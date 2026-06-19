@@ -1,0 +1,175 @@
+{
+  "id": "workcycle_20260619_123136",
+  "version": "5.6",
+  "created_at": "2026-06-19T16:31:49.676599+00:00",
+  "project_id": "eidolon",
+  "dry_run": false,
+  "use_ai": true,
+  "approve_work_execution": true,
+  "seed_if_empty": true,
+  "auto_create_patch_followups": true,
+  "steps_requested": 1,
+  "steps_completed": 1,
+  "stopped_reason": "task_failed",
+  "ok": false,
+  "error": "",
+  "message": "Work cycle finished after 1 step(s). Stopped: task_failed.",
+  "created_work_ids": [],
+  "created_task_ids": [],
+  "created_followup_work_ids": [],
+  "created_followup_task_ids": [],
+  "executed_work_ids": [
+    "task_20260619_123131_run-general-eidolon-test-workflow"
+  ],
+  "executed_task_ids": [
+    "task_20260619_123131_run-general-eidolon-test-workflow"
+  ],
+  "patch_ids": [],
+  "summary_before": {
+    "total": 3,
+    "pending": 1,
+    "active": 1,
+    "blocked": 1,
+    "done": 0,
+    "failed": 0,
+    "cancelled": 0,
+    "approval_required": 0,
+    "next_item": {
+      "id": "task_20260619_123131_run-general-eidolon-test-workflow",
+      "title": "Run general Eidolon test workflow",
+      "description": "Run the approved default test workflow through the task work executor.",
+      "project_id": "eidolon",
+      "status": "pending",
+      "priority": 5,
+      "risk": "low",
+      "source": "system",
+      "requires_approval": false,
+      "created_at": "2026-06-19T12:31:31",
+      "updated_at": "2026-06-19T12:31:31",
+      "started_at": null,
+      "completed_at": null,
+      "blocked_reason": null,
+      "result": null,
+      "metadata": {
+        "action_type": "test_project",
+        "cycle_seed": true,
+        "compatibility_layer": "work_queue",
+        "work_status": "pending"
+      }
+    },
+    "canonical_store": "data/tasks.json",
+    "compatibility_layer": "work_queue.py"
+  },
+  "summary_after": {
+    "total": 5,
+    "pending": 2,
+    "active": 1,
+    "blocked": 1,
+    "done": 0,
+    "failed": 1,
+    "cancelled": 0,
+    "approval_required": 0,
+    "next_item": {
+      "id": "task_20260619_123146_review-readme-next-steps-md-for-the-next-safe-ei",
+      "title": "Review README_NEXT_STEPS.md for the next safe Eidolon step",
+      "description": "Inspect the project README and summarize the next safe action. This is read-only and gives the cycle context before making changes.",
+      "project_id": "eidolon",
+      "status": "pending",
+      "priority": 5,
+      "risk": "low",
+      "source": "system",
+      "requires_approval": false,
+      "created_at": "2026-06-19T12:31:46",
+      "updated_at": "2026-06-19T12:31:46",
+      "started_at": null,
+      "completed_at": null,
+      "blocked_reason": null,
+      "result": null,
+      "metadata": {
+        "action_type": "review_file",
+        "target_file": "README_NEXT_STEPS.md",
+        "cycle_seed": true,
+        "compatibility_layer": "work_queue",
+        "work_status": "pending"
+      }
+    },
+    "canonical_store": "data/tasks.json",
+    "compatibility_layer": "work_queue.py"
+  },
+  "events": [
+    {
+      "type": "observe_queue",
+      "at": "2026-06-19T16:31:36.563724+00:00",
+      "summary": {
+        "total": 3,
+        "pending": 1,
+        "active": 1,
+        "blocked": 1,
+        "done": 0,
+        "failed": 0,
+        "cancelled": 0,
+        "approval_required": 0,
+        "next_item": {
+          "id": "task_20260619_123131_run-general-eidolon-test-workflow",
+          "title": "Run general Eidolon test workflow",
+          "description": "Run the approved default test workflow through the task work executor.",
+          "project_id": "eidolon",
+          "status": "pending",
+          "priority": 5,
+          "risk": "low",
+          "source": "system",
+          "requires_approval": false,
+          "created_at": "2026-06-19T12:31:31",
+          "updated_at": "2026-06-19T12:31:31",
+          "started_at": null,
+          "completed_at": null,
+          "blocked_reason": null,
+          "result": null,
+          "metadata": {
+            "action_type": "test_project",
+            "cycle_seed": true,
+            "compatibility_layer": "work_queue",
+            "work_status": "pending"
+          }
+        },
+        "canonical_store": "data/tasks.json",
+        "compatibility_layer": "work_queue.py"
+      }
+    },
+    {
+      "type": "execute_task_work",
+      "at": "2026-06-19T16:31:49.665822+00:00",
+      "step": 1,
+      "work_item": {
+        "id": "task_20260619_123131_run-general-eidolon-test-workflow",
+        "title": "Run general Eidolon test workflow",
+        "status": "pending",
+        "project_id": "eidolon",
+        "priority": 5,
+        "risk": "low",
+        "requires_approval": false,
+        "metadata": {
+          "action_type": "test_project",
+          "cycle_seed": true,
+          "compatibility_layer": "work_queue",
+          "work_status": "pending"
+        }
+      },
+      "execution": {
+        "ok": false,
+        "task_id": "task_20260619_123131_run-general-eidolon-test-workflow",
+        "action_type": "test_project",
+        "dry_run": false,
+        "message": "",
+        "error": "",
+        "result": "Test report: test_20260619_123138_general\nDry run: False\nOK: False\nStatus: failed\nRecommendation: One or more checks failed. Review the output before applying or keeping changes.",
+        "blocked": false,
+        "completed": false,
+        "metadata": {
+          "test_report_id": "test_20260619_123138_general"
+        },
+        "work_id": "task_20260619_123131_run-general-eidolon-test-workflow"
+      }
+    }
+  ]
+}

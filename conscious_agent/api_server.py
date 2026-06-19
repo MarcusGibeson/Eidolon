@@ -22,12 +22,22 @@ from notification_manager import (
     update_notification_status,
 )
 from patch_suggester import list_patch_proposals, load_patch_proposal, suggest_patch
+from task_patch_bridge import (
+    create_patch_followup_tasks,
+    create_patch_task,
+    suggest_patch_for_task,
+)
+from work_queue_patch_bridge import (
+    create_patch_followup_items,
+    create_patch_work_item,
+    suggest_patch_for_work_item,
+)
 from project_manager import get_active_project
 from session_planner import create_session_plan, list_session_plans, load_session_plan
 from settings_manager import get_setting, load_settings
 from desktop_setup_helper import create_setup_report, list_setup_reports, load_setup_report
 from desktop_onboarding_wizard import build_onboarding_run, list_onboarding_runs, load_onboarding_run
-from task_queue import add_task, get_task, list_tasks, task_status_counts
+from task_queue import add_task, get_task, list_tasks, task_status_counts, update_task_fields
 from work_queue import (
     add_work_item,
     find_work_item,
@@ -35,14 +45,21 @@ from work_queue import (
     summarize_queue,
     update_work_item,
 )
-from work_queue_executor import execute_next_work_item, execute_work_item
+from task_work_executor import execute_next_task_work, execute_task_work_item
+from task_approval_bridge import (
+    list_task_approvals,
+    request_next_task_work_approval,
+    request_task_work_approval,
+)
+from task_lifecycle import derive_task_lifecycle, list_task_lifecycles, normalize_lifecycle_stage_filter, task_lifecycle_summary
+from work_cycle import list_work_cycles, load_work_cycle, run_supervised_work_cycle
 from dev_loop_runner import get_dev_loop, list_dev_loops, run_dev_loop
 from test_report_reviewer import list_test_reviews
 from test_runner import list_test_reports
 from watch_mode import list_watch_reports, load_watch_report, run_watch_loop, run_watch_once
 
 
-API_VERSION = "4.8"
+API_VERSION = "5.7"
 
 
 class ApiError(Exception):
@@ -155,19 +172,40 @@ def _api_index() -> dict[str, Any]:
             "POST /api/chat-actions/{id}/dry-run": "Dry-run a saved chat action.",
             "POST /api/chat-actions/{id}/execute": "Execute safe action or create approval for risky action.",
             "GET /api/tasks": "List tasks.",
+            "GET /api/tasks/summary": "Summarize canonical task-backed work state.",
+            "GET /api/tasks/lifecycle": "Summarize task lifecycle stages derived from status, approvals, and patch metadata. Supports ?stage=... filters.",
+            "GET /api/tasks/{id}/lifecycle": "Get one task lifecycle record.",
+            "POST /api/tasks/request-approvals": "Create approval requests for tasks matching a lifecycle stage, normally approval_required.",
             "GET /api/tasks/{id}": "Get a task detail record.",
             "POST /api/tasks": "Create a task.",
-            "GET /api/work-queue": "List self-directed work queue items.",
-            "GET /api/work-queue/summary": "Summarize the self-directed work queue.",
-            "GET /api/work-queue/{id}": "Get one self-directed work item.",
-            "POST /api/work-queue": "Create a self-directed work item.",
-            "POST /api/work-queue/next/dry-run": "Dry-run the next safe work item.",
-            "POST /api/work-queue/next/execute": "Execute the next safe work item.",
-            "POST /api/work-queue/{id}/dry-run": "Dry-run one work item.",
-            "POST /api/work-queue/{id}/execute": "Execute one work item.",
-            "POST /api/work-queue/{id}/done": "Mark one work item done.",
-            "POST /api/work-queue/{id}/block": "Block one work item.",
-            "POST /api/work-queue/{id}/cancel": "Cancel one work item.",
+            "POST /api/tasks/next/dry-run": "Dry-run the next safe task.",
+            "POST /api/tasks/next/execute": "Execute the next safe task.",
+            "POST /api/tasks/{id}/dry-run": "Dry-run one task through the task work executor.",
+            "POST /api/tasks/{id}/execute": "Execute one task through the task work executor.",
+            "POST /api/tasks/{id}/request-approval": "Create an approval request for executing one approval-gated task.",
+            "GET /api/tasks/{id}/approvals": "List approval requests linked to one task.",
+            "POST /api/tasks/next/request-approval": "Create an approval request for the next approval-gated task.",
+            "POST /api/tasks/{id}/done": "Mark one task done.",
+            "POST /api/tasks/{id}/block": "Block one task.",
+            "POST /api/tasks/{id}/cancel": "Cancel one task.",
+            "GET /api/work-queue": "Legacy alias: list task-backed tasks.",
+            "GET /api/work-queue/summary": "Legacy alias: summarize task-backed tasks.",
+            "GET /api/work-queue/{id}": "Legacy alias: get one task-backed task.",
+            "POST /api/work-queue": "Legacy alias: create a task-backed task.",
+            "POST /api/tasks/patch-request": "Create a task-backed patch-generation item.",
+            "POST /api/work-queue/patch-request": "Legacy alias: create a patch-generation task.",
+            "POST /api/work-queue/next/dry-run": "Legacy alias: dry-run the next safe task.",
+            "POST /api/work-queue/next/execute": "Legacy alias: execute the next safe task.",
+            "POST /api/work-queue/{id}/dry-run": "Legacy alias: dry-run one task.",
+            "POST /api/work-queue/{id}/execute": "Legacy alias: execute one task.",
+            "POST /api/work-queue/{id}/done": "Legacy alias: mark one task done.",
+            "POST /api/work-queue/{id}/block": "Legacy alias: block one task.",
+            "POST /api/work-queue/{id}/cancel": "Legacy alias: cancel one task.",
+            "POST /api/tasks/{id}/suggest-patch": "Generate and link a patch proposal from one task.",
+            "POST /api/work-queue/{id}/suggest-patch": "Legacy alias: generate and link a patch proposal from one task.",
+            "GET /api/work-cycles": "List saved supervised work cycle records.",
+            "GET /api/work-cycles/{id}": "Get one supervised work cycle record.",
+            "POST /api/work-cycles/run": "Run a supervised work cycle over task-backed tasks.",
             "GET /api/goals": "List goals.",
             "GET /api/goals/{id}": "Get a goal detail record.",
             "POST /api/goals": "Create a goal.",
@@ -190,6 +228,8 @@ def _api_index() -> dict[str, Any]:
             "GET /api/patches": "List patch proposals.",
             "GET /api/patches/{id}": "Get a patch proposal.",
             "POST /api/patches/suggest": "Create a patch proposal through patch suggestion mode.",
+            "POST /api/patches/{id}/create-task-followups": "Create review/apply/test task follow-ups for a patch.",
+            "POST /api/patches/{id}/create-followups": "Legacy alias: create review/apply/test work queue follow-ups for a patch.",
             "POST /api/dashboard-chat": "Create a dashboard chat turn with action card.",
             "GET /api/dashboard-chat/latest": "Latest dashboard chat turn.",
         },
@@ -210,6 +250,8 @@ def build_status_payload() -> dict[str, Any]:
     setup_reports = list_setup_reports()
     onboarding_runs = list_onboarding_runs()
     work_summary = summarize_queue()
+    lifecycle_summary = task_lifecycle_summary()
+    work_cycles = list_work_cycles()
     next_work = work_summary.get("next_item") or {}
     settings = load_settings()
 
@@ -244,7 +286,11 @@ def build_status_payload() -> dict[str, Any]:
             "work_queue_done": work_summary.get("done", 0),
             "work_queue_failed": work_summary.get("failed", 0),
             "work_queue_approval_required": work_summary.get("approval_required", 0),
+            "task_lifecycle_needs_attention": lifecycle_summary.get("needs_attention", 0),
+            "task_lifecycle_open": lifecycle_summary.get("open", 0),
+            "work_cycles": len(work_cycles),
         },
+        "task_lifecycle": lifecycle_summary,
         "latest": {
             "diagnostic_report_id": diagnostics[0].get("id") if diagnostics else "",
             "watch_report_id": watch_reports[0].get("id") if watch_reports else "",
@@ -258,6 +304,7 @@ def build_status_payload() -> dict[str, Any]:
             "onboarding_status": onboarding_runs[0].get("status") if onboarding_runs else "",
             "work_item_id": next_work.get("id", ""),
             "work_item_title": next_work.get("title", ""),
+            "work_cycle_id": work_cycles[0].get("id") if work_cycles else "",
         },
         "settings": {
             "dashboard_host": settings.get("dashboard_host"),
@@ -468,6 +515,17 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
             raise ApiError(404, f"Chat action not found: {parts[1]}")
         return 200, _ok(action)
 
+    if parts[0] == "work-cycles":
+        cycles = list_work_cycles()
+        if len(parts) == 1:
+            limit = int(query.get("limit", ["25"])[0] or 25)
+            return 200, _ok(cycles[: max(1, min(limit, 100))])
+        cycle_id = "latest" if parts[1] == "latest" else parts[1]
+        cycle = cycles[0] if cycle_id == "latest" and cycles else load_work_cycle(cycle_id)
+        if not cycle:
+            raise ApiError(404, f"Work cycle not found: {cycle_id}")
+        return 200, _ok(cycle)
+
     if parts[0] == "work-queue":
         if len(parts) == 1:
             status = query.get("status", [""])[0]
@@ -479,14 +537,35 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
             return 200, _ok(summarize_queue(project_id=project_id or None))
         item = find_work_item(parts[1])
         if not item:
-            raise ApiError(404, f"Work item not found: {parts[1]}")
+            raise ApiError(404, f"Task not found through legacy alias: {parts[1]}")
         return 200, _ok(item)
 
     if parts[0] == "tasks":
         if len(parts) == 1:
             status = query.get("status", [""])[0]
+            stage = query.get("stage", [""])[0]
+            project_id = query.get("project", [""])[0]
             include_cancelled = _query_bool(query, "include_cancelled", False)
-            return 200, _ok(list_tasks(status=status, include_cancelled=include_cancelled))
+            if stage:
+                rows = list_task_lifecycles(project=project_id or "", include_closed=include_cancelled, stage_filter=stage)
+                ids = {str(row.get("task_id") or "") for row in rows}
+                return 200, _ok([task for task in list_tasks(status=status, project=project_id or "", include_cancelled=include_cancelled) if task.get("id") in ids])
+            return 200, _ok(list_tasks(status=status, project=project_id or "", include_cancelled=include_cancelled))
+        if len(parts) == 2 and parts[1] == "summary":
+            project_id = query.get("project", [""])[0]
+            return 200, _ok(summarize_queue(project_id=project_id or None))
+        if len(parts) == 2 and parts[1] == "lifecycle":
+            project_id = query.get("project", [""])[0]
+            stage = query.get("stage", [""])[0]
+            return 200, _ok(task_lifecycle_summary(project=project_id or "", stage_filter=stage))
+        if len(parts) == 3 and parts[2] == "approvals":
+            include_closed = _query_bool(query, "include_closed", True)
+            return 200, _ok(list_task_approvals(parts[1], include_closed=include_closed))
+        if len(parts) == 3 and parts[2] == "lifecycle":
+            task = get_task(parts[1])
+            if not task:
+                raise ApiError(404, f"Task not found: {parts[1]}")
+            return 200, _ok(derive_task_lifecycle(task))
         task = get_task(parts[1])
         if not task:
             raise ApiError(404, f"Task not found: {parts[1]}")
@@ -598,6 +677,26 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
         )
         return 201, _ok(loop, message=f"Dev loop saved: {loop.get('id')}")
 
+    if parts == ["work-cycles", "run"]:
+        project_id = str(body.get("project_id") or body.get("project") or "eidolon")
+        max_steps = int(body.get("max_steps", body.get("steps", 1)) or 1)
+        dry_run = _body_bool(body, "dry_run", True)
+        use_ai = _body_bool(body, "use_ai", True)
+        approve_work_execution = _body_bool(body, "approve_work_execution", False)
+        seed_if_empty = _body_bool(body, "seed_if_empty", True)
+        auto_followups = _body_bool(body, "auto_create_patch_followups", True)
+        result = run_supervised_work_cycle(
+            project_id=project_id,
+            max_steps=max_steps,
+            dry_run=dry_run,
+            use_ai=use_ai,
+            approve_work_execution=approve_work_execution,
+            seed_if_empty=seed_if_empty,
+            auto_create_patch_followups=auto_followups,
+        )
+        cycle = load_work_cycle(result.cycle_id)
+        return 201, _ok({"result": result, "cycle": cycle}, message=result.message)
+
     if parts and parts[0] == "notifications":
         if parts == ["notifications", "clear-dismissed"]:
             count = clear_dismissed_notifications()
@@ -642,6 +741,88 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
             saved = load_chat_action(result.chat_action_id)
             return 200, _ok({"result": result, "chat_action": saved}, message=result.message)
 
+    if parts == ["tasks", "request-approvals"]:
+        stage = normalize_lifecycle_stage_filter(str(body.get("stage") or "approval_required"))
+        project_id = str(body.get("project_id") or body.get("project") or "").strip()
+        dry_run = _body_bool(body, "dry_run", False)
+        use_ai = _body_bool(body, "use_ai", True)
+        force = _body_bool(body, "force", False)
+        reason = str(body.get("reason") or "Batch approval request from lifecycle filter.")
+        rows = list_task_lifecycles(project=project_id, include_closed=False, stage_filter=stage)
+        results = []
+        created = 0
+        failed = 0
+        for row in rows:
+            task_id = str(row.get("task_id") or "").strip()
+            if not task_id:
+                continue
+            result = request_task_work_approval(task_id, reason=reason, use_ai=use_ai, force=force, dry_run=dry_run)
+            result_data = _to_jsonable(result)
+            result_data["stage"] = row.get("stage")
+            results.append(result_data)
+            if result.ok:
+                created += 1
+            else:
+                failed += 1
+        return 200 if dry_run else 201, _ok({
+            "stage": stage,
+            "dry_run": dry_run,
+            "matched": len(rows),
+            "created_or_valid": created,
+            "failed": failed,
+            "results": results,
+        }, message=f"Handled approval requests for {created} of {len(rows)} task(s).")
+
+    if parts == ["tasks", "patch-request"]:
+        target_file = str(body.get("target_file") or body.get("file") or "").strip()
+        request = str(body.get("request") or body.get("description") or body.get("message") or "").strip()
+        if not target_file:
+            raise ApiError(400, "target_file is required.")
+        if not request:
+            raise ApiError(400, "request is required.")
+        requires_raw = body.get("requires_approval", None)
+        if requires_raw is None:
+            requires_approval = None
+        elif isinstance(requires_raw, bool):
+            requires_approval = requires_raw
+        else:
+            requires_approval = str(requires_raw).lower() in {"1", "true", "yes", "on"}
+        task = create_patch_task(
+            target_file=target_file,
+            request=request,
+            project_id=str(body.get("project_id") or body.get("project") or "eidolon"),
+            priority=int(body.get("priority") or 7),
+            risk=str(body.get("risk") or "low"),
+            source="dashboard" if str(body.get("source") or "") == "dashboard" else "system",
+            requires_approval=requires_approval,
+        )
+        return 201, _ok(task, message=f"Patch task created: {task.get('id')}")
+
+    if parts == ["work-queue", "patch-request"]:
+        target_file = str(body.get("target_file") or body.get("file") or "").strip()
+        request = str(body.get("request") or body.get("description") or body.get("message") or "").strip()
+        if not target_file:
+            raise ApiError(400, "target_file is required.")
+        if not request:
+            raise ApiError(400, "request is required.")
+        requires_raw = body.get("requires_approval", None)
+        if requires_raw is None:
+            requires_approval = None
+        elif isinstance(requires_raw, bool):
+            requires_approval = requires_raw
+        else:
+            requires_approval = str(requires_raw).lower() in {"1", "true", "yes", "on"}
+        item = create_patch_work_item(
+            target_file=target_file,
+            request=request,
+            project_id=str(body.get("project_id") or body.get("project") or "eidolon"),
+            priority=int(body.get("priority") or 7),
+            risk=str(body.get("risk") or "low"),
+            source="dashboard" if str(body.get("source") or "") == "dashboard" else "system",
+            requires_approval=requires_approval,
+        )
+        return 201, _ok(item, message=f"Patch task created through legacy alias: {item.id}")
+
     if parts == ["work-queue"]:
         title = str(body.get("title") or "").strip()
         if not title:
@@ -663,7 +844,69 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
             requires_approval=requires_approval,
             metadata=body.get("metadata") if isinstance(body.get("metadata"), dict) else {},
         )
-        return 201, _ok(item, message=f"Work item created: {item.id}")
+        return 201, _ok(item, message=f"Task created through legacy alias: {item.id}")
+
+    if parts and parts[0] == "tasks" and len(parts) == 3 and parts[2] == "suggest-patch":
+        task_id = parts[1]
+        dry_run = _body_bool(body, "dry_run", False)
+        use_ai = _body_bool(body, "use_ai", True)
+        result = suggest_patch_for_task(task_id, use_ai=use_ai, dry_run=dry_run)
+        if not result.ok:
+            raise ApiError(400, result.error or "Patch suggestion from task failed.", result)
+        patch = load_patch_proposal(result.patch_id) if result.patch_id else None
+        return 200, _ok({"result": result, "patch": patch}, message=result.message or "Patch suggestion handled.")
+
+    if parts and parts[0] == "tasks" and len(parts) == 3:
+        task_id = parts[1]
+        operation = parts[2]
+        if task_id == "next" and operation in {"dry-run", "execute"}:
+            dry_run = operation == "dry-run" or _body_bool(body, "dry_run", False)
+            use_ai = _body_bool(body, "use_ai", True)
+            project_id = str(body.get("project_id") or body.get("project") or "").strip() or None
+            result = execute_next_task_work(project_id=project_id, dry_run=dry_run, use_ai=use_ai)
+            return 200, _ok(result, message=result.message or result.error or "Task work executor finished.")
+        if task_id == "next" and operation == "request-approval":
+            dry_run = _body_bool(body, "dry_run", False)
+            use_ai = _body_bool(body, "use_ai", True)
+            force = _body_bool(body, "force", False)
+            project_id = str(body.get("project_id") or body.get("project") or "").strip() or None
+            reason = str(body.get("reason") or "")
+            result = request_next_task_work_approval(project_id=project_id, reason=reason, use_ai=use_ai, force=force, dry_run=dry_run)
+            if not result.ok:
+                raise ApiError(400, result.error or "Task approval request failed.", result)
+            return 201, _ok(result, message=result.message or "Task approval request handled.")
+        if operation == "request-approval":
+            dry_run = _body_bool(body, "dry_run", False)
+            use_ai = _body_bool(body, "use_ai", True)
+            force = _body_bool(body, "force", False)
+            reason = str(body.get("reason") or "")
+            result = request_task_work_approval(task_id, reason=reason, use_ai=use_ai, force=force, dry_run=dry_run)
+            if not result.ok:
+                raise ApiError(400, result.error or "Task approval request failed.", result)
+            return 201, _ok(result, message=result.message or "Task approval request handled.")
+        if operation in {"dry-run", "execute"}:
+            dry_run = operation == "dry-run" or _body_bool(body, "dry_run", False)
+            use_ai = _body_bool(body, "use_ai", True)
+            result = execute_task_work_item(task_id, dry_run=dry_run, use_ai=use_ai)
+            return 200, _ok(result, message=result.message or result.error or "Task work executor finished.")
+        if operation == "done":
+            result_text = str(body.get("result") or "Marked done through local API.")
+            mutation = update_task_fields(task_id, status="done", result=result_text)
+            if not mutation.ok:
+                raise ApiError(404, mutation.error or f"Task not found: {task_id}", mutation)
+            return 200, _ok(mutation.task, message=f"Task marked done: {task_id}")
+        if operation == "block":
+            reason = str(body.get("reason") or "Blocked through local API.")
+            mutation = update_task_fields(task_id, status="blocked", blocked_reason=reason)
+            if not mutation.ok:
+                raise ApiError(404, mutation.error or f"Task not found: {task_id}", mutation)
+            return 200, _ok(mutation.task, message=f"Task blocked: {task_id}")
+        if operation == "cancel":
+            result_text = str(body.get("result") or "Cancelled through local API.")
+            mutation = update_task_fields(task_id, status="cancelled", result=result_text)
+            if not mutation.ok:
+                raise ApiError(404, mutation.error or f"Task not found: {task_id}", mutation)
+            return 200, _ok(mutation.task, message=f"Task cancelled: {task_id}")
 
     if parts and parts[0] == "work-queue" and len(parts) == 3:
         item_id = parts[1]
@@ -672,41 +915,78 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
             dry_run = operation == "dry-run" or _body_bool(body, "dry_run", False)
             use_ai = _body_bool(body, "use_ai", True)
             project_id = str(body.get("project_id") or body.get("project") or "").strip() or None
-            result = execute_next_work_item(project_id=project_id, dry_run=dry_run, use_ai=use_ai)
-            return 200, _ok(result, message=result.message or result.error or "Work queue executor finished.")
+            result = execute_next_task_work(project_id=project_id, dry_run=dry_run, use_ai=use_ai)
+            return 200, _ok(result, message=result.message or result.error or "Task work executor finished.")
+        if item_id == "next" and operation == "request-approval":
+            dry_run = _body_bool(body, "dry_run", False)
+            use_ai = _body_bool(body, "use_ai", True)
+            force = _body_bool(body, "force", False)
+            project_id = str(body.get("project_id") or body.get("project") or "").strip() or None
+            reason = str(body.get("reason") or "")
+            result = request_next_task_work_approval(project_id=project_id, reason=reason, use_ai=use_ai, force=force, dry_run=dry_run)
+            if not result.ok:
+                raise ApiError(400, result.error or "Task approval request failed.", result)
+            return 201, _ok(result, message=result.message or "Task approval request handled.")
+        if operation == "request-approval":
+            dry_run = _body_bool(body, "dry_run", False)
+            use_ai = _body_bool(body, "use_ai", True)
+            force = _body_bool(body, "force", False)
+            reason = str(body.get("reason") or "")
+            result = request_task_work_approval(item_id, reason=reason, use_ai=use_ai, force=force, dry_run=dry_run)
+            if not result.ok:
+                raise ApiError(400, result.error or "Task approval request failed.", result)
+            return 201, _ok(result, message=result.message or "Task approval request handled.")
+        if operation == "suggest-patch":
+            dry_run = _body_bool(body, "dry_run", False)
+            use_ai = _body_bool(body, "use_ai", True)
+            result = suggest_patch_for_work_item(item_id, use_ai=use_ai, dry_run=dry_run)
+            if not result.ok:
+                raise ApiError(400, result.error or "Patch suggestion from task failed.", result)
+            patch = load_patch_proposal(result.patch_id) if result.patch_id else None
+            return 200, _ok({"result": result, "patch": patch}, message=result.message or "Patch suggestion handled.")
         if operation in {"dry-run", "execute"}:
             dry_run = operation == "dry-run" or _body_bool(body, "dry_run", False)
             use_ai = _body_bool(body, "use_ai", True)
-            result = execute_work_item(item_id, dry_run=dry_run, use_ai=use_ai)
-            return 200, _ok(result, message=result.message or result.error or "Work queue executor finished.")
+            result = execute_task_work_item(item_id, dry_run=dry_run, use_ai=use_ai)
+            return 200, _ok(result, message=result.message or result.error or "Task work executor finished.")
         if operation == "done":
             item = update_work_item(item_id, status="done", result=str(body.get("result") or "Marked done through local API."))
             if not item:
-                raise ApiError(404, f"Work item not found: {item_id}")
-            return 200, _ok(item, message=f"Work item marked done: {item_id}")
+                raise ApiError(404, f"Task not found: {item_id}")
+            return 200, _ok(item, message=f"Task marked done through legacy alias: {item_id}")
         if operation == "block":
             reason = str(body.get("reason") or "Blocked through local API.")
             item = update_work_item(item_id, status="blocked", blocked_reason=reason)
             if not item:
-                raise ApiError(404, f"Work item not found: {item_id}")
-            return 200, _ok(item, message=f"Work item blocked: {item_id}")
+                raise ApiError(404, f"Task not found: {item_id}")
+            return 200, _ok(item, message=f"Task blocked through legacy alias: {item_id}")
         if operation == "cancel":
             item = update_work_item(item_id, status="cancelled", result=str(body.get("result") or "Cancelled through local API."))
             if not item:
-                raise ApiError(404, f"Work item not found: {item_id}")
-            return 200, _ok(item, message=f"Work item cancelled: {item_id}")
+                raise ApiError(404, f"Task not found: {item_id}")
+            return 200, _ok(item, message=f"Task cancelled through legacy alias: {item_id}")
 
     if parts == ["tasks"]:
+        requires_raw = body.get("requires_approval", None)
+        if requires_raw is None:
+            requires_approval = None
+        elif isinstance(requires_raw, bool):
+            requires_approval = requires_raw
+        else:
+            requires_approval = str(requires_raw).lower() in {"1", "true", "yes", "on"}
         result = add_task(
             title=str(body.get("title") or ""),
             description=str(body.get("description") or ""),
             priority=str(body.get("priority") or "medium"),
             status=str(body.get("status") or "planned"),
+            project=str(body.get("project_id") or body.get("project") or ""),
             command=str(body.get("command") or ""),
             next_action=str(body.get("next_action") or ""),
             linked_goal=str(body.get("linked_goal") or ""),
             risk=str(body.get("risk") or "low"),
             source="local_api",
+            requires_approval=requires_approval,
+            metadata=body.get("metadata") if isinstance(body.get("metadata"), dict) else {},
         )
         if not result.ok:
             raise ApiError(400, result.error or "Task creation failed.", result)
@@ -723,6 +1003,20 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
         if not result.ok:
             raise ApiError(400, result.error or "Goal creation failed.", result)
         return 201, _ok(result.goal, message=result.message)
+
+    if parts and parts[0] == "patches" and len(parts) == 3 and parts[2] == "create-task-followups":
+        project_id = str(body.get("project_id") or body.get("project") or "eidolon")
+        result = create_patch_followup_tasks(parts[1], project_id=project_id)
+        if not result.ok:
+            raise ApiError(400, result.error or "Could not create patch follow-up tasks.", result)
+        return 201, _ok(result, message=result.message)
+
+    if parts and parts[0] == "patches" and len(parts) == 3 and parts[2] == "create-followups":
+        project_id = str(body.get("project_id") or body.get("project") or "eidolon")
+        result = create_patch_followup_items(parts[1], project_id=project_id)
+        if not result.ok:
+            raise ApiError(400, result.error or "Could not create patch follow-up tasks.", result)
+        return 201, _ok(result, message=result.message)
 
     if parts == ["patches", "suggest"]:
         target_file = str(body.get("target_file") or body.get("file") or "").strip()
@@ -763,7 +1057,7 @@ def dispatch_api(method: str, path: str, query: dict[str, list[str]] | None = No
 
 
 class EidolonApiHandler(BaseHTTPRequestHandler):
-    server_version = "EidolonAPI/4.8"
+    server_version = "EidolonAPI/5.7"
 
     def _send_json(self, payload: dict[str, Any], status: int = 200) -> None:
         encoded = json.dumps(_to_jsonable(payload), indent=2, default=str).encode("utf-8")

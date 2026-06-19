@@ -74,7 +74,29 @@ from session_planner import (
     list_session_plans,
 )
 from work_queue import run_cli as run_work_queue_cli
-from work_queue_executor import print_execute_next_work_item, print_execute_work_item
+from task_work_executor import print_execute_next_task_work_item, print_execute_task_work_item
+from task_approval_bridge import (
+    print_request_task_work_approval,
+    print_request_next_task_work_approval,
+    print_task_approvals,
+)
+from task_patch_bridge import (
+    print_create_patch_task,
+    print_suggest_patch_for_task,
+    print_create_patch_task_followups,
+)
+from work_queue_patch_bridge import (
+    print_create_patch_work_item,
+    print_suggest_patch_for_work_item,
+    print_create_patch_followups,
+)
+from work_cycle import (
+    print_work_cycle,
+    print_work_cycles,
+    print_saved_work_cycle,
+    list_work_cycles,
+    resolve_work_cycle_id,
+)
 from task_queue import (
     print_task_status,
     print_task_list,
@@ -521,6 +543,9 @@ def print_latest_ids() -> None:
     print("  python conscious_agent/main.py --show-dev-loop latest")
     print("  python conscious_agent/main.py --settings")
     print("  python conscious_agent/main.py --settings-health")
+    print("  python conscious_agent/main.py --work-cycle --dry-run")
+    print("  python conscious_agent/main.py --work-cycle --work-cycle-steps 3")
+    print("  python conscious_agent/main.py --show-work-cycle latest")
     print("  python conscious_agent/main.py --diagnostics")
     print("  python conscious_agent/main.py --dashboard")
     print("  python conscious_agent/main.py --diagnostics --diagnostics-full")
@@ -552,14 +577,53 @@ def main() -> None:
     parser.add_argument(
         "--work-queue",
         nargs=argparse.REMAINDER,
-        help="Manage Eidolon's self-directed work queue. Everything after this flag is passed to the work queue CLI.",
+        help="Legacy alias: manage task-backed tasks through the old work-queue CLI.",
     )
-    parser.add_argument("--execute-work", action="store_true", help="Execute the next safe item from the self-directed work queue")
-    parser.add_argument("--execute-work-id", type=str, help="Execute one specific self-directed work queue item by id")
-    parser.add_argument("--execute-work-project", type=str, default="", help="Optional project id filter for --execute-work")
-    parser.add_argument("--approve-work-execution", action="store_true", help="Allow approval-required work queue items to execute; use carefully")
-    parser.add_argument("--no-ai-work-executor", action="store_true", help="Disable local AI during work queue execution")
-    parser.add_argument("--work-executor-full", action="store_true", help="Show full work executor output")
+    parser.add_argument(
+        "--task-work",
+        nargs=argparse.REMAINDER,
+        help="Manage canonical task-backed tasks through the Tasks / Work CLI.",
+    )
+    parser.add_argument("--execute-task-work", action="store_true", help="Execute the next safe planned/active task through the task work executor")
+    parser.add_argument("--execute-task-work-id", type=str, help="Execute one specific task through the task work executor")
+    parser.add_argument("--execute-task-work-project", type=str, default="", help="Optional project filter for --execute-task-work")
+    parser.add_argument("--execute-work", action="store_true", help="Legacy alias: execute the next safe task-backed task")
+    parser.add_argument("--execute-work-id", type=str, help="Legacy alias: execute one specific task-backed task by id")
+    parser.add_argument("--execute-work-project", type=str, default="", help="Legacy alias project filter for --execute-work")
+    parser.add_argument("--approve-task-work-execution", action="store_true", help="Allow approval-required task work to execute; use carefully")
+    parser.add_argument("--approve-work-execution", action="store_true", help="Legacy alias: allow approval-required task-backed tasks to execute; use carefully")
+    parser.add_argument("--no-ai-task-work-executor", action="store_true", help="Disable local AI during task work execution")
+    parser.add_argument("--no-ai-work-executor", action="store_true", help="Legacy alias: disable local AI during task work execution")
+    parser.add_argument("--task-work-executor-full", action="store_true", help="Show full task work executor output")
+    parser.add_argument("--work-executor-full", action="store_true", help="Legacy alias: show full task work executor output")
+    parser.add_argument("--request-task-approval", type=str, help="Create an approval request for executing one approval-gated task")
+    parser.add_argument("--request-next-task-approval", action="store_true", help="Create an approval request for the next approval-gated task")
+    parser.add_argument("--task-approval-project", type=str, default="", help="Optional project filter for --request-next-task-approval")
+    parser.add_argument("--task-approval-reason", type=str, default="", help="Reason to store on a task approval request")
+    parser.add_argument("--force-task-approval", action="store_true", help="Create a task approval even if the task is not currently risk-gated")
+    parser.add_argument("--show-task-approvals", type=str, help="Show approval requests linked to a task")
+    parser.add_argument("--task-approval-full", action="store_true", help="Show full task approval request details")
+    parser.add_argument("--queue-patch", nargs=2, metavar=("FILE", "REQUEST"), help="Legacy alias: create a task-backed patch-generation item for a file")
+    parser.add_argument("--queue-task-patch", nargs=2, metavar=("FILE", "REQUEST"), help="Create a task-backed item that will generate a patch proposal for a file")
+    parser.add_argument("--queue-patch-project", type=str, default="eidolon", help="Project id for --queue-patch / --queue-task-patch")
+    parser.add_argument("--queue-patch-priority", type=int, default=7, help="Priority 1-10 for --queue-patch / --queue-task-patch")
+    parser.add_argument("--queue-patch-risk", type=str, default="low", choices=["low", "medium", "high"], help="Risk level for --queue-patch / --queue-task-patch")
+    parser.add_argument("--queue-patch-requires-approval", action="store_true", help="Force the queued patch task to require approval")
+    parser.add_argument("--suggest-patch-for-work", type=str, help="Legacy alias: generate and link a patch proposal from a task-backed task")
+    parser.add_argument("--suggest-patch-for-task", type=str, help="Generate and link a patch proposal from a task")
+    parser.add_argument("--create-patch-followups", type=str, help="Legacy alias: create review/apply/test follow-up tasks for a patch id")
+    parser.add_argument("--create-patch-task-followups", type=str, help="Create review/apply/test follow-up tasks for a patch id")
+    parser.add_argument("--patch-followup-project", type=str, default="eidolon", help="Project id for --create-patch-followups")
+    parser.add_argument("--work-cycle", action="store_true", help="Run one supervised autonomous work cycle over task-backed tasks")
+    parser.add_argument("--work-cycle-project", type=str, default="eidolon", help="Project id for --work-cycle")
+    parser.add_argument("--work-cycle-steps", type=int, default=1, help="Maximum tasks to advance during --work-cycle, capped at 10")
+    parser.add_argument("--approve-work-cycle-actions", action="store_true", help="Allow approval-required tasks during --work-cycle; use carefully")
+    parser.add_argument("--no-ai-work-cycle", action="store_true", help="Disable local AI during --work-cycle")
+    parser.add_argument("--no-work-cycle-seed", action="store_true", help="Do not create seed tasks when the queue is empty")
+    parser.add_argument("--no-work-cycle-followups", action="store_true", help="Do not auto-create review/apply/test follow-ups for proposed patches")
+    parser.add_argument("--work-cycle-full", action="store_true", help="Show full supervised work cycle details")
+    parser.add_argument("--list-work-cycles", action="store_true", help="List saved supervised work cycle records")
+    parser.add_argument("--show-work-cycle", nargs="?", const="latest", help="Show a saved supervised work cycle by id or alias")
     parser.add_argument("--project-status", action="store_true", help="Show tracked projects")
     parser.add_argument("--add-project", type=str, help="Add a project and set it active")
     parser.add_argument("--project-path", type=str, default="", help="Path for --add-project")
@@ -774,24 +838,136 @@ def main() -> None:
     if args.work_queue is not None:
         raise SystemExit(run_work_queue_cli(args.work_queue))
 
-    if args.execute_work_id:
-        print_execute_work_item(
-            args.execute_work_id,
+    if args.task_work is not None:
+        raise SystemExit(run_work_queue_cli(args.task_work))
+
+    task_work_full = args.task_work_executor_full or args.work_executor_full
+    allow_task_work_approval = args.approve_task_work_execution or args.approve_work_execution
+    use_task_work_ai = not (args.no_ai_task_work_executor or args.no_ai_work_executor)
+
+    if args.request_task_approval:
+        print_request_task_work_approval(
+            args.request_task_approval,
+            reason=args.task_approval_reason,
+            use_ai=use_task_work_ai,
+            full_output=task_work_full,
+            force=args.force_task_approval,
             dry_run=args.dry_run,
-            allow_approval_required=args.approve_work_execution,
+            full=args.task_approval_full,
+        )
+        return
+
+    if args.request_next_task_approval:
+        print_request_next_task_work_approval(
+            project_id=args.task_approval_project or None,
+            reason=args.task_approval_reason,
+            use_ai=use_task_work_ai,
+            full_output=task_work_full,
+            force=args.force_task_approval,
+            dry_run=args.dry_run,
+            full=args.task_approval_full,
+        )
+        return
+
+    if args.show_task_approvals:
+        print_task_approvals(
+            args.show_task_approvals,
+            include_closed=True,
+            full=args.task_approval_full,
+        )
+        return
+
+    if args.execute_task_work_id or args.execute_work_id:
+        target_task_id = args.execute_task_work_id or args.execute_work_id
+        print_execute_task_work_item(
+            target_task_id,
+            dry_run=args.dry_run,
+            allow_approval_required=allow_task_work_approval,
+            use_ai=use_task_work_ai,
+            full=task_work_full,
+        )
+        return
+
+    if args.execute_task_work or args.execute_work:
+        project_filter = args.execute_task_work_project or args.execute_work_project or None
+        print_execute_next_task_work_item(
+            project_id=project_filter,
+            dry_run=args.dry_run,
+            allow_approval_required=allow_task_work_approval,
+            use_ai=use_task_work_ai,
+            full=task_work_full,
+        )
+        return
+
+    if args.queue_task_patch:
+        target_file, request = args.queue_task_patch
+        print_create_patch_task(
+            target_file=target_file,
+            request=request,
+            project_id=args.queue_patch_project,
+            priority=args.queue_patch_priority,
+            risk=args.queue_patch_risk,
+            requires_approval=args.queue_patch_requires_approval or None,
+        )
+        return
+
+    if args.queue_patch:
+        target_file, request = args.queue_patch
+        print_create_patch_work_item(
+            target_file=target_file,
+            request=request,
+            project_id=args.queue_patch_project,
+            priority=args.queue_patch_priority,
+            risk=args.queue_patch_risk,
+            requires_approval=args.queue_patch_requires_approval or None,
+        )
+        return
+
+    if args.suggest_patch_for_task:
+        print_suggest_patch_for_task(
+            args.suggest_patch_for_task,
             use_ai=not args.no_ai_work_executor,
+            dry_run=args.dry_run,
             full=args.work_executor_full,
         )
         return
 
-    if args.execute_work:
-        print_execute_next_work_item(
-            project_id=args.execute_work_project or None,
-            dry_run=args.dry_run,
-            allow_approval_required=args.approve_work_execution,
+    if args.suggest_patch_for_work:
+        print_suggest_patch_for_work_item(
+            args.suggest_patch_for_work,
             use_ai=not args.no_ai_work_executor,
+            dry_run=args.dry_run,
             full=args.work_executor_full,
         )
+        return
+
+    if args.create_patch_task_followups:
+        print_create_patch_task_followups(args.create_patch_task_followups, project_id=args.patch_followup_project)
+        return
+
+    if args.create_patch_followups:
+        print_create_patch_followups(args.create_patch_followups, project_id=args.patch_followup_project)
+        return
+
+    if args.work_cycle:
+        print_work_cycle(
+            project_id=args.work_cycle_project,
+            max_steps=args.work_cycle_steps,
+            dry_run=args.dry_run,
+            use_ai=not args.no_ai_work_cycle,
+            approve_work_execution=args.approve_work_cycle_actions,
+            seed_if_empty=not args.no_work_cycle_seed,
+            auto_create_patch_followups=not args.no_work_cycle_followups,
+            full=args.work_cycle_full,
+        )
+        return
+
+    if args.list_work_cycles:
+        print_work_cycles()
+        return
+
+    if args.show_work_cycle:
+        print_saved_work_cycle(args.show_work_cycle, full=args.work_cycle_full)
         return
 
     if args.status:

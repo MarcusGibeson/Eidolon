@@ -1,5 +1,5 @@
 {
-  "settings_version": "4.5",
+  "settings_version": "5.7",
   "local_model": "qwen2.5:7b",
   "embed_model": "nomic-embed-text:latest",
   "ollama_base_url": "http://localhost:11434",

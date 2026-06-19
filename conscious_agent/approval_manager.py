@@ -250,6 +250,64 @@ def _result_dict(result: Any) -> dict[str, Any]:
     return {"value": str(result)}
 
 
+def _linked_task_id(approval: dict[str, Any]) -> str:
+    metadata = approval.get("metadata") if isinstance(approval.get("metadata"), dict) else {}
+    task_id = str(metadata.get("task_id") or "").strip()
+    object_id = str(approval.get("object_id") or "").strip()
+    if task_id:
+        return task_id
+    if object_id.startswith("task_"):
+        return object_id
+    command = str(approval.get("command") or "")
+    marker = "--execute-task-work-id"
+    if marker in command:
+        parts = command.split()
+        try:
+            return parts[parts.index(marker) + 1]
+        except (ValueError, IndexError):
+            return ""
+    return ""
+
+
+def _sync_linked_task_approval(
+    approval: dict[str, Any],
+    approval_status: str,
+    result: dict[str, Any] | None = None,
+    note: str = "",
+) -> None:
+    task_id = _linked_task_id(approval)
+    if not task_id:
+        return
+    metadata = {
+        "approval_id": approval.get("id", ""),
+        "approval_status": approval_status,
+        "approval_action_type": approval.get("action_type", ""),
+    }
+    if result is not None:
+        metadata["approval_result"] = result
+    try:
+        from task_queue import update_task_fields
+
+        if approval_status == "rejected":
+            update_task_fields(
+                task_id,
+                status="blocked",
+                blocked_reason=f"Approval rejected: {note or approval.get('id', '')}",
+                metadata=metadata,
+            )
+        elif approval_status == "failed":
+            update_task_fields(
+                task_id,
+                status="blocked",
+                blocked_reason=f"Approval execution failed: {approval.get('id', '')}",
+                metadata=metadata,
+            )
+        else:
+            update_task_fields(task_id, metadata=metadata)
+    except Exception as error:
+        approval.setdefault("notes", []).append(f"Could not sync linked task {task_id}: {error}")
+
+
 def approve_approval(approval_id: str = "latest-pending", dry_run: bool = False) -> dict[str, Any]:
     approval = get_approval(approval_id)
     if not approval:
@@ -305,6 +363,7 @@ def approve_approval(approval_id: str = "latest-pending", dry_run: bool = False)
     approval["resolved_at"] = _now()
     approval["status"] = "approved" if ok else "failed"
     approval["result"] = result_data
+    _sync_linked_task_approval(approval, approval["status"], result=result_data)
     _save_approval(approval)
 
     store_memory({
@@ -342,6 +401,7 @@ def reject_approval(approval_id: str = "latest-pending", note: str = "") -> dict
     approval["resolved_at"] = _now()
     approval["status"] = "rejected"
     approval.setdefault("notes", []).append(note or "Rejected without note.")
+    _sync_linked_task_approval(approval, "rejected", note=note)
     _save_approval(approval)
 
     store_memory({

@@ -749,5 +749,328 @@
     "scan_id": "maint_20260618_234256",
     "suggestion_count": 3,
     "created_at": "2026-06-18T23:42:56"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 185 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T15:45:45"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T15:45:45 with 185 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T15:45:45"
+  },
+  {
+    "type": "task_event",
+    "content": "Added task task_20260619_155907_v5-4-api-task-lifecycle-smoke-test: v5.4 API task lifecycle smoke test",
+    "source": "task_queue",
+    "task_id": "task_20260619_155907_v5-4-api-task-lifecycle-smoke-test",
+    "status": "planned",
+    "priority": "medium",
+    "created_at": "2026-06-19T15:59:07"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_155907_v5-4-api-task-lifecycle-smoke-test fields: status, blocked_reason",
+    "source": "task_queue",
+    "task_id": "task_20260619_155907_v5-4-api-task-lifecycle-smoke-test",
+    "created_at": "2026-06-19T15:59:07"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_155907_v5-4-api-task-lifecycle-smoke-test fields: status, result",
+    "source": "task_queue",
+    "task_id": "task_20260619_155907_v5-4-api-task-lifecycle-smoke-test",
+    "created_at": "2026-06-19T15:59:07"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_155907_v5-4-api-task-lifecycle-smoke-test fields: status, result",
+    "source": "task_queue",
+    "task_id": "task_20260619_155907_v5-4-api-task-lifecycle-smoke-test",
+    "created_at": "2026-06-19T15:59:07"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 185 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T15:59:17"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T15:59:17 with 185 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T15:59:17"
+  },
+  {
+    "type": "task_event",
+    "content": "Added task task_20260619_160735_approval-bridge-smoke-task: Approval bridge smoke task",
+    "source": "task_queue",
+    "task_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "status": "planned",
+    "priority": "high",
+    "created_at": "2026-06-19T16:07:35"
+  },
+  {
+    "type": "approval_request_created",
+    "content": "Created approval request approval_20260619_160739_run-command_task-20260619-160735-approval-bridge-smo for run_command: Execute task task_20260619_160735_approval-bridge-smoke-task: Approval bridge smoke task",
+    "source": "approval_manager",
+    "approval_id": "approval_20260619_160739_run-command_task-20260619-160735-approval-bridge-smo",
+    "action_type": "run_command",
+    "object_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "status": "pending",
+    "created_at": "2026-06-19T16:07:39"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_160735_approval-bridge-smoke-task fields: status, blocked_reason",
+    "source": "task_queue",
+    "task_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "created_at": "2026-06-19T16:07:39"
+  },
+  {
+    "type": "task_approval_requested",
+    "content": "Created approval request approval_20260619_160739_run-command_task-20260619-160735-approval-bridge-smo for task task_20260619_160735_approval-bridge-smoke-task.",
+    "source": "task_approval_bridge",
+    "task_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "approval_id": "approval_20260619_160739_run-command_task-20260619-160735-approval-bridge-smo",
+    "risk": "medium",
+    "created_at": "2026-06-19T16:07:39"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_160735_approval-bridge-smoke-task fields: status",
+    "source": "task_queue",
+    "task_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "created_at": "2026-06-19T16:08:13"
+  },
+  {
+    "type": "dashboard_note",
+    "content": "Dashboard note recorded from task task_20260619_160735_approval-bridge-smoke-task: Approval bridge smoke task\n\nDashboard note approval smoke test",
+    "source": "task_work_executor",
+    "task_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "work_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "project_id": "eidolon",
+    "created_at": "2026-06-19T16:08:13"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_160735_approval-bridge-smoke-task fields: status, result, patch_id, patch_status, work_status",
+    "source": "task_queue",
+    "task_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "created_at": "2026-06-19T16:08:13"
+  },
+  {
+    "type": "task_work_execution_event",
+    "content": "Executed task task_20260619_160735_approval-bridge-smoke-task as dashboard_note. ok=True",
+    "source": "task_work_executor",
+    "task_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "work_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "project_id": "eidolon",
+    "action_type": "dashboard_note",
+    "ok": true,
+    "created_at": "2026-06-19T16:08:13"
+  },
+  {
+    "type": "command_run_event",
+    "content": "Ran approved command: python conscious_agent/main.py --execute-task-work-id task_20260619_160735_approval-bridge-smoke-task --approve-task-work-execution. Status: success. Output: # Task work execution\nTask: task_20260619_160735_approval-bridge-smoke-task\nAction type: dashboard_note\nDry run: False\nOK: True\nCompleted: True\n\n## Result\nDashboard note recorded from task task_20260619_160735_approval-bridge-smoke-task: Approval bridge smoke task\n\nDashboard note approval smoke test",
+    "source": "command_runner",
+    "command": "python conscious_agent/main.py --execute-task-work-id task_20260619_160735_approval-bridge-smoke-task --approve-task-work-execution",
+    "return_code": 0,
+    "status": "success",
+    "created_at": "2026-06-19T16:08:13"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_160735_approval-bridge-smoke-task fields: ",
+    "source": "task_queue",
+    "task_id": "task_20260619_160735_approval-bridge-smoke-task",
+    "created_at": "2026-06-19T16:08:13"
+  },
+  {
+    "type": "approval_request_resolved",
+    "content": "Approval approval_20260619_160739_run-command_task-20260619-160735-approval-bridge-smo resolved with status approved for action run_command.",
+    "source": "approval_manager",
+    "approval_id": "approval_20260619_160739_run-command_task-20260619-160735-approval-bridge-smo",
+    "action_type": "run_command",
+    "status": "approved",
+    "ok": true,
+    "created_at": "2026-06-19T16:08:13"
+  },
+  {
+    "type": "task_event",
+    "content": "Added task task_20260619_160825_approval-rejection-smoke-task: Approval rejection smoke task",
+    "source": "task_queue",
+    "task_id": "task_20260619_160825_approval-rejection-smoke-task",
+    "status": "planned",
+    "priority": "high",
+    "created_at": "2026-06-19T16:08:25"
+  },
+  {
+    "type": "approval_request_created",
+    "content": "Created approval request approval_20260619_160827_run-command_task-20260619-160825-approval-rejection for run_command: Execute task task_20260619_160825_approval-rejection-smoke-task: Approval rejection smoke task",
+    "source": "approval_manager",
+    "approval_id": "approval_20260619_160827_run-command_task-20260619-160825-approval-rejection",
+    "action_type": "run_command",
+    "object_id": "task_20260619_160825_approval-rejection-smoke-task",
+    "status": "pending",
+    "created_at": "2026-06-19T16:08:27"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_160825_approval-rejection-smoke-task fields: status, blocked_reason",
+    "source": "task_queue",
+    "task_id": "task_20260619_160825_approval-rejection-smoke-task",
+    "created_at": "2026-06-19T16:08:27"
+  },
+  {
+    "type": "task_approval_requested",
+    "content": "Created approval request approval_20260619_160827_run-command_task-20260619-160825-approval-rejection for task task_20260619_160825_approval-rejection-smoke-task.",
+    "source": "task_approval_bridge",
+    "task_id": "task_20260619_160825_approval-rejection-smoke-task",
+    "approval_id": "approval_20260619_160827_run-command_task-20260619-160825-approval-rejection",
+    "risk": "medium",
+    "created_at": "2026-06-19T16:08:27"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_160825_approval-rejection-smoke-task fields: status, blocked_reason",
+    "source": "task_queue",
+    "task_id": "task_20260619_160825_approval-rejection-smoke-task",
+    "created_at": "2026-06-19T16:08:29"
+  },
+  {
+    "type": "approval_request_rejected",
+    "content": "Rejected approval approval_20260619_160827_run-command_task-20260619-160825-approval-rejection: Smoke rejection",
+    "source": "approval_manager",
+    "approval_id": "approval_20260619_160827_run-command_task-20260619-160825-approval-rejection",
+    "action_type": "run_command",
+    "status": "rejected",
+    "created_at": "2026-06-19T16:08:29"
+  },
+  {
+    "type": "task_event",
+    "content": "Added task task_20260619_160848_api-approval-smoke: API approval smoke",
+    "source": "task_queue",
+    "task_id": "task_20260619_160848_api-approval-smoke",
+    "status": "planned",
+    "priority": "high",
+    "created_at": "2026-06-19T16:08:48"
+  },
+  {
+    "type": "approval_request_created",
+    "content": "Created approval request approval_20260619_160848_run-command_task-20260619-160848-api-approval-smoke for run_command: Execute task task_20260619_160848_api-approval-smoke: API approval smoke",
+    "source": "approval_manager",
+    "approval_id": "approval_20260619_160848_run-command_task-20260619-160848-api-approval-smoke",
+    "action_type": "run_command",
+    "object_id": "task_20260619_160848_api-approval-smoke",
+    "status": "pending",
+    "created_at": "2026-06-19T16:08:48"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_160848_api-approval-smoke fields: status, blocked_reason",
+    "source": "task_queue",
+    "task_id": "task_20260619_160848_api-approval-smoke",
+    "created_at": "2026-06-19T16:08:48"
+  },
+  {
+    "type": "task_approval_requested",
+    "content": "Created approval request approval_20260619_160848_run-command_task-20260619-160848-api-approval-smoke for task task_20260619_160848_api-approval-smoke.",
+    "source": "task_approval_bridge",
+    "task_id": "task_20260619_160848_api-approval-smoke",
+    "approval_id": "approval_20260619_160848_run-command_task-20260619-160848-api-approval-smoke",
+    "risk": "medium",
+    "created_at": "2026-06-19T16:08:48"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 186 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:09:22"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T16:09:22 with 186 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:09:22"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 187 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:18:43"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T16:18:43 with 187 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:18:43"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 187 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:19:16"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T16:19:16 with 187 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:19:16"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 187 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:29:15"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T16:29:15 with 187 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:29:15"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 187 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:30:16"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T16:30:16 with 187 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:30:16"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 187 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:30:28"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T16:30:28 with 187 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T16:30:28"
   }
 ]

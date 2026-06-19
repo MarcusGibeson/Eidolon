@@ -15,6 +15,8 @@ TASKS_FILE = DATA_DIR / "tasks.json"
 
 TASK_STATUSES = {"planned", "active", "blocked", "paused", "done", "cancelled"}
 TASK_PRIORITIES = {"low", "medium", "high", "critical"}
+TASK_RISKS = {"low", "medium", "high", "critical"}
+APPROVAL_RISKS = {"medium", "high", "critical"}
 OPEN_STATUSES = {"planned", "active", "blocked", "paused"}
 READY_STATUSES = {"planned", "active"}
 PRIORITY_RANK = {"critical": 0, "high": 1, "medium": 2, "low": 3}
@@ -69,12 +71,16 @@ def load_tasks_data() -> dict[str, Any]:
     if not isinstance(data, dict):
         data = _default_tasks()
 
-    data.setdefault("version", 1)
+    data.setdefault("version", 2)
     data.setdefault("active_task", "")
     data.setdefault("tasks", [])
 
     if not isinstance(data["tasks"], list):
         data["tasks"] = []
+
+    for task in data["tasks"]:
+        if isinstance(task, dict):
+            _normalize_task_record(task)
 
     return data
 
@@ -193,6 +199,39 @@ def _active_project_name() -> str:
     return project.get("name", "")
 
 
+def _normalize_risk(risk: str) -> str:
+    risk = (risk or "low").lower().strip()
+    return risk if risk in TASK_RISKS else "low"
+
+
+def _default_requires_approval(risk: str, explicit: bool | None = None) -> bool:
+    if explicit is not None:
+        return bool(explicit)
+    return _normalize_risk(risk) in APPROVAL_RISKS
+
+
+def _normalize_task_record(task: dict[str, Any]) -> dict[str, Any]:
+    """Backfill v5.1 task fields so task_queue is the single source of truth."""
+    risk = _normalize_risk(str(task.get("risk", "low")))
+    task["risk"] = risk
+    task.setdefault("requires_approval", _default_requires_approval(risk))
+    metadata = task.get("metadata")
+    if not isinstance(metadata, dict):
+        metadata = {}
+    task["metadata"] = metadata
+    task.setdefault("patch_id", metadata.get("patch_id", ""))
+    task.setdefault("patch_status", metadata.get("patch_status", ""))
+    task.setdefault("result", "")
+    task.setdefault("work_status", "")
+    task.setdefault("source_id", "")
+    task.setdefault("source_category", "")
+    task.setdefault("follow_up_commands", [])
+    task.setdefault("next_actions", [])
+    task.setdefault("blockers", [])
+    task.setdefault("notes", [])
+    return task
+
+
 def add_task(
     title: str,
     description: str = "",
@@ -207,6 +246,12 @@ def add_task(
     source_id: str = "",
     source_category: str = "",
     follow_up_commands: list[str] | None = None,
+    requires_approval: bool | None = None,
+    metadata: dict[str, Any] | None = None,
+    patch_id: str = "",
+    patch_status: str = "",
+    result: str = "",
+    work_status: str = "",
 ) -> TaskMutationResult:
     title = title.strip()
     if not title:
@@ -219,6 +264,11 @@ def add_task(
     status = status.lower().strip()
     if status not in TASK_STATUSES:
         return TaskMutationResult(False, error=f"Invalid task status: {status}")
+
+    risk = _normalize_risk(risk)
+    if metadata is None:
+        metadata = {}
+    requires_approval = _default_requires_approval(risk, requires_approval)
 
     now = _now()
     if not project:
@@ -238,6 +288,7 @@ def add_task(
         "status": status,
         "priority": priority,
         "risk": risk or "low",
+        "requires_approval": bool(requires_approval),
         "command": command,
         "follow_up_commands": follow_up_commands or [],
         "next_actions": actions,
@@ -247,6 +298,11 @@ def add_task(
         "source": source,
         "source_id": source_id,
         "source_category": source_category,
+        "metadata": metadata or {},
+        "patch_id": patch_id or str((metadata or {}).get("patch_id", "")),
+        "patch_status": patch_status or str((metadata or {}).get("patch_status", "")),
+        "result": result,
+        "work_status": work_status,
         "created_at": now,
         "updated_at": now,
         "started_at": now if status == "active" else "",
@@ -317,6 +373,111 @@ def set_task_status(task_id: str, status: str, note: str = "") -> TaskMutationRe
     })
 
     return TaskMutationResult(True, task=task, message=f"Task {task['id']} status set to {status}.")
+
+
+def update_task_fields(task_id: str, **updates: Any) -> TaskMutationResult:
+    """Update task fields used by legacy work-queue compatibility and patch linking."""
+    resolved = resolve_task_id(task_id)
+    if not resolved:
+        return TaskMutationResult(False, error=f"Task not found: {task_id}")
+
+    data = load_tasks_data()
+    task = None
+    for existing in data.get("tasks", []):
+        if existing.get("id") == resolved:
+            task = existing
+            break
+
+    if not task:
+        return TaskMutationResult(False, error=f"Task not found: {task_id}")
+
+    now = _now()
+    metadata_updates = updates.pop("metadata", None)
+
+    aliases = {
+        "project_id": "project",
+        "blocked_reason": "blockers",
+    }
+
+    for key, value in updates.items():
+        key = aliases.get(key, key)
+        if key == "status":
+            value = str(value).lower().strip()
+            if value not in TASK_STATUSES:
+                continue
+            task["status"] = value
+            if value == "active" and not task.get("started_at"):
+                task["started_at"] = now
+            if value in {"done", "cancelled"}:
+                task["completed_at"] = task.get("completed_at") or now
+            if value == "active":
+                data["active_task"] = task.get("id", "")
+            elif data.get("active_task") == task.get("id") and value in {"done", "cancelled"}:
+                data["active_task"] = ""
+        elif key == "priority":
+            value = str(value).lower().strip()
+            if value in TASK_PRIORITIES:
+                task["priority"] = value
+        elif key == "risk":
+            task["risk"] = _normalize_risk(str(value))
+            if "requires_approval" not in updates:
+                task["requires_approval"] = _default_requires_approval(task["risk"])
+        elif key == "requires_approval":
+            task["requires_approval"] = bool(value)
+        elif key == "blockers":
+            if value:
+                task.setdefault("blockers", []).append(str(value))
+        elif key in {
+            "title", "description", "project", "command", "linked_goal", "source",
+            "source_id", "source_category", "patch_id", "patch_status", "result", "work_status",
+        }:
+            task[key] = str(value)
+        elif key == "follow_up_commands":
+            task[key] = [str(command) for command in (value or [])]
+        elif key == "next_actions":
+            task[key] = [str(action) for action in (value or [])]
+
+    if metadata_updates is not None:
+        metadata = task.get("metadata") if isinstance(task.get("metadata"), dict) else {}
+        if isinstance(metadata_updates, dict):
+            metadata.update(metadata_updates)
+        task["metadata"] = metadata
+        if metadata.get("patch_id") and not task.get("patch_id"):
+            task["patch_id"] = str(metadata.get("patch_id"))
+        if metadata.get("patch_status"):
+            task["patch_status"] = str(metadata.get("patch_status"))
+
+    task["updated_at"] = now
+    _normalize_task_record(task)
+    _update_task_in_data(data, task)
+    save_tasks_data(data)
+
+    store_memory({
+        "type": "task_event",
+        "content": f"Updated task {task['id']} fields: {', '.join(updates.keys())}",
+        "source": "task_queue",
+        "task_id": task["id"],
+    })
+
+    return TaskMutationResult(True, task=task, message=f"Updated task: {task['id']}")
+
+
+def delete_task(task_id: str) -> TaskMutationResult:
+    resolved = resolve_task_id(task_id)
+    if not resolved:
+        return TaskMutationResult(False, error=f"Task not found: {task_id}")
+
+    data = load_tasks_data()
+    tasks = data.get("tasks", [])
+    kept = [task for task in tasks if task.get("id") != resolved]
+    if len(kept) == len(tasks):
+        return TaskMutationResult(False, error=f"Task not found: {task_id}")
+
+    data["tasks"] = kept
+    if data.get("active_task") == resolved:
+        data["active_task"] = ""
+    save_tasks_data(data)
+    return TaskMutationResult(True, message=f"Deleted task: {resolved}")
 
 
 def add_task_note(task_id: str, note: str) -> TaskMutationResult:
@@ -499,9 +660,17 @@ def task_detail_text(task: dict[str, Any], full: bool = False) -> str:
     lines.append(f"Status: {task.get('status')}")
     lines.append(f"Priority: {task.get('priority')}")
     lines.append(f"Risk: {task.get('risk')}")
+    lines.append(f"Requires approval: {bool(task.get('requires_approval'))}")
     lines.append(f"Project: {task.get('project') or '[none]'}")
     if task.get("linked_goal"):
         lines.append(f"Linked goal: {task.get('linked_goal')}")
+    if task.get("patch_id"):
+        lines.append(f"Patch: {task.get('patch_id')} ({task.get('patch_status') or 'unknown'})")
+    metadata = task.get("metadata") if isinstance(task.get("metadata"), dict) else {}
+    if metadata.get("approval_id"):
+        lines.append(f"Approval: {metadata.get('approval_id')} ({metadata.get('approval_status') or 'pending'})")
+    if task.get("work_status"):
+        lines.append(f"Work status compatibility: {task.get('work_status')}")
     if task.get("source"):
         lines.append(f"Source: {task.get('source')} {task.get('source_id') or ''}".strip())
     lines.append(f"Created: {task.get('created_at')}")
@@ -510,6 +679,10 @@ def task_detail_text(task: dict[str, Any], full: bool = False) -> str:
         lines.append("")
         lines.append("## Description")
         lines.append(task.get("description", ""))
+    if task.get("result"):
+        lines.append("")
+        lines.append("## Result")
+        lines.append(task.get("result", ""))
     if task.get("command"):
         lines.append("")
         lines.append("## Recommended command")
@@ -534,6 +707,10 @@ def task_detail_text(task: dict[str, Any], full: bool = False) -> str:
         lines.append("## Notes")
         for note in task.get("notes", []):
             lines.append(f"- {note}")
+    if full and task.get("metadata"):
+        lines.append("")
+        lines.append("## Metadata")
+        lines.append(json.dumps(task.get("metadata") or {}, indent=2))
     if full and task.get("execution_history"):
         lines.append("")
         lines.append("## Execution history")

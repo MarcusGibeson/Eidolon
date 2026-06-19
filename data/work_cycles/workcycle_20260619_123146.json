@@ -1,0 +1,160 @@
+{
+  "id": "workcycle_20260619_123146",
+  "version": "5.6",
+  "created_at": "2026-06-19T16:32:37.237973+00:00",
+  "project_id": "eidolon",
+  "dry_run": false,
+  "use_ai": true,
+  "approve_work_execution": true,
+  "seed_if_empty": true,
+  "auto_create_patch_followups": true,
+  "steps_requested": 10,
+  "steps_completed": 2,
+  "stopped_reason": "task_failed",
+  "ok": false,
+  "error": "",
+  "message": "Work cycle finished after 2 step(s). Created 2 seed task(s). Stopped: task_failed.",
+  "created_work_ids": [
+    "task_20260619_123146_review-readme-next-steps-md-for-the-next-safe-ei",
+    "task_20260619_123148_run-general-eidolon-test-workflow"
+  ],
+  "created_task_ids": [
+    "task_20260619_123146_review-readme-next-steps-md-for-the-next-safe-ei",
+    "task_20260619_123148_run-general-eidolon-test-workflow"
+  ],
+  "created_followup_work_ids": [],
+  "created_followup_task_ids": [],
+  "executed_work_ids": [
+    "task_20260619_123146_review-readme-next-steps-md-for-the-next-safe-ei",
+    "task_20260619_123148_run-general-eidolon-test-workflow"
+  ],
+  "executed_task_ids": [
+    "task_20260619_123146_review-readme-next-steps-md-for-the-next-safe-ei",
+    "task_20260619_123148_run-general-eidolon-test-workflow"
+  ],
+  "patch_ids": [],
+  "summary_before": {
+    "total": 3,
+    "pending": 0,
+    "active": 1,
+    "blocked": 1,
+    "done": 0,
+    "failed": 1,
+    "cancelled": 0,
+    "approval_required": 0,
+    "next_item": null,
+    "canonical_store": "data/tasks.json",
+    "compatibility_layer": "work_queue.py"
+  },
+  "summary_after": {
+    "total": 5,
+    "pending": 0,
+    "active": 0,
+    "blocked": 1,
+    "done": 2,
+    "failed": 2,
+    "cancelled": 0,
+    "approval_required": 0,
+    "next_item": null,
+    "canonical_store": "data/tasks.json",
+    "compatibility_layer": "work_queue.py"
+  },
+  "events": [
+    {
+      "type": "observe_queue",
+      "at": "2026-06-19T16:31:46.121706+00:00",
+      "summary": {
+        "total": 3,
+        "pending": 0,
+        "active": 1,
+        "blocked": 1,
+        "done": 0,
+        "failed": 1,
+        "cancelled": 0,
+        "approval_required": 0,
+        "next_item": null,
+        "canonical_store": "data/tasks.json",
+        "compatibility_layer": "work_queue.py"
+      }
+    },
+    {
+      "type": "seed_queue",
+      "at": "2026-06-19T16:31:50.396026+00:00",
+      "dry_run": false,
+      "created_work_ids": [
+        "task_20260619_123146_review-readme-next-steps-md-for-the-next-safe-ei",
+        "task_20260619_123148_run-general-eidolon-test-workflow"
+      ],
+      "proposed_items": []
+    },
+    {
+      "type": "execute_task_work",
+      "at": "2026-06-19T16:32:23.809737+00:00",
+      "step": 1,
+      "work_item": {
+        "id": "task_20260619_123146_review-readme-next-steps-md-for-the-next-safe-ei",
+        "title": "Review README_NEXT_STEPS.md for the next safe Eidolon step",
+        "status": "pending",
+        "project_id": "eidolon",
+        "priority": 5,
+        "risk": "low",
+        "requires_approval": false,
+        "metadata": {
+          "action_type": "review_file",
+          "target_file": "README_NEXT_STEPS.md",
+          "cycle_seed": true,
+          "compatibility_layer": "work_queue",
+          "work_status": "pending"
+        }
+      },
+      "execution": {
+        "ok": true,
+        "task_id": "task_20260619_123146_review-readme-next-steps-md-for-the-next-safe-ei",
+        "action_type": "review_file",
+        "dry_run": false,
+        "message": "",
+        "error": "",
+        "result": "# Code Review: README_NEXT_STEPS.md\n\n## Basic facts\n- Lines: 1691\n- Characters reviewed: 18000 of 55118\n\n## Project index context\nIndex entry for README_NEXT_STEPS.md:\n{'line_count': 1691, 'non_empty_line_count': 1250, 'preview': '# Eidolon v5.6 - Task Lifecycle Dashboard Polish\\nv5.6 makes the dashboard and API explain task state in plain lifecycle stages instead of forcing you to decode raw status + risk + approval metadata like some cursed office horoscope. The canonical task system remains `task_queue.py`, `task_work_executor.py`, `task_patch_bridge.py`, and `task_approval_bridge.py`.\\n## What changed in v5.6\\n- Added `conscious_agent/task_lifecycle.py`\\n- derives readable lifecycle stages from task status, risk, approval links, and patch metadata\\n- does not mutate task state\\n- powers dashboard and API lifecycle summaries\\n- Updated `conscious_agent/dashboard.py`\\n- dashboard version is now `5.6`\\n- `/tasks-work` now shows lifecycle summary cards'}\n\n## Static review findings\n- Line 3: very long line (314 chars).\n- Line 73: very long line (253 chars).\n- Line 79: very long line (416 chars).\n- Line 190: very long line (297 chars).\n- Line 196: very long line (329 chars).\n- Line 286: very long line (302 chars).\n- Line 292: very long line (346 chars).\n- Line 339: very long line (181 chars).\n- Line 380: very long line (213 chars).\n- Line 381: very long line (189 chars).\n- Line 387: very long line (335 chars).\n- Line 477: very long line (206 chars).\n- Line 483: very long line (414 chars).\n- Line 564: very long line (223 chars).\n- Line 568: very long line (336 chars).\n- Line 661: very long line (191 chars).\n- Line 686: very long line (283 chars).\n- Line 692: very long line (409 chars).\n- Line 706: very long line (205 chars).\n- Line 734: very long line (274 chars).\n- Line 780: very long line (262 chars).\n- Line 786: very long line (434 chars).\n- Line 788: very long line (209 chars).\n- Line 872: very long line (218 chars).\n- Line 959: very long line (245 chars).\n- Line 965: very long line (316 chars).\n- Line 1096: very long line (285 chars).\n- Line 1098: very long line (309 chars).\n- Line 1102: very long line (232 chars).\n- Line 1170: very long line (251 chars).\n- Line 1247: very long line (197 chars).\n- Line 1266: very long line (223 chars).\n- Line 1279: very long line (270 chars).\n- Line 1297: very long line (269 chars).\n- Line 1299: very long line (296 chars).\n- Line 1303: very long line (278 chars).\n- Line 1412: very long line (223 chars).\n- Line 1443: very long line (196 chars).\n- Line 1450: very long line (226 chars).\n- Line 1469: very long line (313 chars).\n\n## Local AI review\n### Code Review for `conscious_agent/task_work_executor.py`\n\n#### 1. What This File Appears to Do\nThe file `task_work_executor.py` is a crucial component in the Eidolon project, responsible for executing tasks based on their classification and handling various types of work items such as review files, running commands, suggesting patches, testing projects, adding dashboard notes, and more. It operates directly with the task queue stored in `data/tasks.json`, ensuring that each task is processed according to its specified type.\n\n#### 2. Important Functions/Classes/Components\n- **`execute_task_work_item`**: This function takes a task item from the queue and executes it based on its classification.\n- **`classify_task`**: Determines how a given task should be executed, returning an appropriate classification like `REVIEW_FILE`, `RUN_COMMAND`, etc.\n- **`handle_review_file`**, **`handle_run_command`**, **`handle_suggest_patch`**, **`handle_test_project`**, **`handle_dashboard_note`**: These are specialized handlers for different types of tasks.\n- **`execute_task`**: A higher-level function that orchestrates the execution process, including classification and handling.\n\n#### 3. Likely Issues or Risks\n1. **Deprecation Risk**: The file still includes compatibility aliases like `work_id`, which might lead to confusion as the project transitions away from older n\n\n[TRUNCATED: task work executor output exceeded 4000 characters]",
+        "blocked": false,
+        "completed": true,
+        "metadata": null,
+        "work_id": "task_20260619_123146_review-readme-next-steps-md-for-the-next-safe-ei"
+      }
+    },
+    {
+      "type": "execute_task_work",
+      "at": "2026-06-19T16:32:37.235940+00:00",
+      "step": 2,
+      "work_item": {
+        "id": "task_20260619_123148_run-general-eidolon-test-workflow",
+        "title": "Run general Eidolon test workflow",
+        "status": "pending",
+        "project_id": "eidolon",
+        "priority": 5,
+        "risk": "low",
+        "requires_approval": false,
+        "metadata": {
+          "action_type": "test_project",
+          "cycle_seed": true,
+          "compatibility_layer": "work_queue",
+          "work_status": "pending"
+        }
+      },
+      "execution": {
+        "ok": false,
+        "task_id": "task_20260619_123148_run-general-eidolon-test-workflow",
+        "action_type": "test_project",
+        "dry_run": false,
+        "message": "",
+        "error": "",
+        "result": "Test report: test_20260619_123225_general\nDry run: False\nOK: False\nStatus: failed\nRecommendation: One or more checks failed. Review the output before applying or keeping changes.",
+        "blocked": false,
+        "completed": false,
+        "metadata": {
+          "test_report_id": "test_20260619_123225_general"
+        },
+        "work_id": "task_20260619_123148_run-general-eidolon-test-workflow"
+      }
+    }
+  ]
+}

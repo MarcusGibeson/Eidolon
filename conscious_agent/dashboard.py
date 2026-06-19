@@ -56,6 +56,11 @@ from memory_compactor import (
     memory_summary_text,
 )
 from patch_suggester import list_patch_proposals, load_patch_proposal, patch_proposal_text, suggest_patch
+from work_queue_patch_bridge import (
+    create_patch_followup_items,
+    create_patch_work_item,
+    suggest_patch_for_work_item,
+)
 from project_manager import get_active_project
 from session_planner import create_session_plan, list_session_plans, load_session_plan, session_plan_text
 from settings_manager import get_setting, load_settings, set_setting, settings_health, settings_text
@@ -68,7 +73,18 @@ from work_queue import (
     summarize_queue,
     update_work_item,
 )
-from work_queue_executor import execute_next_work_item, execute_work_item, work_execution_text
+from task_work_executor import execute_next_task_work, execute_task_work_item, task_work_execution_text
+from task_approval_bridge import request_task_work_approval, task_approvals_text
+from task_lifecycle import (
+    STAGE_FILTER_LABELS,
+    derive_task_lifecycle,
+    lifecycle_stage_matches,
+    list_task_lifecycles,
+    normalize_lifecycle_stage_filter,
+    task_lifecycle_summary,
+    task_lifecycle_text,
+)
+from work_cycle import run_supervised_work_cycle, list_work_cycles, load_work_cycle, work_cycle_text
 from test_runner import list_test_reports, load_test_report, test_report_text
 from test_report_reviewer import list_test_reviews, load_test_review, test_review_text
 from watch_mode import list_watch_reports, load_watch_report, run_watch_once, run_watch_loop, watch_report_text
@@ -77,7 +93,7 @@ from dev_loop_runner import get_dev_loop, list_dev_loops, run_dev_loop, dev_loop
 
 
 DASHBOARD_TITLE = "Eidolon Dashboard"
-DASHBOARD_VERSION = "4.8"
+DASHBOARD_VERSION = "5.7"
 
 
 class DashboardState:
@@ -273,7 +289,8 @@ def _layout(path: str, content: str) -> str:
         ("/chat-actions", "Chat Actions <span class='nav-badge' data-live-count='counts.chat_actions'></span>"),
         ("/create", "Create"),
         ("/tasks", "Tasks <span class='nav-badge' data-live-count='counts.tasks'></span>"),
-        ("/work-queue", "Work Queue <span class='nav-badge' data-live-count='counts.work_queue_pending'></span>"),
+        ("/tasks-work", "Tasks / Work <span class='nav-badge' data-live-count='counts.work_queue_pending'></span>"),
+        ("/work-cycle", "Work Cycle <span class='nav-badge' data-live-count='counts.work_cycles'></span>"),
         ("/approvals", "Approvals <span class='nav-badge warn-badge' data-live-count='counts.pending_approvals'></span>"),
         ("/notifications", "Notifications <span class='nav-badge warn-badge' data-live-count='counts.unread_notifications'></span>"),
         ("/watch", "Watch <span class='nav-badge' data-live-count='counts.watch_reports'></span>"),
@@ -332,6 +349,20 @@ textarea {{ width:100%; background:var(--panel2); color:var(--text); border:1px 
 .notice.ok {{ background:#122619; color:#d7ffe0; }} .notice.bad {{ background:#2b1515; color:#ffdada; }}
 table {{ width:100%; border-collapse:collapse; }} th,td {{ border-bottom:1px solid var(--border); padding:8px; vertical-align:top; text-align:left; }} th {{ color:var(--muted); font-weight:600; }}
 .badge {{ display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid var(--border); color:var(--muted); font-size:12px; }}
+.stage-pill {{ display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid var(--border); font-size:12px; font-weight:600; background:#151b26; color:var(--muted); }}
+.stage-ready {{ color:var(--good); border-color:#315f43; background:#102016; }}
+.stage-active {{ color:#dbe7ff; border-color:#365c9b; background:#111d35; }}
+.stage-approval-required, .stage-approval-pending, .stage-approved-ready {{ color:var(--warn); border-color:#6a4c18; background:#23190b; }}
+.stage-approval-rejected, .stage-approval-failed, .stage-blocked {{ color:var(--bad); border-color:#6d3030; background:#261111; }}
+.stage-patch-proposed {{ color:#cdb7ff; border-color:#514277; background:#1c1730; }}
+.stage-done {{ color:var(--good); border-color:#315f43; background:#102016; }}
+.stage-cancelled, .stage-unknown {{ color:var(--muted); }}
+.lifecycle-strip {{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0; }}
+.lifecycle-step {{ padding:8px 10px; border:1px solid var(--border); border-radius:12px; background:#10151e; color:var(--muted); font-size:12px; }}
+.lifecycle-step.current {{ border-color:var(--accent); color:#fff; box-shadow:0 0 0 1px var(--accent) inset; }}
+.toolbar {{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0; }}
+	.filter-chip {{ display:inline-block; padding:7px 10px; border:1px solid var(--border); border-radius:999px; background:#111722; color:var(--text); text-decoration:none; font-size:12px; }}
+	.filter-chip.active {{ border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }}
 .footer {{ color:var(--muted); font-size:12px; margin-top:30px; }}
 .nav-badge {{ display:inline-block; min-width:20px; margin-left:5px; padding:1px 6px; border-radius:999px; background:#253047; color:#dbe7ff; font-size:11px; text-align:center; }}
 .nav-badge:empty {{ display:none; }}
@@ -363,7 +394,8 @@ def _status_cards() -> str:
     cards = [
         _card("Active Project", f"<div class='kpi' data-live-text='active_project.name'>{_fmt(project.get('name','[none]'))}</div><p class='muted' data-live-text='active_project.path'>{_fmt(project.get('path',''))}</p>"),
         _card("Tasks", f"<div class='kpi' data-live-count='counts.tasks'>{len(tasks)}</div><p class='muted'>Ready: <span data-live-count='counts.task_status.ready'>{counts.get('ready',0)}</span> · Active: <span data-live-count='counts.task_status.active'>{counts.get('active',0)}</span> · Blocked: <span data-live-count='counts.task_status.blocked'>{counts.get('blocked',0)}</span></p>"),
-        _card("Work Queue", f"<div class='kpi' data-live-count='counts.work_queue_pending'>{work_summary.get('pending',0)}</div><p class='muted'>Active: <span data-live-count='counts.work_queue_active'>{work_summary.get('active',0)}</span> · Blocked: <span data-live-count='counts.work_queue_blocked'>{work_summary.get('blocked',0)}</span> · Approval: <span data-live-count='counts.work_queue_approval_required'>{work_summary.get('approval_required',0)}</span></p>"),
+        _card("Tasks / Work", f"<div class='kpi' data-live-count='counts.work_queue_pending'>{work_summary.get('pending',0)}</div><p class='muted'>Active: <span data-live-count='counts.work_queue_active'>{work_summary.get('active',0)}</span> · Blocked: <span data-live-count='counts.work_queue_blocked'>{work_summary.get('blocked',0)}</span> · Approval: <span data-live-count='counts.work_queue_approval_required'>{work_summary.get('approval_required',0)}</span></p>"),
+        _card("Work Cycles", f"<div class='kpi' data-live-count='counts.work_cycles'>{len(list_work_cycles())}</div><p class='muted'>Bounded supervised queue cycles.</p>"),
         _card("Pending Approvals", f"<div class='kpi' data-live-count='counts.pending_approvals'>{len(approvals)}</div><p class='muted'>Things waiting for your glorious human permission.</p>"),
         _card("Unread Notifications", f"<div class='kpi' data-live-count='counts.unread_notifications'>{len(notifications)}</div><p class='muted'>Saved alerts from watch mode and other systems.</p>"),
         _card("Patches", f"<div class='kpi' data-live-count='counts.patches'>{len(patches)}</div><p class='muted'>Proposed/applied/rolled back patch records.</p>"),
@@ -377,7 +409,7 @@ def render_overview() -> str:
     next_item = next_task()
     next_task_html = task_detail_text(next_item, full=False) if next_item else "No ready task found. Suspiciously peaceful."
     actions = "".join([
-        "<p><a href='/actions'><button type='button'>Open Action Center</button></a> <a href='/chat-console'><button type='button'>Open Chat Console</button></a> <a href='/work-queue'><button type='button'>Open Work Queue</button></a> <a href='/create'><button type='button'>Create Task / Goal / Patch</button></a> <a href='/onboarding'><button type='button'>Open Onboarding</button></a></p>",
+        "<p><a href='/actions'><button type='button'>Open Action Center</button></a> <a href='/chat-console'><button type='button'>Open Chat Console</button></a> <a href='/tasks-work'><button type='button'>Open Tasks / Work</button></a> <a href='/work-cycle'><button type='button'>Open Work Cycle</button></a> <a href='/create'><button type='button'>Create Task / Goal / Patch</button></a> <a href='/onboarding'><button type='button'>Open Onboarding</button></a></p>",
         _button("Run diagnostics", "run_diagnostics"),
         _button("Plan session", "plan_session"),
         _button("Maintenance scan", "maintenance_scan"),
@@ -766,22 +798,124 @@ def _work_item_create_form() -> str:
 <form method='post' action='/action' class='stack'>
 <input type='hidden' name='action' value='dashboard_add_work_item'>
 <label>Title <input name='title' required placeholder='Review conscious_agent/dashboard.py'></label>
-<label>Description <textarea name='description' rows='4' placeholder='Describe the work item. Include a target file, command:, or metadata-style hint when useful.'></textarea></label>
+<label>Description <textarea name='description' rows='4' placeholder='Describe the task. Include a target file, command:, or metadata-style hint when useful.'></textarea></label>
 <label>Project ID <input name='project_id' value='eidolon' placeholder='eidolon'></label>
 <label>Priority <input name='priority' type='number' min='1' max='10' value='5'></label>
 <label>Risk <select name='risk'>{risk_options}</select></label>
 <label><input type='checkbox' name='requires_approval' value='true'> Requires approval</label>
-<button type='submit'>Create Work Item</button>
+<button type='submit'>Create Task</button>
 </form>
-<p class='muted'>Work items are for the self-directed queue. Low-risk items can be dry-run or executed through the conservative executor. Medium/high-risk items stay approval-gated, because the machine does not get a tiny crown.</p>
+<p class='muted'>Tasks are the canonical work records. Low-risk tasks can be dry-run or executed through the conservative task work executor. Medium/high-risk tasks stay approval-gated, because the machine does not get a tiny crown.</p>
 """
 
 
+def _patch_work_item_create_form() -> str:
+    risk_options = _risk_options("low")
+    return f"""
+<form method='post' action='/action' class='stack'>
+<input type='hidden' name='action' value='dashboard_queue_patch'>
+<label>Target file <input name='target_file' required placeholder='conscious_agent/dashboard.py'></label>
+<label>Patch request <textarea name='request' rows='4' required placeholder='Describe the change Eidolon should propose as a patch.'></textarea></label>
+<label>Project ID <input name='project_id' value='eidolon' placeholder='eidolon'></label>
+<label>Priority <input name='priority' type='number' min='1' max='10' value='7'></label>
+<label>Risk <select name='risk'>{risk_options}</select></label>
+<label><input type='checkbox' name='requires_approval' value='true'> Requires approval before patch generation</label>
+<button type='submit'>Queue Patch Task</button>
+</form>
+<p class='muted'>This creates a task-backed item with <code>action_type=suggest_patch</code>. Executing it creates a proposed patch and links the patch back to the task. Documentation, meet accountability. Finally.</p>
+"""
+
+
+
+def _stage_pill(lifecycle: dict[str, Any]) -> str:
+    stage = str(lifecycle.get("stage") or "unknown")
+    label = str(lifecycle.get("stage_label") or stage)
+    css = str(lifecycle.get("css_class") or f"stage-{stage.replace('_', '-')}")
+    return f"<span class='stage-pill {_safe(css)}'>{_safe(label)}</span>"
+
+
+def _task_lifecycle_for_work_item(item: Any) -> dict[str, Any]:
+    task = get_task(getattr(item, "id", "")) if item else None
+    if task:
+        return derive_task_lifecycle(task)
+    metadata = getattr(item, "metadata", {}) if item else {}
+    return {
+        "stage": "unknown",
+        "stage_label": "Unknown",
+        "css_class": "stage-unknown",
+        "next_action": "Inspect the raw task/work record.",
+        "approval_id": str((metadata or {}).get("approval_id") or "") if isinstance(metadata, dict) else "",
+        "approval_status": str((metadata or {}).get("approval_status") or "") if isinstance(metadata, dict) else "",
+        "patch_id": str((metadata or {}).get("patch_id") or "") if isinstance(metadata, dict) else "",
+        "patch_status": str((metadata or {}).get("patch_status") or "") if isinstance(metadata, dict) else "",
+    }
+
+
+def _lifecycle_flow(stage: str) -> str:
+    stages = [
+        ("ready", "Ready"),
+        ("approval_required", "Needs approval"),
+        ("approval_pending", "Pending"),
+        ("approved_ready", "Approved"),
+        ("active", "Active"),
+        ("done", "Done"),
+    ]
+    blocked = {"blocked", "approval_rejected", "approval_failed", "cancelled"}
+    parts = []
+    for key, label in stages:
+        current = " current" if key == stage else ""
+        parts.append(f"<span class='lifecycle-step{current}'>{_safe(label)}</span>")
+    if stage in blocked:
+        parts.append(f"<span class='lifecycle-step current'>{_safe(stage.replace('_', ' ').title())}</span>")
+    return "<div class='lifecycle-strip'>" + "".join(parts) + "</div>"
+
+
+def _lifecycle_summary_cards() -> str:
+    summary = task_lifecycle_summary()
+    counts = summary.get("counts", {})
+    return (
+        "<div class='grid'>"
+        + _card("Open Tasks", f"<div class='kpi'>{_safe(summary.get('open', 0))}</div><p class='muted'>Total task records: {_safe(summary.get('total', 0))}</p>")
+        + _card("Ready / Active", f"<div class='kpi'>{_safe(counts.get('ready', 0) + counts.get('active', 0))}</div><p class='muted'>Ready: {_safe(counts.get('ready', 0))} · Active: {_safe(counts.get('active', 0))}</p>")
+        + _card("Approval Flow", f"<div class='kpi'>{_safe(counts.get('approval_required', 0) + counts.get('approval_pending', 0) + counts.get('approved_ready', 0))}</div><p class='muted'>Required: {_safe(counts.get('approval_required', 0))} · Pending: {_safe(counts.get('approval_pending', 0))} · Approved: {_safe(counts.get('approved_ready', 0))}</p>")
+        + _card("Needs Attention", f"<div class='kpi'>{_safe(summary.get('needs_attention', 0))}</div><p class='muted'>Blocked/rejected/failed/approval waiting.</p>")
+        + "</div>"
+    )
+
+
+def _lifecycle_legend() -> str:
+    return (
+        "<div class='toolbar'>"
+        "<span class='stage-pill stage-ready'>Ready</span>"
+        "<span class='stage-pill stage-approval-required'>Needs approval request</span>"
+        "<span class='stage-pill stage-approval-pending'>Approval pending</span>"
+        "<span class='stage-pill stage-approved-ready'>Approved, ready to run</span>"
+        "<span class='stage-pill stage-active'>Active</span>"
+        "<span class='stage-pill stage-blocked'>Blocked</span>"
+        "<span class='stage-pill stage-done'>Done</span>"
+        "</div>"
+        "<p class='muted'>v5.7 derives lifecycle stages from canonical task status, risk, linked approvals, and patch metadata, then lets the dashboard filter and act on them. Same data, fewer riddles. Allegedly.</p>"
+    )
+
 def _work_item_controls(item_id: str, status: str) -> str:
     controls = []
-    if status == "pending":
+    item = find_work_item(item_id)
+    metadata = item.metadata if item and isinstance(item.metadata, dict) else {}
+    lifecycle = _task_lifecycle_for_work_item(item)
+    stage = str(lifecycle.get("stage") or "unknown")
+    is_patch_item = str(metadata.get("action_type") or "").lower() == "suggest_patch" or bool(metadata.get("patch_target_file") or metadata.get("target_file"))
+    approval_id = str(lifecycle.get("approval_id") or metadata.get("approval_id") or "").strip()
+
+    if stage in {"ready", "active", "approved_ready", "patch_proposed"} or status == "pending":
         controls.append(_button("Dry-run", "work_queue_execute", work_item_id=item_id, dry_run="true", use_ai="true"))
+    if stage in {"ready", "active", "approved_ready"} or status == "pending":
         controls.append(_button("Execute", "work_queue_execute", work_item_id=item_id, use_ai="true"))
+    if is_patch_item and stage in {"ready", "active", "patch_proposed"}:
+        controls.append(_button("Suggest Patch", "work_queue_suggest_patch", work_item_id=item_id, use_ai="true"))
+    if stage in {"approval_required", "blocked", "approval_rejected", "approval_failed"}:
+        controls.append(_button("Request Approval", "task_request_approval", work_item_id=item_id, use_ai="true"))
+    if approval_id:
+        controls.append(_detail_link("approval", approval_id, "Open Approval"))
     if status in {"pending", "active", "blocked", "failed"}:
         controls.append(_button("Mark done", "work_queue_done", work_item_id=item_id))
         controls.append(_button("Cancel", "work_queue_cancel", work_item_id=item_id))
@@ -791,32 +925,107 @@ def _work_item_controls(item_id: str, status: str) -> str:
     return " ".join(controls)
 
 
-def _work_queue_table(items: list[Any]) -> str:
+def _work_item_patch_hint(item: Any) -> str:
+    metadata = item.metadata if hasattr(item, "metadata") and isinstance(item.metadata, dict) else {}
+    lifecycle = _task_lifecycle_for_work_item(item)
+    patch_id = str(lifecycle.get("patch_id") or metadata.get("patch_id") or "").strip()
+    target_file = str(lifecycle.get("target_file") or metadata.get("patch_target_file") or metadata.get("target_file") or "").strip()
+    approval_id = str(lifecycle.get("approval_id") or metadata.get("approval_id") or "").strip()
+    approval_status = str(lifecycle.get("approval_status") or metadata.get("approval_status") or "").strip()
+    bits = []
+    if target_file:
+        bits.append(f"<span class='muted'>Patch target: {_safe(target_file)}</span>")
+    if patch_id:
+        bits.append(f"<span class='muted'>Patch: {_detail_link('patch', patch_id, patch_id)}</span>")
+    if approval_id:
+        label = f"{approval_id} ({approval_status or 'pending'})"
+        bits.append(f"<span class='muted'>Approval: {_detail_link('approval', approval_id, label)}</span>")
+    return "<br>" + "<br>".join(bits) if bits else ""
+
+
+def _lifecycle_filter_controls(selected_stage: str = "all") -> str:
+    selected_stage = normalize_lifecycle_stage_filter(selected_stage)
+    summary = task_lifecycle_summary()
+    filters = summary.get("filters", [])
+    preferred = ["all", "open", "needs_attention", "ready_to_act", "ready", "approval_required", "approval_pending", "approved_ready", "blocked", "patch_proposed", "done", "cancelled"]
+    by_key = {str(item.get("key")): item for item in filters if isinstance(item, dict)}
+    chips = []
+    for key in preferred:
+        item = by_key.get(key) or {"key": key, "label": STAGE_FILTER_LABELS.get(key, key.replace("_", " ").title()), "count": 0}
+        active = " active" if key == selected_stage else ""
+        href = "/tasks-work" if key == "all" else f"/tasks-work?stage={_safe(key)}"
+        chips.append(f"<a class='filter-chip{active}' href='{href}'>{_safe(item.get('label', key))} <span class='badge'>{_safe(item.get('count', 0))}</span></a>")
+    return "<div class='toolbar'>" + "".join(chips) + "</div>"
+
+
+def _batch_lifecycle_actions(selected_stage: str = "all") -> str:
+    selected_stage = normalize_lifecycle_stage_filter(selected_stage)
+    approval_count = len(list_task_lifecycles(stage_filter="approval_required", include_closed=False))
+    ready_count = len(list_task_lifecycles(stage_filter="ready_to_act", include_closed=False))
+    return f"""
+<div class='toolbar'>
+<form method='post' action='/action' class='inline'>
+<input type='hidden' name='action' value='task_batch_request_approvals'>
+<input type='hidden' name='stage' value='approval_required'>
+<button type='submit'>Request approvals for approval-required tasks ({_safe(approval_count)})</button>
+</form>
+<form method='post' action='/action' class='inline'>
+<input type='hidden' name='action' value='work_queue_execute_next'>
+<input type='hidden' name='dry_run' value='true'>
+<input type='hidden' name='use_ai' value='true'>
+<button type='submit'>Dry-run next ready task ({_safe(ready_count)})</button>
+</form>
+<a class='filter-chip' href='/tasks-work?stage=approved_ready'>Show approved-ready tasks</a>
+<a class='filter-chip' href='/tasks-work?stage=blocked'>Show blocked tasks</a>
+</div>
+<p class='muted'>v5.7 deliberately does not add an “execute all” button. That button is how dashboards become confession letters.</p>
+"""
+
+
+def _filter_work_items_by_lifecycle(items: list[Any], selected_stage: str = "all") -> list[Any]:
+    selected_stage = normalize_lifecycle_stage_filter(selected_stage)
+    if selected_stage == "all":
+        return items
+    return [item for item in items if lifecycle_stage_matches(_task_lifecycle_for_work_item(item), selected_stage)]
+
+
+def _work_queue_table(items: list[Any], selected_stage: str = "all") -> str:
+    selected_stage = normalize_lifecycle_stage_filter(selected_stage)
+    filtered_items = _filter_work_items_by_lifecycle(items, selected_stage)
     rows = []
-    for item in items[:120]:
+    for item in filtered_items[:120]:
         approval = "approval" if item.requires_approval else "safe"
+        lifecycle = _task_lifecycle_for_work_item(item)
+        lifecycle_cell = (
+            f"{_stage_pill(lifecycle)}"
+            f"<br><span class='muted'>{_safe(lifecycle.get('next_action', ''))}</span>"
+        )
         rows.append(
             "<tr>"
+            f"<td>{lifecycle_cell}</td>"
             f"<td><span class='badge'>{_safe(item.status)}</span></td>"
             f"<td>{_safe(item.priority)}</td>"
             f"<td><span class='badge'>{_safe(item.risk)}</span><br><span class='muted'>{_safe(approval)}</span></td>"
-            f"<td><b>{_detail_link('work_item', item.id, item.title)}</b><br><span class='muted'>{_safe(item.id)}</span><br><span class='muted'>Project: {_safe(item.project_id)}</span></td>"
+            f"<td><b>{_detail_link('work_item', item.id, item.title)}</b><br><span class='muted'>{_safe(item.id)}</span><br><span class='muted'>Project: {_safe(item.project_id)}</span>{_work_item_patch_hint(item)}</td>"
             f"<td>{_safe(item.description[:180])}{'...' if len(item.description) > 180 else ''}</td>"
             f"<td>{_work_item_controls(item.id, item.status)}</td>"
             "</tr>"
         )
     if not rows:
-        return "<p class='muted'>No work items found.</p>"
-    return "<table><tr><th>Status</th><th>Priority</th><th>Risk</th><th>Work Item</th><th>Description</th><th>Actions</th></tr>" + "".join(rows) + "</table>"
+        label = STAGE_FILTER_LABELS.get(selected_stage, selected_stage.replace("_", " ").title())
+        return f"<p class='muted'>No task-backed tasks found for filter: {_safe(label)}.</p>"
+    caption = "" if selected_stage == "all" else f"<p class='muted'>Showing {_safe(len(filtered_items))} task(s) matching {_safe(STAGE_FILTER_LABELS.get(selected_stage, selected_stage))}.</p>"
+    return caption + "<table><tr><th>Lifecycle</th><th>Status</th><th>Priority</th><th>Risk</th><th>Task / Work</th><th>Description</th><th>Actions</th></tr>" + "".join(rows) + "</table>"
 
 
-def render_work_queue() -> str:
+def render_work_queue(stage: str = "all") -> str:
+    selected_stage = normalize_lifecycle_stage_filter(stage)
     summary = summarize_queue()
     active_items = list_work_items(include_done=False)
     all_items = list_work_items(include_done=True)
     next_item = summary.get("next_item") or {}
 
-    next_text = "No pending work item found. Either victory or neglect. Hard to tell."
+    next_text = "No pending task-backed task found. Either victory or neglect. Hard to tell."
     next_controls = ""
     if next_item:
         next_obj = find_work_item(str(next_item.get("id", ""))) if next_item.get("id") else None
@@ -828,23 +1037,70 @@ def render_work_queue() -> str:
             + _detail_link("work_item", str(next_item.get("id", "")), "Open next item", full=True)
         )
 
-    summary_html = (
-        "<div class='grid'>"
-        + _card("Pending", f"<div class='kpi'>{_safe(summary.get('pending', 0))}</div>")
-        + _card("Active", f"<div class='kpi'>{_safe(summary.get('active', 0))}</div>")
-        + _card("Blocked", f"<div class='kpi'>{_safe(summary.get('blocked', 0))}</div>")
-        + _card("Approval Required", f"<div class='kpi'>{_safe(summary.get('approval_required', 0))}</div>")
-        + "</div>"
+    summary_html = _lifecycle_summary_cards()
+
+    consolidation_note = _card(
+        "v5.7 Task Lifecycle Actions / Filters",
+        "<p class='muted'>This page uses <code>task_queue.py</code> and <code>data/tasks.json</code> as the canonical store. "
+        "v5.7 adds lifecycle filters, stage-aware task tables, and safe batch approval requests. Legacy <code>/work-queue</code> aliases still work, because compatibility is ugly but cheaper than tears.</p>"
+        + _lifecycle_legend()
     )
 
     body = (
-        summary_html
-        + _card("Create Work Item", _work_item_create_form())
-        + _card("Next Recommended Work Item", _text_block(next_text) + next_controls)
-        + _card("Open Work Items", _work_queue_table(active_items))
-        + _card("All Work Items", _work_queue_table(all_items))
+        consolidation_note
+        + summary_html
+        + _card("Lifecycle Filters", _lifecycle_filter_controls(selected_stage))
+        + _card("Lifecycle Batch Actions", _batch_lifecycle_actions(selected_stage))
+        + _card("Lifecycle Legend", _lifecycle_legend())
+        + _card("Create Task", _work_item_create_form())
+        + _card("Create Patch Task", _patch_work_item_create_form())
+        + _card("Next Recommended Task", _text_block(next_text) + next_controls)
+        + _card("Open Tasks / Work", _work_queue_table(active_items, selected_stage))
+        + _card("All Tasks / Work", _work_queue_table(all_items, selected_stage))
     )
-    return _layout("/work-queue", body)
+    return _layout("/tasks-work", body)
+
+
+def _work_cycle_controls() -> str:
+    return """
+<form method='post' action='/action'>
+<input type='hidden' name='action' value='work_cycle_run'>
+<label>Project <input name='project_id' value='eidolon'></label>
+<label>Max steps <input name='max_steps' type='number' min='1' max='10' value='1'></label>
+<label><input type='checkbox' name='dry_run' value='true' checked> Dry run</label>
+<label><input type='checkbox' name='use_ai' value='true' checked> Use local AI when a selected step needs it</label>
+<label><input type='checkbox' name='seed_if_empty' value='true' checked> Seed queue if empty</label>
+<label><input type='checkbox' name='auto_followups' value='true' checked> Auto-create patch follow-ups</label>
+<label><input type='checkbox' name='approve_work_execution' value='true'> Allow approval-required work this run</label>
+<button type='submit'>Run supervised work cycle</button>
+</form>
+<p class='muted'>Default mode is dry-run. Non-dry-run still uses the task work executor, patch proposal rules, command whitelist, and approval gates. So, disappointingly for chaos enthusiasts, this is not a permission slip for mayhem.</p>
+"""
+
+
+def render_work_cycle() -> str:
+    cycles = list_work_cycles()
+    latest = cycles[0] if cycles else None
+    rows = []
+    for cycle in cycles[:50]:
+        cycle_id = str(cycle.get('id', ''))
+        rows.append(
+            "<tr>"
+            f"<td><span class='badge'>{_safe('ok' if cycle.get('ok') else 'attention')}</span></td>"
+            f"<td>{_safe(cycle.get('dry_run'))}</td>"
+            f"<td><b>{_detail_link('work_cycle', cycle_id, cycle_id)}</b><br><span class='muted'>Project: {_safe(cycle.get('project_id',''))}</span></td>"
+            f"<td>{_safe(cycle.get('steps_completed',0))}/{_safe(cycle.get('steps_requested',0))}</td>"
+            f"<td>{_safe(cycle.get('stopped_reason',''))}</td>"
+            "</tr>"
+        )
+    table = "<table><tr><th>Status</th><th>Dry Run</th><th>Cycle</th><th>Steps</th><th>Stopped</th></tr>" + "".join(rows) + "</table>" if rows else "<p class='muted'>No work cycles found.</p>"
+    latest_text = work_cycle_text(latest, full=False) if latest else "No supervised work cycles saved yet. The clipboard is empty. Horrifyingly peaceful."
+    body = (
+        _card("Run Supervised Work Cycle", _work_cycle_controls())
+        + _card("Latest Work Cycle", _text_block(latest_text))
+        + _card("Saved Work Cycles", table)
+    )
+    return _layout("/work-cycle", body)
 
 
 def render_approvals() -> str:
@@ -946,7 +1202,11 @@ def render_patches() -> str:
     patches = list_patch_proposals()
     rows = []
     for patch in patches[:80]:
-        rows.append(f"<tr><td><span class='badge'>{_safe(patch.get('status',''))}</span></td><td>{_safe(patch.get('risk_level',''))}</td><td><b>{_detail_link('patch', patch.get('id',''), patch.get('target_file',''))}</b><br><span class='muted'>{_safe(patch.get('id',''))}</span></td><td>{_safe(patch.get('request',''))}<br>{_detail_link('patch', patch.get('id',''), 'Details')}</td></tr>")
+        patch_id = str(patch.get('id', ''))
+        task_id = str(patch.get('task_id') or patch.get('work_item_id') or '')
+        linked = _detail_link('work_item', task_id, task_id) if task_id else "<span class='muted'>[none]</span>"
+        controls = _button("Create Follow-ups", "patch_create_followups", patch_id=patch_id) if patch_id else ""
+        rows.append(f"<tr><td><span class='badge'>{_safe(patch.get('status',''))}</span></td><td>{_safe(patch.get('risk_level',''))}</td><td><b>{_detail_link('patch', patch_id, patch.get('target_file',''))}</b><br><span class='muted'>{_safe(patch_id)}</span><br><span class='muted'>Task: {linked}</span></td><td>{_safe(patch.get('request',''))}<br>{_detail_link('patch', patch_id, 'Details')} {controls}</td></tr>")
     table = "<table><tr><th>Status</th><th>Risk</th><th>File</th><th>Request</th></tr>" + "".join(rows) + "</table>" if rows else "<p>No patches found.</p>"
     latest = patches[0] if patches else None
     latest_text = patch_proposal_text(latest, include_full_content=False) if latest else "No patch proposals yet."
@@ -992,7 +1252,7 @@ def render_settings() -> str:
 
 def render_api_info() -> str:
     body = """
-<p>The dashboard now exposes a local JSON API under <code>/api</code>, and v4.5 uses <code>/api/status</code> for live refresh/polling. The standalone server can also run on its own with <code>--api-server</code>.</p>
+<p>The dashboard exposes a local JSON API under <code>/api</code>. Current task/work controls use the task-centered <code>/api/tasks/...</code> routes. Older <code>/api/work-queue/...</code> routes remain compatibility aliases. Browser pages use <code>/api/status</code> for live refresh/polling. The standalone server can also run on its own with <code>--api-server</code>.</p>
 <pre>GET  /api
 GET  /api/status    # live dashboard status payload
 GET  /api/diagnostics/latest
@@ -1020,12 +1280,24 @@ POST /api/dev-loops/run
 GET  /api/desktop/attention
 GET  /api/setup/latest
 POST /api/setup/run
+GET  /api/tasks
+GET  /api/tasks/summary
+POST /api/tasks
+POST /api/tasks/next/dry-run
+POST /api/tasks/next/execute
+POST /api/tasks/{id}/dry-run
+POST /api/tasks/{id}/execute
+POST /api/tasks/{id}/done
+POST /api/tasks/{id}/block
+POST /api/tasks/{id}/cancel
+POST /api/tasks/patch-request
+POST /api/tasks/{id}/suggest-patch
+POST /api/patches/{id}/create-task-followups
+
+Legacy aliases still supported:
 GET  /api/work-queue
 GET  /api/work-queue/summary
 POST /api/work-queue
-POST /api/work-queue/next/dry-run
-POST /api/work-queue/next/execute
-POST /api/work-queue/{id}/dry-run
 POST /api/work-queue/{id}/execute</pre>
 <p class='muted'>The API calls existing safety, approval, and command gates. It is convenience plumbing, not a magical permission bypass. Tragic for chaos, nice for your files.</p>
 <pre>curl http://127.0.0.1:8765/api/status
@@ -1259,10 +1531,16 @@ def render_detail(query: dict[str, list[str]]) -> str:
             buttons = _card("Notification Actions", _button("Mark read", "notification_read", notification_id=note_id) + _button("Dismiss", "notification_dismiss", notification_id=note_id))
         return _detail_card(kind, item_id, "Notification Detail", body, "/notifications", buttons)
 
+    if kind == "work_cycle":
+        item = load_work_cycle(item_id)
+        body = _text_block(work_cycle_text(item, full=full) if item else f"Work cycle not found: {item_id}")
+        return _detail_card(kind, item_id, "Work Cycle Detail", body, "/work-cycle")
+
     if kind == "patch":
         item = load_patch_proposal(item_id)
         body = _text_block(patch_proposal_text(item, include_full_content=True) if item else f"Patch not found: {item_id}")
-        return _detail_card(kind, item_id, "Patch Detail", body, "/patches")
+        buttons = _card("Patch Queue Controls", _button("Create Follow-up Work Items", "patch_create_followups", patch_id=item_id)) if item else ""
+        return _detail_card(kind, item_id, "Patch Detail", body, "/patches", buttons)
 
     if kind == "goal":
         item = get_goal(item_id)
@@ -1329,11 +1607,19 @@ def render_detail(query: dict[str, list[str]]) -> str:
 
     if kind == "work_item":
         item = find_work_item(item_id)
-        body = _text_block(format_work_item(item, full=True) if item else f"Work item not found: {item_id}")
+        body = _text_block(format_work_item(item, full=True) if item else f"Task not found: {item_id}")
         buttons = ""
         if item:
-            buttons = _card("Work Item Controls", _work_item_controls(item.id, item.status))
-        return _detail_card(kind, item_id, "Work Item Detail", body, "/work-queue", buttons)
+            lifecycle = _task_lifecycle_for_work_item(item)
+            lifecycle_card = _card(
+                "Lifecycle",
+                _lifecycle_flow(str(lifecycle.get("stage") or "unknown"))
+                + f"<p>{_stage_pill(lifecycle)}</p>"
+                + _text_block(task_lifecycle_text(item.id, full=False))
+            )
+            approvals = _text_block(task_approvals_text(item.id, include_closed=True, full=False))
+            buttons = lifecycle_card + _card("Task / Work Controls", _work_item_controls(item.id, item.status)) + _card("Linked Approvals", approvals)
+        return _detail_card(kind, item_id, "Task Work Detail", body, "/tasks-work", buttons)
 
     return _layout("/detail", _card("Unknown detail type", f"<p>No detail renderer for <code>{_safe(kind)}</code>.</p>"))
 
@@ -1442,6 +1728,33 @@ def handle_action(form: dict[str, list[str]]) -> None:
             use_ai = form.get("use_ai", [""])[0].lower() == "true"
             result = suggest_patch(target_file, request, use_ai=use_ai)
             DashboardState.message = f"Patch proposal saved: {result.patch_id}" if result.ok else f"Patch suggestion failed: {result.error}"
+        elif action == "dashboard_queue_patch":
+            target_file = form.get("target_file", [""])[0].strip()
+            request = form.get("request", [""])[0].strip()
+            project_id = form.get("project_id", ["eidolon"])[0].strip() or "eidolon"
+            priority = int(form.get("priority", ["7"])[0] or 7)
+            risk = form.get("risk", ["low"])[0].strip() or "low"
+            requires_raw = form.get("requires_approval", [""])[0]
+            requires_approval = True if requires_raw else None
+            item = create_patch_work_item(
+                target_file=target_file,
+                request=request,
+                project_id=project_id,
+                priority=priority,
+                risk=risk,
+                source="dashboard",
+                requires_approval=requires_approval,
+            )
+            DashboardState.message = f"Patch task queued: {item.id}"
+        elif action == "work_queue_suggest_patch":
+            work_item_id = form.get("work_item_id", [""])[0]
+            use_ai = form.get("use_ai", ["true"])[0].lower() == "true"
+            result = suggest_patch_for_work_item(work_item_id, use_ai=use_ai, dry_run=False)
+            DashboardState.message = result.message if result.ok else f"Patch-from-task failed: {result.error}"
+        elif action == "patch_create_followups":
+            patch_id = form.get("patch_id", [""])[0]
+            result = create_patch_followup_items(patch_id)
+            DashboardState.message = result.message if result.ok else f"Patch follow-up task creation failed: {result.error}"
         elif action == "dashboard_add_work_item":
             title = form.get("title", [""])[0].strip()
             description = form.get("description", [""])[0].strip()
@@ -1458,31 +1771,71 @@ def handle_action(form: dict[str, list[str]]) -> None:
                 source="dashboard",
                 requires_approval=requires_approval if requires_approval else None,
             )
-            DashboardState.message = f"Work item created: {item.id}"
+            DashboardState.message = f"Task created: {item.id}"
         elif action == "work_queue_execute_next":
             dry_run = form.get("dry_run", ["false"])[0].lower() == "true"
             use_ai = form.get("use_ai", ["true"])[0].lower() == "true"
-            result = execute_next_work_item(dry_run=dry_run, use_ai=use_ai)
-            DashboardState.message = work_execution_text(result, full=False)
+            result = execute_next_task_work(dry_run=dry_run, use_ai=use_ai)
+            DashboardState.message = task_work_execution_text(result, full=False)
         elif action == "work_queue_execute":
             item_id = form.get("work_item_id", [""])[0].strip()
             dry_run = form.get("dry_run", ["false"])[0].lower() == "true"
             use_ai = form.get("use_ai", ["true"])[0].lower() == "true"
-            result = execute_work_item(item_id, dry_run=dry_run, use_ai=use_ai)
-            DashboardState.message = work_execution_text(result, full=False)
+            result = execute_task_work_item(item_id, dry_run=dry_run, use_ai=use_ai)
+            DashboardState.message = task_work_execution_text(result, full=False)
+        elif action == "task_request_approval":
+            item_id = form.get("work_item_id", [""])[0].strip()
+            use_ai = form.get("use_ai", ["true"])[0].lower() == "true"
+            result = request_task_work_approval(item_id, use_ai=use_ai, force=True)
+            DashboardState.message = result.message if result.ok else f"Approval request failed: {result.error}"
         elif action == "work_queue_done":
             item_id = form.get("work_item_id", [""])[0].strip()
             item = update_work_item(item_id, status="done", result="Marked done from dashboard.")
-            DashboardState.message = f"Marked work item done: {item_id}" if item else f"Work item not found: {item_id}"
+            DashboardState.message = f"Marked task done: {item_id}" if item else f"Task not found: {item_id}"
         elif action == "work_queue_cancel":
             item_id = form.get("work_item_id", [""])[0].strip()
             item = update_work_item(item_id, status="cancelled", result="Cancelled from dashboard.")
-            DashboardState.message = f"Cancelled work item: {item_id}" if item else f"Work item not found: {item_id}"
+            DashboardState.message = f"Cancelled task: {item_id}" if item else f"Task not found: {item_id}"
         elif action == "work_queue_block":
             item_id = form.get("work_item_id", [""])[0].strip()
             reason = form.get("reason", ["Blocked from dashboard."])[0].strip() or "Blocked from dashboard."
             item = update_work_item(item_id, status="blocked", blocked_reason=reason)
-            DashboardState.message = f"Blocked work item: {item_id}" if item else f"Work item not found: {item_id}"
+            DashboardState.message = f"Blocked task: {item_id}" if item else f"Task not found: {item_id}"
+        elif action == "task_batch_request_approvals":
+            stage = form.get("stage", ["approval_required"])[0]
+            rows = list_task_lifecycles(stage_filter=stage, include_closed=False)
+            created = []
+            failed = []
+            for row in rows:
+                task_id = str(row.get("task_id") or "").strip()
+                if not task_id:
+                    continue
+                result = request_task_work_approval(task_id, use_ai=True, force=False)
+                if result.ok:
+                    created.append(result.approval_id or result.task_id)
+                else:
+                    failed.append(f"{task_id}: {result.error}")
+            DashboardState.message = f"Requested approvals for {len(created)} task(s)."
+            if failed:
+                DashboardState.error = "Some approval requests failed: " + "; ".join(failed[:3])
+        elif action == "work_cycle_run":
+            project_id = form.get("project_id", ["eidolon"])[0].strip() or "eidolon"
+            max_steps = int(form.get("max_steps", ["1"])[0] or 1)
+            dry_run = form.get("dry_run", [""])[0].lower() == "true"
+            use_ai = form.get("use_ai", [""])[0].lower() == "true"
+            seed_if_empty = form.get("seed_if_empty", [""])[0].lower() == "true"
+            auto_followups = form.get("auto_followups", [""])[0].lower() == "true"
+            approve_work_execution = form.get("approve_work_execution", [""])[0].lower() == "true"
+            result = run_supervised_work_cycle(
+                project_id=project_id,
+                max_steps=max_steps,
+                dry_run=dry_run,
+                use_ai=use_ai,
+                approve_work_execution=approve_work_execution,
+                seed_if_empty=seed_if_empty,
+                auto_create_patch_followups=auto_followups,
+            )
+            DashboardState.message = work_cycle_text(result, full=False)
         elif action == "set_setting":
             key = form.get("key", [""])[0].strip()
             value = form.get("value", [""])[0].strip()
@@ -1495,7 +1848,7 @@ def handle_action(form: dict[str, list[str]]) -> None:
 
 
 class EidolonDashboardHandler(BaseHTTPRequestHandler):
-    server_version = "EidolonDashboard/4.8"
+    server_version = "EidolonDashboard/5.7"
 
     def _send_json(self, payload: dict[str, Any], status: int = 200) -> None:
         encoded = json.dumps(_to_jsonable(payload), indent=2, default=str).encode("utf-8")
@@ -1545,8 +1898,10 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
                 html = render_create()
             elif path == "/tasks":
                 html = render_tasks()
-            elif path == "/work-queue":
-                html = render_work_queue()
+            elif path in {"/work-queue", "/tasks-work"}:
+                html = render_work_queue(stage=parse_qs(parsed.query).get("stage", ["all"])[0])
+            elif path == "/work-cycle":
+                html = render_work_cycle()
             elif path == "/approvals":
                 html = render_approvals()
             elif path == "/notifications":

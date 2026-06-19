@@ -13,9 +13,9 @@ from paths import DATA_DIR
 SETTINGS_FILE = DATA_DIR / "settings.json"
 
 DEFAULT_SETTINGS: dict[str, Any] = {
-    "settings_version": "4.5",
+    "settings_version": "5.7",
     "local_model": "qwen2.5:7b",
-    "embed_model": "nomic-embed-text",
+    "embed_model": "nomic-embed-text:latest",
     "ollama_base_url": "http://localhost:11434",
     "ollama_timeout_seconds": 120,
     "command_timeout_seconds": 45,

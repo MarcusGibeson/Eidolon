@@ -1,19 +1,30 @@
 {
-  "indexed_at": "2026-06-19T03:38:12",
+  "indexed_at": "2026-06-19T16:30:28",
   "active_project": "Eidolon",
-  "project_path": "/mnt/data/eidolon_v45_work",
+  "project_path": "/mnt/data/eidolon_v57_work/Eidolon",
   "relative_path": "",
   "max_files": 400,
   "files": [
     {
+      "path": ".gitignore",
+      "extension": "",
+      "size_bytes": 241,
+      "modified_at": "2026-06-19T13:16:58",
+      "summary": {
+        "line_count": 15,
+        "non_empty_line_count": 12,
+        "preview": ".venv/\n__pycache__/\n*.py[cod]\n# Local vector database and runtime cache artifacts.\ndata/chroma/\n# Patch backups are runtime safety artifacts and can grow quickly.\ndata/backups/\n# Local OS/editor noise.\n.DS_Store\nThumbs.db"
+      }
+    },
+    {
       "path": "README_NEXT_STEPS.md",
       "extension": ".md",
-      "size_bytes": 5585,
-      "modified_at": "2026-06-19T03:32:19",
+      "size_bytes": 58131,
+      "modified_at": "2026-06-19T16:30:26",
       "summary": {
-        "line_count": 225,
-        "non_empty_line_count": 164,
-        "preview": "# Eidolon v4.5 - Desktop Guided Onboarding Wizard\nv4.5 turns the v4.4 setup reports into a guided onboarding runbook. Instead of merely saying \u201csomething is wrong\u201d and dropping a diagnostic brick on your foot, Eidolon now orders the setup issues into steps, shows the next recommended action, lists commands to copy, and links you to the relevant dashboard pages.\nSafety stays boring on purpose: onboarding is advisory. It saves onboarding runs and setup reports, but it does **not** install packages, change settings, start services, approve actions, apply patches, rollback files, or edit project files.\n## What changed\n- Added `desktop_onboarding_wizard.py`\n- Added `data/onboarding_runs/`\n- Added CLI commands:\n- `--onboarding`\n- `--onboarding-full`\n- `--onboarding-use-latest-setup`"
+        "line_count": 1777,
+        "non_empty_line_count": 1316,
+        "preview": "# Eidolon v5.7 - Task Lifecycle Actions / Filters\nv5.7 turns the v5.6 lifecycle view into a controllable operator surface. The dashboard can now filter Tasks / Work by lifecycle stage and safely batch-request approvals for tasks that need approval. No batch execution button was added, because apparently we prefer filesystems that continue existing.\n## What changed in v5.7\n- Updated `conscious_agent/task_lifecycle.py`\n- added lifecycle stage filter helpers\n- added grouped filters: `open`, `needs_attention`, and `ready_to_act`\n- `task_lifecycle_summary()` now returns filter metadata and filtered rows\n- Updated `conscious_agent/dashboard.py`\n- dashboard version is now `5.7`\n- `/tasks-work?stage=...` now filters task tables by lifecycle stage"
       }
     },
     {
@@ -37,8 +48,8 @@
     {
       "path": "conscious_agent/api_server.py",
       "extension": ".py",
-      "size_bytes": 33380,
-      "modified_at": "2026-06-19T03:29:41",
+      "size_bytes": 56806,
+      "modified_at": "2026-06-19T16:27:23",
       "summary": {
         "classes": [
           "ApiError",
@@ -88,23 +99,30 @@
           "project_manager",
           "session_planner",
           "settings_manager",
+          "task_approval_bridge",
+          "task_lifecycle",
+          "task_patch_bridge",
           "task_queue",
+          "task_work_executor",
           "test_report_reviewer",
           "test_runner",
           "traceback",
           "typing",
           "urllib.parse",
-          "watch_mode"
+          "watch_mode",
+          "work_cycle",
+          "work_queue",
+          "work_queue_patch_bridge"
         ],
         "parse_error": null,
-        "line_count": 724
+        "line_count": 1116
       }
     },
     {
       "path": "conscious_agent/approval_manager.py",
       "extension": ".py",
-      "size_bytes": 16522,
-      "modified_at": "2026-06-18T16:13:42",
+      "size_bytes": 18611,
+      "modified_at": "2026-06-19T16:04:58",
       "summary": {
         "classes": [],
         "functions": [
@@ -112,12 +130,14 @@
           "_approval_path",
           "_ensure_storage",
           "_find_duplicate_pending",
+          "_linked_task_id",
           "_load_json_file",
           "_new_approval_id",
           "_now",
           "_result_dict",
           "_save_approval",
           "_slug",
+          "_sync_linked_task_approval",
           "approval_text",
           "approve_approval",
           "create_approval",
@@ -142,11 +162,12 @@
           "pathlib",
           "paths",
           "re",
+          "task_queue",
           "task_result_evaluator",
           "typing"
         ],
         "parse_error": null,
-        "line_count": 462
+        "line_count": 522
       }
     },
     {
@@ -347,8 +368,8 @@
     {
       "path": "conscious_agent/command_runner.py",
       "extension": ".py",
-      "size_bytes": 19630,
-      "modified_at": "2026-06-19T03:31:50",
+      "size_bytes": 20786,
+      "modified_at": "2026-06-19T16:04:43",
       "summary": {
         "classes": [
           "CommandRunResult",
@@ -389,14 +410,14 @@
           "typing"
         ],
         "parse_error": null,
-        "line_count": 583
+        "line_count": 623
       }
     },
     {
       "path": "conscious_agent/dashboard.py",
       "extension": ".py",
-      "size_bytes": 77409,
-      "modified_at": "2026-06-19T03:37:47",
+      "size_bytes": 108577,
+      "modified_at": "2026-06-19T16:27:04",
       "summary": {
         "classes": [
           "DashboardState",
@@ -407,21 +428,28 @@
           "_action_panel",
           "_as_bool",
           "_back_link",
+          "_batch_lifecycle_actions",
           "_button",
           "_card",
           "_chat_action_card",
           "_detail_card",
           "_detail_link",
+          "_filter_work_items_by_lifecycle",
           "_fmt",
           "_goal_create_form",
           "_goal_text",
           "_json_block",
           "_layout",
+          "_lifecycle_filter_controls",
+          "_lifecycle_flow",
+          "_lifecycle_legend",
+          "_lifecycle_summary_cards",
           "_live_refresh_bar",
           "_live_refresh_script",
           "_now",
           "_onboarding_step_html",
           "_patch_request_form",
+          "_patch_work_item_create_form",
           "_priority_options",
           "_redirect",
           "_risk_options",
@@ -430,11 +458,19 @@
           "_send_html",
           "_send_json",
           "_small_list",
+          "_stage_pill",
           "_status_cards",
           "_status_options",
           "_task_create_form",
+          "_task_lifecycle_for_work_item",
           "_text_block",
           "_watch_loop_form",
+          "_work_cycle_controls",
+          "_work_item_controls",
+          "_work_item_create_form",
+          "_work_item_patch_hint",
+          "_work_queue_table",
+          "_work_status_options",
           "do_GET",
           "do_OPTIONS",
           "do_POST",
@@ -459,6 +495,8 @@
           "render_setup",
           "render_tasks",
           "render_watch",
+          "render_work_cycle",
+          "render_work_queue",
           "run_dashboard"
         ],
         "imports": [
@@ -486,16 +524,22 @@
           "project_manager",
           "session_planner",
           "settings_manager",
+          "task_approval_bridge",
+          "task_lifecycle",
           "task_queue",
+          "task_work_executor",
           "test_report_reviewer",
           "test_runner",
           "traceback",
           "typing",
           "urllib.parse",
-          "watch_mode"
+          "watch_mode",
+          "work_cycle",
+          "work_queue",
+          "work_queue_patch_bridge"
         ],
         "parse_error": null,
-        "line_count": 1462
+        "line_count": 1980
       }
     },
     {
@@ -1097,8 +1141,8 @@
     {
       "path": "conscious_agent/main.py",
       "extension": ".py",
-      "size_bytes": 67697,
-      "modified_at": "2026-06-19T03:29:23",
+      "size_bytes": 78973,
+      "modified_at": "2026-06-19T16:04:35",
       "summary": {
         "classes": [],
         "functions": [
@@ -1146,16 +1190,22 @@
           "self_model",
           "session_planner",
           "settings_manager",
+          "task_approval_bridge",
           "task_executor",
+          "task_patch_bridge",
           "task_queue",
           "task_result_evaluator",
+          "task_work_executor",
           "test_report_reviewer",
           "test_runner",
           "vector_memory",
-          "watch_mode"
+          "watch_mode",
+          "work_cycle",
+          "work_queue",
+          "work_queue_patch_bridge"
         ],
         "parse_error": null,
-        "line_count": 1393
+        "line_count": 1605
       }
     },
     {
@@ -1725,8 +1775,8 @@
     {
       "path": "conscious_agent/settings_manager.py",
       "extension": ".py",
-      "size_bytes": 15399,
-      "modified_at": "2026-06-19T03:29:03",
+      "size_bytes": 15406,
+      "modified_at": "2026-06-19T16:27:39",
       "summary": {
         "classes": [
           "SettingsError"
@@ -1759,6 +1809,43 @@
         ],
         "parse_error": null,
         "line_count": 347
+      }
+    },
+    {
+      "path": "conscious_agent/task_approval_bridge.py",
+      "extension": ".py",
+      "size_bytes": 9460,
+      "modified_at": "2026-06-19T16:04:11",
+      "summary": {
+        "classes": [
+          "TaskApprovalRequestResult"
+        ],
+        "functions": [
+          "_task_approval_metadata",
+          "_task_execution_command",
+          "_task_needs_approval",
+          "list_task_approvals",
+          "print_request_next_task_work_approval",
+          "print_request_task_work_approval",
+          "print_task_approvals",
+          "request_next_task_work_approval",
+          "request_task_work_approval",
+          "task_approval_request_text",
+          "task_approvals_text",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "approval_manager",
+          "dataclasses",
+          "json",
+          "memory",
+          "task_queue",
+          "task_work_executor",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 275
       }
     },
     {
@@ -1797,19 +1884,98 @@
       }
     },
     {
+      "path": "conscious_agent/task_lifecycle.py",
+      "extension": ".py",
+      "size_bytes": 13100,
+      "modified_at": "2026-06-19T16:26:28",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_approval_matches_task",
+          "_filter_count",
+          "_latest_approval",
+          "_metadata",
+          "_needs_approval",
+          "approvals_for_task",
+          "derive_task_lifecycle",
+          "lifecycle_stage_matches",
+          "list_task_lifecycles",
+          "normalize_lifecycle_stage_filter",
+          "task_lifecycle_summary",
+          "task_lifecycle_text"
+        ],
+        "imports": [
+          "__future__",
+          "approval_manager",
+          "task_queue",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 329
+      }
+    },
+    {
+      "path": "conscious_agent/task_patch_bridge.py",
+      "extension": ".py",
+      "size_bytes": 18583,
+      "modified_at": "2026-06-19T14:49:40",
+      "summary": {
+        "classes": [
+          "PatchFollowupResult",
+          "TaskPatchResult"
+        ],
+        "functions": [
+          "_merge_task_metadata",
+          "_now",
+          "_priority_number_to_label",
+          "_risk_label",
+          "_task_metadata",
+          "_task_text",
+          "create_patch_followup_tasks",
+          "create_patch_task",
+          "link_patch_to_task",
+          "patch_followup_result_text",
+          "patch_request_from_task",
+          "patch_target_from_task",
+          "print_create_patch_task",
+          "print_create_patch_task_followups",
+          "print_suggest_patch_for_task",
+          "suggest_patch_for_task",
+          "task_patch_result_text",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "patch_suggester",
+          "re",
+          "task_queue",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 522
+      }
+    },
+    {
       "path": "conscious_agent/task_queue.py",
       "extension": ".py",
-      "size_bytes": 21786,
-      "modified_at": "2026-06-18T15:17:50",
+      "size_bytes": 28768,
+      "modified_at": "2026-06-19T16:06:11",
       "summary": {
         "classes": [
           "TaskMutationResult"
         ],
         "functions": [
           "_active_project_name",
+          "_default_requires_approval",
           "_default_tasks",
           "_ensure_storage",
           "_new_task_id",
+          "_normalize_risk",
+          "_normalize_task_record",
           "_now",
           "_slug",
           "_task_brief",
@@ -1821,6 +1987,7 @@
           "add_task_note",
           "block_task",
           "complete_task",
+          "delete_task",
           "get_task",
           "list_tasks",
           "load_tasks_data",
@@ -1844,7 +2011,8 @@
           "start_task",
           "task_context_text",
           "task_detail_text",
-          "task_status_counts"
+          "task_status_counts",
+          "update_task_fields"
         ],
         "imports": [
           "__future__",
@@ -1859,7 +2027,7 @@
           "typing"
         ],
         "parse_error": null,
-        "line_count": 685
+        "line_count": 862
       }
     },
     {
@@ -1907,6 +2075,68 @@
         ],
         "parse_error": null,
         "line_count": 475
+      }
+    },
+    {
+      "path": "conscious_agent/task_work_executor.py",
+      "extension": ".py",
+      "size_bytes": 23317,
+      "modified_at": "2026-06-19T16:07:56",
+      "summary": {
+        "classes": [
+          "TaskWorkExecutionResult"
+        ],
+        "functions": [
+          "_command_from_task",
+          "_dry_run_message",
+          "_execute_dashboard_note",
+          "_execute_review_file",
+          "_execute_run_command",
+          "_execute_suggest_patch",
+          "_execute_test_project",
+          "_merge_metadata",
+          "_metadata_action_type",
+          "_now",
+          "_safe_ready_tasks",
+          "_target_file_from_task",
+          "_task_metadata",
+          "_test_commands_from_task",
+          "_text_for_task",
+          "_truncate",
+          "can_execute_task_work",
+          "can_execute_work_item",
+          "classify_task_work",
+          "classify_work_item",
+          "execute_next_task_work",
+          "execute_next_work_item",
+          "execute_task_work_item",
+          "execute_work_item",
+          "get_next_task_work",
+          "print_execute_next_task_work_item",
+          "print_execute_next_work_item",
+          "print_execute_task_work_item",
+          "print_execute_work_item",
+          "task_work_execution_text",
+          "to_dict",
+          "work_execution_text"
+        ],
+        "imports": [
+          "__future__",
+          "code_reviewer",
+          "command_runner",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "re",
+          "task_approval_bridge",
+          "task_patch_bridge",
+          "task_queue",
+          "test_runner",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 627
       }
     },
     {
@@ -2096,14 +2326,159 @@
       }
     },
     {
+      "path": "conscious_agent/work_cycle.py",
+      "extension": ".py",
+      "size_bytes": 18658,
+      "modified_at": "2026-06-19T16:27:39",
+      "summary": {
+        "classes": [
+          "WorkCycleResult"
+        ],
+        "functions": [
+          "_create_seed_items",
+          "_cycle_message",
+          "_cycle_path",
+          "_ensure_storage",
+          "_join_ids",
+          "_now",
+          "_patch_followups_already_exist",
+          "_seed_definitions",
+          "_short_item",
+          "_timestamp_id",
+          "_unfollowed_patch_ids",
+          "list_work_cycles",
+          "load_work_cycle",
+          "print_saved_work_cycle",
+          "print_work_cycle",
+          "print_work_cycles",
+          "resolve_work_cycle_id",
+          "run_supervised_work_cycle",
+          "save_work_cycle",
+          "to_dict",
+          "work_cycle_text"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "task_patch_bridge",
+          "task_work_executor",
+          "typing",
+          "work_queue"
+        ],
+        "parse_error": null,
+        "line_count": 534
+      }
+    },
+    {
+      "path": "conscious_agent/work_queue.py",
+      "extension": ".py",
+      "size_bytes": 22182,
+      "modified_at": "2026-06-19T14:38:05",
+      "summary": {
+        "classes": [
+          "WorkItem"
+        ],
+        "functions": [
+          "_blocked_reason_from_task",
+          "_number_to_task_priority",
+          "_task_priority_to_number",
+          "_task_status_from_work",
+          "_task_to_work_item",
+          "_work_status_from_task",
+          "_work_updates_to_task_updates",
+          "add_work_item",
+          "build_parser",
+          "clamp_priority",
+          "create",
+          "delete_work_item",
+          "find_work_item",
+          "format_work_item",
+          "from_dict",
+          "get_next_work_item",
+          "list_work_items",
+          "load_work_items",
+          "normalize_risk",
+          "normalize_source",
+          "normalize_status",
+          "now_iso",
+          "print_work_items",
+          "run_cli",
+          "save_work_items",
+          "status_sort_weight",
+          "summarize_queue",
+          "to_dict",
+          "update_work_item"
+        ],
+        "imports": [
+          "__future__",
+          "argparse",
+          "dataclasses",
+          "datetime",
+          "json",
+          "task_queue",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 669
+      }
+    },
+    {
+      "path": "conscious_agent/work_queue_executor.py",
+      "extension": ".py",
+      "size_bytes": 1031,
+      "modified_at": "2026-06-19T15:00:44",
+      "summary": {
+        "classes": [],
+        "functions": [],
+        "imports": [
+          "__future__",
+          "task_work_executor"
+        ],
+        "parse_error": null,
+        "line_count": 37
+      }
+    },
+    {
+      "path": "conscious_agent/work_queue_patch_bridge.py",
+      "extension": ".py",
+      "size_bytes": 3335,
+      "modified_at": "2026-06-19T14:49:40",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "create_patch_followup_items",
+          "create_patch_work_item",
+          "print_create_patch_followups",
+          "print_create_patch_work_item",
+          "print_suggest_patch_for_work_item",
+          "suggest_patch_for_work_item",
+          "work_patch_result_text"
+        ],
+        "imports": [
+          "__future__",
+          "task_patch_bridge",
+          "typing",
+          "work_queue"
+        ],
+        "parse_error": null,
+        "line_count": 99
+      }
+    },
+    {
       "path": "data/action_log.json",
       "extension": ".json",
-      "size_bytes": 2,
-      "modified_at": "2026-06-18T15:51:52",
+      "size_bytes": 548,
+      "modified_at": "2026-06-19T16:08:13",
       "summary": {
-        "line_count": 1,
-        "non_empty_line_count": 1,
-        "preview": "[]"
+        "line_count": 18,
+        "non_empty_line_count": 18,
+        "preview": "[\n{\n\"timestamp\": \"2026-06-19T16:08:13\",\n\"action\": \"run_approved_command\",\n\"command\": \"python conscious_agent/main.py --execute-task-work-id task_20260619_160735_approval-bridge-smoke-task --approve-task-work-execution\",\n\"args\": [\n\"python\",\n\"conscious_agent/main.py\",\n\"--execute-task-work-id\",\n\"task_20260619_160735_approval-bridge-smoke-task\","
       }
     },
     {
@@ -2118,14 +2493,14 @@
       }
     },
     {
-      "path": "data/backups/README.md",
-      "extension": ".md",
-      "size_bytes": 156,
-      "modified_at": "2026-06-18T03:30:10",
+      "path": "data/approvals/approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me.json",
+      "extension": ".json",
+      "size_bytes": 2143,
+      "modified_at": "2026-06-18T16:18:32",
       "summary": {
-        "line_count": 4,
-        "non_empty_line_count": 3,
-        "preview": "# Backups\nPatch backups are stored here when a saved patch proposal is applied.\nEach patch gets its own subfolder so original files can be restored later."
+        "line_count": 44,
+        "non_empty_line_count": 44,
+        "preview": "{\n\"id\": \"approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me\",\n\"type\": \"approval_request\",\n\"created_at\": \"2026-06-18T12:17:51\",\n\"updated_at\": \"2026-06-18T12:18:32\",\n\"status\": \"approved\",\n\"action_type\": \"apply_patch\",\n\"summary\": \"Apply proposed patch patch_20260617_231303_conscious_agent-memory-py to conscious_agent\\\\memory.py\",\n\"reason\": \"A proposed patch exists. Review it before any file write.\",\n\"object_id\": \"patch_20260617_231303_conscious_agent-memory-py\","
       }
     },
     {
@@ -2140,6 +2515,61 @@
       }
     },
     {
+      "path": "data/chat_actions/chat_action_20260618_215231_unknown-request.json",
+      "extension": ".json",
+      "size_bytes": 1041,
+      "modified_at": "2026-06-19T01:52:31",
+      "summary": {
+        "line_count": 27,
+        "non_empty_line_count": 27,
+        "preview": "{\n\"id\": \"chat_action_20260618_215231_unknown-request\",\n\"type\": \"chat_action\",\n\"created_at\": \"2026-06-18T21:52:31\",\n\"updated_at\": \"2026-06-18T21:52:31\",\n\"status\": \"blocked\",\n\"user_request\": \"Hey Eid\",\n\"intent\": \"unknown_request\",\n\"title\": \"No safe action matched\",\n\"summary\": \"I could not map this request to a known safe Eidolon action.\","
+      }
+    },
+    {
+      "path": "data/chat_actions/chat_action_20260618_215307_request-apply-patch.json",
+      "extension": ".json",
+      "size_bytes": 1578,
+      "modified_at": "2026-06-19T01:53:07",
+      "summary": {
+        "line_count": 29,
+        "non_empty_line_count": 29,
+        "preview": "{\n\"id\": \"chat_action_20260618_215307_request-apply-patch\",\n\"type\": \"chat_action\",\n\"created_at\": \"2026-06-18T21:53:07\",\n\"updated_at\": \"2026-06-18T21:53:07\",\n\"status\": \"proposed\",\n\"user_request\": \"Run diagnostics Check what needs attention Show pending approvals Plan the next session Review conscious_agent/memory.py Suggest improvement for conscious_agent/local_brain.py to improve Ollama error messages Apply the latest patch Rollback the latest patch\",\n\"intent\": \"request_apply_patch\",\n\"title\": \"Request approval to apply latest proposed patch\",\n\"summary\": \"Applying a patch writes to a project file, so this becomes an approval request.\","
+      }
+    },
+    {
+      "path": "data/chat_actions/chat_action_20260618_215409_unknown-request.json",
+      "extension": ".json",
+      "size_bytes": 1062,
+      "modified_at": "2026-06-19T01:54:09",
+      "summary": {
+        "line_count": 27,
+        "non_empty_line_count": 27,
+        "preview": "{\n\"id\": \"chat_action_20260618_215409_unknown-request\",\n\"type\": \"chat_action\",\n\"created_at\": \"2026-06-18T21:54:09\",\n\"updated_at\": \"2026-06-18T21:54:09\",\n\"status\": \"blocked\",\n\"user_request\": \"Yes do what needs to be done\",\n\"intent\": \"unknown_request\",\n\"title\": \"No safe action matched\",\n\"summary\": \"I could not map this request to a known safe Eidolon action.\","
+      }
+    },
+    {
+      "path": "data/chat_actions/chat_action_20260618_215614_run-diagnostics.json",
+      "extension": ".json",
+      "size_bytes": 1121,
+      "modified_at": "2026-06-19T01:56:14",
+      "summary": {
+        "line_count": 29,
+        "non_empty_line_count": 29,
+        "preview": "{\n\"id\": \"chat_action_20260618_215614_run-diagnostics\",\n\"type\": \"chat_action\",\n\"created_at\": \"2026-06-18T21:56:14\",\n\"updated_at\": \"2026-06-18T21:56:14\",\n\"status\": \"proposed\",\n\"user_request\": \"Run diagnostics\",\n\"intent\": \"run_diagnostics\",\n\"title\": \"Run diagnostics\",\n\"summary\": \"Run a diagnostics report.\","
+      }
+    },
+    {
+      "path": "data/chat_actions/chat_action_20260618_224554_unknown-request.json",
+      "extension": ".json",
+      "size_bytes": 1062,
+      "modified_at": "2026-06-19T02:45:54",
+      "summary": {
+        "line_count": 27,
+        "non_empty_line_count": 27,
+        "preview": "{\n\"id\": \"chat_action_20260618_224554_unknown-request\",\n\"type\": \"chat_action\",\n\"created_at\": \"2026-06-18T22:45:54\",\n\"updated_at\": \"2026-06-18T22:45:54\",\n\"status\": \"blocked\",\n\"user_request\": \"what should we work on next?\",\n\"intent\": \"unknown_request\",\n\"title\": \"No safe action matched\",\n\"summary\": \"I could not map this request to a known safe Eidolon action.\","
+      }
+    },
+    {
       "path": "data/dashboard_chat/README.md",
       "extension": ".md",
       "size_bytes": 124,
@@ -2148,6 +2578,61 @@
         "line_count": 1,
         "non_empty_line_count": 1,
         "preview": "Saved Dashboard Chat Console turns. Each turn stores Marcus's message, Eidolon's response, and any linked safe chat action."
+      }
+    },
+    {
+      "path": "data/dashboard_chat/dash_chat_20260618_215217_hey-eid.json",
+      "extension": ".json",
+      "size_bytes": 2028,
+      "modified_at": "2026-06-19T01:52:54",
+      "summary": {
+        "line_count": 37,
+        "non_empty_line_count": 37,
+        "preview": "{\n\"id\": \"dash_chat_20260618_215217_hey-eid\",\n\"type\": \"dashboard_chat_turn\",\n\"created_at\": \"2026-06-18T21:52:17\",\n\"user_message\": \"Hey Eid\",\n\"eidolon_response\": \"Eidolon: Hey Marcus! I'm glad to hear from you. How can I assist you today? We're currently working on enhancing the session planner and task queue features for Eidolon. Our next steps include testing the session planner commands and designing `task_queue.py` based on your feedback. If you have any specific tasks or ideas, feel free to share! \\ud83d\\ude0a\\n\\nIf you need a quick rundown of what's possible with our current tools, you can use commands like `--project-tree`, `--read-project-file <path>`, or `--search-project-files <query>` to explore and search your project files. Let me know if there\\u2019s anything else I can help with!\",\n\"action_id\": \"chat_action_20260618_215231_unknown-request\",\n\"action\": {\n\"id\": \"chat_action_20260618_215231_unknown-request\",\n\"type\": \"chat_action\","
+      }
+    },
+    {
+      "path": "data/dashboard_chat/dash_chat_20260618_215304_run-diagnostics-check-what-needs.json",
+      "extension": ".json",
+      "size_bytes": 3117,
+      "modified_at": "2026-06-19T01:53:23",
+      "summary": {
+        "line_count": 39,
+        "non_empty_line_count": 39,
+        "preview": "{\n\"id\": \"dash_chat_20260618_215304_run-diagnostics-check-what-needs\",\n\"type\": \"dashboard_chat_turn\",\n\"created_at\": \"2026-06-18T21:53:04\",\n\"user_message\": \"Run diagnostics\\r\\nCheck what needs attention\\r\\nShow pending approvals\\r\\nPlan the next session\\r\\nReview conscious_agent/memory.py\\r\\nSuggest improvement for conscious_agent/local_brain.py to improve Ollama error messages\\r\\nApply the latest patch\\r\\nRollback the latest patch\",\n\"eidolon_response\": \"Eidolon: Marcus,\\n\\nThank you for your guidance. Based on our current context and goals, I recommend we proceed with the following steps:\\n\\n1. **Run Diagnostics**: Let's start by running diagnostics to check what needs attention in the system.\\n2. **Check Pending Approvals**: Ensure all pending approvals are handled before moving forward.\\n3. **Plan Next Session**: With the results from diagnostics, we can better plan our next work session.\\n4. **Review `conscious_agent/memory.py`**: This is crucial for ensuring memory management is robust and error-free.\\n5. **Improve Error Handling in `local_brain.py`**: We need to enhance how Ollama handles errors related to semantic memory.\\n\\nAfter these steps, we can apply the latest patch if necessary or rollback it if issues arise. I will start with running diagnostics now.\\n\\nLet me know once you're ready to proceed!\\n\\nBest,\\nEidolon\",\n\"action_id\": \"chat_action_20260618_215307_request-apply-patch\",\n\"action\": {\n\"id\": \"chat_action_20260618_215307_request-apply-patch\",\n\"type\": \"chat_action\","
+      }
+    },
+    {
+      "path": "data/dashboard_chat/dash_chat_20260618_215407_yes-do-what-needs-to-be-done.json",
+      "extension": ".json",
+      "size_bytes": 1964,
+      "modified_at": "2026-06-19T01:54:25",
+      "summary": {
+        "line_count": 37,
+        "non_empty_line_count": 37,
+        "preview": "{\n\"id\": \"dash_chat_20260618_215407_yes-do-what-needs-to-be-done\",\n\"type\": \"dashboard_chat_turn\",\n\"created_at\": \"2026-06-18T21:54:07\",\n\"user_message\": \"Yes do what needs to be done\",\n\"eidolon_response\": \"Eidolon: Marcus,\\n\\nThank you for your instruction. The next concrete step is to test the session planner commands and ensure they function as intended. This will help us build a robust task queue system later on.\\n\\nTo get started, I'll run some basic tests using the session planner. Once we confirm its functionality, we can proceed with designing `task_queue.py` based on the results.\\n\\nIf you have any specific areas or features you'd like to focus on during these tests, please let me know!\\n\\nBest,\\nEidolon\",\n\"action_id\": \"chat_action_20260618_215409_unknown-request\",\n\"action\": {\n\"id\": \"chat_action_20260618_215409_unknown-request\",\n\"type\": \"chat_action\","
+      }
+    },
+    {
+      "path": "data/dashboard_chat/dash_chat_20260618_215611_run-diagnostics.json",
+      "extension": ".json",
+      "size_bytes": 2390,
+      "modified_at": "2026-06-19T01:56:35",
+      "summary": {
+        "line_count": 39,
+        "non_empty_line_count": 39,
+        "preview": "{\n\"id\": \"dash_chat_20260618_215611_run-diagnostics\",\n\"type\": \"dashboard_chat_turn\",\n\"created_at\": \"2026-06-18T21:56:11\",\n\"user_message\": \"Run diagnostics\",\n\"eidolon_response\": \"Eidolon: Marcus,\\n\\nThank you for your request. I've begun running diagnostics to check what needs attention and will show pending approvals before planning the next session. Here\\u2019s a summary of my actions:\\n\\n1. **Run Diagnostics**: I'll start by checking system status, memory usage, and any potential issues.\\n2. **Show Pending Approvals**: I\\u2019ll list all tasks that require your approval to ensure we proceed safely.\\n3. **Plan Next Session**: Based on diagnostics results, I will outline the next steps for our session planning.\\n4. **Review Code Improvements**: I\\u2019ll review `conscious_agent/memory.py` and suggest improvements for `conscious_agent/local_brain.py`, focusing on enhancing Ollama error messages.\\n\\nOnce diagnostics are complete, I will present a detailed report including any necessary approvals. Let me know if you have any specific preferences or concerns!\\n\\nEidolon\",\n\"action_id\": \"chat_action_20260618_215614_run-diagnostics\",\n\"action\": {\n\"id\": \"chat_action_20260618_215614_run-diagnostics\",\n\"type\": \"chat_action\","
+      }
+    },
+    {
+      "path": "data/dashboard_chat/dash_chat_20260618_224547_what-should-we-work-on-next.json",
+      "extension": ".json",
+      "size_bytes": 2128,
+      "modified_at": "2026-06-19T02:46:13",
+      "summary": {
+        "line_count": 37,
+        "non_empty_line_count": 37,
+        "preview": "{\n\"id\": \"dash_chat_20260618_224547_what-should-we-work-on-next\",\n\"type\": \"dashboard_chat_turn\",\n\"created_at\": \"2026-06-18T22:45:47\",\n\"user_message\": \"what should we work on next?\",\n\"eidolon_response\": \"Eidolon: Marcus,\\n\\nBased on our current goals and context, let's start with running diagnostics to ensure everything is in order. This will help us identify any issues that need addressing before moving forward.\\n\\nHere\\u2019s what we\\u2019ll do:\\n\\n1. Run diagnostics using `--diagnostics` to check the system status.\\n2. Review pending approvals with `--pending-approvals`.\\n3. Plan our next session based on the diagnostic results.\\n4. Once these steps are completed, we can proceed to review and improve the memory management in `conscious_agent/memory.py`.\\n\\nLet's begin with the diagnostics run. This will give us a clear picture of what needs attention.\\n\\nBest,\\nEidolon\",\n\"action_id\": \"chat_action_20260618_224554_unknown-request\",\n\"action\": {\n\"id\": \"chat_action_20260618_224554_unknown-request\",\n\"type\": \"chat_action\","
       }
     },
     {
@@ -2173,6 +2658,105 @@
       }
     },
     {
+      "path": "data/dev_cycles/devcycle_20260618_115942_review-proposed-patch.json",
+      "extension": ".json",
+      "size_bytes": 1729,
+      "modified_at": "2026-06-18T15:59:42",
+      "summary": {
+        "line_count": 36,
+        "non_empty_line_count": 36,
+        "preview": "{\n\"id\": \"devcycle_20260618_115942_review-proposed-patch\",\n\"type\": \"autonomous_dev_cycle\",\n\"created_at\": \"2026-06-18T11:59:42\",\n\"mode\": \"inspect\",\n\"step\": \"review-proposed-patch\",\n\"ok\": true,\n\"decision\": {\n\"step\": \"review-proposed-patch\",\n\"reason\": \"A proposed patch exists. Review it before any file write.\","
+      }
+    },
+    {
+      "path": "data/dev_cycles/devcycle_20260618_115949_review-proposed-patch.json",
+      "extension": ".json",
+      "size_bytes": 3108,
+      "modified_at": "2026-06-18T15:59:49",
+      "summary": {
+        "line_count": 62,
+        "non_empty_line_count": 62,
+        "preview": "{\n\"id\": \"devcycle_20260618_115949_review-proposed-patch\",\n\"type\": \"autonomous_dev_cycle\",\n\"created_at\": \"2026-06-18T11:59:49\",\n\"mode\": \"advance\",\n\"step\": \"review-proposed-patch\",\n\"ok\": false,\n\"decision\": {\n\"step\": \"review-proposed-patch\",\n\"reason\": \"A proposed patch exists. Review it before any file write.\","
+      }
+    },
+    {
+      "path": "data/dev_cycles/devcycle_20260618_115953_review-proposed-patch.json",
+      "extension": ".json",
+      "size_bytes": 3109,
+      "modified_at": "2026-06-18T15:59:53",
+      "summary": {
+        "line_count": 62,
+        "non_empty_line_count": 62,
+        "preview": "{\n\"id\": \"devcycle_20260618_115953_review-proposed-patch\",\n\"type\": \"autonomous_dev_cycle\",\n\"created_at\": \"2026-06-18T11:59:53\",\n\"mode\": \"advance\",\n\"step\": \"review-proposed-patch\",\n\"ok\": false,\n\"decision\": {\n\"step\": \"review-proposed-patch\",\n\"reason\": \"A proposed patch exists. Review it before any file write.\","
+      }
+    },
+    {
+      "path": "data/dev_cycles/devcycle_20260618_115957_review-proposed-patch.json",
+      "extension": ".json",
+      "size_bytes": 1729,
+      "modified_at": "2026-06-18T15:59:57",
+      "summary": {
+        "line_count": 36,
+        "non_empty_line_count": 36,
+        "preview": "{\n\"id\": \"devcycle_20260618_115957_review-proposed-patch\",\n\"type\": \"autonomous_dev_cycle\",\n\"created_at\": \"2026-06-18T11:59:57\",\n\"mode\": \"inspect\",\n\"step\": \"review-proposed-patch\",\n\"ok\": true,\n\"decision\": {\n\"step\": \"review-proposed-patch\",\n\"reason\": \"A proposed patch exists. Review it before any file write.\","
+      }
+    },
+    {
+      "path": "data/dev_cycles/devcycle_20260618_120145_review-proposed-patch.json",
+      "extension": ".json",
+      "size_bytes": 3227,
+      "modified_at": "2026-06-18T16:01:45",
+      "summary": {
+        "line_count": 66,
+        "non_empty_line_count": 66,
+        "preview": "{\n\"id\": \"devcycle_20260618_120145_review-proposed-patch\",\n\"type\": \"autonomous_dev_cycle\",\n\"created_at\": \"2026-06-18T12:01:45\",\n\"mode\": \"advance\",\n\"step\": \"review-proposed-patch\",\n\"ok\": true,\n\"decision\": {\n\"step\": \"review-proposed-patch\",\n\"reason\": \"A proposed patch exists. Review it before any file write.\","
+      }
+    },
+    {
+      "path": "data/dev_cycles/devcycle_20260618_120628_review-proposed-patch.json",
+      "extension": ".json",
+      "size_bytes": 1729,
+      "modified_at": "2026-06-18T16:06:28",
+      "summary": {
+        "line_count": 36,
+        "non_empty_line_count": 36,
+        "preview": "{\n\"id\": \"devcycle_20260618_120628_review-proposed-patch\",\n\"type\": \"autonomous_dev_cycle\",\n\"created_at\": \"2026-06-18T12:06:28\",\n\"mode\": \"inspect\",\n\"step\": \"review-proposed-patch\",\n\"ok\": true,\n\"decision\": {\n\"step\": \"review-proposed-patch\",\n\"reason\": \"A proposed patch exists. Review it before any file write.\","
+      }
+    },
+    {
+      "path": "data/dev_cycles/devcycle_20260618_120648_review-proposed-patch.json",
+      "extension": ".json",
+      "size_bytes": 1729,
+      "modified_at": "2026-06-18T16:06:48",
+      "summary": {
+        "line_count": 36,
+        "non_empty_line_count": 36,
+        "preview": "{\n\"id\": \"devcycle_20260618_120648_review-proposed-patch\",\n\"type\": \"autonomous_dev_cycle\",\n\"created_at\": \"2026-06-18T12:06:48\",\n\"mode\": \"inspect\",\n\"step\": \"review-proposed-patch\",\n\"ok\": true,\n\"decision\": {\n\"step\": \"review-proposed-patch\",\n\"reason\": \"A proposed patch exists. Review it before any file write.\","
+      }
+    },
+    {
+      "path": "data/dev_cycles/devcycle_20260618_121745_review-proposed-patch.json",
+      "extension": ".json",
+      "size_bytes": 1729,
+      "modified_at": "2026-06-18T16:17:45",
+      "summary": {
+        "line_count": 36,
+        "non_empty_line_count": 36,
+        "preview": "{\n\"id\": \"devcycle_20260618_121745_review-proposed-patch\",\n\"type\": \"autonomous_dev_cycle\",\n\"created_at\": \"2026-06-18T12:17:45\",\n\"mode\": \"inspect\",\n\"step\": \"review-proposed-patch\",\n\"ok\": true,\n\"decision\": {\n\"step\": \"review-proposed-patch\",\n\"reason\": \"A proposed patch exists. Review it before any file write.\","
+      }
+    },
+    {
+      "path": "data/dev_cycles/devcycle_20260618_122900_patch-looks-safe.json",
+      "extension": ".json",
+      "size_bytes": 1840,
+      "modified_at": "2026-06-18T16:29:00",
+      "summary": {
+        "line_count": 35,
+        "non_empty_line_count": 35,
+        "preview": "{\n\"id\": \"devcycle_20260618_122900_patch-looks-safe\",\n\"type\": \"autonomous_dev_cycle\",\n\"created_at\": \"2026-06-18T12:29:00\",\n\"mode\": \"inspect\",\n\"step\": \"patch-looks-safe\",\n\"ok\": true,\n\"decision\": {\n\"step\": \"patch-looks-safe\",\n\"reason\": \"Latest review recommends keep_patch. Next useful work should come from the task queue.\","
+      }
+    },
+    {
       "path": "data/dev_loops/README.md",
       "extension": ".md",
       "size_bytes": 51,
@@ -2184,6 +2768,50 @@
       }
     },
     {
+      "path": "data/dev_loops/devloop_20260618_120628.json",
+      "extension": ".json",
+      "size_bytes": 1363,
+      "modified_at": "2026-06-18T16:06:31",
+      "summary": {
+        "line_count": 34,
+        "non_empty_line_count": 34,
+        "preview": "{\n\"id\": \"devloop_20260618_120628\",\n\"type\": \"bounded_autonomous_dev_loop\",\n\"created_at\": \"2026-06-18T12:06:28\",\n\"task_id\": \"latest-ready\",\n\"max_steps\": 3,\n\"dry_run\": true,\n\"approve_apply\": false,\n\"apply_evaluation\": false,\n\"use_ai\": false,"
+      }
+    },
+    {
+      "path": "data/dev_loops/devloop_20260618_120648.json",
+      "extension": ".json",
+      "size_bytes": 1364,
+      "modified_at": "2026-06-18T16:06:52",
+      "summary": {
+        "line_count": 34,
+        "non_empty_line_count": 34,
+        "preview": "{\n\"id\": \"devloop_20260618_120648\",\n\"type\": \"bounded_autonomous_dev_loop\",\n\"created_at\": \"2026-06-18T12:06:48\",\n\"task_id\": \"latest-ready\",\n\"max_steps\": 3,\n\"dry_run\": false,\n\"approve_apply\": false,\n\"apply_evaluation\": false,\n\"use_ai\": false,"
+      }
+    },
+    {
+      "path": "data/dev_loops/devloop_20260618_121745.json",
+      "extension": ".json",
+      "size_bytes": 1641,
+      "modified_at": "2026-06-18T16:17:53",
+      "summary": {
+        "line_count": 36,
+        "non_empty_line_count": 36,
+        "preview": "{\n\"id\": \"devloop_20260618_121745\",\n\"type\": \"bounded_autonomous_dev_loop\",\n\"created_at\": \"2026-06-18T12:17:45\",\n\"task_id\": \"latest-ready\",\n\"max_steps\": 3,\n\"dry_run\": true,\n\"approve_apply\": false,\n\"apply_evaluation\": false,\n\"use_ai\": false,"
+      }
+    },
+    {
+      "path": "data/dev_loops/devloop_20260618_122900.json",
+      "extension": ".json",
+      "size_bytes": 1643,
+      "modified_at": "2026-06-18T16:29:06",
+      "summary": {
+        "line_count": 34,
+        "non_empty_line_count": 34,
+        "preview": "{\n\"id\": \"devloop_20260618_122900\",\n\"type\": \"bounded_autonomous_dev_loop\",\n\"created_at\": \"2026-06-18T12:29:00\",\n\"task_id\": \"latest-ready\",\n\"max_steps\": 3,\n\"dry_run\": true,\n\"approve_apply\": false,\n\"apply_evaluation\": false,\n\"use_ai\": false,"
+      }
+    },
+    {
       "path": "data/diagnostics/README.md",
       "extension": ".md",
       "size_bytes": 38,
@@ -2192,6 +2820,105 @@
         "line_count": 1,
         "non_empty_line_count": 1,
         "preview": "Saved diagnostic reports for Eidolon."
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_123715.json",
+      "extension": ".json",
+      "size_bytes": 23060,
+      "modified_at": "2026-06-18T16:37:15",
+      "summary": {
+        "line_count": 485,
+        "non_empty_line_count": 485,
+        "preview": "{\n\"id\": \"diag_20260618_123715\",\n\"created_at\": \"2026-06-18T12:37:15\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_125528.json",
+      "extension": ".json",
+      "size_bytes": 23271,
+      "modified_at": "2026-06-18T16:55:28",
+      "summary": {
+        "line_count": 488,
+        "non_empty_line_count": 488,
+        "preview": "{\n\"id\": \"diag_20260618_125528\",\n\"created_at\": \"2026-06-18T12:55:28\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_125722.json",
+      "extension": ".json",
+      "size_bytes": 23271,
+      "modified_at": "2026-06-18T16:57:22",
+      "summary": {
+        "line_count": 488,
+        "non_empty_line_count": 488,
+        "preview": "{\n\"id\": \"diag_20260618_125722\",\n\"created_at\": \"2026-06-18T12:57:22\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_130607.json",
+      "extension": ".json",
+      "size_bytes": 24129,
+      "modified_at": "2026-06-18T17:06:07",
+      "summary": {
+        "line_count": 496,
+        "non_empty_line_count": 496,
+        "preview": "{\n\"id\": \"diag_20260618_130607\",\n\"created_at\": \"2026-06-18T13:06:07\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_130613.json",
+      "extension": ".json",
+      "size_bytes": 24129,
+      "modified_at": "2026-06-18T17:06:13",
+      "summary": {
+        "line_count": 496,
+        "non_empty_line_count": 496,
+        "preview": "{\n\"id\": \"diag_20260618_130613\",\n\"created_at\": \"2026-06-18T13:06:13\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_130650.json",
+      "extension": ".json",
+      "size_bytes": 24129,
+      "modified_at": "2026-06-18T17:06:50",
+      "summary": {
+        "line_count": 496,
+        "non_empty_line_count": 496,
+        "preview": "{\n\"id\": \"diag_20260618_130650\",\n\"created_at\": \"2026-06-18T13:06:50\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_131620.json",
+      "extension": ".json",
+      "size_bytes": 24661,
+      "modified_at": "2026-06-18T17:16:20",
+      "summary": {
+        "line_count": 501,
+        "non_empty_line_count": 501,
+        "preview": "{\n\"id\": \"diag_20260618_131620\",\n\"created_at\": \"2026-06-18T13:16:20\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_132546.json",
+      "extension": ".json",
+      "size_bytes": 25033,
+      "modified_at": "2026-06-18T17:25:46",
+      "summary": {
+        "line_count": 505,
+        "non_empty_line_count": 505,
+        "preview": "{\n\"id\": \"diag_20260618_132546\",\n\"created_at\": \"2026-06-18T13:25:46\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_134356.json",
+      "extension": ".json",
+      "size_bytes": 25698,
+      "modified_at": "2026-06-18T17:43:56",
+      "summary": {
+        "line_count": 513,
+        "non_empty_line_count": 513,
+        "preview": "{\n\"id\": \"diag_20260618_134356\",\n\"created_at\": \"2026-06-18T13:43:56\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
       }
     },
     {
@@ -2214,6 +2941,28 @@
         "line_count": 489,
         "non_empty_line_count": 489,
         "preview": "{\n\"id\": \"diag_20260618_164216\",\n\"created_at\": \"2026-06-18T16:42:16\",\n\"overall_status\": \"fail\",\n\"counts\": {\n\"pass\": 9,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 1\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_224707.json",
+      "extension": ".json",
+      "size_bytes": 29345,
+      "modified_at": "2026-06-19T02:47:07",
+      "summary": {
+        "line_count": 556,
+        "non_empty_line_count": 556,
+        "preview": "{\n\"id\": \"diag_20260618_224707\",\n\"created_at\": \"2026-06-18T22:47:07\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_224716.json",
+      "extension": ".json",
+      "size_bytes": 29345,
+      "modified_at": "2026-06-19T02:47:16",
+      "summary": {
+        "line_count": 556,
+        "non_empty_line_count": 556,
+        "preview": "{\n\"id\": \"diag_20260618_224716\",\n\"created_at\": \"2026-06-18T22:47:16\",\n\"overall_status\": \"warn\",\n\"counts\": {\n\"pass\": 10,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 0\n},"
       }
     },
     {
@@ -2272,13 +3021,90 @@
       }
     },
     {
+      "path": "data/maintenance_suggestions/maint_20260618_102631.json",
+      "extension": ".json",
+      "size_bytes": 3650,
+      "modified_at": "2026-06-18T14:26:51",
+      "summary": {
+        "line_count": 64,
+        "non_empty_line_count": 64,
+        "preview": "{\n\"id\": \"maint_20260618_102631\",\n\"created_at\": \"2026-06-18T10:26:31\",\n\"active_project\": \"Eidolon\",\n\"use_ai\": true,\n\"summary\": {\n\"indexed_file_count\": 26,\n\"patch_count\": 5,\n\"test_report_count\": 3,\n\"test_review_count\": 1,"
+      }
+    },
+    {
+      "path": "data/maintenance_suggestions/maint_20260618_130613.json",
+      "extension": ".json",
+      "size_bytes": 2121,
+      "modified_at": "2026-06-18T17:06:13",
+      "summary": {
+        "line_count": 46,
+        "non_empty_line_count": 46,
+        "preview": "{\n\"id\": \"maint_20260618_130613\",\n\"created_at\": \"2026-06-18T13:06:13\",\n\"active_project\": \"Eidolon\",\n\"use_ai\": false,\n\"summary\": {\n\"indexed_file_count\": 40,\n\"patch_count\": 5,\n\"test_report_count\": 3,\n\"test_review_count\": 1,"
+      }
+    },
+    {
+      "path": "data/maintenance_suggestions/maint_20260618_130650.json",
+      "extension": ".json",
+      "size_bytes": 2121,
+      "modified_at": "2026-06-18T17:06:50",
+      "summary": {
+        "line_count": 46,
+        "non_empty_line_count": 46,
+        "preview": "{\n\"id\": \"maint_20260618_130650\",\n\"created_at\": \"2026-06-18T13:06:50\",\n\"active_project\": \"Eidolon\",\n\"use_ai\": false,\n\"summary\": {\n\"indexed_file_count\": 40,\n\"patch_count\": 5,\n\"test_report_count\": 3,\n\"test_review_count\": 1,"
+      }
+    },
+    {
+      "path": "data/maintenance_suggestions/maint_20260618_131620.json",
+      "extension": ".json",
+      "size_bytes": 2121,
+      "modified_at": "2026-06-18T17:16:20",
+      "summary": {
+        "line_count": 46,
+        "non_empty_line_count": 46,
+        "preview": "{\n\"id\": \"maint_20260618_131620\",\n\"created_at\": \"2026-06-18T13:16:20\",\n\"active_project\": \"Eidolon\",\n\"use_ai\": false,\n\"summary\": {\n\"indexed_file_count\": 41,\n\"patch_count\": 5,\n\"test_report_count\": 3,\n\"test_review_count\": 1,"
+      }
+    },
+    {
+      "path": "data/maintenance_suggestions/maint_20260618_132546.json",
+      "extension": ".json",
+      "size_bytes": 2121,
+      "modified_at": "2026-06-18T17:25:46",
+      "summary": {
+        "line_count": 46,
+        "non_empty_line_count": 46,
+        "preview": "{\n\"id\": \"maint_20260618_132546\",\n\"created_at\": \"2026-06-18T13:25:46\",\n\"active_project\": \"Eidolon\",\n\"use_ai\": false,\n\"summary\": {\n\"indexed_file_count\": 41,\n\"patch_count\": 5,\n\"test_report_count\": 3,\n\"test_review_count\": 1,"
+      }
+    },
+    {
+      "path": "data/maintenance_suggestions/maint_20260618_134356.json",
+      "extension": ".json",
+      "size_bytes": 2121,
+      "modified_at": "2026-06-18T17:43:56",
+      "summary": {
+        "line_count": 46,
+        "non_empty_line_count": 46,
+        "preview": "{\n\"id\": \"maint_20260618_134356\",\n\"created_at\": \"2026-06-18T13:43:56\",\n\"active_project\": \"Eidolon\",\n\"use_ai\": false,\n\"summary\": {\n\"indexed_file_count\": 41,\n\"patch_count\": 5,\n\"test_report_count\": 3,\n\"test_review_count\": 1,"
+      }
+    },
+    {
+      "path": "data/maintenance_suggestions/maint_20260618_234256.json",
+      "extension": ".json",
+      "size_bytes": 2120,
+      "modified_at": "2026-06-19T03:42:56",
+      "summary": {
+        "line_count": 46,
+        "non_empty_line_count": 46,
+        "preview": "{\n\"id\": \"maint_20260618_234256\",\n\"created_at\": \"2026-06-18T23:42:56\",\n\"active_project\": \"Eidolon\",\n\"use_ai\": false,\n\"summary\": {\n\"indexed_file_count\": 90,\n\"patch_count\": 5,\n\"test_report_count\": 3,\n\"test_review_count\": 1,"
+      }
+    },
+    {
       "path": "data/memories.json",
       "extension": ".json",
-      "size_bytes": 24391,
-      "modified_at": "2026-06-19T03:22:36",
+      "size_bytes": 38001,
+      "modified_at": "2026-06-19T16:30:16",
       "summary": {
-        "line_count": 731,
-        "non_empty_line_count": 731,
+        "line_count": 1062,
+        "non_empty_line_count": 1062,
         "preview": "[\n{\n\"created_at\": \"2026-06-16T20:51:04\",\n\"type\": \"inner_thought\",\n\"content\": \"I am Eidolon. I have no stored memories yet, so my first priority is to create continuity. My current focus is help Marcus build useful software.\",\n\"importance\": 0.72,\n\"related_goal\": \"help Marcus build useful software\",\n\"recommended_action\": \"store_only\",\n\"reasoning_summary\": \"Generated from self-model, desire weights, memory count, and current state.\",\n\"state_snapshot\": {"
       }
     },
@@ -2316,6 +3142,116 @@
       }
     },
     {
+      "path": "data/notifications/note_20260618_131627_fb685c.json",
+      "extension": ".json",
+      "size_bytes": 1130,
+      "modified_at": "2026-06-18T17:17:13",
+      "summary": {
+        "line_count": 26,
+        "non_empty_line_count": 26,
+        "preview": "{\n\"id\": \"note_20260618_131627_fb685c\",\n\"type\": \"watch_attention\",\n\"severity\": \"warning\",\n\"title\": \"Watch mode needs attention\",\n\"message\": \"Watch report watch_20260618_131627 ended with status attention_needed. Safe next command: python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review\",\n\"recommended_command\": \"python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review\",\n\"status\": \"read\",\n\"created_at\": \"2026-06-18T13:16:27\",\n\"last_seen_at\": \"2026-06-18T13:16:27\","
+      }
+    },
+    {
+      "path": "data/notifications/note_20260618_131629_cbed68.json",
+      "extension": ".json",
+      "size_bytes": 1418,
+      "modified_at": "2026-06-18T17:17:15",
+      "summary": {
+        "line_count": 33,
+        "non_empty_line_count": 33,
+        "preview": "{\n\"id\": \"note_20260618_131629_cbed68\",\n\"type\": \"testing\",\n\"severity\": \"warning\",\n\"title\": \"Run tests for an applied patch\",\n\"message\": \"Applied patch patch_20260618_095713_conscious_agent-memory-py has no saved test report.\",\n\"recommended_command\": \"python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review\",\n\"status\": \"read\",\n\"created_at\": \"2026-06-18T13:16:29\",\n\"last_seen_at\": \"2026-06-18T13:16:29\","
+      }
+    },
+    {
+      "path": "data/notifications/note_20260618_131631_239517.json",
+      "extension": ".json",
+      "size_bytes": 1311,
+      "modified_at": "2026-06-18T17:17:15",
+      "summary": {
+        "line_count": 33,
+        "non_empty_line_count": 33,
+        "preview": "{\n\"id\": \"note_20260618_131631_239517\",\n\"type\": \"diagnostics\",\n\"severity\": \"warning\",\n\"title\": \"Review diagnostic warnings\",\n\"message\": \"System is usable, but review warnings before depending on autonomous workflows.\",\n\"recommended_command\": \"python conscious_agent/main.py --show-diagnostic-report latest --diagnostics-full\",\n\"status\": \"read\",\n\"created_at\": \"2026-06-18T13:16:31\",\n\"last_seen_at\": \"2026-06-18T13:16:31\","
+      }
+    },
+    {
+      "path": "data/notifications/note_20260618_131633_ae9bc3.json",
+      "extension": ".json",
+      "size_bytes": 1505,
+      "modified_at": "2026-06-18T17:17:16",
+      "summary": {
+        "line_count": 33,
+        "non_empty_line_count": 33,
+        "preview": "{\n\"id\": \"note_20260618_131633_ae9bc3\",\n\"type\": \"test_reviews\",\n\"severity\": \"warning\",\n\"title\": \"Review latest unreviewed test report\",\n\"message\": \"Test report test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py has no saved review.\",\n\"recommended_command\": \"python conscious_agent/main.py --review-test-report test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py\",\n\"status\": \"read\",\n\"created_at\": \"2026-06-18T13:16:33\",\n\"last_seen_at\": \"2026-06-18T13:16:33\","
+      }
+    },
+    {
+      "path": "data/notifications/note_20260618_131635_99d728.json",
+      "extension": ".json",
+      "size_bytes": 1032,
+      "modified_at": "2026-06-18T17:16:42",
+      "summary": {
+        "line_count": 27,
+        "non_empty_line_count": 27,
+        "preview": "{\n\"id\": \"note_20260618_131635_99d728\",\n\"type\": \"planning\",\n\"severity\": \"warning\",\n\"title\": \"Create or queue a next task\",\n\"message\": \"No ready or active task was found.\",\n\"recommended_command\": \"python conscious_agent/main.py --plan-session --no-ai-session\",\n\"status\": \"read\",\n\"created_at\": \"2026-06-18T13:16:35\",\n\"last_seen_at\": \"2026-06-18T13:16:35\","
+      }
+    },
+    {
+      "path": "data/notifications/note_20260618_132553_9528d9.json",
+      "extension": ".json",
+      "size_bytes": 1130,
+      "modified_at": "2026-06-19T02:26:23",
+      "summary": {
+        "line_count": 26,
+        "non_empty_line_count": 26,
+        "preview": "{\n\"id\": \"note_20260618_132553_9528d9\",\n\"type\": \"watch_attention\",\n\"severity\": \"warning\",\n\"title\": \"Watch mode needs attention\",\n\"message\": \"Watch report watch_20260618_134400 ended with status attention_needed. Safe next command: python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review\",\n\"recommended_command\": \"python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review\",\n\"status\": \"read\",\n\"created_at\": \"2026-06-18T13:25:53\",\n\"last_seen_at\": \"2026-06-18T13:44:08\","
+      }
+    },
+    {
+      "path": "data/notifications/note_20260618_132555_532890.json",
+      "extension": ".json",
+      "size_bytes": 1257,
+      "modified_at": "2026-06-18T17:44:08",
+      "summary": {
+        "line_count": 26,
+        "non_empty_line_count": 26,
+        "preview": "{\n\"id\": \"note_20260618_132555_532890\",\n\"type\": \"testing\",\n\"severity\": \"warning\",\n\"title\": \"Run tests for an applied patch\",\n\"message\": \"Applied patch patch_20260618_095713_conscious_agent-memory-py has no saved test report.\",\n\"recommended_command\": \"python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review\",\n\"status\": \"unread\",\n\"created_at\": \"2026-06-18T13:25:55\",\n\"last_seen_at\": \"2026-06-18T13:44:08\","
+      }
+    },
+    {
+      "path": "data/notifications/note_20260618_132557_386ea7.json",
+      "extension": ".json",
+      "size_bytes": 1150,
+      "modified_at": "2026-06-18T17:44:08",
+      "summary": {
+        "line_count": 26,
+        "non_empty_line_count": 26,
+        "preview": "{\n\"id\": \"note_20260618_132557_386ea7\",\n\"type\": \"diagnostics\",\n\"severity\": \"warning\",\n\"title\": \"Review diagnostic warnings\",\n\"message\": \"System is usable, but review warnings before depending on autonomous workflows.\",\n\"recommended_command\": \"python conscious_agent/main.py --show-diagnostic-report latest --diagnostics-full\",\n\"status\": \"unread\",\n\"created_at\": \"2026-06-18T13:25:57\",\n\"last_seen_at\": \"2026-06-18T13:44:08\","
+      }
+    },
+    {
+      "path": "data/notifications/note_20260618_132559_e3c13b.json",
+      "extension": ".json",
+      "size_bytes": 1344,
+      "modified_at": "2026-06-18T17:44:08",
+      "summary": {
+        "line_count": 26,
+        "non_empty_line_count": 26,
+        "preview": "{\n\"id\": \"note_20260618_132559_e3c13b\",\n\"type\": \"test_reviews\",\n\"severity\": \"warning\",\n\"title\": \"Review latest unreviewed test report\",\n\"message\": \"Test report test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py has no saved review.\",\n\"recommended_command\": \"python conscious_agent/main.py --review-test-report test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py\",\n\"status\": \"unread\",\n\"created_at\": \"2026-06-18T13:25:59\",\n\"last_seen_at\": \"2026-06-18T13:44:08\","
+      }
+    },
+    {
+      "path": "data/notifications/note_20260618_132601_dcf0e7.json",
+      "extension": ".json",
+      "size_bytes": 994,
+      "modified_at": "2026-06-18T17:44:08",
+      "summary": {
+        "line_count": 26,
+        "non_empty_line_count": 26,
+        "preview": "{\n\"id\": \"note_20260618_132601_dcf0e7\",\n\"type\": \"planning\",\n\"severity\": \"warning\",\n\"title\": \"Create or queue a next task\",\n\"message\": \"No ready or active task was found.\",\n\"recommended_command\": \"python conscious_agent/main.py --plan-session --no-ai-session\",\n\"status\": \"unread\",\n\"created_at\": \"2026-06-18T13:26:01\",\n\"last_seen_at\": \"2026-06-18T13:44:08\","
+      }
+    },
+    {
       "path": "data/onboarding_runs/README.md",
       "extension": ".md",
       "size_bytes": 64,
@@ -2327,25 +3263,25 @@
       }
     },
     {
-      "path": "data/onboarding_runs/onboarding_20260619_033335.json",
+      "path": "data/onboarding_runs/onboarding_20260618_234321.json",
       "extension": ".json",
-      "size_bytes": 6757,
-      "modified_at": "2026-06-19T03:33:35",
+      "size_bytes": 5856,
+      "modified_at": "2026-06-19T03:43:21",
       "summary": {
-        "line_count": 210,
-        "non_empty_line_count": 210,
-        "preview": "{\n\"id\": \"onboarding_20260619_033335\",\n\"version\": \"4.5\",\n\"created_at\": \"2026-06-19T03:33:35\",\n\"status\": \"needs_action\",\n\"setup_report_id\": \"setup_20260619_033335\",\n\"setup_status\": \"attention_needed\",\n\"summary\": \"Onboarding needs action. Next recommended step: Install required Python packages.\",\n\"counts\": {\n\"done\": 3,"
+        "line_count": 187,
+        "non_empty_line_count": 187,
+        "preview": "{\n\"id\": \"onboarding_20260618_234321\",\n\"version\": \"4.5\",\n\"created_at\": \"2026-06-18T23:43:21\",\n\"status\": \"attention_needed\",\n\"setup_report_id\": \"setup_20260618_234321\",\n\"setup_status\": \"attention_needed\",\n\"summary\": \"Onboarding needs attention: 0 action step(s), 0 blocked step(s), 2 optional step(s).\",\n\"counts\": {\n\"done\": 6,"
       }
     },
     {
-      "path": "data/onboarding_runs/onboarding_20260619_033616.json",
+      "path": "data/onboarding_runs/onboarding_20260619_003335.json",
       "extension": ".json",
-      "size_bytes": 6757,
-      "modified_at": "2026-06-19T03:36:16",
+      "size_bytes": 6372,
+      "modified_at": "2026-06-19T04:33:35",
       "summary": {
-        "line_count": 210,
-        "non_empty_line_count": 210,
-        "preview": "{\n\"id\": \"onboarding_20260619_033616\",\n\"version\": \"4.5\",\n\"created_at\": \"2026-06-19T03:36:16\",\n\"status\": \"needs_action\",\n\"setup_report_id\": \"setup_20260619_033335\",\n\"setup_status\": \"attention_needed\",\n\"summary\": \"Onboarding needs action. Next recommended step: Install required Python packages.\",\n\"counts\": {\n\"done\": 3,"
+        "line_count": 200,
+        "non_empty_line_count": 200,
+        "preview": "{\n\"id\": \"onboarding_20260619_003335\",\n\"version\": \"4.5\",\n\"created_at\": \"2026-06-19T00:33:35\",\n\"status\": \"attention_needed\",\n\"setup_report_id\": \"setup_20260619_003335\",\n\"setup_status\": \"attention_needed\",\n\"summary\": \"Onboarding needs attention: 0 action step(s), 0 blocked step(s), 2 optional step(s).\",\n\"counts\": {\n\"done\": 5,"
       }
     },
     {
@@ -2371,25 +3307,80 @@
       }
     },
     {
+      "path": "data/patches/patch_20260617_231303_conscious_agent-memory-py.json",
+      "extension": ".json",
+      "size_bytes": 7554,
+      "modified_at": "2026-06-18T16:18:29",
+      "summary": {
+        "line_count": 18,
+        "non_empty_line_count": 18,
+        "preview": "{\n\"id\": \"patch_20260617_231303_conscious_agent-memory-py\",\n\"status\": \"applied\",\n\"created_at\": \"2026-06-17T23:13:03\",\n\"target_file\": \"conscious_agent\\\\memory.py\",\n\"request\": \"Improve error handling when vector memory storage fails\",\n\"summary\": \"Local AI generated a full-file replacement proposal. Review the diff before applying in a future version.\",\n\"risk_level\": \"high\",\n\"model\": \"qwen2.5:7b\",\n\"original_sha256\": \"18da358e61ac1d22ee7e0177d68ed65dd9be79720b3ea51926e9bca0e515ff64\","
+      }
+    },
+    {
+      "path": "data/patches/patch_20260617_231631_conscious_agent-memory-py.json",
+      "extension": ".json",
+      "size_bytes": 6102,
+      "modified_at": "2026-06-18T14:14:35",
+      "summary": {
+        "line_count": 18,
+        "non_empty_line_count": 18,
+        "preview": "{\n\"id\": \"patch_20260617_231631_conscious_agent-memory-py\",\n\"status\": \"applied\",\n\"created_at\": \"2026-06-17T23:16:31\",\n\"target_file\": \"conscious_agent\\\\memory.py\",\n\"request\": \"Improve error handling when vector memory storage fails\",\n\"summary\": \"Local AI generated a full-file replacement proposal. Review the diff before applying in a future version.\",\n\"risk_level\": \"medium\",\n\"model\": \"qwen2.5:7b\",\n\"original_sha256\": \"18da358e61ac1d22ee7e0177d68ed65dd9be79720b3ea51926e9bca0e515ff64\","
+      }
+    },
+    {
+      "path": "data/patches/patch_20260617_232242_conscious_agent-memory-py.json",
+      "extension": ".json",
+      "size_bytes": 6102,
+      "modified_at": "2026-06-18T03:26:21",
+      "summary": {
+        "line_count": 18,
+        "non_empty_line_count": 18,
+        "preview": "{\n\"id\": \"patch_20260617_232242_conscious_agent-memory-py\",\n\"status\": \"applied\",\n\"created_at\": \"2026-06-17T23:22:42\",\n\"target_file\": \"conscious_agent\\\\memory.py\",\n\"request\": \"Improve error handling when vector memory storage fails\",\n\"summary\": \"Local AI generated a full-file replacement proposal. Review the diff before applying in a future version.\",\n\"risk_level\": \"medium\",\n\"model\": \"qwen2.5:7b\",\n\"original_sha256\": \"18da358e61ac1d22ee7e0177d68ed65dd9be79720b3ea51926e9bca0e515ff64\","
+      }
+    },
+    {
+      "path": "data/patches/patch_20260617_235231_conscious_agent-memory-py.json",
+      "extension": ".json",
+      "size_bytes": 8324,
+      "modified_at": "2026-06-18T03:53:32",
+      "summary": {
+        "line_count": 20,
+        "non_empty_line_count": 20,
+        "preview": "{\n\"id\": \"patch_20260617_235231_conscious_agent-memory-py\",\n\"status\": \"rolled_back\",\n\"created_at\": \"2026-06-17T23:52:31\",\n\"target_file\": \"conscious_agent\\\\memory.py\",\n\"request\": \"Improve error handling when vector memory storage fails\",\n\"summary\": \"Local AI generated a full-file replacement proposal. Review the diff before applying in a future version.\",\n\"risk_level\": \"high\",\n\"model\": \"qwen2.5:7b\",\n\"original_sha256\": \"18da358e61ac1d22ee7e0177d68ed65dd9be79720b3ea51926e9bca0e515ff64\","
+      }
+    },
+    {
+      "path": "data/patches/patch_20260618_095713_conscious_agent-memory-py.json",
+      "extension": ".json",
+      "size_bytes": 6376,
+      "modified_at": "2026-06-18T14:00:35",
+      "summary": {
+        "line_count": 18,
+        "non_empty_line_count": 18,
+        "preview": "{\n\"id\": \"patch_20260618_095713_conscious_agent-memory-py\",\n\"status\": \"applied\",\n\"created_at\": \"2026-06-18T09:57:13\",\n\"target_file\": \"conscious_agent\\\\memory.py\",\n\"request\": \"Improve error handling when semantic memory is unavailable\",\n\"summary\": \"Local AI generated a full-file replacement proposal. Review the diff before applying in a future version.\",\n\"risk_level\": \"high\",\n\"model\": \"qwen2.5:7b\",\n\"original_sha256\": \"18da358e61ac1d22ee7e0177d68ed65dd9be79720b3ea51926e9bca0e515ff64\","
+      }
+    },
+    {
       "path": "data/project_index.json",
       "extension": ".json",
-      "size_bytes": 71579,
-      "modified_at": "2026-06-19T03:22:36",
+      "size_bytes": 155271,
+      "modified_at": "2026-06-19T16:30:16",
       "summary": {
-        "line_count": 2448,
-        "non_empty_line_count": 2448,
-        "preview": "{\n\"indexed_at\": \"2026-06-19T03:22:36\",\n\"active_project\": \"Eidolon\",\n\"project_path\": \"/mnt/data/eidolon_v44_work\",\n\"relative_path\": \"\",\n\"max_files\": 400,\n\"files\": [\n{\n\"path\": \"README_NEXT_STEPS.md\",\n\"extension\": \".md\","
+        "line_count": 3899,
+        "non_empty_line_count": 3899,
+        "preview": "{\n\"indexed_at\": \"2026-06-19T16:30:16\",\n\"active_project\": \"Eidolon\",\n\"project_path\": \"/mnt/data/eidolon_v57_work/Eidolon\",\n\"relative_path\": \"\",\n\"max_files\": 400,\n\"files\": [\n{\n\"path\": \".gitignore\",\n\"extension\": \"\","
       }
     },
     {
       "path": "data/projects.json",
       "extension": ".json",
-      "size_bytes": 19014,
-      "modified_at": "2026-06-19T03:32:41",
+      "size_bytes": 21173,
+      "modified_at": "2026-06-19T16:30:16",
       "summary": {
-        "line_count": 231,
-        "non_empty_line_count": 231,
-        "preview": "{\n\"active_project\": \"Eidolon\",\n\"projects\": [\n{\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, self-improvement workflows, maintenance scans, memory compaction, structured goals, session planning, task queues, guided/bounded dev loops, approval inbox, settings, diagnostics, local dashboard, background watch mode, notifications, chat-to-action routing, dashboard chat, local JSON API, dashboard forms, live dashboard status polling, a local desktop companion shell, desktop notifications/watcher behavior, desktop quick actions, optional real system tray integration, desktop startup/first-run setup helpers, and a guided desktop onboarding wizard.\",\n\"language\": \"Python\",\n\"status\": \"active\",\n\"goals\": ["
+        "line_count": 238,
+        "non_empty_line_count": 238,
+        "preview": "{\n\"active_project\": \"Eidolon\",\n\"projects\": [\n{\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, self-improvement workflows, maintenance scans, memory compaction, structured goals, session planning, a canonical task/work queue, task-centered patch bridges, task-centered execution, task approval bridge, supervised work cycles, approval inbox, settings, diagnostics, local dashboard, background watch mode, notifications, chat-to-action routing, dashboard chat, local JSON API, dashboard forms, live dashboard status polling, desktop companion tools, setup helpers, and guided desktop onboarding.\",\n\"language\": \"Python\",\n\"status\": \"active\",\n\"goals\": ["
       }
     },
     {
@@ -2401,6 +3392,17 @@
         "line_count": 10,
         "non_empty_line_count": 7,
         "preview": "# Self-improvement runs\nSaved supervised self-improvement run records are stored here as JSON.\nUse `latest` with commands like:\n```bash\npython conscious_agent/main.py --show-self-improvement latest\npython conscious_agent/main.py --self-improve-apply latest --dry-run\n```"
+      }
+    },
+    {
+      "path": "data/self_improvements/selfimp_20260618_095636_conscious_agent-memory-py.json",
+      "extension": ".json",
+      "size_bytes": 1817,
+      "modified_at": "2026-06-18T14:01:00",
+      "summary": {
+        "line_count": 23,
+        "non_empty_line_count": 23,
+        "preview": "{\n\"id\": \"selfimp_20260618_095636_conscious_agent-memory-py\",\n\"status\": \"tested_and_reviewed\",\n\"created_at\": \"2026-06-18T09:56:36\",\n\"target_file\": \"conscious_agent\\\\memory.py\",\n\"request\": \"Improve error handling when semantic memory is unavailable\",\n\"review_ai_used\": false,\n\"review_text\": \"# Code Review: conscious_agent\\\\memory.py\\n\\n## Basic facts\\n- Lines: 62\\n- Characters reviewed: 2153 of 2153\\n\\n## Project index context\\nNo matching project index entry found. Run --index-project to refresh the index.\\n\\n## Static review findings\\n- Function 'save_json' has no docstring. Not fatal, but important public helpers may need one.\\n- Function 'load_memories' has no docstring. Not fatal, but important public helpers may need one.\\n- Function 'store_memory' has no docstring. Not fatal, but important public helpers may need one.\\n- Function 'search_memories' has no docstring. Not fatal, but important public helpers may need one.\\n- Exception handler silently passes. This can hide failures.\\n\\n## Local AI review\\nSkipped. Run without --no-ai-review to use the local Ollama model.\",\n\"patch_id\": \"patch_20260618_095713_conscious_agent-memory-py\",\n\"patch_status\": \"applied\","
       }
     },
     {
@@ -2426,14 +3428,146 @@
       }
     },
     {
+      "path": "data/session_plans/session_20260618_110204.json",
+      "extension": ".json",
+      "size_bytes": 16332,
+      "modified_at": "2026-06-18T15:02:04",
+      "summary": {
+        "line_count": 296,
+        "non_empty_line_count": 296,
+        "preview": "{\n\"id\": \"session_20260618_110204\",\n\"created_at\": \"2026-06-18T11:02:04\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, and session planning.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_110237.json",
+      "extension": ".json",
+      "size_bytes": 15934,
+      "modified_at": "2026-06-18T15:02:37",
+      "summary": {
+        "line_count": 296,
+        "non_empty_line_count": 296,
+        "preview": "{\n\"id\": \"session_20260618_110237\",\n\"created_at\": \"2026-06-18T11:02:37\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, and session planning.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_110250.json",
+      "extension": ".json",
+      "size_bytes": 15934,
+      "modified_at": "2026-06-18T15:02:50",
+      "summary": {
+        "line_count": 296,
+        "non_empty_line_count": 296,
+        "preview": "{\n\"id\": \"session_20260618_110250\",\n\"created_at\": \"2026-06-18T11:02:50\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, and session planning.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_111344.json",
+      "extension": ".json",
+      "size_bytes": 16334,
+      "modified_at": "2026-06-18T15:13:44",
+      "summary": {
+        "line_count": 304,
+        "non_empty_line_count": 304,
+        "preview": "{\n\"id\": \"session_20260618_111344\",\n\"created_at\": \"2026-06-18T11:13:44\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, and session planning.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_125537.json",
+      "extension": ".json",
+      "size_bytes": 21010,
+      "modified_at": "2026-06-18T16:55:37",
+      "summary": {
+        "line_count": 356,
+        "non_empty_line_count": 356,
+        "preview": "{\n\"id\": \"session_20260618_125537\",\n\"created_at\": \"2026-06-18T12:55:37\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, session planning, task queue management, supervised task execution, task result evaluation, guided work sessions, bounded dev loops, approval inbox, and settings/config management.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_130618.json",
+      "extension": ".json",
+      "size_bytes": 21692,
+      "modified_at": "2026-06-18T17:06:18",
+      "summary": {
+        "line_count": 362,
+        "non_empty_line_count": 362,
+        "preview": "{\n\"id\": \"session_20260618_130618\",\n\"created_at\": \"2026-06-18T13:06:18\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, session planning, task queue management, supervised task execution, task result evaluation, guided work sessions, bounded dev loops, approval inbox, and settings/config management, diagnostics, local web dashboard, and background watch mode.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_130652.json",
+      "extension": ".json",
+      "size_bytes": 21692,
+      "modified_at": "2026-06-18T17:06:52",
+      "summary": {
+        "line_count": 362,
+        "non_empty_line_count": 362,
+        "preview": "{\n\"id\": \"session_20260618_130652\",\n\"created_at\": \"2026-06-18T13:06:52\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, session planning, task queue management, supervised task execution, task result evaluation, guided work sessions, bounded dev loops, approval inbox, and settings/config management, diagnostics, local web dashboard, and background watch mode.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_131624.json",
+      "extension": ".json",
+      "size_bytes": 22194,
+      "modified_at": "2026-06-18T17:16:24",
+      "summary": {
+        "line_count": 367,
+        "non_empty_line_count": 367,
+        "preview": "{\n\"id\": \"session_20260618_131624\",\n\"created_at\": \"2026-06-18T13:16:24\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, session planning, task queue management, supervised task execution, task result evaluation, guided work sessions, bounded dev loops, approval inbox, and settings/config management, diagnostics, local web dashboard, and background watch mode, notification system, and dashboard notifications.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_132550.json",
+      "extension": ".json",
+      "size_bytes": 22542,
+      "modified_at": "2026-06-18T17:25:50",
+      "summary": {
+        "line_count": 371,
+        "non_empty_line_count": 371,
+        "preview": "{\n\"id\": \"session_20260618_132550\",\n\"created_at\": \"2026-06-18T13:25:50\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, session planning, task queue management, supervised task execution, task result evaluation, guided work sessions, bounded dev loops, approval inbox, and settings/config management, diagnostics, local web dashboard, and background watch mode, notification system, and dashboard notifications.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_134239.json",
+      "extension": ".json",
+      "size_bytes": 23159,
+      "modified_at": "2026-06-18T17:42:39",
+      "summary": {
+        "line_count": 379,
+        "non_empty_line_count": 379,
+        "preview": "{\n\"id\": \"session_20260618_134239\",\n\"created_at\": \"2026-06-18T13:42:39\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, session planning, task queue management, supervised task execution, task result evaluation, guided work sessions, bounded dev loops, approval inbox, and settings/config management, diagnostics, local web dashboard, and background watch mode, notification system, and dashboard notifications, and clickable dashboard detail pages, and dashboard action center.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_134358.json",
+      "extension": ".json",
+      "size_bytes": 23159,
+      "modified_at": "2026-06-18T17:43:58",
+      "summary": {
+        "line_count": 379,
+        "non_empty_line_count": 379,
+        "preview": "{\n\"id\": \"session_20260618_134358\",\n\"created_at\": \"2026-06-18T13:43:58\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, auto-review, supervised self-improvement, shortcut aliases, maintenance suggestions, memory compaction, structured goal management, session planning, task queue management, supervised task execution, task result evaluation, guided work sessions, bounded dev loops, approval inbox, and settings/config management, diagnostics, local web dashboard, and background watch mode, notification system, and dashboard notifications, and clickable dashboard detail pages, and dashboard action center.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/session_plans/session_20260618_224844.json",
+      "extension": ".json",
+      "size_bytes": 26548,
+      "modified_at": "2026-06-19T02:48:44",
+      "summary": {
+        "line_count": 422,
+        "non_empty_line_count": 422,
+        "preview": "{\n\"id\": \"session_20260618_224844\",\n\"created_at\": \"2026-06-18T22:48:44\",\n\"type\": \"session_plan\",\n\"active_project\": {\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, self-improvement workflows, maintenance scans, memory compaction, structured goals, session planning, task queues, guided/bounded dev loops, approval inbox, settings, diagnostics, local dashboard, background watch mode, notifications, chat-to-action routing, dashboard chat, local JSON API, dashboard forms, live dashboard status polling, and a local desktop companion shell.\",\n\"language\": \"Python\",\n\"status\": \"active\","
+      }
+    },
+    {
       "path": "data/settings.json",
       "extension": ".json",
-      "size_bytes": 1967,
-      "modified_at": "2026-06-19T03:33:35",
+      "size_bytes": 1974,
+      "modified_at": "2026-06-19T16:27:39",
       "summary": {
         "line_count": 57,
         "non_empty_line_count": 57,
-        "preview": "{\n\"settings_version\": \"4.4\",\n\"local_model\": \"qwen2.5:7b\",\n\"embed_model\": \"nomic-embed-text\",\n\"ollama_base_url\": \"http://localhost:11434\",\n\"ollama_timeout_seconds\": 120,\n\"command_timeout_seconds\": 45,\n\"max_capture_chars\": 12000,\n\"default_dev_loop_steps\": 3,\n\"max_dev_loop_steps\": 10,"
+        "preview": "{\n\"settings_version\": \"5.7\",\n\"local_model\": \"qwen2.5:7b\",\n\"embed_model\": \"nomic-embed-text:latest\",\n\"ollama_base_url\": \"http://localhost:11434\",\n\"ollama_timeout_seconds\": 120,\n\"command_timeout_seconds\": 45,\n\"max_capture_chars\": 12000,\n\"default_dev_loop_steps\": 3,\n\"max_dev_loop_steps\": 10,"
       }
     },
     {
@@ -2448,14 +3582,36 @@
       }
     },
     {
-      "path": "data/setup_reports/setup_20260619_033335.json",
+      "path": "data/setup_reports/setup_20260618_232410.json",
       "extension": ".json",
-      "size_bytes": 5872,
-      "modified_at": "2026-06-19T03:33:35",
+      "size_bytes": 5654,
+      "modified_at": "2026-06-19T03:24:10",
       "summary": {
-        "line_count": 193,
-        "non_empty_line_count": 193,
-        "preview": "{\n\"id\": \"setup_20260619_033335\",\n\"version\": \"4.4\",\n\"created_at\": \"2026-06-19T03:33:35\",\n\"status\": \"attention_needed\",\n\"counts\": {\n\"ok\": 4,\n\"info\": 2,\n\"warning\": 3,\n\"error\": 0"
+        "line_count": 184,
+        "non_empty_line_count": 184,
+        "preview": "{\n\"id\": \"setup_20260618_232410\",\n\"version\": \"4.4\",\n\"created_at\": \"2026-06-18T23:24:10\",\n\"status\": \"attention_needed\",\n\"counts\": {\n\"ok\": 6,\n\"info\": 2,\n\"warning\": 1,\n\"error\": 0"
+      }
+    },
+    {
+      "path": "data/setup_reports/setup_20260618_234321.json",
+      "extension": ".json",
+      "size_bytes": 25471,
+      "modified_at": "2026-06-19T03:43:21",
+      "summary": {
+        "line_count": 404,
+        "non_empty_line_count": 404,
+        "preview": "{\n\"id\": \"setup_20260618_234321\",\n\"version\": \"4.5\",\n\"created_at\": \"2026-06-18T23:43:21\",\n\"status\": \"attention_needed\",\n\"counts\": {\n\"ok\": 7,\n\"info\": 1,\n\"warning\": 1,\n\"error\": 0"
+      }
+    },
+    {
+      "path": "data/setup_reports/setup_20260619_003335.json",
+      "extension": ".json",
+      "size_bytes": 5587,
+      "modified_at": "2026-06-19T04:33:35",
+      "summary": {
+        "line_count": 184,
+        "non_empty_line_count": 184,
+        "preview": "{\n\"id\": \"setup_20260619_003335\",\n\"version\": \"4.5\",\n\"created_at\": \"2026-06-19T00:33:35\",\n\"status\": \"attention_needed\",\n\"counts\": {\n\"ok\": 6,\n\"info\": 2,\n\"warning\": 1,\n\"error\": 0"
       }
     },
     {
@@ -2470,10 +3626,32 @@
       }
     },
     {
+      "path": "data/task_evaluations/taskeval-20260618-113334-test-task-evaluator.json",
+      "extension": ".json",
+      "size_bytes": 1225,
+      "modified_at": "2026-06-18T15:33:34",
+      "summary": {
+        "line_count": 36,
+        "non_empty_line_count": 36,
+        "preview": "{\n\"ok\": true,\n\"id\": \"taskeval_20260618_113334_test-task-evaluator\",\n\"type\": \"task_result_evaluation\",\n\"task_id\": \"task_20260618_113322_test-task-evaluator\",\n\"task_title\": \"Test task evaluator\",\n\"task_status\": \"planned\",\n\"created_at\": \"2026-06-18T11:33:34\",\n\"recommendation\": \"execute_after_dry_run\",\n\"confidence\": 0.85,"
+      }
+    },
+    {
+      "path": "data/task_evaluations/taskeval-20260618-113349-test-task-evaluator.json",
+      "extension": ".json",
+      "size_bytes": 2359,
+      "modified_at": "2026-06-18T15:33:57",
+      "summary": {
+        "line_count": 36,
+        "non_empty_line_count": 36,
+        "preview": "{\n\"ok\": true,\n\"id\": \"taskeval_20260618_113349_test-task-evaluator\",\n\"type\": \"task_result_evaluation\",\n\"task_id\": \"task_20260618_113322_test-task-evaluator\",\n\"task_title\": \"Test task evaluator\",\n\"task_status\": \"active\",\n\"created_at\": \"2026-06-18T11:33:49\",\n\"recommendation\": \"complete_task\",\n\"confidence\": 0.88,"
+      }
+    },
+    {
       "path": "data/tasks.json",
       "extension": ".json",
       "size_bytes": 54,
-      "modified_at": "2026-06-19T02:23:28",
+      "modified_at": "2026-06-19T16:29:06",
       "summary": {
         "line_count": 5,
         "non_empty_line_count": 5,
@@ -2492,6 +3670,39 @@
       }
     },
     {
+      "path": "data/test_reports/test_20260618_000522_general.json",
+      "extension": ".json",
+      "size_bytes": 6281,
+      "modified_at": "2026-06-18T04:05:29",
+      "summary": {
+        "line_count": 42,
+        "non_empty_line_count": 42,
+        "preview": "{\n\"id\": \"test_20260618_000522_general\",\n\"created_at\": \"2026-06-18T00:05:29\",\n\"started_at\": \"2026-06-18T00:05:22\",\n\"finished_at\": \"2026-06-18T00:05:29\",\n\"status\": \"passed\",\n\"dry_run\": false,\n\"patch\": {\n\"patch_id\": \"\",\n\"patch_found\": false,"
+      }
+    },
+    {
+      "path": "data/test_reports/test_20260618_092857_general.json",
+      "extension": ".json",
+      "size_bytes": 972,
+      "modified_at": "2026-06-18T13:28:57",
+      "summary": {
+        "line_count": 36,
+        "non_empty_line_count": 36,
+        "preview": "{\n\"id\": \"test_20260618_092857_general\",\n\"created_at\": \"2026-06-18T09:28:57\",\n\"started_at\": \"2026-06-18T09:28:57\",\n\"finished_at\": \"2026-06-18T09:28:57\",\n\"status\": \"passed\",\n\"dry_run\": true,\n\"patch\": {\n\"patch_id\": \"\",\n\"patch_found\": false,"
+      }
+    },
+    {
+      "path": "data/test_reports/test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py.json",
+      "extension": ".json",
+      "size_bytes": 3624,
+      "modified_at": "2026-06-18T14:00:51",
+      "summary": {
+        "line_count": 45,
+        "non_empty_line_count": 45,
+        "preview": "{\n\"id\": \"test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py\",\n\"created_at\": \"2026-06-18T10:00:51\",\n\"started_at\": \"2026-06-18T10:00:39\",\n\"finished_at\": \"2026-06-18T10:00:51\",\n\"status\": \"passed\",\n\"dry_run\": false,\n\"patch\": {\n\"patch_id\": \"patch_20260618_095713_conscious_agent-memory-py\",\n\"patch_found\": true,"
+      }
+    },
+    {
       "path": "data/test_reviews/README.md",
       "extension": ".md",
       "size_bytes": 239,
@@ -2503,13 +3714,24 @@
       }
     },
     {
+      "path": "data/test_reviews/review_20260618_100058_test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py.json",
+      "extension": ".json",
+      "size_bytes": 1303,
+      "modified_at": "2026-06-18T14:00:58",
+      "summary": {
+        "line_count": 20,
+        "non_empty_line_count": 20,
+        "preview": "{\n\"id\": \"review_20260618_100058_test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py\",\n\"created_at\": \"2026-06-18T10:00:58\",\n\"test_report_id\": \"test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py\",\n\"test_report_status\": \"passed\",\n\"patch_id\": \"patch_20260618_095713_conscious_agent-memory-py\",\n\"patch_status\": \"applied\",\n\"target_file\": \"conscious_agent\\\\memory.py\",\n\"recommendation\": \"keep_patch\",\n\"summary\": \"All configured checks passed after the applied patch. Keep the patch for now.\","
+      }
+    },
+    {
       "path": "data/thoughts.log",
       "extension": ".log",
-      "size_bytes": 17020,
-      "modified_at": "2026-06-19T03:22:36",
+      "size_bytes": 25139,
+      "modified_at": "2026-06-19T16:30:16",
       "summary": {
-        "line_count": 148,
-        "non_empty_line_count": 147,
+        "line_count": 218,
+        "non_empty_line_count": 214,
         "preview": "[2026-06-16T20:51:04] inner_thought: I am Eidolon. I have no stored memories yet, so my first priority is to create continuity. My current focus is help Marcus build useful software.\n[2026-06-16T20:51:04] reflection: This thought should be stored as continuity, but does not need immediate action. Avoid claiming this proves real consciousness. Do not interrupt the user unless the value is clear.\n[2026-06-16T20:51:04] action_result: Action store_only completed with result: stored_without_external_action\n[2026-06-17T20:35:44] file_tool_event: Listed project files under 'conscious_agent'.\n[2026-06-17T20:35:46] file_tool_event: Read project file 'conscious_agent/file_tools.py'.\n[2026-06-17T20:35:47] file_tool_event: Searched project files for 'generate_inner_thought'. Found 5 matches.\n[2026-06-17T20:35:58] file_tool_event: Listed project files under 'conscious_agent'.\n[2026-06-17T20:36:07] file_tool_event: Listed project files under 'conscious_agent'.\n[2026-06-17T21:14:18] project_index_event: Indexed 18 files for project Eidolon.\n[2026-06-17T21:14:18] project_event: Added note to Eidolon: Project indexed at 2026-06-17T21:14:18 with 18 files."
       }
     },
@@ -2525,6 +3747,105 @@
       }
     },
     {
+      "path": "data/watch_reports/watch_20260618_130620.json",
+      "extension": ".json",
+      "size_bytes": 7365,
+      "modified_at": "2026-06-18T17:06:20",
+      "summary": {
+        "line_count": 96,
+        "non_empty_line_count": 96,
+        "preview": "{\n\"id\": \"watch_20260618_130620\",\n\"type\": \"background_watch_report\",\n\"created_at\": \"2026-06-18T13:06:08\",\n\"status\": \"attention_needed\",\n\"use_ai\": false,\n\"diagnostic_report_id\": \"diag_20260618_130613\",\n\"diagnostic_status\": \"warn\",\n\"created_maintenance_scan_id\": \"maint_20260618_130613\",\n\"created_session_plan_id\": \"session_20260618_130618\","
+      }
+    },
+    {
+      "path": "data/watch_reports/watch_20260618_130654.json",
+      "extension": ".json",
+      "size_bytes": 7365,
+      "modified_at": "2026-06-18T17:06:54",
+      "summary": {
+        "line_count": 96,
+        "non_empty_line_count": 96,
+        "preview": "{\n\"id\": \"watch_20260618_130654\",\n\"type\": \"background_watch_report\",\n\"created_at\": \"2026-06-18T13:06:45\",\n\"status\": \"attention_needed\",\n\"use_ai\": false,\n\"diagnostic_report_id\": \"diag_20260618_130650\",\n\"diagnostic_status\": \"warn\",\n\"created_maintenance_scan_id\": \"maint_20260618_130650\",\n\"created_session_plan_id\": \"session_20260618_130652\","
+      }
+    },
+    {
+      "path": "data/watch_reports/watch_20260618_131627.json",
+      "extension": ".json",
+      "size_bytes": 7583,
+      "modified_at": "2026-06-18T17:16:37",
+      "summary": {
+        "line_count": 103,
+        "non_empty_line_count": 103,
+        "preview": "{\n\"id\": \"watch_20260618_131627\",\n\"type\": \"background_watch_report\",\n\"created_at\": \"2026-06-18T13:16:15\",\n\"status\": \"attention_needed\",\n\"use_ai\": false,\n\"diagnostic_report_id\": \"diag_20260618_131620\",\n\"diagnostic_status\": \"warn\",\n\"created_maintenance_scan_id\": \"maint_20260618_131620\",\n\"created_session_plan_id\": \"session_20260618_131624\","
+      }
+    },
+    {
+      "path": "data/watch_reports/watch_20260618_132553.json",
+      "extension": ".json",
+      "size_bytes": 7583,
+      "modified_at": "2026-06-18T17:26:03",
+      "summary": {
+        "line_count": 103,
+        "non_empty_line_count": 103,
+        "preview": "{\n\"id\": \"watch_20260618_132553\",\n\"type\": \"background_watch_report\",\n\"created_at\": \"2026-06-18T13:25:41\",\n\"status\": \"attention_needed\",\n\"use_ai\": false,\n\"diagnostic_report_id\": \"diag_20260618_132546\",\n\"diagnostic_status\": \"warn\",\n\"created_maintenance_scan_id\": \"maint_20260618_132546\",\n\"created_session_plan_id\": \"session_20260618_132550\","
+      }
+    },
+    {
+      "path": "data/watch_reports/watch_20260618_134400.json",
+      "extension": ".json",
+      "size_bytes": 7982,
+      "modified_at": "2026-06-18T17:44:08",
+      "summary": {
+        "line_count": 103,
+        "non_empty_line_count": 103,
+        "preview": "{\n\"id\": \"watch_20260618_134400\",\n\"type\": \"background_watch_report\",\n\"created_at\": \"2026-06-18T13:43:52\",\n\"status\": \"attention_needed\",\n\"use_ai\": true,\n\"diagnostic_report_id\": \"diag_20260618_134356\",\n\"diagnostic_status\": \"warn\",\n\"created_maintenance_scan_id\": \"maint_20260618_134356\",\n\"created_session_plan_id\": \"session_20260618_134358\","
+      }
+    },
+    {
+      "path": "data/watch_reports/watchloop_20260618_130645.json",
+      "extension": ".json",
+      "size_bytes": 481,
+      "modified_at": "2026-06-18T17:06:56",
+      "summary": {
+        "line_count": 20,
+        "non_empty_line_count": 20,
+        "preview": "{\n\"id\": \"watchloop_20260618_130645\",\n\"type\": \"background_watch_loop\",\n\"created_at\": \"2026-06-18T13:06:45\",\n\"cycles_requested\": 2,\n\"interval_seconds\": 5,\n\"use_ai\": false,\n\"reports\": [\n{\n\"cycle\": 1,"
+      }
+    },
+    {
+      "path": "data/work_cycles/README.md",
+      "extension": ".md",
+      "size_bytes": 1027,
+      "modified_at": "2026-06-19T16:27:39",
+      "summary": {
+        "line_count": 11,
+        "non_empty_line_count": 6,
+        "preview": "# Work cycles\nSaved supervised task/work-cycle records.\nv5.0 introduced the bounded cycle around the newer work-queue interface. v5.1 made the queue task-backed. v5.2 keeps the saved-cycle directory but records task aliases (`created_task_ids`, `created_followup_task_ids`, `executed_task_ids`) alongside the older work-id fields for compatibility.\nv5.3 moved execution into `conscious_agent/task_work_executor.py`. New cycle events use `execute_task_work`, while old event readers still recognize `execute_work_item` for compatibility.\nAs of v5.4, new cycle records use task-centered wording. As of v5.5, blocked approval-gated task executions can create approval requests through `task_approval_bridge.py`. Older saved records remain readable.\nAs of v5.6, new cycle records use version `5.6`, and dashboard/API lifecycle summaries derive readable task stages from task status, approval links, and patch metadata. As of v5.7, dashboard/API lifecycle filters can drive focused task views and safe batch approval requests."
+      }
+    },
+    {
+      "path": "data/work_queue/README.md",
+      "extension": ".md",
+      "size_bytes": 1625,
+      "modified_at": "2026-06-19T16:27:39",
+      "summary": {
+        "line_count": 18,
+        "non_empty_line_count": 9,
+        "preview": "# Work Queue Legacy Adapter\nAs of v5.1, `task_queue.py` and `data/tasks.json` are Eidolon's canonical work/task store.\nAs of v5.2, patch-request and patch-follow-up behavior is task-native through `conscious_agent/task_patch_bridge.py`. The older `work_queue_patch_bridge.py` module remains as a compatibility wrapper.\nThe older v4.6-v5.0 `work_queue.py` API remains available as a compatibility adapter so dashboard/API/CLI routes such as `--work-queue (legacy alias; prefer --task-work)`, `/work-queue (legacy alias; prefer /tasks-work)`, and work-cycle helpers keep working.\nDo not add new state here. New queued work should be stored in `data/tasks.json` through `task_queue.py`.\nAs of v5.3, task execution is also task-native through `conscious_agent/task_work_executor.py`. The older `work_queue_executor.py` module remains only as a compatibility wrapper.\nAs of v5.4, this directory is explicitly documented as compatibility-only. New task/work state belongs in `data/tasks.json`; this path exists so older commands and records have somewhere honest to point.\nAs of v5.5, approval-gated task execution is connected to `approval_manager.py` through `conscious_agent/task_approval_bridge.py`. The old work-queue route can still request approval for a task, but new code should use task-centered approval commands and `/api/tasks/...` endpoints.\nAs of v5.6, dashboard/API lifecycle views are task-centered. Legacy work-queue aliases still read the same task-backed lifecycle data. As of v5.7, lifecycle filters and safe batch approval-request actions are available from /tasks-work and /api/tasks/... endpoints."
+      }
+    },
+    {
+      "path": "data/work_queue/work_items.json",
+      "extension": ".json",
+      "size_bytes": 2,
+      "modified_at": "2026-06-19T14:03:41",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "[]"
+      }
+    },
+    {
       "path": "requirements.txt",
       "extension": ".txt",
       "size_bytes": 33,
@@ -2533,6 +3854,45 @@
         "line_count": 2,
         "non_empty_line_count": 2,
         "preview": "requests>=2.31.0\nchromadb>=0.5.0"
+      }
+    },
+    {
+      "path": "setup.ps1",
+      "extension": ".ps1",
+      "size_bytes": 852,
+      "modified_at": "2026-06-19T13:16:17",
+      "summary": {
+        "line_count": 24,
+        "non_empty_line_count": 19,
+        "preview": "$ErrorActionPreference = \"Stop\"\n$ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path\n$Python = Join-Path $ProjectRoot \".venv\\Scripts\\python.exe\"\n$Requirements = Join-Path $ProjectRoot \"requirements.txt\"\n$SmokeCheck = Join-Path $ProjectRoot \"tools\\smoke_check.py\"\nif (-not (Test-Path -LiteralPath $Python)) {\nWrite-Host \"Creating virtual environment...\"\npy -m venv (Join-Path $ProjectRoot \".venv\")\n}\nWrite-Host \"Installing requirements...\""
+      }
+    },
+    {
+      "path": "tools/smoke_check.py",
+      "extension": ".py",
+      "size_bytes": 3495,
+      "modified_at": "2026-06-19T16:29:47",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "check_compile",
+          "check_import",
+          "check_lifecycle_filters",
+          "check_settings",
+          "main",
+          "run_main"
+        ],
+        "imports": [
+          "__future__",
+          "importlib",
+          "json",
+          "pathlib",
+          "subprocess",
+          "sys",
+          "task_lifecycle"
+        ],
+        "parse_error": null,
+        "line_count": 121
       }
     }
   ]
