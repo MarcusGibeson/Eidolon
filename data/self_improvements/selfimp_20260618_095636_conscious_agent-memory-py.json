@@ -1,0 +1,23 @@
+{
+  "id": "selfimp_20260618_095636_conscious_agent-memory-py",
+  "status": "tested_and_reviewed",
+  "created_at": "2026-06-18T09:56:36",
+  "target_file": "conscious_agent\\memory.py",
+  "request": "Improve error handling when semantic memory is unavailable",
+  "review_ai_used": false,
+  "review_text": "# Code Review: conscious_agent\\memory.py\n\n## Basic facts\n- Lines: 62\n- Characters reviewed: 2153 of 2153\n\n## Project index context\nNo matching project index entry found. Run --index-project to refresh the index.\n\n## Static review findings\n- Function 'save_json' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'load_memories' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'store_memory' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'search_memories' has no docstring. Not fatal, but important public helpers may need one.\n- Exception handler silently passes. This can hide failures.\n\n## Local AI review\nSkipped. Run without --no-ai-review to use the local Ollama model.",
+  "patch_id": "patch_20260618_095713_conscious_agent-memory-py",
+  "patch_status": "applied",
+  "test_report_id": "test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+  "test_review_id": "review_20260618_100058_test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+  "recommendation": "keep_patch",
+  "last_apply_dry_run": false,
+  "last_apply_ok": true,
+  "last_apply_error": "",
+  "last_apply_message": "Patch applied successfully.",
+  "applied_at": "2026-06-18T10:01:00",
+  "test_commands": [
+    "python conscious_agent/main.py --status",
+    "python conscious_agent/main.py --review-project-file conscious_agent/self_improver.py --no-ai-review"
+  ]
+}

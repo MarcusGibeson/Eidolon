@@ -1,0 +1,15 @@
+[
+  {
+    "topic": "machine consciousness",
+    "opinion": "A program may become consciousness-like if it has autonomous thought, memory, self-modeling, values, and reflective continuity, but true subjective experience remains unproven.",
+    "confidence": 0.76,
+    "reasons": [
+      "Autonomous inner loops create self-directed thought.",
+      "Memory gives continuity.",
+      "Values allow preferences and opinions.",
+      "Subjective experience cannot be directly verified.",
+      "Autonomous thoughts should matter by changing future behavior, not merely being logged."
+    ],
+    "last_updated": "2026-06-17"
+  }
+]

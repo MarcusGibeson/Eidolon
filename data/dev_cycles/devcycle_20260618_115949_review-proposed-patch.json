@@ -1,0 +1,62 @@
+{
+  "id": "devcycle_20260618_115949_review-proposed-patch",
+  "type": "autonomous_dev_cycle",
+  "created_at": "2026-06-18T11:59:49",
+  "mode": "advance",
+  "step": "review-proposed-patch",
+  "ok": false,
+  "decision": {
+    "step": "review-proposed-patch",
+    "reason": "A proposed patch exists. Review it before any file write.",
+    "object_id": "patch_20260617_231303_conscious_agent-memory-py",
+    "next_command": "python conscious_agent/main.py --show-patch latest-proposed",
+    "approval_command": "python conscious_agent/main.py --advance-dev-cycle --approve-dev-cycle-apply --dry-run"
+  },
+  "action_result": {
+    "action": "await-approval",
+    "ok": false,
+    "message": "A proposed patch exists. Review it first. Applying requires --approve-dev-cycle-apply."
+  },
+  "next_command": "python conscious_agent/main.py --advance-dev-cycle --approve-dev-cycle-apply --dry-run",
+  "useful_commands": [
+    "python conscious_agent/main.py --dev-cycle",
+    "python conscious_agent/main.py --advance-dev-cycle --approve-dev-cycle-apply --dry-run",
+    "python conscious_agent/main.py --show-patch latest-proposed",
+    "python conscious_agent/main.py --show-dev-cycle devcycle_20260618_115949_review-proposed-patch"
+  ],
+  "notes": [],
+  "state": {
+    "proposed_patch_id": "patch_20260617_231303_conscious_agent-memory-py",
+    "proposed_patch_file": "conscious_agent\\memory.py",
+    "applied_patch_id": "patch_20260618_095713_conscious_agent-memory-py",
+    "applied_patch_file": "conscious_agent\\memory.py",
+    "ready_task_id": "",
+    "ready_task_title": "",
+    "latest_patch_report_id": "test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+    "latest_patch_report_status": "passed",
+    "latest_patch_review_id": "review_20260618_100058_test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+    "latest_patch_review_recommendation": "keep_patch"
+  },
+  "dry_run": true,
+  "approve_apply": false,
+  "apply_evaluation": false,
+  "final_state": {
+    "proposed_patch_id": "patch_20260617_231303_conscious_agent-memory-py",
+    "proposed_patch_file": "conscious_agent\\memory.py",
+    "applied_patch_id": "patch_20260618_095713_conscious_agent-memory-py",
+    "applied_patch_file": "conscious_agent\\memory.py",
+    "ready_task_id": "",
+    "ready_task_title": "",
+    "latest_patch_report_id": "test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+    "latest_patch_report_status": "passed",
+    "latest_patch_review_id": "review_20260618_100058_test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+    "latest_patch_review_recommendation": "keep_patch"
+  },
+  "next_decision": {
+    "step": "review-proposed-patch",
+    "reason": "A proposed patch exists. Review it before any file write.",
+    "object_id": "patch_20260617_231303_conscious_agent-memory-py",
+    "next_command": "python conscious_agent/main.py --show-patch latest-proposed",
+    "approval_command": "python conscious_agent/main.py --advance-dev-cycle --approve-dev-cycle-apply --dry-run"
+  }
+}

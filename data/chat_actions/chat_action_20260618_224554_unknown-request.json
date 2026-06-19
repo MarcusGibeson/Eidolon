@@ -1,0 +1,27 @@
+{
+  "id": "chat_action_20260618_224554_unknown-request",
+  "type": "chat_action",
+  "created_at": "2026-06-18T22:45:54",
+  "updated_at": "2026-06-18T22:45:54",
+  "status": "blocked",
+  "user_request": "what should we work on next?",
+  "intent": "unknown_request",
+  "title": "No safe action matched",
+  "summary": "I could not map this request to a known safe Eidolon action.",
+  "explanation": "Try phrasing it as: run diagnostics, check approvals, plan session, run watch, review conscious_agent/memory.py, or suggest improvement for conscious_agent/memory.py.",
+  "execution_mode": "blocked",
+  "risk_level": "unknown",
+  "command": "",
+  "function_name": "",
+  "function_args": {},
+  "approval_action_type": "",
+  "approval_object_id": "",
+  "approval_command": "",
+  "blocked_reason": "Unknown or unsupported chat action request.",
+  "source": "chat_action_router",
+  "result": {},
+  "approval_id": "",
+  "useful_commands": [
+    "python conscious_agent/main.py --show-chat-action chat_action_20260618_224554_unknown-request"
+  ]
+}

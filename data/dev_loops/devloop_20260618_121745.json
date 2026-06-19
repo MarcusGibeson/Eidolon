@@ -1,0 +1,36 @@
+{
+  "id": "devloop_20260618_121745",
+  "type": "bounded_autonomous_dev_loop",
+  "created_at": "2026-06-18T12:17:45",
+  "task_id": "latest-ready",
+  "max_steps": 3,
+  "dry_run": true,
+  "approve_apply": false,
+  "apply_evaluation": false,
+  "use_ai": false,
+  "ok": true,
+  "steps": [
+    {
+      "index": 1,
+      "preview_cycle_id": "devcycle_20260618_121745_review-proposed-patch",
+      "decision_step": "review-proposed-patch",
+      "decision_reason": "A proposed patch exists. Review it before any file write.",
+      "object_id": "patch_20260617_231303_conscious_agent-memory-py",
+      "next_command_before_action": "python conscious_agent/main.py --show-patch latest-proposed",
+      "action": {},
+      "approval_id": "approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me"
+    }
+  ],
+  "stopped_reason": "approval_required",
+  "stopped_message": "A proposed patch exists. Review it before any file write.",
+  "next_command": "python conscious_agent/main.py --show-approval approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me",
+  "useful_commands": [
+    "python conscious_agent/main.py --dev-loop --dry-run --no-ai-dev-loop",
+    "python conscious_agent/main.py --dev-loop",
+    "python conscious_agent/main.py --show-dev-loop latest --dev-loop-full",
+    "python conscious_agent/main.py --show-approval approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me"
+  ],
+  "approval_id": "approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me",
+  "finished_at": "2026-06-18T12:17:53",
+  "step_count": 1
+}

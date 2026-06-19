@@ -1,0 +1,753 @@
+[
+  {
+    "created_at": "2026-06-16T20:51:04",
+    "type": "inner_thought",
+    "content": "I am Eidolon. I have no stored memories yet, so my first priority is to create continuity. My current focus is help Marcus build useful software.",
+    "importance": 0.72,
+    "related_goal": "help Marcus build useful software",
+    "recommended_action": "store_only",
+    "reasoning_summary": "Generated from self-model, desire weights, memory count, and current state.",
+    "state_snapshot": {
+      "mood_label": "neutral",
+      "energy": 0.7,
+      "focus": 0.8,
+      "uncertainty": 0.4
+    }
+  },
+  {
+    "created_at": "2026-06-16T20:51:04",
+    "type": "reflection",
+    "content": "This thought should be stored as continuity, but does not need immediate action. Avoid claiming this proves real consciousness. Do not interrupt the user unless the value is clear.",
+    "thought_created_at": "2026-06-16T20:51:04",
+    "recommended_action": "store_only"
+  },
+  {
+    "type": "action_result",
+    "content": "Action store_only completed with result: stored_without_external_action",
+    "action": {
+      "name": "store_only",
+      "reason": "Private continuity is enough for this cycle."
+    },
+    "result": {
+      "action": "store_only",
+      "result": "stored_without_external_action"
+    },
+    "created_at": "2026-06-16T20:51:04"
+  },
+  {
+    "type": "file_tool_event",
+    "content": "Listed project files under 'conscious_agent'.",
+    "source": "file_tools",
+    "project_root": "/mnt/data/eidolon_v05_work/Eidolon",
+    "created_at": "2026-06-17T20:35:44"
+  },
+  {
+    "type": "file_tool_event",
+    "content": "Read project file 'conscious_agent/file_tools.py'.",
+    "source": "file_tools",
+    "project_root": "/mnt/data/eidolon_v05_work/Eidolon",
+    "created_at": "2026-06-17T20:35:46"
+  },
+  {
+    "type": "file_tool_event",
+    "content": "Searched project files for 'generate_inner_thought'. Found 5 matches.",
+    "source": "file_tools",
+    "project_root": "/mnt/data/eidolon_v05_work/Eidolon",
+    "created_at": "2026-06-17T20:35:47"
+  },
+  {
+    "type": "file_tool_event",
+    "content": "Listed project files under 'conscious_agent'.",
+    "source": "file_tools",
+    "project_root": "/mnt/data/eidolon_v05_work/Eidolon",
+    "created_at": "2026-06-17T20:35:58"
+  },
+  {
+    "type": "file_tool_event",
+    "content": "Listed project files under 'conscious_agent'.",
+    "source": "file_tools",
+    "project_root": "/mnt/data/eidolon_v05_work/Eidolon",
+    "created_at": "2026-06-17T20:36:07"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 18 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-17T21:14:18"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-17T21:14:18 with 18 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-17T21:14:18"
+  },
+  {
+    "type": "file_tool_event",
+    "content": "Read project file 'conscious_agent/brain.py'.",
+    "source": "file_tools",
+    "project_root": "/mnt/data/eidolon_v07_work/Eidolon",
+    "created_at": "2026-06-17T21:16:20"
+  },
+  {
+    "type": "code_review_event",
+    "content": "Reviewed project file 'conscious_agent/brain.py' using static only review.",
+    "source": "code_reviewer",
+    "file": "conscious_agent/brain.py",
+    "created_at": "2026-06-17T21:16:20"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 20 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T00:47:26"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T00:47:26 with 20 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T00:47:26"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 21 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T03:31:06"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T03:31:06 with 21 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T03:31:06"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 21 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T03:35:18"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T03:35:18 with 21 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T03:35:18"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 22 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T03:58:18"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T03:58:18 with 22 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T03:58:18"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 25 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T13:53:19"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T13:53:19 with 25 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T13:53:19"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 25 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T14:07:09"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T14:07:09 with 25 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T14:07:09"
+  },
+  {
+    "type": "maintenance_scan_event",
+    "content": "Created maintenance scan maint_20260618_141730 with 3 suggestion(s).",
+    "source": "maintenance_advisor",
+    "scan_id": "maint_20260618_141730",
+    "suggestion_count": 3,
+    "created_at": "2026-06-18T14:17:30"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 26 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T14:17:43"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T14:17:43 with 26 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T14:17:43"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 27 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T14:31:23"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T14:31:23 with 27 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T14:31:23"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 29 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T14:53:26"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T14:53:26 with 29 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T14:53:26"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 30 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T15:10:19"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T15:10:19 with 30 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T15:10:19"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 31 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T15:18:34"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T15:18:34 with 31 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T15:18:34"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 32 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T15:32:31"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T15:32:31 with 32 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T15:32:31"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 33 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T15:37:22"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T15:37:22 with 33 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T15:37:22"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 35 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:03:27"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T16:03:27 with 35 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:03:27"
+  },
+  {
+    "type": "approval_request_rejected",
+    "content": "Rejected approval approval_20260618_161328_run-command_python-conscious-agent-main-py-status: test cleanup",
+    "source": "approval_manager",
+    "approval_id": "approval_20260618_161328_run-command_python-conscious-agent-main-py-status",
+    "action_type": "run_command",
+    "status": "rejected",
+    "created_at": "2026-06-18T16:13:34"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 36 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:14:25"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T16:14:25 with 36 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:14:25"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 37 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:25:15"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T16:25:15 with 37 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:25:15"
+  },
+  {
+    "type": "autonomous_dev_cycle",
+    "content": "Created supervised dev cycle devcycle_20260618_162527_plan-and-queue. Step: plan-and-queue. Reason: No ready task exists. Create a session plan and queue tasks from it.",
+    "source": "autonomous_dev_cycle",
+    "dev_cycle_id": "devcycle_20260618_162527_plan-and-queue",
+    "step": "plan-and-queue",
+    "created_at": "2026-06-18T16:25:27"
+  },
+  {
+    "type": "autonomous_dev_cycle_advance",
+    "content": "Advanced supervised dev cycle devcycle_20260618_162527_plan-and-queue. Step: plan-and-queue. OK: True",
+    "source": "autonomous_dev_cycle",
+    "dev_cycle_id": "devcycle_20260618_162527_plan-and-queue",
+    "step": "plan-and-queue",
+    "ok": true,
+    "created_at": "2026-06-18T16:25:27"
+  },
+  {
+    "type": "bounded_autonomous_dev_loop",
+    "content": "Ran bounded autonomous dev loop devloop_20260618_162527 for 1 step(s). Stopped because: dry_run_complete.",
+    "source": "dev_loop_runner",
+    "dev_loop_id": "devloop_20260618_162527",
+    "stopped_reason": "dry_run_complete",
+    "step_count": 1,
+    "created_at": "2026-06-18T16:25:27"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 38 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:33:09"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T16:33:09 with 38 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:33:09"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 39 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:42:15"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T16:42:15 with 39 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T16:42:15"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 40 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:02:45"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T17:02:45 with 40 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:02:45"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 41 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:13:59"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T17:13:59 with 41 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:13:59"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 41 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:14:46"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T17:14:46 with 41 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:14:46"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 41 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:18:57"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T17:18:57 with 41 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:18:57"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 41 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:28:42"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T17:28:42 with 41 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:28:42"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 41 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:33:21"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T17:33:21 with 41 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:33:21"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 42 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:49:00"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-18T17:49:00 with 42 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-18T17:49:00"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 43 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T00:47:23"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T00:47:23 with 43 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T00:47:23"
+  },
+  {
+    "created_at": "2026-06-19T00:47:51",
+    "type": "inner_thought",
+    "content": "I am reviewing my recent memories. The recurring theme is that autonomous thought needs to affect future behavior, not merely appear as text. I should keep measuring whether my thoughts change goals, opinions, or actions.",
+    "importance": 0.86,
+    "related_goal": "Build Eidolon into a safe local AI assistant",
+    "recommended_action": "update_opinion",
+    "reasoning_summary": "Generated from self-model, desire weights, memory count, and current state.",
+    "state_snapshot": {
+      "mode": "dashboard_chat",
+      "user_message": true,
+      "latest_user_message": "run diagnostics",
+      "timestamp": "2026-06-19T00:47:51",
+      "chat_action_id": "chat_action_20260619_004751_run-diagnostics"
+    },
+    "brain_mode": "local_logic"
+  },
+  {
+    "created_at": "2026-06-19T00:47:51",
+    "type": "reflection",
+    "content": "This thought is important enough to affect future behavior. Avoid claiming this proves real consciousness. Do not interrupt the user unless the value is clear.",
+    "thought_created_at": "2026-06-19T00:47:51",
+    "recommended_action": "update_opinion"
+  },
+  {
+    "type": "chat_action_proposed",
+    "content": "Created chat action chat_action_20260619_021455_run-diagnostics for request: run diagnostics. Intent: run_diagnostics. Mode: direct_command.",
+    "source": "chat_action_router",
+    "chat_action_id": "chat_action_20260619_021455_run-diagnostics",
+    "intent": "run_diagnostics",
+    "execution_mode": "direct_command",
+    "created_at": "2026-06-19T02:14:55"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 81 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:15:36"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T02:15:36 with 81 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:15:36"
+  },
+  {
+    "type": "task_event",
+    "content": "Added task task_20260619_022328_temporary-api-form-test-task: Temporary API form test task",
+    "source": "task_queue",
+    "task_id": "task_20260619_022328_temporary-api-form-test-task",
+    "status": "planned",
+    "priority": "medium",
+    "created_at": "2026-06-19T02:23:28"
+  },
+  {
+    "type": "goal_event",
+    "content": "Added goal 'Temporary API form test goal' with status planned and priority medium.",
+    "source": "goal_manager",
+    "goal_id": "goal_20260619_022328_temporary-api-form-test-goal",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:23:28"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 80 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:23:35"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T02:23:35 with 80 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:23:35"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 80 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:24:26"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T02:24:26 with 80 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:24:26"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 80 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:32:44"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T02:32:44 with 80 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:32:44"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 45 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:41:03"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T02:41:03 with 45 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:41:03"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 82 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:49:59"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T02:49:59 with 82 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:49:59"
+  },
+  {
+    "type": "maintenance_scan_event",
+    "content": "Created maintenance scan maint_20260619_025832 with 3 suggestion(s).",
+    "source": "maintenance_advisor",
+    "scan_id": "maint_20260619_025832",
+    "suggestion_count": 3,
+    "created_at": "2026-06-19T02:58:32"
+  },
+  {
+    "type": "autonomous_dev_cycle",
+    "content": "Created supervised dev cycle devcycle_20260619_025832_plan-and-queue. Step: plan-and-queue. Reason: No ready task exists. Create a session plan and queue tasks from it.",
+    "source": "autonomous_dev_cycle",
+    "dev_cycle_id": "devcycle_20260619_025832_plan-and-queue",
+    "step": "plan-and-queue",
+    "created_at": "2026-06-19T02:58:32"
+  },
+  {
+    "type": "autonomous_dev_cycle_advance",
+    "content": "Advanced supervised dev cycle devcycle_20260619_025832_plan-and-queue. Step: plan-and-queue. OK: True",
+    "source": "autonomous_dev_cycle",
+    "dev_cycle_id": "devcycle_20260619_025832_plan-and-queue",
+    "step": "plan-and-queue",
+    "ok": true,
+    "created_at": "2026-06-19T02:58:32"
+  },
+  {
+    "type": "bounded_autonomous_dev_loop",
+    "content": "Ran bounded autonomous dev loop devloop_20260619_025832 for 1 step(s). Stopped because: dry_run_complete.",
+    "source": "dev_loop_runner",
+    "dev_loop_id": "devloop_20260619_025832",
+    "stopped_reason": "dry_run_complete",
+    "step_count": 1,
+    "created_at": "2026-06-19T02:58:32"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 82 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:59:03"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T02:59:03 with 82 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T02:59:03"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 83 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T03:09:36"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T03:09:36 with 83 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T03:09:36"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 85 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T03:21:37"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T03:21:37 with 85 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T03:21:38"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 85 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T03:22:36"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T03:22:36 with 85 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T03:22:36"
+  },
+  {
+    "type": "project_index_event",
+    "content": "Indexed 90 files for project Eidolon.",
+    "source": "project_indexer",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T03:38:12"
+  },
+  {
+    "type": "project_event",
+    "content": "Added note to Eidolon: Project indexed at 2026-06-19T03:38:12 with 90 files.",
+    "source": "project_manager",
+    "project": "Eidolon",
+    "created_at": "2026-06-19T03:38:12"
+  },
+  {
+    "type": "maintenance_scan_event",
+    "content": "Created maintenance scan maint_20260618_234256 with 3 suggestion(s).",
+    "source": "maintenance_advisor",
+    "scan_id": "maint_20260618_234256",
+    "suggestion_count": 3,
+    "created_at": "2026-06-18T23:42:56"
+  }
+]

@@ -1,0 +1,52 @@
+{
+  "id": "guided_20260618_155056_overview_advance-active-goal-build-eidolon-into-a-safe-lo",
+  "type": "guided_work_session",
+  "created_at": "2026-06-18T15:50:56",
+  "mode": "guide",
+  "step": "overview",
+  "task_id": "task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo",
+  "task_title": "Advance active goal: Build Eidolon into a safe local AI assistant",
+  "task_status": "planned",
+  "task_priority": "high",
+  "result": {},
+  "next_step": {
+    "step": "dry-run",
+    "reason": "Task has no command execution history yet. The next safe step is to dry-run its command.",
+    "next_command": "python conscious_agent/main.py --advance-work-session task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo --dry-run"
+  },
+  "ok": true,
+  "task": {
+    "id": "task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo",
+    "title": "Advance active goal: Build Eidolon into a safe local AI assistant",
+    "description": "Next action: Test the session planner commands.",
+    "project": "Eidolon",
+    "status": "planned",
+    "priority": "high",
+    "risk": "low",
+    "command": "python conscious_agent/main.py --show-goal goal_seed_build-eidolon --show-goal-full",
+    "follow_up_commands": [
+      "python conscious_agent/main.py --maintenance-scan --no-ai-maintenance",
+      "python conscious_agent/main.py --plan-session --no-ai-session"
+    ],
+    "next_actions": [
+      "python conscious_agent/main.py --show-goal goal_seed_build-eidolon --show-goal-full"
+    ],
+    "blockers": [],
+    "notes": [],
+    "linked_goal": "goal_seed_build-eidolon",
+    "source": "session_plan",
+    "source_id": "session_20260618_155056",
+    "source_category": "goal_next_action",
+    "created_at": "2026-06-18T15:50:56",
+    "updated_at": "2026-06-18T15:50:56",
+    "started_at": "",
+    "completed_at": ""
+  },
+  "command_options_text": "# Task command options: task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo\nTitle: Advance active goal: Build Eidolon into a safe local AI assistant\n[0] primary: python conscious_agent/main.py --show-goal goal_seed_build-eidolon --show-goal-full\n[1] follow-up 1: python conscious_agent/main.py --maintenance-scan --no-ai-maintenance\n[2] follow-up 2: python conscious_agent/main.py --plan-session --no-ai-session\n\nRun one with:\npython conscious_agent/main.py --execute-task task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo --task-command-index 0 --dry-run",
+  "useful_commands": [
+    "python conscious_agent/main.py --show-task task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo --show-task-full",
+    "python conscious_agent/main.py --task-command-options task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo",
+    "python conscious_agent/main.py --advance-work-session task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo --dry-run",
+    "python conscious_agent/main.py --show-guided-session guided_20260618_155056_overview_advance-active-goal-build-eidolon-into-a-safe-lo"
+  ]
+}

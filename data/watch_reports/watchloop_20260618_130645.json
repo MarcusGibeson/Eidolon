@@ -1,0 +1,20 @@
+{
+  "id": "watchloop_20260618_130645",
+  "type": "background_watch_loop",
+  "created_at": "2026-06-18T13:06:45",
+  "cycles_requested": 2,
+  "interval_seconds": 5,
+  "use_ai": false,
+  "reports": [
+    {
+      "cycle": 1,
+      "ok": true,
+      "report_id": "watch_20260618_130654",
+      "status": "attention_needed",
+      "recommendation_count": 6
+    }
+  ],
+  "stopped_reason": "attention_needed",
+  "finished_at": "2026-06-18T13:06:56",
+  "cycle_count": 1
+}

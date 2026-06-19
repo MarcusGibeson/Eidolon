@@ -1,0 +1,26 @@
+{
+  "id": "note_20260618_132555_532890",
+  "type": "testing",
+  "severity": "warning",
+  "title": "Run tests for an applied patch",
+  "message": "Applied patch patch_20260618_095713_conscious_agent-memory-py has no saved test report.",
+  "recommended_command": "python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review",
+  "status": "unread",
+  "created_at": "2026-06-18T13:25:55",
+  "last_seen_at": "2026-06-18T13:44:08",
+  "seen_count": 2,
+  "source": "watch_mode",
+  "related_id": "watch_20260618_132553",
+  "dedupe_key": "watch_recommendation:testing:Run tests for an applied patch:python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review",
+  "metadata": {
+    "watch_report_id": "watch_20260618_134400",
+    "recommendation": {
+      "priority": "high",
+      "category": "testing",
+      "title": "Run tests for an applied patch",
+      "reason": "Applied patch patch_20260618_095713_conscious_agent-memory-py has no saved test report.",
+      "recommended_command": "python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review",
+      "risk": "low"
+    }
+  }
+}

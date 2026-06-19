@@ -1,0 +1,26 @@
+{
+  "id": "note_20260618_132553_9528d9",
+  "type": "watch_attention",
+  "severity": "warning",
+  "title": "Watch mode needs attention",
+  "message": "Watch report watch_20260618_134400 ended with status attention_needed. Safe next command: python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review",
+  "recommended_command": "python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review",
+  "status": "read",
+  "created_at": "2026-06-18T13:25:53",
+  "last_seen_at": "2026-06-18T13:44:08",
+  "seen_count": 2,
+  "source": "watch_mode",
+  "related_id": "watch_20260618_132553",
+  "dedupe_key": "watch_attention:attention_needed:python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review",
+  "metadata": {
+    "watch_report_id": "watch_20260618_134400",
+    "status": "attention_needed"
+  },
+  "updated_at": "2026-06-18T22:26:23",
+  "notes": [
+    {
+      "created_at": "2026-06-18T22:26:23",
+      "note": "Marked read from dashboard."
+    }
+  ]
+}

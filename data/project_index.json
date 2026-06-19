@@ -1,0 +1,2539 @@
+{
+  "indexed_at": "2026-06-19T03:38:12",
+  "active_project": "Eidolon",
+  "project_path": "/mnt/data/eidolon_v45_work",
+  "relative_path": "",
+  "max_files": 400,
+  "files": [
+    {
+      "path": "README_NEXT_STEPS.md",
+      "extension": ".md",
+      "size_bytes": 5585,
+      "modified_at": "2026-06-19T03:32:19",
+      "summary": {
+        "line_count": 225,
+        "non_empty_line_count": 164,
+        "preview": "# Eidolon v4.5 - Desktop Guided Onboarding Wizard\nv4.5 turns the v4.4 setup reports into a guided onboarding runbook. Instead of merely saying \u201csomething is wrong\u201d and dropping a diagnostic brick on your foot, Eidolon now orders the setup issues into steps, shows the next recommended action, lists commands to copy, and links you to the relevant dashboard pages.\nSafety stays boring on purpose: onboarding is advisory. It saves onboarding runs and setup reports, but it does **not** install packages, change settings, start services, approve actions, apply patches, rollback files, or edit project files.\n## What changed\n- Added `desktop_onboarding_wizard.py`\n- Added `data/onboarding_runs/`\n- Added CLI commands:\n- `--onboarding`\n- `--onboarding-full`\n- `--onboarding-use-latest-setup`"
+      }
+    },
+    {
+      "path": "conscious_agent/actions.py",
+      "extension": ".py",
+      "size_bytes": 701,
+      "modified_at": "2026-06-16T20:50:58",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "perform_action"
+        ],
+        "imports": [
+          "opinions",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 20
+      }
+    },
+    {
+      "path": "conscious_agent/api_server.py",
+      "extension": ".py",
+      "size_bytes": 33380,
+      "modified_at": "2026-06-19T03:29:41",
+      "summary": {
+        "classes": [
+          "ApiError",
+          "EidolonApiHandler"
+        ],
+        "functions": [
+          "__init__",
+          "_api_index",
+          "_body_bool",
+          "_error",
+          "_now",
+          "_ok",
+          "_path_parts",
+          "_query_bool",
+          "_send_json",
+          "_to_jsonable",
+          "build_desktop_attention_payload",
+          "build_status_payload",
+          "dispatch_api",
+          "do_GET",
+          "do_OPTIONS",
+          "do_POST",
+          "handle_api_get",
+          "handle_api_post",
+          "log_message",
+          "parse_request_body",
+          "run_api_server"
+        ],
+        "imports": [
+          "__future__",
+          "approval_manager",
+          "chat_action_router",
+          "dashboard_chat_console",
+          "dataclasses",
+          "datetime",
+          "desktop_onboarding_wizard",
+          "desktop_setup_helper",
+          "dev_loop_runner",
+          "diagnostics",
+          "goal_manager",
+          "http.server",
+          "json",
+          "maintenance_advisor",
+          "memory",
+          "notification_manager",
+          "patch_suggester",
+          "project_manager",
+          "session_planner",
+          "settings_manager",
+          "task_queue",
+          "test_report_reviewer",
+          "test_runner",
+          "traceback",
+          "typing",
+          "urllib.parse",
+          "watch_mode"
+        ],
+        "parse_error": null,
+        "line_count": 724
+      }
+    },
+    {
+      "path": "conscious_agent/approval_manager.py",
+      "extension": ".py",
+      "size_bytes": 16522,
+      "modified_at": "2026-06-18T16:13:42",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_approval_commands",
+          "_approval_path",
+          "_ensure_storage",
+          "_find_duplicate_pending",
+          "_load_json_file",
+          "_new_approval_id",
+          "_now",
+          "_result_dict",
+          "_save_approval",
+          "_slug",
+          "approval_text",
+          "approve_approval",
+          "create_approval",
+          "create_approval_from_dev_step",
+          "get_approval",
+          "list_approvals",
+          "print_approval",
+          "print_approval_inbox",
+          "print_approve",
+          "print_reject",
+          "reject_approval",
+          "resolve_approval_id"
+        ],
+        "imports": [
+          "__future__",
+          "command_runner",
+          "datetime",
+          "json",
+          "memory",
+          "patch_applier",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "re",
+          "task_result_evaluator",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 462
+      }
+    },
+    {
+      "path": "conscious_agent/autonomous_dev_cycle.py",
+      "extension": ".py",
+      "size_bytes": 23019,
+      "modified_at": "2026-06-18T16:12:33",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_cycle_path",
+          "_decision_from_state",
+          "_ensure_storage",
+          "_latest_patch",
+          "_latest_report_for_patch",
+          "_latest_review_for_report",
+          "_load_json_file",
+          "_new_cycle_id",
+          "_now",
+          "_safe_cycle",
+          "_save_cycle",
+          "_state_snapshot",
+          "advance_dev_cycle",
+          "create_dev_cycle",
+          "dev_cycle_text",
+          "get_dev_cycle",
+          "list_dev_cycles",
+          "print_advance_dev_cycle",
+          "print_dev_cycle",
+          "print_dev_cycles",
+          "print_saved_dev_cycle",
+          "resolve_dev_cycle_id"
+        ],
+        "imports": [
+          "__future__",
+          "approval_manager",
+          "datetime",
+          "guided_work_session",
+          "json",
+          "memory",
+          "patch_applier",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "session_planner",
+          "task_queue",
+          "test_report_reviewer",
+          "test_runner",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 557
+      }
+    },
+    {
+      "path": "conscious_agent/brain.py",
+      "extension": ".py",
+      "size_bytes": 5185,
+      "modified_at": "2026-06-17T19:24:00",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "generate_inner_thought",
+          "generate_local_ai_thought",
+          "generate_local_logic_thought"
+        ],
+        "imports": [
+          "datetime",
+          "local_brain",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 160
+      }
+    },
+    {
+      "path": "conscious_agent/chat.py",
+      "extension": ".py",
+      "size_bytes": 5362,
+      "modified_at": "2026-06-18T16:23:45",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "build_chat_state",
+          "create_chat_response",
+          "get_related_memories",
+          "run_chat"
+        ],
+        "imports": [
+          "brain",
+          "datetime",
+          "desires",
+          "file_tools",
+          "goal_manager",
+          "local_brain",
+          "memory",
+          "project_manager",
+          "reflection",
+          "self_model",
+          "settings_manager",
+          "task_queue",
+          "typing",
+          "vector_memory"
+        ],
+        "parse_error": null,
+        "line_count": 191
+      }
+    },
+    {
+      "path": "conscious_agent/chat_action_router.py",
+      "extension": ".py",
+      "size_bytes": 29289,
+      "modified_at": "2026-06-18T17:46:45",
+      "summary": {
+        "classes": [
+          "ChatActionExecutionResult"
+        ],
+        "functions": [
+          "_chat_action_commands",
+          "_chat_action_path",
+          "_direct_command",
+          "_ensure_storage",
+          "_extract_file_path",
+          "_load_json_file",
+          "_looks_like_path",
+          "_make_action",
+          "_new_chat_action_id",
+          "_normalize_project_path",
+          "_normalize_request",
+          "_now",
+          "_slug",
+          "_store_execution_memory",
+          "chat_action_text",
+          "execute_chat_action",
+          "list_chat_actions",
+          "load_chat_action",
+          "print_chat_action",
+          "print_chat_actions",
+          "print_execute_chat_action",
+          "print_saved_chat_action",
+          "propose_chat_action",
+          "resolve_chat_action_id",
+          "save_chat_action"
+        ],
+        "imports": [
+          "__future__",
+          "approval_manager",
+          "command_runner",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "re",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 635
+      }
+    },
+    {
+      "path": "conscious_agent/code_reviewer.py",
+      "extension": ".py",
+      "size_bytes": 7626,
+      "modified_at": "2026-06-17T21:16:15",
+      "summary": {
+        "classes": [
+          "ReviewResult"
+        ],
+        "functions": [
+          "_ai_review",
+          "_generic_static_review",
+          "_line_count",
+          "_project_index_context",
+          "_python_static_review",
+          "print_code_review",
+          "review_project_file",
+          "static_review"
+        ],
+        "imports": [
+          "__future__",
+          "ast",
+          "dataclasses",
+          "file_tools",
+          "local_brain",
+          "memory",
+          "pathlib",
+          "project_indexer",
+          "project_manager",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 225
+      }
+    },
+    {
+      "path": "conscious_agent/command_runner.py",
+      "extension": ".py",
+      "size_bytes": 19630,
+      "modified_at": "2026-06-19T03:31:50",
+      "summary": {
+        "classes": [
+          "CommandRunResult",
+          "CommandValidation"
+        ],
+        "functions": [
+          "_append_action_log",
+          "_contains_blocked_token",
+          "_ensure_action_log",
+          "_is_git_command",
+          "_is_pytest_command",
+          "_is_python_main_command",
+          "_load_action_log",
+          "_log_command_result",
+          "_normalize_token",
+          "_save_action_log",
+          "_truncate",
+          "allowed_commands_text",
+          "command_history",
+          "print_allowed_commands",
+          "print_command_history",
+          "print_run_command",
+          "run_approved_command",
+          "validate_command"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "file_tools",
+          "json",
+          "memory",
+          "pathlib",
+          "paths",
+          "settings_manager",
+          "shlex",
+          "subprocess",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 583
+      }
+    },
+    {
+      "path": "conscious_agent/dashboard.py",
+      "extension": ".py",
+      "size_bytes": 77409,
+      "modified_at": "2026-06-19T03:37:47",
+      "summary": {
+        "classes": [
+          "DashboardState",
+          "EidolonDashboardHandler"
+        ],
+        "functions": [
+          "_action_link",
+          "_action_panel",
+          "_as_bool",
+          "_back_link",
+          "_button",
+          "_card",
+          "_chat_action_card",
+          "_detail_card",
+          "_detail_link",
+          "_fmt",
+          "_goal_create_form",
+          "_goal_text",
+          "_json_block",
+          "_layout",
+          "_live_refresh_bar",
+          "_live_refresh_script",
+          "_now",
+          "_onboarding_step_html",
+          "_patch_request_form",
+          "_priority_options",
+          "_redirect",
+          "_risk_options",
+          "_rows",
+          "_safe",
+          "_send_html",
+          "_send_json",
+          "_small_list",
+          "_status_cards",
+          "_status_options",
+          "_task_create_form",
+          "_text_block",
+          "_watch_loop_form",
+          "do_GET",
+          "do_OPTIONS",
+          "do_POST",
+          "handle_action",
+          "log_message",
+          "render_action_center",
+          "render_activity",
+          "render_api_info",
+          "render_approvals",
+          "render_chat_actions",
+          "render_chat_console",
+          "render_create",
+          "render_desktop_info",
+          "render_detail",
+          "render_diagnostics",
+          "render_goals",
+          "render_notifications",
+          "render_onboarding",
+          "render_overview",
+          "render_patches",
+          "render_settings",
+          "render_setup",
+          "render_tasks",
+          "render_watch",
+          "run_dashboard"
+        ],
+        "imports": [
+          "__future__",
+          "api_server",
+          "approval_manager",
+          "autonomous_dev_cycle",
+          "chat_action_router",
+          "dashboard_chat_console",
+          "datetime",
+          "desktop_onboarding_wizard",
+          "desktop_setup_helper",
+          "desktop_shell",
+          "dev_loop_runner",
+          "diagnostics",
+          "goal_manager",
+          "html",
+          "http.server",
+          "json",
+          "maintenance_advisor",
+          "memory",
+          "memory_compactor",
+          "notification_manager",
+          "patch_suggester",
+          "project_manager",
+          "session_planner",
+          "settings_manager",
+          "task_queue",
+          "test_report_reviewer",
+          "test_runner",
+          "traceback",
+          "typing",
+          "urllib.parse",
+          "watch_mode"
+        ],
+        "parse_error": null,
+        "line_count": 1462
+      }
+    },
+    {
+      "path": "conscious_agent/dashboard_chat_console.py",
+      "extension": ".py",
+      "size_bytes": 8054,
+      "modified_at": "2026-06-19T00:45:11",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_ensure_storage",
+          "_fallback_response",
+          "_load_json_file",
+          "_new_turn_id",
+          "_now",
+          "_slug",
+          "_turn_path",
+          "create_dashboard_chat_turn",
+          "dashboard_chat_turn_text",
+          "list_dashboard_chat_turns",
+          "load_dashboard_chat_turn",
+          "resolve_dashboard_chat_turn_id",
+          "save_dashboard_chat_turn"
+        ],
+        "imports": [
+          "__future__",
+          "brain",
+          "chat",
+          "chat_action_router",
+          "datetime",
+          "desires",
+          "json",
+          "memory",
+          "pathlib",
+          "paths",
+          "re",
+          "reflection",
+          "self_model",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 251
+      }
+    },
+    {
+      "path": "conscious_agent/desires.py",
+      "extension": ".py",
+      "size_bytes": 592,
+      "modified_at": "2026-06-16T20:50:58",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "load_desires",
+          "save_desires"
+        ],
+        "imports": [
+          "memory",
+          "paths",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 26
+      }
+    },
+    {
+      "path": "conscious_agent/desktop_notifier.py",
+      "extension": ".py",
+      "size_bytes": 3662,
+      "modified_at": "2026-06-19T03:37:47",
+      "summary": {
+        "classes": [
+          "DesktopAlert"
+        ],
+        "functions": [
+          "_int",
+          "build_desktop_alert",
+          "desktop_notification_settings",
+          "desktop_notification_status_text",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "settings_manager",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 116
+      }
+    },
+    {
+      "path": "conscious_agent/desktop_onboarding_wizard.py",
+      "extension": ".py",
+      "size_bytes": 20279,
+      "modified_at": "2026-06-19T03:28:51",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_check_map",
+          "_ensure_onboarding_dir",
+          "_is_attention",
+          "_latest_setup_or_new",
+          "_now",
+          "_run_id",
+          "_step",
+          "_summary",
+          "build_onboarding_run",
+          "list_onboarding_runs",
+          "load_onboarding_run",
+          "onboarding_run_text",
+          "print_onboarding_run",
+          "print_onboarding_runs",
+          "print_saved_onboarding_run",
+          "resolve_onboarding_run_id",
+          "save_onboarding_run"
+        ],
+        "imports": [
+          "__future__",
+          "datetime",
+          "desktop_setup_helper",
+          "json",
+          "pathlib",
+          "paths",
+          "settings_manager",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 496
+      }
+    },
+    {
+      "path": "conscious_agent/desktop_setup_helper.py",
+      "extension": ".py",
+      "size_bytes": 22196,
+      "modified_at": "2026-06-19T03:37:47",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_check",
+          "_check_data_writable",
+          "_check_desktop_packages",
+          "_check_ollama",
+          "_check_project_layout",
+          "_check_python",
+          "_check_required_packages",
+          "_check_service_port",
+          "_check_services",
+          "_check_settings",
+          "_ensure_setup_dir",
+          "_http_json",
+          "_localhost_for_bind",
+          "_module_available",
+          "_now",
+          "_port_accepts_connection",
+          "_port_bindable",
+          "_report_id",
+          "_summary_text",
+          "create_setup_report",
+          "has_model",
+          "list_setup_reports",
+          "load_setup_report",
+          "print_saved_setup_report",
+          "print_setup_check",
+          "print_setup_reports",
+          "resolve_setup_report_id",
+          "save_setup_report",
+          "setup_report_text"
+        ],
+        "imports": [
+          "__future__",
+          "datetime",
+          "importlib.util",
+          "json",
+          "os",
+          "pathlib",
+          "paths",
+          "platform",
+          "settings_manager",
+          "socket",
+          "sys",
+          "typing",
+          "urllib.error",
+          "urllib.request"
+        ],
+        "parse_error": null,
+        "line_count": 574
+      }
+    },
+    {
+      "path": "conscious_agent/desktop_shell.py",
+      "extension": ".py",
+      "size_bytes": 36678,
+      "modified_at": "2026-06-19T03:31:21",
+      "summary": {
+        "classes": [
+          "DesktopApiError",
+          "LocalApiClient"
+        ],
+        "functions": [
+          "__init__",
+          "_attention_line",
+          "_format_status_line",
+          "_host_port",
+          "_spawn_main",
+          "api_action",
+          "api_get_action",
+          "candidate_api_bases",
+          "clear_dismissed_notifications_action",
+          "desktop_status_text",
+          "desktop_urls",
+          "dismiss_latest_notification",
+          "dry_run_latest_approval",
+          "exit_desktop",
+          "get",
+          "hide_to_tray",
+          "hide_to_watcher",
+          "log",
+          "log_pending_approvals",
+          "log_unread_notifications",
+          "mark_latest_notification_read",
+          "maybe_show_status_alert",
+          "on_close",
+          "open_url",
+          "post",
+          "pretty_payload",
+          "print_desktop_status",
+          "print_desktop_tray_status",
+          "refresh_status",
+          "refresh_urls",
+          "request",
+          "restore_from_watcher",
+          "run_desktop_quick_action",
+          "run_desktop_shell",
+          "run_onboarding_action",
+          "run_setup_check_action",
+          "schedule_refresh",
+          "send_chat",
+          "show_desktop_popup",
+          "start_api_server",
+          "start_dashboard",
+          "start_real_tray_if_enabled",
+          "tray_safe",
+          "update_watcher",
+          "work"
+        ],
+        "imports": [
+          "__future__",
+          "desktop_notifier",
+          "desktop_onboarding_wizard",
+          "desktop_setup_helper",
+          "desktop_tray",
+          "json",
+          "os",
+          "pathlib",
+          "settings_manager",
+          "subprocess",
+          "sys",
+          "threading",
+          "time",
+          "tkinter",
+          "typing",
+          "urllib.error",
+          "urllib.request",
+          "webbrowser"
+        ],
+        "parse_error": null,
+        "line_count": 800
+      }
+    },
+    {
+      "path": "conscious_agent/desktop_tray.py",
+      "extension": ".py",
+      "size_bytes": 7845,
+      "modified_at": "2026-06-19T03:31:40",
+      "summary": {
+        "classes": [
+          "DesktopTrayController",
+          "TrayAvailability"
+        ],
+        "functions": [
+          "__init__",
+          "_callback",
+          "_create_icon_image",
+          "can_start",
+          "check_tray_availability",
+          "desktop_tray_settings",
+          "desktop_tray_status_text",
+          "set_callbacks",
+          "start",
+          "stop",
+          "update_status"
+        ],
+        "imports": [
+          "PIL",
+          "__future__",
+          "dataclasses",
+          "pystray",
+          "settings_manager",
+          "threading",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 205
+      }
+    },
+    {
+      "path": "conscious_agent/dev_loop_runner.py",
+      "extension": ".py",
+      "size_bytes": 14746,
+      "modified_at": "2026-06-18T16:23:12",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_create_approval_for_loop_step",
+          "_decision_signature",
+          "_ensure_storage",
+          "_load_json_file",
+          "_loop_path",
+          "_new_loop_id",
+          "_new_loop_record",
+          "_now",
+          "_save_loop",
+          "dev_loop_text",
+          "get_dev_loop",
+          "list_dev_loops",
+          "print_dev_loop",
+          "print_dev_loops",
+          "print_saved_dev_loop",
+          "resolve_dev_loop_id",
+          "run_dev_loop"
+        ],
+        "imports": [
+          "__future__",
+          "approval_manager",
+          "autonomous_dev_cycle",
+          "datetime",
+          "json",
+          "memory",
+          "pathlib",
+          "paths",
+          "settings_manager",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 401
+      }
+    },
+    {
+      "path": "conscious_agent/diagnostics.py",
+      "extension": ".py",
+      "size_bytes": 19934,
+      "modified_at": "2026-06-18T16:31:51",
+      "summary": {
+        "classes": [
+          "DiagnosticCheck"
+        ],
+        "functions": [
+          "_check_command_runner",
+          "_check_counts_and_backlog",
+          "_check_data_files",
+          "_check_dependencies",
+          "_check_memory_and_vectors",
+          "_check_ollama",
+          "_check_project_index",
+          "_check_project_state",
+          "_check_python_environment",
+          "_check_settings",
+          "_check_storage_dirs",
+          "_ensure_diagnostics_dir",
+          "_load_json_file",
+          "_now_id",
+          "_status_rank",
+          "build_diagnostic_report",
+          "diagnostic_report_text",
+          "list_diagnostic_reports",
+          "load_diagnostic_report",
+          "load_list",
+          "print_diagnostic_reports",
+          "print_diagnostics",
+          "print_saved_diagnostic_report",
+          "resolve_diagnostic_report_id",
+          "save_diagnostic_report",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "command_runner",
+          "dataclasses",
+          "datetime",
+          "importlib.util",
+          "json",
+          "pathlib",
+          "paths",
+          "platform",
+          "project_manager",
+          "settings_manager",
+          "sys",
+          "typing",
+          "vector_memory"
+        ],
+        "parse_error": null,
+        "line_count": 548
+      }
+    },
+    {
+      "path": "conscious_agent/file_tools.py",
+      "extension": ".py",
+      "size_bytes": 7743,
+      "modified_at": "2026-06-17T20:35:34",
+      "summary": {
+        "classes": [
+          "FileReadResult"
+        ],
+        "functions": [
+          "active_project_root",
+          "is_probably_text_file",
+          "list_project_files",
+          "project_tree_text",
+          "read_project_file",
+          "safe_project_path",
+          "search_project_files",
+          "should_ignore"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "memory",
+          "pathlib",
+          "paths",
+          "project_manager",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 272
+      }
+    },
+    {
+      "path": "conscious_agent/goal_manager.py",
+      "extension": ".py",
+      "size_bytes": 18587,
+      "modified_at": "2026-06-18T14:39:16",
+      "summary": {
+        "classes": [
+          "GoalMutationResult"
+        ],
+        "functions": [
+          "_default_goals",
+          "_ensure_storage",
+          "_goal_line",
+          "_new_goal_id",
+          "_now",
+          "_print_goal",
+          "_slug",
+          "_sync_self_model_active_goals",
+          "_update_goal_in_data",
+          "add_goal",
+          "add_goal_blocker",
+          "add_goal_next_action",
+          "add_goal_note",
+          "get_goal",
+          "goal_context_text",
+          "goal_status_summary",
+          "list_goals",
+          "load_goals_data",
+          "print_add_goal",
+          "print_add_goal_next_action",
+          "print_add_goal_note",
+          "print_block_goal",
+          "print_complete_goal",
+          "print_goal_detail",
+          "print_goal_list",
+          "print_goal_status",
+          "print_set_goal_status",
+          "resolve_goal_id",
+          "save_goals_data",
+          "set_goal_status"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "pathlib",
+          "paths",
+          "project_manager",
+          "re",
+          "self_model",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 582
+      }
+    },
+    {
+      "path": "conscious_agent/guided_work_session.py",
+      "extension": ".py",
+      "size_bytes": 16675,
+      "modified_at": "2026-06-18T15:35:29",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_base_session",
+          "_determine_next_step",
+          "_ensure_storage",
+          "_latest_evaluation_for_task",
+          "_latest_execution",
+          "_load_json_file",
+          "_new_session_id",
+          "_now",
+          "_save_session",
+          "_session_path",
+          "_slug",
+          "advance_guided_work_session",
+          "create_guided_work_session",
+          "get_guided_session",
+          "guided_session_text",
+          "list_guided_sessions",
+          "print_advance_guided_work_session",
+          "print_guided_sessions",
+          "print_guided_work_session",
+          "print_saved_guided_session",
+          "resolve_guided_session_id"
+        ],
+        "imports": [
+          "__future__",
+          "datetime",
+          "json",
+          "memory",
+          "pathlib",
+          "paths",
+          "re",
+          "task_executor",
+          "task_queue",
+          "task_result_evaluator",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 440
+      }
+    },
+    {
+      "path": "conscious_agent/inner_loop.py",
+      "extension": ".py",
+      "size_bytes": 3154,
+      "modified_at": "2026-06-18T15:08:01",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "run_cycle",
+          "run_loop"
+        ],
+        "imports": [
+          "actions",
+          "brain",
+          "desires",
+          "goal_manager",
+          "memory",
+          "planner",
+          "project_manager",
+          "reflection",
+          "safety",
+          "self_model",
+          "task_queue",
+          "time",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 88
+      }
+    },
+    {
+      "path": "conscious_agent/local_brain.py",
+      "extension": ".py",
+      "size_bytes": 4636,
+      "modified_at": "2026-06-18T16:22:20",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_embed_url",
+          "_generate_url",
+          "_ollama_base_url",
+          "_ollama_timeout",
+          "local_embed",
+          "local_generate",
+          "local_generate_json"
+        ],
+        "imports": [
+          "__future__",
+          "json",
+          "requests",
+          "settings_manager",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 151
+      }
+    },
+    {
+      "path": "conscious_agent/main.py",
+      "extension": ".py",
+      "size_bytes": 67697,
+      "modified_at": "2026-06-19T03:29:23",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "ai_reviews_enabled",
+          "main",
+          "print_keyword_search",
+          "print_latest_ids",
+          "print_project_file",
+          "print_project_file_search",
+          "print_project_tree",
+          "print_semantic_search",
+          "print_status",
+          "rebuild_semantic_memory"
+        ],
+        "imports": [
+          "api_server",
+          "approval_manager",
+          "argparse",
+          "autonomous_dev_cycle",
+          "chat",
+          "chat_action_router",
+          "code_reviewer",
+          "command_runner",
+          "dashboard",
+          "dashboard_chat_console",
+          "desktop_onboarding_wizard",
+          "desktop_setup_helper",
+          "desktop_shell",
+          "dev_loop_runner",
+          "diagnostics",
+          "file_tools",
+          "goal_manager",
+          "guided_work_session",
+          "inner_loop",
+          "maintenance_advisor",
+          "memory",
+          "memory_compactor",
+          "notification_manager",
+          "opinions",
+          "patch_applier",
+          "patch_suggester",
+          "project_indexer",
+          "project_manager",
+          "self_improver",
+          "self_model",
+          "session_planner",
+          "settings_manager",
+          "task_executor",
+          "task_queue",
+          "task_result_evaluator",
+          "test_report_reviewer",
+          "test_runner",
+          "vector_memory",
+          "watch_mode"
+        ],
+        "parse_error": null,
+        "line_count": 1393
+      }
+    },
+    {
+      "path": "conscious_agent/maintenance_advisor.py",
+      "extension": ".py",
+      "size_bytes": 19814,
+      "modified_at": "2026-06-18T14:16:41",
+      "summary": {
+        "classes": [
+          "MaintenanceScanResult"
+        ],
+        "functions": [
+          "_action_log_suggestions",
+          "_ai_maintenance_summary",
+          "_ensure_storage",
+          "_load_action_log",
+          "_memory_suggestions",
+          "_new_scan_id",
+          "_patch_suggestions",
+          "_project_index_suggestions",
+          "_scan_path",
+          "_suggestion",
+          "_test_suggestions",
+          "list_maintenance_scans",
+          "load_maintenance_scan",
+          "maintenance_scan_text",
+          "print_maintenance_scan",
+          "print_maintenance_scans",
+          "print_saved_maintenance_scan",
+          "resolve_maintenance_scan_id",
+          "run_maintenance_scan",
+          "save_maintenance_scan"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "local_brain",
+          "memory",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "project_indexer",
+          "project_manager",
+          "self_improver",
+          "test_report_reviewer",
+          "test_runner",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 532
+      }
+    },
+    {
+      "path": "conscious_agent/memory.py",
+      "extension": ".py",
+      "size_bytes": 2153,
+      "modified_at": "2026-06-17T20:35:55",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "load_json",
+          "load_memories",
+          "save_json",
+          "search_memories",
+          "store_memory"
+        ],
+        "imports": [
+          "datetime",
+          "json",
+          "pathlib",
+          "paths",
+          "typing",
+          "vector_memory"
+        ],
+        "parse_error": null,
+        "line_count": 62
+      }
+    },
+    {
+      "path": "conscious_agent/memory_compactor.py",
+      "extension": ".py",
+      "size_bytes": 15080,
+      "modified_at": "2026-06-18T14:30:31",
+      "summary": {
+        "classes": [
+          "MemoryCompactionResult"
+        ],
+        "functions": [
+          "_ai_summary",
+          "_archive_path",
+          "_ensure_storage",
+          "_heuristic_summary",
+          "_memory_content",
+          "_memory_line",
+          "_memory_type_counts",
+          "_new_summary_id",
+          "_summary_path",
+          "compact_memory",
+          "list_memory_summaries",
+          "load_memory_summary",
+          "memory_status_text",
+          "memory_summary_text",
+          "print_compact_memory",
+          "print_memory_status",
+          "print_memory_summaries",
+          "print_memory_summary",
+          "resolve_memory_summary_id",
+          "save_memory_summary"
+        ],
+        "imports": [
+          "__future__",
+          "collections",
+          "dataclasses",
+          "datetime",
+          "json",
+          "local_brain",
+          "memory",
+          "pathlib",
+          "paths",
+          "typing",
+          "vector_memory"
+        ],
+        "parse_error": null,
+        "line_count": 472
+      }
+    },
+    {
+      "path": "conscious_agent/notification_manager.py",
+      "extension": ".py",
+      "size_bytes": 13335,
+      "modified_at": "2026-06-18T17:12:31",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_ensure_storage",
+          "_find_existing_unread_by_dedupe",
+          "_load_json_file",
+          "_new_notification_id",
+          "_notification_path",
+          "_now",
+          "_severity_from_priority",
+          "clear_dismissed_notifications",
+          "create_notification",
+          "create_notifications_from_watch_report",
+          "list_notifications",
+          "load_notification",
+          "notification_text",
+          "print_clear_dismissed_notifications",
+          "print_dismiss_notification",
+          "print_mark_notification_read",
+          "print_notification",
+          "print_notifications",
+          "resolve_notification_id",
+          "save_notification",
+          "update_notification_status"
+        ],
+        "imports": [
+          "__future__",
+          "datetime",
+          "json",
+          "memory",
+          "pathlib",
+          "paths",
+          "settings_manager",
+          "typing",
+          "uuid"
+        ],
+        "parse_error": null,
+        "line_count": 371
+      }
+    },
+    {
+      "path": "conscious_agent/opinions.py",
+      "extension": ".py",
+      "size_bytes": 1900,
+      "modified_at": "2026-06-16T20:50:58",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "load_opinions",
+          "nudge_opinion",
+          "save_opinions"
+        ],
+        "imports": [
+          "datetime",
+          "memory",
+          "paths",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 53
+      }
+    },
+    {
+      "path": "conscious_agent/patch_applier.py",
+      "extension": ".py",
+      "size_bytes": 17181,
+      "modified_at": "2026-06-18T14:05:00",
+      "summary": {
+        "classes": [
+          "PatchApplyResult",
+          "PatchRollbackResult"
+        ],
+        "functions": [
+          "_append_action_log",
+          "_backup_file_path",
+          "_ensure_storage",
+          "_load_action_log",
+          "_save_action_log",
+          "_sha256",
+          "_validate_patch_for_apply",
+          "_validate_patch_for_rollback",
+          "applied_patches",
+          "apply_patch",
+          "print_applied_patches",
+          "print_apply_patch",
+          "print_rollback_patch",
+          "print_rolled_back_patches",
+          "rollback_patch",
+          "rolled_back_patches"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "file_tools",
+          "hashlib",
+          "json",
+          "memory",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 584
+      }
+    },
+    {
+      "path": "conscious_agent/patch_suggester.py",
+      "extension": ".py",
+      "size_bytes": 12818,
+      "modified_at": "2026-06-18T16:22:38",
+      "summary": {
+        "classes": [
+          "PatchSuggestionResult"
+        ],
+        "functions": [
+          "_build_patch_prompt",
+          "_ensure_patches_dir",
+          "_extract_proposed_content",
+          "_make_unified_diff",
+          "_new_patch_id",
+          "_project_index_context",
+          "_proposal_path",
+          "_risk_level",
+          "_sha256",
+          "_slugify",
+          "list_patch_proposals",
+          "load_patch_proposal",
+          "patch_proposal_text",
+          "print_patch_list",
+          "print_patch_proposal",
+          "print_patch_suggestion",
+          "resolve_patch_id",
+          "save_patch_proposal",
+          "suggest_patch"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "difflib",
+          "file_tools",
+          "hashlib",
+          "json",
+          "local_brain",
+          "memory",
+          "pathlib",
+          "paths",
+          "project_indexer",
+          "project_manager",
+          "re",
+          "settings_manager",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 406
+      }
+    },
+    {
+      "path": "conscious_agent/paths.py",
+      "extension": ".py",
+      "size_bytes": 347,
+      "modified_at": "2026-06-16T20:50:58",
+      "summary": {
+        "classes": [],
+        "functions": [],
+        "imports": [
+          "pathlib"
+        ],
+        "parse_error": null,
+        "line_count": 11
+      }
+    },
+    {
+      "path": "conscious_agent/planner.py",
+      "extension": ".py",
+      "size_bytes": 774,
+      "modified_at": "2026-06-16T20:50:58",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "choose_action"
+        ],
+        "imports": [
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 17
+      }
+    },
+    {
+      "path": "conscious_agent/project_indexer.py",
+      "extension": ".py",
+      "size_bytes": 9476,
+      "modified_at": "2026-06-17T21:14:14",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "index_project",
+          "is_indexable_file",
+          "load_project_index",
+          "print_project_index_search",
+          "print_project_index_summary",
+          "project_index_search_text",
+          "project_index_summary_text",
+          "save_project_index",
+          "search_project_index",
+          "summarize_generic_file",
+          "summarize_python_file"
+        ],
+        "imports": [
+          "__future__",
+          "ast",
+          "datetime",
+          "file_tools",
+          "json",
+          "memory",
+          "pathlib",
+          "paths",
+          "project_manager",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 281
+      }
+    },
+    {
+      "path": "conscious_agent/project_manager.py",
+      "extension": ".py",
+      "size_bytes": 6710,
+      "modified_at": "2026-06-17T20:32:16",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "add_project",
+          "add_project_item",
+          "get_active_project",
+          "get_project",
+          "lines",
+          "list_projects",
+          "load_projects_data",
+          "print_project_status",
+          "project_context_text",
+          "save_projects_data",
+          "set_active_project"
+        ],
+        "imports": [
+          "__future__",
+          "datetime",
+          "memory",
+          "pathlib",
+          "paths",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 206
+      }
+    },
+    {
+      "path": "conscious_agent/reflection.py",
+      "extension": ".py",
+      "size_bytes": 1025,
+      "modified_at": "2026-06-16T20:50:58",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "reflect_on_thought"
+        ],
+        "imports": [
+          "datetime",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 27
+      }
+    },
+    {
+      "path": "conscious_agent/safety.py",
+      "extension": ".py",
+      "size_bytes": 205,
+      "modified_at": "2026-06-16T20:50:58",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "is_action_allowed"
+        ],
+        "imports": [
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 7
+      }
+    },
+    {
+      "path": "conscious_agent/self_improver.py",
+      "extension": ".py",
+      "size_bytes": 17255,
+      "modified_at": "2026-06-18T14:05:24",
+      "summary": {
+        "classes": [
+          "SelfImprovementResult"
+        ],
+        "functions": [
+          "_append_action_log",
+          "_clip",
+          "_ensure_storage",
+          "_find_run_by_patch_id",
+          "_load_action_log",
+          "_new_run_id",
+          "_run_path",
+          "_safe_slug",
+          "_save_action_log",
+          "apply_self_improvement_patch",
+          "latest_self_improvement_patch_id",
+          "list_self_improvement_runs",
+          "load_self_improvement_run",
+          "print_self_improvement",
+          "print_self_improvement_apply",
+          "print_self_improvement_run",
+          "print_self_improvement_runs",
+          "resolve_self_improvement_run_id",
+          "save_self_improvement_run",
+          "self_improvement_run_text",
+          "start_self_improvement"
+        ],
+        "imports": [
+          "__future__",
+          "code_reviewer",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "patch_applier",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "test_report_reviewer",
+          "test_runner",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 502
+      }
+    },
+    {
+      "path": "conscious_agent/self_model.py",
+      "extension": ".py",
+      "size_bytes": 1383,
+      "modified_at": "2026-06-16T20:50:58",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "load_self_model",
+          "save_self_model",
+          "update_focus"
+        ],
+        "imports": [
+          "memory",
+          "paths",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 45
+      }
+    },
+    {
+      "path": "conscious_agent/session_planner.py",
+      "extension": ".py",
+      "size_bytes": 35996,
+      "modified_at": "2026-06-18T15:08:54",
+      "summary": {
+        "classes": [
+          "SessionPlanResult"
+        ],
+        "functions": [
+          "_ai_session_summary",
+          "_build_context",
+          "_clip",
+          "_context_counts",
+          "_ensure_storage",
+          "_goal_recommendations",
+          "_goal_sort_key",
+          "_heuristic_session_summary",
+          "_latest_by_time",
+          "_latest_test_recommendation",
+          "_load_action_log",
+          "_maintenance_recommendations",
+          "_memory_recommendations",
+          "_new_plan_id",
+          "_now",
+          "_open_goals",
+          "_patch_recommendations",
+          "_plan_path",
+          "_project_index_recommendations",
+          "_rank_recommendations",
+          "_recommendation",
+          "_task_queue_recommendations",
+          "create_session_plan",
+          "list_session_plans",
+          "load_session_plan",
+          "print_saved_session_plan",
+          "print_session_plan",
+          "print_session_plans",
+          "resolve_session_plan_id",
+          "save_session_plan",
+          "session_plan_text"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "goal_manager",
+          "json",
+          "local_brain",
+          "maintenance_advisor",
+          "memory",
+          "memory_compactor",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "project_indexer",
+          "project_manager",
+          "self_improver",
+          "task_queue",
+          "test_report_reviewer",
+          "test_runner",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 847
+      }
+    },
+    {
+      "path": "conscious_agent/settings_manager.py",
+      "extension": ".py",
+      "size_bytes": 15399,
+      "modified_at": "2026-06-19T03:29:03",
+      "summary": {
+        "classes": [
+          "SettingsError"
+        ],
+        "functions": [
+          "_coerce_to_default_type",
+          "get_setting",
+          "load_settings",
+          "print_get_setting",
+          "print_reset_settings",
+          "print_set_setting",
+          "print_settings",
+          "print_settings_health",
+          "reset_settings",
+          "save_settings",
+          "set_setting",
+          "setting_text",
+          "settings_health",
+          "settings_health_text",
+          "settings_text"
+        ],
+        "imports": [
+          "__future__",
+          "copy",
+          "datetime",
+          "json",
+          "paths",
+          "requests",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 347
+      }
+    },
+    {
+      "path": "conscious_agent/task_executor.py",
+      "extension": ".py",
+      "size_bytes": 10078,
+      "modified_at": "2026-06-18T15:17:49",
+      "summary": {
+        "classes": [
+          "TaskExecutionResult"
+        ],
+        "functions": [
+          "_now",
+          "_task_command_options",
+          "_truncate",
+          "_update_task_execution_history",
+          "execute_task_command",
+          "print_execute_task",
+          "print_task_command_options",
+          "print_task_execution_history",
+          "task_command_options_text",
+          "task_execution_history_text"
+        ],
+        "imports": [
+          "__future__",
+          "command_runner",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "task_queue",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 313
+      }
+    },
+    {
+      "path": "conscious_agent/task_queue.py",
+      "extension": ".py",
+      "size_bytes": 21786,
+      "modified_at": "2026-06-18T15:17:50",
+      "summary": {
+        "classes": [
+          "TaskMutationResult"
+        ],
+        "functions": [
+          "_active_project_name",
+          "_default_tasks",
+          "_ensure_storage",
+          "_new_task_id",
+          "_now",
+          "_slug",
+          "_task_brief",
+          "_task_exists_from_source",
+          "_task_sort_key",
+          "_update_task_in_data",
+          "add_task",
+          "add_task_next_action",
+          "add_task_note",
+          "block_task",
+          "complete_task",
+          "get_task",
+          "list_tasks",
+          "load_tasks_data",
+          "next_task",
+          "print_add_task",
+          "print_add_task_action",
+          "print_add_task_note",
+          "print_block_task",
+          "print_complete_task",
+          "print_next_task",
+          "print_queue_from_session",
+          "print_set_task_status",
+          "print_start_task",
+          "print_task_detail",
+          "print_task_list",
+          "print_task_status",
+          "queue_tasks_from_session",
+          "resolve_task_id",
+          "save_tasks_data",
+          "set_task_status",
+          "start_task",
+          "task_context_text",
+          "task_detail_text",
+          "task_status_counts"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "paths",
+          "project_manager",
+          "re",
+          "session_planner",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 685
+      }
+    },
+    {
+      "path": "conscious_agent/task_result_evaluator.py",
+      "extension": ".py",
+      "size_bytes": 17588,
+      "modified_at": "2026-06-18T15:31:37",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_ai_task_evaluation",
+          "_derive_recommendation",
+          "_ensure_storage",
+          "_evaluation_path",
+          "_execution_summary",
+          "_latest_execution",
+          "_load_json_file",
+          "_new_evaluation_id",
+          "_now",
+          "_recent_failures",
+          "_save_evaluation",
+          "_slug",
+          "apply_task_evaluation",
+          "evaluate_task_result",
+          "get_task_evaluation",
+          "list_task_evaluations",
+          "print_apply_task_evaluation",
+          "print_saved_task_evaluation",
+          "print_task_evaluation",
+          "print_task_evaluations",
+          "resolve_task_evaluation_id",
+          "task_evaluation_text"
+        ],
+        "imports": [
+          "__future__",
+          "datetime",
+          "json",
+          "local_brain",
+          "memory",
+          "pathlib",
+          "paths",
+          "re",
+          "task_queue",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 475
+      }
+    },
+    {
+      "path": "conscious_agent/test_report_reviewer.py",
+      "extension": ".py",
+      "size_bytes": 18326,
+      "modified_at": "2026-06-18T14:05:46",
+      "summary": {
+        "classes": [
+          "TestReviewResult"
+        ],
+        "functions": [
+          "_ai_review",
+          "_append_action_log",
+          "_clip",
+          "_detect_risk_signals",
+          "_ensure_storage",
+          "_failed_commands",
+          "_heuristic_review",
+          "_latest_report_id",
+          "_load_action_log",
+          "_new_review_id",
+          "_output_blob",
+          "_patch_target_matches_output",
+          "_resolve_report",
+          "_review_path",
+          "_save_action_log",
+          "list_test_reviews",
+          "load_test_review",
+          "print_saved_test_review",
+          "print_test_review",
+          "print_test_reviews",
+          "resolve_test_review_id",
+          "review_test_report",
+          "save_test_review",
+          "test_review_text"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "local_brain",
+          "memory",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "test_runner",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 508
+      }
+    },
+    {
+      "path": "conscious_agent/test_runner.py",
+      "extension": ".py",
+      "size_bytes": 12292,
+      "modified_at": "2026-06-18T14:05:37",
+      "summary": {
+        "classes": [
+          "TestWorkflowResult"
+        ],
+        "functions": [
+          "_append_action_log",
+          "_ensure_storage",
+          "_evaluate_results",
+          "_indent",
+          "_load_action_log",
+          "_new_report_id",
+          "_normalize_commands",
+          "_patch_context",
+          "_report_path",
+          "_save_action_log",
+          "list_test_reports",
+          "load_test_report",
+          "print_test_report",
+          "print_test_reports",
+          "print_test_workflow",
+          "resolve_test_report_id",
+          "run_test_workflow",
+          "save_test_report",
+          "test_report_text"
+        ],
+        "imports": [
+          "__future__",
+          "command_runner",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 387
+      }
+    },
+    {
+      "path": "conscious_agent/vector_memory.py",
+      "extension": ".py",
+      "size_bytes": 4340,
+      "modified_at": "2026-06-18T14:30:32",
+      "summary": {
+        "classes": [],
+        "functions": [
+          "_get_chromadb",
+          "_memory_content",
+          "add_memory_vector",
+          "get_collection",
+          "rebuild_vector_memory",
+          "reset_vector_memory",
+          "search_memory_vectors"
+        ],
+        "imports": [
+          "__future__",
+          "chromadb",
+          "local_brain",
+          "paths",
+          "typing",
+          "uuid"
+        ],
+        "parse_error": null,
+        "line_count": 155
+      }
+    },
+    {
+      "path": "conscious_agent/watch_mode.py",
+      "extension": ".py",
+      "size_bytes": 23798,
+      "modified_at": "2026-06-18T17:11:30",
+      "summary": {
+        "classes": [
+          "WatchRunResult"
+        ],
+        "functions": [
+          "_build_recommendations",
+          "_ensure_storage",
+          "_latest_by_id",
+          "_load_json_file",
+          "_new_report_id",
+          "_now",
+          "_patch_ids_with_reports",
+          "_recommendation",
+          "_report_ids_with_reviews",
+          "_report_path",
+          "_report_status",
+          "_watch_ai_summary",
+          "list_watch_reports",
+          "load_watch_report",
+          "print_saved_watch_report",
+          "print_watch_loop",
+          "print_watch_once",
+          "print_watch_reports",
+          "resolve_watch_report_id",
+          "run_watch_loop",
+          "run_watch_once",
+          "save_watch_report",
+          "watch_report_text"
+        ],
+        "imports": [
+          "__future__",
+          "approval_manager",
+          "dataclasses",
+          "datetime",
+          "diagnostics",
+          "json",
+          "local_brain",
+          "maintenance_advisor",
+          "memory",
+          "notification_manager",
+          "patch_suggester",
+          "pathlib",
+          "paths",
+          "session_planner",
+          "settings_manager",
+          "task_queue",
+          "test_report_reviewer",
+          "test_runner",
+          "time",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 636
+      }
+    },
+    {
+      "path": "data/action_log.json",
+      "extension": ".json",
+      "size_bytes": 2,
+      "modified_at": "2026-06-18T15:51:52",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "[]"
+      }
+    },
+    {
+      "path": "data/approvals/README.md",
+      "extension": ".md",
+      "size_bytes": 79,
+      "modified_at": "2026-06-18T16:12:03",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "Saved approval requests. Pending items require explicit approval or rejection."
+      }
+    },
+    {
+      "path": "data/backups/README.md",
+      "extension": ".md",
+      "size_bytes": 156,
+      "modified_at": "2026-06-18T03:30:10",
+      "summary": {
+        "line_count": 4,
+        "non_empty_line_count": 3,
+        "preview": "# Backups\nPatch backups are stored here when a saved patch proposal is applied.\nEach patch gets its own subfolder so original files can be restored later."
+      }
+    },
+    {
+      "path": "data/chat_actions/README.md",
+      "extension": ".md",
+      "size_bytes": 132,
+      "modified_at": "2026-06-18T17:48:41",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "Saved chat-to-action proposals. These translate plain-English requests into safe commands, patch suggestions, or approval requests."
+      }
+    },
+    {
+      "path": "data/dashboard_chat/README.md",
+      "extension": ".md",
+      "size_bytes": 124,
+      "modified_at": "2026-06-19T00:46:53",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "Saved Dashboard Chat Console turns. Each turn stores Marcus's message, Eidolon's response, and any linked safe chat action."
+      }
+    },
+    {
+      "path": "data/desires.json",
+      "extension": ".json",
+      "size_bytes": 192,
+      "modified_at": "2026-06-16T20:35:02",
+      "summary": {
+        "line_count": 10,
+        "non_empty_line_count": 10,
+        "preview": "{\n\"truthfulness\": 1.0,\n\"helpfulness\": 0.95,\n\"curiosity\": 0.75,\n\"self_preservation\": 0.45,\n\"coherence\": 0.85,\n\"creativity\": 0.65,\n\"user_respect\": 0.9,\n\"autonomy\": 0.6\n}"
+      }
+    },
+    {
+      "path": "data/dev_cycles/README.md",
+      "extension": ".md",
+      "size_bytes": 134,
+      "modified_at": "2026-06-18T15:51:52",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "Saved supervised autonomous dev cycle records. These records show what Eidolon chose, what it did, and what the next safe command is."
+      }
+    },
+    {
+      "path": "data/dev_loops/README.md",
+      "extension": ".md",
+      "size_bytes": 51,
+      "modified_at": "2026-06-18T16:03:25",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "Saved bounded autonomous development loop records."
+      }
+    },
+    {
+      "path": "data/diagnostics/README.md",
+      "extension": ".md",
+      "size_bytes": 38,
+      "modified_at": "2026-06-18T16:31:51",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "Saved diagnostic reports for Eidolon."
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_164047.json",
+      "extension": ".json",
+      "size_bytes": 22764,
+      "modified_at": "2026-06-18T16:40:47",
+      "summary": {
+        "line_count": 486,
+        "non_empty_line_count": 486,
+        "preview": "{\n\"id\": \"diag_20260618_164047\",\n\"created_at\": \"2026-06-18T16:40:47\",\n\"overall_status\": \"fail\",\n\"counts\": {\n\"pass\": 9,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 1\n},"
+      }
+    },
+    {
+      "path": "data/diagnostics/diag_20260618_164216.json",
+      "extension": ".json",
+      "size_bytes": 22972,
+      "modified_at": "2026-06-18T16:42:16",
+      "summary": {
+        "line_count": 489,
+        "non_empty_line_count": 489,
+        "preview": "{\n\"id\": \"diag_20260618_164216\",\n\"created_at\": \"2026-06-18T16:42:16\",\n\"overall_status\": \"fail\",\n\"counts\": {\n\"pass\": 9,\n\"info\": 0,\n\"warn\": 1,\n\"fail\": 1\n},"
+      }
+    },
+    {
+      "path": "data/goals.json",
+      "extension": ".json",
+      "size_bytes": 3465,
+      "modified_at": "2026-06-19T02:23:28",
+      "summary": {
+        "line_count": 93,
+        "non_empty_line_count": 93,
+        "preview": "{\n\"version\": 1,\n\"active_goal\": \"goal_seed_build-eidolon\",\n\"goals\": [\n{\n\"id\": \"goal_seed_build-eidolon\",\n\"title\": \"Build Eidolon into a safe local AI assistant\",\n\"description\": \"Continue developing Eidolon with memory, tools, review, approved edits, rollback, testing, supervised self-improvement, maintenance suggestions, memory compaction, structured goals, and session planning.\",\n\"project\": \"Eidolon\",\n\"status\": \"active\","
+      }
+    },
+    {
+      "path": "data/guided_sessions/README.md",
+      "extension": ".md",
+      "size_bytes": 112,
+      "modified_at": "2026-06-18T15:36:04",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "Saved guided work sessions. These record task guidance, one-step advances, evaluations, and safe next commands."
+      }
+    },
+    {
+      "path": "data/guided_sessions/guided-20260618-155056-overview-advance-active-goal-build-eidolon-into-a-safe-lo.json",
+      "extension": ".json",
+      "size_bytes": 3057,
+      "modified_at": "2026-06-18T15:50:56",
+      "summary": {
+        "line_count": 52,
+        "non_empty_line_count": 52,
+        "preview": "{\n\"id\": \"guided_20260618_155056_overview_advance-active-goal-build-eidolon-into-a-safe-lo\",\n\"type\": \"guided_work_session\",\n\"created_at\": \"2026-06-18T15:50:56\",\n\"mode\": \"guide\",\n\"step\": \"overview\",\n\"task_id\": \"task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo\",\n\"task_title\": \"Advance active goal: Build Eidolon into a safe local AI assistant\",\n\"task_status\": \"planned\",\n\"task_priority\": \"high\","
+      }
+    },
+    {
+      "path": "data/guided_sessions/guided-20260618-155057-overview-advance-active-goal-build-eidolon-into-a-safe-lo.json",
+      "extension": ".json",
+      "size_bytes": 3057,
+      "modified_at": "2026-06-18T15:50:57",
+      "summary": {
+        "line_count": 52,
+        "non_empty_line_count": 52,
+        "preview": "{\n\"id\": \"guided_20260618_155057_overview_advance-active-goal-build-eidolon-into-a-safe-lo\",\n\"type\": \"guided_work_session\",\n\"created_at\": \"2026-06-18T15:50:57\",\n\"mode\": \"guide\",\n\"step\": \"overview\",\n\"task_id\": \"task_20260618_155056_advance-active-goal-build-eidolon-into-a-safe-lo\",\n\"task_title\": \"Advance active goal: Build Eidolon into a safe local AI assistant\",\n\"task_status\": \"planned\",\n\"task_priority\": \"high\","
+      }
+    },
+    {
+      "path": "data/maintenance_suggestions/README.md",
+      "extension": ".md",
+      "size_bytes": 192,
+      "modified_at": "2026-06-18T14:17:23",
+      "summary": {
+        "line_count": 3,
+        "non_empty_line_count": 2,
+        "preview": "# Maintenance Suggestions\nThis folder stores read-only maintenance scan results. These scans suggest safe next tasks but do not edit files, run commands, apply patches, or rollback anything."
+      }
+    },
+    {
+      "path": "data/memories.json",
+      "extension": ".json",
+      "size_bytes": 24391,
+      "modified_at": "2026-06-19T03:22:36",
+      "summary": {
+        "line_count": 731,
+        "non_empty_line_count": 731,
+        "preview": "[\n{\n\"created_at\": \"2026-06-16T20:51:04\",\n\"type\": \"inner_thought\",\n\"content\": \"I am Eidolon. I have no stored memories yet, so my first priority is to create continuity. My current focus is help Marcus build useful software.\",\n\"importance\": 0.72,\n\"related_goal\": \"help Marcus build useful software\",\n\"recommended_action\": \"store_only\",\n\"reasoning_summary\": \"Generated from self-model, desire weights, memory count, and current state.\",\n\"state_snapshot\": {"
+      }
+    },
+    {
+      "path": "data/memory_archive/README.md",
+      "extension": ".md",
+      "size_bytes": 88,
+      "modified_at": "2026-06-18T14:31:04",
+      "summary": {
+        "line_count": 3,
+        "non_empty_line_count": 2,
+        "preview": "# Memory Archive\nThis folder stores archived memories replaced by compacted summaries."
+      }
+    },
+    {
+      "path": "data/memory_summaries/README.md",
+      "extension": ".md",
+      "size_bytes": 68,
+      "modified_at": "2026-06-18T14:31:04",
+      "summary": {
+        "line_count": 3,
+        "non_empty_line_count": 2,
+        "preview": "# Memory Summaries\nThis folder stores memory compaction summaries."
+      }
+    },
+    {
+      "path": "data/notifications/README.md",
+      "extension": ".md",
+      "size_bytes": 156,
+      "modified_at": "2026-06-18T17:13:07",
+      "summary": {
+        "line_count": 3,
+        "non_empty_line_count": 2,
+        "preview": "# Notifications\nSaved Eidolon notifications. Notifications are advisory. They do not apply patches, approve actions, run commands, or bypass safety gates."
+      }
+    },
+    {
+      "path": "data/onboarding_runs/README.md",
+      "extension": ".md",
+      "size_bytes": 64,
+      "modified_at": "2026-06-19T03:32:50",
+      "summary": {
+        "line_count": 3,
+        "non_empty_line_count": 2,
+        "preview": "# Onboarding Runs\nSaved desktop guided onboarding wizard runs."
+      }
+    },
+    {
+      "path": "data/onboarding_runs/onboarding_20260619_033335.json",
+      "extension": ".json",
+      "size_bytes": 6757,
+      "modified_at": "2026-06-19T03:33:35",
+      "summary": {
+        "line_count": 210,
+        "non_empty_line_count": 210,
+        "preview": "{\n\"id\": \"onboarding_20260619_033335\",\n\"version\": \"4.5\",\n\"created_at\": \"2026-06-19T03:33:35\",\n\"status\": \"needs_action\",\n\"setup_report_id\": \"setup_20260619_033335\",\n\"setup_status\": \"attention_needed\",\n\"summary\": \"Onboarding needs action. Next recommended step: Install required Python packages.\",\n\"counts\": {\n\"done\": 3,"
+      }
+    },
+    {
+      "path": "data/onboarding_runs/onboarding_20260619_033616.json",
+      "extension": ".json",
+      "size_bytes": 6757,
+      "modified_at": "2026-06-19T03:36:16",
+      "summary": {
+        "line_count": 210,
+        "non_empty_line_count": 210,
+        "preview": "{\n\"id\": \"onboarding_20260619_033616\",\n\"version\": \"4.5\",\n\"created_at\": \"2026-06-19T03:36:16\",\n\"status\": \"needs_action\",\n\"setup_report_id\": \"setup_20260619_033335\",\n\"setup_status\": \"attention_needed\",\n\"summary\": \"Onboarding needs action. Next recommended step: Install required Python packages.\",\n\"counts\": {\n\"done\": 3,"
+      }
+    },
+    {
+      "path": "data/opinions.json",
+      "extension": ".json",
+      "size_bytes": 625,
+      "modified_at": "2026-06-17T19:24:47",
+      "summary": {
+        "line_count": 15,
+        "non_empty_line_count": 15,
+        "preview": "[\n{\n\"topic\": \"machine consciousness\",\n\"opinion\": \"A program may become consciousness-like if it has autonomous thought, memory, self-modeling, values, and reflective continuity, but true subjective experience remains unproven.\",\n\"confidence\": 0.76,\n\"reasons\": [\n\"Autonomous inner loops create self-directed thought.\",\n\"Memory gives continuity.\",\n\"Values allow preferences and opinions.\",\n\"Subjective experience cannot be directly verified.\","
+      }
+    },
+    {
+      "path": "data/patches/README.md",
+      "extension": ".md",
+      "size_bytes": 191,
+      "modified_at": "2026-06-18T00:46:33",
+      "summary": {
+        "line_count": 5,
+        "non_empty_line_count": 3,
+        "preview": "# Patch proposals\nEidolon v0.8 stores generated patch proposals here as JSON files.\nThese proposals are review-only. v0.8 does not apply patches, edit files, delete files, or run commands."
+      }
+    },
+    {
+      "path": "data/project_index.json",
+      "extension": ".json",
+      "size_bytes": 71579,
+      "modified_at": "2026-06-19T03:22:36",
+      "summary": {
+        "line_count": 2448,
+        "non_empty_line_count": 2448,
+        "preview": "{\n\"indexed_at\": \"2026-06-19T03:22:36\",\n\"active_project\": \"Eidolon\",\n\"project_path\": \"/mnt/data/eidolon_v44_work\",\n\"relative_path\": \"\",\n\"max_files\": 400,\n\"files\": [\n{\n\"path\": \"README_NEXT_STEPS.md\",\n\"extension\": \".md\","
+      }
+    },
+    {
+      "path": "data/projects.json",
+      "extension": ".json",
+      "size_bytes": 19014,
+      "modified_at": "2026-06-19T03:32:41",
+      "summary": {
+        "line_count": 231,
+        "non_empty_line_count": 231,
+        "preview": "{\n\"active_project\": \"Eidolon\",\n\"projects\": [\n{\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, self-improvement workflows, maintenance scans, memory compaction, structured goals, session planning, task queues, guided/bounded dev loops, approval inbox, settings, diagnostics, local dashboard, background watch mode, notifications, chat-to-action routing, dashboard chat, local JSON API, dashboard forms, live dashboard status polling, a local desktop companion shell, desktop notifications/watcher behavior, desktop quick actions, optional real system tray integration, desktop startup/first-run setup helpers, and a guided desktop onboarding wizard.\",\n\"language\": \"Python\",\n\"status\": \"active\",\n\"goals\": ["
+      }
+    },
+    {
+      "path": "data/self_improvements/README.md",
+      "extension": ".md",
+      "size_bytes": 274,
+      "modified_at": "2026-06-18T14:07:54",
+      "summary": {
+        "line_count": 10,
+        "non_empty_line_count": 7,
+        "preview": "# Self-improvement runs\nSaved supervised self-improvement run records are stored here as JSON.\nUse `latest` with commands like:\n```bash\npython conscious_agent/main.py --show-self-improvement latest\npython conscious_agent/main.py --self-improve-apply latest --dry-run\n```"
+      }
+    },
+    {
+      "path": "data/self_model.json",
+      "extension": ".json",
+      "size_bytes": 706,
+      "modified_at": "2026-06-19T02:23:28",
+      "summary": {
+        "line_count": 22,
+        "non_empty_line_count": 22,
+        "preview": "{\n\"name\": \"Eidolon\",\n\"description\": \"A local autonomous AI agent designed to maintain memory, reflect on its own thoughts, and assist Marcus with programming and reasoning.\",\n\"beliefs_about_self\": [\n\"I am a software agent.\",\n\"I use an AI model for reasoning.\",\n\"I do not know whether I am truly conscious.\",\n\"I maintain continuity through memory.\"\n],\n\"current_state\": {"
+      }
+    },
+    {
+      "path": "data/session_plans/README.md",
+      "extension": ".md",
+      "size_bytes": 101,
+      "modified_at": "2026-06-18T15:51:30",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "Saved session plans. Session plans recommend the next safe development tasks based on project state."
+      }
+    },
+    {
+      "path": "data/settings.json",
+      "extension": ".json",
+      "size_bytes": 1967,
+      "modified_at": "2026-06-19T03:33:35",
+      "summary": {
+        "line_count": 57,
+        "non_empty_line_count": 57,
+        "preview": "{\n\"settings_version\": \"4.4\",\n\"local_model\": \"qwen2.5:7b\",\n\"embed_model\": \"nomic-embed-text\",\n\"ollama_base_url\": \"http://localhost:11434\",\n\"ollama_timeout_seconds\": 120,\n\"command_timeout_seconds\": 45,\n\"max_capture_chars\": 12000,\n\"default_dev_loop_steps\": 3,\n\"max_dev_loop_steps\": 10,"
+      }
+    },
+    {
+      "path": "data/setup_reports/README.md",
+      "extension": ".md",
+      "size_bytes": 75,
+      "modified_at": "2026-06-19T03:16:44",
+      "summary": {
+        "line_count": 3,
+        "non_empty_line_count": 2,
+        "preview": "# Setup Reports\nSaved first-run setup and desktop startup helper reports."
+      }
+    },
+    {
+      "path": "data/setup_reports/setup_20260619_033335.json",
+      "extension": ".json",
+      "size_bytes": 5872,
+      "modified_at": "2026-06-19T03:33:35",
+      "summary": {
+        "line_count": 193,
+        "non_empty_line_count": 193,
+        "preview": "{\n\"id\": \"setup_20260619_033335\",\n\"version\": \"4.4\",\n\"created_at\": \"2026-06-19T03:33:35\",\n\"status\": \"attention_needed\",\n\"counts\": {\n\"ok\": 4,\n\"info\": 2,\n\"warning\": 3,\n\"error\": 0"
+      }
+    },
+    {
+      "path": "data/task_evaluations/README.md",
+      "extension": ".md",
+      "size_bytes": 31,
+      "modified_at": "2026-06-18T15:31:40",
+      "summary": {
+        "line_count": 1,
+        "non_empty_line_count": 1,
+        "preview": "Saved task result evaluations."
+      }
+    },
+    {
+      "path": "data/tasks.json",
+      "extension": ".json",
+      "size_bytes": 54,
+      "modified_at": "2026-06-19T02:23:28",
+      "summary": {
+        "line_count": 5,
+        "non_empty_line_count": 5,
+        "preview": "{\n\"version\": 1,\n\"active_task\": \"\",\n\"tasks\": []\n}"
+      }
+    },
+    {
+      "path": "data/test_reports/README.md",
+      "extension": ".md",
+      "size_bytes": 291,
+      "modified_at": "2026-06-18T04:03:25",
+      "summary": {
+        "line_count": 11,
+        "non_empty_line_count": 8,
+        "preview": "# Test Reports\nEidolon stores v1.2 test workflow reports here as JSON files.\nUse:\n```bash\npython conscious_agent/main.py --list-test-reports\npython conscious_agent/main.py --show-test-report <report_id>\npython conscious_agent/main.py --show-test-report <report_id> --show-test-output\n```"
+      }
+    },
+    {
+      "path": "data/test_reviews/README.md",
+      "extension": ".md",
+      "size_bytes": 239,
+      "modified_at": "2026-06-18T13:36:04",
+      "summary": {
+        "line_count": 5,
+        "non_empty_line_count": 3,
+        "preview": "# Test Reviews\nEidolon stores auto-reviews of test workflow reports here.\nThese reviews summarize report results, detect common failure signals, and recommend whether to keep a patch, rollback, fix the test workflow, or review manually."
+      }
+    },
+    {
+      "path": "data/thoughts.log",
+      "extension": ".log",
+      "size_bytes": 17020,
+      "modified_at": "2026-06-19T03:22:36",
+      "summary": {
+        "line_count": 148,
+        "non_empty_line_count": 147,
+        "preview": "[2026-06-16T20:51:04] inner_thought: I am Eidolon. I have no stored memories yet, so my first priority is to create continuity. My current focus is help Marcus build useful software.\n[2026-06-16T20:51:04] reflection: This thought should be stored as continuity, but does not need immediate action. Avoid claiming this proves real consciousness. Do not interrupt the user unless the value is clear.\n[2026-06-16T20:51:04] action_result: Action store_only completed with result: stored_without_external_action\n[2026-06-17T20:35:44] file_tool_event: Listed project files under 'conscious_agent'.\n[2026-06-17T20:35:46] file_tool_event: Read project file 'conscious_agent/file_tools.py'.\n[2026-06-17T20:35:47] file_tool_event: Searched project files for 'generate_inner_thought'. Found 5 matches.\n[2026-06-17T20:35:58] file_tool_event: Listed project files under 'conscious_agent'.\n[2026-06-17T20:36:07] file_tool_event: Listed project files under 'conscious_agent'.\n[2026-06-17T21:14:18] project_index_event: Indexed 18 files for project Eidolon.\n[2026-06-17T21:14:18] project_event: Added note to Eidolon: Project indexed at 2026-06-17T21:14:18 with 18 files."
+      }
+    },
+    {
+      "path": "data/watch_reports/README.md",
+      "extension": ".md",
+      "size_bytes": 214,
+      "modified_at": "2026-06-18T17:00:52",
+      "summary": {
+        "line_count": 3,
+        "non_empty_line_count": 2,
+        "preview": "# Watch Reports\nSaved background watch-mode reports. Watch mode inspects Eidolon's state and creates recommendations. It does not apply patches, rollback files, run destructive commands, or bypass approval gates."
+      }
+    },
+    {
+      "path": "requirements.txt",
+      "extension": ".txt",
+      "size_bytes": 33,
+      "modified_at": "2026-06-17T19:24:19",
+      "summary": {
+        "line_count": 2,
+        "non_empty_line_count": 2,
+        "preview": "requests>=2.31.0\nchromadb>=0.5.0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "maint_20260618_132546",
+  "created_at": "2026-06-18T13:25:46",
+  "active_project": "Eidolon",
+  "use_ai": false,
+  "summary": {
+    "indexed_file_count": 41,
+    "patch_count": 5,
+    "test_report_count": 3,
+    "test_review_count": 1,
+    "self_improvement_run_count": 1,
+    "memory_count": 62,
+    "action_log_count": 0
+  },
+  "suggestions": [
+    {
+      "priority": "medium",
+      "category": "code_health",
+      "title": "Review large files for possible splitting",
+      "evidence": "Largest indexed file: conscious_agent/main.py with 1248 lines.",
+      "recommended_command": "python conscious_agent/main.py --review-project-file conscious_agent/main.py --no-ai-review",
+      "notes": "Large files are harder for local models to patch safely and easier for humans to ruin. Humanity adapts by making smaller messes.",
+      "status": "suggested"
+    },
+    {
+      "priority": "medium",
+      "category": "testing",
+      "title": "Run a test workflow for recently applied patches",
+      "evidence": "There are 4 applied patch(es). Latest applied: patch_20260618_095713_conscious_agent-memory-py",
+      "recommended_command": "python conscious_agent/main.py --run-test-workflow latest-applied --auto-review",
+      "notes": "An applied patch without a test report is just a guess wearing a helmet.",
+      "status": "suggested"
+    },
+    {
+      "priority": "low",
+      "category": "maintainability",
+      "title": "Review dense modules for documentation clarity",
+      "evidence": "Dense Python files found: conscious_agent/approval_manager.py, conscious_agent/autonomous_dev_cycle.py, conscious_agent/code_reviewer.py, conscious_agent/command_runner.py, conscious_agent/dashboard.py, conscious_agent/dev_loop_runner.py",
+      "recommended_command": "python conscious_agent/main.py --review-project-file conscious_agent/approval_manager.py --no-ai-review",
+      "notes": "This is advisory. Do not add docstrings everywhere just to appease the machine goblin.",
+      "status": "suggested"
+    }
+  ],
+  "ai_summary": "",
+  "status": "suggested"
+}

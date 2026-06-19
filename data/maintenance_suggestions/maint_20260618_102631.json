@@ -1,0 +1,64 @@
+{
+  "id": "maint_20260618_102631",
+  "created_at": "2026-06-18T10:26:31",
+  "active_project": "Eidolon",
+  "use_ai": true,
+  "summary": {
+    "indexed_file_count": 26,
+    "patch_count": 5,
+    "test_report_count": 3,
+    "test_review_count": 1,
+    "self_improvement_run_count": 1,
+    "memory_count": 27,
+    "action_log_count": 0
+  },
+  "suggestions": [
+    {
+      "priority": "high",
+      "category": "patch_safety",
+      "title": "Manually inspect high-risk patch proposals",
+      "evidence": "High-risk proposed patch: patch_20260617_231303_conscious_agent-memory-py targeting conscious_agent\\memory.py",
+      "recommended_command": "python conscious_agent/main.py --show-patch patch_20260617_231303_conscious_agent-memory-py",
+      "notes": "Do not apply high-risk patches through the comfort of optimism. Optimism has broken enough builds.",
+      "status": "suggested"
+    },
+    {
+      "priority": "medium",
+      "category": "code_health",
+      "title": "Review large files for possible splitting",
+      "evidence": "Largest indexed file: conscious_agent/patch_applier.py with 584 lines.",
+      "recommended_command": "python conscious_agent/main.py --review-project-file conscious_agent/patch_applier.py --no-ai-review",
+      "notes": "Large files are harder for local models to patch safely and easier for humans to ruin. Humanity adapts by making smaller messes.",
+      "status": "suggested"
+    },
+    {
+      "priority": "medium",
+      "category": "patch_workflow",
+      "title": "Review proposed patches waiting for approval",
+      "evidence": "There are 1 proposed patch(es). Newest: patch_20260617_231303_conscious_agent-memory-py",
+      "recommended_command": "python conscious_agent/main.py --show-patch latest-proposed",
+      "notes": "Review the diff before applying. Future-you deserves fewer surprises, allegedly.",
+      "status": "suggested"
+    },
+    {
+      "priority": "medium",
+      "category": "testing",
+      "title": "Run a test workflow for recently applied patches",
+      "evidence": "There are 3 applied patch(es). Latest applied: patch_20260618_095713_conscious_agent-memory-py",
+      "recommended_command": "python conscious_agent/main.py --run-test-workflow latest-applied --auto-review",
+      "notes": "An applied patch without a test report is just a guess wearing a helmet.",
+      "status": "suggested"
+    },
+    {
+      "priority": "low",
+      "category": "maintainability",
+      "title": "Review dense modules for documentation clarity",
+      "evidence": "Dense Python files found: conscious_agent/code_reviewer.py, conscious_agent/command_runner.py, conscious_agent/file_tools.py, conscious_agent/main.py, conscious_agent/maintenance_advisor.py, conscious_agent/patch_applier.py",
+      "recommended_command": "python conscious_agent/main.py --review-project-file conscious_agent/code_reviewer.py --no-ai-review",
+      "notes": "This is advisory. Do not add docstrings everywhere just to appease the machine goblin.",
+      "status": "suggested"
+    }
+  ],
+  "ai_summary": "### Maintenance Summary:\n\n**Highest Priority Issue:** Manual inspection of high-risk patch proposals.\n\n**Safest Next Command:** `python conscious_agent/main.py --show-patch latest-proposed`\n\n**Why It Matters:** Ensures you review and understand the proposed changes before applying them, preventing potential build breaks or unintended behavior.\n\n**What Not to Do Yet:** Avoid applying patches through automated means without manual inspection. Optimism has led to enough issues; proceed with caution.",
+  "status": "suggested"
+}

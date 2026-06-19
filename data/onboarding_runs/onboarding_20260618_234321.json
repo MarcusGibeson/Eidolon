@@ -1,0 +1,187 @@
+{
+  "id": "onboarding_20260618_234321",
+  "version": "4.5",
+  "created_at": "2026-06-18T23:43:21",
+  "status": "attention_needed",
+  "setup_report_id": "setup_20260618_234321",
+  "setup_status": "attention_needed",
+  "summary": "Onboarding needs attention: 0 action step(s), 0 blocked step(s), 2 optional step(s).",
+  "counts": {
+    "done": 6,
+    "needs_action": 0,
+    "blocked": 0,
+    "optional": 2,
+    "ready": 1
+  },
+  "next_step": {
+    "id": "rerun_after_fixes",
+    "title": "Re-run onboarding after fixes",
+    "status": "ready",
+    "priority": "medium",
+    "description": "After handling the highest-priority steps, run the onboarding wizard again so it can stop complaining with evidence.",
+    "commands": [
+      "python conscious_agent/main.py --onboarding"
+    ],
+    "links": [],
+    "suggestions": [],
+    "related_check_ids": [],
+    "safe_to_auto_run": false
+  },
+  "steps": [
+    {
+      "id": "confirm_project_layout",
+      "title": "Project folder looks usable",
+      "status": "done",
+      "priority": "low",
+      "description": "The expected Eidolon files are present.",
+      "commands": [],
+      "links": [],
+      "suggestions": [],
+      "related_check_ids": [
+        "project_layout"
+      ],
+      "safe_to_auto_run": false
+    },
+    {
+      "id": "confirm_data_folder",
+      "title": "Data folder is writable",
+      "status": "done",
+      "priority": "low",
+      "description": "Eidolon can save memories, reports, notifications, and other local state.",
+      "commands": [],
+      "links": [],
+      "suggestions": [],
+      "related_check_ids": [
+        "data_writable"
+      ],
+      "safe_to_auto_run": false
+    },
+    {
+      "id": "confirm_required_packages",
+      "title": "Required packages are importable",
+      "status": "done",
+      "priority": "low",
+      "description": "Core Python dependencies are available.",
+      "commands": [],
+      "links": [],
+      "suggestions": [],
+      "related_check_ids": [
+        "required_packages"
+      ],
+      "safe_to_auto_run": false
+    },
+    {
+      "id": "install_optional_tray_packages",
+      "title": "Install optional tray packages",
+      "status": "optional",
+      "priority": "medium",
+      "description": "The desktop shell can run without these, but real system tray mode needs pystray and Pillow. Watcher fallback still works.",
+      "commands": [
+        "python -m pip install pystray pillow"
+      ],
+      "links": [],
+      "suggestions": [
+        "Install optional tray packages if you want a real system tray icon."
+      ],
+      "related_check_ids": [
+        "desktop_packages"
+      ],
+      "safe_to_auto_run": false
+    },
+    {
+      "id": "confirm_local_only_hosts",
+      "title": "Local-only service settings are safe",
+      "status": "done",
+      "priority": "low",
+      "description": "Dashboard and API hosts are configured for loopback/local-only use.",
+      "commands": [],
+      "links": [],
+      "suggestions": [],
+      "related_check_ids": [
+        "local_only_settings"
+      ],
+      "safe_to_auto_run": false
+    },
+    {
+      "id": "confirm_ollama",
+      "title": "Ollama looks ready",
+      "status": "done",
+      "priority": "low",
+      "description": "Ollama is responding and the configured local model settings look usable.",
+      "commands": [],
+      "links": [],
+      "suggestions": [],
+      "related_check_ids": [
+        "ollama"
+      ],
+      "safe_to_auto_run": false
+    },
+    {
+      "id": "confirm_dashboard",
+      "title": "Dashboard is responding",
+      "status": "done",
+      "priority": "low",
+      "description": "The dashboard-integrated API is already online.",
+      "commands": [],
+      "links": [
+        {
+          "label": "Dashboard",
+          "url": "http://127.0.0.1:8765"
+        }
+      ],
+      "suggestions": [],
+      "related_check_ids": [
+        "dashboard_service"
+      ],
+      "safe_to_auto_run": false
+    },
+    {
+      "id": "start_api_if_needed",
+      "title": "Start standalone API only if needed",
+      "status": "optional",
+      "priority": "low",
+      "description": "The dashboard already includes API routes. Start the standalone API only for external local tools or when you want the API without the dashboard.",
+      "commands": [
+        "python conscious_agent/main.py --api-server --api-host 127.0.0.1 --api-port 8766"
+      ],
+      "links": [
+        {
+          "label": "Standalone API",
+          "url": "http://127.0.0.1:8766/api"
+        }
+      ],
+      "suggestions": [
+        "Start the api service when needed."
+      ],
+      "related_check_ids": [
+        "api_service"
+      ],
+      "safe_to_auto_run": true
+    },
+    {
+      "id": "rerun_after_fixes",
+      "title": "Re-run onboarding after fixes",
+      "status": "ready",
+      "priority": "medium",
+      "description": "After handling the highest-priority steps, run the onboarding wizard again so it can stop complaining with evidence.",
+      "commands": [
+        "python conscious_agent/main.py --onboarding"
+      ],
+      "links": [],
+      "suggestions": [],
+      "related_check_ids": [],
+      "safe_to_auto_run": false
+    }
+  ],
+  "settings_snapshot": {
+    "dashboard_host": "127.0.0.1",
+    "dashboard_port": 8765,
+    "api_host": "127.0.0.1",
+    "api_port": 8766,
+    "local_model": "qwen2.5:7b",
+    "embed_model": "nomic-embed-text",
+    "desktop_real_tray_enabled": true,
+    "desktop_launch_dashboard_on_start": false
+  },
+  "safety": "Onboarding is advisory. It saves this runbook and setup report but does not install packages, change settings, start services, approve actions, apply patches, rollback files, or edit project files."
+}

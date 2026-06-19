@@ -1,0 +1,45 @@
+{
+  "id": "test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+  "created_at": "2026-06-18T10:00:51",
+  "started_at": "2026-06-18T10:00:39",
+  "finished_at": "2026-06-18T10:00:51",
+  "status": "passed",
+  "dry_run": false,
+  "patch": {
+    "patch_id": "patch_20260618_095713_conscious_agent-memory-py",
+    "patch_found": true,
+    "status": "applied",
+    "target_file": "conscious_agent\\memory.py",
+    "risk_level": "high",
+    "request": "Improve error handling when semantic memory is unavailable"
+  },
+  "commands": [
+    {
+      "command": "python conscious_agent/main.py --status",
+      "ok": true,
+      "dry_run": false,
+      "return_code": 0,
+      "stdout": "Name: Eidolon\nStored memories: 28\nOpinions: 1\nActive goals:\n- help Marcus build useful software\n- learn from previous interactions\n- form coherent opinions\n- avoid unsupported claims about consciousness\n\nActive project: Eidolon\nProjects:\n* Eidolon [Python] active\n  Path: \n  Description: A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved file editing, rollback support, approved command execution, a test-runner workflow, and auto-review of test reports.\n  Next steps:\n    - Test read-only file commands\n    - Add code analysis summaries\n    - Add approved patch suggestions\n    - Test project indexer commands\n    - Build code review mode\n",
+      "stderr": "",
+      "error": "",
+      "message": "Command completed successfully.",
+      "started_at": "2026-06-18T10:00:39",
+      "finished_at": "2026-06-18T10:00:40",
+      "cwd": "C:\\Users\\marcu\\Eidolon"
+    },
+    {
+      "command": "python conscious_agent/main.py --review-project-file conscious_agent/self_improver.py --no-ai-review",
+      "ok": true,
+      "dry_run": false,
+      "return_code": 0,
+      "stdout": "# Code Review: conscious_agent\\self_improver.py\n\n## Basic facts\n- Lines: 467\n- Characters reviewed: 16097 of 16097\n\n## Project index context\nNo matching project index entry found. Run --index-project to refresh the index.\n\n## Static review findings\n- Class 'SelfImprovementResult' has no docstring.\n- Function 'save_self_improvement_run' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'load_self_improvement_run' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'list_self_improvement_runs' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'self_improvement_run_text' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'print_self_improvement' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'print_self_improvement_apply' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'print_self_improvement_runs' has no docstring. Not fatal, but important public helpers may need one.\n- Function 'print_self_improvement_run' has no docstring. Not fatal, but important public helpers may need one.\n\n## Local AI review\nSkipped. Run without --no-ai-review to use the local Ollama model.\n",
+      "stderr": "",
+      "error": "",
+      "message": "Command completed successfully.",
+      "started_at": "2026-06-18T10:00:42",
+      "finished_at": "2026-06-18T10:00:49",
+      "cwd": "C:\\Users\\marcu\\Eidolon"
+    }
+  ],
+  "recommendation": "All checks passed after the applied patch. Recommendation: keep the patch for now."
+}

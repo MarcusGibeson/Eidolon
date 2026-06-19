@@ -1,0 +1,556 @@
+{
+  "id": "diag_20260618_224707",
+  "created_at": "2026-06-18T22:47:07",
+  "overall_status": "warn",
+  "counts": {
+    "pass": 10,
+    "info": 0,
+    "warn": 1,
+    "fail": 0
+  },
+  "recommendation": "System is usable, but review warnings before depending on autonomous workflows.",
+  "checks": [
+    {
+      "name": "python_environment",
+      "status": "pass",
+      "summary": "Python 3.11.9 is usable.",
+      "details": {
+        "python_version": "3.11.9",
+        "platform": "Windows-10-10.0.26200-SP0",
+        "executable": "C:\\Users\\marcu\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "cwd": "C:\\Users\\marcu\\Eidolon",
+        "root_dir": "C:\\Users\\marcu\\Eidolon",
+        "data_dir": "C:\\Users\\marcu\\Eidolon\\data"
+      }
+    },
+    {
+      "name": "dependencies",
+      "status": "pass",
+      "summary": "Required Python packages are importable.",
+      "details": {
+        "packages": {
+          "requests": true,
+          "chromadb": true
+        },
+        "missing": []
+      }
+    },
+    {
+      "name": "settings",
+      "status": "pass",
+      "summary": "Settings loaded successfully.",
+      "details": {
+        "settings_file": "C:\\Users\\marcu\\Eidolon\\data\\settings.json",
+        "missing_required_keys": [],
+        "selected": {
+          "local_model": "qwen2.5:7b",
+          "embed_model": "nomic-embed-text",
+          "ollama_base_url": "http://localhost:11434",
+          "command_timeout_seconds": 45,
+          "max_capture_chars": 12000,
+          "default_dev_loop_steps": 3,
+          "safe_mode": "strict"
+        }
+      }
+    },
+    {
+      "name": "ollama",
+      "status": "warn",
+      "summary": "Ollama is reachable, but configured model(s) are missing: nomic-embed-text",
+      "details": {
+        "checked_at": "2026-06-18T22:47:03",
+        "ollama_base_url": "http://localhost:11434",
+        "local_model": "qwen2.5:7b",
+        "embed_model": "nomic-embed-text",
+        "ollama_ok": true,
+        "ollama_version": "0.30.10",
+        "models": [
+          "nomic-embed-text:latest",
+          "qwen2.5:7b"
+        ],
+        "local_model_installed": true,
+        "embed_model_installed": false,
+        "errors": []
+      }
+    },
+    {
+      "name": "data_files",
+      "status": "pass",
+      "summary": "Core data JSON files exist and parse correctly.",
+      "details": {
+        "files": {
+          "settings.json": {
+            "exists": true,
+            "status": "ok",
+            "type": "dict",
+            "count": 31
+          },
+          "self_model.json": {
+            "exists": true,
+            "status": "ok",
+            "type": "dict",
+            "count": 5
+          },
+          "desires.json": {
+            "exists": true,
+            "status": "ok",
+            "type": "dict",
+            "count": 8
+          },
+          "opinions.json": {
+            "exists": true,
+            "status": "ok",
+            "type": "list",
+            "count": 1
+          },
+          "memories.json": {
+            "exists": true,
+            "status": "ok",
+            "type": "list",
+            "count": 89
+          },
+          "projects.json": {
+            "exists": true,
+            "status": "ok",
+            "type": "dict",
+            "count": 2
+          },
+          "goals.json": {
+            "exists": true,
+            "status": "ok",
+            "type": "dict",
+            "count": 3
+          },
+          "tasks.json": {
+            "exists": true,
+            "status": "ok",
+            "type": "dict",
+            "count": 3
+          },
+          "action_log.json": {
+            "exists": true,
+            "status": "ok",
+            "type": "list",
+            "count": 0
+          }
+        },
+        "missing": [],
+        "failures": []
+      }
+    },
+    {
+      "name": "storage_dirs",
+      "status": "pass",
+      "summary": "Expected storage directories exist.",
+      "details": {
+        "directories": {
+          "patches": {
+            "exists": true,
+            "is_dir": true
+          },
+          "backups": {
+            "exists": true,
+            "is_dir": true
+          },
+          "test_reports": {
+            "exists": true,
+            "is_dir": true
+          },
+          "test_reviews": {
+            "exists": true,
+            "is_dir": true
+          },
+          "self_improvements": {
+            "exists": true,
+            "is_dir": true
+          },
+          "maintenance_suggestions": {
+            "exists": true,
+            "is_dir": true
+          },
+          "memory_summaries": {
+            "exists": true,
+            "is_dir": true
+          },
+          "memory_archive": {
+            "exists": true,
+            "is_dir": true
+          },
+          "session_plans": {
+            "exists": true,
+            "is_dir": true
+          },
+          "task_evaluations": {
+            "exists": true,
+            "is_dir": true
+          },
+          "guided_sessions": {
+            "exists": true,
+            "is_dir": true
+          },
+          "dev_cycles": {
+            "exists": true,
+            "is_dir": true
+          },
+          "dev_loops": {
+            "exists": true,
+            "is_dir": true
+          },
+          "approvals": {
+            "exists": true,
+            "is_dir": true
+          },
+          "diagnostics": {
+            "exists": true,
+            "is_dir": true
+          }
+        },
+        "missing": []
+      }
+    },
+    {
+      "name": "project_state",
+      "status": "pass",
+      "summary": "Active project path exists: .",
+      "details": {
+        "active_project": {
+          "name": "Eidolon",
+          "path": "",
+          "description": "A local autonomous AI agent prototype with memory, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, self-improvement workflows, maintenance scans, memory compaction, structured goals, session planning, task queues, guided/bounded dev loops, approval inbox, settings, diagnostics, local dashboard, background watch mode, notifications, chat-to-action routing, dashboard chat, local JSON API, dashboard forms, live dashboard status polling, and a local desktop companion shell.",
+          "language": "Python",
+          "status": "active",
+          "goals": [
+            "Use the desktop shell as a launcher/status/chat bridge before adding tray notifications.",
+            "Keep the desktop shell local-only and routed through existing API safety gates.",
+            "Build v4.0 desktop companion shell using the local API.",
+            "Use live nav badges and KPI cards to reduce manual dashboard refreshing.",
+            "Keep live refresh read-only and separate from action execution.",
+            "Add live dashboard status polling from /api/status.",
+            "Keep dashboard-created patch requests proposal-only until explicitly approved.",
+            "Use dashboard forms as a bridge between chat/action planning and structured work tracking.",
+            "Create tasks, goals, and patch proposal requests from dashboard forms.",
+            "Use API server as foundation for future dashboard forms and desktop companion UI.",
+            "Keep API actions routed through existing approval and safety gates.",
+            "Add local JSON API endpoints for status, diagnostics, watch, notifications, approvals, chat actions, and dashboard chat.",
+            "Build dashboard chat console on top of chat-to-action routing",
+            "Keep dashboard actions routed through existing approval and safety gates.",
+            "Use dashboard action center as the safest next-step hub.",
+            "Build dashboard action center for safe next-step controls.",
+            "Improve dashboard inspection/details for watch reports, notifications, and approvals.",
+            "Build persistent identity and memory",
+            "Add semantic memory search",
+            "Add project awareness",
+            "Eventually support approved code edits and command execution",
+            "Add code analysis using read-only file tools",
+            "Add project indexing and basic code analysis",
+            "Build code review mode from the project index",
+            "Add code review mode",
+            "Use read-only review before patch suggestions",
+            "Add patch suggestion mode",
+            "Generate review-only diffs before approved edits",
+            "Keep all powerful actions permission-gated and logged",
+            "Add approved file editing with backups",
+            "Keep all writes explicit, logged, and reversible",
+            "Build rollback support before command execution",
+            "Add rollback support for applied patches",
+            "Keep all edits reversible before adding command execution",
+            "Add approved command execution with a strict whitelist",
+            "Use command output to test edits after patches",
+            "Keep command execution explicit, logged, timeout-limited, and reversible when possible",
+            "Add test-runner workflow after command execution",
+            "Use approved test workflows to evaluate applied patches",
+            "Save test reports and recommend keep or rollback review",
+            "Add auto-review after test workflows",
+            "Use report reviews to decide keep, rollback, fix workflow, or manual review",
+            "Keep rollback and command execution explicit and user-approved",
+            "Reduce manual id-copying with latest aliases and workflow shortcuts",
+            "Add limited autonomous maintenance suggestions",
+            "Use maintenance scans to identify safe next tasks without applying changes",
+            "Compact older memories into durable summaries",
+            "Keep active memory small enough for reliable local context",
+            "Add structured goal management",
+            "Use goals to track priorities, blockers, and next actions",
+            "Keep legacy active_goals synced from structured goals",
+            "Add session planner / daily brief from goals and maintenance scans",
+            "Use session plans to choose the next safe development task without applying changes",
+            "Add supervised task execution from queued tasks",
+            "Run task commands only through the approved command runner",
+            "Attach command results back to task history",
+            "Build v2.2 Task Result Evaluator",
+            "Add guided work sessions to reduce manual task workflow commands",
+            "Use one-step guided advancement to dry-run, execute, evaluate, and safely apply task recommendations",
+            "Use supervised dev cycle to connect planning, tasks, patches, tests, and evaluations one safe step at a time.",
+            "Add bounded autonomous dev-loop execution",
+            "Add approval inbox for permission-required dev-cycle actions",
+            "Keep patch apply and rollback gated through inspectable approval requests",
+            "Move runtime configuration out of hardcoded Python constants and into data/settings.json",
+            "Use settings for local model, embedding model, Ollama URL, command timeout, memory compaction defaults, and dev-loop limits",
+            "Maintain v2.8 health check and diagnostics workflow",
+            "Build local web dashboard",
+            "Add background watch mode for periodic state checks and safe recommendations",
+            "Use watch reports to notice diagnostics, approvals, patches, tests, tasks, memory, and planning needs without applying changes automatically",
+            "Surface important watch/dev-loop events as saved notifications",
+            "Add Dashboard Chat Console with safe action cards"
+          ],
+          "known_issues": [
+            "Desktop shell currently provides launcher/status/chat controls, not full tray integration.",
+            "Desktop companion requires Tkinter to be available in the local Python install.",
+            "Browser live polling depends on the dashboard-integrated local API being reachable.",
+            "Live refresh updates counts and status text, but full table rows still require a page reload.",
+            "Dashboard forms currently support creation, not full edit/delete CRUD for every item.",
+            "API is intentionally local-only by default and has no authentication layer for public exposure.",
+            "Chat-to-action currently uses deterministic intent matching rather than full local-AI intent parsing",
+            "No safe approved write/patch system yet",
+            "No command execution yet",
+            "Local model quality depends on the Ollama model installed",
+            "No code review mode yet",
+            "No approved patch suggestion system yet",
+            "No patch suggestion system yet",
+            "Patch proposals are generated but not applied yet",
+            "No backup/rollback system yet",
+            "Rollback is not automated yet",
+            "Applied patches require manual testing",
+            "No approved command execution yet",
+            "Rollback blocks if files changed after apply, requiring manual recovery if needed",
+            "Command runner is whitelist-only and does not yet summarize test results automatically",
+            "No automatic keep-or-rollback recommendation after command execution yet",
+            "No dedicated test-runner workflow yet",
+            "Test-runner workflow does not yet auto-rollback; rollback still requires explicit command",
+            "Test recommendations are rule-based and not yet deeply AI-analyzed",
+            "No automatic post-patch AI review of command output yet",
+            "Auto-review is advisory only and does not rollback automatically",
+            "AI review quality depends on the local Ollama model installed",
+            "Long patch/run/report ids are annoying to copy manually",
+            "Maintenance suggestions are advisory only and do not run commands or apply changes",
+            "No memory compaction/summarization workflow yet",
+            "Goals were previously loose strings in self_model.json and project metadata",
+            "Task execution is supervised and whitelist-only; it does not grant unrestricted terminal access",
+            "Task execution can run approved commands but does not decide automatically what to run without user command",
+            "Guided work sessions still advance only one step at a time and do not provide full autopilot",
+            "Approval inbox is explicit and supervised; it does not grant automatic permission to apply or rollback patches.",
+            "Settings changes do not bypass safety gates; file edits and rollbacks still require approval workflows.",
+            "Watch mode is advisory and does not apply patches, rollback files, approve actions, or run unsafe commands automatically.",
+            "Watch loops are bounded and stop when attention is needed instead of running forever.",
+            "Dashboard chat console still depends on local Ollama for conversational responses when enabled."
+          ],
+          "next_steps": [
+            "Use the Desktop dashboard page to verify local URLs and settings.",
+            "Test --desktop and --desktop-status on Windows.",
+            "Next: build v4.1 desktop notifications and tray behavior.",
+            "Next: build v4.0 desktop companion shell using the local API.",
+            "Add richer dashboard table live updates after the polling foundation proves stable.",
+            "Build a desktop companion shell that uses the local API.",
+            "Test /create, /tasks, /goals, and /patches dashboard forms.",
+            "Test /api/tasks, /api/goals, and /api/patches/suggest routes.",
+            "Test /api/status and /api/chat-actions routes from dashboard and standalone API server.",
+            "Use local API routes as the backend for future browser controls.",
+            "Create v3.6 dashboard chat console with action cards",
+            "Use Action Center to run diagnostics, watch, maintenance, session planning, and safe dev-loop dry-runs.",
+            "Test /actions dashboard route.",
+            "Create v3.4 Dashboard Action Center.",
+            "Build richer dashboard detail pages and notification workflows.",
+            "Next: add notifications or dashboard controls for watch mode",
+            "Use --show-watch-report latest --watch-full to inspect saved watch reports",
+            "Test v3.0 watch mode with --watch-once --no-ai-watch",
+            "Test v2.6 approval inbox with --approval-inbox and --show-approval latest-pending",
+            "Use --approve latest-pending --dry-run before approving any action",
+            "Next: build settings/config manager so model names and safety limits are editable without changing Python",
+            "Test v2.5 bounded dev loop with dry-run and no-AI mode",
+            "Next: build task progress evaluator / automatic task result review",
+            "Use --task-execution-history latest after running a task command",
+            "Test task execution with --execute-task latest-ready --dry-run",
+            "Build v2.1 task execution assistant after task queue is tested",
+            "Use task queue to track session-plan recommendations",
+            "Test read-only file commands",
+            "Add code analysis summaries",
+            "Add approved patch suggestions",
+            "Test project indexer commands",
+            "Build code review mode",
+            "Add patch suggestion workflow",
+            "Test code review mode on brain.py",
+            "Build patch suggestion mode next",
+            "Test patch suggestion mode on a small file",
+            "Build approved file editing with backups next",
+            "Add rollback support before command execution",
+            "Test approved patch application with --dry-run first",
+            "Build rollback support next",
+            "Add post-patch test running after command execution exists",
+            "Test rollback with --dry-run first",
+            "Build approved command execution next",
+            "Add test runner after command execution exists",
+            "Test approved command execution with --dry-run first",
+            "Run a safe status command through command_runner.py",
+            "Build test-runner workflow next",
+            "Add post-patch review that recommends keep or rollback",
+            "Test v1.2 test-runner workflow with --dry-run first",
+            "Run test workflow after applying a small patch",
+            "Build auto-review after patch next",
+            "Test auto-review with --review-test-report latest",
+            "Build supervised self-improvement workflow next",
+            "Add limited autonomous maintenance suggestions after supervised self-improvement is stable.",
+            "Add limited autonomous maintenance suggestions",
+            "Test maintenance scans with --maintenance-scan --no-ai-maintenance",
+            "Build memory compaction / summarization next",
+            "Test memory compaction dry-run",
+            "Run real compaction after memory count grows beyond threshold",
+            "Test structured goal commands",
+            "Use --goal-status and --list-goals during development",
+            "Test session planner with --plan-session --no-ai-session",
+            "Use --show-session-plan latest before choosing next development task",
+            "Next: build task queue / session execution checklist from session plans",
+            "Build v2.3 Guided Work Session",
+            "Test guided work sessions with --guided-work-session and --advance-work-session",
+            "Test --dev-cycle and --advance-dev-cycle with dry-run first.",
+            "Next: build v2.8 Health Check / Diagnostics to verify dependencies, Ollama, models, project paths, memory, and recent failures.",
+            "Run --diagnostics before dev loops or patch approval",
+            "Use --show-diagnostic-report latest --diagnostics-full when troubleshooting",
+            "Build background watch mode",
+            "Add dashboard watch controls and richer notification handling",
+            "Build dashboard task/approval creation forms"
+          ],
+          "notes": [
+            "The desktop shell can launch local services and run safe report actions, but it does not bypass approvals.",
+            "v4.0 added a standard-library Tkinter desktop companion shell that talks to the local API.",
+            "v3.2 added dashboard watch controls for one-shot watch checks and bounded watch loops from the browser.",
+            "Powerful actions should remain permission-gated and logged.",
+            "Read-only file tools added in v0.5. They can list, read, and search files inside the active project folder only.",
+            "Project indexer added in v0.6. It builds data/project_index.json and extracts basic Python structure read-only.",
+            "Patch suggestion mode added in v0.8. It generates saved diffs under data/patches but does not apply them.",
+            "v0.8 keeps all patch behavior read-only until an explicit approved editing workflow exists.",
+            "Approved file editing added in v0.9. Saved patches can be applied only through an explicit command.",
+            "Patch application creates backups under data/backups and logs actions to data/action_log.json.",
+            "Rollback support is the next safety layer before command execution.",
+            "Rollback system added in v1.0. Applied patches can be restored from backups with explicit command.",
+            "Rollback checks current file hash before restoring to avoid overwriting newer work.",
+            "Approved command execution added in v1.1. Commands are parsed with shell=False and checked against a whitelist.",
+            "Command runner blocks destructive commands, package installs, network calls, shell wrappers, pipes, redirection, and risky git commands.",
+            "Test-runner workflow added in v1.2. It runs approved commands through command_runner.py and saves reports under data/test_reports.",
+            "Test workflow reports include command results, patch context, and a keep/review-or-rollback recommendation.",
+            "Auto-review after patch added in v1.3. It reviews saved test reports and recommends keep, rollback, fix workflow, or manual review.",
+            "Test reviews are saved under data/test_reviews and do not execute commands or modify files.",
+            "v1.4 adds supervised self-improvement workflow for review, patch, apply, test, and auto-review.",
+            "v1.5 added latest/latest-proposed/latest-applied/latest-rolled-back aliases and --latest-ids.",
+            "v1.7 adds memory compaction/summarization with archives, dry-run support, summary aliases, and semantic memory rebuild after compaction.",
+            "v1.9 adds session planner. It creates read-only next-session plans from goals, maintenance scans, memory summaries, patch state, and test reports.",
+            "Session plans are advisory only and do not run commands or apply changes.",
+            "Project indexed at 2026-06-18T14:53:26 with 29 files.",
+            "v2.0 added structured task queue with latest aliases and session-plan task creation.",
+            "Project indexed at 2026-06-18T15:10:19 with 30 files.",
+            "v2.1 adds task execution assistant. It runs queued task commands through command_runner.py and stores results on the task.",
+            "Task execution supports dry-run and command index selection for primary/follow-up commands.",
+            "Project indexed at 2026-06-18T15:18:34 with 31 files.",
+            "v2.2 added task result evaluations that recommend completion, retry, blocking, or manual review based on execution history.",
+            "Project indexed at 2026-06-18T15:32:31 with 32 files.",
+            "v2.3 adds guided work sessions. It shows next safe task steps and advances one supervised step at a time.",
+            "Project indexed at 2026-06-18T15:36:38 with guided work session support.",
+            "Project indexed at 2026-06-18T15:37:22 with 33 files.",
+            "Project indexed at 2026-06-18T15:37:29 with 33 files.",
+            "v2.4 added supervised autonomous dev cycle orchestration for choosing and advancing the next safe development step.",
+            "Project indexed at 2026-06-18T15:51:18 with 34 files.",
+            "Project indexed at 2026-06-18T16:03:27 with 35 files.",
+            "v2.6 added approval_manager.py and data/approvals for inspectable pending approval requests.",
+            "Dev cycles and bounded dev loops now create approval requests when patch apply or rollback is required.",
+            "Approvals route through existing safe systems and can be dry-run, approved, or rejected.",
+            "Project indexed at 2026-06-18T16:14:25 with 36 files.",
+            "v2.7 added settings_manager.py and data/settings.json for configurable local models, timeouts, loop limits, AI toggles, and safety preferences.",
+            "local_brain.py now reads model names and Ollama URL from settings and supports modern and legacy embedding endpoints.",
+            "Project indexed at 2026-06-18T16:25:15 with 37 files.",
+            "v2.8 adds diagnostics reports for settings, Ollama, dependencies, memory, project index, workflow backlog, and command safety.",
+            "Project indexed at 2026-06-18T16:33:09 with 38 files.",
+            "v2.9 added a local web dashboard for overview, tasks, approvals, patches, goals, diagnostics, settings, and recent activity.",
+            "Project indexed at 2026-06-18T16:42:15 with 39 files.",
+            "Project indexed at 2026-06-18T17:02:45 with 40 files.",
+            "Project indexed at 2026-06-18T17:13:59 with 41 files.",
+            "v3.1 added notification_manager.py, saved notification records, notification CLI commands, watch-report notification creation, and dashboard notification panel/actions.",
+            "Project indexed at 2026-06-18T17:14:46 with 41 files.",
+            "Project indexed at 2026-06-18T17:18:57 with 41 files.",
+            "Project indexed at 2026-06-18T17:28:42 with 41 files.",
+            "Project indexed at 2026-06-18T17:33:21 with 41 files.",
+            "Project indexed at 2026-06-18T17:49:00 with 42 files.",
+            "Project indexed at 2026-06-19T00:47:23 with 43 files.",
+            "Project indexed at 2026-06-19T02:15:36 with 81 files.",
+            "Project indexed at 2026-06-19T02:23:35 with 80 files.",
+            "Project indexed at 2026-06-19T02:24:26 with 80 files.",
+            "Project indexed at 2026-06-19T02:32:44 with 80 files.",
+            "Project indexed at 2026-06-19T02:41:03 with 45 files."
+          ],
+          "created_at": "2026-06-17T20:30:00",
+          "last_worked_on": "2026-06-19T02:41:03"
+        },
+        "path_exists": true,
+        "is_dir": true
+      }
+    },
+    {
+      "name": "project_index",
+      "status": "pass",
+      "summary": "Project index contains 45 files.",
+      "details": {
+        "index_file": "C:\\Users\\marcu\\Eidolon\\data\\project_index.json",
+        "indexed_at": "2026-06-19T02:41:03",
+        "active_project": "Eidolon",
+        "files_indexed": 45,
+        "parse_errors": []
+      }
+    },
+    {
+      "name": "memory",
+      "status": "pass",
+      "summary": "Memory is readable with 89 active memories.",
+      "details": {
+        "memories_json_status": "ok",
+        "active_memory_count": 89,
+        "chroma_dir_exists": true,
+        "chromadb_importable": true,
+        "vector_collection_count": 194,
+        "vector_error": null
+      }
+    },
+    {
+      "name": "command_runner",
+      "status": "pass",
+      "summary": "Command runner allows the baseline status command.",
+      "details": {
+        "status_command_allowed": true,
+        "reason": "",
+        "args": [
+          "python",
+          "conscious_agent/main.py",
+          "--status"
+        ]
+      }
+    },
+    {
+      "name": "workflow_backlog",
+      "status": "pass",
+      "summary": "No obvious workflow backlog found.",
+      "details": {
+        "patches": {
+          "total": 5,
+          "proposed": 0,
+          "applied": 4
+        },
+        "approvals": {
+          "total": 1,
+          "pending": 0
+        },
+        "tasks": {
+          "total": 0,
+          "ready": 0,
+          "active": 0,
+          "blocked": 0
+        },
+        "goals": {
+          "total": 0,
+          "active": 0,
+          "blocked": 0
+        },
+        "action_log": {
+          "total": 0,
+          "recent_failures": [],
+          "failure_count": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "id": "setup_20260618_232410",
+  "version": "4.4",
+  "created_at": "2026-06-18T23:24:10",
+  "status": "attention_needed",
+  "counts": {
+    "ok": 6,
+    "info": 2,
+    "warning": 1,
+    "error": 0
+  },
+  "summary": "Setup needs attention: 1 warning(s), 0 error(s).",
+  "checks": [
+    {
+      "id": "python_runtime",
+      "title": "Python runtime",
+      "status": "ok",
+      "severity": "info",
+      "message": "Python 3.11.9 on Windows 10.",
+      "details": {
+        "executable": "C:\\Users\\marcu\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "version_info": [
+          3,
+          11,
+          9
+        ],
+        "platform": "Windows-10-10.0.26200-SP0"
+      },
+      "suggestions": [],
+      "commands": []
+    },
+    {
+      "id": "project_layout",
+      "title": "Project layout",
+      "status": "ok",
+      "severity": "info",
+      "message": "Required project files are present.",
+      "details": {
+        "project_root": "C:\\Users\\marcu\\Eidolon",
+        "main_file": "C:\\Users\\marcu\\Eidolon\\conscious_agent\\main.py"
+      },
+      "suggestions": [],
+      "commands": []
+    },
+    {
+      "id": "data_writable",
+      "title": "Data directory writable",
+      "status": "ok",
+      "severity": "info",
+      "message": "Eidolon can write to its data directory.",
+      "details": {
+        "data_dir": "C:\\Users\\marcu\\Eidolon\\data"
+      },
+      "suggestions": [],
+      "commands": []
+    },
+    {
+      "id": "required_packages",
+      "title": "Required Python packages",
+      "status": "ok",
+      "severity": "info",
+      "message": "Required Python packages are importable.",
+      "details": {
+        "packages": [
+          "requests>=2.31.0",
+          "chromadb>=0.5.0"
+        ]
+      },
+      "suggestions": [],
+      "commands": []
+    },
+    {
+      "id": "desktop_packages",
+      "title": "Desktop and tray packages",
+      "status": "warning",
+      "severity": "warning",
+      "message": "Desktop shell can run, but real tray support is missing optional packages. Watcher fallback still works.",
+      "details": {
+        "tkinter": true,
+        "pystray": false,
+        "pillow": false,
+        "missing_optional": [
+          "pystray",
+          "pillow"
+        ]
+      },
+      "suggestions": [
+        "Install optional tray packages if you want a real system tray icon."
+      ],
+      "commands": [
+        "python -m pip install pystray pillow"
+      ]
+    },
+    {
+      "id": "local_only_settings",
+      "title": "Local-only host settings",
+      "status": "ok",
+      "severity": "info",
+      "message": "Dashboard and API hosts are local-only.",
+      "details": {
+        "dashboard_host": "127.0.0.1",
+        "api_host": "127.0.0.1"
+      },
+      "suggestions": [],
+      "commands": []
+    },
+    {
+      "id": "ollama",
+      "title": "Ollama service and models",
+      "status": "ok",
+      "severity": "info",
+      "message": "Ollama is responding and configured models appear available.",
+      "details": {
+        "base_url": "http://localhost:11434",
+        "configured_local_model": "qwen2.5:7b",
+        "configured_embed_model": "nomic-embed-text",
+        "installed_models": [
+          "nomic-embed-text:latest",
+          "qwen2.5:7b"
+        ]
+      },
+      "suggestions": [],
+      "commands": []
+    },
+    {
+      "id": "dashboard_service",
+      "title": "Dashboard service",
+      "status": "info",
+      "severity": "info",
+      "message": "Dashboard service is not running, and port 8765 appears available.",
+      "details": {
+        "url": "http://127.0.0.1:8765/api/status",
+        "connect_error": "timed out",
+        "bind": "port can be bound"
+      },
+      "suggestions": [
+        "Start the dashboard service when needed."
+      ],
+      "commands": [
+        "python conscious_agent/main.py --dashboard --dashboard-host 127.0.0.1 --dashboard-port 8765"
+      ]
+    },
+    {
+      "id": "api_service",
+      "title": "Api service",
+      "status": "info",
+      "severity": "info",
+      "message": "Api service is not running, and port 8766 appears available.",
+      "details": {
+        "url": "http://127.0.0.1:8766/api/status",
+        "connect_error": "timed out",
+        "bind": "port can be bound"
+      },
+      "suggestions": [
+        "Start the api service when needed."
+      ],
+      "commands": [
+        "python conscious_agent/main.py --api-server --api-host 127.0.0.1 --api-port 8766"
+      ]
+    }
+  ],
+  "suggested_commands": [
+    "python -m pip install pystray pillow",
+    "python conscious_agent/main.py --dashboard --dashboard-host 127.0.0.1 --dashboard-port 8765",
+    "python conscious_agent/main.py --api-server --api-host 127.0.0.1 --api-port 8766"
+  ],
+  "suggestions": [
+    "Install optional tray packages if you want a real system tray icon.",
+    "Start the dashboard service when needed.",
+    "Start the api service when needed."
+  ],
+  "settings_snapshot": {
+    "dashboard_host": "127.0.0.1",
+    "dashboard_port": 8765,
+    "api_host": "127.0.0.1",
+    "api_port": 8766,
+    "ollama_base_url": "http://localhost:11434",
+    "local_model": "qwen2.5:7b",
+    "embed_model": "nomic-embed-text",
+    "desktop_real_tray_enabled": true,
+    "desktop_tray_fallback_to_watcher": true
+  },
+  "safety": "Setup helper is read-only except saving this report. It recommends commands but does not install packages, edit files, or expose services."
+}

@@ -1,0 +1,26 @@
+{
+  "id": "note_20260618_132557_386ea7",
+  "type": "diagnostics",
+  "severity": "warning",
+  "title": "Review diagnostic warnings",
+  "message": "System is usable, but review warnings before depending on autonomous workflows.",
+  "recommended_command": "python conscious_agent/main.py --show-diagnostic-report latest --diagnostics-full",
+  "status": "unread",
+  "created_at": "2026-06-18T13:25:57",
+  "last_seen_at": "2026-06-18T13:44:08",
+  "seen_count": 2,
+  "source": "watch_mode",
+  "related_id": "watch_20260618_132553",
+  "dedupe_key": "watch_recommendation:diagnostics:Review diagnostic warnings:python conscious_agent/main.py --show-diagnostic-report latest --diagnostics-full",
+  "metadata": {
+    "watch_report_id": "watch_20260618_134400",
+    "recommendation": {
+      "priority": "medium",
+      "category": "diagnostics",
+      "title": "Review diagnostic warnings",
+      "reason": "System is usable, but review warnings before depending on autonomous workflows.",
+      "recommended_command": "python conscious_agent/main.py --show-diagnostic-report latest --diagnostics-full",
+      "risk": "low"
+    }
+  }
+}

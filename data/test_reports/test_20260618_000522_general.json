@@ -1,0 +1,42 @@
+{
+  "id": "test_20260618_000522_general",
+  "created_at": "2026-06-18T00:05:29",
+  "started_at": "2026-06-18T00:05:22",
+  "finished_at": "2026-06-18T00:05:29",
+  "status": "passed",
+  "dry_run": false,
+  "patch": {
+    "patch_id": "",
+    "patch_found": false,
+    "message": "No patch id supplied. Running a general test workflow."
+  },
+  "commands": [
+    {
+      "command": "python conscious_agent/main.py --status",
+      "ok": true,
+      "dry_run": false,
+      "return_code": 0,
+      "stdout": "Name: Eidolon\nStored memories: 20\nOpinions: 1\nActive goals:\n- help Marcus build useful software\n- learn from previous interactions\n- form coherent opinions\n- avoid unsupported claims about consciousness\n\nActive project: Eidolon\nProjects:\n* Eidolon [Python] active\n  Path: \n  Description: A local autonomous AI agent prototype with memory, inner thoughts, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved file editing, rollback support, approved command execution, and a test-runner workflow.\n  Next steps:\n    - Test read-only file commands\n    - Add code analysis summaries\n    - Add approved patch suggestions\n    - Test project indexer commands\n    - Build code review mode\n",
+      "stderr": "",
+      "error": "",
+      "message": "Command completed successfully.",
+      "started_at": "2026-06-18T00:05:22",
+      "finished_at": "2026-06-18T00:05:23",
+      "cwd": "C:\\Users\\marcu\\Eidolon"
+    },
+    {
+      "command": "python conscious_agent/main.py --project-index-summary",
+      "ok": true,
+      "dry_run": false,
+      "return_code": 0,
+      "stdout": "Indexed at: 2026-06-18T04:04:08\nActive project: Eidolon\nProject path: /mnt/data/eidolon_v12_work/Eidolon\nFiles indexed: 23\n\nFiles by extension:\n  .py: 23\n\nPython structure:\n\nconscious_agent/actions.py\n  Functions: perform_action\n\nconscious_agent/brain.py\n  Functions: generate_inner_thought, generate_local_ai_thought, generate_local_logic_thought\n\nconscious_agent/chat.py\n  Functions: build_chat_state, create_chat_response, get_related_memories, run_chat\n\nconscious_agent/code_reviewer.py\n  Classes: ReviewResult\n  Functions: _ai_review, _generic_static_review, _line_count, _project_index_context, _python_static_review, print_code_review, review_project_file, static_review\n\nconscious_agent/command_runner.py\n  Classes: CommandRunResult, CommandValidation\n  Functions: _append_action_log, _contains_blocked_token, _ensure_action_log, _is_git_command, _is_pytest_command, _is_python_main_command, _load_action_log, _log_command_result, _normalize_token, _save_action_log, _truncate, allowed_commands_text, command_history, print_allowed_commands, print_command_history, print_run_command, run_approved_command, validate_command\n\nconscious_agent/desires.py\n  Functions: load_desires, save_desires\n\nconscious_agent/file_tools.py\n  Classes: FileReadResult\n  Functions: active_project_root, is_probably_text_file, list_project_files, project_tree_text, read_project_file, safe_project_path, search_project_files, should_ignore\n\nconscious_agent/inner_loop.py\n  Functions: run_cycle, run_loop\n\nconscious_agent/local_brain.py\n  Functions: local_embed, local_generate, local_generate_json\n\nconscious_agent/main.py\n  Functions: main, print_keyword_search, print_project_file, print_project_file_search, print_project_tree, print_semantic_search, print_status, rebuild_semantic_memory\n\nconscious_agent/memory.py\n  Functions: load_json, load_memories, save_json, search_memories, store_memory\n\nconscious_agent/opinions.py\n  Functions: load_opinions, nudge_opinion, save_opinions\n\nconscious_agent/patch_applier.py\n  Classes: PatchApplyResult, PatchRollbackResult\n  Functions: _append_action_log, _backup_file_path, _ensure_storage, _load_action_log, _save_action_log, _sha256, _validate_patch_for_apply, _validate_patch_for_rollback, applied_patches, apply_patch, print_applied_patches, print_apply_patch, print_rollback_patch, print_rolled_back_patches, rollback_patch, rolled_back_patches\n\nconscious_agent/patch_suggester.py\n  Classes: PatchSuggestionResult\n  Functions: _build_patch_prompt, _ensure_patches_dir, _extract_proposed_content, _make_unified_diff, _new_patch_id, _project_index_context, _proposal_path, _risk_level, _sha256, _slugify, list_patch_proposals, load_patch_proposal, patch_proposal_text, print_patch_list, print_patch_proposal, print_patch_suggestion, save_patch_proposal, suggest_patch\n\nconscious_agent/planner.py\n  Functions: choose_action\n\nconscious_agent/project_indexer.py\n  Functions: index_project, is_indexable_file, load_project_index, print_project_index_search, print_project_index_summary, project_index_search_text, project_index_summary_text, save_project_index, search_project_index, summarize_generic_file, summarize_python_file\n\nconscious_agent/project_manager.py\n  Functions: add_project, add_project_item, get_active_project, get_project, lines, list_projects, load_projects_data, print_project_status, project_context_text, save_projects_data, set_active_project\n\nconscious_agent/reflection.py\n  Functions: reflect_on_thought\n\nconscious_agent/safety.py\n  Functions: is_action_allowed\n\nconscious_agent/self_model.py\n  Functions: load_self_model, save_self_model, update_focus\n\nconscious_agent/test_runner.py\n  Classes: TestWorkflowResult\n  Functions: _append_action_log, _ensure_storage, _evaluate_results, _indent, _load_action_log, _new_report_id, _normalize_commands, _patch_context, _report_path, _save_action_log, list_test_reports, load_test_report, print_test_report, print_test_reports, print_test_workflow, run_test_workflow, save_test_report, test_report_text\n\nconscious_agent/vector_memory.py\n  Functions: _get_chromadb, _memory_content, add_memory_vector, get_collection, rebuild_vector_memory, search_memory_vectors\n",
+      "stderr": "",
+      "error": "",
+      "message": "Command completed successfully.",
+      "started_at": "2026-06-18T00:05:26",
+      "finished_at": "2026-06-18T00:05:27",
+      "cwd": "C:\\Users\\marcu\\Eidolon"
+    }
+  ],
+  "recommendation": "All checks passed. No patch-specific recommendation was needed."
+}

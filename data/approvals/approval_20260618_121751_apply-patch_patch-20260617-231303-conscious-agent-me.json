@@ -1,0 +1,44 @@
+{
+  "id": "approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me",
+  "type": "approval_request",
+  "created_at": "2026-06-18T12:17:51",
+  "updated_at": "2026-06-18T12:18:32",
+  "status": "approved",
+  "action_type": "apply_patch",
+  "summary": "Apply proposed patch patch_20260617_231303_conscious_agent-memory-py to conscious_agent\\memory.py",
+  "reason": "A proposed patch exists. Review it before any file write.",
+  "object_id": "patch_20260617_231303_conscious_agent-memory-py",
+  "command": "python conscious_agent/main.py --apply-patch patch_20260617_231303_conscious_agent-memory-py",
+  "risk_level": "high",
+  "source": "dev_loop_runner",
+  "metadata": {
+    "target_file": "conscious_agent\\memory.py"
+  },
+  "notes": [],
+  "result": {
+    "ok": true,
+    "patch_id": "patch_20260617_231303_conscious_agent-memory-py",
+    "target_file": "conscious_agent\\memory.py",
+    "message": "Patch applied successfully.",
+    "backup_path": "C:\\Users\\marcu\\Eidolon\\data\\backups\\patch_20260617_231303_conscious_agent-memory-py\\conscious_agent\\memory.py",
+    "error": "",
+    "dry_run": false
+  },
+  "useful_commands": [
+    "python conscious_agent/main.py --show-approval approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me",
+    "python conscious_agent/main.py --approve approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me --dry-run",
+    "python conscious_agent/main.py --approve approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me",
+    "python conscious_agent/main.py --reject approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me --approval-note \"Reason here\""
+  ],
+  "last_dry_run_at": "2026-06-18T12:17:57",
+  "last_dry_run_result": {
+    "ok": true,
+    "patch_id": "patch_20260617_231303_conscious_agent-memory-py",
+    "target_file": "conscious_agent\\memory.py",
+    "message": "Dry run passed. Patch is safe to apply based on current checks.",
+    "backup_path": "",
+    "error": "",
+    "dry_run": true
+  },
+  "resolved_at": "2026-06-18T12:18:32"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "chat_action_20260618_215614_run-diagnostics",
+  "type": "chat_action",
+  "created_at": "2026-06-18T21:56:14",
+  "updated_at": "2026-06-18T21:56:14",
+  "status": "proposed",
+  "user_request": "Run diagnostics",
+  "intent": "run_diagnostics",
+  "title": "Run diagnostics",
+  "summary": "Run a diagnostics report.",
+  "explanation": "This maps to an approved read-only or low-risk command.",
+  "execution_mode": "direct_command",
+  "risk_level": "low",
+  "command": "python conscious_agent/main.py --diagnostics",
+  "function_name": "",
+  "function_args": {},
+  "approval_action_type": "",
+  "approval_object_id": "",
+  "approval_command": "",
+  "blocked_reason": "",
+  "source": "chat_action_router",
+  "result": {},
+  "approval_id": "",
+  "useful_commands": [
+    "python conscious_agent/main.py --show-chat-action chat_action_20260618_215614_run-diagnostics",
+    "python conscious_agent/main.py --execute-chat-action chat_action_20260618_215614_run-diagnostics --dry-run",
+    "python conscious_agent/main.py --execute-chat-action chat_action_20260618_215614_run-diagnostics"
+  ]
+}

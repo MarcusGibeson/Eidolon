@@ -1,0 +1,26 @@
+{
+  "id": "note_20260618_132559_e3c13b",
+  "type": "test_reviews",
+  "severity": "warning",
+  "title": "Review latest unreviewed test report",
+  "message": "Test report test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py has no saved review.",
+  "recommended_command": "python conscious_agent/main.py --review-test-report test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+  "status": "unread",
+  "created_at": "2026-06-18T13:25:59",
+  "last_seen_at": "2026-06-18T13:44:08",
+  "seen_count": 2,
+  "source": "watch_mode",
+  "related_id": "watch_20260618_132553",
+  "dedupe_key": "watch_recommendation:test_reviews:Review latest unreviewed test report:python conscious_agent/main.py --review-test-report test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+  "metadata": {
+    "watch_report_id": "watch_20260618_134400",
+    "recommendation": {
+      "priority": "medium",
+      "category": "test_reviews",
+      "title": "Review latest unreviewed test report",
+      "reason": "Test report test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py has no saved review.",
+      "recommended_command": "python conscious_agent/main.py --review-test-report test_20260618_100039_patch_20260618_095713_conscious_agent-memory-py",
+      "risk": "low"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "note_20260618_131635_99d728",
+  "type": "planning",
+  "severity": "warning",
+  "title": "Create or queue a next task",
+  "message": "No ready or active task was found.",
+  "recommended_command": "python conscious_agent/main.py --plan-session --no-ai-session",
+  "status": "read",
+  "created_at": "2026-06-18T13:16:35",
+  "last_seen_at": "2026-06-18T13:16:35",
+  "seen_count": 1,
+  "source": "watch_mode",
+  "related_id": "watch_20260618_131627",
+  "dedupe_key": "watch_recommendation:planning:Create or queue a next task:python conscious_agent/main.py --plan-session --no-ai-session",
+  "metadata": {
+    "watch_report_id": "watch_20260618_131627",
+    "recommendation": {
+      "priority": "medium",
+      "category": "planning",
+      "title": "Create or queue a next task",
+      "reason": "No ready or active task was found.",
+      "recommended_command": "python conscious_agent/main.py --plan-session --no-ai-session",
+      "risk": "low"
+    }
+  },
+  "updated_at": "2026-06-18T13:16:42"
+}
