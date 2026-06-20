@@ -1,0 +1,52 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "default_profile": "source-only",
+  "profiles": [
+    {
+      "id": "source-only",
+      "share_safe": true,
+      "default": true,
+      "description": "Source files plus allowlisted seed/config metadata only; excludes private runtime state."
+    },
+    {
+      "id": "developer-local",
+      "share_safe": false,
+      "default": false,
+      "description": "Local developer handoff with selected generated reports, never chat/memory/vector stores."
+    },
+    {
+      "id": "diagnostic",
+      "share_safe": false,
+      "default": false,
+      "description": "Local diagnostic bundle with selected debug reports for troubleshooting."
+    },
+    {
+      "id": "full-backup",
+      "share_safe": false,
+      "default": false,
+      "description": "Local-only backup profile; never marked share-safe."
+    }
+  ],
+  "rows": [
+    {
+      "name": "default-profile",
+      "status": "pass",
+      "message": "source-only is the default guarded release profile."
+    },
+    {
+      "name": "share-safe-profile",
+      "status": "pass",
+      "message": "Only source-only is share-safe."
+    },
+    {
+      "name": "profile-count",
+      "status": "pass",
+      "message": "4 release profiles are defined."
+    }
+  ],
+  "message": "Release profiles define how package inventory should treat source, diagnostics, and local-only runtime state."
+}

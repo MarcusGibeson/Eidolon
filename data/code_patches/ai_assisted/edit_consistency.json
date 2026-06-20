@@ -1,0 +1,17 @@
+{
+  "version": "17.0",
+  "checked_at": "2026-06-20T01:27:21",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "edit_id": "edit_001",
+      "file": "README_NEXT_STEPS.md",
+      "status": "pass",
+      "reasons": [],
+      "message": "Edit is consistent with the current generated patch set."
+    }
+  ],
+  "message": "Generated edit consistency check completed."
+}

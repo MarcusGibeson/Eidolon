@@ -1,0 +1,39 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T00:18:36",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "package_name": "Eidolon_v15_0.zip",
+  "changed_files": [],
+  "previewed_files": [
+    "README_NEXT_STEPS.md"
+  ],
+  "readme_sections_required": [
+    "v14.1",
+    "v14.2",
+    "v14.3",
+    "v14.4",
+    "v14.5",
+    "v14.6",
+    "v14.7",
+    "v14.8",
+    "v14.9",
+    "v15.0"
+  ],
+  "verification_commands": [
+    "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+    "PYTHONPATH=conscious_agent python -c \"import dashboard; print(dashboard.DASHBOARD_VERSION)\"",
+    "python conscious_agent/main.py --doctor",
+    "python conscious_agent/main.py --stabilization-checkpoint --stabilization-full",
+    "python tools/smoke_check.py",
+    "python conscious_agent/main.py --patch-draft-status"
+  ],
+  "known_warnings": [
+    "Unconsumed approval exists; acceptable for review but not final release.",
+    "No real approved code apply exists yet; rollback is not applicable."
+  ],
+  "rollback_available": false,
+  "zip_readiness": "READY WITH WARNINGS",
+  "message": "Release package metadata prepared for Eidolon_v15_0.zip."
+}

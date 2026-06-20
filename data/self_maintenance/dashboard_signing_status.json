@@ -1,0 +1,26 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:18:21",
+  "project_id": "eidolon",
+  "stage": "v29.8",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "name": "route-linked",
+      "status": "pass",
+      "message": "dashboard references /release-signing"
+    },
+    {
+      "name": "renderer",
+      "status": "pass",
+      "message": "release signing renderer exists"
+    },
+    {
+      "name": "no-private-key-fields",
+      "status": "pass",
+      "message": "dashboard does not ask for private key material"
+    }
+  ],
+  "message": "Dashboard signing status check completed."
+}

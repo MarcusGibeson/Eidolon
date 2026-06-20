@@ -1,0 +1,356 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:18:24",
+  "project_id": "eidolon",
+  "stage": "v29.10",
+  "status": "warn",
+  "ok": true,
+  "package_name": "Eidolon_v30_0.zip",
+  "zip_path": "data\\release_installation\\incoming\\Eidolon_v30_0.zip",
+  "steps": {
+    "signing_readiness": {
+      "version": "30.0",
+      "stage": "v29.1",
+      "status": "warn",
+      "ok": true,
+      "message": "Signing readiness audit completed; artifacts remain unsigned.",
+      "rows": [
+        {
+          "name": "canonical-manifest-format",
+          "status": "pass",
+          "message": "eidolon.canonical_manifest.v1"
+        },
+        {
+          "name": "canonical-evidence-schema",
+          "status": "pass",
+          "message": "eidolon.release_evidence.v1"
+        },
+        {
+          "name": "package-hash-explicit",
+          "status": "pass",
+          "message": "ea56a93fdc643b35b9e2c268a16e6823ce497f5ffa138b674e85ea401d727aa7"
+        },
+        {
+          "name": "deterministic-manifest-hash",
+          "status": "pass",
+          "message": "76bb13822a9a1f1ce5c10cd88d31066876f73baed5ce4d6fb4cfbdfcb5c8cd7a"
+        },
+        {
+          "name": "unsigned-status-clear",
+          "status": "warn",
+          "message": "Release artifacts are explicitly unsigned; no signature trust is claimed."
+        },
+        {
+          "name": "reports-excluded",
+          "status": "pass",
+          "message": "Source-only privacy scan protects reports/ and generated evidence from release zips."
+        },
+        {
+          "name": "volatile-metadata-excluded-from-signing-inputs",
+          "status": "pass",
+          "message": "data/projects.json, data/settings.json, data/workspaces/*.json, data/workspaces/command_profiles/*.json"
+        },
+        {
+          "name": "readme-unsigned-status",
+          "status": "pass",
+          "message": "README should document current unsigned signing-prep status."
+        },
+        {
+          "name": "verification-commands-reproducible",
+          "status": "pass",
+          "message": "5 command(s)"
+        }
+      ],
+      "row_count": 9,
+      "package_name": "Eidolon_v30_0.zip",
+      "zip_path": "data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+    },
+    "canonical_manifest": {
+      "version": "30.0",
+      "stage": "v29.2",
+      "status": "pass",
+      "ok": true,
+      "message": "Canonical manifest format generated.",
+      "rows": [
+        {
+          "name": "required-fields",
+          "status": "pass",
+          "message": "missing=none"
+        },
+        {
+          "name": "stable-sort-order",
+          "status": "pass",
+          "message": "file paths and metadata lists are sorted before hashing"
+        },
+        {
+          "name": "canonical-hash",
+          "status": "pass",
+          "message": "76bb13822a9a1f1ce5c10cd88d31066876f73baed5ce4d6fb4cfbdfcb5c8cd7a"
+        }
+      ],
+      "row_count": 3
+    },
+    "canonical_evidence": {
+      "version": "30.0",
+      "stage": "v29.3",
+      "status": "warn",
+      "ok": true,
+      "message": "Canonical evidence bundle schema generated.",
+      "rows": [
+        {
+          "name": "required-fields",
+          "status": "pass",
+          "message": "missing=none"
+        },
+        {
+          "name": "unsigned-status",
+          "status": "warn",
+          "message": "signing_status is unsigned by design for v30.0 preparation"
+        },
+        {
+          "name": "evidence-hash",
+          "status": "pass",
+          "message": "4aefeec8a295ee30ad90b9a70873f6ff1d28559c3a854b6e6cd3a2ff90e97ab0"
+        }
+      ],
+      "row_count": 3
+    },
+    "signing_status": {
+      "version": "30.0",
+      "stage": "v29.4",
+      "status": "warn",
+      "ok": true,
+      "message": "Release signing status reported as unsigned.",
+      "rows": [
+        {
+          "name": "signed",
+          "status": "warn",
+          "message": "signed=false; package is unsigned"
+        },
+        {
+          "name": "signing-ready",
+          "status": "pass",
+          "message": "Signing readiness audit completed; artifacts remain unsigned."
+        },
+        {
+          "name": "package-hash",
+          "status": "pass",
+          "message": "ea56a93fdc643b35b9e2c268a16e6823ce497f5ffa138b674e85ea401d727aa7"
+        }
+      ],
+      "row_count": 3,
+      "package_name": "Eidolon_v30_0.zip",
+      "zip_path": "data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+    },
+    "signature_contract": {
+      "version": "30.0",
+      "stage": "v29.5",
+      "status": "warn",
+      "ok": true,
+      "message": "Signature placeholder contract generated.",
+      "rows": [
+        {
+          "name": "placeholder-fields",
+          "status": "pass",
+          "message": "signature_algorithm, signature, public_key_fingerprint, signed_at, signed_by"
+        },
+        {
+          "name": "null-means-unsigned",
+          "status": "pass",
+          "message": "Null signature fields require signing_status=unsigned."
+        },
+        {
+          "name": "no-signature-trust-claimed",
+          "status": "warn",
+          "message": "Unsigned packages must not be described as signature-trusted."
+        }
+      ],
+      "row_count": 3
+    },
+    "key_policy": {
+      "version": "30.0",
+      "stage": "v29.6",
+      "status": "warn",
+      "ok": true,
+      "message": "Key policy preparation report generated.",
+      "rows": [
+        {
+          "name": "no-private-keys",
+          "status": "pass",
+          "message": "No private keys are stored in source or data defaults."
+        },
+        {
+          "name": "unsigned-allowed-with-warning",
+          "status": "warn",
+          "message": "Unsigned releases are allowed for now but must remain clearly marked."
+        },
+        {
+          "name": "future-key-config",
+          "status": "warn",
+          "message": "Key storage and public key configuration are intentionally not implemented yet."
+        }
+      ],
+      "row_count": 3
+    },
+    "signature_verifier": {
+      "version": "30.0",
+      "stage": "v29.7",
+      "status": "warn",
+      "ok": true,
+      "message": "Signature verification placeholder completed.",
+      "rows": [
+        {
+          "name": "signature",
+          "status": "warn",
+          "message": "Package is unsigned; verification reports warn/ok without claiming cryptographic trust."
+        },
+        {
+          "name": "unsigned-status-visible",
+          "status": "pass",
+          "message": "unsigned"
+        }
+      ],
+      "row_count": 2,
+      "package_name": "Eidolon_v30_0.zip",
+      "zip_path": "data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+    },
+    "dashboard_signing": {
+      "version": "30.0",
+      "stage": "v29.8",
+      "status": "pass",
+      "ok": true,
+      "message": "Dashboard signing status check completed.",
+      "rows": [
+        {
+          "name": "route-linked",
+          "status": "pass",
+          "message": "dashboard references /release-signing"
+        },
+        {
+          "name": "renderer",
+          "status": "pass",
+          "message": "release signing renderer exists"
+        },
+        {
+          "name": "no-private-key-fields",
+          "status": "pass",
+          "message": "dashboard does not ask for private key material"
+        }
+      ],
+      "row_count": 3
+    },
+    "api_signing": {
+      "version": "30.0",
+      "stage": "v29.9",
+      "status": "pass",
+      "ok": true,
+      "message": "API signing status check completed.",
+      "rows": [
+        {
+          "name": "api-tokens",
+          "status": "pass",
+          "message": "missing=none"
+        },
+        {
+          "name": "get-read-only",
+          "status": "pass",
+          "message": "v29.9 signing endpoints are inspection-only GET routes."
+        },
+        {
+          "name": "future-signing-boundary",
+          "status": "pass",
+          "message": "Any future real signing action must be POST-only and confirmation-gated."
+        }
+      ],
+      "row_count": 3
+    },
+    "privacy": {
+      "version": "30.0",
+      "stage": null,
+      "status": "pass",
+      "ok": true,
+      "message": "Package privacy scan completed for source-only release packaging.",
+      "rows": [
+        {
+          "name": "inventory-ok",
+          "status": "pass",
+          "message": "Package inventory classified included and excluded files for a guarded release zip."
+        },
+        {
+          "name": "private-files",
+          "status": "pass",
+          "message": "0 private/runtime included path(s) detected."
+        },
+        {
+          "name": "portable-warnings",
+          "status": "pass",
+          "message": "0 portable metadata warning(s)."
+        },
+        {
+          "name": "source-only-profile",
+          "status": "pass",
+          "message": "Package inventory uses source-only profile by default."
+        }
+      ],
+      "row_count": 4
+    }
+  },
+  "rows": [
+    {
+      "name": "signing_readiness",
+      "status": "warn",
+      "message": "Signing readiness audit completed; artifacts remain unsigned."
+    },
+    {
+      "name": "canonical_manifest",
+      "status": "pass",
+      "message": "Canonical manifest format generated."
+    },
+    {
+      "name": "canonical_evidence",
+      "status": "warn",
+      "message": "Canonical evidence bundle schema generated."
+    },
+    {
+      "name": "signing_status",
+      "status": "warn",
+      "message": "Release signing status reported as unsigned."
+    },
+    {
+      "name": "signature_contract",
+      "status": "warn",
+      "message": "Signature placeholder contract generated."
+    },
+    {
+      "name": "key_policy",
+      "status": "warn",
+      "message": "Key policy preparation report generated."
+    },
+    {
+      "name": "signature_verifier",
+      "status": "warn",
+      "message": "Signature verification placeholder completed."
+    },
+    {
+      "name": "dashboard_signing",
+      "status": "pass",
+      "message": "Dashboard signing status check completed."
+    },
+    {
+      "name": "api_signing",
+      "status": "pass",
+      "message": "API signing status check completed."
+    },
+    {
+      "name": "privacy",
+      "status": "pass",
+      "message": "Package privacy scan completed for source-only release packaging."
+    },
+    {
+      "name": "readme-unsigned-status",
+      "status": "pass",
+      "message": "README documents v30.0 unsigned signing preparation."
+    }
+  ],
+  "message": "Pre-v30 signing preparation audit completed."
+}

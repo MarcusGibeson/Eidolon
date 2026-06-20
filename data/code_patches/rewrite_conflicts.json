@@ -1,0 +1,28 @@
+{
+  "version": "16.0",
+  "checked_at": "2026-06-20T00:42:18",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "approval_binding": {
+    "ok": false,
+    "message": "No approved draft currently binds to these artifacts."
+  },
+  "rows": [
+    {
+      "path": "README_NEXT_STEPS.md",
+      "status": "pass",
+      "reasons": [],
+      "message": "No rewrite conflict detected."
+    },
+    {
+      "path": "approval_state",
+      "status": "warn",
+      "reasons": [
+        "No approved draft currently binds to these artifacts."
+      ],
+      "message": "Approval is not currently ready for real apply; dry-run review may continue."
+    }
+  ],
+  "message": "Rewrite conflict detector completed."
+}

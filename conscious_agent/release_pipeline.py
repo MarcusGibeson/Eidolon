@@ -68,6 +68,11 @@ def _json_print(value: Any) -> None:
     print(json.dumps(value, indent=2, default=str))
 
 
+def _current_release_version() -> str:
+    settings = _read_json(DATA_DIR / "settings.json", {})
+    return str(settings.get("version") or settings.get("settings_version") or settings.get("last_updated_for") or RELEASE_PIPELINE_VERSION).lstrip("v")
+
+
 def _sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8", errors="replace")).hexdigest()
 
@@ -116,7 +121,7 @@ def _current_draft(project_id: str = "eidolon", *, save: bool = False) -> dict[s
     if not isinstance(draft, dict) or not draft.get("draft_id"):
         request = _read_json(DRAFT_REQUEST, {})
         if not isinstance(request, dict) or not request.get("request_id"):
-            build_patch_draft_request(project_id=project_id, target_version="15.0", save=save)
+            build_patch_draft_request(project_id=project_id, target_version=_current_release_version(), save=save)
         draft = build_draft_patch(project_id=project_id, save=save)
     return draft if isinstance(draft, dict) else {}
 
@@ -529,7 +534,7 @@ def build_prepare_release_package(project_id: str = "eidolon", package_name: str
     """v14.8: create package metadata after approval/release checks."""
     readiness = build_release_readiness(project_id=project_id, save=False)
     settings = _read_json(DATA_DIR / "settings.json", {})
-    current_version = str(settings.get("version") or settings.get("settings_version") or settings.get("last_updated_for") or RELEASE_PIPELINE_VERSION).lstrip("v")
+    current_version = _current_release_version()
     apply_report = _read_json(APPROVED_CODE_APPLY, {})
     dry_run = _read_json(APPROVED_CODE_DRY_RUN, {})
     suggestions = _read_json(TEST_SUGGESTIONS, {})
@@ -567,7 +572,7 @@ def build_human_approved_release_loop(project_id: str = "eidolon", approve_apply
         request = _read_json(DRAFT_REQUEST, {})
         draft = _read_json(CURRENT_DRAFT, {})
     else:
-        request = build_patch_draft_request(project_id=project_id, target_version="15.0", save=save)
+        request = build_patch_draft_request(project_id=project_id, target_version=_current_release_version(), save=save)
         draft = build_draft_patch(project_id=project_id, save=save)
     proposal = build_code_edit_proposal(project_id=project_id, save=save)
     preview = build_safe_rewrite_preview(project_id=project_id, save=save)

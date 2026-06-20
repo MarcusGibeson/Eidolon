@@ -1,0 +1,35 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T00:31:37",
+  "project_id": "eidolon",
+  "draft_id": "draft_20260620_003135_draft_request_20260620_003133_synthetic_patch_draft_request",
+  "status": "pass",
+  "ok": true,
+  "files": [
+    "conscious_agent/patch_drafting.py",
+    "README_NEXT_STEPS.md"
+  ],
+  "commands": [
+    {
+      "command": "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+      "reason": "Every draft that may touch Python files must compile."
+    },
+    {
+      "command": "python conscious_agent/main.py --doctor",
+      "reason": "Doctor mode summarizes environment, project, and readiness issues."
+    },
+    {
+      "command": "python conscious_agent/main.py --stabilization-checkpoint --stabilization-full",
+      "reason": "Stabilization checkpoint verifies the whole loop after draft work."
+    },
+    {
+      "command": "python tools/smoke_check.py",
+      "reason": "Smoke check covers critical CLI/report surfaces."
+    },
+    {
+      "command": "python conscious_agent/main.py --patch-draft-status",
+      "reason": "Patch drafting changes must preserve the draft workspace report."
+    }
+  ],
+  "message": "Draft test impact planned 5 verification command(s)."
+}

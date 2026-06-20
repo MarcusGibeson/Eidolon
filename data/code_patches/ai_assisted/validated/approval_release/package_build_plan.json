@@ -1,0 +1,184 @@
+{
+  "version": "19.0",
+  "checked_at": "2026-06-20T01:57:55",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "source_root": "/mnt/data/eidolon_v19_work/Eidolon",
+  "package_name": "Eidolon_v19_0.zip",
+  "included_roots": [
+    "conscious_agent/",
+    "data/",
+    "tools/",
+    "README_NEXT_STEPS.md",
+    "requirements.txt"
+  ],
+  "excluded_patterns": [
+    ".git/",
+    ".venv/",
+    "__pycache__/",
+    "*.pyc"
+  ],
+  "readme_sections": [
+    "v18.1",
+    "v18.2",
+    "v18.3",
+    "v18.4",
+    "v18.5",
+    "v18.6",
+    "v18.7",
+    "v18.8",
+    "v18.9",
+    "v19.0"
+  ],
+  "verification_commands": [
+    "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+    "python conscious_agent/main.py --approval-to-release-loop",
+    "python -u tools/smoke_check.py"
+  ],
+  "known_warnings": [
+    "Ollama may be unavailable on machines where the local service is not running.",
+    "chromadb must be installed from requirements.txt for semantic memory features."
+  ],
+  "release_readiness": {
+    "version": "15.0",
+    "checked_at": "2026-06-20T01:57:51",
+    "project_id": "eidolon",
+    "status": "warn",
+    "ok": true,
+    "release_readiness": "READY WITH WARNINGS",
+    "rows": [
+      {
+        "name": "py-compile",
+        "status": "pass",
+        "returncode": 0,
+        "message": "Python compile passed."
+      },
+      {
+        "name": "readme-v15",
+        "status": "pass",
+        "message": "README documents v15.0."
+      },
+      {
+        "name": "settings-version",
+        "status": "warn",
+        "message": "settings version markers: version=None last_updated_for=v19.0"
+      },
+      {
+        "name": "project-version",
+        "status": "warn",
+        "message": "projects last_updated_for=v19.0"
+      },
+      {
+        "name": "approval-state",
+        "status": "pass",
+        "message": "No dirty unconsumed approval blocking release."
+      },
+      {
+        "name": "dry-run-separation",
+        "status": "pass",
+        "message": "Dry-run code patch reports are separate from real apply reports."
+      },
+      {
+        "name": "rollback-availability",
+        "status": "warn",
+        "message": "No real approved code apply exists yet; rollback is not applicable."
+      },
+      {
+        "name": "test-suggestions",
+        "status": "pass",
+        "message": "6 test suggestion(s) recorded."
+      }
+    ],
+    "known_warnings": [
+      "settings version markers: version=None last_updated_for=v19.0",
+      "projects last_updated_for=v19.0",
+      "No real approved code apply exists yet; rollback is not applicable."
+    ],
+    "message": "Release readiness: READY WITH WARNINGS.",
+    "preview_only": true
+  },
+  "release_artifact": {
+    "version": "16.0",
+    "checked_at": "2026-06-20T01:57:55",
+    "project_id": "eidolon",
+    "status": "pass",
+    "ok": true,
+    "package_name": "Eidolon_v19_0.zip",
+    "changed_files": [],
+    "previewed_files": [
+      "README_NEXT_STEPS.md"
+    ],
+    "excluded_files": [
+      ".git",
+      ".venv",
+      "__pycache__",
+      "*.pyc",
+      "data/code_patches/backups"
+    ],
+    "readme_sections": [
+      "v15.1",
+      "v15.2",
+      "v15.3",
+      "v15.4",
+      "v15.5",
+      "v15.6",
+      "v15.7",
+      "v15.8",
+      "v15.9",
+      "v16.0"
+    ],
+    "verification_commands": [
+      "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+      "PYTHONPATH=conscious_agent python -c \"import dashboard; print(dashboard.DASHBOARD_VERSION)\"",
+      "python conscious_agent/main.py --doctor",
+      "python conscious_agent/main.py --stabilization-checkpoint --stabilization-full",
+      "python tools/smoke_check.py",
+      "python conscious_agent/main.py --patch-draft-status"
+    ],
+    "known_warnings": [
+      "settings version markers: version=None last_updated_for=v19.0",
+      "projects last_updated_for=v19.0",
+      "No real approved code apply exists yet; rollback is not applicable."
+    ],
+    "rollback_status": null,
+    "release_readiness": "READY WITH WARNINGS",
+    "rows": [
+      {
+        "name": "release-readiness",
+        "status": "pass",
+        "message": "Release readiness: READY WITH WARNINGS."
+      },
+      {
+        "name": "semantic-checks",
+        "status": "pass",
+        "message": "Post-apply semantic checks completed."
+      },
+      {
+        "name": "readme-v16-sections",
+        "status": "pass",
+        "message": "README includes v15.1-v16.0 sections."
+      }
+    ],
+    "message": "Release artifact manifest prepared for Eidolon_v19_0.zip.",
+    "preview_only": true
+  },
+  "rows": [
+    {
+      "name": "release-readiness",
+      "status": "pass",
+      "message": "Release readiness: READY WITH WARNINGS."
+    },
+    {
+      "name": "readme-v19",
+      "status": "pass",
+      "message": "README must document v18.1-v19.0."
+    },
+    {
+      "name": "package-name",
+      "status": "pass",
+      "message": "Eidolon_v19_0.zip"
+    }
+  ],
+  "message": "Package build plan prepared for final handoff."
+}

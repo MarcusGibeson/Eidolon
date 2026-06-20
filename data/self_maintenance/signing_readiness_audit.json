@@ -1,0 +1,60 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:18:14",
+  "project_id": "eidolon",
+  "stage": "v29.1",
+  "status": "warn",
+  "ok": true,
+  "package_name": "Eidolon_v30_0.zip",
+  "zip_path": "data\\release_installation\\incoming\\Eidolon_v30_0.zip",
+  "manifest_hash": "76bb13822a9a1f1ce5c10cd88d31066876f73baed5ce4d6fb4cfbdfcb5c8cd7a",
+  "evidence_hash": "4aefeec8a295ee30ad90b9a70873f6ff1d28559c3a854b6e6cd3a2ff90e97ab0",
+  "rows": [
+    {
+      "name": "canonical-manifest-format",
+      "status": "pass",
+      "message": "eidolon.canonical_manifest.v1"
+    },
+    {
+      "name": "canonical-evidence-schema",
+      "status": "pass",
+      "message": "eidolon.release_evidence.v1"
+    },
+    {
+      "name": "package-hash-explicit",
+      "status": "pass",
+      "message": "ea56a93fdc643b35b9e2c268a16e6823ce497f5ffa138b674e85ea401d727aa7"
+    },
+    {
+      "name": "deterministic-manifest-hash",
+      "status": "pass",
+      "message": "76bb13822a9a1f1ce5c10cd88d31066876f73baed5ce4d6fb4cfbdfcb5c8cd7a"
+    },
+    {
+      "name": "unsigned-status-clear",
+      "status": "warn",
+      "message": "Release artifacts are explicitly unsigned; no signature trust is claimed."
+    },
+    {
+      "name": "reports-excluded",
+      "status": "pass",
+      "message": "Source-only privacy scan protects reports/ and generated evidence from release zips."
+    },
+    {
+      "name": "volatile-metadata-excluded-from-signing-inputs",
+      "status": "pass",
+      "message": "data/projects.json, data/settings.json, data/workspaces/*.json, data/workspaces/command_profiles/*.json"
+    },
+    {
+      "name": "readme-unsigned-status",
+      "status": "pass",
+      "message": "README should document current unsigned signing-prep status."
+    },
+    {
+      "name": "verification-commands-reproducible",
+      "status": "pass",
+      "message": "5 command(s)"
+    }
+  ],
+  "message": "Signing readiness audit completed; artifacts remain unsigned."
+}

@@ -1,0 +1,31 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:19:05",
+  "project_id": "eidolon",
+  "stage": "v26.6",
+  "status": "warn",
+  "ok": true,
+  "artifact_hashes": {
+    "release_candidate_freeze": "47a4b2592a30928d5b6278f03d6d441d3c46f4d6f02410224cc39b652d793c80",
+    "frozen_zip_verification": "aac29473aa58a916898c4c8b5b9dc9ee11ba8a2bee9b8c29f517b8c4d301482e",
+    "release_command_reproducer": "b5a79100c7ad316c8b3f2b2ef1167768726a0d7c8ea08944453fbcfc5f5cce65"
+  },
+  "rows": [
+    {
+      "name": "artifact-hashes",
+      "status": "pass",
+      "message": "Missing: none."
+    },
+    {
+      "name": "zip-verification",
+      "status": "pass",
+      "message": "Frozen release zip verification completed."
+    },
+    {
+      "name": "live-approval",
+      "status": "warn",
+      "message": "Ledger is evidence only; it does not authorize live apply."
+    }
+  ],
+  "message": "Approval evidence ledger generated; live approval remains separate."
+}

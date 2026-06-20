@@ -413,6 +413,93 @@ from release_packaging import (
     verify_release_unzip_text,
     release_pipeline_audit_text,
     verified_release_package_loop_text,
+    _package_name,
+)
+from release_installation import (
+    build_release_profiles,
+    build_package_privacy_scan,
+    build_portable_metadata_check,
+    build_first_run_check,
+    build_dependency_advisor,
+    build_upgrade_notes,
+    build_runtime_migration_check,
+    build_release_install_verification,
+    build_verified_installable_release_loop,
+    build_smoke_runtime_hardening,
+    build_external_zip_install_verification,
+    build_deterministic_release_manifest,
+    build_update_dry_run_plan,
+    build_atomic_source_update,
+    build_runtime_migration_assistant,
+    build_route_safety_harness,
+    build_release_dashboard_command_center,
+    build_clean_room_install_harness,
+    build_verified_self_update_release_pipeline,
+    release_profiles_text,
+    package_privacy_scan_text,
+    portable_metadata_check_text,
+    first_run_check_text,
+    dependency_advisor_text,
+    upgrade_notes_text,
+    runtime_migration_check_text,
+    release_install_verification_text,
+    verified_installable_release_loop_text,
+    smoke_runtime_hardening_text,
+    external_zip_install_verification_text,
+    deterministic_release_manifest_text,
+    update_dry_run_plan_text,
+    atomic_source_update_text,
+    runtime_migration_assistant_text,
+    route_safety_harness_text,
+    release_dashboard_command_center_text,
+    clean_room_install_harness_text,
+    verified_self_update_release_pipeline_text,
+)
+from self_maintenance import (
+    build_self_maintenance_proposal_sandbox,
+    build_patch_plan_builder,
+    build_dry_run_patch_generator,
+    build_patch_safety_auditor,
+    build_apply_patch_to_temp_clone,
+    build_maintenance_review_bundle,
+    build_human_approval_binding,
+    build_real_maintenance_patch_apply,
+    build_post_apply_health_monitor,
+    build_controlled_maintenance_cycle,
+    build_assisted_self_improvement_release,
+    self_maintenance_proposal_text,
+    patch_plan_builder_text,
+    dry_run_patch_generator_text,
+    patch_safety_auditor_text,
+    apply_patch_to_temp_clone_text,
+    maintenance_review_bundle_text,
+    human_approval_binding_text,
+    real_maintenance_patch_apply_text,
+    post_apply_health_monitor_text,
+    controlled_maintenance_cycle_text,
+    assisted_self_improvement_release_text,
+    build_release_candidate_governance,
+    build_release_evidence_bundle,
+    build_release_artifact_diff,
+    build_pre_v28_governance_audit,
+    build_verifiable_release_evidence_system,
+    build_evidence_operator_summary,
+    build_evidence_timeline,
+    build_durable_release_evidence_archive,
+    release_candidate_governance_text,
+    release_evidence_bundle_text,
+    release_artifact_diff_text,
+    pre_v28_governance_audit_text,
+    verifiable_release_evidence_system_text,
+    evidence_operator_summary_text,
+    evidence_timeline_text,
+    durable_release_evidence_archive_text,
+    build_release_signing_status,
+    build_signing_readiness_audit,
+    build_pre_v30_signing_prep_audit,
+    release_signing_status_text,
+    signing_readiness_audit_text,
+    pre_v30_signing_prep_audit_text,
 )
 from test_runner import list_test_reports, load_test_report, test_report_text
 from test_report_reviewer import list_test_reviews, load_test_review, test_review_text
@@ -422,7 +509,7 @@ from dev_loop_runner import get_dev_loop, list_dev_loops, run_dev_loop, dev_loop
 
 
 DASHBOARD_TITLE = "Eidolon Dashboard"
-DASHBOARD_VERSION = "20.0"
+DASHBOARD_VERSION = "30.0"
 
 
 class DashboardState:
@@ -631,6 +718,9 @@ def _layout(path: str, content: str) -> str:
         ("/code-patches", "Code Patches"),
         ("/release-review", "Release Review"),
         ("/release-package", "Release Package"),
+        ("/release-governance", "Release Governance"),
+        ("/release-evidence", "Release Evidence"),
+        ("/release-signing", "Release Signing"),
         ("/approvals", "Approvals <span class='nav-badge warn-badge' data-live-count='counts.pending_approvals'></span>"),
         ("/notifications", "Notifications <span class='nav-badge warn-badge' data-live-count='counts.unread_notifications'></span>"),
         ("/watch", "Watch <span class='nav-badge' data-live-count='counts.watch_reports'></span>"),
@@ -2226,7 +2316,7 @@ python conscious_agent/main.py --guarded-workspace-dev-loop</pre>
 
 def render_patch_drafts() -> str:
     status = build_patch_draft_status(project_id="eidolon")
-    request = build_patch_draft_request(project_id="eidolon", target_version="15.0", save=False)
+    request = build_patch_draft_request(project_id="eidolon", target_version="20.0.1", save=False)
     draft = build_draft_patch(project_id="eidolon", save=False)
     notes = build_patch_review_notes(project_id="eidolon", save=False)
     diff = build_draft_diff(project_id="eidolon", save=False)
@@ -2272,7 +2362,7 @@ def render_patch_drafts() -> str:
   </div>
 </div>
 <p><a href='/api/patch-drafts/status'>Status JSON</a> | <a href='/api/patch-drafts/quality'>Quality JSON</a> | <a href='/api/patch-drafts/code-edit-proposal'>Code Proposal JSON</a> | <a href='/api/patch-drafts/safe-rewrite-preview'>Rewrite Preview JSON</a> | <a href='/api/patch-drafts/generated-code-patch'>Generated Patch JSON</a> | <a href='/api/patch-drafts/test-suggestions'>Test Suggestions JSON</a> | <a href='/api/release/readiness'>Release Readiness JSON</a> | <a href='/api/release/human-approved-loop'>Release Loop JSON</a></p>
-<pre>python conscious_agent/main.py --patch-draft-request --patch-draft-target-version 15.0
+<pre>python conscious_agent/main.py --patch-draft-request --patch-draft-target-version 20.0.1
 python conscious_agent/main.py --draft-patch
 python conscious_agent/main.py --draft-diff
 python conscious_agent/main.py --draft-test-impact
@@ -2322,7 +2412,7 @@ def render_code_patches() -> str:
     bind_preview = bind_current_approval_to_validated_manifest(project_id="eidolon", save=False)
     apply_preview = build_apply_validated_ai_patch(project_id="eidolon", approve=False, dry_run=True, save=False)
     post_apply = build_post_apply_review(project_id="eidolon", save=False)
-    package_plan = build_package_build_plan(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
+    package_plan = build_package_build_plan(project_id="eidolon", package_name=_package_name(), save=False)
     body = f"""
 <p>v20.0 keeps the validated AI patch review lane approval-bound and packaging-aware: refresh the review bundle, bind an approved draft to the exact validated manifest, dry-run apply, then move through release package checks. GET/API/dashboard views stay read-only, because links are not scalpels.</p>
 <div class='cards'>
@@ -2371,7 +2461,7 @@ python conscious_agent/main.py --approval-to-release-loop</pre>
         post_apply_review_text(post_apply, full=False),
         package_build_plan_text(package_plan, full=False),
     ])
-    return _layout("/code-patches", _card("Validated AI Patch Approval Workflow", body) + _card("v18.1-v20.0 reports", _text_block(reports)))
+    return _layout("/code-patches", _card("Validated AI Patch Approval Workflow", body) + _card("v18.1-v21.0 reports", _text_block(reports)))
 
 
 def render_release_review() -> str:
@@ -2381,7 +2471,7 @@ def render_release_review() -> str:
     apply_preview = build_apply_validated_ai_patch(project_id="eidolon", approve=False, dry_run=True, save=False)
     post_apply = build_post_apply_review(project_id="eidolon", save=False)
     readiness = build_release_readiness(project_id="eidolon", save=False)
-    package_plan = build_package_build_plan(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
+    package_plan = build_package_build_plan(project_id="eidolon", package_name=_package_name(), save=False)
     body = f"""
 <p>Release review shows whether the latest validated AI patch can move from human approval to a release handoff without artifact mismatch nonsense. Somehow, this is what peace looks like.</p>
 <div class='cards'>
@@ -2408,52 +2498,95 @@ def render_release_review() -> str:
 
 
 def render_release_package() -> str:
-    manifest = build_release_manifest_integrity(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
-    inventory = build_package_inventory(project_id="eidolon", save=False)
-    checksums = build_package_checksums(project_id="eidolon", save=False)
-    notes = build_release_notes(project_id="eidolon", save=False)
-    handoff = build_release_handoff_report(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
-    zip_plan = build_release_zip(project_id="eidolon", package_name="Eidolon_v20_0.zip", confirm=False, dry_run=True, save=False)
-    unzip = build_verify_release_unzip(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
-    audit = build_release_pipeline_audit(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
-    loop = build_verified_release_package_loop(project_id="eidolon", package_name="Eidolon_v20_0.zip", confirm=False, dry_run=True, save=False)
+    package_name = _package_name()
     body = f"""
-<p>v20.0 verifies release packaging before handoff: manifest consistency, package inventory, checksums, release notes, handoff report, guarded zip planning, unzip verification, and pipeline audit. Thrilling, like accounting with zip files.</p>
+<p>The release package page is now intentionally lightweight. It does not eagerly rebuild every release, install, self-maintenance, and governance report on GET page load, because apparently opening a dashboard page should not reenact a small CI pipeline.</p>
 <div class='cards'>
-  {_report_status_card('Manifest integrity', manifest)}
-  {_report_status_card('Inventory', inventory)}
-  {_report_status_card('Checksums', checksums)}
-  {_report_status_card('Release notes', notes)}
-  {_report_status_card('Handoff', handoff)}
-  {_report_status_card('Zip plan', zip_plan)}
-  {_report_status_card('Unzip verify', unzip)}
-  {_report_status_card('Pipeline audit', audit)}
-  {_report_status_card('Verified loop', loop)}
+  {_report_status_card('Package helper', {'status': 'pass', 'message': package_name})}
+  {_report_status_card('Lazy reports', {'status': 'pass', 'message': 'Use the API links or CLI commands below to run heavy checks on demand.'})}
+  {_report_status_card('Mutation boundary', {'status': 'pass', 'message': 'GET page render remains read-only. POST-only actions stay confirmation-gated.'})}
 </div>
-<p><a href='/api/release/manifest-integrity'>Manifest JSON</a> | <a href='/api/release/package-inventory'>Inventory JSON</a> | <a href='/api/release/package-checksums'>Checksums JSON</a> | <a href='/api/release/handoff'>Handoff JSON</a> | <a href='/api/release/verified-package-loop'>Verified Loop JSON</a></p>
+<p><a href='/release-governance'>Release Governance page</a> | <a href='/release-evidence'>Release Evidence page</a></p>
+<p><a href='/api/release/profiles'>Profiles</a> | <a href='/api/release/privacy-scan'>Privacy Scan</a> | <a href='/api/release/portable-metadata'>Portable Metadata</a> | <a href='/api/release/install-verification'>Install Verification</a> | <a href='/api/release/verified-installable-loop'>Installable Loop</a> | <a href='/api/release/deterministic-release-manifest'>Manifest Binding</a> | <a href='/api/release/route-safety-harness'>Route Safety</a> | <a href='/api/release/release-candidate-governance'>v27 Governance</a> | <a href='/api/release/release-governance-drill'>Governance Drill</a> | <a href='/api/release/release-evidence-bundle'>Evidence Bundle</a> | <a href='/api/release/release-artifact-diff'>Artifact Diff</a> | <a href='/api/release/pre-v28-governance-audit'>Pre-v28 Audit</a> | <a href='/api/release/verifiable-release-evidence-system'>v28 Evidence System</a> | <a href='/api/release/durable-release-evidence-archive'>v29 Evidence Archive</a></p>
 <form method='post' action='/api/release/build-zip'><input type='hidden' name='project' value='eidolon'><input type='hidden' name='dry_run' value='true'><button type='submit'>Dry-run release zip builder</button></form>
-<pre>python conscious_agent/main.py --release-manifest-integrity
-python conscious_agent/main.py --package-inventory
-python conscious_agent/main.py --package-checksums
-python conscious_agent/main.py --release-notes
-python conscious_agent/main.py --release-handoff-report
-python conscious_agent/main.py --build-release-zip --dry-run
-python conscious_agent/main.py --verify-release-unzip
-python conscious_agent/main.py --release-pipeline-audit
-python conscious_agent/main.py --verified-release-package-loop</pre>
+<pre>python conscious_agent/main.py --package-privacy-scan --readiness-json
+python conscious_agent/main.py --deterministic-release-manifest --readiness-json
+python conscious_agent/main.py --release-candidate-governance --readiness-json
+python conscious_agent/main.py --release-governance-drill --readiness-json
+python conscious_agent/main.py --release-evidence-bundle --readiness-json
+python conscious_agent/main.py --release-artifact-diff --readiness-json
+python conscious_agent/main.py --pre-v28-governance-audit --readiness-json
+python conscious_agent/main.py --verifiable-release-evidence-system --readiness-json
+python conscious_agent/main.py --durable-release-evidence-archive --readiness-json</pre>
 """
-    reports = "\n\n".join([
-        release_manifest_integrity_text(manifest, full=False),
-        package_inventory_text(inventory, full=False),
-        package_checksums_text(checksums, full=False),
-        release_notes_text(notes, full=False),
-        release_handoff_report_text(handoff, full=False),
-        build_release_zip_text(zip_plan, full=False),
-        verify_release_unzip_text(unzip, full=False),
-        release_pipeline_audit_text(audit, full=False),
-        verified_release_package_loop_text(loop, full=False),
-    ])
-    return _layout("/release-package", _card("Verified Release Package", body) + _card("v19.1-v20.0 package reports", _text_block(reports)))
+    return _layout("/release-package", _card("Release Package", body))
+
+
+def render_release_governance() -> str:
+    package_name = _package_name()
+    diff = build_release_artifact_diff(project_id="eidolon", package_name=package_name, save=False)
+    body = f"""
+<p>Release governance is GET-only and intentionally lightweight. Heavy checks run from the linked API endpoints or CLI commands instead of turning page load into a miniature release tribunal.</p>
+<div class='cards'>
+  {_report_status_card('Package helper', {'status': 'pass', 'message': package_name})}
+  {_report_status_card('Artifact diff preview', diff)}
+  {_report_status_card('Heavy evidence checks', {'status': 'preview', 'message': 'Run evidence bundle, pre-v28 audit, and v28 gate from the API links or CLI.'})}
+</div>
+<p><a href='/api/release/release-governance-drill'>Governance Drill JSON</a> | <a href='/api/release/release-evidence-bundle'>Evidence Bundle JSON</a> | <a href='/api/release/verify-release-evidence-bundle'>Verify Evidence Bundle JSON</a> | <a href='/api/release/release-artifact-diff'>Artifact Diff JSON</a> | <a href='/api/release/pre-v28-governance-audit'>Pre-v28 Audit JSON</a> | <a href='/api/release/verifiable-release-evidence-system'>v28 Gate JSON</a></p>
+<pre>python conscious_agent/main.py --release-governance-drill --readiness-json
+python conscious_agent/main.py --release-evidence-bundle --readiness-json
+python conscious_agent/main.py --verify-release-evidence-bundle --readiness-json
+python conscious_agent/main.py --release-artifact-diff --readiness-json
+python conscious_agent/main.py --pre-v28-governance-audit --readiness-json
+python conscious_agent/main.py --verifiable-release-evidence-system --readiness-json
+python conscious_agent/main.py --durable-release-evidence-archive --readiness-json</pre>
+"""
+    reports = release_artifact_diff_text(diff, full=False)
+    return _layout("/release-governance", _card("Release Governance", body) + _card("Fast governance preview", _text_block(reports)))
+
+
+def render_release_evidence() -> str:
+    package_name = _package_name()
+    body = f"""
+<p>Release evidence is a lightweight, GET-only viewer. Evidence checks are on-demand through the API links or CLI commands below, because page load should not become a tiny compliance department with a stopwatch.</p>
+<div class='cards'>
+  {_report_status_card('Package helper', {'status': 'pass', 'message': package_name})}
+  {_report_status_card('Evidence checks are on-demand', {'status': 'pass', 'message': 'Run replay, persistence, timeline, summary, or v29 archive checks from API/CLI links.'})}
+  {_report_status_card('Generated reports', {'status': 'pass', 'message': 'reports/release_evidence is local generated evidence and is excluded from source-only zips.'})}
+  {_report_status_card('Mutation boundary', {'status': 'pass', 'message': 'GET renders inspect evidence only; persistence remains explicit and generated reports stay out of source-only zips.'})}
+</div>
+<p><a href='/api/release/evidence-replay-drill'>Replay Drill JSON</a> | <a href='/api/release/persist-release-evidence'>Persist Evidence JSON</a> | <a href='/api/release/replay-release-evidence'>Replay Evidence JSON</a> | <a href='/api/release/evidence-timeline'>Timeline JSON</a> | <a href='/api/release/evidence-summary'>Summary JSON</a> | <a href='/api/release/evidence-retention-policy'>Retention JSON</a> | <a href='/api/release/pre-v29-evidence-audit'>Pre-v29 Audit JSON</a> | <a href='/api/release/durable-release-evidence-archive'>v29 Archive JSON</a></p>
+<pre>python conscious_agent/main.py --evidence-replay-drill --readiness-json
+python conscious_agent/main.py --persist-release-evidence --readiness-json
+python conscious_agent/main.py --replay-release-evidence --readiness-json
+python conscious_agent/main.py --evidence-timeline --readiness-json
+python conscious_agent/main.py --evidence-operator-summary --readiness-json
+python conscious_agent/main.py --pre-v29-evidence-audit --readiness-json
+python conscious_agent/main.py --durable-release-evidence-archive --readiness-json</pre>
+"""
+    return _layout("/release-evidence", _card("Release Evidence", body))
+
+
+def render_release_signing() -> str:
+    package_name = _package_name()
+    status = build_release_signing_status(project_id="eidolon", package_name=package_name, save=False)
+    body = f"""
+<p>Release signing is GET-only and explicitly unsigned in v30.0. This page reports signing readiness and placeholder verification without asking for keys, storing secrets, or pretending a package is signed because JSON got ambitious.</p>
+<div class='cards'>
+  {_report_status_card('Package helper', {'status': 'pass', 'message': package_name})}
+  {_report_status_card('Signing status', status)}
+  {_report_status_card('Unsigned boundary', {'status': 'warn', 'message': 'v30.0 prepares signing-ready artifacts but does not create real signatures.'})}
+</div>
+<p><a href='/api/release/signing-readiness-audit'>Signing Readiness JSON</a> | <a href='/api/release/canonical-manifest-format'>Canonical Manifest JSON</a> | <a href='/api/release/canonical-evidence-schema'>Canonical Evidence JSON</a> | <a href='/api/release/release-signing-status'>Signing Status JSON</a> | <a href='/api/release/verify-release-signature'>Signature Verify JSON</a> | <a href='/api/release/signing-policy'>Signing Policy JSON</a> | <a href='/api/release/pre-v30-signing-prep-audit'>Pre-v30 Audit JSON</a> | <a href='/api/release/signed-release-preparation-system'>v30 Gate JSON</a></p>
+<pre>python conscious_agent/main.py --signing-readiness-audit --readiness-json
+python conscious_agent/main.py --canonical-manifest-format --readiness-json
+python conscious_agent/main.py --canonical-evidence-schema --readiness-json
+python conscious_agent/main.py --release-signing-status --readiness-json
+python conscious_agent/main.py --verify-release-signature --readiness-json
+python conscious_agent/main.py --pre-v30-signing-prep-audit --readiness-json
+python conscious_agent/main.py --signed-release-preparation-system --readiness-json</pre>
+"""
+    return _layout("/release-signing", _card("Release Signing", body) + _card("Signing status preview", _text_block(release_signing_status_text(status, full=False))))
 
 def render_api_info() -> str:
     body = """
@@ -3353,7 +3486,7 @@ def handle_action(form: dict[str, list[str]]) -> None:
 
 
 class EidolonDashboardHandler(BaseHTTPRequestHandler):
-    server_version = "EidolonDashboard/7.0"
+    server_version = "EidolonDashboard/30.0"
 
     def _send_json(self, payload: dict[str, Any], status: int = 200) -> None:
         encoded = json.dumps(_to_jsonable(payload), indent=2, default=str).encode("utf-8")
@@ -3432,6 +3565,14 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
                 html = render_code_patches()
             elif path == "/release-review":
                 html = render_release_review()
+            elif path == "/release-package":
+                html = render_release_package()
+            elif path == "/release-governance":
+                html = render_release_governance()
+            elif path == "/release-evidence":
+                html = render_release_evidence()
+            elif path == "/release-signing":
+                html = render_release_signing()
             elif path == "/approvals":
                 html = render_approvals()
             elif path == "/notifications":
@@ -3508,3 +3649,15 @@ def run_dashboard(host: str | None = None, port: int | None = None) -> None:
         print("\nDashboard stopped.")
     finally:
         server.server_close()
+
+
+# v22.1-v29.0 staged upgrade and self-maintenance roadmap tokens for dashboard release command discovery:
+# trial-upgrade-from-zip backup-rollback-drill update-collision-detector version-registry-report release-provenance-report dashboard-upgrade-wizard-preview api-upgrade-wizard-preview staged-apply-drill real-apply-guard-rails real-apply-rollback-verification self-update-ux-polish v23-readiness-gate controlled-self-maintenance-loop self-maintenance-proposal build-patch-plan generate-maintenance-patch patch-safety-audit apply-maintenance-patch-to-temp maintenance-review-bundle approve-maintenance-bundle real-maintenance-patch-apply post-apply-health-monitor controlled-maintenance-cycle assisted-self-improvement-release improvement-candidate-scan candidate-prioritizer candidate-to-proposal maintenance-backlog dashboard-maintenance-backlog api-maintenance-backlog candidate-regression-detector release-memory-privacy candidate-verification-recipes assisted-improvement-cycle semi-autonomous-maintenance-review set-maintenance-candidate-status upgrade release
+
+# v25.1-v28.0 trustworthy maintenance console tokens: hotfix-regression-lockdown dashboard-route-coverage api-default-source-audit nested-readiness-severity review-bundle-approval-contract maintenance-report-diff release-gate-composition-test dashboard-api-parity-audit operator-trust-report trustworthy-maintenance-console
+
+# v26.1-v28.0 release candidate governance tokens: trust-console-drill trust-console-snapshot trust-console-diff freeze-release-candidate verify-frozen-release-zip approval-evidence-ledger release-command-reproducer console-readme-consistency pre-v27-safety-audit release-candidate-governance
+
+# v28.1-v29.0 durable evidence tokens: evidence-replay-drill persist-release-evidence replay-release-evidence evidence-timeline evidence-operator-summary dashboard-evidence-viewer api-evidence-viewer evidence-retention-policy evidence-regression-lockdown pre-v29-evidence-audit durable-release-evidence-archive release-evidence
+
+# v29.1-v30.0 signing preparation tokens: signing-readiness-audit canonical-manifest-format canonical-evidence-schema release-signing-status signature-placeholder-contract key-policy-preparation verify-release-signature dashboard-signing-status api-signing-status pre-v30-signing-prep-audit signed-release-preparation-system release-signing

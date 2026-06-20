@@ -1,0 +1,407 @@
+{
+  "version": "19.0",
+  "checked_at": "2026-06-20T01:57:45",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "patch_id": "validated_ai_patch_7c86d439334e9a43",
+  "approved_manifest": {
+    "version": "19.0",
+    "created_at": "2026-06-20T01:57:45",
+    "project_id": "eidolon",
+    "patch_id": "validated_ai_patch_7c86d439334e9a43",
+    "draft_id": null,
+    "request_id": null,
+    "artifact_hashes": {
+      "objective_refinement": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+      "context_ranking": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+      "safety_envelope": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+      "generated_patch_validation": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+      "patch_simulation": "20519f6aa4fa34e4ca892a2bd10cee6ea8be6cc9b12b3c3e49fc5396511d15ee",
+      "test_stub_plan": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+      "patch_review_score": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+      "recovery_plan": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+      "diff_bundle": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+      "semantic_checks": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+      "release_readiness_preview": "eaf28352d6eea6dba8879781b59fa7acdac87b2c20672babf9cacb22375b1325",
+      "release_artifact": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+      "release_audit_trail": "2a11426d78d67ae2bffb9b93f0a45a82518e1a23b898b8ab20ba09687f2e8da5"
+    },
+    "artifact_count": 13,
+    "status": "pass",
+    "ok": true,
+    "rows": [
+      {
+        "name": "objective_refinement",
+        "status": "pass",
+        "sha256": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+        "message": "objective_refinement snapshot hash captured."
+      },
+      {
+        "name": "context_ranking",
+        "status": "pass",
+        "sha256": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+        "message": "context_ranking snapshot hash captured."
+      },
+      {
+        "name": "safety_envelope",
+        "status": "pass",
+        "sha256": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+        "message": "safety_envelope snapshot hash captured."
+      },
+      {
+        "name": "generated_patch_validation",
+        "status": "pass",
+        "sha256": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+        "message": "generated_patch_validation snapshot hash captured."
+      },
+      {
+        "name": "patch_simulation",
+        "status": "pass",
+        "sha256": "20519f6aa4fa34e4ca892a2bd10cee6ea8be6cc9b12b3c3e49fc5396511d15ee",
+        "message": "patch_simulation snapshot hash captured."
+      },
+      {
+        "name": "test_stub_plan",
+        "status": "pass",
+        "sha256": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+        "message": "test_stub_plan snapshot hash captured."
+      },
+      {
+        "name": "patch_review_score",
+        "status": "pass",
+        "sha256": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+        "message": "patch_review_score snapshot hash captured."
+      },
+      {
+        "name": "recovery_plan",
+        "status": "pass",
+        "sha256": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+        "message": "recovery_plan snapshot hash captured."
+      },
+      {
+        "name": "diff_bundle",
+        "status": "pass",
+        "sha256": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+        "message": "diff_bundle snapshot hash captured."
+      },
+      {
+        "name": "semantic_checks",
+        "status": "pass",
+        "sha256": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+        "message": "semantic_checks snapshot hash captured."
+      },
+      {
+        "name": "release_readiness_preview",
+        "status": "pass",
+        "sha256": "eaf28352d6eea6dba8879781b59fa7acdac87b2c20672babf9cacb22375b1325",
+        "message": "release_readiness_preview snapshot hash captured."
+      },
+      {
+        "name": "release_artifact",
+        "status": "pass",
+        "sha256": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+        "message": "release_artifact snapshot hash captured."
+      },
+      {
+        "name": "release_audit_trail",
+        "status": "pass",
+        "sha256": "2a11426d78d67ae2bffb9b93f0a45a82518e1a23b898b8ab20ba09687f2e8da5",
+        "message": "release_audit_trail snapshot hash captured."
+      }
+    ],
+    "message": "Validated patch approval manifest binds approval to the exact reviewed v18/v19 artifact set."
+  },
+  "apply_report": {},
+  "dry_run_report": {
+    "version": "19.0",
+    "checked_at": "2026-06-20T01:57:45",
+    "project_id": "eidolon",
+    "status": "dry_run",
+    "ok": true,
+    "dry_run": true,
+    "patch_id": "validated_ai_patch_7c86d439334e9a43",
+    "rows": [
+      {
+        "name": "approval-ready",
+        "status": "pass",
+        "message": "Approval-ready gate completed for the validated AI patch review bundle."
+      },
+      {
+        "name": "manifest-binding",
+        "status": "warn",
+        "message": "Validated AI apply requires approval bound to the exact validated patch approval manifest."
+      },
+      {
+        "name": "explicit-confirmation",
+        "status": "pass",
+        "message": "Real apply requires explicit approval/confirmation."
+      }
+    ],
+    "blocked_steps": [],
+    "approval_manifest_binding": {
+      "status": "blocked",
+      "ok": false,
+      "rows": [
+        {
+          "name": "approval-exists",
+          "status": "blocked",
+          "message": "status=neutral_packaged_handoff"
+        },
+        {
+          "name": "approval-unconsumed",
+          "status": "blocked",
+          "message": "consumed=False"
+        },
+        {
+          "name": "approval-ready",
+          "status": "pass",
+          "message": "Approval-ready gate completed for the validated AI patch review bundle."
+        },
+        {
+          "name": "bundle-integrity",
+          "status": "pass",
+          "message": "Review bundle integrity requires saved and current validated AI patch artifact hashes to match."
+        },
+        {
+          "name": "manifest-snapshot",
+          "status": "blocked",
+          "message": "approval=None; current=validated_ai_patch_7c86d439334e9a43"
+        }
+      ],
+      "approval": {
+        "approved": false,
+        "consumed": false,
+        "status": "neutral_packaged_handoff",
+        "updated_at": "2026-06-20T00:00:00",
+        "message": "Packaged handoff has no live unconsumed approval."
+      },
+      "manifest": {
+        "version": "19.0",
+        "created_at": "2026-06-20T01:57:45",
+        "project_id": "eidolon",
+        "patch_id": "validated_ai_patch_7c86d439334e9a43",
+        "draft_id": null,
+        "request_id": null,
+        "artifact_hashes": {
+          "objective_refinement": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+          "context_ranking": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+          "safety_envelope": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+          "generated_patch_validation": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+          "patch_simulation": "20519f6aa4fa34e4ca892a2bd10cee6ea8be6cc9b12b3c3e49fc5396511d15ee",
+          "test_stub_plan": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+          "patch_review_score": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+          "recovery_plan": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+          "diff_bundle": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+          "semantic_checks": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+          "release_readiness_preview": "eaf28352d6eea6dba8879781b59fa7acdac87b2c20672babf9cacb22375b1325",
+          "release_artifact": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+          "release_audit_trail": "2a11426d78d67ae2bffb9b93f0a45a82518e1a23b898b8ab20ba09687f2e8da5"
+        },
+        "artifact_count": 13,
+        "status": "pass",
+        "ok": true,
+        "rows": [
+          {
+            "name": "objective_refinement",
+            "status": "pass",
+            "sha256": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+            "message": "objective_refinement snapshot hash captured."
+          },
+          {
+            "name": "context_ranking",
+            "status": "pass",
+            "sha256": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+            "message": "context_ranking snapshot hash captured."
+          },
+          {
+            "name": "safety_envelope",
+            "status": "pass",
+            "sha256": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+            "message": "safety_envelope snapshot hash captured."
+          },
+          {
+            "name": "generated_patch_validation",
+            "status": "pass",
+            "sha256": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+            "message": "generated_patch_validation snapshot hash captured."
+          },
+          {
+            "name": "patch_simulation",
+            "status": "pass",
+            "sha256": "20519f6aa4fa34e4ca892a2bd10cee6ea8be6cc9b12b3c3e49fc5396511d15ee",
+            "message": "patch_simulation snapshot hash captured."
+          },
+          {
+            "name": "test_stub_plan",
+            "status": "pass",
+            "sha256": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+            "message": "test_stub_plan snapshot hash captured."
+          },
+          {
+            "name": "patch_review_score",
+            "status": "pass",
+            "sha256": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+            "message": "patch_review_score snapshot hash captured."
+          },
+          {
+            "name": "recovery_plan",
+            "status": "pass",
+            "sha256": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+            "message": "recovery_plan snapshot hash captured."
+          },
+          {
+            "name": "diff_bundle",
+            "status": "pass",
+            "sha256": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+            "message": "diff_bundle snapshot hash captured."
+          },
+          {
+            "name": "semantic_checks",
+            "status": "pass",
+            "sha256": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+            "message": "semantic_checks snapshot hash captured."
+          },
+          {
+            "name": "release_readiness_preview",
+            "status": "pass",
+            "sha256": "eaf28352d6eea6dba8879781b59fa7acdac87b2c20672babf9cacb22375b1325",
+            "message": "release_readiness_preview snapshot hash captured."
+          },
+          {
+            "name": "release_artifact",
+            "status": "pass",
+            "sha256": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+            "message": "release_artifact snapshot hash captured."
+          },
+          {
+            "name": "release_audit_trail",
+            "status": "pass",
+            "sha256": "2a11426d78d67ae2bffb9b93f0a45a82518e1a23b898b8ab20ba09687f2e8da5",
+            "message": "release_audit_trail snapshot hash captured."
+          }
+        ],
+        "message": "Validated patch approval manifest binds approval to the exact reviewed v18/v19 artifact set."
+      },
+      "message": "Validated AI apply requires approval bound to the exact validated patch approval manifest."
+    },
+    "apply_transaction": {
+      "version": "16.0",
+      "checked_at": "2026-06-20T01:57:45",
+      "project_id": "eidolon",
+      "status": "blocked",
+      "ok": false,
+      "dry_run": true,
+      "prechecks": [
+        {
+          "name": "rewrite-conflicts",
+          "status": "blocked",
+          "message": "Rewrite conflict detector completed."
+        },
+        {
+          "name": "diff-bundle",
+          "status": "pass",
+          "message": "Generated patch diff bundle prepared for review."
+        },
+        {
+          "name": "approval-binding",
+          "status": "warn",
+          "message": "No approved draft currently binds to the patch bundle."
+        },
+        {
+          "name": "explicit-confirmation",
+          "status": "pass",
+          "message": "Real apply requires --approve-controlled-self-build."
+        }
+      ],
+      "blocked_steps": [
+        "rewrite-conflicts"
+      ],
+      "apply_report": null,
+      "message": "Code patch transaction blocked before source writes."
+    },
+    "message": "Validated AI patch apply completed as dry-run."
+  },
+  "release_readiness": {
+    "version": "15.0",
+    "checked_at": "2026-06-20T01:57:47",
+    "project_id": "eidolon",
+    "status": "warn",
+    "ok": true,
+    "release_readiness": "READY WITH WARNINGS",
+    "rows": [
+      {
+        "name": "py-compile",
+        "status": "pass",
+        "returncode": 0,
+        "message": "Python compile passed."
+      },
+      {
+        "name": "readme-v15",
+        "status": "pass",
+        "message": "README documents v15.0."
+      },
+      {
+        "name": "settings-version",
+        "status": "warn",
+        "message": "settings version markers: version=None last_updated_for=v19.0"
+      },
+      {
+        "name": "project-version",
+        "status": "warn",
+        "message": "projects last_updated_for=v19.0"
+      },
+      {
+        "name": "approval-state",
+        "status": "pass",
+        "message": "No dirty unconsumed approval blocking release."
+      },
+      {
+        "name": "dry-run-separation",
+        "status": "pass",
+        "message": "Dry-run code patch reports are separate from real apply reports."
+      },
+      {
+        "name": "rollback-availability",
+        "status": "warn",
+        "message": "No real approved code apply exists yet; rollback is not applicable."
+      },
+      {
+        "name": "test-suggestions",
+        "status": "pass",
+        "message": "6 test suggestion(s) recorded."
+      }
+    ],
+    "known_warnings": [
+      "settings version markers: version=None last_updated_for=v19.0",
+      "projects last_updated_for=v19.0",
+      "No real approved code apply exists yet; rollback is not applicable."
+    ],
+    "message": "Release readiness: READY WITH WARNINGS.",
+    "preview_only": true
+  },
+  "rollback_status": "available only after real apply creates backups",
+  "rows": [
+    {
+      "name": "manifest-present",
+      "status": "pass",
+      "message": "patch_id=validated_ai_patch_7c86d439334e9a43"
+    },
+    {
+      "name": "real-apply-present",
+      "status": "warn",
+      "message": "latest_real_status=missing"
+    },
+    {
+      "name": "dry-run-separated",
+      "status": "pass",
+      "message": "Dry-run apply report is stored separately from real apply report."
+    },
+    {
+      "name": "transaction-match",
+      "status": "pass",
+      "message": "Apply transaction is available and not failed."
+    }
+  ],
+  "message": "Post-apply review compared approved manifest, apply report, dry-run separation, and release readiness."
+}

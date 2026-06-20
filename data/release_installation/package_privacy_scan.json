@@ -1,0 +1,33 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:19:23",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "violations": [],
+  "warnings": [],
+  "included_count": 96,
+  "rows": [
+    {
+      "name": "inventory-ok",
+      "status": "pass",
+      "message": "Package inventory classified included and excluded files for a guarded release zip."
+    },
+    {
+      "name": "private-files",
+      "status": "pass",
+      "message": "0 private/runtime included path(s) detected."
+    },
+    {
+      "name": "portable-warnings",
+      "status": "pass",
+      "message": "0 portable metadata warning(s)."
+    },
+    {
+      "name": "source-only-profile",
+      "status": "pass",
+      "message": "Package inventory uses source-only profile by default."
+    }
+  ],
+  "message": "Package privacy scan completed for source-only release packaging."
+}

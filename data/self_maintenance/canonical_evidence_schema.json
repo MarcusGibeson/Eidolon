@@ -1,0 +1,72 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:18:17",
+  "project_id": "eidolon",
+  "stage": "v29.3",
+  "status": "warn",
+  "ok": true,
+  "schema": {
+    "schema_version": "eidolon.release_evidence.v1",
+    "release_version": "30.0",
+    "package_name": "Eidolon_v30_0.zip",
+    "package_sha256": "ea56a93fdc643b35b9e2c268a16e6823ce497f5ffa138b674e85ea401d727aa7",
+    "manifest_sha256": "76bb13822a9a1f1ce5c10cd88d31066876f73baed5ce4d6fb4cfbdfcb5c8cd7a",
+    "gate_results": {
+      "privacy": {
+        "status": "pass",
+        "ok": true,
+        "message": "Package privacy scan completed for source-only release packaging."
+      },
+      "deterministic_manifest": {
+        "status": "pass",
+        "ok": true,
+        "message": "Deterministic release manifest generated."
+      },
+      "signing_status": {
+        "status": "warn",
+        "ok": true,
+        "message": "Artifact is explicitly unsigned."
+      }
+    },
+    "warnings": [
+      {
+        "name": "signing_status",
+        "status": "warn",
+        "message": "Artifact is explicitly unsigned."
+      }
+    ],
+    "blocked_items": [],
+    "verification_commands": [
+      "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+      "python conscious_agent/main.py --package-privacy-scan --readiness-json",
+      "python conscious_agent/main.py --deterministic-release-manifest --readiness-json",
+      "python conscious_agent/main.py --release-evidence-bundle --readiness-json",
+      "python conscious_agent/main.py --release-signing-status --readiness-json"
+    ],
+    "signing_status": "unsigned",
+    "signature_algorithm": null,
+    "signature": null,
+    "public_key_fingerprint": null,
+    "signed_at": null,
+    "signed_by": null,
+    "evidence_hash": "4aefeec8a295ee30ad90b9a70873f6ff1d28559c3a854b6e6cd3a2ff90e97ab0"
+  },
+  "rows": [
+    {
+      "name": "required-fields",
+      "status": "pass",
+      "message": "missing=none"
+    },
+    {
+      "name": "unsigned-status",
+      "status": "warn",
+      "message": "signing_status is unsigned by design for v30.0 preparation"
+    },
+    {
+      "name": "evidence-hash",
+      "status": "pass",
+      "message": "4aefeec8a295ee30ad90b9a70873f6ff1d28559c3a854b6e6cd3a2ff90e97ab0"
+    }
+  ],
+  "message": "Canonical evidence bundle schema generated."
+}

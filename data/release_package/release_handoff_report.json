@@ -1,0 +1,61 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "release_version": "21.0",
+  "package_name": "Eidolon_v21_0.zip",
+  "manifest_status": "pass",
+  "checksums_status": "pass",
+  "readme_status": "pass",
+  "approval_state": {
+    "approved": false,
+    "status": "neutral_packaged_handoff"
+  },
+  "known_warnings": [],
+  "commands_tested": [
+    "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+    "python conscious_agent/main.py --verified-release-package-loop",
+    "python -u tools/smoke_check.py"
+  ],
+  "recommended_first_commands_after_unzip": [
+    "python -m pip install -r requirements.txt",
+    "python conscious_agent/main.py --doctor",
+    "python conscious_agent/main.py --release-manifest-integrity",
+    "python -u tools/smoke_check.py"
+  ],
+  "rows": [
+    {
+      "name": "manifest",
+      "status": "pass",
+      "message": "Release manifest integrity verifies version markers, README, package plan, and approval/release artifacts."
+    },
+    {
+      "name": "inventory",
+      "status": "pass",
+      "message": "Package inventory classified included and excluded files for a guarded release zip."
+    },
+    {
+      "name": "checksums",
+      "status": "pass",
+      "message": "Package checksums generated for included release files."
+    },
+    {
+      "name": "release-notes",
+      "status": "pass",
+      "message": "Release notes generated from README and v20 packaging metadata."
+    },
+    {
+      "name": "release-readiness",
+      "status": "pass",
+      "message": "Release readiness: READY WITH WARNINGS."
+    },
+    {
+      "name": "approval-neutral",
+      "status": "pass",
+      "message": "Packaged handoff should not include a live unconsumed approval."
+    }
+  ],
+  "message": "Release handoff report prepared for the verified package."
+}

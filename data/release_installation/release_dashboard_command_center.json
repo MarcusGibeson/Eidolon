@@ -1,0 +1,35 @@
+{
+  "version": "22.0",
+  "checked_at": "2026-06-20T08:54:02",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "name": "deterministic-release-manifest",
+      "status": "pass",
+      "message": "Exposed in dashboard/API/CLI."
+    },
+    {
+      "name": "update-dry-run-plan",
+      "status": "pass",
+      "message": "Exposed in dashboard/API/CLI."
+    },
+    {
+      "name": "route-safety-harness",
+      "status": "pass",
+      "message": "Exposed in dashboard/API/CLI."
+    },
+    {
+      "name": "clean-room-install-harness",
+      "status": "pass",
+      "message": "Exposed in dashboard/API/CLI."
+    },
+    {
+      "name": "verified-self-update-release-pipeline",
+      "status": "pass",
+      "message": "Exposed in dashboard/API/CLI."
+    }
+  ],
+  "message": "Release dashboard command center check completed."
+}

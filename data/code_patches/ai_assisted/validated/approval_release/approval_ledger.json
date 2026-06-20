@@ -1,0 +1,58 @@
+[
+  {
+    "event_id": "approval_ledger_20260620T015734",
+    "recorded_at": "2026-06-20T01:57:34",
+    "project_id": "eidolon",
+    "patch_id": "validated_ai_patch_7c86d439334e9a43",
+    "draft_id": null,
+    "request_id": null,
+    "approval_status": "neutral_packaged_handoff",
+    "approved": false,
+    "consumed": false,
+    "risk_accepted": null,
+    "artifact_hashes": {
+      "objective_refinement": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+      "context_ranking": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+      "safety_envelope": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+      "generated_patch_validation": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+      "patch_simulation": "20519f6aa4fa34e4ca892a2bd10cee6ea8be6cc9b12b3c3e49fc5396511d15ee",
+      "test_stub_plan": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+      "patch_review_score": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+      "recovery_plan": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+      "diff_bundle": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+      "semantic_checks": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+      "release_readiness_preview": "eaf28352d6eea6dba8879781b59fa7acdac87b2c20672babf9cacb22375b1325",
+      "release_artifact": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+      "release_audit_trail": "2a11426d78d67ae2bffb9b93f0a45a82518e1a23b898b8ab20ba09687f2e8da5"
+    },
+    "message": "Approval ledger records the current approval state against the validated patch manifest."
+  },
+  {
+    "event_id": "approval_ledger_20260620T015745",
+    "recorded_at": "2026-06-20T01:57:45",
+    "project_id": "eidolon",
+    "patch_id": "validated_ai_patch_7c86d439334e9a43",
+    "draft_id": null,
+    "request_id": null,
+    "approval_status": "neutral_packaged_handoff",
+    "approved": false,
+    "consumed": false,
+    "risk_accepted": null,
+    "artifact_hashes": {
+      "objective_refinement": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+      "context_ranking": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+      "safety_envelope": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+      "generated_patch_validation": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+      "patch_simulation": "20519f6aa4fa34e4ca892a2bd10cee6ea8be6cc9b12b3c3e49fc5396511d15ee",
+      "test_stub_plan": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+      "patch_review_score": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+      "recovery_plan": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+      "diff_bundle": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+      "semantic_checks": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+      "release_readiness_preview": "eaf28352d6eea6dba8879781b59fa7acdac87b2c20672babf9cacb22375b1325",
+      "release_artifact": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+      "release_audit_trail": "2a11426d78d67ae2bffb9b93f0a45a82518e1a23b898b8ab20ba09687f2e8da5"
+    },
+    "message": "Approval ledger records the current approval state against the validated patch manifest."
+  }
+]

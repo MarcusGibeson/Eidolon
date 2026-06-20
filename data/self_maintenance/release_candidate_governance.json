@@ -1,0 +1,194 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:19:22",
+  "project_id": "eidolon",
+  "stage": "v27.0",
+  "status": "warn",
+  "ok": true,
+  "package_name": "Eidolon_v30_0.zip",
+  "zip_path": "data\\release_installation\\incoming\\Eidolon_v30_0.zip",
+  "steps": {
+    "freeze": {
+      "version": "30.0",
+      "stage": "v26.4",
+      "status": "pass",
+      "ok": true,
+      "message": "Release candidate artifact set frozen for review.",
+      "rows": [
+        {
+          "name": "source-manifest",
+          "status": "pass",
+          "message": "88 hash-bound file(s), 8 metadata file(s) drift-tolerant, da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f"
+        },
+        {
+          "name": "privacy-scan",
+          "status": "pass",
+          "message": "Package privacy scan completed for source-only release packaging."
+        },
+        {
+          "name": "release-integrity",
+          "status": "pass",
+          "message": "Release manifest integrity verifies version markers, README, package plan, and approval/release artifacts."
+        },
+        {
+          "name": "readme-current",
+          "status": "pass",
+          "message": "README includes v30.0 notes."
+        }
+      ],
+      "row_count": 4
+    },
+    "frozen_zip": {
+      "version": "30.0",
+      "stage": "v26.5",
+      "status": "pass",
+      "ok": true,
+      "message": "Frozen release zip verification completed.",
+      "rows": [
+        {
+          "name": "zip-present",
+          "status": "pass",
+          "message": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+        },
+        {
+          "name": "manifest-hash-match",
+          "status": "pass",
+          "message": "frozen=da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f zip=da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f; drift-tolerant metadata ignored=8"
+        },
+        {
+          "name": "missing-files",
+          "status": "pass",
+          "message": "0 missing file(s)."
+        },
+        {
+          "name": "extra-files",
+          "status": "pass",
+          "message": "0 extra file(s)."
+        },
+        {
+          "name": "changed-files",
+          "status": "pass",
+          "message": "0 changed file(s)."
+        }
+      ],
+      "row_count": 5,
+      "package_name": "Eidolon_v30_0.zip",
+      "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+    },
+    "evidence": {
+      "version": "30.0",
+      "stage": "v26.6",
+      "status": "warn",
+      "ok": true,
+      "message": "Approval evidence ledger generated; live approval remains separate.",
+      "rows": [
+        {
+          "name": "artifact-hashes",
+          "status": "pass",
+          "message": "Missing: none."
+        },
+        {
+          "name": "zip-verification",
+          "status": "pass",
+          "message": "Frozen release zip verification completed."
+        },
+        {
+          "name": "live-approval",
+          "status": "warn",
+          "message": "Ledger is evidence only; it does not authorize live apply."
+        }
+      ],
+      "row_count": 3
+    },
+    "commands": {
+      "version": "30.0",
+      "stage": "v26.7",
+      "status": "pass",
+      "ok": true,
+      "message": "Release command reproducer generated.",
+      "rows": [
+        {
+          "name": "commands",
+          "status": "pass",
+          "message": "8 reproducible command(s) generated for Eidolon_v30_0.zip."
+        }
+      ],
+      "row_count": 1,
+      "package_name": "Eidolon_v30_0.zip",
+      "zip_path": "data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+    },
+    "trust": {
+      "version": "30.0",
+      "stage": "v25.9",
+      "status": "warn",
+      "ok": true,
+      "message": "Operator trust report completed.",
+      "rows": [
+        {
+          "name": "route-coverage",
+          "status": "pass",
+          "message": "Dashboard route coverage auditor completed."
+        },
+        {
+          "name": "api-default-source",
+          "status": "pass",
+          "message": "API default source-of-truth audit completed."
+        },
+        {
+          "name": "nested-severity",
+          "status": "pass",
+          "message": "Nested readiness severity engine checks completed."
+        },
+        {
+          "name": "approval-contract",
+          "status": "pass",
+          "message": "Review bundle approval contract inspection completed."
+        },
+        {
+          "name": "release-memory-privacy",
+          "status": "pass",
+          "message": "Release memory privacy check completed."
+        },
+        {
+          "name": "hotfix-regression",
+          "status": "warn",
+          "message": "Hotfix regression lockdown completed for v25.0.1 route/default/severity fixes."
+        }
+      ],
+      "row_count": 6
+    }
+  },
+  "rows": [
+    {
+      "name": "freeze",
+      "status": "pass",
+      "message": "Release candidate artifact set frozen for review."
+    },
+    {
+      "name": "frozen_zip",
+      "status": "pass",
+      "message": "Frozen release zip verification completed."
+    },
+    {
+      "name": "evidence",
+      "status": "warn",
+      "message": "Approval evidence ledger generated; live approval remains separate."
+    },
+    {
+      "name": "commands",
+      "status": "pass",
+      "message": "Release command reproducer generated."
+    },
+    {
+      "name": "trust",
+      "status": "warn",
+      "message": "Operator trust report completed."
+    },
+    {
+      "name": "governance-boundary",
+      "status": "pass",
+      "message": "v27.0 governs release candidates; it does not perform live apply without exact approval."
+    }
+  ],
+  "message": "Release candidate governance system completed."
+}

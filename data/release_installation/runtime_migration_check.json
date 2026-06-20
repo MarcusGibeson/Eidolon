@@ -1,0 +1,40 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "runtime_paths": [
+    "data/memories.json",
+    "data/chroma",
+    "data/dashboard_chat",
+    "data/chat_actions",
+    "data/backups",
+    "data/patch_drafts",
+    "data/code_patches"
+  ],
+  "seed_paths": [
+    "data/settings.json",
+    "data/projects.json",
+    "data/workspaces/projects.json",
+    "data/workspaces/active_project.json"
+  ],
+  "rows": [
+    {
+      "name": "runtime-state-present",
+      "status": "warn",
+      "message": "7 local runtime/private path(s) exist; back them up before replacing folders."
+    },
+    {
+      "name": "seed-data",
+      "status": "pass",
+      "message": "Source-only package seed metadata files exist."
+    },
+    {
+      "name": "overwrite-rule",
+      "status": "pass",
+      "message": "Never overwrite private runtime data without explicit backup and confirmation."
+    }
+  ],
+  "message": "Runtime migration check completed."
+}

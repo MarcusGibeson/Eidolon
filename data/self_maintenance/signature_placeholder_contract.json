@@ -1,0 +1,33 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:18:19",
+  "project_id": "eidolon",
+  "stage": "v29.5",
+  "status": "warn",
+  "ok": true,
+  "placeholders": {
+    "signature_algorithm": null,
+    "signature": null,
+    "public_key_fingerprint": null,
+    "signed_at": null,
+    "signed_by": null
+  },
+  "rows": [
+    {
+      "name": "placeholder-fields",
+      "status": "pass",
+      "message": "signature_algorithm, signature, public_key_fingerprint, signed_at, signed_by"
+    },
+    {
+      "name": "null-means-unsigned",
+      "status": "pass",
+      "message": "Null signature fields require signing_status=unsigned."
+    },
+    {
+      "name": "no-signature-trust-claimed",
+      "status": "warn",
+      "message": "Unsigned packages must not be described as signature-trusted."
+    }
+  ],
+  "message": "Signature placeholder contract generated."
+}

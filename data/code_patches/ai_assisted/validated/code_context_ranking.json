@@ -1,0 +1,49 @@
+{
+  "version": "18.0",
+  "checked_at": "2026-06-20T01:27:21",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "objective_id": "{'id': 'synthetic_patch_draft_request', 'title': 'Draft a safe README/documentation patch lane', 'description': 'No safe queued task was available, so v14.0 created a bounded documentation-first draft request.', 'priority': 'low', 'risk': 'low', 'source': 'synthetic'}",
+  "ranked_context": [
+    {
+      "path": "conscious_agent/patch_drafting.py",
+      "score": 114,
+      "risk": "low",
+      "symbol_count": 40,
+      "snippet_count": 8,
+      "reasons": [
+        "matches task/surface keywords",
+        "risk=low"
+      ]
+    },
+    {
+      "path": "README_NEXT_STEPS.md",
+      "score": 107,
+      "risk": "low",
+      "symbol_count": 0,
+      "snippet_count": 1,
+      "reasons": [
+        "matches task/surface keywords",
+        "risk=low"
+      ]
+    }
+  ],
+  "top_context_paths": [
+    "conscious_agent/patch_drafting.py",
+    "README_NEXT_STEPS.md"
+  ],
+  "rows": [
+    {
+      "path": "conscious_agent/patch_drafting.py",
+      "status": "pass",
+      "message": "score=114 risk=low"
+    },
+    {
+      "path": "README_NEXT_STEPS.md",
+      "status": "pass",
+      "message": "score=107 risk=low"
+    }
+  ],
+  "message": "Code context ranked for generated patch prompt focus."
+}

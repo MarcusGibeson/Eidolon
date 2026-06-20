@@ -1,0 +1,22 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T00:32:25",
+  "project_id": "eidolon",
+  "run_id": "approved_code_patch_20260620_003225",
+  "status": "dry_run",
+  "ok": true,
+  "dry_run": true,
+  "approval_consumed": false,
+  "applied": [
+    {
+      "path": "README_NEXT_STEPS.md",
+      "status": "dry_run",
+      "backup_path": "data/code_patches/backups/approved_code_patch_20260620_003225/README_NEXT_STEPS.md",
+      "original_sha256": "296178de21f0c665e45bfa4c97289e4271f581973213ef97e18e7a2408d976c3",
+      "applied_sha256": "b96e122797a3eebe7bcba90827dd7ce4f223c4292ac233d0b48dd3fc561810a9"
+    }
+  ],
+  "errors": [],
+  "rollback_available": false,
+  "message": "Approved code patch dry_run; dry-runs do not consume approval or overwrite real apply pointers."
+}

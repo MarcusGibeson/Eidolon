@@ -1,0 +1,493 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:18:16",
+  "project_id": "eidolon",
+  "stage": "v29.2",
+  "status": "pass",
+  "ok": true,
+  "manifest": {
+    "schema_version": "eidolon.canonical_manifest.v1",
+    "project_name": "Eidolon",
+    "release_version": "30.0",
+    "package_name": "Eidolon_v30_0.zip",
+    "package_profile": "source-only",
+    "generated_at": "2026-06-20T15:18:16",
+    "hash_algorithm": "sha256",
+    "files": [
+      {
+        "path": ".gitignore",
+        "sha256": "7710f9ce2cc19d7579e4ceef49ace76babdd160ac2bd9a446a0a7609207729cc",
+        "size": 241
+      },
+      {
+        "path": "README_NEXT_STEPS.md",
+        "sha256": "732cc42611ffed32419cd958bb97658b86e3b3c465c6f9c2f41f159ffaf37831",
+        "size": 334081
+      },
+      {
+        "path": "conscious_agent/actions.py",
+        "sha256": "9444d5aaf276c21b9c565a105a81e6bc9943bb8d40f531919b41d116f1fc065c",
+        "size": 701
+      },
+      {
+        "path": "conscious_agent/ai_patch_assistance.py",
+        "sha256": "074649f7e3bb4a3c2700fc06acc9f21c77380ffefb598e3b75a21f5fc6ced1bc",
+        "size": 39992
+      },
+      {
+        "path": "conscious_agent/api_server.py",
+        "sha256": "48c902899bccdd114c92710b28b6b054ed1ec049953524ae235d22779f0e129c",
+        "size": 209410
+      },
+      {
+        "path": "conscious_agent/approval_manager.py",
+        "sha256": "52fef9feb816408373890a99f3b3670fa6a5309f5ce8a59d232eb337a6d95bb6",
+        "size": 18611
+      },
+      {
+        "path": "conscious_agent/approval_release_workflow.py",
+        "sha256": "12a36890ee1c4b1d7f4bfcbbef664a7596b0f30f1b34625b75988957cfb19f55",
+        "size": 35534
+      },
+      {
+        "path": "conscious_agent/autonomous_dev_cycle.py",
+        "sha256": "2095e5b4afde2dc02e112d1e57be16fb31cf9d80a60cb2c8b7fdeb76a687b263",
+        "size": 23019
+      },
+      {
+        "path": "conscious_agent/brain.py",
+        "sha256": "4d61b27a043f9fb39c22a6d1fd1c7fc31c74f6ac97ac99646cc223da621b639d",
+        "size": 5185
+      },
+      {
+        "path": "conscious_agent/chat.py",
+        "sha256": "e45b2b662bdb2e686b0c13a324c39bf3a3b61755e909f4c5fa66cbf7e2e2f42c",
+        "size": 5362
+      },
+      {
+        "path": "conscious_agent/chat_action_router.py",
+        "sha256": "18abc57fc71de897f4139c5cbcb42390bfc7419727ee88925a1a486802e80095",
+        "size": 29289
+      },
+      {
+        "path": "conscious_agent/code_patch_release.py",
+        "sha256": "e4bbc91dee780200b375d42a462833172044ef42602586d3752950c0efdcc7d8",
+        "size": 37598
+      },
+      {
+        "path": "conscious_agent/code_reviewer.py",
+        "sha256": "c6f185749b63162537460ec4bfe258d3904f30c5ab05589723fba1c6ab2060fd",
+        "size": 7626
+      },
+      {
+        "path": "conscious_agent/command_runner.py",
+        "sha256": "8d3461cbc48259f928db67ec7f09f2a142c0b1666a1ed75fc00c95881ae2e3dc",
+        "size": 28299
+      },
+      {
+        "path": "conscious_agent/controlled_build_cycle.py",
+        "sha256": "06eb6faac31b5669404b4575d2e9bf00f8fb5587310a6fb02a54ff2e11ba7257",
+        "size": 46499
+      },
+      {
+        "path": "conscious_agent/dashboard.py",
+        "sha256": "2ac14002715c796a5bc036f9902d3782fa646594df8306241e4205ce7818f9ee",
+        "size": 207534
+      },
+      {
+        "path": "conscious_agent/dashboard_chat_console.py",
+        "sha256": "2faf33702420923225fe867e5bbf9cb551d6e44dd252cf1311bdb96326ef3cba",
+        "size": 8054
+      },
+      {
+        "path": "conscious_agent/desires.py",
+        "sha256": "82df4a0662b6766152ec611f96ae4b58edd86dd7526583a5b5f6f0ab27c17b8f",
+        "size": 592
+      },
+      {
+        "path": "conscious_agent/desktop_notifier.py",
+        "sha256": "09e7fcf13c196d504de1ba36081c05c9f65f6feace2a683e7694edc3ed083a91",
+        "size": 3662
+      },
+      {
+        "path": "conscious_agent/desktop_onboarding_wizard.py",
+        "sha256": "96ffbecf44a5dacc3ef4f4501f4c75e5ea5ae45d91a44676deda2062972ada5b",
+        "size": 20279
+      },
+      {
+        "path": "conscious_agent/desktop_setup_helper.py",
+        "sha256": "bfc7b1c7eb936c597b7613e684b042d43de8938a1d5f63d2a071faf2c4127125",
+        "size": 22196
+      },
+      {
+        "path": "conscious_agent/desktop_shell.py",
+        "sha256": "7fcf3bc0a46ac1fd641f6ab14963279a6cc127ac6456979452727f4e61230c9f",
+        "size": 36678
+      },
+      {
+        "path": "conscious_agent/desktop_tray.py",
+        "sha256": "ca5d167898eeb7ebca969563e95ec8701d8024f5e3691725ccf436dcbb627c87",
+        "size": 7845
+      },
+      {
+        "path": "conscious_agent/dev_loop_runner.py",
+        "sha256": "091fd8b152594931b79eacc5ee5b74ce281a8cb06ebbc510ca13eaf1d995a874",
+        "size": 14746
+      },
+      {
+        "path": "conscious_agent/diagnostics.py",
+        "sha256": "32db674a0de3ee0c2ce5daef4bc9b7e3973c31eaf3c8468f9fead12192103cd4",
+        "size": 19934
+      },
+      {
+        "path": "conscious_agent/file_tools.py",
+        "sha256": "411f85bbbaa8ee1a39cdef61c55e3fc939df88ae85e9dfb53f39ac7b80ad0013",
+        "size": 7743
+      },
+      {
+        "path": "conscious_agent/goal_manager.py",
+        "sha256": "cf4d1ab5fcf5d25682bcc46dde6361fdb62edc4600d7208312a12467630f4d90",
+        "size": 18587
+      },
+      {
+        "path": "conscious_agent/guided_work_session.py",
+        "sha256": "416185e8baa4d4a3c14916cfbdab5ca55f8fb1db3c1702244098abd8ec216b75",
+        "size": 16675
+      },
+      {
+        "path": "conscious_agent/inner_loop.py",
+        "sha256": "86246435c9cf895991326f9117c7f0569588f982f7db38bcc271da3f7dc62d7f",
+        "size": 3154
+      },
+      {
+        "path": "conscious_agent/local_brain.py",
+        "sha256": "e20e07f627a77f07ba7603185784053b14485d0bf6622bb1d50d3631af5cdab0",
+        "size": 4636
+      },
+      {
+        "path": "conscious_agent/main.py",
+        "sha256": "39c2039b135221f699cd87f48fe8d735d0dcc354f5d8e8264513b320bb79210c",
+        "size": 204930
+      },
+      {
+        "path": "conscious_agent/maintenance_advisor.py",
+        "sha256": "d2641dd7d44beb7feed4ade4d01a97f7c09b5f0c7709fdd07b8734bbf49c14eb",
+        "size": 19814
+      },
+      {
+        "path": "conscious_agent/memory.py",
+        "sha256": "18da358e61ac1d22ee7e0177d68ed65dd9be79720b3ea51926e9bca0e515ff64",
+        "size": 2153
+      },
+      {
+        "path": "conscious_agent/memory_compactor.py",
+        "sha256": "2d80eb21741f973ebc009a06ee9d56cfdd6450f28bb2377d6de727d573cd53ff",
+        "size": 15080
+      },
+      {
+        "path": "conscious_agent/notification_manager.py",
+        "sha256": "9c833f7c469434fd383928e93e63cdf3a87a270740bfe4b6faf2d75c0d34bb5a",
+        "size": 13335
+      },
+      {
+        "path": "conscious_agent/operational_readiness.py",
+        "sha256": "3bdac73e71670636b80086cd465710c524e3ed30b53027a4c37de88934e2dd34",
+        "size": 43017
+      },
+      {
+        "path": "conscious_agent/opinions.py",
+        "sha256": "8a3691b67ea9b966ba9a4d588f552ba2d33e6d4c9d3e9210cbfbd3f84b627543",
+        "size": 1900
+      },
+      {
+        "path": "conscious_agent/patch_applier.py",
+        "sha256": "5ed4967c2ade4b11a13c74bbc4539026dbcb854c1fe7562236c2b08f5f5c3fc5",
+        "size": 17181
+      },
+      {
+        "path": "conscious_agent/patch_drafting.py",
+        "sha256": "e4edd6cc8fd7bb9490fada6af8f98db7ad117f34de1465e374ece596af535061",
+        "size": 75777
+      },
+      {
+        "path": "conscious_agent/patch_suggester.py",
+        "sha256": "f3596507c5528f750e9f167eab54734d5b364634f64d6d78455fc3cbb0860bae",
+        "size": 12818
+      },
+      {
+        "path": "conscious_agent/paths.py",
+        "sha256": "d725800bc607c71d454b7d123cf9cb92fa397ac972ec5aba268f18dafb97093f",
+        "size": 347
+      },
+      {
+        "path": "conscious_agent/planner.py",
+        "sha256": "cce761cefd46c80b102c53f9b6b5519e4a3034031b690c9829879b9ab20a7c21",
+        "size": 774
+      },
+      {
+        "path": "conscious_agent/project_indexer.py",
+        "sha256": "9a19b027dd8137ae2755b8eb3d952babc7682b74d3c57be11266cb076984b558",
+        "size": 9476
+      },
+      {
+        "path": "conscious_agent/project_intelligence.py",
+        "sha256": "49e6fa61eb926ae3583fbdda3fda36bb1fd8b84f327036de26a81d7a4c14216f",
+        "size": 30535
+      },
+      {
+        "path": "conscious_agent/project_manager.py",
+        "sha256": "16b83b111b4fb62849de76c77f2305145c2adb3f0143158a0ca689c742554e96",
+        "size": 6710
+      },
+      {
+        "path": "conscious_agent/reflection.py",
+        "sha256": "cc394f666ca3f43138cb0aa7523882b8d7fd50ac8a2e8bfa8a5484385e2e7bcd",
+        "size": 1025
+      },
+      {
+        "path": "conscious_agent/release_installation.py",
+        "sha256": "095c0e6df9bebd8fa59882a0bd9a665af386051d57831dbe2cd20efc7adc7530",
+        "size": 119002
+      },
+      {
+        "path": "conscious_agent/release_packaging.py",
+        "sha256": "722dc501e1a307ff4246f45e22764c096af82b04f50078075f6489d0f5a07944",
+        "size": 44092
+      },
+      {
+        "path": "conscious_agent/release_pipeline.py",
+        "sha256": "76b95671e5d7d2a2e3bba48eca2bc81d8b168b3a2291c24e393c9d2a730226d2",
+        "size": 37252
+      },
+      {
+        "path": "conscious_agent/safety.py",
+        "sha256": "c9b32c86216387066178d92d3ef2c3041801bb99781796ae3e25806f838b8fd3",
+        "size": 205
+      },
+      {
+        "path": "conscious_agent/self_improver.py",
+        "sha256": "248de333c6d439c04bba7626f91a8725eb83f16bb9781c69f81d6d44ccad08c2",
+        "size": 17255
+      },
+      {
+        "path": "conscious_agent/self_maintenance.py",
+        "sha256": "acaf1c9e75353c6ac24df6036a367cab2384ef525d5dac021587aab71b2d6d6b",
+        "size": 219033
+      },
+      {
+        "path": "conscious_agent/self_model.py",
+        "sha256": "77cdad864b0158bb1462ff75c61649e89e1a0eccceaea3fb6b071e2f64d80d02",
+        "size": 1383
+      },
+      {
+        "path": "conscious_agent/session_planner.py",
+        "sha256": "fb675367f30ecfe7f3756f00ca9c10db0eb67b51d6286426503759d58cf0826e",
+        "size": 35996
+      },
+      {
+        "path": "conscious_agent/settings_manager.py",
+        "sha256": "c9e0de9ecdeecb3208d4daac9bc2c68043112efb5721793f03906e43f744a89d",
+        "size": 16057
+      },
+      {
+        "path": "conscious_agent/stabilization_checkpoint.py",
+        "sha256": "8e16630a85e2bce3ae0f4123b13c23627c7d96935e23d81e67d05b542a3e706c",
+        "size": 28147
+      },
+      {
+        "path": "conscious_agent/stable_loop_audit.py",
+        "sha256": "b03a0804365624477e8119e543ffd824b07364e041d510e19b84f3a9b82832fd",
+        "size": 17086
+      },
+      {
+        "path": "conscious_agent/stable_loop_decision_report.py",
+        "sha256": "11ffcdb6dd680e93b8600304f2ffed76ab8fe8354e2ce472961c9a2ead3729cb",
+        "size": 18293
+      },
+      {
+        "path": "conscious_agent/stable_loop_followup_completion.py",
+        "sha256": "257e8686d8dda98457e370986000b8d3f331171d87864bbeabc898fe7118ac64",
+        "size": 20721
+      },
+      {
+        "path": "conscious_agent/stable_loop_followup_lifecycle.py",
+        "sha256": "12c0fe708a77a996770c0c75c3b4fc36fa82795eb7617b6f08e9b71957af260c",
+        "size": 18073
+      },
+      {
+        "path": "conscious_agent/stable_loop_followup_tasks.py",
+        "sha256": "6836e62750d306523ce7bf305e02c13289c56ca4e9dbe5f0c3cac603289e41f9",
+        "size": 22669
+      },
+      {
+        "path": "conscious_agent/stable_loop_guardrails.py",
+        "sha256": "a6697bb94883bd8d8968dec45bb8da1cec6260ec74b9095da08073e407e8d415",
+        "size": 7640
+      },
+      {
+        "path": "conscious_agent/stable_loop_operator_notes.py",
+        "sha256": "91b4e52b871030c8f3860ec34315bb0b7bae353edabfc904bea436fe9d0db9aa",
+        "size": 16980
+      },
+      {
+        "path": "conscious_agent/stable_loop_review.py",
+        "sha256": "a2c9c0244d01791d94607a5352d32a17ac30c24ef2fc12188046ebd1e5a1647e",
+        "size": 23273
+      },
+      {
+        "path": "conscious_agent/stable_supervised_loop.py",
+        "sha256": "b7e4ab7a633c6c753aca8ac211e35e350fe2a257b95d025806f4600d97075267",
+        "size": 22731
+      },
+      {
+        "path": "conscious_agent/task_approval_bridge.py",
+        "sha256": "884cafc54e8b3550f5f38513b358e10972c7060ec1212f00af604c1f2fb4fd71",
+        "size": 9460
+      },
+      {
+        "path": "conscious_agent/task_cycle_policy.py",
+        "sha256": "69e37012564eac18a8f4827d6cb0a26def703342ac374de937b4642f71355391",
+        "size": 16766
+      },
+      {
+        "path": "conscious_agent/task_executor.py",
+        "sha256": "6703cfce0b1727b7ef8dd95558e8b5b4ee58714f2972b47b2cbaa599e0e712f8",
+        "size": 10078
+      },
+      {
+        "path": "conscious_agent/task_lifecycle.py",
+        "sha256": "b46f4dbadc05a5b1acd1f473eeed23521442b9d3ae8fc191f5cef13f1f4f0580",
+        "size": 15702
+      },
+      {
+        "path": "conscious_agent/task_patch_bridge.py",
+        "sha256": "898accc7abc877b45ba5e0c8742d52fbc8b858699fedae59481581a1869b54a4",
+        "size": 18583
+      },
+      {
+        "path": "conscious_agent/task_queue.py",
+        "sha256": "339c9ff72aab6bc4f3b5d0e3e965d37652ee1addd3f94524786ebfda1ffe4c0e",
+        "size": 28768
+      },
+      {
+        "path": "conscious_agent/task_recovery.py",
+        "sha256": "fc8b70262e60292e4d70aeb4410dee0f54bce857d02c5bafae8f864cab9a61e4",
+        "size": 20587
+      },
+      {
+        "path": "conscious_agent/task_result_evaluator.py",
+        "sha256": "164552bd40ec8f247d7848939c3e01667f9b1b4d24dac4a89e3cb23d5822635d",
+        "size": 17588
+      },
+      {
+        "path": "conscious_agent/task_work_executor.py",
+        "sha256": "27caba474b8e815aea18720be08be1aac0ad26d9438e2a6db321ffb0fb617de9",
+        "size": 23317
+      },
+      {
+        "path": "conscious_agent/test_report_reviewer.py",
+        "sha256": "921f84faa2bf3e5a2855c3346fed5bd3fb50a56ff917c5af5f9343a614b07b50",
+        "size": 18326
+      },
+      {
+        "path": "conscious_agent/test_runner.py",
+        "sha256": "554e7664e4d36af71079e8d0b3cc7fc835d82120e7842d50ba2a7a55eb73a1db",
+        "size": 12292
+      },
+      {
+        "path": "conscious_agent/validated_ai_patch_loop.py",
+        "sha256": "438a07a5140b3b7aee88b0360449f43d7c251a5458254652427b23130c57b264",
+        "size": 39508
+      },
+      {
+        "path": "conscious_agent/vector_memory.py",
+        "sha256": "e53870d3cc3c10e01344bd760c85c4d7199cab9075e84b0684961a3963026446",
+        "size": 4340
+      },
+      {
+        "path": "conscious_agent/watch_mode.py",
+        "sha256": "6552e83fcb988620abc9f2241b0bcbed0e253fff6d0b414d5b3d39e174af405b",
+        "size": 23798
+      },
+      {
+        "path": "conscious_agent/work_cycle.py",
+        "sha256": "fba649e32867228bff1f882f5948c31f6044dd7528fe19a23c045cc1e3b64557",
+        "size": 20654
+      },
+      {
+        "path": "conscious_agent/work_queue.py",
+        "sha256": "ff8250618091859d1c59c43c005ae705bc1151be0d04d13d438d66bfc823ea04",
+        "size": 22182
+      },
+      {
+        "path": "conscious_agent/work_queue_executor.py",
+        "sha256": "df2180197c9a82fc58e172f6701bde529bce1df02ea7589d85765dfe1a2923a8",
+        "size": 1031
+      },
+      {
+        "path": "conscious_agent/work_queue_patch_bridge.py",
+        "sha256": "a974e66feeb9fff3e6e19193fdae47020e00aaea6c22869d20dfe391953c3ec9",
+        "size": 3335
+      },
+      {
+        "path": "conscious_agent/workspace_execution.py",
+        "sha256": "c225708e9db6cb12cdbb27503ce0448582499962ed200fc24bf832d8b07aa6fc",
+        "size": 27415
+      },
+      {
+        "path": "conscious_agent/workspace_orchestration.py",
+        "sha256": "270cf697fb9fa7d84c31aed1b17a9e2dd17d6560689f9fc1b7269d26a48050e3",
+        "size": 32262
+      },
+      {
+        "path": "requirements.txt",
+        "sha256": "e791f11a7e84322b2cfdd44064e46a9dea2f543fa3d0396f9a1417a4e56a214d",
+        "size": 33
+      },
+      {
+        "path": "setup.ps1",
+        "sha256": "76c912dd98f6841d9e37e037d8812f483352725669f1bb0d0a666cba3558fadc",
+        "size": 852
+      },
+      {
+        "path": "tools/smoke_check.py",
+        "sha256": "8f8332bc348f239dd942305a15fb0012daae2edd8fc8a97aeaaa4d1e1bbdf8e6",
+        "size": 50344
+      }
+    ],
+    "excluded_paths": [
+      ".git",
+      ".venv",
+      "__pycache__",
+      "data/release_package",
+      "data/releases",
+      "data/self_maintenance",
+      "reports"
+    ],
+    "volatile_metadata_paths": [
+      "data/projects.json",
+      "data/settings.json",
+      "data/workspaces/*.json",
+      "data/workspaces/command_profiles/*.json"
+    ],
+    "deterministic_manifest_hash": "76bb13822a9a1f1ce5c10cd88d31066876f73baed5ce4d6fb4cfbdfcb5c8cd7a"
+  },
+  "rows": [
+    {
+      "name": "required-fields",
+      "status": "pass",
+      "message": "missing=none"
+    },
+    {
+      "name": "stable-sort-order",
+      "status": "pass",
+      "message": "file paths and metadata lists are sorted before hashing"
+    },
+    {
+      "name": "canonical-hash",
+      "status": "pass",
+      "message": "76bb13822a9a1f1ce5c10cd88d31066876f73baed5ce4d6fb4cfbdfcb5c8cd7a"
+    }
+  ],
+  "message": "Canonical manifest format generated."
+}

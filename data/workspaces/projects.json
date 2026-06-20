@@ -1,0 +1,33 @@
+{
+  "version": "30.0",
+  "updated_at": "2026-06-20T18:42:54",
+  "projects": [
+    {
+      "id": "eidolon",
+      "name": "Eidolon",
+      "root": ".",
+      "root_resolves_from": "ROOT_DIR",
+      "version": "v30.0",
+      "language": "Python",
+      "framework_type": "local_cli_dashboard_api",
+      "readme_path": "README_NEXT_STEPS.md",
+      "test_commands": [
+        "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+        "python conscious_agent/main.py --doctor",
+        "python conscious_agent/main.py --stabilization-checkpoint --stabilization-full",
+        "python tools/smoke_check.py",
+        "python tools/smoke_check.py --tier full --json",
+        "python conscious_agent/main.py --assisted-self-improvement-release --readiness-json",
+        "python conscious_agent/main.py --semi-autonomous-maintenance-review --readiness-json"
+      ],
+      "safe_command_profile": "eidolon",
+      "last_health_status": "unknown",
+      "priority": "high",
+      "safe_to_modify": true,
+      "last_updated_for": "v30.0",
+      "current_milestone": "v30.0 Signed Release Preparation System",
+      "registered_at": "2026-06-20T04:13:25",
+      "updated_at": "2026-06-20T18:42:54"
+    }
+  ]
+}

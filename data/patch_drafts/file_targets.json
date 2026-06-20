@@ -1,0 +1,52 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T00:22:58",
+  "project_id": "eidolon",
+  "draft_id": "draft_20260620_002258_draft_request_20260620_002258_synthetic_patch_draft_request",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "path": "conscious_agent/patch_drafting.py",
+      "status": "target",
+      "risk": "medium",
+      "reason": "Resolved from draft request, task text, proposed file metadata, and project review surfaces."
+    },
+    {
+      "path": "README_NEXT_STEPS.md",
+      "status": "target",
+      "risk": "low",
+      "reason": "README update required for every project patch."
+    },
+    {
+      "path": "conscious_agent/api_server.py",
+      "status": "candidate",
+      "risk": "medium",
+      "reason": "Task references API behavior."
+    }
+  ],
+  "likely_files": [
+    "conscious_agent/patch_drafting.py",
+    "README_NEXT_STEPS.md",
+    "conscious_agent/api_server.py"
+  ],
+  "avoid": [
+    {
+      "path": "conscious_agent/command_runner.py",
+      "reason": "Command execution policy should change only when the task explicitly targets safety/whitelist behavior."
+    },
+    {
+      "path": "conscious_agent/stable_loop_guardrails.py",
+      "reason": "Guardrails are high-risk and should not be changed as incidental draft work."
+    },
+    {
+      "path": "data/workspaces/projects.json",
+      "reason": "Workspace registry writes belong to explicit registry commands, not draft review."
+    },
+    {
+      "path": "data/patch_workspace/latest_apply_report.json",
+      "reason": "Real apply pointers must not be rewritten by preview/draft reports."
+    }
+  ],
+  "message": "Resolved 3 likely draft file target(s)."
+}

@@ -1,0 +1,642 @@
+{
+  "id": "stableloop_20260619_141810",
+  "version": "6.0",
+  "created_at": "2026-06-19T18:18:13.920454+00:00",
+  "project_id": "eidolon",
+  "live": false,
+  "max_steps": 1,
+  "use_ai": false,
+  "approve_work_execution": false,
+  "seed_if_empty": true,
+  "auto_create_patch_followups": true,
+  "auto_request_approvals": true,
+  "auto_retry_recovery": false,
+  "ok": true,
+  "stopped_reason": "preview_only",
+  "message": "Stable loop preview saved. ok=True. stopped=preview_only. Preview cycle: workcycle_20260619_141810. No live task mutations were requested.",
+  "error": "",
+  "preflight": {
+    "ok": true,
+    "version": "6.0",
+    "checked_at": "2026-06-19T18:18:10.043391+00:00",
+    "project_id": "eidolon",
+    "settings_version": "6.0",
+    "safe_mode": "strict",
+    "requested_steps": 1,
+    "max_steps_cap": 5,
+    "effective_steps": 1,
+    "issues": [],
+    "warnings": [
+      "No open task candidates found. Stable loop may seed safe starter tasks if enabled."
+    ],
+    "pending_approval_count": 0,
+    "queue_summary": {
+      "total": 0,
+      "pending": 0,
+      "active": 0,
+      "blocked": 0,
+      "done": 0,
+      "failed": 0,
+      "cancelled": 0,
+      "approval_required": 0,
+      "next_item": null,
+      "canonical_store": "data/tasks.json",
+      "compatibility_layer": "work_queue.py"
+    },
+    "lifecycle_summary": {
+      "total": 0,
+      "open": 0,
+      "counts": {
+        "ready": 0,
+        "active": 0,
+        "approval_required": 0,
+        "approval_pending": 0,
+        "approved_ready": 0,
+        "approval_rejected": 0,
+        "approval_failed": 0,
+        "recovery_needed": 0,
+        "blocked": 0,
+        "patch_proposed": 0,
+        "done": 0,
+        "cancelled": 0,
+        "unknown": 0
+      },
+      "needs_attention": 0,
+      "ready_to_act": 0,
+      "selected_filter": "all",
+      "selected_filter_label": "All",
+      "filtered_total": 0,
+      "next": null,
+      "rows": [],
+      "all_rows": [],
+      "filters": [
+        {
+          "key": "all",
+          "label": "All",
+          "count": 0
+        },
+        {
+          "key": "open",
+          "label": "Open",
+          "count": 0
+        },
+        {
+          "key": "needs_attention",
+          "label": "Needs attention",
+          "count": 0
+        },
+        {
+          "key": "ready_to_act",
+          "label": "Ready to act",
+          "count": 0
+        },
+        {
+          "key": "ready",
+          "label": "Ready",
+          "count": 0
+        },
+        {
+          "key": "active",
+          "label": "Active",
+          "count": 0
+        },
+        {
+          "key": "approval_required",
+          "label": "Needs approval request",
+          "count": 0
+        },
+        {
+          "key": "approval_pending",
+          "label": "Approval pending",
+          "count": 0
+        },
+        {
+          "key": "approved_ready",
+          "label": "Approved, ready to run",
+          "count": 0
+        },
+        {
+          "key": "approval_rejected",
+          "label": "Approval rejected",
+          "count": 0
+        },
+        {
+          "key": "approval_failed",
+          "label": "Approval failed",
+          "count": 0
+        },
+        {
+          "key": "recovery_needed",
+          "label": "Recovery needed",
+          "count": 0
+        },
+        {
+          "key": "blocked",
+          "label": "Blocked",
+          "count": 0
+        },
+        {
+          "key": "patch_proposed",
+          "label": "Patch proposed",
+          "count": 0
+        },
+        {
+          "key": "done",
+          "label": "Done",
+          "count": 0
+        },
+        {
+          "key": "cancelled",
+          "label": "Cancelled",
+          "count": 0
+        },
+        {
+          "key": "unknown",
+          "label": "Unknown",
+          "count": 0
+        }
+      ]
+    },
+    "recovery_summary": {
+      "project": "eidolon",
+      "recoverable": 0,
+      "needs_attention": 0,
+      "categories": {},
+      "next_recovery": null,
+      "recoveries": []
+    },
+    "candidate_count": 0,
+    "next_decision": {
+      "ok": true,
+      "action": "no_task",
+      "task_id": "",
+      "title": "",
+      "stage": "",
+      "stage_label": "",
+      "reason": "No open task lifecycle candidates found.",
+      "lifecycle": null,
+      "task": null,
+      "metadata": {
+        "project": "eidolon",
+        "candidate_count": 0
+      }
+    }
+  },
+  "decision": {
+    "ok": true,
+    "action": "no_task",
+    "task_id": "",
+    "title": "",
+    "stage": "",
+    "stage_label": "",
+    "reason": "No open task lifecycle candidates found.",
+    "lifecycle": null,
+    "task": null,
+    "metadata": {
+      "project": "eidolon",
+      "candidate_count": 0
+    }
+  },
+  "preview_cycle_id": "workcycle_20260619_141810",
+  "live_cycle_id": "",
+  "preview_cycle": {
+    "id": "workcycle_20260619_141810",
+    "version": "6.0",
+    "created_at": "2026-06-19T18:18:10.047915+00:00",
+    "project_id": "eidolon",
+    "dry_run": true,
+    "use_ai": false,
+    "approve_work_execution": false,
+    "seed_if_empty": true,
+    "auto_create_patch_followups": true,
+    "auto_request_approvals": true,
+    "auto_retry_recovery": false,
+    "steps_requested": 1,
+    "steps_completed": 0,
+    "stopped_reason": "dry_run_seed_preview",
+    "ok": true,
+    "error": "",
+    "message": "Dry-run preview finished after 0 step(s). Stopped: dry_run_seed_preview.",
+    "created_work_ids": [],
+    "created_task_ids": [],
+    "created_followup_work_ids": [],
+    "created_followup_task_ids": [],
+    "executed_work_ids": [],
+    "executed_task_ids": [],
+    "approval_ids": [],
+    "recovered_work_ids": [],
+    "recovered_task_ids": [],
+    "lifecycle_decisions": [],
+    "patch_ids": [],
+    "summary_before": {
+      "total": 0,
+      "pending": 0,
+      "active": 0,
+      "blocked": 0,
+      "done": 0,
+      "failed": 0,
+      "cancelled": 0,
+      "approval_required": 0,
+      "next_item": null,
+      "canonical_store": "data/tasks.json",
+      "compatibility_layer": "work_queue.py"
+    },
+    "summary_after": {
+      "total": 0,
+      "pending": 0,
+      "active": 0,
+      "blocked": 0,
+      "done": 0,
+      "failed": 0,
+      "cancelled": 0,
+      "approval_required": 0,
+      "next_item": null,
+      "canonical_store": "data/tasks.json",
+      "compatibility_layer": "work_queue.py"
+    },
+    "events": [
+      {
+        "type": "observe_queue",
+        "at": "2026-06-19T18:18:10.044496+00:00",
+        "summary": {
+          "total": 0,
+          "pending": 0,
+          "active": 0,
+          "blocked": 0,
+          "done": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "approval_required": 0,
+          "next_item": null,
+          "canonical_store": "data/tasks.json",
+          "compatibility_layer": "work_queue.py"
+        }
+      },
+      {
+        "type": "seed_queue",
+        "at": "2026-06-19T18:18:10.046860+00:00",
+        "dry_run": true,
+        "created_work_ids": [],
+        "created_task_ids": [],
+        "proposed_items": [
+          {
+            "title": "Review README_NEXT_STEPS.md for the next safe Eidolon step",
+            "description": "Inspect the project README and summarize the next safe action. This is read-only and gives the cycle context before making changes.",
+            "project_id": "eidolon",
+            "priority": 6,
+            "risk": "low",
+            "source": "system",
+            "requires_approval": false,
+            "metadata": {
+              "action_type": "review_file",
+              "target_file": "README_NEXT_STEPS.md",
+              "cycle_seed": true
+            }
+          },
+          {
+            "title": "Run general Eidolon test workflow",
+            "description": "Run the approved default test workflow through the task work executor.",
+            "project_id": "eidolon",
+            "priority": 5,
+            "risk": "low",
+            "source": "system",
+            "requires_approval": false,
+            "metadata": {
+              "action_type": "test_project",
+              "cycle_seed": true
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "live_cycle": null,
+  "events": [
+    {
+      "type": "preflight",
+      "at": "2026-06-19T18:18:10.043445+00:00",
+      "preflight": {
+        "ok": true,
+        "version": "6.0",
+        "checked_at": "2026-06-19T18:18:10.043391+00:00",
+        "project_id": "eidolon",
+        "settings_version": "6.0",
+        "safe_mode": "strict",
+        "requested_steps": 1,
+        "max_steps_cap": 5,
+        "effective_steps": 1,
+        "issues": [],
+        "warnings": [
+          "No open task candidates found. Stable loop may seed safe starter tasks if enabled."
+        ],
+        "pending_approval_count": 0,
+        "queue_summary": {
+          "total": 0,
+          "pending": 0,
+          "active": 0,
+          "blocked": 0,
+          "done": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "approval_required": 0,
+          "next_item": null,
+          "canonical_store": "data/tasks.json",
+          "compatibility_layer": "work_queue.py"
+        },
+        "lifecycle_summary": {
+          "total": 0,
+          "open": 0,
+          "counts": {
+            "ready": 0,
+            "active": 0,
+            "approval_required": 0,
+            "approval_pending": 0,
+            "approved_ready": 0,
+            "approval_rejected": 0,
+            "approval_failed": 0,
+            "recovery_needed": 0,
+            "blocked": 0,
+            "patch_proposed": 0,
+            "done": 0,
+            "cancelled": 0,
+            "unknown": 0
+          },
+          "needs_attention": 0,
+          "ready_to_act": 0,
+          "selected_filter": "all",
+          "selected_filter_label": "All",
+          "filtered_total": 0,
+          "next": null,
+          "rows": [],
+          "all_rows": [],
+          "filters": [
+            {
+              "key": "all",
+              "label": "All",
+              "count": 0
+            },
+            {
+              "key": "open",
+              "label": "Open",
+              "count": 0
+            },
+            {
+              "key": "needs_attention",
+              "label": "Needs attention",
+              "count": 0
+            },
+            {
+              "key": "ready_to_act",
+              "label": "Ready to act",
+              "count": 0
+            },
+            {
+              "key": "ready",
+              "label": "Ready",
+              "count": 0
+            },
+            {
+              "key": "active",
+              "label": "Active",
+              "count": 0
+            },
+            {
+              "key": "approval_required",
+              "label": "Needs approval request",
+              "count": 0
+            },
+            {
+              "key": "approval_pending",
+              "label": "Approval pending",
+              "count": 0
+            },
+            {
+              "key": "approved_ready",
+              "label": "Approved, ready to run",
+              "count": 0
+            },
+            {
+              "key": "approval_rejected",
+              "label": "Approval rejected",
+              "count": 0
+            },
+            {
+              "key": "approval_failed",
+              "label": "Approval failed",
+              "count": 0
+            },
+            {
+              "key": "recovery_needed",
+              "label": "Recovery needed",
+              "count": 0
+            },
+            {
+              "key": "blocked",
+              "label": "Blocked",
+              "count": 0
+            },
+            {
+              "key": "patch_proposed",
+              "label": "Patch proposed",
+              "count": 0
+            },
+            {
+              "key": "done",
+              "label": "Done",
+              "count": 0
+            },
+            {
+              "key": "cancelled",
+              "label": "Cancelled",
+              "count": 0
+            },
+            {
+              "key": "unknown",
+              "label": "Unknown",
+              "count": 0
+            }
+          ]
+        },
+        "recovery_summary": {
+          "project": "eidolon",
+          "recoverable": 0,
+          "needs_attention": 0,
+          "categories": {},
+          "next_recovery": null,
+          "recoveries": []
+        },
+        "candidate_count": 0,
+        "next_decision": {
+          "ok": true,
+          "action": "no_task",
+          "task_id": "",
+          "title": "",
+          "stage": "",
+          "stage_label": "",
+          "reason": "No open task lifecycle candidates found.",
+          "lifecycle": null,
+          "task": null,
+          "metadata": {
+            "project": "eidolon",
+            "candidate_count": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "preview_cycle",
+      "at": "2026-06-19T18:18:13.920425+00:00",
+      "cycle_id": "workcycle_20260619_141810",
+      "ok": true,
+      "stopped_reason": "dry_run_seed_preview",
+      "message": "Dry-run preview finished after 0 step(s). Stopped: dry_run_seed_preview."
+    }
+  ],
+  "audit": {
+    "version": "6.7",
+    "generated_at": "2026-06-19T19:58:40.101779+00:00",
+    "loop_id": "stableloop_20260619_141810",
+    "project_id": "eidolon",
+    "live": false,
+    "ok": true,
+    "stopped_reason": "preview_only",
+    "cycle_id": "workcycle_20260619_141810",
+    "cycle_dry_run": true,
+    "changed_task_ids": [],
+    "created_task_ids": [],
+    "created_followup_task_ids": [],
+    "executed_task_ids": [],
+    "recovered_task_ids": [],
+    "approval_ids": [],
+    "patch_ids": [],
+    "commands": [],
+    "actions": [
+      {
+        "event_type": "observe_queue",
+        "action": "observe_queue",
+        "task_id": "",
+        "ok": null,
+        "blocked": null,
+        "stopped_reason": "",
+        "approval_id": "",
+        "patch_id": ""
+      },
+      {
+        "event_type": "seed_queue",
+        "action": "seed_queue",
+        "task_id": "",
+        "ok": null,
+        "blocked": null,
+        "stopped_reason": "",
+        "approval_id": "",
+        "patch_id": ""
+      }
+    ],
+    "tasks": [],
+    "approvals": [],
+    "patches": [],
+    "check_commands": [
+      "python conscious_agent/main.py --status",
+      "python conscious_agent/main.py --settings-health",
+      "python conscious_agent/main.py --task-work summary",
+      "python conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop",
+      "python conscious_agent/main.py --list-applied-patches",
+      "python conscious_agent/main.py --show-stable-loop-audit stableloop_20260619_141810 --stable-loop-audit-full"
+    ],
+    "warnings": [
+      "This is a preview-only stable loop record. No live task mutations should have occurred."
+    ],
+    "summary": "Preview stable-loop audit: 0 changed task id(s), 0 approval id(s), 0 patch id(s), 1 warning(s)."
+  },
+  "operator_notes": {
+    "version": "6.7",
+    "created_at": "2026-06-19T19:58:40.101902+00:00",
+    "updated_at": "",
+    "final_decision": "undecided",
+    "decision_note": "",
+    "decision_at": "",
+    "decision_by": "",
+    "notes": [],
+    "checklist": [
+      {
+        "id": "status",
+        "label": "Run general status check",
+        "command": "python conscious_agent/main.py --status",
+        "required": true,
+        "source": "standard",
+        "status": "pending",
+        "completed_at": "",
+        "completed_by": "",
+        "note": ""
+      },
+      {
+        "id": "settings_health",
+        "label": "Run settings health check",
+        "command": "python conscious_agent/main.py --settings-health",
+        "required": true,
+        "source": "standard",
+        "status": "pending",
+        "completed_at": "",
+        "completed_by": "",
+        "note": ""
+      },
+      {
+        "id": "task_summary",
+        "label": "Review task/work summary",
+        "command": "python conscious_agent/main.py --task-work summary",
+        "required": true,
+        "source": "standard",
+        "status": "pending",
+        "completed_at": "",
+        "completed_by": "",
+        "note": ""
+      },
+      {
+        "id": "stable_preflight",
+        "label": "Run stable loop preflight",
+        "command": "python conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop",
+        "required": true,
+        "source": "standard",
+        "status": "pending",
+        "completed_at": "",
+        "completed_by": "",
+        "note": ""
+      },
+      {
+        "id": "python_conscious_agent_main_py_list_applied_patc",
+        "label": "Run recommended check: python conscious_agent/main.py --list-applied-patches",
+        "command": "python conscious_agent/main.py --list-applied-patches",
+        "required": false,
+        "source": "audit",
+        "status": "pending",
+        "completed_at": "",
+        "completed_by": "",
+        "note": ""
+      },
+      {
+        "id": "python_conscious_agent_main_py_show_stable_loop_",
+        "label": "Run recommended check: python conscious_agent/main.py --show-stable-loop-audit stableloop_20260619_141810 --stable-loop-audit-full",
+        "command": "python conscious_agent/main.py --show-stable-loop-audit stableloop_20260619_141810 --stable-loop-audit-full",
+        "required": false,
+        "source": "audit",
+        "status": "pending",
+        "completed_at": "",
+        "completed_by": "",
+        "note": ""
+      }
+    ],
+    "summary": {
+      "check_total": 6,
+      "check_done": 0,
+      "check_skipped": 0,
+      "check_pending": 6,
+      "required_total": 4,
+      "required_done": 0,
+      "required_pending": 4,
+      "final_decision": "undecided",
+      "final_decision_label": "Undecided",
+      "complete": false,
+      "ready_for_keep_decision": false
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "version": "18.0",
+  "checked_at": "2026-06-20T01:27:21",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "allowed_files": [
+    "conscious_agent/patch_drafting.py",
+    "README_NEXT_STEPS.md"
+  ],
+  "blocked_files": [
+    ".git/",
+    ".venv/",
+    "data/workspaces/projects.json unless registry work is explicit",
+    "conscious_agent/command_runner.py unless safety/command policy work is explicit"
+  ],
+  "top_context_paths": [
+    "conscious_agent/patch_drafting.py",
+    "README_NEXT_STEPS.md"
+  ],
+  "hard_rules": [
+    "Return valid JSON only using the generated edit schema.",
+    "Only modify allowed_files.",
+    "Never rewrite a full file unless full_file_rewrite_allowed is true.",
+    "Every edit must include expected_old_text and replacement_text.",
+    "Every edit must include README impact and test impact.",
+    "Do not touch guardrails, command runners, rollback code, or workspace registry files unless explicitly allowed.",
+    "GET endpoints must stay read-only; mutating/live work must be POST-only with confirmation.",
+    "Dry-runs must never overwrite real apply, approval, or rollback pointers.",
+    "Approval must bind to the exact draft/diff/test/quality/checklist bundle."
+  ],
+  "output_schema": {
+    "edits": [
+      {
+        "file": "relative/path.py",
+        "symbol": "optional_function_or_class",
+        "expected_old_text": "exact text to replace",
+        "replacement_text": "new text",
+        "reason": "why this edit is needed",
+        "tests": [
+          "commands or checks"
+        ],
+        "readme_impact": true
+      }
+    ]
+  },
+  "rows": [
+    {
+      "name": "allowed-files",
+      "status": "pass",
+      "message": "2 allowed file(s)."
+    },
+    {
+      "name": "ranked-context",
+      "status": "pass",
+      "message": "2 ranked context item(s)."
+    },
+    {
+      "name": "hard-rules",
+      "status": "pass",
+      "message": "9 safety rules active."
+    }
+  ],
+  "message": "Prompt safety envelope built for bounded AI-generated code edits."
+}

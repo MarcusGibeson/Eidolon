@@ -1,0 +1,12 @@
+{
+  "version": "10.0",
+  "checked_at": "2026-06-19T18:30:36",
+  "project_id": "eidolon",
+  "status": "dry_run",
+  "ok": true,
+  "dry_run": true,
+  "source_apply_run_id": "apply_20260619_180432_plan-20260619-180432-synthetic-v9-safe-readme-task",
+  "restored": [],
+  "errors": [],
+  "message": "Rollback previewed for 0 file(s)."
+}

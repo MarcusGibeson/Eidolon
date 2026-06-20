@@ -1,0 +1,90 @@
+{
+  "version": "27.0",
+  "checked_at": "2026-06-20T12:47:53",
+  "project_id": "eidolon",
+  "stage": "v26.1",
+  "status": "pass",
+  "ok": true,
+  "scenarios": [
+    {
+      "name": "all-pass",
+      "expected": "pass",
+      "actual": "pass",
+      "ok": true
+    },
+    {
+      "name": "nested-warn",
+      "expected": "warn",
+      "actual": "warn",
+      "ok": true
+    },
+    {
+      "name": "nested-blocked",
+      "expected": "blocked",
+      "actual": "blocked",
+      "ok": true
+    },
+    {
+      "name": "stale-package-default",
+      "expected": "warn",
+      "actual": "warn",
+      "ok": true
+    },
+    {
+      "name": "missing-dashboard-route",
+      "expected": "blocked",
+      "actual": "blocked",
+      "ok": true
+    },
+    {
+      "name": "readme-drift",
+      "expected": "warn",
+      "actual": "warn",
+      "ok": true
+    },
+    {
+      "name": "source-privacy-leak",
+      "expected": "blocked",
+      "actual": "blocked",
+      "ok": true
+    }
+  ],
+  "rows": [
+    {
+      "name": "all-pass",
+      "status": "pass",
+      "message": "expected=pass actual=pass"
+    },
+    {
+      "name": "nested-warn",
+      "status": "pass",
+      "message": "expected=warn actual=warn"
+    },
+    {
+      "name": "nested-blocked",
+      "status": "pass",
+      "message": "expected=blocked actual=blocked"
+    },
+    {
+      "name": "stale-package-default",
+      "status": "pass",
+      "message": "expected=warn actual=warn"
+    },
+    {
+      "name": "missing-dashboard-route",
+      "status": "pass",
+      "message": "expected=blocked actual=blocked"
+    },
+    {
+      "name": "readme-drift",
+      "status": "pass",
+      "message": "expected=warn actual=warn"
+    },
+    {
+      "name": "source-privacy-leak",
+      "status": "pass",
+      "message": "expected=blocked actual=blocked"
+    }
+  ],
+  "message": "Trust console drill scenarios completed."
+}

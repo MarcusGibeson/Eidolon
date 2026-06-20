@@ -1,0 +1,38 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:18:20",
+  "project_id": "eidolon",
+  "stage": "v29.6",
+  "status": "warn",
+  "ok": true,
+  "policy": {
+    "signing_required": false,
+    "accepted_algorithms_planned": [
+      "ed25519",
+      "rsa-pss-sha256"
+    ],
+    "key_storage_configured": false,
+    "public_key_configured": false,
+    "unsigned_releases_allowed": true,
+    "unsigned_release_behavior": "warn_ok",
+    "private_keys_in_source_allowed": false
+  },
+  "rows": [
+    {
+      "name": "no-private-keys",
+      "status": "pass",
+      "message": "No private keys are stored in source or data defaults."
+    },
+    {
+      "name": "unsigned-allowed-with-warning",
+      "status": "warn",
+      "message": "Unsigned releases are allowed for now but must remain clearly marked."
+    },
+    {
+      "name": "future-key-config",
+      "status": "warn",
+      "message": "Key storage and public key configuration are intentionally not implemented yet."
+    }
+  ],
+  "message": "Key policy preparation report generated."
+}

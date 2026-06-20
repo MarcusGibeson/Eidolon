@@ -1,0 +1,1305 @@
+{
+  "version": "22.0",
+  "checked_at": "2026-06-20T08:54:02",
+  "project_id": "eidolon",
+  "status": "dry_run",
+  "ok": true,
+  "dry_run": true,
+  "package_name": "Eidolon_v22_0.zip",
+  "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\missing.zip",
+  "manifest_sha256": "33eda217c64e10af6ba6568c93b24407f5f0f8f51d92081cddd7b1db0a9b91ee",
+  "steps": {
+    "smoke": {
+      "version": "22.0",
+      "checked_at": "2026-06-20T08:54:01",
+      "project_id": "eidolon",
+      "tier": "full",
+      "status": "pass",
+      "ok": true,
+      "rows": [
+        {
+          "name": "smoke-script",
+          "status": "pass",
+          "message": "tools/smoke_check.py exists."
+        },
+        {
+          "name": "single-check-mode",
+          "status": "pass",
+          "message": "Each check can run in an isolated subprocess."
+        },
+        {
+          "name": "tiered-mode",
+          "status": "pass",
+          "message": "Smoke tiers are declared."
+        },
+        {
+          "name": "json-summary",
+          "status": "pass",
+          "message": "Machine-readable smoke summaries are available."
+        },
+        {
+          "name": "timeout-wrapper",
+          "status": "pass",
+          "message": "Per-check timeout handling is present."
+        }
+      ],
+      "message": "Smoke runtime hardening check completed."
+    },
+    "external_zip": {
+      "version": "22.0",
+      "checked_at": "2026-06-20T08:54:01",
+      "project_id": "eidolon",
+      "status": "warn",
+      "ok": true,
+      "skipped": true,
+      "rows": [
+        {
+          "name": "zip-present",
+          "status": "warn",
+          "message": "No external release zip was provided or found; external unzip verification skipped."
+        }
+      ],
+      "details": {
+        "requested_package_name": "Eidolon_v22_0.zip",
+        "requested_zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\missing.zip"
+      },
+      "message": "External release zip verification skipped because no zip was available."
+    },
+    "deterministic_manifest": {
+      "version": "22.0",
+      "checked_at": "2026-06-20T08:54:02",
+      "project_id": "eidolon",
+      "status": "pass",
+      "ok": true,
+      "package_name": "Eidolon_v22_0.zip",
+      "zip_path": null,
+      "source": "working-tree-inventory",
+      "package_profile": "source_only",
+      "file_count": 95,
+      "excluded_count": 10,
+      "manifest_sha256": "33eda217c64e10af6ba6568c93b24407f5f0f8f51d92081cddd7b1db0a9b91ee",
+      "entries": [
+        {
+          "path": ".gitignore",
+          "sha256": "7710f9ce2cc19d7579e4ceef49ace76babdd160ac2bd9a446a0a7609207729cc",
+          "size": 241
+        },
+        {
+          "path": "README_NEXT_STEPS.md",
+          "sha256": "836f0ca0cd90f9d197665b614b5c481f8a19dfd4ac788f11fa9df8320bafb08f",
+          "size": 269855
+        },
+        {
+          "path": "conscious_agent/actions.py",
+          "sha256": "9444d5aaf276c21b9c565a105a81e6bc9943bb8d40f531919b41d116f1fc065c",
+          "size": 701
+        },
+        {
+          "path": "conscious_agent/ai_patch_assistance.py",
+          "sha256": "074649f7e3bb4a3c2700fc06acc9f21c77380ffefb598e3b75a21f5fc6ced1bc",
+          "size": 39992
+        },
+        {
+          "path": "conscious_agent/api_server.py",
+          "sha256": "f6fe977035cff06ee48c32e1207446bb91fcae293b7d39585c6e1826a20d94c1",
+          "size": 156758
+        },
+        {
+          "path": "conscious_agent/approval_manager.py",
+          "sha256": "52fef9feb816408373890a99f3b3670fa6a5309f5ce8a59d232eb337a6d95bb6",
+          "size": 18611
+        },
+        {
+          "path": "conscious_agent/approval_release_workflow.py",
+          "sha256": "12a36890ee1c4b1d7f4bfcbbef664a7596b0f30f1b34625b75988957cfb19f55",
+          "size": 35534
+        },
+        {
+          "path": "conscious_agent/autonomous_dev_cycle.py",
+          "sha256": "2095e5b4afde2dc02e112d1e57be16fb31cf9d80a60cb2c8b7fdeb76a687b263",
+          "size": 23019
+        },
+        {
+          "path": "conscious_agent/brain.py",
+          "sha256": "4d61b27a043f9fb39c22a6d1fd1c7fc31c74f6ac97ac99646cc223da621b639d",
+          "size": 5185
+        },
+        {
+          "path": "conscious_agent/chat.py",
+          "sha256": "e45b2b662bdb2e686b0c13a324c39bf3a3b61755e909f4c5fa66cbf7e2e2f42c",
+          "size": 5362
+        },
+        {
+          "path": "conscious_agent/chat_action_router.py",
+          "sha256": "18abc57fc71de897f4139c5cbcb42390bfc7419727ee88925a1a486802e80095",
+          "size": 29289
+        },
+        {
+          "path": "conscious_agent/code_patch_release.py",
+          "sha256": "e4bbc91dee780200b375d42a462833172044ef42602586d3752950c0efdcc7d8",
+          "size": 37598
+        },
+        {
+          "path": "conscious_agent/code_reviewer.py",
+          "sha256": "c6f185749b63162537460ec4bfe258d3904f30c5ab05589723fba1c6ab2060fd",
+          "size": 7626
+        },
+        {
+          "path": "conscious_agent/command_runner.py",
+          "sha256": "8d3461cbc48259f928db67ec7f09f2a142c0b1666a1ed75fc00c95881ae2e3dc",
+          "size": 28299
+        },
+        {
+          "path": "conscious_agent/controlled_build_cycle.py",
+          "sha256": "06eb6faac31b5669404b4575d2e9bf00f8fb5587310a6fb02a54ff2e11ba7257",
+          "size": 46499
+        },
+        {
+          "path": "conscious_agent/dashboard.py",
+          "sha256": "00e62294be9c8825079b6f8945ff2d9fe974707f97593413433511cf315cb85d",
+          "size": 203143
+        },
+        {
+          "path": "conscious_agent/dashboard_chat_console.py",
+          "sha256": "2faf33702420923225fe867e5bbf9cb551d6e44dd252cf1311bdb96326ef3cba",
+          "size": 8054
+        },
+        {
+          "path": "conscious_agent/desires.py",
+          "sha256": "82df4a0662b6766152ec611f96ae4b58edd86dd7526583a5b5f6f0ab27c17b8f",
+          "size": 592
+        },
+        {
+          "path": "conscious_agent/desktop_notifier.py",
+          "sha256": "09e7fcf13c196d504de1ba36081c05c9f65f6feace2a683e7694edc3ed083a91",
+          "size": 3662
+        },
+        {
+          "path": "conscious_agent/desktop_onboarding_wizard.py",
+          "sha256": "96ffbecf44a5dacc3ef4f4501f4c75e5ea5ae45d91a44676deda2062972ada5b",
+          "size": 20279
+        },
+        {
+          "path": "conscious_agent/desktop_setup_helper.py",
+          "sha256": "bfc7b1c7eb936c597b7613e684b042d43de8938a1d5f63d2a071faf2c4127125",
+          "size": 22196
+        },
+        {
+          "path": "conscious_agent/desktop_shell.py",
+          "sha256": "7fcf3bc0a46ac1fd641f6ab14963279a6cc127ac6456979452727f4e61230c9f",
+          "size": 36678
+        },
+        {
+          "path": "conscious_agent/desktop_tray.py",
+          "sha256": "ca5d167898eeb7ebca969563e95ec8701d8024f5e3691725ccf436dcbb627c87",
+          "size": 7845
+        },
+        {
+          "path": "conscious_agent/dev_loop_runner.py",
+          "sha256": "091fd8b152594931b79eacc5ee5b74ce281a8cb06ebbc510ca13eaf1d995a874",
+          "size": 14746
+        },
+        {
+          "path": "conscious_agent/diagnostics.py",
+          "sha256": "32db674a0de3ee0c2ce5daef4bc9b7e3973c31eaf3c8468f9fead12192103cd4",
+          "size": 19934
+        },
+        {
+          "path": "conscious_agent/file_tools.py",
+          "sha256": "411f85bbbaa8ee1a39cdef61c55e3fc939df88ae85e9dfb53f39ac7b80ad0013",
+          "size": 7743
+        },
+        {
+          "path": "conscious_agent/goal_manager.py",
+          "sha256": "cf4d1ab5fcf5d25682bcc46dde6361fdb62edc4600d7208312a12467630f4d90",
+          "size": 18587
+        },
+        {
+          "path": "conscious_agent/guided_work_session.py",
+          "sha256": "416185e8baa4d4a3c14916cfbdab5ca55f8fb1db3c1702244098abd8ec216b75",
+          "size": 16675
+        },
+        {
+          "path": "conscious_agent/inner_loop.py",
+          "sha256": "86246435c9cf895991326f9117c7f0569588f982f7db38bcc271da3f7dc62d7f",
+          "size": 3154
+        },
+        {
+          "path": "conscious_agent/local_brain.py",
+          "sha256": "e20e07f627a77f07ba7603185784053b14485d0bf6622bb1d50d3631af5cdab0",
+          "size": 4636
+        },
+        {
+          "path": "conscious_agent/main.py",
+          "sha256": "447ad3707178f958d10c7a35a8b0c310a241c4064af19f67d7f153f7febb5b98",
+          "size": 166736
+        },
+        {
+          "path": "conscious_agent/maintenance_advisor.py",
+          "sha256": "d2641dd7d44beb7feed4ade4d01a97f7c09b5f0c7709fdd07b8734bbf49c14eb",
+          "size": 19814
+        },
+        {
+          "path": "conscious_agent/memory.py",
+          "sha256": "18da358e61ac1d22ee7e0177d68ed65dd9be79720b3ea51926e9bca0e515ff64",
+          "size": 2153
+        },
+        {
+          "path": "conscious_agent/memory_compactor.py",
+          "sha256": "2d80eb21741f973ebc009a06ee9d56cfdd6450f28bb2377d6de727d573cd53ff",
+          "size": 15080
+        },
+        {
+          "path": "conscious_agent/notification_manager.py",
+          "sha256": "9c833f7c469434fd383928e93e63cdf3a87a270740bfe4b6faf2d75c0d34bb5a",
+          "size": 13335
+        },
+        {
+          "path": "conscious_agent/operational_readiness.py",
+          "sha256": "3bdac73e71670636b80086cd465710c524e3ed30b53027a4c37de88934e2dd34",
+          "size": 43017
+        },
+        {
+          "path": "conscious_agent/opinions.py",
+          "sha256": "8a3691b67ea9b966ba9a4d588f552ba2d33e6d4c9d3e9210cbfbd3f84b627543",
+          "size": 1900
+        },
+        {
+          "path": "conscious_agent/patch_applier.py",
+          "sha256": "5ed4967c2ade4b11a13c74bbc4539026dbcb854c1fe7562236c2b08f5f5c3fc5",
+          "size": 17181
+        },
+        {
+          "path": "conscious_agent/patch_drafting.py",
+          "sha256": "e4edd6cc8fd7bb9490fada6af8f98db7ad117f34de1465e374ece596af535061",
+          "size": 75777
+        },
+        {
+          "path": "conscious_agent/patch_suggester.py",
+          "sha256": "f3596507c5528f750e9f167eab54734d5b364634f64d6d78455fc3cbb0860bae",
+          "size": 12818
+        },
+        {
+          "path": "conscious_agent/paths.py",
+          "sha256": "d725800bc607c71d454b7d123cf9cb92fa397ac972ec5aba268f18dafb97093f",
+          "size": 347
+        },
+        {
+          "path": "conscious_agent/planner.py",
+          "sha256": "cce761cefd46c80b102c53f9b6b5519e4a3034031b690c9829879b9ab20a7c21",
+          "size": 774
+        },
+        {
+          "path": "conscious_agent/project_indexer.py",
+          "sha256": "9a19b027dd8137ae2755b8eb3d952babc7682b74d3c57be11266cb076984b558",
+          "size": 9476
+        },
+        {
+          "path": "conscious_agent/project_intelligence.py",
+          "sha256": "49e6fa61eb926ae3583fbdda3fda36bb1fd8b84f327036de26a81d7a4c14216f",
+          "size": 30535
+        },
+        {
+          "path": "conscious_agent/project_manager.py",
+          "sha256": "16b83b111b4fb62849de76c77f2305145c2adb3f0143158a0ca689c742554e96",
+          "size": 6710
+        },
+        {
+          "path": "conscious_agent/reflection.py",
+          "sha256": "cc394f666ca3f43138cb0aa7523882b8d7fd50ac8a2e8bfa8a5484385e2e7bcd",
+          "size": 1025
+        },
+        {
+          "path": "conscious_agent/release_installation.py",
+          "sha256": "c586691b640d7d545164f3e9fceab0481986d3116a8b0b01a3a9305a0c43901d",
+          "size": 73294
+        },
+        {
+          "path": "conscious_agent/release_packaging.py",
+          "sha256": "2c72f944b4fcdfe52fde201ba19565ee1f0fc2be91210317fbb94e22b54d6559",
+          "size": 44081
+        },
+        {
+          "path": "conscious_agent/release_pipeline.py",
+          "sha256": "76b95671e5d7d2a2e3bba48eca2bc81d8b168b3a2291c24e393c9d2a730226d2",
+          "size": 37252
+        },
+        {
+          "path": "conscious_agent/safety.py",
+          "sha256": "c9b32c86216387066178d92d3ef2c3041801bb99781796ae3e25806f838b8fd3",
+          "size": 205
+        },
+        {
+          "path": "conscious_agent/self_improver.py",
+          "sha256": "248de333c6d439c04bba7626f91a8725eb83f16bb9781c69f81d6d44ccad08c2",
+          "size": 17255
+        },
+        {
+          "path": "conscious_agent/self_model.py",
+          "sha256": "77cdad864b0158bb1462ff75c61649e89e1a0eccceaea3fb6b071e2f64d80d02",
+          "size": 1383
+        },
+        {
+          "path": "conscious_agent/session_planner.py",
+          "sha256": "fb675367f30ecfe7f3756f00ca9c10db0eb67b51d6286426503759d58cf0826e",
+          "size": 35996
+        },
+        {
+          "path": "conscious_agent/settings_manager.py",
+          "sha256": "c9e0de9ecdeecb3208d4daac9bc2c68043112efb5721793f03906e43f744a89d",
+          "size": 16057
+        },
+        {
+          "path": "conscious_agent/stabilization_checkpoint.py",
+          "sha256": "8e16630a85e2bce3ae0f4123b13c23627c7d96935e23d81e67d05b542a3e706c",
+          "size": 28147
+        },
+        {
+          "path": "conscious_agent/stable_loop_audit.py",
+          "sha256": "b03a0804365624477e8119e543ffd824b07364e041d510e19b84f3a9b82832fd",
+          "size": 17086
+        },
+        {
+          "path": "conscious_agent/stable_loop_decision_report.py",
+          "sha256": "11ffcdb6dd680e93b8600304f2ffed76ab8fe8354e2ce472961c9a2ead3729cb",
+          "size": 18293
+        },
+        {
+          "path": "conscious_agent/stable_loop_followup_completion.py",
+          "sha256": "257e8686d8dda98457e370986000b8d3f331171d87864bbeabc898fe7118ac64",
+          "size": 20721
+        },
+        {
+          "path": "conscious_agent/stable_loop_followup_lifecycle.py",
+          "sha256": "12c0fe708a77a996770c0c75c3b4fc36fa82795eb7617b6f08e9b71957af260c",
+          "size": 18073
+        },
+        {
+          "path": "conscious_agent/stable_loop_followup_tasks.py",
+          "sha256": "6836e62750d306523ce7bf305e02c13289c56ca4e9dbe5f0c3cac603289e41f9",
+          "size": 22669
+        },
+        {
+          "path": "conscious_agent/stable_loop_guardrails.py",
+          "sha256": "a6697bb94883bd8d8968dec45bb8da1cec6260ec74b9095da08073e407e8d415",
+          "size": 7640
+        },
+        {
+          "path": "conscious_agent/stable_loop_operator_notes.py",
+          "sha256": "91b4e52b871030c8f3860ec34315bb0b7bae353edabfc904bea436fe9d0db9aa",
+          "size": 16980
+        },
+        {
+          "path": "conscious_agent/stable_loop_review.py",
+          "sha256": "a2c9c0244d01791d94607a5352d32a17ac30c24ef2fc12188046ebd1e5a1647e",
+          "size": 23273
+        },
+        {
+          "path": "conscious_agent/stable_supervised_loop.py",
+          "sha256": "b7e4ab7a633c6c753aca8ac211e35e350fe2a257b95d025806f4600d97075267",
+          "size": 22731
+        },
+        {
+          "path": "conscious_agent/task_approval_bridge.py",
+          "sha256": "884cafc54e8b3550f5f38513b358e10972c7060ec1212f00af604c1f2fb4fd71",
+          "size": 9460
+        },
+        {
+          "path": "conscious_agent/task_cycle_policy.py",
+          "sha256": "69e37012564eac18a8f4827d6cb0a26def703342ac374de937b4642f71355391",
+          "size": 16766
+        },
+        {
+          "path": "conscious_agent/task_executor.py",
+          "sha256": "6703cfce0b1727b7ef8dd95558e8b5b4ee58714f2972b47b2cbaa599e0e712f8",
+          "size": 10078
+        },
+        {
+          "path": "conscious_agent/task_lifecycle.py",
+          "sha256": "b46f4dbadc05a5b1acd1f473eeed23521442b9d3ae8fc191f5cef13f1f4f0580",
+          "size": 15702
+        },
+        {
+          "path": "conscious_agent/task_patch_bridge.py",
+          "sha256": "898accc7abc877b45ba5e0c8742d52fbc8b858699fedae59481581a1869b54a4",
+          "size": 18583
+        },
+        {
+          "path": "conscious_agent/task_queue.py",
+          "sha256": "339c9ff72aab6bc4f3b5d0e3e965d37652ee1addd3f94524786ebfda1ffe4c0e",
+          "size": 28768
+        },
+        {
+          "path": "conscious_agent/task_recovery.py",
+          "sha256": "fc8b70262e60292e4d70aeb4410dee0f54bce857d02c5bafae8f864cab9a61e4",
+          "size": 20587
+        },
+        {
+          "path": "conscious_agent/task_result_evaluator.py",
+          "sha256": "164552bd40ec8f247d7848939c3e01667f9b1b4d24dac4a89e3cb23d5822635d",
+          "size": 17588
+        },
+        {
+          "path": "conscious_agent/task_work_executor.py",
+          "sha256": "27caba474b8e815aea18720be08be1aac0ad26d9438e2a6db321ffb0fb617de9",
+          "size": 23317
+        },
+        {
+          "path": "conscious_agent/test_report_reviewer.py",
+          "sha256": "921f84faa2bf3e5a2855c3346fed5bd3fb50a56ff917c5af5f9343a614b07b50",
+          "size": 18326
+        },
+        {
+          "path": "conscious_agent/test_runner.py",
+          "sha256": "554e7664e4d36af71079e8d0b3cc7fc835d82120e7842d50ba2a7a55eb73a1db",
+          "size": 12292
+        },
+        {
+          "path": "conscious_agent/validated_ai_patch_loop.py",
+          "sha256": "438a07a5140b3b7aee88b0360449f43d7c251a5458254652427b23130c57b264",
+          "size": 39508
+        },
+        {
+          "path": "conscious_agent/vector_memory.py",
+          "sha256": "e53870d3cc3c10e01344bd760c85c4d7199cab9075e84b0684961a3963026446",
+          "size": 4340
+        },
+        {
+          "path": "conscious_agent/watch_mode.py",
+          "sha256": "6552e83fcb988620abc9f2241b0bcbed0e253fff6d0b414d5b3d39e174af405b",
+          "size": 23798
+        },
+        {
+          "path": "conscious_agent/work_cycle.py",
+          "sha256": "fba649e32867228bff1f882f5948c31f6044dd7528fe19a23c045cc1e3b64557",
+          "size": 20654
+        },
+        {
+          "path": "conscious_agent/work_queue.py",
+          "sha256": "ff8250618091859d1c59c43c005ae705bc1151be0d04d13d438d66bfc823ea04",
+          "size": 22182
+        },
+        {
+          "path": "conscious_agent/work_queue_executor.py",
+          "sha256": "df2180197c9a82fc58e172f6701bde529bce1df02ea7589d85765dfe1a2923a8",
+          "size": 1031
+        },
+        {
+          "path": "conscious_agent/work_queue_patch_bridge.py",
+          "sha256": "a974e66feeb9fff3e6e19193fdae47020e00aaea6c22869d20dfe391953c3ec9",
+          "size": 3335
+        },
+        {
+          "path": "conscious_agent/workspace_execution.py",
+          "sha256": "c225708e9db6cb12cdbb27503ce0448582499962ed200fc24bf832d8b07aa6fc",
+          "size": 27415
+        },
+        {
+          "path": "conscious_agent/workspace_orchestration.py",
+          "sha256": "6adc80029920fc736021d0f4ff3cf1a7d67ccbfa0f76e070b12d6c895d9e6ce1",
+          "size": 32270
+        },
+        {
+          "path": "data/projects.json",
+          "sha256": "7dd2ba7067bbe9253e27c4baba5858612ed9551a327aeb2b62e4da66d58c40c6",
+          "size": 28069
+        },
+        {
+          "path": "data/settings.json",
+          "sha256": "0f249202cd7292c46906681cb1c733cb5d869f8b900b14effbddf8fe95b4ff17",
+          "size": 2137
+        },
+        {
+          "path": "data/workspaces/active_project.json",
+          "sha256": "af6f0a70d0a6c191a99973b28fc110c14ea67c144c1684ca6bae9076d82b272e",
+          "size": 199
+        },
+        {
+          "path": "data/workspaces/command_profiles/default_java.json",
+          "sha256": "41d71d64ac830279467f0880add109bc8e39377fca52a275ccff8560aa591b6a",
+          "size": 487
+        },
+        {
+          "path": "data/workspaces/command_profiles/default_node.json",
+          "sha256": "3075992da515c3ac4717ad9ff1319e01691b521fe7d1dda67323de09eec42961",
+          "size": 493
+        },
+        {
+          "path": "data/workspaces/command_profiles/default_python.json",
+          "sha256": "df7eaa4756e6c4d6d4488c29a04ea9d233e2100ac4a6abdff68a61551eb9d28c",
+          "size": 498
+        },
+        {
+          "path": "data/workspaces/command_profiles/eidolon.json",
+          "sha256": "8da4879054f55aa6d9e228f2074a92db1107af000e04a831b4421fc9e6ac30c2",
+          "size": 861
+        },
+        {
+          "path": "data/workspaces/projects.json",
+          "sha256": "cda4bddbf8cad0303b00b037b715ed96ecd43499a9e20aeaa020c0027d7e4ad4",
+          "size": 1059
+        },
+        {
+          "path": "requirements.txt",
+          "sha256": "e791f11a7e84322b2cfdd44064e46a9dea2f543fa3d0396f9a1417a4e56a214d",
+          "size": 33
+        },
+        {
+          "path": "setup.ps1",
+          "sha256": "76c912dd98f6841d9e37e037d8812f483352725669f1bb0d0a666cba3558fadc",
+          "size": 852
+        },
+        {
+          "path": "tools/smoke_check.py",
+          "sha256": "3def8eee6371529dae160fe67cc05b59a8ea82c585cfad0c3282f874c2eb69bc",
+          "size": 47066
+        }
+      ],
+      "rows": [
+        {
+          "name": "manifest-source",
+          "status": "pass",
+          "message": "working-tree-inventory"
+        },
+        {
+          "name": "file-count",
+          "status": "pass",
+          "message": "95 file(s) are bound to the deterministic manifest."
+        },
+        {
+          "name": "manifest-hash",
+          "status": "pass",
+          "message": "33eda217c64e10af6ba6568c93b24407f5f0f8f51d92081cddd7b1db0a9b91ee"
+        },
+        {
+          "name": "sorted",
+          "status": "pass",
+          "message": "Manifest entries are path-sorted."
+        }
+      ],
+      "message": "Deterministic release manifest generated."
+    },
+    "update_plan": {
+      "version": "22.0",
+      "checked_at": "2026-06-20T08:54:02",
+      "project_id": "eidolon",
+      "status": "warn",
+      "ok": true,
+      "dry_run": true,
+      "package_name": "Eidolon_v22_0.zip",
+      "zip_path": null,
+      "install_root": "C:\\Users\\marcu\\Eidolon",
+      "new_files": [],
+      "changed_files": [],
+      "unchanged_files": [],
+      "removed_files": [],
+      "manifest_sha256": null,
+      "rows": [
+        {
+          "name": "target-zip",
+          "status": "warn",
+          "message": "No target zip supplied; generated inventory-only dry-run plan."
+        }
+      ],
+      "inventory_summary": {
+        "version": "22.0",
+        "checked_at": "2026-06-20T08:54:02",
+        "project_id": "eidolon",
+        "status": "pass",
+        "ok": true,
+        "package_profile": "source_only",
+        "included_count": 95,
+        "excluded_count": 10,
+        "rows": [
+          {
+            "name": "included-files",
+            "status": "pass",
+            "message": "95 file(s) included."
+          },
+          {
+            "name": "readme-included",
+            "status": "pass",
+            "message": "README_NEXT_STEPS.md must be packaged."
+          },
+          {
+            "name": "approval-state-excluded",
+            "status": "pass",
+            "message": "Live approval state is absent from included package files."
+          },
+          {
+            "name": "source-only-data-profile",
+            "status": "pass",
+            "message": "Only allowlisted source-safe data files may be packaged."
+          },
+          {
+            "name": "data-runtime-excluded",
+            "status": "pass",
+            "message": "Runtime/private data folders are excluded by default."
+          },
+          {
+            "name": "venv-excluded",
+            "status": "pass",
+            "message": ".git, .venv, __pycache__, .pyc, logs, generated package files, private runtime data, and nested zips are excluded."
+          }
+        ],
+        "message": "Package inventory classified included and excluded files for a guarded release zip.",
+        "preview_only": true,
+        "included_sample": [
+          {
+            "path": ".gitignore",
+            "size": 241,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/actions.py",
+            "size": 701,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/ai_patch_assistance.py",
+            "size": 39992,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/api_server.py",
+            "size": 156758,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/approval_manager.py",
+            "size": 18611,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/approval_release_workflow.py",
+            "size": 35534,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/autonomous_dev_cycle.py",
+            "size": 23019,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/brain.py",
+            "size": 5185,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/chat.py",
+            "size": 5362,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/chat_action_router.py",
+            "size": 29289,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/code_patch_release.py",
+            "size": 37598,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/code_reviewer.py",
+            "size": 7626,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/command_runner.py",
+            "size": 28299,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/controlled_build_cycle.py",
+            "size": 46499,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/dashboard.py",
+            "size": 203143,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/dashboard_chat_console.py",
+            "size": 8054,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/desires.py",
+            "size": 592,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/desktop_notifier.py",
+            "size": 3662,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/desktop_onboarding_wizard.py",
+            "size": 20279,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/desktop_setup_helper.py",
+            "size": 22196,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/desktop_shell.py",
+            "size": 36678,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/desktop_tray.py",
+            "size": 7845,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/dev_loop_runner.py",
+            "size": 14746,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/diagnostics.py",
+            "size": 19934,
+            "reason": "included source release file"
+          },
+          {
+            "path": "conscious_agent/file_tools.py",
+            "size": 7743,
+            "reason": "included source release file"
+          }
+        ],
+        "included_truncated": true,
+        "excluded_sample": [
+          {
+            "path": "data/action_log.json",
+            "size": 3577,
+            "reason": "excluded private/runtime data by source-only package profile"
+          },
+          {
+            "path": "data/desires.json",
+            "size": 192,
+            "reason": "excluded private/runtime data by source-only package profile"
+          },
+          {
+            "path": "data/goals.json",
+            "size": 3465,
+            "reason": "excluded private/runtime data by source-only package profile"
+          },
+          {
+            "path": "data/memories.json",
+            "size": 90431,
+            "reason": "excluded live approval state"
+          },
+          {
+            "path": "data/opinions.json",
+            "size": 625,
+            "reason": "excluded private/runtime data by source-only package profile"
+          },
+          {
+            "path": "data/project_index.json",
+            "size": 172164,
+            "reason": "excluded private/runtime data by source-only package profile"
+          },
+          {
+            "path": "data/self_model.json",
+            "size": 706,
+            "reason": "excluded private/runtime data by source-only package profile"
+          },
+          {
+            "path": "data/tasks.json",
+            "size": 14370,
+            "reason": "excluded private/runtime data by source-only package profile"
+          },
+          {
+            "path": "data/thoughts.log",
+            "size": 48717,
+            "reason": "excluded generated/log/bytecode file"
+          },
+          {
+            "path": "data/workspaces/timeline.json",
+            "size": 55558,
+            "reason": "excluded private/runtime data by source-only package profile"
+          }
+        ],
+        "excluded_truncated": false,
+        "summary_only": true
+      },
+      "message": "Update dry-run plan skipped exact compare because no target zip was available."
+    },
+    "migration": {
+      "version": "22.0",
+      "checked_at": "2026-06-20T08:54:02",
+      "project_id": "eidolon",
+      "status": "dry_run",
+      "ok": true,
+      "dry_run": true,
+      "actions": [
+        {
+          "action": "backup-runtime-path",
+          "path": "data/memories.json",
+          "required_before_live_update": true
+        },
+        {
+          "action": "backup-runtime-path",
+          "path": "data/chroma",
+          "required_before_live_update": true
+        },
+        {
+          "action": "backup-runtime-path",
+          "path": "data/dashboard_chat",
+          "required_before_live_update": true
+        },
+        {
+          "action": "backup-runtime-path",
+          "path": "data/chat_actions",
+          "required_before_live_update": true
+        },
+        {
+          "action": "backup-runtime-path",
+          "path": "data/backups",
+          "required_before_live_update": true
+        },
+        {
+          "action": "backup-runtime-path",
+          "path": "data/patch_drafts",
+          "required_before_live_update": true
+        },
+        {
+          "action": "backup-runtime-path",
+          "path": "data/code_patches",
+          "required_before_live_update": true
+        },
+        {
+          "action": "preserve-private-data",
+          "path": "data/* except source-safe seed metadata",
+          "required_before_live_update": true
+        }
+      ],
+      "runtime_guard": {
+        "version": "22.0",
+        "checked_at": "2026-06-20T08:54:02",
+        "project_id": "eidolon",
+        "status": "warn",
+        "ok": true,
+        "runtime_paths": [
+          "data/memories.json",
+          "data/chroma",
+          "data/dashboard_chat",
+          "data/chat_actions",
+          "data/backups",
+          "data/patch_drafts",
+          "data/code_patches"
+        ],
+        "seed_paths": [
+          "data/settings.json",
+          "data/projects.json",
+          "data/workspaces/projects.json",
+          "data/workspaces/active_project.json"
+        ],
+        "rows": [
+          {
+            "name": "runtime-state-present",
+            "status": "warn",
+            "message": "7 local runtime/private path(s) exist; back them up before replacing folders."
+          },
+          {
+            "name": "seed-data",
+            "status": "pass",
+            "message": "Source-only package seed metadata files exist."
+          },
+          {
+            "name": "overwrite-rule",
+            "status": "pass",
+            "message": "Never overwrite private runtime data without explicit backup and confirmation."
+          }
+        ],
+        "message": "Runtime migration check completed.",
+        "preview_only": true
+      },
+      "rows": [
+        {
+          "name": "runtime-guard",
+          "status": "pass",
+          "message": "Runtime migration check completed."
+        },
+        {
+          "name": "backup-plan",
+          "status": "warn",
+          "message": "7 runtime path(s) should be backed up before live update."
+        },
+        {
+          "name": "live-migration",
+          "status": "warn",
+          "message": "Live migration requires confirm=True and dry_run=False; preview only by default."
+        }
+      ],
+      "message": "Runtime migration assistant completed."
+    },
+    "routes": {
+      "version": "22.0",
+      "checked_at": "2026-06-20T08:54:02",
+      "project_id": "eidolon",
+      "status": "pass",
+      "ok": true,
+      "rows": [
+        {
+          "name": "dashboard-api-info-routing",
+          "status": "pass",
+          "message": "/api-info is not captured by the /api prefix router."
+        },
+        {
+          "name": "get-release-dry-run",
+          "status": "pass",
+          "message": "GET release routes use dry-run/save=False previews."
+        },
+        {
+          "name": "get-save-true-scan",
+          "status": "pass",
+          "message": "No save=True literal detected in API GET section."
+        },
+        {
+          "name": "post-confirmation-gates",
+          "status": "pass",
+          "message": "Live/destructive POST release paths require explicit confirmation tokens."
+        }
+      ],
+      "message": "Route safety harness completed."
+    },
+    "command_center": {
+      "version": "22.0",
+      "checked_at": "2026-06-20T08:54:02",
+      "project_id": "eidolon",
+      "status": "pass",
+      "ok": true,
+      "rows": [
+        {
+          "name": "deterministic-release-manifest",
+          "status": "pass",
+          "message": "Exposed in dashboard/API/CLI."
+        },
+        {
+          "name": "update-dry-run-plan",
+          "status": "pass",
+          "message": "Exposed in dashboard/API/CLI."
+        },
+        {
+          "name": "route-safety-harness",
+          "status": "pass",
+          "message": "Exposed in dashboard/API/CLI."
+        },
+        {
+          "name": "clean-room-install-harness",
+          "status": "pass",
+          "message": "Exposed in dashboard/API/CLI."
+        },
+        {
+          "name": "verified-self-update-release-pipeline",
+          "status": "pass",
+          "message": "Exposed in dashboard/API/CLI."
+        }
+      ],
+      "message": "Release dashboard command center check completed."
+    },
+    "clean_room": {
+      "version": "22.0",
+      "status": "warn",
+      "ok": true,
+      "skipped": true,
+      "message": "Clean-room harness skipped; pass run_clean_room=True to execute."
+    },
+    "atomic_update": {
+      "version": "22.0",
+      "checked_at": "2026-06-20T08:54:02",
+      "project_id": "eidolon",
+      "status": "dry_run",
+      "ok": true,
+      "dry_run": true,
+      "package_name": "Eidolon_v22_0.zip",
+      "zip_path": null,
+      "expected_manifest_hash": "33eda217c64e10af6ba6568c93b24407f5f0f8f51d92081cddd7b1db0a9b91ee",
+      "actual_manifest_hash": null,
+      "applied_files": [],
+      "backup_dir": null,
+      "rollback_manifest": [],
+      "plan": {
+        "version": "22.0",
+        "checked_at": "2026-06-20T08:54:02",
+        "project_id": "eidolon",
+        "status": "warn",
+        "ok": true,
+        "dry_run": true,
+        "package_name": "Eidolon_v22_0.zip",
+        "zip_path": null,
+        "install_root": "C:\\Users\\marcu\\Eidolon",
+        "new_files": [],
+        "changed_files": [],
+        "unchanged_files": [],
+        "removed_files": [],
+        "manifest_sha256": null,
+        "rows": [
+          {
+            "name": "target-zip",
+            "status": "warn",
+            "message": "No target zip supplied; generated inventory-only dry-run plan."
+          }
+        ],
+        "inventory_summary": {
+          "version": "22.0",
+          "checked_at": "2026-06-20T08:54:02",
+          "project_id": "eidolon",
+          "status": "pass",
+          "ok": true,
+          "package_profile": "source_only",
+          "included_count": 95,
+          "excluded_count": 10,
+          "rows": [
+            {
+              "name": "included-files",
+              "status": "pass",
+              "message": "95 file(s) included."
+            },
+            {
+              "name": "readme-included",
+              "status": "pass",
+              "message": "README_NEXT_STEPS.md must be packaged."
+            },
+            {
+              "name": "approval-state-excluded",
+              "status": "pass",
+              "message": "Live approval state is absent from included package files."
+            },
+            {
+              "name": "source-only-data-profile",
+              "status": "pass",
+              "message": "Only allowlisted source-safe data files may be packaged."
+            },
+            {
+              "name": "data-runtime-excluded",
+              "status": "pass",
+              "message": "Runtime/private data folders are excluded by default."
+            },
+            {
+              "name": "venv-excluded",
+              "status": "pass",
+              "message": ".git, .venv, __pycache__, .pyc, logs, generated package files, private runtime data, and nested zips are excluded."
+            }
+          ],
+          "message": "Package inventory classified included and excluded files for a guarded release zip.",
+          "preview_only": true,
+          "included_sample": [
+            {
+              "path": ".gitignore",
+              "size": 241,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/actions.py",
+              "size": 701,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/ai_patch_assistance.py",
+              "size": 39992,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/api_server.py",
+              "size": 156758,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/approval_manager.py",
+              "size": 18611,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/approval_release_workflow.py",
+              "size": 35534,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/autonomous_dev_cycle.py",
+              "size": 23019,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/brain.py",
+              "size": 5185,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/chat.py",
+              "size": 5362,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/chat_action_router.py",
+              "size": 29289,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/code_patch_release.py",
+              "size": 37598,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/code_reviewer.py",
+              "size": 7626,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/command_runner.py",
+              "size": 28299,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/controlled_build_cycle.py",
+              "size": 46499,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/dashboard.py",
+              "size": 203143,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/dashboard_chat_console.py",
+              "size": 8054,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/desires.py",
+              "size": 592,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/desktop_notifier.py",
+              "size": 3662,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/desktop_onboarding_wizard.py",
+              "size": 20279,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/desktop_setup_helper.py",
+              "size": 22196,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/desktop_shell.py",
+              "size": 36678,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/desktop_tray.py",
+              "size": 7845,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/dev_loop_runner.py",
+              "size": 14746,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/diagnostics.py",
+              "size": 19934,
+              "reason": "included source release file"
+            },
+            {
+              "path": "conscious_agent/file_tools.py",
+              "size": 7743,
+              "reason": "included source release file"
+            }
+          ],
+          "included_truncated": true,
+          "excluded_sample": [
+            {
+              "path": "data/action_log.json",
+              "size": 3577,
+              "reason": "excluded private/runtime data by source-only package profile"
+            },
+            {
+              "path": "data/desires.json",
+              "size": 192,
+              "reason": "excluded private/runtime data by source-only package profile"
+            },
+            {
+              "path": "data/goals.json",
+              "size": 3465,
+              "reason": "excluded private/runtime data by source-only package profile"
+            },
+            {
+              "path": "data/memories.json",
+              "size": 90431,
+              "reason": "excluded live approval state"
+            },
+            {
+              "path": "data/opinions.json",
+              "size": 625,
+              "reason": "excluded private/runtime data by source-only package profile"
+            },
+            {
+              "path": "data/project_index.json",
+              "size": 172164,
+              "reason": "excluded private/runtime data by source-only package profile"
+            },
+            {
+              "path": "data/self_model.json",
+              "size": 706,
+              "reason": "excluded private/runtime data by source-only package profile"
+            },
+            {
+              "path": "data/tasks.json",
+              "size": 14370,
+              "reason": "excluded private/runtime data by source-only package profile"
+            },
+            {
+              "path": "data/thoughts.log",
+              "size": 48717,
+              "reason": "excluded generated/log/bytecode file"
+            },
+            {
+              "path": "data/workspaces/timeline.json",
+              "size": 55558,
+              "reason": "excluded private/runtime data by source-only package profile"
+            }
+          ],
+          "excluded_truncated": false,
+          "summary_only": true
+        },
+        "message": "Update dry-run plan skipped exact compare because no target zip was available.",
+        "preview_only": true
+      },
+      "rows": [
+        {
+          "name": "plan",
+          "status": "pass",
+          "message": "Update dry-run plan skipped exact compare because no target zip was available."
+        },
+        {
+          "name": "explicit-confirm",
+          "status": "warn",
+          "message": "Real apply requires confirm=True."
+        },
+        {
+          "name": "manifest-binding",
+          "status": "warn",
+          "message": "expected=33eda217c64e10af6ba6568c93b24407f5f0f8f51d92081cddd7b1db0a9b91ee actual=missing"
+        },
+        {
+          "name": "dry-run",
+          "status": "pass",
+          "message": "No source files are modified in dry-run mode."
+        }
+      ],
+      "message": "Atomic source update transaction preview completed; no source files were modified."
+    }
+  },
+  "blocked_steps": [],
+  "message": "Verified self-update release pipeline completed."
+}

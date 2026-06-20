@@ -1,0 +1,40 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "name": "workspace-root-version",
+      "status": "pass",
+      "message": "workspace root version=21.0 expected=21.0"
+    },
+    {
+      "name": "active-project-version",
+      "status": "pass",
+      "message": "active project version=v21.0 last_updated_for=v21.0"
+    },
+    {
+      "name": "project-root-portable",
+      "status": "pass",
+      "message": "project root=. should resolve from ROOT_DIR."
+    },
+    {
+      "name": "readme-path",
+      "status": "pass",
+      "message": "README path resolves inside the package."
+    },
+    {
+      "name": "command-profiles",
+      "status": "pass",
+      "message": "4 command profile file(s) found."
+    },
+    {
+      "name": "no-absolute-paths",
+      "status": "pass",
+      "message": "Workspace metadata should not contain /mnt/data or hard-coded user roots."
+    }
+  ],
+  "message": "Portable workspace metadata check completed."
+}

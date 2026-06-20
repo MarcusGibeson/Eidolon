@@ -1,0 +1,72 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T00:22:58",
+  "project_id": "eidolon",
+  "draft_id": "draft_20260620_002258_draft_request_20260620_002258_synthetic_patch_draft_request",
+  "status": "pass",
+  "ok": true,
+  "blocks": [
+    {
+      "id": "intent_1",
+      "title": "Clarify requested change",
+      "purpose": "Represent the task `Draft a safe README/documentation patch lane` as reviewable patch intent.",
+      "files": [
+        "data/patch_drafts/draft_request.json"
+      ],
+      "risk": "low",
+      "tests_required": [
+        "python conscious_agent/main.py --patch-draft-status"
+      ],
+      "readme_impact": false,
+      "approval_notes": "Review before approval.",
+      "status": "planned"
+    },
+    {
+      "id": "intent_2",
+      "title": "Update patch drafting logic",
+      "purpose": "Keep draft generation, review, approval, apply, and reporting bounded to one patch lane.",
+      "files": [
+        "conscious_agent/patch_drafting.py"
+      ],
+      "risk": "medium",
+      "tests_required": [
+        "python conscious_agent/main.py --draft-quality",
+        "python conscious_agent/main.py --draft-conflicts"
+      ],
+      "readme_impact": false,
+      "approval_notes": "Review before approval.",
+      "status": "planned"
+    },
+    {
+      "id": "intent_3",
+      "title": "Update project documentation",
+      "purpose": "Document the version and verification commands for the patch.",
+      "files": [
+        "README_NEXT_STEPS.md"
+      ],
+      "risk": "low",
+      "tests_required": [
+        "python conscious_agent/main.py --readme-gate --readiness-json"
+      ],
+      "readme_impact": true,
+      "approval_notes": "README update is mandatory before approval.",
+      "status": "planned"
+    },
+    {
+      "id": "intent_4",
+      "title": "Review API surface",
+      "purpose": "Keep GET endpoints read-only and route mutations through POST-only handlers.",
+      "files": [
+        "conscious_agent/api_server.py"
+      ],
+      "risk": "medium",
+      "tests_required": [
+        "python conscious_agent/main.py --draft-verification-bundle"
+      ],
+      "readme_impact": false,
+      "approval_notes": "Reject if any preview GET writes state.",
+      "status": "planned"
+    }
+  ],
+  "message": "Prepared 4 draft intent block(s)."
+}

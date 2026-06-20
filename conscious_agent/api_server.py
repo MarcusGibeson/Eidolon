@@ -256,6 +256,121 @@ from release_packaging import (
     build_verify_release_unzip,
     build_release_pipeline_audit,
     build_verified_release_package_loop,
+    summarize_release_report,
+    _package_name,
+)
+from release_installation import (
+    build_release_profiles,
+    build_package_privacy_scan,
+    build_portable_metadata_check,
+    build_first_run_check,
+    build_dependency_advisor,
+    build_upgrade_notes,
+    build_runtime_migration_check,
+    build_release_install_verification,
+    build_verified_installable_release_loop,
+    build_smoke_runtime_hardening,
+    build_external_zip_install_verification,
+    build_deterministic_release_manifest,
+    build_update_dry_run_plan,
+    build_atomic_source_update,
+    build_runtime_migration_assistant,
+    build_route_safety_harness,
+    build_release_dashboard_command_center,
+    build_clean_room_install_harness,
+    build_verified_self_update_release_pipeline,
+    build_trial_upgrade_harness,
+    build_backup_rollback_drill,
+    build_update_collision_detector,
+    build_version_registry_report,
+    build_release_provenance_report,
+    build_dashboard_upgrade_wizard_preview,
+    build_api_upgrade_wizard_preview,
+    build_staged_apply_drill,
+    build_real_apply_guard_rails,
+    build_real_apply_rollback_verification,
+    build_self_update_ux_polish,
+    build_v23_readiness_gate,
+    build_controlled_self_maintenance_loop,
+    summarize_installation_report,
+)
+from self_maintenance import (
+    build_self_maintenance_proposal_sandbox,
+    build_patch_plan_builder,
+    build_dry_run_patch_generator,
+    build_patch_safety_auditor,
+    build_apply_patch_to_temp_clone,
+    build_maintenance_review_bundle,
+    build_human_approval_binding,
+    build_real_maintenance_patch_apply,
+    build_post_apply_health_monitor,
+    build_controlled_maintenance_cycle,
+    build_assisted_self_improvement_release,
+    build_improvement_candidate_scan,
+    build_candidate_prioritizer,
+    build_candidate_to_proposal_bridge,
+    build_maintenance_backlog_registry,
+    build_dashboard_maintenance_backlog,
+    build_api_maintenance_backlog,
+    build_candidate_regression_detector,
+    build_release_memory_privacy,
+    build_candidate_verification_recipes,
+    build_assisted_improvement_cycle,
+    build_semi_autonomous_maintenance_review,
+    build_hotfix_regression_lockdown,
+    build_dashboard_route_coverage_auditor,
+    build_api_default_source_audit,
+    build_nested_readiness_severity_engine,
+    build_review_bundle_approval_contract,
+    build_maintenance_report_diff_viewer,
+    build_release_gate_composition_test,
+    build_dashboard_api_parity_audit,
+    build_operator_trust_report,
+    build_trustworthy_maintenance_console,
+    build_trust_console_drill,
+    build_trust_console_snapshot,
+    build_trust_console_diff,
+    build_release_candidate_freezer,
+    build_frozen_release_zip_verification,
+    build_approval_evidence_ledger,
+    build_release_command_reproducer,
+    build_console_readme_consistency,
+    build_pre_v27_safety_audit,
+    build_release_candidate_governance,
+    build_release_governance_drill,
+    build_release_evidence_bundle,
+    build_release_evidence_bundle_verifier,
+    build_release_governance_page,
+    build_governance_api_read_only_surface,
+    build_release_artifact_diff,
+    build_release_signing_preparation,
+    build_local_trust_policy,
+    build_release_governance_ux_polish,
+    build_pre_v28_governance_audit,
+    build_verifiable_release_evidence_system,
+    build_evidence_replay_drill,
+    build_evidence_bundle_persistence,
+    build_replay_release_evidence,
+    build_evidence_timeline,
+    build_evidence_operator_summary,
+    build_dashboard_evidence_viewer,
+    build_api_evidence_viewer,
+    build_evidence_retention_policy,
+    build_evidence_regression_lockdown,
+    build_pre_v29_evidence_audit,
+    build_durable_release_evidence_archive,
+    build_signing_readiness_audit,
+    build_canonical_manifest_format,
+    build_canonical_evidence_schema,
+    build_release_signing_status,
+    build_signature_placeholder_contract,
+    build_key_policy_preparation,
+    build_signature_verification_placeholder,
+    build_dashboard_signing_status,
+    build_api_signing_status,
+    build_pre_v30_signing_prep_audit,
+    build_signed_release_preparation_system,
+    summarize_self_maintenance_report,
 )
 from dev_loop_runner import get_dev_loop, list_dev_loops, run_dev_loop
 from test_report_reviewer import list_test_reviews
@@ -263,7 +378,7 @@ from test_runner import list_test_reports
 from watch_mode import list_watch_reports, load_watch_report, run_watch_loop, run_watch_once
 
 
-API_VERSION = "20.0"
+API_VERSION = "30.0"
 
 
 class ApiError(Exception):
@@ -878,7 +993,7 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["patch-draft-request"], ["patch-drafts", "request"]):
         project_id = query.get("project", ["eidolon"])[0]
-        return 200, _ok(build_patch_draft_request(project_id=project_id, target_version=query.get("version", ["15.0"])[0], task=query.get("task", [None])[0], intent=query.get("intent", [None])[0], risk_limit=query.get("risk_limit", ["medium"])[0], save=False))
+        return 200, _ok(build_patch_draft_request(project_id=project_id, target_version=query.get("version", ["20.0.1"])[0], task=query.get("task", [None])[0], intent=query.get("intent", [None])[0], risk_limit=query.get("risk_limit", ["medium"])[0], save=False))
 
     if parts in (["draft-patch"], ["patch-drafts", "draft"]):
         project_id = query.get("project", ["eidolon"])[0]
@@ -1120,7 +1235,7 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["package-build-plan"], ["release", "package-build-plan"]):
         project_id = query.get("project", ["eidolon"])[0]
-        package_name = query.get("package_name", ["Eidolon_v20_0.zip"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
         return 200, _ok(build_package_build_plan(project_id=project_id, package_name=package_name, save=False))
 
     if parts in (["approval-to-release-loop"], ["release", "approval-to-release-loop"]):
@@ -1129,16 +1244,18 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["release-manifest-integrity"], ["release", "manifest-integrity"]):
         project_id = query.get("project", ["eidolon"])[0]
-        package_name = query.get("package_name", ["Eidolon_v20_0.zip"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
         return 200, _ok(build_release_manifest_integrity(project_id=project_id, package_name=package_name, save=False))
 
     if parts in (["package-inventory"], ["release", "package-inventory"]):
         project_id = query.get("project", ["eidolon"])[0]
-        return 200, _ok(build_package_inventory(project_id=project_id, save=False))
+        report = build_package_inventory(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_release_report(report))
 
     if parts in (["package-checksums"], ["release", "package-checksums"]):
         project_id = query.get("project", ["eidolon"])[0]
-        return 200, _ok(build_package_checksums(project_id=project_id, save=False))
+        report = build_package_checksums(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_release_report(report))
 
     if parts in (["release-notes"], ["release", "notes"]):
         project_id = query.get("project", ["eidolon"])[0]
@@ -1146,28 +1263,547 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["release-handoff-report"], ["release", "handoff"]):
         project_id = query.get("project", ["eidolon"])[0]
-        package_name = query.get("package_name", ["Eidolon_v20_0.zip"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
         return 200, _ok(build_release_handoff_report(project_id=project_id, package_name=package_name, save=False))
 
     if parts in (["build-release-zip"], ["release", "build-zip"]):
         project_id = query.get("project", ["eidolon"])[0]
-        package_name = query.get("package_name", ["Eidolon_v20_0.zip"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
         return 200, _ok(build_release_zip(project_id=project_id, package_name=package_name, confirm=False, dry_run=True, save=False))
 
     if parts in (["verify-release-unzip"], ["release", "verify-unzip"]):
         project_id = query.get("project", ["eidolon"])[0]
-        package_name = query.get("package_name", ["Eidolon_v20_0.zip"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
         return 200, _ok(build_verify_release_unzip(project_id=project_id, package_name=package_name, save=False))
 
     if parts in (["release-pipeline-audit"], ["release", "pipeline-audit"]):
         project_id = query.get("project", ["eidolon"])[0]
-        package_name = query.get("package_name", ["Eidolon_v20_0.zip"])[0]
-        return 200, _ok(build_release_pipeline_audit(project_id=project_id, package_name=package_name, save=False))
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_release_pipeline_audit(project_id=project_id, package_name=package_name, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_release_report(report))
 
     if parts in (["verified-release-package-loop"], ["release", "verified-package-loop"]):
         project_id = query.get("project", ["eidolon"])[0]
-        package_name = query.get("package_name", ["Eidolon_v20_0.zip"])[0]
-        return 200, _ok(build_verified_release_package_loop(project_id=project_id, package_name=package_name, confirm=False, dry_run=True, save=False))
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_verified_release_package_loop(project_id=project_id, package_name=package_name, confirm=False, dry_run=True, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_release_report(report))
+
+    if parts in (["release-profiles"], ["release", "profiles"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_profiles(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["package-privacy-scan"], ["release", "privacy-scan"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_package_privacy_scan(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["portable-metadata-check"], ["release", "portable-metadata"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        return 200, _ok(build_portable_metadata_check(project_id=project_id, save=False))
+
+    if parts in (["first-run-check"], ["release", "first-run-check"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_first_run_check(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["dependency-advisor"], ["release", "dependency-advisor"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_dependency_advisor(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["upgrade-notes"], ["release", "upgrade-notes"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_upgrade_notes(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["runtime-migration-check"], ["release", "runtime-migration"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_runtime_migration_check(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["release-install-verification"], ["release", "install-verification"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_release_install_verification(project_id=project_id, package_name=package_name, run_smoke=False, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["verified-installable-release-loop"], ["release", "verified-installable-loop"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_verified_installable_release_loop(project_id=project_id, package_name=package_name, confirm=False, dry_run=True, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["smoke-runtime-hardening"], ["release", "smoke-runtime-hardening"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_smoke_runtime_hardening(project_id=project_id, tier=query.get("tier", ["full"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["external-zip-install-verification"], ["release", "external-zip-install-verification"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_external_zip_install_verification(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], run_compile=False, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["deterministic-release-manifest"], ["release", "deterministic-release-manifest"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_deterministic_release_manifest(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["update-dry-run-plan"], ["release", "update-dry-run-plan"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_update_dry_run_plan(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["atomic-source-update"], ["release", "atomic-source-update"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_atomic_source_update(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], expected_manifest_hash=query.get("expected_manifest_hash", [None])[0], confirm=False, dry_run=True, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["runtime-migration-assistant"], ["release", "runtime-migration-assistant"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_runtime_migration_assistant(project_id=project_id, confirm=False, dry_run=True, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["route-safety-harness"], ["release", "route-safety-harness"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_route_safety_harness(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["release-dashboard-command-center"], ["release", "dashboard-command-center"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_dashboard_command_center(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["clean-room-install-harness"], ["release", "clean-room-install-harness"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_clean_room_install_harness(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], run_smoke_tier=query.get("tier", ["fast"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["verified-self-update-release-pipeline"], ["release", "verified-self-update-release-pipeline"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_verified_self_update_release_pipeline(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], confirm=False, dry_run=True, run_clean_room=False, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["trial-upgrade-from-zip"], ["release", "trial-upgrade-from-zip"], ["release", "trial-upgrade"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_trial_upgrade_harness(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], run_smoke_tier=query.get("tier", ["fast"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["backup-rollback-drill"], ["release", "backup-rollback-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_backup_rollback_drill(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["update-collision-detector"], ["release", "update-collision-detector"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_update_collision_detector(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["version-registry-report"], ["release", "version-registry-report"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_version_registry_report(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], dry_run=True, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["release-provenance-report"], ["release", "provenance-report"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_release_provenance_report(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["dashboard-upgrade-wizard-preview"], ["release", "dashboard-upgrade-wizard-preview"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_dashboard_upgrade_wizard_preview(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["api-upgrade-wizard-preview"], ["release", "api-upgrade-wizard-preview"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_api_upgrade_wizard_preview(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["staged-apply-drill"], ["release", "staged-apply-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_staged_apply_drill(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["real-apply-guard-rails"], ["release", "real-apply-guard-rails"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_real_apply_guard_rails(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], expected_manifest_hash=query.get("expected_manifest_hash", [None])[0], confirm_phrase=query.get("confirm_phrase", [""])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["real-apply-rollback-verification"], ["release", "real-apply-rollback-verification"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_real_apply_rollback_verification(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["self-update-ux-polish"], ["release", "self-update-ux-polish"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_self_update_ux_polish(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["v23-readiness-gate"], ["release", "v23-readiness-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_v23_readiness_gate(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], run_heavy=query.get("run_heavy", ["false"])[0].lower() == "true", save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+    if parts in (["controlled-self-maintenance-loop"], ["release", "controlled-self-maintenance-loop"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        report = build_controlled_self_maintenance_loop(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+
+
+
+    if parts in (["self-maintenance", "proposal"], ["release", "self-maintenance-proposal"], ["self-maintenance-proposal"]):
+        report = build_self_maintenance_proposal_sandbox(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "patch-plan"], ["release", "build-patch-plan"], ["build-patch-plan"]):
+        report = build_patch_plan_builder(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "patch-preview"], ["release", "generate-maintenance-patch"], ["generate-maintenance-patch"]):
+        report = build_dry_run_patch_generator(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "safety-audit"], ["release", "patch-safety-audit"], ["patch-safety-audit"]):
+        report = build_patch_safety_auditor(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "temp-apply-drill"], ["release", "apply-maintenance-patch-to-temp"], ["apply-maintenance-patch-to-temp"]):
+        report = build_apply_patch_to_temp_clone(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "review-bundle"], ["release", "maintenance-review-bundle"], ["maintenance-review-bundle"]):
+        report = build_maintenance_review_bundle(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-binding"], ["release", "approve-maintenance-bundle"], ["approve-maintenance-bundle"]):
+        report = build_human_approval_binding(project_id=query.get("project", ["eidolon"])[0], bundle_hash=query.get("bundle_hash", [None])[0], confirm=False, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "apply-gate"], ["release", "real-maintenance-patch-apply"], ["real-maintenance-patch-apply"]):
+        report = build_real_maintenance_patch_apply(project_id=query.get("project", ["eidolon"])[0], bundle_hash=query.get("bundle_hash", [None])[0], dry_run=True, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "post-apply-health"], ["release", "post-apply-health-monitor"], ["post-apply-health-monitor"]):
+        report = build_post_apply_health_monitor(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "controlled-cycle"], ["release", "controlled-maintenance-cycle"], ["controlled-maintenance-cycle"]):
+        report = build_controlled_maintenance_cycle(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "assisted-release"], ["release", "assisted-self-improvement-release"], ["assisted-self-improvement-release"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        zip_path = query.get("zip_path", [None])[0]
+        report = build_assisted_self_improvement_release(project_id=project_id, package_name=package_name, zip_path=zip_path, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "improvement-candidates"], ["release", "improvement-candidate-scan"], ["improvement-candidate-scan"]):
+        report = build_improvement_candidate_scan(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "candidate-prioritizer"], ["release", "candidate-prioritizer"], ["candidate-prioritizer"]):
+        report = build_candidate_prioritizer(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "candidate-to-proposal"], ["release", "candidate-to-proposal"], ["candidate-to-proposal"]):
+        report = build_candidate_to_proposal_bridge(project_id=query.get("project", ["eidolon"])[0], candidate_id=query.get("candidate_id", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "maintenance-backlog"], ["release", "maintenance-backlog"], ["maintenance-backlog"]):
+        report = build_maintenance_backlog_registry(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "dashboard-backlog"], ["release", "dashboard-maintenance-backlog"], ["dashboard-maintenance-backlog"]):
+        report = build_dashboard_maintenance_backlog(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "api-backlog"], ["release", "api-maintenance-backlog"], ["api-maintenance-backlog"]):
+        report = build_api_maintenance_backlog(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "regression-detector"], ["release", "candidate-regression-detector"], ["candidate-regression-detector"]):
+        report = build_candidate_regression_detector(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-memory-privacy"], ["release", "release-memory-privacy"], ["release-memory-privacy"]):
+        report = build_release_memory_privacy(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "verification-recipes"], ["release", "candidate-verification-recipes"], ["candidate-verification-recipes"]):
+        report = build_candidate_verification_recipes(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "assisted-improvement-cycle"], ["release", "assisted-improvement-cycle"], ["assisted-improvement-cycle"]):
+        report = build_assisted_improvement_cycle(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "semi-autonomous-review"], ["release", "semi-autonomous-maintenance-review"], ["semi-autonomous-maintenance-review"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        package_name = query.get("package_name", [_package_name()])[0]
+        zip_path = query.get("zip_path", [None])[0]
+        report = build_semi_autonomous_maintenance_review(project_id=project_id, package_name=package_name, zip_path=zip_path, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "hotfix-regression-lockdown"], ["release", "hotfix-regression-lockdown"], ["hotfix-regression-lockdown"]):
+        report = build_hotfix_regression_lockdown(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "dashboard-route-coverage"], ["release", "dashboard-route-coverage"], ["dashboard-route-coverage"]):
+        report = build_dashboard_route_coverage_auditor(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "api-default-source-audit"], ["release", "api-default-source-audit"], ["api-default-source-audit"]):
+        report = build_api_default_source_audit(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "nested-readiness-severity"], ["release", "nested-readiness-severity"], ["nested-readiness-severity"]):
+        report = build_nested_readiness_severity_engine(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "review-bundle-approval-contract"], ["release", "review-bundle-approval-contract"], ["review-bundle-approval-contract"]):
+        report = build_review_bundle_approval_contract(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "maintenance-report-diff"], ["release", "maintenance-report-diff"], ["maintenance-report-diff"]):
+        report = build_maintenance_report_diff_viewer(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-gate-composition-test"], ["release", "release-gate-composition-test"], ["release-gate-composition-test"]):
+        report = build_release_gate_composition_test(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "dashboard-api-parity-audit"], ["release", "dashboard-api-parity-audit"], ["dashboard-api-parity-audit"]):
+        report = build_dashboard_api_parity_audit(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "operator-trust-report"], ["release", "operator-trust-report"], ["operator-trust-report"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_operator_trust_report(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trustworthy-maintenance-console"], ["release", "trustworthy-maintenance-console"], ["trustworthy-maintenance-console"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_trustworthy_maintenance_console(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trust-console-drill"], ["release", "trust-console-drill"], ["trust-console-drill"]):
+        report = build_trust_console_drill(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trust-console-snapshot"], ["release", "trust-console-snapshot"], ["trust-console-snapshot"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_trust_console_snapshot(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trust-console-diff"], ["release", "trust-console-diff"], ["trust-console-diff"]):
+        report = build_trust_console_diff(project_id=query.get("project", ["eidolon"])[0], before_path=query.get("before", [None])[0], after_path=query.get("after", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "freeze-release-candidate"], ["release", "freeze-release-candidate"], ["freeze-release-candidate"]):
+        report = build_release_candidate_freezer(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "verify-frozen-release-zip"], ["release", "verify-frozen-release-zip"], ["verify-frozen-release-zip"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_frozen_release_zip_verification(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-evidence-ledger"], ["release", "approval-evidence-ledger"], ["approval-evidence-ledger"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_evidence_ledger(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-command-reproducer"], ["release", "release-command-reproducer"], ["release-command-reproducer"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_command_reproducer(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "console-readme-consistency"], ["release", "console-readme-consistency"], ["console-readme-consistency"]):
+        report = build_console_readme_consistency(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v27-safety-audit"], ["release", "pre-v27-safety-audit"], ["pre-v27-safety-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v27_safety_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-candidate-governance"], ["release", "release-candidate-governance"], ["release-candidate-governance"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_candidate_governance(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+
+    if parts in (["self-maintenance", "release-governance-drill"], ["release", "release-governance-drill"], ["release-governance-drill"]):
+        report = build_release_governance_drill(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-evidence-bundle"], ["release", "release-evidence-bundle"], ["release-evidence-bundle"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_evidence_bundle(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "verify-release-evidence-bundle"], ["release", "verify-release-evidence-bundle"], ["verify-release-evidence-bundle"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_evidence_bundle_verifier(project_id=project_id, bundle_path=query.get("bundle_path", [None])[0], package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-governance-page"], ["release", "release-governance-page"], ["release-governance-page"]):
+        report = build_release_governance_page(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "governance-api-read-only"], ["release", "governance-api-read-only"], ["governance-api-read-only"]):
+        report = build_governance_api_read_only_surface(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-artifact-diff"], ["release", "release-artifact-diff"], ["release-artifact-diff"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_artifact_diff(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-signing-preparation"], ["release", "release-signing-preparation"], ["release-signing-preparation"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_signing_preparation(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "local-trust-policy"], ["release", "local-trust-policy"], ["local-trust-policy"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_local_trust_policy(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-governance-ux-polish"], ["release", "release-governance-ux-polish"], ["release-governance-ux-polish"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_governance_ux_polish(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v28-governance-audit"], ["release", "pre-v28-governance-audit"], ["pre-v28-governance-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v28_governance_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "verifiable-release-evidence-system"], ["release", "verifiable-release-evidence-system"], ["verifiable-release-evidence-system"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_verifiable_release_evidence_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+
+
+    if parts in (["self-maintenance", "evidence-replay-drill"], ["release", "evidence-replay-drill"], ["evidence-replay-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_evidence_replay_drill(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "persist-release-evidence"], ["release", "persist-release-evidence"], ["persist-release-evidence"], ["release", "evidence"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_evidence_bundle_persistence(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "replay-release-evidence"], ["release", "replay-release-evidence"], ["replay-release-evidence"], ["release", "evidence", "replay"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_replay_release_evidence(project_id=project_id, bundle_path=query.get("bundle_path", [None])[0], package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "evidence-timeline"], ["release", "evidence-timeline"], ["evidence-timeline"]):
+        report = build_evidence_timeline(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "evidence-summary"], ["release", "evidence-summary"], ["evidence-summary"], ["release", "evidence", "summary"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_evidence_operator_summary(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "dashboard-evidence-viewer"], ["release", "dashboard-evidence-viewer"], ["dashboard-evidence-viewer"]):
+        report = build_dashboard_evidence_viewer(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "api-evidence-viewer"], ["release", "api-evidence-viewer"], ["api-evidence-viewer"]):
+        report = build_api_evidence_viewer(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "evidence-retention-policy"], ["release", "evidence-retention-policy"], ["evidence-retention-policy"]):
+        report = build_evidence_retention_policy(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "evidence-regression-lockdown"], ["release", "evidence-regression-lockdown"], ["evidence-regression-lockdown"]):
+        report = build_evidence_regression_lockdown(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v29-evidence-audit"], ["release", "pre-v29-evidence-audit"], ["pre-v29-evidence-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v29_evidence_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "durable-release-evidence-archive"], ["release", "durable-release-evidence-archive"], ["durable-release-evidence-archive"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_durable_release_evidence_archive(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signing-readiness-audit"], ["release", "signing-readiness-audit"], ["signing-readiness-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signing_readiness_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "canonical-manifest-format"], ["release", "canonical-manifest-format"], ["canonical-manifest-format"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_canonical_manifest_format(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "canonical-evidence-schema"], ["release", "canonical-evidence-schema"], ["canonical-evidence-schema"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_canonical_evidence_schema(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-signing-status"], ["release", "release-signing-status"], ["release", "signing"], ["release-signing-status"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_signing_status(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signature-placeholder-contract"], ["release", "signature-placeholder-contract"], ["signature-placeholder-contract"]):
+        report = build_signature_placeholder_contract(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "key-policy-preparation"], ["release", "key-policy-preparation"], ["release", "signing-policy"], ["signing-policy"]):
+        report = build_key_policy_preparation(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "verify-release-signature"], ["release", "verify-release-signature"], ["release", "signature", "verify"], ["verify-release-signature"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signature_verification_placeholder(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "dashboard-signing-status"], ["release", "dashboard-signing-status"], ["dashboard-signing-status"]):
+        report = build_dashboard_signing_status(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "api-signing-status"], ["release", "api-signing-status"], ["api-signing-status"]):
+        report = build_api_signing_status(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v30-signing-prep-audit"], ["release", "pre-v30-signing-prep-audit"], ["pre-v30-signing-prep-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v30_signing_prep_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signed-release-preparation-system"], ["release", "signed-release-preparation-system"], ["signed-release-preparation-system"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signed_release_preparation_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts[0] == "diagnostics":
         reports = list_diagnostic_reports()
@@ -1566,7 +2202,7 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
     if parts == ["patch-draft-request"]:
         return 200, _ok(build_patch_draft_request(
             project_id=str(body.get("project", "eidolon")),
-            target_version=str(body.get("target_version") or body.get("version") or "15.0"),
+            target_version=str(body.get("target_version") or body.get("version") or "20.0.1"),
             task=str(body.get("task")) if body.get("task") is not None else None,
             intent=str(body.get("intent")) if body.get("intent") is not None else None,
             constraints=[str(item) for item in body.get("constraints", [])] if isinstance(body.get("constraints", []), list) else None,
@@ -1806,7 +2442,7 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
         return 200, _ok(bind_current_approval_to_validated_manifest(project_id=str(body.get("project", "eidolon")), save=True))
 
     if parts in (["release", "manifest-integrity"], ["release-manifest-integrity"]):
-        return 200, _ok(build_release_manifest_integrity(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or "Eidolon_v20_0.zip"), save=True))
+        return 200, _ok(build_release_manifest_integrity(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), save=True))
 
     if parts in (["release", "package-inventory"], ["package-inventory"]):
         return 200, _ok(build_package_inventory(project_id=str(body.get("project", "eidolon")), save=True))
@@ -1818,27 +2454,211 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
         return 200, _ok(build_release_notes(project_id=str(body.get("project", "eidolon")), save=True))
 
     if parts in (["release", "handoff"], ["release-handoff-report"]):
-        return 200, _ok(build_release_handoff_report(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or "Eidolon_v20_0.zip"), save=True))
+        return 200, _ok(build_release_handoff_report(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), save=True))
 
     if parts in (["release", "build-zip"], ["build-release-zip"]):
         confirm = _body_bool(body, "confirm", False) or _body_bool(body, "approve", False)
         dry_run = _body_bool(body, "dry_run", True)
         if confirm and not dry_run:
             _require_confirmation(body, "BUILD_RELEASE_ZIP")
-        return 200, _ok(build_release_zip(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or "Eidolon_v20_0.zip"), confirm=confirm, dry_run=dry_run or not confirm, save=True))
+        return 200, _ok(build_release_zip(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), confirm=confirm, dry_run=dry_run or not confirm, save=True))
 
     if parts in (["release", "verify-unzip"], ["verify-release-unzip"]):
-        return 200, _ok(build_verify_release_unzip(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or "Eidolon_v20_0.zip"), save=True))
+        return 200, _ok(build_verify_release_unzip(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), save=True))
 
     if parts in (["release", "pipeline-audit"], ["release-pipeline-audit"]):
-        return 200, _ok(build_release_pipeline_audit(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or "Eidolon_v20_0.zip"), save=True))
+        return 200, _ok(build_release_pipeline_audit(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), save=True))
 
     if parts in (["release", "verified-package-loop"], ["verified-release-package-loop"]):
         confirm = _body_bool(body, "confirm", False) or _body_bool(body, "approve", False)
         dry_run = _body_bool(body, "dry_run", True)
         if confirm and not dry_run:
             _require_confirmation(body, "VERIFIED_RELEASE_PACKAGE_LOOP")
-        return 200, _ok(build_verified_release_package_loop(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or "Eidolon_v20_0.zip"), confirm=confirm, dry_run=dry_run or not confirm, save=True))
+        return 200, _ok(build_verified_release_package_loop(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), confirm=confirm, dry_run=dry_run or not confirm, save=True))
+
+    if parts in (["release", "profiles"], ["release-profiles"]):
+        return 200, _ok(build_release_profiles(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "privacy-scan"], ["package-privacy-scan"]):
+        return 200, _ok(build_package_privacy_scan(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "portable-metadata"], ["portable-metadata-check"]):
+        return 200, _ok(build_portable_metadata_check(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "first-run-check"], ["first-run-check"]):
+        return 200, _ok(build_first_run_check(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "dependency-advisor"], ["dependency-advisor"]):
+        return 200, _ok(build_dependency_advisor(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "upgrade-notes"], ["upgrade-notes"]):
+        return 200, _ok(build_upgrade_notes(project_id=str(body.get("project", "eidolon")), to_version=str(body.get("to_version") or "21.0"), save=True))
+
+    if parts in (["release", "runtime-migration"], ["runtime-migration-check"]):
+        return 200, _ok(build_runtime_migration_check(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "install-verification"], ["release-install-verification"]):
+        return 200, _ok(build_release_install_verification(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), run_smoke=_body_bool(body, "run_smoke", False), save=True))
+
+    if parts in (["release", "verified-installable-loop"], ["verified-installable-release-loop"]):
+        confirm = _body_bool(body, "confirm", False) or _body_bool(body, "approve", False)
+        dry_run = _body_bool(body, "dry_run", True)
+        if confirm and not dry_run:
+            _require_confirmation(body, "VERIFIED_INSTALLABLE_RELEASE_LOOP")
+        return 200, _ok(build_verified_installable_release_loop(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), confirm=confirm, dry_run=dry_run or not confirm, run_smoke=_body_bool(body, "run_smoke", False), save=True))
+
+    if parts in (["release", "smoke-runtime-hardening"], ["smoke-runtime-hardening"]):
+        return 200, _ok(build_smoke_runtime_hardening(project_id=str(body.get("project", "eidolon")), tier=str(body.get("tier") or "full"), save=True))
+
+    if parts in (["release", "external-zip-install-verification"], ["external-zip-install-verification"]):
+        return 200, _ok(build_external_zip_install_verification(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+    if parts in (["release", "deterministic-release-manifest"], ["deterministic-release-manifest"]):
+        return 200, _ok(build_deterministic_release_manifest(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+    if parts in (["release", "update-dry-run-plan"], ["update-dry-run-plan"]):
+        return 200, _ok(build_update_dry_run_plan(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+    if parts in (["release", "atomic-source-update"], ["atomic-source-update"]):
+        confirm = _body_bool(body, "confirm", False) or _body_bool(body, "approve", False)
+        dry_run = _body_bool(body, "dry_run", True)
+        if confirm and not dry_run:
+            _require_confirmation(body, "ATOMIC_SOURCE_UPDATE")
+        return 200, _ok(build_atomic_source_update(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), expected_manifest_hash=body.get("expected_manifest_hash"), confirm=confirm, dry_run=dry_run or not confirm, save=True))
+
+    if parts in (["release", "runtime-migration-assistant"], ["runtime-migration-assistant"]):
+        confirm = _body_bool(body, "confirm", False) or _body_bool(body, "approve", False)
+        dry_run = _body_bool(body, "dry_run", True)
+        if confirm and not dry_run:
+            _require_confirmation(body, "RUNTIME_MIGRATION_ASSISTANT")
+        return 200, _ok(build_runtime_migration_assistant(project_id=str(body.get("project", "eidolon")), confirm=confirm, dry_run=dry_run or not confirm, save=True))
+
+    if parts in (["release", "route-safety-harness"], ["route-safety-harness"]):
+        return 200, _ok(build_route_safety_harness(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "dashboard-command-center"], ["release-dashboard-command-center"]):
+        return 200, _ok(build_release_dashboard_command_center(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "clean-room-install-harness"], ["clean-room-install-harness"]):
+        return 200, _ok(build_clean_room_install_harness(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), run_smoke_tier=str(body.get("tier") or "fast"), save=True))
+
+    if parts in (["release", "verified-self-update-release-pipeline"], ["verified-self-update-release-pipeline"]):
+        confirm = _body_bool(body, "confirm", False) or _body_bool(body, "approve", False)
+        dry_run = _body_bool(body, "dry_run", True)
+        if confirm and not dry_run:
+            _require_confirmation(body, "VERIFIED_SELF_UPDATE_RELEASE_PIPELINE")
+        return 200, _ok(build_verified_self_update_release_pipeline(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), expected_manifest_hash=body.get("expected_manifest_hash"), confirm=confirm, dry_run=dry_run or not confirm, run_clean_room=_body_bool(body, "run_clean_room", False), save=True))
+
+    if parts in (["release", "trial-upgrade-from-zip"], ["trial-upgrade-from-zip"], ["release", "trial-upgrade"]):
+        return 200, _ok(build_trial_upgrade_harness(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), run_smoke_tier=str(body.get("tier") or "fast"), save=True))
+
+    if parts in (["release", "backup-rollback-drill"], ["backup-rollback-drill"]):
+        return 200, _ok(build_backup_rollback_drill(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+    if parts in (["release", "update-collision-detector"], ["update-collision-detector"]):
+        return 200, _ok(build_update_collision_detector(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+    if parts in (["release", "version-registry-report"], ["version-registry-report"]):
+        return 200, _ok(build_version_registry_report(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), dry_run=not _body_bool(body, "confirm", False), save=True))
+
+    if parts in (["release", "release-provenance-report"], ["release-provenance-report"]):
+        return 200, _ok(build_release_provenance_report(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+    if parts in (["release", "dashboard-upgrade-wizard-preview"], ["dashboard-upgrade-wizard-preview"]):
+        return 200, _ok(build_dashboard_upgrade_wizard_preview(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "api-upgrade-wizard-preview"], ["api-upgrade-wizard-preview"]):
+        return 200, _ok(build_api_upgrade_wizard_preview(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "staged-apply-drill"], ["staged-apply-drill"]):
+        return 200, _ok(build_staged_apply_drill(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+    if parts in (["release", "real-apply-guard-rails"], ["real-apply-guard-rails"]):
+        return 200, _ok(build_real_apply_guard_rails(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), expected_manifest_hash=body.get("expected_manifest_hash"), confirm_phrase=str(body.get("confirm_phrase") or ""), save=True))
+
+    if parts in (["release", "real-apply-rollback-verification"], ["real-apply-rollback-verification"]):
+        return 200, _ok(build_real_apply_rollback_verification(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+    if parts in (["release", "self-update-ux-polish"], ["self-update-ux-polish"]):
+        return 200, _ok(build_self_update_ux_polish(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "v23-readiness-gate"], ["v23-readiness-gate"]):
+        return 200, _ok(build_v23_readiness_gate(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), run_heavy=_body_bool(body, "run_heavy", False), save=True))
+
+    if parts in (["release", "controlled-self-maintenance-loop"], ["controlled-self-maintenance-loop"]):
+        return 200, _ok(build_controlled_self_maintenance_loop(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+
+    if parts in (["release", "self-maintenance-proposal"], ["self-maintenance-proposal"]):
+        return 200, _ok(build_self_maintenance_proposal_sandbox(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "build-patch-plan"], ["build-patch-plan"]):
+        return 200, _ok(build_patch_plan_builder(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "generate-maintenance-patch"], ["generate-maintenance-patch"]):
+        return 200, _ok(build_dry_run_patch_generator(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "patch-safety-audit"], ["patch-safety-audit"]):
+        return 200, _ok(build_patch_safety_auditor(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "apply-maintenance-patch-to-temp"], ["apply-maintenance-patch-to-temp"]):
+        return 200, _ok(build_apply_patch_to_temp_clone(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "maintenance-review-bundle"], ["maintenance-review-bundle"]):
+        return 200, _ok(build_maintenance_review_bundle(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "approve-maintenance-bundle"], ["approve-maintenance-bundle"]):
+        confirm = _body_bool(body, "confirm", False) or _body_bool(body, "approve", False)
+        if confirm:
+            _require_confirmation(body, "APPROVE_MAINTENANCE_BUNDLE")
+        return 200, _ok(build_human_approval_binding(project_id=str(body.get("project", "eidolon")), bundle_hash=body.get("bundle_hash"), confirm=confirm, save=True))
+
+    if parts in (["release", "real-maintenance-patch-apply"], ["real-maintenance-patch-apply"]):
+        confirm = _body_bool(body, "confirm", False) or _body_bool(body, "approve", False)
+        dry_run = _body_bool(body, "dry_run", True)
+        if confirm and not dry_run:
+            _require_confirmation(body, "APPLY EXACT REVIEWED MAINTENANCE BUNDLE")
+        return 200, _ok(build_real_maintenance_patch_apply(project_id=str(body.get("project", "eidolon")), bundle_hash=body.get("bundle_hash"), confirm_phrase=str(body.get("confirm_phrase") or body.get("confirmation") or ""), dry_run=dry_run or not confirm, save=True))
+
+    if parts in (["release", "improvement-candidate-scan"], ["improvement-candidate-scan"]):
+        return 200, _ok(build_improvement_candidate_scan(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "candidate-prioritizer"], ["candidate-prioritizer"]):
+        return 200, _ok(build_candidate_prioritizer(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "candidate-to-proposal"], ["candidate-to-proposal"]):
+        return 200, _ok(build_candidate_to_proposal_bridge(project_id=str(body.get("project", "eidolon")), candidate_id=body.get("candidate_id"), save=True))
+
+    if parts in (["release", "maintenance-backlog"], ["maintenance-backlog"]):
+        return 200, _ok(build_maintenance_backlog_registry(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "candidate-regression-detector"], ["candidate-regression-detector"]):
+        return 200, _ok(build_candidate_regression_detector(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "release-memory-privacy"], ["release-memory-privacy"]):
+        return 200, _ok(build_release_memory_privacy(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "candidate-verification-recipes"], ["candidate-verification-recipes"]):
+        return 200, _ok(build_candidate_verification_recipes(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "assisted-improvement-cycle"], ["assisted-improvement-cycle"]):
+        return 200, _ok(build_assisted_improvement_cycle(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "semi-autonomous-maintenance-review"], ["semi-autonomous-maintenance-review"]):
+        return 200, _ok(build_semi_autonomous_maintenance_review(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+
+    if parts in (["release", "set-maintenance-candidate-status"], ["set-maintenance-candidate-status"]):
+        _require_confirmation(body, "ACCEPT_MAINTENANCE_CANDIDATE_STATUS")
+        return 200, _ok({"status": "preview_saved", "message": "Candidate status mutation requires POST confirmation; runtime backlog writes remain outside source-only packages.", "candidate_id": body.get("candidate_id"), "new_status": body.get("status")})
+
+    if parts in (["release", "post-apply-health-monitor"], ["post-apply-health-monitor"]):
+        return 200, _ok(build_post_apply_health_monitor(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "controlled-maintenance-cycle"], ["controlled-maintenance-cycle"]):
+        return 200, _ok(build_controlled_maintenance_cycle(project_id=str(body.get("project", "eidolon")), save=True))
+
+    if parts in (["release", "assisted-self-improvement-release"], ["assisted-self-improvement-release"]):
+        return 200, _ok(build_assisted_self_improvement_release(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
 
     if parts == ["projects", "register"]:
         name = str(body.get("name") or body.get("project") or "Workspace Project")

@@ -1,0 +1,26 @@
+[
+  {
+    "created_at": "2026-06-20T00:05:25",
+    "project_id": "eidolon",
+    "file": "README_NEXT_STEPS.md",
+    "intent_block": "v15.0",
+    "note": "README must mention release readiness.",
+    "status": "open"
+  },
+  {
+    "created_at": "2026-06-20T00:09:58",
+    "project_id": "eidolon",
+    "file": null,
+    "intent_block": null,
+    "note": "Bind approval to the exact draft artifacts.",
+    "status": "open"
+  },
+  {
+    "created_at": "2026-06-20T00:12:06",
+    "project_id": "eidolon",
+    "file": null,
+    "intent_block": null,
+    "note": "Bind approval to the exact draft artifacts.",
+    "status": "open"
+  }
+]

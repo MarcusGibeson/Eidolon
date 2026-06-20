@@ -1,0 +1,289 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T00:12:00",
+  "project_id": "eidolon",
+  "run_id": "approved_draft_apply_20260620_001200_draft_20260620_001151_draft_request_20260620_001149_syntheti",
+  "draft_id": "draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request",
+  "status": "dry_run",
+  "ok": true,
+  "dry_run": true,
+  "applied": [
+    {
+      "path": "conscious_agent/patch_drafting.py",
+      "action": "metadata_only",
+      "status": "skipped",
+      "message": "No writable proposed content."
+    },
+    {
+      "path": "README_NEXT_STEPS.md",
+      "action": "modify",
+      "status": "dry_run",
+      "backup_path": "data/patch_drafts/backups/approved_draft_apply_20260620_001200_draft_20260620_001151_draft_request_20260620_001149_syntheti/README_NEXT_STEPS.md",
+      "original_sha256": "ca08f0bd7f98f5a3145f67084df901062546ee897574e8a5f654094f1fe1f6d1",
+      "applied_sha256": "2fb4c763760f6a68eff75fd11cc2fd6394fd8cfab9cd5c960344f5818b5a7cc6"
+    }
+  ],
+  "errors": [],
+  "approval_consumed": false,
+  "rollback_available": false,
+  "binding_validation": {
+    "version": "15.0",
+    "checked_at": "2026-06-20T00:12:00",
+    "project_id": "eidolon",
+    "draft_id": "draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request",
+    "status": "pass",
+    "ok": true,
+    "rows": [
+      {
+        "name": "approval-exists",
+        "status": "pass",
+        "message": "approval status=approved"
+      },
+      {
+        "name": "approval-unconsumed",
+        "status": "pass",
+        "message": "consumed=False"
+      },
+      {
+        "name": "approval-draft-binding",
+        "status": "pass",
+        "message": "approval.draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; current draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+      },
+      {
+        "name": "artifact-binding",
+        "status": "pass",
+        "message": "Saved draft review artifacts must all bind to the same request_id and draft_id before approval/apply."
+      },
+      {
+        "name": "snapshot-request",
+        "status": "pass",
+        "message": "approved=df6244139503a3aebf000c9a6ca115e77bb724f7db6ff93fae895250817d9aa1; current=df6244139503a3aebf000c9a6ca115e77bb724f7db6ff93fae895250817d9aa1"
+      },
+      {
+        "name": "snapshot-draft",
+        "status": "pass",
+        "message": "approved=7d4f38a984d95b605828b88f5e0e8164085fe7be72875d4f1b8e0822e202f5a7; current=7d4f38a984d95b605828b88f5e0e8164085fe7be72875d4f1b8e0822e202f5a7"
+      },
+      {
+        "name": "snapshot-draft-draft",
+        "status": "pass",
+        "message": "approved=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; current=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+      },
+      {
+        "name": "snapshot-diff",
+        "status": "pass",
+        "message": "approved=40d1c483f73d0417b56f68c3184083e59f37f2701fdd29a9a1b75d611a9f87fb; current=40d1c483f73d0417b56f68c3184083e59f37f2701fdd29a9a1b75d611a9f87fb"
+      },
+      {
+        "name": "snapshot-diff-draft",
+        "status": "pass",
+        "message": "approved=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; current=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+      },
+      {
+        "name": "snapshot-test_impact",
+        "status": "pass",
+        "message": "approved=b36d4209db271a3c481ee6df678ffa7974f8c70ad498215e002426b5ab4ec8e0; current=b36d4209db271a3c481ee6df678ffa7974f8c70ad498215e002426b5ab4ec8e0"
+      },
+      {
+        "name": "snapshot-test_impact-draft",
+        "status": "pass",
+        "message": "approved=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; current=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+      },
+      {
+        "name": "snapshot-quality",
+        "status": "pass",
+        "message": "approved=8f09cbd0346ee340be43ab31613dacb3dce9b36b9ba5719d7903a82c4eb4c4b9; current=8f09cbd0346ee340be43ab31613dacb3dce9b36b9ba5719d7903a82c4eb4c4b9"
+      },
+      {
+        "name": "snapshot-quality-draft",
+        "status": "pass",
+        "message": "approved=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; current=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+      },
+      {
+        "name": "snapshot-checklist",
+        "status": "pass",
+        "message": "approved=a1c5fe305a0f86c176ac363c0a44d7d7ce5a053dafe4af190634585130b81de4; current=a1c5fe305a0f86c176ac363c0a44d7d7ce5a053dafe4af190634585130b81de4"
+      },
+      {
+        "name": "snapshot-checklist-draft",
+        "status": "pass",
+        "message": "approved=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; current=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+      },
+      {
+        "name": "snapshot-verification_bundle",
+        "status": "pass",
+        "message": "approved=e10908f87b421e3b21e6b410df1c802eba4a0e4b9b94475bdc9ee9a7a8a0b777; current=e10908f87b421e3b21e6b410df1c802eba4a0e4b9b94475bdc9ee9a7a8a0b777"
+      },
+      {
+        "name": "snapshot-verification_bundle-draft",
+        "status": "pass",
+        "message": "approved=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; current=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+      }
+    ],
+    "binding": {
+      "version": "15.0",
+      "checked_at": "2026-06-20T00:12:00",
+      "project_id": "eidolon",
+      "request_id": "draft_request_20260620_001149_synthetic_patch_draft_request",
+      "draft_id": "draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request",
+      "status": "pass",
+      "ok": true,
+      "rows": [
+        {
+          "name": "request-exists",
+          "status": "pass",
+          "message": "request_id=draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "draft-exists",
+          "status": "pass",
+          "message": "draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "draft-request-binding",
+          "status": "pass",
+          "message": "draft.request_id=draft_request_20260620_001149_synthetic_patch_draft_request; request_id=draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "diff-draft-binding",
+          "status": "pass",
+          "message": "diff.draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "test-impact-draft-binding",
+          "status": "pass",
+          "message": "test-impact.draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "quality-draft-binding",
+          "status": "pass",
+          "message": "quality.draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "checklist-draft-binding",
+          "status": "pass",
+          "message": "checklist.draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "checklist-request-binding",
+          "status": "pass",
+          "message": "checklist.request_id=draft_request_20260620_001149_synthetic_patch_draft_request; request_id=draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "verification-bundle-draft-binding",
+          "status": "pass",
+          "message": "verification-bundle.draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request; draft_id=draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "verification-bundle-request-binding",
+          "status": "pass",
+          "message": "verification-bundle.request_id=draft_request_20260620_001149_synthetic_patch_draft_request; request_id=draft_request_20260620_001149_synthetic_patch_draft_request"
+        },
+        {
+          "name": "request-file-present",
+          "status": "pass",
+          "message": "data/patch_drafts/draft_request.json sha256=df6244139503a3aebf000c9a6ca115e77bb724f7db6ff93fae895250817d9aa1"
+        },
+        {
+          "name": "draft-file-present",
+          "status": "pass",
+          "message": "data/patch_drafts/current_draft.json sha256=7d4f38a984d95b605828b88f5e0e8164085fe7be72875d4f1b8e0822e202f5a7"
+        },
+        {
+          "name": "diff-file-present",
+          "status": "pass",
+          "message": "data/patch_drafts/current_diff.json sha256=40d1c483f73d0417b56f68c3184083e59f37f2701fdd29a9a1b75d611a9f87fb"
+        },
+        {
+          "name": "test_impact-file-present",
+          "status": "pass",
+          "message": "data/patch_drafts/test_impact.json sha256=b36d4209db271a3c481ee6df678ffa7974f8c70ad498215e002426b5ab4ec8e0"
+        },
+        {
+          "name": "quality-file-present",
+          "status": "pass",
+          "message": "data/patch_drafts/draft_quality.json sha256=8f09cbd0346ee340be43ab31613dacb3dce9b36b9ba5719d7903a82c4eb4c4b9"
+        },
+        {
+          "name": "checklist-file-present",
+          "status": "pass",
+          "message": "data/patch_drafts/review_checklist.json sha256=a1c5fe305a0f86c176ac363c0a44d7d7ce5a053dafe4af190634585130b81de4"
+        },
+        {
+          "name": "verification_bundle-file-present",
+          "status": "pass",
+          "message": "data/patch_drafts/verification_bundle.json sha256=e10908f87b421e3b21e6b410df1c802eba4a0e4b9b94475bdc9ee9a7a8a0b777"
+        }
+      ],
+      "snapshot": {
+        "request": {
+          "path": "data/patch_drafts/draft_request.json",
+          "exists": true,
+          "sha256": "df6244139503a3aebf000c9a6ca115e77bb724f7db6ff93fae895250817d9aa1",
+          "request_id": "draft_request_20260620_001149_synthetic_patch_draft_request",
+          "draft_id": null,
+          "status": "pass",
+          "ok": true
+        },
+        "draft": {
+          "path": "data/patch_drafts/current_draft.json",
+          "exists": true,
+          "sha256": "7d4f38a984d95b605828b88f5e0e8164085fe7be72875d4f1b8e0822e202f5a7",
+          "request_id": "draft_request_20260620_001149_synthetic_patch_draft_request",
+          "draft_id": "draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request",
+          "status": "pass",
+          "ok": true
+        },
+        "diff": {
+          "path": "data/patch_drafts/current_diff.json",
+          "exists": true,
+          "sha256": "40d1c483f73d0417b56f68c3184083e59f37f2701fdd29a9a1b75d611a9f87fb",
+          "request_id": null,
+          "draft_id": "draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request",
+          "status": "pass",
+          "ok": true
+        },
+        "test_impact": {
+          "path": "data/patch_drafts/test_impact.json",
+          "exists": true,
+          "sha256": "b36d4209db271a3c481ee6df678ffa7974f8c70ad498215e002426b5ab4ec8e0",
+          "request_id": null,
+          "draft_id": "draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request",
+          "status": "pass",
+          "ok": true
+        },
+        "quality": {
+          "path": "data/patch_drafts/draft_quality.json",
+          "exists": true,
+          "sha256": "8f09cbd0346ee340be43ab31613dacb3dce9b36b9ba5719d7903a82c4eb4c4b9",
+          "request_id": null,
+          "draft_id": "draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request",
+          "status": "pass",
+          "ok": true
+        },
+        "checklist": {
+          "path": "data/patch_drafts/review_checklist.json",
+          "exists": true,
+          "sha256": "a1c5fe305a0f86c176ac363c0a44d7d7ce5a053dafe4af190634585130b81de4",
+          "request_id": "draft_request_20260620_001149_synthetic_patch_draft_request",
+          "draft_id": "draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request",
+          "status": "pass",
+          "ok": true
+        },
+        "verification_bundle": {
+          "path": "data/patch_drafts/verification_bundle.json",
+          "exists": true,
+          "sha256": "e10908f87b421e3b21e6b410df1c802eba4a0e4b9b94475bdc9ee9a7a8a0b777",
+          "request_id": "draft_request_20260620_001149_synthetic_patch_draft_request",
+          "draft_id": "draft_20260620_001151_draft_request_20260620_001149_synthetic_patch_draft_request",
+          "status": "warn",
+          "ok": true
+        }
+      },
+      "message": "Saved draft review artifacts must all bind to the same request_id and draft_id before approval/apply.",
+      "preview_only": true
+    },
+    "message": "Approval binding validation requires approval, current artifacts, and approved snapshot hashes to match."
+  },
+  "message": "Approved draft apply dry_run with 0 error(s)."
+}

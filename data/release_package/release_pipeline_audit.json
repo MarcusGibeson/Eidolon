@@ -1,0 +1,56 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:12",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "package_name": "Eidolon_v21_0.zip",
+  "rows": [
+    {
+      "name": "draft-approval-binding",
+      "status": "pass",
+      "message": "Review bundle contains a validated manifest."
+    },
+    {
+      "name": "validated-manifest-binding",
+      "status": "pass",
+      "message": "Review bundle integrity requires saved and current validated AI patch artifact hashes to match. If this is blocked after legitimate regenerated reports, run --ai-patch-review-bundle or POST /api/code-patches/refresh-review-bundle to save a fresh review bundle before approval."
+    },
+    {
+      "name": "approval-ready",
+      "status": "pass",
+      "message": "Approval-ready gate completed for the validated AI patch review bundle."
+    },
+    {
+      "name": "post-apply-review",
+      "status": "pass",
+      "message": "Post-apply review compared approved manifest, apply report, dry-run separation, and release readiness."
+    },
+    {
+      "name": "release-readiness",
+      "status": "pass",
+      "message": "Release readiness: READY WITH WARNINGS."
+    },
+    {
+      "name": "manifest-integrity",
+      "status": "pass",
+      "message": "Release manifest integrity verifies version markers, README, package plan, and approval/release artifacts."
+    },
+    {
+      "name": "checksums",
+      "status": "pass",
+      "message": "Package checksums generated for included release files."
+    },
+    {
+      "name": "handoff",
+      "status": "pass",
+      "message": "Release handoff report prepared for the verified package."
+    },
+    {
+      "name": "zip-builder",
+      "status": "pass",
+      "message": "Source-only release zip dry-run completed; no archive written."
+    }
+  ],
+  "message": "Release pipeline audit completed across approval, readiness, manifest, checksum, handoff, and zip prechecks."
+}

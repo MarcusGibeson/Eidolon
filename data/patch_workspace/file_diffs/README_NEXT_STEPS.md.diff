@@ -1,0 +1,9 @@
+--- a/README_NEXT_STEPS.md
++++ b/README_NEXT_STEPS.md
+@@ -8904,3 +8904,6 @@
+ - keep installation and risky machine changes manual
+ 
+ v4.5 tells you what to do. v4.6 should make copying the exact commands less annoying, because apparently typing is where human morale goes to die.
++
++<!-- EIDOLON_CONTROLLED_BUILD_STAGE_MARKER -->
++Staged controlled-build probe for plan_20260620_151735_task-20260619-234414-advance-active-goal-build-eid. This line is only written if the operator explicitly applies the staged patch.

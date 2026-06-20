@@ -1,0 +1,88 @@
+{
+  "version": "16.0",
+  "checked_at": "2026-06-20T00:42:18",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "workspace_dir": "data/code_patches",
+  "rows": [
+    {
+      "name": "current_patch",
+      "path": "data/code_patches/current_patch.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "proposed_edits",
+      "path": "data/code_patches/proposed_edits.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "rewrite_previews",
+      "path": "data/code_patches/rewrite_previews.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "apply_transaction_report",
+      "path": "data/code_patches/apply_transaction_report.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "verification_report",
+      "path": "data/code_patches/semantic_checks.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "symbol_scan",
+      "path": "data/code_patches/symbol_scan.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "rewrite_plan",
+      "path": "data/code_patches/rewrite_plan.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "rewrite_conflicts",
+      "path": "data/code_patches/rewrite_conflicts.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "diff_bundle",
+      "path": "data/code_patches/code_patch_diff_bundle.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "release_artifact",
+      "path": "data/code_patches/release_artifact.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    },
+    {
+      "name": "audit_trail",
+      "path": "data/code_patches/release_audit_trail.json",
+      "status": "pass",
+      "exists": true,
+      "message": "Artifact exists."
+    }
+  ],
+  "message": "Generated-code patch workspace status loaded."
+}

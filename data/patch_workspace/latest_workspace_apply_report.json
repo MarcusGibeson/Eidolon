@@ -1,0 +1,40 @@
+{
+  "version": "12.0",
+  "checked_at": "2026-06-19T23:14:09",
+  "project_id": "eidolon",
+  "status": "dry_run",
+  "ok": true,
+  "dry_run": true,
+  "approved": false,
+  "apply_report": {
+    "version": "12.0",
+    "checked_at": "2026-06-19T23:14:09",
+    "project_id": "eidolon",
+    "run_id": "apply_20260619_231409_plan-20260619-231409-synthetic-v9-safe-readme-task",
+    "plan_id": "plan_20260619_231409_synthetic-v9-safe-readme-task",
+    "status": "dry_run",
+    "ok": true,
+    "dry_run": true,
+    "approved": false,
+    "applied": [
+      {
+        "path": "README_NEXT_STEPS.md",
+        "action": "modify",
+        "status": "dry_run",
+        "backup_path": "data/controlled_build_backups/apply_20260619_231409_plan-20260619-231409-synthetic-v9-safe-readme-task/README_NEXT_STEPS.md",
+        "original_sha256": "789f913274548695f69b79e4cf32e830ad00868c2a53c42142a41356a7c5d952",
+        "applied_sha256": "3a081c6b960700fbe2f5d38adc4b47fd7f74d9c5e5ea7a22c4b68a34fad3a563"
+      }
+    ],
+    "errors": [],
+    "readme_updated": true,
+    "rollback_available": false,
+    "next_commands": [
+      "python conscious_agent/main.py --verify-latest-patch",
+      "python conscious_agent/main.py --readme-gate",
+      "python conscious_agent/main.py --rollback-latest-patch --approve-controlled-self-build"
+    ],
+    "message": "Staged patch apply_20260619_231409_plan-20260619-231409-synthetic-v9-safe-readme-task validated with 0 error(s)."
+  },
+  "message": "Workspace apply dry-run completed."
+}

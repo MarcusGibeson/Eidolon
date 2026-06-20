@@ -1,0 +1,46 @@
+{
+  "version": "16.0",
+  "checked_at": "2026-06-20T01:57:48",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "name": "api-get-read-only-discipline",
+      "status": "pass",
+      "message": "API server has separate GET/POST handlers; inspect route-specific writes during review."
+    },
+    {
+      "name": "approval-binding",
+      "status": "pass",
+      "message": "Approved applies require artifact-bound draft validation."
+    },
+    {
+      "name": "dry-run-pointer-separation",
+      "status": "pass",
+      "message": "Code apply dry-runs are stored separately from real apply pointers."
+    },
+    {
+      "name": "rollback-stale-guard",
+      "status": "pass",
+      "message": "Controlled rollback has status/hash guard markers."
+    },
+    {
+      "name": "single-use-approval",
+      "status": "pass",
+      "message": "Approved real apply consumes approval."
+    },
+    {
+      "name": "dashboard-import",
+      "status": "pass",
+      "message": "Dashboard import is covered by smoke/verification commands."
+    },
+    {
+      "name": "py-compile",
+      "status": "pass",
+      "returncode": 0,
+      "message": "Python compile passed."
+    }
+  ],
+  "message": "Post-apply semantic checks completed."
+}

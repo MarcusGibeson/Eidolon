@@ -14,5 +14,104 @@
     "return_code": 0,
     "status": "success",
     "error": ""
+  },
+  {
+    "timestamp": "2026-06-19T23:37:10",
+    "action": "run_approved_command",
+    "command": "python conscious_agent/main.py --execute-task-work-id task_20260619_233620_apply-patch-patch-20260619-154553-conscious-agen --approve-task-work-execution --no-ai-task-work-executor",
+    "args": [
+      "python",
+      "conscious_agent/main.py",
+      "--execute-task-work-id",
+      "task_20260619_233620_apply-patch-patch-20260619-154553-conscious-agen",
+      "--approve-task-work-execution",
+      "--no-ai-task-work-executor"
+    ],
+    "cwd": "C:\\Users\\marcu\\Eidolon",
+    "return_code": 1,
+    "status": "failed",
+    "error": ""
+  },
+  {
+    "timestamp": "2026-06-19T23:39:26",
+    "action": "run_approved_command",
+    "command": "python conscious_agent/main.py --status",
+    "args": [
+      "python",
+      "conscious_agent/main.py",
+      "--status"
+    ],
+    "cwd": "C:\\Users\\marcu\\Eidolon",
+    "return_code": 1,
+    "status": "failed",
+    "error": ""
+  },
+  {
+    "timestamp": "2026-06-19T23:39:28",
+    "action": "run_approved_command",
+    "command": "python conscious_agent/main.py --status",
+    "args": [
+      "python",
+      "conscious_agent/main.py",
+      "--status"
+    ],
+    "cwd": "C:\\Users\\marcu\\Eidolon",
+    "return_code": 1,
+    "status": "failed",
+    "error": ""
+  },
+  {
+    "timestamp": "2026-06-19T23:39:29",
+    "action": "run_approved_command",
+    "command": "python conscious_agent/main.py --project-index-summary",
+    "args": [
+      "python",
+      "conscious_agent/main.py",
+      "--project-index-summary"
+    ],
+    "cwd": "C:\\Users\\marcu\\Eidolon",
+    "return_code": 1,
+    "status": "failed",
+    "error": ""
+  },
+  {
+    "timestamp": "2026-06-19T23:39:30",
+    "action": "run_approved_command",
+    "command": "python conscious_agent/main.py --project-index-summary",
+    "args": [
+      "python",
+      "conscious_agent/main.py",
+      "--project-index-summary"
+    ],
+    "cwd": "C:\\Users\\marcu\\Eidolon",
+    "return_code": 1,
+    "status": "failed",
+    "error": ""
+  },
+  {
+    "timestamp": "2026-06-19T23:39:31",
+    "action": "test_workflow",
+    "report_id": "test_20260619_233926_general",
+    "patch_id": "",
+    "status": "failed",
+    "dry_run": false,
+    "commands": [
+      "python conscious_agent/main.py --status",
+      "python conscious_agent/main.py --project-index-summary"
+    ],
+    "recommendation": "One or more checks failed. Review the output before applying or keeping changes."
+  },
+  {
+    "timestamp": "2026-06-19T23:39:32",
+    "action": "test_workflow",
+    "report_id": "test_20260619_233928_general",
+    "patch_id": "",
+    "status": "failed",
+    "dry_run": false,
+    "commands": [
+      "python conscious_agent/main.py --status",
+      "python conscious_agent/main.py --project-index-summary"
+    ],
+    "recommendation": "One or more checks failed. Review the output before applying or keeping changes."
   }
 ]

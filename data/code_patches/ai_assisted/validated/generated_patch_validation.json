@@ -1,0 +1,27 @@
+{
+  "version": "18.0",
+  "checked_at": "2026-06-20T01:27:21",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "validated_edits": [
+    {
+      "edit_id": "edit_001",
+      "file": "README_NEXT_STEPS.md",
+      "status": "pass",
+      "message": "Generated edit passed validation.",
+      "reasons": []
+    }
+  ],
+  "rejected_count": 0,
+  "rows": [
+    {
+      "edit_id": "edit_001",
+      "file": "README_NEXT_STEPS.md",
+      "status": "pass",
+      "message": "Generated edit passed validation.",
+      "reasons": []
+    }
+  ],
+  "message": "Generated patch validation completed."
+}

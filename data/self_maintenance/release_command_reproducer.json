@@ -1,0 +1,28 @@
+{
+  "version": "27.0",
+  "checked_at": "2026-06-20T12:48:09",
+  "project_id": "eidolon",
+  "stage": "v26.7",
+  "status": "pass",
+  "ok": true,
+  "package_name": "Eidolon_v27_0.zip",
+  "zip_path": "data\\release_installation\\incoming\\Eidolon_v27_0.zip",
+  "commands": [
+    "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+    "PYTHONPATH=conscious_agent python -c \"import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)\"",
+    "python conscious_agent/main.py --package-privacy-scan --readiness-json",
+    "python conscious_agent/main.py --release-manifest-integrity --readiness-json",
+    "python conscious_agent/main.py --external-zip-install-verification --release-zip-path data\\release_installation\\incoming\\Eidolon_v27_0.zip --readiness-json",
+    "python conscious_agent/main.py --trial-upgrade-from-zip --release-zip-path data\\release_installation\\incoming\\Eidolon_v27_0.zip --readiness-json",
+    "python conscious_agent/main.py --trustworthy-maintenance-console --release-zip-path data\\release_installation\\incoming\\Eidolon_v27_0.zip --readiness-json",
+    "python -u tools/smoke_check.py --tier install --json"
+  ],
+  "rows": [
+    {
+      "name": "commands",
+      "status": "pass",
+      "message": "8 reproducible command(s) generated for Eidolon_v27_0.zip."
+    }
+  ],
+  "message": "Release command reproducer generated."
+}

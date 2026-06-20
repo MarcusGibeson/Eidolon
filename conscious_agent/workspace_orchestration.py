@@ -10,7 +10,7 @@ from paths import DATA_DIR, ROOT_DIR
 from settings_manager import load_settings
 from task_queue import list_tasks
 
-WORKSPACE_ORCHESTRATION_VERSION = "15.0"
+WORKSPACE_ORCHESTRATION_VERSION = "30.0"
 WORKSPACES_DIR = DATA_DIR / "workspaces"
 PROJECTS_FILE = WORKSPACES_DIR / "projects.json"
 ACTIVE_PROJECT_FILE = WORKSPACES_DIR / "active_project.json"
@@ -147,6 +147,8 @@ def _default_project() -> dict[str, Any]:
         "last_health_status": "unknown",
         "priority": "high",
         "safe_to_modify": True,
+        "last_updated_for": f"v{settings.get('settings_version', WORKSPACE_ORCHESTRATION_VERSION)}",
+        "current_milestone": f"v{settings.get('settings_version', WORKSPACE_ORCHESTRATION_VERSION)} Assisted Self-Improvement Release",
         "registered_at": _now(),
         "updated_at": _now(),
     }
@@ -186,8 +188,9 @@ def load_workspace_projects(repair: bool = False) -> list[dict[str, Any]]:
     if repair:
         _write_json(PROJECTS_FILE, {"version": WORKSPACE_ORCHESTRATION_VERSION, "updated_at": _now(), "projects": normalized})
         active = _read_json(ACTIVE_PROJECT_FILE, {})
-        if not isinstance(active, dict) or not active.get("active_project_id"):
-            _write_json(ACTIVE_PROJECT_FILE, {"version": WORKSPACE_ORCHESTRATION_VERSION, "active_project_id": "eidolon", "updated_at": _now()})
+        active_payload = {"version": f"v{WORKSPACE_ORCHESTRATION_VERSION}", "active_project_id": str(active.get("active_project_id") or "eidolon") if isinstance(active, dict) else "eidolon", "updated_at": _now(), "last_updated_for": f"v{WORKSPACE_ORCHESTRATION_VERSION}", "current_milestone": f"v{WORKSPACE_ORCHESTRATION_VERSION} Assisted Self-Improvement Release"}
+        if not isinstance(active, dict) or active.get("version") != f"v{WORKSPACE_ORCHESTRATION_VERSION}" or active.get("last_updated_for") != f"v{WORKSPACE_ORCHESTRATION_VERSION}":
+            _write_json(ACTIVE_PROJECT_FILE, active_payload)
     return normalized
 
 
@@ -522,7 +525,7 @@ def build_workspace_dev_loop(project_id: str = "eidolon", live: bool = False, sa
     try:
         from controlled_build_cycle import build_patch_plan, stage_controlled_patch, preview_staged_diff
 
-        plan = build_patch_plan(project_id=selected_project_id, target_version="15.0", save=False)
+        plan = build_patch_plan(project_id=selected_project_id, target_version="26.0", save=False)
         staged = stage_controlled_patch(project_id=selected_project_id, create_plan_if_missing=True, save=False)
         diff = preview_staged_diff(project_id=selected_project_id, stage_if_missing=False, save=False)
     except Exception as error:

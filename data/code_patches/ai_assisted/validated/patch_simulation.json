@@ -1,0 +1,41 @@
+{
+  "version": "18.0",
+  "checked_at": "2026-06-20T01:27:21",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "dry_run": true,
+  "source_writes": false,
+  "changed_files": [
+    {
+      "file": "README_NEXT_STEPS.md",
+      "would_change": true,
+      "before_sha256": "ab7bc4b14364b19f3e68bcf8f21dbe2d3a86ed74060e36d7c5de059a2d1845f1",
+      "after_sha256": "b96e122797a3eebe7bcba90827dd7ce4f223c4292ac233d0b48dd3fc561810a9",
+      "backup_required": true,
+      "rollback_plan": "copy backup after verifying applied_sha256"
+    }
+  ],
+  "test_commands_that_would_run": [
+    "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+    "python conscious_agent/main.py --semantic-checks",
+    "python tools/smoke_check.py"
+  ],
+  "semantic_checks_that_would_trigger": [
+    "GET read-only",
+    "POST confirmation",
+    "dry-run pointer separation",
+    "approval artifact binding",
+    "rollback stale-pointer guard"
+  ],
+  "release_readiness_effect": "preview only; readiness remains informational until real apply occurs",
+  "rows": [
+    {
+      "edit_id": "edit_001",
+      "file": "README_NEXT_STEPS.md",
+      "status": "pass",
+      "message": "Replacement simulated."
+    }
+  ],
+  "message": "Patch simulation completed without source writes."
+}

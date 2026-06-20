@@ -1,0 +1,250 @@
+{
+  "version": "22.0",
+  "checked_at": "2026-06-20T08:54:02",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "dry_run": true,
+  "package_name": "Eidolon_v22_0.zip",
+  "zip_path": null,
+  "install_root": "C:\\Users\\marcu\\Eidolon",
+  "new_files": [],
+  "changed_files": [],
+  "unchanged_files": [],
+  "removed_files": [],
+  "manifest_sha256": null,
+  "rows": [
+    {
+      "name": "target-zip",
+      "status": "warn",
+      "message": "No target zip supplied; generated inventory-only dry-run plan."
+    }
+  ],
+  "inventory_summary": {
+    "version": "22.0",
+    "checked_at": "2026-06-20T08:54:02",
+    "project_id": "eidolon",
+    "status": "pass",
+    "ok": true,
+    "package_profile": "source_only",
+    "included_count": 95,
+    "excluded_count": 10,
+    "rows": [
+      {
+        "name": "included-files",
+        "status": "pass",
+        "message": "95 file(s) included."
+      },
+      {
+        "name": "readme-included",
+        "status": "pass",
+        "message": "README_NEXT_STEPS.md must be packaged."
+      },
+      {
+        "name": "approval-state-excluded",
+        "status": "pass",
+        "message": "Live approval state is absent from included package files."
+      },
+      {
+        "name": "source-only-data-profile",
+        "status": "pass",
+        "message": "Only allowlisted source-safe data files may be packaged."
+      },
+      {
+        "name": "data-runtime-excluded",
+        "status": "pass",
+        "message": "Runtime/private data folders are excluded by default."
+      },
+      {
+        "name": "venv-excluded",
+        "status": "pass",
+        "message": ".git, .venv, __pycache__, .pyc, logs, generated package files, private runtime data, and nested zips are excluded."
+      }
+    ],
+    "message": "Package inventory classified included and excluded files for a guarded release zip.",
+    "preview_only": true,
+    "included_sample": [
+      {
+        "path": ".gitignore",
+        "size": 241,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/actions.py",
+        "size": 701,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/ai_patch_assistance.py",
+        "size": 39992,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/api_server.py",
+        "size": 156758,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/approval_manager.py",
+        "size": 18611,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/approval_release_workflow.py",
+        "size": 35534,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/autonomous_dev_cycle.py",
+        "size": 23019,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/brain.py",
+        "size": 5185,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/chat.py",
+        "size": 5362,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/chat_action_router.py",
+        "size": 29289,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/code_patch_release.py",
+        "size": 37598,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/code_reviewer.py",
+        "size": 7626,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/command_runner.py",
+        "size": 28299,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/controlled_build_cycle.py",
+        "size": 46499,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/dashboard.py",
+        "size": 203143,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/dashboard_chat_console.py",
+        "size": 8054,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/desires.py",
+        "size": 592,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/desktop_notifier.py",
+        "size": 3662,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/desktop_onboarding_wizard.py",
+        "size": 20279,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/desktop_setup_helper.py",
+        "size": 22196,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/desktop_shell.py",
+        "size": 36678,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/desktop_tray.py",
+        "size": 7845,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/dev_loop_runner.py",
+        "size": 14746,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/diagnostics.py",
+        "size": 19934,
+        "reason": "included source release file"
+      },
+      {
+        "path": "conscious_agent/file_tools.py",
+        "size": 7743,
+        "reason": "included source release file"
+      }
+    ],
+    "included_truncated": true,
+    "excluded_sample": [
+      {
+        "path": "data/action_log.json",
+        "size": 3577,
+        "reason": "excluded private/runtime data by source-only package profile"
+      },
+      {
+        "path": "data/desires.json",
+        "size": 192,
+        "reason": "excluded private/runtime data by source-only package profile"
+      },
+      {
+        "path": "data/goals.json",
+        "size": 3465,
+        "reason": "excluded private/runtime data by source-only package profile"
+      },
+      {
+        "path": "data/memories.json",
+        "size": 90431,
+        "reason": "excluded live approval state"
+      },
+      {
+        "path": "data/opinions.json",
+        "size": 625,
+        "reason": "excluded private/runtime data by source-only package profile"
+      },
+      {
+        "path": "data/project_index.json",
+        "size": 172164,
+        "reason": "excluded private/runtime data by source-only package profile"
+      },
+      {
+        "path": "data/self_model.json",
+        "size": 706,
+        "reason": "excluded private/runtime data by source-only package profile"
+      },
+      {
+        "path": "data/tasks.json",
+        "size": 14370,
+        "reason": "excluded private/runtime data by source-only package profile"
+      },
+      {
+        "path": "data/thoughts.log",
+        "size": 48717,
+        "reason": "excluded generated/log/bytecode file"
+      },
+      {
+        "path": "data/workspaces/timeline.json",
+        "size": 55558,
+        "reason": "excluded private/runtime data by source-only package profile"
+      }
+    ],
+    "excluded_truncated": false,
+    "summary_only": true
+  },
+  "message": "Update dry-run plan skipped exact compare because no target zip was available."
+}

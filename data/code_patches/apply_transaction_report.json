@@ -1,0 +1,35 @@
+{
+  "version": "16.0",
+  "checked_at": "2026-06-20T01:57:45",
+  "project_id": "eidolon",
+  "status": "blocked",
+  "ok": false,
+  "dry_run": true,
+  "prechecks": [
+    {
+      "name": "rewrite-conflicts",
+      "status": "blocked",
+      "message": "Rewrite conflict detector completed."
+    },
+    {
+      "name": "diff-bundle",
+      "status": "pass",
+      "message": "Generated patch diff bundle prepared for review."
+    },
+    {
+      "name": "approval-binding",
+      "status": "warn",
+      "message": "No approved draft currently binds to the patch bundle."
+    },
+    {
+      "name": "explicit-confirmation",
+      "status": "pass",
+      "message": "Real apply requires --approve-controlled-self-build."
+    }
+  ],
+  "blocked_steps": [
+    "rewrite-conflicts"
+  ],
+  "apply_report": null,
+  "message": "Code patch transaction blocked before source writes."
+}

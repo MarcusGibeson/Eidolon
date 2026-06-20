@@ -1,0 +1,27 @@
+{
+  "version": "17.0",
+  "checked_at": "2026-06-20T00:59:10",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "signals_checked": 4,
+  "rows": [
+    {
+      "class": "approval mismatch",
+      "status": "warn",
+      "matched": [
+        "approval"
+      ],
+      "message": "Detected active signal(s) for approval mismatch."
+    },
+    {
+      "class": "rollback unavailable",
+      "status": "warn",
+      "matched": [
+        "rollback"
+      ],
+      "message": "Detected active signal(s) for rollback unavailable."
+    }
+  ],
+  "message": "Patch failure analysis completed."
+}

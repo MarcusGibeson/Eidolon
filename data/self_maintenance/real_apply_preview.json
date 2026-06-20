@@ -1,0 +1,63 @@
+{
+  "version": "24.0",
+  "checked_at": "2026-06-20T11:08:17",
+  "project_id": "eidolon",
+  "stage": "v23.8",
+  "status": "blocked",
+  "ok": true,
+  "dry_run": true,
+  "live_allowed": false,
+  "binding": {
+    "version": "24.0",
+    "checked_at": "2026-06-20T11:08:17",
+    "project_id": "eidolon",
+    "stage": "v23.7",
+    "status": "warn",
+    "ok": true,
+    "approved": false,
+    "bundle_hash": "d691b140f66e5c3fec37c6f19f215f027fab1dfeca0b0cdfbac48dd53b34fe56",
+    "supplied_bundle_hash": null,
+    "rows": [
+      {
+        "name": "bundle-hash-present",
+        "status": "pass",
+        "message": "d691b140f66e5c3fec37c6f19f215f027fab1dfeca0b0cdfbac48dd53b34fe56"
+      },
+      {
+        "name": "exact-hash-match",
+        "status": "warn",
+        "message": "Approval is preview-only until the exact bundle hash is supplied with confirmation."
+      },
+      {
+        "name": "no-apply",
+        "status": "pass",
+        "message": "Approval binding does not apply source edits."
+      }
+    ],
+    "message": "Human approval binding preview completed.",
+    "preview_only": true
+  },
+  "rows": [
+    {
+      "name": "dry-run-default",
+      "status": "pass",
+      "message": "Real maintenance apply defaults to dry-run."
+    },
+    {
+      "name": "approval-binding",
+      "status": "blocked",
+      "message": "Exact reviewed bundle hash is required for live apply."
+    },
+    {
+      "name": "confirmation-phrase",
+      "status": "blocked",
+      "message": "Live apply requires APPLY EXACT REVIEWED MAINTENANCE BUNDLE."
+    },
+    {
+      "name": "live-apply",
+      "status": "dry_run",
+      "message": "No source edits were applied by this report."
+    }
+  ],
+  "message": "Real maintenance patch apply gate evaluated; no edit engine is run in dry-run mode."
+}

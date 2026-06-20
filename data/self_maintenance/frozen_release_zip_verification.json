@@ -1,0 +1,44 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:19:03",
+  "project_id": "eidolon",
+  "stage": "v26.5",
+  "status": "pass",
+  "ok": true,
+  "package_name": "Eidolon_v30_0.zip",
+  "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v30_0.zip",
+  "freeze_hash": "47a4b2592a30928d5b6278f03d6d441d3c46f4d6f02410224cc39b652d793c80",
+  "frozen_manifest_sha256": "da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f",
+  "zip_manifest_sha256": "da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f",
+  "missing_files": [],
+  "extra_files": [],
+  "changed_files": [],
+  "rows": [
+    {
+      "name": "zip-present",
+      "status": "pass",
+      "message": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+    },
+    {
+      "name": "manifest-hash-match",
+      "status": "pass",
+      "message": "frozen=da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f zip=da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f; drift-tolerant metadata ignored=8"
+    },
+    {
+      "name": "missing-files",
+      "status": "pass",
+      "message": "0 missing file(s)."
+    },
+    {
+      "name": "extra-files",
+      "status": "pass",
+      "message": "0 extra file(s)."
+    },
+    {
+      "name": "changed-files",
+      "status": "pass",
+      "message": "0 changed file(s)."
+    }
+  ],
+  "message": "Frozen release zip verification completed."
+}

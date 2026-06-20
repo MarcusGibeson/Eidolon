@@ -1,0 +1,1786 @@
+{
+  "version": "24.0",
+  "checked_at": "2026-06-20T11:05:17",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "package_name": "Eidolon_v24_0.zip",
+  "zip_path": "data\\release_installation\\incoming\\Eidolon_v24_0.zip",
+  "required_confirmation_phrase": "APPLY EXACT REVIEWED RELEASE",
+  "expected_manifest_hash": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d",
+  "actual_manifest_hash": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d",
+  "steps": {
+    "manifest": {
+      "version": "24.0",
+      "checked_at": "2026-06-20T11:05:05",
+      "project_id": "eidolon",
+      "status": "pass",
+      "ok": true,
+      "package_name": "Eidolon_v24_0.zip",
+      "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip",
+      "source": "zip",
+      "package_profile": "source-only-zip",
+      "file_count": 96,
+      "excluded_count": null,
+      "manifest_sha256": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d",
+      "entries": [
+        {
+          "path": ".gitignore",
+          "size": 241,
+          "sha256": "7710f9ce2cc19d7579e4ceef49ace76babdd160ac2bd9a446a0a7609207729cc"
+        },
+        {
+          "path": "README_NEXT_STEPS.md",
+          "size": 290844,
+          "sha256": "2a25d8eb794aef2786aaf4330647118b2b308a1fb2844021137f8fd935dc1e8b"
+        },
+        {
+          "path": "conscious_agent/actions.py",
+          "size": 701,
+          "sha256": "9444d5aaf276c21b9c565a105a81e6bc9943bb8d40f531919b41d116f1fc065c"
+        },
+        {
+          "path": "conscious_agent/ai_patch_assistance.py",
+          "size": 39992,
+          "sha256": "074649f7e3bb4a3c2700fc06acc9f21c77380ffefb598e3b75a21f5fc6ced1bc"
+        },
+        {
+          "path": "conscious_agent/api_server.py",
+          "size": 175574,
+          "sha256": "b1aa9ec9604cea740805bf7082785c2ed7d0948a99eb973b9aa19d64e5399ffe"
+        },
+        {
+          "path": "conscious_agent/approval_manager.py",
+          "size": 18611,
+          "sha256": "52fef9feb816408373890a99f3b3670fa6a5309f5ce8a59d232eb337a6d95bb6"
+        },
+        {
+          "path": "conscious_agent/approval_release_workflow.py",
+          "size": 35534,
+          "sha256": "12a36890ee1c4b1d7f4bfcbbef664a7596b0f30f1b34625b75988957cfb19f55"
+        },
+        {
+          "path": "conscious_agent/autonomous_dev_cycle.py",
+          "size": 23019,
+          "sha256": "2095e5b4afde2dc02e112d1e57be16fb31cf9d80a60cb2c8b7fdeb76a687b263"
+        },
+        {
+          "path": "conscious_agent/brain.py",
+          "size": 5185,
+          "sha256": "4d61b27a043f9fb39c22a6d1fd1c7fc31c74f6ac97ac99646cc223da621b639d"
+        },
+        {
+          "path": "conscious_agent/chat.py",
+          "size": 5362,
+          "sha256": "e45b2b662bdb2e686b0c13a324c39bf3a3b61755e909f4c5fa66cbf7e2e2f42c"
+        },
+        {
+          "path": "conscious_agent/chat_action_router.py",
+          "size": 29289,
+          "sha256": "18abc57fc71de897f4139c5cbcb42390bfc7419727ee88925a1a486802e80095"
+        },
+        {
+          "path": "conscious_agent/code_patch_release.py",
+          "size": 37598,
+          "sha256": "e4bbc91dee780200b375d42a462833172044ef42602586d3752950c0efdcc7d8"
+        },
+        {
+          "path": "conscious_agent/code_reviewer.py",
+          "size": 7626,
+          "sha256": "c6f185749b63162537460ec4bfe258d3904f30c5ab05589723fba1c6ab2060fd"
+        },
+        {
+          "path": "conscious_agent/command_runner.py",
+          "size": 28299,
+          "sha256": "8d3461cbc48259f928db67ec7f09f2a142c0b1666a1ed75fc00c95881ae2e3dc"
+        },
+        {
+          "path": "conscious_agent/controlled_build_cycle.py",
+          "size": 46499,
+          "sha256": "06eb6faac31b5669404b4575d2e9bf00f8fb5587310a6fb02a54ff2e11ba7257"
+        },
+        {
+          "path": "conscious_agent/dashboard.py",
+          "size": 208029,
+          "sha256": "cd9da2ab88e0f762450741089c37724e3909eb53178271c85e1c80f5ccb005c0"
+        },
+        {
+          "path": "conscious_agent/dashboard_chat_console.py",
+          "size": 8054,
+          "sha256": "2faf33702420923225fe867e5bbf9cb551d6e44dd252cf1311bdb96326ef3cba"
+        },
+        {
+          "path": "conscious_agent/desires.py",
+          "size": 592,
+          "sha256": "82df4a0662b6766152ec611f96ae4b58edd86dd7526583a5b5f6f0ab27c17b8f"
+        },
+        {
+          "path": "conscious_agent/desktop_notifier.py",
+          "size": 3662,
+          "sha256": "09e7fcf13c196d504de1ba36081c05c9f65f6feace2a683e7694edc3ed083a91"
+        },
+        {
+          "path": "conscious_agent/desktop_onboarding_wizard.py",
+          "size": 20279,
+          "sha256": "96ffbecf44a5dacc3ef4f4501f4c75e5ea5ae45d91a44676deda2062972ada5b"
+        },
+        {
+          "path": "conscious_agent/desktop_setup_helper.py",
+          "size": 22196,
+          "sha256": "bfc7b1c7eb936c597b7613e684b042d43de8938a1d5f63d2a071faf2c4127125"
+        },
+        {
+          "path": "conscious_agent/desktop_shell.py",
+          "size": 36678,
+          "sha256": "7fcf3bc0a46ac1fd641f6ab14963279a6cc127ac6456979452727f4e61230c9f"
+        },
+        {
+          "path": "conscious_agent/desktop_tray.py",
+          "size": 7845,
+          "sha256": "ca5d167898eeb7ebca969563e95ec8701d8024f5e3691725ccf436dcbb627c87"
+        },
+        {
+          "path": "conscious_agent/dev_loop_runner.py",
+          "size": 14746,
+          "sha256": "091fd8b152594931b79eacc5ee5b74ce281a8cb06ebbc510ca13eaf1d995a874"
+        },
+        {
+          "path": "conscious_agent/diagnostics.py",
+          "size": 19934,
+          "sha256": "32db674a0de3ee0c2ce5daef4bc9b7e3973c31eaf3c8468f9fead12192103cd4"
+        },
+        {
+          "path": "conscious_agent/file_tools.py",
+          "size": 7743,
+          "sha256": "411f85bbbaa8ee1a39cdef61c55e3fc939df88ae85e9dfb53f39ac7b80ad0013"
+        },
+        {
+          "path": "conscious_agent/goal_manager.py",
+          "size": 18587,
+          "sha256": "cf4d1ab5fcf5d25682bcc46dde6361fdb62edc4600d7208312a12467630f4d90"
+        },
+        {
+          "path": "conscious_agent/guided_work_session.py",
+          "size": 16675,
+          "sha256": "416185e8baa4d4a3c14916cfbdab5ca55f8fb1db3c1702244098abd8ec216b75"
+        },
+        {
+          "path": "conscious_agent/inner_loop.py",
+          "size": 3154,
+          "sha256": "86246435c9cf895991326f9117c7f0569588f982f7db38bcc271da3f7dc62d7f"
+        },
+        {
+          "path": "conscious_agent/local_brain.py",
+          "size": 4636,
+          "sha256": "e20e07f627a77f07ba7603185784053b14485d0bf6622bb1d50d3631af5cdab0"
+        },
+        {
+          "path": "conscious_agent/main.py",
+          "size": 177802,
+          "sha256": "c9affbd6bacf52f646fccc4b64e15f2a4e7f13220b0654293d84cbdc29cab95a"
+        },
+        {
+          "path": "conscious_agent/maintenance_advisor.py",
+          "size": 19814,
+          "sha256": "d2641dd7d44beb7feed4ade4d01a97f7c09b5f0c7709fdd07b8734bbf49c14eb"
+        },
+        {
+          "path": "conscious_agent/memory.py",
+          "size": 2153,
+          "sha256": "18da358e61ac1d22ee7e0177d68ed65dd9be79720b3ea51926e9bca0e515ff64"
+        },
+        {
+          "path": "conscious_agent/memory_compactor.py",
+          "size": 15080,
+          "sha256": "2d80eb21741f973ebc009a06ee9d56cfdd6450f28bb2377d6de727d573cd53ff"
+        },
+        {
+          "path": "conscious_agent/notification_manager.py",
+          "size": 13335,
+          "sha256": "9c833f7c469434fd383928e93e63cdf3a87a270740bfe4b6faf2d75c0d34bb5a"
+        },
+        {
+          "path": "conscious_agent/operational_readiness.py",
+          "size": 43017,
+          "sha256": "3bdac73e71670636b80086cd465710c524e3ed30b53027a4c37de88934e2dd34"
+        },
+        {
+          "path": "conscious_agent/opinions.py",
+          "size": 1900,
+          "sha256": "8a3691b67ea9b966ba9a4d588f552ba2d33e6d4c9d3e9210cbfbd3f84b627543"
+        },
+        {
+          "path": "conscious_agent/patch_applier.py",
+          "size": 17181,
+          "sha256": "5ed4967c2ade4b11a13c74bbc4539026dbcb854c1fe7562236c2b08f5f5c3fc5"
+        },
+        {
+          "path": "conscious_agent/patch_drafting.py",
+          "size": 75777,
+          "sha256": "e4edd6cc8fd7bb9490fada6af8f98db7ad117f34de1465e374ece596af535061"
+        },
+        {
+          "path": "conscious_agent/patch_suggester.py",
+          "size": 12818,
+          "sha256": "f3596507c5528f750e9f167eab54734d5b364634f64d6d78455fc3cbb0860bae"
+        },
+        {
+          "path": "conscious_agent/paths.py",
+          "size": 347,
+          "sha256": "d725800bc607c71d454b7d123cf9cb92fa397ac972ec5aba268f18dafb97093f"
+        },
+        {
+          "path": "conscious_agent/planner.py",
+          "size": 774,
+          "sha256": "cce761cefd46c80b102c53f9b6b5519e4a3034031b690c9829879b9ab20a7c21"
+        },
+        {
+          "path": "conscious_agent/project_indexer.py",
+          "size": 9476,
+          "sha256": "9a19b027dd8137ae2755b8eb3d952babc7682b74d3c57be11266cb076984b558"
+        },
+        {
+          "path": "conscious_agent/project_intelligence.py",
+          "size": 30535,
+          "sha256": "49e6fa61eb926ae3583fbdda3fda36bb1fd8b84f327036de26a81d7a4c14216f"
+        },
+        {
+          "path": "conscious_agent/project_manager.py",
+          "size": 6710,
+          "sha256": "16b83b111b4fb62849de76c77f2305145c2adb3f0143158a0ca689c742554e96"
+        },
+        {
+          "path": "conscious_agent/reflection.py",
+          "size": 1025,
+          "sha256": "cc394f666ca3f43138cb0aa7523882b8d7fd50ac8a2e8bfa8a5484385e2e7bcd"
+        },
+        {
+          "path": "conscious_agent/release_installation.py",
+          "size": 119002,
+          "sha256": "5a2988405e269026bac535df4a4c60d81aef49660864811097f3274ade434062"
+        },
+        {
+          "path": "conscious_agent/release_packaging.py",
+          "size": 44081,
+          "sha256": "445b5b0bd0ec93953b17808957e404d28af5dd20292597dcc41f580d680ae21a"
+        },
+        {
+          "path": "conscious_agent/release_pipeline.py",
+          "size": 37252,
+          "sha256": "76b95671e5d7d2a2e3bba48eca2bc81d8b168b3a2291c24e393c9d2a730226d2"
+        },
+        {
+          "path": "conscious_agent/safety.py",
+          "size": 205,
+          "sha256": "c9b32c86216387066178d92d3ef2c3041801bb99781796ae3e25806f838b8fd3"
+        },
+        {
+          "path": "conscious_agent/self_improver.py",
+          "size": 17255,
+          "sha256": "248de333c6d439c04bba7626f91a8725eb83f16bb9781c69f81d6d44ccad08c2"
+        },
+        {
+          "path": "conscious_agent/self_maintenance.py",
+          "size": 34231,
+          "sha256": "48f89955d484d40374fc1a2ac6e5dc5b8cad0d4fc8d2345aa9ca0b134821c197"
+        },
+        {
+          "path": "conscious_agent/self_model.py",
+          "size": 1383,
+          "sha256": "77cdad864b0158bb1462ff75c61649e89e1a0eccceaea3fb6b071e2f64d80d02"
+        },
+        {
+          "path": "conscious_agent/session_planner.py",
+          "size": 35996,
+          "sha256": "fb675367f30ecfe7f3756f00ca9c10db0eb67b51d6286426503759d58cf0826e"
+        },
+        {
+          "path": "conscious_agent/settings_manager.py",
+          "size": 16057,
+          "sha256": "c9e0de9ecdeecb3208d4daac9bc2c68043112efb5721793f03906e43f744a89d"
+        },
+        {
+          "path": "conscious_agent/stabilization_checkpoint.py",
+          "size": 28147,
+          "sha256": "8e16630a85e2bce3ae0f4123b13c23627c7d96935e23d81e67d05b542a3e706c"
+        },
+        {
+          "path": "conscious_agent/stable_loop_audit.py",
+          "size": 17086,
+          "sha256": "b03a0804365624477e8119e543ffd824b07364e041d510e19b84f3a9b82832fd"
+        },
+        {
+          "path": "conscious_agent/stable_loop_decision_report.py",
+          "size": 18293,
+          "sha256": "11ffcdb6dd680e93b8600304f2ffed76ab8fe8354e2ce472961c9a2ead3729cb"
+        },
+        {
+          "path": "conscious_agent/stable_loop_followup_completion.py",
+          "size": 20721,
+          "sha256": "257e8686d8dda98457e370986000b8d3f331171d87864bbeabc898fe7118ac64"
+        },
+        {
+          "path": "conscious_agent/stable_loop_followup_lifecycle.py",
+          "size": 18073,
+          "sha256": "12c0fe708a77a996770c0c75c3b4fc36fa82795eb7617b6f08e9b71957af260c"
+        },
+        {
+          "path": "conscious_agent/stable_loop_followup_tasks.py",
+          "size": 22669,
+          "sha256": "6836e62750d306523ce7bf305e02c13289c56ca4e9dbe5f0c3cac603289e41f9"
+        },
+        {
+          "path": "conscious_agent/stable_loop_guardrails.py",
+          "size": 7640,
+          "sha256": "a6697bb94883bd8d8968dec45bb8da1cec6260ec74b9095da08073e407e8d415"
+        },
+        {
+          "path": "conscious_agent/stable_loop_operator_notes.py",
+          "size": 16980,
+          "sha256": "91b4e52b871030c8f3860ec34315bb0b7bae353edabfc904bea436fe9d0db9aa"
+        },
+        {
+          "path": "conscious_agent/stable_loop_review.py",
+          "size": 23273,
+          "sha256": "a2c9c0244d01791d94607a5352d32a17ac30c24ef2fc12188046ebd1e5a1647e"
+        },
+        {
+          "path": "conscious_agent/stable_supervised_loop.py",
+          "size": 22731,
+          "sha256": "b7e4ab7a633c6c753aca8ac211e35e350fe2a257b95d025806f4600d97075267"
+        },
+        {
+          "path": "conscious_agent/task_approval_bridge.py",
+          "size": 9460,
+          "sha256": "884cafc54e8b3550f5f38513b358e10972c7060ec1212f00af604c1f2fb4fd71"
+        },
+        {
+          "path": "conscious_agent/task_cycle_policy.py",
+          "size": 16766,
+          "sha256": "69e37012564eac18a8f4827d6cb0a26def703342ac374de937b4642f71355391"
+        },
+        {
+          "path": "conscious_agent/task_executor.py",
+          "size": 10078,
+          "sha256": "6703cfce0b1727b7ef8dd95558e8b5b4ee58714f2972b47b2cbaa599e0e712f8"
+        },
+        {
+          "path": "conscious_agent/task_lifecycle.py",
+          "size": 15702,
+          "sha256": "b46f4dbadc05a5b1acd1f473eeed23521442b9d3ae8fc191f5cef13f1f4f0580"
+        },
+        {
+          "path": "conscious_agent/task_patch_bridge.py",
+          "size": 18583,
+          "sha256": "898accc7abc877b45ba5e0c8742d52fbc8b858699fedae59481581a1869b54a4"
+        },
+        {
+          "path": "conscious_agent/task_queue.py",
+          "size": 28768,
+          "sha256": "339c9ff72aab6bc4f3b5d0e3e965d37652ee1addd3f94524786ebfda1ffe4c0e"
+        },
+        {
+          "path": "conscious_agent/task_recovery.py",
+          "size": 20587,
+          "sha256": "fc8b70262e60292e4d70aeb4410dee0f54bce857d02c5bafae8f864cab9a61e4"
+        },
+        {
+          "path": "conscious_agent/task_result_evaluator.py",
+          "size": 17588,
+          "sha256": "164552bd40ec8f247d7848939c3e01667f9b1b4d24dac4a89e3cb23d5822635d"
+        },
+        {
+          "path": "conscious_agent/task_work_executor.py",
+          "size": 23317,
+          "sha256": "27caba474b8e815aea18720be08be1aac0ad26d9438e2a6db321ffb0fb617de9"
+        },
+        {
+          "path": "conscious_agent/test_report_reviewer.py",
+          "size": 18326,
+          "sha256": "921f84faa2bf3e5a2855c3346fed5bd3fb50a56ff917c5af5f9343a614b07b50"
+        },
+        {
+          "path": "conscious_agent/test_runner.py",
+          "size": 12292,
+          "sha256": "554e7664e4d36af71079e8d0b3cc7fc835d82120e7842d50ba2a7a55eb73a1db"
+        },
+        {
+          "path": "conscious_agent/validated_ai_patch_loop.py",
+          "size": 39508,
+          "sha256": "438a07a5140b3b7aee88b0360449f43d7c251a5458254652427b23130c57b264"
+        },
+        {
+          "path": "conscious_agent/vector_memory.py",
+          "size": 4340,
+          "sha256": "e53870d3cc3c10e01344bd760c85c4d7199cab9075e84b0684961a3963026446"
+        },
+        {
+          "path": "conscious_agent/watch_mode.py",
+          "size": 23798,
+          "sha256": "6552e83fcb988620abc9f2241b0bcbed0e253fff6d0b414d5b3d39e174af405b"
+        },
+        {
+          "path": "conscious_agent/work_cycle.py",
+          "size": 20654,
+          "sha256": "fba649e32867228bff1f882f5948c31f6044dd7528fe19a23c045cc1e3b64557"
+        },
+        {
+          "path": "conscious_agent/work_queue.py",
+          "size": 22182,
+          "sha256": "ff8250618091859d1c59c43c005ae705bc1151be0d04d13d438d66bfc823ea04"
+        },
+        {
+          "path": "conscious_agent/work_queue_executor.py",
+          "size": 1031,
+          "sha256": "df2180197c9a82fc58e172f6701bde529bce1df02ea7589d85765dfe1a2923a8"
+        },
+        {
+          "path": "conscious_agent/work_queue_patch_bridge.py",
+          "size": 3335,
+          "sha256": "a974e66feeb9fff3e6e19193fdae47020e00aaea6c22869d20dfe391953c3ec9"
+        },
+        {
+          "path": "conscious_agent/workspace_execution.py",
+          "size": 27415,
+          "sha256": "c225708e9db6cb12cdbb27503ce0448582499962ed200fc24bf832d8b07aa6fc"
+        },
+        {
+          "path": "conscious_agent/workspace_orchestration.py",
+          "size": 32262,
+          "sha256": "44b79aec5afe7ac1efdec6b7d7d22918cb165de2d227e3d1a84e8bd0d803c425"
+        },
+        {
+          "path": "data/projects.json",
+          "size": 28839,
+          "sha256": "521a35470ab8ea669dd877270b6c02cbb3a2282398733910ed1559216261121b"
+        },
+        {
+          "path": "data/settings.json",
+          "size": 2136,
+          "sha256": "3241fcf7f8900ae32abf20cf0dbc43463d99f7c156e22ad0bf9a58e4edab719e"
+        },
+        {
+          "path": "data/workspaces/active_project.json",
+          "size": 194,
+          "sha256": "9eefe76775188c769f1f87ba8ed6fb6577acdc6b21df1118b6098b5f079bc5ac"
+        },
+        {
+          "path": "data/workspaces/command_profiles/default_java.json",
+          "size": 466,
+          "sha256": "e2a9cb740dc726ee0e7128655636116cfeab2fbc48216e8bdef4d566de823b2f"
+        },
+        {
+          "path": "data/workspaces/command_profiles/default_node.json",
+          "size": 472,
+          "sha256": "468446d7796ebd430d287dfa3eff15fe141a5ce6cdc396cfd9086973565a32c0"
+        },
+        {
+          "path": "data/workspaces/command_profiles/default_python.json",
+          "size": 478,
+          "sha256": "7987f712f14170eaf2c2b39a997506cfaf9709934e1abe2381084483d306812f"
+        },
+        {
+          "path": "data/workspaces/command_profiles/eidolon.json",
+          "size": 836,
+          "sha256": "38432d023af14bd8d11523b42d8dc01dda24386d374c5d7586c6eaed8bbc2116"
+        },
+        {
+          "path": "data/workspaces/projects.json",
+          "size": 1120,
+          "sha256": "444cbd84fdda168692bb0afe0641fa3ea5d84e1cdf7599dcb537bf0000df15ec"
+        },
+        {
+          "path": "requirements.txt",
+          "size": 33,
+          "sha256": "e791f11a7e84322b2cfdd44064e46a9dea2f543fa3d0396f9a1417a4e56a214d"
+        },
+        {
+          "path": "setup.ps1",
+          "size": 852,
+          "sha256": "76c912dd98f6841d9e37e037d8812f483352725669f1bb0d0a666cba3558fadc"
+        },
+        {
+          "path": "tools/smoke_check.py",
+          "size": 48888,
+          "sha256": "e9e1005260e4375ca61ccb5c96ed7adbab27c72cc7cfcf08d31de7e85e6db656"
+        }
+      ],
+      "rows": [
+        {
+          "name": "manifest-source",
+          "status": "pass",
+          "message": "zip"
+        },
+        {
+          "name": "file-count",
+          "status": "pass",
+          "message": "96 file(s) are bound to the deterministic manifest."
+        },
+        {
+          "name": "manifest-hash",
+          "status": "pass",
+          "message": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d"
+        },
+        {
+          "name": "sorted",
+          "status": "pass",
+          "message": "Manifest entries are path-sorted."
+        }
+      ],
+      "message": "Deterministic release manifest generated.",
+      "preview_only": true
+    },
+    "collision": {
+      "version": "24.0",
+      "checked_at": "2026-06-20T11:05:05",
+      "project_id": "eidolon",
+      "status": "warn",
+      "ok": true,
+      "package_name": "Eidolon_v24_0.zip",
+      "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip",
+      "install_root": "C:\\Users\\marcu\\Eidolon",
+      "collisions": [],
+      "warnings": [
+        {
+          "path": "data/workspaces/command_profiles/default_java.json",
+          "reason": "local file differs from target package",
+          "current_sha256": "aff77c7a42a209cfc5180b96bcfcb64cdcfa8c304f934f2cf614b801ca58dc0b",
+          "target_sha256": "e2a9cb740dc726ee0e7128655636116cfeab2fbc48216e8bdef4d566de823b2f"
+        },
+        {
+          "path": "data/workspaces/command_profiles/default_node.json",
+          "reason": "local file differs from target package",
+          "current_sha256": "83d940167338fb2621b416260559f0bd1b23df789b6d116463b50d4db57bd41f",
+          "target_sha256": "468446d7796ebd430d287dfa3eff15fe141a5ce6cdc396cfd9086973565a32c0"
+        },
+        {
+          "path": "data/workspaces/command_profiles/default_python.json",
+          "reason": "local file differs from target package",
+          "current_sha256": "c3058a8069af43dfc95d4313de400f62180b3c65257323c1c3e220c0f9ae076f",
+          "target_sha256": "7987f712f14170eaf2c2b39a997506cfaf9709934e1abe2381084483d306812f"
+        },
+        {
+          "path": "data/workspaces/command_profiles/eidolon.json",
+          "reason": "local file differs from target package",
+          "current_sha256": "5c967d9abbb41f0656d8ec708827f108c9a88df7215f006021da040454fd9277",
+          "target_sha256": "38432d023af14bd8d11523b42d8dc01dda24386d374c5d7586c6eaed8bbc2116"
+        },
+        {
+          "path": "data/workspaces/projects.json",
+          "reason": "local file differs from target package",
+          "current_sha256": "5e9e34b924ed7d80ab1eadd330d68718b3f4f74ab53707817688d24aef0aeac2",
+          "target_sha256": "444cbd84fdda168692bb0afe0641fa3ea5d84e1cdf7599dcb537bf0000df15ec"
+        }
+      ],
+      "generated_artifacts": [
+        "conscious_agent/__pycache__/actions.cpython-311.pyc",
+        "conscious_agent/__pycache__/actions.cpython-313.pyc",
+        "conscious_agent/__pycache__/actions.cpython-314.pyc",
+        "conscious_agent/__pycache__/ai_patch_assistance.cpython-311.pyc",
+        "conscious_agent/__pycache__/ai_patch_assistance.cpython-314.pyc",
+        "conscious_agent/__pycache__/api_server.cpython-311.pyc",
+        "conscious_agent/__pycache__/api_server.cpython-313.pyc",
+        "conscious_agent/__pycache__/api_server.cpython-314.pyc",
+        "conscious_agent/__pycache__/approval_manager.cpython-311.pyc",
+        "conscious_agent/__pycache__/approval_manager.cpython-313.pyc",
+        "conscious_agent/__pycache__/approval_manager.cpython-314.pyc",
+        "conscious_agent/__pycache__/approval_release_workflow.cpython-311.pyc",
+        "conscious_agent/__pycache__/approval_release_workflow.cpython-314.pyc",
+        "conscious_agent/__pycache__/autonomous_dev_cycle.cpython-311.pyc",
+        "conscious_agent/__pycache__/autonomous_dev_cycle.cpython-313.pyc",
+        "conscious_agent/__pycache__/autonomous_dev_cycle.cpython-314.pyc",
+        "conscious_agent/__pycache__/brain.cpython-311.pyc",
+        "conscious_agent/__pycache__/brain.cpython-313.pyc",
+        "conscious_agent/__pycache__/brain.cpython-314.pyc",
+        "conscious_agent/__pycache__/chat.cpython-311.pyc",
+        "conscious_agent/__pycache__/chat.cpython-313.pyc",
+        "conscious_agent/__pycache__/chat.cpython-314.pyc",
+        "conscious_agent/__pycache__/chat_action_router.cpython-311.pyc",
+        "conscious_agent/__pycache__/chat_action_router.cpython-313.pyc",
+        "conscious_agent/__pycache__/chat_action_router.cpython-314.pyc",
+        "conscious_agent/__pycache__/code_patch_release.cpython-311.pyc",
+        "conscious_agent/__pycache__/code_patch_release.cpython-314.pyc",
+        "conscious_agent/__pycache__/code_reviewer.cpython-311.pyc",
+        "conscious_agent/__pycache__/code_reviewer.cpython-313.pyc",
+        "conscious_agent/__pycache__/code_reviewer.cpython-314.pyc",
+        "conscious_agent/__pycache__/command_runner.cpython-311.pyc",
+        "conscious_agent/__pycache__/command_runner.cpython-313.pyc",
+        "conscious_agent/__pycache__/command_runner.cpython-314.pyc",
+        "conscious_agent/__pycache__/controlled_build_cycle.cpython-311.pyc",
+        "conscious_agent/__pycache__/controlled_build_cycle.cpython-314.pyc",
+        "conscious_agent/__pycache__/dashboard.cpython-311.pyc",
+        "conscious_agent/__pycache__/dashboard.cpython-313.pyc",
+        "conscious_agent/__pycache__/dashboard.cpython-314.pyc",
+        "conscious_agent/__pycache__/dashboard_chat_console.cpython-311.pyc",
+        "conscious_agent/__pycache__/dashboard_chat_console.cpython-313.pyc",
+        "conscious_agent/__pycache__/dashboard_chat_console.cpython-314.pyc",
+        "conscious_agent/__pycache__/desires.cpython-311.pyc",
+        "conscious_agent/__pycache__/desires.cpython-313.pyc",
+        "conscious_agent/__pycache__/desires.cpython-314.pyc",
+        "conscious_agent/__pycache__/desktop_notifier.cpython-311.pyc",
+        "conscious_agent/__pycache__/desktop_notifier.cpython-313.pyc",
+        "conscious_agent/__pycache__/desktop_notifier.cpython-314.pyc",
+        "conscious_agent/__pycache__/desktop_onboarding_wizard.cpython-311.pyc",
+        "conscious_agent/__pycache__/desktop_onboarding_wizard.cpython-313.pyc",
+        "conscious_agent/__pycache__/desktop_onboarding_wizard.cpython-314.pyc",
+        "conscious_agent/__pycache__/desktop_setup_helper.cpython-311.pyc",
+        "conscious_agent/__pycache__/desktop_setup_helper.cpython-313.pyc",
+        "conscious_agent/__pycache__/desktop_setup_helper.cpython-314.pyc",
+        "conscious_agent/__pycache__/desktop_shell.cpython-311.pyc",
+        "conscious_agent/__pycache__/desktop_shell.cpython-313.pyc",
+        "conscious_agent/__pycache__/desktop_shell.cpython-314.pyc",
+        "conscious_agent/__pycache__/desktop_tray.cpython-311.pyc",
+        "conscious_agent/__pycache__/desktop_tray.cpython-313.pyc",
+        "conscious_agent/__pycache__/desktop_tray.cpython-314.pyc",
+        "conscious_agent/__pycache__/dev_loop_runner.cpython-311.pyc",
+        "conscious_agent/__pycache__/dev_loop_runner.cpython-313.pyc",
+        "conscious_agent/__pycache__/dev_loop_runner.cpython-314.pyc",
+        "conscious_agent/__pycache__/diagnostics.cpython-311.pyc",
+        "conscious_agent/__pycache__/diagnostics.cpython-313.pyc",
+        "conscious_agent/__pycache__/diagnostics.cpython-314.pyc",
+        "conscious_agent/__pycache__/file_tools.cpython-311.pyc",
+        "conscious_agent/__pycache__/file_tools.cpython-313.pyc",
+        "conscious_agent/__pycache__/file_tools.cpython-314.pyc",
+        "conscious_agent/__pycache__/goal_manager.cpython-311.pyc",
+        "conscious_agent/__pycache__/goal_manager.cpython-313.pyc",
+        "conscious_agent/__pycache__/goal_manager.cpython-314.pyc",
+        "conscious_agent/__pycache__/guided_work_session.cpython-311.pyc",
+        "conscious_agent/__pycache__/guided_work_session.cpython-313.pyc",
+        "conscious_agent/__pycache__/guided_work_session.cpython-314.pyc",
+        "conscious_agent/__pycache__/inner_loop.cpython-311.pyc",
+        "conscious_agent/__pycache__/inner_loop.cpython-313.pyc",
+        "conscious_agent/__pycache__/inner_loop.cpython-314.pyc",
+        "conscious_agent/__pycache__/local_brain.cpython-311.pyc",
+        "conscious_agent/__pycache__/local_brain.cpython-313.pyc",
+        "conscious_agent/__pycache__/local_brain.cpython-314.pyc",
+        "conscious_agent/__pycache__/main.cpython-311.pyc",
+        "conscious_agent/__pycache__/main.cpython-313.pyc",
+        "conscious_agent/__pycache__/main.cpython-314.pyc",
+        "conscious_agent/__pycache__/maintenance_advisor.cpython-311.pyc",
+        "conscious_agent/__pycache__/maintenance_advisor.cpython-313.pyc",
+        "conscious_agent/__pycache__/maintenance_advisor.cpython-314.pyc",
+        "conscious_agent/__pycache__/memory.cpython-311.pyc",
+        "conscious_agent/__pycache__/memory.cpython-313.pyc",
+        "conscious_agent/__pycache__/memory.cpython-314.pyc",
+        "conscious_agent/__pycache__/memory_compactor.cpython-311.pyc",
+        "conscious_agent/__pycache__/memory_compactor.cpython-313.pyc",
+        "conscious_agent/__pycache__/memory_compactor.cpython-314.pyc",
+        "conscious_agent/__pycache__/notification_manager.cpython-311.pyc",
+        "conscious_agent/__pycache__/notification_manager.cpython-313.pyc",
+        "conscious_agent/__pycache__/notification_manager.cpython-314.pyc",
+        "conscious_agent/__pycache__/operational_readiness.cpython-311.pyc",
+        "conscious_agent/__pycache__/operational_readiness.cpython-314.pyc",
+        "conscious_agent/__pycache__/opinions.cpython-311.pyc",
+        "conscious_agent/__pycache__/opinions.cpython-313.pyc",
+        "conscious_agent/__pycache__/opinions.cpython-314.pyc"
+      ],
+      "rows": [
+        {
+          "name": "target-zip",
+          "status": "pass",
+          "message": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip"
+        },
+        {
+          "name": "path-collisions",
+          "status": "pass",
+          "message": "0 blocking collision(s)."
+        },
+        {
+          "name": "local-differences",
+          "status": "warn",
+          "message": "5 warning(s) found."
+        },
+        {
+          "name": "generated-source-artifacts",
+          "status": "warn",
+          "message": "218 pyc artifact(s) under source/tool folders."
+        },
+        {
+          "name": "dry-run-only",
+          "status": "pass",
+          "message": "Collision detection is read-only."
+        }
+      ],
+      "message": "Update collision detector completed.",
+      "preview_only": true
+    },
+    "trial": {
+      "version": "24.0",
+      "checked_at": "2026-06-20T11:05:17",
+      "project_id": "eidolon",
+      "status": "pass",
+      "ok": true,
+      "package_name": "Eidolon_v24_0.zip",
+      "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip",
+      "common_root": "Eidolon",
+      "file_count": 96,
+      "run_smoke_tier": "fast",
+      "manifest_sha256": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d",
+      "trial_root_discarded": "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_trial_upgrade_4wrzev8i\\Eidolon",
+      "steps": {
+        "external_zip": {
+          "version": "24.0",
+          "checked_at": "2026-06-20T11:05:07",
+          "project_id": "eidolon",
+          "status": "pass",
+          "ok": true,
+          "package_name": "Eidolon_v24_0.zip",
+          "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip",
+          "common_root": "Eidolon",
+          "file_count": 96,
+          "violations": [],
+          "rows": [
+            {
+              "name": "zip-present",
+              "status": "pass",
+              "message": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip"
+            },
+            {
+              "name": "zip-member-count",
+              "status": "pass",
+              "message": "96 file member(s) found."
+            },
+            {
+              "name": "zip-root",
+              "status": "pass",
+              "message": "Eidolon"
+            },
+            {
+              "name": "source-files",
+              "status": "pass",
+              "message": "84 Python source file(s) found."
+            },
+            {
+              "name": "privacy-and-paths",
+              "status": "pass",
+              "message": "0 zip path/privacy violation(s)."
+            },
+            {
+              "name": "temp-extract-compile",
+              "status": "pass",
+              "message": "Temporary extract compiled."
+            }
+          ],
+          "compile": {
+            "args": [
+              "C:\\Users\\marcu\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+              "-m",
+              "py_compile",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\actions.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\ai_patch_assistance.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\api_server.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\approval_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\approval_release_workflow.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\autonomous_dev_cycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\brain.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\chat.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\chat_action_router.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\code_patch_release.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\code_reviewer.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\command_runner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\controlled_build_cycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\dashboard.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\dashboard_chat_console.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\desires.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\desktop_notifier.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\desktop_onboarding_wizard.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\desktop_setup_helper.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\desktop_shell.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\desktop_tray.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\dev_loop_runner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\diagnostics.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\file_tools.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\goal_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\guided_work_session.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\inner_loop.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\local_brain.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\main.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\maintenance_advisor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\memory.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\memory_compactor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\notification_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\operational_readiness.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\opinions.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\patch_applier.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\patch_drafting.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\patch_suggester.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\paths.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\planner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\project_indexer.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\project_intelligence.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\project_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\reflection.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\release_installation.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\release_packaging.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\release_pipeline.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\safety.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\self_improver.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\self_maintenance.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\self_model.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\session_planner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\settings_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stabilization_checkpoint.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stable_loop_audit.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stable_loop_decision_report.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stable_loop_followup_completion.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stable_loop_followup_lifecycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stable_loop_followup_tasks.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stable_loop_guardrails.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stable_loop_operator_notes.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stable_loop_review.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\stable_supervised_loop.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\task_approval_bridge.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\task_cycle_policy.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\task_executor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\task_lifecycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\task_patch_bridge.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\task_queue.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\task_recovery.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\task_result_evaluator.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\task_work_executor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\test_report_reviewer.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\test_runner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\validated_ai_patch_loop.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\vector_memory.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\watch_mode.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\work_cycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\work_queue.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\work_queue_executor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\work_queue_patch_bridge.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\workspace_execution.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\conscious_agent\\workspace_orchestration.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_0hm9t9rc\\Eidolon\\tools\\smoke_check.py"
+            ],
+            "returncode": 0,
+            "ok": true,
+            "stdout_tail": "",
+            "stderr_tail": ""
+          },
+          "message": "External release zip install verification completed.",
+          "preview_only": true
+        },
+        "deterministic_manifest": {
+          "version": "24.0",
+          "checked_at": "2026-06-20T11:05:07",
+          "project_id": "eidolon",
+          "status": "pass",
+          "ok": true,
+          "package_name": "Eidolon_v24_0.zip",
+          "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip",
+          "source": "zip",
+          "package_profile": "source-only-zip",
+          "file_count": 96,
+          "excluded_count": null,
+          "manifest_sha256": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d",
+          "entries": [
+            {
+              "path": ".gitignore",
+              "size": 241,
+              "sha256": "7710f9ce2cc19d7579e4ceef49ace76babdd160ac2bd9a446a0a7609207729cc"
+            },
+            {
+              "path": "README_NEXT_STEPS.md",
+              "size": 290844,
+              "sha256": "2a25d8eb794aef2786aaf4330647118b2b308a1fb2844021137f8fd935dc1e8b"
+            },
+            {
+              "path": "conscious_agent/actions.py",
+              "size": 701,
+              "sha256": "9444d5aaf276c21b9c565a105a81e6bc9943bb8d40f531919b41d116f1fc065c"
+            },
+            {
+              "path": "conscious_agent/ai_patch_assistance.py",
+              "size": 39992,
+              "sha256": "074649f7e3bb4a3c2700fc06acc9f21c77380ffefb598e3b75a21f5fc6ced1bc"
+            },
+            {
+              "path": "conscious_agent/api_server.py",
+              "size": 175574,
+              "sha256": "b1aa9ec9604cea740805bf7082785c2ed7d0948a99eb973b9aa19d64e5399ffe"
+            },
+            {
+              "path": "conscious_agent/approval_manager.py",
+              "size": 18611,
+              "sha256": "52fef9feb816408373890a99f3b3670fa6a5309f5ce8a59d232eb337a6d95bb6"
+            },
+            {
+              "path": "conscious_agent/approval_release_workflow.py",
+              "size": 35534,
+              "sha256": "12a36890ee1c4b1d7f4bfcbbef664a7596b0f30f1b34625b75988957cfb19f55"
+            },
+            {
+              "path": "conscious_agent/autonomous_dev_cycle.py",
+              "size": 23019,
+              "sha256": "2095e5b4afde2dc02e112d1e57be16fb31cf9d80a60cb2c8b7fdeb76a687b263"
+            },
+            {
+              "path": "conscious_agent/brain.py",
+              "size": 5185,
+              "sha256": "4d61b27a043f9fb39c22a6d1fd1c7fc31c74f6ac97ac99646cc223da621b639d"
+            },
+            {
+              "path": "conscious_agent/chat.py",
+              "size": 5362,
+              "sha256": "e45b2b662bdb2e686b0c13a324c39bf3a3b61755e909f4c5fa66cbf7e2e2f42c"
+            },
+            {
+              "path": "conscious_agent/chat_action_router.py",
+              "size": 29289,
+              "sha256": "18abc57fc71de897f4139c5cbcb42390bfc7419727ee88925a1a486802e80095"
+            },
+            {
+              "path": "conscious_agent/code_patch_release.py",
+              "size": 37598,
+              "sha256": "e4bbc91dee780200b375d42a462833172044ef42602586d3752950c0efdcc7d8"
+            },
+            {
+              "path": "conscious_agent/code_reviewer.py",
+              "size": 7626,
+              "sha256": "c6f185749b63162537460ec4bfe258d3904f30c5ab05589723fba1c6ab2060fd"
+            },
+            {
+              "path": "conscious_agent/command_runner.py",
+              "size": 28299,
+              "sha256": "8d3461cbc48259f928db67ec7f09f2a142c0b1666a1ed75fc00c95881ae2e3dc"
+            },
+            {
+              "path": "conscious_agent/controlled_build_cycle.py",
+              "size": 46499,
+              "sha256": "06eb6faac31b5669404b4575d2e9bf00f8fb5587310a6fb02a54ff2e11ba7257"
+            },
+            {
+              "path": "conscious_agent/dashboard.py",
+              "size": 208029,
+              "sha256": "cd9da2ab88e0f762450741089c37724e3909eb53178271c85e1c80f5ccb005c0"
+            },
+            {
+              "path": "conscious_agent/dashboard_chat_console.py",
+              "size": 8054,
+              "sha256": "2faf33702420923225fe867e5bbf9cb551d6e44dd252cf1311bdb96326ef3cba"
+            },
+            {
+              "path": "conscious_agent/desires.py",
+              "size": 592,
+              "sha256": "82df4a0662b6766152ec611f96ae4b58edd86dd7526583a5b5f6f0ab27c17b8f"
+            },
+            {
+              "path": "conscious_agent/desktop_notifier.py",
+              "size": 3662,
+              "sha256": "09e7fcf13c196d504de1ba36081c05c9f65f6feace2a683e7694edc3ed083a91"
+            },
+            {
+              "path": "conscious_agent/desktop_onboarding_wizard.py",
+              "size": 20279,
+              "sha256": "96ffbecf44a5dacc3ef4f4501f4c75e5ea5ae45d91a44676deda2062972ada5b"
+            },
+            {
+              "path": "conscious_agent/desktop_setup_helper.py",
+              "size": 22196,
+              "sha256": "bfc7b1c7eb936c597b7613e684b042d43de8938a1d5f63d2a071faf2c4127125"
+            },
+            {
+              "path": "conscious_agent/desktop_shell.py",
+              "size": 36678,
+              "sha256": "7fcf3bc0a46ac1fd641f6ab14963279a6cc127ac6456979452727f4e61230c9f"
+            },
+            {
+              "path": "conscious_agent/desktop_tray.py",
+              "size": 7845,
+              "sha256": "ca5d167898eeb7ebca969563e95ec8701d8024f5e3691725ccf436dcbb627c87"
+            },
+            {
+              "path": "conscious_agent/dev_loop_runner.py",
+              "size": 14746,
+              "sha256": "091fd8b152594931b79eacc5ee5b74ce281a8cb06ebbc510ca13eaf1d995a874"
+            },
+            {
+              "path": "conscious_agent/diagnostics.py",
+              "size": 19934,
+              "sha256": "32db674a0de3ee0c2ce5daef4bc9b7e3973c31eaf3c8468f9fead12192103cd4"
+            },
+            {
+              "path": "conscious_agent/file_tools.py",
+              "size": 7743,
+              "sha256": "411f85bbbaa8ee1a39cdef61c55e3fc939df88ae85e9dfb53f39ac7b80ad0013"
+            },
+            {
+              "path": "conscious_agent/goal_manager.py",
+              "size": 18587,
+              "sha256": "cf4d1ab5fcf5d25682bcc46dde6361fdb62edc4600d7208312a12467630f4d90"
+            },
+            {
+              "path": "conscious_agent/guided_work_session.py",
+              "size": 16675,
+              "sha256": "416185e8baa4d4a3c14916cfbdab5ca55f8fb1db3c1702244098abd8ec216b75"
+            },
+            {
+              "path": "conscious_agent/inner_loop.py",
+              "size": 3154,
+              "sha256": "86246435c9cf895991326f9117c7f0569588f982f7db38bcc271da3f7dc62d7f"
+            },
+            {
+              "path": "conscious_agent/local_brain.py",
+              "size": 4636,
+              "sha256": "e20e07f627a77f07ba7603185784053b14485d0bf6622bb1d50d3631af5cdab0"
+            },
+            {
+              "path": "conscious_agent/main.py",
+              "size": 177802,
+              "sha256": "c9affbd6bacf52f646fccc4b64e15f2a4e7f13220b0654293d84cbdc29cab95a"
+            },
+            {
+              "path": "conscious_agent/maintenance_advisor.py",
+              "size": 19814,
+              "sha256": "d2641dd7d44beb7feed4ade4d01a97f7c09b5f0c7709fdd07b8734bbf49c14eb"
+            },
+            {
+              "path": "conscious_agent/memory.py",
+              "size": 2153,
+              "sha256": "18da358e61ac1d22ee7e0177d68ed65dd9be79720b3ea51926e9bca0e515ff64"
+            },
+            {
+              "path": "conscious_agent/memory_compactor.py",
+              "size": 15080,
+              "sha256": "2d80eb21741f973ebc009a06ee9d56cfdd6450f28bb2377d6de727d573cd53ff"
+            },
+            {
+              "path": "conscious_agent/notification_manager.py",
+              "size": 13335,
+              "sha256": "9c833f7c469434fd383928e93e63cdf3a87a270740bfe4b6faf2d75c0d34bb5a"
+            },
+            {
+              "path": "conscious_agent/operational_readiness.py",
+              "size": 43017,
+              "sha256": "3bdac73e71670636b80086cd465710c524e3ed30b53027a4c37de88934e2dd34"
+            },
+            {
+              "path": "conscious_agent/opinions.py",
+              "size": 1900,
+              "sha256": "8a3691b67ea9b966ba9a4d588f552ba2d33e6d4c9d3e9210cbfbd3f84b627543"
+            },
+            {
+              "path": "conscious_agent/patch_applier.py",
+              "size": 17181,
+              "sha256": "5ed4967c2ade4b11a13c74bbc4539026dbcb854c1fe7562236c2b08f5f5c3fc5"
+            },
+            {
+              "path": "conscious_agent/patch_drafting.py",
+              "size": 75777,
+              "sha256": "e4edd6cc8fd7bb9490fada6af8f98db7ad117f34de1465e374ece596af535061"
+            },
+            {
+              "path": "conscious_agent/patch_suggester.py",
+              "size": 12818,
+              "sha256": "f3596507c5528f750e9f167eab54734d5b364634f64d6d78455fc3cbb0860bae"
+            },
+            {
+              "path": "conscious_agent/paths.py",
+              "size": 347,
+              "sha256": "d725800bc607c71d454b7d123cf9cb92fa397ac972ec5aba268f18dafb97093f"
+            },
+            {
+              "path": "conscious_agent/planner.py",
+              "size": 774,
+              "sha256": "cce761cefd46c80b102c53f9b6b5519e4a3034031b690c9829879b9ab20a7c21"
+            },
+            {
+              "path": "conscious_agent/project_indexer.py",
+              "size": 9476,
+              "sha256": "9a19b027dd8137ae2755b8eb3d952babc7682b74d3c57be11266cb076984b558"
+            },
+            {
+              "path": "conscious_agent/project_intelligence.py",
+              "size": 30535,
+              "sha256": "49e6fa61eb926ae3583fbdda3fda36bb1fd8b84f327036de26a81d7a4c14216f"
+            },
+            {
+              "path": "conscious_agent/project_manager.py",
+              "size": 6710,
+              "sha256": "16b83b111b4fb62849de76c77f2305145c2adb3f0143158a0ca689c742554e96"
+            },
+            {
+              "path": "conscious_agent/reflection.py",
+              "size": 1025,
+              "sha256": "cc394f666ca3f43138cb0aa7523882b8d7fd50ac8a2e8bfa8a5484385e2e7bcd"
+            },
+            {
+              "path": "conscious_agent/release_installation.py",
+              "size": 119002,
+              "sha256": "5a2988405e269026bac535df4a4c60d81aef49660864811097f3274ade434062"
+            },
+            {
+              "path": "conscious_agent/release_packaging.py",
+              "size": 44081,
+              "sha256": "445b5b0bd0ec93953b17808957e404d28af5dd20292597dcc41f580d680ae21a"
+            },
+            {
+              "path": "conscious_agent/release_pipeline.py",
+              "size": 37252,
+              "sha256": "76b95671e5d7d2a2e3bba48eca2bc81d8b168b3a2291c24e393c9d2a730226d2"
+            },
+            {
+              "path": "conscious_agent/safety.py",
+              "size": 205,
+              "sha256": "c9b32c86216387066178d92d3ef2c3041801bb99781796ae3e25806f838b8fd3"
+            },
+            {
+              "path": "conscious_agent/self_improver.py",
+              "size": 17255,
+              "sha256": "248de333c6d439c04bba7626f91a8725eb83f16bb9781c69f81d6d44ccad08c2"
+            },
+            {
+              "path": "conscious_agent/self_maintenance.py",
+              "size": 34231,
+              "sha256": "48f89955d484d40374fc1a2ac6e5dc5b8cad0d4fc8d2345aa9ca0b134821c197"
+            },
+            {
+              "path": "conscious_agent/self_model.py",
+              "size": 1383,
+              "sha256": "77cdad864b0158bb1462ff75c61649e89e1a0eccceaea3fb6b071e2f64d80d02"
+            },
+            {
+              "path": "conscious_agent/session_planner.py",
+              "size": 35996,
+              "sha256": "fb675367f30ecfe7f3756f00ca9c10db0eb67b51d6286426503759d58cf0826e"
+            },
+            {
+              "path": "conscious_agent/settings_manager.py",
+              "size": 16057,
+              "sha256": "c9e0de9ecdeecb3208d4daac9bc2c68043112efb5721793f03906e43f744a89d"
+            },
+            {
+              "path": "conscious_agent/stabilization_checkpoint.py",
+              "size": 28147,
+              "sha256": "8e16630a85e2bce3ae0f4123b13c23627c7d96935e23d81e67d05b542a3e706c"
+            },
+            {
+              "path": "conscious_agent/stable_loop_audit.py",
+              "size": 17086,
+              "sha256": "b03a0804365624477e8119e543ffd824b07364e041d510e19b84f3a9b82832fd"
+            },
+            {
+              "path": "conscious_agent/stable_loop_decision_report.py",
+              "size": 18293,
+              "sha256": "11ffcdb6dd680e93b8600304f2ffed76ab8fe8354e2ce472961c9a2ead3729cb"
+            },
+            {
+              "path": "conscious_agent/stable_loop_followup_completion.py",
+              "size": 20721,
+              "sha256": "257e8686d8dda98457e370986000b8d3f331171d87864bbeabc898fe7118ac64"
+            },
+            {
+              "path": "conscious_agent/stable_loop_followup_lifecycle.py",
+              "size": 18073,
+              "sha256": "12c0fe708a77a996770c0c75c3b4fc36fa82795eb7617b6f08e9b71957af260c"
+            },
+            {
+              "path": "conscious_agent/stable_loop_followup_tasks.py",
+              "size": 22669,
+              "sha256": "6836e62750d306523ce7bf305e02c13289c56ca4e9dbe5f0c3cac603289e41f9"
+            },
+            {
+              "path": "conscious_agent/stable_loop_guardrails.py",
+              "size": 7640,
+              "sha256": "a6697bb94883bd8d8968dec45bb8da1cec6260ec74b9095da08073e407e8d415"
+            },
+            {
+              "path": "conscious_agent/stable_loop_operator_notes.py",
+              "size": 16980,
+              "sha256": "91b4e52b871030c8f3860ec34315bb0b7bae353edabfc904bea436fe9d0db9aa"
+            },
+            {
+              "path": "conscious_agent/stable_loop_review.py",
+              "size": 23273,
+              "sha256": "a2c9c0244d01791d94607a5352d32a17ac30c24ef2fc12188046ebd1e5a1647e"
+            },
+            {
+              "path": "conscious_agent/stable_supervised_loop.py",
+              "size": 22731,
+              "sha256": "b7e4ab7a633c6c753aca8ac211e35e350fe2a257b95d025806f4600d97075267"
+            },
+            {
+              "path": "conscious_agent/task_approval_bridge.py",
+              "size": 9460,
+              "sha256": "884cafc54e8b3550f5f38513b358e10972c7060ec1212f00af604c1f2fb4fd71"
+            },
+            {
+              "path": "conscious_agent/task_cycle_policy.py",
+              "size": 16766,
+              "sha256": "69e37012564eac18a8f4827d6cb0a26def703342ac374de937b4642f71355391"
+            },
+            {
+              "path": "conscious_agent/task_executor.py",
+              "size": 10078,
+              "sha256": "6703cfce0b1727b7ef8dd95558e8b5b4ee58714f2972b47b2cbaa599e0e712f8"
+            },
+            {
+              "path": "conscious_agent/task_lifecycle.py",
+              "size": 15702,
+              "sha256": "b46f4dbadc05a5b1acd1f473eeed23521442b9d3ae8fc191f5cef13f1f4f0580"
+            },
+            {
+              "path": "conscious_agent/task_patch_bridge.py",
+              "size": 18583,
+              "sha256": "898accc7abc877b45ba5e0c8742d52fbc8b858699fedae59481581a1869b54a4"
+            },
+            {
+              "path": "conscious_agent/task_queue.py",
+              "size": 28768,
+              "sha256": "339c9ff72aab6bc4f3b5d0e3e965d37652ee1addd3f94524786ebfda1ffe4c0e"
+            },
+            {
+              "path": "conscious_agent/task_recovery.py",
+              "size": 20587,
+              "sha256": "fc8b70262e60292e4d70aeb4410dee0f54bce857d02c5bafae8f864cab9a61e4"
+            },
+            {
+              "path": "conscious_agent/task_result_evaluator.py",
+              "size": 17588,
+              "sha256": "164552bd40ec8f247d7848939c3e01667f9b1b4d24dac4a89e3cb23d5822635d"
+            },
+            {
+              "path": "conscious_agent/task_work_executor.py",
+              "size": 23317,
+              "sha256": "27caba474b8e815aea18720be08be1aac0ad26d9438e2a6db321ffb0fb617de9"
+            },
+            {
+              "path": "conscious_agent/test_report_reviewer.py",
+              "size": 18326,
+              "sha256": "921f84faa2bf3e5a2855c3346fed5bd3fb50a56ff917c5af5f9343a614b07b50"
+            },
+            {
+              "path": "conscious_agent/test_runner.py",
+              "size": 12292,
+              "sha256": "554e7664e4d36af71079e8d0b3cc7fc835d82120e7842d50ba2a7a55eb73a1db"
+            },
+            {
+              "path": "conscious_agent/validated_ai_patch_loop.py",
+              "size": 39508,
+              "sha256": "438a07a5140b3b7aee88b0360449f43d7c251a5458254652427b23130c57b264"
+            },
+            {
+              "path": "conscious_agent/vector_memory.py",
+              "size": 4340,
+              "sha256": "e53870d3cc3c10e01344bd760c85c4d7199cab9075e84b0684961a3963026446"
+            },
+            {
+              "path": "conscious_agent/watch_mode.py",
+              "size": 23798,
+              "sha256": "6552e83fcb988620abc9f2241b0bcbed0e253fff6d0b414d5b3d39e174af405b"
+            },
+            {
+              "path": "conscious_agent/work_cycle.py",
+              "size": 20654,
+              "sha256": "fba649e32867228bff1f882f5948c31f6044dd7528fe19a23c045cc1e3b64557"
+            },
+            {
+              "path": "conscious_agent/work_queue.py",
+              "size": 22182,
+              "sha256": "ff8250618091859d1c59c43c005ae705bc1151be0d04d13d438d66bfc823ea04"
+            },
+            {
+              "path": "conscious_agent/work_queue_executor.py",
+              "size": 1031,
+              "sha256": "df2180197c9a82fc58e172f6701bde529bce1df02ea7589d85765dfe1a2923a8"
+            },
+            {
+              "path": "conscious_agent/work_queue_patch_bridge.py",
+              "size": 3335,
+              "sha256": "a974e66feeb9fff3e6e19193fdae47020e00aaea6c22869d20dfe391953c3ec9"
+            },
+            {
+              "path": "conscious_agent/workspace_execution.py",
+              "size": 27415,
+              "sha256": "c225708e9db6cb12cdbb27503ce0448582499962ed200fc24bf832d8b07aa6fc"
+            },
+            {
+              "path": "conscious_agent/workspace_orchestration.py",
+              "size": 32262,
+              "sha256": "44b79aec5afe7ac1efdec6b7d7d22918cb165de2d227e3d1a84e8bd0d803c425"
+            },
+            {
+              "path": "data/projects.json",
+              "size": 28839,
+              "sha256": "521a35470ab8ea669dd877270b6c02cbb3a2282398733910ed1559216261121b"
+            },
+            {
+              "path": "data/settings.json",
+              "size": 2136,
+              "sha256": "3241fcf7f8900ae32abf20cf0dbc43463d99f7c156e22ad0bf9a58e4edab719e"
+            },
+            {
+              "path": "data/workspaces/active_project.json",
+              "size": 194,
+              "sha256": "9eefe76775188c769f1f87ba8ed6fb6577acdc6b21df1118b6098b5f079bc5ac"
+            },
+            {
+              "path": "data/workspaces/command_profiles/default_java.json",
+              "size": 466,
+              "sha256": "e2a9cb740dc726ee0e7128655636116cfeab2fbc48216e8bdef4d566de823b2f"
+            },
+            {
+              "path": "data/workspaces/command_profiles/default_node.json",
+              "size": 472,
+              "sha256": "468446d7796ebd430d287dfa3eff15fe141a5ce6cdc396cfd9086973565a32c0"
+            },
+            {
+              "path": "data/workspaces/command_profiles/default_python.json",
+              "size": 478,
+              "sha256": "7987f712f14170eaf2c2b39a997506cfaf9709934e1abe2381084483d306812f"
+            },
+            {
+              "path": "data/workspaces/command_profiles/eidolon.json",
+              "size": 836,
+              "sha256": "38432d023af14bd8d11523b42d8dc01dda24386d374c5d7586c6eaed8bbc2116"
+            },
+            {
+              "path": "data/workspaces/projects.json",
+              "size": 1120,
+              "sha256": "444cbd84fdda168692bb0afe0641fa3ea5d84e1cdf7599dcb537bf0000df15ec"
+            },
+            {
+              "path": "requirements.txt",
+              "size": 33,
+              "sha256": "e791f11a7e84322b2cfdd44064e46a9dea2f543fa3d0396f9a1417a4e56a214d"
+            },
+            {
+              "path": "setup.ps1",
+              "size": 852,
+              "sha256": "76c912dd98f6841d9e37e037d8812f483352725669f1bb0d0a666cba3558fadc"
+            },
+            {
+              "path": "tools/smoke_check.py",
+              "size": 48888,
+              "sha256": "e9e1005260e4375ca61ccb5c96ed7adbab27c72cc7cfcf08d31de7e85e6db656"
+            }
+          ],
+          "rows": [
+            {
+              "name": "manifest-source",
+              "status": "pass",
+              "message": "zip"
+            },
+            {
+              "name": "file-count",
+              "status": "pass",
+              "message": "96 file(s) are bound to the deterministic manifest."
+            },
+            {
+              "name": "manifest-hash",
+              "status": "pass",
+              "message": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d"
+            },
+            {
+              "name": "sorted",
+              "status": "pass",
+              "message": "Manifest entries are path-sorted."
+            }
+          ],
+          "message": "Deterministic release manifest generated.",
+          "preview_only": true
+        },
+        "clean_room": {
+          "version": "24.0",
+          "checked_at": "2026-06-20T11:05:16",
+          "project_id": "eidolon",
+          "status": "pass",
+          "ok": true,
+          "package_name": "Eidolon_v24_0.zip",
+          "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip",
+          "run_smoke_tier": "fast",
+          "rows": [
+            {
+              "name": "target-zip",
+              "status": "pass",
+              "message": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip"
+            },
+            {
+              "name": "compile",
+              "status": "pass",
+              "message": "Clean-room compile passed."
+            },
+            {
+              "name": "version-import",
+              "status": "pass",
+              "message": "24.0 24.0"
+            },
+            {
+              "name": "first-run",
+              "status": "pass",
+              "message": "First-run check completed."
+            },
+            {
+              "name": "smoke",
+              "status": "pass",
+              "message": "Smoke tier fast completed."
+            }
+          ],
+          "compile": {
+            "args": [
+              "C:\\Users\\marcu\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+              "-m",
+              "py_compile",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\actions.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\ai_patch_assistance.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\api_server.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\approval_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\approval_release_workflow.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\autonomous_dev_cycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\brain.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\chat.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\chat_action_router.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\code_patch_release.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\code_reviewer.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\command_runner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\controlled_build_cycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\dashboard.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\dashboard_chat_console.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\desires.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\desktop_notifier.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\desktop_onboarding_wizard.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\desktop_setup_helper.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\desktop_shell.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\desktop_tray.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\dev_loop_runner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\diagnostics.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\file_tools.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\goal_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\guided_work_session.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\inner_loop.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\local_brain.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\main.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\maintenance_advisor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\memory.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\memory_compactor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\notification_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\operational_readiness.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\opinions.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\patch_applier.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\patch_drafting.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\patch_suggester.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\paths.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\planner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\project_indexer.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\project_intelligence.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\project_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\reflection.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\release_installation.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\release_packaging.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\release_pipeline.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\safety.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\self_improver.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\self_maintenance.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\self_model.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\session_planner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\settings_manager.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stabilization_checkpoint.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stable_loop_audit.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stable_loop_decision_report.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stable_loop_followup_completion.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stable_loop_followup_lifecycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stable_loop_followup_tasks.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stable_loop_guardrails.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stable_loop_operator_notes.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stable_loop_review.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\stable_supervised_loop.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\task_approval_bridge.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\task_cycle_policy.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\task_executor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\task_lifecycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\task_patch_bridge.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\task_queue.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\task_recovery.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\task_result_evaluator.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\task_work_executor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\test_report_reviewer.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\test_runner.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\validated_ai_patch_loop.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\vector_memory.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\watch_mode.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\work_cycle.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\work_queue.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\work_queue_executor.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\work_queue_patch_bridge.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\workspace_execution.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\conscious_agent\\workspace_orchestration.py",
+              "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_clean_install_qthxz3fz\\Eidolon\\tools\\smoke_check.py"
+            ],
+            "returncode": 0,
+            "ok": true,
+            "stdout_tail": "",
+            "stderr_tail": ""
+          },
+          "version_import": {
+            "args": [
+              "C:\\Users\\marcu\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+              "-c",
+              "import sys; sys.path.insert(0, 'conscious_agent'); import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+            ],
+            "returncode": 0,
+            "ok": true,
+            "stdout_tail": "24.0 24.0\n",
+            "stderr_tail": ""
+          },
+          "first_run": {
+            "args": [
+              "C:\\Users\\marcu\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+              "conscious_agent/main.py",
+              "--first-run-check",
+              "--readiness-json"
+            ],
+            "returncode": 0,
+            "ok": true,
+            "stdout_tail": "pdated_for=v24.0\"\n      },\n      {\n        \"name\": \"project-root-portable\",\n        \"status\": \"pass\",\n        \"message\": \"project root=. should resolve from ROOT_DIR.\"\n      },\n      {\n        \"name\": \"readme-path\",\n        \"status\": \"pass\",\n        \"message\": \"README path resolves inside the package.\"\n      },\n      {\n        \"name\": \"command-profiles\",\n        \"status\": \"pass\",\n        \"message\": \"4 command profile file(s) found.\"\n      },\n      {\n        \"name\": \"no-absolute-paths\",\n        \"status\": \"pass\",\n        \"message\": \"Workspace metadata should not contain /mnt/data or hard-coded user roots.\"\n      }\n    ],\n    \"message\": \"Portable workspace metadata check completed.\",\n    \"preview_only\": true\n  },\n  \"recommended_first_commands\": [\n    \"pip install -r requirements.txt\",\n    \"python conscious_agent/main.py --first-run-check\",\n    \"python conscious_agent/main.py --doctor\",\n    \"python conscious_agent/main.py --dashboard\"\n  ],\n  \"message\": \"First-run setup check completed.\"\n}\n",
+            "stderr_tail": ""
+          },
+          "smoke": {
+            "args": [
+              "C:\\Users\\marcu\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+              "-u",
+              "tools/smoke_check.py",
+              "--tier",
+              "fast",
+              "--json"
+            ],
+            "returncode": 0,
+            "ok": true,
+            "stdout_tail": "      \"name\": \"lifecycle-filters\",\n      \"tier\": \"fast\",\n      \"status\": \"pass\",\n      \"ok\": true,\n      \"elapsed_seconds\": 0.001,\n      \"timeout_seconds\": 20,\n      \"mode\": \"in-process\"\n    },\n    {\n      \"name\": \"import-task-recovery\",\n      \"tier\": \"fast\",\n      \"status\": \"pass\",\n      \"ok\": true,\n      \"elapsed_seconds\": 0.007,\n      \"timeout_seconds\": 15,\n      \"mode\": \"in-process\"\n    },\n    {\n      \"name\": \"task-recovery\",\n      \"tier\": \"fast\",\n      \"status\": \"pass\",\n      \"ok\": true,\n      \"elapsed_seconds\": 0.001,\n      \"timeout_seconds\": 20,\n      \"mode\": \"in-process\"\n    },\n    {\n      \"name\": \"import-task-cycle-policy\",\n      \"tier\": \"fast\",\n      \"status\": \"pass\",\n      \"ok\": true,\n      \"elapsed_seconds\": 0.003,\n      \"timeout_seconds\": 15,\n      \"mode\": \"in-process\"\n    },\n    {\n      \"name\": \"cycle-policy\",\n      \"tier\": \"fast\",\n      \"status\": \"pass\",\n      \"ok\": true,\n      \"elapsed_seconds\": 0.001,\n      \"timeout_seconds\": 20,\n      \"mode\": \"in-process\"\n    }\n  ]\n}\n",
+            "stderr_tail": ""
+          },
+          "message": "Clean-room install harness completed.",
+          "preview_only": true
+        },
+        "update_dry_run_plan": {
+          "version": "24.0",
+          "checked_at": "2026-06-20T11:05:17",
+          "project_id": "eidolon",
+          "status": "pass",
+          "ok": true,
+          "dry_run": true,
+          "package_name": "Eidolon_v24_0.zip",
+          "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip",
+          "install_root": "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_trial_upgrade_4wrzev8i\\Eidolon",
+          "manifest_sha256": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d",
+          "new_files": [],
+          "changed_files": [],
+          "unchanged_files": [
+            ".gitignore",
+            "README_NEXT_STEPS.md",
+            "conscious_agent/actions.py",
+            "conscious_agent/ai_patch_assistance.py",
+            "conscious_agent/api_server.py",
+            "conscious_agent/approval_manager.py",
+            "conscious_agent/approval_release_workflow.py",
+            "conscious_agent/autonomous_dev_cycle.py",
+            "conscious_agent/brain.py",
+            "conscious_agent/chat.py",
+            "conscious_agent/chat_action_router.py",
+            "conscious_agent/code_patch_release.py",
+            "conscious_agent/code_reviewer.py",
+            "conscious_agent/command_runner.py",
+            "conscious_agent/controlled_build_cycle.py",
+            "conscious_agent/dashboard.py",
+            "conscious_agent/dashboard_chat_console.py",
+            "conscious_agent/desires.py",
+            "conscious_agent/desktop_notifier.py",
+            "conscious_agent/desktop_onboarding_wizard.py",
+            "conscious_agent/desktop_setup_helper.py",
+            "conscious_agent/desktop_shell.py",
+            "conscious_agent/desktop_tray.py",
+            "conscious_agent/dev_loop_runner.py",
+            "conscious_agent/diagnostics.py",
+            "conscious_agent/file_tools.py",
+            "conscious_agent/goal_manager.py",
+            "conscious_agent/guided_work_session.py",
+            "conscious_agent/inner_loop.py",
+            "conscious_agent/local_brain.py",
+            "conscious_agent/main.py",
+            "conscious_agent/maintenance_advisor.py",
+            "conscious_agent/memory.py",
+            "conscious_agent/memory_compactor.py",
+            "conscious_agent/notification_manager.py",
+            "conscious_agent/operational_readiness.py",
+            "conscious_agent/opinions.py",
+            "conscious_agent/patch_applier.py",
+            "conscious_agent/patch_drafting.py",
+            "conscious_agent/patch_suggester.py",
+            "conscious_agent/paths.py",
+            "conscious_agent/planner.py",
+            "conscious_agent/project_indexer.py",
+            "conscious_agent/project_intelligence.py",
+            "conscious_agent/project_manager.py",
+            "conscious_agent/reflection.py",
+            "conscious_agent/release_installation.py",
+            "conscious_agent/release_packaging.py",
+            "conscious_agent/release_pipeline.py",
+            "conscious_agent/safety.py",
+            "conscious_agent/self_improver.py",
+            "conscious_agent/self_maintenance.py",
+            "conscious_agent/self_model.py",
+            "conscious_agent/session_planner.py",
+            "conscious_agent/settings_manager.py",
+            "conscious_agent/stabilization_checkpoint.py",
+            "conscious_agent/stable_loop_audit.py",
+            "conscious_agent/stable_loop_decision_report.py",
+            "conscious_agent/stable_loop_followup_completion.py",
+            "conscious_agent/stable_loop_followup_lifecycle.py",
+            "conscious_agent/stable_loop_followup_tasks.py",
+            "conscious_agent/stable_loop_guardrails.py",
+            "conscious_agent/stable_loop_operator_notes.py",
+            "conscious_agent/stable_loop_review.py",
+            "conscious_agent/stable_supervised_loop.py",
+            "conscious_agent/task_approval_bridge.py",
+            "conscious_agent/task_cycle_policy.py",
+            "conscious_agent/task_executor.py",
+            "conscious_agent/task_lifecycle.py",
+            "conscious_agent/task_patch_bridge.py",
+            "conscious_agent/task_queue.py",
+            "conscious_agent/task_recovery.py",
+            "conscious_agent/task_result_evaluator.py",
+            "conscious_agent/task_work_executor.py",
+            "conscious_agent/test_report_reviewer.py",
+            "conscious_agent/test_runner.py",
+            "conscious_agent/validated_ai_patch_loop.py",
+            "conscious_agent/vector_memory.py",
+            "conscious_agent/watch_mode.py",
+            "conscious_agent/work_cycle.py",
+            "conscious_agent/work_queue.py",
+            "conscious_agent/work_queue_executor.py",
+            "conscious_agent/work_queue_patch_bridge.py",
+            "conscious_agent/workspace_execution.py",
+            "conscious_agent/workspace_orchestration.py",
+            "data/projects.json",
+            "data/settings.json",
+            "data/workspaces/active_project.json",
+            "data/workspaces/command_profiles/default_java.json",
+            "data/workspaces/command_profiles/default_node.json",
+            "data/workspaces/command_profiles/default_python.json",
+            "data/workspaces/command_profiles/eidolon.json",
+            "data/workspaces/projects.json",
+            "requirements.txt",
+            "setup.ps1",
+            "tools/smoke_check.py"
+          ],
+          "removed_files": [],
+          "rows": [
+            {
+              "name": "target-zip",
+              "status": "pass",
+              "message": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip"
+            },
+            {
+              "name": "manifest-hash",
+              "status": "pass",
+              "message": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d"
+            },
+            {
+              "name": "new-files",
+              "status": "pass",
+              "message": "0"
+            },
+            {
+              "name": "changed-files",
+              "status": "pass",
+              "message": "0"
+            },
+            {
+              "name": "removed-files",
+              "status": "pass",
+              "message": "0 current source file(s) are absent from the target package; dry-run only."
+            },
+            {
+              "name": "dry-run-pointer-safety",
+              "status": "pass",
+              "message": "Dry-run does not write apply or rollback pointers."
+            }
+          ],
+          "message": "Update dry-run plan completed without applying changes.",
+          "preview_only": true
+        }
+      },
+      "blocked_steps": [],
+      "rows": [
+        {
+          "name": "target-zip",
+          "status": "pass",
+          "message": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v24_0.zip"
+        },
+        {
+          "name": "external-zip-verification",
+          "status": "pass",
+          "message": "External release zip install verification completed."
+        },
+        {
+          "name": "deterministic-manifest",
+          "status": "pass",
+          "message": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d"
+        },
+        {
+          "name": "clean-room-install",
+          "status": "pass",
+          "message": "Clean-room install harness completed."
+        },
+        {
+          "name": "temp-upgrade-dry-run",
+          "status": "pass",
+          "message": "Update dry-run plan completed without applying changes."
+        },
+        {
+          "name": "no-op-upgrade-match",
+          "status": "pass",
+          "message": "new=0 changed=0 removed=0; a zip compared with its own temp install should be a no-op."
+        },
+        {
+          "name": "rollback-metadata-preview",
+          "status": "pass",
+          "message": "Rollback metadata would be bound to the exact manifest during live apply; trial mode writes no rollback pointer."
+        },
+        {
+          "name": "runtime-preservation",
+          "status": "pass",
+          "message": "0 source-only/privacy violation(s); private runtime data remains outside the temp trial."
+        },
+        {
+          "name": "live-apply-safety",
+          "status": "pass",
+          "message": "Trial harness performs no live source update and does not modify real apply/rollback pointers."
+        }
+      ],
+      "message": "Trial upgrade harness completed a temp clean install plus no-op update rehearsal from the release zip.",
+      "preview_only": true
+    }
+  },
+  "rows": [
+    {
+      "name": "manifest-present",
+      "status": "pass",
+      "message": "6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d"
+    },
+    {
+      "name": "manifest-match",
+      "status": "pass",
+      "message": "expected=6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d actual=6881c719a43c798a09f37d882fd9bfad70d775ae4417c83615b646e76dd4504d"
+    },
+    {
+      "name": "confirmation-phrase",
+      "status": "pass",
+      "message": "Required phrase: APPLY EXACT REVIEWED RELEASE"
+    },
+    {
+      "name": "collision-detector",
+      "status": "pass",
+      "message": "Update collision detector completed."
+    },
+    {
+      "name": "recent-trial",
+      "status": "pass",
+      "message": "Trial upgrade harness completed a temp clean install plus no-op update rehearsal from the release zip."
+    },
+    {
+      "name": "dry-run-pointer-safety",
+      "status": "pass",
+      "message": "Guard report is read-only and writes no apply pointer."
+    }
+  ],
+  "message": "Real apply guard rails evaluated."
+}

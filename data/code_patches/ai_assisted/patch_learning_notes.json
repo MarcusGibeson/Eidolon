@@ -1,0 +1,104 @@
+{
+  "version": "17.0",
+  "checked_at": "2026-06-20T01:57:55",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "notes": [
+    {
+      "created_at": "2026-06-20T00:52:33",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "context mismatch",
+      "recommended_future_constraint": "Check for context mismatch before approval.",
+      "details": "Detected signals for context mismatch."
+    },
+    {
+      "created_at": "2026-06-20T00:52:33",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "symbol missing",
+      "recommended_future_constraint": "Check for symbol missing before approval.",
+      "details": "Detected signals for symbol missing."
+    },
+    {
+      "created_at": "2026-06-20T00:52:33",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "compile failure",
+      "recommended_future_constraint": "Check for compile failure before approval.",
+      "details": "Detected signals for compile failure."
+    },
+    {
+      "created_at": "2026-06-20T00:52:33",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "dashboard import failure",
+      "recommended_future_constraint": "Check for dashboard import failure before approval.",
+      "details": "Detected signals for dashboard import failure."
+    },
+    {
+      "created_at": "2026-06-20T00:52:33",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "API safety failure",
+      "recommended_future_constraint": "Check for API safety failure before approval.",
+      "details": "Detected signals for API safety failure."
+    },
+    {
+      "created_at": "2026-06-20T00:52:33",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "README gate failure",
+      "recommended_future_constraint": "Check for README gate failure before approval.",
+      "details": "Detected signals for README gate failure."
+    },
+    {
+      "created_at": "2026-06-20T00:52:33",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "approval mismatch",
+      "recommended_future_constraint": "Check for approval mismatch before approval.",
+      "details": "Detected signals for approval mismatch."
+    },
+    {
+      "created_at": "2026-06-20T00:52:33",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "rollback unavailable",
+      "recommended_future_constraint": "Check for rollback unavailable before approval.",
+      "details": "Detected signals for rollback unavailable."
+    },
+    {
+      "created_at": "2026-06-20T00:52:33",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "environment warning",
+      "recommended_future_constraint": "Check for environment warning before approval.",
+      "details": "Detected signals for environment warning."
+    },
+    {
+      "created_at": "2026-06-20T00:58:24",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "approval mismatch",
+      "recommended_future_constraint": "Check for approval mismatch before approval.",
+      "details": "Detected active signal(s) for approval mismatch."
+    },
+    {
+      "created_at": "2026-06-20T00:58:24",
+      "project_id": "eidolon",
+      "source": "failure_analysis",
+      "failure_class": "rollback unavailable",
+      "recommended_future_constraint": "Check for rollback unavailable before approval.",
+      "details": "Detected active signal(s) for rollback unavailable."
+    },
+    {
+      "created_at": "2026-06-20T01:57:55",
+      "project_id": "eidolon",
+      "source": "human",
+      "note": "v19 approval-to-release loop recorded review/apply state."
+    }
+  ],
+  "message": "Stored 12 generated-patch learning note(s)."
+}

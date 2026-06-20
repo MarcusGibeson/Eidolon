@@ -1,0 +1,61 @@
+{
+  "version": "18.0",
+  "checked_at": "2026-06-20T01:27:23",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "failure_classes": [
+    "approval mismatch",
+    "rollback unavailable"
+  ],
+  "safe_retry_strategy": [
+    {
+      "action": "add_prompt_constraint",
+      "status": "warn",
+      "message": "Add future constraint for approval mismatch."
+    },
+    {
+      "action": "add_prompt_constraint",
+      "status": "warn",
+      "message": "Add future constraint for rollback unavailable."
+    }
+  ],
+  "files_to_avoid": [
+    "conscious_agent/command_runner.py unless safety intent is explicit",
+    "data/workspaces/projects.json unless registry work is explicit"
+  ],
+  "tests_to_add": [
+    {
+      "kind": "compile",
+      "status": "pass",
+      "command": "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+      "reason": "basic syntax/import coverage"
+    },
+    {
+      "kind": "smoke",
+      "status": "pass",
+      "command": "python tools/smoke_check.py",
+      "reason": "core regression coverage"
+    },
+    {
+      "kind": "semantic",
+      "status": "pass",
+      "command": "python conscious_agent/main.py --semantic-checks",
+      "reason": "approval, rollback, dry-run, and GET/POST safety markers"
+    }
+  ],
+  "human_review_required": true,
+  "rows": [
+    {
+      "action": "add_prompt_constraint",
+      "status": "warn",
+      "message": "Add future constraint for approval mismatch."
+    },
+    {
+      "action": "add_prompt_constraint",
+      "status": "warn",
+      "message": "Add future constraint for rollback unavailable."
+    }
+  ],
+  "message": "Patch recovery plan created from validation, simulation, and failure analysis artifacts."
+}

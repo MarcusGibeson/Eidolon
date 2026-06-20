@@ -1,0 +1,26 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:18:22",
+  "project_id": "eidolon",
+  "stage": "v29.9",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "name": "api-tokens",
+      "status": "pass",
+      "message": "missing=none"
+    },
+    {
+      "name": "get-read-only",
+      "status": "pass",
+      "message": "v29.9 signing endpoints are inspection-only GET routes."
+    },
+    {
+      "name": "future-signing-boundary",
+      "status": "pass",
+      "message": "Any future real signing action must be POST-only and confirmation-gated."
+    }
+  ],
+  "message": "API signing status check completed."
+}

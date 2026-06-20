@@ -1,0 +1,77 @@
+{
+  "version": "27.0",
+  "checked_at": "2026-06-20T12:48:00",
+  "project_id": "eidolon",
+  "stage": "v26.3",
+  "status": "pass",
+  "ok": true,
+  "before_path": null,
+  "after_path": null,
+  "changes": [
+    {
+      "name": "api-defaults",
+      "before": null,
+      "after": "pass",
+      "changed": true
+    },
+    {
+      "name": "approval-contract",
+      "before": null,
+      "after": "pass",
+      "changed": true
+    },
+    {
+      "name": "console",
+      "before": null,
+      "after": "pass",
+      "changed": true
+    },
+    {
+      "name": "nested-severity",
+      "before": null,
+      "after": "pass",
+      "changed": true
+    },
+    {
+      "name": "readme-latest",
+      "before": null,
+      "after": "pass",
+      "changed": true
+    },
+    {
+      "name": "route-coverage",
+      "before": null,
+      "after": "pass",
+      "changed": true
+    },
+    {
+      "name": "synthetic",
+      "before": "warn",
+      "after": null,
+      "changed": true
+    }
+  ],
+  "rows": [
+    {
+      "name": "snapshot-before",
+      "status": "pass",
+      "message": "synthetic-before"
+    },
+    {
+      "name": "snapshot-after",
+      "status": "pass",
+      "message": "a6d05e3d06df37284faf1d5cf16392427a0c418277df84eb885e64c4b86a9e40"
+    },
+    {
+      "name": "changed-rows",
+      "status": "pass",
+      "message": "7 row(s) changed."
+    },
+    {
+      "name": "hidden-blocks",
+      "status": "pass",
+      "message": "0 blocked row(s) disappeared without an explicit after status."
+    }
+  ],
+  "message": "Trust console snapshot diff completed."
+}

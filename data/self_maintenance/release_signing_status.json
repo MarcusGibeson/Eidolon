@@ -1,0 +1,33 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:21:38",
+  "project_id": "eidolon",
+  "stage": "v29.4",
+  "status": "warn",
+  "ok": true,
+  "package_name": "Eidolon_v30_0.zip",
+  "zip_path": null,
+  "package_sha256": null,
+  "signed": false,
+  "signing_status": "unsigned",
+  "signing_ready": true,
+  "reason": "No cryptographic signature or key policy is configured yet.",
+  "rows": [
+    {
+      "name": "signed",
+      "status": "warn",
+      "message": "signed=false; package is unsigned"
+    },
+    {
+      "name": "signing-ready",
+      "status": "pass",
+      "message": "Signing readiness audit completed; artifacts remain unsigned."
+    },
+    {
+      "name": "package-hash",
+      "status": "pass",
+      "message": "zip not supplied"
+    }
+  ],
+  "message": "Release signing status reported as unsigned."
+}

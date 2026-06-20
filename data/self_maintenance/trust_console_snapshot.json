@@ -1,0 +1,226 @@
+{
+  "version": "27.0",
+  "checked_at": "2026-06-20T12:47:56",
+  "project_id": "eidolon",
+  "stage": "v26.2",
+  "status": "pass",
+  "ok": true,
+  "current_version": "27.0",
+  "package_name": "Eidolon_v27_0.zip",
+  "zip_path": null,
+  "latest_readme_heading": "Eidolon v27.0 - Release Candidate Governance System",
+  "verification_commands": [
+    "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+    "PYTHONPATH=conscious_agent python -c \"import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)\"",
+    "python conscious_agent/main.py --trustworthy-maintenance-console --readiness-json",
+    "python conscious_agent/main.py --trust-console-drill --readiness-json",
+    "python -u tools/smoke_check.py --tier install --json"
+  ],
+  "steps": {
+    "route": {
+      "version": "27.0",
+      "stage": "v25.2",
+      "status": "pass",
+      "ok": true,
+      "message": "Dashboard route coverage auditor completed.",
+      "rows": [
+        {
+          "name": "nav-path-count",
+          "status": "pass",
+          "message": "Found 31 dashboard navigation path(s)."
+        },
+        {
+          "name": "router-path-count",
+          "status": "pass",
+          "message": "Found 34 dashboard router path(s)."
+        },
+        {
+          "name": "nav-routes-covered",
+          "status": "pass",
+          "message": "Missing router path(s): none."
+        },
+        {
+          "name": "release-package-route",
+          "status": "pass",
+          "message": "/release-package remains route-covered."
+        }
+      ],
+      "row_count": 4
+    },
+    "defaults": {
+      "version": "27.0",
+      "stage": "v25.3",
+      "status": "pass",
+      "ok": true,
+      "message": "API default source-of-truth audit completed.",
+      "rows": [
+        {
+          "name": "no-hardcoded-package-literals",
+          "status": "pass",
+          "message": "Hardcoded package literal matches: none."
+        },
+        {
+          "name": "api-uses-package-helper",
+          "status": "pass",
+          "message": "api_server.py uses _package_name() 61 time(s)."
+        },
+        {
+          "name": "current-helper-package",
+          "status": "pass",
+          "message": "Current helper resolves package name as Eidolon_v27_0.zip."
+        }
+      ],
+      "row_count": 3,
+      "package_name": "Eidolon_v27_0.zip"
+    },
+    "severity": {
+      "version": "27.0",
+      "stage": "v25.4",
+      "status": "pass",
+      "ok": true,
+      "message": "Nested readiness severity engine checks completed.",
+      "rows": [
+        {
+          "name": "all-pass",
+          "status": "pass",
+          "message": "expected=pass actual=pass"
+        },
+        {
+          "name": "warn-inside-pass",
+          "status": "pass",
+          "message": "expected=warn actual=warn"
+        },
+        {
+          "name": "blocked-beats-warn",
+          "status": "pass",
+          "message": "expected=blocked actual=blocked"
+        },
+        {
+          "name": "failed-beats-pass",
+          "status": "pass",
+          "message": "expected=blocked actual=blocked"
+        },
+        {
+          "name": "ok-true-does-not-erase-warn",
+          "status": "pass",
+          "message": "expected=warn actual=warn"
+        },
+        {
+          "name": "warn-ok-contract",
+          "status": "pass",
+          "message": "warn remains ok=True but status remains warn."
+        }
+      ],
+      "row_count": 6
+    },
+    "contract": {
+      "version": "27.0",
+      "stage": "v25.5",
+      "status": "pass",
+      "ok": true,
+      "message": "Review bundle approval contract inspection completed.",
+      "rows": [
+        {
+          "name": "artifact-hashes-present",
+          "status": "pass",
+          "message": "Missing artifact hash(es): none."
+        },
+        {
+          "name": "whole-bundle-hash",
+          "status": "pass",
+          "message": "bfc05b056268b02d9c3956bbf034cc656e6985c89396dd79052c7b0b256318ab"
+        },
+        {
+          "name": "approval-binds-whole-bundle",
+          "status": "pass",
+          "message": "Approval binding accepts only the exact whole review bundle hash."
+        },
+        {
+          "name": "no-live-apply",
+          "status": "pass",
+          "message": "Approval contract inspection does not run a live patch apply."
+        }
+      ],
+      "row_count": 4
+    },
+    "drill": {
+      "version": "27.0",
+      "stage": "v26.1",
+      "status": "pass",
+      "ok": true,
+      "message": "Trust console drill scenarios completed.",
+      "rows": [
+        {
+          "name": "all-pass",
+          "status": "pass",
+          "message": "expected=pass actual=pass"
+        },
+        {
+          "name": "nested-warn",
+          "status": "pass",
+          "message": "expected=warn actual=warn"
+        },
+        {
+          "name": "nested-blocked",
+          "status": "pass",
+          "message": "expected=blocked actual=blocked"
+        },
+        {
+          "name": "stale-package-default",
+          "status": "pass",
+          "message": "expected=warn actual=warn"
+        },
+        {
+          "name": "missing-dashboard-route",
+          "status": "pass",
+          "message": "expected=blocked actual=blocked"
+        },
+        {
+          "name": "readme-drift",
+          "status": "pass",
+          "message": "expected=warn actual=warn"
+        },
+        {
+          "name": "source-privacy-leak",
+          "status": "pass",
+          "message": "expected=blocked actual=blocked"
+        }
+      ],
+      "row_count": 7
+    }
+  },
+  "rows": [
+    {
+      "name": "console",
+      "status": "pass",
+      "message": "Lightweight trust-console status assembled from route/default/severity/contract/drill checks."
+    },
+    {
+      "name": "route-coverage",
+      "status": "pass",
+      "message": "Dashboard route coverage auditor completed."
+    },
+    {
+      "name": "api-defaults",
+      "status": "pass",
+      "message": "API default source-of-truth audit completed."
+    },
+    {
+      "name": "nested-severity",
+      "status": "pass",
+      "message": "Nested readiness severity engine checks completed."
+    },
+    {
+      "name": "approval-contract",
+      "status": "pass",
+      "message": "Review bundle approval contract inspection completed."
+    },
+    {
+      "name": "readme-latest",
+      "status": "pass",
+      "message": "Eidolon v27.0 - Release Candidate Governance System"
+    }
+  ],
+  "message": "Trust console snapshot exported.",
+  "snapshot_hash": "fbfd97c4de413d4aa514f617b0988e86157384c077167e66b5460d10e85d332f"
+}

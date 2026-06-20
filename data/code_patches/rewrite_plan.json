@@ -1,0 +1,25 @@
+{
+  "version": "16.0",
+  "checked_at": "2026-06-20T00:42:18",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "path": "README_NEXT_STEPS.md",
+      "status": "ready",
+      "target_symbol": null,
+      "rewrite_strategy": "file_hash_guarded",
+      "expected_sha256": "296178de21f0c665e45bfa4c97289e4271f581973213ef97e18e7a2408d976c3",
+      "replacement_strategy": "Use generated proposed content only if hash and boundary checks pass.",
+      "risk": "low",
+      "backup_required": true,
+      "tests_required": [
+        "python -m py_compile conscious_agent/*.py tools/smoke_check.py"
+      ],
+      "readme_impact": true,
+      "message": "Rewrite planned with file_hash_guarded guardrails."
+    }
+  ],
+  "message": "Targeted rewrite plan prepared for 1 item(s)."
+}

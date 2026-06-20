@@ -1,0 +1,35 @@
+{
+  "id": "approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2",
+  "type": "approval_request",
+  "created_at": "2026-06-19T23:38:25",
+  "updated_at": "2026-06-19T23:38:25",
+  "status": "pending",
+  "action_type": "run_command",
+  "summary": "Execute task task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen: Apply patch patch_20260619_154527_conscious_agent-dashboard-py",
+  "reason": "Task is risk-gated or explicitly requires approval before execution.",
+  "object_id": "task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen",
+  "command": "python conscious_agent/main.py --execute-task-work-id task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen --approve-task-work-execution",
+  "risk_level": "high",
+  "source": "task_approval_bridge",
+  "metadata": {
+    "approval_kind": "task_work_execution",
+    "task_id": "task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen",
+    "task_title": "Apply patch patch_20260619_154527_conscious_agent-dashboard-py",
+    "task_status": "planned",
+    "task_project": "eidolon",
+    "task_risk": "high",
+    "task_requires_approval": true,
+    "task_action_type": "run_command",
+    "approved_command": "python conscious_agent/main.py --execute-task-work-id task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen --approve-task-work-execution",
+    "use_ai": true,
+    "reason": "Task is risk-gated or explicitly requires approval before execution."
+  },
+  "notes": [],
+  "result": {},
+  "useful_commands": [
+    "python conscious_agent/main.py --show-approval approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2",
+    "python conscious_agent/main.py --approve approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2 --dry-run",
+    "python conscious_agent/main.py --approve approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2",
+    "python conscious_agent/main.py --reject approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2 --approval-note \"Reason here\""
+  ]
+}

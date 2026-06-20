@@ -1,0 +1,48 @@
+{
+  "version": "18.0",
+  "checked_at": "2026-06-20T01:27:21",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "target_files": [
+    "README_NEXT_STEPS.md"
+  ],
+  "suggestions": [
+    {
+      "kind": "compile",
+      "status": "pass",
+      "command": "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+      "reason": "basic syntax/import coverage"
+    },
+    {
+      "kind": "smoke",
+      "status": "pass",
+      "command": "python tools/smoke_check.py",
+      "reason": "core regression coverage"
+    },
+    {
+      "kind": "semantic",
+      "status": "pass",
+      "command": "python conscious_agent/main.py --semantic-checks",
+      "reason": "approval, rollback, dry-run, and GET/POST safety markers"
+    }
+  ],
+  "rows": [
+    {
+      "name": "compile",
+      "status": "pass",
+      "message": "python -m py_compile conscious_agent/*.py tools/smoke_check.py - basic syntax/import coverage"
+    },
+    {
+      "name": "smoke",
+      "status": "pass",
+      "message": "python tools/smoke_check.py - core regression coverage"
+    },
+    {
+      "name": "semantic",
+      "status": "pass",
+      "message": "python conscious_agent/main.py --semantic-checks - approval, rollback, dry-run, and GET/POST safety markers"
+    }
+  ],
+  "message": "Generated patch test stub plan created."
+}

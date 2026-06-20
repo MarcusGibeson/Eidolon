@@ -1,0 +1,572 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "package_profile": "source_only",
+  "included_count": 95,
+  "excluded_count": 10,
+  "included": [
+    {
+      "path": ".gitignore",
+      "size": 241,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/actions.py",
+      "size": 701,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/ai_patch_assistance.py",
+      "size": 39992,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/api_server.py",
+      "size": 147682,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/approval_manager.py",
+      "size": 18611,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/approval_release_workflow.py",
+      "size": 35534,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/autonomous_dev_cycle.py",
+      "size": 23019,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/brain.py",
+      "size": 5185,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/chat.py",
+      "size": 5362,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/chat_action_router.py",
+      "size": 29289,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/code_patch_release.py",
+      "size": 37598,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/code_reviewer.py",
+      "size": 7626,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/command_runner.py",
+      "size": 28299,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/controlled_build_cycle.py",
+      "size": 46499,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/dashboard.py",
+      "size": 198785,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/dashboard_chat_console.py",
+      "size": 8054,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/desires.py",
+      "size": 592,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/desktop_notifier.py",
+      "size": 3662,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/desktop_onboarding_wizard.py",
+      "size": 20279,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/desktop_setup_helper.py",
+      "size": 22196,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/desktop_shell.py",
+      "size": 36678,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/desktop_tray.py",
+      "size": 7845,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/dev_loop_runner.py",
+      "size": 14746,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/diagnostics.py",
+      "size": 19934,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/file_tools.py",
+      "size": 7743,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/goal_manager.py",
+      "size": 18587,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/guided_work_session.py",
+      "size": 16675,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/inner_loop.py",
+      "size": 3154,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/local_brain.py",
+      "size": 4636,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/main.py",
+      "size": 161352,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/maintenance_advisor.py",
+      "size": 19814,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/memory.py",
+      "size": 2153,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/memory_compactor.py",
+      "size": 15080,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/notification_manager.py",
+      "size": 13335,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/operational_readiness.py",
+      "size": 43017,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/opinions.py",
+      "size": 1900,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/patch_applier.py",
+      "size": 17181,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/patch_drafting.py",
+      "size": 75777,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/patch_suggester.py",
+      "size": 12818,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/paths.py",
+      "size": 347,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/planner.py",
+      "size": 774,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/project_indexer.py",
+      "size": 9476,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/project_intelligence.py",
+      "size": 30535,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/project_manager.py",
+      "size": 6710,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/reflection.py",
+      "size": 1025,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/release_installation.py",
+      "size": 31275,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/release_packaging.py",
+      "size": 44081,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/release_pipeline.py",
+      "size": 37252,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/safety.py",
+      "size": 205,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/self_improver.py",
+      "size": 17255,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/self_model.py",
+      "size": 1383,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/session_planner.py",
+      "size": 35996,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/settings_manager.py",
+      "size": 16057,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stabilization_checkpoint.py",
+      "size": 28147,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stable_loop_audit.py",
+      "size": 17086,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stable_loop_decision_report.py",
+      "size": 18293,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stable_loop_followup_completion.py",
+      "size": 20721,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stable_loop_followup_lifecycle.py",
+      "size": 18073,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stable_loop_followup_tasks.py",
+      "size": 22669,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stable_loop_guardrails.py",
+      "size": 7640,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stable_loop_operator_notes.py",
+      "size": 16980,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stable_loop_review.py",
+      "size": 23273,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/stable_supervised_loop.py",
+      "size": 22731,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/task_approval_bridge.py",
+      "size": 9460,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/task_cycle_policy.py",
+      "size": 16766,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/task_executor.py",
+      "size": 10078,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/task_lifecycle.py",
+      "size": 15702,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/task_patch_bridge.py",
+      "size": 18583,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/task_queue.py",
+      "size": 28768,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/task_recovery.py",
+      "size": 20587,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/task_result_evaluator.py",
+      "size": 17588,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/task_work_executor.py",
+      "size": 23317,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/test_report_reviewer.py",
+      "size": 18326,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/test_runner.py",
+      "size": 12292,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/validated_ai_patch_loop.py",
+      "size": 39508,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/vector_memory.py",
+      "size": 4340,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/watch_mode.py",
+      "size": 23798,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/work_cycle.py",
+      "size": 20654,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/work_queue.py",
+      "size": 22182,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/work_queue_executor.py",
+      "size": 1031,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/work_queue_patch_bridge.py",
+      "size": 3335,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/workspace_execution.py",
+      "size": 27415,
+      "reason": "included source release file"
+    },
+    {
+      "path": "conscious_agent/workspace_orchestration.py",
+      "size": 32262,
+      "reason": "included source release file"
+    },
+    {
+      "path": "data/projects.json",
+      "size": 27261,
+      "reason": "included source release file"
+    },
+    {
+      "path": "data/settings.json",
+      "size": 2136,
+      "reason": "included source release file"
+    },
+    {
+      "path": "data/workspaces/active_project.json",
+      "size": 194,
+      "reason": "included source release file"
+    },
+    {
+      "path": "data/workspaces/command_profiles/default_java.json",
+      "size": 466,
+      "reason": "included source release file"
+    },
+    {
+      "path": "data/workspaces/command_profiles/default_node.json",
+      "size": 472,
+      "reason": "included source release file"
+    },
+    {
+      "path": "data/workspaces/command_profiles/default_python.json",
+      "size": 478,
+      "reason": "included source release file"
+    },
+    {
+      "path": "data/workspaces/command_profiles/eidolon.json",
+      "size": 725,
+      "reason": "included source release file"
+    },
+    {
+      "path": "data/workspaces/projects.json",
+      "size": 967,
+      "reason": "included source release file"
+    },
+    {
+      "path": "README_NEXT_STEPS.md",
+      "size": 261661,
+      "reason": "included source release file"
+    },
+    {
+      "path": "requirements.txt",
+      "size": 33,
+      "reason": "included source release file"
+    },
+    {
+      "path": "setup.ps1",
+      "size": 852,
+      "reason": "included source release file"
+    },
+    {
+      "path": "tools/smoke_check.py",
+      "size": 42914,
+      "reason": "included source release file"
+    }
+  ],
+  "excluded": [
+    {
+      "path": "data/action_log.json",
+      "size": 3577,
+      "reason": "excluded private/runtime data by source-only package profile"
+    },
+    {
+      "path": "data/desires.json",
+      "size": 192,
+      "reason": "excluded private/runtime data by source-only package profile"
+    },
+    {
+      "path": "data/goals.json",
+      "size": 3465,
+      "reason": "excluded private/runtime data by source-only package profile"
+    },
+    {
+      "path": "data/memories.json",
+      "size": 90431,
+      "reason": "excluded live approval state"
+    },
+    {
+      "path": "data/opinions.json",
+      "size": 625,
+      "reason": "excluded private/runtime data by source-only package profile"
+    },
+    {
+      "path": "data/project_index.json",
+      "size": 172164,
+      "reason": "excluded private/runtime data by source-only package profile"
+    },
+    {
+      "path": "data/self_model.json",
+      "size": 706,
+      "reason": "excluded private/runtime data by source-only package profile"
+    },
+    {
+      "path": "data/tasks.json",
+      "size": 14370,
+      "reason": "excluded private/runtime data by source-only package profile"
+    },
+    {
+      "path": "data/thoughts.log",
+      "size": 48717,
+      "reason": "excluded generated/log/bytecode file"
+    },
+    {
+      "path": "data/workspaces/timeline.json",
+      "size": 55558,
+      "reason": "excluded private/runtime data by source-only package profile"
+    }
+  ],
+  "rows": [
+    {
+      "name": "included-files",
+      "status": "pass",
+      "message": "95 file(s) included."
+    },
+    {
+      "name": "readme-included",
+      "status": "pass",
+      "message": "README_NEXT_STEPS.md must be packaged."
+    },
+    {
+      "name": "approval-state-excluded",
+      "status": "pass",
+      "message": "Live approval state is absent from included package files."
+    },
+    {
+      "name": "source-only-data-profile",
+      "status": "pass",
+      "message": "Only allowlisted source-safe data files may be packaged."
+    },
+    {
+      "name": "data-runtime-excluded",
+      "status": "pass",
+      "message": "Runtime/private data folders are excluded by default."
+    },
+    {
+      "name": "venv-excluded",
+      "status": "pass",
+      "message": ".git, .venv, __pycache__, .pyc, logs, generated package files, private runtime data, and nested zips are excluded."
+    }
+  ],
+  "message": "Package inventory classified included and excluded files for a guarded release zip."
+}

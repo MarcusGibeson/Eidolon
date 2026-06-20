@@ -1,0 +1,17 @@
+{
+  "version": "16.0",
+  "checked_at": "2026-06-20T00:42:18",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "path": "README_NEXT_STEPS.md",
+      "status": "pass",
+      "kind": "text",
+      "symbols": {},
+      "message": "Non-Python file; symbol scan not required."
+    }
+  ],
+  "message": "Symbol-aware scan completed for 1 target file(s)."
+}

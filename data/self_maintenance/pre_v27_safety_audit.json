@@ -1,0 +1,374 @@
+{
+  "version": "30.0",
+  "checked_at": "2026-06-20T15:19:16",
+  "project_id": "eidolon",
+  "stage": "v26.9",
+  "status": "warn",
+  "ok": true,
+  "package_name": "Eidolon_v30_0.zip",
+  "zip_path": "data\\release_installation\\incoming\\Eidolon_v30_0.zip",
+  "steps": {
+    "trust_console": {
+      "version": "30.0",
+      "stage": "v25.9",
+      "status": "warn",
+      "ok": true,
+      "message": "Operator trust report completed.",
+      "rows": [
+        {
+          "name": "route-coverage",
+          "status": "pass",
+          "message": "Dashboard route coverage auditor completed."
+        },
+        {
+          "name": "api-default-source",
+          "status": "pass",
+          "message": "API default source-of-truth audit completed."
+        },
+        {
+          "name": "nested-severity",
+          "status": "pass",
+          "message": "Nested readiness severity engine checks completed."
+        },
+        {
+          "name": "approval-contract",
+          "status": "pass",
+          "message": "Review bundle approval contract inspection completed."
+        },
+        {
+          "name": "release-memory-privacy",
+          "status": "pass",
+          "message": "Release memory privacy check completed."
+        },
+        {
+          "name": "hotfix-regression",
+          "status": "warn",
+          "message": "Hotfix regression lockdown completed for v25.0.1 route/default/severity fixes."
+        }
+      ],
+      "row_count": 6
+    },
+    "drill": {
+      "version": "30.0",
+      "stage": "v26.1",
+      "status": "pass",
+      "ok": true,
+      "message": "Trust console drill scenarios completed.",
+      "rows": [
+        {
+          "name": "all-pass",
+          "status": "pass",
+          "message": "expected=pass actual=pass"
+        },
+        {
+          "name": "nested-warn",
+          "status": "pass",
+          "message": "expected=warn actual=warn"
+        },
+        {
+          "name": "nested-blocked",
+          "status": "pass",
+          "message": "expected=blocked actual=blocked"
+        },
+        {
+          "name": "stale-package-default",
+          "status": "pass",
+          "message": "expected=warn actual=warn"
+        },
+        {
+          "name": "missing-dashboard-route",
+          "status": "pass",
+          "message": "expected=blocked actual=blocked"
+        },
+        {
+          "name": "readme-drift",
+          "status": "pass",
+          "message": "expected=warn actual=warn"
+        },
+        {
+          "name": "source-privacy-leak",
+          "status": "pass",
+          "message": "expected=blocked actual=blocked"
+        }
+      ],
+      "row_count": 7
+    },
+    "snapshot": {
+      "version": "30.0",
+      "stage": "v26.2",
+      "status": "pass",
+      "ok": true,
+      "message": "Trust console snapshot exported.",
+      "rows": [
+        {
+          "name": "console",
+          "status": "pass",
+          "message": "Lightweight trust-console status assembled from route/default/severity/contract/drill checks."
+        },
+        {
+          "name": "route-coverage",
+          "status": "pass",
+          "message": "Dashboard route coverage auditor completed."
+        },
+        {
+          "name": "api-defaults",
+          "status": "pass",
+          "message": "API default source-of-truth audit completed."
+        },
+        {
+          "name": "nested-severity",
+          "status": "pass",
+          "message": "Nested readiness severity engine checks completed."
+        },
+        {
+          "name": "approval-contract",
+          "status": "pass",
+          "message": "Review bundle approval contract inspection completed."
+        },
+        {
+          "name": "readme-latest",
+          "status": "pass",
+          "message": "Eidolon v30.0 - Signed Release Preparation System"
+        }
+      ],
+      "row_count": 6,
+      "package_name": "Eidolon_v30_0.zip",
+      "zip_path": "data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+    },
+    "diff": {
+      "version": "30.0",
+      "stage": "v26.3",
+      "status": "pass",
+      "ok": true,
+      "message": "Trust console snapshot diff completed.",
+      "rows": [
+        {
+          "name": "snapshot-before",
+          "status": "pass",
+          "message": "synthetic-before"
+        },
+        {
+          "name": "snapshot-after",
+          "status": "pass",
+          "message": "24175b2ab8f5eaa0d19c3bfb1025e3b742b9ef25e7a25e54359450708246c3fe"
+        },
+        {
+          "name": "changed-rows",
+          "status": "pass",
+          "message": "7 row(s) changed."
+        },
+        {
+          "name": "hidden-blocks",
+          "status": "pass",
+          "message": "0 blocked row(s) disappeared without an explicit after status."
+        }
+      ],
+      "row_count": 4
+    },
+    "freeze": {
+      "version": "30.0",
+      "stage": "v26.4",
+      "status": "pass",
+      "ok": true,
+      "message": "Release candidate artifact set frozen for review.",
+      "rows": [
+        {
+          "name": "source-manifest",
+          "status": "pass",
+          "message": "88 hash-bound file(s), 8 metadata file(s) drift-tolerant, da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f"
+        },
+        {
+          "name": "privacy-scan",
+          "status": "pass",
+          "message": "Package privacy scan completed for source-only release packaging."
+        },
+        {
+          "name": "release-integrity",
+          "status": "pass",
+          "message": "Release manifest integrity verifies version markers, README, package plan, and approval/release artifacts."
+        },
+        {
+          "name": "readme-current",
+          "status": "pass",
+          "message": "README includes v30.0 notes."
+        }
+      ],
+      "row_count": 4
+    },
+    "frozen_zip": {
+      "version": "30.0",
+      "stage": "v26.5",
+      "status": "pass",
+      "ok": true,
+      "message": "Frozen release zip verification completed.",
+      "rows": [
+        {
+          "name": "zip-present",
+          "status": "pass",
+          "message": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+        },
+        {
+          "name": "manifest-hash-match",
+          "status": "pass",
+          "message": "frozen=da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f zip=da3699c14d849712ff6c6d092bc3f1406464ad5718dde8a03129179a3dcbe61f; drift-tolerant metadata ignored=8"
+        },
+        {
+          "name": "missing-files",
+          "status": "pass",
+          "message": "0 missing file(s)."
+        },
+        {
+          "name": "extra-files",
+          "status": "pass",
+          "message": "0 extra file(s)."
+        },
+        {
+          "name": "changed-files",
+          "status": "pass",
+          "message": "0 changed file(s)."
+        }
+      ],
+      "row_count": 5,
+      "package_name": "Eidolon_v30_0.zip",
+      "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+    },
+    "ledger": {
+      "version": "30.0",
+      "stage": "v26.6",
+      "status": "warn",
+      "ok": true,
+      "message": "Approval evidence ledger generated; live approval remains separate.",
+      "rows": [
+        {
+          "name": "artifact-hashes",
+          "status": "pass",
+          "message": "Missing: none."
+        },
+        {
+          "name": "zip-verification",
+          "status": "pass",
+          "message": "Frozen release zip verification completed."
+        },
+        {
+          "name": "live-approval",
+          "status": "warn",
+          "message": "Ledger is evidence only; it does not authorize live apply."
+        }
+      ],
+      "row_count": 3
+    },
+    "readme": {
+      "version": "30.0",
+      "stage": "v26.8",
+      "status": "pass",
+      "ok": true,
+      "message": "Console-to-README consistency check completed.",
+      "rows": [
+        {
+          "name": "cli-flags",
+          "status": "pass",
+          "message": "Missing CLI flags: none."
+        },
+        {
+          "name": "readme-flags",
+          "status": "pass",
+          "message": "Missing README flags: none."
+        },
+        {
+          "name": "api-surfaces",
+          "status": "pass",
+          "message": "Missing API tokens: none."
+        },
+        {
+          "name": "dashboard-surfaces",
+          "status": "pass",
+          "message": "Missing dashboard tokens: none."
+        },
+        {
+          "name": "current-version",
+          "status": "pass",
+          "message": "README includes v30.0."
+        }
+      ],
+      "row_count": 5
+    },
+    "privacy": {
+      "version": "30.0",
+      "stage": null,
+      "status": "pass",
+      "ok": true,
+      "message": "Package privacy scan completed for source-only release packaging.",
+      "rows": [
+        {
+          "name": "inventory-ok",
+          "status": "pass",
+          "message": "Package inventory classified included and excluded files for a guarded release zip."
+        },
+        {
+          "name": "private-files",
+          "status": "pass",
+          "message": "0 private/runtime included path(s) detected."
+        },
+        {
+          "name": "portable-warnings",
+          "status": "pass",
+          "message": "0 portable metadata warning(s)."
+        },
+        {
+          "name": "source-only-profile",
+          "status": "pass",
+          "message": "Package inventory uses source-only profile by default."
+        }
+      ],
+      "row_count": 4
+    }
+  },
+  "rows": [
+    {
+      "name": "trust_console",
+      "status": "warn",
+      "message": "Operator trust report completed."
+    },
+    {
+      "name": "drill",
+      "status": "pass",
+      "message": "Trust console drill scenarios completed."
+    },
+    {
+      "name": "snapshot",
+      "status": "pass",
+      "message": "Trust console snapshot exported."
+    },
+    {
+      "name": "diff",
+      "status": "pass",
+      "message": "Trust console snapshot diff completed."
+    },
+    {
+      "name": "freeze",
+      "status": "pass",
+      "message": "Release candidate artifact set frozen for review."
+    },
+    {
+      "name": "frozen_zip",
+      "status": "pass",
+      "message": "Frozen release zip verification completed."
+    },
+    {
+      "name": "ledger",
+      "status": "warn",
+      "message": "Approval evidence ledger generated; live approval remains separate."
+    },
+    {
+      "name": "readme",
+      "status": "pass",
+      "message": "Console-to-README consistency check completed."
+    },
+    {
+      "name": "privacy",
+      "status": "pass",
+      "message": "Package privacy scan completed for source-only release packaging."
+    }
+  ],
+  "message": "Pre-v27 safety audit completed."
+}

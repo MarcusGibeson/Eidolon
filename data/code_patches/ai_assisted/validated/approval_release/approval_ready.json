@@ -1,0 +1,52 @@
+{
+  "version": "20.0",
+  "checked_at": "2026-06-20T02:32:34",
+  "project_id": "eidolon",
+  "status": "ready",
+  "ok": true,
+  "patch_id": "validated_ai_patch_aa7bdd79bc6d4993",
+  "review_score": 90,
+  "rows": [
+    {
+      "name": "review-bundle",
+      "status": "pass",
+      "message": "AI patch review bundle created from objective, context, safety, validation, simulation, scoring, recovery, release, and audit artifacts."
+    },
+    {
+      "name": "bundle-integrity",
+      "status": "pass",
+      "message": "Review bundle integrity requires saved and current validated AI patch artifact hashes to match. If this is blocked after legitimate regenerated reports, run --ai-patch-review-bundle or POST /api/code-patches/refresh-review-bundle to save a fresh review bundle before approval."
+    },
+    {
+      "name": "validation",
+      "status": "pass",
+      "message": "Generated patch validation completed."
+    },
+    {
+      "name": "simulation",
+      "status": "pass",
+      "message": "Patch simulation completed without source writes."
+    },
+    {
+      "name": "review-score",
+      "status": "pass",
+      "message": "score=90; target=70+"
+    },
+    {
+      "name": "test-stub-plan",
+      "status": "pass",
+      "message": "Generated patch test stub plan created."
+    },
+    {
+      "name": "readme-impact",
+      "status": "pass",
+      "message": "README impact must be present in review artifacts."
+    },
+    {
+      "name": "stale-approval",
+      "status": "pass",
+      "message": "approval_status=neutral_packaged_handoff consumed=False"
+    }
+  ],
+  "message": "Approval-ready gate completed for the validated AI patch review bundle."
+}

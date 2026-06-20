@@ -1,0 +1,16 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "package_name": "Eidolon_v21_0.zip",
+  "rows": [
+    {
+      "name": "zip-exists",
+      "status": "warn",
+      "message": "C:\\Users\\marcu\\Eidolon\\data\\releases\\Eidolon_v21_0.zip does not exist yet; run --build-release-zip --confirm to create it."
+    }
+  ],
+  "message": "No release zip found yet; unzip verification is pending."
+}

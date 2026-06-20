@@ -1,0 +1,120 @@
+{
+  "id": "workcycle_20260619_233557_121735",
+  "version": "6.9",
+  "created_at": "2026-06-20T03:35:57.133185+00:00",
+  "project_id": "eidolon",
+  "dry_run": true,
+  "use_ai": false,
+  "approve_work_execution": false,
+  "seed_if_empty": true,
+  "auto_create_patch_followups": true,
+  "auto_request_approvals": true,
+  "auto_retry_recovery": false,
+  "steps_requested": 1,
+  "steps_completed": 0,
+  "stopped_reason": "dry_run_seed_preview",
+  "ok": true,
+  "error": "",
+  "message": "Dry-run preview finished after 0 step(s). Stopped: dry_run_seed_preview.",
+  "created_work_ids": [],
+  "created_task_ids": [],
+  "created_followup_work_ids": [],
+  "created_followup_task_ids": [],
+  "executed_work_ids": [],
+  "executed_task_ids": [],
+  "approval_ids": [],
+  "recovered_work_ids": [],
+  "recovered_task_ids": [],
+  "lifecycle_decisions": [],
+  "patch_ids": [],
+  "summary_before": {
+    "total": 0,
+    "pending": 0,
+    "active": 0,
+    "blocked": 0,
+    "done": 0,
+    "failed": 0,
+    "cancelled": 0,
+    "approval_required": 0,
+    "next_item": null,
+    "canonical_store": "data/tasks.json",
+    "compatibility_layer": "work_queue.py"
+  },
+  "summary_after": {
+    "total": 0,
+    "pending": 0,
+    "active": 0,
+    "blocked": 0,
+    "done": 0,
+    "failed": 0,
+    "cancelled": 0,
+    "approval_required": 0,
+    "next_item": null,
+    "canonical_store": "data/tasks.json",
+    "compatibility_layer": "work_queue.py"
+  },
+  "events": [
+    {
+      "type": "observe_queue",
+      "at": "2026-06-20T03:35:57.122842+00:00",
+      "summary": {
+        "total": 0,
+        "pending": 0,
+        "active": 0,
+        "blocked": 0,
+        "done": 0,
+        "failed": 0,
+        "cancelled": 0,
+        "approval_required": 0,
+        "next_item": null,
+        "canonical_store": "data/tasks.json",
+        "compatibility_layer": "work_queue.py"
+      }
+    },
+    {
+      "type": "patch_followup_scan",
+      "at": "2026-06-20T03:35:57.131695+00:00",
+      "patch_ids": [
+        "patch_20260619_154553_conscious_agent-dashboard-py",
+        "patch_20260619_154527_conscious_agent-dashboard-py"
+      ],
+      "dry_run": true
+    },
+    {
+      "type": "seed_queue",
+      "at": "2026-06-20T03:35:57.132238+00:00",
+      "dry_run": true,
+      "created_work_ids": [],
+      "created_task_ids": [],
+      "proposed_items": [
+        {
+          "title": "Review README_NEXT_STEPS.md for the next safe Eidolon step",
+          "description": "Inspect the project README and summarize the next safe action. This is read-only and gives the cycle context before making changes.",
+          "project_id": "eidolon",
+          "priority": 6,
+          "risk": "low",
+          "source": "system",
+          "requires_approval": false,
+          "metadata": {
+            "action_type": "review_file",
+            "target_file": "README_NEXT_STEPS.md",
+            "cycle_seed": true
+          }
+        },
+        {
+          "title": "Run general Eidolon test workflow",
+          "description": "Run the approved default test workflow through the task work executor.",
+          "project_id": "eidolon",
+          "priority": 5,
+          "risk": "low",
+          "source": "system",
+          "requires_approval": false,
+          "metadata": {
+            "action_type": "test_project",
+            "cycle_seed": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "version": "18.0",
+  "checked_at": "2026-06-20T01:27:21",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "task_summary": "{'id': 'synthetic_patch_draft_request', 'title': 'Draft a safe README/documentation patch lane', 'description': 'No safe queued task was available, so v14.0 created a bounded documentation-first draft request.', 'priority': 'low', 'risk': 'low', 'source': 'synthetic'}",
+  "specific_behavior_change": "No safe queued task was available, so v14.0 created a bounded documentation-first draft request.",
+  "affected_surfaces": [
+    "documentation"
+  ],
+  "allowed_files": [
+    "conscious_agent/patch_drafting.py",
+    "README_NEXT_STEPS.md"
+  ],
+  "blocked_files": [
+    ".git/",
+    ".venv/",
+    "data/workspaces/projects.json unless registry work is explicit",
+    "conscious_agent/command_runner.py unless safety/command policy work is explicit"
+  ],
+  "success_criteria": [
+    "generated edits parse into expected-text rewrites",
+    "validation is pass or warn with no blockers",
+    "simulation produces no source writes",
+    "README impact is explicit",
+    "semantic checks remain pass/warn only"
+  ],
+  "failure_criteria": [
+    "file outside project boundary",
+    "missing expected_old_text",
+    "expected_old_text not present in current file",
+    "GET endpoint mutation introduced",
+    "dry-run overwrites real apply pointer",
+    "approval artifact mismatch"
+  ],
+  "readme_impact": "README_NEXT_STEPS.md must document v17.1-v18.0 changes.",
+  "test_expectations": [
+    "py_compile",
+    "dashboard import",
+    "semantic-checks",
+    "doctor",
+    "stabilization-checkpoint",
+    "smoke_check"
+  ],
+  "rows": [
+    {
+      "name": "objective",
+      "status": "pass",
+      "message": "{'id': 'synthetic_patch_draft_request', 'title': 'Draft a safe README/documentation patch lane', 'description': 'No safe queued task was available, so v14.0 created a bounded documentation-first draft request.', 'priority': 'low', 'risk': 'low', 'source': 'synthetic'}"
+    },
+    {
+      "name": "allowed-files",
+      "status": "pass",
+      "message": "2 allowed file(s)."
+    },
+    {
+      "name": "surfaces",
+      "status": "pass",
+      "message": "documentation"
+    }
+  ],
+  "message": "Patch objective refined into explicit surfaces, success/failure criteria, and safety limits."
+}

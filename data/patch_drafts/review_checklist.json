@@ -1,0 +1,52 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T00:31:41",
+  "project_id": "eidolon",
+  "request_id": "draft_request_20260620_003133_synthetic_patch_draft_request",
+  "draft_id": "draft_20260620_003135_draft_request_20260620_003133_synthetic_patch_draft_request",
+  "status": "pass",
+  "ok": true,
+  "items": [
+    {
+      "item": "Do the intended files match the task?",
+      "status": "open",
+      "source": "file_targets"
+    },
+    {
+      "item": "Are GET routes read-only and mutation routes POST-only?",
+      "status": "open",
+      "source": "api_safety"
+    },
+    {
+      "item": "Is README_NEXT_STEPS.md included or explicitly unnecessary?",
+      "status": "pass",
+      "source": "readme"
+    },
+    {
+      "item": "Are rollback/apply reports separated for dry-run vs real apply?",
+      "status": "open",
+      "source": "rollback"
+    },
+    {
+      "item": "Are test commands specific to touched files?",
+      "status": "pass",
+      "source": "tests"
+    },
+    {
+      "item": "Is approval single-use and unconsumed?",
+      "status": "open",
+      "source": "approval"
+    },
+    {
+      "item": "Is risk within the requested limit?",
+      "status": "pass",
+      "source": "risk"
+    },
+    {
+      "item": "Are blocking conflicts clear?",
+      "status": "pass",
+      "source": "conflicts"
+    }
+  ],
+  "message": "Human review checklist prepared with 8 item(s)."
+}

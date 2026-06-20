@@ -1,0 +1,21 @@
+{
+  "id": "default_python",
+  "language": "Python",
+  "allowed_compile_commands": [
+    "python -m py_compile"
+  ],
+  "allowed_test_commands": [
+    "python -m pytest",
+    "python -m unittest"
+  ],
+  "forbidden_commands": [
+    "rm -rf",
+    "del /s",
+    "format"
+  ],
+  "package_install_requires_approval": true,
+  "destructive_commands_require_approval": true,
+  "shell_commands_require_approval": true,
+  "updated_at": "2026-06-20T18:42:54",
+  "workspace_version": "30.0"
+}

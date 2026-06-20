@@ -1,0 +1,48 @@
+{
+  "version": "27.0",
+  "checked_at": "2026-06-20T12:48:10",
+  "project_id": "eidolon",
+  "stage": "v26.8",
+  "status": "pass",
+  "ok": true,
+  "required_flags": [
+    "trust-console-drill",
+    "trust-console-snapshot",
+    "trust-console-diff",
+    "freeze-release-candidate",
+    "verify-frozen-release-zip",
+    "approval-evidence-ledger",
+    "release-command-reproducer",
+    "console-readme-consistency",
+    "pre-v27-safety-audit",
+    "release-candidate-governance"
+  ],
+  "rows": [
+    {
+      "name": "cli-flags",
+      "status": "pass",
+      "message": "Missing CLI flags: none."
+    },
+    {
+      "name": "readme-flags",
+      "status": "pass",
+      "message": "Missing README flags: none."
+    },
+    {
+      "name": "api-surfaces",
+      "status": "pass",
+      "message": "Missing API tokens: none."
+    },
+    {
+      "name": "dashboard-surfaces",
+      "status": "pass",
+      "message": "Missing dashboard tokens: none."
+    },
+    {
+      "name": "current-version",
+      "status": "pass",
+      "message": "README includes v27.0."
+    }
+  ],
+  "message": "Console-to-README consistency check completed."
+}

@@ -1,0 +1,626 @@
+{
+  "version": "24.0",
+  "checked_at": "2026-06-20T11:08:43",
+  "project_id": "eidolon",
+  "stage": "v23.10",
+  "status": "pass",
+  "ok": true,
+  "review_bundle_hash": "a2f7f2349b92dd3fbf0b7df282eccb8e088fa13154db9d777936bcdc1bca1d56",
+  "steps": {
+    "review_bundle": {
+      "version": "24.0",
+      "checked_at": "2026-06-20T11:08:41",
+      "project_id": "eidolon",
+      "stage": "v23.6",
+      "status": "pass",
+      "ok": true,
+      "artifact_hashes": {
+        "proposal": "d94870eb38e39814aecd394e24c579de9452c2b72936db1d64dd363dfade7994",
+        "plan": "8e5bb56b404ec0b31b3c259587b6167ae323edf1d58c556cbcc610c9a0cc5cf6",
+        "preview": "e620185a66e8efd73bee4565e9f76c4312cbf5064e680b6c2e4a47f1a69846a6",
+        "audit": "9c8aa822b854c4e5461720087900d82e33ee3f5d4f64b5704316dd4df04f6671",
+        "temp_apply_drill": "f56bac7e6f434b0613ae7acab4315219ddcc73011b51a6df5028de4529bf48e6"
+      },
+      "artifacts": {
+        "proposal": {
+          "version": "24.0",
+          "checked_at": "2026-06-20T11:08:38",
+          "project_id": "eidolon",
+          "stage": "v23.1",
+          "status": "pass",
+          "ok": true,
+          "findings": [
+            {
+              "id": "release-package-defaults",
+              "title": "Release package defaults match current version",
+              "status": "pass",
+              "risk": "medium",
+              "affected_files": [
+                "conscious_agent/main.py",
+                "conscious_agent/api_server.py",
+                "conscious_agent/dashboard.py"
+              ],
+              "message": "Current default package should be Eidolon_v24_0.zip; stale references: 0."
+            },
+            {
+              "id": "project-metadata-current-milestone",
+              "title": "Project metadata reflects the current milestone",
+              "status": "pass",
+              "risk": "low",
+              "affected_files": [
+                "data/projects.json",
+                "data/workspaces/projects.json",
+                "data/workspaces/active_project.json"
+              ],
+              "message": "Project metadata last_updated_for=v24.0; legacy milestone present=False."
+            },
+            {
+              "id": "readiness-warning-severity",
+              "title": "Readiness summaries preserve warn severity",
+              "status": "pass",
+              "risk": "medium",
+              "affected_files": [
+                "conscious_agent/release_installation.py"
+              ],
+              "message": "Readiness rows preserve warning-level reports instead of flattening every ok report into pass."
+            },
+            {
+              "id": "readme-stage-coverage",
+              "title": "README documents v23.x and v24.0 staged releases",
+              "status": "pass",
+              "risk": "low",
+              "affected_files": [
+                "README_NEXT_STEPS.md"
+              ],
+              "message": "All v23.x/v24.0 release notes are present."
+            },
+            {
+              "id": "route-safety-baseline",
+              "title": "GET routes remain read-only and mutation paths remain gated",
+              "status": "pass",
+              "risk": "high",
+              "affected_files": [
+                "conscious_agent/dashboard.py",
+                "conscious_agent/api_server.py"
+              ],
+              "message": "Route safety harness completed."
+            }
+          ],
+          "proposals": [
+            {
+              "proposal_id": "proposal-release-package-defaults",
+              "source_finding": "release-package-defaults",
+              "title": "Release package defaults match current version",
+              "action": "monitor",
+              "risk": "medium",
+              "affected_files": [
+                "conscious_agent/main.py",
+                "conscious_agent/api_server.py",
+                "conscious_agent/dashboard.py"
+              ],
+              "requires_approval": false,
+              "safe_for_dry_run_patch": true,
+              "message": "Current default package should be Eidolon_v24_0.zip; stale references: 0."
+            },
+            {
+              "proposal_id": "proposal-project-metadata-current-milestone",
+              "source_finding": "project-metadata-current-milestone",
+              "title": "Project metadata reflects the current milestone",
+              "action": "monitor",
+              "risk": "low",
+              "affected_files": [
+                "data/projects.json",
+                "data/workspaces/projects.json",
+                "data/workspaces/active_project.json"
+              ],
+              "requires_approval": false,
+              "safe_for_dry_run_patch": true,
+              "message": "Project metadata last_updated_for=v24.0; legacy milestone present=False."
+            },
+            {
+              "proposal_id": "proposal-readiness-warning-severity",
+              "source_finding": "readiness-warning-severity",
+              "title": "Readiness summaries preserve warn severity",
+              "action": "monitor",
+              "risk": "medium",
+              "affected_files": [
+                "conscious_agent/release_installation.py"
+              ],
+              "requires_approval": false,
+              "safe_for_dry_run_patch": true,
+              "message": "Readiness rows preserve warning-level reports instead of flattening every ok report into pass."
+            },
+            {
+              "proposal_id": "proposal-readme-stage-coverage",
+              "source_finding": "readme-stage-coverage",
+              "title": "README documents v23.x and v24.0 staged releases",
+              "action": "monitor",
+              "risk": "low",
+              "affected_files": [
+                "README_NEXT_STEPS.md"
+              ],
+              "requires_approval": false,
+              "safe_for_dry_run_patch": true,
+              "message": "All v23.x/v24.0 release notes are present."
+            },
+            {
+              "proposal_id": "proposal-route-safety-baseline",
+              "source_finding": "route-safety-baseline",
+              "title": "GET routes remain read-only and mutation paths remain gated",
+              "action": "monitor",
+              "risk": "high",
+              "affected_files": [
+                "conscious_agent/dashboard.py",
+                "conscious_agent/api_server.py"
+              ],
+              "requires_approval": false,
+              "safe_for_dry_run_patch": true,
+              "message": "Route safety harness completed."
+            }
+          ],
+          "rows": [
+            {
+              "name": "release-package-defaults",
+              "status": "pass",
+              "message": "Current default package should be Eidolon_v24_0.zip; stale references: 0."
+            },
+            {
+              "name": "project-metadata-current-milestone",
+              "status": "pass",
+              "message": "Project metadata last_updated_for=v24.0; legacy milestone present=False."
+            },
+            {
+              "name": "readiness-warning-severity",
+              "status": "pass",
+              "message": "Readiness rows preserve warning-level reports instead of flattening every ok report into pass."
+            },
+            {
+              "name": "readme-stage-coverage",
+              "status": "pass",
+              "message": "All v23.x/v24.0 release notes are present."
+            },
+            {
+              "name": "route-safety-baseline",
+              "status": "pass",
+              "message": "Route safety harness completed."
+            },
+            {
+              "name": "proposal-only",
+              "status": "pass",
+              "message": "No project files are edited by the proposal sandbox."
+            },
+            {
+              "name": "dry-run-default",
+              "status": "pass",
+              "message": "Generated proposals are review artifacts, not apply instructions."
+            }
+          ],
+          "message": "Self-maintenance proposal sandbox completed without editing source files.",
+          "preview_only": true
+        },
+        "plan": {
+          "version": "24.0",
+          "checked_at": "2026-06-20T11:08:38",
+          "project_id": "eidolon",
+          "stage": "v23.2",
+          "status": "pass",
+          "ok": true,
+          "proposal_hash": "d94870eb38e39814aecd394e24c579de9452c2b72936db1d64dd363dfade7994",
+          "file_plans": [
+            {
+              "path": "README_NEXT_STEPS.md",
+              "safe_target": true,
+              "change_intent": [
+                "readme-stage-coverage"
+              ],
+              "before_after_behavior": "Preserve existing behavior while improving release metadata, safety visibility, or review scaffolding.",
+              "verification": [
+                "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+                "python conscious_agent/main.py --self-maintenance-proposal --readiness-json",
+                "python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json"
+              ]
+            },
+            {
+              "path": "conscious_agent/api_server.py",
+              "safe_target": true,
+              "change_intent": [
+                "release-package-defaults",
+                "route-safety-baseline"
+              ],
+              "before_after_behavior": "Preserve existing behavior while improving release metadata, safety visibility, or review scaffolding.",
+              "verification": [
+                "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+                "python conscious_agent/main.py --self-maintenance-proposal --readiness-json",
+                "python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json"
+              ]
+            },
+            {
+              "path": "conscious_agent/dashboard.py",
+              "safe_target": true,
+              "change_intent": [
+                "release-package-defaults",
+                "route-safety-baseline"
+              ],
+              "before_after_behavior": "Preserve existing behavior while improving release metadata, safety visibility, or review scaffolding.",
+              "verification": [
+                "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+                "python conscious_agent/main.py --self-maintenance-proposal --readiness-json",
+                "python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json"
+              ]
+            },
+            {
+              "path": "conscious_agent/main.py",
+              "safe_target": true,
+              "change_intent": [
+                "release-package-defaults"
+              ],
+              "before_after_behavior": "Preserve existing behavior while improving release metadata, safety visibility, or review scaffolding.",
+              "verification": [
+                "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+                "python conscious_agent/main.py --self-maintenance-proposal --readiness-json",
+                "python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json"
+              ]
+            },
+            {
+              "path": "conscious_agent/release_installation.py",
+              "safe_target": true,
+              "change_intent": [
+                "readiness-warning-severity"
+              ],
+              "before_after_behavior": "Preserve existing behavior while improving release metadata, safety visibility, or review scaffolding.",
+              "verification": [
+                "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+                "python conscious_agent/main.py --self-maintenance-proposal --readiness-json",
+                "python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json"
+              ]
+            },
+            {
+              "path": "data/projects.json",
+              "safe_target": true,
+              "change_intent": [
+                "project-metadata-current-milestone"
+              ],
+              "before_after_behavior": "Preserve existing behavior while improving release metadata, safety visibility, or review scaffolding.",
+              "verification": [
+                "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+                "python conscious_agent/main.py --self-maintenance-proposal --readiness-json",
+                "python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json"
+              ]
+            },
+            {
+              "path": "data/workspaces/active_project.json",
+              "safe_target": true,
+              "change_intent": [
+                "project-metadata-current-milestone"
+              ],
+              "before_after_behavior": "Preserve existing behavior while improving release metadata, safety visibility, or review scaffolding.",
+              "verification": [
+                "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+                "python conscious_agent/main.py --self-maintenance-proposal --readiness-json",
+                "python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json"
+              ]
+            },
+            {
+              "path": "data/workspaces/projects.json",
+              "safe_target": true,
+              "change_intent": [
+                "project-metadata-current-milestone"
+              ],
+              "before_after_behavior": "Preserve existing behavior while improving release metadata, safety visibility, or review scaffolding.",
+              "verification": [
+                "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+                "python conscious_agent/main.py --self-maintenance-proposal --readiness-json",
+                "python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json"
+              ]
+            }
+          ],
+          "rows": [
+            {
+              "name": "file-targets",
+              "status": "pass",
+              "message": "8 maintenance file target(s) planned."
+            },
+            {
+              "name": "runtime-data-guard",
+              "status": "pass",
+              "message": "Patch plan avoids private runtime data."
+            },
+            {
+              "name": "readme-required",
+              "status": "pass",
+              "message": "README is included when release/code changes are planned."
+            }
+          ],
+          "message": "Patch plan builder completed.",
+          "preview_only": true
+        },
+        "preview": {
+          "version": "24.0",
+          "checked_at": "2026-06-20T11:08:38",
+          "project_id": "eidolon",
+          "stage": "v23.3",
+          "status": "pass",
+          "ok": true,
+          "plan_hash": "8e5bb56b404ec0b31b3c259587b6167ae323edf1d58c556cbcc610c9a0cc5cf6",
+          "preview_changes": [
+            {
+              "path": "README_NEXT_STEPS.md",
+              "mode": "preview-only",
+              "intended_edits": [
+                "readme-stage-coverage"
+              ],
+              "diff_summary": "No direct diff is applied by this generator; it records intended maintenance edits for review."
+            },
+            {
+              "path": "conscious_agent/api_server.py",
+              "mode": "preview-only",
+              "intended_edits": [
+                "release-package-defaults",
+                "route-safety-baseline"
+              ],
+              "diff_summary": "No direct diff is applied by this generator; it records intended maintenance edits for review."
+            },
+            {
+              "path": "conscious_agent/dashboard.py",
+              "mode": "preview-only",
+              "intended_edits": [
+                "release-package-defaults",
+                "route-safety-baseline"
+              ],
+              "diff_summary": "No direct diff is applied by this generator; it records intended maintenance edits for review."
+            },
+            {
+              "path": "conscious_agent/main.py",
+              "mode": "preview-only",
+              "intended_edits": [
+                "release-package-defaults"
+              ],
+              "diff_summary": "No direct diff is applied by this generator; it records intended maintenance edits for review."
+            },
+            {
+              "path": "conscious_agent/release_installation.py",
+              "mode": "preview-only",
+              "intended_edits": [
+                "readiness-warning-severity"
+              ],
+              "diff_summary": "No direct diff is applied by this generator; it records intended maintenance edits for review."
+            },
+            {
+              "path": "data/projects.json",
+              "mode": "preview-only",
+              "intended_edits": [
+                "project-metadata-current-milestone"
+              ],
+              "diff_summary": "No direct diff is applied by this generator; it records intended maintenance edits for review."
+            },
+            {
+              "path": "data/workspaces/active_project.json",
+              "mode": "preview-only",
+              "intended_edits": [
+                "project-metadata-current-milestone"
+              ],
+              "diff_summary": "No direct diff is applied by this generator; it records intended maintenance edits for review."
+            },
+            {
+              "path": "data/workspaces/projects.json",
+              "mode": "preview-only",
+              "intended_edits": [
+                "project-metadata-current-milestone"
+              ],
+              "diff_summary": "No direct diff is applied by this generator; it records intended maintenance edits for review."
+            }
+          ],
+          "rows": [
+            {
+              "name": "preview-generated",
+              "status": "pass",
+              "message": "8 preview change(s) described."
+            },
+            {
+              "name": "source-files-untouched",
+              "status": "pass",
+              "message": "Patch generator writes only the review report when save=True."
+            },
+            {
+              "name": "package-exclusion",
+              "status": "pass",
+              "message": "data/self_maintenance reports are excluded from source-only packages by the source-only data rule."
+            }
+          ],
+          "message": "Dry-run maintenance patch preview generated.",
+          "preview_only": true
+        },
+        "audit": {
+          "version": "24.0",
+          "checked_at": "2026-06-20T11:08:38",
+          "project_id": "eidolon",
+          "stage": "v23.4",
+          "status": "pass",
+          "ok": true,
+          "preview_hash": "e620185a66e8efd73bee4565e9f76c4312cbf5064e680b6c2e4a47f1a69846a6",
+          "rows": [
+            {
+              "name": "no-private-runtime-edits",
+              "status": "pass",
+              "message": "Private runtime data is not targeted."
+            },
+            {
+              "name": "get-routes-read-only",
+              "status": "pass",
+              "message": "Route safety harness completed."
+            },
+            {
+              "name": "readme-gate",
+              "status": "pass",
+              "message": "README update is part of the maintenance bundle when release/code changes are staged."
+            },
+            {
+              "name": "approval-binding-required",
+              "status": "pass",
+              "message": "Real apply remains blocked unless an exact reviewed bundle hash is supplied."
+            },
+            {
+              "name": "dry-run-pointer-guard",
+              "status": "pass",
+              "message": "Dry-run generators do not write real apply/rollback pointers."
+            }
+          ],
+          "message": "Patch safety audit completed.",
+          "preview_only": true
+        },
+        "temp_apply_drill": {
+          "version": "24.0",
+          "checked_at": "2026-06-20T11:08:41",
+          "project_id": "eidolon",
+          "stage": "v23.5",
+          "status": "pass",
+          "ok": true,
+          "audit_hash": "9c8aa822b854c4e5461720087900d82e33ee3f5d4f64b5704316dd4df04f6671",
+          "compile": {
+            "status": "pass",
+            "ok": true,
+            "returncode": 0,
+            "stdout": "",
+            "stderr": "",
+            "message": "Temporary clone py_compile completed."
+          },
+          "rows": [
+            {
+              "name": "safety-audit",
+              "status": "pass",
+              "message": "Patch safety audit completed."
+            },
+            {
+              "name": "temp-clone-only",
+              "status": "pass",
+              "message": "No real project files are modified by the temp apply drill."
+            },
+            {
+              "name": "compile",
+              "status": "pass",
+              "message": "Temporary clone py_compile completed."
+            }
+          ],
+          "message": "Temporary clone maintenance apply drill completed.",
+          "preview_only": true
+        }
+      },
+      "rows": [
+        {
+          "name": "proposal",
+          "status": "pass",
+          "message": "Self-maintenance proposal sandbox completed without editing source files."
+        },
+        {
+          "name": "plan",
+          "status": "pass",
+          "message": "Patch plan builder completed."
+        },
+        {
+          "name": "preview",
+          "status": "pass",
+          "message": "Dry-run maintenance patch preview generated."
+        },
+        {
+          "name": "audit",
+          "status": "pass",
+          "message": "Patch safety audit completed."
+        },
+        {
+          "name": "temp_apply_drill",
+          "status": "pass",
+          "message": "Temporary clone maintenance apply drill completed."
+        },
+        {
+          "name": "bundle-hashes",
+          "status": "pass",
+          "message": "5 artifact hash(es) bound into the review bundle."
+        }
+      ],
+      "message": "Maintenance review bundle prepared.",
+      "preview_only": true
+    },
+    "apply_gate": {
+      "version": "24.0",
+      "checked_at": "2026-06-20T11:08:43",
+      "project_id": "eidolon",
+      "stage": "v23.8",
+      "status": "blocked",
+      "ok": true,
+      "dry_run": true,
+      "live_allowed": false,
+      "binding": {
+        "version": "24.0",
+        "checked_at": "2026-06-20T11:08:43",
+        "project_id": "eidolon",
+        "stage": "v23.7",
+        "status": "warn",
+        "ok": true,
+        "approved": false,
+        "bundle_hash": "dd8516abcd2d2b3a83a06bdb9e6e281b71d399db121c78ecaaffce42967d3dfa",
+        "supplied_bundle_hash": "d94870eb38e39814aecd394e24c579de9452c2b72936db1d64dd363dfade7994",
+        "rows": [
+          {
+            "name": "bundle-hash-present",
+            "status": "pass",
+            "message": "dd8516abcd2d2b3a83a06bdb9e6e281b71d399db121c78ecaaffce42967d3dfa"
+          },
+          {
+            "name": "exact-hash-match",
+            "status": "warn",
+            "message": "Approval is preview-only until the exact bundle hash is supplied with confirmation."
+          },
+          {
+            "name": "no-apply",
+            "status": "pass",
+            "message": "Approval binding does not apply source edits."
+          }
+        ],
+        "message": "Human approval binding preview completed.",
+        "preview_only": true
+      },
+      "rows": [
+        {
+          "name": "dry-run-default",
+          "status": "pass",
+          "message": "Real maintenance apply defaults to dry-run."
+        },
+        {
+          "name": "approval-binding",
+          "status": "blocked",
+          "message": "Exact reviewed bundle hash is required for live apply."
+        },
+        {
+          "name": "confirmation-phrase",
+          "status": "blocked",
+          "message": "Live apply requires APPLY EXACT REVIEWED MAINTENANCE BUNDLE."
+        },
+        {
+          "name": "live-apply",
+          "status": "dry_run",
+          "message": "No source edits were applied by this report."
+        }
+      ],
+      "message": "Real maintenance patch apply gate evaluated; no edit engine is run in dry-run mode.",
+      "preview_only": true
+    }
+  },
+  "rows": [
+    {
+      "name": "review-bundle",
+      "status": "pass",
+      "message": "Maintenance review bundle prepared."
+    },
+    {
+      "name": "stop-before-real-apply",
+      "status": "pass",
+      "message": "Controlled cycle creates review artifacts only."
+    },
+    {
+      "name": "apply-gate-preview",
+      "status": "pass",
+      "message": "Real maintenance patch apply gate evaluated; no edit engine is run in dry-run mode."
+    }
+  ],
+  "message": "Controlled maintenance cycle completed and stopped before live apply."
+}

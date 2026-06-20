@@ -1,0 +1,323 @@
+{
+  "version": "12.0",
+  "checked_at": "2026-06-19T23:11:52",
+  "project_id": "eidolon",
+  "status": "passed",
+  "ok": true,
+  "verification": {
+    "version": "12.0",
+    "checked_at": "2026-06-19T23:11:52",
+    "project_id": "eidolon",
+    "status": "passed",
+    "ok": true,
+    "apply_report_status": null,
+    "latest_apply_integrity": {
+      "status": "missing",
+      "ok": true,
+      "message": "No latest real apply report exists."
+    },
+    "latest_dry_run_apply_status": "dry_run",
+    "rows": [
+      {
+        "command": "/opt/pyvenv/bin/python -m py_compile conscious_agent/actions.py conscious_agent/api_server.py conscious_agent/approval_manager.py conscious_agent/autonomous_dev_cycle.py conscious_agent/brain.py conscious_agent/chat.py conscious_agent/chat_action_router.py conscious_agent/code_reviewer.py conscious_agent/command_runner.py conscious_agent/controlled_build_cycle.py conscious_agent/dashboard.py conscious_agent/dashboard_chat_console.py conscious_agent/desires.py conscious_agent/desktop_notifier.py conscious_agent/desktop_onboarding_wizard.py conscious_agent/desktop_setup_helper.py conscious_agent/desktop_shell.py conscious_agent/desktop_tray.py conscious_agent/dev_loop_runner.py conscious_agent/diagnostics.py conscious_agent/file_tools.py conscious_agent/goal_manager.py conscious_agent/guided_work_session.py conscious_agent/inner_loop.py conscious_agent/local_brain.py conscious_agent/main.py conscious_agent/maintenance_advisor.py conscious_agent/memory.py conscious_agent/memory_compactor.py conscious_agent/notification_manager.py conscious_agent/operational_readiness.py conscious_agent/opinions.py conscious_agent/patch_applier.py conscious_agent/patch_suggester.py conscious_agent/paths.py conscious_agent/planner.py conscious_agent/project_indexer.py conscious_agent/project_intelligence.py conscious_agent/project_manager.py conscious_agent/reflection.py conscious_agent/safety.py conscious_agent/self_improver.py conscious_agent/self_model.py conscious_agent/session_planner.py conscious_agent/settings_manager.py conscious_agent/stabilization_checkpoint.py conscious_agent/stable_loop_audit.py conscious_agent/stable_loop_decision_report.py conscious_agent/stable_loop_followup_completion.py conscious_agent/stable_loop_followup_lifecycle.py conscious_agent/stable_loop_followup_tasks.py conscious_agent/stable_loop_guardrails.py conscious_agent/stable_loop_operator_notes.py conscious_agent/stable_loop_review.py conscious_agent/stable_supervised_loop.py conscious_agent/task_approval_bridge.py conscious_agent/task_cycle_policy.py conscious_agent/task_executor.py conscious_agent/task_lifecycle.py conscious_agent/task_patch_bridge.py conscious_agent/task_queue.py conscious_agent/task_recovery.py conscious_agent/task_result_evaluator.py conscious_agent/task_work_executor.py conscious_agent/test_report_reviewer.py conscious_agent/test_runner.py conscious_agent/vector_memory.py conscious_agent/watch_mode.py conscious_agent/work_cycle.py conscious_agent/work_queue.py conscious_agent/work_queue_executor.py conscious_agent/work_queue_patch_bridge.py conscious_agent/workspace_execution.py conscious_agent/workspace_orchestration.py tools/smoke_check.py",
+        "started_at": "2026-06-19T23:11:45",
+        "finished_at": "2026-06-19T23:11:46",
+        "return_code": 0,
+        "ok": true,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": "/opt/pyvenv/bin/python conscious_agent/main.py --doctor",
+        "started_at": "2026-06-19T23:11:46",
+        "finished_at": "2026-06-19T23:11:49",
+        "return_code": 0,
+        "ok": true,
+        "stdout": "# Eidolon v7.2 Doctor Mode\n\nVersion: 12.0\nChecked at: 2026-06-19T23:11:49.189045+00:00\nStatus: BLOCKED\nConfidence score: 61%\nMessage: Doctor status is blocked with confidence score 61%.\n\n## Subreports\n- stabilization: FAIL - Stabilization checkpoint failed with 1 blocker(s) and 1 warning(s).\n- confidence: LIMITED_MODE - Stable loop confidence is 61% (limited_mode).\n- repair_suggestions: WARN - Generated 3 repair suggestion(s).\n- patch_integrity: WARN - Checked metadata for 7 patch proposal(s).\n- task_review: WARN - Reviewed 0 task lifecycle row(s).\n- recovery_drill: PASS - Recovery drill simulated 5 failure mode(s) without mutating project state.\n- hardening: PASS - Hardening report checked 133 surface item(s).\n\n## Blockers\n- stabilization: Stabilization checkpoint failed with 1 blocker(s) and 1 warning(s).\n- confidence: Stable loop confidence is 61% (limited_mode).\n\n## Warnings\n- confidence: Stable loop confidence is 61% (limited_mode).\n- repair_suggestions: Generated 3 repair suggestion(s).\n- patch_integrity: Checked metadata for 7 patch proposal(s).\n- task_review: Reviewed 0 task lifecycle row(s).\n\n## Next commands\n- python conscious_agent/main.py --repair-suggestions\n- python conscious_agent/main.py --controlled-self-build --dry-run --no-ai-stable-loop\n- python tools/smoke_check.py\n",
+        "stderr": ""
+      },
+      {
+        "command": "/opt/pyvenv/bin/python conscious_agent/main.py --stabilization-checkpoint --stabilization-full",
+        "started_at": "2026-06-19T23:11:49",
+        "finished_at": "2026-06-19T23:11:50",
+        "return_code": 0,
+        "ok": true,
+        "stdout": "ories\": {}\n      }\n    },\n    {\n      \"name\": \"cycle-policy-decision\",\n      \"status\": \"pass\",\n      \"message\": \"Cycle policy selected action: no_task.\",\n      \"category\": \"tasks\",\n      \"details\": {\n        \"decision\": {\n          \"ok\": true,\n          \"action\": \"no_task\",\n          \"task_id\": \"\",\n          \"title\": \"\",\n          \"stage\": \"\",\n          \"stage_label\": \"\",\n          \"reason\": \"No open task lifecycle candidates found.\",\n          \"lifecycle\": null,\n          \"task\": null,\n          \"metadata\": {\n            \"project\": \"eidolon\",\n            \"candidate_count\": 0\n          }\n        },\n        \"candidate_count\": 0\n      }\n    },\n    {\n      \"name\": \"stable-loop-preflight\",\n      \"status\": \"pass\",\n      \"message\": \"Stable-loop preflight returns next decision and lifecycle summary.\",\n      \"category\": \"stable-loop\",\n      \"details\": {\n        \"ok\": true,\n        \"next_action\": \"no_task\"\n      }\n    },\n    {\n      \"name\": \"stable-loop-closure-guardrails\",\n      \"status\": \"pass\",\n      \"message\": \"Stable-loop closure guardrails are clear.\",\n      \"category\": \"stable-loop\",\n      \"details\": {\n        \"ok_for_preview\": true,\n        \"ok_for_live\": true,\n        \"unresolved_count\": 0,\n        \"warnings\": []\n      }\n    },\n    {\n      \"name\": \"stable-loop-review-summary\",\n      \"status\": \"pass\",\n      \"message\": \"Stable-loop review summary is available.\",\n      \"category\": \"stable-loop\",\n      \"details\": {\n        \"counts\": {\n          \"approved_for_live\": 0,\n          \"rejected\": 0,\n          \"reviewed\": 0,\n          \"superseded\": 0,\n          \"unreviewed\": 3\n        }\n      }\n    },\n    {\n      \"name\": \"stable-loop-decision-summary\",\n      \"status\": \"pass\",\n      \"message\": \"Stable-loop decision report is available.\",\n      \"category\": \"stable-loop\",\n      \"details\": {\n        \"counts\": {\n          \"fix_forward\": 0,\n          \"keep\": 0,\n          \"needs_review\": 0,\n          \"rollback\": 0,\n          \"undecided\": 3\n        }\n      }\n    },\n    {\n      \"name\": \"stable-loop-followup-lifecycle\",\n      \"status\": \"pass\",\n      \"message\": \"Stable-loop follow-up lifecycle summary is available.\",\n      \"category\": \"stable-loop\",\n      \"details\": {\n        \"ready_to_resolve_loop_count\": 0\n      }\n    },\n    {\n      \"name\": \"stable-loop-followup-completion\",\n      \"status\": \"pass\",\n      \"message\": \"Stable-loop follow-up completion report is available.\",\n      \"category\": \"stable-loop\",\n      \"details\": {\n        \"unresolved_count\": 0,\n        \"cleanup_candidate_count\": 0\n      }\n    },\n    {\n      \"name\": \"cli-stabilization-surface\",\n      \"status\": \"pass\",\n      \"message\": \"Stabilization checkpoint CLI flags are present.\",\n      \"category\": \"surface\",\n      \"details\": {\n        \"missing_flags\": []\n      }\n    },\n    {\n      \"name\": \"api-stabilization-surface\",\n      \"status\": \"pass\",\n      \"message\": \"Checkpoint API route and related loop endpoints are documented.\",\n      \"category\": \"surface\",\n      \"details\": {\n        \"missing_endpoints\": []\n      }\n    },\n    {\n      \"name\": \"dashboard-stabilization-surface\",\n      \"status\": \"pass\",\n      \"message\": \"Checkpoint dashboard route and core dashboard routes are present.\",\n      \"category\": \"surface\",\n      \"details\": {\n        \"missing_routes\": []\n      }\n    },\n    {\n      \"name\": \"dashboard-api-prefix-routing\",\n      \"status\": \"pass\",\n      \"message\": \"Dashboard API routing uses exact /api or /api/... matching, so /api-info stays human-readable.\",\n      \"category\": \"surface\",\n      \"details\": {}\n    },\n    {\n      \"name\": \"smoke-check-readiness\",\n      \"status\": \"fail\",\n      \"message\": \"Smoke check is missing: stabilization command\",\n      \"category\": \"smoke\",\n      \"details\": {\n        \"checks\": {\n          \"stabilization command\": false,\n          \"stable loop guardrails\": true,\n          \"stable loop preflight\": true,\n          \"project intelligence\": true,\n          \"workspace orchestration\": true,\n          \"environment warning helper\": true\n        }\n      }\n    }\n  ]\n}\n",
+        "stderr": ""
+      },
+      {
+        "command": "/opt/pyvenv/bin/python conscious_agent/main.py --readme-gate",
+        "started_at": "2026-06-19T23:11:50",
+        "finished_at": "2026-06-19T23:11:52",
+        "return_code": 0,
+        "ok": true,
+        "stdout": "# Eidolon v8.8 README Enforcement Gate\n\nVersion: 12.0\nChecked at: 2026-06-19T23:11:52\nStatus: PASS\nMessage: README gate checked 41 item(s): 0 fail, 0 warn.\n\n## Warnings\n- None.\n\n## Errors\n- None.\n\n## Blocked Reasons\n- None.\n\n## Rows\n- PASS readme-section-v8.1: present\n- PASS readme-section-v8.2: present\n- PASS readme-section-v8.3: present\n- PASS readme-section-v8.4: present\n- PASS readme-section-v8.5: present\n- PASS readme-section-v8.6: present\n- PASS readme-section-v8.7: present\n- PASS readme-section-v8.8: present\n- PASS readme-section-v8.9: present\n- PASS readme-section-v9.0: present\n- PASS readme-section-v9.1: present\n- PASS readme-section-v9.2: present\n- PASS readme-section-v9.3: present\n- PASS readme-section-v9.4: present\n- PASS readme-section-v9.5: present\n- PASS readme-section-v9.6: present\n- PASS readme-section-v9.7: present\n- PASS readme-section-v9.8: present\n- PASS readme-section-v9.9: present\n- PASS readme-section-v10.0: present\n- PASS readme-section-v10.1: present\n- PASS readme-section-v10.2: present\n- PASS readme-section-v10.3: present\n- PASS readme-section-v10.4: present\n- PASS readme-section-v10.5: present\n- PASS readme-section-v10.6: present\n- PASS readme-section-v10.7: present\n- PASS readme-section-v10.8: present\n- PASS readme-section-v10.9: present\n- PASS readme-section-v11.0: present\n- PASS readme-section-v11.1: present\n- PASS readme-section-v11.2: present\n- PASS readme-section-v11.3: present\n- PASS readme-section-v11.4: present\n- PASS readme-section-v11.5: present\n- PASS readme-section-v11.6: present\n- PASS readme-section-v11.7: present\n- PASS readme-section-v11.8: present\n- PASS readme-section-v11.9: present\n- PASS readme-section-v12.0: present\n- PASS settings-version: settings_version=12.0\n",
+        "stderr": ""
+      }
+    ],
+    "rollback_recommended": false,
+    "message": "Verification passed; 0 command(s) failed; latest apply integrity=missing."
+  },
+  "readme_gate": {
+    "version": "12.0",
+    "checked_at": "2026-06-19T23:11:52",
+    "project_id": "eidolon",
+    "status": "pass",
+    "ok": true,
+    "rows": [
+      {
+        "name": "readme-section-v8.1",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v8.2",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v8.3",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v8.4",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v8.5",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v8.6",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v8.7",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v8.8",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v8.9",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.0",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.1",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.2",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.3",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.4",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.5",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.6",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.7",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.8",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v9.9",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.0",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.1",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.2",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.3",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.4",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.5",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.6",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.7",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.8",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v10.9",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.0",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.1",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.2",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.3",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.4",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.5",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.6",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.7",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.8",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v11.9",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "readme-section-v12.0",
+        "status": "pass",
+        "message": "present"
+      },
+      {
+        "name": "settings-version",
+        "status": "pass",
+        "message": "settings_version=12.0"
+      }
+    ],
+    "message": "README gate checked 41 item(s): 0 fail, 0 warn."
+  },
+  "boundary": {
+    "version": "12.0",
+    "checked_at": "2026-06-19T23:11:52",
+    "project_id": "eidolon",
+    "active_project_root": "/mnt/data/eidolon_v12_work/Eidolon",
+    "status": "pass",
+    "ok": true,
+    "rows": [
+      {
+        "path": "README_NEXT_STEPS.md",
+        "action": "modify",
+        "status": "pass",
+        "problems": []
+      }
+    ],
+    "message": "Project boundary check reviewed 1 staged change row(s)."
+  },
+  "health": {
+    "version": "12.0",
+    "checked_at": "2026-06-19T23:11:52",
+    "project_id": "eidolon",
+    "status": "pass",
+    "ok": true,
+    "all_projects": false,
+    "rows": [
+      {
+        "id": "eidolon",
+        "name": "Eidolon",
+        "root": "/mnt/data/eidolon_v12_work/Eidolon",
+        "root_exists": true,
+        "readme_exists": true,
+        "test_command_count": 4,
+        "safe_command_profile": "eidolon",
+        "safe_command_profile_exists": true,
+        "safe_to_modify": true,
+        "status": "pass",
+        "blockers": []
+      }
+    ],
+    "counts": {
+      "pass": 1
+    },
+    "message": "Checked health for 1 project(s)."
+  },
+  "rollback_recommended": false,
+  "blocked_reasons": [],
+  "message": "Workspace verification pipeline passed."
+}

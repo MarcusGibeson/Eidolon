@@ -1,0 +1,301 @@
+{
+  "version": "20.0",
+  "checked_at": "2026-06-20T02:32:34",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "patch_id": "validated_ai_patch_aa7bdd79bc6d4993",
+  "saved_manifest": {
+    "version": "20.0",
+    "created_at": "2026-06-20T02:32:33",
+    "project_id": "eidolon",
+    "patch_id": "validated_ai_patch_aa7bdd79bc6d4993",
+    "draft_id": null,
+    "request_id": null,
+    "artifact_hashes": {
+      "objective_refinement": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+      "context_ranking": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+      "safety_envelope": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+      "generated_patch_validation": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+      "patch_simulation": "fa0aaf9184981c86cf950697e2a0f878db8758dca45ad2ffea2dd78aa8024c39",
+      "test_stub_plan": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+      "patch_review_score": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+      "recovery_plan": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+      "diff_bundle": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+      "semantic_checks": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+      "release_readiness_preview": "b88c968347882cbae54294823cbdb972a478f3238a2013bb1e1baf9c5b62ddf5",
+      "release_artifact": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+      "release_audit_trail": "a1be0752ea794461440aca425f92a7b52676ecc9b8521ed1a1d87f12cf5c23ff"
+    },
+    "artifact_count": 13,
+    "status": "pass",
+    "ok": true,
+    "rows": [
+      {
+        "name": "objective_refinement",
+        "status": "pass",
+        "sha256": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+        "message": "objective_refinement snapshot hash captured."
+      },
+      {
+        "name": "context_ranking",
+        "status": "pass",
+        "sha256": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+        "message": "context_ranking snapshot hash captured."
+      },
+      {
+        "name": "safety_envelope",
+        "status": "pass",
+        "sha256": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+        "message": "safety_envelope snapshot hash captured."
+      },
+      {
+        "name": "generated_patch_validation",
+        "status": "pass",
+        "sha256": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+        "message": "generated_patch_validation snapshot hash captured."
+      },
+      {
+        "name": "patch_simulation",
+        "status": "pass",
+        "sha256": "fa0aaf9184981c86cf950697e2a0f878db8758dca45ad2ffea2dd78aa8024c39",
+        "message": "patch_simulation snapshot hash captured."
+      },
+      {
+        "name": "test_stub_plan",
+        "status": "pass",
+        "sha256": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+        "message": "test_stub_plan snapshot hash captured."
+      },
+      {
+        "name": "patch_review_score",
+        "status": "pass",
+        "sha256": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+        "message": "patch_review_score snapshot hash captured."
+      },
+      {
+        "name": "recovery_plan",
+        "status": "pass",
+        "sha256": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+        "message": "recovery_plan snapshot hash captured."
+      },
+      {
+        "name": "diff_bundle",
+        "status": "pass",
+        "sha256": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+        "message": "diff_bundle snapshot hash captured."
+      },
+      {
+        "name": "semantic_checks",
+        "status": "pass",
+        "sha256": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+        "message": "semantic_checks snapshot hash captured."
+      },
+      {
+        "name": "release_readiness_preview",
+        "status": "pass",
+        "sha256": "b88c968347882cbae54294823cbdb972a478f3238a2013bb1e1baf9c5b62ddf5",
+        "message": "release_readiness_preview snapshot hash captured."
+      },
+      {
+        "name": "release_artifact",
+        "status": "pass",
+        "sha256": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+        "message": "release_artifact snapshot hash captured."
+      },
+      {
+        "name": "release_audit_trail",
+        "status": "pass",
+        "sha256": "a1be0752ea794461440aca425f92a7b52676ecc9b8521ed1a1d87f12cf5c23ff",
+        "message": "release_audit_trail snapshot hash captured."
+      }
+    ],
+    "message": "Validated patch approval manifest binds approval to the exact reviewed v18/v19 artifact set."
+  },
+  "current_manifest": {
+    "version": "20.0",
+    "created_at": "2026-06-20T02:32:34",
+    "project_id": "eidolon",
+    "patch_id": "validated_ai_patch_aa7bdd79bc6d4993",
+    "draft_id": null,
+    "request_id": null,
+    "artifact_hashes": {
+      "objective_refinement": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+      "context_ranking": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+      "safety_envelope": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+      "generated_patch_validation": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+      "patch_simulation": "fa0aaf9184981c86cf950697e2a0f878db8758dca45ad2ffea2dd78aa8024c39",
+      "test_stub_plan": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+      "patch_review_score": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+      "recovery_plan": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+      "diff_bundle": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+      "semantic_checks": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+      "release_readiness_preview": "b88c968347882cbae54294823cbdb972a478f3238a2013bb1e1baf9c5b62ddf5",
+      "release_artifact": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+      "release_audit_trail": "a1be0752ea794461440aca425f92a7b52676ecc9b8521ed1a1d87f12cf5c23ff"
+    },
+    "artifact_count": 13,
+    "status": "pass",
+    "ok": true,
+    "rows": [
+      {
+        "name": "objective_refinement",
+        "status": "pass",
+        "sha256": "a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d",
+        "message": "objective_refinement snapshot hash captured."
+      },
+      {
+        "name": "context_ranking",
+        "status": "pass",
+        "sha256": "33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056",
+        "message": "context_ranking snapshot hash captured."
+      },
+      {
+        "name": "safety_envelope",
+        "status": "pass",
+        "sha256": "66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363",
+        "message": "safety_envelope snapshot hash captured."
+      },
+      {
+        "name": "generated_patch_validation",
+        "status": "pass",
+        "sha256": "dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924",
+        "message": "generated_patch_validation snapshot hash captured."
+      },
+      {
+        "name": "patch_simulation",
+        "status": "pass",
+        "sha256": "fa0aaf9184981c86cf950697e2a0f878db8758dca45ad2ffea2dd78aa8024c39",
+        "message": "patch_simulation snapshot hash captured."
+      },
+      {
+        "name": "test_stub_plan",
+        "status": "pass",
+        "sha256": "c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f",
+        "message": "test_stub_plan snapshot hash captured."
+      },
+      {
+        "name": "patch_review_score",
+        "status": "pass",
+        "sha256": "6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1",
+        "message": "patch_review_score snapshot hash captured."
+      },
+      {
+        "name": "recovery_plan",
+        "status": "pass",
+        "sha256": "d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753",
+        "message": "recovery_plan snapshot hash captured."
+      },
+      {
+        "name": "diff_bundle",
+        "status": "pass",
+        "sha256": "4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c",
+        "message": "diff_bundle snapshot hash captured."
+      },
+      {
+        "name": "semantic_checks",
+        "status": "pass",
+        "sha256": "eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01",
+        "message": "semantic_checks snapshot hash captured."
+      },
+      {
+        "name": "release_readiness_preview",
+        "status": "pass",
+        "sha256": "b88c968347882cbae54294823cbdb972a478f3238a2013bb1e1baf9c5b62ddf5",
+        "message": "release_readiness_preview snapshot hash captured."
+      },
+      {
+        "name": "release_artifact",
+        "status": "pass",
+        "sha256": "d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a",
+        "message": "release_artifact snapshot hash captured."
+      },
+      {
+        "name": "release_audit_trail",
+        "status": "pass",
+        "sha256": "a1be0752ea794461440aca425f92a7b52676ecc9b8521ed1a1d87f12cf5c23ff",
+        "message": "release_audit_trail snapshot hash captured."
+      }
+    ],
+    "message": "Validated patch approval manifest binds approval to the exact reviewed v18/v19 artifact set."
+  },
+  "bundle_present": true,
+  "rows": [
+    {
+      "name": "patch-id",
+      "status": "pass",
+      "message": "saved=validated_ai_patch_aa7bdd79bc6d4993 current=validated_ai_patch_aa7bdd79bc6d4993"
+    },
+    {
+      "name": "project-id",
+      "status": "pass",
+      "message": "saved=eidolon current=eidolon"
+    },
+    {
+      "name": "artifact-context_ranking",
+      "status": "pass",
+      "message": "saved=33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056 current=33845db315ce65245f42797f9762f66e0addbab79b02708a7759feb92c753056"
+    },
+    {
+      "name": "artifact-diff_bundle",
+      "status": "pass",
+      "message": "saved=4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c current=4f317278a102106d2f50977915e6c2170ba2911cb2599df9cdcaa8e7963f2d5c"
+    },
+    {
+      "name": "artifact-generated_patch_validation",
+      "status": "pass",
+      "message": "saved=dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924 current=dd28080d3d6437fb17148a8e4c202bb5d3f6643f5e149d22e7d95838fed61924"
+    },
+    {
+      "name": "artifact-objective_refinement",
+      "status": "pass",
+      "message": "saved=a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d current=a75480d0ef9419655473b8d1711dab35865f4aa2d1dfc5108fdeb0234caaab9d"
+    },
+    {
+      "name": "artifact-patch_review_score",
+      "status": "pass",
+      "message": "saved=6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1 current=6232b040e36e5faf612b0dc5ee91e48a1a8c7024860e01faea9efb14628190c1"
+    },
+    {
+      "name": "artifact-patch_simulation",
+      "status": "pass",
+      "message": "saved=fa0aaf9184981c86cf950697e2a0f878db8758dca45ad2ffea2dd78aa8024c39 current=fa0aaf9184981c86cf950697e2a0f878db8758dca45ad2ffea2dd78aa8024c39"
+    },
+    {
+      "name": "artifact-recovery_plan",
+      "status": "pass",
+      "message": "saved=d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753 current=d6e9c31cee730954c0dee3aa47308b524264e1f778e886a4f52b8fd019c0b753"
+    },
+    {
+      "name": "artifact-release_artifact",
+      "status": "pass",
+      "message": "saved=d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a current=d2e8192eaaa4ad742438fee4a228bba8a8d654e31bcd7c26be760710d2325a8a"
+    },
+    {
+      "name": "artifact-release_audit_trail",
+      "status": "pass",
+      "message": "saved=a1be0752ea794461440aca425f92a7b52676ecc9b8521ed1a1d87f12cf5c23ff current=a1be0752ea794461440aca425f92a7b52676ecc9b8521ed1a1d87f12cf5c23ff"
+    },
+    {
+      "name": "artifact-release_readiness_preview",
+      "status": "pass",
+      "message": "saved=b88c968347882cbae54294823cbdb972a478f3238a2013bb1e1baf9c5b62ddf5 current=b88c968347882cbae54294823cbdb972a478f3238a2013bb1e1baf9c5b62ddf5"
+    },
+    {
+      "name": "artifact-safety_envelope",
+      "status": "pass",
+      "message": "saved=66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363 current=66b3f42d1c51456a5e47b8a15825ef62723f2a24bdb35f61865d19be8e083363"
+    },
+    {
+      "name": "artifact-semantic_checks",
+      "status": "pass",
+      "message": "saved=eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01 current=eda56e621666072ee24ad82f1277d8343161c7d50c945335835d158c1dd17e01"
+    },
+    {
+      "name": "artifact-test_stub_plan",
+      "status": "pass",
+      "message": "saved=c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f current=c5bd094d1e6db540cdbd2540112c26967e0ae5f03ea7bc59e4df65eac5165d0f"
+    }
+  ],
+  "message": "Review bundle integrity requires saved and current validated AI patch artifact hashes to match. If this is blocked after legitimate regenerated reports, run --ai-patch-review-bundle or POST /api/code-patches/refresh-review-bundle to save a fresh review bundle before approval."
+}

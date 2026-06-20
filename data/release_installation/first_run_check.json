@@ -1,0 +1,145 @@
+{
+  "version": "22.0",
+  "checked_at": "2026-06-20T08:52:30",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "rows": [
+    {
+      "name": "python-version",
+      "status": "pass",
+      "message": "3.11.9"
+    },
+    {
+      "name": "requirements",
+      "status": "pass",
+      "message": "requirements.txt exists."
+    },
+    {
+      "name": "settings",
+      "status": "pass",
+      "message": "settings.json loads."
+    },
+    {
+      "name": "readme",
+      "status": "pass",
+      "message": "README exists."
+    },
+    {
+      "name": "workspace-metadata",
+      "status": "pass",
+      "message": "Portable workspace metadata check completed."
+    },
+    {
+      "name": "dashboard-import",
+      "status": "pass",
+      "message": "dashboard.py exists/importable from project path."
+    },
+    {
+      "name": "api-import",
+      "status": "pass",
+      "message": "api_server.py exists."
+    },
+    {
+      "name": "dependencies",
+      "status": "pass",
+      "message": "Dependency advisor completed."
+    },
+    {
+      "name": "ollama-optional",
+      "status": "warn",
+      "message": "Ollama is optional for first-run packaging checks; use --settings-health for live model status."
+    }
+  ],
+  "dependency_advisor": {
+    "version": "22.0",
+    "checked_at": "2026-06-20T08:52:30",
+    "project_id": "eidolon",
+    "status": "pass",
+    "ok": true,
+    "packages": [
+      {
+        "requirement": "requests",
+        "module": "requests",
+        "installed": true,
+        "optional": false
+      },
+      {
+        "requirement": "chromadb",
+        "module": "chromadb",
+        "installed": true,
+        "optional": true
+      }
+    ],
+    "missing_required": [],
+    "missing_optional": [],
+    "install_command": "pip install -r requirements.txt",
+    "rows": [
+      {
+        "name": "requirements-file",
+        "status": "pass",
+        "message": "2 requirement(s) listed."
+      },
+      {
+        "name": "required-packages",
+        "status": "pass",
+        "message": "Missing required: none."
+      },
+      {
+        "name": "optional-packages",
+        "status": "pass",
+        "message": "Missing optional: none."
+      }
+    ],
+    "message": "Dependency advisor completed.",
+    "preview_only": true
+  },
+  "portable_metadata": {
+    "version": "22.0",
+    "checked_at": "2026-06-20T08:52:30",
+    "project_id": "eidolon",
+    "status": "pass",
+    "ok": true,
+    "rows": [
+      {
+        "name": "workspace-root-version",
+        "status": "pass",
+        "message": "workspace root version=22.0 expected=22.0"
+      },
+      {
+        "name": "active-project-version",
+        "status": "pass",
+        "message": "active project version=v22.0 last_updated_for=v22.0"
+      },
+      {
+        "name": "project-root-portable",
+        "status": "pass",
+        "message": "project root=. should resolve from ROOT_DIR."
+      },
+      {
+        "name": "readme-path",
+        "status": "pass",
+        "message": "README path resolves inside the package."
+      },
+      {
+        "name": "command-profiles",
+        "status": "pass",
+        "message": "4 command profile file(s) found."
+      },
+      {
+        "name": "no-absolute-paths",
+        "status": "pass",
+        "message": "Workspace metadata should not contain /mnt/data or hard-coded user roots."
+      }
+    ],
+    "message": "Portable workspace metadata check completed.",
+    "preview_only": true
+  },
+  "recommended_first_commands": [
+    "pip install -r requirements.txt",
+    "python conscious_agent/main.py --first-run-check",
+    "python conscious_agent/main.py --doctor",
+    "python conscious_agent/main.py --dashboard"
+  ],
+  "message": "First-run setup check completed."
+}

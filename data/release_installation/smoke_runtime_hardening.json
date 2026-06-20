@@ -1,0 +1,36 @@
+{
+  "version": "22.0",
+  "checked_at": "2026-06-20T08:54:01",
+  "project_id": "eidolon",
+  "tier": "full",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "name": "smoke-script",
+      "status": "pass",
+      "message": "tools/smoke_check.py exists."
+    },
+    {
+      "name": "single-check-mode",
+      "status": "pass",
+      "message": "Each check can run in an isolated subprocess."
+    },
+    {
+      "name": "tiered-mode",
+      "status": "pass",
+      "message": "Smoke tiers are declared."
+    },
+    {
+      "name": "json-summary",
+      "status": "pass",
+      "message": "Machine-readable smoke summaries are available."
+    },
+    {
+      "name": "timeout-wrapper",
+      "status": "pass",
+      "message": "Per-check timeout handling is present."
+    }
+  ],
+  "message": "Smoke runtime hardening check completed."
+}

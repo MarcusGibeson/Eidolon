@@ -1,0 +1,45 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "release_version": "21.0",
+  "title": "Eidolon v21.0 Release Notes",
+  "major_changes": [
+    "Verified release package loop with manifest integrity checks.",
+    "Package inventory and checksum reports.",
+    "Release notes and handoff report generation.",
+    "Guarded zip builder and unzip verification previews.",
+    "Release dashboard/package review surface."
+  ],
+  "new_commands": [
+    "--release-manifest-integrity",
+    "--package-inventory",
+    "--package-checksums",
+    "--release-notes",
+    "--release-handoff-report",
+    "--build-release-zip",
+    "--verify-release-unzip",
+    "--release-pipeline-audit",
+    "--verified-release-package-loop"
+  ],
+  "known_warnings": [
+    "Ollama health depends on the local service running.",
+    "chromadb must be installed from requirements.txt for semantic memory features."
+  ],
+  "readme_excerpt": "# Eidolon v21.0 - Verified Installable Release Loop\n\nv21.0 bundles the v20.1 through v21.0 installable-release roadmap into one release. Eidolon now treats source-only packaging as a named release profile, scans packages for private/runtime data, checks portable workspace metadata, provides first-run setup guidance, explains missing dependencies, generates upgrade notes, guards runtime migration, verifies installability, polishes the release package dashboard, and runs one bounded verified installable release loop. The zip machine now has a privacy officer, because apparently that is where we are as a species.\n\n## What changed from v20.1 through v21.0\n\n- Added `conscious_agent/release_installation.py`\n  - v20.1 release profile system with `source-only` as the share-safe default\n  - v20.2 package privacy scanner for memories, chat logs, approvals, vector stores, backups, diagnostics, local paths, sandbox paths, and generated patch state\n  - v20.3 portable workspace metadata check for ROOT_DIR-relative project roots and no stale `/mnt/data` or hard-coded user paths\n  - v20.4 first-run setup check for Python, required files, settings, workspace metadata, dashboard/API importability, and optional model status guidance\n  - v20.5 dependency install advisor with `pip install -r requirements.txt` guidance\n  - v20.6 release upgrade notes from v20.0.1 to v21.0\n  - v20.7 runtime data migration guard so source-only packages do not bulldoze existing private runtime state\n  - v20.8 release install verification for compile, manifest, privacy, portable metadata, first-run, unzip, and optional smoke checks\n  - v21.0 verified installable release loop\n- Updated `conscious_agent/release_packaging.py`\n  - release packaging metadata is now `21.0`\n  - verified package loop now uses the v21 package name and metadata\n- Updated `conscious_agent/workspace_orchestration.py`\n  - fixed `WORKSPACE_ORCHESTRATION_VERSION` so normal workspace registry/audit calls no longer rewrite `data/workspaces/projects.json` back to stale `15.0`\n- Updated `conscious_agent/main.py`\n  - added `--release-profiles`\n  - added `--package-privacy-scan`\n  - added `--portable-metadata-check`\n  - added `--first-run-check`\n  - added `--dependency-advisor`\n  - added `--upgrade-notes`\n  - added `--runtime-migration-check`\n  - added `--release-install-verification`\n  - added `--verified-installable-release-loop`\n  - added `--run-install-smoke` for optional heavier install verification\n- Updated `conscious_agent/api_",
+  "rows": [
+    {
+      "name": "readme-section",
+      "status": "pass",
+      "message": "README section for v21.0 found."
+    },
+    {
+      "name": "command-count",
+      "status": "pass",
+      "message": "9 release packaging command(s) listed."
+    }
+  ],
+  "message": "Release notes generated from README and v20 packaging metadata."
+}

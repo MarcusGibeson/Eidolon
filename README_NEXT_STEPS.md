@@ -1,3 +1,1553 @@
+# Eidolon v30.0 - Signed Release Preparation System
+
+v30.0 moves Eidolon from durable release evidence into signing-ready release preparation. It does **not** create real cryptographic signatures, store keys, or claim packages are signed. Instead, it standardizes canonical manifests, canonical evidence schemas, explicit unsigned status, placeholder signature verification, key-policy readiness, and CLI/API/dashboard signing visibility. Apparently trust now requires a full pre-signing bureaucracy, but at least this one does not ask anyone to paste private keys into a dashboard like a cursed security training video.
+
+## What changed in v30.0
+
+- Added `--signed-release-preparation-system` as the v30.0 signing-prep gate.
+- Composes signing readiness, canonical manifest, canonical evidence schema, signing status, placeholder signature contract, key policy readiness, placeholder signature verification, dashboard signing page, API signing endpoints, and the pre-v30 audit.
+- Keeps `signing_status: unsigned` explicit throughout the release evidence path.
+- Confirms no real signing, key generation, or private-key storage is performed.
+- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `30.0`.
+
+## Verification commands for v30.0
+
+```powershell
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --signing-readiness-audit --release-zip-path Eidolon_v30_0.zip --readiness-json
+python conscious_agent/main.py --canonical-manifest-format --release-zip-path Eidolon_v30_0.zip --readiness-json
+python conscious_agent/main.py --canonical-evidence-schema --release-zip-path Eidolon_v30_0.zip --readiness-json
+python conscious_agent/main.py --release-signing-status --release-zip-path Eidolon_v30_0.zip --readiness-json
+python conscious_agent/main.py --signature-placeholder-contract --readiness-json
+python conscious_agent/main.py --key-policy-preparation --readiness-json
+python conscious_agent/main.py --verify-release-signature --release-zip-path Eidolon_v30_0.zip --readiness-json
+python conscious_agent/main.py --dashboard-signing-status --readiness-json
+python conscious_agent/main.py --api-signing-status --readiness-json
+python conscious_agent/main.py --pre-v30-signing-prep-audit --release-zip-path Eidolon_v30_0.zip --readiness-json
+python conscious_agent/main.py --signed-release-preparation-system --release-zip-path Eidolon_v30_0.zip --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+python -u tools/smoke_check.py --tier install --json
+```
+
+## v30.0 safety rules preserved
+
+- Source-only release zips stay source-only.
+- Runtime/private/generated evidence reports stay excluded from shareable packages.
+- No real signature is claimed for unsigned artifacts.
+- No private keys are stored, requested, generated, or packaged.
+- GET dashboard/API routes remain inspection-only.
+- Any future real signing or release mutation must be POST-only and confirmation-gated.
+- Evidence and signing readiness do not equal live apply approval.
+
+## v29.10 - Pre-v30 Signing Prep Audit
+
+v29.10 adds `--pre-v30-signing-prep-audit`, composing the signing readiness audit, canonical manifest, canonical evidence schema, signing status reporter, signature placeholder contract, key policy preparation, signature verification placeholder, dashboard/API signing checks, privacy scan, and README unsigned-status coverage before v30.0.
+
+## v29.9 - API Signing Status
+
+v29.9 adds read-only API signing status surfaces for signing readiness, release signing status, placeholder signature verification, signing policy, and pre-v30 signing audit. These are GET-only inspection routes; any future real signing action must be POST-only and explicitly confirmed.
+
+## v29.8 - Dashboard Signing Status
+
+v29.8 adds a lightweight `/release-signing` dashboard page. The page shows package helper output, unsigned signing status, API links, and copyable CLI commands without running heavy checks on page load and without exposing any private-key input.
+
+## v29.7 - Signature Verification Placeholder
+
+v29.7 adds `--verify-release-signature`. In v30 prep it safely reports unsigned packages as `warn, ok true`, blocks unsupported signature metadata, and does not perform or claim real cryptographic verification.
+
+## v29.6 - Key Policy Preparation
+
+v29.6 adds `--key-policy-preparation`, documenting planned algorithm policy, unsigned-release behavior, missing key configuration, and the hard rule that private keys are not source files, not package files, and not dashboard form material.
+
+## v29.5 - Signature Placeholder Contract
+
+v29.5 adds `--signature-placeholder-contract`, defining null signature fields such as `signature_algorithm`, `signature`, `public_key_fingerprint`, `signed_at`, and `signed_by`. Null signature fields mean the release is unsigned. Revolutionary concept: null means null.
+
+## v29.4 - Signing Status Reporter
+
+v29.4 adds `--release-signing-status`, reporting `signed: false`, `signing_status: unsigned`, package hash when a zip is supplied, and signing readiness. It keeps unsigned artifacts honest instead of decorating them with fake trust glitter.
+
+## v29.3 - Canonical Evidence Bundle Schema
+
+v29.3 adds `--canonical-evidence-schema`, generating a stable evidence shape with schema version, release version, package hash, manifest hash, evidence hash, gate results, warnings, blocked items, verification commands, and explicit unsigned signing status.
+
+## v29.2 - Canonical Manifest Format
+
+v29.2 adds `--canonical-manifest-format`, producing a sorted canonical source manifest with schema version, project name, release version, package profile, hash algorithm, source file entries, excluded paths, volatile metadata paths, and a deterministic manifest hash.
+
+## v29.1 - Signing Readiness Audit
+
+v29.1 adds `--signing-readiness-audit`, checking canonical manifest readiness, evidence schema readiness, explicit package hash fields, deterministic manifest hashing, unsigned status clarity, generated-report exclusion, volatile metadata exclusion from signing inputs, README unsigned-status coverage, and reproducible verification commands.
+
+---
+
+# Eidolon v29.0 - Durable Release Evidence Archive
+
+v29.0 turns v28's verifiable release evidence into durable, replayable local evidence. Eidolon can now persist generated evidence bundles outside source-only packages, replay saved evidence later, run tamper drills against missing or mutated evidence, build a local evidence timeline, summarize trust for the operator, expose lightweight dashboard/API evidence viewers, enforce a generated-report retention policy, and run a pre-v29 evidence audit. The release evidence no longer has the shelf life of a wet receipt, which is apparently progress.
+
+## What changed in v29.0
+
+- Added `--evidence-replay-drill` for synthetic tamper/drift scenarios against release evidence.
+- Added `--persist-release-evidence` to save generated evidence bundles under `reports/release_evidence/`.
+- Added `--replay-release-evidence` to verify a saved bundle against the current release/package context.
+- Added `--evidence-timeline` for local generated evidence history.
+- Added `--evidence-operator-summary` to turn evidence into a compact trust summary.
+- Added `/release-evidence`, a lightweight GET-only dashboard evidence viewer.
+- Added read-only API surfaces for evidence replay, summary, timeline, retention, and archive gates.
+- Added `--evidence-retention-policy` to inspect generated evidence cleanup rules without deleting anything.
+- Added `--evidence-regression-lockdown` to protect v28/v29 evidence behavior.
+- Added `--pre-v29-evidence-audit` as the final v28.x evidence audit.
+- Added `--durable-release-evidence-archive` as the v29.0 gate.
+- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `29.0`.
+
+## Verification commands for v29.0
+
+```powershell
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --evidence-replay-drill --readiness-json
+python conscious_agent/main.py --persist-release-evidence --readiness-json
+python conscious_agent/main.py --replay-release-evidence --readiness-json
+python conscious_agent/main.py --evidence-timeline --readiness-json
+python conscious_agent/main.py --evidence-operator-summary --readiness-json
+python conscious_agent/main.py --dashboard-evidence-viewer --readiness-json
+python conscious_agent/main.py --api-evidence-viewer --readiness-json
+python conscious_agent/main.py --evidence-retention-policy --readiness-json
+python conscious_agent/main.py --evidence-regression-lockdown --readiness-json
+python conscious_agent/main.py --pre-v29-evidence-audit --readiness-json
+python conscious_agent/main.py --durable-release-evidence-archive --readiness-json
+python conscious_agent/main.py --external-zip-install-verification --release-zip-path Eidolon_v29_0.zip --readiness-json
+python conscious_agent/main.py --verify-frozen-release-zip --release-zip-path Eidolon_v29_0.zip --readiness-json
+python conscious_agent/main.py --durable-release-evidence-archive --release-zip-path Eidolon_v29_0.zip --readiness-json
+python -u tools/smoke_check.py --tier install --json
+```
+
+## v29.0 safety rules preserved
+
+- Source-only packages still exclude `reports/`, runtime data, private memory, chat logs, vector DB files, approvals, backups, generated release reports, `.git`, `.venv`, `__pycache__`, and nested zips.
+- Evidence persistence writes generated reports locally only; persisted evidence is not part of the shareable source zip.
+- `/release-evidence` is GET-only and lightweight. Heavy evidence checks remain API/CLI-driven.
+- Evidence replay preserves warning/block visibility instead of flattening everything into a decorative green checkmark.
+- Evidence archive/replay does not grant live apply approval.
+- Dry-runs still do not overwrite real apply/rollback pointers.
+
+## v28.10 - Pre-v29 Evidence Audit
+
+v28.10 adds `--pre-v29-evidence-audit`, which composes the replay drill, evidence persistence, saved replay, timeline, summary, dashboard/API evidence viewers, retention policy, regression lockdown, privacy scan, and README coverage before v29.0.
+
+## v28.9 - Evidence Regression Lockdown
+
+v28.9 adds `--evidence-regression-lockdown` to protect the v28 fixes: metadata-drift-tolerant frozen manifests, continued portable/privacy metadata checks, lightweight `/release-package`, GET-only governance/evidence pages, visible replay warnings, and source-only exclusion for generated reports.
+
+## v28.8 - Evidence Retention Policy
+
+v28.8 adds `--evidence-retention-policy`, a non-destructive report showing which generated evidence files are retained and which would be eligible for future confirmed cleanup. It deletes nothing by default, because cleanup tools with enthusiasm are just vandalism with a progress bar.
+
+## v28.7 - API Evidence Viewer
+
+v28.7 adds read-only API evidence viewer coverage for replay drills, evidence persistence previews, saved replay, timelines, summaries, retention, pre-v29 audit, and the v29 archive gate.
+
+## v28.6 - Dashboard Evidence Viewer
+
+v28.6 adds `/release-evidence`, a GET-only dashboard page for evidence status, timeline previews, operator summaries, copyable verification commands, and links to evidence API reports. The page stays lightweight and avoids eager heavy report generation.
+
+## v28.5 - Evidence-to-Operator Summary
+
+v28.5 adds `--evidence-operator-summary`, a compact report answering what package was verified, what warned, what blocked, whether it is safe to share/install, and the next safe action.
+
+## v28.4 - Evidence Timeline
+
+v28.4 adds `--evidence-timeline`, a local timeline for generated evidence bundles under `reports/release_evidence/`. The timeline is runtime/generated history and remains excluded from source-only releases.
+
+## v28.3 - Evidence Replay Command
+
+v28.3 adds `--replay-release-evidence`, which verifies a saved evidence bundle against the current package context and optional release zip while preserving warning/block visibility.
+
+## v28.2 - Evidence Bundle Persistence
+
+v28.2 adds `--persist-release-evidence`, which writes generated evidence bundles to `reports/release_evidence/` and updates `latest.json`. These files are useful locally and intentionally excluded from source-only packages.
+
+## v28.1 - Evidence Replay and Tamper Drill
+
+v28.1 adds `--evidence-replay-drill`, synthetic evidence replay scenarios for missing sections, changed hashes, missing README notes, hidden warnings, runtime/private contamination, and old evidence replayed against newer packages.
+
+# Eidolon v28.0 - Verifiable Release Evidence System
+
+v28.0 turns the v27 release-candidate governance layer into a verifiable release evidence system. Eidolon can freeze a hash-bound source artifact set, verify a final source-only zip against that frozen candidate while tolerating known portable workspace metadata timestamp churn, export and verify an evidence bundle, show a release-governance dashboard page, enforce a local trust policy, generate artifact diffs, and produce reproducible verification commands. Because apparently a zip file now needs witnesses. It probably does.
+
+## What changed in v28.0
+
+- Added `--release-governance-drill` for synthetic bad-evidence scenarios.
+- Added `--release-evidence-bundle` to export freeze, zip verification, privacy, manifest, trial-upgrade, trust-console, approval-ledger, and command evidence.
+- Added `--verify-release-evidence-bundle` for schema/hash/section verification.
+- Added `/release-governance` as a GET-only release governance dashboard page.
+- Added read-only governance API surfaces for evidence, drills, diffs, policy, and v28 gates.
+- Added `--release-artifact-diff` for candidate-vs-zip drift reporting.
+- Added `--release-signing-preparation` with explicit unsigned signing-ready metadata.
+- Added `--local-trust-policy` for source-only, privacy, README, frozen-candidate, and warning-policy checks.
+- Added `--release-governance-ux-polish` and `--pre-v28-governance-audit`.
+- Added `--verifiable-release-evidence-system` as the v28.0 gate.
+- Fixed the v27 frozen-manifest false block by excluding known portable workspace metadata JSON content from the hash-bound candidate/zip comparison while still leaving metadata covered by portable metadata and privacy checks.
+- Made `/release-package` lightweight and on-demand instead of eagerly building the whole report stack on page load.
+- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `28.0`.
+
+## Verification commands for v28.0
+
+```powershell
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --release-governance-drill --readiness-json
+python conscious_agent/main.py --release-evidence-bundle --readiness-json
+python conscious_agent/main.py --verify-release-evidence-bundle --readiness-json
+python conscious_agent/main.py --release-governance-page --readiness-json
+python conscious_agent/main.py --governance-api-read-only --readiness-json
+python conscious_agent/main.py --release-artifact-diff --readiness-json
+python conscious_agent/main.py --release-signing-preparation --readiness-json
+python conscious_agent/main.py --local-trust-policy --readiness-json
+python conscious_agent/main.py --release-governance-ux-polish --readiness-json
+python conscious_agent/main.py --pre-v28-governance-audit --readiness-json
+python conscious_agent/main.py --verifiable-release-evidence-system --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+python conscious_agent/main.py --external-zip-install-verification --release-zip-path Eidolon_v28_0.zip --readiness-json
+python conscious_agent/main.py --verify-frozen-release-zip --release-zip-path Eidolon_v28_0.zip --readiness-json
+python conscious_agent/main.py --verifiable-release-evidence-system --release-zip-path Eidolon_v28_0.zip --readiness-json
+python -u tools/smoke_check.py --tier install --json
+```
+
+## v28.0 safety rules preserved
+
+- Source-only release zips remain the default.
+- Private/runtime/generated data remains excluded from shareable packages.
+- `/release-package` and `/release-governance` are GET-only report pages.
+- Heavy release/governance checks are button/API/CLI-driven instead of automatic page-load work.
+- Known workspace metadata JSON churn is not treated as hash-bound source drift.
+- Portable metadata and privacy scans still cover packaged metadata files.
+- Evidence bundles are review artifacts, not live approval.
+- No release/apply/rollback pointer is overwritten by dry-runs.
+- Live apply remains POST/confirmation/exact-artifact gated.
+
+## v27.10 - Pre-v28 Governance Audit
+
+v27.10 adds `--pre-v28-governance-audit`, a final release governance gate that composes the governance drill, evidence bundle, evidence verifier, artifact diff, dashboard/API governance surfaces, trust policy, README consistency, privacy scan, and frozen zip verification.
+
+## v27.9 - Release Governance UX Polish
+
+v27.9 adds `--release-governance-ux-polish`, which explains pass/warn/block rows and recommends the next safe operator action instead of leaving the user with a smug status word and no map.
+
+## v27.8 - Local Trust Policy
+
+v27.8 adds `--local-trust-policy`, a code-defined policy requiring source-only packaging, no runtime/private data, current README notes, frozen-candidate zip matching, and explicit handling of non-blocking warnings.
+
+## v27.7 - Release Signing Preparation
+
+v27.7 adds `--release-signing-preparation`, generating a canonical, signing-ready metadata block while clearly marking artifacts as unsigned. No imaginary cryptographic trust, because lies with hashes are still lies.
+
+## v27.6 - Release Artifact Diff
+
+v27.6 adds `--release-artifact-diff`, comparing the frozen candidate and final zip by file paths and hashes while ignoring known portable metadata content churn.
+
+## v27.5 - Governance API Read-Only Surface
+
+v27.5 adds read-only governance API coverage for drills, evidence bundles, bundle verification, artifact diffs, trust policy, pre-v28 audit, and the v28 gate. GET remains inspection-only.
+
+## v27.4 - Release Candidate Review Page
+
+v27.4 adds `/release-governance`, a GET-only dashboard page for release governance status, evidence bundle status, artifact diffs, pre-v28 audit, and the v28 evidence gate.
+
+## v27.3 - Evidence Bundle Verifier
+
+v27.3 adds `--verify-release-evidence-bundle`, which checks evidence bundle schema, required sections, bundle hashes, and visible blocked rows.
+
+## v27.2 - Release Evidence Bundle Export
+
+v27.2 adds `--release-evidence-bundle`, a single reviewable release evidence bundle combining freeze, zip verification, privacy scan, deterministic manifest, trial upgrade, trust console, approval evidence, and reproducible command output.
+
+## v27.1 - Release Governance Evidence Drill
+
+v27.1 adds `--release-governance-drill`, synthetic bad-evidence scenarios for extra files, missing files, changed hashes, README drift, approval hash mismatch, runtime data leaks, and package profile drift.
+
+# Eidolon v27.0 - Release Candidate Governance System
+
+v27.0 turns the trustworthy maintenance console into a release-candidate governance layer. Eidolon can now freeze a reviewed source artifact set, compare a final source-only zip against that frozen manifest, collect approval evidence, reproduce release verification commands, and report operator trust status without pretending any of that is the same as live apply approval. Because apparently "this is the exact thing we reviewed" needed its own constitution.
+
+## What changed in v27.0
+
+- Added `--release-candidate-governance` as the v27.0 gate.
+- Added release candidate governance across freeze, zip verification, evidence ledger, command reproducer, operator trust, and pre-v27 audit checks.
+- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `27.0`.
+- Updated packaged project metadata, settings, active workspace metadata, workspace registry metadata, and command profile versions to `v27.0`.
+- Kept source-only package rules intact: no runtime/private data, approvals, reports, generated release files, nested zips, `.git`, `.venv`, or `__pycache__` in shareable packages.
+
+## Verification commands for v27.0
+
+```powershell
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --trust-console-drill --readiness-json
+python conscious_agent/main.py --trust-console-snapshot --readiness-json
+python conscious_agent/main.py --trust-console-diff --readiness-json
+python conscious_agent/main.py --freeze-release-candidate --readiness-json
+python conscious_agent/main.py --verify-frozen-release-zip --release-zip-path Eidolon_v27_0.zip --readiness-json
+python conscious_agent/main.py --approval-evidence-ledger --release-zip-path Eidolon_v27_0.zip --readiness-json
+python conscious_agent/main.py --release-command-reproducer --release-zip-path Eidolon_v27_0.zip --readiness-json
+python conscious_agent/main.py --console-readme-consistency --readiness-json
+python conscious_agent/main.py --pre-v27-safety-audit --release-zip-path Eidolon_v27_0.zip --readiness-json
+python conscious_agent/main.py --release-candidate-governance --release-zip-path Eidolon_v27_0.zip --readiness-json
+python -u tools/smoke_check.py --tier install --json
+```
+
+## v27.0 safety rules preserved
+
+- GET dashboard/API routes remain read-only preview/status surfaces.
+- POST-only mutation paths remain explicit-confirmation gated.
+- Dry-runs do not overwrite real apply/rollback pointers.
+- Approval evidence is inspectable, but it does not authorize live apply by itself.
+- Release candidate freeze and final zip verification bind to exact file paths and hashes.
+- Runtime/private/generated files stay excluded from source-only release zips.
+
+# Eidolon v26.9 - Pre-v27 Safety Audit
+
+v26.9 adds `--pre-v27-safety-audit`, a final gate before release governance. It composes the trust console, drill mode, snapshot export, snapshot diff, release candidate freezer, frozen zip verifier, approval evidence ledger, README consistency check, and privacy scan into one safety report.
+
+# Eidolon v26.8 - Console-to-README Consistency Check
+
+v26.8 adds `--console-readme-consistency`, which checks that new CLI flags exist, README notes mention the current workflow, and API/dashboard code exposes matching read-only surfaces. Documentation drift is just a bug wearing a cardigan.
+
+# Eidolon v26.7 - Release Command Reproducer
+
+v26.7 adds `--release-command-reproducer`, generating copyable commands that reproduce release verification: compile, version import, privacy scan, manifest integrity, external zip verification, trial upgrade, trust console, and install-tier smoke.
+
+# Eidolon v26.6 - Approval Evidence Ledger
+
+v26.6 adds `--approval-evidence-ledger`, an evidence-only report that records hashes for frozen release candidates, zip verification, review bundles, and trust-console output. It does not grant live apply approval.
+
+# Eidolon v26.5 - Freeze-to-Zip Verifier
+
+v26.5 adds `--verify-frozen-release-zip`, which compares the final source-only zip against the frozen release-candidate manifest. It reports missing, extra, or changed files and blocks if the exact artifact set does not match.
+
+# Eidolon v26.4 - Release Candidate Freezer
+
+v26.4 adds `--freeze-release-candidate`, which creates a sorted source-only file manifest with SHA-256 hashes before packaging. This freezes the reviewed artifact set before anyone starts waving a zip file around like it proves something.
+
+# Eidolon v26.3 - Snapshot Diff
+
+v26.3 adds `--trust-console-diff`, comparing two trust snapshots or a generated baseline against the current snapshot. It highlights changed rows and prevents blocked items from disappearing quietly.
+
+# Eidolon v26.2 - Maintenance Console Snapshot Export
+
+v26.2 adds `--trust-console-snapshot`, exporting the current version, package helper default, latest README heading, console status, operator trust status, route coverage, API defaults, verification commands, and a stable snapshot hash.
+
+# Eidolon v26.1 - Trust Console Drill Mode
+
+v26.1 adds `--trust-console-drill`, running synthetic trust-console scenarios for all-pass, nested warning, nested blocked apply gate, stale package default, missing dashboard route, README drift, and source-only privacy leak cases. Green checkmarks now have to earn rent.
+
+# Eidolon v26.0 - Trustworthy Maintenance Console
+
+v26.0 turns the v25 review system into a broader trustworthy maintenance console. It adds permanent tripwires for the v25.0.1 hotfixes, route coverage checks, API/package-default source-of-truth auditing, nested severity tests, approval-contract inspection, report diffs, gate composition tests, dashboard/API parity checks, and an operator trust report. The point is simple: Eidolon can explain what is safe, what is warned, what is blocked, and why, instead of burying the truth under a cheerful green checkmark like every dashboard with commitment issues.
+
+## What changed in v26.0
+
+- Added `--trustworthy-maintenance-console` as the v26.0 gate.
+- Added dashboard/API parity coverage for the v25.1-v26.0 maintenance trust reports.
+- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `26.0`.
+- Updated packaged project metadata, settings, active workspace metadata, workspace registry metadata, and command profile versions to `v26.0`.
+- Kept real maintenance apply gated behind exact bundle approval and explicit confirmation.
+- Kept release zips source-only by default.
+
+## Verification commands for v26.0
+
+```powershell
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --hotfix-regression-lockdown --readiness-json
+python conscious_agent/main.py --dashboard-route-coverage --readiness-json
+python conscious_agent/main.py --api-default-source-audit --readiness-json
+python conscious_agent/main.py --nested-readiness-severity --readiness-json
+python conscious_agent/main.py --review-bundle-approval-contract --readiness-json
+python conscious_agent/main.py --maintenance-report-diff --readiness-json
+python conscious_agent/main.py --release-gate-composition-test --readiness-json
+python conscious_agent/main.py --dashboard-api-parity-audit --readiness-json
+python conscious_agent/main.py --operator-trust-report --readiness-json
+python conscious_agent/main.py --trustworthy-maintenance-console --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+python conscious_agent/main.py --release-manifest-integrity --readiness-json
+python -u tools/smoke_check.py --tier install --json
+```
+
+## v26.0 safety rules preserved
+
+- GET API/dashboard routes remain read-only.
+- Mutations remain POST-only and must require explicit confirmation for live/destructive actions.
+- Dry-runs do not overwrite live apply/rollback pointers.
+- Real maintenance apply still requires exact reviewed bundle approval.
+- Runtime/private/generated data stays out of source-only release zips.
+
+# Eidolon v25.9 - Operator Trust Report
+
+v25.9 adds an operator-facing trust report that answers the practical questions: what version is running, what package helper resolves, what checks passed, what warnings remain, what is blocked, what is safe next, and what must not be done yet.
+
+## What changed in v25.9
+
+- Added `--operator-trust-report`.
+- Summarizes route coverage, API default source checks, nested severity, approval contracts, release-memory privacy, and hotfix regression status.
+- Reports safe next action and explicit must-not-do-yet guidance.
+
+# Eidolon v25.8 - Dashboard/API Parity Audit
+
+v25.8 verifies that dashboard and API surfaces expose the same major maintenance trust checks.
+
+## What changed in v25.8
+
+- Added `--dashboard-api-parity-audit`.
+- Checks v25.1-v26.0 trust workflow tokens across dashboard and API code.
+- Keeps parity audit read-only.
+
+# Eidolon v25.7 - Release Gate Composition Test
+
+v25.7 adds synthetic nested-readiness tests for release gate aggregation.
+
+## What changed in v25.7
+
+- Added `--release-gate-composition-test`.
+- Tests pass-inside-pass, warn-inside-pass, blocked-inside-pass, and dry-run-with-warn compositions.
+- Ensures warning and blocked states survive summary aggregation.
+
+# Eidolon v25.6 - Maintenance Report Diff Viewer
+
+v25.6 adds a read-only diff summary across maintenance proposal, plan, preview, and review bundle reports.
+
+## What changed in v25.6
+
+- Added `--maintenance-report-diff`.
+- Computes artifact hashes for proposal, plan, preview, and bundle reports.
+- Shows how proposal counts become file plans, preview changes, and bundled artifacts.
+
+# Eidolon v25.5 - Review Bundle Approval Contract
+
+v25.5 makes the approval contract easier to inspect.
+
+## What changed in v25.5
+
+- Added `--review-bundle-approval-contract`.
+- Verifies proposal, plan, preview, audit, and temp apply drill hashes are present.
+- Verifies approval binds to the whole review bundle hash, not a smaller proposal-only hash.
+- Does not apply source edits.
+
+# Eidolon v25.4 - Nested Readiness Severity Engine
+
+v25.4 centralizes the rule that readiness status must stay honest.
+
+## What changed in v25.4
+
+- Added `--nested-readiness-severity`.
+- Validates `blocked > warn > pass` behavior.
+- Confirms `ok: true` does not erase warning severity.
+- Treats warnings as operationally okay but still visibly warned.
+
+# Eidolon v25.3 - API Default Source-of-Truth Audit
+
+v25.3 prevents stale package-label bugs from returning through hardcoded API/default strings.
+
+## What changed in v25.3
+
+- Added `--api-default-source-audit`.
+- Scans `main.py`, `api_server.py`, and `dashboard.py` for hardcoded `Eidolon_v*_*.zip` literals.
+- Verifies API package defaults use `_package_name()`.
+
+# Eidolon v25.2 - Dashboard Route Coverage Auditor
+
+v25.2 makes dashboard navigation links prove they actually resolve.
+
+## What changed in v25.2
+
+- Added `--dashboard-route-coverage`.
+- Parses dashboard nav paths and GET router paths.
+- Fails if nav links point to missing dashboard routes.
+- Keeps `/release-package` under explicit regression coverage.
+
+# Eidolon v25.1 - Hotfix Regression Lockdown
+
+v25.1 turns the v25.0.1 findings into recurring tripwires.
+
+## What changed in v25.1
+
+- Added `--hotfix-regression-lockdown`.
+- Verifies `/release-package` is both linked and routed.
+- Verifies API package defaults use the package helper.
+- Verifies the controlled maintenance cycle preserves nested apply-gate warning severity.
+- Verifies approval binding uses the full review bundle hash.
+- Verifies dry-run cycles do not appear live-approved.
+
+
+# Eidolon v25.0.1 - Maintenance Safety Hotfix
+
+v25.0.1 fixes the review findings carried forward from the v24.0/v25.0 release line. It keeps v25.0's semi-autonomous review scope, but tightens dashboard routing, package-name default handling, and nested apply-gate severity reporting. Tiny repairs, huge trust impact, because release tools that mislabel themselves are basically wearing a fake mustache.
+
+## What changed in v25.0.1
+
+- Added the missing dashboard GET router branch for `/release-package`, matching the existing nav link and renderer so the Release Package page no longer returns 404.
+- Replaced API release package fallback literals such as `Eidolon_v25_0.zip` with the current release package helper, preventing the stale-label bug from returning in the next version.
+- Updated controlled maintenance cycle approval preview logic to pass the full review bundle hash, not the proposal hash, into the approval-binding/apply-gate preview.
+- Updated the real maintenance patch apply gate so dry-run previews preserve missing approval/confirmation requirements as warning-level rows while live apply still blocks without exact approval.
+- Updated the controlled maintenance cycle to surface the nested apply-gate status instead of reporting top-level pass just because the nested gate was dry-run.
+- Updated CLI/API/dashboard/release/self-maintenance/workspace metadata to `25.0.1`.
+- Updated packaged project metadata, workspace metadata, active project metadata, settings, and command profiles to `v25.0.1`.
+- Kept source-only packaging exclusions unchanged.
+
+## Verification commands for v25.0.1
+
+```powershell
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json
+python conscious_agent/main.py --candidate-regression-detector --readiness-json
+python conscious_agent/main.py --semi-autonomous-maintenance-review --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+python conscious_agent/main.py --external-zip-install-verification --release-zip-path Eidolon_v25_0_1.zip --readiness-json
+python conscious_agent/main.py --deterministic-release-manifest --release-zip-path Eidolon_v25_0_1.zip --readiness-json
+python -u tools/smoke_check.py --tier install --json
+```
+
+## v25.0.1 safety rules preserved
+
+- GET dashboard/API routes remain read-only previews.
+- `/release-package` is now reachable by GET but does not mutate release state.
+- API package defaults resolve through the current package helper instead of hardcoded zip names.
+- Controlled maintenance cycles stop before live apply and preserve nested warning/block status in the report.
+- Live maintenance apply still requires exact reviewed bundle approval and the exact confirmation phrase.
+- Dry-runs still never overwrite real apply or rollback pointers.
+- `README_NEXT_STEPS.md` must be updated after every patch.
+
+---
+
+# Eidolon v25.0 - Semi-Autonomous Maintenance Review System
+
+v25.0 turns the v24 assisted self-improvement gate into a safer semi-autonomous maintenance review system. Eidolon can now find improvement candidates, rank them, bridge a selected candidate into a proposal, preview a local maintenance backlog, expose dashboard/API backlog views, detect regressions, verify release-memory privacy, generate candidate-specific verification recipes, and run an assisted improvement cycle that stops before real apply.
+
+This release keeps the same safety boundary: Eidolon may find, rank, plan, bundle, and verify work, but it may not apply real source edits without exact human approval. Because self-improving software with no leash is not engineering, it is a raccoon with a soldering iron.
+
+## What changed in v25.0
+
+- Added `--semi-autonomous-maintenance-review` as the v25.0 release gate.
+- Added v24.1-v24.10 staged candidate/backlog/verification commands and report builders.
+- Updated CLI/API/dashboard version markers to `25.0`.
+- Updated default release package labels to `Eidolon_v25_0.zip`.
+- Updated packaged project metadata, workspace metadata, active project metadata, settings, and command profiles to v25.0.
+- Added smoke coverage for the v24.x/v25.0 maintenance review reports.
+- Kept local maintenance backlog and release-memory state excluded from source-only packages.
+
+## Verification commands for v25.0
+
+```powershell
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --improvement-candidate-scan --readiness-json
+python conscious_agent/main.py --candidate-prioritizer --readiness-json
+python conscious_agent/main.py --candidate-to-proposal --readiness-json
+python conscious_agent/main.py --maintenance-backlog --readiness-json
+python conscious_agent/main.py --dashboard-maintenance-backlog --readiness-json
+python conscious_agent/main.py --api-maintenance-backlog --readiness-json
+python conscious_agent/main.py --candidate-regression-detector --readiness-json
+python conscious_agent/main.py --release-memory-privacy --readiness-json
+python conscious_agent/main.py --candidate-verification-recipes --readiness-json
+python conscious_agent/main.py --assisted-improvement-cycle --readiness-json
+python conscious_agent/main.py --semi-autonomous-maintenance-review --readiness-json
+python -u tools/smoke_check.py --tier install --json
+```
+
+## v25.0 safety rules preserved
+
+- GET dashboard/API routes remain read-only previews.
+- Backlog/candidate status mutations are POST-only and confirmation-gated.
+- Dry-runs never overwrite real apply or rollback pointers.
+- Assisted improvement stops before live apply.
+- Real maintenance apply still requires exact reviewed bundle approval.
+- Local backlog/release-memory reports remain runtime data and stay out of source-only zips.
+- `README_NEXT_STEPS.md` must be updated after every patch.
+
+---
+
+# Eidolon v24.10 - Assisted Improvement Cycle
+
+## What changed in v24.10
+
+- Added a safe assisted-improvement cycle that scans candidates, ranks them, creates a proposal bridge, builds a patch plan, audits safety, assembles a review bundle, and generates verification recipes.
+- The cycle stops before approval binding or real apply.
+- The selected candidate is included in the report for human review.
+
+## Verification commands for v24.10
+
+```powershell
+python conscious_agent/main.py --assisted-improvement-cycle --readiness-json
+python conscious_agent/main.py --candidate-verification-recipes --readiness-json
+python conscious_agent/main.py --maintenance-review-bundle --readiness-json
+```
+
+---
+
+# Eidolon v24.9 - Candidate Verification Recipes
+
+## What changed in v24.9
+
+- Added candidate-specific verification recipes.
+- Each ranked candidate now includes commands that prove the intended fix and keep warning rows visible.
+- Recipes include compile, version import, candidate regression detection, and candidate-specific release checks.
+
+## Verification commands for v24.9
+
+```powershell
+python conscious_agent/main.py --candidate-verification-recipes --readiness-json
+python conscious_agent/main.py --candidate-prioritizer --readiness-json
+```
+
+---
+
+# Eidolon v24.8 - Release Memory Without Private Leakage
+
+## What changed in v24.8
+
+- Added a release-memory privacy check for maintenance backlog and local release history state.
+- The check verifies `data/self_maintenance/`, `data/maintenance_backlog.json`, release-installation reports, and release package reports are excluded from source-only inventory.
+- This keeps local release history useful without smuggling runtime state into shareable zips, a thing computers would absolutely do if unsupervised.
+
+## Verification commands for v24.8
+
+```powershell
+python conscious_agent/main.py --release-memory-privacy --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+```
+
+---
+
+# Eidolon v24.7 - Candidate Regression Detector
+
+## What changed in v24.7
+
+- Added regression detection for stale package defaults, stale metadata, warning-severity flattening, source-only privacy, and README stage coverage.
+- The detector directly guards against the v23 findings that previously slipped through.
+- Warning-level child reports remain warning-level rows.
+
+## Verification commands for v24.7
+
+```powershell
+python conscious_agent/main.py --candidate-regression-detector --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+```
+
+---
+
+# Eidolon v24.6 - API Maintenance Backlog
+
+## What changed in v24.6
+
+- Added API read-only preview routes for improvement candidates, prioritization, backlog previews, regression detection, release-memory privacy, verification recipes, assisted improvement cycles, and the v25 review gate.
+- Added POST-only confirmation scaffolding for maintenance candidate status changes.
+- GET routes remain read-only.
+
+## Verification commands for v24.6
+
+```powershell
+python conscious_agent/main.py --api-maintenance-backlog --readiness-json
+python conscious_agent/main.py --route-safety-harness --readiness-json
+```
+
+---
+
+# Eidolon v24.5 - Dashboard Maintenance Backlog
+
+## What changed in v24.5
+
+- Added dashboard discovery links for improvement candidate scanning, prioritization, backlog preview, candidate regression detection, assisted improvement cycle, and the v25 review gate.
+- Added CLI command hints for the v24.x/v25.0 maintenance review workflow.
+- Dashboard surfaces remain preview-oriented.
+
+## Verification commands for v24.5
+
+```powershell
+python conscious_agent/main.py --dashboard-maintenance-backlog --readiness-json
+python conscious_agent/main.py --route-safety-harness --readiness-json
+```
+
+---
+
+# Eidolon v24.4 - Maintenance Backlog Registry
+
+## What changed in v24.4
+
+- Added a local maintenance backlog registry preview.
+- The preview describes candidate backlog records but does not write `data/maintenance_backlog.json`.
+- Backlog state is treated as runtime data and remains excluded from source-only release packages.
+
+## Verification commands for v24.4
+
+```powershell
+python conscious_agent/main.py --maintenance-backlog --readiness-json
+python conscious_agent/main.py --release-memory-privacy --readiness-json
+```
+
+---
+
+# Eidolon v24.3 - Candidate-to-Proposal Bridge
+
+## What changed in v24.3
+
+- Added a bridge that converts the selected ranked candidate into a proposal-compatible review object.
+- The bridge includes affected files, risk, required checks, and approval requirements.
+- No source edits are generated or applied.
+
+## Verification commands for v24.3
+
+```powershell
+python conscious_agent/main.py --candidate-to-proposal --readiness-json
+python conscious_agent/main.py --candidate-prioritizer --readiness-json
+```
+
+---
+
+# Eidolon v24.2 - Candidate Prioritizer
+
+## What changed in v24.2
+
+- Added prioritization for improvement candidates.
+- Scores favor release trust, regression prevention, source-only privacy, implementation safety, and testability.
+- The report selects a recommended candidate for proposal review.
+
+## Verification commands for v24.2
+
+```powershell
+python conscious_agent/main.py --candidate-prioritizer --readiness-json
+python conscious_agent/main.py --improvement-candidate-scan --readiness-json
+```
+
+---
+
+# Eidolon v24.1 - Improvement Candidate Scanner
+
+## What changed in v24.1
+
+- Added a read-only candidate scanner for release trust, metadata drift, operator UX gaps, TODO/FIXME clusters, regression safety, and source-only privacy concerns.
+- Each candidate includes affected files, risk, complexity, required checks, README requirements, runtime/private-data risk, and a recommended next action.
+- No patching or backlog mutation occurs.
+
+## Verification commands for v24.1
+
+```powershell
+python conscious_agent/main.py --improvement-candidate-scan --readiness-json
+python conscious_agent/main.py --self-maintenance-proposal --readiness-json
+```
+
+---
+
+# Eidolon v24.0 - Assisted Self-Improvement Release
+
+v24.0 extends the controlled self-maintenance work into a full assisted self-improvement release gate. Eidolon can now inspect itself for maintenance candidates, build a bounded patch plan, generate a dry-run patch preview, audit the patch plan, apply the preview only inside a temporary clone, assemble a review bundle, bind approval to the exact bundle hash, expose a guarded real-apply gate, run post-apply health checks, and execute a controlled maintenance cycle that stops before live mutation.
+
+This release also cleans up release trust issues found after v23.0: release package defaults no longer point at stale `Eidolon_v22_0.zip` labels, project metadata now reports the current v24.0 milestone, and readiness summaries preserve warning severity instead of flattening every `ok: true` report into a top-level pass row.
+
+## What changed in v24.0
+
+- Added `conscious_agent/self_maintenance.py` as the self-maintenance proposal/review/gating module.
+- Added v23.1-v23.10 staged self-maintenance commands and report builders.
+- Added `--assisted-self-improvement-release` as the v24.0 release gate.
+- Updated CLI/API/dashboard version markers to `24.0`.
+- Changed `--release-package-name` to default from current settings metadata instead of a stale hardcoded v22 zip name.
+- Updated API/dashboard default release package names to `Eidolon_v24_0.zip` or the current package helper.
+- Updated `data/settings.json`, `data/projects.json`, `data/workspaces/projects.json`, `data/workspaces/active_project.json`, and command profile workspace versions to v24.0.
+- Updated `build_v23_readiness_gate` row handling so warning-level child reports remain warning-level rows.
+- Added dashboard/API discovery for the v23.x self-maintenance preview/report workflow.
+- Added smoke coverage for the new self-maintenance reports.
+
+## Verification commands for v24.0
+
+```powershell
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --self-maintenance-proposal --readiness-json
+python conscious_agent/main.py --build-patch-plan --readiness-json
+python conscious_agent/main.py --generate-maintenance-patch --readiness-json
+python conscious_agent/main.py --patch-safety-audit --readiness-json
+python conscious_agent/main.py --apply-maintenance-patch-to-temp --readiness-json
+python conscious_agent/main.py --maintenance-review-bundle --readiness-json
+python conscious_agent/main.py --post-apply-health-monitor --readiness-json
+python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json
+python conscious_agent/main.py --assisted-self-improvement-release --readiness-json
+python conscious_agent/main.py --release-manifest-integrity --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+python conscious_agent/main.py --route-safety-harness --readiness-json
+python -u tools/smoke_check.py --tier install --json
+```
+
+## v24.0 safety rules preserved
+
+- GET dashboard/API routes remain read-only previews.
+- Live/destructive operations remain POST-only or explicit CLI confirmation-gated.
+- Dry-runs never overwrite real apply or rollback pointers.
+- Real maintenance patch apply remains blocked unless an exact reviewed bundle hash and confirmation phrase are supplied.
+- Review reports under `data/self_maintenance/` are runtime/generated reports and remain excluded from source-only release packages.
+- `README_NEXT_STEPS.md` must be updated whenever code changes.
+
+---
+
+# Eidolon v23.10 - Controlled Maintenance Cycle
+
+## What changed in v23.10
+
+- Added a controlled maintenance cycle that runs proposal generation, patch planning, dry-run preview generation, safety auditing, temporary-clone verification, and review-bundle assembly.
+- The cycle intentionally stops before real apply.
+- Real maintenance apply remains a separate approval-bound gate.
+
+## Verification commands for v23.10
+
+```powershell
+python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json
+python conscious_agent/main.py --maintenance-review-bundle --readiness-json
+python conscious_agent/main.py --patch-safety-audit --readiness-json
+```
+
+---
+
+# Eidolon v23.9 - Post-Apply Health Monitor
+
+## What changed in v23.9
+
+- Added a post-apply health monitor for manifest integrity, package privacy, and route safety.
+- Added rollback recommendation language for failed post-apply health rows.
+- Kept the monitor usable as a preview report before live apply exists.
+
+## Verification commands for v23.9
+
+```powershell
+python conscious_agent/main.py --post-apply-health-monitor --readiness-json
+python conscious_agent/main.py --release-manifest-integrity --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+```
+
+---
+
+# Eidolon v23.8 - Real Maintenance Patch Apply Gate
+
+## What changed in v23.8
+
+- Added a guarded real maintenance patch apply gate.
+- The gate defaults to dry-run.
+- Live apply requires an exact reviewed bundle hash and the confirmation phrase `APPLY EXACT REVIEWED MAINTENANCE BUNDLE`.
+- The dry-run gate does not edit source files or create live rollback pointers.
+
+## Verification commands for v23.8
+
+```powershell
+python conscious_agent/main.py --real-maintenance-patch-apply --dry-run --readiness-json
+python conscious_agent/main.py --approve-maintenance-bundle --readiness-json
+```
+
+---
+
+# Eidolon v23.7 - Human Approval Binding
+
+## What changed in v23.7
+
+- Added exact maintenance review bundle hash binding.
+- Approval remains preview-only unless the supplied hash matches the current review bundle.
+- Approval binding does not apply source edits.
+
+## Verification commands for v23.7
+
+```powershell
+python conscious_agent/main.py --maintenance-review-bundle --readiness-json
+python conscious_agent/main.py --approve-maintenance-bundle --readiness-json
+```
+
+---
+
+# Eidolon v23.6 - Maintenance Review Bundle
+
+## What changed in v23.6
+
+- Bundled proposal, patch plan, dry-run patch preview, safety audit, and temporary-clone apply drill reports.
+- Added deterministic hashes for the review artifacts.
+- Prepared a single artifact set suitable for later exact approval binding.
+
+## Verification commands for v23.6
+
+```powershell
+python conscious_agent/main.py --maintenance-review-bundle --readiness-json
+python conscious_agent/main.py --apply-maintenance-patch-to-temp --readiness-json
+```
+
+---
+
+# Eidolon v23.5 - Apply Patch to Temporary Clone
+
+## What changed in v23.5
+
+- Added temporary-clone patch apply drill support.
+- The drill copies the source tree to a temp folder, validates compile behavior there, and deletes the temp clone afterward.
+- The real project tree is not modified.
+
+## Verification commands for v23.5
+
+```powershell
+python conscious_agent/main.py --apply-maintenance-patch-to-temp --readiness-json
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+```
+
+---
+
+# Eidolon v23.4 - Patch Safety Auditor
+
+## What changed in v23.4
+
+- Added patch safety auditing for private runtime data, GET route mutation risk, README enforcement, approval binding, and dry-run pointer safety.
+- Integrated route safety results without flattening warning severity.
+
+## Verification commands for v23.4
+
+```powershell
+python conscious_agent/main.py --patch-safety-audit --readiness-json
+python conscious_agent/main.py --route-safety-harness --readiness-json
+```
+
+---
+
+# Eidolon v23.3 - Dry-Run Patch Generator
+
+## What changed in v23.3
+
+- Added a dry-run maintenance patch preview report.
+- The generator describes intended changes but does not apply diffs.
+- Generated preview reports are runtime artifacts excluded from source-only packages.
+
+## Verification commands for v23.3
+
+```powershell
+python conscious_agent/main.py --generate-maintenance-patch --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+```
+
+---
+
+# Eidolon v23.2 - Patch Plan Builder
+
+## What changed in v23.2
+
+- Added maintenance patch plan construction from proposal findings.
+- Plans list affected files, change intent, safety target status, and verification commands.
+- Runtime/private data remains blocked from planned maintenance edits.
+
+## Verification commands for v23.2
+
+```powershell
+python conscious_agent/main.py --build-patch-plan --readiness-json
+python conscious_agent/main.py --self-maintenance-proposal --readiness-json
+```
+
+---
+
+# Eidolon v23.1 - Self-Maintenance Proposal Sandbox
+
+## What changed in v23.1
+
+- Added a proposal-only self-maintenance scanner.
+- The scanner detects stale release package defaults, stale project milestone metadata, warning-severity flattening, README stage coverage, and route safety baseline status.
+- The sandbox generates proposals only and does not edit project files.
+
+## Verification commands for v23.1
+
+```powershell
+python conscious_agent/main.py --self-maintenance-proposal --readiness-json
+python conscious_agent/main.py --controlled-self-maintenance-loop --readiness-json
+```
+
+---
+
+# Eidolon v23.0 - Controlled Self-Maintenance Loop
+
+v23.0 completes the staged v22.x install/update safety runway and adds a controlled self-maintenance loop preview. Eidolon can now rehearse release zip upgrades, drill backup/rollback behavior, detect update collisions, preview release registry entries, bind release provenance, expose dashboard/API upgrade previews, run staged apply drills in temp clones, evaluate real-apply guard rails, verify rollback readiness, check self-update UX clarity, run a v23 readiness gate, and finally preview a self-maintenance lifecycle that still stops before human approval. The program is learning to file paperwork before touching itself, which is somehow what maturity looks like in software.
+
+## What changed in v23.0
+
+- `conscious_agent/release_installation.py`
+  - bumped release installation metadata to `23.0`
+  - added `--controlled-self-maintenance-loop`
+  - added a dry-run lifecycle for controlled issue detection, patch proposal, artifact binding, release gate checks, human approval, guarded apply, post-apply verification, and rollback preservation
+  - kept the loop proposal-only by default; no autonomous live apply is performed
+- `conscious_agent/main.py`
+  - added v23.0 CLI dispatch for the controlled self-maintenance loop
+  - bumped the default patch draft target version to `23.0`
+- `conscious_agent/api_server.py`
+  - API version is now `23.0`
+  - added preview endpoints for the v23.0 controlled self-maintenance loop
+- `conscious_agent/dashboard.py`
+  - dashboard version is now `23.0`
+  - added release/upgrade discovery tokens for the v22.1-v23.0 staged workflow
+- `conscious_agent/release_packaging.py`
+  - release packaging metadata is now `23.0`
+- `conscious_agent/workspace_orchestration.py`
+  - workspace orchestration metadata is now `23.0`
+- `tools/smoke_check.py`
+  - smoke release version checks now expect `23.0`
+- packaged metadata
+  - `data/settings.json` marks `last_updated_for: v23.0`
+  - `data/projects.json` describes the v23.0 controlled self-maintenance loop
+  - `data/workspaces/projects.json` and `data/workspaces/active_project.json` now report v23.0
+  - command profiles are marked as workspace version `23.0`
+
+## Verification commands for v23.0
+
+```powershell
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --v23-readiness-gate --readiness-json
+python conscious_agent/main.py --controlled-self-maintenance-loop --readiness-json
+python -u tools/smoke_check.py --tier fast --json
+python -u tools/smoke_check.py --tier install --json
+```
+
+When a final zip exists, also run:
+
+```powershell
+python conscious_agent/main.py --external-zip-install-verification --release-zip-path Eidolon_v23_0.zip --readiness-json
+python conscious_agent/main.py --deterministic-release-manifest --release-zip-path Eidolon_v23_0.zip --readiness-json
+python conscious_agent/main.py --trial-upgrade-from-zip --release-zip-path Eidolon_v23_0.zip --readiness-json
+python conscious_agent/main.py --staged-apply-drill --release-zip-path Eidolon_v23_0.zip --readiness-json
+python conscious_agent/main.py --v23-readiness-gate --release-zip-path Eidolon_v23_0.zip --readiness-json
+```
+
+## v23.0 safety rules preserved
+
+- Source-only release packages remain the default.
+- Private runtime data, memories, chat logs, vector DB files, approvals, generated release reports, backups, `.git`, `.venv`, `__pycache__`, and nested zips remain excluded from shareable packages.
+- GET dashboard/API routes remain preview/read-only surfaces.
+- Live/destructive actions remain POST/CLI-confirmation gated.
+- Dry-runs do not overwrite real apply/rollback pointers.
+- Approval must remain bound to the exact reviewed artifact set before any real apply.
+
+---
+
+# Eidolon v22.12 - v23 Readiness Gate
+
+v22.12 adds the final gate before controlled self-maintenance. It collects manifest integrity, privacy scan, portable metadata, route safety, dashboard/API upgrade preview checks, UX polish, and optional zip-dependent upgrade drills into one report.
+
+## What changed in v22.12
+
+- Added `--v23-readiness-gate`.
+- Added `build_v23_readiness_gate()`.
+- Checks source/package readiness without requiring a zip.
+- When a zip path is supplied, also checks external zip verification, deterministic manifest, trial upgrade, rollback drill, collision detection, staged apply, and real apply rollback verification.
+- Produces blocked step names so the next fix is obvious instead of hiding in a swamp of JSON, as software loves to do.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --v23-readiness-gate --readiness-json
+python conscious_agent/main.py --v23-readiness-gate --release-zip-path Eidolon_v23_0.zip --readiness-json
+```
+
+---
+
+# Eidolon v22.11 - Self-Update UX Polish
+
+v22.11 checks that release/update reports are understandable enough for a human to use without developing a grudge against the terminal.
+
+## What changed in v22.11
+
+- Added `--self-update-ux-polish`.
+- Added `build_self_update_ux_polish()`.
+- Checks README staged release notes.
+- Checks discoverable copyable commands.
+- Checks dashboard release/upgrade wording.
+- Confirms report rows continue to include status and message fields.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --self-update-ux-polish --readiness-json
+```
+
+---
+
+# Eidolon v22.10 - Real Apply + Rollback Verification
+
+v22.10 verifies real apply mechanics in safe preview mode by leaning on the staged apply drill and registry preview. It does not mutate the real project.
+
+## What changed in v22.10
+
+- Added `--real-apply-rollback-verification`.
+- Added `build_real_apply_rollback_verification()`.
+- Chains staged apply drill and version registry preview.
+- Confirms rollback behavior in temp space before a real updater is trusted.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --real-apply-rollback-verification --release-zip-path Eidolon_v23_0.zip --readiness-json
+```
+
+---
+
+# Eidolon v22.9 - Real Apply Guard Rails
+
+v22.9 adds the final read-only guard report for live update eligibility.
+
+## What changed in v22.9
+
+- Added `--real-apply-guard-rails`.
+- Added `build_real_apply_guard_rails()`.
+- Requires an exact deterministic manifest hash.
+- Requires the explicit phrase `APPLY EXACT REVIEWED RELEASE`.
+- Checks collision detector output.
+- Checks recent trial upgrade output when a zip is supplied.
+- Writes no apply pointer and applies no source files.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --real-apply-guard-rails --release-zip-path Eidolon_v23_0.zip --expected-manifest-hash <sha256> --release-confirm-phrase "APPLY EXACT REVIEWED RELEASE" --readiness-json
+```
+
+---
+
+# Eidolon v22.8 - Staged Apply in Temporary Clone
+
+v22.8 applies release contents only to a temporary clone, then rolls the clone back and verifies hashes.
+
+## What changed in v22.8
+
+- Added `--staged-apply-drill`.
+- Added `build_staged_apply_drill()`.
+- Copies source-safe files into temp space.
+- Builds an update dry-run plan against the temp clone.
+- Applies planned new/changed files to the temp clone only.
+- Rolls the temp clone back and compares hashes.
+- Keeps real runtime data and real rollback pointers untouched.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --staged-apply-drill --release-zip-path Eidolon_v23_0.zip --readiness-json
+```
+
+---
+
+# Eidolon v22.7 - API Upgrade Wizard Preview
+
+v22.7 adds API preview coverage for the staged upgrade workflow while preserving GET read-only behavior.
+
+## What changed in v22.7
+
+- Added `--api-upgrade-wizard-preview`.
+- Added `build_api_upgrade_wizard_preview()`.
+- Added read-only GET preview route tokens for v22.1-v23.0 release/update reports.
+- Added POST report-generation route tokens for saved reports.
+- Kept live/destructive update paths confirmation-gated.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --api-upgrade-wizard-preview --readiness-json
+python conscious_agent/main.py --route-safety-harness --readiness-json
+```
+
+---
+
+# Eidolon v22.6 - Dashboard Upgrade Wizard Preview
+
+v22.6 makes the dashboard aware of the staged upgrade path without enabling casual live updates from the UI.
+
+## What changed in v22.6
+
+- Added `--dashboard-upgrade-wizard-preview`.
+- Added `build_dashboard_upgrade_wizard_preview()`.
+- Added dashboard discovery tokens for trial upgrade, rollback drill, collision detector, provenance report, staged apply, and v23 readiness.
+- Keeps the dashboard side in preview/report mode.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --dashboard-upgrade-wizard-preview --readiness-json
+```
+
+---
+
+# Eidolon v22.5 - Release Provenance Report
+
+v22.5 binds release source, manifest, privacy, verification, and collision checks into one provenance report.
+
+## What changed in v22.5
+
+- Added `--release-provenance-report`.
+- Added `build_release_provenance_report()`.
+- Combines external zip verification, deterministic manifest, package privacy scan, and update collision detection.
+- Surfaces manifest SHA-256 and blocked steps.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --release-provenance-report --release-zip-path Eidolon_v23_0.zip --readiness-json
+```
+
+---
+
+# Eidolon v22.4 - Version Registry
+
+v22.4 adds a previewable version registry report. The registry itself is runtime state and remains excluded from source-only packages.
+
+## What changed in v22.4
+
+- Added `--version-registry-report`.
+- Added `build_version_registry_report()`.
+- Previews a release registry entry with version, package name, zip path, manifest hash, timestamp, and dry-run status.
+- Defaults to dry-run and does not package `data/release_registry.json`.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --version-registry-report --release-zip-path Eidolon_v23_0.zip --readiness-json
+```
+
+---
+
+# Eidolon v22.3 - Update Collision Detector
+
+v22.3 detects update risks before any staged or real apply.
+
+## What changed in v22.3
+
+- Added `--update-collision-detector`.
+- Added `build_update_collision_detector()`.
+- Detects case-insensitive path collisions.
+- Blocks non-allowlisted runtime data inside release zips.
+- Warns on local source differences against the target package.
+- Warns on generated bytecode artifacts under source/tool folders.
+- Stays read-only.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --update-collision-detector --release-zip-path Eidolon_v23_0.zip --readiness-json
+```
+
+---
+
+# Eidolon v22.2 - Backup and Rollback Drill
+
+v22.2 drills backup and rollback mechanics in temp space.
+
+## What changed in v22.2
+
+- Added `--backup-rollback-drill`.
+- Added `build_backup_rollback_drill()`.
+- Copies source-safe files into a temporary install tree.
+- Modifies a temp file, backs it up, restores it, and compares hashes.
+- Writes no real backup pointer and touches no real runtime data.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --backup-rollback-drill --readiness-json
+```
+
+---
+
+# Eidolon v22.1 - Trial Upgrade Harness
+
+v22.1 adds an end-to-end rehearsal from a release zip.
+
+## What changed in v22.1
+
+- Added `--trial-upgrade-from-zip`.
+- Added `build_trial_upgrade_harness()`.
+- Verifies an external source-only zip.
+- Generates a deterministic manifest.
+- Runs a clean-room install harness.
+- Extracts the zip into temp space and compares the zip against its own temp install as a no-op upgrade.
+- Confirms rollback metadata would be manifest-bound without writing a real pointer.
+- Fixes clean-room command execution so subprocesses run with the temp extracted root as `cwd`, not the original project root.
+
+## Verification
+
+```powershell
+python conscious_agent/main.py --trial-upgrade-from-zip --release-zip-path Eidolon_v23_0.zip --readiness-json
+```
+
+---
+
+# Eidolon v22.0 - Verified Self-Update Release Pipeline
+
+v22.0 bundles the v21.1 through v22.0 release/install safety roadmap into one source-only release. Eidolon now hardens the smoke runner with tiered subprocess checks and per-check timeouts, verifies external release zips, builds deterministic manifest hashes for exact artifact binding, previews update diffs without touching apply/rollback pointers, adds a guarded atomic source update transaction, previews runtime migration/backups, checks route safety, verifies dashboard/API/CLI release command-center coverage, simulates clean-room installs, and wraps it all in a v22 verified self-update release pipeline. The software has learned to ask for ID before letting a zip file into the building, which is sadly progress.
+
+## What changed from v21.1 through v22.0
+
+- Updated `tools/smoke_check.py`
+  - v21.1 tiered smoke runner with `--tier fast|loop|readiness|build|patch|release|install|full`
+  - smoke checks now report per-check timing and can run individual checks through hidden `--single-check`
+  - optional isolated subprocess mode is available with `EIDOLON_SMOKE_ISOLATED=1`, with timeout handling for stubborn checks
+  - heavyweight legacy release/AI smoke checks were narrowed to shape/text validation so full install smoke no longer stalls while targeted commands still cover the detailed builders
+  - added `--json` machine-readable summaries and `--list-checks`
+  - default full smoke still covers the previous core, loop, readiness, patch, release, and install checks
+- Updated `conscious_agent/release_installation.py`
+  - bumped release installation metadata to `22.0`
+  - v21.1 `--smoke-runtime-hardening` report
+  - v21.2 `--external-zip-install-verification` for actual zip files outside the source tree
+  - v21.3 `--deterministic-release-manifest` with sorted file entries and a manifest SHA-256
+  - v21.4 `--update-dry-run-plan` comparing a target zip to the current source tree without writing apply/rollback pointers
+  - v21.5 `--atomic-source-update`, dry-run by default, with real apply blocked unless explicitly approved and bound to an expected manifest hash
+  - v21.6 `--runtime-migration-assistant` for runtime backup/preservation planning
+  - v21.7 `--route-safety-harness` for GET read-only and POST confirmation-gate checks
+  - v21.8 `--release-dashboard-command-center` to verify dashboard/API/CLI exposure for the release safety tools
+  - v21.9 `--clean-room-install-harness` to temp-extract, compile, import versions, run first-run check, and run tiered smoke from a release zip
+  - v22.0 `--verified-self-update-release-pipeline` to chain smoke hardening, zip verification, manifest binding, dry-run planning, migration preview, route safety, command-center checks, optional clean-room install, and guarded update preview
+- Updated `conscious_agent/release_packaging.py`
+  - bumped release packaging metadata to `22.0`
+- Updated `conscious_agent/workspace_orchestration.py`
+  - bumped workspace orchestration metadata to `22.0` so workspace repair/smoke checks do not rewrite release metadata back to v21.0
+  - updated regenerated workspace milestone text to the v22.0 verified self-update release pipeline
+- Updated `conscious_agent/main.py`
+  - added v21.1-v22.0 release/install/update CLI commands
+  - added `--release-zip-path`, `--expected-manifest-hash`, `--run-clean-room`, and `--smoke-tier`
+  - default release package name now resolves from the current settings version (`v24.0` -> `Eidolon_v24_0.zip`)
+- Updated `conscious_agent/api_server.py`
+  - API version is now `22.0`
+  - added read-only GET preview endpoints for the v21.1-v22.0 release/update safety reports
+  - added POST refresh/save endpoints for reports
+  - live update/migration/self-update POST paths require explicit confirmation tokens and remain dry-run by default
+- Updated `conscious_agent/dashboard.py`
+  - dashboard version is now `22.0`
+  - `/release-package` now shows smoke hardening, external zip verification, deterministic manifest binding, update dry-run planning, atomic update preview, runtime migration assistant, route safety harness, command center, clean-room install, and self-update pipeline cards
+  - release page links now include the v21.1-v22.0 API endpoints and CLI commands
+- Updated metadata
+  - `data/settings.json` marks `last_updated_for: v22.0`
+  - `data/projects.json` describes the v22.0 verified self-update release pipeline and adds release/update safety goals
+  - `data/workspaces/projects.json` root and project metadata now report v22.0
+  - `data/workspaces/active_project.json` now reports v22.0
+
+## Safety rules preserved in v22.0
+
+- Source-only release packaging remains the default.
+- Runtime/private data, memories, chat logs, approvals, vector stores, generated reports, backups, `.git`, `.venv`, `__pycache__`, and nested zip files remain excluded from shareable release packages.
+- GET API/dashboard routes remain read-only previews.
+- Mutation-capable release/update paths are POST-only and require explicit confirmation for live/destructive actions.
+- Dry-runs do not overwrite real apply or rollback pointers.
+- Real source update is blocked unless the operator supplies an exact expected deterministic manifest hash.
+
+## Verification used for v22.0
+
+```bash
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --smoke-runtime-hardening --readiness-json
+python conscious_agent/main.py --external-zip-install-verification --readiness-json
+python conscious_agent/main.py --deterministic-release-manifest --readiness-json
+python conscious_agent/main.py --update-dry-run-plan --readiness-json
+python conscious_agent/main.py --atomic-source-update --readiness-json
+python conscious_agent/main.py --runtime-migration-assistant --readiness-json
+python conscious_agent/main.py --route-safety-harness --readiness-json
+python conscious_agent/main.py --release-dashboard-command-center --readiness-json
+python conscious_agent/main.py --clean-room-install-harness --readiness-json
+python conscious_agent/main.py --verified-self-update-release-pipeline --readiness-json
+python conscious_agent/main.py --release-install-verification --readiness-json
+python conscious_agent/main.py --verified-installable-release-loop --readiness-json
+python -u tools/smoke_check.py --tier fast --json
+python -u tools/smoke_check.py --tier install --json
+```
+
+## Known v22.0 packaging notes
+
+- `--external-zip-install-verification`, `--update-dry-run-plan`, and `--clean-room-install-harness` warn/skip zip-specific work when no external release zip path is supplied. That is expected inside an extracted source-only tree because the release zip should not contain a nested copy of itself.
+- `chromadb` may warn if the environment has not run `pip install -r requirements.txt`; it remains listed in `requirements.txt`.
+- `--doctor` and model-health checks can still report limited confidence when Ollama/local models are unavailable. That is an environment readiness warning, not a packaging privacy failure.
+
+## Recommended first commands after unzip
+
+```bash
+pip install -r requirements.txt
+python conscious_agent/main.py --first-run-check
+python conscious_agent/main.py --dependency-advisor
+python conscious_agent/main.py --smoke-runtime-hardening
+python conscious_agent/main.py --doctor
+python conscious_agent/main.py --dashboard
+```
+
+## Recommended release/update commands
+
+```bash
+python conscious_agent/main.py --deterministic-release-manifest --release-zip-path path/to/Eidolon_v24_0.zip
+python conscious_agent/main.py --external-zip-install-verification --release-zip-path path/to/Eidolon_v24_0.zip
+python conscious_agent/main.py --update-dry-run-plan --release-zip-path path/to/Eidolon_v24_0.zip
+python conscious_agent/main.py --verified-self-update-release-pipeline --release-zip-path path/to/Eidolon_v24_0.zip --run-clean-room
+```
+
+Real source update remains intentionally annoying:
+
+```bash
+python conscious_agent/main.py --atomic-source-update --release-zip-path path/to/Eidolon_v24_0.zip --expected-manifest-hash <manifest_sha256> --approve-controlled-self-build
+```
+
+---
+
+# Eidolon v21.0 - Verified Installable Release Loop
+
+v21.0 bundles the v20.1 through v21.0 installable-release roadmap into one release. Eidolon now treats source-only packaging as a named release profile, scans packages for private/runtime data, checks portable workspace metadata, provides first-run setup guidance, explains missing dependencies, generates upgrade notes, guards runtime migration, verifies installability, polishes the release package dashboard, and runs one bounded verified installable release loop. The zip machine now has a privacy officer, because apparently that is where we are as a species.
+
+## What changed from v20.1 through v21.0
+
+- Added `conscious_agent/release_installation.py`
+  - v20.1 release profile system with `source-only` as the share-safe default
+  - v20.2 package privacy scanner for memories, chat logs, approvals, vector stores, backups, diagnostics, local paths, sandbox paths, and generated patch state
+  - v20.3 portable workspace metadata check for ROOT_DIR-relative project roots and no stale `/mnt/data` or hard-coded user paths
+  - v20.4 first-run setup check for Python, required files, settings, workspace metadata, dashboard/API importability, and optional model status guidance
+  - v20.5 dependency install advisor with `pip install -r requirements.txt` guidance
+  - v20.6 release upgrade notes from v20.0.1 to v21.0
+  - v20.7 runtime data migration guard so source-only packages do not bulldoze existing private runtime state
+  - v20.8 release install verification for compile, manifest, privacy, portable metadata, first-run, unzip, and optional smoke checks
+  - v21.0 verified installable release loop
+- Updated `conscious_agent/release_packaging.py`
+  - release packaging metadata is now `21.0`
+  - verified package loop now uses the v21 package name and metadata
+- Updated `conscious_agent/workspace_orchestration.py`
+  - fixed `WORKSPACE_ORCHESTRATION_VERSION` so normal workspace registry/audit calls no longer rewrite `data/workspaces/projects.json` back to stale `15.0`
+- Updated `conscious_agent/main.py`
+  - added `--release-profiles`
+  - added `--package-privacy-scan`
+  - added `--portable-metadata-check`
+  - added `--first-run-check`
+  - added `--dependency-advisor`
+  - added `--upgrade-notes`
+  - added `--runtime-migration-check`
+  - added `--release-install-verification`
+  - added `--verified-installable-release-loop`
+  - added `--run-install-smoke` for optional heavier install verification
+- Updated `conscious_agent/api_server.py`
+  - API version is now `21.0`
+  - added read-only GET release install endpoints under `/api/release/...`
+  - added POST refresh/save endpoints for release install reports and guarded installable package loop runs
+  - dashboard-facing endpoints return compact summaries unless `full=true`
+- Updated `conscious_agent/dashboard.py`
+  - dashboard version is now `21.0`
+  - `/release-package` now shows release profiles, privacy scan, portable metadata, first-run check, dependency advisor, upgrade notes, runtime migration guard, install verification, and installable release loop cards
+- Updated `conscious_agent/command_runner.py`
+  - whitelisted the v20.1-v21.0 release install commands
+- Updated `tools/smoke_check.py`
+  - smoke check now fails if release manifest integrity, package privacy, portable metadata, verified release package loop, or verified installable release loop is blocked
+- Updated metadata
+  - `data/settings.json` marks `last_updated_for: v21.0`
+  - `data/projects.json` marks the active Eidolon project as v21.0
+  - `data/workspaces/projects.json` root and project metadata now report v21.0
+  - `data/workspaces/active_project.json` now reports v21.0
+  - packaged command profiles are marked with workspace version 21.0
+
+## Findings fixed during v21.0
+
+- Fixed the strict release manifest blocker caused by `workspace_orchestration.py` rewriting workspace metadata back to version `15.0`.
+- Strengthened smoke checks so release packaging cannot be blocked while the smoke check still passes.
+- Kept source-only required workspace metadata files in the package allowlist and verified them through portable metadata checks.
+- Added release privacy and migration checks so future release zips do not accidentally ship private runtime state or overwrite local runtime data.
+
+## Verification used for v21.0
+
+```bash
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --release-profiles --readiness-json
+python conscious_agent/main.py --package-privacy-scan --readiness-json
+python conscious_agent/main.py --portable-metadata-check --readiness-json
+python conscious_agent/main.py --first-run-check --readiness-json
+python conscious_agent/main.py --dependency-advisor --readiness-json
+python conscious_agent/main.py --upgrade-notes --readiness-json
+python conscious_agent/main.py --runtime-migration-check --readiness-json
+python conscious_agent/main.py --release-install-verification --readiness-json
+python conscious_agent/main.py --verified-installable-release-loop --readiness-json
+python conscious_agent/main.py --release-manifest-integrity --readiness-json
+python conscious_agent/main.py --verified-release-package-loop --readiness-json
+python conscious_agent/main.py --doctor
+python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
+python -u tools/smoke_check.py
+```
+
+## Known v21.0 packaging notes
+
+- `--doctor` can still report a blocked/limited stable-loop confidence state in an empty or local-model-unavailable environment. That is an operational-readiness signal, not a source-only packaging failure.
+- `chromadb` may warn if the environment has not run `pip install -r requirements.txt`; the package still lists it in `requirements.txt`.
+- Source-only release zips intentionally exclude private runtime data, generated release reports, approvals, vector stores, backups, chat logs, and memory files.
+
+## Recommended first commands after unzip
+
+```bash
+pip install -r requirements.txt
+python conscious_agent/main.py --first-run-check
+python conscious_agent/main.py --dependency-advisor
+python conscious_agent/main.py --doctor
+python conscious_agent/main.py --dashboard
+```
+
+---
+
+# Eidolon v20.0.1 - Source-Only Release Package Hotfix
+
+v20.0.1 finishes the v20.0 release-packaging hardening pass before new v20.1 work begins. The hotfix makes guarded release zips source-only by default, prunes private/runtime folders during inventory traversal, tightens field-level version checks, keeps dashboard release API responses lightweight unless `full=true`, and removes stale v15 defaults from the legacy release lane. The zip builder has been reminded that private runtime state is not a party favor.
+
+## What changed in v20.0.1
+
+- Updated `conscious_agent/release_packaging.py`
+  - bumped release packaging metadata to `20.0.1`
+  - added a source-only package profile for guarded release zips
+  - excluded runtime/private `data/` state by default
+  - allowlisted only safe seed/config data files and workspace command profiles
+  - pruned `.git`, `.venv`, cache folders, and excluded runtime data during traversal instead of scanning them after the fact
+  - added strict field-level workspace metadata integrity checks
+  - added dashboard/API-safe release report summaries that omit huge inventory/checksum payloads by default
+  - strengthened unzip verification so packaged runtime/private data blocks the check
+- Updated `conscious_agent/api_server.py`
+  - API version is now `20.0.1`
+  - release inventory/checksum/audit/loop GET endpoints return compact summaries by default
+  - full release payloads remain available with `full=true`
+- Updated `conscious_agent/dashboard.py`
+  - dashboard version is now `20.0.1`
+  - release package page points at `Eidolon_v20_0_1.zip`
+  - release package labels describe the source-only package hotfix
+- Updated `conscious_agent/release_pipeline.py`
+  - legacy v15 release lane now uses the current configured target version for generated draft requests
+  - legacy package metadata no longer defaults to stale v15 package naming
+- Updated `tools/smoke_check.py`
+  - validates the v20.0.1 release-packaging version marker
+- Updated metadata
+  - `data/settings.json` marks `last_updated_for: v20.0.1`
+  - `data/projects.json` marks the active Eidolon project as v20.0.1
+  - `data/workspaces/projects.json` top-level and project-level versions now match v20.0.1
+
+## Findings fixed in v20.0.1
+
+- Release zips no longer include broad private/runtime `data/` contents by default.
+- `.git` and `.venv` are pruned during traversal, so packaging checks do not waste time crawling the basement.
+- Package inventory now blocks if any non-allowlisted `data/` runtime file is included.
+- Release manifest integrity checks the actual workspace version fields instead of merely searching for `v20.0` somewhere in JSON.
+- Dashboard/API release endpoints avoid multi-megabyte payloads unless a caller explicitly asks for full output.
+- Legacy release code no longer creates fresh draft requests targeting v15.0.
+
+## Verification used for v20.0.1
+
+```bash
+python -m py_compile conscious_agent/*.py tools/smoke_check.py
+PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
+python conscious_agent/main.py --release-manifest-integrity --readiness-json
+python conscious_agent/main.py --package-inventory --readiness-json
+python conscious_agent/main.py --package-checksums --readiness-json
+python conscious_agent/main.py --release-pipeline-audit --readiness-json
+python conscious_agent/main.py --verified-release-package-loop --readiness-json
+python conscious_agent/main.py --build-release-zip --dry-run --readiness-json
+python conscious_agent/main.py --verify-release-unzip --readiness-json
+python conscious_agent/main.py --doctor
+python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
+python -u tools/smoke_check.py
+```
+
+## Next likely step
+
+v20.1 can now move into install/replace workflow improvements instead of cleaning up v20.0 packaging safety. Imagine that: a dot release doing its job without demanding a parade.
+
+---
+
 # Eidolon v20.0 - Verified Release Package Loop
 
 v20.0 bundles the v19.1 through v20.0 release-packaging roadmap into one packaged release. Eidolon can now verify release metadata, classify package contents, generate file checksums, create release notes and handoff reports, dry-run a guarded zip builder, verify extracted packages, audit the approval-to-package chain, and run one bounded verified release package loop. The machine can finally prepare its own suitcase without packing a live approval grenade, which is a touching little milestone in robot maturity.

@@ -1,0 +1,57 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T01:57:50",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "release_readiness": "READY WITH WARNINGS",
+  "rows": [
+    {
+      "name": "py-compile",
+      "status": "pass",
+      "returncode": 0,
+      "message": "Python compile passed."
+    },
+    {
+      "name": "readme-v15",
+      "status": "pass",
+      "message": "README documents v15.0."
+    },
+    {
+      "name": "settings-version",
+      "status": "warn",
+      "message": "settings version markers: version=None last_updated_for=v19.0"
+    },
+    {
+      "name": "project-version",
+      "status": "warn",
+      "message": "projects last_updated_for=v19.0"
+    },
+    {
+      "name": "approval-state",
+      "status": "pass",
+      "message": "No dirty unconsumed approval blocking release."
+    },
+    {
+      "name": "dry-run-separation",
+      "status": "pass",
+      "message": "Dry-run code patch reports are separate from real apply reports."
+    },
+    {
+      "name": "rollback-availability",
+      "status": "warn",
+      "message": "No real approved code apply exists yet; rollback is not applicable."
+    },
+    {
+      "name": "test-suggestions",
+      "status": "pass",
+      "message": "6 test suggestion(s) recorded."
+    }
+  ],
+  "known_warnings": [
+    "settings version markers: version=None last_updated_for=v19.0",
+    "projects last_updated_for=v19.0",
+    "No real approved code apply exists yet; rollback is not applicable."
+  ],
+  "message": "Release readiness: READY WITH WARNINGS."
+}

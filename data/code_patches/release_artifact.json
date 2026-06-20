@@ -1,0 +1,64 @@
+{
+  "version": "16.0",
+  "checked_at": "2026-06-20T01:27:27",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "package_name": "Eidolon_v18_0.zip",
+  "changed_files": [],
+  "previewed_files": [
+    "README_NEXT_STEPS.md"
+  ],
+  "excluded_files": [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "*.pyc",
+    "data/code_patches/backups"
+  ],
+  "readme_sections": [
+    "v15.1",
+    "v15.2",
+    "v15.3",
+    "v15.4",
+    "v15.5",
+    "v15.6",
+    "v15.7",
+    "v15.8",
+    "v15.9",
+    "v16.0"
+  ],
+  "verification_commands": [
+    "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+    "PYTHONPATH=conscious_agent python -c \"import dashboard; print(dashboard.DASHBOARD_VERSION)\"",
+    "python conscious_agent/main.py --doctor",
+    "python conscious_agent/main.py --stabilization-checkpoint --stabilization-full",
+    "python tools/smoke_check.py",
+    "python conscious_agent/main.py --patch-draft-status"
+  ],
+  "known_warnings": [
+    "settings version markers: version=None last_updated_for=v18.0",
+    "projects last_updated_for=v17.0",
+    "No real approved code apply exists yet; rollback is not applicable."
+  ],
+  "rollback_status": null,
+  "release_readiness": "READY WITH WARNINGS",
+  "rows": [
+    {
+      "name": "release-readiness",
+      "status": "pass",
+      "message": "Release readiness: READY WITH WARNINGS."
+    },
+    {
+      "name": "semantic-checks",
+      "status": "pass",
+      "message": "Post-apply semantic checks completed."
+    },
+    {
+      "name": "readme-v16-sections",
+      "status": "pass",
+      "message": "README includes v15.1-v16.0 sections."
+    }
+  ],
+  "message": "Release artifact manifest prepared for Eidolon_v18_0.zip."
+}

@@ -1,0 +1,30 @@
+{
+  "version": "10.0",
+  "checked_at": "2026-06-19T22:21:57",
+  "project_id": "eidolon",
+  "run_id": "apply_20260619_222157_plan-20260619-222157-synthetic-v9-safe-readme-task",
+  "plan_id": "plan_20260619_222157_synthetic-v9-safe-readme-task",
+  "status": "dry_run",
+  "ok": true,
+  "dry_run": true,
+  "approved": false,
+  "applied": [
+    {
+      "path": "README_NEXT_STEPS.md",
+      "action": "modify",
+      "status": "dry_run",
+      "backup_path": "data/controlled_build_backups/apply_20260619_222157_plan-20260619-222157-synthetic-v9-safe-readme-task/README_NEXT_STEPS.md",
+      "original_sha256": "d83646ae0b33ae64bbcb25ffad83c78509ff3cc8a5914344bcbae75a24c47e0f",
+      "applied_sha256": "54b2591aa324093972771de5deb795bd82d8c45b31ad65b6bc31032f28a5078a"
+    }
+  ],
+  "errors": [],
+  "readme_updated": true,
+  "rollback_available": false,
+  "next_commands": [
+    "python conscious_agent/main.py --verify-latest-patch",
+    "python conscious_agent/main.py --readme-gate",
+    "python conscious_agent/main.py --rollback-latest-patch --approve-controlled-self-build"
+  ],
+  "message": "Staged patch apply_20260619_222157_plan-20260619-222157-synthetic-v9-safe-readme-task validated with 0 error(s)."
+}

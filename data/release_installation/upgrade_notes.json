@@ -1,0 +1,44 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "from_version": "20.0.1",
+  "to_version": "21.0",
+  "new_commands": [
+    "--release-profiles",
+    "--package-privacy-scan",
+    "--portable-metadata-check",
+    "--first-run-check",
+    "--dependency-advisor",
+    "--upgrade-notes",
+    "--runtime-migration-check",
+    "--release-install-verification",
+    "--verified-installable-release-loop"
+  ],
+  "upgrade_notes": [
+    "Use the source-only release package for handoff; do not replace private runtime data blindly.",
+    "Run --first-run-check after unzip before launching dashboard or desktop.",
+    "Run --runtime-migration-check before copying a new package over an existing local Eidolon folder.",
+    "Release APIs return compact summaries by default; use full=true only when inspecting detailed inventories."
+  ],
+  "rows": [
+    {
+      "name": "from-version",
+      "status": "pass",
+      "message": "20.0.1"
+    },
+    {
+      "name": "to-version",
+      "status": "pass",
+      "message": "21.0"
+    },
+    {
+      "name": "new-command-count",
+      "status": "pass",
+      "message": "9 release install commands documented."
+    }
+  ],
+  "message": "Upgrade notes generated from v20.0.1 to v21.0."
+}

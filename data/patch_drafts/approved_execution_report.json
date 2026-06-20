@@ -1,0 +1,17 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T00:22:55",
+  "project_id": "eidolon",
+  "status": "warn",
+  "ok": true,
+  "dry_run": true,
+  "approval_used": false,
+  "apply_status": "dry_run",
+  "files_changed": [],
+  "files_previewed": [
+    "README_NEXT_STEPS.md"
+  ],
+  "rollback_available": false,
+  "rollback_status": null,
+  "message": "Approved draft execution report assembled; dry-run reports never imply rollback availability."
+}

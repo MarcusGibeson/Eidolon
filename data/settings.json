@@ -1,5 +1,5 @@
 {
-  "settings_version": "20.0",
+  "settings_version": "30.0",
   "local_model": "qwen2.5:7b",
   "embed_model": "nomic-embed-text:latest",
   "ollama_base_url": "http://localhost:11434",
@@ -54,7 +54,7 @@
   "setup_check_ports": true,
   "desktop_onboarding_check_on_start": false,
   "onboarding_refresh_setup_default": true,
-  "last_updated_for": "v20.0",
+  "last_updated_for": "v30.0",
   "release_pipeline_enabled": true,
   "approval_binding_required_for_draft_apply": true,
   "safe_rewrite_preview_required": true

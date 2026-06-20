@@ -300,6 +300,117 @@ from release_packaging import (
     print_release_pipeline_audit,
     print_verified_release_package_loop,
 )
+from release_installation import (
+    print_release_profiles,
+    print_package_privacy_scan,
+    print_portable_metadata_check,
+    print_first_run_check,
+    print_dependency_advisor,
+    print_upgrade_notes,
+    print_runtime_migration_check,
+    print_release_install_verification,
+    print_verified_installable_release_loop,
+    print_smoke_runtime_hardening,
+    print_external_zip_install_verification,
+    print_deterministic_release_manifest,
+    print_update_dry_run_plan,
+    print_atomic_source_update,
+    print_runtime_migration_assistant,
+    print_route_safety_harness,
+    print_release_dashboard_command_center,
+    print_clean_room_install_harness,
+    print_verified_self_update_release_pipeline,
+    print_trial_upgrade_harness,
+    print_backup_rollback_drill,
+    print_update_collision_detector,
+    print_version_registry_report,
+    print_release_provenance_report,
+    print_dashboard_upgrade_wizard_preview,
+    print_api_upgrade_wizard_preview,
+    print_staged_apply_drill,
+    print_real_apply_guard_rails,
+    print_real_apply_rollback_verification,
+    print_self_update_ux_polish,
+    print_v23_readiness_gate,
+    print_controlled_self_maintenance_loop,
+)
+from self_maintenance import (
+    print_self_maintenance_proposal,
+    print_patch_plan_builder,
+    print_dry_run_patch_generator,
+    print_patch_safety_auditor,
+    print_apply_patch_to_temp_clone,
+    print_maintenance_review_bundle,
+    print_human_approval_binding,
+    print_real_maintenance_patch_apply,
+    print_post_apply_health_monitor,
+    print_controlled_maintenance_cycle,
+    print_assisted_self_improvement_release,
+    print_improvement_candidate_scan,
+    print_candidate_prioritizer,
+    print_candidate_to_proposal_bridge,
+    print_maintenance_backlog_registry,
+    print_dashboard_maintenance_backlog,
+    print_api_maintenance_backlog,
+    print_candidate_regression_detector,
+    print_release_memory_privacy,
+    print_candidate_verification_recipes,
+    print_assisted_improvement_cycle,
+    print_semi_autonomous_maintenance_review,
+    print_hotfix_regression_lockdown,
+    print_dashboard_route_coverage_auditor,
+    print_api_default_source_audit,
+    print_nested_readiness_severity_engine,
+    print_review_bundle_approval_contract,
+    print_maintenance_report_diff_viewer,
+    print_release_gate_composition_test,
+    print_dashboard_api_parity_audit,
+    print_operator_trust_report,
+    print_trustworthy_maintenance_console,
+    print_trust_console_drill,
+    print_trust_console_snapshot,
+    print_trust_console_diff,
+    print_release_candidate_freezer,
+    print_frozen_release_zip_verification,
+    print_approval_evidence_ledger,
+    print_release_command_reproducer,
+    print_console_readme_consistency,
+    print_pre_v27_safety_audit,
+    print_release_candidate_governance,
+    print_release_governance_drill,
+    print_release_evidence_bundle,
+    print_release_evidence_bundle_verifier,
+    print_release_governance_page,
+    print_governance_api_read_only_surface,
+    print_release_artifact_diff,
+    print_release_signing_preparation,
+    print_local_trust_policy,
+    print_release_governance_ux_polish,
+    print_pre_v28_governance_audit,
+    print_verifiable_release_evidence_system,
+    print_evidence_replay_drill,
+    print_evidence_bundle_persistence,
+    print_replay_release_evidence,
+    print_evidence_timeline,
+    print_evidence_operator_summary,
+    print_dashboard_evidence_viewer,
+    print_api_evidence_viewer,
+    print_evidence_retention_policy,
+    print_evidence_regression_lockdown,
+    print_pre_v29_evidence_audit,
+    print_durable_release_evidence_archive,
+    print_signing_readiness_audit,
+    print_canonical_manifest_format,
+    print_canonical_evidence_schema,
+    print_release_signing_status,
+    print_signature_placeholder_contract,
+    print_key_policy_preparation,
+    print_signature_verification_placeholder,
+    print_dashboard_signing_status,
+    print_api_signing_status,
+    print_pre_v30_signing_prep_audit,
+    print_signed_release_preparation_system,
+)
 from task_queue import (
     print_task_status,
     print_task_list,
@@ -948,7 +1059,7 @@ def main() -> None:
     parser.add_argument("--inline-review-intent", help="Intent block id/title for --inline-review-note")
     parser.add_argument("--apply-approved-code-patch", action="store_true", help="Run v14.7 approved generated code patch apply; dry-run unless approved")
     parser.add_argument("--prepare-release-package", action="store_true", help="Run v14.8 release package metadata preparation")
-    parser.add_argument("--release-package-name", default="Eidolon_v20_0.zip", help="Package name for release preparation metadata")
+    parser.add_argument("--release-package-name", default=None, help="Package name for release preparation metadata; defaults to current settings version")
     parser.add_argument("--release-readiness", action="store_true", help="Run v14.9 release readiness gate")
     parser.add_argument("--human-approved-release-loop", action="store_true", help="Run v15.0 human-approved release loop; stops after one approval/apply decision")
     parser.add_argument("--code-patch-status", action="store_true", help="Run v15.1 generated-code patch workspace status")
@@ -997,10 +1108,131 @@ def main() -> None:
     parser.add_argument("--build-release-zip", action="store_true", help="Run v19.6 guarded release zip builder; dry-run unless --approve-controlled-self-build is provided")
     parser.add_argument("--verify-release-unzip", action="store_true", help="Run v19.7 install/unzip verification for the latest release zip")
     parser.add_argument("--release-pipeline-audit", action="store_true", help="Run v19.9 release pipeline audit")
-    parser.add_argument("--verified-release-package-loop", action="store_true", help="Run v20.0 verified release package loop")
+    parser.add_argument("--verified-release-package-loop", action="store_true", help="Run v22.0 verified installable release package loop")
+    parser.add_argument("--release-profiles", action="store_true", help="Run v20.1 release profile report")
+    parser.add_argument("--package-privacy-scan", action="store_true", help="Run v20.2 package privacy scanner")
+    parser.add_argument("--portable-metadata-check", action="store_true", help="Run v20.3 portable workspace metadata check")
+    parser.add_argument("--first-run-check", action="store_true", help="Run v20.4 first-run setup check")
+    parser.add_argument("--dependency-advisor", action="store_true", help="Run v20.5 dependency install advisor")
+    parser.add_argument("--upgrade-notes", action="store_true", help="Run v20.6 release upgrade notes")
+    parser.add_argument("--runtime-migration-check", action="store_true", help="Run v20.7 runtime data migration guard")
+    parser.add_argument("--release-install-verification", action="store_true", help="Run v20.8 release install verification")
+    parser.add_argument("--verified-installable-release-loop", action="store_true", help="Run v22.0 verified installable release loop")
+    parser.add_argument("--smoke-runtime-hardening", action="store_true", help="Run v21.1 smoke runtime hardening report")
+    parser.add_argument("--external-zip-install-verification", action="store_true", help="Run v21.2 external release zip install verification")
+    parser.add_argument("--deterministic-release-manifest", action="store_true", help="Run v21.3 deterministic release manifest")
+    parser.add_argument("--update-dry-run-plan", action="store_true", help="Run v21.4 update dry-run planner")
+    parser.add_argument("--atomic-source-update", action="store_true", help="Run v21.5 guarded atomic source update; dry-run unless approved")
+    parser.add_argument("--runtime-migration-assistant", action="store_true", help="Run v21.6 runtime migration assistant")
+    parser.add_argument("--route-safety-harness", action="store_true", help="Run v21.7 route safety harness")
+    parser.add_argument("--release-dashboard-command-center", action="store_true", help="Run v21.8 release dashboard/API/CLI command center check")
+    parser.add_argument("--clean-room-install-harness", action="store_true", help="Run v21.9 clean-room install harness from a release zip")
+    parser.add_argument("--verified-self-update-release-pipeline", action="store_true", help="Run v22.0 verified self-update release pipeline")
+    parser.add_argument("--trial-upgrade-from-zip", action="store_true", help="Run v22.1 trial upgrade harness from a release zip")
+    parser.add_argument("--backup-rollback-drill", action="store_true", help="Run v22.2 backup and rollback drill in temp space")
+    parser.add_argument("--update-collision-detector", action="store_true", help="Run v22.3 update collision detector")
+    parser.add_argument("--version-registry-report", action="store_true", help="Run v22.4 version registry preview report")
+    parser.add_argument("--release-provenance-report", action="store_true", help="Run v22.5 release provenance report")
+    parser.add_argument("--dashboard-upgrade-wizard-preview", action="store_true", help="Run v22.6 dashboard upgrade wizard preview check")
+    parser.add_argument("--api-upgrade-wizard-preview", action="store_true", help="Run v22.7 API upgrade wizard preview check")
+    parser.add_argument("--staged-apply-drill", action="store_true", help="Run v22.8 staged apply drill in temp clone")
+    parser.add_argument("--real-apply-guard-rails", action="store_true", help="Run v22.9 real apply guard rail check")
+    parser.add_argument("--real-apply-rollback-verification", action="store_true", help="Run v22.10 real apply rollback verification preview")
+    parser.add_argument("--self-update-ux-polish", action="store_true", help="Run v22.11 self-update UX polish check")
+    parser.add_argument("--v23-readiness-gate", action="store_true", help="Run v22.12 v23 readiness gate")
+    parser.add_argument("--controlled-self-maintenance-loop", action="store_true", help="Run v23.0 controlled self-maintenance loop preview")
+
+    parser.add_argument("--self-maintenance-proposal", action="store_true", help="Run v23.1 self-maintenance proposal sandbox")
+    parser.add_argument("--build-patch-plan", action="store_true", help="Run v23.2 maintenance patch plan builder")
+    parser.add_argument("--generate-maintenance-patch", action="store_true", help="Run v23.3 dry-run maintenance patch generator")
+    parser.add_argument("--patch-safety-audit", action="store_true", help="Run v23.4 patch safety auditor")
+    parser.add_argument("--apply-maintenance-patch-to-temp", action="store_true", help="Run v23.5 maintenance patch apply drill in a temporary clone")
+    parser.add_argument("--maintenance-review-bundle", action="store_true", help="Run v23.6 maintenance review bundle")
+    parser.add_argument("--approve-maintenance-bundle", action="store_true", help="Run v23.7 exact maintenance bundle approval binding preview")
+    parser.add_argument("--real-maintenance-patch-apply", action="store_true", help="Run v23.8 real maintenance patch apply gate; dry-run unless approved")
+    parser.add_argument("--post-apply-health-monitor", action="store_true", help="Run v23.9 post-apply health monitor")
+    parser.add_argument("--controlled-maintenance-cycle", action="store_true", help="Run v23.10 controlled maintenance cycle and stop before live apply")
+    parser.add_argument("--assisted-self-improvement-release", action="store_true", help="Run v24.0 assisted self-improvement release gate")
+    parser.add_argument("--improvement-candidate-scan", action="store_true", help="Run v24.1 improvement candidate scanner")
+    parser.add_argument("--candidate-prioritizer", action="store_true", help="Run v24.2 improvement candidate prioritizer")
+    parser.add_argument("--candidate-to-proposal", action="store_true", help="Run v24.3 candidate-to-proposal bridge")
+    parser.add_argument("--maintenance-backlog", action="store_true", help="Run v24.4 maintenance backlog registry preview")
+    parser.add_argument("--dashboard-maintenance-backlog", action="store_true", help="Run v24.5 dashboard maintenance backlog preview check")
+    parser.add_argument("--api-maintenance-backlog", action="store_true", help="Run v24.6 API maintenance backlog preview check")
+    parser.add_argument("--candidate-regression-detector", action="store_true", help="Run v24.7 candidate regression detector")
+    parser.add_argument("--release-memory-privacy", action="store_true", help="Run v24.8 release memory privacy check")
+    parser.add_argument("--candidate-verification-recipes", action="store_true", help="Run v24.9 candidate verification recipes")
+    parser.add_argument("--assisted-improvement-cycle", action="store_true", help="Run v24.10 assisted improvement cycle")
+    parser.add_argument("--semi-autonomous-maintenance-review", action="store_true", help="Run v25.0.1 semi-autonomous maintenance review hotfix gate")
+    parser.add_argument("--hotfix-regression-lockdown", action="store_true", help="Run v25.1 hotfix regression lockdown")
+    parser.add_argument("--dashboard-route-coverage", action="store_true", help="Run v25.2 dashboard route coverage auditor")
+    parser.add_argument("--api-default-source-audit", action="store_true", help="Run v25.3 API default source-of-truth audit")
+    parser.add_argument("--nested-readiness-severity", action="store_true", help="Run v25.4 nested readiness severity engine")
+    parser.add_argument("--review-bundle-approval-contract", action="store_true", help="Run v25.5 review bundle approval contract")
+    parser.add_argument("--maintenance-report-diff", action="store_true", help="Run v25.6 maintenance report diff viewer")
+    parser.add_argument("--release-gate-composition-test", action="store_true", help="Run v25.7 release gate composition test")
+    parser.add_argument("--dashboard-api-parity-audit", action="store_true", help="Run v25.8 dashboard/API parity audit")
+    parser.add_argument("--operator-trust-report", action="store_true", help="Run v25.9 operator trust report")
+    parser.add_argument("--trustworthy-maintenance-console", action="store_true", help="Run v26.0 trustworthy maintenance console gate")
+    parser.add_argument("--trust-console-drill", action="store_true", help="Run v26.1 trust console drill mode")
+    parser.add_argument("--trust-console-snapshot", action="store_true", help="Run v26.2 trust console snapshot export")
+    parser.add_argument("--trust-console-diff", action="store_true", help="Run v26.3 trust console snapshot diff")
+    parser.add_argument("--freeze-release-candidate", action="store_true", help="Run v26.4 release candidate freezer")
+    parser.add_argument("--verify-frozen-release-zip", action="store_true", help="Run v26.5 freeze-to-zip verifier")
+    parser.add_argument("--approval-evidence-ledger", action="store_true", help="Run v26.6 approval evidence ledger")
+    parser.add_argument("--release-command-reproducer", action="store_true", help="Run v26.7 release command reproducer")
+    parser.add_argument("--console-readme-consistency", action="store_true", help="Run v26.8 console-to-README consistency check")
+    parser.add_argument("--pre-v27-safety-audit", action="store_true", help="Run v26.9 pre-v27 safety audit")
+    parser.add_argument("--release-candidate-governance", action="store_true", help="Run v27.0 release candidate governance system")
+    parser.add_argument("--release-governance-drill", action="store_true", help="Run v27.1 release governance evidence drill")
+    parser.add_argument("--release-evidence-bundle", action="store_true", help="Run v27.2 release evidence bundle export")
+    parser.add_argument("--verify-release-evidence-bundle", action="store_true", help="Run v27.3 release evidence bundle verifier")
+    parser.add_argument("--release-governance-page", action="store_true", help="Run v27.4 dashboard release governance page check")
+    parser.add_argument("--governance-api-read-only", action="store_true", help="Run v27.5 governance API read-only surface check")
+    parser.add_argument("--release-artifact-diff", action="store_true", help="Run v27.6 release artifact diff")
+    parser.add_argument("--release-signing-preparation", action="store_true", help="Run v27.7 release signing preparation")
+    parser.add_argument("--local-trust-policy", action="store_true", help="Run v27.8 local trust policy")
+    parser.add_argument("--release-governance-ux-polish", action="store_true", help="Run v27.9 release governance UX polish")
+    parser.add_argument("--pre-v28-governance-audit", action="store_true", help="Run v27.10 pre-v28 governance audit")
+    parser.add_argument("--verifiable-release-evidence-system", action="store_true", help="Run v28.0 verifiable release evidence system")
+    parser.add_argument("--evidence-replay-drill", action="store_true", help="Run v28.1 evidence replay and tamper drill")
+    parser.add_argument("--persist-release-evidence", action="store_true", help="Run v28.2 evidence bundle persistence")
+    parser.add_argument("--replay-release-evidence", action="store_true", help="Run v28.3 replay release evidence command")
+    parser.add_argument("--evidence-timeline", action="store_true", help="Run v28.4 evidence timeline")
+    parser.add_argument("--evidence-operator-summary", action="store_true", help="Run v28.5 evidence-to-operator summary")
+    parser.add_argument("--dashboard-evidence-viewer", action="store_true", help="Run v28.6 dashboard evidence viewer check")
+    parser.add_argument("--api-evidence-viewer", action="store_true", help="Run v28.7 API evidence viewer check")
+    parser.add_argument("--evidence-retention-policy", action="store_true", help="Run v28.8 evidence retention policy")
+    parser.add_argument("--evidence-regression-lockdown", action="store_true", help="Run v28.9 evidence regression lockdown")
+    parser.add_argument("--pre-v29-evidence-audit", action="store_true", help="Run v28.10 pre-v29 evidence audit")
+    parser.add_argument("--durable-release-evidence-archive", action="store_true", help="Run v29.0 durable release evidence archive gate")
+    parser.add_argument("--signing-readiness-audit", action="store_true", help="Run v29.1 signing readiness audit")
+    parser.add_argument("--canonical-manifest-format", action="store_true", help="Run v29.2 canonical manifest format report")
+    parser.add_argument("--canonical-evidence-schema", action="store_true", help="Run v29.3 canonical evidence bundle schema report")
+    parser.add_argument("--release-signing-status", action="store_true", help="Run v29.4 release signing status reporter")
+    parser.add_argument("--signature-placeholder-contract", action="store_true", help="Run v29.5 signature placeholder contract")
+    parser.add_argument("--key-policy-preparation", action="store_true", help="Run v29.6 key policy preparation")
+    parser.add_argument("--verify-release-signature", action="store_true", help="Run v29.7 signature verification placeholder")
+    parser.add_argument("--dashboard-signing-status", action="store_true", help="Run v29.8 dashboard signing status check")
+    parser.add_argument("--api-signing-status", action="store_true", help="Run v29.9 API signing status check")
+    parser.add_argument("--pre-v30-signing-prep-audit", action="store_true", help="Run v29.10 pre-v30 signing prep audit")
+    parser.add_argument("--signed-release-preparation-system", action="store_true", help="Run v30.0 signed release preparation system")
+    parser.add_argument("--release-evidence-bundle-path", help="Path to a release evidence bundle JSON for verification")
+    parser.add_argument("--trust-snapshot-before", help="Before snapshot JSON path for --trust-console-diff")
+    parser.add_argument("--trust-snapshot-after", help="After snapshot JSON path for --trust-console-diff")
+    parser.add_argument("--maintenance-candidate-id", help="Specific maintenance candidate id for candidate-to-proposal bridge")
+    parser.add_argument("--maintenance-bundle-hash", help="Exact reviewed maintenance bundle hash for approval-bound apply gates")
+    parser.add_argument("--maintenance-confirm-phrase", default="", help="Explicit maintenance confirmation phrase for guarded live apply")
+    parser.add_argument("--release-confirm-phrase", default="", help="Explicit release confirmation phrase for guarded checks")
+    parser.add_argument("--run-heavy-release-checks", action="store_true", help="Run heavier zip compile/smoke checks inside v23 gates")
+    parser.add_argument("--release-zip-path", help="Path to an external release zip for install/update verification")
+    parser.add_argument("--expected-manifest-hash", help="Exact deterministic manifest SHA-256 required for live source update")
+    parser.add_argument("--run-clean-room", action="store_true", help="Run clean-room install harness inside v22 self-update pipeline")
+    parser.add_argument("--smoke-tier", default="fast", help="Smoke tier for clean-room or hardened smoke workflows")
+    parser.add_argument("--run-install-smoke", action="store_true", help="Run full smoke check inside release install verification")
     parser.add_argument("--patch-draft-task", help="Patch draft task title/summary")
     parser.add_argument("--patch-draft-intent", help="Patch draft intent/why this patch exists")
-    parser.add_argument("--patch-draft-target-version", default="20.0", help="Target version for a patch draft request")
+    parser.add_argument("--patch-draft-target-version", default="30.0", help="Target version for a patch draft request")
     parser.add_argument("--patch-draft-risk-limit", default="medium", help="Maximum accepted draft risk for approval")
     parser.add_argument("--list-stable-loops", action="store_true", help="List saved stable supervised loop records")
     parser.add_argument("--show-stable-loop", nargs="?", const="latest", help="Show a saved stable supervised loop by id or alias")
@@ -2055,6 +2287,441 @@ def main() -> None:
     if args.verified_release_package_loop:
         approved = bool(args.approve_controlled_self_build)
         print_verified_release_package_loop(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, confirm=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_profiles:
+        print_release_profiles(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.package_privacy_scan:
+        print_package_privacy_scan(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.portable_metadata_check:
+        print_portable_metadata_check(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.first_run_check:
+        print_first_run_check(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.dependency_advisor:
+        print_dependency_advisor(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.upgrade_notes:
+        print_upgrade_notes(project_id=args.workspace_project_id or args.stable_loop_project, to_version=args.patch_draft_target_version, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.runtime_migration_check:
+        print_runtime_migration_check(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_install_verification:
+        print_release_install_verification(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, run_smoke=args.run_install_smoke, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.verified_installable_release_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_verified_installable_release_loop(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, confirm=approved, dry_run=not approved or args.dry_run, run_smoke=args.run_install_smoke, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.smoke_runtime_hardening:
+        print_smoke_runtime_hardening(project_id=args.workspace_project_id or args.stable_loop_project, tier=args.smoke_tier, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.external_zip_install_verification:
+        print_external_zip_install_verification(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.deterministic_release_manifest:
+        print_deterministic_release_manifest(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.update_dry_run_plan:
+        print_update_dry_run_plan(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.atomic_source_update:
+        approved = bool(args.approve_controlled_self_build)
+        print_atomic_source_update(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, expected_manifest_hash=args.expected_manifest_hash, confirm=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.runtime_migration_assistant:
+        approved = bool(args.approve_controlled_self_build)
+        print_runtime_migration_assistant(project_id=args.workspace_project_id or args.stable_loop_project, confirm=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.route_safety_harness:
+        print_route_safety_harness(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_dashboard_command_center:
+        print_release_dashboard_command_center(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.clean_room_install_harness:
+        print_clean_room_install_harness(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, run_smoke_tier=args.smoke_tier, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.verified_self_update_release_pipeline:
+        approved = bool(args.approve_controlled_self_build)
+        print_verified_self_update_release_pipeline(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, expected_manifest_hash=args.expected_manifest_hash, confirm=approved, dry_run=not approved or args.dry_run, run_clean_room=args.run_clean_room, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.trial_upgrade_from_zip:
+        print_trial_upgrade_harness(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, run_smoke_tier=args.smoke_tier, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.backup_rollback_drill:
+        print_backup_rollback_drill(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.update_collision_detector:
+        print_update_collision_detector(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.version_registry_report:
+        print_version_registry_report(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, dry_run=not args.approve_controlled_self_build, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_provenance_report:
+        print_release_provenance_report(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.dashboard_upgrade_wizard_preview:
+        print_dashboard_upgrade_wizard_preview(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.api_upgrade_wizard_preview:
+        print_api_upgrade_wizard_preview(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.staged_apply_drill:
+        print_staged_apply_drill(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.real_apply_guard_rails:
+        print_real_apply_guard_rails(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, expected_manifest_hash=args.expected_manifest_hash, confirm_phrase=args.release_confirm_phrase, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.real_apply_rollback_verification:
+        print_real_apply_rollback_verification(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.self_update_ux_polish:
+        print_self_update_ux_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.v23_readiness_gate:
+        print_v23_readiness_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, run_heavy=args.run_heavy_release_checks, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.controlled_self_maintenance_loop:
+        print_controlled_self_maintenance_loop(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+
+    if args.self_maintenance_proposal:
+        print_self_maintenance_proposal(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.build_patch_plan:
+        print_patch_plan_builder(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.generate_maintenance_patch:
+        print_dry_run_patch_generator(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_safety_audit:
+        print_patch_safety_auditor(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.apply_maintenance_patch_to_temp:
+        print_apply_patch_to_temp_clone(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.maintenance_review_bundle:
+        print_maintenance_review_bundle(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.approve_maintenance_bundle:
+        print_human_approval_binding(project_id=args.workspace_project_id or args.stable_loop_project, bundle_hash=args.maintenance_bundle_hash, confirm=bool(args.approve_controlled_self_build), full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.real_maintenance_patch_apply:
+        approved = bool(args.approve_controlled_self_build)
+        print_real_maintenance_patch_apply(project_id=args.workspace_project_id or args.stable_loop_project, bundle_hash=args.maintenance_bundle_hash, confirm_phrase=args.maintenance_confirm_phrase, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.post_apply_health_monitor:
+        print_post_apply_health_monitor(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.controlled_maintenance_cycle:
+        print_controlled_maintenance_cycle(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.assisted_self_improvement_release:
+        print_assisted_self_improvement_release(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.improvement_candidate_scan:
+        print_improvement_candidate_scan(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.candidate_prioritizer:
+        print_candidate_prioritizer(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.candidate_to_proposal:
+        print_candidate_to_proposal_bridge(project_id=args.workspace_project_id or args.stable_loop_project, candidate_id=args.maintenance_candidate_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.maintenance_backlog:
+        print_maintenance_backlog_registry(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.dashboard_maintenance_backlog:
+        print_dashboard_maintenance_backlog(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.api_maintenance_backlog:
+        print_api_maintenance_backlog(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.candidate_regression_detector:
+        print_candidate_regression_detector(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_memory_privacy:
+        print_release_memory_privacy(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.candidate_verification_recipes:
+        print_candidate_verification_recipes(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.assisted_improvement_cycle:
+        print_assisted_improvement_cycle(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.semi_autonomous_maintenance_review:
+        print_semi_autonomous_maintenance_review(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.hotfix_regression_lockdown:
+        print_hotfix_regression_lockdown(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.dashboard_route_coverage:
+        print_dashboard_route_coverage_auditor(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.api_default_source_audit:
+        print_api_default_source_audit(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.nested_readiness_severity:
+        print_nested_readiness_severity_engine(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.review_bundle_approval_contract:
+        print_review_bundle_approval_contract(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.maintenance_report_diff:
+        print_maintenance_report_diff_viewer(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_gate_composition_test:
+        print_release_gate_composition_test(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.dashboard_api_parity_audit:
+        print_dashboard_api_parity_audit(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.operator_trust_report:
+        print_operator_trust_report(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.trustworthy_maintenance_console:
+        print_trustworthy_maintenance_console(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.trust_console_drill:
+        print_trust_console_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.trust_console_snapshot:
+        print_trust_console_snapshot(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.trust_console_diff:
+        print_trust_console_diff(project_id=args.workspace_project_id or args.stable_loop_project, before_path=args.trust_snapshot_before, after_path=args.trust_snapshot_after, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.freeze_release_candidate:
+        print_release_candidate_freezer(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.verify_frozen_release_zip:
+        print_frozen_release_zip_verification(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.approval_evidence_ledger:
+        print_approval_evidence_ledger(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_command_reproducer:
+        print_release_command_reproducer(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.console_readme_consistency:
+        print_console_readme_consistency(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v27_safety_audit:
+        print_pre_v27_safety_audit(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_candidate_governance:
+        print_release_candidate_governance(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_governance_drill:
+        print_release_governance_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_evidence_bundle:
+        print_release_evidence_bundle(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.verify_release_evidence_bundle:
+        print_release_evidence_bundle_verifier(project_id=args.workspace_project_id or args.stable_loop_project, bundle_path=args.release_evidence_bundle_path, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_governance_page:
+        print_release_governance_page(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.governance_api_read_only:
+        print_governance_api_read_only_surface(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_artifact_diff:
+        print_release_artifact_diff(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_signing_preparation:
+        print_release_signing_preparation(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.local_trust_policy:
+        print_local_trust_policy(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_governance_ux_polish:
+        print_release_governance_ux_polish(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v28_governance_audit:
+        print_pre_v28_governance_audit(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.verifiable_release_evidence_system:
+        print_verifiable_release_evidence_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+
+    if args.evidence_replay_drill:
+        print_evidence_replay_drill(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.persist_release_evidence:
+        print_evidence_bundle_persistence(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.replay_release_evidence:
+        print_replay_release_evidence(project_id=args.workspace_project_id or args.stable_loop_project, bundle_path=args.release_evidence_bundle_path, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.evidence_timeline:
+        print_evidence_timeline(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.evidence_operator_summary:
+        print_evidence_operator_summary(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.dashboard_evidence_viewer:
+        print_dashboard_evidence_viewer(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.api_evidence_viewer:
+        print_api_evidence_viewer(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.evidence_retention_policy:
+        print_evidence_retention_policy(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.evidence_regression_lockdown:
+        print_evidence_regression_lockdown(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v29_evidence_audit:
+        print_pre_v29_evidence_audit(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.durable_release_evidence_archive:
+        print_durable_release_evidence_archive(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.signing_readiness_audit:
+        print_signing_readiness_audit(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.canonical_manifest_format:
+        print_canonical_manifest_format(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.canonical_evidence_schema:
+        print_canonical_evidence_schema(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_signing_status:
+        print_release_signing_status(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.signature_placeholder_contract:
+        print_signature_placeholder_contract(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.key_policy_preparation:
+        print_key_policy_preparation(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.verify_release_signature:
+        print_signature_verification_placeholder(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.dashboard_signing_status:
+        print_dashboard_signing_status(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.api_signing_status:
+        print_api_signing_status(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v30_signing_prep_audit:
+        print_pre_v30_signing_prep_audit(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.signed_release_preparation_system:
+        print_signed_release_preparation_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
         return
 
     if args.stable_loop:

@@ -1,0 +1,30 @@
+{
+  "version": "22.0",
+  "checked_at": "2026-06-20T08:54:02",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "rows": [
+    {
+      "name": "dashboard-api-info-routing",
+      "status": "pass",
+      "message": "/api-info is not captured by the /api prefix router."
+    },
+    {
+      "name": "get-release-dry-run",
+      "status": "pass",
+      "message": "GET release routes use dry-run/save=False previews."
+    },
+    {
+      "name": "get-save-true-scan",
+      "status": "pass",
+      "message": "No save=True literal detected in API GET section."
+    },
+    {
+      "name": "post-confirmation-gates",
+      "status": "pass",
+      "message": "Live/destructive POST release paths require explicit confirmation tokens."
+    }
+  ],
+  "message": "Route safety harness completed."
+}

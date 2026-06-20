@@ -1,0 +1,41 @@
+{
+  "version": "15.0",
+  "checked_at": "2026-06-20T00:18:33",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "files": [
+    "README_NEXT_STEPS.md"
+  ],
+  "commands": [
+    {
+      "command": "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+      "reason": "Compile every Python module before release."
+    },
+    {
+      "command": "PYTHONPATH=conscious_agent python -c \"import dashboard; print(dashboard.DASHBOARD_VERSION)\"",
+      "reason": "Catch dashboard syntax/import issues before desktop launch."
+    },
+    {
+      "command": "python conscious_agent/main.py --doctor",
+      "reason": "Doctor mode summarizes release blockers and environment warnings."
+    },
+    {
+      "command": "python conscious_agent/main.py --stabilization-checkpoint --stabilization-full",
+      "reason": "Full stabilization checkpoint must remain healthy."
+    },
+    {
+      "command": "python tools/smoke_check.py",
+      "reason": "Smoke check verifies critical CLI surfaces."
+    },
+    {
+      "command": "python conscious_agent/main.py --patch-draft-status",
+      "reason": "Patch drafting changes must preserve the draft workspace report."
+    }
+  ],
+  "manual_checks": [
+    "Confirm README_NEXT_STEPS.md documents every version included in the patch.",
+    "Confirm dry-runs never overwrite real rollback/apply pointers."
+  ],
+  "message": "Prepared 6 command suggestion(s) and 2 manual check(s)."
+}

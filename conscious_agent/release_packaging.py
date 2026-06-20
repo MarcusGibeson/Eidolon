@@ -35,7 +35,7 @@ from code_patch_release import build_release_artifact, build_release_audit_trail
 from patch_drafting import APPROVAL_STATE
 from workspace_orchestration import _timeline_event
 
-RELEASE_PACKAGING_VERSION = "20.0"
+RELEASE_PACKAGING_VERSION = "30.0"
 RELEASE_PACKAGE_DIR = DATA_DIR / "release_package"
 RELEASES_DIR = DATA_DIR / "releases"
 RELEASE_MANIFEST_INTEGRITY = RELEASE_PACKAGE_DIR / "release_manifest_integrity.json"
@@ -48,13 +48,24 @@ VERIFY_RELEASE_UNZIP = RELEASE_PACKAGE_DIR / "verify_release_unzip.json"
 RELEASE_PIPELINE_AUDIT = RELEASE_PACKAGE_DIR / "release_pipeline_audit.json"
 VERIFIED_RELEASE_PACKAGE_LOOP = RELEASE_PACKAGE_DIR / "verified_release_package_loop.json"
 
-EXCLUDE_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", ".mypy_cache"}
+EXCLUDE_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", ".mypy_cache", "reports"}
 EXCLUDE_SUFFIXES = {".pyc", ".pyo", ".log"}
 EXCLUDE_FILES = {
     "approval_state.json",
     "memories.json",
     "thoughts.log",
 }
+# v20.0.1: release zips use a source-only data profile by default.
+# Runtime/private/generated data is excluded unless explicitly allowlisted here.
+SOURCE_ONLY_DATA_FILES = {
+    "data/settings.json",
+    "data/projects.json",
+    "data/workspaces/projects.json",
+    "data/workspaces/active_project.json",
+}
+SOURCE_ONLY_DATA_PREFIXES = (
+    "data/workspaces/command_profiles/",
+)
 EXCLUDE_PARTS = {
     ("data", "chat_actions"),
     ("data", "controlled_build_reports"),
@@ -75,7 +86,6 @@ EXCLUDE_PARTS = {
     ("data", "test_reviews"),
     ("data", "watch_reports"),
     ("data", "work_cycles"),
-    ("data", "workspaces"),
 }
 
 
@@ -122,6 +132,37 @@ def _json_print(value: Any) -> None:
     print(json.dumps(value, indent=2, default=str))
 
 
+def summarize_release_report(report: dict[str, Any], list_limit: int = 25) -> dict[str, Any]:
+    """Return a dashboard/API-safe summary without giant inventory/checksum payloads."""
+    summary = {
+        key: value
+        for key, value in report.items()
+        if key not in {"included", "excluded", "checksums", "steps", "readme_excerpt"}
+    }
+    for key in ("included", "excluded", "checksums"):
+        items = report.get(key)
+        if isinstance(items, list):
+            summary[f"{key}_sample"] = items[:list_limit]
+            summary[f"{key}_truncated"] = len(items) > list_limit
+    steps = report.get("steps")
+    if isinstance(steps, dict):
+        summary["steps"] = {
+            name: {
+                "status": value.get("status"),
+                "ok": value.get("ok"),
+                "message": value.get("message"),
+                "included_count": value.get("included_count"),
+                "excluded_count": value.get("excluded_count"),
+                "checksum_count": value.get("checksum_count"),
+                "package_name": value.get("package_name"),
+            }
+            for name, value in steps.items()
+            if isinstance(value, dict)
+        }
+    summary["summary_only"] = True
+    return summary
+
+
 def _current_version() -> str:
     settings = _read_json(DATA_DIR / "settings.json", {})
     return str(settings.get("version") or settings.get("last_updated_for") or RELEASE_PACKAGING_VERSION).lstrip("v")
@@ -132,28 +173,56 @@ def _package_name(default: str | None = None) -> str:
     return default or f"Eidolon_v{version}.zip"
 
 
+def _rel_path(path: Path) -> str:
+    return str(path.relative_to(ROOT_DIR)).replace(os.sep, "/")
+
+
+def _is_source_data_file(rel: str) -> bool:
+    return rel in SOURCE_ONLY_DATA_FILES or any(rel.startswith(prefix) for prefix in SOURCE_ONLY_DATA_PREFIXES)
+
+
 def _is_excluded(path: Path) -> tuple[bool, str]:
-    rel = path.relative_to(ROOT_DIR)
-    parts = rel.parts
+    rel = _rel_path(path)
+    parts = Path(rel).parts
     if any(part in EXCLUDE_DIRS for part in parts):
         return True, "excluded generated/cache/env directory"
     if path.suffix in EXCLUDE_SUFFIXES:
         return True, "excluded generated/log/bytecode file"
     if path.name in EXCLUDE_FILES:
         return True, "excluded live approval state"
+    if rel.startswith("data/") and not _is_source_data_file(rel):
+        return True, "excluded private/runtime data by source-only package profile"
     if len(parts) >= 2 and (parts[0], parts[1]) in EXCLUDE_PARTS:
         return True, "excluded generated release-package output"
     if path.suffix == ".zip":
         return True, "excluded nested release zip"
-    return False, "included release file"
+    return False, "included source release file"
+
+
+def _should_prune_dir(parent: Path, dirname: str) -> bool:
+    if dirname in EXCLUDE_DIRS:
+        return True
+    rel = str((parent / dirname).relative_to(ROOT_DIR)).replace(os.sep, "/")
+    if rel == "data":
+        return False
+    if rel.startswith("data/"):
+        prefix = rel + "/"
+        if any(item.startswith(prefix) for item in SOURCE_ONLY_DATA_FILES):
+            return False
+        if any(allowed.startswith(prefix) or prefix.startswith(allowed) for allowed in SOURCE_ONLY_DATA_PREFIXES):
+            return False
+        return True
+    return False
 
 
 def _iter_files() -> list[Path]:
     files: list[Path] = []
-    for path in sorted(ROOT_DIR.rglob("*")):
-        if path.is_file():
-            files.append(path)
-    return files
+    for root, dirs, filenames in os.walk(ROOT_DIR):
+        root_path = Path(root)
+        dirs[:] = sorted(d for d in dirs if not _should_prune_dir(root_path, d))
+        for name in sorted(filenames):
+            files.append(root_path / name)
+    return sorted(files)
 
 
 def build_release_manifest_integrity(project_id: str = "eidolon", package_name: str | None = None, save: bool = True) -> dict[str, Any]:
@@ -174,7 +243,8 @@ def build_release_manifest_integrity(project_id: str = "eidolon", package_name: 
     rows = [
         {"name": "settings-version", "status": "pass" if (str(settings.get("version") or settings.get("settings_version")) == version and settings.get("last_updated_for") == f"v{version}") else "blocked", "message": f"settings version={settings.get('version') or settings.get('settings_version')} last_updated_for={settings.get('last_updated_for')} expected=v{version}"},
         {"name": "projects-version", "status": "pass" if projects.get("last_updated_for") == f"v{version}" else "blocked", "message": f"projects last_updated_for={projects.get('last_updated_for')} expected=v{version}"},
-        {"name": "workspace-version", "status": "pass" if f"v{version}" in json.dumps(workspace_projects) else "warn", "message": "Workspace metadata references current version."},
+        {"name": "workspace-root-version", "status": "pass" if str(workspace_projects.get("version")) in {version, f"v{version}"} else "blocked", "message": f"workspace root version={workspace_projects.get('version')} expected={version} or v{version}"},
+        {"name": "workspace-project-version", "status": "pass" if any(str(item.get("version")) in {version, f"v{version}"} and str(item.get("current_milestone", "")).find(f"v{version}") >= 0 for item in workspace_projects.get("projects", [])) else "blocked", "message": f"active workspace project metadata must reference v{version}."},
         {"name": "readme-section", "status": "pass" if f"v{version}" in readme else "blocked", "message": f"README must document v{version}."},
         {"name": "dashboard-version", "status": "pass" if f'DASHBOARD_VERSION = "{version}"' in dashboard_text else "blocked", "message": "Dashboard version marker must match release."},
         {"name": "api-version", "status": "pass" if f'API_VERSION = "{version}"' in api_text else "blocked", "message": "API version marker must match release."},
@@ -208,7 +278,7 @@ def build_package_inventory(project_id: str = "eidolon", save: bool = True) -> d
     included: list[dict[str, Any]] = []
     excluded: list[dict[str, Any]] = []
     for path in _iter_files():
-        rel = str(path.relative_to(ROOT_DIR)).replace(os.sep, "/")
+        rel = _rel_path(path)
         exclude, reason = _is_excluded(path)
         row = {"path": rel, "size": path.stat().st_size, "reason": reason}
         if exclude:
@@ -218,8 +288,10 @@ def build_package_inventory(project_id: str = "eidolon", save: bool = True) -> d
     rows = [
         {"name": "included-files", "status": "pass" if included else "blocked", "message": f"{len(included)} file(s) included."},
         {"name": "readme-included", "status": "pass" if any(row["path"] == "README_NEXT_STEPS.md" for row in included) else "blocked", "message": "README_NEXT_STEPS.md must be packaged."},
-        {"name": "approval-state-excluded", "status": "pass" if any(row["path"].endswith("approval_state.json") for row in excluded) else "warn", "message": "Live approval state should not ship."},
-        {"name": "venv-excluded", "status": "pass", "message": ".venv, __pycache__, .pyc, logs, generated package files, and nested zips are excluded."},
+        {"name": "approval-state-excluded", "status": "pass" if not any(row["path"].endswith("approval_state.json") for row in included) else "blocked", "message": "Live approval state is absent from included package files."},
+        {"name": "source-only-data-profile", "status": "pass" if not any(row["path"].startswith("data/") and not _is_source_data_file(row["path"]) for row in included) else "blocked", "message": "Only allowlisted source-safe data files may be packaged."},
+        {"name": "data-runtime-excluded", "status": "pass" if any(row["path"].startswith("data/") and row["path"] not in SOURCE_ONLY_DATA_FILES for row in excluded) else "warn", "message": "Runtime/private data folders are excluded by default."},
+        {"name": "venv-excluded", "status": "pass", "message": ".git, .venv, __pycache__, .pyc, logs, generated package files, private runtime data, and nested zips are excluded."},
     ]
     status = _status_from(rows)
     report = {
@@ -228,6 +300,7 @@ def build_package_inventory(project_id: str = "eidolon", save: bool = True) -> d
         "project_id": project_id,
         "status": status,
         "ok": status != "blocked",
+        "package_profile": "source_only",
         "included_count": len(included),
         "excluded_count": len(excluded),
         "included": included,
@@ -454,7 +527,7 @@ def _build_release_zip_from_parts(
         "zip_path": str(target) if built else None,
         "included_count": inventory.get("included_count"),
         "rows": rows,
-        "message": "Release zip built." if built else "Release zip dry-run completed; no archive written." if status != "blocked" else "Release zip blocked by prechecks.",
+        "message": "Source-only release zip built." if built else "Source-only release zip dry-run completed; no archive written." if status != "blocked" else "Release zip blocked by prechecks.",
     }
     if save:
         _write_json(BUILD_RELEASE_ZIP, report)
@@ -494,7 +567,8 @@ def build_verify_release_unzip(project_id: str = "eidolon", package_name: str | 
             {"name": "main-py", "status": "pass" if main_py.exists() else "blocked", "message": "main.py exists after extraction."},
             {"name": "readme", "status": "pass" if (extracted_root / "README_NEXT_STEPS.md").exists() else "blocked", "message": "README exists after extraction."},
             {"name": "approval-neutral", "status": "pass" if not (extracted_root / "data" / "patch_drafts" / "approval_state.json").exists() else "blocked", "message": "Live approval state is not packaged."},
-            {"name": "portable-root", "status": "pass" if "/mnt/data" not in json.dumps([p.name for p in extracted_root.rglob('*')][:25]) else "warn", "message": "Basic portable path check completed."},
+            {"name": "runtime-data-excluded", "status": "pass" if not any((extracted_root / item).exists() for item in ["data/chroma", "data/chat_actions", "data/dashboard_chat", "data/backups", "data/code_patches", "data/memories.json"]) else "blocked", "message": "Private/runtime data folders are absent after extraction."},
+            {"name": "portable-root", "status": "pass" if "/mnt/data" not in json.dumps([str(p.relative_to(extracted_root)).replace(os.sep, "/") for p in extracted_root.rglob('*')][:200]) else "warn", "message": "Portable path check completed."},
         ])
     except Exception as error:
         rows.append({"name": "extracts", "status": "blocked", "message": str(error)})
@@ -512,12 +586,19 @@ def build_verify_release_unzip(project_id: str = "eidolon", package_name: str | 
     return report
 
 
+def _cached_release_artifact(path: Path, message: str) -> dict[str, Any]:
+    cached = _read_json(path, {})
+    if isinstance(cached, dict) and cached:
+        return cached
+    return {"status": "warn", "ok": True, "message": message}
+
+
 def build_release_pipeline_audit(project_id: str = "eidolon", package_name: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v19.9: audit the full approval-to-package chain."""
-    bundle = build_ai_patch_review_bundle(project_id=project_id, save=False)
-    integrity = build_review_bundle_integrity(project_id=project_id, save=False)
-    ready = build_approval_ready(project_id=project_id, save=False)
-    post_apply = build_post_apply_review(project_id=project_id, save=False)
+    """v19.9/v21.0: audit the approval-to-package chain without rebuilding heavyweight AI review artifacts during dashboard/package checks."""
+    bundle = _cached_release_artifact(AI_PATCH_REVIEW_BUNDLE, "Review bundle has not been saved yet; refresh it before approving a generated patch.")
+    integrity = _cached_release_artifact(REVIEW_BUNDLE_INTEGRITY, "Review bundle integrity has not been saved yet; run --ai-patch-review-integrity before approval.")
+    ready = _cached_release_artifact(APPROVAL_READY, "Approval-ready gate has not been saved yet; run --approval-ready before applying a generated patch.")
+    post_apply = _cached_release_artifact(POST_APPLY_REVIEW, "No real post-apply review exists in this packaged handoff state.")
     readiness = _read_json(RELEASE_READINESS, {}) or {"status": "warn", "ok": True, "message": "Release readiness has not been saved yet; run --release-readiness or --doctor before final handoff."}
     manifest = build_release_manifest_integrity(project_id=project_id, package_name=package_name, save=False)
     inventory = build_package_inventory(project_id=project_id, save=False)
@@ -571,10 +652,10 @@ def build_verified_release_package_loop(project_id: str = "eidolon", package_nam
     checksums = _build_package_checksums_from_inventory(project_id=project_id, inventory=inventory, save=save)
     notes = build_release_notes(project_id=project_id, save=save)
     handoff = _build_release_handoff_report_from_parts(project_id=project_id, package_name=package_name, manifest=manifest, inventory=inventory, checksums=checksums, notes=notes, save=save)
-    bundle = build_ai_patch_review_bundle(project_id=project_id, save=False)
-    integrity = build_review_bundle_integrity(project_id=project_id, save=False)
-    ready = build_approval_ready(project_id=project_id, save=False)
-    post_apply = build_post_apply_review(project_id=project_id, save=False)
+    bundle = _cached_release_artifact(AI_PATCH_REVIEW_BUNDLE, "Review bundle has not been saved yet; refresh it before approving a generated patch.")
+    integrity = _cached_release_artifact(REVIEW_BUNDLE_INTEGRITY, "Review bundle integrity has not been saved yet; run --ai-patch-review-integrity before approval.")
+    ready = _cached_release_artifact(APPROVAL_READY, "Approval-ready gate has not been saved yet; run --approval-ready before applying a generated patch.")
+    post_apply = _cached_release_artifact(POST_APPLY_REVIEW, "No real post-apply review exists in this packaged handoff state.")
     readiness = _read_json(RELEASE_READINESS, {}) or {"status": "warn", "ok": True, "message": "Release readiness has not been saved yet; run --release-readiness or --doctor before final handoff."}
     zip_report = _build_release_zip_from_parts(project_id=project_id, package_name=package_name, manifest=manifest, inventory=inventory, checksums=checksums, handoff=handoff, confirm=confirm, dry_run=dry_run or not confirm, save=save)
     audit = _build_release_pipeline_audit_from_parts(project_id=project_id, package_name=package_name, bundle=bundle, integrity=integrity, ready=ready, post_apply=post_apply, readiness=readiness, manifest=manifest, checksums=checksums, handoff=handoff, zip_plan=zip_report, save=save)
@@ -674,7 +755,7 @@ def release_pipeline_audit_text(report: dict[str, Any] | None = None, full: bool
 
 
 def verified_release_package_loop_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
-    return _generic_text("Eidolon v20.0 Verified Release Package Loop", report or build_verified_release_package_loop(save=False), full)
+    return _generic_text("Eidolon v21.0 Verified Release Package Loop", report or build_verified_release_package_loop(save=False), full)
 
 
 def print_release_manifest_integrity(project_id: str = "eidolon", package_name: str | None = None, full: bool = False, json_output: bool = False) -> None:

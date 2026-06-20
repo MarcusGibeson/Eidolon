@@ -1,0 +1,72 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "release_version": "21.0",
+  "package_name": "Eidolon_v21_0.zip",
+  "rows": [
+    {
+      "name": "settings-version",
+      "status": "pass",
+      "message": "settings version=21.0 last_updated_for=v21.0 expected=v21.0"
+    },
+    {
+      "name": "projects-version",
+      "status": "pass",
+      "message": "projects last_updated_for=v21.0 expected=v21.0"
+    },
+    {
+      "name": "workspace-root-version",
+      "status": "pass",
+      "message": "workspace root version=21.0 expected=21.0 or v21.0"
+    },
+    {
+      "name": "workspace-project-version",
+      "status": "pass",
+      "message": "active workspace project metadata must reference v21.0."
+    },
+    {
+      "name": "readme-section",
+      "status": "pass",
+      "message": "README must document v21.0."
+    },
+    {
+      "name": "dashboard-version",
+      "status": "pass",
+      "message": "Dashboard version marker must match release."
+    },
+    {
+      "name": "api-version",
+      "status": "pass",
+      "message": "API version marker must match release."
+    },
+    {
+      "name": "approval-manifest",
+      "status": "pass",
+      "message": "Validated patch approval manifest is present or not needed for packaging-only handoff."
+    },
+    {
+      "name": "review-bundle",
+      "status": "pass",
+      "message": "AI patch review bundle created from objective, context, safety, validation, simulation, scoring, recovery, release, and audit artifacts."
+    },
+    {
+      "name": "review-integrity",
+      "status": "pass",
+      "message": "Review bundle integrity requires saved and current validated AI patch artifact hashes to match. If this is blocked after legitimate regenerated reports, run --ai-patch-review-bundle or POST /api/code-patches/refresh-review-bundle to save a fresh review bundle before approval."
+    },
+    {
+      "name": "release-readiness",
+      "status": "pass",
+      "message": "Release readiness: READY WITH WARNINGS."
+    },
+    {
+      "name": "package-plan",
+      "status": "pass",
+      "message": "Package build plan prepared for final handoff."
+    }
+  ],
+  "message": "Release manifest integrity verifies version markers, README, package plan, and approval/release artifacts."
+}

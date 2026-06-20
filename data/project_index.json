@@ -1,7 +1,7 @@
 {
-  "indexed_at": "2026-06-19T16:30:28",
+  "indexed_at": "2026-06-19T20:41:49",
   "active_project": "Eidolon",
-  "project_path": "/mnt/data/eidolon_v57_work/Eidolon",
+  "project_path": "/mnt/data/eidolon_v69_work/Eidolon",
   "relative_path": "",
   "max_files": 400,
   "files": [
@@ -19,12 +19,12 @@
     {
       "path": "README_NEXT_STEPS.md",
       "extension": ".md",
-      "size_bytes": 58131,
-      "modified_at": "2026-06-19T16:30:26",
+      "size_bytes": 107655,
+      "modified_at": "2026-06-19T20:36:54",
       "summary": {
-        "line_count": 1777,
-        "non_empty_line_count": 1316,
-        "preview": "# Eidolon v5.7 - Task Lifecycle Actions / Filters\nv5.7 turns the v5.6 lifecycle view into a controllable operator surface. The dashboard can now filter Tasks / Work by lifecycle stage and safely batch-request approvals for tasks that need approval. No batch execution button was added, because apparently we prefer filesystems that continue existing.\n## What changed in v5.7\n- Updated `conscious_agent/task_lifecycle.py`\n- added lifecycle stage filter helpers\n- added grouped filters: `open`, `needs_attention`, and `ready_to_act`\n- `task_lifecycle_summary()` now returns filter metadata and filtered rows\n- Updated `conscious_agent/dashboard.py`\n- dashboard version is now `5.7`\n- `/tasks-work?stage=...` now filters task tables by lifecycle stage"
+        "line_count": 3078,
+        "non_empty_line_count": 2304,
+        "preview": "# Eidolon v6.9 - Stable Loop Closure-Aware Work Cycle Guardrails\nv6.9 adds live-run guardrails around the stable supervised loop. v6.8 made decision follow-up chains reportable; v6.9 makes those reports matter by blocking new live stable-loop advancement while unresolved action-required follow-up chains still exist. Preview/preflight still works, because seeing the next move is useful. Live runs now need either clear closure guardrails or an explicit bypass flag, because apparently one mess should be cleaned before starting another. Revolutionary little chore chart.\n## What changed in v6.9\n- Added `conscious_agent/stable_loop_guardrails.py`\n- reports unresolved follow-up chains\n- counts missing follow-up tasks, open follow-up chains, ready-to-resolve chains, resolved chains, and cleanup candidates\n- explains whether preview and live advancement are allowed\n- provides recommended operator actions\n- Updated `conscious_agent/stable_supervised_loop.py`\n- version is now `6.9`"
       }
     },
     {
@@ -48,8 +48,8 @@
     {
       "path": "conscious_agent/api_server.py",
       "extension": ".py",
-      "size_bytes": 56806,
-      "modified_at": "2026-06-19T16:27:23",
+      "size_bytes": 83196,
+      "modified_at": "2026-06-19T20:36:16",
       "summary": {
         "classes": [
           "ApiError",
@@ -99,10 +99,20 @@
           "project_manager",
           "session_planner",
           "settings_manager",
+          "stable_loop_audit",
+          "stable_loop_decision_report",
+          "stable_loop_followup_completion",
+          "stable_loop_followup_lifecycle",
+          "stable_loop_followup_tasks",
+          "stable_loop_guardrails",
+          "stable_loop_operator_notes",
+          "stable_loop_review",
+          "stable_supervised_loop",
           "task_approval_bridge",
           "task_lifecycle",
           "task_patch_bridge",
           "task_queue",
+          "task_recovery",
           "task_work_executor",
           "test_report_reviewer",
           "test_runner",
@@ -115,7 +125,7 @@
           "work_queue_patch_bridge"
         ],
         "parse_error": null,
-        "line_count": 1116
+        "line_count": 1524
       }
     },
     {
@@ -368,8 +378,8 @@
     {
       "path": "conscious_agent/command_runner.py",
       "extension": ".py",
-      "size_bytes": 20786,
-      "modified_at": "2026-06-19T16:04:43",
+      "size_bytes": 23579,
+      "modified_at": "2026-06-19T20:33:53",
       "summary": {
         "classes": [
           "CommandRunResult",
@@ -410,14 +420,14 @@
           "typing"
         ],
         "parse_error": null,
-        "line_count": 623
+        "line_count": 701
       }
     },
     {
       "path": "conscious_agent/dashboard.py",
       "extension": ".py",
-      "size_bytes": 108577,
-      "modified_at": "2026-06-19T16:27:04",
+      "size_bytes": 151187,
+      "modified_at": "2026-06-19T20:34:11",
       "summary": {
         "classes": [
           "DashboardState",
@@ -458,6 +468,20 @@
           "_send_html",
           "_send_json",
           "_small_list",
+          "_stable_loop_controls",
+          "_stable_loop_decision_cards",
+          "_stable_loop_decision_cleanup_controls",
+          "_stable_loop_decision_filter_controls",
+          "_stable_loop_filter_controls",
+          "_stable_loop_followup_cards",
+          "_stable_loop_followup_completion_cards",
+          "_stable_loop_followup_completion_cleanup_controls",
+          "_stable_loop_followup_completion_filter_controls",
+          "_stable_loop_followup_controls",
+          "_stable_loop_history_cleanup_controls",
+          "_stable_loop_operator_controls",
+          "_stable_loop_review_cards",
+          "_stable_loop_review_controls",
           "_stage_pill",
           "_status_cards",
           "_status_options",
@@ -493,6 +517,7 @@
           "render_patches",
           "render_settings",
           "render_setup",
+          "render_stable_loop",
           "render_tasks",
           "render_watch",
           "render_work_cycle",
@@ -524,9 +549,19 @@
           "project_manager",
           "session_planner",
           "settings_manager",
+          "stable_loop_audit",
+          "stable_loop_decision_report",
+          "stable_loop_followup_completion",
+          "stable_loop_followup_lifecycle",
+          "stable_loop_followup_tasks",
+          "stable_loop_guardrails",
+          "stable_loop_operator_notes",
+          "stable_loop_review",
+          "stable_supervised_loop",
           "task_approval_bridge",
           "task_lifecycle",
           "task_queue",
+          "task_recovery",
           "task_work_executor",
           "test_report_reviewer",
           "test_runner",
@@ -539,7 +574,7 @@
           "work_queue_patch_bridge"
         ],
         "parse_error": null,
-        "line_count": 1980
+        "line_count": 2622
       }
     },
     {
@@ -1141,8 +1176,8 @@
     {
       "path": "conscious_agent/main.py",
       "extension": ".py",
-      "size_bytes": 78973,
-      "modified_at": "2026-06-19T16:04:35",
+      "size_bytes": 104768,
+      "modified_at": "2026-06-19T20:32:09",
       "summary": {
         "classes": [],
         "functions": [
@@ -1190,10 +1225,20 @@
           "self_model",
           "session_planner",
           "settings_manager",
+          "stable_loop_audit",
+          "stable_loop_decision_report",
+          "stable_loop_followup_completion",
+          "stable_loop_followup_lifecycle",
+          "stable_loop_followup_tasks",
+          "stable_loop_guardrails",
+          "stable_loop_operator_notes",
+          "stable_loop_review",
+          "stable_supervised_loop",
           "task_approval_bridge",
           "task_executor",
           "task_patch_bridge",
           "task_queue",
+          "task_recovery",
           "task_result_evaluator",
           "task_work_executor",
           "test_report_reviewer",
@@ -1205,7 +1250,7 @@
           "work_queue_patch_bridge"
         ],
         "parse_error": null,
-        "line_count": 1605
+        "line_count": 2076
       }
     },
     {
@@ -1776,7 +1821,7 @@
       "path": "conscious_agent/settings_manager.py",
       "extension": ".py",
       "size_bytes": 15406,
-      "modified_at": "2026-06-19T16:27:39",
+      "modified_at": "2026-06-19T20:34:11",
       "summary": {
         "classes": [
           "SettingsError"
@@ -1809,6 +1854,407 @@
         ],
         "parse_error": null,
         "line_count": 347
+      }
+    },
+    {
+      "path": "conscious_agent/stable_loop_audit.py",
+      "extension": ".py",
+      "size_bytes": 17086,
+      "modified_at": "2026-06-19T20:34:11",
+      "summary": {
+        "classes": [
+          "StableLoopAuditResult"
+        ],
+        "functions": [
+          "_approval_rows",
+          "_as_list",
+          "_audit_summary_text",
+          "_check_commands",
+          "_collect_event_details",
+          "_cycle_from_loop",
+          "_extract_command_from_execution",
+          "_now",
+          "_patch_rows",
+          "_task_rows",
+          "_unique",
+          "build_stable_loop_audit",
+          "print_stable_loop_audit",
+          "refresh_stable_loop_audit",
+          "stable_loop_audit_text",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "approval_manager",
+          "dataclasses",
+          "datetime",
+          "json",
+          "patch_suggester",
+          "pathlib",
+          "stable_supervised_loop",
+          "task_queue",
+          "typing",
+          "work_cycle"
+        ],
+        "parse_error": null,
+        "line_count": 404
+      }
+    },
+    {
+      "path": "conscious_agent/stable_loop_decision_report.py",
+      "extension": ".py",
+      "size_bytes": 18293,
+      "modified_at": "2026-06-19T20:34:11",
+      "summary": {
+        "classes": [
+          "StableLoopDecisionCleanupResult"
+        ],
+        "functions": [
+          "_audit",
+          "_notes",
+          "_now",
+          "cleanup_result_text",
+          "cleanup_stable_loop_decision_history",
+          "decision_label",
+          "final_decision_for_loop",
+          "list_stable_loop_decision_rows",
+          "normalize_decision_filter",
+          "print_cleanup_stable_loop_decisions",
+          "print_stable_loop_decision_report",
+          "print_stable_loop_decision_rows",
+          "recommended_decision_action",
+          "stable_loop_decision_report_text",
+          "stable_loop_decision_row",
+          "stable_loop_decision_summary",
+          "stable_loop_matches_decision_filter",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "stable_loop_operator_notes",
+          "stable_loop_review",
+          "stable_supervised_loop",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 493
+      }
+    },
+    {
+      "path": "conscious_agent/stable_loop_followup_completion.py",
+      "extension": ".py",
+      "size_bytes": 20721,
+      "modified_at": "2026-06-19T20:34:20",
+      "summary": {
+        "classes": [
+          "StableLoopFollowupCompletionCleanupResult"
+        ],
+        "functions": [
+          "_now",
+          "_resolution_for_loop",
+          "cleanup_stable_loop_followup_completions",
+          "list_stable_loop_followup_completion_rows",
+          "mark_stable_loop_followup_chain_closed",
+          "normalize_followup_completion_filter",
+          "print_cleanup_stable_loop_followup_completions",
+          "print_mark_stable_loop_followup_closed",
+          "print_stable_loop_followup_completion_report",
+          "print_stable_loop_followup_completion_rows",
+          "stable_loop_followup_closure_text",
+          "stable_loop_followup_completion_cleanup_text",
+          "stable_loop_followup_completion_matches",
+          "stable_loop_followup_completion_report_text",
+          "stable_loop_followup_completion_row",
+          "stable_loop_followup_completion_summary",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "stable_loop_decision_report",
+          "stable_loop_followup_lifecycle",
+          "stable_loop_operator_notes",
+          "stable_loop_review",
+          "stable_supervised_loop",
+          "task_queue",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 466
+      }
+    },
+    {
+      "path": "conscious_agent/stable_loop_followup_lifecycle.py",
+      "extension": ".py",
+      "size_bytes": 18073,
+      "modified_at": "2026-06-19T20:34:11",
+      "summary": {
+        "classes": [
+          "FollowupLifecycleResult"
+        ],
+        "functions": [
+          "_metadata",
+          "_now",
+          "final_decision_for_task",
+          "followup_kind_for_task",
+          "followup_lifecycle_summary_text",
+          "followup_resolution_text",
+          "is_stable_loop_followup_task",
+          "list_stable_loop_followup_task_rows",
+          "print_resolve_stable_loop_followups",
+          "print_resolve_task_stable_loop_followup",
+          "print_stable_loop_followup_lifecycle_summary",
+          "print_stable_loop_followup_task",
+          "resolve_stable_loop_followups",
+          "resolve_task_stable_loop_followup",
+          "stable_loop_followup_lifecycle_summary",
+          "stable_loop_followup_task_row",
+          "stable_loop_followup_task_text",
+          "stable_loop_followup_tasks",
+          "stable_loop_id_for_task",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "stable_loop_decision_report",
+          "stable_loop_operator_notes",
+          "stable_loop_review",
+          "stable_supervised_loop",
+          "task_lifecycle",
+          "task_queue",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 416
+      }
+    },
+    {
+      "path": "conscious_agent/stable_loop_followup_tasks.py",
+      "extension": ".py",
+      "size_bytes": 22669,
+      "modified_at": "2026-06-19T20:34:11",
+      "summary": {
+        "classes": [
+          "StableLoopFollowupBatchResult",
+          "StableLoopFollowupResult"
+        ],
+        "functions": [
+          "_audit",
+          "_build_followup_specs",
+          "_command_from_audit",
+          "_existing_followup_tasks",
+          "_now",
+          "_operator_followups",
+          "_record_followups_on_loop",
+          "_slug",
+          "create_stable_loop_followup_tasks",
+          "create_stable_loop_followups_for_decisions",
+          "followup_batch_text",
+          "followup_result_text",
+          "followup_summary_text",
+          "plan_stable_loop_followups",
+          "print_create_stable_loop_followups",
+          "print_create_stable_loop_followups_for_decisions",
+          "print_stable_loop_followup_summary",
+          "stable_loop_followup_summary",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "stable_loop_decision_report",
+          "stable_loop_operator_notes",
+          "stable_supervised_loop",
+          "task_queue",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 557
+      }
+    },
+    {
+      "path": "conscious_agent/stable_loop_guardrails.py",
+      "extension": ".py",
+      "size_bytes": 7640,
+      "modified_at": "2026-06-19T20:31:23",
+      "summary": {
+        "classes": [
+          "StableLoopGuardrailResult"
+        ],
+        "functions": [
+          "_now",
+          "print_stable_loop_guardrails",
+          "stable_loop_guardrail_summary",
+          "stable_loop_guardrails_text",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "stable_loop_followup_completion",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 186
+      }
+    },
+    {
+      "path": "conscious_agent/stable_loop_operator_notes.py",
+      "extension": ".py",
+      "size_bytes": 16980,
+      "modified_at": "2026-06-19T20:34:11",
+      "summary": {
+        "classes": [
+          "StableLoopOperatorResult"
+        ],
+        "functions": [
+          "_check_item",
+          "_ensure_audit",
+          "_merge_checklists",
+          "_now",
+          "_slug",
+          "add_stable_loop_operator_note",
+          "build_default_checklist",
+          "ensure_operator_notes",
+          "get_stable_loop_operator_notes",
+          "normalize_final_decision",
+          "print_add_stable_loop_operator_note",
+          "print_set_stable_loop_final_decision",
+          "print_stable_loop_operator_notes",
+          "print_update_stable_loop_check",
+          "set_stable_loop_final_decision",
+          "stable_loop_operator_notes_text",
+          "summarize_operator_notes",
+          "to_dict",
+          "update_stable_loop_check"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "re",
+          "stable_loop_audit",
+          "stable_supervised_loop",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 405
+      }
+    },
+    {
+      "path": "conscious_agent/stable_loop_review.py",
+      "extension": ".py",
+      "size_bytes": 23273,
+      "modified_at": "2026-06-19T20:32:27",
+      "summary": {
+        "classes": [
+          "StableLoopReviewResult"
+        ],
+        "functions": [
+          "_ensure_review",
+          "_json",
+          "_now",
+          "_review",
+          "cleanup_stable_loop_history",
+          "list_stable_loop_reviews",
+          "loop_is_archived",
+          "loop_is_live_ready",
+          "normalize_review_filter",
+          "normalize_review_status",
+          "print_archive_stable_loop",
+          "print_cleanup_stable_loop_history",
+          "print_run_approved_stable_loop_live",
+          "print_stable_loop_review",
+          "print_stable_loop_review_summary",
+          "print_stable_loop_reviews",
+          "print_update_stable_loop_review",
+          "review_label_for_loop",
+          "review_status_for_loop",
+          "run_approved_stable_loop_live",
+          "set_stable_loop_archived",
+          "stable_loop_matches_review_filter",
+          "stable_loop_review_row",
+          "stable_loop_review_summary",
+          "stable_loop_review_text",
+          "to_dict",
+          "update_stable_loop_review"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "stable_supervised_loop",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 642
+      }
+    },
+    {
+      "path": "conscious_agent/stable_supervised_loop.py",
+      "extension": ".py",
+      "size_bytes": 22731,
+      "modified_at": "2026-06-19T20:31:50",
+      "summary": {
+        "classes": [
+          "StableLoopResult"
+        ],
+        "functions": [
+          "_ensure_storage",
+          "_loop_path",
+          "_now",
+          "_saved_cycle",
+          "_stable_loop_message",
+          "_timestamp_id",
+          "build_stable_loop_preflight",
+          "list_stable_loops",
+          "load_stable_loop",
+          "print_saved_stable_loop",
+          "print_stable_loop",
+          "print_stable_loop_preflight",
+          "print_stable_loops",
+          "resolve_stable_loop_id",
+          "run_stable_supervised_loop",
+          "save_stable_loop",
+          "stable_loop_text",
+          "stable_preflight_text",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "approval_manager",
+          "dataclasses",
+          "datetime",
+          "json",
+          "pathlib",
+          "paths",
+          "settings_manager",
+          "stable_loop_audit",
+          "stable_loop_guardrails",
+          "stable_loop_operator_notes",
+          "task_cycle_policy",
+          "task_lifecycle",
+          "task_recovery",
+          "typing",
+          "work_cycle",
+          "work_queue"
+        ],
+        "parse_error": null,
+        "line_count": 576
       }
     },
     {
@@ -1849,6 +2295,44 @@
       }
     },
     {
+      "path": "conscious_agent/task_cycle_policy.py",
+      "extension": ".py",
+      "size_bytes": 16766,
+      "modified_at": "2026-06-19T16:56:39",
+      "summary": {
+        "classes": [
+          "TaskCycleActionResult",
+          "TaskCycleDecision"
+        ],
+        "functions": [
+          "_decision_reason",
+          "_now",
+          "_stage_policy_rank",
+          "_task_priority",
+          "choose_next_cycle_decision",
+          "cycle_decision_text",
+          "execute_cycle_decision",
+          "list_cycle_candidates",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "task_approval_bridge",
+          "task_lifecycle",
+          "task_patch_bridge",
+          "task_queue",
+          "task_recovery",
+          "task_work_executor",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 416
+      }
+    },
+    {
       "path": "conscious_agent/task_executor.py",
       "extension": ".py",
       "size_bytes": 10078,
@@ -1886,8 +2370,8 @@
     {
       "path": "conscious_agent/task_lifecycle.py",
       "extension": ".py",
-      "size_bytes": 13100,
-      "modified_at": "2026-06-19T16:26:28",
+      "size_bytes": 15702,
+      "modified_at": "2026-06-19T19:53:44",
       "summary": {
         "classes": [],
         "functions": [
@@ -1911,7 +2395,7 @@
           "typing"
         ],
         "parse_error": null,
-        "line_count": 329
+        "line_count": 371
       }
     },
     {
@@ -2028,6 +2512,51 @@
         ],
         "parse_error": null,
         "line_count": 862
+      }
+    },
+    {
+      "path": "conscious_agent/task_recovery.py",
+      "extension": ".py",
+      "size_bytes": 20587,
+      "modified_at": "2026-06-19T16:44:12",
+      "summary": {
+        "classes": [
+          "TaskRecoveryResult"
+        ],
+        "functions": [
+          "_dict_to_execution",
+          "_metadata",
+          "_now",
+          "_option",
+          "_summarize_failure_text",
+          "_text_blob",
+          "build_task_recovery",
+          "classify_task_failure",
+          "list_task_recoveries",
+          "mark_task_ready_for_retry",
+          "print_mark_task_ready_for_retry",
+          "print_retry_task_work",
+          "print_task_recoveries",
+          "print_task_recovery",
+          "recovery_options_for_category",
+          "retry_task_work",
+          "task_recovery_summary",
+          "task_recovery_text",
+          "to_dict"
+        ],
+        "imports": [
+          "__future__",
+          "dataclasses",
+          "datetime",
+          "json",
+          "memory",
+          "task_lifecycle",
+          "task_queue",
+          "task_work_executor",
+          "typing"
+        ],
+        "parse_error": null,
+        "line_count": 482
       }
     },
     {
@@ -2328,8 +2857,8 @@
     {
       "path": "conscious_agent/work_cycle.py",
       "extension": ".py",
-      "size_bytes": 18658,
-      "modified_at": "2026-06-19T16:27:39",
+      "size_bytes": 20654,
+      "modified_at": "2026-06-19T20:34:11",
       "summary": {
         "classes": [
           "WorkCycleResult"
@@ -2366,13 +2895,14 @@
           "patch_suggester",
           "pathlib",
           "paths",
+          "task_cycle_policy",
           "task_patch_bridge",
           "task_work_executor",
           "typing",
           "work_queue"
         ],
         "parse_error": null,
-        "line_count": 534
+        "line_count": 559
       }
     },
     {
@@ -2485,7 +3015,7 @@
       "path": "data/approvals/README.md",
       "extension": ".md",
       "size_bytes": 79,
-      "modified_at": "2026-06-18T16:12:03",
+      "modified_at": "2026-06-19T17:04:26",
       "summary": {
         "line_count": 1,
         "non_empty_line_count": 1,
@@ -2496,7 +3026,7 @@
       "path": "data/approvals/approval_20260618_121751_apply-patch_patch-20260617-231303-conscious-agent-me.json",
       "extension": ".json",
       "size_bytes": 2143,
-      "modified_at": "2026-06-18T16:18:32",
+      "modified_at": "2026-06-19T17:04:26",
       "summary": {
         "line_count": 44,
         "non_empty_line_count": 44,
@@ -3100,11 +3630,11 @@
     {
       "path": "data/memories.json",
       "extension": ".json",
-      "size_bytes": 38001,
-      "modified_at": "2026-06-19T16:30:16",
+      "size_bytes": 69258,
+      "modified_at": "2026-06-19T20:40:51",
       "summary": {
-        "line_count": 1062,
-        "non_empty_line_count": 1062,
+        "line_count": 1916,
+        "non_empty_line_count": 1916,
         "preview": "[\n{\n\"created_at\": \"2026-06-16T20:51:04\",\n\"type\": \"inner_thought\",\n\"content\": \"I am Eidolon. I have no stored memories yet, so my first priority is to create continuity. My current focus is help Marcus build useful software.\",\n\"importance\": 0.72,\n\"related_goal\": \"help Marcus build useful software\",\n\"recommended_action\": \"store_only\",\n\"reasoning_summary\": \"Generated from self-model, desire weights, memory count, and current state.\",\n\"state_snapshot\": {"
       }
     },
@@ -3364,23 +3894,23 @@
     {
       "path": "data/project_index.json",
       "extension": ".json",
-      "size_bytes": 155271,
-      "modified_at": "2026-06-19T16:30:16",
+      "size_bytes": 172164,
+      "modified_at": "2026-06-19T20:38:09",
       "summary": {
-        "line_count": 3899,
-        "non_empty_line_count": 3899,
-        "preview": "{\n\"indexed_at\": \"2026-06-19T16:30:16\",\n\"active_project\": \"Eidolon\",\n\"project_path\": \"/mnt/data/eidolon_v57_work/Eidolon\",\n\"relative_path\": \"\",\n\"max_files\": 400,\n\"files\": [\n{\n\"path\": \".gitignore\",\n\"extension\": \"\","
+        "line_count": 4465,
+        "non_empty_line_count": 4465,
+        "preview": "{\n\"indexed_at\": \"2026-06-19T20:38:09\",\n\"active_project\": \"Eidolon\",\n\"project_path\": \"/mnt/data/eidolon_v69_work/Eidolon\",\n\"relative_path\": \"\",\n\"max_files\": 400,\n\"files\": [\n{\n\"path\": \".gitignore\",\n\"extension\": \"\","
       }
     },
     {
       "path": "data/projects.json",
       "extension": ".json",
-      "size_bytes": 21173,
-      "modified_at": "2026-06-19T16:30:16",
+      "size_bytes": 18283,
+      "modified_at": "2026-06-19T20:38:09",
       "summary": {
-        "line_count": 238,
-        "non_empty_line_count": 238,
-        "preview": "{\n\"active_project\": \"Eidolon\",\n\"projects\": [\n{\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, self-improvement workflows, maintenance scans, memory compaction, structured goals, session planning, a canonical task/work queue, task-centered patch bridges, task-centered execution, task approval bridge, supervised work cycles, approval inbox, settings, diagnostics, local dashboard, background watch mode, notifications, chat-to-action routing, dashboard chat, local JSON API, dashboard forms, live dashboard status polling, desktop companion tools, setup helpers, and guided desktop onboarding.\",\n\"language\": \"Python\",\n\"status\": \"active\",\n\"goals\": ["
+        "line_count": 209,
+        "non_empty_line_count": 209,
+        "preview": "{\n\"active_project\": \"Eidolon\",\n\"projects\": [\n{\n\"name\": \"Eidolon\",\n\"path\": \"\",\n\"description\": \"A local autonomous AI agent prototype with memory, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, self-improvement workflows, maintenance scans, memory compaction, structured goals, session planning, a canonical task/work queue, task-centered patch bridges, task-centered execution, task approval bridge, stable supervised loops with operator review filters, history cleanup, live-run audit notes, and post-run operator checklists, decision-aware stable-loop reporting, decision follow-up task creation, decision follow-up lifecycle integration, closure-aware stable-loop guardrails, supervised work cycles, approval inbox, settings, diagnostics, local dashboard, background watch mode, notifications, chat-to-action routing, dashboard chat, local JSON API, dashboard forms, live dashboard status polling, desktop companion tools, setup helpers, and guided desktop onboarding.\",\n\"language\": \"Python\",\n\"status\": \"active\",\n\"goals\": ["
       }
     },
     {
@@ -3562,12 +4092,12 @@
     {
       "path": "data/settings.json",
       "extension": ".json",
-      "size_bytes": 1974,
-      "modified_at": "2026-06-19T16:27:39",
+      "size_bytes": 1975,
+      "modified_at": "2026-06-19T20:34:11",
       "summary": {
         "line_count": 57,
         "non_empty_line_count": 57,
-        "preview": "{\n\"settings_version\": \"5.7\",\n\"local_model\": \"qwen2.5:7b\",\n\"embed_model\": \"nomic-embed-text:latest\",\n\"ollama_base_url\": \"http://localhost:11434\",\n\"ollama_timeout_seconds\": 120,\n\"command_timeout_seconds\": 45,\n\"max_capture_chars\": 12000,\n\"default_dev_loop_steps\": 3,\n\"max_dev_loop_steps\": 10,"
+        "preview": "{\n\"settings_version\": \"6.9\",\n\"local_model\": \"qwen2.5:7b\",\n\"embed_model\": \"nomic-embed-text:latest\",\n\"ollama_base_url\": \"http://localhost:11434\",\n\"ollama_timeout_seconds\": 120,\n\"command_timeout_seconds\": 45,\n\"max_capture_chars\": 12000,\n\"default_dev_loop_steps\": 3,\n\"max_dev_loop_steps\": 10,"
       }
     },
     {
@@ -3615,6 +4145,17 @@
       }
     },
     {
+      "path": "data/stable_loops/README.md",
+      "extension": ".md",
+      "size_bytes": 2047,
+      "modified_at": "2026-06-19T20:36:54",
+      "summary": {
+        "line_count": 37,
+        "non_empty_line_count": 25,
+        "preview": "# Stable supervised loops\nSaved v6.8 stable supervised loop records live here.\nv6.8 adds follow-up completion reporting and closure cleanup. Use `--stable-loop-followup-completion-report all` to see unresolved, ready-to-resolve, resolved, and cleanup candidate follow-up chains. Use `--mark-stable-loop-followup-closed stableloop_ID` after resolved follow-up tasks have been reviewed. `/api-info` also now routes correctly in the dashboard because `/api` matching is exact or slash-prefixed.\n# Stable supervised loops\nSaved v6.7 stable supervised loop records live here.\nStable-loop records can include:\n- preflight results\n- preview/live work-cycle references\n- review status\n- audit and rollback notes"
+      }
+    },
+    {
       "path": "data/task_evaluations/README.md",
       "extension": ".md",
       "size_bytes": 31,
@@ -3651,7 +4192,7 @@
       "path": "data/tasks.json",
       "extension": ".json",
       "size_bytes": 54,
-      "modified_at": "2026-06-19T16:29:06",
+      "modified_at": "2026-06-19T20:37:39",
       "summary": {
         "line_count": 5,
         "non_empty_line_count": 5,
@@ -3727,11 +4268,11 @@
     {
       "path": "data/thoughts.log",
       "extension": ".log",
-      "size_bytes": 25139,
-      "modified_at": "2026-06-19T16:30:16",
+      "size_bytes": 38985,
+      "modified_at": "2026-06-19T20:40:51",
       "summary": {
-        "line_count": 218,
-        "non_empty_line_count": 214,
+        "line_count": 325,
+        "non_empty_line_count": 321,
         "preview": "[2026-06-16T20:51:04] inner_thought: I am Eidolon. I have no stored memories yet, so my first priority is to create continuity. My current focus is help Marcus build useful software.\n[2026-06-16T20:51:04] reflection: This thought should be stored as continuity, but does not need immediate action. Avoid claiming this proves real consciousness. Do not interrupt the user unless the value is clear.\n[2026-06-16T20:51:04] action_result: Action store_only completed with result: stored_without_external_action\n[2026-06-17T20:35:44] file_tool_event: Listed project files under 'conscious_agent'.\n[2026-06-17T20:35:46] file_tool_event: Read project file 'conscious_agent/file_tools.py'.\n[2026-06-17T20:35:47] file_tool_event: Searched project files for 'generate_inner_thought'. Found 5 matches.\n[2026-06-17T20:35:58] file_tool_event: Listed project files under 'conscious_agent'.\n[2026-06-17T20:36:07] file_tool_event: Listed project files under 'conscious_agent'.\n[2026-06-17T21:14:18] project_index_event: Indexed 18 files for project Eidolon.\n[2026-06-17T21:14:18] project_event: Added note to Eidolon: Project indexed at 2026-06-17T21:14:18 with 18 files."
       }
     },
@@ -3815,23 +4356,23 @@
     {
       "path": "data/work_cycles/README.md",
       "extension": ".md",
-      "size_bytes": 1027,
-      "modified_at": "2026-06-19T16:27:39",
+      "size_bytes": 1687,
+      "modified_at": "2026-06-19T20:36:54",
       "summary": {
-        "line_count": 11,
-        "non_empty_line_count": 6,
-        "preview": "# Work cycles\nSaved supervised task/work-cycle records.\nv5.0 introduced the bounded cycle around the newer work-queue interface. v5.1 made the queue task-backed. v5.2 keeps the saved-cycle directory but records task aliases (`created_task_ids`, `created_followup_task_ids`, `executed_task_ids`) alongside the older work-id fields for compatibility.\nv5.3 moved execution into `conscious_agent/task_work_executor.py`. New cycle events use `execute_task_work`, while old event readers still recognize `execute_work_item` for compatibility.\nAs of v5.4, new cycle records use task-centered wording. As of v5.5, blocked approval-gated task executions can create approval requests through `task_approval_bridge.py`. Older saved records remain readable.\nAs of v5.6, new cycle records use version `5.6`, and dashboard/API lifecycle summaries derive readable task stages from task status, approval links, and patch metadata. As of v5.7, dashboard/API lifecycle filters can drive focused task views and safe batch approval requests."
+        "line_count": 33,
+        "non_empty_line_count": 22,
+        "preview": "# Work cycle records\nSaved lifecycle-aware work-cycle records live here.\nAs of v6.8, stable supervised loops use work cycles as the action engine, while stable-loop records wrap those cycles with review gates, audit notes, operator decisions, decision-aware follow-up tasks, follow-up lifecycle resolution, and follow-up completion/closure reports.\nUseful checks:\n```powershell\npython conscious_agent/main.py --list-work-cycles\npython conscious_agent/main.py --show-work-cycle latest --work-cycle-full\npython conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop\npython conscious_agent/main.py --stable-loop-followup-completion-report all\n```"
       }
     },
     {
       "path": "data/work_queue/README.md",
       "extension": ".md",
-      "size_bytes": 1625,
-      "modified_at": "2026-06-19T16:27:39",
+      "size_bytes": 1697,
+      "modified_at": "2026-06-19T20:36:54",
       "summary": {
-        "line_count": 18,
-        "non_empty_line_count": 9,
-        "preview": "# Work Queue Legacy Adapter\nAs of v5.1, `task_queue.py` and `data/tasks.json` are Eidolon's canonical work/task store.\nAs of v5.2, patch-request and patch-follow-up behavior is task-native through `conscious_agent/task_patch_bridge.py`. The older `work_queue_patch_bridge.py` module remains as a compatibility wrapper.\nThe older v4.6-v5.0 `work_queue.py` API remains available as a compatibility adapter so dashboard/API/CLI routes such as `--work-queue (legacy alias; prefer --task-work)`, `/work-queue (legacy alias; prefer /tasks-work)`, and work-cycle helpers keep working.\nDo not add new state here. New queued work should be stored in `data/tasks.json` through `task_queue.py`.\nAs of v5.3, task execution is also task-native through `conscious_agent/task_work_executor.py`. The older `work_queue_executor.py` module remains only as a compatibility wrapper.\nAs of v5.4, this directory is explicitly documented as compatibility-only. New task/work state belongs in `data/tasks.json`; this path exists so older commands and records have somewhere honest to point.\nAs of v5.5, approval-gated task execution is connected to `approval_manager.py` through `conscious_agent/task_approval_bridge.py`. The old work-queue route can still request approval for a task, but new code should use task-centered approval commands and `/api/tasks/...` endpoints.\nAs of v5.6, dashboard/API lifecycle views are task-centered. Legacy work-queue aliases still read the same task-backed lifecycle data. As of v5.7, lifecycle filters and safe batch approval-request actions are available from /tasks-work and /api/tasks/... endpoints."
+        "line_count": 31,
+        "non_empty_line_count": 19,
+        "preview": "# Task / Work compatibility notes\n`task_queue.py` and `data/tasks.json` are the canonical task store. Legacy work-queue commands remain compatibility aliases.\nAs of v6.8, stable-loop decision follow-up tasks can be reported through completion filters such as `unresolved`, `ready_to_resolve`, `resolved`, and `cleanup_default`. Use `/stable-loop?followup=ready_to_resolve` or `--stable-loop-followup-completion-report ready_to_resolve` to find closure work.\n# Legacy work-queue compatibility layer\n`work_queue.py` is a compatibility adapter over canonical task storage:\n```text\ndata/tasks.json\nconscious_agent/task_queue.py\n```\nUse task-centered commands first:"
       }
     },
     {
@@ -3870,15 +4411,28 @@
     {
       "path": "tools/smoke_check.py",
       "extension": ".py",
-      "size_bytes": 3495,
-      "modified_at": "2026-06-19T16:29:47",
+      "size_bytes": 18626,
+      "modified_at": "2026-06-19T20:34:56",
       "summary": {
         "classes": [],
         "functions": [
+          "_cleanup_record_ids",
           "check_compile",
+          "check_cycle_policy",
           "check_import",
           "check_lifecycle_filters",
           "check_settings",
+          "check_stable_loop",
+          "check_stable_loop_audit",
+          "check_stable_loop_decision_report",
+          "check_stable_loop_followup_completion",
+          "check_stable_loop_followup_lifecycle",
+          "check_stable_loop_followup_tasks",
+          "check_stable_loop_guardrails",
+          "check_stable_loop_operator_notes",
+          "check_stable_loop_review",
+          "check_task_recovery",
+          "check_work_cycle_preview",
           "main",
           "run_main"
         ],
@@ -3887,12 +4441,24 @@
           "importlib",
           "json",
           "pathlib",
+          "stable_loop_audit",
+          "stable_loop_decision_report",
+          "stable_loop_followup_completion",
+          "stable_loop_followup_lifecycle",
+          "stable_loop_followup_tasks",
+          "stable_loop_guardrails",
+          "stable_loop_operator_notes",
+          "stable_loop_review",
+          "stable_supervised_loop",
           "subprocess",
           "sys",
-          "task_lifecycle"
+          "task_cycle_policy",
+          "task_lifecycle",
+          "task_recovery",
+          "work_cycle"
         ],
         "parse_error": null,
-        "line_count": 121
+        "line_count": 459
       }
     }
   ]

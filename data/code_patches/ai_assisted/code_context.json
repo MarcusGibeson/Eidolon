@@ -1,0 +1,385 @@
+{
+  "version": "17.0",
+  "checked_at": "2026-06-20T00:59:02",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "objective_id": "draft_20260620_003135_draft_request_20260620_003133_synthetic_patch_draft_request",
+  "target_files": [
+    "conscious_agent/patch_drafting.py",
+    "README_NEXT_STEPS.md"
+  ],
+  "symbol_scan_status": "pass",
+  "contexts": [
+    {
+      "path": "conscious_agent/patch_drafting.py",
+      "size_chars": 75778,
+      "symbols": [
+        {
+          "name": "_now",
+          "kind": "function",
+          "lineno": 41,
+          "end_lineno": 42
+        },
+        {
+          "name": "_ensure_dirs",
+          "kind": "function",
+          "lineno": 45,
+          "end_lineno": 48
+        },
+        {
+          "name": "_json_print",
+          "kind": "function",
+          "lineno": 51,
+          "end_lineno": 52
+        },
+        {
+          "name": "_read_json",
+          "kind": "function",
+          "lineno": 55,
+          "end_lineno": 59
+        },
+        {
+          "name": "_write_json",
+          "kind": "function",
+          "lineno": 62,
+          "end_lineno": 65
+        },
+        {
+          "name": "_file_sha256",
+          "kind": "function",
+          "lineno": 68,
+          "end_lineno": 72
+        },
+        {
+          "name": "_artifact_snapshot",
+          "kind": "function",
+          "lineno": 75,
+          "end_lineno": 103
+        },
+        {
+          "name": "build_draft_artifact_binding",
+          "kind": "function",
+          "lineno": 106,
+          "end_lineno": 168
+        },
+        {
+          "name": "row",
+          "kind": "function",
+          "lineno": 120,
+          "end_lineno": 121
+        },
+        {
+          "name": "validate_approval_binding",
+          "kind": "function",
+          "lineno": 171,
+          "end_lineno": 216
+        },
+        {
+          "name": "row",
+          "kind": "function",
+          "lineno": 178,
+          "end_lineno": 179
+        },
+        {
+          "name": "_sha256",
+          "kind": "function",
+          "lineno": 219,
+          "end_lineno": 220
+        },
+        {
+          "name": "_slug",
+          "kind": "function",
+          "lineno": 223,
+          "end_lineno": 225
+        },
+        {
+          "name": "_safe_path",
+          "kind": "function",
+          "lineno": 228,
+          "end_lineno": 233
+        },
+        {
+          "name": "_status_from",
+          "kind": "function",
+          "lineno": 236,
+          "end_lineno": 242
+        },
+        {
+          "name": "_risk_value",
+          "kind": "function",
+          "lineno": 245,
+          "end_lineno": 246
+        },
+        {
+          "name": "_selected_task",
+          "kind": "function",
+          "lineno": 249,
+          "end_lineno": 272
+        },
+        {
+          "name": "_likely_files",
+          "kind": "function",
+          "lineno": 275,
+          "end_lineno": 294
+        },
+        {
+          "name": "build_patch_draft_request",
+          "kind": "function",
+          "lineno": 297,
+          "end_lineno": 334
+        },
+        {
+          "name": "build_draft_patch",
+          "kind": "function",
+          "lineno": 337,
+          "end_lineno": 379
+        },
+        {
+          "name": "build_patch_draft_status",
+          "kind": "function",
+          "lineno": 382,
+          "end_lineno": 416
+        },
+        {
+          "name": "build_patch_review_notes",
+          "kind": "function",
+          "lineno": 419,
+          "end_lineno": 438
+        },
+        {
+          "name": "_read_text",
+          "kind": "function",
+          "lineno": 441,
+          "end_lineno": 448
+        },
+        {
+          "name": "_draft_readme_content",
+          "kind": "function",
+          "lineno": 451,
+          "end_lineno": 463
+        },
+        {
+          "name": "build_draft_diff",
+          "kind": "function",
+          "lineno": 466,
+          "end_lineno": 534
+        },
+        {
+          "name": "build_draft_test_impact",
+          "kind": "function",
+          "lineno": 537,
+          "end_lineno": 571
+        },
+        {
+          "name": "add",
+          "kind": "function",
+          "lineno": 543,
+          "end_lineno": 545
+        },
+        {
+          "name": "build_approval_gate",
+          "kind": "function",
+          "lineno": 574,
+          "end_lineno": 604
+        },
+        {
+          "name": "approve_draft",
+          "kind": "function",
+          "lineno": 607,
+          "end_lineno": 643
+        },
+        {
+          "name": "reject_draft",
+          "kind": "function",
+          "lineno": 646,
+          "end_lineno": 665
+        },
+        {
+          "name": "build_apply_approved_draft",
+          "kind": "function",
+          "lineno": 668,
+          "end_lineno": 769
+        },
+        {
+          "name": "build_rollback_approved_draft",
+          "kind": "function",
+          "lineno": 772,
+          "end_lineno": 816
+        },
+        {
+          "name": "reopen_draft",
+          "kind": "function",
+          "lineno": 819,
+          "end_lineno": 839
+        },
+        {
+          "name": "build_human_approved_patch_loop",
+          "kind": "function",
+          "lineno": 842,
+          "end_lineno": 873
+        },
+        {
+          "name": "build_draft_file_targets",
+          "kind": "function",
+          "lineno": 877,
+          "end_lineno": 921
+        },
+        {
+          "name": "build_draft_intent_blocks",
+          "kind": "function",
+          "lineno": 924,
+          "end_lineno": 970
+        },
+        {
+          "name": "add",
+          "kind": "function",
+          "lineno": 930,
+          "end_lineno": 941
+        },
+        {
+          "name": "build_draft_conflicts",
+          "kind": "function",
+          "lineno": 973,
+          "end_lineno": 1015
+        },
+        {
+          "name": "build_draft_quality",
+          "kind": "function",
+          "lineno": 1018,
+          "end_lineno": 1059
+        },
+        {
+          "name": "criterion",
+          "kind": "function",
+          "lineno": 1026,
+          "end_lineno": 1027
+        }
+      ],
+      "snippets": [
+        {
+          "name": "_now",
+          "kind": "function",
+          "lineno": 41,
+          "end_lineno": 42,
+          "snippet": {
+            "start_line": 37,
+            "end_line": 46,
+            "text": "37: REVIEW_LOOP_REPORT = DRAFTS_DIR / \"review_centered_patch_loop.json\"\n38: README_FILE = ROOT_DIR / \"README_NEXT_STEPS.md\"\n39: \n40: \n41: def _now() -> str:\n42:     return datetime.now().isoformat(timespec=\"seconds\")\n43: \n44: \n45: def _ensure_dirs() -> None:\n46:     DRAFTS_DIR.mkdir(parents=True, exist_ok=True)"
+          }
+        },
+        {
+          "name": "_ensure_dirs",
+          "kind": "function",
+          "lineno": 45,
+          "end_lineno": 48,
+          "snippet": {
+            "start_line": 41,
+            "end_line": 52,
+            "text": "41: def _now() -> str:\n42:     return datetime.now().isoformat(timespec=\"seconds\")\n43: \n44: \n45: def _ensure_dirs() -> None:\n46:     DRAFTS_DIR.mkdir(parents=True, exist_ok=True)\n47:     PROPOSED_FILES_DIR.mkdir(parents=True, exist_ok=True)\n48:     BACKUPS_DIR.mkdir(parents=True, exist_ok=True)\n49: \n50: \n51: def _json_print(value: Any) -> None:\n52:     print(json.dumps(value, indent=2, default=str))"
+          }
+        },
+        {
+          "name": "_json_print",
+          "kind": "function",
+          "lineno": 51,
+          "end_lineno": 52,
+          "snippet": {
+            "start_line": 47,
+            "end_line": 56,
+            "text": "47:     PROPOSED_FILES_DIR.mkdir(parents=True, exist_ok=True)\n48:     BACKUPS_DIR.mkdir(parents=True, exist_ok=True)\n49: \n50: \n51: def _json_print(value: Any) -> None:\n52:     print(json.dumps(value, indent=2, default=str))\n53: \n54: \n55: def _read_json(path: Path, default: Any) -> Any:\n56:     try:"
+          }
+        },
+        {
+          "name": "_read_json",
+          "kind": "function",
+          "lineno": 55,
+          "end_lineno": 59,
+          "snippet": {
+            "start_line": 51,
+            "end_line": 63,
+            "text": "51: def _json_print(value: Any) -> None:\n52:     print(json.dumps(value, indent=2, default=str))\n53: \n54: \n55: def _read_json(path: Path, default: Any) -> Any:\n56:     try:\n57:         return json.loads(path.read_text(encoding=\"utf-8\"))\n58:     except (OSError, json.JSONDecodeError):\n59:         return default\n60: \n61: \n62: def _write_json(path: Path, value: Any) -> None:\n63:     _ensure_dirs()"
+          }
+        },
+        {
+          "name": "_write_json",
+          "kind": "function",
+          "lineno": 62,
+          "end_lineno": 65,
+          "snippet": {
+            "start_line": 58,
+            "end_line": 69,
+            "text": "58:     except (OSError, json.JSONDecodeError):\n59:         return default\n60: \n61: \n62: def _write_json(path: Path, value: Any) -> None:\n63:     _ensure_dirs()\n64:     path.parent.mkdir(parents=True, exist_ok=True)\n65:     path.write_text(json.dumps(value, indent=2, default=str), encoding=\"utf-8\")\n66: \n67: \n68: def _file_sha256(path: Path) -> str | None:\n69:     try:"
+          }
+        },
+        {
+          "name": "_file_sha256",
+          "kind": "function",
+          "lineno": 68,
+          "end_lineno": 72,
+          "snippet": {
+            "start_line": 64,
+            "end_line": 76,
+            "text": "64:     path.parent.mkdir(parents=True, exist_ok=True)\n65:     path.write_text(json.dumps(value, indent=2, default=str), encoding=\"utf-8\")\n66: \n67: \n68: def _file_sha256(path: Path) -> str | None:\n69:     try:\n70:         return hashlib.sha256(path.read_bytes()).hexdigest()\n71:     except OSError:\n72:         return None\n73: \n74: \n75: def _artifact_snapshot() -> dict[str, Any]:\n76:     \"\"\"Capture the saved review artifacts that bind one approval to one exact draft."
+          }
+        },
+        {
+          "name": "_artifact_snapshot",
+          "kind": "function",
+          "lineno": 75,
+          "end_lineno": 103,
+          "snippet": {
+            "start_line": 71,
+            "end_line": 107,
+            "text": "71:     except OSError:\n72:         return None\n73: \n74: \n75: def _artifact_snapshot() -> dict[str, Any]:\n76:     \"\"\"Capture the saved review artifacts that bind one approval to one exact draft.\n77: \n78:     The snapshot intentionally uses saved files only. Preview builders can be useful,\n79:     but approval must point at the exact request/draft/diff/test/review artifacts the\n80:     human reviewed, not a freshly generated cousin wearing the same trench coat.\n81:     \"\"\"\n82:     artifacts = {\n83:         \"request\": DRAFT_REQUEST,\n84:         \"draft\": CURRENT_DRAFT,\n85:         \"diff\": CURRENT_DIFF,\n86:         \"test_impact\": TEST_IMPACT,\n87:         \"quality\": DRAFT_QUALITY,\n88:         \"checklist\": REVIEW_CHECKLIST,\n89:         \"verification_bundle\": VERIFICATION_BUNDLE,\n90:     }\n91:     snapshot: dict[str, Any] = {}\n92:     for name, artifact_path in artifacts.items():\n93:         value = _read_json(artifact_path, {})\n94:         snapshot[name] = {\n95:             \"path\": str(artifact_path.relative_to(ROOT_DIR)),\n96:             \"exists\": artifact_path.exists(),\n97:             \"sha256\": _file_sha256(artifact_path),\n98:             \"request_id\": value.get(\"request_id\") if isinstance(value, dict) else None,\n99:             \"draft_id\": value.get(\"draft_id\") if isinstance(value, dict) else None,\n100:             \"status\": value.get(\"status\") if isinstance(value, dict) else None,\n101:             \"ok\": value.get(\"ok\") if isinstance(value, dict) else None,\n102:         }\n103:     return snapshot\n104: \n105: \n106: def build_draft_artifact_binding(project_id: str = \"eidolon\", save: bool = False) -> dict[str, Any]:\n107:     \"\"\"Verify that saved draft review artifacts all describe the same request/draft.\"\"\""
+          }
+        },
+        {
+          "name": "build_draft_artifact_binding",
+          "kind": "function",
+          "lineno": 106,
+          "end_lineno": 168,
+          "snippet": {
+            "start_line": 102,
+            "end_line": 172,
+            "text": "102:         }\n103:     return snapshot\n104: \n105: \n106: def build_draft_artifact_binding(project_id: str = \"eidolon\", save: bool = False) -> dict[str, Any]:\n107:     \"\"\"Verify that saved draft review artifacts all describe the same request/draft.\"\"\"\n108:     request = _read_json(DRAFT_REQUEST, {})\n109:     draft = _read_json(CURRENT_DRAFT, {})\n110:     diff = _read_json(CURRENT_DIFF, {})\n111:     impact = _read_json(TEST_IMPACT, {})\n112:     quality = _read_json(DRAFT_QUALITY, {})\n113:     checklist = _read_json(REVIEW_CHECKLIST, {})\n114:     bundle = _read_json(VERIFICATION_BUNDLE, {})\n115: \n116:     request_id = request.get(\"request_id\") if isinstance(request, dict) else None\n117:     draft_id = draft.get(\"draft_id\") if isinstance(draft, dict) else None\n118:     rows: list[dict[str, Any]] = []\n119: \n120:     def row(name: str, passed: bool, message: str, *, status_if_fail: str = \"blocked\") -> None:\n121:         rows.append({\"name\": name, \"status\": \"pass\" if passed else status_if_fail, \"message\": message})\n122: \n123:     row(\"request-exists\", bool(request_id), f\"request_id={request_id or 'missing'}\")\n124:     row(\"draft-exists\", bool(draft_id), f\"draft_id={draft_id or 'missing'}\")\n125:     row(\"draft-request-binding\", bool(request_id and draft.get(\"request_id\") == request_id), f\"draft.request_id={draft.get('request_id') if isinstance(draft, dict) else None}; request_id={request_id}\")\n126: \n127:     required = [\n128:         (\"diff\", diff),\n129:         (\"test-impact\", impact),\n130:         (\"quality\", quality),\n131:         (\"checklist\", checklist),\n132:         (\"verification-bundle\", bundle),\n133:     ]\n134:     for name, artifact in required:\n135:         if not isinstance(artifact, dict) or not artifact:\n136:             row(f\"{name}-exists\", False, f\"Saved {name} artifact is missing.\")\n137:             continue\n138:         artifact_draft_id = artifact.get(\"draft_id\")\n139:         artifact_request_id = artifact.get(\"request_id\")\n140:         if name == \"verification-bundle\":\n141:             artifact_draft_id = artifact_draft_id or ((artifact.get(\"steps\") or {}).get(\"draft\") or {}).get(\"draft_id\")\n142:             artifact_request_id = artifact_request_id or ((artifact.get(\"steps\") or {}).get(\"request\") or {}).get(\"request_id\")\n143:         row(f\"{name}-draft-binding\", bool(draft_id and artifact_draft_id == draft_id), f\"{name}.draft_id={artifact_draft_id}; draft_id={draft_id}\")\n144:         if artifact_request_id is not None or name in {\"checklist\", \"verification-bundle\"}:\n145:             row(f\"{name}-request-binding\", bool(request_id and artifact_request_id == request_id), f\"{name}.request_id={artifact_request_id}; request_id={request_id}\")\n146: \n147:     snapshot = _artifact_snapshot()\n148:     for name, meta in snapshot.items():\n149:         row(f\"{name}-file-present\", bool(meta.get(\"exists\") and meta.get(\"sha256\")), f\"{meta.get('path')} sha256={meta.get('sha256') or 'missing'}\")\n150: \n151:     status = _status_from(rows)\n152:     report = {\n153:         \"version\": PATCH_DRAFTING_VERSION,\n154:         \"checked_at\": _now(),\n155:         \"project_id\": project_id,\n156:         \"request_id\": request_id,\n157:         \"draft_id\": draft_id,\n158:         \"status\": status,\n159:         \"ok\": status == \"pass\",\n160:         \"rows\": rows,\n161:         \"snapshot\": snapshot,\n162:         \"message\": \"Saved draft review artifacts must all bind to the same request_id and draft_id before approval/apply.\",\n163:     }\n164:     if save:\n165:         _write_json(DRAFTS_DIR / \"artifact_binding.json\", report)\n166:     else:\n167:         report[\"preview_only\"] = True\n168:     return report\n169: \n170: \n171: def validate_approval_binding(approval: dict[str, Any] | None = None, project_id: str = \"eidolon\") -> dict[str, Any]:\n172:     \"\"\"Validate that the current saved artifacts still match the approved snapshot.\"\"\""
+          }
+        }
+      ]
+    },
+    {
+      "path": "README_NEXT_STEPS.md",
+      "size_chars": 223522,
+      "symbols": [],
+      "snippets": [
+        {
+          "name": "README_NEXT_STEPS.md",
+          "kind": "file",
+          "lineno": 1,
+          "end_lineno": 80,
+          "snippet": {
+            "start_line": 1,
+            "end_line": 80,
+            "text": "1: # Eidolon v17.0 - AI-Assisted Human-Approved Code Patch Loop\n2: \n3: v17.0 bundles the v16.1 through v17.0 AI-assisted generated-code patch roadmap into one packaged release. Eidolon can now translate a task into a concrete code patch objective, extract focused code context, build a bounded patch prompt, parse generated edit objects, check edit consistency, run an AI patch dry-run, classify failures, store learning notes, and run a one-task AI-assisted human-approved code patch loop. The gremlin is now allowed to suggest edits, but only through a cage made of JSON, approval binding, expected text, and the crushing weight of consequences.\n4: \n5: ## What changed in v17.0\n6: \n7: - Added `conscious_agent/ai_patch_assistance.py`\n8:   - v16.1 task-to-code patch translator\n9:   - v16.2 focused code context extractor\n10:   - v16.3 structured patch prompt builder\n11:   - v16.4 generated edit parser\n12:   - v16.5 multi-edit consistency checker\n13:   - v16.6 AI-assisted code patch dry-run\n14:   - v16.8 patch failure classifier\n15:   - v16.9 patch learning notes\n16:   - v17.0 AI-assisted human-approved code patch loop\n17: - Updated `conscious_agent/main.py`\n18:   - added CLI commands for the v16.1-v17.0 AI-assisted code patch pipeline\n19: - Updated `conscious_agent/api_server.py`\n20:   - API version is now `17.0`\n21:   - added read-only GET preview endpoints for AI-assisted code patch reports\n22:   - added POST endpoints for saving AI-assisted patch review artifacts\n23:   - real apply paths remain POST-only and require explicit confirmation\n24: - Updated `conscious_agent/dashboard.py`\n25:   - dashboard version is now `17.0`\n26:   - added `/code-patches` generated patch review page\n27:   - added dashboard cards for task objective, code context, patch prompt, parsed edits, consistency, AI dry-run, semantic checks, and AI-assisted loop state\n28: - Updated `conscious_agent/command_runner.py`\n29:   - whitelisted the v16.1-v17.0 AI-assisted patch review commands\n30: - Updated `tools/smoke_check.py`\n31:   - validates `ai_patch_assistance.py` report shapes in-process\n32: - Updated metadata\n33:   - `data/settings.json` marks `last_updated_for: v17.0`\n34:   - `data/projects.json` marks `last_updated_for: v17.0`\n35:   - workspace metadata marks the Eidolon project as version `17.0`\n36: \n37: ## Version-by-version roadmap completed\n38: \n39: ### v16.1 - Task-to-Code Patch Translator\n40: \n41: Added task objective translation through:\n42: \n43: ```bash\n44: python conscious_agent/main.py --task-to-code-patch\n45: ```\n46: \n47: This turns the active draft request into a bounded code patch objective with target behavior, expected files, likely symbols, README impact, test impact, risk level, and patch strategy.\n48: \n49: ### v16.2 - Code Context Extractor\n50: \n51: Added focused code context extraction through:\n52: \n53: ```bash\n54: python conscious_agent/main.py --code-context\n55: ```\n56: \n57: It extracts target files, symbol spans, nearby snippets, README context, and symbol scan summaries so patch generation does not have to swallow the whole project like a python with ambition.\n58: \n59: ### v16.3 - Patch Prompt Builder\n60: \n61: Added structured prompt generation through:\n62: \n63: ```bash\n64: python conscious_agent/main.py --patch-prompt\n65: ```\n66: \n67: The prompt includes task objective, constraints, allowed files, blocked files, current code context, README requirements, test requirements, safety rules, and a strict JSON output schema.\n68: \n69: ### v16.4 - Generated Edit Parser\n70: \n71: Added generated edit parsing through:\n72: \n73: ```bash\n74: python conscious_agent/main.py --parse-generated-edits\n75: ```\n76: \n77: It parses edit objects with `file`, `symbol`, `expected_old_text`, `replacement_text`, `reason`, tests, and README impact. It rejects unsafe paths, missing expected text, missing replacements, large blind full-file rewrites, unapproved guardrail edits, and expected text that does not match the current file.\n78: \n79: ### v16.5 - Multi-Edit Consistency Checker\n80: "
+          }
+        }
+      ]
+    }
+  ],
+  "readme_context": [
+    "then generated edit validation, add dashboard approval controls for generated code patches, and prepare a human-approved real apply path that can produce release packages with fewer manual terminal hops.\n\n---\n\n# Eidolon v16.0 - Generated Code Patch Release Loop\n\nv16.0 bundles the v15.1 through v16.0 generated-code release roadmap into one packaged release. The release lane now has a dedicated generated-code patch workspace, symbol-aware file scans, targeted rewrite plans, conflict detection, diff bundles, guarded apply transactions, semantic safety checks, release artifact manifests, audit trails, and a bounded generated-code release loop. The robot now has a clipboard, a map, and a lockbox. Still not allowed near scissors without permission.\n\n## What changed in v16.0\n\n- Added `conscious_agent/code_patch_release.py`\n  - v15.1 generated-code patch workspace status\n  - v15.2 symbol-aware target file scanner\n  - v15.3 targeted rewrite planner\n  - v15.4 rewrite conflict detector\n  - v15.5 generated patch diff bundle\n  - v15.6 guarded code patch transaction dry-run/apply gate\n  - v15.7 post-apply semantic ch"
+  ],
+  "rows": [
+    {
+      "path": "conscious_agent/patch_drafting.py",
+      "status": "pass",
+      "message": "Context extracted with 8 snippet(s)."
+    },
+    {
+      "path": "README_NEXT_STEPS.md",
+      "status": "pass",
+      "message": "Context extracted with 1 snippet(s)."
+    }
+  ],
+  "message": "Focused code context extracted for 2 file(s)."
+}

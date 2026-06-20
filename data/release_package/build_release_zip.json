@@ -1,0 +1,39 @@
+{
+  "version": "21.0",
+  "checked_at": "2026-06-20T07:33:11",
+  "project_id": "eidolon",
+  "status": "dry_run",
+  "ok": true,
+  "dry_run": true,
+  "package_name": "Eidolon_v21_0.zip",
+  "zip_path": null,
+  "included_count": 95,
+  "rows": [
+    {
+      "name": "manifest",
+      "status": "pass",
+      "message": "Release manifest integrity verifies version markers, README, package plan, and approval/release artifacts."
+    },
+    {
+      "name": "inventory",
+      "status": "pass",
+      "message": "Package inventory classified included and excluded files for a guarded release zip."
+    },
+    {
+      "name": "checksums",
+      "status": "pass",
+      "message": "Package checksums generated for included release files."
+    },
+    {
+      "name": "handoff",
+      "status": "pass",
+      "message": "Release handoff report prepared for the verified package."
+    },
+    {
+      "name": "explicit-confirm",
+      "status": "pass",
+      "message": "Real zip build requires --confirm."
+    }
+  ],
+  "message": "Source-only release zip dry-run completed; no archive written."
+}

@@ -1,0 +1,27 @@
+{
+  "id": "eidolon",
+  "language": "Python",
+  "allowed_compile_commands": [
+    "python -m py_compile conscious_agent/*.py tools/smoke_check.py"
+  ],
+  "allowed_test_commands": [
+    "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
+    "python conscious_agent/main.py --doctor",
+    "python conscious_agent/main.py --stabilization-checkpoint --stabilization-full",
+    "python tools/smoke_check.py",
+    "python tools/smoke_check.py --tier fast --json",
+    "python tools/smoke_check.py --tier install --json",
+    "python conscious_agent/main.py --verifiable-release-evidence-system --readiness-json"
+  ],
+  "forbidden_commands": [
+    "rm -rf",
+    "del /s",
+    "format",
+    "git push --force"
+  ],
+  "package_install_requires_approval": true,
+  "destructive_commands_require_approval": true,
+  "shell_commands_require_approval": true,
+  "updated_at": "2026-06-20T18:42:54",
+  "workspace_version": "30.0"
+}
