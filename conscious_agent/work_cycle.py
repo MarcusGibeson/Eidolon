@@ -17,8 +17,9 @@ from work_queue import (
     list_work_items,
     summarize_queue,
 )
-from task_work_executor import execute_task_work_item, task_work_execution_text
+from task_work_executor import task_work_execution_text
 from task_patch_bridge import create_patch_followup_tasks
+from task_cycle_policy import choose_next_cycle_decision, execute_cycle_decision, cycle_decision_text
 
 
 WORK_CYCLES_DIR = DATA_DIR / "work_cycles"
@@ -39,6 +40,9 @@ class WorkCycleResult:
     created_work_ids: list[str] | None = None
     created_followup_work_ids: list[str] | None = None
     executed_work_ids: list[str] | None = None
+    approval_ids: list[str] | None = None
+    recovered_work_ids: list[str] | None = None
+    lifecycle_decisions: list[dict[str, Any]] | None = None
     patch_ids: list[str] | None = None
     events: list[dict[str, Any]] | None = None
     summary_before: dict[str, Any] | None = None
@@ -53,7 +57,7 @@ def _now() -> str:
 
 
 def _timestamp_id() -> str:
-    return datetime.now().strftime("%Y%m%d_%H%M%S")
+    return datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
 
 def _ensure_storage() -> None:
@@ -215,6 +219,8 @@ def run_supervised_work_cycle(
     approve_work_execution: bool = False,
     seed_if_empty: bool = True,
     auto_create_patch_followups: bool = True,
+    auto_request_approvals: bool = True,
+    auto_retry_recovery: bool = False,
 ) -> WorkCycleResult:
     project = (project_id or DEFAULT_PROJECT_ID).strip() or DEFAULT_PROJECT_ID
     max_steps = max(1, min(int(max_steps or 1), 10))
@@ -223,6 +229,9 @@ def run_supervised_work_cycle(
     created_work_ids: list[str] = []
     created_followup_work_ids: list[str] = []
     executed_work_ids: list[str] = []
+    approval_ids: list[str] = []
+    recovered_work_ids: list[str] = []
+    lifecycle_decisions: list[dict[str, Any]] = []
     patch_ids: list[str] = []
     stopped_reason = ""
     ok = True
@@ -265,8 +274,8 @@ def run_supervised_work_cycle(
                 stopped_reason = "patch_followup_failed"
                 break
 
-    next_item = get_next_work_item(project_id=project)
-    if not next_item and seed_if_empty and not stopped_reason:
+    decision = choose_next_cycle_decision(project)
+    if decision.action == "no_task" and seed_if_empty and not stopped_reason:
         ids, definitions = _create_seed_items(project, dry_run=dry_run)
         created_work_ids.extend(ids)
         events.append({
@@ -274,81 +283,68 @@ def run_supervised_work_cycle(
             "at": _now(),
             "dry_run": dry_run,
             "created_work_ids": ids,
+            "created_task_ids": ids,
             "proposed_items": definitions if dry_run else [],
         })
         if dry_run:
             stopped_reason = "dry_run_seed_preview"
         else:
-            next_item = get_next_work_item(project_id=project)
+            decision = choose_next_cycle_decision(project)
 
     steps_completed = 0
     if not stopped_reason:
         for step_index in range(max_steps):
-            item = get_next_work_item(project_id=project)
-            if not item:
-                stopped_reason = "no_pending_work"
+            decision = choose_next_cycle_decision(project)
+            lifecycle_decisions.append(decision.to_dict())
+            if decision.action == "no_task":
+                stopped_reason = "no_lifecycle_candidate"
+                events.append({
+                    "type": "lifecycle_decision",
+                    "at": _now(),
+                    "step": step_index + 1,
+                    "decision": decision.to_dict(),
+                })
                 break
 
-            execution = execute_task_work_item(
-                item.id,
+            action_result = execute_cycle_decision(
+                decision,
                 dry_run=dry_run,
-                allow_approval_required=approve_work_execution,
                 use_ai=use_ai,
+                approve_work_execution=approve_work_execution,
+                auto_create_patch_followups=auto_create_patch_followups,
+                auto_request_approvals=auto_request_approvals,
+                auto_retry_recovery=auto_retry_recovery,
             )
-            executed_work_ids.append(item.id)
             steps_completed += 1
-            event = {
-                "type": "execute_task_work",
+
+            if action_result.executed_task_id:
+                executed_work_ids.append(action_result.executed_task_id)
+            elif action_result.action in {"execute_task", "execute_approved_task"} and action_result.task_id:
+                executed_work_ids.append(action_result.task_id)
+
+            if action_result.approval_id:
+                approval_ids.append(action_result.approval_id)
+            if action_result.patch_id:
+                patch_ids.append(action_result.patch_id)
+            if action_result.created_followup_task_ids:
+                created_followup_work_ids.extend(action_result.created_followup_task_ids)
+            if action_result.action == "review_recovery" and action_result.task_id:
+                recovered_work_ids.append(action_result.task_id)
+
+            events.append({
+                "type": "lifecycle_decision",
                 "at": _now(),
                 "step": step_index + 1,
-                "work_item": _short_item(item),
-                "execution": execution.to_dict(),
-            }
-            events.append(event)
+                "decision": decision.to_dict(),
+                "action_result": action_result.to_dict(),
+            })
 
-            patch_id = ""
-            if execution.metadata:
-                patch_id = str(execution.metadata.get("patch_id") or "")
-            refreshed_item = find_work_item(item.id)
-            if not patch_id and refreshed_item and isinstance(refreshed_item.metadata, dict):
-                patch_id = str(refreshed_item.metadata.get("patch_id") or "")
-            if patch_id:
-                patch_ids.append(patch_id)
-
-            if patch_id and auto_create_patch_followups and not dry_run:
-                followups = create_patch_followup_tasks(patch_id, project_id=project)
-                if followups.ok:
-                    ids = followups.created_task_ids or followups.created_work_ids or []
-                    created_followup_work_ids.extend(ids)
-                    events.append({
-                        "type": "patch_followups_created",
-                        "at": _now(),
-                        "patch_id": patch_id,
-                        "created_work_ids": ids,
-                    })
-                else:
-                    ok = False
-                    error = followups.error
-                    stopped_reason = "patch_followup_failed"
-                    events.append({
-                        "type": "patch_followup_failed",
-                        "at": _now(),
-                        "patch_id": patch_id,
-                        "error": followups.error,
-                    })
-                    break
-
-            if dry_run:
-                stopped_reason = "dry_run_preview_complete"
-                break
-
-            if execution.blocked:
-                stopped_reason = "task_blocked"
-                break
-            if not execution.ok:
+            if not action_result.ok:
                 ok = False
-                error = execution.error
-                stopped_reason = "task_failed"
+                error = action_result.error
+
+            if action_result.stop_cycle:
+                stopped_reason = action_result.stopped_reason or action_result.action
                 break
 
         if not stopped_reason:
@@ -359,7 +355,7 @@ def run_supervised_work_cycle(
 
     record = {
         "id": cycle_id,
-        "version": "5.7",
+        "version": "6.9",
         "created_at": _now(),
         "project_id": project,
         "dry_run": dry_run,
@@ -367,6 +363,8 @@ def run_supervised_work_cycle(
         "approve_work_execution": approve_work_execution,
         "seed_if_empty": seed_if_empty,
         "auto_create_patch_followups": auto_create_patch_followups,
+        "auto_request_approvals": auto_request_approvals,
+        "auto_retry_recovery": auto_retry_recovery,
         "steps_requested": max_steps,
         "steps_completed": steps_completed,
         "stopped_reason": stopped_reason,
@@ -379,6 +377,10 @@ def run_supervised_work_cycle(
         "created_followup_task_ids": created_followup_work_ids,
         "executed_work_ids": executed_work_ids,
         "executed_task_ids": executed_work_ids,
+        "approval_ids": approval_ids,
+        "recovered_work_ids": recovered_work_ids,
+        "recovered_task_ids": recovered_work_ids,
+        "lifecycle_decisions": lifecycle_decisions,
         "patch_ids": patch_ids,
         "summary_before": summary_before,
         "summary_after": summary_after,
@@ -391,6 +393,7 @@ def run_supervised_work_cycle(
         "content": f"Ran supervised work cycle {cycle_id}. dry_run={dry_run} steps={steps_completed} stopped={stopped_reason}",
         "source": "work_cycle",
         "cycle_id": cycle_id,
+        "lifecycle_decision_count": len(lifecycle_decisions),
         "project_id": project,
         "ok": ok,
         "dry_run": dry_run,
@@ -410,6 +413,9 @@ def run_supervised_work_cycle(
         created_work_ids=created_work_ids,
         created_followup_work_ids=created_followup_work_ids,
         executed_work_ids=executed_work_ids,
+        approval_ids=approval_ids,
+        recovered_work_ids=recovered_work_ids,
+        lifecycle_decisions=lifecycle_decisions,
         patch_ids=patch_ids,
         events=events,
         summary_before=summary_before,
@@ -446,7 +452,7 @@ def work_cycle_text(record_or_result: dict[str, Any] | WorkCycleResult, full: bo
         "",
         f"Cycle: {data.get('cycle_id') or data.get('id', '')}",
         f"Project: {data.get('project_id', '')}",
-        f"Version: {data.get('version', '5.7')}",
+        f"Version: {data.get('version', '6.9')}",
         f"Dry run: {data.get('dry_run')}",
         f"OK: {data.get('ok')}",
         f"Steps: {data.get('steps_completed', 0)} / {data.get('steps_requested', 0)}",
@@ -464,7 +470,11 @@ def work_cycle_text(record_or_result: dict[str, Any] | WorkCycleResult, full: bo
     _join_ids("Created tasks", data.get("created_task_ids") or data.get("created_work_ids"))
     _join_ids("Created follow-up tasks", data.get("created_followup_task_ids") or data.get("created_followup_work_ids"))
     _join_ids("Executed tasks", data.get("executed_task_ids") or data.get("executed_work_ids"))
+    _join_ids("Approvals", data.get("approval_ids"))
+    _join_ids("Recovery-reviewed tasks", data.get("recovered_task_ids") or data.get("recovered_work_ids"))
     _join_ids("Patches", data.get("patch_ids"))
+    if data.get("lifecycle_decisions"):
+        lines.append(f"Lifecycle decisions: {len(data.get('lifecycle_decisions') or [])}")
 
     events = data.get("events") or []
     if events:
@@ -472,7 +482,18 @@ def work_cycle_text(record_or_result: dict[str, Any] | WorkCycleResult, full: bo
         for event in events[:20]:
             event_type = event.get("type", "event")
             lines.append(f"- {event_type} at {event.get('at', '')}")
-            if event_type in {"execute_task_work", "execute_work_item"}:
+            if event_type == "lifecycle_decision":
+                decision = event.get("decision") or {}
+                action_result = event.get("action_result") or {}
+                lines.append(f"  - task: {decision.get('task_id', '')} | {decision.get('title', '')}")
+                lines.append(f"  - stage: {decision.get('stage_label', decision.get('stage', ''))} | action: {decision.get('action', '')}")
+                if action_result:
+                    lines.append(f"  - result: ok={action_result.get('ok')} | blocked={action_result.get('blocked')} | stop={action_result.get('stop_cycle')}")
+                    if action_result.get("message"):
+                        lines.append(f"  - message: {action_result.get('message')}")
+                    if action_result.get("error"):
+                        lines.append(f"  - error: {action_result.get('error')}")
+            elif event_type in {"execute_task_work", "execute_work_item"}:
                 execution = event.get("execution") or {}
                 item = event.get("work_item") or {}
                 lines.append(f"  - task: {item.get('id', '')} | {item.get('title', '')}")
@@ -500,6 +521,8 @@ def print_work_cycle(
     approve_work_execution: bool = False,
     seed_if_empty: bool = True,
     auto_create_patch_followups: bool = True,
+    auto_request_approvals: bool = True,
+    auto_retry_recovery: bool = False,
     full: bool = False,
 ) -> None:
     result = run_supervised_work_cycle(
@@ -510,6 +533,8 @@ def print_work_cycle(
         approve_work_execution=approve_work_execution,
         seed_if_empty=seed_if_empty,
         auto_create_patch_followups=auto_create_patch_followups,
+        auto_request_approvals=auto_request_approvals,
+        auto_retry_recovery=auto_retry_recovery,
     )
     print(work_cycle_text(result, full=full))
 

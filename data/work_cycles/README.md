@@ -1,11 +1,33 @@
-# Work cycles
+# Work cycle records
 
-Saved supervised task/work-cycle records.
+Saved lifecycle-aware work-cycle records live here.
 
-v5.0 introduced the bounded cycle around the newer work-queue interface. v5.1 made the queue task-backed. v5.2 keeps the saved-cycle directory but records task aliases (`created_task_ids`, `created_followup_task_ids`, `executed_task_ids`) alongside the older work-id fields for compatibility.
+As of v6.8, stable supervised loops use work cycles as the action engine, while stable-loop records wrap those cycles with review gates, audit notes, operator decisions, decision-aware follow-up tasks, follow-up lifecycle resolution, and follow-up completion/closure reports.
 
-v5.3 moved execution into `conscious_agent/task_work_executor.py`. New cycle events use `execute_task_work`, while old event readers still recognize `execute_work_item` for compatibility.
+Useful checks:
+```powershell
+python conscious_agent/main.py --list-work-cycles
+python conscious_agent/main.py --show-work-cycle latest --work-cycle-full
+python conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop
+python conscious_agent/main.py --stable-loop-followup-completion-report all
+```
 
-As of v5.4, new cycle records use task-centered wording. As of v5.5, blocked approval-gated task executions can create approval requests through `task_approval_bridge.py`. Older saved records remain readable.
+# Work cycle records
 
-As of v5.6, new cycle records use version `5.6`, and dashboard/API lifecycle summaries derive readable task stages from task status, approval links, and patch metadata. As of v5.7, dashboard/API lifecycle filters can drive focused task views and safe batch approval requests.
+Saved lifecycle-aware work-cycle records live here.
+
+As of v6.7, stable supervised loops use work cycles as the action engine, while stable-loop records wrap those cycles with review gates, audit notes, operator decisions, decision-aware follow-up tasks, and follow-up lifecycle resolution.
+
+Useful checks:
+
+```powershell
+python conscious_agent/main.py --list-work-cycles
+python conscious_agent/main.py --show-work-cycle latest --work-cycle-full
+python conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop
+python conscious_agent/main.py --stable-loop-followup-lifecycle-summary all
+```
+
+
+## v6.9 closure-aware guardrails
+
+Stable-loop live runs now check unresolved decision follow-up chains before live advancement. Preview/preflight remains available, but live execution is blocked until follow-up chains are resolved/closed/archived or the operator explicitly uses the closure-guardrail bypass. Use `python conscious_agent/main.py --stable-loop-guardrails` to inspect the current state.

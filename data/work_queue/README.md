@@ -1,18 +1,31 @@
-# Work Queue Legacy Adapter
+# Task / Work compatibility notes
 
-As of v5.1, `task_queue.py` and `data/tasks.json` are Eidolon's canonical work/task store.
+`task_queue.py` and `data/tasks.json` are the canonical task store. Legacy work-queue commands remain compatibility aliases.
 
-As of v5.2, patch-request and patch-follow-up behavior is task-native through `conscious_agent/task_patch_bridge.py`. The older `work_queue_patch_bridge.py` module remains as a compatibility wrapper.
+As of v6.8, stable-loop decision follow-up tasks can be reported through completion filters such as `unresolved`, `ready_to_resolve`, `resolved`, and `cleanup_default`. Use `/stable-loop?followup=ready_to_resolve` or `--stable-loop-followup-completion-report ready_to_resolve` to find closure work.
 
-The older v4.6-v5.0 `work_queue.py` API remains available as a compatibility adapter so dashboard/API/CLI routes such as `--work-queue (legacy alias; prefer --task-work)`, `/work-queue (legacy alias; prefer /tasks-work)`, and work-cycle helpers keep working.
+# Legacy work-queue compatibility layer
 
-Do not add new state here. New queued work should be stored in `data/tasks.json` through `task_queue.py`.
+`work_queue.py` is a compatibility adapter over canonical task storage:
 
-As of v5.3, task execution is also task-native through `conscious_agent/task_work_executor.py`. The older `work_queue_executor.py` module remains only as a compatibility wrapper.
+```text
+data/tasks.json
+conscious_agent/task_queue.py
+```
 
-As of v5.4, this directory is explicitly documented as compatibility-only. New task/work state belongs in `data/tasks.json`; this path exists so older commands and records have somewhere honest to point.
+Use task-centered commands first:
+
+```powershell
+python conscious_agent/main.py --task-work summary
+python conscious_agent/main.py --execute-task-work --dry-run
+python conscious_agent/main.py --stable-loop-followup-lifecycle-summary all
+```
+
+Old `--work-queue` and `/api/work-queue/...` routes still work as aliases. They are kept so previous dashboard/API commands do not break like brittle little fossils.
+
+As of v6.7, stable-loop decision follow-up tasks are canonical tasks with stable-loop metadata. Use `/tasks-work?stage=stable_loop_followup` or `--show-task-stable-loop-followup task_ID` to inspect which stable-loop decision created a follow-up task.
 
 
-As of v5.5, approval-gated task execution is connected to `approval_manager.py` through `conscious_agent/task_approval_bridge.py`. The old work-queue route can still request approval for a task, but new code should use task-centered approval commands and `/api/tasks/...` endpoints.
+## v6.9 closure-aware guardrails
 
-As of v5.6, dashboard/API lifecycle views are task-centered. Legacy work-queue aliases still read the same task-backed lifecycle data. As of v5.7, lifecycle filters and safe batch approval-request actions are available from /tasks-work and /api/tasks/... endpoints.
+Stable-loop live runs now check unresolved decision follow-up chains before live advancement. Preview/preflight remains available, but live execution is blocked until follow-up chains are resolved/closed/archived or the operator explicitly uses the closure-guardrail bypass. Use `python conscious_agent/main.py --stable-loop-guardrails` to inspect the current state.

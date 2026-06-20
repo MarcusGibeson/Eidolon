@@ -80,6 +80,12 @@ from task_approval_bridge import (
     print_request_next_task_work_approval,
     print_task_approvals,
 )
+from task_recovery import (
+    print_task_recovery,
+    print_task_recoveries,
+    print_mark_task_ready_for_retry,
+    print_retry_task_work,
+)
 from task_patch_bridge import (
     print_create_patch_task,
     print_suggest_patch_for_task,
@@ -96,6 +102,203 @@ from work_cycle import (
     print_saved_work_cycle,
     list_work_cycles,
     resolve_work_cycle_id,
+)
+from stable_supervised_loop import (
+    print_stable_loop_preflight,
+    print_stable_loop,
+    print_stable_loops,
+    print_saved_stable_loop,
+    list_stable_loops,
+    resolve_stable_loop_id,
+)
+from stable_loop_review import (
+    print_stable_loop_review_summary,
+    print_stable_loop_review,
+    print_update_stable_loop_review,
+    print_run_approved_stable_loop_live,
+    print_stable_loop_reviews,
+    print_archive_stable_loop,
+    print_cleanup_stable_loop_history,
+)
+from stable_loop_audit import print_stable_loop_audit
+from stable_loop_operator_notes import (
+    print_stable_loop_operator_notes,
+    print_add_stable_loop_operator_note,
+    print_update_stable_loop_check,
+    print_set_stable_loop_final_decision,
+)
+from stable_loop_decision_report import (
+    print_stable_loop_decision_report,
+    print_stable_loop_decision_rows,
+    print_cleanup_stable_loop_decisions,
+)
+from stable_loop_followup_tasks import (
+    print_stable_loop_followup_summary,
+    print_create_stable_loop_followups,
+    print_create_stable_loop_followups_for_decisions,
+)
+from stable_loop_followup_lifecycle import (
+    print_resolve_stable_loop_followups,
+    print_resolve_task_stable_loop_followup,
+    print_stable_loop_followup_lifecycle_summary,
+    print_stable_loop_followup_task,
+)
+from stable_loop_followup_completion import (
+    print_cleanup_stable_loop_followup_completions,
+    print_mark_stable_loop_followup_closed,
+    print_stable_loop_followup_completion_report,
+    print_stable_loop_followup_completion_rows,
+)
+from stable_loop_guardrails import print_stable_loop_guardrails
+from stabilization_checkpoint import print_stabilization_checkpoint
+from operational_readiness import (
+    print_doctor,
+    print_repair_suggestions,
+    print_patch_integrity,
+    print_project_snapshot,
+    print_task_review,
+    print_recovery_drill,
+    print_stable_loop_confidence,
+    print_hardening_report,
+    print_controlled_self_build,
+)
+from controlled_build_cycle import (
+    print_controlled_task_selection,
+    print_patch_plan,
+    print_patch_workspace_status,
+    print_stage_controlled_patch,
+    print_preview_staged_diff,
+    print_apply_staged_patch,
+    print_verify_latest_patch,
+    print_rollback_latest_patch,
+    print_readme_gate,
+    print_controlled_build_cycle,
+    print_supervised_dev_loop,
+)
+
+from project_intelligence import (
+    print_codebase_map,
+    print_task_dependencies,
+    print_test_plan,
+    print_patch_risk,
+    print_patch_review,
+    print_project_memory_index,
+    print_workspace_status,
+    print_cross_project_task_review,
+    print_asymmetric_dev_loop,
+)
+from workspace_orchestration import (
+    print_project_registry,
+    print_register_project,
+    print_set_active_workspace_project,
+    print_project_health,
+    print_command_profiles,
+    print_workspace_dependency_map,
+    print_workspace_task_inbox,
+    print_switch_workspace_project,
+    print_project_context,
+    print_workspace_timeline,
+    print_workspace_dev_loop,
+)
+from workspace_execution import (
+    print_workspace_registry_audit,
+    print_workspace_repair_suggestions,
+    print_project_registration_wizard,
+    print_project_boundary_check,
+    print_workspace_patch_plan,
+    print_workspace_preview_diff,
+    print_workspace_apply,
+    print_workspace_verify_latest,
+    print_guarded_workspace_dev_loop,
+)
+from patch_drafting import (
+    print_patch_draft_request,
+    print_draft_patch,
+    print_patch_draft_status,
+    print_patch_review_notes,
+    print_draft_diff,
+    print_draft_test_impact,
+    print_approve_draft,
+    print_reject_draft,
+    print_apply_approved_draft,
+    print_rollback_approved_draft,
+    print_reopen_draft,
+    print_human_approved_patch_loop,
+    print_draft_quality,
+    print_draft_file_targets,
+    print_draft_intent_blocks,
+    print_draft_conflicts,
+    print_draft_verification_bundle,
+    print_draft_review_checklist,
+    print_approved_draft_execution_report,
+    print_review_centered_patch_loop,
+)
+from release_pipeline import (
+    print_code_edit_proposal,
+    print_safe_rewrite_preview,
+    print_generated_code_patch,
+    print_test_suggestions,
+    print_inline_review_note,
+    print_apply_approved_code_patch,
+    print_prepare_release_package,
+    print_release_readiness,
+    print_human_approved_release_loop,
+)
+from code_patch_release import (
+    print_code_patch_status,
+    print_symbol_scan,
+    print_rewrite_plan,
+    print_rewrite_conflicts,
+    print_code_patch_diff_bundle,
+    print_apply_code_patch_transaction,
+    print_semantic_checks,
+    print_release_artifact,
+    print_release_audit_trail,
+    print_generated_code_release_loop,
+)
+from ai_patch_assistance import (
+    print_task_to_code_patch,
+    print_code_context,
+    print_patch_prompt,
+    print_parse_generated_edits,
+    print_edit_consistency,
+    print_ai_code_patch_dry_run,
+    print_patch_failure_analysis,
+    print_patch_learning_notes,
+    print_ai_assisted_code_patch_loop,
+)
+from validated_ai_patch_loop import (
+    print_patch_objective_refinement,
+    print_code_context_ranking,
+    print_patch_safety_envelope,
+    print_generated_patch_validation,
+    print_patch_simulation,
+    print_test_stub_plan,
+    print_patch_review_score,
+    print_patch_recovery_plan,
+    print_validated_ai_code_patch_loop,
+)
+from approval_release_workflow import (
+    print_bind_validated_approval,
+    print_ai_patch_review_bundle,
+    print_review_bundle_integrity,
+    print_approval_ready,
+    print_approval_ledger,
+    print_apply_validated_ai_patch,
+    print_post_apply_review,
+    print_package_build_plan,
+    print_approval_to_release_loop,
+)
+from release_packaging import (
+    print_release_manifest_integrity,
+    print_package_inventory,
+    print_package_checksums,
+    print_release_notes,
+    print_release_handoff_report,
+    print_build_release_zip,
+    print_verify_release_unzip,
+    print_release_pipeline_audit,
+    print_verified_release_package_loop,
 )
 from task_queue import (
     print_task_status,
@@ -603,6 +806,14 @@ def main() -> None:
     parser.add_argument("--force-task-approval", action="store_true", help="Create a task approval even if the task is not currently risk-gated")
     parser.add_argument("--show-task-approvals", type=str, help="Show approval requests linked to a task")
     parser.add_argument("--task-approval-full", action="store_true", help="Show full task approval request details")
+    parser.add_argument("--task-recovery-summary", action="store_true", help="Show recoverable blocked/failed task summary")
+    parser.add_argument("--list-task-recoveries", action="store_true", help="List recoverable blocked/failed tasks and suggested recovery actions")
+    parser.add_argument("--show-task-recovery", type=str, help="Show recovery plan for a task by id or alias")
+    parser.add_argument("--mark-task-ready-for-retry", type=str, help="Clear failed/blocked work markers and mark a task planned for retry")
+    parser.add_argument("--retry-task-work", type=str, help="Retry a recoverable task through the task work executor; use --dry-run first")
+    parser.add_argument("--task-recovery-project", type=str, default="", help="Optional project filter for task recovery listing")
+    parser.add_argument("--task-recovery-note", type=str, default="", help="Optional note for --mark-task-ready-for-retry")
+    parser.add_argument("--task-recovery-full", action="store_true", help="Show full task recovery details")
     parser.add_argument("--queue-patch", nargs=2, metavar=("FILE", "REQUEST"), help="Legacy alias: create a task-backed patch-generation item for a file")
     parser.add_argument("--queue-task-patch", nargs=2, metavar=("FILE", "REQUEST"), help="Create a task-backed item that will generate a patch proposal for a file")
     parser.add_argument("--queue-patch-project", type=str, default="eidolon", help="Project id for --queue-patch / --queue-task-patch")
@@ -621,9 +832,230 @@ def main() -> None:
     parser.add_argument("--no-ai-work-cycle", action="store_true", help="Disable local AI during --work-cycle")
     parser.add_argument("--no-work-cycle-seed", action="store_true", help="Do not create seed tasks when the queue is empty")
     parser.add_argument("--no-work-cycle-followups", action="store_true", help="Do not auto-create review/apply/test follow-ups for proposed patches")
+    parser.add_argument("--no-work-cycle-approval-requests", action="store_true", help="Do not auto-create approval requests for approval-required tasks during --work-cycle")
+    parser.add_argument("--work-cycle-auto-retry-recovery", action="store_true", help="Allow --work-cycle to mark recovery-needed tasks ready for retry; default only reports recovery plans")
     parser.add_argument("--work-cycle-full", action="store_true", help="Show full supervised work cycle details")
     parser.add_argument("--list-work-cycles", action="store_true", help="List saved supervised work cycle records")
     parser.add_argument("--show-work-cycle", nargs="?", const="latest", help="Show a saved supervised work cycle by id or alias")
+    parser.add_argument("--stable-loop-preflight", action="store_true", help="Preview stable supervised loop health and next lifecycle decision")
+    parser.add_argument("--stable-loop", action="store_true", help="Run the v6.9 stable supervised loop; preview-only unless --stable-loop-live is used")
+    parser.add_argument("--stable-loop-project", type=str, default="eidolon", help="Project id for --stable-loop")
+    parser.add_argument("--stable-loop-steps", type=int, default=1, help="Maximum stable loop steps, capped at 5")
+    parser.add_argument("--stable-loop-live", action="store_true", help="Allow the stable loop to run a live cycle after its dry-run preview")
+    parser.add_argument("--approve-stable-loop-actions", action="store_true", help="Allow approval-required task work during a live stable loop; use carefully")
+    parser.add_argument("--no-ai-stable-loop", action="store_true", help="Disable local AI during stable loop preview/live cycle")
+    parser.add_argument("--no-stable-loop-seed", action="store_true", help="Do not create seed tasks when stable loop finds an empty queue")
+    parser.add_argument("--no-stable-loop-followups", action="store_true", help="Do not auto-create patch follow-up tasks during stable loop")
+    parser.add_argument("--no-stable-loop-approval-requests", action="store_true", help="Do not auto-create task approval requests during stable loop")
+    parser.add_argument("--stable-loop-auto-retry-recovery", action="store_true", help="Allow live stable loop to mark recovery-needed tasks ready for retry")
+    parser.add_argument("--stable-loop-full", action="store_true", help="Show full stable loop details")
+    parser.add_argument("--stable-loop-guardrails", action="store_true", help="Show closure-aware guardrails for stable-loop live advancement")
+    parser.add_argument("--stable-loop-bypass-closure-guardrails", action="store_true", help="Explicitly bypass unresolved follow-up guardrails for a live stable-loop run")
+    parser.add_argument("--stabilization-checkpoint", action="store_true", help="Run the v8.0 read-only stabilization checkpoint across CLI/API/dashboard/task/stable-loop surfaces")
+    parser.add_argument("--stabilization-full", action="store_true", help="Include every stabilization checkpoint item and raw report details")
+    parser.add_argument("--stabilization-json", action="store_true", help="Print the stabilization checkpoint report as JSON")
+    parser.add_argument("--doctor", action="store_true", help="Run the v7.2 one-command doctor report")
+    parser.add_argument("--doctor-full", action="store_true", help="Include raw JSON/details for doctor and operational readiness reports")
+    parser.add_argument("--readiness-json", action="store_true", help="Print new operational readiness reports as JSON")
+    parser.add_argument("--repair-suggestions", action="store_true", help="Show v7.3 self-repair suggestions based on current diagnostics")
+    parser.add_argument("--patch-integrity", action="store_true", help="Show v7.4 patch metadata and rollback integrity report")
+    parser.add_argument("--project-snapshot", action="store_true", help="Show v7.5 project state snapshot")
+    parser.add_argument("--task-review", action="store_true", help="Show v7.6 task queue risk/lifecycle review")
+    parser.add_argument("--recovery-drill", action="store_true", help="Run v7.7 read-only recovery drill scenarios")
+    parser.add_argument("--stable-loop-confidence", action="store_true", help="Show v7.8 stable-loop confidence score")
+    parser.add_argument("--hardening-report", action="store_true", help="Show v7.9 pre-v8 hardening report")
+    parser.add_argument("--controlled-self-build", action="store_true", help="Run v8.0 controlled self-build preview unless live approval flags are supplied")
+    parser.add_argument("--controlled-self-build-live", action="store_true", help="Allow controlled self-build/supervised loop commands to attempt live work after doctor/guardrail gates")
+    parser.add_argument("--approve-controlled-self-build", action="store_true", help="Explicit operator approval required for live controlled self-build, apply, or rollback actions")
+    parser.add_argument("--controlled-self-build-steps", type=int, default=1, help="Bounded step count for controlled self-build, capped internally")
+    parser.add_argument("--select-task", action="store_true", help="Run v8.1 controlled self-build task selection")
+    parser.add_argument("--plan-patch", action="store_true", help="Run v8.2 controlled patch planner and save data/patch_workspace/current_plan.json")
+    parser.add_argument("--patch-workspace-status", action="store_true", help="Show v8.3 controlled patch workspace status")
+    parser.add_argument("--stage-patch", action="store_true", help="Run v8.3 patch staging into data/patch_workspace without touching source files")
+    parser.add_argument("--preview-diff", action="store_true", help="Run v8.4 staged file diff preview")
+    parser.add_argument("--apply-staged-patch", action="store_true", help="Run v8.5 apply staged patch; writes only with --approve-controlled-self-build")
+    parser.add_argument("--verify-latest-patch", action="store_true", help="Run v8.6 verification for the latest controlled patch/apply report")
+    parser.add_argument("--rollback-latest-patch", action="store_true", help="Run v8.7 rollback for the latest controlled patch; writes only with --approve-controlled-self-build")
+    parser.add_argument("--readme-gate", action="store_true", help="Run v8.8 README enforcement gate")
+    parser.add_argument("--controlled-self-build-cycle", action="store_true", help="Run v8.9 full controlled build cycle; preview by default")
+    parser.add_argument("--supervised-dev-loop", action="store_true", help="Run v9.0 one-cycle supervised autonomous development loop; preview by default")
+    parser.add_argument("--codebase-map", action="store_true", help="Run v9.1 codebase map")
+    parser.add_argument("--task-dependencies", action="store_true", help="Run v9.2 dependency-aware task planning")
+    parser.add_argument("--test-plan", action="store_true", help="Run v9.3 test planner")
+    parser.add_argument("--patch-risk", action="store_true", help="Run v9.4 patch risk analyzer")
+    parser.add_argument("--patch-review", action="store_true", help="Run v9.5 patch review report")
+    parser.add_argument("--project-memory-index", action="store_true", help="Run v9.7 project memory index")
+    parser.add_argument("--workspace-status", action="store_true", help="Run v9.8 multi-project workspace status")
+    parser.add_argument("--cross-project-task-review", action="store_true", help="Run v9.9 cross-project task review")
+    parser.add_argument("--asymmetric-dev-loop", action="store_true", help="Run v10.0 asymmetric multi-project dev loop preview")
+    parser.add_argument("--project-registry", action="store_true", help="Run v10.1 workspace project registry report")
+    parser.add_argument("--register-project", help="Register or update a workspace project by name")
+    parser.add_argument("--workspace-project-id", help="Workspace project id for registration/context commands")
+    parser.add_argument("--workspace-project-root", help="Workspace project root; use . to derive from ROOT_DIR")
+    parser.add_argument("--workspace-project-version", default="unknown", help="Workspace project version metadata")
+    parser.add_argument("--workspace-project-language", default="unknown", help="Workspace project language metadata")
+    parser.add_argument("--workspace-project-framework", default="unknown", help="Workspace project framework/type metadata")
+    parser.add_argument("--workspace-project-readme", default="README_NEXT_STEPS.md", help="Workspace project README path")
+    parser.add_argument("--workspace-project-test-command", action="append", default=[], help="Project-specific test command; may be provided multiple times")
+    parser.add_argument("--workspace-command-profile", default="default_python", help="Project safe command profile id")
+    parser.add_argument("--set-active-workspace-project", help="Set the active workspace project id")
+    parser.add_argument("--project-health", action="store_true", help="Run v10.2 per-project health check")
+    parser.add_argument("--project-health-all", action="store_true", help="Run v10.2 health check across all registered projects")
+    parser.add_argument("--command-profiles", action="store_true", help="Run v10.3 project command profile report and seed defaults")
+    parser.add_argument("--workspace-dependency-map", action="store_true", help="Run v10.4 cross-project dependency map")
+    parser.add_argument("--workspace-task-inbox", action="store_true", help="Run v10.5 multi-project task inbox")
+    parser.add_argument("--switch-project", help="Safely switch active workspace project, blocked by dirty patch workspace unless forced")
+    parser.add_argument("--force-switch-project", action="store_true", help="Force workspace project switch despite patch workspace state")
+    parser.add_argument("--project-context", action="store_true", help="Run v10.7 project context bundle")
+    parser.add_argument("--workspace-timeline", action="store_true", help="Run v10.8 workspace timeline")
+    parser.add_argument("--workspace-dev-loop", action="store_true", help="Run v11.0 workspace-orchestrated development loop preview")
+    parser.add_argument("--workspace-registry-audit", action="store_true", help="Run v11.1 workspace registry persistence audit")
+    parser.add_argument("--workspace-repair-suggestions", action="store_true", help="Run v11.2 workspace repair suggestions")
+    parser.add_argument("--project-registration-wizard", nargs="?", const="Workspace Project", help="Run v11.3 project registration wizard preview")
+    parser.add_argument("--project-boundary-check", action="store_true", help="Run v11.4 project boundary guard")
+    parser.add_argument("--workspace-patch-plan", action="store_true", help="Run v11.5 workspace patch plan")
+    parser.add_argument("--workspace-preview-diff", action="store_true", help="Run v11.6 workspace diff preview")
+    parser.add_argument("--workspace-apply", action="store_true", help="Run v11.7/v11.8 workspace apply; dry-run unless --approve-controlled-self-build is provided")
+    parser.add_argument("--workspace-verify-latest", action="store_true", help="Run v11.9 workspace verification pipeline")
+    parser.add_argument("--guarded-workspace-dev-loop", action="store_true", help="Run v12.0 guarded workspace development loop; dry-run unless approved")
+    parser.add_argument("--patch-draft-request", action="store_true", help="Run v12.1 patch draft request format and save data/patch_drafts/draft_request.json")
+    parser.add_argument("--draft-patch", action="store_true", help="Run v12.2 AI patch drafting interface without applying source edits")
+    parser.add_argument("--patch-draft-status", action="store_true", help="Run v12.3 patch draft workspace status")
+    parser.add_argument("--patch-review-notes", action="store_true", help="Run v12.4 human patch review notes")
+    parser.add_argument("--patch-review-note", help="Review note text to attach to the current patch draft")
+    parser.add_argument("--draft-diff", action="store_true", help="Run v12.5 draft diff generator")
+    parser.add_argument("--draft-test-impact", action="store_true", help="Run v12.6 draft test impact planner")
+    parser.add_argument("--approve-draft", action="store_true", help="Run v12.7 approval gate and approve the current draft for one apply if gates pass")
+    parser.add_argument("--reject-draft", action="store_true", help="Reject the current patch draft")
+    parser.add_argument("--apply-approved-draft", action="store_true", help="Run v12.8 approved draft apply; use --dry-run to preview without writing")
+    parser.add_argument("--rollback-approved-draft", action="store_true", help="Run v12.9 approved draft rollback; writes only with --approve-controlled-self-build")
+    parser.add_argument("--reopen-draft", action="store_true", help="Run v12.9 reopen draft and clear approval state")
+    parser.add_argument("--human-approved-patch-loop", action="store_true", help="Run v13.0 human-approved autonomous patch loop; stops unless a draft is already approved")
+    parser.add_argument("--draft-quality", action="store_true", help="Run v13.1 draft quality scoring")
+    parser.add_argument("--draft-file-targets", action="store_true", help="Run v13.2 draft file target resolver")
+    parser.add_argument("--draft-intent-blocks", action="store_true", help="Run v13.3 draft change intent blocks")
+    parser.add_argument("--draft-conflicts", action="store_true", help="Run v13.4 draft conflict detector")
+    parser.add_argument("--draft-verification-bundle", action="store_true", help="Run v13.7 draft verification bundle")
+    parser.add_argument("--draft-review-checklist", action="store_true", help="Run v13.8 human review checklist")
+    parser.add_argument("--approved-draft-execution-report", action="store_true", help="Run v13.9 approved draft execution report")
+    parser.add_argument("--review-centered-patch-loop", action="store_true", help="Run v14.0 review-centered patch loop; stops unless approval exists and apply is approved")
+    parser.add_argument("--code-edit-proposal", action="store_true", help="Run v14.1 real code edit proposal format")
+    parser.add_argument("--safe-rewrite-preview", action="store_true", help="Run v14.2 safe file rewrite preview with hash checks")
+    parser.add_argument("--generate-code-patch", action="store_true", help="Run v14.3 generated code patch artifact builder")
+    parser.add_argument("--test-suggestions", action="store_true", help="Run v14.4 unit/manual test suggestion generator")
+    parser.add_argument("--inline-review-note", action="store_true", help="Run v14.6 inline patch review note capture")
+    parser.add_argument("--inline-review-file", help="File path for --inline-review-note")
+    parser.add_argument("--inline-review-intent", help="Intent block id/title for --inline-review-note")
+    parser.add_argument("--apply-approved-code-patch", action="store_true", help="Run v14.7 approved generated code patch apply; dry-run unless approved")
+    parser.add_argument("--prepare-release-package", action="store_true", help="Run v14.8 release package metadata preparation")
+    parser.add_argument("--release-package-name", default="Eidolon_v20_0.zip", help="Package name for release preparation metadata")
+    parser.add_argument("--release-readiness", action="store_true", help="Run v14.9 release readiness gate")
+    parser.add_argument("--human-approved-release-loop", action="store_true", help="Run v15.0 human-approved release loop; stops after one approval/apply decision")
+    parser.add_argument("--code-patch-status", action="store_true", help="Run v15.1 generated-code patch workspace status")
+    parser.add_argument("--symbol-scan", action="store_true", help="Run v15.2 symbol-aware target file scanner")
+    parser.add_argument("--rewrite-plan", action="store_true", help="Run v15.3 targeted rewrite planner")
+    parser.add_argument("--rewrite-conflicts", action="store_true", help="Run v15.4 rewrite conflict detector")
+    parser.add_argument("--code-patch-diff-bundle", action="store_true", help="Run v15.5 generated code patch diff bundle")
+    parser.add_argument("--apply-code-patch-transaction", action="store_true", help="Run v15.6 guarded code patch apply transaction; dry-run unless approved")
+    parser.add_argument("--semantic-checks", action="store_true", help="Run v15.7 post-apply semantic checks")
+    parser.add_argument("--release-artifact", action="store_true", help="Run v15.8 release artifact manifest builder")
+    parser.add_argument("--release-audit-trail", action="store_true", help="Run v15.9 release audit trail")
+    parser.add_argument("--generated-code-release-loop", action="store_true", help="Run v16.0 generated code patch release loop; one bounded dry-run/apply then stop")
+    parser.add_argument("--task-to-code-patch", action="store_true", help="Run v16.1 task-to-code patch translator")
+    parser.add_argument("--code-context", action="store_true", help="Run v16.2 focused code context extractor")
+    parser.add_argument("--patch-prompt", action="store_true", help="Run v16.3 structured patch prompt builder")
+    parser.add_argument("--parse-generated-edits", action="store_true", help="Run v16.4 generated edit parser")
+    parser.add_argument("--edit-consistency", action="store_true", help="Run v16.5 multi-edit consistency checker")
+    parser.add_argument("--ai-code-patch-dry-run", action="store_true", help="Run v16.6 AI-assisted patch dry-run without source writes")
+    parser.add_argument("--patch-failure-analysis", action="store_true", help="Run v16.8 generated patch failure classifier")
+    parser.add_argument("--patch-learning-notes", action="store_true", help="Run v16.9 generated patch learning notes")
+    parser.add_argument("--ai-assisted-code-patch-loop", action="store_true", help="Run v17.0 AI-assisted human-approved code patch loop; bounded and approval-gated")
+    parser.add_argument("--refine-patch-objective", action="store_true", help="Run v17.1 patch objective refinement")
+    parser.add_argument("--rank-code-context", action="store_true", help="Run v17.2 code context ranking")
+    parser.add_argument("--patch-safety-envelope", action="store_true", help="Run v17.3 prompt safety envelope")
+    parser.add_argument("--validate-generated-patch", action="store_true", help="Run v17.4 generated patch validator")
+    parser.add_argument("--patch-simulation", action="store_true", help="Run v17.5 patch simulation without source writes")
+    parser.add_argument("--test-stub-plan", action="store_true", help="Run v17.6 test stub planner")
+    parser.add_argument("--patch-review-score", action="store_true", help="Run v17.7 patch review scoring")
+    parser.add_argument("--patch-recovery-plan", action="store_true", help="Run v17.9 patch failure recovery plan")
+    parser.add_argument("--validated-ai-code-patch-loop", action="store_true", help="Run v18.0 validated AI code patch loop; validates, simulates, scores, and stops for approval")
+    parser.add_argument("--ai-patch-review-bundle", action="store_true", help="Run v18.1 AI patch review bundle")
+    parser.add_argument("--ai-patch-review-integrity", action="store_true", help="Run v18.2 review bundle integrity check")
+    parser.add_argument("--approval-ready", action="store_true", help="Run v18.3 approval-ready gate")
+    parser.add_argument("--approval-ledger", action="store_true", help="Run v18.5 human approval ledger")
+    parser.add_argument("--apply-validated-ai-patch", action="store_true", help="Run v18.6 validated AI patch apply; dry-run unless approved")
+    parser.add_argument("--post-apply-review", action="store_true", help="Run v18.7 post-apply review comparison")
+    parser.add_argument("--package-build-plan", action="store_true", help="Run v18.9 package build plan")
+    parser.add_argument("--approval-to-release-loop", action="store_true", help="Run v19.0 approval-to-release loop")
+    parser.add_argument("--bind-validated-approval", action="store_true", help="Bind the current approved draft to the saved validated AI patch manifest before real validated apply")
+    parser.add_argument("--refresh-ai-patch-review-bundle", action="store_true", help="Refresh and save the authoritative validated AI patch review bundle/manifest")
+    parser.add_argument("--release-manifest-integrity", action="store_true", help="Run v19.1 release manifest integrity check")
+    parser.add_argument("--package-inventory", action="store_true", help="Run v19.2 package file inventory")
+    parser.add_argument("--package-checksums", action="store_true", help="Run v19.3 package checksum builder")
+    parser.add_argument("--release-notes", action="store_true", help="Run v19.4 release notes generator")
+    parser.add_argument("--release-handoff-report", action="store_true", help="Run v19.5 release handoff report")
+    parser.add_argument("--build-release-zip", action="store_true", help="Run v19.6 guarded release zip builder; dry-run unless --approve-controlled-self-build is provided")
+    parser.add_argument("--verify-release-unzip", action="store_true", help="Run v19.7 install/unzip verification for the latest release zip")
+    parser.add_argument("--release-pipeline-audit", action="store_true", help="Run v19.9 release pipeline audit")
+    parser.add_argument("--verified-release-package-loop", action="store_true", help="Run v20.0 verified release package loop")
+    parser.add_argument("--patch-draft-task", help="Patch draft task title/summary")
+    parser.add_argument("--patch-draft-intent", help="Patch draft intent/why this patch exists")
+    parser.add_argument("--patch-draft-target-version", default="20.0", help="Target version for a patch draft request")
+    parser.add_argument("--patch-draft-risk-limit", default="medium", help="Maximum accepted draft risk for approval")
+    parser.add_argument("--list-stable-loops", action="store_true", help="List saved stable supervised loop records")
+    parser.add_argument("--show-stable-loop", nargs="?", const="latest", help="Show a saved stable supervised loop by id or alias")
+    parser.add_argument("--stable-loop-review-summary", action="store_true", help="Summarize stable loop operator review states")
+    parser.add_argument("--show-stable-loop-review", nargs="?", const="latest", help="Show review metadata for a saved stable loop")
+    parser.add_argument("--mark-stable-loop-reviewed", type=str, help="Mark a stable loop reviewed")
+    parser.add_argument("--approve-stable-loop-live", type=str, help="Mark a preview stable loop approved for explicit live run")
+    parser.add_argument("--reject-stable-loop", type=str, help="Reject a stable loop review record")
+    parser.add_argument("--run-approved-stable-loop-live", type=str, help="Run a live stable loop from a preview already approved for live")
+    parser.add_argument("--stable-loop-review-note", type=str, default="", help="Optional note for stable loop review actions")
+    parser.add_argument("--stable-loop-review-full", action="store_true", help="Show full stable loop review details")
+    parser.add_argument("--list-stable-loop-reviews", nargs="?", const="all", help="List stable loop review/history records by filter")
+    parser.add_argument("--stable-loop-review-filter", type=str, default="all", help="Review/history filter for stable loop review listings and cleanup")
+    parser.add_argument("--include-archived-stable-loops", action="store_true", help="Include archived stable loop history records in listings")
+    parser.add_argument("--archive-stable-loop", type=str, help="Archive one stable loop history record without deleting it")
+    parser.add_argument("--restore-stable-loop", type=str, help="Restore one archived stable loop history record")
+    parser.add_argument("--cleanup-stable-loop-history", action="store_true", help="Archive old stable loop history records matching a filter; dry-run unless --cleanup-stable-loop-confirm is used")
+    parser.add_argument("--cleanup-stable-loop-limit", type=int, default=25, help="Maximum stable loop records to archive during cleanup")
+    parser.add_argument("--cleanup-stable-loop-confirm", action="store_true", help="Actually archive cleanup candidates instead of previewing them")
+    parser.add_argument("--cleanup-stable-loop-exclude-live", action="store_true", help="Do not archive live stable-loop records during cleanup")
+    parser.add_argument("--show-stable-loop-audit", nargs="?", const="latest", help="Show audit, rollback, and verification notes for a stable-loop record")
+    parser.add_argument("--refresh-stable-loop-audit", nargs="?", const="latest", help="Refresh and save the audit block for a stable-loop record")
+    parser.add_argument("--stable-loop-audit-full", action="store_true", help="Include raw audit JSON when showing stable-loop audit notes")
+    parser.add_argument("--show-stable-loop-operator-notes", nargs="?", const="latest", help="Show post-run checklist, operator notes, and final decision for a stable-loop record")
+    parser.add_argument("--add-stable-loop-operator-note", type=str, help="Add an operator note to a stable-loop record")
+    parser.add_argument("--complete-stable-loop-check", nargs=2, metavar=("LOOP_ID", "CHECK_ID"), help="Mark one stable-loop post-run checklist item done")
+    parser.add_argument("--skip-stable-loop-check", nargs=2, metavar=("LOOP_ID", "CHECK_ID"), help="Mark one stable-loop post-run checklist item skipped")
+    parser.add_argument("--set-stable-loop-final-decision", type=str, help="Set final operator decision for a stable-loop record")
+    parser.add_argument("--stable-loop-final-decision", type=str, default="undecided", choices=["undecided", "keep", "fix_forward", "rollback", "needs_review"], help="Final stable-loop decision value")
+    parser.add_argument("--stable-loop-operator-note", type=str, default="", help="Operator note for stable-loop checklist or final decision actions")
+    parser.add_argument("--stable-loop-operator-full", action="store_true", help="Include raw operator-note JSON when showing post-run checklist details")
+    parser.add_argument("--stable-loop-decision-report", nargs="?", const="all", help="Show stable-loop final-decision report by decision filter")
+    parser.add_argument("--list-stable-loop-decisions", nargs="?", const="all", help="List stable-loop records by final-decision filter")
+    parser.add_argument("--stable-loop-decision-filter", type=str, default="all", help="Final-decision filter for stable-loop decision reporting and cleanup")
+    parser.add_argument("--include-live-stable-loop-decisions", action="store_true", help="Include live stable-loop records in decision reports and cleanup; enabled by default for cleanup")
+    parser.add_argument("--cleanup-stable-loop-decisions", action="store_true", help="Archive stable-loop history by final decision; dry-run unless --cleanup-stable-loop-confirm is used")
+    parser.add_argument("--stable-loop-decision-full", action="store_true", help="Include raw decision report/cleanup JSON")
+    parser.add_argument("--stable-loop-followup-summary", nargs="?", const="action_required", help="Summarize decision-aware stable-loop follow-up task needs by final-decision filter")
+    parser.add_argument("--create-stable-loop-followups", type=str, help="Create or preview follow-up tasks for one stable-loop final decision")
+    parser.add_argument("--create-stable-loop-decision-followups", nargs="?", const="action_required", help="Create or preview follow-up tasks for stable-loop records matching a final-decision filter")
+    parser.add_argument("--stable-loop-followup-force", action="store_true", help="Allow stable-loop follow-up task creation even when the final decision is not normally action-required")
+    parser.add_argument("--stable-loop-followup-full", action="store_true", help="Include raw stable-loop follow-up task JSON output")
+    parser.add_argument("--stable-loop-followup-lifecycle-summary", nargs="?", const="all", help="Summarize stable-loop decision follow-up tasks and lifecycle resolution state")
+    parser.add_argument("--show-task-stable-loop-followup", type=str, help="Show stable-loop decision follow-up metadata for a task")
+    parser.add_argument("--resolve-stable-loop-followups", type=str, help="Mark a stable-loop decision follow-up chain resolved once linked follow-up tasks are done")
+    parser.add_argument("--resolve-task-stable-loop-followup", type=str, help="Resolve the stable-loop decision follow-up chain linked to a completed follow-up task")
+    parser.add_argument("--archive-resolved-stable-loop", action="store_true", help="Archive the stable-loop record after resolving its follow-up task chain")
+    parser.add_argument("--force-stable-loop-followup-resolution", action="store_true", help="Allow resolving stable-loop follow-ups even when linked tasks are still open")
+    parser.add_argument("--stable-loop-followup-note", type=str, default="", help="Optional note for stable-loop follow-up lifecycle resolution")
+    parser.add_argument("--stable-loop-followup-completion-report", nargs="?", const="all", help="Show stable-loop follow-up completion report by closure filter")
+    parser.add_argument("--list-stable-loop-followup-completions", nargs="?", const="all", help="List stable-loop follow-up completion rows by closure filter")
+    parser.add_argument("--stable-loop-followup-completion-filter", type=str, default="all", help="Filter for stable-loop follow-up completion reporting and cleanup")
+    parser.add_argument("--mark-stable-loop-followup-closed", type=str, help="Mark a resolved stable-loop follow-up chain closed after operator review")
+    parser.add_argument("--cleanup-stable-loop-followup-completions", action="store_true", help="Archive resolved stable-loop follow-up completion records; dry-run unless --cleanup-stable-loop-confirm is used")
+    parser.add_argument("--stable-loop-followup-completion-full", action="store_true", help="Include raw follow-up completion report/cleanup JSON")
     parser.add_argument("--project-status", action="store_true", help="Show tracked projects")
     parser.add_argument("--add-project", type=str, help="Add a project and set it active")
     parser.add_argument("--project-path", type=str, default="", help="Path for --add-project")
@@ -877,6 +1309,44 @@ def main() -> None:
         )
         return
 
+    if args.task_recovery_summary:
+        print_task_recoveries(
+            project=args.task_recovery_project,
+            include_nonrecoverable=False,
+            full=False,
+        )
+        return
+
+    if args.list_task_recoveries:
+        print_task_recoveries(
+            project=args.task_recovery_project,
+            include_nonrecoverable=False,
+            full=args.task_recovery_full,
+        )
+        return
+
+    if args.show_task_recovery:
+        print_task_recovery(args.show_task_recovery, full=args.task_recovery_full)
+        return
+
+    if args.mark_task_ready_for_retry:
+        print_mark_task_ready_for_retry(
+            args.mark_task_ready_for_retry,
+            note=args.task_recovery_note,
+            full=args.task_recovery_full,
+        )
+        return
+
+    if args.retry_task_work:
+        print_retry_task_work(
+            args.retry_task_work,
+            dry_run=args.dry_run,
+            allow_approval_required=allow_task_work_approval,
+            use_ai=use_task_work_ai,
+            full=args.task_recovery_full or task_work_full,
+        )
+        return
+
     if args.execute_task_work_id or args.execute_work_id:
         target_task_id = args.execute_task_work_id or args.execute_work_id
         print_execute_task_work_item(
@@ -958,6 +1428,8 @@ def main() -> None:
             approve_work_execution=args.approve_work_cycle_actions,
             seed_if_empty=not args.no_work_cycle_seed,
             auto_create_patch_followups=not args.no_work_cycle_followups,
+            auto_request_approvals=not args.no_work_cycle_approval_requests,
+            auto_retry_recovery=args.work_cycle_auto_retry_recovery,
             full=args.work_cycle_full,
         )
         return
@@ -968,6 +1440,904 @@ def main() -> None:
 
     if args.show_work_cycle:
         print_saved_work_cycle(args.show_work_cycle, full=args.work_cycle_full)
+        return
+
+    if args.stable_loop_preflight:
+        print_stable_loop_preflight(
+            project_id=args.stable_loop_project,
+            max_steps=args.stable_loop_steps,
+            full=args.stable_loop_full,
+        )
+        return
+
+    if args.stable_loop_guardrails:
+        print_stable_loop_guardrails(
+            project_id=args.stable_loop_project,
+            bypass=args.stable_loop_bypass_closure_guardrails,
+            include_archived=args.include_archived_stable_loops,
+            full=args.stable_loop_full,
+        )
+        return
+
+    if args.stabilization_checkpoint:
+        print_stabilization_checkpoint(
+            project_id=args.stable_loop_project,
+            full=args.stabilization_full,
+            json_output=args.stabilization_json,
+        )
+        return
+
+    if args.doctor:
+        print_doctor(
+            project_id=args.stable_loop_project,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.repair_suggestions:
+        print_repair_suggestions(
+            project_id=args.stable_loop_project,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.patch_integrity:
+        print_patch_integrity(full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.project_snapshot:
+        print_project_snapshot(
+            project_id=args.stable_loop_project,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.task_review:
+        print_task_review(
+            project_id=args.stable_loop_project,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.recovery_drill:
+        print_recovery_drill(
+            project_id=args.stable_loop_project,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.stable_loop_confidence:
+        print_stable_loop_confidence(
+            project_id=args.stable_loop_project,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.hardening_report:
+        print_hardening_report(
+            project_id=args.stable_loop_project,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.controlled_self_build and args.select_task:
+        print_controlled_task_selection(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.controlled_self_build and args.plan_patch:
+        print_patch_plan(project_id=args.stable_loop_project, target_version="12.0", full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_workspace_status or (args.controlled_self_build and args.patch_workspace_status):
+        print_patch_workspace_status(full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.controlled_self_build and args.stage_patch:
+        print_stage_controlled_patch(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.controlled_self_build and args.preview_diff:
+        print_preview_staged_diff(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.controlled_self_build and args.apply_staged_patch:
+        print_apply_staged_patch(
+            project_id=args.stable_loop_project,
+            approve=args.approve_controlled_self_build,
+            dry_run=args.dry_run,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.verify_latest_patch:
+        print_verify_latest_patch(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.rollback_latest_patch:
+        print_rollback_latest_patch(
+            project_id=args.stable_loop_project,
+            approve=args.approve_controlled_self_build,
+            dry_run=args.dry_run,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.readme_gate:
+        print_readme_gate(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.controlled_self_build_cycle:
+        print_controlled_build_cycle(
+            project_id=args.stable_loop_project,
+            live=args.controlled_self_build_live,
+            approve=args.approve_controlled_self_build,
+            dry_run=args.dry_run or not args.controlled_self_build_live,
+            full=args.doctor_full or args.stable_loop_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.supervised_dev_loop:
+        print_supervised_dev_loop(
+            project_id=args.stable_loop_project,
+            live=args.controlled_self_build_live,
+            approve=args.approve_controlled_self_build,
+            use_ai=(not args.no_ai_stable_loop and ai_reviews_enabled()),
+            full=args.doctor_full or args.stable_loop_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.controlled_self_build:
+        print_controlled_self_build(
+            project_id=args.stable_loop_project,
+            max_steps=args.controlled_self_build_steps,
+            live=args.controlled_self_build_live,
+            approve_live=args.approve_controlled_self_build,
+            use_ai=(not args.no_ai_stable_loop and ai_reviews_enabled()),
+            full=args.doctor_full or args.stable_loop_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+
+    if args.codebase_map:
+        print_codebase_map(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.task_dependencies:
+        print_task_dependencies(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.test_plan:
+        print_test_plan(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_risk:
+        print_patch_risk(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_review:
+        print_patch_review(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.project_memory_index:
+        print_project_memory_index(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_status:
+        print_workspace_status(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.cross_project_task_review:
+        print_cross_project_task_review(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.asymmetric_dev_loop:
+        print_asymmetric_dev_loop(project_id=args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.project_registry:
+        print_project_registry(full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.register_project:
+        print_register_project(
+            name=args.register_project,
+            root=args.workspace_project_root,
+            version=args.workspace_project_version,
+            language=args.workspace_project_language,
+            framework_type=args.workspace_project_framework,
+            readme_path=args.workspace_project_readme,
+            test_commands=args.workspace_project_test_command,
+            profile=args.workspace_command_profile,
+            project_id=args.workspace_project_id,
+            full=args.doctor_full,
+            json_output=args.readiness_json,
+        )
+        return
+
+    if args.set_active_workspace_project:
+        print_set_active_workspace_project(args.set_active_workspace_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.project_health or args.project_health_all:
+        print_project_health(project_id=args.workspace_project_id or args.stable_loop_project, all_projects=args.project_health_all, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.command_profiles:
+        print_command_profiles(full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_dependency_map:
+        print_workspace_dependency_map(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_task_inbox:
+        print_workspace_task_inbox(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.switch_project:
+        print_switch_workspace_project(args.switch_project, force=args.force_switch_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.project_context:
+        print_project_context(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_timeline:
+        print_workspace_timeline(full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_dev_loop:
+        print_workspace_dev_loop(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_registry_audit:
+        print_workspace_registry_audit(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json, archive_stale=True)
+        return
+
+    if args.workspace_repair_suggestions:
+        print_workspace_repair_suggestions(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.project_registration_wizard:
+        print_project_registration_wizard(name=args.project_registration_wizard, root=args.workspace_project_root, project_id=args.workspace_project_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.project_boundary_check:
+        print_project_boundary_check(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_patch_plan:
+        print_workspace_patch_plan(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_preview_diff:
+        print_workspace_preview_diff(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_apply:
+        approved = bool(args.approve_controlled_self_build)
+        print_workspace_apply(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.workspace_verify_latest:
+        print_workspace_verify_latest(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.guarded_workspace_dev_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_guarded_workspace_dev_loop(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_draft_request:
+        print_patch_draft_request(project_id=args.workspace_project_id or args.stable_loop_project, target_version=args.patch_draft_target_version, task=args.patch_draft_task, intent=args.patch_draft_intent, risk_limit=args.patch_draft_risk_limit, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.draft_patch:
+        print_draft_patch(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_draft_status:
+        print_patch_draft_status(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_review_notes:
+        print_patch_review_notes(project_id=args.workspace_project_id or args.stable_loop_project, note=args.patch_review_note, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.draft_diff:
+        print_draft_diff(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.draft_test_impact:
+        print_draft_test_impact(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.approve_draft:
+        print_approve_draft(project_id=args.workspace_project_id or args.stable_loop_project, note=args.patch_review_note, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reject_draft:
+        print_reject_draft(project_id=args.workspace_project_id or args.stable_loop_project, note=args.patch_review_note, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.apply_approved_draft:
+        print_apply_approved_draft(project_id=args.workspace_project_id or args.stable_loop_project, dry_run=args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.rollback_approved_draft:
+        approved = bool(args.approve_controlled_self_build)
+        print_rollback_approved_draft(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reopen_draft:
+        print_reopen_draft(project_id=args.workspace_project_id or args.stable_loop_project, note=args.patch_review_note, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.human_approved_patch_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_human_approved_patch_loop(project_id=args.workspace_project_id or args.stable_loop_project, approve_apply=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.draft_quality:
+        print_draft_quality(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.draft_file_targets:
+        print_draft_file_targets(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.draft_intent_blocks:
+        print_draft_intent_blocks(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.draft_conflicts:
+        print_draft_conflicts(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.draft_verification_bundle:
+        print_draft_verification_bundle(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.draft_review_checklist:
+        print_draft_review_checklist(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.approved_draft_execution_report:
+        print_approved_draft_execution_report(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.review_centered_patch_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_review_centered_patch_loop(project_id=args.workspace_project_id or args.stable_loop_project, approve_apply=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.code_edit_proposal:
+        print_code_edit_proposal(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.safe_rewrite_preview:
+        print_safe_rewrite_preview(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.generate_code_patch:
+        print_generated_code_patch(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.test_suggestions:
+        print_test_suggestions(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.inline_review_note:
+        print_inline_review_note(project_id=args.workspace_project_id or args.stable_loop_project, note=args.patch_review_note, file_path=args.inline_review_file, intent_block=args.inline_review_intent, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.apply_approved_code_patch:
+        approved = bool(args.approve_controlled_self_build)
+        print_apply_approved_code_patch(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.prepare_release_package:
+        print_prepare_release_package(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_readiness:
+        print_release_readiness(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.human_approved_release_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_human_approved_release_loop(project_id=args.workspace_project_id or args.stable_loop_project, approve_apply=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.code_patch_status:
+        print_code_patch_status(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.symbol_scan:
+        print_symbol_scan(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.rewrite_plan:
+        print_rewrite_plan(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.rewrite_conflicts:
+        print_rewrite_conflicts(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.code_patch_diff_bundle:
+        print_code_patch_diff_bundle(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.apply_code_patch_transaction:
+        approved = bool(args.approve_controlled_self_build)
+        print_apply_code_patch_transaction(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.semantic_checks:
+        print_semantic_checks(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_artifact:
+        print_release_artifact(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_audit_trail:
+        print_release_audit_trail(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.generated_code_release_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_generated_code_release_loop(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.task_to_code_patch:
+        print_task_to_code_patch(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.code_context:
+        print_code_context(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_prompt:
+        print_patch_prompt(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.parse_generated_edits:
+        print_parse_generated_edits(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.edit_consistency:
+        print_edit_consistency(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.ai_code_patch_dry_run:
+        print_ai_code_patch_dry_run(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_failure_analysis:
+        print_patch_failure_analysis(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_learning_notes:
+        print_patch_learning_notes(project_id=args.workspace_project_id or args.stable_loop_project, note=args.patch_review_note, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.ai_assisted_code_patch_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_ai_assisted_code_patch_loop(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.refine_patch_objective:
+        print_patch_objective_refinement(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.rank_code_context:
+        print_code_context_ranking(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_safety_envelope:
+        print_patch_safety_envelope(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.validate_generated_patch:
+        print_generated_patch_validation(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_simulation:
+        print_patch_simulation(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.test_stub_plan:
+        print_test_stub_plan(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_review_score:
+        print_patch_review_score(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_recovery_plan:
+        print_patch_recovery_plan(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.validated_ai_code_patch_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_validated_ai_code_patch_loop(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.ai_patch_review_bundle:
+        print_ai_patch_review_bundle(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.ai_patch_review_integrity:
+        print_review_bundle_integrity(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.approval_ready:
+        print_approval_ready(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.approval_ledger:
+        print_approval_ledger(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.apply_validated_ai_patch:
+        approved = bool(args.approve_controlled_self_build)
+        print_apply_validated_ai_patch(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.post_apply_review:
+        print_post_apply_review(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.package_build_plan:
+        print_package_build_plan(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.approval_to_release_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_approval_to_release_loop(project_id=args.workspace_project_id or args.stable_loop_project, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.bind_validated_approval:
+        print_bind_validated_approval(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.refresh_ai_patch_review_bundle:
+        print_ai_patch_review_bundle(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_manifest_integrity:
+        print_release_manifest_integrity(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.package_inventory:
+        print_package_inventory(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.package_checksums:
+        print_package_checksums(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_notes:
+        print_release_notes(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_handoff_report:
+        print_release_handoff_report(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.build_release_zip:
+        approved = bool(args.approve_controlled_self_build)
+        print_build_release_zip(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, confirm=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.verify_release_unzip:
+        print_verify_release_unzip(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_pipeline_audit:
+        print_release_pipeline_audit(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.verified_release_package_loop:
+        approved = bool(args.approve_controlled_self_build)
+        print_verified_release_package_loop(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, confirm=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.stable_loop:
+        print_stable_loop(
+            project_id=args.stable_loop_project,
+            max_steps=args.stable_loop_steps,
+            live=args.stable_loop_live,
+            use_ai=not args.no_ai_stable_loop,
+            approve_work_execution=args.approve_stable_loop_actions,
+            seed_if_empty=not args.no_stable_loop_seed,
+            auto_create_patch_followups=not args.no_stable_loop_followups,
+            auto_request_approvals=not args.no_stable_loop_approval_requests,
+            auto_retry_recovery=args.stable_loop_auto_retry_recovery,
+            bypass_closure_guardrails=args.stable_loop_bypass_closure_guardrails,
+            full=args.stable_loop_full,
+        )
+        return
+
+    if args.list_stable_loops:
+        print_stable_loops()
+        return
+
+    if args.stable_loop_review_summary:
+        print_stable_loop_review_summary(full=args.stable_loop_review_full)
+        return
+
+    if args.list_stable_loop_reviews is not None:
+        filter_value = args.list_stable_loop_reviews or args.stable_loop_review_filter
+        print_stable_loop_reviews(
+            review_filter=filter_value,
+            include_archived=args.include_archived_stable_loops,
+            full=args.stable_loop_review_full,
+        )
+        return
+
+    if args.archive_stable_loop:
+        print_archive_stable_loop(
+            args.archive_stable_loop,
+            archived=True,
+            note=args.stable_loop_review_note,
+            full=args.stable_loop_review_full,
+        )
+        return
+
+    if args.restore_stable_loop:
+        print_archive_stable_loop(
+            args.restore_stable_loop,
+            archived=False,
+            note=args.stable_loop_review_note,
+            full=args.stable_loop_review_full,
+        )
+        return
+
+    if args.cleanup_stable_loop_history:
+        print_cleanup_stable_loop_history(
+            review_filter=args.stable_loop_review_filter,
+            limit=args.cleanup_stable_loop_limit,
+            dry_run=not args.cleanup_stable_loop_confirm,
+            include_live=not args.cleanup_stable_loop_exclude_live,
+            full=args.stable_loop_review_full,
+        )
+        return
+
+    if args.show_stable_loop_review:
+        print_stable_loop_review(args.show_stable_loop_review, full=args.stable_loop_review_full)
+        return
+
+    if args.show_stable_loop_audit:
+        print_stable_loop_audit(args.show_stable_loop_audit, refresh=False, full=args.stable_loop_audit_full)
+        return
+
+    if args.refresh_stable_loop_audit:
+        print_stable_loop_audit(args.refresh_stable_loop_audit, refresh=True, full=args.stable_loop_audit_full)
+        return
+
+    if args.show_stable_loop_operator_notes:
+        print_stable_loop_operator_notes(args.show_stable_loop_operator_notes, full=args.stable_loop_operator_full)
+        return
+
+    if args.add_stable_loop_operator_note:
+        print_add_stable_loop_operator_note(
+            args.add_stable_loop_operator_note,
+            note=args.stable_loop_operator_note,
+            full=args.stable_loop_operator_full,
+        )
+        return
+
+    if args.complete_stable_loop_check:
+        loop_id, check_id = args.complete_stable_loop_check
+        print_update_stable_loop_check(
+            loop_id,
+            check_id,
+            status="done",
+            note=args.stable_loop_operator_note,
+            full=args.stable_loop_operator_full,
+        )
+        return
+
+    if args.skip_stable_loop_check:
+        loop_id, check_id = args.skip_stable_loop_check
+        print_update_stable_loop_check(
+            loop_id,
+            check_id,
+            status="skipped",
+            note=args.stable_loop_operator_note,
+            full=args.stable_loop_operator_full,
+        )
+        return
+
+    if args.set_stable_loop_final_decision:
+        print_set_stable_loop_final_decision(
+            args.set_stable_loop_final_decision,
+            decision=args.stable_loop_final_decision,
+            note=args.stable_loop_operator_note,
+            full=args.stable_loop_operator_full,
+        )
+        return
+
+    if args.stable_loop_decision_report is not None:
+        filter_value = args.stable_loop_decision_report or args.stable_loop_decision_filter
+        print_stable_loop_decision_report(
+            decision_filter=filter_value,
+            include_archived=args.include_archived_stable_loops,
+            include_live=True,
+            full=args.stable_loop_decision_full,
+        )
+        return
+
+    if args.list_stable_loop_decisions is not None:
+        filter_value = args.list_stable_loop_decisions or args.stable_loop_decision_filter
+        print_stable_loop_decision_rows(
+            decision_filter=filter_value,
+            include_archived=args.include_archived_stable_loops,
+            include_live=True,
+        )
+        return
+
+    if args.cleanup_stable_loop_decisions:
+        print_cleanup_stable_loop_decisions(
+            decision_filter=args.stable_loop_decision_filter,
+            limit=args.cleanup_stable_loop_limit,
+            dry_run=not args.cleanup_stable_loop_confirm,
+            include_live=not args.cleanup_stable_loop_exclude_live,
+            full=args.stable_loop_decision_full,
+        )
+        return
+
+    if args.cleanup_stable_loop_followup_completions:
+        print_cleanup_stable_loop_followup_completions(
+            completion_filter=args.stable_loop_followup_completion_filter,
+            limit=args.cleanup_stable_loop_limit,
+            dry_run=not args.cleanup_stable_loop_confirm,
+            include_archived=args.include_archived_stable_loops,
+            full=args.stable_loop_followup_completion_full,
+        )
+        return
+
+    if args.mark_stable_loop_followup_closed:
+        print_mark_stable_loop_followup_closed(
+            args.mark_stable_loop_followup_closed,
+            note=args.stable_loop_followup_note,
+            archive=args.archive_resolved_stable_loop,
+            full=args.stable_loop_followup_completion_full,
+        )
+        return
+
+    if args.stable_loop_followup_completion_report is not None:
+        filter_value = args.stable_loop_followup_completion_report or args.stable_loop_followup_completion_filter or "all"
+        print_stable_loop_followup_completion_report(
+            completion_filter=filter_value,
+            include_archived=args.include_archived_stable_loops,
+            full=args.stable_loop_followup_completion_full,
+        )
+        return
+
+    if args.list_stable_loop_followup_completions is not None:
+        filter_value = args.list_stable_loop_followup_completions or args.stable_loop_followup_completion_filter or "all"
+        print_stable_loop_followup_completion_rows(
+            completion_filter=filter_value,
+            include_archived=args.include_archived_stable_loops,
+            limit=args.cleanup_stable_loop_limit,
+        )
+        return
+
+    if args.stable_loop_followup_lifecycle_summary is not None:
+        filter_value = args.stable_loop_followup_lifecycle_summary or "all"
+        print_stable_loop_followup_lifecycle_summary(
+            decision_filter=filter_value,
+            include_closed=True,
+            include_archived=args.include_archived_stable_loops,
+            full=args.stable_loop_followup_full,
+        )
+        return
+
+    if args.show_task_stable_loop_followup:
+        print_stable_loop_followup_task(args.show_task_stable_loop_followup, full=args.stable_loop_followup_full)
+        return
+
+    if args.resolve_stable_loop_followups:
+        print_resolve_stable_loop_followups(
+            args.resolve_stable_loop_followups,
+            archive=args.archive_resolved_stable_loop,
+            force=args.force_stable_loop_followup_resolution,
+            note=args.stable_loop_followup_note,
+            full=args.stable_loop_followup_full,
+        )
+        return
+
+    if args.resolve_task_stable_loop_followup:
+        print_resolve_task_stable_loop_followup(
+            args.resolve_task_stable_loop_followup,
+            archive=args.archive_resolved_stable_loop,
+            force=args.force_stable_loop_followup_resolution,
+            note=args.stable_loop_followup_note,
+            full=args.stable_loop_followup_full,
+        )
+        return
+
+    if args.stable_loop_followup_summary is not None:
+        filter_value = args.stable_loop_followup_summary or args.stable_loop_decision_filter or "action_required"
+        print_stable_loop_followup_summary(
+            decision_filter=filter_value,
+            include_archived=args.include_archived_stable_loops,
+            include_live=not args.cleanup_stable_loop_exclude_live,
+            full=args.stable_loop_followup_full,
+        )
+        return
+
+    if args.create_stable_loop_followups:
+        print_create_stable_loop_followups(
+            args.create_stable_loop_followups,
+            dry_run=args.dry_run,
+            force=args.stable_loop_followup_force,
+            full=args.stable_loop_followup_full,
+        )
+        return
+
+    if args.create_stable_loop_decision_followups is not None:
+        filter_value = args.create_stable_loop_decision_followups or args.stable_loop_decision_filter or "action_required"
+        print_create_stable_loop_followups_for_decisions(
+            decision_filter=filter_value,
+            dry_run=args.dry_run,
+            include_archived=args.include_archived_stable_loops,
+            include_live=not args.cleanup_stable_loop_exclude_live,
+            limit=args.cleanup_stable_loop_limit,
+            force=args.stable_loop_followup_force,
+            full=args.stable_loop_followup_full,
+        )
+        return
+
+    if args.mark_stable_loop_reviewed:
+        print_update_stable_loop_review(
+            args.mark_stable_loop_reviewed,
+            status="reviewed",
+            note=args.stable_loop_review_note,
+            full=args.stable_loop_review_full,
+        )
+        return
+
+    if args.approve_stable_loop_live:
+        print_update_stable_loop_review(
+            args.approve_stable_loop_live,
+            status="approved_for_live",
+            note=args.stable_loop_review_note,
+            full=args.stable_loop_review_full,
+        )
+        return
+
+    if args.reject_stable_loop:
+        print_update_stable_loop_review(
+            args.reject_stable_loop,
+            status="rejected",
+            note=args.stable_loop_review_note,
+            full=args.stable_loop_review_full,
+        )
+        return
+
+    if args.run_approved_stable_loop_live:
+        print_run_approved_stable_loop_live(
+            args.run_approved_stable_loop_live,
+            note=args.stable_loop_review_note,
+            full=args.stable_loop_review_full or args.stable_loop_full,
+        )
         return
 
     if args.status:

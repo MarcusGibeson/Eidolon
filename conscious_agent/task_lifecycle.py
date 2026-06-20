@@ -2,12 +2,10 @@ from __future__ import annotations
 
 """Task lifecycle helpers for dashboard/API clarity.
 
-v5.7 note:
+v6.7 note:
     task_queue.py remains the source of truth. This module does not mutate task
     state; it derives a readable lifecycle stage from task status, risk,
-    approval metadata, linked approvals, and patch metadata. v5.7 adds
-    filter helpers so dashboard/API callers can query stage-specific work
-    without re-implementing lifecycle logic in the UI layer.
+    approval metadata, linked approvals, patch metadata, recovery metadata, and stable-loop decision follow-up metadata. v6.7 keeps the task queue canonical while exposing follow-up origin fields to dashboards and APIs.
 """
 
 from typing import Any
@@ -26,10 +24,11 @@ STAGE_ORDER = {
     "approved_ready": 4,
     "approval_rejected": 5,
     "approval_failed": 6,
-    "blocked": 7,
-    "patch_proposed": 8,
-    "done": 9,
-    "cancelled": 10,
+    "recovery_needed": 7,
+    "blocked": 8,
+    "patch_proposed": 9,
+    "done": 10,
+    "cancelled": 11,
     "unknown": 99,
 }
 
@@ -41,11 +40,13 @@ STAGE_LABELS = {
     "approved_ready": "Approved, ready to run",
     "approval_rejected": "Approval rejected",
     "approval_failed": "Approval failed",
+    "recovery_needed": "Recovery needed",
     "blocked": "Blocked",
     "patch_proposed": "Patch proposed",
     "done": "Done",
     "cancelled": "Cancelled",
     "unknown": "Unknown",
+    "stable_loop_followup": "Stable-loop follow-ups",
 }
 
 STAGE_NEXT_ACTIONS = {
@@ -56,6 +57,7 @@ STAGE_NEXT_ACTIONS = {
     "approved_ready": "Run the approved approval command or execute with approval override.",
     "approval_rejected": "Revise the task or cancel it; approval was rejected.",
     "approval_failed": "Inspect the failed approval result before retrying.",
+    "recovery_needed": "Review the recovery plan, then dry-run retry or mark the task ready for retry.",
     "blocked": "Resolve the blocker or request approval if risk is the blocker.",
     "patch_proposed": "Review the linked patch and create/apply follow-up tasks as needed.",
     "done": "No action needed.",
@@ -76,11 +78,13 @@ STAGE_FILTER_LABELS = {
     "approved_ready": "Approved, ready to run",
     "approval_rejected": "Approval rejected",
     "approval_failed": "Approval failed",
+    "recovery_needed": "Recovery needed",
     "blocked": "Blocked",
     "patch_proposed": "Patch proposed",
     "done": "Done",
     "cancelled": "Cancelled",
     "unknown": "Unknown",
+    "stable_loop_followup": "Stable-loop follow-ups",
 }
 
 STAGE_FILTER_ALIASES = {
@@ -120,18 +124,28 @@ STAGE_FILTER_ALIASES = {
     "rejected": "approval_rejected",
     "approval-failed": "approval_failed",
     "approval_failed": "approval_failed",
-    "failed": "approval_failed",
+    "failed": "recovery_needed",
+    "recovery": "recovery_needed",
+    "recovery-needed": "recovery_needed",
+    "recovery_needed": "recovery_needed",
+    "needs-recovery": "recovery_needed",
+    "needs_recovery": "recovery_needed",
     "unknown": "unknown",
+    "stable-loop-followup": "stable_loop_followup",
+    "stable_loop_followup": "stable_loop_followup",
+    "decision-followup": "stable_loop_followup",
+    "decision_followup": "stable_loop_followup",
+    "followup": "stable_loop_followup",
 }
 
-NEEDS_ATTENTION_STAGES = {"approval_required", "approval_pending", "approval_rejected", "approval_failed", "blocked"}
+NEEDS_ATTENTION_STAGES = {"approval_required", "approval_pending", "approval_rejected", "approval_failed", "recovery_needed", "blocked"}
 READY_TO_ACT_STAGES = {"ready", "active", "approved_ready", "patch_proposed"}
 OPEN_LIFECYCLE_STAGES = set(STAGE_ORDER) - {"done", "cancelled"}
 
 
 def normalize_lifecycle_stage_filter(stage: str | None = "") -> str:
     token = str(stage or "").strip().lower().replace(" ", "_")
-    return STAGE_FILTER_ALIASES.get(token, STAGE_FILTER_ALIASES.get(token.replace("_", "-"), token if token in STAGE_ORDER else "all"))
+    return STAGE_FILTER_ALIASES.get(token, STAGE_FILTER_ALIASES.get(token.replace("_", "-"), token if token in STAGE_ORDER or token == "stable_loop_followup" else "all"))
 
 
 def lifecycle_stage_matches(lifecycle: dict[str, Any], stage_filter: str | None = "") -> bool:
@@ -145,6 +159,8 @@ def lifecycle_stage_matches(lifecycle: dict[str, Any], stage_filter: str | None 
         return stage in NEEDS_ATTENTION_STAGES
     if stage_filter == "ready_to_act":
         return stage in READY_TO_ACT_STAGES
+    if stage_filter == "stable_loop_followup":
+        return bool(lifecycle.get("is_stable_loop_followup"))
     return stage == stage_filter
 
 
@@ -216,9 +232,24 @@ def derive_task_lifecycle(
     risk = str(task.get("risk") or "low").lower().strip()
     patch_id = str(task.get("patch_id") or metadata.get("patch_id") or "").strip()
     patch_status = str(task.get("patch_status") or metadata.get("patch_status") or "").strip()
+    work_status = str(task.get("work_status") or metadata.get("work_status") or "").lower().strip()
+    failure_marker = bool(
+        work_status == "failed"
+        or metadata.get("last_executor_block_reason")
+        or metadata.get("recovery_status") == "retry_failed"
+    )
     needs_approval = _needs_approval(task)
     approval_id = str((latest or {}).get("id") or metadata.get("approval_id") or "").strip()
     approval_status = str((latest or {}).get("status") or metadata.get("approval_status") or "").strip()
+    followup_source_match = bool(
+        task.get("source_category") == "stable_loop_followup"
+        or task.get("source") == "stable_loop_decision"
+        or metadata.get("source") == "stable_loop_decision"
+    )
+    stable_loop_id = str(metadata.get("stable_loop_id") or (task.get("source_id") if followup_source_match else "") or "").strip()
+    stable_loop_followup_kind = str(metadata.get("followup_kind") or "").strip()
+    stable_loop_decision = str(metadata.get("final_decision") or "").strip()
+    is_stable_loop_followup = bool(followup_source_match or metadata.get("stable_loop_id"))
 
     if status == "done":
         stage = "done"
@@ -234,6 +265,8 @@ def derive_task_lifecycle(
         stage = "approval_failed"
     elif needs_approval and not approval_id and status in OPEN_STATUSES:
         stage = "approval_required"
+    elif status == "blocked" and failure_marker:
+        stage = "recovery_needed"
     elif status == "blocked":
         stage = "blocked"
     elif status == "active":
@@ -252,6 +285,9 @@ def derive_task_lifecycle(
         "status": status,
         "priority": task.get("priority", ""),
         "risk": risk,
+        "work_status": work_status,
+        "recovery_status": str(metadata.get("recovery_status") or ""),
+        "retry_count": int(metadata.get("retry_count") or 0),
         "requires_approval": bool(task.get("requires_approval")),
         "needs_approval": needs_approval,
         "stage": stage,
@@ -266,6 +302,11 @@ def derive_task_lifecycle(
         "patch_status": patch_status,
         "action_type": str(metadata.get("action_type") or ""),
         "target_file": str(metadata.get("patch_target_file") or metadata.get("target_file") or ""),
+        "is_stable_loop_followup": is_stable_loop_followup,
+        "stable_loop_id": stable_loop_id,
+        "stable_loop_decision": stable_loop_decision,
+        "stable_loop_followup_kind": stable_loop_followup_kind,
+        "stable_loop_followup_resolution_status": str(metadata.get("stable_loop_followup_resolution_status") or ""),
         "css_class": f"stage-{stage.replace('_', '-')}",
     }
 
@@ -322,6 +363,7 @@ def task_lifecycle_text(task_or_id: dict[str, Any] | str | None, full: bool = Fa
         f"Risk: {lifecycle.get('risk') or '[none]'}",
         f"Approval: {lifecycle.get('approval_id') or '[none]'} ({lifecycle.get('approval_status') or 'none'})",
         f"Patch: {lifecycle.get('patch_id') or '[none]'} ({lifecycle.get('patch_status') or 'none'})",
+        f"Stable-loop follow-up: {lifecycle.get('stable_loop_id') or '[none]'} ({lifecycle.get('stable_loop_decision') or 'none'} / {lifecycle.get('stable_loop_followup_kind') or 'none'})",
         f"Next action: {lifecycle.get('next_action')}",
     ]
     if full:

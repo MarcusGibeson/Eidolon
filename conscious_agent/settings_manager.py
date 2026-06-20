@@ -13,7 +13,7 @@ from paths import DATA_DIR
 SETTINGS_FILE = DATA_DIR / "settings.json"
 
 DEFAULT_SETTINGS: dict[str, Any] = {
-    "settings_version": "5.7",
+    "settings_version": "15.0",
     "local_model": "qwen2.5:7b",
     "embed_model": "nomic-embed-text:latest",
     "ollama_base_url": "http://localhost:11434",
@@ -68,10 +68,18 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "setup_check_ports": True,
     "desktop_onboarding_check_on_start": False,
     "onboarding_refresh_setup_default": True,
+    "last_updated_for": "v15.0",
+    "release_pipeline_enabled": True,
+    "approval_binding_required_for_draft_apply": True,
+    "safe_rewrite_preview_required": True,
 }
 
 SETTING_DESCRIPTIONS: dict[str, str] = {
     "settings_version": "Settings schema version.",
+    "last_updated_for": "Last packaged project version that updated the settings schema/defaults.",
+    "release_pipeline_enabled": "Whether the human-approved release pipeline reports and commands are enabled.",
+    "approval_binding_required_for_draft_apply": "Whether approved draft apply must validate the exact saved draft artifact snapshot.",
+    "safe_rewrite_preview_required": "Whether code patch apply requires a hash-checked safe rewrite preview before writing files.",
     "local_model": "Ollama model used for local chat, reviews, patch suggestions, and summaries.",
     "embed_model": "Ollama embedding model used for semantic memory.",
     "ollama_base_url": "Base URL for the local Ollama server.",

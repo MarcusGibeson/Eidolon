@@ -84,7 +84,336 @@ from task_lifecycle import (
     task_lifecycle_summary,
     task_lifecycle_text,
 )
+from task_recovery import (
+    build_task_recovery,
+    mark_task_ready_for_retry,
+    retry_task_work,
+    task_recovery_summary,
+    task_recovery_text,
+)
 from work_cycle import run_supervised_work_cycle, list_work_cycles, load_work_cycle, work_cycle_text
+from stable_supervised_loop import (
+    build_stable_loop_preflight,
+    list_stable_loops,
+    load_stable_loop,
+    run_stable_supervised_loop,
+    stable_loop_text,
+    stable_preflight_text,
+)
+from stable_loop_review import (
+    REVIEW_FILTER_LABELS,
+    REVIEW_STATUS_LABELS,
+    cleanup_stable_loop_history,
+    list_stable_loop_reviews,
+    loop_is_archived,
+    loop_is_live_ready,
+    normalize_review_filter,
+    review_label_for_loop,
+    review_status_for_loop,
+    run_approved_stable_loop_live,
+    set_stable_loop_archived,
+    stable_loop_review_summary,
+    stable_loop_review_text,
+    update_stable_loop_review,
+)
+from stable_loop_audit import refresh_stable_loop_audit, stable_loop_audit_text
+from stable_loop_operator_notes import (
+    FINAL_DECISION_LABELS,
+    add_stable_loop_operator_note,
+    get_stable_loop_operator_notes,
+    set_stable_loop_final_decision,
+    stable_loop_operator_notes_text,
+    update_stable_loop_check,
+)
+from stable_loop_decision_report import (
+    DECISION_FILTER_LABELS,
+    cleanup_stable_loop_decision_history,
+    list_stable_loop_decision_rows,
+    normalize_decision_filter,
+    stable_loop_decision_row,
+    stable_loop_decision_summary,
+    stable_loop_decision_report_text,
+)
+from stable_loop_followup_tasks import (
+    create_stable_loop_followup_tasks,
+    create_stable_loop_followups_for_decisions,
+    stable_loop_followup_summary,
+    followup_result_text,
+    followup_batch_text,
+)
+from stable_loop_followup_lifecycle import (
+    followup_lifecycle_summary_text,
+    followup_resolution_text,
+    list_stable_loop_followup_task_rows,
+    resolve_stable_loop_followups,
+    resolve_task_stable_loop_followup,
+    stable_loop_followup_lifecycle_summary,
+    stable_loop_followup_task_text,
+)
+from stable_loop_followup_completion import (
+    FOLLOWUP_COMPLETION_FILTER_LABELS,
+    cleanup_stable_loop_followup_completions,
+    mark_stable_loop_followup_chain_closed,
+    normalize_followup_completion_filter,
+    stable_loop_followup_completion_cleanup_text,
+    stable_loop_followup_completion_report_text,
+    stable_loop_followup_completion_summary,
+    stable_loop_followup_completion_row,
+    stable_loop_followup_closure_text,
+)
+from stable_loop_guardrails import stable_loop_guardrail_summary, stable_loop_guardrails_text
+from stabilization_checkpoint import build_stabilization_checkpoint, stabilization_checkpoint_text
+from operational_readiness import (
+    build_doctor_report,
+    build_repair_suggestions,
+    build_patch_integrity_report,
+    build_project_snapshot,
+    build_task_review,
+    build_recovery_drill,
+    build_stable_loop_confidence,
+    build_hardening_report,
+    build_controlled_self_build,
+    doctor_report_text,
+    repair_suggestions_text,
+    patch_integrity_text,
+    project_snapshot_text,
+    task_review_text,
+    recovery_drill_text,
+    stable_loop_confidence_text,
+    hardening_report_text,
+    controlled_self_build_text,
+)
+from controlled_build_cycle import (
+    build_controlled_task_selection,
+    build_patch_plan,
+    patch_workspace_status,
+    preview_staged_diff,
+    readme_gate,
+    build_controlled_build_cycle,
+    build_supervised_dev_loop,
+    controlled_task_selection_text,
+    patch_plan_text,
+    workspace_status_text,
+    diff_preview_text,
+    readme_gate_text,
+    controlled_build_cycle_text,
+    supervised_dev_loop_text,
+)
+
+from project_intelligence import (
+    build_codebase_map,
+    build_task_dependencies,
+    build_test_plan,
+    build_patch_risk,
+    build_patch_review,
+    build_project_memory_index,
+    build_workspace_status,
+    build_cross_project_task_review,
+    build_asymmetric_dev_loop,
+    codebase_map_text,
+    task_dependencies_text,
+    test_plan_text,
+    patch_risk_text,
+    patch_review_text,
+    project_memory_index_text,
+    workspace_status_text as intelligence_workspace_status_text,
+    cross_project_task_review_text,
+    asymmetric_dev_loop_text,
+)
+from workspace_orchestration import (
+    build_project_registry,
+    build_project_health,
+    build_command_profiles,
+    build_workspace_dependency_map,
+    build_workspace_task_inbox,
+    build_project_context,
+    build_workspace_timeline,
+    build_workspace_dev_loop,
+    project_registry_text,
+    project_health_text,
+    command_profiles_text,
+    workspace_dependency_map_text,
+    workspace_task_inbox_text,
+    project_context_text,
+    workspace_timeline_text,
+    workspace_dev_loop_text,
+)
+from workspace_execution import (
+    build_workspace_registry_audit,
+    build_workspace_repair_suggestions,
+    build_project_boundary_check,
+    build_workspace_patch_plan,
+    build_workspace_preview_diff,
+    build_workspace_verify_latest,
+    build_guarded_workspace_dev_loop,
+    workspace_registry_audit_text,
+    workspace_repair_suggestions_text,
+    project_boundary_check_text,
+    workspace_patch_plan_text,
+    workspace_preview_diff_text,
+    workspace_verify_latest_text,
+    guarded_workspace_dev_loop_text,
+)
+from patch_drafting import (
+    build_patch_draft_request,
+    build_draft_patch,
+    build_patch_draft_status,
+    build_patch_review_notes,
+    build_draft_diff,
+    build_draft_test_impact,
+    build_approval_gate,
+    build_apply_approved_draft,
+    build_rollback_approved_draft,
+    build_human_approved_patch_loop,
+    build_draft_quality,
+    build_draft_file_targets,
+    build_draft_intent_blocks,
+    build_draft_conflicts,
+    build_draft_verification_bundle,
+    build_draft_review_checklist,
+    build_approved_draft_execution_report,
+    build_review_centered_patch_loop,
+    patch_draft_request_text,
+    draft_patch_text,
+    patch_draft_status_text,
+    patch_review_notes_text,
+    draft_diff_text,
+    draft_test_impact_text,
+    approval_gate_text,
+    apply_approved_draft_text,
+    draft_rollback_text,
+    human_approved_patch_loop_text,
+    draft_quality_text,
+    draft_file_targets_text,
+    draft_intent_blocks_text,
+    draft_conflicts_text,
+    draft_verification_bundle_text,
+    draft_review_checklist_text,
+    approved_draft_execution_report_text,
+    review_centered_patch_loop_text,
+)
+from release_pipeline import (
+    build_code_edit_proposal,
+    build_safe_rewrite_preview,
+    build_generated_code_patch,
+    build_test_suggestions,
+    build_inline_review_note,
+    build_apply_approved_code_patch,
+    build_prepare_release_package,
+    build_release_readiness,
+    build_human_approved_release_loop,
+    code_edit_proposal_text,
+    safe_rewrite_preview_text,
+    generated_code_patch_text,
+    test_suggestions_text,
+    inline_review_note_text,
+    apply_approved_code_patch_text,
+    prepare_release_package_text,
+    release_readiness_text,
+    human_approved_release_loop_text,
+)
+from code_patch_release import (
+    build_code_patch_status,
+    build_symbol_scan,
+    build_rewrite_plan,
+    build_rewrite_conflicts,
+    build_code_patch_diff_bundle,
+    build_apply_code_patch_transaction,
+    build_semantic_checks,
+    build_release_artifact,
+    build_release_audit_trail,
+    build_generated_code_release_loop,
+    code_patch_status_text,
+    symbol_scan_text,
+    rewrite_plan_text,
+    rewrite_conflicts_text,
+    code_patch_diff_bundle_text,
+    apply_code_patch_transaction_text,
+    semantic_checks_text,
+    release_artifact_text,
+    release_audit_trail_text,
+    generated_code_release_loop_text,
+)
+from ai_patch_assistance import (
+    build_task_to_code_patch,
+    build_code_context,
+    build_patch_prompt,
+    build_parse_generated_edits,
+    build_edit_consistency,
+    build_ai_code_patch_dry_run,
+    build_patch_failure_analysis,
+    build_patch_learning_notes,
+    build_ai_assisted_code_patch_loop,
+    task_to_code_patch_text,
+    code_context_text,
+    patch_prompt_text,
+    parse_generated_edits_text,
+    edit_consistency_text,
+    ai_code_patch_dry_run_text,
+    patch_failure_analysis_text,
+    patch_learning_notes_text,
+    ai_assisted_code_patch_loop_text,
+)
+from validated_ai_patch_loop import (
+    build_patch_objective_refinement,
+    build_code_context_ranking,
+    build_patch_safety_envelope,
+    build_generated_patch_validation,
+    build_patch_simulation,
+    build_test_stub_plan,
+    build_patch_review_score,
+    build_patch_recovery_plan,
+    build_validated_ai_code_patch_loop,
+    patch_objective_refinement_text,
+    code_context_ranking_text,
+    patch_safety_envelope_text,
+    generated_patch_validation_text,
+    patch_simulation_text,
+    test_stub_plan_text,
+    patch_review_score_text,
+    patch_recovery_plan_text,
+    validated_ai_code_patch_loop_text,
+)
+from approval_release_workflow import (
+    bind_current_approval_to_validated_manifest,
+    build_ai_patch_review_bundle,
+    build_review_bundle_integrity,
+    build_approval_ready,
+    build_approval_ledger,
+    build_apply_validated_ai_patch,
+    build_post_apply_review,
+    build_package_build_plan,
+    build_approval_to_release_loop,
+    ai_patch_review_bundle_text,
+    review_bundle_integrity_text,
+    approval_ready_text,
+    approval_ledger_text,
+    apply_validated_ai_patch_text,
+    post_apply_review_text,
+    package_build_plan_text,
+    approval_to_release_loop_text,
+    bind_validated_approval_text,
+)
+from release_packaging import (
+    build_release_manifest_integrity,
+    build_package_inventory,
+    build_package_checksums,
+    build_release_notes,
+    build_release_handoff_report,
+    build_release_zip,
+    build_verify_release_unzip,
+    build_release_pipeline_audit,
+    build_verified_release_package_loop,
+    release_manifest_integrity_text,
+    package_inventory_text,
+    package_checksums_text,
+    release_notes_text,
+    release_handoff_report_text,
+    build_release_zip_text,
+    verify_release_unzip_text,
+    release_pipeline_audit_text,
+    verified_release_package_loop_text,
+)
 from test_runner import list_test_reports, load_test_report, test_report_text
 from test_report_reviewer import list_test_reviews, load_test_review, test_review_text
 from watch_mode import list_watch_reports, load_watch_report, run_watch_once, run_watch_loop, watch_report_text
@@ -93,7 +422,7 @@ from dev_loop_runner import get_dev_loop, list_dev_loops, run_dev_loop, dev_loop
 
 
 DASHBOARD_TITLE = "Eidolon Dashboard"
-DASHBOARD_VERSION = "5.7"
+DASHBOARD_VERSION = "20.0"
 
 
 class DashboardState:
@@ -291,6 +620,17 @@ def _layout(path: str, content: str) -> str:
         ("/tasks", "Tasks <span class='nav-badge' data-live-count='counts.tasks'></span>"),
         ("/tasks-work", "Tasks / Work <span class='nav-badge' data-live-count='counts.work_queue_pending'></span>"),
         ("/work-cycle", "Work Cycle <span class='nav-badge' data-live-count='counts.work_cycles'></span>"),
+        ("/stable-loop", "Stable Loop <span class='nav-badge' data-live-count='counts.stable_loops'></span>"),
+        ("/stabilization", "Stabilization"),
+        ("/doctor", "Doctor"),
+        ("/build-cycle", "Build Cycle"),
+        ("/patch-review", "Patch Review"),
+        ("/intelligence", "Intelligence"),
+        ("/workspace", "Workspace"),
+        ("/patch-drafts", "Patch Drafts"),
+        ("/code-patches", "Code Patches"),
+        ("/release-review", "Release Review"),
+        ("/release-package", "Release Package"),
         ("/approvals", "Approvals <span class='nav-badge warn-badge' data-live-count='counts.pending_approvals'></span>"),
         ("/notifications", "Notifications <span class='nav-badge warn-badge' data-live-count='counts.unread_notifications'></span>"),
         ("/watch", "Watch <span class='nav-badge' data-live-count='counts.watch_reports'></span>"),
@@ -353,10 +693,11 @@ table {{ width:100%; border-collapse:collapse; }} th,td {{ border-bottom:1px sol
 .stage-ready {{ color:var(--good); border-color:#315f43; background:#102016; }}
 .stage-active {{ color:#dbe7ff; border-color:#365c9b; background:#111d35; }}
 .stage-approval-required, .stage-approval-pending, .stage-approved-ready {{ color:var(--warn); border-color:#6a4c18; background:#23190b; }}
-.stage-approval-rejected, .stage-approval-failed, .stage-blocked {{ color:var(--bad); border-color:#6d3030; background:#261111; }}
+.stage-approval-rejected, .stage-approval-failed, .stage-recovery-needed, .stage-blocked {{ color:var(--bad); border-color:#6d3030; background:#261111; }}
 .stage-patch-proposed {{ color:#cdb7ff; border-color:#514277; background:#1c1730; }}
 .stage-done {{ color:var(--good); border-color:#315f43; background:#102016; }}
 .stage-cancelled, .stage-unknown {{ color:var(--muted); }}
+.review-archived {{ opacity:0.62; }}
 .lifecycle-strip {{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0; }}
 .lifecycle-step {{ padding:8px 10px; border:1px solid var(--border); border-radius:12px; background:#10151e; color:var(--muted); font-size:12px; }}
 .lifecycle-step.current {{ border-color:var(--accent); color:#fff; box-shadow:0 0 0 1px var(--accent) inset; }}
@@ -409,7 +750,7 @@ def render_overview() -> str:
     next_item = next_task()
     next_task_html = task_detail_text(next_item, full=False) if next_item else "No ready task found. Suspiciously peaceful."
     actions = "".join([
-        "<p><a href='/actions'><button type='button'>Open Action Center</button></a> <a href='/chat-console'><button type='button'>Open Chat Console</button></a> <a href='/tasks-work'><button type='button'>Open Tasks / Work</button></a> <a href='/work-cycle'><button type='button'>Open Work Cycle</button></a> <a href='/create'><button type='button'>Create Task / Goal / Patch</button></a> <a href='/onboarding'><button type='button'>Open Onboarding</button></a></p>",
+        "<p><a href='/actions'><button type='button'>Open Action Center</button></a> <a href='/chat-console'><button type='button'>Open Chat Console</button></a> <a href='/tasks-work'><button type='button'>Open Tasks / Work</button></a> <a href='/work-cycle'><button type='button'>Open Work Cycle</button></a> <a href='/stable-loop'><button type='button'>Open Stable Loop</button></a> <a href='/create'><button type='button'>Create Task / Goal / Patch</button></a> <a href='/onboarding'><button type='button'>Open Onboarding</button></a></p>",
         _button("Run diagnostics", "run_diagnostics"),
         _button("Plan session", "plan_session"),
         _button("Maintenance scan", "maintenance_scan"),
@@ -857,6 +1198,7 @@ def _lifecycle_flow(stage: str) -> str:
         ("approval_required", "Needs approval"),
         ("approval_pending", "Pending"),
         ("approved_ready", "Approved"),
+        ("recovery_needed", "Recovery"),
         ("active", "Active"),
         ("done", "Done"),
     ]
@@ -879,6 +1221,7 @@ def _lifecycle_summary_cards() -> str:
         + _card("Ready / Active", f"<div class='kpi'>{_safe(counts.get('ready', 0) + counts.get('active', 0))}</div><p class='muted'>Ready: {_safe(counts.get('ready', 0))} · Active: {_safe(counts.get('active', 0))}</p>")
         + _card("Approval Flow", f"<div class='kpi'>{_safe(counts.get('approval_required', 0) + counts.get('approval_pending', 0) + counts.get('approved_ready', 0))}</div><p class='muted'>Required: {_safe(counts.get('approval_required', 0))} · Pending: {_safe(counts.get('approval_pending', 0))} · Approved: {_safe(counts.get('approved_ready', 0))}</p>")
         + _card("Needs Attention", f"<div class='kpi'>{_safe(summary.get('needs_attention', 0))}</div><p class='muted'>Blocked/rejected/failed/approval waiting.</p>")
+        + _card("Recovery Needed", f"<div class='kpi'>{_safe(counts.get('recovery_needed', 0))}</div><p class='muted'>Failed or blocked tasks with retry/recovery hints.</p>")
         + "</div>"
     )
 
@@ -891,10 +1234,11 @@ def _lifecycle_legend() -> str:
         "<span class='stage-pill stage-approval-pending'>Approval pending</span>"
         "<span class='stage-pill stage-approved-ready'>Approved, ready to run</span>"
         "<span class='stage-pill stage-active'>Active</span>"
+        "<span class='stage-pill stage-recovery-needed'>Recovery needed</span>"
         "<span class='stage-pill stage-blocked'>Blocked</span>"
         "<span class='stage-pill stage-done'>Done</span>"
         "</div>"
-        "<p class='muted'>v5.7 derives lifecycle stages from canonical task status, risk, linked approvals, and patch metadata, then lets the dashboard filter and act on them. Same data, fewer riddles. Allegedly.</p>"
+        "<p class='muted'>v5.9 uses these lifecycle stages to choose supervised work-cycle actions before advancing tasks. The cycle now asks: approval, recovery, patch follow-up, or safe execution? Astonishingly, order matters.</p>"
     )
 
 def _work_item_controls(item_id: str, status: str) -> str:
@@ -912,6 +1256,10 @@ def _work_item_controls(item_id: str, status: str) -> str:
         controls.append(_button("Execute", "work_queue_execute", work_item_id=item_id, use_ai="true"))
     if is_patch_item and stage in {"ready", "active", "patch_proposed"}:
         controls.append(_button("Suggest Patch", "work_queue_suggest_patch", work_item_id=item_id, use_ai="true"))
+    if stage in {"recovery_needed", "approval_rejected", "approval_failed"}:
+        controls.append(_detail_link("task_recovery", item_id, "Recovery Plan", full=True))
+        controls.append(_button("Dry-run Retry", "task_recovery_retry", work_item_id=item_id, dry_run="true", use_ai="true"))
+        controls.append(_button("Mark Ready for Retry", "task_recovery_mark_ready", work_item_id=item_id))
     if stage in {"approval_required", "blocked", "approval_rejected", "approval_failed"}:
         controls.append(_button("Request Approval", "task_request_approval", work_item_id=item_id, use_ai="true"))
     if approval_id:
@@ -940,6 +1288,14 @@ def _work_item_patch_hint(item: Any) -> str:
     if approval_id:
         label = f"{approval_id} ({approval_status or 'pending'})"
         bits.append(f"<span class='muted'>Approval: {_detail_link('approval', approval_id, label)}</span>")
+    stable_loop_id = str(lifecycle.get("stable_loop_id") or metadata.get("stable_loop_id") or "").strip()
+    if lifecycle.get("is_stable_loop_followup") or stable_loop_id:
+        decision = str(lifecycle.get("stable_loop_decision") or metadata.get("final_decision") or "").strip() or "undecided"
+        kind = str(lifecycle.get("stable_loop_followup_kind") or metadata.get("followup_kind") or "").strip()
+        bits.append(
+            f"<span class='muted'>Stable-loop follow-up: {_detail_link('stable_loop', stable_loop_id, stable_loop_id or '[missing loop]')} "
+            f"decision={_safe(decision)} kind={_safe(kind or '[none]')}</span>"
+        )
     return "<br>" + "<br>".join(bits) if bits else ""
 
 
@@ -947,7 +1303,7 @@ def _lifecycle_filter_controls(selected_stage: str = "all") -> str:
     selected_stage = normalize_lifecycle_stage_filter(selected_stage)
     summary = task_lifecycle_summary()
     filters = summary.get("filters", [])
-    preferred = ["all", "open", "needs_attention", "ready_to_act", "ready", "approval_required", "approval_pending", "approved_ready", "blocked", "patch_proposed", "done", "cancelled"]
+    preferred = ["all", "open", "needs_attention", "ready_to_act", "ready", "approval_required", "approval_pending", "approved_ready", "blocked", "patch_proposed", "stable_loop_followup", "done", "cancelled"]
     by_key = {str(item.get("key")): item for item in filters if isinstance(item, dict)}
     chips = []
     for key in preferred:
@@ -976,9 +1332,10 @@ def _batch_lifecycle_actions(selected_stage: str = "all") -> str:
 <button type='submit'>Dry-run next ready task ({_safe(ready_count)})</button>
 </form>
 <a class='filter-chip' href='/tasks-work?stage=approved_ready'>Show approved-ready tasks</a>
+<a class='filter-chip' href='/tasks-work?stage=recovery_needed'>Show recovery-needed tasks</a>
 <a class='filter-chip' href='/tasks-work?stage=blocked'>Show blocked tasks</a>
 </div>
-<p class='muted'>v5.7 deliberately does not add an “execute all” button. That button is how dashboards become confession letters.</p>
+<p class='muted'>v5.9 still deliberately does not add an “execute all” button. That button is how dashboards become confession letters.</p>
 """
 
 
@@ -1040,9 +1397,9 @@ def render_work_queue(stage: str = "all") -> str:
     summary_html = _lifecycle_summary_cards()
 
     consolidation_note = _card(
-        "v5.7 Task Lifecycle Actions / Filters",
+        "v6.9 Closure-Aware Stable Loop Guardrails",
         "<p class='muted'>This page uses <code>task_queue.py</code> and <code>data/tasks.json</code> as the canonical store. "
-        "v5.7 adds lifecycle filters, stage-aware task tables, and safe batch approval requests. Legacy <code>/work-queue</code> aliases still work, because compatibility is ugly but cheaper than tears.</p>"
+        "v6.9 keeps the v6.8 follow-up closure tools and adds live-run guardrails that block new live stable-loop advancement while unresolved follow-up chains are still open. Legacy <code>/work-queue</code> aliases still work, because compatibility is ugly but cheaper than tears.</p>"
         + _lifecycle_legend()
     )
 
@@ -1051,6 +1408,8 @@ def render_work_queue(stage: str = "all") -> str:
         + summary_html
         + _card("Lifecycle Filters", _lifecycle_filter_controls(selected_stage))
         + _card("Lifecycle Batch Actions", _batch_lifecycle_actions(selected_stage))
+        + _card("Recovery Summary", _text_block(json.dumps(task_recovery_summary(), indent=2, default=str)))
+        + _card("Stable-loop Follow-up Lifecycle", _text_block(followup_lifecycle_summary_text(stable_loop_followup_lifecycle_summary(), full=False)))
         + _card("Lifecycle Legend", _lifecycle_legend())
         + _card("Create Task", _work_item_create_form())
         + _card("Create Patch Task", _patch_work_item_create_form())
@@ -1071,10 +1430,12 @@ def _work_cycle_controls() -> str:
 <label><input type='checkbox' name='use_ai' value='true' checked> Use local AI when a selected step needs it</label>
 <label><input type='checkbox' name='seed_if_empty' value='true' checked> Seed queue if empty</label>
 <label><input type='checkbox' name='auto_followups' value='true' checked> Auto-create patch follow-ups</label>
+<label><input type='checkbox' name='auto_approval_requests' value='true' checked> Auto-request approvals for approval-required tasks</label>
+<label><input type='checkbox' name='auto_retry_recovery' value='true'> Auto-prepare recovery-needed tasks for retry</label>
 <label><input type='checkbox' name='approve_work_execution' value='true'> Allow approval-required work this run</label>
-<button type='submit'>Run supervised work cycle</button>
+<button type='submit'>Run lifecycle-aware work cycle</button>
 </form>
-<p class='muted'>Default mode is dry-run. Non-dry-run still uses the task work executor, patch proposal rules, command whitelist, and approval gates. So, disappointingly for chaos enthusiasts, this is not a permission slip for mayhem.</p>
+<p class='muted'>v5.9 cycles choose from lifecycle state first: approval request, recovery review, patch follow-up creation, or safe task execution. Default mode is dry-run. No “press button, become chaos landlord” behavior here.</p>
 """
 
 
@@ -1101,6 +1462,359 @@ def render_work_cycle() -> str:
         + _card("Saved Work Cycles", table)
     )
     return _layout("/work-cycle", body)
+
+
+
+def _stable_loop_controls() -> str:
+    return """
+<form method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_run'>
+<label>Project <input name='project_id' value='eidolon'></label>
+<label>Max steps <input name='max_steps' type='number' min='1' max='5' value='1'></label>
+<label><input type='checkbox' name='live' value='true'> Live run after preview</label>
+<label><input type='checkbox' name='use_ai' value='true' checked> Use local AI when a selected step needs it</label>
+<label><input type='checkbox' name='seed_if_empty' value='true' checked> Seed queue if empty</label>
+<label><input type='checkbox' name='auto_followups' value='true' checked> Auto-create patch follow-ups</label>
+<label><input type='checkbox' name='auto_approval_requests' value='true' checked> Auto-request approvals</label>
+<label><input type='checkbox' name='auto_retry_recovery' value='true'> Auto-prepare recovery tasks for retry</label>
+<label><input type='checkbox' name='approve_work_execution' value='true'> Allow approval-required live work</label>
+<label><input type='checkbox' name='bypass_closure_guardrails' value='true'> Bypass unresolved follow-up guardrails for this live run</label>
+<button type='submit'>Run stable supervised loop</button>
+</form>
+<p class='muted'>v6.9 records preflight/dry-run previews first, attaches audit/rollback notes, supports post-run operator decisions, decision-aware reports/cleanup, task-backed decision follow-ups, and closure-aware live-run guardrails. Live mode requires the explicit checkbox. There is still no “execute all” button, because we are apparently attached to reality.</p>
+"""
+
+
+
+def _stable_loop_review_controls(loop_id: str, compact: bool = False) -> str:
+    if not loop_id:
+        return ""
+    loop = load_stable_loop(loop_id)
+    if not loop:
+        return ""
+    status = review_status_for_loop(loop)
+    buttons = ""
+    if status == "unreviewed":
+        buttons += _button("Mark reviewed", "stable_loop_mark_reviewed", stable_loop_id=loop_id)
+    if status not in {"approved_for_live", "superseded"} and not loop.get("live") and loop.get("ok"):
+        buttons += _button("Approve for live", "stable_loop_approve_live", stable_loop_id=loop_id)
+    if status not in {"rejected", "superseded"}:
+        buttons += _button("Reject", "stable_loop_reject", stable_loop_id=loop_id)
+    if loop_is_live_ready(loop):
+        buttons += _button("Run approved live", "stable_loop_run_approved_live", stable_loop_id=loop_id)
+    if loop:
+        buttons += _button("Refresh audit", "stable_loop_refresh_audit", stable_loop_id=loop_id)
+    if compact:
+        return buttons
+    note_form = f"""
+<form method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_mark_reviewed'>
+<input type='hidden' name='stable_loop_id' value='{_safe(loop_id)}'>
+<label>Review note <input name='note' placeholder='Optional operator review note'></label>
+<button type='submit'>Save review note</button>
+</form>
+"""
+    return buttons + note_form
+
+
+
+
+def _stable_loop_operator_controls(loop_id: str) -> str:
+    if not loop_id:
+        return ""
+    result = get_stable_loop_operator_notes(loop_id, ensure=True, save=True)
+    if not result.ok or not result.operator_notes:
+        return f"<p class='muted'>Operator checklist unavailable: {_safe(result.error)}</p>"
+    notes = result.operator_notes
+    summary = notes.get("summary") or {}
+    checklist = notes.get("checklist") if isinstance(notes.get("checklist"), list) else []
+    rows = []
+    for item in checklist[:20]:
+        if not isinstance(item, dict):
+            continue
+        check_id = str(item.get("id", ""))
+        status = str(item.get("status", "pending"))
+        command = str(item.get("command", ""))
+        required = "required" if item.get("required") else "optional"
+        controls = ""
+        if status != "done":
+            controls += _button("Done", "stable_loop_check_done", stable_loop_id=loop_id, check_id=check_id)
+        if status != "skipped":
+            controls += _button("Skip", "stable_loop_check_skip", stable_loop_id=loop_id, check_id=check_id)
+        rows.append(
+            "<tr>"
+            f"<td><span class='badge'>{_safe(status)}</span></td>"
+            f"<td><b>{_safe(check_id)}</b><br>{_safe(item.get('label', ''))}<br><span class='muted'>{_safe(required)}</span></td>"
+            f"<td><code>{_safe(command)}</code></td>"
+            f"<td>{controls}</td>"
+            "</tr>"
+        )
+    table = "<table><tr><th>Status</th><th>Check</th><th>Command</th><th>Actions</th></tr>" + "".join(rows) + "</table>" if rows else "<p class='muted'>No checklist items found.</p>"
+    decision_options = "".join(
+        f"<option value='{_safe(value)}'>{_safe(label)}</option>"
+        for value, label in FINAL_DECISION_LABELS.items()
+    )
+    forms = f"""
+<form method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_add_operator_note'>
+<input type='hidden' name='stable_loop_id' value='{_safe(loop_id)}'>
+<label>Operator note <input name='note' placeholder='What did you verify or notice?'></label>
+<button type='submit'>Add operator note</button>
+</form>
+<form method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_final_decision'>
+<input type='hidden' name='stable_loop_id' value='{_safe(loop_id)}'>
+<label>Final decision <select name='decision'>{decision_options}</select></label>
+<label>Decision note <input name='note' placeholder='Keep, fix forward, rollback, or review notes'></label>
+<button type='submit'>Save final decision</button>
+</form>
+"""
+    kpis = (
+        f"<p><span class='badge'>Checklist: {_safe(summary.get('check_done', 0))}/{_safe(summary.get('check_total', 0))} done</span> "
+        f"<span class='badge'>Required pending: {_safe(summary.get('required_pending', 0))}</span> "
+        f"<span class='badge'>Decision: {_safe(summary.get('final_decision_label', 'Undecided'))}</span></p>"
+    )
+    return kpis + table + forms
+
+
+def _stable_loop_review_cards(selected_filter: str = "all") -> str:
+    summary = stable_loop_review_summary(review_filter=selected_filter)
+    counts = summary.get("counts") or {}
+    cards = (
+        _card("Review Queue", f"<div class='kpi'>{_safe(summary.get('unreviewed_preview_count', 0))}</div><p class='muted'>Unreviewed preview loop(s)</p>")
+        + _card("Approved for Live", f"<div class='kpi'>{_safe(summary.get('approved_ready_count', 0))}</div><p class='muted'>Approved preview(s) ready for an explicit live run</p>")
+        + _card("Archived", f"<div class='kpi'>{_safe(summary.get('archived_count', 0))}</div><p class='muted'>Hidden history record(s), not deleted</p>")
+    )
+    details = " ".join(
+        f"<span class='badge'>{_safe(REVIEW_STATUS_LABELS.get(status, status))}: {_safe(count)}</span>"
+        for status, count in sorted(counts.items())
+    )
+    return cards + _card("Review Status Counts", details or "<p class='muted'>No saved stable loop records.</p>")
+
+
+def _stable_loop_filter_controls(selected_filter: str = "all") -> str:
+    selected = normalize_review_filter(selected_filter)
+    filters = ["all", "open", "unreviewed", "reviewed", "approved_ready", "rejected", "superseded", "failed", "cleanup_default", "archived"]
+    links = []
+    for token in filters:
+        label = REVIEW_FILTER_LABELS.get(token, token)
+        active = " active" if token == selected else ""
+        links.append(f"<a class='filter-chip{active}' href='/stable-loop?review={_safe(token)}'>{_safe(label)}</a>")
+    return "<div class='toolbar'>" + "".join(links) + "</div>"
+
+
+def _stable_loop_history_cleanup_controls(selected_filter: str = "cleanup_default") -> str:
+    filter_value = normalize_review_filter(selected_filter if selected_filter != "all" else "cleanup_default")
+    return f"""
+<form class='inline' method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_cleanup_history'>
+<input type='hidden' name='review_filter' value='{_safe(filter_value)}'>
+<input type='hidden' name='dry_run' value='true'>
+<button type='submit'>Preview cleanup for {_safe(REVIEW_FILTER_LABELS.get(filter_value, filter_value))}</button>
+</form>
+<form class='inline' method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_cleanup_history'>
+<input type='hidden' name='review_filter' value='{_safe(filter_value)}'>
+<input type='hidden' name='dry_run' value='false'>
+<button type='submit'>Archive cleanup candidates</button>
+</form>
+<p class='muted'>Cleanup archives matching records by marking review metadata. It does not delete JSON files, because deleting history to “clean up” is how future-you invent archaeology as a hobby.</p>
+"""
+
+
+
+def _stable_loop_decision_cards(selected_filter: str = "all") -> str:
+    summary = stable_loop_decision_summary(decision_filter=selected_filter)
+    return (
+        _card("Final Decisions", f"<div class='kpi'>{_safe(summary.get('filtered_count', 0))}</div><p class='muted'>{_safe(summary.get('selected_filter_label', 'All decisions'))}</p>")
+        + _card("Action Required", f"<div class='kpi'>{_safe(summary.get('action_required_count', 0))}</div><p class='muted'>Fix-forward, rollback, or needs-review decision(s)</p>")
+        + _card("Cleanup Candidates", f"<div class='kpi'>{_safe(summary.get('cleanup_candidate_count', 0))}</div><p class='muted'>Completed keep/rollback decision record(s) safe to archive</p>")
+    )
+
+
+def _stable_loop_decision_filter_controls(selected_filter: str = "all", review_filter: str = "all") -> str:
+    selected = normalize_decision_filter(selected_filter)
+    filters = ["all", "open", "undecided", "keep", "fix_forward", "rollback", "needs_review", "action_required", "decided", "complete", "incomplete", "cleanup_default", "archived"]
+    links = []
+    for token in filters:
+        label = DECISION_FILTER_LABELS.get(token, token)
+        active = " active" if token == selected else ""
+        links.append(f"<a class='filter-chip{active}' href='/stable-loop?review={_safe(review_filter)}&decision={_safe(token)}'>{_safe(label)}</a>")
+    return "<div class='toolbar'>" + "".join(links) + "</div>"
+
+
+def _stable_loop_decision_cleanup_controls(selected_filter: str = "cleanup_default") -> str:
+    filter_value = normalize_decision_filter(selected_filter if selected_filter != "all" else "cleanup_default")
+    return f"""
+<form class='inline' method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_cleanup_decisions'>
+<input type='hidden' name='decision_filter' value='{_safe(filter_value)}'>
+<input type='hidden' name='dry_run' value='true'>
+<button type='submit'>Preview decision cleanup for {_safe(DECISION_FILTER_LABELS.get(filter_value, filter_value))}</button>
+</form>
+<form class='inline' method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_cleanup_decisions'>
+<input type='hidden' name='decision_filter' value='{_safe(filter_value)}'>
+<input type='hidden' name='dry_run' value='false'>
+<button type='submit'>Archive decision cleanup candidates</button>
+</form>
+<p class='muted'>Decision cleanup archives completed keep/rollback records by default. It does not delete JSON. Shocking restraint from software, really.</p>
+"""
+
+
+
+def _stable_loop_followup_cards(selected_filter: str = "action_required") -> str:
+    summary = stable_loop_followup_summary(decision_filter=selected_filter)
+    return (
+        _card("Decision Follow-ups", f"<div class='kpi'>{_safe(summary.get('missing_followup_count', 0))}</div><p class='muted'>Missing task-backed follow-up(s)</p>")
+        + _card("Existing Follow-ups", f"<div class='kpi'>{_safe(summary.get('existing_followup_count', 0))}</div><p class='muted'>Already-created follow-up task(s)</p>")
+    )
+
+
+def _stable_loop_followup_controls(selected_filter: str = "action_required") -> str:
+    filter_value = normalize_decision_filter(selected_filter if selected_filter != "all" else "action_required")
+    return f"""
+<form class='inline' method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_create_decision_followups'>
+<input type='hidden' name='decision_filter' value='{_safe(filter_value)}'>
+<input type='hidden' name='dry_run' value='true'>
+<button type='submit'>Preview follow-up tasks for {_safe(DECISION_FILTER_LABELS.get(filter_value, filter_value))}</button>
+</form>
+<form class='inline' method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_create_decision_followups'>
+<input type='hidden' name='decision_filter' value='{_safe(filter_value)}'>
+<input type='hidden' name='dry_run' value='false'>
+<button type='submit'>Create follow-up tasks</button>
+</form>
+<p class='muted'>Creates canonical tasks for fix-forward, rollback, and needs-review decisions. It avoids duplicates by stable-loop id and follow-up kind. Finally, paperwork that does something.</p>
+"""
+
+
+
+def _stable_loop_followup_completion_cards(selected_filter: str = "all") -> str:
+    summary = stable_loop_followup_completion_summary(completion_filter=selected_filter)
+    return (
+        _card("Follow-up Closure", f"<div class='kpi'>{_safe(summary.get('filtered_count', 0))}</div><p class='muted'>{_safe(summary.get('selected_filter_label', 'All follow-up chains'))}</p>")
+        + _card("Ready to Resolve", f"<div class='kpi'>{_safe(summary.get('ready_to_resolve_count', 0))}</div><p class='muted'>Chains whose follow-up tasks are closed but not resolved</p>")
+        + _card("Unresolved", f"<div class='kpi'>{_safe(summary.get('unresolved_count', 0))}</div><p class='muted'>Action-required decisions not fully closed</p>")
+        + _card("Completion Cleanup", f"<div class='kpi'>{_safe(summary.get('cleanup_candidate_count', 0))}</div><p class='muted'>Resolved chains safe to archive</p>")
+    )
+
+
+def _stable_loop_followup_completion_filter_controls(selected_filter: str = "all", review_filter: str = "all", decision_filter: str = "all") -> str:
+    selected = normalize_followup_completion_filter(selected_filter)
+    filters = ["all", "action_required", "missing_followups", "open", "unresolved", "ready_to_resolve", "resolved", "cleanup_default", "archived"]
+    links = []
+    for token in filters:
+        label = FOLLOWUP_COMPLETION_FILTER_LABELS.get(token, token)
+        active = " active" if token == selected else ""
+        links.append(f"<a class='filter-chip{active}' href='/stable-loop?review={_safe(review_filter)}&decision={_safe(decision_filter)}&followup={_safe(token)}'>{_safe(label)}</a>")
+    return "<div class='toolbar'>" + "".join(links) + "</div>"
+
+
+def _stable_loop_followup_completion_cleanup_controls(selected_filter: str = "cleanup_default") -> str:
+    filter_value = normalize_followup_completion_filter(selected_filter if selected_filter != "all" else "cleanup_default")
+    return f"""
+<form class='inline' method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_cleanup_followup_completions'>
+<input type='hidden' name='completion_filter' value='{_safe(filter_value)}'>
+<input type='hidden' name='dry_run' value='true'>
+<button type='submit'>Preview follow-up cleanup for {_safe(FOLLOWUP_COMPLETION_FILTER_LABELS.get(filter_value, filter_value))}</button>
+</form>
+<form class='inline' method='post' action='/action'>
+<input type='hidden' name='action' value='stable_loop_cleanup_followup_completions'>
+<input type='hidden' name='completion_filter' value='{_safe(filter_value)}'>
+<input type='hidden' name='dry_run' value='false'>
+<button type='submit'>Archive resolved follow-up chains</button>
+</form>
+<p class='muted'>Completion cleanup archives resolved stable-loop follow-up chains. It does not delete records, because apparently we have learned from history. Briefly.</p>
+"""
+
+def render_stable_loop(review_filter: str = "all", decision_filter: str = "all", followup_filter: str = "all") -> str:
+    selected_filter = normalize_review_filter(review_filter)
+    selected_decision_filter = normalize_decision_filter(decision_filter)
+    selected_followup_filter = normalize_followup_completion_filter(followup_filter)
+    rows_data = list_stable_loop_reviews(review_filter=selected_filter, include_archived=(selected_filter == "archived" or selected_decision_filter == "archived"), limit=160)
+    latest = load_stable_loop("latest")
+    preflight = build_stable_loop_preflight(project_id="eidolon", max_steps=1)
+    guardrails = stable_loop_guardrail_summary(project_id="eidolon")
+    decision_filter_ids = set()
+    if selected_decision_filter != "all":
+        decision_filter_ids = {
+            str(row.get("id", ""))
+            for row in list_stable_loop_decision_rows(
+                decision_filter=selected_decision_filter,
+                include_archived=(selected_decision_filter == "archived"),
+                limit=0,
+            )
+        }
+    followup_filter_ids = set()
+    if selected_followup_filter != "all":
+        completion_summary = stable_loop_followup_completion_summary(
+            completion_filter=selected_followup_filter,
+            include_archived=(selected_followup_filter == "archived"),
+        )
+        followup_filter_ids = {str(item) for item in completion_summary.get("filtered_ids", [])}
+    rows = []
+    for row in rows_data:
+        loop_id = str(row.get('id', ''))
+        loop = load_stable_loop(loop_id) or {}
+        decision_row = stable_loop_decision_row(loop) if loop else {}
+        if selected_decision_filter != "all" and loop_id not in decision_filter_ids:
+            continue
+        if selected_followup_filter != "all" and loop_id not in followup_filter_ids:
+            continue
+        completion_row = stable_loop_followup_completion_row(loop) if loop else {}
+        controls = _stable_loop_review_controls(loop_id, compact=True)
+        archive_control = ""
+        if row.get("archived"):
+            archive_control = _button("Restore", "stable_loop_restore", stable_loop_id=loop_id)
+        else:
+            archive_control = _button("Archive", "stable_loop_archive", stable_loop_id=loop_id)
+        row_class = " class='review-archived'" if row.get("archived") else ""
+        archived_badge = " <span class='badge'>archived</span>" if row.get("archived") else ""
+        rows.append(
+            f"<tr{row_class}>"
+            f"<td><span class='badge'>{_safe('ok' if row.get('ok') else 'attention')}</span></td>"
+            f"<td><span class='badge'>{_safe(row.get('review_label',''))}</span>{archived_badge}</td>"
+            f"<td>{_safe(row.get('live'))}</td>"
+            f"<td><b>{_detail_link('stable_loop', loop_id, loop_id)}</b><br><span class='muted'>Project: {_safe(row.get('project_id',''))}</span></td>"
+            f"<td>{_safe(row.get('preview_cycle_id',''))}</td>"
+            f"<td>{_safe(row.get('live_cycle_id',''))}</td>"
+            f"<td><span class='badge'>{_safe(decision_row.get('final_decision_label','Undecided'))}</span><br><span class='muted'>checks { _safe(decision_row.get('check_done', 0))}/{ _safe(decision_row.get('check_total', 0))}</span></td>"
+            f"<td><span class='badge'>{_safe(completion_row.get('completion_status_label',''))}</span><br><span class='muted'>tasks { _safe(completion_row.get('task_count', 0))}, open { _safe(completion_row.get('open_task_count', 0))}<br>{_safe(completion_row.get('recommended_action',''))}</span></td>"
+            f"<td>{_safe(row.get('stopped_reason',''))}</td>"
+            f"<td>{_safe((loop.get('audit') or {}).get('summary', ''))}<br><span class='muted'>Warnings: {len(((loop.get('audit') or {}).get('warnings') or []))}<br>{_safe(decision_row.get('recommended_action',''))}</span></td>"
+            f"<td>{controls} {archive_control} {_button('Follow-ups', 'stable_loop_create_followups', stable_loop_id=loop_id, dry_run='true')} {_button('Resolve Follow-ups', 'stable_loop_resolve_followups', stable_loop_id=loop_id)} {_button('Mark Closed', 'stable_loop_mark_followup_closed', stable_loop_id=loop_id)} {_detail_link('stable_loop', loop_id, 'Details')}</td>"
+            "</tr>"
+        )
+    table = "<table><tr><th>Status</th><th>Review</th><th>Live</th><th>Loop</th><th>Preview Cycle</th><th>Live Cycle</th><th>Decision</th><th>Follow-up Closure</th><th>Stopped</th><th>Audit / Next</th><th>Actions</th></tr>" + "".join(rows) + "</table>" if rows else "<p class='muted'>No stable loop records match this filter.</p>"
+    latest_text = stable_loop_text(latest, full=False) if latest else "No stable supervised loops saved yet. Peaceful, but suspicious."
+    latest_loop_id = str(latest.get('id', '')) if latest else ""
+    latest_buttons = _stable_loop_review_controls(latest_loop_id, compact=False) if latest else ""
+    latest_operator = _stable_loop_operator_controls(latest_loop_id) if latest else ""
+    body = (
+        _stable_loop_review_cards(selected_filter)
+        + _stable_loop_decision_cards(selected_decision_filter)
+        + _stable_loop_followup_cards(selected_decision_filter if selected_decision_filter != "all" else "action_required")
+        + _stable_loop_followup_completion_cards(selected_followup_filter)
+        + _card("Review Filters", _stable_loop_filter_controls(selected_filter))
+        + _card("Decision Filters", _stable_loop_decision_filter_controls(selected_decision_filter, selected_filter))
+        + _card("Follow-up Closure Filters", _stable_loop_followup_completion_filter_controls(selected_followup_filter, selected_filter, selected_decision_filter))
+        + _card("History Cleanup", _stable_loop_history_cleanup_controls(selected_filter))
+        + _card("Decision Cleanup", _stable_loop_decision_cleanup_controls(selected_decision_filter))
+        + _card("Follow-up Completion Cleanup", _stable_loop_followup_completion_cleanup_controls(selected_followup_filter))
+        + _card("Decision Follow-up Tasks", _stable_loop_followup_controls(selected_decision_filter if selected_decision_filter != "all" else "action_required"))
+        + _card("Follow-up Completion Report", _text_block(stable_loop_followup_completion_report_text(stable_loop_followup_completion_summary(completion_filter=selected_followup_filter), full=False)))
+        + _card("Follow-up Task Lifecycle", _text_block(followup_lifecycle_summary_text(stable_loop_followup_lifecycle_summary(decision_filter=selected_decision_filter if selected_decision_filter != "all" else "action_required"), full=False)))
+        + _card("Live Run Closure Guardrails", _text_block(stable_loop_guardrails_text(guardrails, full=False)))
+        + _card("Stable Loop Preflight", _text_block(stable_preflight_text(preflight, full=False)))
+        + _card("Run Stable Supervised Loop", _stable_loop_controls())
+        + _card("Latest Stable Loop", _text_block(latest_text) + latest_buttons)
+        + (_card("Latest Post-Run Checklist / Operator Notes", latest_operator) if latest else "")
+        + _card(f"Saved Stable Loops · review={_safe(REVIEW_FILTER_LABELS.get(selected_filter, selected_filter))} · decision={_safe(DECISION_FILTER_LABELS.get(selected_decision_filter, selected_decision_filter))} · followup={_safe(FOLLOWUP_COMPLETION_FILTER_LABELS.get(selected_followup_filter, selected_followup_filter))}", table)
+    )
+    return _layout("/stable-loop", body)
 
 
 def render_approvals() -> str:
@@ -1250,11 +1964,618 @@ def render_settings() -> str:
 
 
 
+
+def _report_status_card(title: str, report: dict[str, Any], extra: str = "") -> str:
+    status = str(report.get("status", "unknown")).upper()
+    status_class = "good" if status in {"PASS", "READY", "PREVIEW_COMPLETE", "LIVE_COMPLETE"} else "warn" if status in {"WARN", "READY_WITH_WARNINGS", "LIMITED_MODE"} else "badtext"
+    score = f"<p class='muted'>Score: {_safe(report.get('score'))}%</p>" if "score" in report else ""
+    return _card(title, f"<div class='kpi {status_class}'>{_safe(status)}</div><p>{_safe(report.get('message', ''))}</p>{score}{extra}")
+
+
+def render_stabilization() -> str:
+    report = build_stabilization_checkpoint(project_id="eidolon", full=True)
+    confidence = build_stable_loop_confidence(project_id="eidolon")
+    repairs = build_repair_suggestions(project_id="eidolon")
+    counts = report.get("counts") or {}
+    blockers = report.get("blockers") or []
+    warnings = report.get("warnings") or []
+    blocker_html = _small_list([
+        _safe(f"[{item.get('category', 'general')}] {item.get('name')}: {item.get('message')}")
+        for item in blockers[:12]
+    ]) if blockers else "<p class='muted'>No blockers found.</p>"
+    warning_html = _small_list([
+        _safe(f"[{item.get('category', 'general')}] {item.get('name')}: {item.get('message')}")
+        for item in warnings[:12]
+    ]) if warnings else "<p class='muted'>No warnings found.</p>"
+    repair_rows = repairs.get("rows") or []
+    repair_html = _small_list([
+        _safe(f"{item.get('severity', 'info').upper()} {item.get('id')}: {item.get('problem')}")
+        for item in repair_rows[:8]
+    ])
+    command_text = "\n".join(report.get("recommended_commands") or [])
+    body = f"""
+<p>The v8.0 stabilization page now groups checkpoint status, confidence, blockers, warnings, repair suggestions, and exact commands. Still read-only. Shocking maturity from a codebase.</p>
+<div class='grid'>
+  {_report_status_card('Checkpoint', report)}
+  {_report_status_card('Stable Loop Confidence', confidence)}
+  <section class='card'><h2>Pass</h2><div class='kpi good'>{_safe(counts.get('pass', 0))}</div></section>
+  <section class='card'><h2>Warn</h2><div class='kpi warn'>{_safe(counts.get('warn', 0))}</div></section>
+  <section class='card'><h2>Fail</h2><div class='kpi badtext'>{_safe(counts.get('fail', 0))}</div></section>
+</div>
+<div class='grid'>
+  {_card('Blockers', blocker_html)}
+  {_card('Warnings', warning_html)}
+  {_card('Repair Suggestions', repair_html + "<p><a href='/doctor'>Open Doctor page</a></p>")}
+</div>
+<h3>Recommended commands</h3>
+<pre>{_safe(command_text)}</pre>
+<p><a href='/api/stabilization-checkpoint?full=true'>Open JSON checkpoint report</a> | <a href='/api/doctor?full=true'>Open JSON doctor report</a></p>
+"""
+    return _layout("/stabilization", _card("Stabilization Checkpoint", body) + _card("Full report", _text_block(stabilization_checkpoint_text(report, full=True))))
+
+
+def render_doctor() -> str:
+    doctor = build_doctor_report(project_id="eidolon", full=False)
+    confidence = build_stable_loop_confidence(project_id="eidolon")
+    snapshot = build_project_snapshot(project_id="eidolon")
+    patch_integrity = build_patch_integrity_report()
+    task_review = build_task_review(project_id="eidolon")
+    recovery = build_recovery_drill(project_id="eidolon")
+    hardening = build_hardening_report(project_id="eidolon")
+    controlled = build_controlled_self_build(project_id="eidolon", max_steps=1, live=False, approve_live=False, use_ai=False)
+    repair = build_repair_suggestions(project_id="eidolon")
+    body = f"""
+<p>Doctor mode ties together v7.2 through v8.0: repair suggestions, patch integrity, project snapshot, task review, recovery drill, confidence score, hardening checks, and controlled self-build preview. Basically a clipboard for the robot before it touches anything sharp.</p>
+<div class='grid'>
+  {_report_status_card('Doctor', doctor)}
+  {_report_status_card('Confidence', confidence)}
+  {_report_status_card('Patch Integrity', patch_integrity)}
+  {_report_status_card('Task Review', task_review)}
+  {_report_status_card('Recovery Drill', recovery)}
+  {_report_status_card('Hardening', hardening)}
+  {_report_status_card('Controlled Self-Build Preview', controlled)}
+</div>
+<p><a href='/api/doctor?full=true'>Doctor JSON</a> | <a href='/api/controlled-self-build'>Controlled self-build JSON</a> | <a href='/api/project-snapshot'>Snapshot JSON</a></p>
+"""
+    reports = "\n\n".join([
+        doctor_report_text(doctor, full=False),
+        repair_suggestions_text(repair, full=False),
+        project_snapshot_text(snapshot, full=False),
+        patch_integrity_text(patch_integrity, full=False),
+        task_review_text(task_review, full=False),
+        recovery_drill_text(recovery, full=False),
+        stable_loop_confidence_text(confidence, full=False),
+        hardening_report_text(hardening, full=False),
+        controlled_self_build_text(controlled, full=False),
+    ])
+    return _layout("/doctor", _card("Doctor Mode", body) + _card("Operational reports", _text_block(reports)))
+
+
+def render_build_cycle() -> str:
+    selection = build_controlled_task_selection(project_id="eidolon")
+    plan = build_patch_plan(project_id="eidolon", target_version="10.0", save=False)
+    workspace = patch_workspace_status()
+    diff = preview_staged_diff(project_id="eidolon", stage_if_missing=False, save=False)
+    gate = readme_gate(project_id="eidolon")
+    cycle = {"version": "9.0", "status": "preview_available", "ok": True, "message": "Run the CLI/API cycle command to execute the preview; dashboard rendering stays read-only."}
+    supervised = {"version": "9.0", "status": "preview_available", "ok": True, "message": "Run the CLI/API supervised loop command to execute one bounded preview cycle; dashboard rendering stays read-only."}
+    body = f"""
+<p>v9.0 adds the controlled build lane: task selection, patch planning, workspace staging, diff preview, guarded apply/rollback, README enforcement, one-cycle controlled build, and the supervised development loop. It is still preview-first, because apparently files enjoy not being surprises.</p>
+<div class='grid'>
+  {_report_status_card('Task Selection', selection)}
+  {_report_status_card('Patch Plan', plan)}
+  {_report_status_card('Workspace', workspace)}
+  {_report_status_card('Diff Preview', diff)}
+  {_report_status_card('README Gate', gate)}
+  {_report_status_card('Controlled Cycle', cycle)}
+  {_report_status_card('Supervised Dev Loop', supervised)}
+</div>
+<p><a href='/api/controlled-build/select-task'>Selection JSON</a> | <a href='/api/controlled-build/workspace'>Workspace JSON</a> | <a href='/api/controlled-build/readme-gate'>README Gate JSON</a> | <a href='/api/patch-review'>Patch Review JSON</a></p>
+<h3>Useful commands</h3>
+<pre>python conscious_agent/main.py --controlled-self-build --select-task
+python conscious_agent/main.py --controlled-self-build --plan-patch
+python conscious_agent/main.py --controlled-self-build --stage-patch
+python conscious_agent/main.py --controlled-self-build --preview-diff
+python conscious_agent/main.py --readme-gate
+python conscious_agent/main.py --controlled-self-build-cycle
+python conscious_agent/main.py --supervised-dev-loop</pre>
+"""
+    reports = "\n\n".join([
+        controlled_task_selection_text(selection, full=False),
+        patch_plan_text(plan, full=False),
+        workspace_status_text(workspace, full=False),
+        diff_preview_text(diff, full=False),
+        readme_gate_text(gate, full=False),
+        controlled_build_cycle_text(cycle, full=False),
+        supervised_dev_loop_text(supervised, full=False),
+    ])
+    return _layout("/build-cycle", _card("Controlled Build Cycle", body) + _card("v8.1-v9.0 Reports", _text_block(reports)))
+
+
+
+def render_patch_review() -> str:
+    report = build_patch_review(project_id="eidolon")
+    risk = report.get("risk") or {}
+    tests = report.get("test_plan") or {}
+    body = f"""
+<p>v9.5 adds a read-only patch review page that combines workspace state, staged diff status, risk scoring, test planning, and README enforcement. It exists so the project can stare at its own proposed changes before touching anything, which is apparently asking a lot.</p>
+<div class='grid'>
+  {_report_status_card('Workspace', report.get('workspace') or {})}
+  {_report_status_card('Diff Preview', report.get('diff') or {})}
+  {_report_status_card('Risk', risk)}
+  {_report_status_card('Test Plan', tests)}
+  {_report_status_card('README Gate', report.get('readme_gate') or {})}
+</div>
+<p><a href='/api/patch-review'>Patch review JSON</a> | <a href='/api/patch-risk'>Risk JSON</a> | <a href='/api/test-plan'>Test plan JSON</a></p>
+<h3>Recommended verification</h3>
+<pre>{_safe(chr(10).join(tests.get('commands', [])))}</pre>
+"""
+    return _layout("/patch-review", _card("Patch Review", body) + _card("Full patch review", _text_block(patch_review_text(report, full=True))))
+
+
+def render_intelligence() -> str:
+    codebase = build_codebase_map(project_id="eidolon")
+    dependencies = build_task_dependencies(project_id="eidolon")
+    tests = build_test_plan(project_id="eidolon")
+    risk = build_patch_risk(project_id="eidolon")
+    memory = build_project_memory_index(project_id="eidolon")
+    workspace = build_workspace_status(project_id="eidolon")
+    cross = build_cross_project_task_review(project_id="eidolon")
+    asymmetric = build_asymmetric_dev_loop(project_id="eidolon")
+    body = f"""
+<p>v10.0 adds the project intelligence lane: codebase mapping, dependency-aware planning, test planning, risk analysis, project memory indexing, workspace awareness, cross-project task review, and asymmetric loop preview. It thinks across projects but modifies none of them from this page. Tiny mercy.</p>
+<div class='grid'>
+  {_report_status_card('Codebase Map', codebase)}
+  {_report_status_card('Task Dependencies', dependencies)}
+  {_report_status_card('Test Plan', tests)}
+  {_report_status_card('Patch Risk', risk)}
+  {_report_status_card('Memory Index', memory)}
+  {_report_status_card('Workspace', workspace)}
+  {_report_status_card('Cross-Project Review', cross)}
+  {_report_status_card('Asymmetric Loop', asymmetric)}
+</div>
+<p><a href='/api/codebase-map'>Codebase JSON</a> | <a href='/api/task-dependencies'>Dependencies JSON</a> | <a href='/api/asymmetric-dev-loop'>Asymmetric loop JSON</a></p>
+<h3>Useful commands</h3>
+<pre>python conscious_agent/main.py --codebase-map
+python conscious_agent/main.py --task-dependencies
+python conscious_agent/main.py --test-plan
+python conscious_agent/main.py --patch-risk
+python conscious_agent/main.py --patch-review
+python conscious_agent/main.py --project-memory-index
+python conscious_agent/main.py --workspace-status
+python conscious_agent/main.py --cross-project-task-review
+python conscious_agent/main.py --asymmetric-dev-loop</pre>
+"""
+    reports = "\n\n".join([
+        codebase_map_text(codebase, full=False),
+        task_dependencies_text(dependencies, full=False),
+        test_plan_text(tests, full=False),
+        patch_risk_text(risk, full=False),
+        project_memory_index_text(memory, full=False),
+        intelligence_workspace_status_text(workspace, full=False),
+        cross_project_task_review_text(cross, full=False),
+        asymmetric_dev_loop_text(asymmetric, full=False),
+    ])
+    return _layout("/intelligence", _card("Project Intelligence", body) + _card("v9.1-v10.0 reports", _text_block(reports)))
+
+
+def render_workspace() -> str:
+    registry = build_project_registry(repair=False)
+    health = build_project_health(project_id="eidolon", all_projects=True)
+    profiles = build_command_profiles(save=False)
+    deps = build_workspace_dependency_map(project_id="eidolon")
+    inbox = build_workspace_task_inbox(project_id="eidolon")
+    context = build_project_context(project_id="eidolon")
+    timeline = build_workspace_timeline()
+    loop = build_workspace_dev_loop(project_id="eidolon", live=False, save_timeline=False)
+    audit = build_workspace_registry_audit(project_id="eidolon", archive_stale=False)
+    repair = build_workspace_repair_suggestions(project_id="eidolon")
+    boundary = build_project_boundary_check(project_id="eidolon")
+    plan = build_workspace_patch_plan(project_id="eidolon", save=False)
+    diff = build_workspace_preview_diff(project_id="eidolon", save=False)
+    verify = build_workspace_verify_latest(project_id="eidolon", save=False)
+    guarded = build_guarded_workspace_dev_loop(project_id="eidolon", approve=False, dry_run=True, save=False)
+    body = f"""
+<p>v12.0 adds guarded workspace execution: registry audit, repair suggestions, boundary checks, workspace patch planning, diff preview, dry-run/guarded apply, workspace verification, and a one-project guarded dev loop. It still stops after one task, because recursive ambition is how projects become haunted furniture.</p>
+<div class='grid'>
+  {_report_status_card('Registry', registry)}
+  {_report_status_card('Health', health)}
+  {_report_status_card('Command Profiles', profiles)}
+  {_report_status_card('Dependency Map', deps)}
+  {_report_status_card('Task Inbox', inbox)}
+  {_report_status_card('Context Bundle', context)}
+  {_report_status_card('Timeline', timeline)}
+  {_report_status_card('Workspace Dev Loop', loop)}
+  {_report_status_card('Registry Audit', audit)}
+  {_report_status_card('Repair Suggestions', repair)}
+  {_report_status_card('Boundary Guard', boundary)}
+  {_report_status_card('Workspace Patch Plan', plan)}
+  {_report_status_card('Workspace Diff', diff)}
+  {_report_status_card('Workspace Verify', verify)}
+  {_report_status_card('Guarded Loop', guarded)}
+</div>
+<p><a href='/api/project-registry'>Registry JSON</a> | <a href='/api/workspace-registry-audit'>Audit JSON</a> | <a href='/api/workspace-repair-suggestions'>Repair JSON</a> | <a href='/api/project-boundary-check'>Boundary JSON</a> | <a href='/api/workspace-patch-plan'>Plan JSON</a> | <a href='/api/workspace-preview-diff'>Diff JSON</a> | <a href='/api/guarded-workspace-dev-loop'>Guarded loop JSON</a></p>
+<h3>Useful commands</h3>
+<pre>python conscious_agent/main.py --workspace-registry-audit
+python conscious_agent/main.py --workspace-repair-suggestions
+python conscious_agent/main.py --project-boundary-check
+python conscious_agent/main.py --workspace-patch-plan
+python conscious_agent/main.py --workspace-preview-diff
+python conscious_agent/main.py --workspace-apply --dry-run
+python conscious_agent/main.py --workspace-verify-latest
+python conscious_agent/main.py --guarded-workspace-dev-loop</pre>
+"""
+    reports = "\n\n".join([
+        project_registry_text(registry, full=False),
+        project_health_text(health, full=False),
+        command_profiles_text(profiles, full=False),
+        workspace_dependency_map_text(deps, full=False),
+        workspace_task_inbox_text(inbox, full=False),
+        project_context_text(context, full=False),
+        workspace_timeline_text(timeline, full=False),
+        workspace_dev_loop_text(loop, full=False),
+        workspace_registry_audit_text(audit, full=False),
+        workspace_repair_suggestions_text(repair, full=False),
+        project_boundary_check_text(boundary, full=False),
+        workspace_patch_plan_text(plan, full=False),
+        workspace_preview_diff_text(diff, full=False),
+        workspace_verify_latest_text(verify, full=False),
+        guarded_workspace_dev_loop_text(guarded, full=False),
+    ])
+    return _layout("/workspace", _card("Guarded Workspace Development", body) + _card("v10.1-v12.0 reports", _text_block(reports)))
+
+def render_patch_drafts() -> str:
+    status = build_patch_draft_status(project_id="eidolon")
+    request = build_patch_draft_request(project_id="eidolon", target_version="15.0", save=False)
+    draft = build_draft_patch(project_id="eidolon", save=False)
+    notes = build_patch_review_notes(project_id="eidolon", save=False)
+    diff = build_draft_diff(project_id="eidolon", save=False)
+    impact = build_draft_test_impact(project_id="eidolon", save=False)
+    gate = build_approval_gate(project_id="eidolon")
+    quality = build_draft_quality(project_id="eidolon", save=False)
+    targets = build_draft_file_targets(project_id="eidolon", save=False)
+    intents = build_draft_intent_blocks(project_id="eidolon", save=False)
+    conflicts = build_draft_conflicts(project_id="eidolon", save=False)
+    bundle = build_draft_verification_bundle(project_id="eidolon", save=False)
+    checklist = build_draft_review_checklist(project_id="eidolon", save=False)
+    execution = build_approved_draft_execution_report(project_id="eidolon", save=False)
+    loop = build_review_centered_patch_loop(project_id="eidolon", approve_apply=False, dry_run=True, save=False)
+    proposal = build_code_edit_proposal(project_id="eidolon", save=False)
+    rewrite = build_safe_rewrite_preview(project_id="eidolon", save=False)
+    generated = build_generated_code_patch(project_id="eidolon", save=False)
+    tests = build_test_suggestions(project_id="eidolon", save=False)
+    inline_notes = build_inline_review_note(project_id="eidolon", save=False)
+    code_apply = build_apply_approved_code_patch(project_id="eidolon", approve=False, dry_run=True, save=False)
+    package = build_prepare_release_package(project_id="eidolon", save=False)
+    readiness = build_release_readiness(project_id="eidolon", save=False)
+    release_loop = build_human_approved_release_loop(project_id="eidolon", approve_apply=False, dry_run=True, save=False)
+    body = f"""
+<p>v15.0 turns draft review into a human-approved release lane: code edit proposals, hash-checked rewrite previews, generated patch artifacts, test suggestions, inline review notes, guarded approved apply, release readiness, and package metadata. GET routes stay read-only, because APIs left unattended become tiny crime machines.</p>
+<div class='cards'>
+  {_report_status_card('Draft workspace', status)}
+  {_report_status_card('Draft quality', quality)}
+  {_report_status_card('Rewrite preview', rewrite)}
+  {_report_status_card('Generated code patch', generated)}
+  {_report_status_card('Release readiness', readiness)}
+  {_report_status_card('Release loop', release_loop)}
+</div>
+<div class='cards'>
+  <div class='card'><h3>Approve / Reject</h3>
+    <form method='post' action='/api/approve-draft'><input type='hidden' name='project' value='eidolon'><input type='hidden' name='note' value='Dashboard approval for one draft apply.'><button type='submit'>Approve draft</button></form>
+    <form method='post' action='/api/reject-draft'><input type='hidden' name='project' value='eidolon'><input type='hidden' name='note' value='Rejected from dashboard review.'><button type='submit'>Reject draft</button></form>
+    <form method='post' action='/api/reopen-draft'><input type='hidden' name='project' value='eidolon'><input type='hidden' name='note' value='Reopened from dashboard review.'><button type='submit'>Reopen draft</button></form>
+  </div>
+  <div class='card'><h3>Safe Previews</h3>
+    <form method='post' action='/api/patch-drafts/code-edit-proposal'><input type='hidden' name='project' value='eidolon'><button type='submit'>Save proposal</button></form>
+    <form method='post' action='/api/patch-drafts/safe-rewrite-preview'><input type='hidden' name='project' value='eidolon'><button type='submit'>Save rewrite preview</button></form>
+    <form method='post' action='/api/patch-drafts/apply-approved-code-patch'><input type='hidden' name='project' value='eidolon'><input type='hidden' name='dry_run' value='true'><button type='submit'>Dry-run approved code apply</button></form>
+  </div>
+</div>
+<p><a href='/api/patch-drafts/status'>Status JSON</a> | <a href='/api/patch-drafts/quality'>Quality JSON</a> | <a href='/api/patch-drafts/code-edit-proposal'>Code Proposal JSON</a> | <a href='/api/patch-drafts/safe-rewrite-preview'>Rewrite Preview JSON</a> | <a href='/api/patch-drafts/generated-code-patch'>Generated Patch JSON</a> | <a href='/api/patch-drafts/test-suggestions'>Test Suggestions JSON</a> | <a href='/api/release/readiness'>Release Readiness JSON</a> | <a href='/api/release/human-approved-loop'>Release Loop JSON</a></p>
+<pre>python conscious_agent/main.py --patch-draft-request --patch-draft-target-version 15.0
+python conscious_agent/main.py --draft-patch
+python conscious_agent/main.py --draft-diff
+python conscious_agent/main.py --draft-test-impact
+python conscious_agent/main.py --draft-quality
+python conscious_agent/main.py --code-edit-proposal
+python conscious_agent/main.py --safe-rewrite-preview
+python conscious_agent/main.py --generate-code-patch
+python conscious_agent/main.py --test-suggestions
+python conscious_agent/main.py --apply-approved-code-patch --dry-run
+python conscious_agent/main.py --release-readiness
+python conscious_agent/main.py --prepare-release-package
+python conscious_agent/main.py --human-approved-release-loop</pre>
+"""
+    reports = "\n\n".join([
+        patch_draft_status_text(status, full=False),
+        patch_draft_request_text(request, full=False),
+        draft_patch_text(draft, full=False),
+        patch_review_notes_text(notes, full=False),
+        draft_diff_text(diff, full=False),
+        draft_test_impact_text(impact, full=False),
+        approval_gate_text(gate, full=False),
+        draft_quality_text(quality, full=False),
+        draft_file_targets_text(targets, full=False),
+        draft_intent_blocks_text(intents, full=False),
+        draft_conflicts_text(conflicts, full=False),
+        draft_verification_bundle_text(bundle, full=False),
+        draft_review_checklist_text(checklist, full=False),
+        approved_draft_execution_report_text(execution, full=False),
+        review_centered_patch_loop_text(loop, full=False),
+        code_edit_proposal_text(proposal, full=False),
+        safe_rewrite_preview_text(rewrite, full=False),
+        generated_code_patch_text(generated, full=False),
+        test_suggestions_text(tests, full=False),
+        inline_review_note_text(inline_notes, full=False),
+        apply_approved_code_patch_text(code_apply, full=False),
+        release_readiness_text(readiness, full=False),
+        prepare_release_package_text(package, full=False),
+        human_approved_release_loop_text(release_loop, full=False),
+    ])
+    return _layout("/patch-drafts", _card("Human-Approved Release Patch Drafts", body) + _card("v12.1-v15.0 reports", _text_block(reports)))
+
+def render_code_patches() -> str:
+    review_bundle = build_ai_patch_review_bundle(project_id="eidolon", save=False)
+    integrity = build_review_bundle_integrity(project_id="eidolon", save=False)
+    approval_ready = build_approval_ready(project_id="eidolon", save=False)
+    ledger = build_approval_ledger(project_id="eidolon", save=False)
+    bind_preview = bind_current_approval_to_validated_manifest(project_id="eidolon", save=False)
+    apply_preview = build_apply_validated_ai_patch(project_id="eidolon", approve=False, dry_run=True, save=False)
+    post_apply = build_post_apply_review(project_id="eidolon", save=False)
+    package_plan = build_package_build_plan(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
+    body = f"""
+<p>v20.0 keeps the validated AI patch review lane approval-bound and packaging-aware: refresh the review bundle, bind an approved draft to the exact validated manifest, dry-run apply, then move through release package checks. GET/API/dashboard views stay read-only, because links are not scalpels.</p>
+<div class='cards'>
+  {_report_status_card('Review bundle', review_bundle)}
+  {_report_status_card('Bundle integrity', integrity)}
+  {_report_status_card('Approval ready', approval_ready)}
+  {_report_status_card('Approval ledger', ledger)}
+  {_report_status_card('Bind preview', bind_preview)}
+  {_report_status_card('Apply preview', apply_preview)}
+  {_report_status_card('Post-apply review', post_apply)}
+  {_report_status_card('Package plan', package_plan)}
+</div>
+<div class='cards'>
+  <div class='card'><h3>Read-only review links</h3>
+    <p><a href='/api/code-patches/review-bundle'>Review Bundle JSON</a></p>
+    <p><a href='/api/code-patches/review-integrity'>Integrity JSON</a></p>
+    <p><a href='/api/code-patches/approval-ready'>Approval Ready JSON</a></p>
+    <p><a href='/api/code-patches/approval-ledger'>Approval Ledger JSON</a></p>
+    <p><a href='/api/code-patches/apply-validated-ai-patch'>Apply Dry-Run JSON</a></p>
+    <p><a href='/api/code-patches/post-apply-review'>Post-Apply JSON</a></p>
+  </div>
+  <div class='card'><h3>Mutation controls</h3>
+    <form method='post' action='/api/code-patches/refresh-review-bundle'><input type='hidden' name='project' value='eidolon'><button type='submit'>Refresh/save review bundle</button></form>
+    <form method='post' action='/api/code-patches/bind-validated-approval'><input type='hidden' name='project' value='eidolon'><button type='submit'>Bind approved draft to validated manifest</button></form>
+    <form method='post' action='/api/code-patches/apply-validated-ai-patch'><input type='hidden' name='project' value='eidolon'><input type='hidden' name='dry_run' value='true'><button type='submit'>Dry-run validated AI apply</button></form>
+    <form method='post' action='/api/release/approval-to-release-loop'><input type='hidden' name='project' value='eidolon'><input type='hidden' name='dry_run' value='true'><button type='submit'>Dry-run approval-to-release loop</button></form>
+    <p>Real apply still requires POST confirmation and an approval manifest bound to the exact reviewed artifact hashes.</p>
+  </div>
+</div>
+<pre>python conscious_agent/main.py --ai-patch-review-bundle
+python conscious_agent/main.py --ai-patch-review-integrity
+python conscious_agent/main.py --approval-ready
+python conscious_agent/main.py --bind-validated-approval
+python conscious_agent/main.py --apply-validated-ai-patch --dry-run
+python conscious_agent/main.py --post-apply-review
+python conscious_agent/main.py --package-build-plan
+python conscious_agent/main.py --approval-to-release-loop</pre>
+"""
+    reports = "\n\n".join([
+        ai_patch_review_bundle_text(review_bundle, full=False),
+        review_bundle_integrity_text(integrity, full=False),
+        approval_ready_text(approval_ready, full=False),
+        approval_ledger_text(ledger, full=False),
+        bind_validated_approval_text(bind_preview, full=False),
+        apply_validated_ai_patch_text(apply_preview, full=False),
+        post_apply_review_text(post_apply, full=False),
+        package_build_plan_text(package_plan, full=False),
+    ])
+    return _layout("/code-patches", _card("Validated AI Patch Approval Workflow", body) + _card("v18.1-v20.0 reports", _text_block(reports)))
+
+
+def render_release_review() -> str:
+    review_bundle = build_ai_patch_review_bundle(project_id="eidolon", save=False)
+    integrity = build_review_bundle_integrity(project_id="eidolon", save=False)
+    approval_ready = build_approval_ready(project_id="eidolon", save=False)
+    apply_preview = build_apply_validated_ai_patch(project_id="eidolon", approve=False, dry_run=True, save=False)
+    post_apply = build_post_apply_review(project_id="eidolon", save=False)
+    readiness = build_release_readiness(project_id="eidolon", save=False)
+    package_plan = build_package_build_plan(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
+    body = f"""
+<p>Release review shows whether the latest validated AI patch can move from human approval to a release handoff without artifact mismatch nonsense. Somehow, this is what peace looks like.</p>
+<div class='cards'>
+  {_report_status_card('Review bundle', review_bundle)}
+  {_report_status_card('Integrity', integrity)}
+  {_report_status_card('Approval ready', approval_ready)}
+  {_report_status_card('Apply preview', apply_preview)}
+  {_report_status_card('Post apply', post_apply)}
+  {_report_status_card('Release readiness', readiness)}
+  {_report_status_card('Package plan', package_plan)}
+</div>
+<p><a href='/api/release/approval-to-release-loop'>Approval-to-release loop JSON</a> | <a href='/api/release/package-build-plan'>Package plan JSON</a> | <a href='/api/release/audit-trail'>Audit trail JSON</a></p>
+"""
+    reports = "\n\n".join([
+        ai_patch_review_bundle_text(review_bundle, full=False),
+        review_bundle_integrity_text(integrity, full=False),
+        approval_ready_text(approval_ready, full=False),
+        apply_validated_ai_patch_text(apply_preview, full=False),
+        post_apply_review_text(post_apply, full=False),
+        release_readiness_text(readiness, full=False),
+        package_build_plan_text(package_plan, full=False),
+    ])
+    return _layout("/release-review", _card("Release Review", body) + _card("Release review reports", _text_block(reports)))
+
+
+def render_release_package() -> str:
+    manifest = build_release_manifest_integrity(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
+    inventory = build_package_inventory(project_id="eidolon", save=False)
+    checksums = build_package_checksums(project_id="eidolon", save=False)
+    notes = build_release_notes(project_id="eidolon", save=False)
+    handoff = build_release_handoff_report(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
+    zip_plan = build_release_zip(project_id="eidolon", package_name="Eidolon_v20_0.zip", confirm=False, dry_run=True, save=False)
+    unzip = build_verify_release_unzip(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
+    audit = build_release_pipeline_audit(project_id="eidolon", package_name="Eidolon_v20_0.zip", save=False)
+    loop = build_verified_release_package_loop(project_id="eidolon", package_name="Eidolon_v20_0.zip", confirm=False, dry_run=True, save=False)
+    body = f"""
+<p>v20.0 verifies release packaging before handoff: manifest consistency, package inventory, checksums, release notes, handoff report, guarded zip planning, unzip verification, and pipeline audit. Thrilling, like accounting with zip files.</p>
+<div class='cards'>
+  {_report_status_card('Manifest integrity', manifest)}
+  {_report_status_card('Inventory', inventory)}
+  {_report_status_card('Checksums', checksums)}
+  {_report_status_card('Release notes', notes)}
+  {_report_status_card('Handoff', handoff)}
+  {_report_status_card('Zip plan', zip_plan)}
+  {_report_status_card('Unzip verify', unzip)}
+  {_report_status_card('Pipeline audit', audit)}
+  {_report_status_card('Verified loop', loop)}
+</div>
+<p><a href='/api/release/manifest-integrity'>Manifest JSON</a> | <a href='/api/release/package-inventory'>Inventory JSON</a> | <a href='/api/release/package-checksums'>Checksums JSON</a> | <a href='/api/release/handoff'>Handoff JSON</a> | <a href='/api/release/verified-package-loop'>Verified Loop JSON</a></p>
+<form method='post' action='/api/release/build-zip'><input type='hidden' name='project' value='eidolon'><input type='hidden' name='dry_run' value='true'><button type='submit'>Dry-run release zip builder</button></form>
+<pre>python conscious_agent/main.py --release-manifest-integrity
+python conscious_agent/main.py --package-inventory
+python conscious_agent/main.py --package-checksums
+python conscious_agent/main.py --release-notes
+python conscious_agent/main.py --release-handoff-report
+python conscious_agent/main.py --build-release-zip --dry-run
+python conscious_agent/main.py --verify-release-unzip
+python conscious_agent/main.py --release-pipeline-audit
+python conscious_agent/main.py --verified-release-package-loop</pre>
+"""
+    reports = "\n\n".join([
+        release_manifest_integrity_text(manifest, full=False),
+        package_inventory_text(inventory, full=False),
+        package_checksums_text(checksums, full=False),
+        release_notes_text(notes, full=False),
+        release_handoff_report_text(handoff, full=False),
+        build_release_zip_text(zip_plan, full=False),
+        verify_release_unzip_text(unzip, full=False),
+        release_pipeline_audit_text(audit, full=False),
+        verified_release_package_loop_text(loop, full=False),
+    ])
+    return _layout("/release-package", _card("Verified Release Package", body) + _card("v19.1-v20.0 package reports", _text_block(reports)))
+
 def render_api_info() -> str:
     body = """
 <p>The dashboard exposes a local JSON API under <code>/api</code>. Current task/work controls use the task-centered <code>/api/tasks/...</code> routes. Older <code>/api/work-queue/...</code> routes remain compatibility aliases. Browser pages use <code>/api/status</code> for live refresh/polling. The standalone server can also run on its own with <code>--api-server</code>.</p>
 <pre>GET  /api
 GET  /api/status    # live dashboard status payload
+GET  /api/doctor
+GET  /api/repair-suggestions
+GET  /api/patch-integrity
+GET  /api/project-snapshot
+GET  /api/tasks/review
+GET  /api/recovery-drill
+GET  /api/stable-loops/confidence
+GET  /api/hardening-report
+GET  /api/controlled-self-build        # preview-only
+POST /api/controlled-self-build       # live requires confirm=LIVE_CONTROLLED_BUILD
+GET  /api/controlled-build/select-task
+GET  /api/controlled-build/plan-patch # preview-only
+POST /api/controlled-build/plan-patch
+GET  /api/controlled-build/workspace
+GET  /api/controlled-build/stage-patch # preview-only
+POST /api/controlled-build/stage-patch
+GET  /api/controlled-build/preview-diff # preview-only
+POST /api/controlled-build/preview-diff
+POST /api/controlled-build/apply-staged-patch
+POST /api/controlled-build/verify-latest-patch
+POST /api/controlled-build/rollback-latest-patch
+GET  /api/controlled-build/readme-gate
+POST /api/controlled-build/cycle
+POST /api/supervised-dev-loop
+GET  /api/codebase-map
+GET  /api/task-dependencies
+GET  /api/test-plan
+GET  /api/patch-risk
+GET  /api/patch-review
+GET  /api/project-memory-index
+GET  /api/workspace-status
+GET  /api/cross-project-task-review
+GET  /api/asymmetric-dev-loop
+GET  /api/project-registry
+POST /api/projects/register
+POST /api/projects/active
+GET  /api/project-health?all=true
+GET  /api/command-profiles
+GET  /api/workspace-dependency-map
+GET  /api/workspace-task-inbox
+POST /api/workspace/switch-project
+GET  /api/project-context
+GET  /api/workspace-timeline
+GET  /api/workspace-dev-loop
+GET  /api/workspace-registry-audit
+GET  /api/workspace-repair-suggestions
+GET  /api/project-boundary-check
+GET  /api/workspace-patch-plan
+GET  /api/workspace-preview-diff
+GET  /api/workspace-verify-latest
+GET  /api/guarded-workspace-dev-loop
+POST /api/workspace/apply
+POST /api/workspace/guarded-dev-loop
+GET  /api/patch-draft-status
+GET  /api/patch-draft-request
+POST /api/patch-draft-request
+GET  /api/draft-patch
+POST /api/draft-patch
+GET  /api/patch-review-notes
+POST /api/patch-review-notes
+GET  /api/draft-diff
+POST /api/draft-diff
+GET  /api/draft-test-impact
+POST /api/draft-test-impact
+GET  /api/approval-gate
+POST /api/approve-draft
+POST /api/reject-draft
+POST /api/apply-approved-draft
+POST /api/rollback-approved-draft
+POST /api/reopen-draft
+GET  /api/human-approved-patch-loop
+GET  /api/patch-drafts/quality
+GET  /api/patch-drafts/file-targets
+GET  /api/patch-drafts/intent-blocks
+GET  /api/patch-drafts/conflicts
+GET  /api/patch-drafts/verification-bundle
+GET  /api/patch-drafts/review-checklist
+GET  /api/patch-drafts/execution-report
+GET  /api/patch-drafts/review-loop
+GET  /api/patch-drafts/code-edit-proposal
+GET  /api/patch-drafts/safe-rewrite-preview
+GET  /api/patch-drafts/generated-code-patch
+GET  /api/patch-drafts/test-suggestions
+GET  /api/patch-drafts/inline-review-notes
+GET  /api/patch-drafts/approved-code-apply-report
+GET  /api/code-patches/task-to-code-patch
+GET  /api/code-patches/code-context
+GET  /api/code-patches/patch-prompt
+GET  /api/code-patches/parse-generated-edits
+GET  /api/code-patches/edit-consistency
+GET  /api/code-patches/ai-dry-run
+GET  /api/code-patches/failure-analysis
+GET  /api/code-patches/learning-notes
+GET  /api/code-patches/ai-assisted-loop
+GET  /api/code-patches/objective-refinement
+GET  /api/code-patches/context-ranking
+GET  /api/code-patches/safety-envelope
+GET  /api/code-patches/validate-generated-patch
+GET  /api/code-patches/simulation
+GET  /api/code-patches/test-stub-plan
+GET  /api/code-patches/review-score
+GET  /api/code-patches/recovery-plan
+GET  /api/code-patches/validated-ai-loop
+POST /api/patch-drafts/code-edit-proposal
+POST /api/patch-drafts/safe-rewrite-preview
+POST /api/patch-drafts/generated-code-patch
+POST /api/patch-drafts/test-suggestions
+POST /api/patch-drafts/inline-review-note
+POST /api/patch-drafts/apply-approved-code-patch
+GET  /api/release/readiness
+GET  /api/release/package
+GET  /api/release/human-approved-loop
+POST /api/release/readiness
+POST /api/release/package
+POST /api/release/human-approved-loop
+POST /api/human-approved-patch-loop
 GET  /api/diagnostics/latest
 POST /api/diagnostics/run
 GET  /api/watch/latest
@@ -1531,6 +2852,43 @@ def render_detail(query: dict[str, list[str]]) -> str:
             buttons = _card("Notification Actions", _button("Mark read", "notification_read", notification_id=note_id) + _button("Dismiss", "notification_dismiss", notification_id=note_id))
         return _detail_card(kind, item_id, "Notification Detail", body, "/notifications", buttons)
 
+    if kind == "stable_loop":
+        item = load_stable_loop(item_id)
+        body = _text_block(stable_loop_text(item, full=full) if item else f"Stable loop not found: {item_id}")
+        buttons = ""
+        if item:
+            loop_id = str(item.get("id", item_id))
+            audit = _card("Stable Loop Audit", _text_block(stable_loop_audit_text(item, full=full)))
+            review = _card("Stable Loop Review", _text_block(stable_loop_review_text(item, full=False)) + _stable_loop_review_controls(loop_id, compact=False))
+            operator = _card("Post-Run Checklist / Operator Notes", _stable_loop_operator_controls(loop_id))
+            followup_lifecycle = _card(
+                "Decision Follow-up Task Lifecycle",
+                _text_block(followup_lifecycle_summary_text(stable_loop_followup_lifecycle_summary(loop_id=loop_id), full=False))
+                + _button("Resolve Follow-ups", "stable_loop_resolve_followups", stable_loop_id=loop_id)
+                + _button("Resolve + Archive", "stable_loop_resolve_followups", stable_loop_id=loop_id, archive="true")
+            )
+            followup_completion = _card(
+                "Follow-up Completion / Closure",
+                _text_block(stable_loop_followup_completion_report_text({
+                    "version": "6.9",
+                    "selected_filter_label": "This stable loop",
+                    "total": 1,
+                    "filtered_count": 1,
+                    "action_required_count": 1 if stable_loop_followup_completion_row(item).get("action_required") else 0,
+                    "missing_followup_count": 1 if stable_loop_followup_completion_row(item).get("missing_followups") else 0,
+                    "open_followup_chain_count": 1 if stable_loop_followup_completion_row(item).get("open_task_count") else 0,
+                    "ready_to_resolve_count": 1 if stable_loop_followup_completion_row(item).get("ready_to_resolve") else 0,
+                    "resolved_count": 1 if stable_loop_followup_completion_row(item).get("resolution_status") == "resolved" else 0,
+                    "cleanup_candidate_count": 1 if stable_loop_followup_completion_row(item).get("resolution_status") == "resolved" and not stable_loop_followup_completion_row(item).get("archived") else 0,
+                    "archived_count": 1 if stable_loop_followup_completion_row(item).get("archived") else 0,
+                    "rows": [stable_loop_followup_completion_row(item)],
+                }, full=False))
+                + _button("Mark Closed", "stable_loop_mark_followup_closed", stable_loop_id=loop_id)
+                + _button("Mark Closed + Archive", "stable_loop_mark_followup_closed", stable_loop_id=loop_id, archive="true")
+            )
+            buttons = audit + review + operator + followup_lifecycle + followup_completion
+        return _detail_card(kind, item_id, "Stable Loop Detail", body, "/stable-loop", buttons)
+
     if kind == "work_cycle":
         item = load_work_cycle(item_id)
         body = _text_block(work_cycle_text(item, full=full) if item else f"Work cycle not found: {item_id}")
@@ -1605,6 +2963,17 @@ def render_detail(query: dict[str, list[str]]) -> str:
         return _detail_card(kind, item_id, "Onboarding Run Detail", body, "/onboarding", buttons)
 
 
+    if kind == "task_recovery":
+        recovery = build_task_recovery(item_id)
+        body = _text_block(task_recovery_text(recovery, full=True))
+        buttons = _card(
+            "Recovery Controls",
+            _button("Dry-run retry", "task_recovery_retry", work_item_id=item_id, dry_run="true", use_ai="true")
+            + _button("Mark ready for retry", "task_recovery_mark_ready", work_item_id=item_id)
+            + _detail_link("work_item", item_id, "Open Task Detail", full=True),
+        )
+        return _detail_card(kind, item_id, "Task Recovery Detail", body, "/tasks-work?stage=recovery_needed", buttons)
+
     if kind == "work_item":
         item = find_work_item(item_id)
         body = _text_block(format_work_item(item, full=True) if item else f"Task not found: {item_id}")
@@ -1618,7 +2987,15 @@ def render_detail(query: dict[str, list[str]]) -> str:
                 + _text_block(task_lifecycle_text(item.id, full=False))
             )
             approvals = _text_block(task_approvals_text(item.id, include_closed=True, full=False))
-            buttons = lifecycle_card + _card("Task / Work Controls", _work_item_controls(item.id, item.status)) + _card("Linked Approvals", approvals)
+            recovery_card = _card("Recovery Plan", _text_block(task_recovery_text(build_task_recovery(item.id), full=False)))
+            followup_card = ""
+            if lifecycle.get("is_stable_loop_followup"):
+                followup_controls = (
+                    _button("Resolve source decision", "stable_loop_resolve_task_followup", work_item_id=item.id)
+                    + _button("Resolve + archive source", "stable_loop_resolve_task_followup", work_item_id=item.id, archive="true")
+                )
+                followup_card = _card("Stable-loop Decision Follow-up", _text_block(stable_loop_followup_task_text(item.id, full=True)) + followup_controls)
+            buttons = lifecycle_card + followup_card + recovery_card + _card("Task / Work Controls", _work_item_controls(item.id, item.status)) + _card("Linked Approvals", approvals)
         return _detail_card(kind, item_id, "Task Work Detail", body, "/tasks-work", buttons)
 
     return _layout("/detail", _card("Unknown detail type", f"<p>No detail renderer for <code>{_safe(kind)}</code>.</p>"))
@@ -1801,6 +3178,16 @@ def handle_action(form: dict[str, list[str]]) -> None:
             reason = form.get("reason", ["Blocked from dashboard."])[0].strip() or "Blocked from dashboard."
             item = update_work_item(item_id, status="blocked", blocked_reason=reason)
             DashboardState.message = f"Blocked task: {item_id}" if item else f"Task not found: {item_id}"
+        elif action == "task_recovery_mark_ready":
+            item_id = form.get("work_item_id", [""])[0].strip()
+            result = mark_task_ready_for_retry(item_id, note="Marked ready for retry from dashboard.")
+            DashboardState.message = result.message if result.ok else f"Recovery update failed: {result.error}"
+        elif action == "task_recovery_retry":
+            item_id = form.get("work_item_id", [""])[0].strip()
+            dry_run = form.get("dry_run", ["true"])[0].lower() == "true"
+            use_ai = form.get("use_ai", ["true"])[0].lower() == "true"
+            result = retry_task_work(item_id, dry_run=dry_run, use_ai=use_ai)
+            DashboardState.message = task_recovery_text(result, full=False)
         elif action == "task_batch_request_approvals":
             stage = form.get("stage", ["approval_required"])[0]
             rows = list_task_lifecycles(stage_filter=stage, include_closed=False)
@@ -1818,6 +3205,120 @@ def handle_action(form: dict[str, list[str]]) -> None:
             DashboardState.message = f"Requested approvals for {len(created)} task(s)."
             if failed:
                 DashboardState.error = "Some approval requests failed: " + "; ".join(failed[:3])
+        elif action == "stable_loop_resolve_followups":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            archive = form.get("archive", [""])[0].lower() == "true"
+            force = form.get("force", [""])[0].lower() == "true"
+            result = resolve_stable_loop_followups(loop_id, archive=archive, force=force, note="Resolved from dashboard.", reviewer="dashboard")
+            DashboardState.message = followup_resolution_text(result, full=False)
+        elif action == "stable_loop_resolve_task_followup":
+            item_id = form.get("work_item_id", [""])[0].strip()
+            archive = form.get("archive", [""])[0].lower() == "true"
+            force = form.get("force", [""])[0].lower() == "true"
+            result = resolve_task_stable_loop_followup(item_id, archive=archive, force=force, note="Resolved from dashboard task detail.", reviewer="dashboard")
+            DashboardState.message = followup_resolution_text(result, full=False)
+        elif action == "stable_loop_mark_followup_closed":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            archive = form.get("archive", [""])[0].lower() == "true"
+            result = mark_stable_loop_followup_chain_closed(
+                loop_id,
+                note="Follow-up chain closure confirmed from dashboard.",
+                reviewer="dashboard",
+                archive=archive,
+            )
+            DashboardState.message = stable_loop_followup_closure_text(result, full=False)
+        elif action == "stable_loop_cleanup_followup_completions":
+            completion_filter = form.get("completion_filter", ["cleanup_default"])[0].strip() or "cleanup_default"
+            dry_run = form.get("dry_run", ["true"])[0].lower() != "false"
+            result = cleanup_stable_loop_followup_completions(
+                completion_filter=completion_filter,
+                limit=25,
+                dry_run=dry_run,
+                include_archived=False,
+                reviewer="dashboard",
+            )
+            DashboardState.message = stable_loop_followup_completion_cleanup_text(result, full=False)
+        elif action == "stable_loop_mark_reviewed":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            note = form.get("note", [""])[0].strip()
+            result = update_stable_loop_review(loop_id, "reviewed", note=note or "Marked reviewed from dashboard.", reviewer="dashboard")
+            DashboardState.message = result.message if result.ok else f"Stable loop review failed: {result.error}"
+        elif action == "stable_loop_approve_live":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            note = form.get("note", [""])[0].strip()
+            result = update_stable_loop_review(loop_id, "approved_for_live", note=note or "Approved for live run from dashboard.", reviewer="dashboard")
+            DashboardState.message = result.message if result.ok else f"Stable loop approval failed: {result.error}"
+        elif action == "stable_loop_reject":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            note = form.get("note", [""])[0].strip()
+            result = update_stable_loop_review(loop_id, "rejected", note=note or "Rejected from dashboard.", reviewer="dashboard")
+            DashboardState.message = result.message if result.ok else f"Stable loop rejection failed: {result.error}"
+        elif action == "stable_loop_run_approved_live":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            result = run_approved_stable_loop_live(loop_id, note="Live run launched from dashboard review action.")
+            DashboardState.message = stable_loop_review_text(result, full=False)
+        elif action == "stable_loop_refresh_audit":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            result = refresh_stable_loop_audit(loop_id)
+            DashboardState.message = stable_loop_audit_text(result.audit, full=False) if result.ok else f"Stable loop audit failed: {result.error}"
+        elif action == "stable_loop_archive":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            result = set_stable_loop_archived(loop_id, archived=True, note="Archived from dashboard.", reviewer="dashboard")
+            DashboardState.message = result.message if result.ok else f"Stable loop archive failed: {result.error}"
+        elif action == "stable_loop_restore":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            result = set_stable_loop_archived(loop_id, archived=False, note="Restored from dashboard.", reviewer="dashboard")
+            DashboardState.message = result.message if result.ok else f"Stable loop restore failed: {result.error}"
+        elif action == "stable_loop_cleanup_history":
+            review_filter = form.get("review_filter", ["cleanup_default"])[0].strip() or "cleanup_default"
+            dry_run = form.get("dry_run", ["true"])[0].lower() != "false"
+            result = cleanup_stable_loop_history(review_filter=review_filter, limit=25, dry_run=dry_run, include_live=True, reviewer="dashboard")
+            DashboardState.message = result.get("message", "Stable loop history cleanup complete.")
+        elif action == "stable_loop_add_operator_note":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            note = form.get("note", [""])[0].strip()
+            result = add_stable_loop_operator_note(loop_id, note=note or "Operator note saved from dashboard.", reviewer="dashboard")
+            DashboardState.message = result.message if result.ok else f"Stable loop operator note failed: {result.error}"
+        elif action == "stable_loop_check_done":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            check_id = form.get("check_id", [""])[0].strip()
+            result = update_stable_loop_check(loop_id, check_id=check_id, status="done", note="Marked done from dashboard.", reviewer="dashboard")
+            DashboardState.message = result.message if result.ok else f"Stable loop checklist update failed: {result.error}"
+        elif action == "stable_loop_check_skip":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            check_id = form.get("check_id", [""])[0].strip()
+            result = update_stable_loop_check(loop_id, check_id=check_id, status="skipped", note="Skipped from dashboard.", reviewer="dashboard")
+            DashboardState.message = result.message if result.ok else f"Stable loop checklist update failed: {result.error}"
+        elif action == "stable_loop_final_decision":
+            loop_id = form.get("stable_loop_id", ["latest"])[0].strip() or "latest"
+            decision = form.get("decision", ["needs_review"])[0].strip() or "needs_review"
+            note = form.get("note", [""])[0].strip()
+            result = set_stable_loop_final_decision(loop_id, decision=decision, note=note, reviewer="dashboard")
+            DashboardState.message = result.message if result.ok else f"Stable loop final decision failed: {result.error}"
+        elif action == "stable_loop_run":
+            project_id = form.get("project_id", ["eidolon"])[0].strip() or "eidolon"
+            max_steps = int(form.get("max_steps", ["1"])[0] or 1)
+            live = form.get("live", [""])[0].lower() == "true"
+            use_ai = form.get("use_ai", [""])[0].lower() == "true"
+            seed_if_empty = form.get("seed_if_empty", [""])[0].lower() == "true"
+            auto_followups = form.get("auto_followups", [""])[0].lower() == "true"
+            auto_approval_requests = form.get("auto_approval_requests", [""])[0].lower() == "true"
+            auto_retry_recovery = form.get("auto_retry_recovery", [""])[0].lower() == "true"
+            approve_work_execution = form.get("approve_work_execution", [""])[0].lower() == "true"
+            bypass_closure_guardrails = form.get("bypass_closure_guardrails", [""])[0].lower() == "true"
+            result = run_stable_supervised_loop(
+                project_id=project_id,
+                max_steps=max_steps,
+                live=live,
+                use_ai=use_ai,
+                approve_work_execution=approve_work_execution,
+                seed_if_empty=seed_if_empty,
+                auto_create_patch_followups=auto_followups,
+                auto_request_approvals=auto_approval_requests,
+                auto_retry_recovery=auto_retry_recovery,
+                bypass_closure_guardrails=bypass_closure_guardrails,
+            )
+            DashboardState.message = stable_loop_text(result, full=False)
         elif action == "work_cycle_run":
             project_id = form.get("project_id", ["eidolon"])[0].strip() or "eidolon"
             max_steps = int(form.get("max_steps", ["1"])[0] or 1)
@@ -1825,6 +3326,8 @@ def handle_action(form: dict[str, list[str]]) -> None:
             use_ai = form.get("use_ai", [""])[0].lower() == "true"
             seed_if_empty = form.get("seed_if_empty", [""])[0].lower() == "true"
             auto_followups = form.get("auto_followups", [""])[0].lower() == "true"
+            auto_approval_requests = form.get("auto_approval_requests", [""])[0].lower() == "true"
+            auto_retry_recovery = form.get("auto_retry_recovery", [""])[0].lower() == "true"
             approve_work_execution = form.get("approve_work_execution", [""])[0].lower() == "true"
             result = run_supervised_work_cycle(
                 project_id=project_id,
@@ -1834,6 +3337,8 @@ def handle_action(form: dict[str, list[str]]) -> None:
                 approve_work_execution=approve_work_execution,
                 seed_if_empty=seed_if_empty,
                 auto_create_patch_followups=auto_followups,
+                auto_request_approvals=auto_approval_requests,
+                auto_retry_recovery=auto_retry_recovery,
             )
             DashboardState.message = work_cycle_text(result, full=False)
         elif action == "set_setting":
@@ -1848,7 +3353,7 @@ def handle_action(form: dict[str, list[str]]) -> None:
 
 
 class EidolonDashboardHandler(BaseHTTPRequestHandler):
-    server_version = "EidolonDashboard/5.7"
+    server_version = "EidolonDashboard/7.0"
 
     def _send_json(self, payload: dict[str, Any], status: int = 200) -> None:
         encoded = json.dumps(_to_jsonable(payload), indent=2, default=str).encode("utf-8")
@@ -1881,7 +3386,7 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path
-        if path.startswith("/api"):
+        if path == "/api" or path.startswith("/api/"):
             status, payload = dispatch_api("GET", path, query=parse_qs(parsed.query))
             self._send_json(payload, status=status)
             return
@@ -1902,6 +3407,31 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
                 html = render_work_queue(stage=parse_qs(parsed.query).get("stage", ["all"])[0])
             elif path == "/work-cycle":
                 html = render_work_cycle()
+            elif path == "/stable-loop":
+                parsed_query = parse_qs(parsed.query)
+                html = render_stable_loop(
+                    review_filter=parsed_query.get("review", ["all"])[0],
+                    decision_filter=parsed_query.get("decision", ["all"])[0],
+                    followup_filter=parsed_query.get("followup", parsed_query.get("completion", ["all"]))[0],
+                )
+            elif path == "/stabilization":
+                html = render_stabilization()
+            elif path == "/doctor":
+                html = render_doctor()
+            elif path == "/build-cycle":
+                html = render_build_cycle()
+            elif path == "/patch-review":
+                html = render_patch_review()
+            elif path == "/intelligence":
+                html = render_intelligence()
+            elif path == "/workspace":
+                html = render_workspace()
+            elif path == "/patch-drafts":
+                html = render_patch_drafts()
+            elif path == "/code-patches":
+                html = render_code_patches()
+            elif path == "/release-review":
+                html = render_release_review()
             elif path == "/approvals":
                 html = render_approvals()
             elif path == "/notifications":
@@ -1941,7 +3471,7 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         length = int(self.headers.get("Content-Length", "0"))
         raw_body = self.rfile.read(length) if length else b""
-        if parsed.path.startswith("/api"):
+        if parsed.path == "/api" or parsed.path.startswith("/api/"):
             try:
                 body = parse_request_body(raw_body, self.headers.get("Content-Type", ""))
             except Exception as error:
