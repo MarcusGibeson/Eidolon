@@ -1,0 +1,130 @@
+{
+  "id": "watch_20260620_235523",
+  "type": "background_watch_report",
+  "created_at": "2026-06-20T23:55:13",
+  "status": "attention_needed",
+  "use_ai": false,
+  "diagnostic_report_id": "diag_20260620_235519",
+  "diagnostic_status": "warn",
+  "created_maintenance_scan_id": "maint_20260620_235519",
+  "created_session_plan_id": "session_20260620_235521",
+  "summary_counts": {
+    "pending_approvals": 0,
+    "total_approvals": 3,
+    "proposed_patches": 2,
+    "applied_patches": 4,
+    "test_reports": 7,
+    "test_reviews": 1,
+    "ready_tasks": 0,
+    "active_tasks": 0,
+    "blocked_tasks": 6,
+    "active_memories": 287
+  },
+  "recommendations": [
+    {
+      "priority": "high",
+      "category": "patches",
+      "title": "Inspect latest proposed patch",
+      "reason": "There are 2 proposed patch(es) waiting for review.",
+      "recommended_command": "python conscious_agent/main.py --show-patch latest-proposed",
+      "risk": "high"
+    },
+    {
+      "priority": "high",
+      "category": "testing",
+      "title": "Run tests for an applied patch",
+      "reason": "Applied patch patch_20260618_095713_conscious_agent-memory-py has no saved test report.",
+      "recommended_command": "python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review",
+      "risk": "low"
+    },
+    {
+      "priority": "medium",
+      "category": "diagnostics",
+      "title": "Review diagnostic warnings",
+      "reason": "System is usable, but review warnings before depending on autonomous workflows.",
+      "recommended_command": "python conscious_agent/main.py --show-diagnostic-report latest --diagnostics-full",
+      "risk": "low"
+    },
+    {
+      "priority": "medium",
+      "category": "test_reviews",
+      "title": "Review latest unreviewed test report",
+      "reason": "Test report test_20260619_233928_general has no saved review.",
+      "recommended_command": "python conscious_agent/main.py --review-test-report test_20260619_233928_general",
+      "risk": "low"
+    },
+    {
+      "priority": "medium",
+      "category": "tasks",
+      "title": "Review blocked tasks",
+      "reason": "There are 6 blocked task(s).",
+      "recommended_command": "python conscious_agent/main.py --list-tasks --task-filter-status blocked",
+      "risk": "low"
+    },
+    {
+      "priority": "medium",
+      "category": "planning",
+      "title": "Create or queue a next task",
+      "reason": "No ready or active task was found.",
+      "recommended_command": "python conscious_agent/main.py --plan-session --no-ai-session",
+      "risk": "low"
+    },
+    {
+      "priority": "medium",
+      "category": "memory",
+      "title": "Preview memory compaction",
+      "reason": "Active memory count is 287, meeting or exceeding threshold 80.",
+      "recommended_command": "python conscious_agent/main.py --compact-memory --dry-run",
+      "risk": "low"
+    },
+    {
+      "priority": "low",
+      "category": "maintenance",
+      "title": "Review latest maintenance scan",
+      "reason": "Watch mode created maintenance scan maint_20260620_235519 with 7 suggestion(s).",
+      "recommended_command": "python conscious_agent/main.py --show-maintenance-scan latest --show-maintenance-full",
+      "risk": "low"
+    },
+    {
+      "priority": "low",
+      "category": "session_plan",
+      "title": "Review latest session plan",
+      "reason": "Watch mode created session plan session_20260620_235521.",
+      "recommended_command": "python conscious_agent/main.py --show-session-plan latest --show-session-plan-full",
+      "risk": "low"
+    }
+  ],
+  "safe_next_command": "python conscious_agent/main.py --show-patch latest-proposed",
+  "notes": [
+    "Watch mode is advisory. It does not apply patches, rollback files, or approve actions automatically.",
+    "Use approval commands or dev-loop commands explicitly when you want Eidolon to act."
+  ],
+  "created_artifacts": {
+    "diagnostic_report_id": "diag_20260620_235519",
+    "maintenance_scan_result": {
+      "ok": true,
+      "scan_id": "maint_20260620_235519",
+      "suggestion_count": 7,
+      "text": "# Maintenance Scan: maint_20260620_235519\n\nCreated: 2026-06-20T23:55:19\nActive project: Eidolon\nSuggestions: 7\n\n## Snapshot\n- Indexed files: 199\n- Patches: 7\n- Test reports: 7\n- Test reviews: 1\n- Self-improvement runs: 1\n- Memories: 287\n- Action log entries: 9\n\n## Suggestions\n1. [HIGH] Manually inspect high-risk patch proposals\n   Category: patch_safety\n   Evidence: High-risk proposed patch: patch_20260619_154553_conscious_agent-dashboard-py targeting conscious_agent\\dashboard.py\n   Recommended command: python conscious_agent/main.py --show-patch patch_20260619_154553_conscious_agent-dashboard-py\n\n2. [MEDIUM] Review large files for possible splitting\n   Category: code_health\n   Evidence: Largest indexed file: data/project_index.json with 4465 lines.\n   Recommended command: python conscious_agent/main.py --review-project-file data/project_index.json --no-ai-review\n\n3. [MEDIUM] Review proposed patches waiting for approval\n   Category: patch_workflow\n   Evidence: There are 2 proposed patch(es). Newest: patch_20260619_154553_conscious_agent-dashboard-py\n   Recommended command: python conscious_agent/main.py --show-patch latest-proposed\n\n4. [MEDIUM] Run a test workflow for recently applied patches\n   Category: testing\n   Evidence: There are 4 applied patch(es). Latest applied: patch_20260618_095713_conscious_agent-memory-py\n   Recommended command: python conscious_agent/main.py --run-test-workflow latest-applied --auto-review\n\n5. [MEDIUM] Summarize or compact long-term memory soon\n   Category: memory\n   Evidence: Stored memories count is 287.\n\n6. [MEDIUM] Review recent failed actions\n   Category: audit\n   Evidence: Found 7 failed/error action log entries. Latest action: test_workflow\n   Recommended command: python conscious_agent/main.py --command-history\n\n7. [LOW] Review dense modules for documentation clarity\n   Category: maintainability\n   Evidence: Dense Python files found: conscious_agent/api_server.py, conscious_agent/approval_manager.py, conscious_agent/autonomous_dev_cycle.py, conscious_agent/chat_action_router.py, conscious_agent/code_reviewer.py, conscious_agent/command_runner.py\n   Recommended command: python conscious_agent/main.py --review-project-file conscious_agent/api_server.py --no-ai-review\n\nShortcut commands:\n  python conscious_agent/main.py --show-maintenance-scan latest\n  python conscious_agent/main.py --maintenance-scan --no-ai-maintenance",
+      "error": ""
+    },
+    "session_plan_result": {
+      "ok": true,
+      "plan_id": "session_20260620_235521",
+      "recommendation_count": 7,
+      "text": "# Session Plan: session_20260620_235521\nCreated: 2026-06-20T23:55:21\nActive project: Eidolon\n\n## Summary\nActive project: Eidolon\nOpen goals: 3\nIndexed files: 199\nProposed patches: 2\nApplied patches: 4\nTest reports/reviews: 7/1\nMaintenance scans: 10\nOpen tasks: 7\n\nRecommended next task: Advance active goal: Build Eidolon into a safe local AI assistant\nWhy: Next action: Test the session planner commands.\n\n## Primary Recommendation\nPriority: high\nCategory: goal_next_action\nTask: Advance active goal: Build Eidolon into a safe local AI assistant\nWhy: Next action: Test the session planner commands.\nFirst command: python conscious_agent/main.py --show-goal goal_seed_build-eidolon --show-goal-full\nFollow-up commands:\n- python conscious_agent/main.py --maintenance-scan --no-ai-maintenance\n- python conscious_agent/main.py --plan-session --no-ai-session\n\n## Recommendations (7)\n1. [high] Advance active goal: Build Eidolon into a safe local AI assistant\n   Category: goal_next_action\n   Why: Next action: Test the session planner commands.\n   Command: python conscious_agent/main.py --show-goal goal_seed_build-eidolon --show-goal-full\n2. [high] Manually inspect high-risk patch proposals\n   Category: maintenance\n   Why: High-risk proposed patch: patch_20260619_154553_conscious_agent-dashboard-py targeting conscious_agent\\dashboard.py\n   Command: python conscious_agent/main.py --show-patch patch_20260619_154553_conscious_agent-dashboard-py\n3. [high] Review the latest proposed patch\n   Category: patch_workflow\n   Why: There are 2 proposed patch(es) waiting for review. Review before applying anything. Yes, paperwork again. It keeps the goblin from chewing wires.\n   Command: python conscious_agent/main.py --show-patch latest-proposed\n4. [high] Start queued task: Advance active goal: Build Eidolon into a safe local AI assistant\n   Category: task_queue\n   Why: A ready task is already queued. Starting it is safer than inventing new work just to feel productive.\n   Command: python conscious_agent/main.py --start-task task_20260619_234414_advance-active-goal-build-eidolon-into-a-safe-lo --task-note \"Starting from session plan\"\n5. [high] Run tests for the latest applied patch\n   Category: test_workflow\n   Why: Applied patch patch_20260618_095713_conscious_agent-memory-py has no saved test report yet.\n   Command: python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review\n6. [low] Review unusually large file\n   Category: code_health\n   Why: data/project_index.json has 4465 lines. Large files are where bugs rent apartments.\n   Command: python conscious_agent/main.py --review-project-file data/project_index.json --no-ai-review\n7. [low] Check memory status before it grows too much\n   Category: memory\n   Why: There are 60 active memories and no saved summaries yet.\n   Command: python conscious_agent/main.py --memory-status\n",
+      "error": ""
+    }
+  },
+  "ai_summary": "",
+  "created_notification_ids": [
+    "note_20260620_235523_16c629",
+    "note_20260620_235525_59af96",
+    "note_20260618_132555_532890",
+    "note_20260618_132557_386ea7",
+    "note_20260620_235528_74df32",
+    "note_20260620_235530_460d43",
+    "note_20260618_132601_dcf0e7",
+    "note_20260619_122051_a54a8a"
+  ]
+}

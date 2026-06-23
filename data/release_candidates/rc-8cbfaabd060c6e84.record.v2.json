@@ -1,0 +1,20 @@
+{
+  "schema_version": "eidolon.release_candidate_record.v2",
+  "candidate_id": "rc-8cbfaabd060c6e84",
+  "project_id": "eidolon",
+  "release_version": "35.0",
+  "package_name": "Eidolon_v35_0.zip",
+  "package_sha256": "781aaf21c8533ac8ca1d8b14327a9303a6d0c2aa179ea30ef224efe146c6ff53",
+  "canonical_manifest_hash": "50490cb4308bd56ef512850c0ba56353ccd41d2cf1d7eff52f93b58e4d7bf428",
+  "canonical_evidence_hash": "4c527902f19b5b67a4f0863ce9545974adc3eea0060d8aa1af2277f62a9e4499",
+  "signing_payload_hash": "d0fdc7423af7af292d864af175d6a05f58a4d451784efdbd7824e78847e161a0",
+  "reviewed": false,
+  "reviewed_at": null,
+  "reviewer_label": null,
+  "publish_decision_snapshot": {
+    "publish_ready": false,
+    "status": "warn",
+    "reason": "blocked"
+  },
+  "live_apply_approved": false
+}

@@ -1,0 +1,37 @@
+{
+  "id": "dash_chat_20260620_235616_how-are-you",
+  "type": "dashboard_chat_turn",
+  "created_at": "2026-06-20T23:56:16",
+  "user_message": "How are you?",
+  "eidolon_response": "Eidolon: Hello Marcus! I'm doing well, thank you for asking. Currently, my main focus is on advancing our project goals. The next concrete step is to test the session planner commands to ensure they work as intended. This will help us build Eidolon into a safe local AI assistant more effectively.\n\nIf you have any specific questions or tasks related to the project, feel free to share them! I\u2019m here to assist and support your efforts.",
+  "action_id": "chat_action_20260620_235618_unknown-request",
+  "action": {
+    "id": "chat_action_20260620_235618_unknown-request",
+    "type": "chat_action",
+    "created_at": "2026-06-20T23:56:18",
+    "updated_at": "2026-06-20T23:56:18",
+    "status": "blocked",
+    "user_request": "How are you?",
+    "intent": "unknown_request",
+    "title": "No safe action matched",
+    "summary": "I could not map this request to a known safe Eidolon action.",
+    "explanation": "Try phrasing it as: run diagnostics, check approvals, plan session, run watch, review conscious_agent/memory.py, or suggest improvement for conscious_agent/memory.py.",
+    "execution_mode": "blocked",
+    "risk_level": "unknown",
+    "command": "",
+    "function_name": "",
+    "function_args": {},
+    "approval_action_type": "",
+    "approval_object_id": "",
+    "approval_command": "",
+    "blocked_reason": "Unknown or unsupported chat action request.",
+    "source": "chat_action_router",
+    "result": {},
+    "approval_id": "",
+    "useful_commands": [
+      "python conscious_agent/main.py --show-chat-action chat_action_20260620_235618_unknown-request"
+    ]
+  },
+  "use_ai": true,
+  "error": ""
+}

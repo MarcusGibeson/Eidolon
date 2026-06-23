@@ -1289,10 +1289,18 @@
     }
   ],
   "review": {
-    "status": "unreviewed",
-    "updated_at": "",
-    "reviewed_by": "",
-    "notes": []
+    "status": "reviewed",
+    "updated_at": "2026-06-21T12:55:35.436254+00:00",
+    "reviewed_by": "dashboard",
+    "notes": [
+      {
+        "at": "2026-06-21T12:55:35.436254+00:00",
+        "by": "dashboard",
+        "status": "reviewed",
+        "note": "Marked reviewed from dashboard."
+      }
+    ],
+    "reviewed_at": "2026-06-21T12:55:35.436254+00:00"
   },
   "audit": {
     "version": "6.9",

@@ -195,7 +195,9 @@
       "follow_up_commands": [],
       "next_actions": [],
       "blockers": [
-        "Approval pending: approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2"
+        "Approval pending: approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2",
+        "Approval rejected: Rejected from dashboard.",
+        "Approval rejected: Rejected from dashboard."
       ],
       "notes": [],
       "linked_goal": "",
@@ -211,17 +213,18 @@
         "dry_run_command": "python conscious_agent/main.py --apply-patch patch_20260619_154527_conscious_agent-dashboard-py --dry-run",
         "patch_relationship": "patch_followup",
         "approval_id": "approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2",
-        "approval_status": "pending",
+        "approval_status": "rejected",
         "approval_kind": "task_work_execution",
         "approval_command": "python conscious_agent/main.py --execute-task-work-id task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen --approve-task-work-execution",
-        "approval_reason": "Task is risk-gated or explicitly requires approval before execution."
+        "approval_reason": "Task is risk-gated or explicitly requires approval before execution.",
+        "approval_action_type": "run_command"
       },
       "patch_id": "patch_20260619_154527_conscious_agent-dashboard-py",
       "patch_status": "proposed",
       "result": "",
       "work_status": "",
       "created_at": "2026-06-19T23:36:29",
-      "updated_at": "2026-06-19T23:38:27",
+      "updated_at": "2026-06-20T17:00:39",
       "started_at": "",
       "completed_at": ""
     },
@@ -268,7 +271,7 @@
       "title": "Advance active goal: Build Eidolon into a safe local AI assistant",
       "description": "Next action: Test the session planner commands.",
       "project": "Eidolon",
-      "status": "planned",
+      "status": "blocked",
       "priority": "high",
       "risk": "low",
       "requires_approval": false,
@@ -280,19 +283,24 @@
       "next_actions": [
         "python conscious_agent/main.py --show-goal goal_seed_build-eidolon --show-goal-full"
       ],
-      "blockers": [],
+      "blockers": [
+        "No safe automatic executor matched this task. Manual handling required."
+      ],
       "notes": [],
       "linked_goal": "goal_seed_build-eidolon",
       "source": "session_plan",
       "source_id": "session_20260619_234401",
       "source_category": "goal_next_action",
-      "metadata": {},
+      "metadata": {
+        "last_executor_block_reason": "No safe automatic executor matched this task. Manual handling required.",
+        "action_type": "manual"
+      },
       "patch_id": "",
       "patch_status": "",
       "result": "",
       "work_status": "",
       "created_at": "2026-06-19T23:44:14",
-      "updated_at": "2026-06-19T23:44:14",
+      "updated_at": "2026-06-21T08:53:19",
       "started_at": "",
       "completed_at": ""
     }

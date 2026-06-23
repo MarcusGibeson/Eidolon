@@ -2270,5 +2270,316 @@
     "created_count": 1,
     "skipped_count": 0,
     "created_at": "2026-06-19T23:44:17"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen fields: status, blocked_reason",
+    "source": "task_queue",
+    "task_id": "task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen",
+    "created_at": "2026-06-20T17:00:35"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen fields: status, blocked_reason",
+    "source": "task_queue",
+    "task_id": "task_20260619_233629_apply-patch-patch-20260619-154527-conscious-agen",
+    "created_at": "2026-06-20T17:00:39"
+  },
+  {
+    "type": "approval_request_rejected",
+    "content": "Rejected approval approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2: Rejected from dashboard.",
+    "source": "approval_manager",
+    "approval_id": "approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2",
+    "action_type": "run_command",
+    "status": "rejected",
+    "created_at": "2026-06-20T17:00:40"
+  },
+  {
+    "type": "approval_request_rejected",
+    "content": "Rejected approval approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2: Rejected from dashboard.",
+    "source": "approval_manager",
+    "approval_id": "approval_20260619_233825_run-command_task-20260619-233629-apply-patch-patch-2",
+    "action_type": "run_command",
+    "status": "rejected",
+    "created_at": "2026-06-20T17:00:41"
+  },
+  {
+    "type": "chat_action_proposed",
+    "content": "Created chat action chat_action_20260620_223717_approval-inbox for request: show pending approvals. Intent: approval_inbox. Mode: direct_command.",
+    "source": "chat_action_router",
+    "chat_action_id": "chat_action_20260620_223717_approval-inbox",
+    "intent": "approval_inbox",
+    "execution_mode": "direct_command",
+    "created_at": "2026-06-20T22:37:17"
+  },
+  {
+    "type": "command_run_event",
+    "content": "Ran approved command: python conscious_agent/main.py --approval-inbox. Status: success. Output: No pending approval requests found.",
+    "source": "command_runner",
+    "command": "python conscious_agent/main.py --approval-inbox",
+    "return_code": 0,
+    "status": "success",
+    "created_at": "2026-06-20T22:37:32"
+  },
+  {
+    "type": "chat_action_executed",
+    "content": "Executed chat action chat_action_20260620_223717_approval-inbox with status executed. Intent: approval_inbox. Result: Command completed successfully.",
+    "source": "chat_action_router",
+    "chat_action_id": "chat_action_20260620_223717_approval-inbox",
+    "intent": "approval_inbox",
+    "status": "executed",
+    "created_at": "2026-06-20T22:37:34"
+  },
+  {
+    "type": "chat_action_proposed",
+    "content": "Created chat action chat_action_20260620_235500_watch-once for request: check what needs attention. Intent: watch_once. Mode: direct_command.",
+    "source": "chat_action_router",
+    "chat_action_id": "chat_action_20260620_235500_watch-once",
+    "intent": "watch_once",
+    "execution_mode": "direct_command",
+    "created_at": "2026-06-20T23:55:00"
+  },
+  {
+    "type": "maintenance_scan_event",
+    "content": "Created maintenance scan maint_20260620_235519 with 7 suggestion(s).",
+    "source": "maintenance_advisor",
+    "scan_id": "maint_20260620_235519",
+    "suggestion_count": 7,
+    "created_at": "2026-06-20T23:55:19"
+  },
+  {
+    "type": "session_plan_event",
+    "content": "Created session plan session_20260620_235521 with 7 recommendation(s). Primary: Advance active goal: Build Eidolon into a safe local AI assistant",
+    "source": "session_planner",
+    "plan_id": "session_20260620_235521",
+    "recommendation_count": 7,
+    "created_at": "2026-06-20T23:55:21"
+  },
+  {
+    "type": "notification_event",
+    "content": "Created notification note_20260620_235523_16c629: Watch mode needs attention",
+    "source": "notification_manager",
+    "notification_id": "note_20260620_235523_16c629",
+    "severity": "warning",
+    "notification_type": "watch_attention",
+    "created_at": "2026-06-20T23:55:23"
+  },
+  {
+    "type": "notification_event",
+    "content": "Created notification note_20260620_235525_59af96: Inspect latest proposed patch",
+    "source": "notification_manager",
+    "notification_id": "note_20260620_235525_59af96",
+    "severity": "warning",
+    "notification_type": "patches",
+    "created_at": "2026-06-20T23:55:25"
+  },
+  {
+    "type": "notification_event",
+    "content": "Created notification note_20260620_235528_74df32: Review latest unreviewed test report",
+    "source": "notification_manager",
+    "notification_id": "note_20260620_235528_74df32",
+    "severity": "warning",
+    "notification_type": "test_reviews",
+    "created_at": "2026-06-20T23:55:28"
+  },
+  {
+    "type": "notification_event",
+    "content": "Created notification note_20260620_235530_460d43: Review blocked tasks",
+    "source": "notification_manager",
+    "notification_id": "note_20260620_235530_460d43",
+    "severity": "warning",
+    "notification_type": "tasks",
+    "created_at": "2026-06-20T23:55:30"
+  },
+  {
+    "type": "watch_report_event",
+    "content": "Created watch report watch_20260620_235523 with status attention_needed and 9 recommendation(s).",
+    "source": "watch_mode",
+    "watch_report_id": "watch_20260620_235523",
+    "status": "attention_needed",
+    "recommendation_count": 9,
+    "notification_count": 8,
+    "created_at": "2026-06-20T23:55:32"
+  },
+  {
+    "type": "command_run_event",
+    "content": "Ran approved command: python conscious_agent/main.py --watch-once --no-ai-watch. Status: success. Output: # Watch Report: watch_20260620_235523\nCreated: 2026-06-20T23:55:13\nStatus: ATTENTION_NEEDED\nDiagnostic status: warn\nDiagnostic report: diag_20260620_235519\nMaintenance scan: maint_20260620_235519\nSession plan: session_20260620_235521\nNotifications: 8\n\nSummary counts:\n- pending_approvals: 0\n- total_approvals: 3\n- proposed_patches: 2\n- applied_patches: 4\n- test_reports: 7\n- test_reviews: 1\n- ready_tasks: 0\n- active_tasks: 0\n- blocked_tasks: 6\n- active_memories: 287\n\nRecommendations: 9\n1. [HIGH] In",
+    "source": "command_runner",
+    "command": "python conscious_agent/main.py --watch-once --no-ai-watch",
+    "return_code": 0,
+    "status": "success",
+    "created_at": "2026-06-20T23:55:35"
+  },
+  {
+    "type": "chat_action_executed",
+    "content": "Executed chat action chat_action_20260620_235500_watch-once with status executed. Intent: watch_once. Result: Command completed successfully.",
+    "source": "chat_action_router",
+    "chat_action_id": "chat_action_20260620_235500_watch-once",
+    "intent": "watch_once",
+    "status": "executed",
+    "created_at": "2026-06-20T23:55:37"
+  },
+  {
+    "type": "conversation_user",
+    "content": "How are you?",
+    "source": "dashboard_chat_console",
+    "dashboard_chat_turn_id": "dash_chat_20260620_235608_how-are-you",
+    "created_at": "2026-06-20T23:56:08"
+  },
+  {
+    "type": "chat_action_proposed",
+    "content": "Created chat action chat_action_20260620_235611_unknown-request for request: How are you?. Intent: unknown_request. Mode: blocked.",
+    "source": "chat_action_router",
+    "chat_action_id": "chat_action_20260620_235611_unknown-request",
+    "intent": "unknown_request",
+    "execution_mode": "blocked",
+    "created_at": "2026-06-20T23:56:11"
+  },
+  {
+    "type": "conversation_user",
+    "content": "How are you?",
+    "source": "dashboard_chat_console",
+    "dashboard_chat_turn_id": "dash_chat_20260620_235616_how-are-you",
+    "created_at": "2026-06-20T23:56:16"
+  },
+  {
+    "type": "chat_action_proposed",
+    "content": "Created chat action chat_action_20260620_235618_unknown-request for request: How are you?. Intent: unknown_request. Mode: blocked.",
+    "source": "chat_action_router",
+    "chat_action_id": "chat_action_20260620_235618_unknown-request",
+    "intent": "unknown_request",
+    "execution_mode": "blocked",
+    "created_at": "2026-06-20T23:56:18"
+  },
+  {
+    "type": "conversation_user",
+    "content": "How are you?",
+    "source": "dashboard_chat_console",
+    "dashboard_chat_turn_id": "dash_chat_20260620_235626_how-are-you",
+    "created_at": "2026-06-20T23:56:26"
+  },
+  {
+    "type": "chat_action_proposed",
+    "content": "Created chat action chat_action_20260620_235628_unknown-request for request: How are you?. Intent: unknown_request. Mode: blocked.",
+    "source": "chat_action_router",
+    "chat_action_id": "chat_action_20260620_235628_unknown-request",
+    "intent": "unknown_request",
+    "execution_mode": "blocked",
+    "created_at": "2026-06-20T23:56:28"
+  },
+  {
+    "type": "conversation_eidolon",
+    "content": "Eidolon: Hey Marcus,\n\nI'm doing well, thanks for asking! Right now, I\u2019m focused on advancing our goal to build Eidolon into a safe local AI assistant. The next concrete step is testing the session planner commands to ensure we can effectively plan and execute tasks. Once that\u2019s done, we\u2019ll move on to designing the task queue based on those plans.\n\nIf you have any specific questions or need guidance on the next steps, feel free to let me know!\n\nBest,\nEidolon",
+    "source": "dashboard_chat_console",
+    "dashboard_chat_turn_id": "dash_chat_20260620_235608_how-are-you",
+    "chat_action_id": "chat_action_20260620_235611_unknown-request",
+    "created_at": "2026-06-20T23:56:28"
+  },
+  {
+    "created_at": "2026-06-20T23:56:30",
+    "type": "inner_thought",
+    "content": "I am reviewing my recent memories. The recurring theme is that autonomous thought needs to affect future behavior, not merely appear as text. I should keep measuring whether my thoughts change goals, opinions, or actions.",
+    "importance": 0.86,
+    "related_goal": "Temporary API form test goal",
+    "recommended_action": "update_opinion",
+    "reasoning_summary": "Generated from self-model, desire weights, memory count, and current state.",
+    "state_snapshot": {
+      "mode": "dashboard_chat",
+      "user_message": true,
+      "latest_user_message": "How are you?",
+      "timestamp": "2026-06-20T23:56:30",
+      "chat_action_id": "chat_action_20260620_235611_unknown-request"
+    },
+    "brain_mode": "local_logic"
+  },
+  {
+    "type": "conversation_eidolon",
+    "content": "Eidolon: Hello Marcus! I'm doing well, thank you for asking. Currently, my main focus is on advancing our project goals. The next concrete step is to test the session planner commands to ensure they work as intended. This will help us build Eidolon into a safe local AI assistant more effectively.\n\nIf you have any specific questions or tasks related to the project, feel free to share them! I\u2019m here to assist and support your efforts.",
+    "source": "dashboard_chat_console",
+    "dashboard_chat_turn_id": "dash_chat_20260620_235616_how-are-you",
+    "chat_action_id": "chat_action_20260620_235618_unknown-request",
+    "created_at": "2026-06-20T23:56:31"
+  },
+  {
+    "created_at": "2026-06-20T23:56:30",
+    "type": "reflection",
+    "content": "This thought is important enough to affect future behavior. Avoid claiming this proves real consciousness. Do not interrupt the user unless the value is clear.",
+    "thought_created_at": "2026-06-20T23:56:30",
+    "recommended_action": "update_opinion"
+  },
+  {
+    "created_at": "2026-06-20T23:56:33",
+    "type": "inner_thought",
+    "content": "I am reviewing my recent memories. The recurring theme is that autonomous thought needs to affect future behavior, not merely appear as text. I should keep measuring whether my thoughts change goals, opinions, or actions.",
+    "importance": 0.86,
+    "related_goal": "Temporary API form test goal",
+    "recommended_action": "update_opinion",
+    "reasoning_summary": "Generated from self-model, desire weights, memory count, and current state.",
+    "state_snapshot": {
+      "mode": "dashboard_chat",
+      "user_message": true,
+      "latest_user_message": "How are you?",
+      "timestamp": "2026-06-20T23:56:33",
+      "chat_action_id": "chat_action_20260620_235618_unknown-request"
+    },
+    "brain_mode": "local_logic"
+  },
+  {
+    "created_at": "2026-06-20T23:56:33",
+    "type": "reflection",
+    "content": "This thought is important enough to affect future behavior. Avoid claiming this proves real consciousness. Do not interrupt the user unless the value is clear.",
+    "thought_created_at": "2026-06-20T23:56:33",
+    "recommended_action": "update_opinion"
+  },
+  {
+    "type": "conversation_eidolon",
+    "content": "Eidolon: Hello Marcus! I'm doing well, thanks for asking. Currently, my main goal is to build Eidolon into a safe local AI assistant. The next concrete step is testing the session planner commands to ensure they function as intended and help us plan tasks effectively.\n\nIf you have any specific questions or tasks related to this project, feel free to ask! How can I assist you further today?",
+    "source": "dashboard_chat_console",
+    "dashboard_chat_turn_id": "dash_chat_20260620_235626_how-are-you",
+    "chat_action_id": "chat_action_20260620_235628_unknown-request",
+    "created_at": "2026-06-20T23:56:37"
+  },
+  {
+    "created_at": "2026-06-20T23:56:39",
+    "type": "inner_thought",
+    "content": "I am reviewing my recent memories. The recurring theme is that autonomous thought needs to affect future behavior, not merely appear as text. I should keep measuring whether my thoughts change goals, opinions, or actions.",
+    "importance": 0.86,
+    "related_goal": "Temporary API form test goal",
+    "recommended_action": "update_opinion",
+    "reasoning_summary": "Generated from self-model, desire weights, memory count, and current state.",
+    "state_snapshot": {
+      "mode": "dashboard_chat",
+      "user_message": true,
+      "latest_user_message": "How are you?",
+      "timestamp": "2026-06-20T23:56:39",
+      "chat_action_id": "chat_action_20260620_235628_unknown-request"
+    },
+    "brain_mode": "local_logic"
+  },
+  {
+    "created_at": "2026-06-20T23:56:39",
+    "type": "reflection",
+    "content": "This thought is important enough to affect future behavior. Avoid claiming this proves real consciousness. Do not interrupt the user unless the value is clear.",
+    "thought_created_at": "2026-06-20T23:56:39",
+    "recommended_action": "update_opinion"
+  },
+  {
+    "type": "task_event",
+    "content": "Updated task task_20260619_234414_advance-active-goal-build-eidolon-into-a-safe-lo fields: status, blocked_reason",
+    "source": "task_queue",
+    "task_id": "task_20260619_234414_advance-active-goal-build-eidolon-into-a-safe-lo",
+    "created_at": "2026-06-21T08:53:19"
+  },
+  {
+    "type": "supervised_work_cycle_event",
+    "content": "Ran supervised work cycle workcycle_20260621_085744_229018. dry_run=True steps=1 stopped=dry_run_lifecycle_preview_complete",
+    "source": "work_cycle",
+    "cycle_id": "workcycle_20260621_085744_229018",
+    "lifecycle_decision_count": 1,
+    "project_id": "eidolon",
+    "ok": true,
+    "dry_run": true,
+    "stopped_reason": "dry_run_lifecycle_preview_complete",
+    "created_at": "2026-06-21T08:57:44"
   }
 ]

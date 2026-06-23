@@ -1,10 +1,10 @@
 {
   "version": "15.0",
-  "checked_at": "2026-06-20T15:17:36",
+  "checked_at": "2026-06-23T09:57:53",
   "project_id": "eidolon",
   "status": "pass",
   "ok": true,
-  "plan_id": "plan_20260620_151735_task-20260619-234414-advance-active-goal-build-eid",
+  "plan_id": "plan_20260623_095753_synthetic-v9-safe-readme-task",
   "rows": [
     {
       "path": "README_NEXT_STEPS.md",
@@ -13,7 +13,7 @@
       "diff_path": "data\\patch_workspace\\file_diffs\\README_NEXT_STEPS.md.diff",
       "added_lines": 3,
       "removed_lines": 0,
-      "diff_preview": "--- a/README_NEXT_STEPS.md\n+++ b/README_NEXT_STEPS.md\n@@ -8904,3 +8904,6 @@\n - keep installation and risky machine changes manual\n \n v4.5 tells you what to do. v4.6 should make copying the exact commands less annoying, because apparently typing is where human morale goes to die.\n+\n+<!-- EIDOLON_CONTROLLED_BUILD_STAGE_MARKER -->\n+Staged controlled-build probe for plan_20260620_151735_task-20260619-234414-advance-active-goal-build-eid. This line is only written if the operator explicitly applies the staged patch.\n"
+      "diff_preview": "--- a/README_NEXT_STEPS.md\n+++ b/README_NEXT_STEPS.md\n@@ -3028,3 +3028,6 @@\n \n ### v300.0 closure boundary\n v300.0 may summarize current continuity state, build review-only self-model snapshots, detect stale capability claims, review purpose drift, classify coherence risks, synthesize supervised growth priorities, connect memory candidates to future review needs, connect rollback/recovery lessons to risk planning, and prepare a v300 continuity audit packet. It does not mutate memory automatically, alter identity, alter personality, rewrite purpose, self-approve capabilities, auto-select future roadmaps, start new patches automatically, infer approval from continuity audits, invoke local models by default, execute commands automatically, publish release candidates, or treat self-model snapshots as authority.\n+\n+<!-- EIDOLON_CONTROLLED_BUILD_STAGE_MARKER -->\n+Staged controlled-build probe for plan_20260623_095753_synthetic-v9-safe-readme-task. This line is only written if the operator explicitly applies the staged patch.\n"
     }
   ],
   "warnings": [],

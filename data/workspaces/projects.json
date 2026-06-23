@@ -1,16 +1,31 @@
 {
-  "version": "30.0",
-  "updated_at": "2026-06-20T18:42:54",
+  "last_updated_for": "v350.0",
+  "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
   "projects": [
     {
+      "current_milestone": "v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1",
+      "description": "Eidolon local artificial mind project with governed continuity, identity/personality/coherence expression review, and strict operator approval boundaries.",
+      "framework_type": "local_cli_dashboard_api",
       "id": "eidolon",
-      "name": "Eidolon",
+      "language": "Python",
+      "last_health_status": "unknown",
+      "last_updated_for": "v350.0",
+      "name": "v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1",
+      "next_steps": [
+        "Use /expression-sandbox-trial-evidence-intake and --operator-governed-sandbox-trial-evidence-intake-layer-v1 to review operator-provided sandbox evidence without treating it as approval.",
+        "Use /expression-sandbox-outcome-comparison and --operator-governed-sandbox-outcome-comparison-v1 to compare expected versus actual sandbox results without auto-correction.",
+        "Use /expression-sandbox-regression-result-review and --operator-governed-expression-regression-result-review-v1 to review expression regressions without rewriting prompts or identity.",
+        "Use /expression-sandbox-revision-recommendations and --operator-governed-sandbox-trial-revision-recommendation-layer-v1 to review revise/defer/reject/retry/promote-to-review options without applying changes.",
+        "Use /expression-sandbox-promotion-review-prep and --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 to assemble promotion-review prep without live promotion authority."
+      ],
+      "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+      "priority": "high",
+      "readme_path": "README_NEXT_STEPS.md",
+      "registered_at": "2026-06-20T04:13:25",
       "root": ".",
       "root_resolves_from": "ROOT_DIR",
-      "version": "v30.0",
-      "language": "Python",
-      "framework_type": "local_cli_dashboard_api",
-      "readme_path": "README_NEXT_STEPS.md",
+      "safe_command_profile": "eidolon",
+      "safe_to_modify": true,
       "test_commands": [
         "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
         "python conscious_agent/main.py --doctor",
@@ -20,14 +35,8 @@
         "python conscious_agent/main.py --assisted-self-improvement-release --readiness-json",
         "python conscious_agent/main.py --semi-autonomous-maintenance-review --readiness-json"
       ],
-      "safe_command_profile": "eidolon",
-      "last_health_status": "unknown",
-      "priority": "high",
-      "safe_to_modify": true,
-      "last_updated_for": "v30.0",
-      "current_milestone": "v30.0 Signed Release Preparation System",
-      "registered_at": "2026-06-20T04:13:25",
-      "updated_at": "2026-06-20T18:42:54"
+      "version": "350.0"
     }
-  ]
+  ],
+  "version": "350.0"
 }

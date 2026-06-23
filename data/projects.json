@@ -1,13 +1,44 @@
 {
   "active_project": "Eidolon",
+  "current_project": {
+    "current_milestone": "v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1",
+    "last_updated_for": "v350.0",
+    "next_steps": [
+      "Use /expression-sandbox-trial-evidence-intake and --operator-governed-sandbox-trial-evidence-intake-layer-v1 to review operator-provided sandbox evidence without treating it as approval.",
+      "Use /expression-sandbox-outcome-comparison and --operator-governed-sandbox-outcome-comparison-v1 to compare expected versus actual sandbox results without auto-correction.",
+      "Use /expression-sandbox-regression-result-review and --operator-governed-expression-regression-result-review-v1 to review expression regressions without rewriting prompts or identity.",
+      "Use /expression-sandbox-revision-recommendations and --operator-governed-sandbox-trial-revision-recommendation-layer-v1 to review revise/defer/reject/retry/promote-to-review options without applying changes.",
+      "Use /expression-sandbox-promotion-review-prep and --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 to assemble promotion-review prep without live promotion authority."
+    ],
+    "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+    "recommended_next_actions": [
+      "Use /expression-sandbox-trial-evidence-intake and --operator-governed-sandbox-trial-evidence-intake-layer-v1 to review operator-provided sandbox evidence without treating it as approval.",
+      "Use /expression-sandbox-outcome-comparison and --operator-governed-sandbox-outcome-comparison-v1 to compare expected versus actual sandbox results without auto-correction.",
+      "Use /expression-sandbox-regression-result-review and --operator-governed-expression-regression-result-review-v1 to review expression regressions without rewriting prompts or identity.",
+      "Use /expression-sandbox-revision-recommendations and --operator-governed-sandbox-trial-revision-recommendation-layer-v1 to review revise/defer/reject/retry/promote-to-review options without applying changes.",
+      "Use /expression-sandbox-promotion-review-prep and --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 to assemble promotion-review prep without live promotion authority."
+    ],
+    "version": "350.0"
+  },
+  "last_updated_for": "v350.0",
+  "next_recommended_arc": "v340.1-v345.0 Operator-Governed Expression Promotion Decision Packet Bridge v1",
+  "next_steps": [
+    "Use /expression-sandbox-trial-evidence-intake and --operator-governed-sandbox-trial-evidence-intake-layer-v1 to review operator-provided sandbox evidence without treating it as approval.",
+    "Use /expression-sandbox-outcome-comparison and --operator-governed-sandbox-outcome-comparison-v1 to compare expected versus actual sandbox results without auto-correction.",
+    "Use /expression-sandbox-regression-result-review and --operator-governed-expression-regression-result-review-v1 to review expression regressions without rewriting prompts or identity.",
+    "Use /expression-sandbox-revision-recommendations and --operator-governed-sandbox-trial-revision-recommendation-layer-v1 to review revise/defer/reject/retry/promote-to-review options without applying changes.",
+    "Use /expression-sandbox-promotion-review-prep and --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 to assemble promotion-review prep without live promotion authority."
+  ],
+  "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
   "projects": [
     {
-      "name": "Eidolon",
-      "path": "",
-      "description": "A local autonomous AI agent prototype with memory, reflection, local AI, semantic search, project awareness, read-only file tools, indexing, code review, patch suggestions, approved editing, rollback, command execution, test workflows, self-improvement workflows, maintenance scans, memory compaction, structured goals, session planning, a canonical task/work queue, task-centered patch bridges, task-centered execution, task approval bridge, stable supervised loops with operator review filters, history cleanup, live-run audit notes, and post-run operator checklists, decision-aware stable-loop reporting, decision follow-up task creation, decision follow-up lifecycle integration, closure-aware stable-loop guardrails, a v9.0 stabilization checkpoint, supervised work cycles, approval inbox, settings, diagnostics, local dashboard, background watch mode, notifications, chat-to-action routing, dashboard chat, local JSON API, dashboard forms, live dashboard status polling, desktop companion tools, setup helpers, and guided desktop onboarding, doctor mode, self-repair suggestions, patch integrity reports, project snapshots, task review, recovery drills, stable-loop confidence scoring, hardening reports, and a controlled self-build preview/live gate, controlled build task selection, patch planning, patch workspace staging, diff preview, guarded staged apply/rollback, auto-verification, README enforcement, full controlled build cycles, and one-cycle supervised autonomous development loops, project registry upgrades, per-project health checks, command profiles, workspace dependency maps, multi-project task inboxes, safe project switching, project context bundles, workspace timelines, and workspace-orchestrated development loop previews, and human-approved patch draft requests, draft workspaces, review notes, draft diffs, test impact planning, approval gates, approved draft apply/rollback, and one-task human-approved patch loops., review-centered patch quality scoring, file target resolution, intent blocks, conflict detection, verification bundles, human review checklists, approved execution reporting, and a v14.0 review-centered patch loop, human-approved release pipeline, safe rewrite previews, approval-bound draft artifacts, release readiness gates, and release package preparation, generated-code patch workspaces, symbol-aware scans, targeted rewrite planning, rewrite conflict detection, generated patch diff bundles, guarded code patch transactions, semantic safety checks, release artifact manifests, release audit trails, and a v16.0 generated code patch release loop, AI-assisted task-to-code patch translation, code context extraction, patch prompt building, generated edit parsing, edit consistency checks, AI patch dry-runs, failure analysis, learning notes, generated patch review dashboard, and a v17.0 AI-assisted human-approved code patch loop, validated AI patch objective refinement, code context ranking, safety envelopes, generated patch validation, patch simulation, test stub planning, patch review scoring, recovery planning, and a v18.0 validated AI code patch loop, approval-ready AI patch review bundles, review bundle integrity checks, approval ledgers, validated AI apply gates, post-apply review, package build plans, and a v19.0 approval-to-release loop, verified release packaging, manifest integrity checks, package inventory/checksums, release notes, handoff reports, guarded zip building, unzip verification, release pipeline audits, and a v20.0 verified release package loop, and v23.0 verified self-update release pipeline safeguards for smoke runtime hardening, deterministic manifest binding, external zip verification, dry-run update planning, guarded source update transactions, migration previews, route safety harnesses, dashboard command-center checks, and clean-room install simulation, and v23.0 controlled self-maintenance loop previews guarded issue detection, proposal drafting, release gate checks, approval-bound patching, and rollback-preserving verification., and v24.0 assisted self-improvement release scaffolding for proposal sandboxes, patch planning, dry-run patch previews, safety audits, temp-clone apply drills, review bundles, approval binding, post-apply health monitoring, and controlled maintenance cycles. v25.0.1 fixes the release-package dashboard route, preserves nested apply-gate severity in controlled maintenance cycles, and replaces hardcoded API package defaults with the current package helper., and v28.0 verifiable release evidence safeguards for evidence bundle export/verification, governance drills, artifact diffs, signing-ready metadata, trust policy enforcement, and frozen-candidate zip matching, and v29.0 durable release evidence archives for replay drills, saved evidence bundles, timeline summaries, evidence viewers, retention policy, and tamper/drift detection, and v30.0 signed release preparation for canonical manifests, canonical evidence schemas, explicit unsigned status, placeholder signature verification, key policy readiness, and dashboard/API signing status visibility.",
-      "language": "Python",
-      "status": "active",
+      "created_at": "2026-06-17T20:30:00",
+      "current_milestone": "v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1",
+      "description": "Eidolon local artificial mind project with supervised improvement suggestion loops, suggestion inbox/work-order planning, codebase understanding, release governance, and strict operator approval boundaries.",
       "goals": [
+        "Use v56.0 controlled read-only execution only for exact allowlisted diagnostics after explicit confirmation.",
+        "Keep read-only execution separate from source apply, memory write/removal, publish, live apply, rollback, and identity approvals.",
+        "Use /read-only-execution to inspect allowlist, evidence binding, and result receipts.",
         "Use --verifiable-release-evidence-system as the v28.0 release evidence gate before sharing a package.",
         "Use --release-governance-drill to prove bad evidence is detected before relying on governance reports.",
         "Use v25.0.1 hotfix checks to verify /release-package routing, package-helper API defaults, and nested apply-gate warning preservation before continuing v25.x work.",
@@ -127,8 +158,21 @@
         "Add background watch mode for periodic state checks and safe recommendations",
         "Use watch reports to notice diagnostics, approvals, patches, tests, tasks, memory, and planning needs without applying changes automatically",
         "Surface important watch/dev-loop events as saved notifications",
-        "Add Dashboard Chat Console with safe action cards",
-        "Build v4.2 desktop quick actions and notification actions."
+        "Add Dashboard Chat Console with safe action cards"
+      ],
+      "history": [
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        }
       ],
       "known_issues": [
         "Stable loop live mode still depends on underlying task/work-cycle safety gates; use preview records before live execution.",
@@ -171,105 +215,74 @@
         "Watch loops are bounded and stop when attention is needed instead of running forever.",
         "Dashboard chat console still depends on local Ollama for conversational responses when enabled."
       ],
+      "language": "Python",
+      "last_updated_for": "v350.0",
+      "last_worked_on": "2026-06-21T23:50:00",
+      "name": "v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1",
       "next_steps": [
-        "Use --durable-release-evidence-archive as the v29.0 durable evidence gate before sharing a package.",
-        "Use --evidence-replay-drill and --replay-release-evidence to prove saved evidence still matches the release package.",
-        "Use python conscious_agent/main.py --draft-verification-bundle to inspect all patch draft review artifacts in one report.",
-        "Use v14.0 review-centered patch loop before approved draft application so quality, conflicts, file targets, intent blocks, and checklist reports are reviewed together.",
-        "Use v11.0 workspace-dev-loop preview before any multi-project mutation; only one project may be selected per run.",
-        "Use v9.0 supervised dev loop preview before any live controlled self-build cycle.",
-        "v8.1: Begin controlled self-build use on tiny low-risk tasks only after doctor mode is ready.",
-        "v7.0: run a full stabilization checkpoint across dashboard, API, CLI, task lifecycle, stable-loop guardrails, and smoke checks before adding more autonomy.",
-        "v6.9: make stable-loop preflight/work-cycle guardrails closure-aware so unresolved follow-up chains block new live advancement until reviewed.",
-        "Use .\\.venv\\Scripts\\python.exe .\\conscious_agent\\main.py --stable-loop-followup-lifecycle-summary all to inspect follow-up task lifecycle state.",
-        "Use .\\.venv\\Scripts\\python.exe .\\conscious_agent\\main.py --show-task-stable-loop-followup task_ID to inspect the source stable-loop decision for a follow-up task.",
-        "Use .\\.venv\\Scripts\\python.exe .\\conscious_agent\\main.py --resolve-task-stable-loop-followup task_ID after the follow-up task is done, optionally adding --archive-resolved-stable-loop.",
-        "Use /tasks-work?stage=stable_loop_followup in the dashboard to focus on decision follow-up tasks.",
-        "Run .\\setup.ps1 on Windows after unpacking a fresh zip.",
-        "Use --controlled-self-maintenance-loop as the v23.0 dry-run gate before adding more autonomous apply behavior.",
-        "Use --semi-autonomous-maintenance-review as the v25.0 read-only gate before any future candidate-driven real apply behavior."
+        "Use /expression-sandbox-trial-evidence-intake and --operator-governed-sandbox-trial-evidence-intake-layer-v1 to review operator-provided sandbox evidence without treating it as approval.",
+        "Use /expression-sandbox-outcome-comparison and --operator-governed-sandbox-outcome-comparison-v1 to compare expected versus actual sandbox results without auto-correction.",
+        "Use /expression-sandbox-regression-result-review and --operator-governed-expression-regression-result-review-v1 to review expression regressions without rewriting prompts or identity.",
+        "Use /expression-sandbox-revision-recommendations and --operator-governed-sandbox-trial-revision-recommendation-layer-v1 to review revise/defer/reject/retry/promote-to-review options without applying changes.",
+        "Use /expression-sandbox-promotion-review-prep and --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 to assemble promotion-review prep without live promotion authority."
       ],
-      "notes": [
-        "v11.0 rollback now fails fast if latest_apply_report.json is stale or points to a dry-run/non-applied report.",
-        "v11.0 stores the Eidolon workspace root as . and resolves it from ROOT_DIR, avoiding stale sandbox paths after unzipping.",
-        "v11.0 added workspace_orchestration.py for project registry, health, command profiles, dependency map, task inbox, context bundles, timeline, and workspace dev-loop preview.",
-        "v6.8 added stable_loop_followup_completion.py, follow-up closure reports/filters/cleanup, and fixed dashboard /api-info routing by matching only /api or /api/... as API routes.",
-        "v4.2 added desktop quick-action buttons for diagnostics, watch, maintenance scans, session planning, dev-loop dry-runs, and attention summaries.",
-        "v4.2 added desktop notification actions for showing unread notes, opening latest notes, marking read, dismissing, clearing dismissed records, and dry-running latest pending approvals.",
-        "v4.2 added /api/desktop/attention, /api/maintenance, and /api/dev-loops routes for desktop-friendly local control.",
-        "Project indexed at 2026-06-19T02:59:03 with 82 files.",
-        "Project indexed at 2026-06-19T03:09:36 with 83 files.",
-        "v4.4 added desktop_setup_helper.py, setup reports, CLI setup check commands, dashboard /setup, API /api/setup routes, setup counts in /api/status, and desktop setup quick actions.",
-        "v4.4 setup checks are advisory and do not install packages, edit settings automatically, or bypass existing safety gates.",
-        "Project indexed at 2026-06-19T03:21:37 with 85 files.",
-        "Project indexed at 2026-06-19T03:22:36 with 85 files.",
-        "Project indexed at 2026-06-19T03:38:12 with 90 files.",
-        "v5.3.1 refreshed version labels, settings schema value, health-check notes, project next steps, and task-centered troubleshooting guidance.",
-        "Project indexed at 2026-06-19T15:45:45 with 185 files.",
-        "Project indexed at 2026-06-19T15:59:17 with 185 files.",
-        "Project indexed at 2026-06-19T16:09:22 with 186 files.",
-        "v5.6 added task_lifecycle.py to derive readable task lifecycle stages from canonical task state, approvals, and patch metadata.",
-        "v5.6 dashboard/API now expose lifecycle summaries through /tasks-work, /api/tasks/lifecycle, and /api/tasks/{id}/lifecycle.",
-        "v5.9 adds lifecycle-aware work-cycle decisions through task_cycle_policy.py and records lifecycle decisions in saved work-cycle records.",
-        "Project indexed at 2026-06-19T16:18:43 with 187 files.",
-        "Project indexed at 2026-06-19T16:19:16 with 187 files.",
-        "Project indexed at 2026-06-19T16:29:15 with 187 files.",
-        "Project indexed at 2026-06-19T16:30:16 with 187 files.",
-        "Project indexed at 2026-06-19T16:30:28 with 187 files.",
-        "Project indexed at 2026-06-19T16:45:52 with 188 files.",
-        "Project indexed at 2026-06-19T17:04:29 with 190 files.",
-        "Project indexed at 2026-06-19T18:11:45 with 191 files.",
-        "Project indexed at 2026-06-19T18:35:15 with 192 files.",
-        "Project indexed at 2026-06-19T18:36:27 with 192 files.",
-        "Project indexed at 2026-06-19T18:44:48 with 192 files.",
-        "Project indexed at 2026-06-19T18:47:36 with 192 files.",
-        "Project indexed at 2026-06-19T19:00:25 with 193 files.",
-        "Project indexed at 2026-06-19T19:02:44 with 193 files.",
-        "Project indexed at 2026-06-19T19:12:24 with 194 files.",
-        "Project indexed at 2026-06-19T19:13:20 with 194 files.",
-        "Project indexed at 2026-06-19T19:14:14 with 194 files.",
-        "Project indexed at 2026-06-19T19:24:20 with 195 files.",
-        "Project indexed at 2026-06-19T19:36:55 with 196 files.",
-        "v6.6 added stable_loop_followup_tasks.py to create canonical task-backed follow-ups from stable-loop final decisions.",
-        "Project indexed at 2026-06-19T19:37:12 with 196 files.",
-        "v6.7 added stable_loop_followup_lifecycle.py and task lifecycle fields so decision-created follow-up tasks point back to their stable-loop source decision.",
-        "v6.7 dashboard/API/CLI can resolve a stable-loop decision follow-up chain once linked follow-up tasks are done and can optionally archive the source stable-loop record.",
-        "Project indexed at 2026-06-19T19:51:43 with 197 files.",
-        "Project indexed at 2026-06-19T19:55:31 with 197 files.",
-        "Project indexed at 2026-06-19T20:10:45 with 198 files.",
-        "Project indexed at 2026-06-19T20:38:09 with 199 files.",
-        "Project indexed at 2026-06-19T20:41:49 with 199 files.",
-        "v12.0 added guarded workspace execution, read-only GET previews, boundary checks, workspace verification, and dashboard desktop import fix.",
-        "v13.0 added human-approved patch drafting, review notes, draft diffs, test impact planning, approval gates, approved draft apply/rollback, and patch draft dashboard/API surfaces.",
-        "v14.0 added review-centered patch quality scoring, file target resolution, intent blocks, conflict detection, verification bundles, human review checklists, approved draft execution reports, and review-centered patch loop surfaces.",
-        "v14.0 keeps draft review GET/API/dashboard surfaces read-only and keeps dry-run apply reports separate from real apply pointers.",
-        "v15.0 adds approval-bound code edit proposals, safe rewrite previews, test suggestions, release readiness, and human-approved release packaging.",
-        "v18.1-v19.0 added a validated patch approval manifest so real validated AI apply requires the exact reviewed artifact hashes.",
-        "v19.0 updated project metadata from stale v14/v15 values to the current approval-to-release milestone.",
-        "v19.0 updates /code-patches and /release-review dashboard surfaces to show v18/v19 reports instead of v17-only artifacts.",
-        "v20.0 exposes validated approval manifest binding through CLI/API/dashboard so real validated AI apply is reachable after approval.",
-        "v20.0 adds a refresh/save review bundle path for legitimate review artifact drift before approval.",
-        "v20.0 updates release readiness to use current version metadata instead of stale v15-only checks.",
-        "v20.0 adds verified release package manifests, inventory, checksums, handoff notes, guarded zip planning, unzip verification, and pipeline audit reports.",
-        "v20.0.1 switches guarded release packaging to a source-only profile so private/runtime data is excluded by default.",
-        "v20.0.1 prunes .git, .venv, and private data folders during inventory traversal instead of scanning them after the fact.",
-        "v20.0.1 adds strict field-level workspace metadata integrity checks and dashboard/API-safe release report summaries.",
-        "v20.0.1 cleans legacy release defaults that still pointed draft requests at v15.0.",
-        "v24.0 metadata cleanup: current milestone, release package defaults, and warning-severity preservation were corrected.",
-        "v25.0 adds improvement candidate scanning, prioritization, candidate-to-proposal bridging, backlog previews, regression detection, release-memory privacy checks, verification recipes, assisted improvement cycles, and a semi-autonomous maintenance review gate.",
-        "v25.0.1 hotfix resolves findings from v24/v25 review: dashboard /release-package route no longer 404s, API release package defaults use _package_name(), and controlled maintenance cycles preserve nested apply-gate warning/block status instead of top-level pass masking."
-      ],
-      "created_at": "2026-06-17T20:30:00",
-      "last_worked_on": "2026-06-20T15:40:00",
-      "current_milestone": "v30.0 Signed Release Preparation System",
-      "version": "v30.0",
-      "updated_at": "2026-06-20T17:10:00",
-      "last_updated_for": "v30.0",
+      "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+      "path": "",
       "release_notes": [
-        "v27.0 adds trustworthy maintenance console checks for hotfix regression lockdown, dashboard route coverage, API default source-of-truth auditing, nested readiness severity, review bundle approval contracts, maintenance report diffs, release gate composition, dashboard/API parity, and operator trust reporting."
-      ]
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        },
+        "v27.0 adds trustworthy maintenance console checks for hotfix regression lockdown, dashboard route coverage, API default source-of-truth auditing, nested readiness severity, review bundle approval contracts, maintenance report diffs, release gate composition, dashboard/API parity, and operator trust reporting.",
+        {
+          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+          "version": "350.0"
+        }
+      ],
+      "status": "active",
+      "version": "350.0"
     }
   ],
-  "last_updated_for": "v30.0",
-  "updated_at": "2026-06-20T17:10:00"
+  "root_version": "350.0",
+  "version": "350.0"
 }

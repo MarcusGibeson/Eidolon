@@ -1,7 +1,7 @@
 {
-  "version": "v30.0",
   "active_project_id": "eidolon",
-  "updated_at": "2026-06-20T17:10:00",
-  "last_updated_for": "v30.0",
-  "current_milestone": "v30.0 Signed Release Preparation System"
+  "current_milestone": "v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1",
+  "last_updated_for": "v350.0",
+  "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+  "version": "350.0"
 }

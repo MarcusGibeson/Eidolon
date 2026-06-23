@@ -1,0 +1,46 @@
+{
+  "id": "chat_action_20260620_223717_approval-inbox",
+  "type": "chat_action",
+  "created_at": "2026-06-20T22:37:17",
+  "updated_at": "2026-06-20T22:37:34",
+  "status": "executed",
+  "user_request": "show pending approvals",
+  "intent": "approval_inbox",
+  "title": "Show approval inbox",
+  "summary": "Show pending approval requests.",
+  "explanation": "This maps to an approved read-only or low-risk command.",
+  "execution_mode": "direct_command",
+  "risk_level": "low",
+  "command": "python conscious_agent/main.py --approval-inbox",
+  "function_name": "",
+  "function_args": {},
+  "approval_action_type": "",
+  "approval_object_id": "",
+  "approval_command": "",
+  "blocked_reason": "",
+  "source": "chat_action_router",
+  "result": {
+    "ok": true,
+    "command": "python conscious_agent/main.py --approval-inbox",
+    "args": [
+      "python",
+      "conscious_agent/main.py",
+      "--approval-inbox"
+    ],
+    "return_code": 0,
+    "stdout": "No pending approval requests found.\n",
+    "stderr": "",
+    "message": "Command completed successfully.",
+    "error": "",
+    "dry_run": false,
+    "started_at": "2026-06-20T22:37:31",
+    "finished_at": "2026-06-20T22:37:32",
+    "cwd": "C:\\Users\\marcu\\Eidolon"
+  },
+  "approval_id": "",
+  "useful_commands": [
+    "python conscious_agent/main.py --show-chat-action chat_action_20260620_223717_approval-inbox",
+    "python conscious_agent/main.py --execute-chat-action chat_action_20260620_223717_approval-inbox --dry-run",
+    "python conscious_agent/main.py --execute-chat-action chat_action_20260620_223717_approval-inbox"
+  ]
+}

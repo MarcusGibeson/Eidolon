@@ -30,7 +30,7 @@ from release_packaging import (
     _package_name,
 )
 
-RELEASE_INSTALLATION_VERSION = "30.0"
+RELEASE_INSTALLATION_VERSION = "350.0"
 RELEASE_INSTALLATION_DIR = DATA_DIR / "release_installation"
 RELEASE_PROFILES = RELEASE_INSTALLATION_DIR / "release_profiles.json"
 PACKAGE_PRIVACY_SCAN = RELEASE_INSTALLATION_DIR / "package_privacy_scan.json"
@@ -66,6 +66,8 @@ V23_READINESS_GATE = RELEASE_INSTALLATION_DIR / "v23_readiness_gate.json"
 CONTROLLED_SELF_MAINTENANCE_LOOP = RELEASE_INSTALLATION_DIR / "controlled_self_maintenance_loop.json"
 
 PRIVATE_PATTERNS = [
+    "data/self_maintenance/",
+    "data/autonomy/",
     "memories.json",
     "approval_state.json",
     "data/chroma/",
@@ -91,6 +93,7 @@ SOURCE_SAFE_DATA = {
     "data/projects.json",
     "data/workspaces/projects.json",
     "data/workspaces/active_project.json",
+    "data/signing/trusted_public_keys.json",
 }
 SOURCE_SAFE_PREFIXES = ("data/workspaces/command_profiles/",)
 
@@ -1646,3 +1649,23 @@ def print_controlled_self_maintenance_loop(project_id: str = "eidolon", package_
     report = build_controlled_self_maintenance_loop(project_id=project_id, package_name=package_name, zip_path=zip_path, save=True)
     _json_print(report if full else summarize_installation_report(report)) if json_output else print(controlled_self_maintenance_loop_text(report, full=full))
 
+
+# v69 source-only install/privacy reminder: runtime data/autonomy/transaction_execution evidence is excluded from release packages.
+
+# v69.1-v70.0 release finalization runtime privacy tokens intentionally excluded by source-only data rules: execution_result_ledger_finalizer.json rollback_decision_resolver.json operator_confirmed_rollback_executor.json post_rollback_verification.json release_candidate_finalization_gate.json source_only_package_certifier.json release_finalization_dashboard_api_cli.json recovery_simulation_harness.json pre_v70_recovery_finalization_gate.json verified_execution_recovery_release_layer.json data/autonomy/release_finalization/ rollback_confirmation_phrase rollback_receipt backup_snapshot confirmation_phrase material approval_secrets
+
+# v71.1-v72.0 patch context runtime privacy tokens intentionally excluded by source-only data rules: patch_goal_intake_classifier.json relevant_file_context_selector.json historical_failure_context_binder.json risk_aware_context_budgeter.json verification_requirement_compiler.json patch_prompt_context_packet_builder.json context_completeness_reviewer.json patch_context_dashboard_api_cli.json pre_v72_patch_context_gate.json patch_generation_context_builder.json data/autonomy/patch_context/ source_mutation_performed=False patch_generation_performed=False no_native_title_tooltip
+# v72.1-v73.0 patch draft runtime privacy tokens intentionally excluded by source-only data rules: patch_intent_normalizer.json patch_scope_contract_builder.json patch_prompt_composer.json patch_draft_output_schema.json patch_draft_safety_reviewer.json patch_draft_evidence_binder.json patch_draft_dashboard_api_cli.json local_model_handoff_stub.json pre_v73_patch_draft_gate.json supervised_patch_draft_composer.json data/autonomy/patch_drafts/ local_model_invoked=False source_mutation_performed=False approval_bypass_performed=False no_native_title_tooltip
+# v73.1-v74.0 patch review runtime privacy tokens intentionally excluded by source-only data rules: patch_review_intake_parser.json patch_review_diff_boundary_extractor.json patch_review_scope_contract_validator.json patch_review_safety_boundary_validator.json patch_review_documentation_update_validator.json patch_review_verification_plan_validator.json patch_review_risk_scorer.json patch_review_report_builder.json patch_review_dashboard_api_cli.json pre_v74_patch_review_gate.json patch_draft_review_diff_validation_layer.json data/autonomy/patch_review/ patch_applied=False source_mutation_performed=False local_model_invoked=False approval_bypass_performed=False no_native_title_tooltip
+# v74.1-v75.0 sandbox patch trial runtime privacy tokens intentionally excluded by source-only data rules: patch_trial_intake_binder.json patch_trial_workspace_builder.json patch_trial_materializer.json patch_trial_verification_runner.json patch_trial_evidence_collector.json patch_trial_escape_mutation_guard.json patch_trial_dashboard_api_cli.json patch_trial_cleanup_retention.json pre_v75_sandbox_trial_gate.json sandbox_patch_trial_runner.json data/autonomy/patch_trials/ patch_input.txt trial_metadata.json verification.json evidence.json escape_guard.json live_source_mutation_performed=False promotion_performed=False approval_bypass_performed=False no_native_title_tooltip
+
+# v75.1-v76.0 sandbox evidence review runtime privacy tokens intentionally excluded by source-only data rules: patch_evidence_intake_reader.json trial_integrity_validator.json verification_evidence_scorer.json scope_documentation_evidence_reviewer.json risk_acceptance_classifier.json promotion_readiness_packet_builder.json patch_evidence_dashboard_api_cli.json recommendation_archive_comparison.json pre_v76_evidence_review_gate.json sandbox_evidence_review_recommendation_layer.json data/autonomy/patch_evidence_reviews/ readiness_packet.json comparison.json promotion_performed=False source_mutation_performed=False approval_bypass_performed=False no_native_title_tooltip
+# v76.1-v77.0 operator-approved patch application runtime privacy tokens intentionally excluded by source-only package rules: data/autonomy/patch_applications/ snapshot.json application_evidence.json operator_approved_patch_application_layer.json approval_bypass_performed=False no_native_title_tooltip
+# v77.1-v78.0 recovery runtime privacy tokens intentionally excluded by source-only package rules: data/autonomy/patch_recovery/ dirty_tree_preflight_detector.json snapshot_completeness_validator.json partial_apply_detector.json rollback_integrity_verifier.json failed_verification_triage.json recovery_recommendation_builder.json application_audit_timeline.json repair_patch_generated=False retry_performed=False no_native_title_tooltip
+# v78.1-v79.0 queue planning runtime privacy tokens intentionally excluded by source-only package rules: data/autonomy/patch_queue/ patch_queue_record_schema.json patch_queue_intake_organizer.json patch_queue_conflict_detector.json patch_queue_risk_priority_scheduler.json patch_queue_stale_evidence_detector.json patch_queue_serial_trial_plan_builder.json patch_queue_operator_review_packet.json multi_patch_queue_planning_layer.json patches_applied=False approval_bypass_performed=False no_native_title_tooltip
+
+# v79.1-v85.0 supervised loop runtime privacy tokens intentionally excluded by source-only package rules: data/autonomy/supervised_improvement_loop/ improvement_loop local_model_proposals proposal_critique candidate_ranking candidate_refinement suggestion_loop source_mutation_performed=False patches_applied=False approval_bypass_performed=False local_model_invoked_by_default=False no_native_title_tooltip
+# v85.1-v86.0 suggestion inbox runtime privacy tokens intentionally excluded by source-only package rules: data/autonomy/suggestion_inbox/ suggestion_inbox_record_schema.json suggestion_intake_normalizer.json suggestion_deduplication_drift_resolver.json operator_triage_state_machine.json work_order_draft_builder.json safety_scope_contract_binder.json pipeline_handoff_planner.json pre_v86_suggestion_inbox_gate.json supervised_suggestion_inbox_work_order_planner.json accepted_for_planning work_order_draft source_mutation_performed=False patches_applied=False approval_bypass_performed=False publish_performed=False memory_mutation_performed=False identity_mutation_performed=False no_native_title_tooltip
+
+# v86.1-v90.0 supervised self-development runtime privacy tokens intentionally excluded by source-only package rules: data/autonomy/work_order_handoff/ data/autonomy/work_order_evidence/ data/autonomy/self_development_console/ data/autonomy/self_development_readiness/ autonomy_unlocked=False source_mutation_performed=False patches_applied=False approval_bypass_performed=False publish_performed=False memory_mutation_performed=False identity_mutation_performed=False no_native_title_tooltip
+# v90.1-v95.0 supervised runtime privacy tokens intentionally excluded by source-only package rules: data/autonomy/development_sessions/ data/autonomy/approval_console/ data/autonomy/experiment_planner/ data/autonomy/outcome_reflections/ data/autonomy/improvement_cycles/ supervised_development_session_manager.json operator_approval_workflow_console.json safe_experiment_branch_planner.json learning_from_outcome_reflection_layer.json supervised_improvement_cycle_orchestrator.json autonomy_unlocked=False source_mutation_performed=False patches_applied=False approval_bypass_performed=False publish_performed=False memory_mutation_performed=False identity_mutation_performed=False experiment_promoted_without_transaction=False no_native_title_tooltip

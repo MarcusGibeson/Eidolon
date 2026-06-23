@@ -1,8906 +1,3859 @@
-# Eidolon v30.0 - Signed Release Preparation System
-
-v30.0 moves Eidolon from durable release evidence into signing-ready release preparation. It does **not** create real cryptographic signatures, store keys, or claim packages are signed. Instead, it standardizes canonical manifests, canonical evidence schemas, explicit unsigned status, placeholder signature verification, key-policy readiness, and CLI/API/dashboard signing visibility. Apparently trust now requires a full pre-signing bureaucracy, but at least this one does not ask anyone to paste private keys into a dashboard like a cursed security training video.
-
-## What changed in v30.0
-
-- Added `--signed-release-preparation-system` as the v30.0 signing-prep gate.
-- Composes signing readiness, canonical manifest, canonical evidence schema, signing status, placeholder signature contract, key policy readiness, placeholder signature verification, dashboard signing page, API signing endpoints, and the pre-v30 audit.
-- Keeps `signing_status: unsigned` explicit throughout the release evidence path.
-- Confirms no real signing, key generation, or private-key storage is performed.
-- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `30.0`.
-
-## Verification commands for v30.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --signing-readiness-audit --release-zip-path Eidolon_v30_0.zip --readiness-json
-python conscious_agent/main.py --canonical-manifest-format --release-zip-path Eidolon_v30_0.zip --readiness-json
-python conscious_agent/main.py --canonical-evidence-schema --release-zip-path Eidolon_v30_0.zip --readiness-json
-python conscious_agent/main.py --release-signing-status --release-zip-path Eidolon_v30_0.zip --readiness-json
-python conscious_agent/main.py --signature-placeholder-contract --readiness-json
-python conscious_agent/main.py --key-policy-preparation --readiness-json
-python conscious_agent/main.py --verify-release-signature --release-zip-path Eidolon_v30_0.zip --readiness-json
-python conscious_agent/main.py --dashboard-signing-status --readiness-json
-python conscious_agent/main.py --api-signing-status --readiness-json
-python conscious_agent/main.py --pre-v30-signing-prep-audit --release-zip-path Eidolon_v30_0.zip --readiness-json
-python conscious_agent/main.py --signed-release-preparation-system --release-zip-path Eidolon_v30_0.zip --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-python -u tools/smoke_check.py --tier install --json
-```
-
-## v30.0 safety rules preserved
-
-- Source-only release zips stay source-only.
-- Runtime/private/generated evidence reports stay excluded from shareable packages.
-- No real signature is claimed for unsigned artifacts.
-- No private keys are stored, requested, generated, or packaged.
-- GET dashboard/API routes remain inspection-only.
-- Any future real signing or release mutation must be POST-only and confirmation-gated.
-- Evidence and signing readiness do not equal live apply approval.
-
-## v29.10 - Pre-v30 Signing Prep Audit
-
-v29.10 adds `--pre-v30-signing-prep-audit`, composing the signing readiness audit, canonical manifest, canonical evidence schema, signing status reporter, signature placeholder contract, key policy preparation, signature verification placeholder, dashboard/API signing checks, privacy scan, and README unsigned-status coverage before v30.0.
-
-## v29.9 - API Signing Status
-
-v29.9 adds read-only API signing status surfaces for signing readiness, release signing status, placeholder signature verification, signing policy, and pre-v30 signing audit. These are GET-only inspection routes; any future real signing action must be POST-only and explicitly confirmed.
-
-## v29.8 - Dashboard Signing Status
-
-v29.8 adds a lightweight `/release-signing` dashboard page. The page shows package helper output, unsigned signing status, API links, and copyable CLI commands without running heavy checks on page load and without exposing any private-key input.
-
-## v29.7 - Signature Verification Placeholder
-
-v29.7 adds `--verify-release-signature`. In v30 prep it safely reports unsigned packages as `warn, ok true`, blocks unsupported signature metadata, and does not perform or claim real cryptographic verification.
-
-## v29.6 - Key Policy Preparation
-
-v29.6 adds `--key-policy-preparation`, documenting planned algorithm policy, unsigned-release behavior, missing key configuration, and the hard rule that private keys are not source files, not package files, and not dashboard form material.
-
-## v29.5 - Signature Placeholder Contract
-
-v29.5 adds `--signature-placeholder-contract`, defining null signature fields such as `signature_algorithm`, `signature`, `public_key_fingerprint`, `signed_at`, and `signed_by`. Null signature fields mean the release is unsigned. Revolutionary concept: null means null.
-
-## v29.4 - Signing Status Reporter
-
-v29.4 adds `--release-signing-status`, reporting `signed: false`, `signing_status: unsigned`, package hash when a zip is supplied, and signing readiness. It keeps unsigned artifacts honest instead of decorating them with fake trust glitter.
-
-## v29.3 - Canonical Evidence Bundle Schema
-
-v29.3 adds `--canonical-evidence-schema`, generating a stable evidence shape with schema version, release version, package hash, manifest hash, evidence hash, gate results, warnings, blocked items, verification commands, and explicit unsigned signing status.
-
-## v29.2 - Canonical Manifest Format
-
-v29.2 adds `--canonical-manifest-format`, producing a sorted canonical source manifest with schema version, project name, release version, package profile, hash algorithm, source file entries, excluded paths, volatile metadata paths, and a deterministic manifest hash.
-
-## v29.1 - Signing Readiness Audit
-
-v29.1 adds `--signing-readiness-audit`, checking canonical manifest readiness, evidence schema readiness, explicit package hash fields, deterministic manifest hashing, unsigned status clarity, generated-report exclusion, volatile metadata exclusion from signing inputs, README unsigned-status coverage, and reproducible verification commands.
-
----
-
-# Eidolon v29.0 - Durable Release Evidence Archive
-
-v29.0 turns v28's verifiable release evidence into durable, replayable local evidence. Eidolon can now persist generated evidence bundles outside source-only packages, replay saved evidence later, run tamper drills against missing or mutated evidence, build a local evidence timeline, summarize trust for the operator, expose lightweight dashboard/API evidence viewers, enforce a generated-report retention policy, and run a pre-v29 evidence audit. The release evidence no longer has the shelf life of a wet receipt, which is apparently progress.
-
-## What changed in v29.0
-
-- Added `--evidence-replay-drill` for synthetic tamper/drift scenarios against release evidence.
-- Added `--persist-release-evidence` to save generated evidence bundles under `reports/release_evidence/`.
-- Added `--replay-release-evidence` to verify a saved bundle against the current release/package context.
-- Added `--evidence-timeline` for local generated evidence history.
-- Added `--evidence-operator-summary` to turn evidence into a compact trust summary.
-- Added `/release-evidence`, a lightweight GET-only dashboard evidence viewer.
-- Added read-only API surfaces for evidence replay, summary, timeline, retention, and archive gates.
-- Added `--evidence-retention-policy` to inspect generated evidence cleanup rules without deleting anything.
-- Added `--evidence-regression-lockdown` to protect v28/v29 evidence behavior.
-- Added `--pre-v29-evidence-audit` as the final v28.x evidence audit.
-- Added `--durable-release-evidence-archive` as the v29.0 gate.
-- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `29.0`.
-
-## Verification commands for v29.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --evidence-replay-drill --readiness-json
-python conscious_agent/main.py --persist-release-evidence --readiness-json
-python conscious_agent/main.py --replay-release-evidence --readiness-json
-python conscious_agent/main.py --evidence-timeline --readiness-json
-python conscious_agent/main.py --evidence-operator-summary --readiness-json
-python conscious_agent/main.py --dashboard-evidence-viewer --readiness-json
-python conscious_agent/main.py --api-evidence-viewer --readiness-json
-python conscious_agent/main.py --evidence-retention-policy --readiness-json
-python conscious_agent/main.py --evidence-regression-lockdown --readiness-json
-python conscious_agent/main.py --pre-v29-evidence-audit --readiness-json
-python conscious_agent/main.py --durable-release-evidence-archive --readiness-json
-python conscious_agent/main.py --external-zip-install-verification --release-zip-path Eidolon_v29_0.zip --readiness-json
-python conscious_agent/main.py --verify-frozen-release-zip --release-zip-path Eidolon_v29_0.zip --readiness-json
-python conscious_agent/main.py --durable-release-evidence-archive --release-zip-path Eidolon_v29_0.zip --readiness-json
-python -u tools/smoke_check.py --tier install --json
-```
-
-## v29.0 safety rules preserved
-
-- Source-only packages still exclude `reports/`, runtime data, private memory, chat logs, vector DB files, approvals, backups, generated release reports, `.git`, `.venv`, `__pycache__`, and nested zips.
-- Evidence persistence writes generated reports locally only; persisted evidence is not part of the shareable source zip.
-- `/release-evidence` is GET-only and lightweight. Heavy evidence checks remain API/CLI-driven.
-- Evidence replay preserves warning/block visibility instead of flattening everything into a decorative green checkmark.
-- Evidence archive/replay does not grant live apply approval.
-- Dry-runs still do not overwrite real apply/rollback pointers.
-
-## v28.10 - Pre-v29 Evidence Audit
-
-v28.10 adds `--pre-v29-evidence-audit`, which composes the replay drill, evidence persistence, saved replay, timeline, summary, dashboard/API evidence viewers, retention policy, regression lockdown, privacy scan, and README coverage before v29.0.
-
-## v28.9 - Evidence Regression Lockdown
-
-v28.9 adds `--evidence-regression-lockdown` to protect the v28 fixes: metadata-drift-tolerant frozen manifests, continued portable/privacy metadata checks, lightweight `/release-package`, GET-only governance/evidence pages, visible replay warnings, and source-only exclusion for generated reports.
-
-## v28.8 - Evidence Retention Policy
-
-v28.8 adds `--evidence-retention-policy`, a non-destructive report showing which generated evidence files are retained and which would be eligible for future confirmed cleanup. It deletes nothing by default, because cleanup tools with enthusiasm are just vandalism with a progress bar.
-
-## v28.7 - API Evidence Viewer
-
-v28.7 adds read-only API evidence viewer coverage for replay drills, evidence persistence previews, saved replay, timelines, summaries, retention, pre-v29 audit, and the v29 archive gate.
-
-## v28.6 - Dashboard Evidence Viewer
-
-v28.6 adds `/release-evidence`, a GET-only dashboard page for evidence status, timeline previews, operator summaries, copyable verification commands, and links to evidence API reports. The page stays lightweight and avoids eager heavy report generation.
-
-## v28.5 - Evidence-to-Operator Summary
-
-v28.5 adds `--evidence-operator-summary`, a compact report answering what package was verified, what warned, what blocked, whether it is safe to share/install, and the next safe action.
-
-## v28.4 - Evidence Timeline
-
-v28.4 adds `--evidence-timeline`, a local timeline for generated evidence bundles under `reports/release_evidence/`. The timeline is runtime/generated history and remains excluded from source-only releases.
-
-## v28.3 - Evidence Replay Command
-
-v28.3 adds `--replay-release-evidence`, which verifies a saved evidence bundle against the current package context and optional release zip while preserving warning/block visibility.
-
-## v28.2 - Evidence Bundle Persistence
-
-v28.2 adds `--persist-release-evidence`, which writes generated evidence bundles to `reports/release_evidence/` and updates `latest.json`. These files are useful locally and intentionally excluded from source-only packages.
-
-## v28.1 - Evidence Replay and Tamper Drill
-
-v28.1 adds `--evidence-replay-drill`, synthetic evidence replay scenarios for missing sections, changed hashes, missing README notes, hidden warnings, runtime/private contamination, and old evidence replayed against newer packages.
-
-# Eidolon v28.0 - Verifiable Release Evidence System
-
-v28.0 turns the v27 release-candidate governance layer into a verifiable release evidence system. Eidolon can freeze a hash-bound source artifact set, verify a final source-only zip against that frozen candidate while tolerating known portable workspace metadata timestamp churn, export and verify an evidence bundle, show a release-governance dashboard page, enforce a local trust policy, generate artifact diffs, and produce reproducible verification commands. Because apparently a zip file now needs witnesses. It probably does.
-
-## What changed in v28.0
-
-- Added `--release-governance-drill` for synthetic bad-evidence scenarios.
-- Added `--release-evidence-bundle` to export freeze, zip verification, privacy, manifest, trial-upgrade, trust-console, approval-ledger, and command evidence.
-- Added `--verify-release-evidence-bundle` for schema/hash/section verification.
-- Added `/release-governance` as a GET-only release governance dashboard page.
-- Added read-only governance API surfaces for evidence, drills, diffs, policy, and v28 gates.
-- Added `--release-artifact-diff` for candidate-vs-zip drift reporting.
-- Added `--release-signing-preparation` with explicit unsigned signing-ready metadata.
-- Added `--local-trust-policy` for source-only, privacy, README, frozen-candidate, and warning-policy checks.
-- Added `--release-governance-ux-polish` and `--pre-v28-governance-audit`.
-- Added `--verifiable-release-evidence-system` as the v28.0 gate.
-- Fixed the v27 frozen-manifest false block by excluding known portable workspace metadata JSON content from the hash-bound candidate/zip comparison while still leaving metadata covered by portable metadata and privacy checks.
-- Made `/release-package` lightweight and on-demand instead of eagerly building the whole report stack on page load.
-- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `28.0`.
-
-## Verification commands for v28.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --release-governance-drill --readiness-json
-python conscious_agent/main.py --release-evidence-bundle --readiness-json
-python conscious_agent/main.py --verify-release-evidence-bundle --readiness-json
-python conscious_agent/main.py --release-governance-page --readiness-json
-python conscious_agent/main.py --governance-api-read-only --readiness-json
-python conscious_agent/main.py --release-artifact-diff --readiness-json
-python conscious_agent/main.py --release-signing-preparation --readiness-json
-python conscious_agent/main.py --local-trust-policy --readiness-json
-python conscious_agent/main.py --release-governance-ux-polish --readiness-json
-python conscious_agent/main.py --pre-v28-governance-audit --readiness-json
-python conscious_agent/main.py --verifiable-release-evidence-system --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-python conscious_agent/main.py --external-zip-install-verification --release-zip-path Eidolon_v28_0.zip --readiness-json
-python conscious_agent/main.py --verify-frozen-release-zip --release-zip-path Eidolon_v28_0.zip --readiness-json
-python conscious_agent/main.py --verifiable-release-evidence-system --release-zip-path Eidolon_v28_0.zip --readiness-json
-python -u tools/smoke_check.py --tier install --json
-```
-
-## v28.0 safety rules preserved
-
-- Source-only release zips remain the default.
-- Private/runtime/generated data remains excluded from shareable packages.
-- `/release-package` and `/release-governance` are GET-only report pages.
-- Heavy release/governance checks are button/API/CLI-driven instead of automatic page-load work.
-- Known workspace metadata JSON churn is not treated as hash-bound source drift.
-- Portable metadata and privacy scans still cover packaged metadata files.
-- Evidence bundles are review artifacts, not live approval.
-- No release/apply/rollback pointer is overwritten by dry-runs.
-- Live apply remains POST/confirmation/exact-artifact gated.
-
-## v27.10 - Pre-v28 Governance Audit
-
-v27.10 adds `--pre-v28-governance-audit`, a final release governance gate that composes the governance drill, evidence bundle, evidence verifier, artifact diff, dashboard/API governance surfaces, trust policy, README consistency, privacy scan, and frozen zip verification.
-
-## v27.9 - Release Governance UX Polish
-
-v27.9 adds `--release-governance-ux-polish`, which explains pass/warn/block rows and recommends the next safe operator action instead of leaving the user with a smug status word and no map.
-
-## v27.8 - Local Trust Policy
-
-v27.8 adds `--local-trust-policy`, a code-defined policy requiring source-only packaging, no runtime/private data, current README notes, frozen-candidate zip matching, and explicit handling of non-blocking warnings.
-
-## v27.7 - Release Signing Preparation
-
-v27.7 adds `--release-signing-preparation`, generating a canonical, signing-ready metadata block while clearly marking artifacts as unsigned. No imaginary cryptographic trust, because lies with hashes are still lies.
-
-## v27.6 - Release Artifact Diff
-
-v27.6 adds `--release-artifact-diff`, comparing the frozen candidate and final zip by file paths and hashes while ignoring known portable metadata content churn.
-
-## v27.5 - Governance API Read-Only Surface
-
-v27.5 adds read-only governance API coverage for drills, evidence bundles, bundle verification, artifact diffs, trust policy, pre-v28 audit, and the v28 gate. GET remains inspection-only.
-
-## v27.4 - Release Candidate Review Page
-
-v27.4 adds `/release-governance`, a GET-only dashboard page for release governance status, evidence bundle status, artifact diffs, pre-v28 audit, and the v28 evidence gate.
-
-## v27.3 - Evidence Bundle Verifier
-
-v27.3 adds `--verify-release-evidence-bundle`, which checks evidence bundle schema, required sections, bundle hashes, and visible blocked rows.
-
-## v27.2 - Release Evidence Bundle Export
-
-v27.2 adds `--release-evidence-bundle`, a single reviewable release evidence bundle combining freeze, zip verification, privacy scan, deterministic manifest, trial upgrade, trust console, approval evidence, and reproducible command output.
-
-## v27.1 - Release Governance Evidence Drill
-
-v27.1 adds `--release-governance-drill`, synthetic bad-evidence scenarios for extra files, missing files, changed hashes, README drift, approval hash mismatch, runtime data leaks, and package profile drift.
-
-# Eidolon v27.0 - Release Candidate Governance System
-
-v27.0 turns the trustworthy maintenance console into a release-candidate governance layer. Eidolon can now freeze a reviewed source artifact set, compare a final source-only zip against that frozen manifest, collect approval evidence, reproduce release verification commands, and report operator trust status without pretending any of that is the same as live apply approval. Because apparently "this is the exact thing we reviewed" needed its own constitution.
-
-## What changed in v27.0
-
-- Added `--release-candidate-governance` as the v27.0 gate.
-- Added release candidate governance across freeze, zip verification, evidence ledger, command reproducer, operator trust, and pre-v27 audit checks.
-- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `27.0`.
-- Updated packaged project metadata, settings, active workspace metadata, workspace registry metadata, and command profile versions to `v27.0`.
-- Kept source-only package rules intact: no runtime/private data, approvals, reports, generated release files, nested zips, `.git`, `.venv`, or `__pycache__` in shareable packages.
-
-## Verification commands for v27.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --trust-console-drill --readiness-json
-python conscious_agent/main.py --trust-console-snapshot --readiness-json
-python conscious_agent/main.py --trust-console-diff --readiness-json
-python conscious_agent/main.py --freeze-release-candidate --readiness-json
-python conscious_agent/main.py --verify-frozen-release-zip --release-zip-path Eidolon_v27_0.zip --readiness-json
-python conscious_agent/main.py --approval-evidence-ledger --release-zip-path Eidolon_v27_0.zip --readiness-json
-python conscious_agent/main.py --release-command-reproducer --release-zip-path Eidolon_v27_0.zip --readiness-json
-python conscious_agent/main.py --console-readme-consistency --readiness-json
-python conscious_agent/main.py --pre-v27-safety-audit --release-zip-path Eidolon_v27_0.zip --readiness-json
-python conscious_agent/main.py --release-candidate-governance --release-zip-path Eidolon_v27_0.zip --readiness-json
-python -u tools/smoke_check.py --tier install --json
-```
-
-## v27.0 safety rules preserved
-
-- GET dashboard/API routes remain read-only preview/status surfaces.
-- POST-only mutation paths remain explicit-confirmation gated.
-- Dry-runs do not overwrite real apply/rollback pointers.
-- Approval evidence is inspectable, but it does not authorize live apply by itself.
-- Release candidate freeze and final zip verification bind to exact file paths and hashes.
-- Runtime/private/generated files stay excluded from source-only release zips.
-
-# Eidolon v26.9 - Pre-v27 Safety Audit
-
-v26.9 adds `--pre-v27-safety-audit`, a final gate before release governance. It composes the trust console, drill mode, snapshot export, snapshot diff, release candidate freezer, frozen zip verifier, approval evidence ledger, README consistency check, and privacy scan into one safety report.
-
-# Eidolon v26.8 - Console-to-README Consistency Check
-
-v26.8 adds `--console-readme-consistency`, which checks that new CLI flags exist, README notes mention the current workflow, and API/dashboard code exposes matching read-only surfaces. Documentation drift is just a bug wearing a cardigan.
-
-# Eidolon v26.7 - Release Command Reproducer
-
-v26.7 adds `--release-command-reproducer`, generating copyable commands that reproduce release verification: compile, version import, privacy scan, manifest integrity, external zip verification, trial upgrade, trust console, and install-tier smoke.
-
-# Eidolon v26.6 - Approval Evidence Ledger
-
-v26.6 adds `--approval-evidence-ledger`, an evidence-only report that records hashes for frozen release candidates, zip verification, review bundles, and trust-console output. It does not grant live apply approval.
-
-# Eidolon v26.5 - Freeze-to-Zip Verifier
-
-v26.5 adds `--verify-frozen-release-zip`, which compares the final source-only zip against the frozen release-candidate manifest. It reports missing, extra, or changed files and blocks if the exact artifact set does not match.
-
-# Eidolon v26.4 - Release Candidate Freezer
-
-v26.4 adds `--freeze-release-candidate`, which creates a sorted source-only file manifest with SHA-256 hashes before packaging. This freezes the reviewed artifact set before anyone starts waving a zip file around like it proves something.
-
-# Eidolon v26.3 - Snapshot Diff
-
-v26.3 adds `--trust-console-diff`, comparing two trust snapshots or a generated baseline against the current snapshot. It highlights changed rows and prevents blocked items from disappearing quietly.
-
-# Eidolon v26.2 - Maintenance Console Snapshot Export
-
-v26.2 adds `--trust-console-snapshot`, exporting the current version, package helper default, latest README heading, console status, operator trust status, route coverage, API defaults, verification commands, and a stable snapshot hash.
-
-# Eidolon v26.1 - Trust Console Drill Mode
-
-v26.1 adds `--trust-console-drill`, running synthetic trust-console scenarios for all-pass, nested warning, nested blocked apply gate, stale package default, missing dashboard route, README drift, and source-only privacy leak cases. Green checkmarks now have to earn rent.
-
-# Eidolon v26.0 - Trustworthy Maintenance Console
-
-v26.0 turns the v25 review system into a broader trustworthy maintenance console. It adds permanent tripwires for the v25.0.1 hotfixes, route coverage checks, API/package-default source-of-truth auditing, nested severity tests, approval-contract inspection, report diffs, gate composition tests, dashboard/API parity checks, and an operator trust report. The point is simple: Eidolon can explain what is safe, what is warned, what is blocked, and why, instead of burying the truth under a cheerful green checkmark like every dashboard with commitment issues.
-
-## What changed in v26.0
-
-- Added `--trustworthy-maintenance-console` as the v26.0 gate.
-- Added dashboard/API parity coverage for the v25.1-v26.0 maintenance trust reports.
-- Updated CLI/API/dashboard/self-maintenance/release/workspace metadata to `26.0`.
-- Updated packaged project metadata, settings, active workspace metadata, workspace registry metadata, and command profile versions to `v26.0`.
-- Kept real maintenance apply gated behind exact bundle approval and explicit confirmation.
-- Kept release zips source-only by default.
-
-## Verification commands for v26.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --hotfix-regression-lockdown --readiness-json
-python conscious_agent/main.py --dashboard-route-coverage --readiness-json
-python conscious_agent/main.py --api-default-source-audit --readiness-json
-python conscious_agent/main.py --nested-readiness-severity --readiness-json
-python conscious_agent/main.py --review-bundle-approval-contract --readiness-json
-python conscious_agent/main.py --maintenance-report-diff --readiness-json
-python conscious_agent/main.py --release-gate-composition-test --readiness-json
-python conscious_agent/main.py --dashboard-api-parity-audit --readiness-json
-python conscious_agent/main.py --operator-trust-report --readiness-json
-python conscious_agent/main.py --trustworthy-maintenance-console --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-python conscious_agent/main.py --release-manifest-integrity --readiness-json
-python -u tools/smoke_check.py --tier install --json
-```
-
-## v26.0 safety rules preserved
-
-- GET API/dashboard routes remain read-only.
-- Mutations remain POST-only and must require explicit confirmation for live/destructive actions.
-- Dry-runs do not overwrite live apply/rollback pointers.
-- Real maintenance apply still requires exact reviewed bundle approval.
-- Runtime/private/generated data stays out of source-only release zips.
-
-# Eidolon v25.9 - Operator Trust Report
-
-v25.9 adds an operator-facing trust report that answers the practical questions: what version is running, what package helper resolves, what checks passed, what warnings remain, what is blocked, what is safe next, and what must not be done yet.
-
-## What changed in v25.9
-
-- Added `--operator-trust-report`.
-- Summarizes route coverage, API default source checks, nested severity, approval contracts, release-memory privacy, and hotfix regression status.
-- Reports safe next action and explicit must-not-do-yet guidance.
-
-# Eidolon v25.8 - Dashboard/API Parity Audit
-
-v25.8 verifies that dashboard and API surfaces expose the same major maintenance trust checks.
-
-## What changed in v25.8
-
-- Added `--dashboard-api-parity-audit`.
-- Checks v25.1-v26.0 trust workflow tokens across dashboard and API code.
-- Keeps parity audit read-only.
-
-# Eidolon v25.7 - Release Gate Composition Test
-
-v25.7 adds synthetic nested-readiness tests for release gate aggregation.
-
-## What changed in v25.7
-
-- Added `--release-gate-composition-test`.
-- Tests pass-inside-pass, warn-inside-pass, blocked-inside-pass, and dry-run-with-warn compositions.
-- Ensures warning and blocked states survive summary aggregation.
-
-# Eidolon v25.6 - Maintenance Report Diff Viewer
-
-v25.6 adds a read-only diff summary across maintenance proposal, plan, preview, and review bundle reports.
-
-## What changed in v25.6
-
-- Added `--maintenance-report-diff`.
-- Computes artifact hashes for proposal, plan, preview, and bundle reports.
-- Shows how proposal counts become file plans, preview changes, and bundled artifacts.
-
-# Eidolon v25.5 - Review Bundle Approval Contract
-
-v25.5 makes the approval contract easier to inspect.
-
-## What changed in v25.5
-
-- Added `--review-bundle-approval-contract`.
-- Verifies proposal, plan, preview, audit, and temp apply drill hashes are present.
-- Verifies approval binds to the whole review bundle hash, not a smaller proposal-only hash.
-- Does not apply source edits.
-
-# Eidolon v25.4 - Nested Readiness Severity Engine
-
-v25.4 centralizes the rule that readiness status must stay honest.
-
-## What changed in v25.4
-
-- Added `--nested-readiness-severity`.
-- Validates `blocked > warn > pass` behavior.
-- Confirms `ok: true` does not erase warning severity.
-- Treats warnings as operationally okay but still visibly warned.
-
-# Eidolon v25.3 - API Default Source-of-Truth Audit
-
-v25.3 prevents stale package-label bugs from returning through hardcoded API/default strings.
-
-## What changed in v25.3
-
-- Added `--api-default-source-audit`.
-- Scans `main.py`, `api_server.py`, and `dashboard.py` for hardcoded `Eidolon_v*_*.zip` literals.
-- Verifies API package defaults use `_package_name()`.
-
-# Eidolon v25.2 - Dashboard Route Coverage Auditor
-
-v25.2 makes dashboard navigation links prove they actually resolve.
-
-## What changed in v25.2
-
-- Added `--dashboard-route-coverage`.
-- Parses dashboard nav paths and GET router paths.
-- Fails if nav links point to missing dashboard routes.
-- Keeps `/release-package` under explicit regression coverage.
-
-# Eidolon v25.1 - Hotfix Regression Lockdown
-
-v25.1 turns the v25.0.1 findings into recurring tripwires.
-
-## What changed in v25.1
-
-- Added `--hotfix-regression-lockdown`.
-- Verifies `/release-package` is both linked and routed.
-- Verifies API package defaults use the package helper.
-- Verifies the controlled maintenance cycle preserves nested apply-gate warning severity.
-- Verifies approval binding uses the full review bundle hash.
-- Verifies dry-run cycles do not appear live-approved.
-
-
-# Eidolon v25.0.1 - Maintenance Safety Hotfix
-
-v25.0.1 fixes the review findings carried forward from the v24.0/v25.0 release line. It keeps v25.0's semi-autonomous review scope, but tightens dashboard routing, package-name default handling, and nested apply-gate severity reporting. Tiny repairs, huge trust impact, because release tools that mislabel themselves are basically wearing a fake mustache.
-
-## What changed in v25.0.1
-
-- Added the missing dashboard GET router branch for `/release-package`, matching the existing nav link and renderer so the Release Package page no longer returns 404.
-- Replaced API release package fallback literals such as `Eidolon_v25_0.zip` with the current release package helper, preventing the stale-label bug from returning in the next version.
-- Updated controlled maintenance cycle approval preview logic to pass the full review bundle hash, not the proposal hash, into the approval-binding/apply-gate preview.
-- Updated the real maintenance patch apply gate so dry-run previews preserve missing approval/confirmation requirements as warning-level rows while live apply still blocks without exact approval.
-- Updated the controlled maintenance cycle to surface the nested apply-gate status instead of reporting top-level pass just because the nested gate was dry-run.
-- Updated CLI/API/dashboard/release/self-maintenance/workspace metadata to `25.0.1`.
-- Updated packaged project metadata, workspace metadata, active project metadata, settings, and command profiles to `v25.0.1`.
-- Kept source-only packaging exclusions unchanged.
-
-## Verification commands for v25.0.1
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json
-python conscious_agent/main.py --candidate-regression-detector --readiness-json
-python conscious_agent/main.py --semi-autonomous-maintenance-review --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-python conscious_agent/main.py --external-zip-install-verification --release-zip-path Eidolon_v25_0_1.zip --readiness-json
-python conscious_agent/main.py --deterministic-release-manifest --release-zip-path Eidolon_v25_0_1.zip --readiness-json
-python -u tools/smoke_check.py --tier install --json
-```
-
-## v25.0.1 safety rules preserved
-
-- GET dashboard/API routes remain read-only previews.
-- `/release-package` is now reachable by GET but does not mutate release state.
-- API package defaults resolve through the current package helper instead of hardcoded zip names.
-- Controlled maintenance cycles stop before live apply and preserve nested warning/block status in the report.
-- Live maintenance apply still requires exact reviewed bundle approval and the exact confirmation phrase.
-- Dry-runs still never overwrite real apply or rollback pointers.
-- `README_NEXT_STEPS.md` must be updated after every patch.
-
----
-
-# Eidolon v25.0 - Semi-Autonomous Maintenance Review System
-
-v25.0 turns the v24 assisted self-improvement gate into a safer semi-autonomous maintenance review system. Eidolon can now find improvement candidates, rank them, bridge a selected candidate into a proposal, preview a local maintenance backlog, expose dashboard/API backlog views, detect regressions, verify release-memory privacy, generate candidate-specific verification recipes, and run an assisted improvement cycle that stops before real apply.
-
-This release keeps the same safety boundary: Eidolon may find, rank, plan, bundle, and verify work, but it may not apply real source edits without exact human approval. Because self-improving software with no leash is not engineering, it is a raccoon with a soldering iron.
-
-## What changed in v25.0
-
-- Added `--semi-autonomous-maintenance-review` as the v25.0 release gate.
-- Added v24.1-v24.10 staged candidate/backlog/verification commands and report builders.
-- Updated CLI/API/dashboard version markers to `25.0`.
-- Updated default release package labels to `Eidolon_v25_0.zip`.
-- Updated packaged project metadata, workspace metadata, active project metadata, settings, and command profiles to v25.0.
-- Added smoke coverage for the v24.x/v25.0 maintenance review reports.
-- Kept local maintenance backlog and release-memory state excluded from source-only packages.
-
-## Verification commands for v25.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --improvement-candidate-scan --readiness-json
-python conscious_agent/main.py --candidate-prioritizer --readiness-json
-python conscious_agent/main.py --candidate-to-proposal --readiness-json
-python conscious_agent/main.py --maintenance-backlog --readiness-json
-python conscious_agent/main.py --dashboard-maintenance-backlog --readiness-json
-python conscious_agent/main.py --api-maintenance-backlog --readiness-json
-python conscious_agent/main.py --candidate-regression-detector --readiness-json
-python conscious_agent/main.py --release-memory-privacy --readiness-json
-python conscious_agent/main.py --candidate-verification-recipes --readiness-json
-python conscious_agent/main.py --assisted-improvement-cycle --readiness-json
-python conscious_agent/main.py --semi-autonomous-maintenance-review --readiness-json
-python -u tools/smoke_check.py --tier install --json
-```
-
-## v25.0 safety rules preserved
-
-- GET dashboard/API routes remain read-only previews.
-- Backlog/candidate status mutations are POST-only and confirmation-gated.
-- Dry-runs never overwrite real apply or rollback pointers.
-- Assisted improvement stops before live apply.
-- Real maintenance apply still requires exact reviewed bundle approval.
-- Local backlog/release-memory reports remain runtime data and stay out of source-only zips.
-- `README_NEXT_STEPS.md` must be updated after every patch.
-
----
-
-# Eidolon v24.10 - Assisted Improvement Cycle
-
-## What changed in v24.10
-
-- Added a safe assisted-improvement cycle that scans candidates, ranks them, creates a proposal bridge, builds a patch plan, audits safety, assembles a review bundle, and generates verification recipes.
-- The cycle stops before approval binding or real apply.
-- The selected candidate is included in the report for human review.
-
-## Verification commands for v24.10
-
-```powershell
-python conscious_agent/main.py --assisted-improvement-cycle --readiness-json
-python conscious_agent/main.py --candidate-verification-recipes --readiness-json
-python conscious_agent/main.py --maintenance-review-bundle --readiness-json
-```
-
----
-
-# Eidolon v24.9 - Candidate Verification Recipes
-
-## What changed in v24.9
-
-- Added candidate-specific verification recipes.
-- Each ranked candidate now includes commands that prove the intended fix and keep warning rows visible.
-- Recipes include compile, version import, candidate regression detection, and candidate-specific release checks.
-
-## Verification commands for v24.9
-
-```powershell
-python conscious_agent/main.py --candidate-verification-recipes --readiness-json
-python conscious_agent/main.py --candidate-prioritizer --readiness-json
-```
-
----
-
-# Eidolon v24.8 - Release Memory Without Private Leakage
-
-## What changed in v24.8
-
-- Added a release-memory privacy check for maintenance backlog and local release history state.
-- The check verifies `data/self_maintenance/`, `data/maintenance_backlog.json`, release-installation reports, and release package reports are excluded from source-only inventory.
-- This keeps local release history useful without smuggling runtime state into shareable zips, a thing computers would absolutely do if unsupervised.
-
-## Verification commands for v24.8
-
-```powershell
-python conscious_agent/main.py --release-memory-privacy --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-```
-
----
-
-# Eidolon v24.7 - Candidate Regression Detector
-
-## What changed in v24.7
-
-- Added regression detection for stale package defaults, stale metadata, warning-severity flattening, source-only privacy, and README stage coverage.
-- The detector directly guards against the v23 findings that previously slipped through.
-- Warning-level child reports remain warning-level rows.
-
-## Verification commands for v24.7
-
-```powershell
-python conscious_agent/main.py --candidate-regression-detector --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-```
-
----
-
-# Eidolon v24.6 - API Maintenance Backlog
-
-## What changed in v24.6
-
-- Added API read-only preview routes for improvement candidates, prioritization, backlog previews, regression detection, release-memory privacy, verification recipes, assisted improvement cycles, and the v25 review gate.
-- Added POST-only confirmation scaffolding for maintenance candidate status changes.
-- GET routes remain read-only.
-
-## Verification commands for v24.6
-
-```powershell
-python conscious_agent/main.py --api-maintenance-backlog --readiness-json
-python conscious_agent/main.py --route-safety-harness --readiness-json
-```
-
----
-
-# Eidolon v24.5 - Dashboard Maintenance Backlog
-
-## What changed in v24.5
-
-- Added dashboard discovery links for improvement candidate scanning, prioritization, backlog preview, candidate regression detection, assisted improvement cycle, and the v25 review gate.
-- Added CLI command hints for the v24.x/v25.0 maintenance review workflow.
-- Dashboard surfaces remain preview-oriented.
-
-## Verification commands for v24.5
-
-```powershell
-python conscious_agent/main.py --dashboard-maintenance-backlog --readiness-json
-python conscious_agent/main.py --route-safety-harness --readiness-json
-```
-
----
-
-# Eidolon v24.4 - Maintenance Backlog Registry
-
-## What changed in v24.4
-
-- Added a local maintenance backlog registry preview.
-- The preview describes candidate backlog records but does not write `data/maintenance_backlog.json`.
-- Backlog state is treated as runtime data and remains excluded from source-only release packages.
-
-## Verification commands for v24.4
-
-```powershell
-python conscious_agent/main.py --maintenance-backlog --readiness-json
-python conscious_agent/main.py --release-memory-privacy --readiness-json
-```
-
----
-
-# Eidolon v24.3 - Candidate-to-Proposal Bridge
-
-## What changed in v24.3
-
-- Added a bridge that converts the selected ranked candidate into a proposal-compatible review object.
-- The bridge includes affected files, risk, required checks, and approval requirements.
-- No source edits are generated or applied.
-
-## Verification commands for v24.3
-
-```powershell
-python conscious_agent/main.py --candidate-to-proposal --readiness-json
-python conscious_agent/main.py --candidate-prioritizer --readiness-json
-```
-
----
-
-# Eidolon v24.2 - Candidate Prioritizer
-
-## What changed in v24.2
-
-- Added prioritization for improvement candidates.
-- Scores favor release trust, regression prevention, source-only privacy, implementation safety, and testability.
-- The report selects a recommended candidate for proposal review.
-
-## Verification commands for v24.2
-
-```powershell
-python conscious_agent/main.py --candidate-prioritizer --readiness-json
-python conscious_agent/main.py --improvement-candidate-scan --readiness-json
-```
-
----
-
-# Eidolon v24.1 - Improvement Candidate Scanner
-
-## What changed in v24.1
-
-- Added a read-only candidate scanner for release trust, metadata drift, operator UX gaps, TODO/FIXME clusters, regression safety, and source-only privacy concerns.
-- Each candidate includes affected files, risk, complexity, required checks, README requirements, runtime/private-data risk, and a recommended next action.
-- No patching or backlog mutation occurs.
-
-## Verification commands for v24.1
-
-```powershell
-python conscious_agent/main.py --improvement-candidate-scan --readiness-json
-python conscious_agent/main.py --self-maintenance-proposal --readiness-json
-```
-
----
-
-# Eidolon v24.0 - Assisted Self-Improvement Release
-
-v24.0 extends the controlled self-maintenance work into a full assisted self-improvement release gate. Eidolon can now inspect itself for maintenance candidates, build a bounded patch plan, generate a dry-run patch preview, audit the patch plan, apply the preview only inside a temporary clone, assemble a review bundle, bind approval to the exact bundle hash, expose a guarded real-apply gate, run post-apply health checks, and execute a controlled maintenance cycle that stops before live mutation.
-
-This release also cleans up release trust issues found after v23.0: release package defaults no longer point at stale `Eidolon_v22_0.zip` labels, project metadata now reports the current v24.0 milestone, and readiness summaries preserve warning severity instead of flattening every `ok: true` report into a top-level pass row.
-
-## What changed in v24.0
-
-- Added `conscious_agent/self_maintenance.py` as the self-maintenance proposal/review/gating module.
-- Added v23.1-v23.10 staged self-maintenance commands and report builders.
-- Added `--assisted-self-improvement-release` as the v24.0 release gate.
-- Updated CLI/API/dashboard version markers to `24.0`.
-- Changed `--release-package-name` to default from current settings metadata instead of a stale hardcoded v22 zip name.
-- Updated API/dashboard default release package names to `Eidolon_v24_0.zip` or the current package helper.
-- Updated `data/settings.json`, `data/projects.json`, `data/workspaces/projects.json`, `data/workspaces/active_project.json`, and command profile workspace versions to v24.0.
-- Updated `build_v23_readiness_gate` row handling so warning-level child reports remain warning-level rows.
-- Added dashboard/API discovery for the v23.x self-maintenance preview/report workflow.
-- Added smoke coverage for the new self-maintenance reports.
-
-## Verification commands for v24.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --self-maintenance-proposal --readiness-json
-python conscious_agent/main.py --build-patch-plan --readiness-json
-python conscious_agent/main.py --generate-maintenance-patch --readiness-json
-python conscious_agent/main.py --patch-safety-audit --readiness-json
-python conscious_agent/main.py --apply-maintenance-patch-to-temp --readiness-json
-python conscious_agent/main.py --maintenance-review-bundle --readiness-json
-python conscious_agent/main.py --post-apply-health-monitor --readiness-json
-python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json
-python conscious_agent/main.py --assisted-self-improvement-release --readiness-json
-python conscious_agent/main.py --release-manifest-integrity --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-python conscious_agent/main.py --route-safety-harness --readiness-json
-python -u tools/smoke_check.py --tier install --json
-```
-
-## v24.0 safety rules preserved
-
-- GET dashboard/API routes remain read-only previews.
-- Live/destructive operations remain POST-only or explicit CLI confirmation-gated.
-- Dry-runs never overwrite real apply or rollback pointers.
-- Real maintenance patch apply remains blocked unless an exact reviewed bundle hash and confirmation phrase are supplied.
-- Review reports under `data/self_maintenance/` are runtime/generated reports and remain excluded from source-only release packages.
-- `README_NEXT_STEPS.md` must be updated whenever code changes.
-
----
-
-# Eidolon v23.10 - Controlled Maintenance Cycle
-
-## What changed in v23.10
-
-- Added a controlled maintenance cycle that runs proposal generation, patch planning, dry-run preview generation, safety auditing, temporary-clone verification, and review-bundle assembly.
-- The cycle intentionally stops before real apply.
-- Real maintenance apply remains a separate approval-bound gate.
-
-## Verification commands for v23.10
-
-```powershell
-python conscious_agent/main.py --controlled-maintenance-cycle --readiness-json
-python conscious_agent/main.py --maintenance-review-bundle --readiness-json
-python conscious_agent/main.py --patch-safety-audit --readiness-json
-```
-
----
-
-# Eidolon v23.9 - Post-Apply Health Monitor
-
-## What changed in v23.9
-
-- Added a post-apply health monitor for manifest integrity, package privacy, and route safety.
-- Added rollback recommendation language for failed post-apply health rows.
-- Kept the monitor usable as a preview report before live apply exists.
-
-## Verification commands for v23.9
-
-```powershell
-python conscious_agent/main.py --post-apply-health-monitor --readiness-json
-python conscious_agent/main.py --release-manifest-integrity --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-```
-
----
-
-# Eidolon v23.8 - Real Maintenance Patch Apply Gate
-
-## What changed in v23.8
-
-- Added a guarded real maintenance patch apply gate.
-- The gate defaults to dry-run.
-- Live apply requires an exact reviewed bundle hash and the confirmation phrase `APPLY EXACT REVIEWED MAINTENANCE BUNDLE`.
-- The dry-run gate does not edit source files or create live rollback pointers.
-
-## Verification commands for v23.8
-
-```powershell
-python conscious_agent/main.py --real-maintenance-patch-apply --dry-run --readiness-json
-python conscious_agent/main.py --approve-maintenance-bundle --readiness-json
-```
-
----
-
-# Eidolon v23.7 - Human Approval Binding
-
-## What changed in v23.7
-
-- Added exact maintenance review bundle hash binding.
-- Approval remains preview-only unless the supplied hash matches the current review bundle.
-- Approval binding does not apply source edits.
-
-## Verification commands for v23.7
-
-```powershell
-python conscious_agent/main.py --maintenance-review-bundle --readiness-json
-python conscious_agent/main.py --approve-maintenance-bundle --readiness-json
-```
-
----
-
-# Eidolon v23.6 - Maintenance Review Bundle
-
-## What changed in v23.6
-
-- Bundled proposal, patch plan, dry-run patch preview, safety audit, and temporary-clone apply drill reports.
-- Added deterministic hashes for the review artifacts.
-- Prepared a single artifact set suitable for later exact approval binding.
-
-## Verification commands for v23.6
-
-```powershell
-python conscious_agent/main.py --maintenance-review-bundle --readiness-json
-python conscious_agent/main.py --apply-maintenance-patch-to-temp --readiness-json
-```
-
----
-
-# Eidolon v23.5 - Apply Patch to Temporary Clone
-
-## What changed in v23.5
-
-- Added temporary-clone patch apply drill support.
-- The drill copies the source tree to a temp folder, validates compile behavior there, and deletes the temp clone afterward.
-- The real project tree is not modified.
-
-## Verification commands for v23.5
-
-```powershell
-python conscious_agent/main.py --apply-maintenance-patch-to-temp --readiness-json
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-```
-
----
-
-# Eidolon v23.4 - Patch Safety Auditor
-
-## What changed in v23.4
-
-- Added patch safety auditing for private runtime data, GET route mutation risk, README enforcement, approval binding, and dry-run pointer safety.
-- Integrated route safety results without flattening warning severity.
-
-## Verification commands for v23.4
-
-```powershell
-python conscious_agent/main.py --patch-safety-audit --readiness-json
-python conscious_agent/main.py --route-safety-harness --readiness-json
-```
-
----
-
-# Eidolon v23.3 - Dry-Run Patch Generator
-
-## What changed in v23.3
-
-- Added a dry-run maintenance patch preview report.
-- The generator describes intended changes but does not apply diffs.
-- Generated preview reports are runtime artifacts excluded from source-only packages.
-
-## Verification commands for v23.3
-
-```powershell
-python conscious_agent/main.py --generate-maintenance-patch --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-```
-
----
-
-# Eidolon v23.2 - Patch Plan Builder
-
-## What changed in v23.2
-
-- Added maintenance patch plan construction from proposal findings.
-- Plans list affected files, change intent, safety target status, and verification commands.
-- Runtime/private data remains blocked from planned maintenance edits.
-
-## Verification commands for v23.2
-
-```powershell
-python conscious_agent/main.py --build-patch-plan --readiness-json
-python conscious_agent/main.py --self-maintenance-proposal --readiness-json
-```
-
----
-
-# Eidolon v23.1 - Self-Maintenance Proposal Sandbox
-
-## What changed in v23.1
-
-- Added a proposal-only self-maintenance scanner.
-- The scanner detects stale release package defaults, stale project milestone metadata, warning-severity flattening, README stage coverage, and route safety baseline status.
-- The sandbox generates proposals only and does not edit project files.
-
-## Verification commands for v23.1
-
-```powershell
-python conscious_agent/main.py --self-maintenance-proposal --readiness-json
-python conscious_agent/main.py --controlled-self-maintenance-loop --readiness-json
-```
-
----
-
-# Eidolon v23.0 - Controlled Self-Maintenance Loop
-
-v23.0 completes the staged v22.x install/update safety runway and adds a controlled self-maintenance loop preview. Eidolon can now rehearse release zip upgrades, drill backup/rollback behavior, detect update collisions, preview release registry entries, bind release provenance, expose dashboard/API upgrade previews, run staged apply drills in temp clones, evaluate real-apply guard rails, verify rollback readiness, check self-update UX clarity, run a v23 readiness gate, and finally preview a self-maintenance lifecycle that still stops before human approval. The program is learning to file paperwork before touching itself, which is somehow what maturity looks like in software.
-
-## What changed in v23.0
-
-- `conscious_agent/release_installation.py`
-  - bumped release installation metadata to `23.0`
-  - added `--controlled-self-maintenance-loop`
-  - added a dry-run lifecycle for controlled issue detection, patch proposal, artifact binding, release gate checks, human approval, guarded apply, post-apply verification, and rollback preservation
-  - kept the loop proposal-only by default; no autonomous live apply is performed
-- `conscious_agent/main.py`
-  - added v23.0 CLI dispatch for the controlled self-maintenance loop
-  - bumped the default patch draft target version to `23.0`
-- `conscious_agent/api_server.py`
-  - API version is now `23.0`
-  - added preview endpoints for the v23.0 controlled self-maintenance loop
-- `conscious_agent/dashboard.py`
-  - dashboard version is now `23.0`
-  - added release/upgrade discovery tokens for the v22.1-v23.0 staged workflow
-- `conscious_agent/release_packaging.py`
-  - release packaging metadata is now `23.0`
-- `conscious_agent/workspace_orchestration.py`
-  - workspace orchestration metadata is now `23.0`
-- `tools/smoke_check.py`
-  - smoke release version checks now expect `23.0`
-- packaged metadata
-  - `data/settings.json` marks `last_updated_for: v23.0`
-  - `data/projects.json` describes the v23.0 controlled self-maintenance loop
-  - `data/workspaces/projects.json` and `data/workspaces/active_project.json` now report v23.0
-  - command profiles are marked as workspace version `23.0`
-
-## Verification commands for v23.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --v23-readiness-gate --readiness-json
-python conscious_agent/main.py --controlled-self-maintenance-loop --readiness-json
-python -u tools/smoke_check.py --tier fast --json
-python -u tools/smoke_check.py --tier install --json
-```
-
-When a final zip exists, also run:
-
-```powershell
-python conscious_agent/main.py --external-zip-install-verification --release-zip-path Eidolon_v23_0.zip --readiness-json
-python conscious_agent/main.py --deterministic-release-manifest --release-zip-path Eidolon_v23_0.zip --readiness-json
-python conscious_agent/main.py --trial-upgrade-from-zip --release-zip-path Eidolon_v23_0.zip --readiness-json
-python conscious_agent/main.py --staged-apply-drill --release-zip-path Eidolon_v23_0.zip --readiness-json
-python conscious_agent/main.py --v23-readiness-gate --release-zip-path Eidolon_v23_0.zip --readiness-json
-```
-
-## v23.0 safety rules preserved
-
-- Source-only release packages remain the default.
-- Private runtime data, memories, chat logs, vector DB files, approvals, generated release reports, backups, `.git`, `.venv`, `__pycache__`, and nested zips remain excluded from shareable packages.
-- GET dashboard/API routes remain preview/read-only surfaces.
-- Live/destructive actions remain POST/CLI-confirmation gated.
-- Dry-runs do not overwrite real apply/rollback pointers.
-- Approval must remain bound to the exact reviewed artifact set before any real apply.
-
----
-
-# Eidolon v22.12 - v23 Readiness Gate
-
-v22.12 adds the final gate before controlled self-maintenance. It collects manifest integrity, privacy scan, portable metadata, route safety, dashboard/API upgrade preview checks, UX polish, and optional zip-dependent upgrade drills into one report.
-
-## What changed in v22.12
-
-- Added `--v23-readiness-gate`.
-- Added `build_v23_readiness_gate()`.
-- Checks source/package readiness without requiring a zip.
-- When a zip path is supplied, also checks external zip verification, deterministic manifest, trial upgrade, rollback drill, collision detection, staged apply, and real apply rollback verification.
-- Produces blocked step names so the next fix is obvious instead of hiding in a swamp of JSON, as software loves to do.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --v23-readiness-gate --readiness-json
-python conscious_agent/main.py --v23-readiness-gate --release-zip-path Eidolon_v23_0.zip --readiness-json
-```
-
----
-
-# Eidolon v22.11 - Self-Update UX Polish
-
-v22.11 checks that release/update reports are understandable enough for a human to use without developing a grudge against the terminal.
-
-## What changed in v22.11
-
-- Added `--self-update-ux-polish`.
-- Added `build_self_update_ux_polish()`.
-- Checks README staged release notes.
-- Checks discoverable copyable commands.
-- Checks dashboard release/upgrade wording.
-- Confirms report rows continue to include status and message fields.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --self-update-ux-polish --readiness-json
-```
-
----
-
-# Eidolon v22.10 - Real Apply + Rollback Verification
-
-v22.10 verifies real apply mechanics in safe preview mode by leaning on the staged apply drill and registry preview. It does not mutate the real project.
-
-## What changed in v22.10
-
-- Added `--real-apply-rollback-verification`.
-- Added `build_real_apply_rollback_verification()`.
-- Chains staged apply drill and version registry preview.
-- Confirms rollback behavior in temp space before a real updater is trusted.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --real-apply-rollback-verification --release-zip-path Eidolon_v23_0.zip --readiness-json
-```
-
----
-
-# Eidolon v22.9 - Real Apply Guard Rails
-
-v22.9 adds the final read-only guard report for live update eligibility.
-
-## What changed in v22.9
-
-- Added `--real-apply-guard-rails`.
-- Added `build_real_apply_guard_rails()`.
-- Requires an exact deterministic manifest hash.
-- Requires the explicit phrase `APPLY EXACT REVIEWED RELEASE`.
-- Checks collision detector output.
-- Checks recent trial upgrade output when a zip is supplied.
-- Writes no apply pointer and applies no source files.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --real-apply-guard-rails --release-zip-path Eidolon_v23_0.zip --expected-manifest-hash <sha256> --release-confirm-phrase "APPLY EXACT REVIEWED RELEASE" --readiness-json
-```
-
----
-
-# Eidolon v22.8 - Staged Apply in Temporary Clone
-
-v22.8 applies release contents only to a temporary clone, then rolls the clone back and verifies hashes.
-
-## What changed in v22.8
-
-- Added `--staged-apply-drill`.
-- Added `build_staged_apply_drill()`.
-- Copies source-safe files into temp space.
-- Builds an update dry-run plan against the temp clone.
-- Applies planned new/changed files to the temp clone only.
-- Rolls the temp clone back and compares hashes.
-- Keeps real runtime data and real rollback pointers untouched.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --staged-apply-drill --release-zip-path Eidolon_v23_0.zip --readiness-json
-```
-
----
-
-# Eidolon v22.7 - API Upgrade Wizard Preview
-
-v22.7 adds API preview coverage for the staged upgrade workflow while preserving GET read-only behavior.
-
-## What changed in v22.7
-
-- Added `--api-upgrade-wizard-preview`.
-- Added `build_api_upgrade_wizard_preview()`.
-- Added read-only GET preview route tokens for v22.1-v23.0 release/update reports.
-- Added POST report-generation route tokens for saved reports.
-- Kept live/destructive update paths confirmation-gated.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --api-upgrade-wizard-preview --readiness-json
-python conscious_agent/main.py --route-safety-harness --readiness-json
-```
-
----
-
-# Eidolon v22.6 - Dashboard Upgrade Wizard Preview
-
-v22.6 makes the dashboard aware of the staged upgrade path without enabling casual live updates from the UI.
-
-## What changed in v22.6
-
-- Added `--dashboard-upgrade-wizard-preview`.
-- Added `build_dashboard_upgrade_wizard_preview()`.
-- Added dashboard discovery tokens for trial upgrade, rollback drill, collision detector, provenance report, staged apply, and v23 readiness.
-- Keeps the dashboard side in preview/report mode.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --dashboard-upgrade-wizard-preview --readiness-json
-```
-
----
-
-# Eidolon v22.5 - Release Provenance Report
-
-v22.5 binds release source, manifest, privacy, verification, and collision checks into one provenance report.
-
-## What changed in v22.5
-
-- Added `--release-provenance-report`.
-- Added `build_release_provenance_report()`.
-- Combines external zip verification, deterministic manifest, package privacy scan, and update collision detection.
-- Surfaces manifest SHA-256 and blocked steps.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --release-provenance-report --release-zip-path Eidolon_v23_0.zip --readiness-json
-```
-
----
-
-# Eidolon v22.4 - Version Registry
-
-v22.4 adds a previewable version registry report. The registry itself is runtime state and remains excluded from source-only packages.
-
-## What changed in v22.4
-
-- Added `--version-registry-report`.
-- Added `build_version_registry_report()`.
-- Previews a release registry entry with version, package name, zip path, manifest hash, timestamp, and dry-run status.
-- Defaults to dry-run and does not package `data/release_registry.json`.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --version-registry-report --release-zip-path Eidolon_v23_0.zip --readiness-json
-```
-
----
-
-# Eidolon v22.3 - Update Collision Detector
-
-v22.3 detects update risks before any staged or real apply.
-
-## What changed in v22.3
-
-- Added `--update-collision-detector`.
-- Added `build_update_collision_detector()`.
-- Detects case-insensitive path collisions.
-- Blocks non-allowlisted runtime data inside release zips.
-- Warns on local source differences against the target package.
-- Warns on generated bytecode artifacts under source/tool folders.
-- Stays read-only.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --update-collision-detector --release-zip-path Eidolon_v23_0.zip --readiness-json
-```
-
----
-
-# Eidolon v22.2 - Backup and Rollback Drill
-
-v22.2 drills backup and rollback mechanics in temp space.
-
-## What changed in v22.2
-
-- Added `--backup-rollback-drill`.
-- Added `build_backup_rollback_drill()`.
-- Copies source-safe files into a temporary install tree.
-- Modifies a temp file, backs it up, restores it, and compares hashes.
-- Writes no real backup pointer and touches no real runtime data.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --backup-rollback-drill --readiness-json
-```
-
----
-
-# Eidolon v22.1 - Trial Upgrade Harness
-
-v22.1 adds an end-to-end rehearsal from a release zip.
-
-## What changed in v22.1
-
-- Added `--trial-upgrade-from-zip`.
-- Added `build_trial_upgrade_harness()`.
-- Verifies an external source-only zip.
-- Generates a deterministic manifest.
-- Runs a clean-room install harness.
-- Extracts the zip into temp space and compares the zip against its own temp install as a no-op upgrade.
-- Confirms rollback metadata would be manifest-bound without writing a real pointer.
-- Fixes clean-room command execution so subprocesses run with the temp extracted root as `cwd`, not the original project root.
-
-## Verification
-
-```powershell
-python conscious_agent/main.py --trial-upgrade-from-zip --release-zip-path Eidolon_v23_0.zip --readiness-json
-```
-
----
-
-# Eidolon v22.0 - Verified Self-Update Release Pipeline
-
-v22.0 bundles the v21.1 through v22.0 release/install safety roadmap into one source-only release. Eidolon now hardens the smoke runner with tiered subprocess checks and per-check timeouts, verifies external release zips, builds deterministic manifest hashes for exact artifact binding, previews update diffs without touching apply/rollback pointers, adds a guarded atomic source update transaction, previews runtime migration/backups, checks route safety, verifies dashboard/API/CLI release command-center coverage, simulates clean-room installs, and wraps it all in a v22 verified self-update release pipeline. The software has learned to ask for ID before letting a zip file into the building, which is sadly progress.
-
-## What changed from v21.1 through v22.0
-
-- Updated `tools/smoke_check.py`
-  - v21.1 tiered smoke runner with `--tier fast|loop|readiness|build|patch|release|install|full`
-  - smoke checks now report per-check timing and can run individual checks through hidden `--single-check`
-  - optional isolated subprocess mode is available with `EIDOLON_SMOKE_ISOLATED=1`, with timeout handling for stubborn checks
-  - heavyweight legacy release/AI smoke checks were narrowed to shape/text validation so full install smoke no longer stalls while targeted commands still cover the detailed builders
-  - added `--json` machine-readable summaries and `--list-checks`
-  - default full smoke still covers the previous core, loop, readiness, patch, release, and install checks
-- Updated `conscious_agent/release_installation.py`
-  - bumped release installation metadata to `22.0`
-  - v21.1 `--smoke-runtime-hardening` report
-  - v21.2 `--external-zip-install-verification` for actual zip files outside the source tree
-  - v21.3 `--deterministic-release-manifest` with sorted file entries and a manifest SHA-256
-  - v21.4 `--update-dry-run-plan` comparing a target zip to the current source tree without writing apply/rollback pointers
-  - v21.5 `--atomic-source-update`, dry-run by default, with real apply blocked unless explicitly approved and bound to an expected manifest hash
-  - v21.6 `--runtime-migration-assistant` for runtime backup/preservation planning
-  - v21.7 `--route-safety-harness` for GET read-only and POST confirmation-gate checks
-  - v21.8 `--release-dashboard-command-center` to verify dashboard/API/CLI exposure for the release safety tools
-  - v21.9 `--clean-room-install-harness` to temp-extract, compile, import versions, run first-run check, and run tiered smoke from a release zip
-  - v22.0 `--verified-self-update-release-pipeline` to chain smoke hardening, zip verification, manifest binding, dry-run planning, migration preview, route safety, command-center checks, optional clean-room install, and guarded update preview
-- Updated `conscious_agent/release_packaging.py`
-  - bumped release packaging metadata to `22.0`
-- Updated `conscious_agent/workspace_orchestration.py`
-  - bumped workspace orchestration metadata to `22.0` so workspace repair/smoke checks do not rewrite release metadata back to v21.0
-  - updated regenerated workspace milestone text to the v22.0 verified self-update release pipeline
-- Updated `conscious_agent/main.py`
-  - added v21.1-v22.0 release/install/update CLI commands
-  - added `--release-zip-path`, `--expected-manifest-hash`, `--run-clean-room`, and `--smoke-tier`
-  - default release package name now resolves from the current settings version (`v24.0` -> `Eidolon_v24_0.zip`)
-- Updated `conscious_agent/api_server.py`
-  - API version is now `22.0`
-  - added read-only GET preview endpoints for the v21.1-v22.0 release/update safety reports
-  - added POST refresh/save endpoints for reports
-  - live update/migration/self-update POST paths require explicit confirmation tokens and remain dry-run by default
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `22.0`
-  - `/release-package` now shows smoke hardening, external zip verification, deterministic manifest binding, update dry-run planning, atomic update preview, runtime migration assistant, route safety harness, command center, clean-room install, and self-update pipeline cards
-  - release page links now include the v21.1-v22.0 API endpoints and CLI commands
-- Updated metadata
-  - `data/settings.json` marks `last_updated_for: v22.0`
-  - `data/projects.json` describes the v22.0 verified self-update release pipeline and adds release/update safety goals
-  - `data/workspaces/projects.json` root and project metadata now report v22.0
-  - `data/workspaces/active_project.json` now reports v22.0
-
-## Safety rules preserved in v22.0
-
-- Source-only release packaging remains the default.
-- Runtime/private data, memories, chat logs, approvals, vector stores, generated reports, backups, `.git`, `.venv`, `__pycache__`, and nested zip files remain excluded from shareable release packages.
-- GET API/dashboard routes remain read-only previews.
-- Mutation-capable release/update paths are POST-only and require explicit confirmation for live/destructive actions.
-- Dry-runs do not overwrite real apply or rollback pointers.
-- Real source update is blocked unless the operator supplies an exact expected deterministic manifest hash.
-
-## Verification used for v22.0
-
-```bash
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --smoke-runtime-hardening --readiness-json
-python conscious_agent/main.py --external-zip-install-verification --readiness-json
-python conscious_agent/main.py --deterministic-release-manifest --readiness-json
-python conscious_agent/main.py --update-dry-run-plan --readiness-json
-python conscious_agent/main.py --atomic-source-update --readiness-json
-python conscious_agent/main.py --runtime-migration-assistant --readiness-json
-python conscious_agent/main.py --route-safety-harness --readiness-json
-python conscious_agent/main.py --release-dashboard-command-center --readiness-json
-python conscious_agent/main.py --clean-room-install-harness --readiness-json
-python conscious_agent/main.py --verified-self-update-release-pipeline --readiness-json
-python conscious_agent/main.py --release-install-verification --readiness-json
-python conscious_agent/main.py --verified-installable-release-loop --readiness-json
-python -u tools/smoke_check.py --tier fast --json
-python -u tools/smoke_check.py --tier install --json
-```
-
-## Known v22.0 packaging notes
-
-- `--external-zip-install-verification`, `--update-dry-run-plan`, and `--clean-room-install-harness` warn/skip zip-specific work when no external release zip path is supplied. That is expected inside an extracted source-only tree because the release zip should not contain a nested copy of itself.
-- `chromadb` may warn if the environment has not run `pip install -r requirements.txt`; it remains listed in `requirements.txt`.
-- `--doctor` and model-health checks can still report limited confidence when Ollama/local models are unavailable. That is an environment readiness warning, not a packaging privacy failure.
-
-## Recommended first commands after unzip
-
-```bash
-pip install -r requirements.txt
-python conscious_agent/main.py --first-run-check
-python conscious_agent/main.py --dependency-advisor
-python conscious_agent/main.py --smoke-runtime-hardening
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --dashboard
-```
-
-## Recommended release/update commands
-
-```bash
-python conscious_agent/main.py --deterministic-release-manifest --release-zip-path path/to/Eidolon_v24_0.zip
-python conscious_agent/main.py --external-zip-install-verification --release-zip-path path/to/Eidolon_v24_0.zip
-python conscious_agent/main.py --update-dry-run-plan --release-zip-path path/to/Eidolon_v24_0.zip
-python conscious_agent/main.py --verified-self-update-release-pipeline --release-zip-path path/to/Eidolon_v24_0.zip --run-clean-room
-```
-
-Real source update remains intentionally annoying:
-
-```bash
-python conscious_agent/main.py --atomic-source-update --release-zip-path path/to/Eidolon_v24_0.zip --expected-manifest-hash <manifest_sha256> --approve-controlled-self-build
-```
-
----
-
-# Eidolon v21.0 - Verified Installable Release Loop
-
-v21.0 bundles the v20.1 through v21.0 installable-release roadmap into one release. Eidolon now treats source-only packaging as a named release profile, scans packages for private/runtime data, checks portable workspace metadata, provides first-run setup guidance, explains missing dependencies, generates upgrade notes, guards runtime migration, verifies installability, polishes the release package dashboard, and runs one bounded verified installable release loop. The zip machine now has a privacy officer, because apparently that is where we are as a species.
-
-## What changed from v20.1 through v21.0
-
-- Added `conscious_agent/release_installation.py`
-  - v20.1 release profile system with `source-only` as the share-safe default
-  - v20.2 package privacy scanner for memories, chat logs, approvals, vector stores, backups, diagnostics, local paths, sandbox paths, and generated patch state
-  - v20.3 portable workspace metadata check for ROOT_DIR-relative project roots and no stale `/mnt/data` or hard-coded user paths
-  - v20.4 first-run setup check for Python, required files, settings, workspace metadata, dashboard/API importability, and optional model status guidance
-  - v20.5 dependency install advisor with `pip install -r requirements.txt` guidance
-  - v20.6 release upgrade notes from v20.0.1 to v21.0
-  - v20.7 runtime data migration guard so source-only packages do not bulldoze existing private runtime state
-  - v20.8 release install verification for compile, manifest, privacy, portable metadata, first-run, unzip, and optional smoke checks
-  - v21.0 verified installable release loop
-- Updated `conscious_agent/release_packaging.py`
-  - release packaging metadata is now `21.0`
-  - verified package loop now uses the v21 package name and metadata
-- Updated `conscious_agent/workspace_orchestration.py`
-  - fixed `WORKSPACE_ORCHESTRATION_VERSION` so normal workspace registry/audit calls no longer rewrite `data/workspaces/projects.json` back to stale `15.0`
-- Updated `conscious_agent/main.py`
-  - added `--release-profiles`
-  - added `--package-privacy-scan`
-  - added `--portable-metadata-check`
-  - added `--first-run-check`
-  - added `--dependency-advisor`
-  - added `--upgrade-notes`
-  - added `--runtime-migration-check`
-  - added `--release-install-verification`
-  - added `--verified-installable-release-loop`
-  - added `--run-install-smoke` for optional heavier install verification
-- Updated `conscious_agent/api_server.py`
-  - API version is now `21.0`
-  - added read-only GET release install endpoints under `/api/release/...`
-  - added POST refresh/save endpoints for release install reports and guarded installable package loop runs
-  - dashboard-facing endpoints return compact summaries unless `full=true`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `21.0`
-  - `/release-package` now shows release profiles, privacy scan, portable metadata, first-run check, dependency advisor, upgrade notes, runtime migration guard, install verification, and installable release loop cards
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the v20.1-v21.0 release install commands
-- Updated `tools/smoke_check.py`
-  - smoke check now fails if release manifest integrity, package privacy, portable metadata, verified release package loop, or verified installable release loop is blocked
-- Updated metadata
-  - `data/settings.json` marks `last_updated_for: v21.0`
-  - `data/projects.json` marks the active Eidolon project as v21.0
-  - `data/workspaces/projects.json` root and project metadata now report v21.0
-  - `data/workspaces/active_project.json` now reports v21.0
-  - packaged command profiles are marked with workspace version 21.0
-
-## Findings fixed during v21.0
-
-- Fixed the strict release manifest blocker caused by `workspace_orchestration.py` rewriting workspace metadata back to version `15.0`.
-- Strengthened smoke checks so release packaging cannot be blocked while the smoke check still passes.
-- Kept source-only required workspace metadata files in the package allowlist and verified them through portable metadata checks.
-- Added release privacy and migration checks so future release zips do not accidentally ship private runtime state or overwrite local runtime data.
-
-## Verification used for v21.0
-
-```bash
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --release-profiles --readiness-json
-python conscious_agent/main.py --package-privacy-scan --readiness-json
-python conscious_agent/main.py --portable-metadata-check --readiness-json
-python conscious_agent/main.py --first-run-check --readiness-json
-python conscious_agent/main.py --dependency-advisor --readiness-json
-python conscious_agent/main.py --upgrade-notes --readiness-json
-python conscious_agent/main.py --runtime-migration-check --readiness-json
-python conscious_agent/main.py --release-install-verification --readiness-json
-python conscious_agent/main.py --verified-installable-release-loop --readiness-json
-python conscious_agent/main.py --release-manifest-integrity --readiness-json
-python conscious_agent/main.py --verified-release-package-loop --readiness-json
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python -u tools/smoke_check.py
-```
-
-## Known v21.0 packaging notes
-
-- `--doctor` can still report a blocked/limited stable-loop confidence state in an empty or local-model-unavailable environment. That is an operational-readiness signal, not a source-only packaging failure.
-- `chromadb` may warn if the environment has not run `pip install -r requirements.txt`; the package still lists it in `requirements.txt`.
-- Source-only release zips intentionally exclude private runtime data, generated release reports, approvals, vector stores, backups, chat logs, and memory files.
-
-## Recommended first commands after unzip
-
-```bash
-pip install -r requirements.txt
-python conscious_agent/main.py --first-run-check
-python conscious_agent/main.py --dependency-advisor
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --dashboard
-```
-
----
-
-# Eidolon v20.0.1 - Source-Only Release Package Hotfix
-
-v20.0.1 finishes the v20.0 release-packaging hardening pass before new v20.1 work begins. The hotfix makes guarded release zips source-only by default, prunes private/runtime folders during inventory traversal, tightens field-level version checks, keeps dashboard release API responses lightweight unless `full=true`, and removes stale v15 defaults from the legacy release lane. The zip builder has been reminded that private runtime state is not a party favor.
-
-## What changed in v20.0.1
-
-- Updated `conscious_agent/release_packaging.py`
-  - bumped release packaging metadata to `20.0.1`
-  - added a source-only package profile for guarded release zips
-  - excluded runtime/private `data/` state by default
-  - allowlisted only safe seed/config data files and workspace command profiles
-  - pruned `.git`, `.venv`, cache folders, and excluded runtime data during traversal instead of scanning them after the fact
-  - added strict field-level workspace metadata integrity checks
-  - added dashboard/API-safe release report summaries that omit huge inventory/checksum payloads by default
-  - strengthened unzip verification so packaged runtime/private data blocks the check
-- Updated `conscious_agent/api_server.py`
-  - API version is now `20.0.1`
-  - release inventory/checksum/audit/loop GET endpoints return compact summaries by default
-  - full release payloads remain available with `full=true`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `20.0.1`
-  - release package page points at `Eidolon_v20_0_1.zip`
-  - release package labels describe the source-only package hotfix
-- Updated `conscious_agent/release_pipeline.py`
-  - legacy v15 release lane now uses the current configured target version for generated draft requests
-  - legacy package metadata no longer defaults to stale v15 package naming
-- Updated `tools/smoke_check.py`
-  - validates the v20.0.1 release-packaging version marker
-- Updated metadata
-  - `data/settings.json` marks `last_updated_for: v20.0.1`
-  - `data/projects.json` marks the active Eidolon project as v20.0.1
-  - `data/workspaces/projects.json` top-level and project-level versions now match v20.0.1
-
-## Findings fixed in v20.0.1
-
-- Release zips no longer include broad private/runtime `data/` contents by default.
-- `.git` and `.venv` are pruned during traversal, so packaging checks do not waste time crawling the basement.
-- Package inventory now blocks if any non-allowlisted `data/` runtime file is included.
-- Release manifest integrity checks the actual workspace version fields instead of merely searching for `v20.0` somewhere in JSON.
-- Dashboard/API release endpoints avoid multi-megabyte payloads unless a caller explicitly asks for full output.
-- Legacy release code no longer creates fresh draft requests targeting v15.0.
-
-## Verification used for v20.0.1
-
-```bash
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard, api_server; print(dashboard.DASHBOARD_VERSION, api_server.API_VERSION)"
-python conscious_agent/main.py --release-manifest-integrity --readiness-json
-python conscious_agent/main.py --package-inventory --readiness-json
-python conscious_agent/main.py --package-checksums --readiness-json
-python conscious_agent/main.py --release-pipeline-audit --readiness-json
-python conscious_agent/main.py --verified-release-package-loop --readiness-json
-python conscious_agent/main.py --build-release-zip --dry-run --readiness-json
-python conscious_agent/main.py --verify-release-unzip --readiness-json
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python -u tools/smoke_check.py
-```
-
-## Next likely step
-
-v20.1 can now move into install/replace workflow improvements instead of cleaning up v20.0 packaging safety. Imagine that: a dot release doing its job without demanding a parade.
-
----
-
-# Eidolon v20.0 - Verified Release Package Loop
-
-v20.0 bundles the v19.1 through v20.0 release-packaging roadmap into one packaged release. Eidolon can now verify release metadata, classify package contents, generate file checksums, create release notes and handoff reports, dry-run a guarded zip builder, verify extracted packages, audit the approval-to-package chain, and run one bounded verified release package loop. The machine can finally prepare its own suitcase without packing a live approval grenade, which is a touching little milestone in robot maturity.
-
-## What changed in v20.0
-
-- Added `conscious_agent/release_packaging.py`
-  - v19.1 release manifest integrity
-  - v19.2 package file inventory
-  - v19.3 package checksum builder
-  - v19.4 release notes generator
-  - v19.5 release handoff report
-  - v19.6 guarded zip builder
-  - v19.7 install/unzip verification
-  - v19.9 release pipeline audit
-  - v20.0 verified release package loop
-- Updated `conscious_agent/approval_release_workflow.py`
-  - bumped approval/release workflow metadata for the v20 package line
-  - kept validated apply bound to the exact reviewed artifact manifest
-  - added operator-facing binding text/print helper for validated approval manifests
-  - review integrity now explains how to refresh/save the review bundle when legitimate artifact drift blocks approval
-- Updated `conscious_agent/release_pipeline.py`
-  - release readiness no longer hard-codes stale v15.0 checks
-  - readiness now compares README, settings, and project metadata to the current configured version
-- Updated `conscious_agent/main.py`
-  - added `--bind-validated-approval`
-  - added `--refresh-ai-patch-review-bundle`
-  - added v19.1-v20.0 release package CLI commands
-- Updated `conscious_agent/api_server.py`
-  - API version is now `20.0`
-  - added read-only GET preview endpoints for v20 release package reports
-  - added POST-only mutation endpoints for refreshing the review bundle, binding validated approval, and guarded release zip/package operations
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `20.0`
-  - `/code-patches` now includes refresh/save review bundle and bind validated approval controls
-  - added `/release-package` for v20 manifest, inventory, checksum, notes, handoff, zip, unzip, audit, and verified loop reports
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the v20 release packaging commands
-- Updated `tools/smoke_check.py`
-  - validates the v20 release packaging module and report shapes
-- Updated metadata
-  - `data/settings.json` marks `last_updated_for: v20.0`
-  - `data/projects.json` marks the active Eidolon project as v20.0
-  - workspace project metadata marks the current milestone as v20.0
-
-## Findings fixed during v20.0
-
-- The validated real-apply path is no longer effectively unreachable from normal operator surfaces. Use `--bind-validated-approval`, POST `/api/code-patches/bind-validated-approval`, or the `/code-patches` dashboard control after approval and review-bundle refresh.
-- Review integrity drift now has an obvious repair path: refresh/save the current review bundle before approval with `--refresh-ai-patch-review-bundle` or POST `/api/code-patches/refresh-review-bundle`.
-- Release readiness no longer assumes `last_updated_for == v15.0`; it uses the current settings/project version markers.
-
-## Post-review hardening added after v20.0
-
-- Release package inventory now excludes private and runtime-heavy state folders by default, including chat actions, diagnostics, maintenance scans, notifications, patch workspaces, patches, session plans, stable loops, test reports, watch reports, work cycles, workspace runtime state, `memories.json`, and live approval state.
-- The verified package loop now reuses manifest, inventory, checksum, handoff, zip, and audit reports inside a single run instead of rebuilding the same full-tree reports repeatedly.
-- The legacy release package metadata path now derives `Eidolon_v{current_version}.zip` from settings instead of falling back to `Eidolon_v15_0.zip`.
-
-## Version-by-version roadmap completed
-
-### v19.1 - Release Manifest Integrity
-
-Added release manifest consistency checks through:
-
-```bash
-python conscious_agent/main.py --release-manifest-integrity
-```
-
-The report verifies settings, project metadata, README section, dashboard version, API version, approval/review artifacts, release readiness, and package plan consistency. It exists to stop mismatched version ghosts from crawling back into the dashboard wearing old badges.
-
-### v19.2 - Package File Inventory
-
-Added package inventory through:
-
-```bash
-python conscious_agent/main.py --package-inventory
-```
-
-The inventory classifies included and excluded files. It excludes `.git`, `.venv`, `__pycache__`, `.pyc`, logs, nested zips, generated package reports, live approval state, private memory files, and runtime report folders so release zips are source/handoff packages instead of snapshots of the operator's local history.
-
-### v19.3 - Package Checksum Builder
-
-Added checksum generation through:
-
-```bash
-python conscious_agent/main.py --package-checksums
-```
-
-The report generates SHA-256 hashes and sizes for included release files so the handoff package contents can be verified instead of trusted because the zip looked polite.
-
-### v19.4 - Release Notes Generator
-
-Added release notes through:
-
-```bash
-python conscious_agent/main.py --release-notes
-```
-
-The report summarizes major changes, new commands, known warnings, and README release content for the packaged version.
-
-### v19.5 - Release Handoff Report
-
-Added final handoff reporting through:
-
-```bash
-python conscious_agent/main.py --release-handoff-report
-```
-
-The handoff report includes package name, manifest status, checksum status, README status, approval state, known warnings, tested commands, and recommended first commands after unzip.
-
-### v19.6 - Guarded Zip Builder
-
-Added guarded zip builder through:
-
-```bash
-python conscious_agent/main.py --build-release-zip --dry-run
-```
-
-Real zip writing requires explicit confirmation:
-
-```bash
-python conscious_agent/main.py --build-release-zip --approve-controlled-self-build
-```
-
-The builder runs manifest, inventory, checksum, and handoff prechecks before writing. Dry-runs do not create archives. One small victory for not producing mystery zips.
-
-### v19.7 - Install / Unzip Verification
-
-Added unzip verification through:
-
-```bash
-python conscious_agent/main.py --verify-release-unzip
-```
-
-If a guarded zip exists, Eidolon extracts it to a temporary verification folder and checks for required files, neutral approval state, and portable package structure. If no guarded zip exists yet, the report stays as a warning instead of pretending there was something to verify.
-
-### v19.8 - Release Dashboard Page
-
-Added `/release-package` to the dashboard. It shows manifest integrity, package inventory, checksums, release notes, handoff report, zip readiness, unzip verification, pipeline audit, and the verified package loop. The page uses read-only GET previews and POST-only mutation controls because apparently that commandment needed another marble tablet.
-
-### v19.9 - Release Pipeline Audit
-
-Added release pipeline audit through:
-
-```bash
-python conscious_agent/main.py --release-pipeline-audit
-```
-
-The audit checks the approval-to-package chain: review bundle, validated manifest binding, approval readiness, post-apply review, release readiness, manifest integrity, checksums, handoff, and zip builder readiness.
-
-### v20.0 - Verified Release Package Loop
-
-Added the bounded package workflow through:
-
-```bash
-python conscious_agent/main.py --verified-release-package-loop
-```
-
-The loop runs manifest integrity, inventory, checksums, release notes, handoff report, pipeline audit, guarded zip dry-run, unzip verification, then stops.
-
-Real zip creation remains explicit:
-
-```bash
-python conscious_agent/main.py --verified-release-package-loop --approve-controlled-self-build
-```
-
-## New CLI commands
-
-```bash
-python conscious_agent/main.py --bind-validated-approval
-python conscious_agent/main.py --refresh-ai-patch-review-bundle
-python conscious_agent/main.py --release-manifest-integrity
-python conscious_agent/main.py --package-inventory
-python conscious_agent/main.py --package-checksums
-python conscious_agent/main.py --release-notes
-python conscious_agent/main.py --release-handoff-report
-python conscious_agent/main.py --build-release-zip --dry-run
-python conscious_agent/main.py --verify-release-unzip
-python conscious_agent/main.py --release-pipeline-audit
-python conscious_agent/main.py --verified-release-package-loop
-```
-
-## New API routes
-
-Read-only previews:
-
-```text
-GET /api/release/manifest-integrity
-GET /api/release/package-inventory
-GET /api/release/package-checksums
-GET /api/release/notes
-GET /api/release/handoff
-GET /api/release/build-zip
-GET /api/release/verify-unzip
-GET /api/release/pipeline-audit
-GET /api/release/verified-package-loop
-```
-
-Mutation routes:
-
-```text
-POST /api/code-patches/refresh-review-bundle
-POST /api/code-patches/bind-validated-approval
-POST /api/release/manifest-integrity
-POST /api/release/package-inventory
-POST /api/release/package-checksums
-POST /api/release/notes
-POST /api/release/handoff
-POST /api/release/build-zip
-POST /api/release/verify-unzip
-POST /api/release/pipeline-audit
-POST /api/release/verified-package-loop
-```
-
-Real zip writing requires confirmation through POST or the CLI approval flag. GET routes remain preview-only and read-only.
-
-## Dashboard
-
-Start the dashboard:
-
-```bash
-python conscious_agent/main.py --dashboard
-```
-
-Open:
-
-```text
-http://127.0.0.1:8765/code-patches
-http://127.0.0.1:8765/release-package
-```
-
-`/code-patches` now has controls for refreshing the saved review bundle and binding an approved draft to the validated AI manifest. `/release-package` shows the v20 release packaging reports.
-
-## Verification commands
-
-Recommended checks:
-
-```bash
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard; print(dashboard.DASHBOARD_VERSION)"
-python conscious_agent/main.py --bind-validated-approval
-python conscious_agent/main.py --release-manifest-integrity
-python conscious_agent/main.py --package-inventory
-python conscious_agent/main.py --package-checksums
-python conscious_agent/main.py --release-notes
-python conscious_agent/main.py --release-handoff-report
-python conscious_agent/main.py --build-release-zip --dry-run
-python conscious_agent/main.py --verify-release-unzip
-python conscious_agent/main.py --release-pipeline-audit
-python conscious_agent/main.py --verified-release-package-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python -u tools/smoke_check.py
-```
-
-## Safety notes
-
-- The package ships with neutral approval state.
-- Dry-runs do not write release zips.
-- Real zip writing requires explicit approval.
-- Package inventory excludes live approval state, generated release reports, `.venv`, cache folders, logs, pyc files, and nested zips.
-- The validated AI apply path still requires exact artifact-manifest binding before real apply.
-
-## Next likely step
-
-v20.1 should probably start the **Release Installation and Upgrade Workflow** phase:
-
-- verify an extracted package against checksums
-- compare installed version to release manifest
-- provide upgrade/restore instructions
-- improve dashboard release handoff controls
-- add package provenance checks
-
-v20.0 makes the release package verifiable. v20.1 should make installing or replacing a local project folder less like swapping organs by candlelight.
-
----
-
-# Eidolon v19.0 - Approval-to-Release Loop
-
-v19.0 bundles the v18.1 through v19.0 approval-to-release roadmap into one packaged release. Eidolon can now collect validated AI patch artifacts into one authoritative review bundle, verify bundle integrity, decide approval readiness, keep an approval ledger, dry-run or guard real validated AI applies, compare post-apply state, prepare package handoff metadata, and run one bounded approval-to-release loop. The robot now needs receipts before touching anything, which is annoying until you remember files can be destroyed.
-
-## What changed in v19.0
-
-- Added `conscious_agent/approval_release_workflow.py`
-  - v18.1 AI patch review bundle
-  - v18.2 review bundle integrity check
-  - v18.3 approval-ready gate
-  - v18.5 human approval ledger
-  - v18.6 apply validated AI patch
-  - v18.7 post-apply review comparison
-  - v18.9 package build plan
-  - v19.0 approval-to-release loop
-- Updated `conscious_agent/validated_ai_patch_loop.py`
-  - real approved apply paths now require a validated patch approval manifest, not only the older draft approval binding
-- Updated `conscious_agent/main.py`
-  - added CLI commands for the v18.1-v19.0 approval-to-release workflow
-- Updated `conscious_agent/api_server.py`
-  - API version is now `19.0`
-  - added read-only GET preview endpoints for v19 review/release reports
-  - added POST-only mutation endpoints for validated AI apply and approval-to-release loop
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `19.0`
-  - `/code-patches` now shows v18/v19 review, integrity, approval, apply, post-apply, and package reports instead of being stuck around v17
-  - added `/release-review` as a release control surface
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the v18.1-v19.0 workflow commands
-- Updated `tools/smoke_check.py`
-  - validates `approval_release_workflow.py` report shapes in-process
-- Updated metadata
-  - `data/settings.json` marks `last_updated_for: v19.0`
-  - `data/projects.json` updates stale `current_milestone` and `version` values to v19.0
-  - `data/workspaces/active_project.json` and workspace project metadata mark the current workspace state as v19.0
-
-## Findings fixed during v19.0
-
-- Real validated AI apply now requires a validated patch approval manifest containing hashes for the exact reviewed artifact set: objective refinement, context ranking, safety envelope, validation, simulation, review score, recovery plan, release artifact, audit trail, and related bundle data.
-- Project metadata no longer reports stale v14/v15 milestone/version values while the API, settings, and README report v19.0.
-- `/code-patches` no longer labels itself around v17 or points release package metadata at `Eidolon_v17_0.zip`.
-
-## Version-by-version roadmap completed
-
-### v18.1 - AI Patch Review Bundle
-
-Added one authoritative review bundle through:
-
-```bash
-python conscious_agent/main.py --ai-patch-review-bundle
-```
-
-The bundle includes objective refinement, ranked code context, safety envelope, generated edits validation, simulation, test stub plan, review score, recovery plan, approval state, release readiness preview, and recommended next action.
-
-### v18.2 - Review Bundle Integrity Check
-
-Added integrity checks through:
-
-```bash
-python conscious_agent/main.py --ai-patch-review-integrity
-```
-
-The integrity check compares saved and current validated AI patch artifact hashes so review and approval cannot quietly drift apart. Tiny paperwork. Large safety value.
-
-### v18.3 - Approval-Ready Gate
-
-Added approval readiness through:
-
-```bash
-python conscious_agent/main.py --approval-ready
-```
-
-The gate checks review bundle presence, bundle integrity, validation, simulation, review score, test planning, README impact, and stale approval state before the system asks for human approval.
-
-### v18.4 - Dashboard Approval Workflow
-
-Updated `/code-patches` to show approval readiness, review bundle summary, integrity status, generated edit/simulation status, test planning, review score, recovery state, dry-run apply controls, and package/release links. GET routes remain read-only because apparently we need to keep saying that until the APIs behave.
-
-### v18.5 - Human Approval Ledger
-
-Added approval ledger reporting through:
-
-```bash
-python conscious_agent/main.py --approval-ledger
-```
-
-The ledger records approval status, patch id, draft id, request id, artifact hashes, consumed state, and accepted risk against the current validated patch manifest.
-
-### v18.6 - Apply Validated AI Patch
-
-Added validated AI apply through:
-
-```bash
-python conscious_agent/main.py --apply-validated-ai-patch --dry-run
-```
-
-Real apply remains blocked unless the review bundle passes, the approval-ready gate passes, the approval is unconsumed, and the approval includes the exact validated patch manifest. Dry-runs never overwrite real apply pointers.
-
-### v18.7 - Post-Apply Review Comparison
-
-Added post-apply review through:
-
-```bash
-python conscious_agent/main.py --post-apply-review
-```
-
-The report compares the approved manifest, apply report, dry-run separation, transaction status, rollback state, and release readiness.
-
-### v18.8 - Dashboard Release Review
-
-Added `/release-review` to show latest review bundle, integrity, approval readiness, apply preview, post-apply review, release readiness, package plan, audit trail, and known warnings. The dashboard is becoming a control center, or at least a prettier pile of guardrails.
-
-### v18.9 - Package Builder Command
-
-Added package build planning through:
-
-```bash
-python conscious_agent/main.py --package-build-plan
-```
-
-The plan lists version, source root, included roots, excluded patterns, README sections, verification commands, known warnings, release readiness, and recommended zip filename.
-
-### v19.0 - Approval-to-Release Loop
-
-Added the bounded approval-to-release loop through:
-
-```bash
-python conscious_agent/main.py --approval-to-release-loop
-```
-
-The loop loads the review bundle, checks integrity, checks approval readiness, records the approval ledger, dry-runs or applies the validated AI patch, runs post-apply review, semantic checks, release readiness, package build planning, audit trail, learning notes, then stops. One project. One patch. One approval. One loop. Then it stops, because that is how repositories stay out of therapy.
-
-## Core verification commands
-
-```bash
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard; print(dashboard.DASHBOARD_VERSION)"
-python conscious_agent/main.py --ai-patch-review-bundle
-python conscious_agent/main.py --ai-patch-review-integrity
-python conscious_agent/main.py --approval-ready
-python conscious_agent/main.py --approval-ledger
-python conscious_agent/main.py --apply-validated-ai-patch --dry-run
-python conscious_agent/main.py --post-apply-review
-python conscious_agent/main.py --package-build-plan
-python conscious_agent/main.py --approval-to-release-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python -u tools/smoke_check.py
-```
-
-## Safety notes
-
-- GET endpoints are preview/read-only.
-- Real validated AI apply is POST/CLI-confirmation gated.
-- Real validated AI apply requires a manifest bound to the exact reviewed artifact hashes.
-- Dry-run apply writes separate dry-run reports and does not replace real apply pointers.
-- Packaged approval state should stay neutral; do not ship a zip with a live unconsumed approval.
-- `chromadb` and Ollama warnings remain environment warnings unless the local setup is expected to provide them.
-
-## Next likely step
-
-v19.1 should probably start **Release Packaging Writer / Handoff Builder**:
-
-- create a guarded internal zip builder
-- use the package build plan as the source of truth
-- verify included/excluded file lists
-- attach release audit metadata
-- prevent live approvals from shipping inside package state
-- keep README and package metadata locked together
-
-Right now v19.0 can plan and verify the handoff. v19.1 should make the actual package writing less dependent on a human remembering which files not to throw into the digital suitcase.
-
----
-
-# Eidolon v18.0 - Validated AI Code Patch Loop
-
-v18.0 bundles the v17.1 through v18.0 validation-centered AI code patch roadmap into one packaged release. Eidolon can now refine patch objectives, rank code context, wrap prompts in a safety envelope, validate generated edits, simulate patch effects without source writes, plan test stubs, score review readiness, create recovery plans, and run one bounded validated AI code patch loop. The model may suggest a patch, but it still has to pass through the little turnstile of reality first.
-
-## What changed in v18.0
-
-- Added `conscious_agent/validated_ai_patch_loop.py`
-  - v17.1 patch objective refinement
-  - v17.2 code context ranking
-  - v17.3 prompt safety envelope
-  - v17.4 generated patch validator
-  - v17.5 patch simulation runner
-  - v17.6 test stub planner
-  - v17.7 patch review scoring
-  - v17.9 patch failure recovery plan
-  - v18.0 validated AI code patch loop
-- Updated `conscious_agent/main.py`
-  - added CLI commands for the v17.1-v18.0 validated AI patch pipeline
-- Updated `conscious_agent/api_server.py`
-  - API version is now `18.0`
-  - added read-only GET preview endpoints for validated AI patch reports
-  - added POST endpoints for saving validated AI patch review artifacts
-  - real apply paths remain POST-only and require explicit confirmation
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `18.0`
-  - upgraded `/code-patches` to show objective refinement, ranked context, safety envelope, validation, simulation, test stubs, review score, recovery plan, and validated loop state
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the v17.1-v18.0 validated AI patch review commands
-- Updated `tools/smoke_check.py`
-  - validates `validated_ai_patch_loop.py` report shapes in-process
-- Updated metadata
-  - `data/settings.json` marks `last_updated_for: v18.0`
-  - `data/projects.json` includes v18 goals and description updates
-  - workspace metadata marks the Eidolon project as version `18.0`
-
-## Version-by-version roadmap completed
-
-### v17.1 - Patch Objective Refinement
-
-Added objective refinement through:
-
-```bash
-python conscious_agent/main.py --refine-patch-objective
-```
-
-This sharpens task-to-code patch objectives into specific behavior change, affected command/API/dashboard/documentation surfaces, allowed files, blocked files, success criteria, failure criteria, README impact, and test expectations.
-
-### v17.2 - Code Context Ranking
-
-Added ranked code context through:
-
-```bash
-python conscious_agent/main.py --rank-code-context
-```
-
-It scores focused code snippets by task relevance, surface connection, file risk, and symbol/snippet coverage so prompt context is not just a wheelbarrow of code dumped at the model's feet.
-
-### v17.3 - Prompt Safety Envelope
-
-Added prompt safety envelopes through:
-
-```bash
-python conscious_agent/main.py --patch-safety-envelope
-```
-
-The envelope enforces allowed files, expected old text, no default full-file rewrites, README/test impact, read-only GET routes, dry-run pointer separation, and approval artifact binding.
-
-### v17.4 - Generated Patch Validator
-
-Added generated patch validation through:
-
-```bash
-python conscious_agent/main.py --validate-generated-patch
-```
-
-It validates parsed generated edits against project boundaries, allowed files, expected old text, README impact, test impact, and explicit safety intent for guardrail/recovery files.
-
-### v17.5 - Patch Simulation Runner
-
-Added patch simulation through:
-
-```bash
-python conscious_agent/main.py --patch-simulation
-```
-
-The simulation performs in-memory replacements, computes before/after hashes, identifies files that would change, builds backup/rollback expectations, and never writes source files.
-
-### v17.6 - Test Stub Planner
-
-Added test stub planning through:
-
-```bash
-python conscious_agent/main.py --test-stub-plan
-```
-
-It recommends compile checks, smoke checks, semantic checks, dashboard import checks, API GET/POST safety checks, and CLI regression checks based on touched files.
-
-### v17.7 - Patch Review Scoring
-
-Added patch review scoring through:
-
-```bash
-python conscious_agent/main.py --patch-review-score
-```
-
-The score covers objective clarity, context quality, prompt safety, schema validity, boundary safety, simulation, test coverage, README coverage, rollback safety, and approval safety.
-
-### v17.8 - Dashboard Code Patch Approval UI
-
-Upgraded dashboard review at:
-
-```text
-/code-patches
-```
-
-The page now shows the validation-centered v18 reports and keeps GET views preview-only. POST is still required for saved artifacts or mutation paths, because hyperlinks do not get to operate on live organs.
-
-### v17.9 - Patch Failure Recovery Plan
-
-Added recovery planning through:
-
-```bash
-python conscious_agent/main.py --patch-recovery-plan
-```
-
-It turns validation, simulation, and failure analysis signals into safe retry strategies, future prompt constraints, files to avoid, tests to add, and human-review requirements.
-
-### v18.0 - Validated AI Code Patch Loop
-
-Added the validated AI code patch loop through:
-
-```bash
-python conscious_agent/main.py --validated-ai-code-patch-loop
-```
-
-The loop refines the objective, ranks context, builds the safety envelope, parses edits, checks consistency, validates generated edits, simulates the patch, plans tests, scores review readiness, builds diff/semantic/recovery artifacts, and stops for approval. If a valid artifact-bound approval already exists, it can continue through the existing generated-code release path under explicit confirmation rules.
-
-## New API routes
-
-Read-only preview routes:
-
-```text
-GET /api/code-patches/objective-refinement
-GET /api/code-patches/context-ranking
-GET /api/code-patches/safety-envelope
-GET /api/code-patches/validate-generated-patch
-GET /api/code-patches/simulation
-GET /api/code-patches/test-stub-plan
-GET /api/code-patches/review-score
-GET /api/code-patches/recovery-plan
-GET /api/code-patches/validated-ai-loop
-```
-
-Saved-artifact routes:
-
-```text
-POST /api/code-patches/objective-refinement
-POST /api/code-patches/context-ranking
-POST /api/code-patches/safety-envelope
-POST /api/code-patches/validate-generated-patch
-POST /api/code-patches/simulation
-POST /api/code-patches/test-stub-plan
-POST /api/code-patches/review-score
-POST /api/code-patches/recovery-plan
-POST /api/code-patches/validated-ai-loop
-```
-
-Real apply behavior still requires explicit POST confirmation through the existing generated-code release/apply gates. GET stays read-only, because apparently we keep having to remind software not to perform surgery when someone asks for a chart.
-
-## Recommended verification commands
-
-```bash
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard; print(dashboard.DASHBOARD_VERSION)"
-python conscious_agent/main.py --refine-patch-objective
-python conscious_agent/main.py --rank-code-context
-python conscious_agent/main.py --patch-safety-envelope
-python conscious_agent/main.py --validate-generated-patch
-python conscious_agent/main.py --patch-simulation
-python conscious_agent/main.py --test-stub-plan
-python conscious_agent/main.py --patch-review-score
-python conscious_agent/main.py --patch-recovery-plan
-python conscious_agent/main.py --validated-ai-code-patch-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python -u tools/smoke_check.py
-```
-
-## Next recommended step
-
-v18.0 makes generated AI patches validatable and simulatable before approval. The next likely phase should make the approved apply/release review more operator-friendly: stronger dashboard approve/reject controls, more explicit artifact locking, better local-model integration, and release packaging that can be prepared directly from the validated patch bundle.
-
----
-
-# Previous README: # Eidolon v17.0 - AI-Assisted Human-Approved Code Patch Loop
-
-v17.0 bundles the v16.1 through v17.0 AI-assisted generated-code patch roadmap into one packaged release. Eidolon can now translate a task into a concrete code patch objective, extract focused code context, build a bounded patch prompt, parse generated edit objects, check edit consistency, run an AI patch dry-run, classify failures, store learning notes, and run a one-task AI-assisted human-approved code patch loop. The gremlin is now allowed to suggest edits, but only through a cage made of JSON, approval binding, expected text, and the crushing weight of consequences.
-
-## What changed in v17.0
-
-- Added `conscious_agent/ai_patch_assistance.py`
-  - v16.1 task-to-code patch translator
-  - v16.2 focused code context extractor
-  - v16.3 structured patch prompt builder
-  - v16.4 generated edit parser
-  - v16.5 multi-edit consistency checker
-  - v16.6 AI-assisted code patch dry-run
-  - v16.8 patch failure classifier
-  - v16.9 patch learning notes
-  - v17.0 AI-assisted human-approved code patch loop
-- Updated `conscious_agent/main.py`
-  - added CLI commands for the v16.1-v17.0 AI-assisted code patch pipeline
-- Updated `conscious_agent/api_server.py`
-  - API version is now `17.0`
-  - added read-only GET preview endpoints for AI-assisted code patch reports
-  - added POST endpoints for saving AI-assisted patch review artifacts
-  - real apply paths remain POST-only and require explicit confirmation
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `17.0`
-  - added `/code-patches` generated patch review page
-  - added dashboard cards for task objective, code context, patch prompt, parsed edits, consistency, AI dry-run, semantic checks, and AI-assisted loop state
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the v16.1-v17.0 AI-assisted patch review commands
-- Updated `tools/smoke_check.py`
-  - validates `ai_patch_assistance.py` report shapes in-process
-- Updated metadata
-  - `data/settings.json` marks `last_updated_for: v17.0`
-  - `data/projects.json` marks `last_updated_for: v17.0`
-  - workspace metadata marks the Eidolon project as version `17.0`
-
-## Version-by-version roadmap completed
-
-### v16.1 - Task-to-Code Patch Translator
-
-Added task objective translation through:
-
-```bash
-python conscious_agent/main.py --task-to-code-patch
-```
-
-This turns the active draft request into a bounded code patch objective with target behavior, expected files, likely symbols, README impact, test impact, risk level, and patch strategy.
-
-### v16.2 - Code Context Extractor
-
-Added focused code context extraction through:
-
-```bash
-python conscious_agent/main.py --code-context
-```
-
-It extracts target files, symbol spans, nearby snippets, README context, and symbol scan summaries so patch generation does not have to swallow the whole project like a python with ambition.
-
-### v16.3 - Patch Prompt Builder
-
-Added structured prompt generation through:
-
-```bash
-python conscious_agent/main.py --patch-prompt
-```
-
-The prompt includes task objective, constraints, allowed files, blocked files, current code context, README requirements, test requirements, safety rules, and a strict JSON output schema.
-
-### v16.4 - Generated Edit Parser
-
-Added generated edit parsing through:
-
-```bash
-python conscious_agent/main.py --parse-generated-edits
-```
-
-It parses edit objects with `file`, `symbol`, `expected_old_text`, `replacement_text`, `reason`, tests, and README impact. It rejects unsafe paths, missing expected text, missing replacements, large blind full-file rewrites, unapproved guardrail edits, and expected text that does not match the current file.
-
-### v16.5 - Multi-Edit Consistency Checker
-
-Added generated edit consistency checks through:
-
-```bash
-python conscious_agent/main.py --edit-consistency
-```
-
-It detects duplicate target regions, rejected generated edits, missing README/test impact, and API edits that need GET/POST safety coverage.
-
-### v16.6 - AI Patch Draft Dry-Run
-
-Added an AI-assisted dry-run path through:
-
-```bash
-python conscious_agent/main.py --ai-code-patch-dry-run
-```
-
-The dry-run performs task translation, code context extraction, prompt building, generated patch artifact review, edit parsing, consistency checks, diff bundle generation, and semantic checks without source writes, approval consumption, or rollback pointer changes.
-
-### v16.7 - Generated Patch Review Dashboard
-
-Added dashboard support at:
-
-```text
-/code-patches
-```
-
-The page shows task objective, code context, patch prompt, parsed edits, consistency checks, dry-run state, semantic checks, failure analysis, learning notes, and AI-assisted loop status. The page uses read-only GET previews and POST-only save actions, because links should not be able to operate heavy machinery.
-
-### v16.8 - Patch Failure Classifier
-
-Added generated patch failure analysis through:
-
-```bash
-python conscious_agent/main.py --patch-failure-analysis
-```
-
-It classifies context mismatch, symbol issues, compile failures, dashboard import failures, API safety failures, README gate failures, approval mismatches, rollback problems, test failures, and environment warnings.
-
-### v16.9 - Patch Learning Notes
-
-Added generated patch learning notes through:
-
-```bash
-python conscious_agent/main.py --patch-learning-notes
-```
-
-It stores lessons from failures, rejected edits, and human review notes so future patch prompts can carry forward constraints instead of rediscovering the same rake with its face.
-
-### v17.0 - AI-Assisted Human-Approved Code Patch Loop
-
-Added the bounded AI-assisted code patch loop through:
-
-```bash
-python conscious_agent/main.py --ai-assisted-code-patch-loop
-```
-
-The loop performs one project, one task, one generated patch review, one approval check, one optional apply path, one verification path, one release artifact path, and then stops. Without an artifact-bound approval, it prepares review artifacts and stops for human approval.
-
-## New API routes
-
-Read-only preview routes:
-
-```text
-GET /api/code-patches/task-to-code-patch
-GET /api/code-patches/code-context
-GET /api/code-patches/patch-prompt
-GET /api/code-patches/parse-generated-edits
-GET /api/code-patches/edit-consistency
-GET /api/code-patches/ai-dry-run
-GET /api/code-patches/failure-analysis
-GET /api/code-patches/learning-notes
-GET /api/code-patches/ai-assisted-loop
-```
-
-Saved-artifact routes:
-
-```text
-POST /api/code-patches/task-to-code-patch
-POST /api/code-patches/code-context
-POST /api/code-patches/patch-prompt
-POST /api/code-patches/parse-generated-edits
-POST /api/code-patches/edit-consistency
-POST /api/code-patches/ai-dry-run
-POST /api/code-patches/failure-analysis
-POST /api/code-patches/learning-notes
-POST /api/code-patches/ai-assisted-loop
-```
-
-Live apply behavior still requires explicit POST confirmation through the existing generated-code release/apply gates. GET stays read-only. Yes, we are still saying this out loud because APIs keep trying to do crimes when nobody is looking.
-
-## Recommended verification commands
-
-```bash
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard; print(dashboard.DASHBOARD_VERSION)"
-python conscious_agent/main.py --task-to-code-patch
-python conscious_agent/main.py --code-context
-python conscious_agent/main.py --patch-prompt
-python conscious_agent/main.py --parse-generated-edits
-python conscious_agent/main.py --edit-consistency
-python conscious_agent/main.py --ai-code-patch-dry-run
-python conscious_agent/main.py --patch-failure-analysis
-python conscious_agent/main.py --patch-learning-notes
-python conscious_agent/main.py --ai-assisted-code-patch-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python -u tools/smoke_check.py
-```
-
-## Next recommended step
-
-v17.0 gives Eidolon AI-assisted generated patch content in a safe review lane. The next major phase should make this more practical: improve real local-model integration, strengthen generated edit validation, add dashboard approval controls for generated code patches, and prepare a human-approved real apply path that can produce release packages with fewer manual terminal hops.
-
----
-
-# Eidolon v16.0 - Generated Code Patch Release Loop
-
-v16.0 bundles the v15.1 through v16.0 generated-code release roadmap into one packaged release. The release lane now has a dedicated generated-code patch workspace, symbol-aware file scans, targeted rewrite plans, conflict detection, diff bundles, guarded apply transactions, semantic safety checks, release artifact manifests, audit trails, and a bounded generated-code release loop. The robot now has a clipboard, a map, and a lockbox. Still not allowed near scissors without permission.
-
-## What changed in v16.0
-
-- Added `conscious_agent/code_patch_release.py`
-  - v15.1 generated-code patch workspace status
-  - v15.2 symbol-aware target file scanner
-  - v15.3 targeted rewrite planner
-  - v15.4 rewrite conflict detector
-  - v15.5 generated patch diff bundle
-  - v15.6 guarded code patch transaction dry-run/apply gate
-  - v15.7 post-apply semantic checks
-  - v15.8 release artifact manifest builder
-  - v15.9 release audit trail
-  - v16.0 generated code patch release loop
-- Updated `conscious_agent/main.py`
-  - added CLI commands for the v15.1-v16.0 generated-code patch release pipeline
-- Updated `conscious_agent/api_server.py`
-  - API version is now `16.0`
-  - added read-only GET preview endpoints for generated-code patch/release reports
-  - added POST endpoints for saving generated-code patch/release artifacts
-  - real apply paths remain POST-only and require explicit confirmation
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the v15.1-v16.0 generated-code patch release commands
-- Updated `tools/smoke_check.py`
-  - validates `code_patch_release.py` report shapes in-process
-  - keeps the full CLI sequence out of smoke_check so nested compile/readiness checks do not fight the outer smoke run like tiny multiprocessing goblins
-- Updated metadata
-  - `data/settings.json` marks `last_updated_for: v16.0`
-  - `data/projects.json` marks `last_updated_for: v16.0`
-  - workspace metadata marks the Eidolon project as version `16.0`
-
-## Version-by-version roadmap completed
-
-### v15.1 - Real Patch Workspace Files
-
-Added generated-code patch workspace reporting through:
-
-```bash
-python conscious_agent/main.py --code-patch-status
-```
-
-The workspace lives under:
-
-```text
-data/code_patches/
-  current_patch.json
-  proposed_edits.json
-  rewrite_previews.json
-  apply_transaction_report.json
-  verification_report.json
-  symbol_scan.json
-  rewrite_plan.json
-  rewrite_conflicts.json
-  code_patch_diff_bundle.json
-  release_artifact.json
-  release_audit_trail.json
-```
-
-This separates real code patch artifacts from draft review metadata, because piling every artifact into one drawer is how software grows mushrooms.
-
-### v15.2 - Symbol-Aware File Scanner
-
-Added target-file symbol scanning through:
-
-```bash
-python conscious_agent/main.py --symbol-scan
-```
-
-It detects Python functions, classes, imports, constants, CLI arguments, and likely API/dashboard route markers. Non-Python files are handled as text targets.
-
-### v15.3 - Targeted Rewrite Planner
-
-Added targeted rewrite planning through:
-
-```bash
-python conscious_agent/main.py --rewrite-plan
-```
-
-The planner links code edit proposals to target files, expected hashes, symbol targets when available, backup requirements, README impact, and test requirements. Full-file rewrites remain hash-guarded instead of blindly overwriting files like a caffeinated copier.
-
-### v15.4 - Rewrite Conflict Detector
-
-Added rewrite conflict checks through:
-
-```bash
-python conscious_agent/main.py --rewrite-conflicts
-```
-
-It detects missing target files, changed file hashes, missing target symbols, blocked safe-rewrite previews, and approval binding problems. Approval binding warnings do not block dry-run review, but real apply still requires a valid artifact-bound approval.
-
-### v15.5 - Generated Patch Diff Bundle
-
-Added a generated patch diff bundle through:
-
-```bash
-python conscious_agent/main.py --code-patch-diff-bundle
-```
-
-The bundle collects draft verification, code edit proposals, rewrite plans, safe rewrite previews, generated patch summaries, rewrite conflict checks, test suggestions, boundary checks, and approval binding status into one review artifact.
-
-### v15.6 - Patch Apply Transaction
-
-Added guarded transaction-style apply reporting through:
-
-```bash
-python conscious_agent/main.py --apply-code-patch-transaction --dry-run
-```
-
-Real apply remains gated behind:
-
-```bash
-python conscious_agent/main.py --apply-code-patch-transaction --approve-controlled-self-build
-```
-
-Rules:
-
-- all prechecks must pass before any source write
-- approval must bind to the current artifact set for real apply
-- dry-runs do not consume approval
-- dry-runs do not overwrite real apply pointers
-- failures block before source writes
-
-### v15.7 - Post-Apply Semantic Checks
-
-Added semantic safety checks through:
-
-```bash
-python conscious_agent/main.py --semantic-checks
-```
-
-Checks include:
-
-- API GET/POST separation markers
-- artifact-bound approval validation
-- dry-run pointer separation
-- rollback stale/hash guard markers
-- single-use approval markers
-- compile coverage
-
-This catches the class of bugs that made earlier versions look green while holding a rake behind their back.
-
-### v15.8 - Release Artifact Builder
-
-Added release artifact manifest generation through:
-
-```bash
-python conscious_agent/main.py --release-artifact
-```
-
-The manifest records package name, changed files, previewed files, excluded files, README sections, verification commands, known warnings, rollback status, and release readiness.
-
-### v15.9 - Release Audit Trail
-
-Added release audit trail assembly through:
-
-```bash
-python conscious_agent/main.py --release-audit-trail
-```
-
-The audit trail links draft verification, approval state, code patch diff bundle, apply transaction report, semantic checks, release readiness, package metadata, and release artifact manifest.
-
-### v16.0 - Generated Code Patch Release Loop
-
-Added the bounded generated-code release loop through:
-
-```bash
-python conscious_agent/main.py --generated-code-release-loop
-```
-
-The loop performs one dry-run path by default:
-
-```text
-load/generated code patch workspace
-scan target symbols
-build rewrite plan
-detect rewrite conflicts
-build generated patch diff bundle
-run guarded apply transaction as dry-run
-run semantic checks
-run release readiness
-build release artifact manifest
-write release audit trail
-stop
-```
-
-Real apply still requires an approved draft, valid artifact binding, explicit confirmation, and one bounded run.
-
-## New CLI commands
-
-```bash
-python conscious_agent/main.py --code-patch-status
-python conscious_agent/main.py --symbol-scan
-python conscious_agent/main.py --rewrite-plan
-python conscious_agent/main.py --rewrite-conflicts
-python conscious_agent/main.py --code-patch-diff-bundle
-python conscious_agent/main.py --apply-code-patch-transaction --dry-run
-python conscious_agent/main.py --semantic-checks
-python conscious_agent/main.py --release-artifact
-python conscious_agent/main.py --release-audit-trail
-python conscious_agent/main.py --generated-code-release-loop
-```
-
-## New API endpoints
-
-Read-only GET preview endpoints:
-
-```text
-GET /api/code-patches/status
-GET /api/code-patches/symbol-scan
-GET /api/code-patches/rewrite-plan
-GET /api/code-patches/rewrite-conflicts
-GET /api/code-patches/diff-bundle
-GET /api/code-patches/apply-transaction
-GET /api/code-patches/semantic-checks
-GET /api/release/artifact
-GET /api/release/audit-trail
-GET /api/release/generated-code-loop
-```
-
-POST endpoints save artifacts or run guarded actions. Real apply paths require explicit confirmation.
-
-## Verification used for v16.0
-
-```bash
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard; print(dashboard.DASHBOARD_VERSION)"
-python conscious_agent/main.py --patch-draft-request --patch-draft-target-version 16.0
-python conscious_agent/main.py --draft-patch
-python conscious_agent/main.py --draft-diff
-python conscious_agent/main.py --draft-test-impact
-python conscious_agent/main.py --draft-quality
-python conscious_agent/main.py --draft-verification-bundle
-python conscious_agent/main.py --draft-review-checklist
-python conscious_agent/main.py --approve-draft
-python conscious_agent/main.py --code-edit-proposal
-python conscious_agent/main.py --safe-rewrite-preview
-python conscious_agent/main.py --generate-code-patch
-python conscious_agent/main.py --code-patch-status
-python conscious_agent/main.py --symbol-scan
-python conscious_agent/main.py --rewrite-plan
-python conscious_agent/main.py --rewrite-conflicts
-python conscious_agent/main.py --code-patch-diff-bundle
-python conscious_agent/main.py --apply-code-patch-transaction --dry-run
-python conscious_agent/main.py --semantic-checks
-python conscious_agent/main.py --release-artifact
-python conscious_agent/main.py --release-audit-trail
-python conscious_agent/main.py --generated-code-release-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python tools/smoke_check.py
-```
-
-## Known environment warnings
-
-- `chromadb` may be missing until `pip install -r requirements.txt` is run.
-- Ollama must be running locally for AI health to pass.
-- Release readiness can report `READY WITH WARNINGS` when no real approved code patch has been applied yet. That is expected for a packaged handoff.
-
----
-
-# Eidolon v15.0 - Human-Approved Release Loop
-
-v15.0 bundles the v14.1 through v15.0 release-readiness roadmap into one packaged release. The draft system can now move from review artifacts into release preparation: code edit proposals, safe rewrite previews, generated patch artifacts, test suggestions, dashboard approval controls, inline review notes, guarded approved code apply, package metadata, release readiness, and a one-stop human-approved release loop. The leash remains attached, because software with scissors should not be trusted unsupervised.
-
-## What changed in v15.0
-
-- Added `conscious_agent/release_pipeline.py`
-  - v14.1 real code edit proposal format
-  - v14.2 safe file rewrite preview engine
-  - v14.3 AI-assisted code patch generation artifact
-  - v14.4 unit/manual test suggestion generator
-  - v14.6 inline patch review comments
-  - v14.7 human-approved real apply pipeline
-  - v14.8 commit/package preparation metadata
-  - v14.9 release readiness gate
-  - v15.0 human-approved release loop
-- Updated `conscious_agent/patch_drafting.py`
-  - version marker is now `15.0`
-  - approval now captures a saved artifact snapshot for request, draft, diff, test impact, quality, checklist, and verification bundle
-  - approved draft apply now rejects stale or mismatched approval artifacts
-  - approval must bind to the current diff `draft_id`
-  - verification bundles now use saved request/draft state instead of creating a fresh preview request id
-  - review checklists now include request/draft identifiers so approval artifacts can be checked as one bundle
-- Updated `conscious_agent/main.py`
-  - added v14.1-v15.0 CLI commands for release preparation and approved code apply
-- Updated `conscious_agent/api_server.py`
-  - API version is now `15.0`
-  - added read-only GET endpoints for release proposal/readiness previews
-  - added POST endpoints for saving release artifacts and running approved release actions
-  - mutation-capable paths remain POST-only
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `15.0`
-  - expanded `/patch-drafts` with release proposal, rewrite preview, generated patch, test suggestions, release readiness, and package status
-  - approve/reject/reopen/apply controls stay behind POST actions
-- Updated versioned readiness surfaces
-  - `controlled_build_cycle.py` version is now `15.0`
-  - `operational_readiness.py` version is now `15.0`
-  - `stabilization_checkpoint.py` version is now `15.0`
-  - `project_intelligence.py` version is now `15.0`
-  - `workspace_orchestration.py` version is now `15.0`
-  - `workspace_execution.py` version is now `15.0`
-  - README gate now checks through v15.0
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the new release/readiness/report commands through the safe command gate
-- Updated `tools/smoke_check.py`
-  - validates v15.0 release pipeline report shapes
-  - runs the new draft/release review CLI commands
-- Updated metadata
-  - `data/settings.json` marks `last_updated_for: v15.0`
-  - `data/projects.json` marks `last_updated_for: v15.0`
-
-## Version-by-version roadmap completed
-
-### v14.1 - Real Code Edit Proposal Format
-
-Added structured code edit proposal reporting through:
-
-```bash
-python conscious_agent/main.py --code-edit-proposal
-```
-
-The proposal lists target files, change type, intent, risk, expected symbols, README requirements, and source draft metadata.
-
-### v14.2 - Safe File Rewrite Engine
-
-Added hash-checked safe rewrite previews through:
-
-```bash
-python conscious_agent/main.py --safe-rewrite-preview
-```
-
-The preview checks target paths, expected hashes, backup requirements, boundary status, and line-level diff summaries. It does not blindly overwrite files, because apparently the file system enjoys keeping its organs.
-
-### v14.3 - AI-Assisted Code Patch Generation
-
-Added generated code patch artifacts through:
-
-```bash
-python conscious_agent/main.py --generate-code-patch
-```
-
-This assembles proposed rewrite rows, risk data, boundary status, and review metadata without applying source edits.
-
-### v14.4 - Unit Test Suggestion Generator
-
-Added context-sensitive test suggestions through:
-
-```bash
-python conscious_agent/main.py --test-suggestions
-```
-
-It recommends compile checks, dashboard import checks, doctor mode, stabilization checkpoint, smoke check, draft status checks, and manual API/dashboard review items based on touched files.
-
-### v14.5 - Dashboard Approve / Reject Controls
-
-Expanded `/patch-drafts` with browser-accessible approve, reject, reopen, save proposal, save rewrite preview, save generated patch, save test suggestions, dry-run apply, readiness, package, and release loop controls.
-
-### v14.6 - Inline Patch Review Comments
-
-Added inline review notes through:
-
-```bash
-python conscious_agent/main.py --inline-review-note --patch-review-note "Keep GET routes read-only."
-```
-
-Notes can be attached to a file or intent block and are saved separately from the general draft review notes.
-
-### v14.7 - Human-Approved Real Apply Pipeline
-
-Added approved code apply through:
-
-```bash
-python conscious_agent/main.py --apply-approved-code-patch --dry-run
-```
-
-Real apply requires explicit approval, safe rewrite preview, boundary pass, backup planning, and an unconsumed approval. Dry-runs write to the dry-run report and do not overwrite the real apply pointer.
-
-### v14.8 - Commit / Package Preparation
-
-Added package metadata through:
-
-```bash
-python conscious_agent/main.py --prepare-release-package
-```
-
-It reports changed files, previewed files, required README sections, verification commands, known warnings, rollback availability, package name, and zip readiness.
-
-### v14.9 - Release Readiness Gate
-
-Added release readiness checks through:
-
-```bash
-python conscious_agent/main.py --release-readiness
-```
-
-The gate checks compile status, README/version metadata, approval state, dry-run separation, rollback availability, and test suggestions. It reports `READY`, `READY WITH WARNINGS`, or `FAILED`.
-
-### v15.0 - Human-Approved Release Loop
-
-Added the one-stop release loop through:
-
-```bash
-python conscious_agent/main.py --human-approved-release-loop
-```
-
-The loop loads or prepares one project, one draft, one proposal, one safe rewrite preview, one generated patch artifact, one test suggestion bundle, one readiness report, one package metadata report, and then stops. If an approval already exists, it preserves the approved draft artifacts instead of generating a new request that invalidates approval.
-
-## Safety fixes included during v15.0
-
-- Approval now binds to the exact saved draft artifacts, not just an approval flag.
-- `approve_draft()` stores artifact hashes for the request, draft, diff, test impact, quality report, review checklist, and verification bundle.
-- `build_apply_approved_draft()` rejects mismatched `approval.draft_id` vs `current_diff.draft_id`.
-- Draft apply and release apply validate the saved approval artifact snapshot before doing even a dry-run apply.
-- `build_draft_verification_bundle()` no longer creates a fresh preview request next to the saved current draft.
-- Human-approved release loop preserves existing approved artifacts instead of silently replacing them.
-- Dry-run release apply writes `latest_approved_code_apply_dry_run_report.json`; real apply writes `latest_approved_code_apply_report.json`.
-
-## New CLI commands
-
-```bash
-python conscious_agent/main.py --code-edit-proposal
-python conscious_agent/main.py --safe-rewrite-preview
-python conscious_agent/main.py --generate-code-patch
-python conscious_agent/main.py --test-suggestions
-python conscious_agent/main.py --inline-review-note --patch-review-note "Keep GET routes read-only."
-python conscious_agent/main.py --apply-approved-code-patch --dry-run
-python conscious_agent/main.py --prepare-release-package
-python conscious_agent/main.py --release-readiness
-python conscious_agent/main.py --human-approved-release-loop
-```
-
-## Verification commands run for v15.0
-
-```bash
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard; print(dashboard.DASHBOARD_VERSION)"
-python conscious_agent/main.py --patch-draft-request --patch-draft-target-version 15.0
-python conscious_agent/main.py --draft-patch
-python conscious_agent/main.py --draft-diff
-python conscious_agent/main.py --draft-test-impact
-python conscious_agent/main.py --draft-quality
-python conscious_agent/main.py --draft-verification-bundle
-python conscious_agent/main.py --draft-review-checklist
-python conscious_agent/main.py --approve-draft
-python conscious_agent/main.py --apply-approved-draft --dry-run
-python conscious_agent/main.py --code-edit-proposal
-python conscious_agent/main.py --safe-rewrite-preview
-python conscious_agent/main.py --generate-code-patch
-python conscious_agent/main.py --test-suggestions
-python conscious_agent/main.py --inline-review-note --patch-review-note "Bind approval to the exact draft artifacts."
-python conscious_agent/main.py --apply-approved-code-patch --dry-run
-python conscious_agent/main.py --prepare-release-package
-python conscious_agent/main.py --release-readiness
-python conscious_agent/main.py --human-approved-release-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python tools/smoke_check.py
-```
-
-## Known environment warnings
-
-- `chromadb` may warn if it is not installed in the active Python environment. It remains listed in `requirements.txt`.
-- Ollama health warns if the local Ollama service is not running.
-
-## Next likely step
-
-v15.1 should probably start **Release Review Dashboard Hardening**:
-
-- make release readiness easier to inspect from the browser
-- show approval artifact binding details
-- show stale/mismatched draft artifacts clearly
-- add one-card release package status
-- improve manual verification checklist display
-- keep all mutation buttons POST-only
-
-v15.0 can prepare a release. v15.1 should make reviewing that release less like reading a court transcript written by a printer.
-
----
-
-# Eidolon v14.0 - Review-Centered Patch Loop
-
-v14.0 bundles the v13.1 through v14.0 draft review roadmap into one packaged release. The big shift is that patch drafts now have quality scoring, file target resolution, intent blocks, conflict detection, verification bundles, human review checklists, approved draft execution reports, and a review-centered loop. In other words, the patch process now has enough paperwork to become a small municipal office, but at least it stops previews from lying.
-
-## What changed in v14.0
-
-- Updated `conscious_agent/patch_drafting.py`
-  - v13.1 draft quality scoring
-  - v13.2 draft file target resolver
-  - v13.3 draft change intent blocks
-  - v13.4 draft conflict detector
-  - v13.7 draft verification bundle
-  - v13.8 human review checklist
-  - v13.9 approved draft execution report
-  - v14.0 review-centered patch loop
-  - dry-run approved draft apply now writes `latest_approved_apply_dry_run_report.json` instead of overwriting the real apply pointer
-- Updated `conscious_agent/main.py`
-  - added all v13.1-v14.0 draft review CLI commands
-- Updated `conscious_agent/api_server.py`
-  - API version is now `14.0`
-  - added read-only GET review endpoints under `/api/patch-drafts/...`
-  - added POST endpoints for saving review artifacts and running the review-centered loop
-  - mutation-capable paths remain POST-only
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `14.0`
-  - expanded `/patch-drafts` into a review-centered page with quality, targets, intent blocks, conflicts, bundle, checklist, execution report, and loop status
-- Updated versioned readiness surfaces
-  - `controlled_build_cycle.py` version is now `14.0`
-  - `operational_readiness.py` version is now `14.0`
-  - `stabilization_checkpoint.py` version is now `14.0`
-  - `project_intelligence.py` version is now `14.0`
-  - `workspace_orchestration.py` version is now `14.0`
-  - `workspace_execution.py` version is now `14.0`
-  - README gate now checks through v14.0
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the new review/report commands through the existing safe command gate
-- Updated `tools/smoke_check.py`
-  - validates v14.0 draft review report shapes
-  - runs the new draft review CLI commands
-- Updated metadata:
-  - `data/settings.json`
-  - `data/projects.json`
-  - `data/workspaces/projects.json`
-  - `data/workspaces/active_project.json`
-
-## v13.1 - Draft Quality Scoring
-
-v13.1 adds a draft readiness score.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --draft-quality
-```
-
-New API:
-
-```text
-GET  /api/patch-drafts/quality
-POST /api/patch-drafts/quality
-```
-
-The score considers request completeness, project context, file targets, intent blocks, diff readiness, test impact, README coverage, boundary status, and conflicts.
-
-## v13.2 - Draft File Target Resolver
-
-v13.2 resolves likely files and files to avoid.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --draft-file-targets
-```
-
-New API:
-
-```text
-GET  /api/patch-drafts/file-targets
-POST /api/patch-drafts/file-targets
-```
-
-The resolver uses draft request text, proposed files, task wording, and known risky surfaces. It also calls out files like command runner, guardrails, workspace registry, and real apply pointers as avoid-unless-explicit targets.
-
-## v13.3 - Draft Change Intent Blocks
-
-v13.3 breaks a draft into reviewable intent blocks.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --draft-intent-blocks
-```
-
-New API:
-
-```text
-GET  /api/patch-drafts/intent-blocks
-POST /api/patch-drafts/intent-blocks
-```
-
-Each block includes purpose, files affected, risk, tests required, README impact, and approval notes.
-
-## v13.4 - Draft Conflict Detector
-
-v13.4 detects stale, overlapping, or unsafe draft state.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --draft-conflicts
-```
-
-New API:
-
-```text
-GET  /api/patch-drafts/conflicts
-POST /api/patch-drafts/conflicts
-```
-
-The detector checks approval state, consumed approvals, mismatched draft/diff ids, stale apply reports, dry-run apply reports, and existing controlled/workspace staged work.
-
-## v13.5 - Dashboard Draft Review Page
-
-v13.5 upgrades the dashboard page:
-
-```text
-/patch-drafts
-```
-
-The page now shows:
-
-- draft workspace status
-- quality score
-- file targets
-- conflict status
-- verification bundle
-- review-centered loop status
-- command examples
-- read-only JSON links
-
-## v13.6 - API Draft Review Endpoints
-
-v13.6 adds read-only GET review endpoints:
-
-```text
-GET /api/patch-drafts/status
-GET /api/patch-drafts/request
-GET /api/patch-drafts/draft
-GET /api/patch-drafts/notes
-GET /api/patch-drafts/diff
-GET /api/patch-drafts/test-impact
-GET /api/patch-drafts/approval-gate
-GET /api/patch-drafts/quality
-GET /api/patch-drafts/file-targets
-GET /api/patch-drafts/intent-blocks
-GET /api/patch-drafts/conflicts
-GET /api/patch-drafts/verification-bundle
-GET /api/patch-drafts/review-checklist
-GET /api/patch-drafts/execution-report
-GET /api/patch-drafts/review-loop
-```
-
-Mutation-capable review endpoints are POST-only. GET reads. POST changes. Somehow civilization required this sentence.
-
-## v13.7 - Draft Verification Bundle
-
-v13.7 bundles review artifacts into one report.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --draft-verification-bundle
-```
-
-New API:
-
-```text
-GET  /api/patch-drafts/verification-bundle
-POST /api/patch-drafts/verification-bundle
-```
-
-The bundle includes status, request, draft, file targets, intent blocks, conflicts, diff, test impact, quality, and approval gate results.
-
-## v13.8 - Human Review Checklist
-
-v13.8 generates a checklist before approval.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --draft-review-checklist
-```
-
-New API:
-
-```text
-GET  /api/patch-drafts/review-checklist
-POST /api/patch-drafts/review-checklist
-```
-
-Checklist items cover intended files, GET/POST safety, README update, rollback/apply pointer behavior, tests, single-use approval, risk limit, and conflicts.
-
-## v13.9 - Approved Draft Execution Report
-
-v13.9 reports what happened after an approved draft apply or dry-run apply.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --approved-draft-execution-report
-```
-
-New API:
-
-```text
-GET  /api/patch-drafts/execution-report
-POST /api/patch-drafts/execution-report
-```
-
-Dry-run apply reports do not imply rollback availability and do not overwrite the real apply pointer. This keeps rollback status honest, a concept APIs find personally offensive.
-
-## v14.0 - Review-Centered Patch Loop
-
-v14.0 combines the review workflow.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --review-centered-patch-loop
-```
-
-New API:
-
-```text
-GET  /api/patch-drafts/review-loop
-POST /api/patch-drafts/review-loop
-```
-
-Flow:
-
-```text
-load/create draft request
-create draft
-resolve file targets
-create intent blocks
-detect conflicts
-generate diff
-plan test impact
-score draft quality
-build verification bundle
-build human checklist
-stop for review
-
-if already approved and explicitly allowed:
-apply once
-generate execution report
-clear/consume approval
-stop
-```
-
-Hard limits:
-
-```text
-one project
-one task
-one approval
-one patch
-GET endpoints read-only
-dry-run apply never replaces real apply pointer
-README must be updated
-then stop
-```
-
-## v14.0 CLI summary
-
-```powershell
-python conscious_agent/main.py --patch-draft-request --patch-draft-target-version 14.0
-python conscious_agent/main.py --draft-patch
-python conscious_agent/main.py --draft-file-targets
-python conscious_agent/main.py --draft-intent-blocks
-python conscious_agent/main.py --draft-conflicts
-python conscious_agent/main.py --draft-diff
-python conscious_agent/main.py --draft-test-impact
-python conscious_agent/main.py --draft-quality
-python conscious_agent/main.py --draft-verification-bundle
-python conscious_agent/main.py --draft-review-checklist
-python conscious_agent/main.py --approved-draft-execution-report
-python conscious_agent/main.py --review-centered-patch-loop
-```
-
-Existing v13 commands still work:
-
-```powershell
-python conscious_agent/main.py --patch-draft-status
-python conscious_agent/main.py --patch-review-notes --patch-review-note "Keep GET routes read-only."
-python conscious_agent/main.py --approve-draft
-python conscious_agent/main.py --apply-approved-draft --dry-run
-python conscious_agent/main.py --rollback-approved-draft
-python conscious_agent/main.py --reopen-draft
-python conscious_agent/main.py --human-approved-patch-loop
-```
-
-## v14.0 API summary
-
-Read-only preview routes:
-
-```text
-GET /api/patch-drafts/status
-GET /api/patch-drafts/quality
-GET /api/patch-drafts/file-targets
-GET /api/patch-drafts/intent-blocks
-GET /api/patch-drafts/conflicts
-GET /api/patch-drafts/verification-bundle
-GET /api/patch-drafts/review-checklist
-GET /api/patch-drafts/execution-report
-GET /api/patch-drafts/review-loop
-```
-
-Saved/mutation routes:
-
-```text
-POST /api/patch-drafts/quality
-POST /api/patch-drafts/file-targets
-POST /api/patch-drafts/intent-blocks
-POST /api/patch-drafts/conflicts
-POST /api/patch-drafts/verification-bundle
-POST /api/patch-drafts/review-checklist
-POST /api/patch-drafts/execution-report
-POST /api/patch-drafts/review-loop
-```
-
-Apply still requires explicit confirmation through the existing approved draft apply path:
-
-```text
-POST /api/apply-approved-draft
-```
-
-## v14.0 dashboard
-
-Run:
-
-```powershell
-python conscious_agent/main.py --dashboard
-```
-
-Open:
-
-```text
-http://127.0.0.1:8765/patch-drafts
-```
-
-The dashboard page is read-only and shows the review-centered draft reports in one place.
-
-## Verification performed for v14.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard; print(dashboard.DASHBOARD_VERSION)"
-python conscious_agent/main.py --patch-draft-request --patch-draft-target-version 14.0
-python conscious_agent/main.py --draft-patch
-python conscious_agent/main.py --draft-file-targets
-python conscious_agent/main.py --draft-intent-blocks
-python conscious_agent/main.py --draft-conflicts
-python conscious_agent/main.py --draft-diff
-python conscious_agent/main.py --draft-test-impact
-python conscious_agent/main.py --draft-quality
-python conscious_agent/main.py --draft-verification-bundle
-python conscious_agent/main.py --draft-review-checklist
-python conscious_agent/main.py --approved-draft-execution-report
-python conscious_agent/main.py --review-centered-patch-loop
-python conscious_agent/main.py --human-approved-patch-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python tools/smoke_check.py
-```
-
-## Safety notes
-
-v14.0 still does not turn Eidolon loose. It prepares review artifacts, exposes them through CLI/API/dashboard, keeps GET routes read-only, keeps dry-run apply reports separate from real apply pointers, and stops unless a single-use approval already exists and live apply is explicitly allowed. The robot gets a clipboard, not a chainsaw. A tiny mercy.
-
----
-
-# Eidolon v13.0 - Human-Approved Autonomous Patch Loop
-
-v13.0 bundles the v12.1 through v13.0 human-approved patch drafting roadmap into one packaged release. The big shift is that Eidolon can now turn a structured patch request into a draft, preserve review notes, generate a draft diff, plan test impact, run an approval gate, apply one approved draft, support safe rollback/reopen flows, and run a human-approved patch loop that stops unless approval already exists. We have officially invented paperwork for robots, which is both depressing and exactly what keeps the file goblins supervised.
-
-## What changed in v13.0
-
-- Added `conscious_agent/patch_drafting.py`
-  - v12.1 patch draft request format
-  - v12.2 AI patch drafting interface
-  - v12.3 patch draft workspace
-  - v12.4 human patch review notes
-  - v12.5 draft diff generator
-  - v12.6 draft test impact planner
-  - v12.7 approval gate
-  - v12.8 apply approved draft
-  - v12.9 draft rollback and reopen
-  - v13.0 human-approved autonomous patch loop
-- Updated `conscious_agent/main.py`
-  - added all v12.1-v13.0 patch drafting CLI commands
-- Updated `conscious_agent/api_server.py`
-  - API version is now `13.0`
-  - added read-only GET preview endpoints for patch draft status, request, draft, notes, diff, test impact, approval gate, and human-approved loop
-  - added POST endpoints for saved draft requests, draft generation, notes, diff/test-impact generation, approval/rejection, approved apply, rollback, reopen, and human-approved loop execution
-  - mutation-capable endpoints remain POST-only with explicit confirmation where writes or rollback can occur
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `13.0`
-  - added `/patch-drafts` read-only dashboard page
-  - added API docs for patch draft endpoints
-- Updated versioned readiness surfaces
-  - `controlled_build_cycle.py` version is now `13.0`
-  - `operational_readiness.py` version is now `13.0`
-  - `stabilization_checkpoint.py` version is now `13.0`
-  - `project_intelligence.py` version is now `13.0`
-  - `workspace_orchestration.py` version is now `13.0`
-  - `workspace_execution.py` version is now `13.0`
-  - README gate now checks through v13.0
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted patch draft status/review/preview commands and approval/apply commands behind the existing safe command gate
-- Updated `tools/smoke_check.py`
-  - validates patch drafting report shapes and human-approved loop text
-  - checks v13.0 versions
-- Updated metadata:
-  - `data/settings.json`
-  - `data/projects.json`
-  - `data/workspaces/projects.json`
-  - `data/workspaces/active_project.json`
-
-## v12.1 - Patch Draft Request Format
-
-v12.1 adds the structured patch draft request.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --patch-draft-request
-python conscious_agent/main.py --patch-draft-request --patch-draft-task "Improve API safety" --patch-draft-intent "Keep GET routes read-only"
-```
-
-New API:
-
-```text
-GET  /api/patch-draft-request
-POST /api/patch-draft-request
-```
-
-The request captures project id, target version, task, intent, constraints, expected files, and risk limit. GET previews are read-only. POST saves the request under `data/patch_drafts/draft_request.json`.
-
-## v12.2 - AI Patch Drafting Interface
-
-v12.2 adds the draft patch interface.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --draft-patch
-```
-
-New API:
-
-```text
-GET  /api/draft-patch
-POST /api/draft-patch
-```
-
-The draft loads project context, identifies likely files, marks source files as impact surfaces, and plans a README update without applying source edits.
-
-## v12.3 - Patch Draft Workspace
-
-v12.3 adds a dedicated patch draft workspace.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --patch-draft-status
-```
-
-New API:
-
-```text
-GET /api/patch-draft-status
-```
-
-Workspace files live under:
-
-```text
-data/patch_drafts/
-  draft_request.json
-  current_draft.json
-  current_diff.json
-  test_impact.json
-  review_notes.json
-  approval_state.json
-  proposed_files/
-  backups/
-```
-
-## v12.4 - Human Patch Review Notes
-
-v12.4 adds review notes for patch drafts.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --patch-review-notes
-python conscious_agent/main.py --patch-review-notes --patch-review-note "Reject dashboard changes. Keep API read-only."
-```
-
-New API:
-
-```text
-GET  /api/patch-review-notes
-POST /api/patch-review-notes
-```
-
-Notes are preserved and included in approval review. A note containing rejection language produces an approval warning, because apparently even machines need to learn when humans are waving a red flag.
-
-## v12.5 - Draft Diff Generator
-
-v12.5 adds draft diff previews.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --draft-diff
-```
-
-New API:
-
-```text
-GET  /api/draft-diff
-POST /api/draft-diff
-```
-
-The diff generator creates preview rows, boundary status, README update status, and draft proposed-file artifacts. GET is preview-only. POST saves artifacts.
-
-## v12.6 - Draft Test Impact Planner
-
-v12.6 adds test impact planning.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --draft-test-impact
-```
-
-New API:
-
-```text
-GET  /api/draft-test-impact
-POST /api/draft-test-impact
-```
-
-It maps touched files to required verification commands. Dashboard changes require a dashboard import check. API changes require route/README safety review. Patch drafting changes require patch draft status verification.
-
-## v12.7 - Approval Gate
-
-v12.7 adds a formal approval gate.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --approve-draft
-python conscious_agent/main.py --reject-draft --patch-review-note "Needs another pass."
-```
-
-New API:
-
-```text
-GET  /api/approval-gate
-POST /api/approve-draft
-POST /api/reject-draft
-```
-
-Approval requires a draft, diff, test impact report, boundary pass, README update, and risk within limit. Approval is single-use.
-
-## v12.8 - Apply Approved Draft
-
-v12.8 adds approved draft application.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --apply-approved-draft --dry-run
-python conscious_agent/main.py --apply-approved-draft
-```
-
-New API:
-
-```text
-POST /api/apply-approved-draft
-```
-
-The apply path requires an unconsumed approval. API live apply requires explicit JSON confirmation. Successful non-dry-run apply consumes the approval and creates backup metadata.
-
-## v12.9 - Draft Rollback and Reopen
-
-v12.9 adds rollback and reopen support.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --rollback-approved-draft
-python conscious_agent/main.py --rollback-approved-draft --approve-controlled-self-build
-python conscious_agent/main.py --reopen-draft
-```
-
-New API:
-
-```text
-POST /api/rollback-approved-draft
-POST /api/reopen-draft
-```
-
-Rollback verifies current file hashes before restoring backups so newer manual edits are not overwritten. Reopen clears approval and preserves review notes.
-
-## v13.0 - Human-Approved Autonomous Patch Loop
-
-v13.0 adds the human-approved patch loop.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --human-approved-patch-loop
-```
-
-New API:
-
-```text
-GET  /api/human-approved-patch-loop
-POST /api/human-approved-patch-loop
-```
-
-Flow:
-
-```text
-load active project
-create one patch draft request
-draft one patch
-generate one diff
-run boundary check
-create one test impact plan
-run approval gate
-stop unless an unconsumed approval already exists
-if approved and explicitly allowed, apply once
-consume approval
-stop
-```
-
-Important limit:
-
-```text
-One project. One task. One approval. One patch. Then stop.
-```
-
-## v13.0 CLI summary
-
-```powershell
-python conscious_agent/main.py --patch-draft-request
-python conscious_agent/main.py --draft-patch
-python conscious_agent/main.py --patch-draft-status
-python conscious_agent/main.py --patch-review-notes --patch-review-note "Keep GET routes read-only."
-python conscious_agent/main.py --draft-diff
-python conscious_agent/main.py --draft-test-impact
-python conscious_agent/main.py --approve-draft
-python conscious_agent/main.py --reject-draft
-python conscious_agent/main.py --apply-approved-draft --dry-run
-python conscious_agent/main.py --rollback-approved-draft
-python conscious_agent/main.py --reopen-draft
-python conscious_agent/main.py --human-approved-patch-loop
-```
-
-## v13.0 API summary
-
-Read-only GET preview/report endpoints:
-
-```text
-GET /api/patch-draft-status
-GET /api/patch-draft-request
-GET /api/draft-patch
-GET /api/patch-review-notes
-GET /api/draft-diff
-GET /api/draft-test-impact
-GET /api/approval-gate
-GET /api/human-approved-patch-loop
-```
-
-Mutation-capable POST endpoints:
-
-```text
-POST /api/patch-draft-request
-POST /api/draft-patch
-POST /api/patch-review-notes
-POST /api/draft-diff
-POST /api/draft-test-impact
-POST /api/approve-draft
-POST /api/reject-draft
-POST /api/apply-approved-draft
-POST /api/rollback-approved-draft
-POST /api/reopen-draft
-POST /api/human-approved-patch-loop
-```
-
-Live write/rollback POST behavior requires explicit JSON confirmation where source files can be modified. GET stays read-only, because we are not reenacting the v10 haunted preview-route situation.
-
-## Verification performed for v13.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard; print(dashboard.DASHBOARD_VERSION)"
-python conscious_agent/main.py --patch-draft-request
-python conscious_agent/main.py --draft-patch
-python conscious_agent/main.py --patch-draft-status
-python conscious_agent/main.py --patch-review-notes --patch-review-note "Keep GET routes read-only."
-python conscious_agent/main.py --draft-diff
-python conscious_agent/main.py --draft-test-impact
-python conscious_agent/main.py --approve-draft
-python conscious_agent/main.py --apply-approved-draft --dry-run
-python conscious_agent/main.py --rollback-approved-draft
-python conscious_agent/main.py --reopen-draft
-python conscious_agent/main.py --human-approved-patch-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python tools/smoke_check.py
-```
-
-Known sandbox warnings remain:
-
-- `chromadb` may be missing in this sandbox but remains listed in `requirements.txt`.
-- Ollama may not be running in this sandbox, so AI health reports an environment warning.
-
-## Safety
-
-v13.0 keeps patch generation human-approved. Drafts can be prepared and previewed without source edits. Approval is single-use. Apply checks hashes before writing. Rollback checks hashes before restoring. GET endpoints are read-only. The loop stops after one patch lane because infinite autonomy is how codebases become abandoned theme parks.
-
----
-
-# Eidolon v12.0 - Guarded Workspace Development Loop
-
-v12.0 bundles the v11.1 through v12.0 guarded-workspace roadmap into one packaged release. The big shift is that Eidolon can now audit the workspace registry, suggest workspace repairs, preview project registration, enforce project boundaries, build workspace patch plans, preview workspace diffs, dry-run or explicitly apply one guarded workspace patch, verify the latest workspace patch, and run a guarded workspace development loop that stops after one project, one task, and one patch lane. We keep the brakes installed because apparently software prefers not to be surprised by its own ambition.
-
-This release also folds in review findings from the v11.0 package and the desktop launch blocker:
-
-- Fixed a dashboard f-string quoting bug that caused `python conscious_agent/main.py --desktop` to fail while importing `dashboard.py`; dashboard import now compiles cleanly before desktop launch.
-- GET `/api/project-registry` is now read-only and no longer repairs/seeds command profiles or writes timeline events.
-- GET `/api/command-profiles` is now read-only and no longer writes profile files.
-- GET `/api/workspace-dev-loop` is now read-only and no longer writes a preview timeline event.
-- GET workspace planning/preview endpoints use non-saving preview paths.
-- Workspace dashboard rendering uses read-only report builders so opening the page does not mutate workspace state.
-- Patch workspace status no longer looks green when `latest_apply_report.json` is stale or rollback-unusable.
-- Latest patch verification now fails if the latest apply pointer is stale/dry-run-only and rollback would be unusable.
-- Workspace registry audit can archive stale latest apply pointers during repair/audit CLI paths.
-
-## What changed in v12.0
-
-- Added `conscious_agent/workspace_execution.py`
-  - v11.1 workspace registry persistence audit
-  - v11.2 workspace repair suggestions
-  - v11.3 project registration wizard preview
-  - v11.4 project boundary guard
-  - v11.5 workspace patch plan
-  - v11.6 workspace diff preview
-  - v11.7 workspace apply dry-run
-  - v11.8 workspace apply guarded
-  - v11.9 workspace verification pipeline
-  - v12.0 guarded workspace development loop
-- Updated `conscious_agent/main.py`
-  - added all v11.1-v12.0 guarded workspace CLI commands
-- Updated `conscious_agent/api_server.py`
-  - API version is now `12.0`
-  - added guarded workspace GET preview endpoints
-  - added POST-only guarded workspace apply/dev-loop endpoints
-  - kept GET/preview routes read-only
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `12.0`
-  - fixed desktop-blocking f-string syntax error
-  - updated `/workspace` with guarded workspace execution cards
-  - dashboard workspace reports now use read-only builders
-- Updated `conscious_agent/controlled_build_cycle.py`
-  - controlled-build version is now `12.0`
-  - patch workspace status marks stale/unusable latest apply pointers as not OK
-  - latest patch verification fails when rollback integrity is broken
-  - README gate now checks through v12.0
-- Updated `conscious_agent/workspace_orchestration.py`
-  - workspace orchestration version is now `12.0`
-  - registry/profile/dev-loop preview builders can run read-only
-  - timeline initialization no longer happens from read-only preview calls
-- Updated `conscious_agent/project_intelligence.py`
-  - project-intelligence version is now `12.0`
-  - README memory warnings now check for v12.0
-- Updated `conscious_agent/operational_readiness.py`
-  - operational readiness version is now `12.0`
-  - hardening/readiness checks include v11.1-v12.0 README coverage
-- Updated `conscious_agent/stabilization_checkpoint.py`
-  - checkpoint version is now `12.0`
-  - includes workspace execution surfaces in verification recommendations
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted guarded workspace commands
-- Updated `tools/smoke_check.py`
-  - validates workspace execution report shapes and CLI commands
-  - checks v12.0 versions
-- Updated metadata:
-  - `data/settings.json`
-  - `data/projects.json`
-  - `data/workspaces/projects.json`
-  - `data/workspaces/active_project.json`
-  - `data/workspaces/command_profiles/*.json`
-
-## v11.1 - Workspace Registry Persistence Audit
-
-v11.1 adds a workspace registry audit.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-registry-audit
-```
-
-New API:
-
-```text
-GET /api/workspace-registry-audit
-```
-
-The audit checks registered projects, active project pointers, project root resolution, README paths, safe command profiles, invalid/stale roots, duplicate project IDs, JSON registry files, and stale rollback pointers.
-
-## v11.2 - Workspace Repair Suggestions
-
-v11.2 adds workspace-level repair suggestions.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-repair-suggestions
-```
-
-New API:
-
-```text
-GET /api/workspace-repair-suggestions
-```
-
-It does not automatically repair project files. It explains what should be fixed, because automatically fixing the wrong registry is how machines earn side-eye.
-
-## v11.3 - Project Registration Wizard
-
-v11.3 adds a preview-only project registration wizard.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --project-registration-wizard "My App" --workspace-project-root C:\Projects\MyApp
-```
-
-New API:
-
-```text
-GET /api/project-registration-wizard?name=My%20App&root=C:\Projects\MyApp
-```
-
-It infers language/framework hints from files like `requirements.txt`, `pyproject.toml`, `package.json`, `pom.xml`, and Gradle build files. Saving still uses the existing explicit project registration path.
-
-## v11.4 - Project Boundary Guard
-
-v11.4 adds a project boundary check.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --project-boundary-check
-```
-
-New API:
-
-```text
-GET /api/project-boundary-check
-```
-
-It checks staged changes against the active project root and blocks accidental edits outside the selected project or unsafe workspace registry/profile edits without explicit workspace intent.
-
-## v11.5 - Workspace Patch Plan
-
-v11.5 adds a workspace patch planner.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-patch-plan
-```
-
-New API:
-
-```text
-GET /api/workspace-patch-plan
-```
-
-The plan combines registry audit, project health, project context, dependency map, task inbox, controlled patch plan, boundary guard, and README gate.
-
-## v11.6 - Workspace Diff Preview
-
-v11.6 adds a workspace diff preview.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-preview-diff
-```
-
-New API:
-
-```text
-GET /api/workspace-preview-diff
-```
-
-The preview shows staged changes with boundary status before source files are modified.
-
-## v11.7 - Workspace Apply Dry-Run
-
-v11.7 adds a dry-run workspace apply path.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-apply --dry-run
-```
-
-Dry-run validates gates and runs through the apply path without modifying source files.
-
-## v11.8 - Workspace Apply Guarded
-
-v11.8 adds guarded workspace apply.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-apply --approve-controlled-self-build
-```
-
-New API:
-
-```text
-POST /api/workspace/apply
-```
-
-Live guarded apply requires explicit confirmation from the API body and still targets one active project only.
-
-## v11.9 - Workspace Verification Pipeline
-
-v11.9 adds workspace verification.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-verify-latest
-```
-
-New API:
-
-```text
-GET /api/workspace-verify-latest
-```
-
-It combines latest patch verification, README gate, boundary check, project health, rollback integrity, and rollback recommendation state.
-
-## v12.0 - Guarded Workspace Development Loop
-
-v12.0 adds the guarded workspace loop.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --guarded-workspace-dev-loop
-```
-
-New API:
-
-```text
-GET  /api/guarded-workspace-dev-loop
-POST /api/workspace/guarded-dev-loop
-```
-
-Flow:
-
-```text
-audit workspace registry
-check project health
-review workspace task inbox
-select one project
-build project context
-generate workspace patch plan
-preview workspace diff
-run boundary check
-apply dry-run by default
-run workspace verification
-update timeline only on CLI/POST execution paths
-stop
-```
-
-## v12.0 CLI summary
-
-```powershell
-python conscious_agent/main.py --workspace-registry-audit
-python conscious_agent/main.py --workspace-repair-suggestions
-python conscious_agent/main.py --project-registration-wizard "My App" --workspace-project-root C:\Projects\MyApp
-python conscious_agent/main.py --project-boundary-check
-python conscious_agent/main.py --workspace-patch-plan
-python conscious_agent/main.py --workspace-preview-diff
-python conscious_agent/main.py --workspace-apply --dry-run
-python conscious_agent/main.py --workspace-apply --approve-controlled-self-build
-python conscious_agent/main.py --workspace-verify-latest
-python conscious_agent/main.py --guarded-workspace-dev-loop
-```
-
-## v12.0 API summary
-
-Read-only GET preview/report endpoints:
-
-```text
-GET /api/workspace-registry-audit
-GET /api/workspace-repair-suggestions
-GET /api/project-registration-wizard
-GET /api/project-boundary-check
-GET /api/workspace-patch-plan
-GET /api/workspace-preview-diff
-GET /api/workspace-verify-latest
-GET /api/guarded-workspace-dev-loop
-```
-
-Mutation-capable POST endpoints:
-
-```text
-POST /api/workspace/apply
-POST /api/workspace/guarded-dev-loop
-```
-
-Live POST behavior requires explicit JSON confirmation. GET stays read-only. Society briefly improves.
-
-## Verification performed for v12.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-PYTHONPATH=conscious_agent python -c "import dashboard; print(dashboard.DASHBOARD_VERSION)"
-python conscious_agent/main.py --workspace-registry-audit
-python conscious_agent/main.py --workspace-repair-suggestions
-python conscious_agent/main.py --project-registration-wizard "Eidolon" --workspace-project-root .
-python conscious_agent/main.py --project-boundary-check
-python conscious_agent/main.py --workspace-patch-plan
-python conscious_agent/main.py --workspace-preview-diff
-python conscious_agent/main.py --workspace-apply --dry-run
-python conscious_agent/main.py --workspace-verify-latest
-python conscious_agent/main.py --guarded-workspace-dev-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python tools/smoke_check.py
-```
-
-Known sandbox warnings remain:
-
-- `chromadb` may be missing in this sandbox but remains listed in `requirements.txt`.
-- Ollama may not be running in this sandbox, so AI health reports an environment warning.
-
-## Safety
-
-v12.0 keeps workspace mutation explicit and narrow. GET endpoints are read-only. The guarded workspace loop handles one project, one task, one patch lane, and then stops. This is not unlimited autonomy; it is a fenced workbench with labels, which is apparently what we need to keep the code goblins from redecorating the house.
-
----
-
-# Eidolon v11.0 - Workspace-Orchestrated Development Loop
-
-v11.0 bundles the v10.1 through v11.0 workspace-orchestration roadmap into one packaged release. The big shift is that Eidolon now has a real workspace control layer: it can register projects, derive the Eidolon root from `ROOT_DIR`, check health per project, manage safe command profiles, map cross-project dependencies, build a multi-project task inbox, block unsafe project switching, assemble project context bundles, record a workspace timeline, and run a workspace development-loop preview that stops before touching files. Stopping before mutation remains the humble seatbelt of software, which is embarrassing but useful.
-
-This release also folds in review findings from the v10.0 package:
-
-- Rollback now fails fast if `latest_apply_report.json` is missing, stale, dry-run-only, or has zero real applied file rows.
-- Existing stale v9.0 dry-run rollback pointers are archived under `data/patch_workspace/stale_apply_reports/` if present instead of being left as the active rollback pointer.
-- `patch_workspace_status()` and verification now surface stale latest-apply pointers as integrity warnings.
-- Workspace project roots now store Eidolon as `.` and resolve it from `ROOT_DIR`, so a freshly unzipped Windows project does not inherit `/mnt/data/...` sandbox paths. Tiny victory over haunted absolute paths.
-
-## What changed in v11.0
-
-- Added `conscious_agent/workspace_orchestration.py`
-  - v10.1 project registry upgrade
-  - v10.2 per-project health checks
-  - v10.3 project-specific command profiles
-  - v10.4 cross-project dependency map
-  - v10.5 multi-project task inbox
-  - v10.6 safe project switching
-  - v10.7 project context bundles
-  - v10.8 workspace timeline
-  - v10.9 multi-project dashboard
-  - v11.0 workspace-orchestrated development loop preview
-- Updated `conscious_agent/main.py`
-  - added all v10.1-v11.0 workspace CLI commands
-- Updated `conscious_agent/api_server.py`
-  - API version is now `11.0`
-  - added workspace registry, health, profile, dependency, inbox, context, timeline, and dev-loop endpoints
-  - workspace mutation endpoints are POST-only
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `11.0`
-  - added `/workspace`
-  - updated API documentation with workspace endpoints
-- Updated `conscious_agent/controlled_build_cycle.py`
-  - controlled-build version is now `11.0`
-  - rollback rejects stale/dry-run/non-applied latest apply reports
-  - latest apply integrity is reported from patch workspace and verification reports
-  - README gate now checks through v11.0
-- Updated `conscious_agent/project_intelligence.py`
-  - project-intelligence version is now `11.0`
-  - workspace roots resolve `.` / `ROOT_DIR` dynamically
-- Updated `conscious_agent/operational_readiness.py`
-  - readiness version is now `11.0`
-  - hardening checks include workspace CLI/API/dashboard/README surfaces
-- Updated `conscious_agent/stabilization_checkpoint.py`
-  - checkpoint version is now `11.0`
-  - checks `workspace_orchestration.py`, workspace CLI flags, API endpoints, dashboard route, and smoke coverage
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the new workspace commands
-- Updated `tools/smoke_check.py`
-  - validates workspace orchestration reports and CLI commands
-  - checks v11.0 versions
-- Updated metadata:
-  - `data/settings.json`
-  - `data/projects.json`
-  - `data/workspaces/projects.json`
-  - `data/workspaces/active_project.json`
-  - `data/workspaces/timeline.json`
-  - `data/workspaces/command_profiles/*.json`
-
-## v10.1 - Project Registry Upgrade
-
-v10.1 makes the multi-project workspace registry explicit.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --project-registry
-python conscious_agent/main.py --register-project "My App" --workspace-project-root C:\path\to\project --workspace-project-language Python
-python conscious_agent/main.py --set-active-workspace-project eidolon
-```
-
-New API:
-
-```text
-GET  /api/project-registry
-POST /api/projects/register
-POST /api/projects/active
-```
-
-The seeded Eidolon entry uses:
-
-```json
-{
-  "id": "eidolon",
-  "root": ".",
-  "root_resolves_from": "ROOT_DIR"
-}
-```
-
-That means the root is derived from wherever the zip is unpacked, not from the build sandbox. Astonishingly, software works better when it knows where it lives.
-
-## v10.2 - Per-Project Health Checks
-
-v10.2 checks registered project health independently.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --project-health
-python conscious_agent/main.py --project-health --project-health-all
-```
-
-New API:
-
-```text
-GET /api/project-health
-GET /api/project-health?all=true
-```
-
-Health checks include:
-
-- project root exists
-- README exists
-- test commands are configured
-- safe command profile exists
-- project is marked safe or blocked
-
-## v10.3 - Project-Specific Command Profiles
-
-v10.3 seeds command profiles under:
-
-```text
-data/workspaces/command_profiles/
-```
-
-Seeded profiles:
-
-```text
-eidolon.json
-default_python.json
-default_node.json
-default_java.json
-```
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --command-profiles
-```
-
-New API:
-
-```text
-GET /api/command-profiles
-```
-
-Profiles define allowed compile/test commands and approval rules for package installs, destructive commands, and shell commands.
-
-## v10.4 - Cross-Project Dependency Map
-
-v10.4 adds a read-only dependency/coupling hint report.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-dependency-map
-```
-
-New API:
-
-```text
-GET /api/workspace-dependency-map
-```
-
-It checks shared roots, README references, configured dependencies, and risky coupling hints.
-
-## v10.5 - Multi-Project Task Inbox
-
-v10.5 centralizes task availability across registered projects.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-task-inbox
-```
-
-New API:
-
-```text
-GET /api/workspace-task-inbox
-```
-
-It ranks task rows by project, priority, blocked state, AI need, offline availability, and recommended action.
-
-## v10.6 - Safe Project Switching
-
-v10.6 blocks project switching when patch workspace state is dirty.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --switch-project eidolon
-python conscious_agent/main.py --switch-project eidolon --force-switch-project
-```
-
-New API:
-
-```text
-POST /api/workspace/switch-project
-```
-
-Switching can be blocked by:
-
-- staged patch plan
-- proposed changes
-- validation report
-- stale latest apply pointer
-
-This prevents cross-project confusion, the classic “I patched the wrong repo” flavor of despair.
-
-## v10.7 - Project Context Bundles
-
-v10.7 builds a project-specific context bundle.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --project-context
-python conscious_agent/main.py --project-context --workspace-project-id eidolon
-```
-
-New API:
-
-```text
-GET /api/project-context
-GET /api/project-context?project=eidolon
-```
-
-The bundle includes:
-
-- registry entry
-- health
-- dependency map
-- task inbox selection
-- test plan
-- risk profile
-- memory index
-
-## v10.8 - Workspace Timeline
-
-v10.8 records and displays workspace-level events.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-timeline
-```
-
-New API:
-
-```text
-GET /api/workspace-timeline
-```
-
-Timeline events include registry checks, registration, active project changes, project switches, and workspace dev-loop previews.
-
-## v10.9 - Multi-Project Dashboard
-
-v10.9 adds the dashboard page:
-
-```text
-/workspace
-```
-
-The page shows:
-
-- registry status
-- project health
-- command profiles
-- dependency map
-- task inbox
-- context bundle
-- timeline
-- workspace dev-loop preview
-
-## v11.0 - Workspace-Orchestrated Development Loop
-
-v11.0 adds a preview-only workspace loop.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-dev-loop
-python conscious_agent/main.py --workspace-dev-loop --readiness-json
-```
-
-New API:
-
-```text
-GET /api/workspace-dev-loop
-```
-
-Flow:
-
-```text
-scan registered projects
-run per-project health checks
-rank workspace tasks
-select one project
-load project context bundle
-prepare patch plan preview
-prepare staging preview
-prepare diff preview
-stop before mutation
-```
-
-Important limit:
-
-```text
-Only one project may be selected per run, and v11.0 does not apply patches from the workspace loop.
-```
-
-## v11.0 CLI summary
-
-```powershell
-python conscious_agent/main.py --project-registry
-python conscious_agent/main.py --register-project "My App" --workspace-project-root C:\path\to\project
-python conscious_agent/main.py --set-active-workspace-project eidolon
-python conscious_agent/main.py --project-health --project-health-all
-python conscious_agent/main.py --command-profiles
-python conscious_agent/main.py --workspace-dependency-map
-python conscious_agent/main.py --workspace-task-inbox
-python conscious_agent/main.py --switch-project eidolon
-python conscious_agent/main.py --project-context
-python conscious_agent/main.py --workspace-timeline
-python conscious_agent/main.py --workspace-dev-loop
-```
-
-## v11.0 API summary
-
-```text
-GET  /api/project-registry
-POST /api/projects/register
-POST /api/projects/active
-GET  /api/project-health?all=true
-GET  /api/command-profiles
-GET  /api/workspace-dependency-map
-GET  /api/workspace-task-inbox
-POST /api/workspace/switch-project
-GET  /api/project-context
-GET  /api/workspace-timeline
-GET  /api/workspace-dev-loop
-```
-
-## Verification performed for v11.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --project-registry
-python conscious_agent/main.py --project-health --project-health-all
-python conscious_agent/main.py --command-profiles
-python conscious_agent/main.py --workspace-dependency-map
-python conscious_agent/main.py --workspace-task-inbox
-python conscious_agent/main.py --project-context
-python conscious_agent/main.py --workspace-timeline
-python conscious_agent/main.py --workspace-dev-loop
-python conscious_agent/main.py --rollback-latest-patch --dry-run --readiness-json
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python tools/smoke_check.py
-```
-
-Known environment warnings in the build sandbox:
-
-- `chromadb` is not installed here, but it remains listed in `requirements.txt`.
-- Ollama is not running here, so AI health reports an environment warning.
-
-## Next likely step
-
-v11.1 should probably be **Workspace Patch Review Queue**:
-
-- save workspace dev-loop preview records
-- list pending workspace patch plans
-- mark workspace plans reviewed/rejected/ready
-- connect `/workspace` to patch-review records
-- keep multi-project changes preview-first until review history is boring
-
-Boring review history is good. Exciting review history means something is on fire.
-
----
-
-# Eidolon v10.0 - Asymmetric Multi-Project Development Loop
-
-v10.0 bundles the v9.1 through v10.0 project-intelligence roadmap into one packaged release. The big shift is that Eidolon can now map its own codebase, infer task dependencies, plan verification by file impact, score patch risk, review staged patches from the dashboard/API, index its project history, understand a multi-project workspace foundation, compare task queues across projects, and run an asymmetric multi-project development preview that stops before mutation. Stopping remains the most underrated feature in software, right behind "not deleting the user's work."
-
-This release also hardens the v9.0 controlled-build API and rollback behavior based on review findings:
-
-- GET routes are preview-only and no longer trigger live controlled work.
-- `GET /api/supervised-dev-loop` is disabled with a 405 response; supervised loop execution is POST-only.
-- Live POST routes now require explicit JSON confirmation strings.
-- GET planner/stage/diff routes are read-only preview surfaces; POST routes save workspace state.
-- Dry-run apply reports now write to `latest_dry_run_apply_report.json` instead of overwriting the latest real apply report.
-- Rollback now verifies the current file hash still matches the recorded applied hash before restoring a backup, so newer manual edits are not quietly flattened by the rollback bulldozer.
-
-## What changed in v10.0
-
-- Added `conscious_agent/project_intelligence.py`
-  - v9.1 codebase map
-  - v9.2 dependency-aware task planning
-  - v9.3 test planner
-  - v9.4 patch risk analyzer
-  - v9.5 patch review report
-  - v9.7 project memory index
-  - v9.8 multi-project workspace status
-  - v9.9 cross-project task review
-  - v10.0 asymmetric multi-project development loop preview
-- Updated `conscious_agent/controlled_build_cycle.py`
-  - controlled-build version is now `10.0`
-  - dry-run apply no longer overwrites the real latest apply report
-  - rollback checks current file hashes before restoring backups
-  - GET-compatible preview helpers can avoid saving workspace state
-  - README gate now checks v8.1 through v10.0 sections
-- Updated `conscious_agent/api_server.py`
-  - API version is now `10.0`
-  - live controlled work is POST-only
-  - live POST calls require explicit JSON confirmation
-  - added project-intelligence endpoints
-  - disabled GET execution of `/api/supervised-dev-loop`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `10.0`
-  - added `/patch-review`
-  - added `/intelligence`
-  - updated `/api-info` to document preview-only GET and POST mutation boundaries
-- Updated `conscious_agent/main.py`
-  - added v9.1-v10.0 project-intelligence CLI commands
-- Updated `conscious_agent/operational_readiness.py`
-  - operational readiness version is now `10.0`
-  - hardening checks include project-intelligence CLI/API/README surfaces
-- Updated `conscious_agent/stabilization_checkpoint.py`
-  - checkpoint version is now `10.0`
-  - checks `project_intelligence.py`, the new CLI flags, API routes, and dashboard pages
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the new read-only project-intelligence commands
-- Updated `tools/smoke_check.py`
-  - validates project intelligence reports and commands
-  - checks controlled-build version `10.0`
-- Updated `conscious_agent/settings_manager.py`, `data/settings.json`, `data/projects.json`
-  - metadata now reflects `10.0`
-- Added workspace foundation files:
-  - `data/workspaces/projects.json`
-  - `data/workspaces/active_project.json`
-
-## v9.1 - Codebase Map
-
-v9.1 gives Eidolon a structured view of its own files. This is where it learns where its limbs are before trying to juggle tools with them.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --codebase-map
-python conscious_agent/main.py --codebase-map --readiness-json
-```
-
-New API:
-
-```text
-GET /api/codebase-map
-```
-
-New dashboard surface:
-
-```text
-/intelligence
-```
-
-The map reports:
-
-- project file counts
-- Python module counts
-- major module roles
-- module imports
-- CLI flags
-- API route hints
-- dashboard routes
-- data file samples
-- risky files
-
-## v9.2 - Dependency-Aware Task Planning
-
-v9.2 adds task dependency hints. It does not solve software planning forever, because nothing does, but it at least stops pretending every task is a decorative sticky note.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --task-dependencies
-python conscious_agent/main.py --task-dependencies --readiness-json
-```
-
-New API:
-
-```text
-GET /api/task-dependencies
-```
-
-It infers likely affected files and required checks from task text:
-
-- dashboard work implies dashboard route review
-- API work implies API route review
-- CLI work implies `main.py` and command checks
-- controlled-build or rollback work implies controlled-build verification
-- every real project patch still requires README review
-
-## v9.3 - Test Planner
-
-v9.3 adds a targeted test-plan report.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --test-plan
-python conscious_agent/main.py --test-plan --readiness-json
-```
-
-New API:
-
-```text
-GET /api/test-plan
-```
-
-The planner looks at current controlled-build plan/staged files and recommends checks such as:
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python conscious_agent/main.py --readme-gate
-python tools/smoke_check.py
-```
-
-File-specific checks are added for CLI, API, dashboard, controlled-build, and project-intelligence changes.
-
-## v9.4 - Patch Risk Analyzer
-
-v9.4 scores the risk of the current staged/controlled patch.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --patch-risk
-python conscious_agent/main.py --patch-risk --readiness-json
-```
-
-New API:
-
-```text
-GET /api/patch-risk
-```
-
-Risk factors include:
-
-- changes to safety-sensitive files
-- changes to CLI/API/dashboard routing
-- changes to settings or command runner behavior
-- proposed file deletion
-- large multi-file patches
-- code/data changes without README involvement
-
-Risk levels:
-
-```text
-LOW
-MEDIUM
-HIGH
-BLOCKED
-```
-
-## v9.5 - Dashboard Patch Review UI
-
-v9.5 adds a browser-facing patch review page.
-
-New dashboard route:
-
-```text
-/patch-review
-```
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --patch-review
-python conscious_agent/main.py --patch-review --readiness-json
-```
-
-New API:
-
-```text
-GET /api/patch-review
-```
-
-The patch review combines:
-
-- patch workspace status
-- staged diff preview
-- patch risk score
-- targeted test plan
-- README enforcement gate
-
-The page is read-only. It reviews the patch instead of applying it, which is the dashboard equivalent of touching the stove with a thermometer instead of a hand.
-
-## v9.6 - API Build Control Hardening
-
-v9.6 tightens the local API build-control boundary.
-
-Changed API behavior:
-
-```text
-GET  /api/controlled-self-build        # preview-only
-POST /api/controlled-self-build       # live requires confirm=LIVE_CONTROLLED_BUILD
-GET  /api/controlled-build/plan-patch # preview-only
-POST /api/controlled-build/plan-patch # saves workspace state
-GET  /api/controlled-build/stage-patch # preview-only
-POST /api/controlled-build/stage-patch # saves workspace state
-GET  /api/controlled-build/preview-diff # preview-only
-POST /api/controlled-build/preview-diff # saves validation state
-POST /api/controlled-build/cycle      # live requires confirm=LIVE_CONTROLLED_BUILD_CYCLE
-POST /api/supervised-dev-loop         # live requires confirm=LIVE_SUPERVISED_DEV_LOOP
-```
-
-Removed unsafe behavior:
-
-- GET no longer accepts `live=true` as a path to live work.
-- GET `/api/supervised-dev-loop` no longer runs the supervised loop.
-- GET planning/staging/diff routes no longer write workspace state.
-
-Explicit live confirmations:
-
-```json
-{"live": true, "approve": true, "confirm": "LIVE_CONTROLLED_BUILD"}
-```
-
-```json
-{"live": true, "approve": true, "confirm": "LIVE_CONTROLLED_BUILD_CYCLE"}
-```
-
-```json
-{"live": true, "approve": true, "confirm": "LIVE_SUPERVISED_DEV_LOOP"}
-```
-
-## v9.7 - Project Memory Index
-
-v9.7 adds a project memory index over README history and controlled-build records.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --project-memory-index
-python conscious_agent/main.py --project-memory-index --readiness-json
-```
-
-New API:
-
-```text
-GET /api/project-memory-index
-```
-
-It reports:
-
-- README version markers
-- controlled-build report count
-- patch workspace state files
-- latest report file sample
-- recurring documentation gaps
-
-This helps Eidolon avoid rediscovering its own history like a goldfish with a sprint board.
-
-## v9.8 - Multi-Project Workspace Foundation
-
-v9.8 adds the first workspace foundation for multiple projects.
-
-New files:
-
-```text
-data/workspaces/projects.json
-data/workspaces/active_project.json
-```
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --workspace-status
-python conscious_agent/main.py --workspace-status --readiness-json
-```
-
-New API:
-
-```text
-GET /api/workspace-status
-```
-
-It reports:
-
-- known projects
-- active project
-- project roots
-- project versions
-- project priority
-- whether the root exists
-- whether the project is marked safe to modify
-
-No multi-project editing is enabled here. It is awareness first, tools later, chaos ideally never.
-
-## v9.9 - Cross-Project Task Scheduler
-
-v9.9 compares task availability across known projects.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --cross-project-task-review
-python conscious_agent/main.py --cross-project-task-review --readiness-json
-```
-
-New API:
-
-```text
-GET /api/cross-project-task-review
-```
-
-It reviews:
-
-- project priority
-- safe-to-modify status
-- available task count
-- top task candidates per project
-- selected project candidate
-
-This is still planning-only. It does not modify multiple projects, because mixing project state is how you get a software smoothie nobody ordered.
-
-## v10.0 - Asymmetric Multi-Project Development Loop
-
-v10.0 adds the asymmetric loop preview.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --asymmetric-dev-loop
-python conscious_agent/main.py --asymmetric-dev-loop --readiness-json
-```
-
-New API:
-
-```text
-GET /api/asymmetric-dev-loop
-```
-
-The preview does this:
-
-1. Scans known workspaces.
-2. Reviews task availability across projects.
-3. Selects one safe project candidate.
-4. Maps the active codebase.
-5. Builds dependency and test summaries.
-6. Scores current patch risk.
-7. Stops before mutation.
-
-Important limit:
-
-```text
-Only one project may be selected per run, and the v10.0 loop preview does not write project files.
-```
-
-That gives Eidolon asymmetric awareness without letting it swing a hammer in three rooms at once. Sensible, which is always suspicious but useful.
-
-## API safety fixes included in v10.0
-
-### GET routes are preview-only
-
-`GET /api/controlled-self-build` now always calls controlled self-build in preview mode. If `live=true` or `approve=true` appears in the query string, the response includes a warning instead of doing live work.
-
-### Supervised loop is POST-only
-
-`GET /api/supervised-dev-loop` now returns a 405-style API error. Use POST with JSON instead.
-
-### Planning/staging GET routes do not mutate workspace state
-
-These are preview-only now:
-
-```text
-GET /api/controlled-build/plan-patch
-GET /api/controlled-build/stage-patch
-GET /api/controlled-build/preview-diff
-```
-
-These are the mutating versions:
-
-```text
-POST /api/controlled-build/plan-patch
-POST /api/controlled-build/stage-patch
-POST /api/controlled-build/preview-diff
-```
-
-### Dry-run apply no longer replaces rollback target
-
-Dry-run apply reports are saved separately:
-
-```text
-data/patch_workspace/latest_dry_run_apply_report.json
-```
-
-The real rollback pointer remains:
-
-```text
-data/patch_workspace/latest_apply_report.json
-```
-
-### Rollback now protects newer edits
-
-Rollback checks:
-
-```text
-current file sha256 == applied_sha256 from latest apply report
-```
-
-If the file changed after apply, rollback refuses to overwrite it and reports the mismatch.
-
-## v10.0 CLI summary
-
-```powershell
-python conscious_agent/main.py --codebase-map
-python conscious_agent/main.py --task-dependencies
-python conscious_agent/main.py --test-plan
-python conscious_agent/main.py --patch-risk
-python conscious_agent/main.py --patch-review
-python conscious_agent/main.py --project-memory-index
-python conscious_agent/main.py --workspace-status
-python conscious_agent/main.py --cross-project-task-review
-python conscious_agent/main.py --asymmetric-dev-loop
-```
-
-## v10.0 API summary
-
-```text
-GET  /api/codebase-map
-GET  /api/task-dependencies
-GET  /api/test-plan
-GET  /api/patch-risk
-GET  /api/patch-review
-GET  /api/project-memory-index
-GET  /api/workspace-status
-GET  /api/cross-project-task-review
-GET  /api/asymmetric-dev-loop
-```
-
-## Verification performed for v10.0
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --codebase-map
-python conscious_agent/main.py --task-dependencies
-python conscious_agent/main.py --test-plan
-python conscious_agent/main.py --patch-risk
-python conscious_agent/main.py --patch-review
-python conscious_agent/main.py --project-memory-index
-python conscious_agent/main.py --workspace-status
-python conscious_agent/main.py --cross-project-task-review
-python conscious_agent/main.py --asymmetric-dev-loop
-python conscious_agent/main.py --controlled-self-build --select-task
-python conscious_agent/main.py --controlled-self-build --plan-patch
-python conscious_agent/main.py --controlled-self-build --stage-patch
-python conscious_agent/main.py --controlled-self-build --preview-diff
-python conscious_agent/main.py --controlled-self-build --apply-staged-patch --dry-run
-python conscious_agent/main.py --readme-gate
-python conscious_agent/main.py --supervised-dev-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python tools/smoke_check.py
-```
-
-Known environment warnings in this sandbox remain boring but honest:
-
-- `chromadb` may be missing if dependencies were not installed, but it remains listed in `requirements.txt`.
-- Ollama may be unreachable if the local Ollama service is not running.
-- Older patch records can still report missing backup paths; the integrity system surfaces those instead of pretending the attic is clean.
-
----
-
-# Eidolon v9.0 - Supervised Autonomous Development Loop
-
-v9.0 bundles the full v8.1 through v9.0 controlled-build roadmap into one packaged release. The major shift is that Eidolon now has a real staged development lane: it can select a safe task, create a patch plan, stage proposed changes in a workspace, preview diffs, apply only with explicit approval, verify the latest patch, roll back the latest controlled patch, enforce README updates, run a full controlled build cycle, and stop after one supervised development loop. That last word, stop, is doing heroic work here.
-
-This is still preview-first. Live writes require explicit operator approval and use backups. The system does not silently self-modify, does not bypass guardrails, and does not run forever like a cursed office printer.
-
-## What changed in v9.0
-
-- Added `conscious_agent/controlled_build_cycle.py`
-  - v8.1 controlled task selection
-  - v8.2 controlled patch planning
-  - v8.3 patch workspace and staging support under `data/patch_workspace/`
-  - v8.4 staged diff preview
-  - v8.5 guarded staged patch apply
-  - v8.6 latest patch verification
-  - v8.7 latest controlled patch rollback
-  - v8.8 README enforcement gate
-  - v8.9 full controlled build cycle
-  - v9.0 one-cycle supervised autonomous development loop
-- Updated `conscious_agent/main.py`
-  - added `--select-task`
-  - added `--plan-patch`
-  - added `--patch-workspace-status`
-  - added `--stage-patch`
-  - added `--preview-diff`
-  - added `--apply-staged-patch`
-  - added `--verify-latest-patch`
-  - added `--rollback-latest-patch`
-  - added `--readme-gate`
-  - added `--controlled-self-build-cycle`
-  - added `--supervised-dev-loop`
-- Updated `conscious_agent/api_server.py`
-  - API version is now `9.0`
-  - added controlled-build endpoints under `/api/controlled-build/...`
-  - added `/api/supervised-dev-loop`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `9.0`
-  - added `/build-cycle`
-  - updated `/api-info` with the v8.1-v9.0 surfaces
-- Updated `conscious_agent/operational_readiness.py`
-  - operational readiness version is now `9.0`
-  - hardening checks now include the v8.1-v9.0 CLI/API/dashboard/README surfaces
-- Updated `conscious_agent/stabilization_checkpoint.py`
-  - checkpoint version is now `9.0`
-  - checks `controlled_build_cycle.py` and the new CLI/API/dashboard surfaces
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the new read-only/preview controlled-build commands
-  - live write actions still require explicit approval in their own command path
-- Updated `tools/smoke_check.py`
-  - validates `controlled_build_cycle.py`
-  - checks report shapes and CLI commands for v8.1-v9.0
-- Updated `conscious_agent/settings_manager.py`, `data/settings.json`, and `data/projects.json`
-  - metadata now reflects `9.0`
-
-## v8.1 - Controlled Self-Build Task Selection
-
-v8.1 lets Eidolon choose the next safe task instead of grabbing work like a raccoon in a parts bin.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build --select-task
-python conscious_agent/main.py --controlled-self-build --select-task --readiness-json
-```
-
-New API:
-
-```text
-GET /api/controlled-build/select-task
-```
-
-The selector evaluates:
-
-- task status
-- priority
-- risk
-- approval requirement
-- whether the task is safe for controlled self-build
-
-If no safe queued task exists, it selects a synthetic low-risk README/workspace probe so the loop can still be tested without pretending there is real work. Fake work is bad. Synthetic safety probes are acceptable little training wheels.
-
-## v8.2 - Controlled Patch Planner
-
-v8.2 adds a structured patch plan before anything stages or writes.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build --plan-patch
-python conscious_agent/main.py --controlled-self-build --plan-patch --readiness-json
-```
-
-New API:
-
-```text
-GET /api/controlled-build/plan-patch
-```
-
-The plan is saved to:
-
-```text
-data/patch_workspace/current_plan.json
-```
-
-It records:
-
-- selected task
-- target version
-- expected files to change
-- expected verification commands
-- README sections required
-- rollback strategy
-- risk rating
-- approval requirement
-- staging policy
-
-## v8.3 - Patch Workspace / Staging Area
-
-v8.3 adds the staging workspace:
-
-```text
-data/patch_workspace/
-  current_plan.json
-  proposed_changes.json
-  file_diffs/
-  validation_report.json
-  latest_apply_report.json
-  latest_rollback_report.json
-```
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --patch-workspace-status
-python conscious_agent/main.py --controlled-self-build --stage-patch
-```
-
-New API:
-
-```text
-GET /api/controlled-build/workspace
-GET /api/controlled-build/stage-patch
-```
-
-Staging writes proposal metadata and diff files only. It does not touch source files. Imagine a robot holding a wrench behind glass. Somehow, safer.
-
-## v8.4 - File Diff Preview System
-
-v8.4 adds staged diff preview.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build --preview-diff
-python conscious_agent/main.py --controlled-self-build --preview-diff --doctor-full
-```
-
-New API:
-
-```text
-GET /api/controlled-build/preview-diff
-```
-
-The preview shows:
-
-- files staged
-- action type
-- added/removed line counts
-- diff preview text
-- metadata-only impact surfaces
-- warnings before apply
-
-Rule introduced:
-
-```text
-No staged patch should be applied until a diff preview exists.
-```
-
-## v8.5 - Apply Controlled Patch
-
-v8.5 adds guarded staged patch apply.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build --apply-staged-patch --dry-run
-python conscious_agent/main.py --controlled-self-build --apply-staged-patch --approve-controlled-self-build
-```
-
-New API:
-
-```text
-POST /api/controlled-build/apply-staged-patch
-```
-
-Apply behavior:
-
-- requires a staged patch
-- validates current file hashes before writing
-- creates backups under `data/controlled_build_backups/`
-- records latest apply metadata
-- skips metadata-only source impact rows
-- blocks live write unless `--approve-controlled-self-build` is present
-
-This is where “controlled” earns its paycheck.
-
-## v8.6 - Auto-Verify Applied Patch
-
-v8.6 adds verification for the latest controlled patch/apply report.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --verify-latest-patch
-python conscious_agent/main.py --verify-latest-patch --doctor-full
-```
-
-New API:
-
-```text
-POST /api/controlled-build/verify-latest-patch
-```
-
-Verification runs fixed safe checks:
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python conscious_agent/main.py --readme-gate
-```
-
-It reports:
-
-```text
-passed
-passed_with_warnings
-failed
-rollback_recommended
-```
-
-## v8.7 - Rollback Latest Patch
-
-v8.7 adds rollback for the latest controlled patch.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --rollback-latest-patch --dry-run
-python conscious_agent/main.py --rollback-latest-patch --approve-controlled-self-build
-```
-
-New API:
-
-```text
-POST /api/controlled-build/rollback-latest-patch
-```
-
-Rollback behavior:
-
-- reads `latest_apply_report.json`
-- verifies backup paths
-- restores only files that were actually applied
-- skips metadata-only rows
-- records latest rollback metadata
-- blocks live restore unless `--approve-controlled-self-build` is present
-
-Rollback remains boring. Boring is what you want when undoing file edits.
-
-## v8.8 - README Enforcement Gate
-
-v8.8 adds a README gate.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --readme-gate
-python conscious_agent/main.py --readme-gate --readiness-json
-```
-
-New API:
-
-```text
-GET /api/controlled-build/readme-gate
-```
-
-It checks:
-
-- README includes v8.1 through v9.0 notes
-- settings metadata is on v9.0
-- latest applied controlled patch included a README update when files changed
-
-This matches Marcus's rule: every code/project patch must update the README unless told otherwise. Software has enough amnesia already.
-
-## v8.9 - Full Controlled Build Cycle
-
-v8.9 chains the pieces together.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build-cycle
-python conscious_agent/main.py --controlled-self-build-cycle --readiness-json
-```
-
-Live write path remains explicit:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build-cycle --controlled-self-build-live --approve-controlled-self-build
-```
-
-New API:
-
-```text
-POST /api/controlled-build/cycle
-```
-
-Cycle flow:
-
-```text
-select task
-create patch plan
-stage patch
-preview diff
-apply dry-run by default
-verify latest patch
-check patch integrity
-run README gate
-save cycle report
-stop
-```
-
-Default behavior is preview/dry-run. Live apply requires approval.
-
-## v9.0 - Supervised Autonomous Development Loop
-
-v9.0 adds the one-cycle supervised dev loop.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --supervised-dev-loop
-python conscious_agent/main.py --supervised-dev-loop --readiness-json
-```
-
-Live path:
-
-```powershell
-python conscious_agent/main.py --supervised-dev-loop --controlled-self-build-live --approve-controlled-self-build
-```
-
-New API:
-
-```text
-POST /api/supervised-dev-loop
-```
-
-The supervised loop:
-
-1. Runs doctor/guardrail context.
-2. Runs controlled self-build preview context.
-3. Runs one full controlled build cycle.
-4. Applies only if live mode and explicit approval are provided.
-5. Stops after one bounded cycle.
-6. Reports the next recommended task.
-
-The stop behavior is intentional. No recursive self-improvement spiral. No infinite loop. No “I upgraded my upgrader and now it wants stock options.”
-
-## New dashboard/API paths after v9.0
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/build-cycle
-```
-
-API:
-
-```text
-GET  /api/controlled-build/select-task
-GET  /api/controlled-build/plan-patch
-GET  /api/controlled-build/workspace
-GET  /api/controlled-build/stage-patch
-GET  /api/controlled-build/preview-diff
-POST /api/controlled-build/apply-staged-patch
-POST /api/controlled-build/verify-latest-patch
-POST /api/controlled-build/rollback-latest-patch
-GET  /api/controlled-build/readme-gate
-POST /api/controlled-build/cycle
-POST /api/supervised-dev-loop
-```
-
-## Recommended verification after v9.0
-
-Run these from the project root:
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --status
-python conscious_agent/main.py --settings-health
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python conscious_agent/main.py --doctor --doctor-full
-python conscious_agent/main.py --controlled-self-build --select-task
-python conscious_agent/main.py --controlled-self-build --plan-patch
-python conscious_agent/main.py --patch-workspace-status
-python conscious_agent/main.py --controlled-self-build --stage-patch
-python conscious_agent/main.py --controlled-self-build --preview-diff
-python conscious_agent/main.py --controlled-self-build --apply-staged-patch --dry-run
-python conscious_agent/main.py --verify-latest-patch
-python conscious_agent/main.py --readme-gate
-python conscious_agent/main.py --controlled-self-build-cycle
-python conscious_agent/main.py --supervised-dev-loop
-python tools/smoke_check.py
-```
-
-## Verification performed for v9.0
-
-These checks were run after patching:
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --controlled-self-build --select-task
-python conscious_agent/main.py --controlled-self-build --plan-patch
-python conscious_agent/main.py --patch-workspace-status
-python conscious_agent/main.py --controlled-self-build --stage-patch
-python conscious_agent/main.py --controlled-self-build --preview-diff
-python conscious_agent/main.py --controlled-self-build --apply-staged-patch --dry-run
-python conscious_agent/main.py --verify-latest-patch
-python conscious_agent/main.py --readme-gate
-python conscious_agent/main.py --controlled-self-build-cycle
-python conscious_agent/main.py --supervised-dev-loop
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python tools/smoke_check.py
-```
-
-Known sandbox warnings remain expected:
-
-- `chromadb` may be missing if the active Python environment has not installed `requirements.txt`.
-- Ollama may be unreachable if the local service is not running.
-- Older patch records can still report missing backup paths. The integrity report surfaces that instead of pretending rollback is guaranteed. Because lying to yourself is cheaper only until restore day.
-
-## Next likely step
-
-v9.1 should improve the staged patch generator so it can turn selected low-risk tasks into real source-file proposals instead of mostly README/workspace probes. The apply/verify/rollback lane now exists; next, the patch generator needs better hands.
-
----
-
-# Eidolon v8.0 - Controlled Self-Build Checkpoint Suite
-
-v8.0 bundles the full v7.1 through v8.0 stabilization roadmap into one packaged release. It keeps the project in the same safety posture: read-only diagnostics by default, explicit approval for live controlled work, and no silent patch/application behavior. The exciting part is that Eidolon can now inspect the floor before trying to walk across it. Revolutionary, if you ignore every toddler ever.
-
-## What changed in v8.0
-
-- Added `conscious_agent/operational_readiness.py`
-  - centralizes the v7.1-v8.0 operational reports
-  - keeps reports read-only by default
-  - exposes human-readable text and JSON-ready report dictionaries
-  - adds one controlled self-build entrypoint that gates live behavior behind doctor status, confidence score, closure guardrails, and explicit approval
-- Updated `conscious_agent/main.py`
-  - added `--doctor`
-  - added `--doctor-full`
-  - added `--readiness-json`
-  - added `--repair-suggestions`
-  - added `--patch-integrity`
-  - added `--project-snapshot`
-  - added `--task-review`
-  - added `--recovery-drill`
-  - added `--stable-loop-confidence`
-  - added `--hardening-report`
-  - added `--controlled-self-build`
-  - added `--controlled-self-build-live`
-  - added `--approve-controlled-self-build`
-  - added `--controlled-self-build-steps`
-- Updated `conscious_agent/api_server.py`
-  - API version is now `8.0`
-  - added `GET /api/doctor`
-  - added `GET /api/repair-suggestions`
-  - added `GET /api/patch-integrity`
-  - added `GET /api/project-snapshot`
-  - added `GET /api/tasks/review`
-  - added `GET /api/recovery-drill`
-  - added `GET /api/stable-loops/confidence`
-  - added `GET /api/hardening-report`
-  - added `GET /api/controlled-self-build`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `8.0`
-  - polished `/stabilization` with confidence and repair suggestion cards
-  - added `/doctor` as a dashboard hub for all new operational reports
-  - updated `/api-info` to list the new local API surfaces
-- Updated `conscious_agent/stabilization_checkpoint.py`
-  - checkpoint version is now `8.0`
-  - checks the new CLI flags, API endpoints, dashboard route, and `operational_readiness.py`
-  - recommended commands now include doctor mode, repair suggestions, confidence scoring, and controlled self-build preview
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted all new read-only operational commands
-  - whitelisted the explicit controlled self-build flags
-- Updated `tools/smoke_check.py`
-  - validates `operational_readiness.py`
-  - checks the new report shapes and text output
-  - runs the new CLI commands in the smoke sequence
-- Updated `conscious_agent/settings_manager.py`, `data/settings.json`, and `data/projects.json`
-  - metadata now reflects `8.0`
-
-## v7.1 - Stabilization Dashboard Polish
-
-v7.1 improves the dashboard view for the checkpoint added in v7.0.
-
-- `/stabilization` now groups:
-  - checkpoint status
-  - pass/warn/fail counts
-  - blocker list
-  - warning list
-  - stable-loop confidence
-  - repair suggestions
-  - recommended commands
-- The page links directly to:
-  - `/api/stabilization-checkpoint?full=true`
-  - `/api/doctor?full=true`
-- The goal is visual clarity, not new autonomy. Because apparently reading a giant raw JSON blob is not everyone’s idea of a fulfilling evening.
-
-## v7.2 - One-Command Doctor Mode
-
-v7.2 adds doctor mode.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --doctor --doctor-full
-python conscious_agent/main.py --doctor --readiness-json
-```
-
-New API:
-
-```text
-GET /api/doctor
-GET /api/doctor?full=true
-```
-
-New dashboard:
-
-```text
-http://127.0.0.1:8765/doctor
-```
-
-Doctor mode combines:
-
-- stabilization checkpoint
-- stable-loop confidence
-- repair suggestions
-- patch integrity
-- project snapshot
-- task review
-- recovery drill
-- hardening report
-
-It returns:
-
-```text
-READY
-READY_WITH_WARNINGS
-BLOCKED
-```
-
-## v7.3 - Self-Repair Suggestions
-
-v7.3 adds suggestion-only repair guidance.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --repair-suggestions
-python conscious_agent/main.py --repair-suggestions --readiness-json
-```
-
-New API:
-
-```text
-GET /api/repair-suggestions
-```
-
-The report turns checkpoint and settings-health problems into plain fixes. Examples:
-
-- missing `chromadb` -> install requirements
-- Ollama unreachable -> start Ollama and rerun settings health
-- malformed JSON -> repair or restore that file
-- unresolved stable-loop follow-ups -> resolve or close follow-up chains
-
-This does not automatically install packages, start services, rewrite JSON, or pretend warnings are confetti.
-
-## v7.4 - Patch Integrity System
-
-v7.4 adds patch metadata and rollback integrity review.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --patch-integrity
-python conscious_agent/main.py --patch-integrity --doctor-full
-```
-
-New API:
-
-```text
-GET /api/patch-integrity
-```
-
-The report checks patch records for:
-
-- patch id
-- target file
-- patch status
-- proposed hash
-- applied hash
-- backup path for applied patches
-- missing rollback metadata
-- README notes for the current release
-
-This gives Eidolon a way to inspect whether its patch history is trustworthy before leaning on rollback like it is a magic undo button. It is not magic. It is just files wearing a helmet.
-
-## v7.5 - Project State Snapshot
-
-v7.5 adds a single “where are we?” report.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --project-snapshot
-python conscious_agent/main.py --project-snapshot --readiness-json
-```
-
-New API:
-
-```text
-GET /api/project-snapshot
-```
-
-The snapshot includes:
-
-- active project
-- settings version
-- task totals and status counts
-- pending approval count
-- patch count
-- test report count
-- test review count
-- work-cycle count
-- stable-loop count
-- stabilization status
-- stable-loop confidence score
-- next recommended commands
-
-## v7.6 - Better Task Queue Review
-
-v7.6 adds task lifecycle/risk review.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --task-review
-python conscious_agent/main.py --task-review --doctor-full
-```
-
-New API:
-
-```text
-GET /api/tasks/review
-```
-
-The task review reports:
-
-- task id
-- title
-- task status
-- lifecycle stage
-- estimated risk
-- approval requirement
-- warnings for medium/high-risk tasks
-
-This gives controlled self-build a task-facing checkpoint instead of just grabbing the next item and hoping the universe is gentle. It is not.
-
-## v7.7 - Recovery Drill Mode
-
-v7.7 adds read-only recovery drills.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --recovery-drill
-python conscious_agent/main.py --recovery-drill --doctor-full
-```
-
-New API:
-
-```text
-GET /api/recovery-drill
-```
-
-It simulates recovery expectations for:
-
-- failed patch apply
-- failed test run
-- missing dependency
-- unresolved stable-loop follow-up
-- unavailable AI/Ollama
-
-It does not intentionally break files. A bold and controversial design choice.
-
-## v7.8 - Stable Loop Confidence Score
-
-v7.8 adds a readiness score for stable-loop and self-build workflows.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --stable-loop-confidence
-python conscious_agent/main.py --stable-loop-confidence --readiness-json
-```
-
-New API:
-
-```text
-GET /api/stable-loops/confidence
-```
-
-Scoring considers:
-
-- stabilization blockers
-- stabilization warnings
-- closure guardrails
-- recoverable task backlog
-- Ollama health
-
-Statuses:
-
-```text
-90-100  ready
-75-89   ready_with_warnings
-50-74   limited_mode
-0-49    blocked
-```
-
-## v7.9 - Pre-v8 Hardening Pass
-
-v7.9 adds a hardening report across the new surface area.
-
-New CLI:
-
-```powershell
-python conscious_agent/main.py --hardening-report
-python conscious_agent/main.py --hardening-report --doctor-full
-```
-
-New API:
-
-```text
-GET /api/hardening-report
-```
-
-It checks that the new version surfaces exist in:
-
-- CLI parser
-- command whitelist
-- API route docs
-- dashboard route surfaces
-- README notes
-- Python compile surface
-
-This is the release that checks whether all the release machinery remembered to show up. The bar is underground, yet software keeps tripping on it.
-
-## v8.0 - Controlled Self-Build Loop
-
-v8.0 adds the first controlled self-build entrypoint.
-
-Preview mode:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build --dry-run --no-ai-stable-loop
-```
-
-JSON preview:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build --dry-run --no-ai-stable-loop --readiness-json
-```
-
-Bounded step preview:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build --controlled-self-build-steps 3 --no-ai-stable-loop
-```
-
-Live mode requires all of this:
-
-```powershell
-python conscious_agent/main.py --controlled-self-build --controlled-self-build-live --approve-controlled-self-build --controlled-self-build-steps 1
-```
-
-Live controlled self-build is gated by:
-
-- doctor mode not blocked
-- confidence score at least 90%
-- closure guardrails allowing live advancement
-- explicit `--approve-controlled-self-build`
-- existing stable-loop safety behavior
-- existing approval gates for risky work
-
-This is not unrestricted self-modification. It is a supervised, bounded, inspected route into the existing stable loop. The robot gets a leash, a checklist, and absolutely no flamethrower.
-
-## New recommended verification after v8.0
-
-Run these from the project root:
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --status
-python conscious_agent/main.py --settings-health
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python conscious_agent/main.py --doctor --doctor-full
-python conscious_agent/main.py --repair-suggestions
-python conscious_agent/main.py --patch-integrity
-python conscious_agent/main.py --project-snapshot
-python conscious_agent/main.py --task-review
-python conscious_agent/main.py --recovery-drill
-python conscious_agent/main.py --stable-loop-confidence
-python conscious_agent/main.py --hardening-report --doctor-full
-python conscious_agent/main.py --controlled-self-build --dry-run --no-ai-stable-loop
-python tools/smoke_check.py
-```
-
-## Verification performed for v8.0
-
-These checks were run after patching:
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --doctor
-python conscious_agent/main.py --repair-suggestions
-python conscious_agent/main.py --patch-integrity
-python conscious_agent/main.py --project-snapshot
-python conscious_agent/main.py --task-review
-python conscious_agent/main.py --recovery-drill
-python conscious_agent/main.py --stable-loop-confidence
-python conscious_agent/main.py --hardening-report
-python conscious_agent/main.py --controlled-self-build --dry-run --no-ai-stable-loop
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python tools/smoke_check.py
-```
-
-API/dashboard surface checks were also exercised in-process for:
-
-```text
-/api/doctor
-/api/repair-suggestions
-/api/patch-integrity
-/api/project-snapshot
-/api/tasks/review
-/api/recovery-drill
-/api/stable-loops/confidence
-/api/hardening-report
-/api/controlled-self-build
-/stabilization
-/doctor
-```
-
-Observed sandbox warnings:
-
-- `chromadb` is not installed in this sandbox environment, but it is listed in `requirements.txt`.
-- Ollama is not running in this sandbox, so local AI health reports warn correctly.
-- Existing older patch records report some missing backup paths in `--patch-integrity`; the new integrity system surfaces those instead of pretending rollback is guaranteed.
-
-## Known environment notes
-
-- Missing `chromadb` is reported as an environment/setup warning when the current Python environment has not installed `requirements.txt`.
-- Ollama being unreachable is a local service/model setup warning unless an AI-dependent command is being run live.
-- The controlled self-build path should be used in preview/no-AI mode until the doctor report and confidence score are clean enough to justify live work.
-
-## Next likely step
-
-v8.1 should use controlled self-build only on a tiny, low-risk README or report-format task first. No big feature jumps yet. Make the little robot prove it can carry a paperclip before handing it the toolbox.
-
----
-
-# Eidolon v7.0 - Stabilization Checkpoint
-
-v7.0 stops feature expansion for one pass and adds a read-only stabilization checkpoint across the whole current loop. It checks files, JSON storage, Python compile health, core imports, environment dependencies, settings, command whitelist coverage, task lifecycle, recovery, cycle policy, stable-loop preflight, closure guardrails, follow-up completion, dashboard/API route surfaces, and smoke-test readiness. It does not apply patches, approve actions, run live stable loops, archive records, or start services. An actual checkpoint, not a motivational poster taped over a broken build.
-
-## What changed in v7.0
-
-- Added `conscious_agent/stabilization_checkpoint.py`
-  - builds a read-only PASS/WARN/FAIL checkpoint report
-  - separates code blockers from environment warnings such as missing optional/local packages
-  - checks required files, JSON parse health, compile/import health, settings strictness, command whitelist coverage, task lifecycle/recovery/cycle policy, stable-loop preflight, stable-loop closure guardrails, follow-up lifecycle/completion, API/dashboard surfaces, and smoke readiness
-  - returns recommended verification commands for the operator
-- Updated `conscious_agent/main.py`
-  - added `--stabilization-checkpoint`
-  - added `--stabilization-full`
-  - added `--stabilization-json`
-- Updated `conscious_agent/api_server.py`
-  - API version is now `7.0`
-  - added `GET /api/stabilization-checkpoint`
-  - supports `?full=true` and `?project=eidolon`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `7.0`
-  - added `/stabilization`
-  - added a nav tab for Stabilization
-  - shows pass/warn/fail counts, blockers, warnings, recommended commands, and a full report block
-- Updated `tools/smoke_check.py`
-  - includes stabilization checkpoint checks
-  - runs the new checkpoint CLI command
-  - classifies missing `chromadb` as an environment/setup warning instead of making the smoke check look like project code is broken when the package simply is not installed in the current Python environment
-- Updated `conscious_agent/command_runner.py`
-  - whitelisted the read-only stabilization CLI flags
-- Updated `data/settings.json`, `settings_manager.py`, and `data/projects.json` for v7.0 metadata.
-
-## New CLI commands
-
-Run the checkpoint:
-
-```powershell
-python conscious_agent/main.py --stabilization-checkpoint
-```
-
-Run the full checkpoint with every item shown:
-
-```powershell
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-```
-
-Emit the checkpoint as JSON:
-
-```powershell
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-json
-```
-
-## New dashboard/API paths
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/stabilization
-```
-
-API:
-
-```text
-GET /api/stabilization-checkpoint
-GET /api/stabilization-checkpoint?full=true
-```
-
-## Recommended troubleshooting after v7.0
-
-Run these from the project root:
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --status
-python conscious_agent/main.py --settings-health
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python conscious_agent/main.py --stable-loop-guardrails
-python conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop
-python conscious_agent/main.py --stable-loop-followup-completion-report unresolved
-python tools/smoke_check.py
-```
-
-If the checkpoint returns `WARN` only because `chromadb` is missing, install the project requirements in the active environment:
-
-```powershell
-.\setup.ps1
-```
-
-or manually:
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-If the checkpoint returns `WARN` because stable-loop closure guardrails are blocking live advancement, resolve or close the unresolved follow-up chains before running live:
-
-```powershell
-python conscious_agent/main.py --list-stable-loop-followup-completions unresolved
-python conscious_agent/main.py --create-stable-loop-decision-followups action_required --dry-run
-python conscious_agent/main.py --resolve-stable-loop-followups stableloop_ID
-python conscious_agent/main.py --mark-stable-loop-followup-closed stableloop_ID
-```
-
-## Verification performed for v7.0
-
-These checks were run after patching:
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --status
-python conscious_agent/main.py --settings-health
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-full
-python conscious_agent/main.py --stabilization-checkpoint --stabilization-json
-python conscious_agent/main.py --stable-loop-guardrails
-python conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop
-python conscious_agent/main.py --stable-loop-followup-completion-report all
-python tools/smoke_check.py
-```
-
-Known environment note from this sandbox: Ollama is not running here, so `--settings-health` reports a local service connection failure. That is expected outside the user's local Ollama setup. The checkpoint/smoke path now reports missing `chromadb` as an environment warning rather than a project-code compile failure.
-
-## Next likely step
-
-v7.1 should build on the checkpoint by adding a lightweight dashboard/API "run verification plan" view that launches only approved read-only checks and stores the result as a saved stabilization report. Still no new live autonomy until the checkpoint is boringly green. Boring is good. Boring is how files survive.
-
----
-
-# Eidolon v6.9 - Stable Loop Closure-Aware Work Cycle Guardrails
-
-v6.9 adds live-run guardrails around the stable supervised loop. v6.8 made decision follow-up chains reportable; v6.9 makes those reports matter by blocking new live stable-loop advancement while unresolved action-required follow-up chains still exist. Preview/preflight still works, because seeing the next move is useful. Live runs now need either clear closure guardrails or an explicit bypass flag, because apparently one mess should be cleaned before starting another. Revolutionary little chore chart.
-
-## What changed in v6.9
-
-- Added `conscious_agent/stable_loop_guardrails.py`
-  - reports unresolved follow-up chains
-  - counts missing follow-up tasks, open follow-up chains, ready-to-resolve chains, resolved chains, and cleanup candidates
-  - explains whether preview and live advancement are allowed
-  - provides recommended operator actions
-- Updated `conscious_agent/stable_supervised_loop.py`
-  - version is now `6.9`
-  - preflight now includes `closure_guardrails`
-  - live runs are blocked when unresolved follow-up chains exist
-  - preview-only runs still work normally
-  - explicit bypass is available with `--stable-loop-bypass-closure-guardrails`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `6.9`
-  - `/stable-loop` now shows a Live Run Closure Guardrails card
-  - stable-loop run form includes an explicit bypass checkbox
-- Updated `conscious_agent/api_server.py`
-  - API version is now `6.9`
-  - added `GET /api/stable-loops/guardrails`
-  - `POST /api/stable-loops/run` accepts `bypass_closure_guardrails`
-- Updated `conscious_agent/main.py`
-  - added `--stable-loop-guardrails`
-  - added `--stable-loop-bypass-closure-guardrails`
-- Updated smoke checks, settings version, project metadata, stable-loop docs, work-cycle docs, and command whitelist.
-- Cleaned a duplicated line in `stable_loop_followup_completion.py`.
-
-## New CLI commands
-
-Show closure guardrails:
-
-```powershell
-python conscious_agent/main.py --stable-loop-guardrails
-```
-
-Show full guardrail details:
-
-```powershell
-python conscious_agent/main.py --stable-loop-guardrails --stable-loop-full
-```
-
-Run a normal preview:
-
-```powershell
-python conscious_agent/main.py --stable-loop --no-ai-stable-loop --stable-loop-full
-```
-
-Attempt a live run only when guardrails are clear:
-
-```powershell
-python conscious_agent/main.py --stable-loop --stable-loop-live --no-ai-stable-loop --stable-loop-full
-```
-
-Explicitly bypass unresolved follow-up guardrails for a live run:
-
-```powershell
-python conscious_agent/main.py --stable-loop --stable-loop-live --stable-loop-bypass-closure-guardrails --no-ai-stable-loop --stable-loop-full
-```
-
-Use the bypass only when you have intentionally reviewed the unresolved follow-up chain. It exists for operator override, not for pretending warnings are decorative.
-
-## New dashboard/API paths
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/stable-loop
-```
-
-API:
-
-```text
-GET  /api/stable-loops/guardrails
-GET  /api/stable-loops/preflight
-POST /api/stable-loops/run
-```
-
-Example live run body with explicit bypass:
-
-```json
-{
-  "project_id": "eidolon",
-  "max_steps": 1,
-  "live": true,
-  "use_ai": false,
-  "bypass_closure_guardrails": true
-}
-```
-
-## Recommended troubleshooting after v6.9
-
-Run these from the project root:
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --status
-python conscious_agent/main.py --settings-health
-python conscious_agent/main.py --stable-loop-guardrails
-python conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop
-python conscious_agent/main.py --stable-loop-followup-completion-report unresolved
-```
-
-If `--stable-loop-guardrails` says live is blocked, resolve or close follow-up chains before running live:
-
-```powershell
-python conscious_agent/main.py --list-stable-loop-followup-completions unresolved
-python conscious_agent/main.py --create-stable-loop-decision-followups action_required --dry-run
-python conscious_agent/main.py --resolve-stable-loop-followups stableloop_ID
-python conscious_agent/main.py --mark-stable-loop-followup-closed stableloop_ID
-```
-
-## Next likely step
-
-v7.0 should be a stabilization/checkpoint release: run the dashboard, API, CLI, task lifecycle, stable loop guardrails, follow-up closure, and smoke checks as one pass before adding more autonomy. Yes, a checkpoint. Boring. That is why it might actually save us.
-
----
-
-# Eidolon v6.8 - Follow-Up Completion Reports / Decision Closure Dashboard Polish
-
-v6.8 makes stable-loop decision follow-up chains easier to report, filter, close, and archive. v6.7 could create and resolve follow-up tasks; v6.8 adds completion reporting so the dashboard and CLI can clearly distinguish missing follow-ups, open follow-up tasks, ready-to-resolve chains, resolved chains, and cleanup candidates. It also fixes the dashboard API nav bug where `/api-info` was incorrectly routed as `/api...` because the dashboard checked `path.startswith("/api")` before the exact `/api-info` route. Tiny prefix goblin defeated.
-
-## What changed in v6.8
-
-- Added `conscious_agent/stable_loop_followup_completion.py`
-  - reports stable-loop follow-up completion state
-  - filters `all`, `action_required`, `missing_followups`, `open`, `unresolved`, `ready_to_resolve`, `resolved`, `cleanup_default`, and `archived`
-  - supports closure confirmation after a follow-up chain is resolved
-  - supports cleanup/archive previews for resolved completion records
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `6.8`
-  - fixed `/api-info` routing so it no longer gets swallowed by the `/api` dispatcher
-  - `/stable-loop?followup=...` now filters by follow-up completion state
-  - stable-loop rows show follow-up closure status, linked task counts, open task counts, and next recommended action
-  - added Follow-up Closure cards, filters, cleanup controls, and Mark Closed controls
-- Updated `conscious_agent/api_server.py`
-  - API version is now `6.8`
-  - added follow-up completion report and cleanup endpoints
-- Updated `conscious_agent/main.py`
-  - added CLI commands for follow-up completion reporting, listing, closing, and cleanup
-- Updated smoke checks, settings version, project metadata, and stable-loop/work-cycle docs.
-
-## New dashboard filters
-
-Open the dashboard:
-
-```powershell
-python conscious_agent/main.py --dashboard
-```
-
-Then use:
-
-```text
-http://127.0.0.1:8765/stable-loop?followup=unresolved
-http://127.0.0.1:8765/stable-loop?followup=ready_to_resolve
-http://127.0.0.1:8765/stable-loop?followup=resolved
-http://127.0.0.1:8765/stable-loop?followup=cleanup_default
-http://127.0.0.1:8765/api-info
-```
-
-The `/api-info` tab should now render the API documentation page instead of returning a 404 JSON response from the API dispatcher.
-
-## New CLI commands
-
-Show a completion report:
-
-```powershell
-python conscious_agent/main.py --stable-loop-followup-completion-report all
-```
-
-List unresolved completion rows:
-
-```powershell
-python conscious_agent/main.py --list-stable-loop-followup-completions unresolved
-```
-
-List chains ready to resolve:
-
-```powershell
-python conscious_agent/main.py --list-stable-loop-followup-completions ready_to_resolve
-```
-
-Mark a resolved follow-up chain closed:
-
-```powershell
-python conscious_agent/main.py --mark-stable-loop-followup-closed stableloop_ID --stable-loop-followup-note "Follow-up tasks reviewed and closure confirmed."
-```
-
-Mark closed and archive the source stable-loop record:
-
-```powershell
-python conscious_agent/main.py --mark-stable-loop-followup-closed stableloop_ID --archive-resolved-stable-loop
-```
-
-Preview cleanup of resolved completion records:
-
-```powershell
-python conscious_agent/main.py --cleanup-stable-loop-followup-completions --stable-loop-followup-completion-filter cleanup_default --stable-loop-followup-completion-full
-```
-
-Actually archive cleanup candidates:
-
-```powershell
-python conscious_agent/main.py --cleanup-stable-loop-followup-completions --cleanup-stable-loop-confirm --stable-loop-followup-completion-filter cleanup_default
-```
-
-## New API endpoints
-
-```text
-GET  /api/stable-loops/followups/completion?completion=unresolved
-GET  /api/stable-loops/followups/completion/report?completion=ready_to_resolve
-POST /api/stable-loops/followups/completion/cleanup
-POST /api/stable-loops/{id}/mark-followups-closed
-```
-
-Example cleanup body:
-
-```json
-{
-  "completion": "cleanup_default",
-  "limit": 25,
-  "dry_run": true
-}
-```
-
-## Main checks after v6.8
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --status
-python conscious_agent/main.py --settings-health
-python conscious_agent/main.py --stable-loop-followup-completion-report all
-python conscious_agent/main.py --list-stable-loop-followup-completions unresolved
-python conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop
-```
-
-If running on Windows with the project environment:
-
-```powershell
-.\setup.ps1
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-## Next likely step
-
-Next feature work should be **v6.9 - Stable Loop Closure-Aware Work Cycle Guardrails**. v6.8 reports and closes follow-up chains. v6.9 should make stable-loop preflight and work-cycle decisions aware of unresolved follow-up chains so the agent avoids starting new work while previous live-run follow-up decisions still need closure. Because nothing says "bad automation" like sprinting forward while old mistakes are still smoking politely in the corner.
-
----
-
-# Eidolon v6.7 - Decision Follow-Up Task Lifecycle Integration
-
-v6.7 connects the stable-loop decision follow-up tasks from v6.6 back into the task lifecycle view. Follow-up tasks now visibly show which stable-loop record, final decision, and follow-up kind created them. Once those follow-up tasks are done or cancelled, the source stable-loop decision can be marked resolved and optionally archived. Tiny family reunification for JSON goblins.
-
-## What changed in v6.7
-
-- Added `conscious_agent/stable_loop_followup_lifecycle.py`
-  - detects stable-loop decision follow-up tasks
-  - summarizes follow-up lifecycle state
-  - shows task → stable-loop → final decision links
-  - resolves a stable-loop decision follow-up chain after linked follow-up tasks are finished
-  - can optionally archive the source stable-loop record after resolution
-- Updated `conscious_agent/task_lifecycle.py`
-  - lifecycle rows now include stable-loop follow-up fields:
-    - `is_stable_loop_followup`
-    - `stable_loop_id`
-    - `stable_loop_decision`
-    - `stable_loop_followup_kind`
-    - `stable_loop_followup_resolution_status`
-  - added `/tasks-work?stage=stable_loop_followup` support
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `6.7`
-  - `/tasks-work` shows stable-loop follow-up origin hints on task rows
-  - task detail pages show a stable-loop decision follow-up card when applicable
-  - stable-loop pages show follow-up lifecycle summaries and resolve/archive controls
-- Updated `conscious_agent/api_server.py`
-  - API version is now `6.7`
-  - added stable-loop follow-up lifecycle endpoints
-- Updated `conscious_agent/main.py`
-  - added CLI commands for follow-up lifecycle summaries, task inspection, and resolution
-- Updated `conscious_agent/command_runner.py`
-  - added the new safe read/resolve CLI flags to the command allow-list
-- Updated `tools/smoke_check.py`
-  - added a stable-loop follow-up lifecycle shape/text/version check
-- Updated docs and metadata:
-  - `README_NEXT_STEPS.md`
-  - `data/projects.json`
-  - `data/project_index.json`
-  - `data/stable_loops/README.md`
-  - `data/work_cycles/README.md`
-  - `data/work_queue/README.md`
-  - `data/settings.json` / `settings_manager.py` use `settings_version: 6.7`
-
-## New CLI commands
-
-Show the follow-up lifecycle summary:
-
-```powershell
-python conscious_agent/main.py --stable-loop-followup-lifecycle-summary all
-```
-
-Show one follow-up task's stable-loop source decision:
-
-```powershell
-python conscious_agent/main.py --show-task-stable-loop-followup task_ID --stable-loop-followup-full
-```
-
-Resolve a stable-loop decision follow-up chain after linked follow-up tasks are complete:
-
-```powershell
-python conscious_agent/main.py --resolve-stable-loop-followups stableloop_ID --stable-loop-followup-note "Follow-up tasks completed."
-```
-
-Resolve using one completed follow-up task:
-
-```powershell
-python conscious_agent/main.py --resolve-task-stable-loop-followup task_ID --stable-loop-followup-note "Follow-up task completed."
-```
-
-Resolve and archive the source stable-loop record:
-
-```powershell
-python conscious_agent/main.py --resolve-task-stable-loop-followup task_ID --archive-resolved-stable-loop --stable-loop-followup-note "Closed and archived after follow-up completion."
-```
-
-Force resolution even when linked follow-up tasks are still open:
-
-```powershell
-python conscious_agent/main.py --resolve-stable-loop-followups stableloop_ID --force-stable-loop-followup-resolution
-```
-
-Use force carefully. It exists for operator cleanup, not for pretending unfinished tasks are magically done. Computers already lie enough.
-
-## New dashboard usage
-
-Open:
-
-```text
-http://127.0.0.1:8765/tasks-work?stage=stable_loop_followup
-```
-
-Useful dashboard areas:
-
-- `/tasks-work` now shows stable-loop follow-up metadata in task rows.
-- Task details show the source stable-loop decision and resolution controls.
-- `/stable-loop` shows follow-up lifecycle summaries.
-- Stable-loop detail pages include Resolve Follow-ups and Resolve + Archive controls.
-
-## New API endpoints
-
-```text
-GET  /api/tasks/stable-loop-followups
-GET  /api/tasks/{id}/stable-loop-followup
-POST /api/tasks/{id}/stable-loop-followup/resolve
-GET  /api/stable-loops/{id}/followup-lifecycle
-POST /api/stable-loops/{id}/resolve-followups
-```
-
-Example resolve body:
-
-```json
-{
-  "archive": true,
-  "force": false,
-  "note": "Follow-up tasks completed and decision record archived."
-}
-```
-
-## Main checks after v6.7
-
-```powershell
-python -m py_compile conscious_agent/*.py tools/smoke_check.py
-python conscious_agent/main.py --status
-python conscious_agent/main.py --settings-health
-python conscious_agent/main.py --task-work summary
-python conscious_agent/main.py --stable-loop-followup-lifecycle-summary all
-python conscious_agent/main.py --stable-loop-preflight --no-ai-stable-loop
-python conscious_agent/main.py --index-project
-```
-
-On Windows after unpacking a fresh zip:
-
-```powershell
-.\setup.ps1
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-## Current architecture note
-
-Canonical task/work state still lives in:
-
-```text
-data/tasks.json
-conscious_agent/task_queue.py
-```
-
-Stable-loop decision follow-up tasks are canonical tasks with metadata like:
-
-```json
-{
-  "source": "stable_loop_decision",
-  "stable_loop_id": "stableloop_...",
-  "final_decision": "fix_forward",
-  "followup_kind": "fix_forward_plan"
-}
-```
-
-The old work-queue compatibility layer still exists so earlier dashboard/API/CLI routes do not snap in half like cheap plastic.
-
-## Next likely step
-
-Next feature work should be **v6.8 - Follow-Up Completion Reports / Decision Closure Dashboard Polish**. v6.7 can resolve follow-up chains. v6.8 should add cleaner reporting for resolved vs unresolved decision follow-ups, plus dashboard filters for "ready to resolve" and "resolved/archived" records.
-
----
-
-# Eidolon v6.5 - Stable Loop Decision-Aware Cleanup / Reporting
-
-v6.5 turns stable-loop final decisions into searchable/reportable history. v6.4 let the operator save `keep`, `fix_forward`, `rollback`, and `needs_review` decisions. v6.5 makes those decisions show up in CLI reports, dashboard filters, API summaries, and archive cleanup. Because JSON that nobody can query is just a diary with worse handwriting.
-
-## What changed in v6.5
-
-- Added `conscious_agent/stable_loop_decision_report.py`
-  - builds decision summaries from saved stable-loop records
-  - supports filters for `undecided`, `keep`, `fix_forward`, `rollback`, `needs_review`, `action_required`, `decided`, `complete`, `incomplete`, `cleanup_default`, and `archived`
-  - recommends a next operator action for each record
-  - archives cleanup candidates without deleting JSON history
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `6.5`
-  - `/stable-loop?decision=...` now filters by final decision
-  - stable-loop rows show final decision, checklist progress, and recommended next action
-  - added decision summary cards, decision filter chips, and decision cleanup controls
-- Updated `conscious_agent/api_server.py`
-  - API version is now `6.5`
-  - added decision report endpoints
-  - `/api/stable-loops?decision=...` can now list decision-filtered rows
-  - `/api/status` includes stable-loop decision counts
-- Updated `conscious_agent/main.py`
-  - added decision report/list/cleanup CLI commands
-- Updated safety/docs metadata
-  - `command_runner.py` allows the new decision-reporting flags
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 6.5`
-  - `tools/smoke_check.py` imports and checks `stable_loop_decision_report.py`
-
-## Stable-loop decision CLI examples
-
-Show all final-decision counts:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-decision-report all
-```
-
-List records that need action:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --list-stable-loop-decisions action_required
-```
-
-List rollback decisions:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --list-stable-loop-decisions rollback
-```
-
-Preview decision-aware cleanup:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --cleanup-stable-loop-decisions --stable-loop-decision-filter cleanup_default --stable-loop-decision-full
-```
-
-Archive decision cleanup candidates:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --cleanup-stable-loop-decisions --cleanup-stable-loop-confirm --stable-loop-decision-filter cleanup_default
-```
-
-## Stable-loop decision dashboard/API
-
-Dashboard filters:
-
-```text
-http://127.0.0.1:8765/stable-loop?decision=action_required
-http://127.0.0.1:8765/stable-loop?decision=keep
-http://127.0.0.1:8765/stable-loop?decision=rollback
-http://127.0.0.1:8765/stable-loop?decision=cleanup_default
-```
-
-API:
-
-```text
-GET  /api/stable-loops?decision=action_required
-GET  /api/stable-loops/decisions?decision=all
-GET  /api/stable-loops/decisions/report?decision=cleanup_default
-POST /api/stable-loops/decisions/cleanup
-```
-
-Example cleanup body:
-
-```json
-{
-  "decision": "cleanup_default",
-  "limit": 25,
-  "dry_run": true,
-  "include_live": true
-}
-```
-
-## Main checks after v6.5
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-preflight --no-ai-stable-loop
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-decision-report all
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --cleanup-stable-loop-decisions --stable-loop-decision-filter cleanup_default
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-Next feature work should be **v6.6 - Decision-Aware Stable Loop Follow-Up Tasks**. v6.5 can tell you which stable-loop decisions need action. v6.6 should help convert `fix_forward`, `rollback`, and `needs_review` decisions into task-backed follow-ups so the operator does not have to manually translate decisions into work.
-
----
-
-# Eidolon v6.4 - Stable Loop Post-Run Checklist / Operator Notes
-
-v6.4 turns v6.3 audit notes into an operator workflow. Stable-loop records can now carry a post-run checklist, manual operator notes, and a final decision: keep the result, fix forward, rollback, or continue reviewing. Because an audit trail without a decision is just paperwork doing cosplay.
-
-## What changed in v6.4
-
-- Added `conscious_agent/stable_loop_operator_notes.py`
-  - builds default post-run checklist items from stable-loop audit recommendations
-  - stores checklist state directly on each stable-loop JSON record under `operator_notes`
-  - supports operator notes and final decisions
-  - supports checklist item statuses: `pending`, `done`, and `skipped`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `6.4`
-  - `/stable-loop` and stable-loop detail pages show post-run checklist / operator notes
-  - added checklist buttons for **Done** and **Skip**
-  - added operator note form
-  - added final decision form for `keep`, `fix_forward`, `rollback`, and `needs_review`
-- Updated `conscious_agent/api_server.py`
-  - API version is now `6.4`
-  - added operator-note and checklist endpoints
-- Updated `conscious_agent/main.py`
-  - added stable-loop operator note/checklist/final-decision CLI commands
-- Updated safety/docs metadata
-  - `command_runner.py` allows the new stable-loop operator flags through the safe command whitelist
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 6.4`
-  - `tools/smoke_check.py` imports and checks `stable_loop_operator_notes.py`
-
-## Stable-loop operator CLI examples
-
-Show post-run checklist and operator notes:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-stable-loop-operator-notes latest
-```
-
-Add an operator note:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --add-stable-loop-operator-note stableloop_ID --stable-loop-operator-note "Reviewed dashboard and task summary."
-```
-
-Mark a checklist item complete:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --complete-stable-loop-check stableloop_ID status --stable-loop-operator-note "Status check passed."
-```
-
-Skip a checklist item with a note:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --skip-stable-loop-check stableloop_ID rollback_dry_run_patch_ID --stable-loop-operator-note "No patch was applied, rollback preview not needed."
-```
-
-Set the final decision:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --set-stable-loop-final-decision stableloop_ID --stable-loop-final-decision keep --stable-loop-operator-note "Post-run checks passed. Keeping result."
-```
-
-Valid final decisions:
-
-```text
-undecided
-keep
-fix_forward
-rollback
-needs_review
-```
-
-## Stable-loop operator dashboard/API
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/stable-loop
-```
-
-API:
-
-```text
-GET  /api/stable-loops/{id}/operator-notes
-POST /api/stable-loops/{id}/operator-notes
-POST /api/stable-loops/{id}/checklist/{check_id}
-POST /api/stable-loops/{id}/decision
-```
-
-Example checklist update body:
-
-```json
-{
-  "status": "done",
-  "note": "Status check passed."
-}
-```
-
-Example final decision body:
-
-```json
-{
-  "decision": "needs_review",
-  "note": "Need to inspect patch output before keeping."
-}
-```
-
-## Main checks after v6.4
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-preflight --no-ai-stable-loop
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-stable-loop-audit latest
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-stable-loop-operator-notes latest
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-Next feature work should be **v6.5 - Stable Loop Decision-Aware Cleanup / Reporting**. v6.4 lets the operator save decisions; v6.5 should use those decisions in filters, reports, and cleanup so kept/fix-forward/rollback records are easier to find later.
-
----
-
-# Eidolon v6.3 - Stable Loop Live Run Safeguards / Rollback Notes
-
-v6.3 makes live stable-loop records easier to audit after they run. v6.2 cleaned up stable-loop review history; v6.3 adds an audit layer that summarizes what changed, which approvals were involved, which patches may need rollback notes, and which verification commands should be run afterward. Tiny paperwork, yes. Also the difference between debugging and folklore.
-
-## What changed in v6.3
-
-- Added `conscious_agent/stable_loop_audit.py`
-  - builds audit summaries for saved stable-loop records
-  - records changed task ids, created task ids, executed task ids, approval ids, patch ids, and command notes
-  - derives rollback dry-run commands for applied patches when backup metadata exists
-  - produces recommended post-run check commands
-- Updated `conscious_agent/stable_supervised_loop.py`
-  - stable-loop record version is now `6.3`
-  - new stable-loop records include an `audit` block
-  - full stable-loop output now includes audit summaries
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `6.3`
-  - `/stable-loop` rows show audit summaries and warning counts
-  - stable-loop detail pages show audit / rollback notes
-  - added a **Refresh audit** action
-- Updated `conscious_agent/api_server.py`
-  - API version is now `6.3`
-  - added `GET /api/stable-loops/{id}/audit`
-  - added `GET /api/stable-loops/{id}/audit?refresh=true`
-  - added `POST /api/stable-loops/{id}/refresh-audit`
-- Updated `conscious_agent/main.py`
-  - added stable-loop audit CLI commands
-- Updated safety/docs metadata
-  - `command_runner.py` allows the new audit flags through the safe command whitelist
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 6.3`
-  - `tools/smoke_check.py` imports and checks `stable_loop_audit.py`
-
-## Stable-loop audit CLI examples
-
-Show the latest stable-loop audit:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-stable-loop-audit latest
-```
-
-Show full raw audit JSON:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-stable-loop-audit latest --stable-loop-audit-full
-```
-
-Refresh and save audit notes for one record:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --refresh-stable-loop-audit stableloop_ID --stable-loop-audit-full
-```
-
-## Stable-loop audit dashboard/API
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/stable-loop
-```
-
-API:
-
-```text
-GET  /api/stable-loops/{id}/audit
-GET  /api/stable-loops/{id}/audit?refresh=true
-POST /api/stable-loops/{id}/refresh-audit
-```
-
-## Recommended post-live-run checks
-
-After a live stable loop, inspect the audit and then run the listed check commands. The audit usually recommends commands like:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --list-applied-patches
-```
-
-If a live run applied a patch and the patch still has backup metadata, the audit will include rollback commands like:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --rollback-patch patch_ID --dry-run
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --rollback-patch patch_ID
-```
-
-Run the dry-run rollback first. Always. The computer is not your friend, it is a fast idiot with electricity.
-
-## Main checks after v6.3
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-preflight --no-ai-stable-loop
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-stable-loop-audit latest
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-Next feature work should be **v6.4 - Stable Loop Post-Run Checklist / Operator Notes**. v6.3 creates audit notes; v6.4 should let the operator mark post-run checks complete, save manual review notes, and attach final keep/fix/rollback decisions to each live run.
-
----
-
-# Eidolon v6.2 - Stable Loop Review Filters / History Cleanup
-
-v6.2 makes stable-loop history easier to manage. v6.1 added review actions; v6.2 adds filters for review states and safe archive-based cleanup so old preview/live records stop turning `/stable-loop` into a JSON fossil museum. Records are archived, not deleted, because future-you may still need evidence when the goblin claims innocence.
-
-## What changed in v6.2
-
-- Updated `conscious_agent/stable_loop_review.py`
-  - added stable-loop review filters: `all`, `open`, `unreviewed`, `reviewed`, `approved_ready`, `rejected`, `superseded`, `failed`, `cleanup_default`, and `archived`
-  - added archive/restore support through review metadata
-  - added dry-run history cleanup for superseded/rejected/live cleanup candidates
-  - expanded review summaries with archived counts and filter counts
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `6.2`
-  - `/stable-loop?review=...` filters stable-loop history
-  - added filter chips for review/history views
-  - added Archive / Restore actions per stable-loop row
-  - added a history cleanup panel with dry-run preview and explicit archive action
-- Updated `conscious_agent/api_server.py`
-  - API version is now `6.2`
-  - `GET /api/stable-loops` now supports `?review=...&include_archived=true`
-  - added `GET /api/stable-loops/history`
-  - added archive/restore and cleanup endpoints
-- Updated `conscious_agent/main.py`
-  - added stable-loop history listing, archive/restore, and cleanup CLI commands
-- Updated safety/docs metadata
-  - `command_runner.py` allows the new stable-loop history flags
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 6.2`
-  - stable-loop/work-cycle docs now describe the v6.2 review history layer
-
-## Stable-loop history filters
-
-```text
-all              Visible, non-archived stable-loop records
-open             Unreviewed/reviewed/approved preview records still relevant to review flow
-unreviewed       Records waiting for review
-reviewed         Records marked reviewed
-approved_ready   Approved preview records ready for explicit live run
-rejected         Rejected records
-superseded       Preview records already used to launch a live loop
-failed           Records with failed preflight/preview/live status
-cleanup_default  Superseded, rejected, and live records that are usually safe to archive
-archived         Records hidden from default history views
-```
-
-## Stable-loop history CLI examples
-
-List filtered review/history rows:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --list-stable-loop-reviews open
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --list-stable-loop-reviews archived --include-archived-stable-loops
-```
-
-Archive or restore one record:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --archive-stable-loop stableloop_ID --stable-loop-review-note "Old preview archived."
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --restore-stable-loop stableloop_ID --stable-loop-review-note "Restored for inspection."
-```
-
-Preview cleanup candidates:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --cleanup-stable-loop-history --stable-loop-review-filter cleanup_default --stable-loop-review-full
-```
-
-Archive cleanup candidates after preview:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --cleanup-stable-loop-history --cleanup-stable-loop-confirm --stable-loop-review-filter cleanup_default
-```
-
-## Stable-loop dashboard/API
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/stable-loop
-http://127.0.0.1:8765/stable-loop?review=unreviewed
-http://127.0.0.1:8765/stable-loop?review=cleanup_default
-http://127.0.0.1:8765/stable-loop?review=archived
-```
-
-API:
-
-```text
-GET  /api/stable-loops?review=open
-GET  /api/stable-loops?review=archived&include_archived=true
-GET  /api/stable-loops/reviews?review=cleanup_default
-GET  /api/stable-loops/history?review=rejected
-POST /api/stable-loops/{id}/archive
-POST /api/stable-loops/{id}/restore
-POST /api/stable-loops/history/cleanup
-```
-
-Example cleanup body:
-
-```json
-{
-  "review": "cleanup_default",
-  "limit": 25,
-  "dry_run": true,
-  "include_live": true
-}
-```
-
-## Main checks after v6.2
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-review-summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --list-stable-loop-reviews open
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --cleanup-stable-loop-history --stable-loop-review-filter cleanup_default
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-Next feature work should be **v6.3 - Stable Loop Live Run Safeguards / Rollback Notes**. v6.2 cleans up review history; v6.3 should make live stable-loop records easier to audit by summarizing what changed, what approvals were used, and what rollback/check commands apply afterward.
-
----
-
-# Eidolon v6.1 - Stable Loop Dashboard Review Actions
-
-v6.1 makes stable-loop records reviewable from the dashboard/API/CLI before using a preview to launch an explicit live stable loop. v6.0 gave Eidolon a stable operator loop; v6.1 adds the review gate so preview records do not just pile up like tiny JSON fossils.
-
-## What changed in v6.1
-
-- Added `conscious_agent/stable_loop_review.py`
-  - stores operator review metadata directly inside saved stable-loop records
-  - supports review states: `unreviewed`, `reviewed`, `approved_for_live`, `rejected`, and `superseded`
-  - summarizes the stable-loop review queue
-  - can run a live stable loop only from an approved preview record
-- Updated `conscious_agent/stable_supervised_loop.py`
-  - stable-loop record version is now `6.1`
-  - new records include a default `review` block
-  - stable-loop ids now include microseconds
-- Updated `conscious_agent/work_cycle.py`
-  - work-cycle record version is now `6.1`
-  - work-cycle ids now include microseconds so preview/live records cannot overwrite each other when created in the same second
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `6.1`
-  - `/stable-loop` now shows review summary cards
-  - saved-loop table now includes review status and review actions
-  - stable-loop detail pages show review metadata and controls
-  - dashboard actions can mark reviewed, approve for live, reject, or run approved live
-- Updated `conscious_agent/api_server.py`
-  - API version is now `6.1`
-  - added stable-loop review endpoints
-- Updated `conscious_agent/main.py`
-  - added stable-loop review CLI commands
-- Updated safety/docs metadata
-  - `command_runner.py` allows the new review flags through the approved command whitelist
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 6.1`
-  - `tools/smoke_check.py` imports and exercises the stable-loop review module
-
-## Stable loop review states
-
-```text
-unreviewed        A preview/live record exists but has not been reviewed.
-reviewed          Operator inspected it and left it as reviewed.
-approved_for_live A preview record is approved for one explicit live run.
-rejected          Operator rejected the record or wants changes before live use.
-superseded        An approved preview was used to create a live stable loop.
-```
-
-## Stable loop review CLI examples
-
-Review queue summary:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-review-summary
-```
-
-Show one review record:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-stable-loop-review latest --stable-loop-review-full
-```
-
-Mark a loop reviewed:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --mark-stable-loop-reviewed stableloop_ID --stable-loop-review-note "Preview inspected."
-```
-
-Approve a preview for live execution:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --approve-stable-loop-live stableloop_ID --stable-loop-review-note "Approved after preview review."
-```
-
-Run a live stable loop from an approved preview:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --run-approved-stable-loop-live stableloop_ID --stable-loop-review-full
-```
-
-Reject a loop:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --reject-stable-loop stableloop_ID --stable-loop-review-note "Needs adjustment before live run."
-```
-
-## Stable loop review dashboard/API
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/stable-loop
-```
-
-API:
-
-```text
-GET  /api/stable-loops/reviews
-GET  /api/stable-loops/{id}/review
-POST /api/stable-loops/{id}/review
-POST /api/stable-loops/{id}/approve-live
-POST /api/stable-loops/{id}/reject
-POST /api/stable-loops/{id}/run-approved-live
-```
-
-Example API review body:
-
-```json
-{
-  "status": "reviewed",
-  "note": "Preview inspected from API."
-}
-```
-
-## Main checks after v6.1
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-preflight --stable-loop-full
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop --no-ai-stable-loop --stable-loop-full
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-review-summary
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-Next feature work should be **v6.2 - Stable Loop Review Filters / History Cleanup**. v6.1 adds review actions; v6.2 should add dashboard filters for unreviewed/approved/rejected loops and optional cleanup/archive controls for older stable-loop records.
-
----
-
-# Eidolon v6.0 - Stable Supervised Agent Loop
-
-v6.0 stabilizes the supervised agent loop around a predictable operator path:
-
-```text
-preflight -> lifecycle decision -> dry-run preview -> optional live cycle -> saved review record
-```
-
-The existing lifecycle-aware `work_cycle.py` still performs the actual task advancement. The new stable loop wraps it with preflight checks and review records so the system behaves like a supervised local agent instead of a pile of buttons trying to become a workflow. Tiny standards, huge relief.
-
-## What changed in v6.0
-
-- Added `conscious_agent/stable_supervised_loop.py`
-  - builds a read-only stable-loop preflight snapshot
-  - records the selected lifecycle decision from `task_cycle_policy.py`
-  - always runs/saves a dry-run work-cycle preview first
-  - optionally runs a live work cycle only when explicitly requested
-  - saves review records under `data/stable_loops/`
-- Updated `conscious_agent/main.py`
-  - added stable-loop CLI commands:
-    - `--stable-loop-preflight`
-    - `--stable-loop`
-    - `--stable-loop-live`
-    - `--list-stable-loops`
-    - `--show-stable-loop`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `6.0`
-  - added `/stable-loop`
-  - added a preflight card, stable-loop run form, latest stable loop card, and saved-loop table
-- Updated `conscious_agent/api_server.py`
-  - API version is now `6.0`
-  - added:
-    - `GET /api/stable-loops`
-    - `GET /api/stable-loops/preflight`
-    - `GET /api/stable-loops/{id}`
-    - `POST /api/stable-loops/run`
-- Updated safety/docs metadata
-  - `command_runner.py` allows stable-loop flags through the approved command whitelist
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 6.0`
-  - `tools/smoke_check.py` imports and exercises the stable loop module
-
-## Stable loop CLI examples
-
-Preview health and the next lifecycle decision:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-preflight --stable-loop-full
-```
-
-Run the default stable loop preview:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop --no-ai-stable-loop --stable-loop-full
-```
-
-Run a live stable loop after the preview, still capped and approval-gated:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop --stable-loop-live --stable-loop-steps 1 --no-ai-stable-loop --stable-loop-full
-```
-
-Review saved loops:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --list-stable-loops
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-stable-loop latest --stable-loop-full
-```
-
-## Stable loop dashboard/API examples
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/stable-loop
-```
-
-API:
-
-```text
-GET  /api/stable-loops/preflight
-POST /api/stable-loops/run
-GET  /api/stable-loops/latest
-```
-
-Preview-only request body:
-
-```json
-{
-  "project_id": "eidolon",
-  "max_steps": 1,
-  "live": false,
-  "use_ai": false
-}
-```
-
-Live request body:
-
-```json
-{
-  "project_id": "eidolon",
-  "max_steps": 1,
-  "live": true,
-  "use_ai": false,
-  "approve_work_execution": false,
-  "auto_retry_recovery": false
-}
-```
-
-## Main checks after v6.0
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop-preflight --stable-loop-full
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --stable-loop --no-ai-stable-loop --stable-loop-full
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-Next feature work should be **v6.1 - Stable Loop Dashboard Review Actions**. v6.0 creates stable loop records; v6.1 should make reviewing preview/live cycle results easier from the dashboard before allowing more live advancement.
-
----
-
-# Eidolon v5.9 - Lifecycle-Aware Work Cycle
-
-v5.9 makes the supervised work cycle choose actions from task lifecycle state instead of blindly grabbing the next ready task like a confused office printer. The cycle can now decide whether the next safe move is to request approval, review recovery, create patch follow-ups, or execute a ready low-risk task.
-
-## What changed in v5.9
-
-- Added `conscious_agent/task_cycle_policy.py`
-  - derives cycle candidates from `task_lifecycle.py`
-  - ranks lifecycle stages for supervised cycle work
-  - maps lifecycle stages to cycle actions such as `request_approval`, `review_recovery`, `create_patch_followups`, and `execute_task`
-- Updated `conscious_agent/work_cycle.py`
-  - saved cycle records now use version `5.9`
-  - cycle events now include `lifecycle_decision` records
-  - records now track `approval_ids`, `recovered_task_ids`, and `lifecycle_decisions`
-  - empty queues still seed safe starter tasks, but non-empty queues now use lifecycle-aware selection
-- Updated `conscious_agent/main.py`
-  - added `--no-work-cycle-approval-requests`
-  - added `--work-cycle-auto-retry-recovery`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `5.9`
-  - the Work Cycle form includes lifecycle-aware approval and recovery toggles
-- Updated `conscious_agent/api_server.py`
-  - API version is now `5.9`
-  - `POST /api/work-cycles/run` accepts `auto_request_approvals` and `auto_retry_recovery`
-- Updated safety/docs metadata
-  - `command_runner.py` allows the new work-cycle flags through the safe command whitelist
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 5.9`
-  - `tools/smoke_check.py` imports/checks the cycle policy module
-
-## Lifecycle-aware cycle policy
-
-The cycle now prioritizes decisions roughly like this:
-
-```text
-approval_required      -> request approval
-recovery_needed        -> show recovery plan / dry-run retry preview
-approval_rejected      -> show recovery plan
-approval_failed        -> show recovery plan
-patch_proposed         -> create patch review/apply/test follow-up tasks
-approved_ready         -> execute only if approval-required execution is allowed
-ready / active         -> dry-run or execute through task_work_executor.py
-approval_pending       -> wait for approval resolution
-blocked / unknown      -> stop for manual review
-```
-
-The default cycle still starts in dry-run mode. This remains a supervised system, not a button labeled “trust me bro.”
-
-## Work cycle CLI examples
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --work-cycle --dry-run --no-ai-work-cycle --work-cycle-full
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --work-cycle --work-cycle-steps 3 --no-ai-work-cycle
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --work-cycle --no-work-cycle-approval-requests --dry-run
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --work-cycle --work-cycle-auto-retry-recovery --dry-run --work-cycle-full
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-work-cycle latest --work-cycle-full
-```
-
-Use `--work-cycle-auto-retry-recovery` carefully. By default, v5.9 only reports recovery plans and dry-run retry previews. With that flag, the cycle may mark a recovery-needed task ready for retry, which is safe-ish but still a state change, and state changes are where bugs build vacation homes.
-
-## Work cycle dashboard/API examples
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/work-cycle
-```
-
-API:
-
-```text
-POST /api/work-cycles/run
-```
-
-Request body example:
-
-```json
-{
-  "dry_run": true,
-  "project_id": "eidolon",
-  "max_steps": 1,
-  "use_ai": false,
-  "auto_request_approvals": true,
-  "auto_retry_recovery": false
-}
-```
-
-## Main checks after v5.9
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-recovery-summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --work-cycle --dry-run --no-ai-work-cycle --work-cycle-full
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-Next feature work should be **v6.0 - Stable Supervised Agent Loop**. v5.9 finally connects lifecycle state to the supervised cycle; v6.0 should stabilize the full loop around observe -> decide -> act safely -> record -> dashboard review.
-
----
-
-# Eidolon v5.8 - Task Failure Recovery / Retry Logic
-
-v5.8 teaches Eidolon what to do when a task fails or blocks instead of letting it sulk in `blocked` forever like a printer with a tiny grudge. The canonical task system now has a recovery layer that classifies failure causes, suggests safe recovery actions, and supports dry-run retry / mark-ready-for-retry controls.
-
-## What changed in v5.8
-
-- Added `conscious_agent/task_recovery.py`
-  - classifies failed/blocked task causes such as missing target files, missing commands, blocked commands, command failure, test failure, patch failure, approval rejection, and manual-required cases
-  - builds recovery plans with recommended safe next actions
-  - supports `mark_task_ready_for_retry(...)` and `retry_task_work(...)`
-- Updated `conscious_agent/task_lifecycle.py`
-  - added `recovery_needed` lifecycle stage
-  - `failed`, `recovery`, and `needs_recovery` stage aliases now map to recovery-needed tasks
-  - recovery-needed tasks are included in `needs_attention`
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `5.8`
-  - `/tasks-work?stage=recovery_needed` filters to tasks that need recovery
-  - task rows and task detail pages show recovery-plan controls
-  - added safe buttons for **Recovery Plan**, **Dry-run Retry**, and **Mark Ready for Retry**
-- Updated `conscious_agent/api_server.py`
-  - API version is now `5.8`
-  - added task recovery API endpoints
-  - `/api/status` now includes task recovery summary data
-- Updated CLI wiring in `conscious_agent/main.py`
-  - added recovery summary/list/show/retry commands
-- Updated safety/docs metadata
-  - `command_runner.py` allows the new recovery CLI flags through the command whitelist
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 5.8`
-  - new saved work-cycle records use version `5.8`
-
-## Recovery CLI examples
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-recovery-summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --list-task-recoveries
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --show-task-recovery latest-blocked --task-recovery-full
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --retry-task-work latest-blocked --dry-run --task-recovery-full
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --mark-task-ready-for-retry latest-blocked --task-recovery-note "Reviewed failure and ready to retry."
-```
-
-Use `--dry-run` before a real retry. Yes, every time. Computers punish optimism.
-
-## Recovery dashboard examples
-
-```text
-http://127.0.0.1:8765/tasks-work?stage=recovery_needed
-http://127.0.0.1:8765/tasks-work?stage=needs_attention
-```
-
-Task detail pages now include a recovery plan card when a task is blocked, failed, or otherwise recoverable.
-
-## Recovery API examples
-
-```text
-GET  /api/tasks/recovery
-GET  /api/tasks/recovery/summary
-GET  /api/tasks/{id}/recovery
-POST /api/tasks/{id}/ready-for-retry
-POST /api/tasks/{id}/retry
-```
-
-Retry request body example:
-
-```json
-{
-  "dry_run": true,
-  "use_ai": false,
-  "allow_approval_required": false
-}
-```
-
-## Main checks after v5.8
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-recovery-summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --execute-task-work --dry-run --no-ai-task-work-executor --task-work-executor-full
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-Next feature work should be **v5.9 - Work Cycle Uses Lifecycle Decisions**. The recovery layer exists now; the supervised work cycle should start using lifecycle/recovery summaries when choosing the next safe step instead of only asking for the next ready task.
-
----
-
-# Eidolon v5.7 - Task Lifecycle Actions / Filters
-
-v5.7 turns the v5.6 lifecycle view into a controllable operator surface. The dashboard can now filter Tasks / Work by lifecycle stage and safely batch-request approvals for tasks that need approval. No batch execution button was added, because apparently we prefer filesystems that continue existing.
-
-## What changed in v5.7
-
-- Updated `conscious_agent/task_lifecycle.py`
-  - added lifecycle stage filter helpers
-  - added grouped filters: `open`, `needs_attention`, and `ready_to_act`
-  - `task_lifecycle_summary()` now returns filter metadata and filtered rows
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `5.7`
-  - `/tasks-work?stage=...` now filters task tables by lifecycle stage
-  - added filter chips for all major lifecycle stages
-  - added safe batch action: request approvals for all approval-required tasks
-  - added dry-run-next-ready shortcut without adding a dangerous execute-all button
-- Updated `conscious_agent/api_server.py`
-  - API version is now `5.7`
-  - `GET /api/tasks?stage=...` returns tasks matching a lifecycle filter
-  - `GET /api/tasks/lifecycle?stage=...` returns lifecycle summaries for a selected filter
-  - added `POST /api/tasks/request-approvals`
-- Updated version/docs metadata
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 5.7`
-  - new saved work-cycle records use version `5.7`
-  - README files mention lifecycle filters and batch approval requests
-
-## Lifecycle filter examples
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/tasks-work
-http://127.0.0.1:8765/tasks-work?stage=needs_attention
-http://127.0.0.1:8765/tasks-work?stage=approval_required
-http://127.0.0.1:8765/tasks-work?stage=approved_ready
-http://127.0.0.1:8765/tasks-work?stage=patch_proposed
-```
-
-API:
-
-```text
-GET /api/tasks?stage=needs_attention
-GET /api/tasks?stage=ready_to_act
-GET /api/tasks/lifecycle?stage=approval_required
-POST /api/tasks/request-approvals
-```
-
-Approval request body example:
-
-```json
-{
-  "stage": "approval_required",
-  "dry_run": true,
-  "use_ai": true,
-  "reason": "Batch approval request from lifecycle filter."
-}
-```
-
-## Main checks after v5.7
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --execute-task-work --dry-run --no-ai-task-work-executor --task-work-executor-full
-```
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/tasks-work?stage=needs_attention
-```
-
-API:
-
-```text
-GET /api/tasks/lifecycle?stage=needs_attention
-GET /api/tasks?stage=ready_to_act
-POST /api/tasks/request-approvals
-```
-
-## Next likely milestone
-
-Next feature work should be **v5.8 - Task Failure Recovery / Retry Logic**. The dashboard can now filter and request approvals; the next pass should help failed/blocked tasks produce explicit recovery options instead of just sitting there like a printer with an attitude problem.
-
----
-
-# Eidolon v5.6 - Task Lifecycle Dashboard Polish
-
-v5.6 makes the dashboard and API explain task state in plain lifecycle stages instead of forcing you to decode raw status + risk + approval metadata like some cursed office horoscope. The canonical task system remains `task_queue.py`, `task_work_executor.py`, `task_patch_bridge.py`, and `task_approval_bridge.py`.
-
-## What changed in v5.6
-
-- Added `conscious_agent/task_lifecycle.py`
-  - derives readable lifecycle stages from task status, risk, approval links, and patch metadata
-  - does not mutate task state
-  - powers dashboard and API lifecycle summaries
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `5.6`
-  - `/tasks-work` now shows lifecycle summary cards
-  - task tables now include a **Lifecycle** column
-  - task detail pages now show a lifecycle flow strip
-  - lifecycle legend explains the approval path clearly
-- Updated `conscious_agent/api_server.py`
-  - API version is now `5.6`
-  - added `GET /api/tasks/lifecycle`
-  - added `GET /api/tasks/{id}/lifecycle`
-  - `/api/status` now includes `task_lifecycle` summary data
-- Updated `conscious_agent/work_cycle.py`
-  - new saved cycle records use version `5.6`
-- Updated settings/docs metadata
-  - `data/settings.json` and `settings_manager.py` use `settings_version: 5.6`
-  - `data/work_queue/README.md` and `data/work_cycles/README.md` mention lifecycle views
-
-## Lifecycle stages
-
-The dashboard now derives these readable stages:
-
-```text
-Ready
-Active
-Needs approval request
-Approval pending
-Approved, ready to run
-Approval rejected
-Approval failed
-Blocked
-Patch proposed
-Done
-Cancelled
-Unknown
-```
-
-This is display logic only. The actual source of truth stays in `data/tasks.json`.
-
-## Main checks after v5.6
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --execute-task-work --dry-run --no-ai-task-work-executor --task-work-executor-full
-```
-
-Dashboard:
-
-```text
-http://127.0.0.1:8765/tasks-work
-```
-
-API:
-
-```text
-GET /api/tasks/lifecycle
-GET /api/tasks/{id}/lifecycle
-GET /api/status
-```
-
-## Next likely milestone
-
-Completed by **v5.7 - Task Lifecycle Actions / Filters**. The dashboard can now filter by lifecycle stage and batch-request approval for tasks that are stuck in `Needs approval request`.
-
----
-
-# Eidolon v5.5 - Approval Flow Consolidation
-
-v5.5 connects approval-gated task execution to the existing `approval_manager.py` instead of leaving risky tasks blocked and silently sulking in `data/tasks.json`. The canonical path is still task-centered: `task_queue.py`, `task_work_executor.py`, and `/api/tasks/...`. This pass makes blocked/risky tasks create real approval requests that can be dry-run, approved, or rejected through the existing approval inbox.
-
-## What changed in v5.5
-
-- Added `conscious_agent/task_approval_bridge.py`.
-- Risky or approval-required task execution now creates a pending approval request instead of only blocking the task.
-- Approval requests for task execution use the existing `approval_manager.py` flow with `action_type=run_command` and a safe command like:
-
-```powershell
-python conscious_agent/main.py --execute-task-work-id task_ID --approve-task-work-execution
-```
-
-- Linked task metadata now stores:
-
-```text
-approval_id
-approval_status
-approval_kind
-approval_command
-approval_reason
-```
-
-- Approving or rejecting a linked approval syncs approval status back to the task metadata.
-- Dashboard Tasks / Work rows now show linked approvals and include a **Request Approval** button for blocked/risky tasks.
-- Task detail pages now show linked approval history.
-- Added primary API support for:
-
-```text
-GET  /api/tasks/{id}/approvals
-POST /api/tasks/{id}/request-approval
-POST /api/tasks/next/request-approval
-```
-
-- Added CLI support for:
-
-```powershell
-python conscious_agent/main.py --request-task-approval task_ID
-python conscious_agent/main.py --request-task-approval task_ID --dry-run
-python conscious_agent/main.py --request-next-task-approval --task-approval-project eidolon
-python conscious_agent/main.py --show-task-approvals task_ID --task-approval-full
-```
-
-- Updated version labels:
-  - `conscious_agent/api_server.py` now reports API version `5.5`
-  - `conscious_agent/dashboard.py` now reports dashboard version `5.5`
-  - `conscious_agent/work_cycle.py` now saves new cycle records as version `5.5`
-  - `data/settings.json` and `settings_manager.py` now use `settings_version: 5.5`
-
-## Safe approval workflow
-
-Create or find an approval-gated task:
-
-```powershell
-python conscious_agent/main.py --task-work add "Run risky supervised task" --project eidolon --priority 7 --risk medium --requires-approval
-```
-
-Dry-run the approval request first:
-
-```powershell
-python conscious_agent/main.py --request-task-approval task_ID --dry-run --task-approval-full
-```
-
-Create the approval request:
-
-```powershell
-python conscious_agent/main.py --request-task-approval task_ID --task-approval-full
-```
-
-Inspect and dry-run the approval:
-
-```powershell
-python conscious_agent/main.py --show-approval latest-pending --approval-full
-python conscious_agent/main.py --approve latest-pending --dry-run
-```
-
-Approve or reject it:
-
-```powershell
-python conscious_agent/main.py --approve latest-pending
-python conscious_agent/main.py --reject latest-pending --approval-note "Not safe yet"
-```
-
-## Current architecture
-
-```text
-task_queue.py / data/tasks.json
-        ↑
-canonical task/work storage
-        ↑
-task_work_executor.py
-        ↑
-blocks risky tasks and requests approvals
-        ↑
-task_approval_bridge.py
-        ↑
-approval_manager.py / data/approvals/*.json
-```
-
-Legacy aliases still work:
-
-```text
-/work-queue
-/api/work-queue/...
---work-queue
---execute-work
-```
-
-Use the task-centered names for new work. Old names exist so previous buttons and commands do not collapse into dust, which is apparently frowned upon.
-
-## Next milestone
-
-Next feature work should be **v5.6 - Task Lifecycle Dashboard Polish**. The goal is to make the task detail/dashboard pages clearer around `planned → blocked → approval pending → approved/executed → done`, because right now the plumbing works but the signs could still use a less cursed paint job.
-
----
-
-# Eidolon v5.4 - Dashboard/API Naming Cleanup
-
-v5.4 finishes the visible naming cleanup after the v5.1-v5.3 consolidation. The project already made `task_queue.py`, `task_patch_bridge.py`, and `task_work_executor.py` canonical. This pass makes the dashboard and API lead with the same task-centered names, because having three names for one thing is how software gets haunted.
-
-## What changed in v5.4
-
-- Updated version labels:
-  - `conscious_agent/api_server.py` now reports API version `5.4`
-  - `conscious_agent/dashboard.py` now reports dashboard version `5.4`
-  - `conscious_agent/work_cycle.py` now saves new cycle records as version `5.4`
-  - `data/settings.json` and `settings_manager.py` now use `settings_version: 5.4`
-- Made `/tasks-work` the primary dashboard route for task-backed work controls.
-- Kept `/work-queue` as a legacy alias that renders the same task-backed page.
-- Updated dashboard nav, overview links, detail back-links, page headings, and form wording toward **Tasks / Work** and **Task** language.
-- Added primary API support for:
-
-```text
-GET  /api/tasks/summary
-POST /api/tasks/{id}/done
-POST /api/tasks/{id}/block
-POST /api/tasks/{id}/cancel
-```
-
-- Kept legacy API aliases working:
-
-```text
-GET  /api/work-queue
-GET  /api/work-queue/summary
-POST /api/work-queue
-POST /api/work-queue/{id}/dry-run
-POST /api/work-queue/{id}/execute
-POST /api/work-queue/{id}/done
-POST /api/work-queue/{id}/block
-POST /api/work-queue/{id}/cancel
-```
-
-- Updated API docs so `/api/tasks/...` is first-class and `/api/work-queue/...` is clearly compatibility-only.
-- Updated `data/projects.json`, `data/work_queue/README.md`, and `data/work_cycles/README.md` to point new work at task-centered names.
-
-## Canonical dashboard/API usage
-
-Prefer these:
-
-```powershell
-python conscious_agent/main.py --task-work summary
-python conscious_agent/main.py --execute-task-work --dry-run --no-ai-task-work-executor
-python conscious_agent/main.py --queue-task-patch conscious_agent/dashboard.py "Describe the patch request"
-```
-
-Prefer these browser/API routes:
-
-```text
-http://127.0.0.1:8765/tasks-work
-GET  /api/tasks
-GET  /api/tasks/summary
-POST /api/tasks
-POST /api/tasks/next/dry-run
-POST /api/tasks/next/execute
-POST /api/tasks/{id}/dry-run
-POST /api/tasks/{id}/execute
-POST /api/tasks/{id}/done
-POST /api/tasks/{id}/block
-POST /api/tasks/{id}/cancel
-POST /api/tasks/patch-request
-POST /api/tasks/{id}/suggest-patch
-```
-
-Legacy aliases still work, but new docs and future code should avoid them unless testing compatibility:
-
-```text
-/work-queue
-/api/work-queue/...
---work-queue
---execute-work
---queue-patch
---suggest-patch-for-work
-```
-
-## Health check order
-
-From the project root on Windows:
-
-```powershell
-.\setup.ps1
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --execute-task-work --dry-run --no-ai-task-work-executor --task-work-executor-full
-```
-
-## Next milestone
-
-Next feature work should be **v5.5 - Approval Flow Consolidation**. The goal is to connect blocked/risky tasks, patch application requests, and command execution requests into `approval_manager.py` and the dashboard approvals page, instead of letting blocked tasks sit around like sad office furniture.
-
----
-
-# Eidolon v5.3.1 - Version / Health Cleanup
-
-v5.3.1 is a stabilization pass after the v5.1-v5.3 consolidation work. No new autonomy layer was added. This update makes the project describe itself accurately, strengthens the smoke check, and clarifies that tasks are now the canonical work system. Yes, we paused the feature conveyor belt long enough to label the boxes. Civilization trembles.
-
-## What changed in v5.3.1
-
-- Updated version labels:
-  - `conscious_agent/api_server.py` now reports API version `5.3.1`
-  - `conscious_agent/dashboard.py` now reports dashboard version `5.3.1`
-  - `conscious_agent/work_cycle.py` now saves new cycle records as version `5.3.1`
-  - `data/settings.json` and `settings_manager.py` now use `settings_version: 5.3.1`
-- Kept the desktop module version constants at `4.5` because those files are still the v4.5 desktop/onboarding feature modules, not the current whole-project version.
-- Updated the default embedding model in `settings_manager.py` to `nomic-embed-text:latest` so defaults match the current setup file.
-- Cleaned `main.py` help text so `--task-work` and `--work-cycle` describe the task-backed architecture instead of the older work-queue wording.
-- Updated dashboard/API labels so `/api/tasks/...` and `/tasks-work` are described as the canonical path, while `/api/work-queue/...` and `/work-queue` are legacy aliases.
-- Updated `data/projects.json` so current goals and next steps point at the task-centered architecture instead of old v4.5/v4.6 desktop milestones.
-- Expanded `tools/smoke_check.py` so it now also runs:
-  - `py_compile` across `conscious_agent/*.py`
-  - `main.py --task-work summary`
-- Updated compatibility notes in:
-  - `data/work_queue/README.md`
-  - `data/work_cycles/README.md`
-
-## Canonical architecture after this cleanup
-
-```text
-task_queue.py / data/tasks.json
-        ↑
-canonical task/work storage
-        ↑
-task_patch_bridge.py
-        ↑
-canonical task-to-patch linking
-        ↑
-task_work_executor.py
-        ↑
-canonical task execution
-```
-
-Compatibility aliases still exist:
-
-```text
-work_queue.py
-work_queue_patch_bridge.py
-work_queue_executor.py
-/work-queue
-/api/work-queue/...
-```
-
-Those should keep old commands and dashboard buttons working, but new code should use the task-centered names. Multiple names for the same thing: mankind's gift to future confusion.
-
-## Recommended health check order
-
-From the project root on Windows:
-
-```powershell
-.\setup.ps1
-```
-
-Then:
-
-```powershell
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --execute-task-work --dry-run --no-ai-task-work-executor --task-work-executor-full
-```
-
-If Ollama is not reachable, start Ollama and verify models:
-
-```powershell
-ollama list
-ollama pull qwen2.5:7b
-ollama pull nomic-embed-text:latest
-```
-
-Then rerun:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health
-```
-
-## Troubleshooting map
-
-| Problem | First command to run | What it tells you |
-|---|---|---|
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-| Syntax error | `.\.venv\Scripts\python.exe -m py_compile .\conscious_agent\*.py` | Exact file and line Python refuses to tolerate |
-| Local AI not responding | `.\.venv\Scripts\python.exe .\conscious_agent\main.py --settings-health` | Ollama reachability and configured model status |
-| Task/work confusion | `.\.venv\Scripts\python.exe .\conscious_agent\main.py --task-work summary` | Canonical task-backed work state |
-| Executor weirdness | `.\.venv\Scripts\python.exe .\conscious_agent\main.py --execute-task-work --dry-run --no-ai-task-work-executor --task-work-executor-full` | How the next task would be classified and routed |
-| Patch-task bridge issue | `.\.venv\Scripts\python.exe .\conscious_agent\main.py --queue-task-patch conscious_agent/dashboard.py "Test patch request"` | Whether task-to-patch setup works |
-| Dashboard issue | `.\.venv\Scripts\python.exe .\conscious_agent\main.py --dashboard` | Opens local dashboard at `http://127.0.0.1:8765` |
-| API issue | `.\.venv\Scripts\python.exe .\conscious_agent\main.py --api-server` | Opens standalone API at `http://127.0.0.1:8766/api/status` |
-
-## Next milestone
-
-Next feature work should be **v5.4 - Dashboard/API Naming Cleanup**. The goal is to make `/tasks-work` and `/api/tasks/...` the visible first-class controls everywhere, while keeping `/work-queue` and `/api/work-queue/...` as legacy aliases until the transition is boring enough to trust. Boring is the sound of software not exploding.
-
----
-
-# Eidolon local setup maintenance - 2026-06-19
-
-This pass fixed the local developer environment and added a repeatable setup check so Eidolon can be brought back to a known-good state without re-discovering the same issues.
-
-## What changed
-
-- Installed the declared Python dependencies into `.venv`
-- Added `setup.ps1`
-- Added `tools/smoke_check.py`
-- Added `.gitignore`
-- Initialized a local git repository
-- Updated `data/settings.json`:
-  - `embed_model`: `nomic-embed-text:latest`
-- Verified the dashboard API at:
-  - `http://127.0.0.1:8765/api/status`
-
-## New setup command
-
-From the project root:
-
-```powershell
-.\setup.ps1
-```
-
-The setup script:
-
-- creates `.venv` if it is missing
-- installs `requirements.txt`
-- runs the smoke check
-- prints useful next commands
-
-## New smoke check
-
-Run directly:
-
-```powershell
-.\.venv\Scripts\python.exe .\tools\smoke_check.py
-```
-
-The smoke check verifies:
-
-- `requests` imports
-- `chromadb` imports
-- `data/settings.json` loads
-- `python conscious_agent/main.py --status` works
-- `python conscious_agent/main.py --settings-health` works
-
-Known-good output from this pass:
-
-```text
-[ok] import requests
-[ok] import chromadb
-[ok] settings.json local_model=qwen2.5:7b embed_model=nomic-embed-text:latest safe_mode=strict
-[ok] main.py --status
-[ok] main.py --settings-health
-Smoke check passed.
-```
-
-## Current run commands
-
-Status:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --status
-```
-
-Onboarding:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --onboarding
-```
-
-Dashboard:
-
-```powershell
-.\.venv\Scripts\python.exe .\conscious_agent\main.py --dashboard
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8765
-```
-
-## Git note
-
-The repository was initialized during this pass, but no commit was created. Runtime-heavy paths are ignored in `.gitignore`, including `.venv/`, `__pycache__/`, `*.pyc`, `data/chroma/`, and `data/backups/`.
-
----
-
-# Eidolon v5.3 - Executor Naming Consolidation
-
-v5.3 finishes the next cleanup step from v5.2: execution is now task-centered too. The canonical executor is `conscious_agent/task_work_executor.py`, and the old `work_queue_executor.py` is now only a compatibility wrapper. The project still accepts the older `--execute-work` commands and `/api/work-queue/...` routes, because breaking working controls for vocabulary purity is how software earns haunting rights.
-
-## What changed in v5.3
-
-- Added `conscious_agent/task_work_executor.py`
-  - canonical task-centered execution layer
-  - operates directly on `task_queue.py` / `data/tasks.json`
-  - supports review-file, run-command, suggest-patch, test-project, dashboard-note, and manual classifications
-  - keeps compatibility aliases like `work_id` in result payloads during the transition
-- Rewrote `conscious_agent/work_queue_executor.py`
-  - now a compatibility wrapper over `task_work_executor.py`
-  - old imports such as `execute_work_item` and `work_execution_text` still work
-- Updated `conscious_agent/main.py`
-  - added `--execute-task-work`
-  - added `--execute-task-work-id`
-  - added `--execute-task-work-project`
-  - added `--approve-task-work-execution`
-  - added `--no-ai-task-work-executor`
-  - added `--task-work-executor-full`
-  - kept old `--execute-work`, `--execute-work-id`, `--execute-work-project`, `--approve-work-execution`, `--no-ai-work-executor`, and `--work-executor-full` aliases
-- Updated `conscious_agent/api_server.py`
-  - API version is now `5.3`
-  - added task-centered executor routes:
-    - `POST /api/tasks/next/dry-run`
-    - `POST /api/tasks/next/execute`
-    - `POST /api/tasks/{id}/dry-run`
-    - `POST /api/tasks/{id}/execute`
-  - kept old `/api/work-queue/...` executor routes working as aliases
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `5.3`
-  - Tasks / Work page now points at `task_work_executor.py` as the canonical executor
-- Updated `conscious_agent/work_cycle.py`
-  - calls the task-centered executor directly
-  - saved event type is now `execute_task_work`, while old event readers still recognize `execute_work_item`
-- Updated `conscious_agent/command_runner.py`
-  - added the new task-centered executor flags to the safe command argument list
-- Updated README notes in `data/work_queue/README.md` and `data/work_cycles/README.md`
-
-## New task-centered executor commands
-
-Dry-run the next safe task:
-
-```powershell
-python conscious_agent/main.py --execute-task-work --dry-run
-```
-
-Execute the next safe task:
-
-```powershell
-python conscious_agent/main.py --execute-task-work
-```
-
-Dry-run one specific task:
-
-```powershell
-python conscious_agent/main.py --execute-task-work-id task_YOUR_ID --dry-run
-```
-
-Execute one specific task with full output:
-
-```powershell
-python conscious_agent/main.py --execute-task-work-id task_YOUR_ID --task-work-executor-full
-```
-
-The older `--execute-work` commands still work as compatibility aliases.
-
-## Current source of truth
-
-```text
-task_queue.py / data/tasks.json
-        ↓
-task_patch_bridge.py
-        ↓
-task_work_executor.py
-        ↓
-work_queue.py / work_queue_patch_bridge.py / work_queue_executor.py
-compatibility adapters only
-```
-
-## Next step
-
-Next should be **v5.4 - Dashboard/API Naming Cleanup**, where the visible route names and dashboard form/action names move from `/work-queue` toward `/tasks-work` and `/api/tasks/...` first, while old routes remain aliases.
-
-# Eidolon v5.2 - Task-Centered Patch Follow-up Cleanup
-
-v5.2 finishes the cleanup started in v5.1. The project now treats `task_queue.py` / `data/tasks.json` as the canonical task/work layer, and patch-generation follow-ups now have a task-native bridge instead of living mainly behind the older work-queue names. Basically, fewer duplicate kingdoms. Somewhere, a JSON file can finally sleep.
-
-## What changed in v5.2
-
-- Added `conscious_agent/task_patch_bridge.py`
-  - task-native patch request creation
-  - task-to-patch linking
-  - task-native review/apply/test follow-up creation
-  - compatibility aliases for older work-id fields
-- Rewrote `conscious_agent/work_queue_patch_bridge.py` as a compatibility wrapper over `task_patch_bridge.py`
-- Updated `conscious_agent/main.py`
-  - added `--task-work` as a task-centered alias for the transitional work CLI
-  - added `--queue-task-patch`
-  - added `--suggest-patch-for-task`
-  - added `--create-patch-task-followups`
-  - kept the older `--work-queue`, `--queue-patch`, `--suggest-patch-for-work`, and `--create-patch-followups` aliases working
-- Updated `conscious_agent/api_server.py`
-  - API version is now `5.2`
-  - added `POST /api/tasks/patch-request`
-  - added `POST /api/tasks/{id}/suggest-patch`
-  - added `POST /api/patches/{id}/create-task-followups`
-  - kept the old `/api/work-queue/...` and `/api/patches/{id}/create-followups` aliases
-- Updated `conscious_agent/dashboard.py`
-  - dashboard version is now `5.2`
-  - visible labels now say **Tasks / Work** and **Patch Task** more consistently
-  - `/tasks-work` now opens the same task-backed view as `/work-queue`
-  - patch records show linked **Task** IDs instead of presenting them as separate work items
-- Updated `conscious_agent/work_cycle.py`
-  - uses task-native patch follow-up creation
-  - saved cycle records now include task aliases like `created_task_ids`, `created_followup_task_ids`, and `executed_task_ids`
-  - older work-id fields are kept for compatibility
-- Updated `conscious_agent/command_runner.py` safe command flags for the new task-centered patch commands
-- Updated `data/work_queue/README.md` and `data/work_cycles/README.md`
-
-## New task-centered commands
-
-Create a task-backed patch request:
-
-```powershell
-python conscious_agent/main.py --queue-task-patch conscious_agent/dashboard.py "Describe the change to propose."
-```
-
-Dry-run patch generation from a task:
-
-```powershell
-python conscious_agent/main.py --suggest-patch-for-task task_YOUR_ID --dry-run
-```
-
-Generate and link the patch proposal from a task:
-
-```powershell
-python conscious_agent/main.py --suggest-patch-for-task task_YOUR_ID
-```
-
-Create review/apply/test follow-up tasks for a patch:
-
-```powershell
-python conscious_agent/main.py --create-patch-task-followups patch_YOUR_ID
-```
-
-The older commands still work as aliases, because breaking working commands just to satisfy vocabulary purity is how frameworks are born, and nobody needs that.
-
-## New task-centered API routes
-
-```text
-POST /api/tasks/patch-request
-POST /api/tasks/{id}/suggest-patch
-POST /api/patches/{id}/create-task-followups
-```
-
-Legacy aliases still work:
-
-```text
-POST /api/work-queue/patch-request
-POST /api/work-queue/{id}/suggest-patch
-POST /api/patches/{id}/create-followups
-```
-
-## Dashboard
-
-Run:
-
-```powershell
-python conscious_agent/main.py --dashboard
-```
-
-Then open either route:
-
-```text
-http://127.0.0.1:8765/work-queue
-http://127.0.0.1:8765/tasks-work
-```
-
-Both show the same task-backed Tasks / Work page. `/work-queue` remains for compatibility. `/tasks-work` is the cleaner name going forward. Humanity survives another naming migration. Barely.
-
-## Safety notes
-
-- `task_patch_bridge.py` only creates patch proposals and follow-up tasks. It does not directly apply patches.
-- Apply-patch follow-up tasks are approval-required.
-- Old work-queue fields like `work_item_id` and `linked_work_items` are still written to patch proposal records as aliases so old dashboard/API code can still find links.
-- New code should prefer `task_id`, `linked_tasks`, and the task-centered commands/API routes.
-
-## Tested in this patch
-
-- `python3 -m py_compile conscious_agent/*.py`
-- `python3 conscious_agent/main.py --task-work summary`
-- `python3 conscious_agent/main.py --queue-task-patch conscious_agent/dashboard.py "Dry run test task patch"`
-- `python3 conscious_agent/main.py --suggest-patch-for-task task_TEST_ID --dry-run --no-ai-work-executor`
-- `python3 conscious_agent/main.py --work-queue summary`
-- dashboard render for `/work-queue` and `/tasks-work`
-- API smoke checks for task-centered patch routes
-
-Temporary smoke-test tasks were removed before packaging. The project is not being shipped with my little test droppings.
-
-## Next likely step
-
-Next should be **v5.3 - Executor Naming Consolidation**.
-
-That should either rename `work_queue_executor.py` into a task-centered executor or add a thin `task_work_executor.py` facade so the codebase stops using old work-queue names in the execution path. Not urgent, but leaving old names everywhere is how codebases become haunted museums.
-
----
-
-# Eidolon v5.1 - Architecture Consolidation
-
-v5.1 stops the duplicate-architecture spiral from v4.6-v5.0. Eidolon already had a mature `task_queue.py` / `dev_loop_runner.py` / `autonomous_dev_cycle.py` stack before the newer `work_queue.py` / `work_cycle.py` path was added. This patch consolidates the useful newer ideas back onto the older task system so the project has one canonical task store instead of two tiny governments arguing over JSON files.
-
-## Main decision
-
-`task_queue.py` and `data/tasks.json` are now the canonical source of truth for task/work state.
-
-`work_queue.py` remains, but it is now a compatibility adapter over `task_queue.py`. Existing commands and dashboard/API routes still work:
-
-```powershell
-python conscious_agent/main.py --work-queue summary
-python conscious_agent/main.py --work-queue list --full
-python conscious_agent/main.py --execute-work --dry-run --no-ai-work-executor
-```
-
-Those commands now read and write `data/tasks.json`, not a separate independent queue. The old `data/work_queue/work_items.json` file is retained only for legacy reference and should not receive new state.
-
-## What changed in v5.1
-
-- Updated `conscious_agent/task_queue.py`
-  - added `requires_approval`
-  - added `metadata`
-  - added `patch_id` and `patch_status`
-  - added `result`
-  - added `work_status` compatibility field
-  - added public `update_task_fields(...)`
-  - added public `delete_task(...)`
-  - expanded task detail output to show approval, patch, result, and metadata
-- Rewrote `conscious_agent/work_queue.py` as a compatibility layer over `task_queue.py`
-- Added `data/work_queue/README.md` explaining that work queue storage is legacy
-- Preserved v4.8/v4.9/v5.0 dashboard, API, and CLI routes by mapping them to task-backed records
-- Updated this README to document the consolidation
-
-## Why this matters
-
-Before v5.1, these concepts were duplicated:
-
-```text
-task_queue.py       ↔ work_queue.py
-task_executor.py    ↔ work_queue_executor.py
-autonomous_dev_cycle.py / dev_loop_runner.py ↔ work_cycle.py
-```
-
-After v5.1, new task/work records should be created through `task_queue.py`, while the newer work-queue interface stays available as a transitional shell. The shell still exists so the dashboard does not crack in half like cheap plastic, but the state underneath is unified.
-
-## Compatibility behavior
-
-Work-queue statuses map to task statuses like this:
-
-```text
-pending   -> planned
-active    -> active
-blocked   -> blocked
-done      -> done
-cancelled -> cancelled
-failed    -> blocked + work_status=failed
-```
-
-Task priorities map back to work-queue numeric priorities:
-
-```text
-critical -> 10
-high     -> 8
-medium   -> 5
-low      -> 2
-```
-
-## Safety notes
-
-- Approval-required fields now live on canonical tasks.
-- Patch IDs and patch statuses now live on canonical tasks.
-- Existing patch follow-up helpers still work, but their created work items are task-backed.
-- The dashboard `/work-queue` page still works, but it is really showing task-backed work now. Naming things remains humanity's longest-running prank.
-- Do not add new independent queue state under `data/work_queue/`.
-
-## Tested in this patch
-
-- `python3 -m py_compile conscious_agent/*.py`
-- `python3 conscious_agent/main.py --work-queue summary`
-- `python3 conscious_agent/main.py --task-status`
-- add a work item through `--work-queue add` and verify it appears in `data/tasks.json`
-- mark that work item done through `--work-queue done` and verify task status becomes `done`
-- show the same record through `--show-task ... --show-task-full`
-- restore temporary smoke-test task data before packaging
-
-## Next likely step
-
-Next should be **v5.2 - Task-Centered Patch Follow-up Cleanup**.
-
-That patch should update naming and UI language so the dashboard stops pretending the old work queue is separate. It should gradually rename visible labels toward "Tasks / Work" and move patch follow-up code from compatibility language into task-native language.
-
----
-
-# Eidolon v5.0 - Supervised Autonomous Work Cycle
-
-v5.0 connects the newer self-directed work queue into a bounded supervised cycle. It observes the queue, previews or advances the next safe work item, can seed the queue when it is empty, and can create patch follow-up work items after a patch proposal appears. This is the first queue-centered loop that feels like Eidolon coordinating its own work instead of waiting for Marcus to manually copy every ID like a haunted office clerk.
-
-This is still supervised. Dry-run is the recommended default. Non-dry-run work still routes through the work queue executor, patch proposal system, command whitelist, approval flags, and existing safety gates.
-
-## What changed in v5.0
-
-- Added `conscious_agent/work_cycle.py`
-- Added `data/work_cycles/` for saved supervised work-cycle records
-- Updated `conscious_agent/main.py`
-- Updated `conscious_agent/api_server.py`
-- Updated `conscious_agent/dashboard.py`
-- Updated `conscious_agent/command_runner.py`
-- Updated `README_NEXT_STEPS.md`
-- Updated dashboard/API version strings to `5.0`
-- Added CLI commands for running, listing, and showing work cycles
-- Added API routes for work cycles
-- Added dashboard page `/work-cycle`
-- Added dashboard detail support for saved work-cycle records
-- Added work-cycle live count to the dashboard nav/status payload
-- Added command-runner whitelist entries for safe work-cycle inspection commands
-
-## What the work cycle does
-
-A supervised work cycle performs this bounded loop:
-
-```text
-observe work queue
-→ create patch follow-ups for proposed patches when safe
-→ seed queue if empty, unless disabled
-→ dry-run or execute the next safe work item
-→ if a patch is generated, create review/apply/test follow-ups
-→ save a cycle record
-```
-
-When the queue is empty and seeding is enabled, v5.0 can create two low-risk starter items:
-
-- review `README_NEXT_STEPS.md`
-- run the general Eidolon test workflow
-
-In dry-run mode, it previews those seed items instead of creating them. Tiny mercy from the machine.
-
-## New CLI commands
-
-Dry-run the supervised cycle, recommended first:
-
-```powershell
-python conscious_agent/main.py --work-cycle --dry-run --no-ai-work-cycle
-```
-
-Run one non-dry-run supervised cycle step:
-
-```powershell
-python conscious_agent/main.py --work-cycle --work-cycle-steps 1 --no-ai-work-cycle
-```
-
-Run up to three bounded steps:
-
-```powershell
-python conscious_agent/main.py --work-cycle --work-cycle-steps 3
-```
-
-List saved work cycles:
-
-```powershell
-python conscious_agent/main.py --list-work-cycles
-```
-
-Show the latest saved cycle:
-
-```powershell
-python conscious_agent/main.py --show-work-cycle latest --work-cycle-full
-```
-
-Useful options:
-
-```text
---work-cycle-project eidolon
---work-cycle-steps 3
---dry-run
---no-ai-work-cycle
---no-work-cycle-seed
---no-work-cycle-followups
---approve-work-cycle-actions
---work-cycle-full
-```
-
-Use `--approve-work-cycle-actions` carefully. It allows approval-required work items during that cycle run, which is exactly the sort of flag that deserves adult supervision and maybe a chair thrown under the doorknob.
-
-## New dashboard behavior
-
-Start the dashboard:
-
-```powershell
-python conscious_agent/main.py --dashboard
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8765/work-cycle
-```
-
-The Work Cycle page includes:
-
-- a form to run a supervised work cycle
-- dry-run enabled by default
-- max step control
-- optional local AI toggle
-- seed-if-empty toggle
-- patch-follow-up toggle
-- approval-required execution toggle
-- latest work cycle summary
-- saved work cycle table
-- work-cycle detail view
-
-## New API endpoints
-
-List saved work cycles:
-
-```text
-GET /api/work-cycles
-```
-
-Get one saved cycle:
-
-```text
-GET /api/work-cycles/{id}
-```
-
-Run a supervised cycle:
-
-```text
-POST /api/work-cycles/run
-```
-
-Example JSON body:
-
-```json
-{
-  "project_id": "eidolon",
-  "max_steps": 1,
-  "dry_run": true,
-  "use_ai": false,
-  "seed_if_empty": true,
-  "auto_create_patch_followups": true,
-  "approve_work_execution": false
-}
-```
-
-## Safety notes
-
-- Dry-run mode saves a cycle record but does not execute a work item.
-- Non-dry-run mode still uses `work_queue_executor.py`.
-- Medium/high-risk work remains blocked unless explicitly approved for the cycle.
-- Patch application is not silently approved.
-- Patch follow-up apply items are still created as approval-required work.
-- Command execution still uses `command_runner.py` validation.
-- The cycle is capped at 10 steps per run.
-
-## Tested in this patch
-
-- `python3 -m py_compile conscious_agent/*.py`
-- `python3 conscious_agent/main.py --work-cycle --dry-run --no-ai-work-cycle --work-cycle-full`
-- `python3 conscious_agent/main.py --work-cycle --work-cycle-steps 1 --no-ai-work-cycle --work-cycle-full`
-- local API dispatch for `GET /api/work-cycles`
-- local API dispatch for `POST /api/work-cycles/run`
-- dashboard rendering for `/work-cycle`
-- dashboard rendering for `/work-queue`
-
-Temporary test queue/memory/cycle records were cleaned before packaging. The zip should not come preloaded with my lab-rat work items.
-
-## Next likely step
-
-The next milestone should be **v5.1 - Cycle Approval Inbox Integration**. That should let the work cycle create explicit approval requests for blocked/risky queue items instead of merely blocking them and staring at Marcus like an unpaid intern.
-
----
-
-# Eidolon v4.9 - Queue-to-Patch Integration
-
-v4.9 connects the self-directed work queue to the patch proposal system. v4.8 made the queue visible in the dashboard. v4.9 lets a queue item intentionally generate a patch proposal, then links the patch back to the work item so the chain is visible instead of buried in separate IDs like some cursed scavenger hunt.
-
-This is still supervised. v4.9 creates patch proposals and follow-up queue items. It does not remove review, approval, dry-run, apply, test, or rollback safety gates.
-
-## What changed in v4.9
-
-- Added `conscious_agent/work_queue_patch_bridge.py`
-- Updated `conscious_agent/work_queue_executor.py`
-- Updated `conscious_agent/main.py`
-- Updated `conscious_agent/api_server.py`
-- Updated `conscious_agent/dashboard.py`
-- Updated `README_NEXT_STEPS.md`
-- Updated dashboard/API version strings to `4.9`
-- Added queue-to-patch metadata linking:
-  - work items store `patch_id`, `patch_status`, `patch_target_file`, and `patch_request`
-  - patch proposals store `work_item_id`, `work_item_relationship`, and `linked_work_items`
-- Added dashboard support for creating patch work items from `/work-queue`
-- Added dashboard work-item controls for patch-generation queue items
-- Added dashboard patch follow-up controls from `/patches` and patch detail pages
-- Added API routes for patch work items and patch follow-ups
-- Added CLI helpers for queueing patch work and creating patch follow-ups
-
-## New CLI commands
-
-Queue a patch-generation work item:
-
-```powershell
-python conscious_agent/main.py --queue-patch conscious_agent/dashboard.py "Add a safer dashboard queue control."
-```
-
-Dry-run patch generation from a work item:
-
-```powershell
-python conscious_agent/main.py --suggest-patch-for-work work_YOUR_ID --dry-run
-```
-
-Generate and link a patch proposal from a work item:
-
-```powershell
-python conscious_agent/main.py --suggest-patch-for-work work_YOUR_ID
-```
-
-Create review/apply/test follow-up work items for a patch:
-
-```powershell
-python conscious_agent/main.py --create-patch-followups patch_YOUR_ID
-```
-
-## New dashboard behavior
-
-Open the dashboard:
-
-```powershell
-python conscious_agent/main.py --dashboard
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8765/work-queue
-```
-
-The Work Queue page now includes a **Create Patch Work Item** form. A queued patch item carries metadata like this:
-
-```json
-{
-  "action_type": "suggest_patch",
-  "target_file": "conscious_agent/dashboard.py",
-  "patch_target_file": "conscious_agent/dashboard.py",
-  "patch_request": "Describe the change here.",
-  "patch_status": "queued"
-}
-```
-
-Executing that item through the work queue creates a proposed patch and stores the patch ID back on the work item.
-
-The Patches page now shows linked work items when available and can create follow-up queue items:
-
-- review the patch
-- apply the patch after approval
-- run tests after applying the patch
-
-## New API endpoints
-
-Create a patch-generation work item:
-
-```text
-POST /api/work-queue/patch-request
-```
-
-Generate a patch proposal from a work item:
-
-```text
-POST /api/work-queue/{id}/suggest-patch
-```
-
-Create follow-up work items for a patch:
-
-```text
-POST /api/patches/{id}/create-followups
-```
-
-## Safety notes
-
-- Patch generation still requires local AI unless running a dry run.
-- Patch proposals are still read-only until explicitly applied.
-- Applying a patch still uses the existing patch applier checks.
-- Follow-up apply items are created as approval-required work.
-- The queue does not bypass command validation, patch validation, rollback validation, or approval gates.
-
-## Next likely step
-
-v5.0 should become the **Supervised Autonomous Work Cycle**:
-
-```text
-observe project
-→ create work items
-→ generate patch proposals
-→ create follow-ups
-→ request approval for risky apply steps
-→ run tests
-→ review results
-→ continue safely
-```
-
-That is the point where Eidolon starts feeling less like a toolbelt and more like a tiny supervised developer with a clipboard. Which is both charming and faintly concerning.
-
----
-
-# Eidolon v4.8 - Dashboard Work Queue Panel
-
-v4.8 gives the self-directed work queue a dashboard page. v4.6 created the queue, v4.7 added the conservative executor, and v4.8 finally makes the whole thing visible from the browser so Marcus does not have to interrogate command output like a cave detective with a PowerShell prompt.
-
-This is still supervised autonomy. The dashboard can create work items, dry-run safe work, execute low-risk queue items, mark work done, block work, or cancel work. It does not bypass the v4.7 executor safety gate. Medium-risk, high-risk, or approval-required work is still blocked before automatic execution.
-
-## Documentation rule
-
-Every future Eidolon code change should update this README or the appropriate project documentation in the same patch. If the code changes and the README does not, assume the patch is incomplete. This rule remains active after v4.8.
-
-## What changed in v4.8
-
-- Updated `conscious_agent/dashboard.py`
-- Updated `conscious_agent/api_server.py`
-- Updated `README_NEXT_STEPS.md`
-- Updated dashboard version strings to `4.8`
-- Updated API version strings to `4.8`
-- Added dashboard navigation item:
-  - `/work-queue`
-- Added dashboard Work Queue page with:
-  - queue summary cards
-  - create-work-item form
-  - next recommended work item
-  - open work item table
-  - all work item table
-- Added dashboard work item detail view:
-  - `/detail?kind=work_item&id=work_YOUR_ID&full=1`
-- Added dashboard controls for work items:
-  - dry-run
-  - execute
-  - mark done
-  - block
-  - cancel
-- Added overview Work Queue card
-- Added overview quick link to the Work Queue page
-- Added overview quick action:
-  - dry-run next work
-- Added live dashboard status counts for:
-  - `work_queue_total`
-  - `work_queue_pending`
-  - `work_queue_active`
-  - `work_queue_blocked`
-  - `work_queue_done`
-  - `work_queue_failed`
-  - `work_queue_approval_required`
-- Added API support for work queue visibility and controls
-
-## New dashboard route
-
-Start the dashboard:
-
-```bash
-python conscious_agent/main.py --dashboard
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8765/work-queue
-```
-
-The page shows queue state, next recommended work, and controls for work items. It is the browser-facing control panel for the v4.6/v4.7 queue system.
-
-## New dashboard actions
-
-The dashboard now supports these internal form actions:
-
-```text
-dashboard_add_work_item
-work_queue_execute_next
-work_queue_execute
-work_queue_done
-work_queue_cancel
-work_queue_block
-```
-
-These actions route through the existing `work_queue.py` and `work_queue_executor.py` modules. The dashboard does not directly edit files or run commands behind the executor’s back, because that would be how the little gremlin earns a criminal record.
-
-## New API endpoints
-
-Read queue summary:
-
-```bash
-curl http://127.0.0.1:8765/api/work-queue/summary
-```
-
-List queue items:
-
-```bash
-curl http://127.0.0.1:8765/api/work-queue
-```
-
-Create a queue item:
-
-```bash
-curl -X POST http://127.0.0.1:8765/api/work-queue \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Review conscious_agent/dashboard.py","description":"Review the new work queue panel.","project_id":"eidolon","priority":8,"risk":"low"}'
-```
-
-Dry-run next work item:
-
-```bash
-curl -X POST http://127.0.0.1:8765/api/work-queue/next/dry-run \
-  -H "Content-Type: application/json" \
-  -d '{"use_ai":false}'
-```
-
-Execute next safe work item:
-
-```bash
-curl -X POST http://127.0.0.1:8765/api/work-queue/next/execute \
-  -H "Content-Type: application/json" \
-  -d '{"use_ai":true}'
-```
-
-Dry-run one item:
-
-```bash
-curl -X POST http://127.0.0.1:8765/api/work-queue/work_YOUR_ID/dry-run \
-  -H "Content-Type: application/json" \
-  -d '{"use_ai":false}'
-```
-
-Execute one safe item:
-
-```bash
-curl -X POST http://127.0.0.1:8765/api/work-queue/work_YOUR_ID/execute \
-  -H "Content-Type: application/json" \
-  -d '{"use_ai":true}'
-```
-
-Mark, block, or cancel one item:
-
-```bash
-curl -X POST http://127.0.0.1:8765/api/work-queue/work_YOUR_ID/done
-curl -X POST http://127.0.0.1:8765/api/work-queue/work_YOUR_ID/block \
-  -H "Content-Type: application/json" \
-  -d '{"reason":"Waiting on Marcus approval."}'
-curl -X POST http://127.0.0.1:8765/api/work-queue/work_YOUR_ID/cancel
-```
-
-## Existing queue commands still work
-
-Show queue summary:
-
-```bash
-python conscious_agent/main.py --work-queue summary
-```
-
-Add a work item:
-
-```bash
-python conscious_agent/main.py --work-queue add "Inspect dashboard.py" --description "Review conscious_agent/dashboard.py for syntax issues." --project eidolon --priority 8 --risk low --source user
-```
-
-Dry-run next safe item:
-
-```bash
-python conscious_agent/main.py --execute-work --dry-run
-```
-
-Execute next safe item:
-
-```bash
-python conscious_agent/main.py --execute-work
-```
-
-## Good v4.8 test flow
-
-```bash
-python conscious_agent/main.py --work-queue summary
-python conscious_agent/main.py --work-queue add "Review conscious_agent/dashboard.py" --description "Review conscious_agent/dashboard.py for the v4.8 Work Queue page." --project eidolon --priority 8 --risk low --source user
-python conscious_agent/main.py --execute-work --dry-run --execute-work-project eidolon
-python conscious_agent/main.py --dashboard
-```
-
-Then visit:
-
-```text
-http://127.0.0.1:8765/work-queue
-```
-
-## Safety
-
-v4.8 does not loosen the v4.7 safety rules. Dashboard execution still uses `work_queue_executor.py`. Low-risk, non-approval work can be dry-run or executed. Medium/high-risk or approval-required work remains blocked unless future approval plumbing explicitly handles it.
-
-## Next likely step
-
-v4.9 should probably be **Queue-to-Patch Integration**:
-
-- let work items intentionally create patch proposals
-- show created patch IDs on the work item detail page
-- link queue items to patch proposals
-- let dashboard move from work item → patch proposal → approval → test review
-- keep apply/rollback approval-gated
-
-v4.8 gave the queue a face. v4.9 should connect that face to the patch pipeline without letting it chew through the codebase like an unsupervised termite with a keyboard.
-
----
-
-# Previous README: Eidolon v4.7 - Work Queue Executor
-
-v4.7 adds a conservative execution layer for the self-directed work queue. v4.6 gave Eidolon a place to store and rank work items; v4.7 lets it pull the next safe item, classify it, run an appropriate existing helper when possible, and update the item status afterward.
-
-This is still supervised autonomy. Low-risk, non-approval work can be dry-run or executed. Medium-risk, high-risk, or approval-required items are blocked instead of being run automatically, because letting a local agent freestyle on your filesystem is how machines earn haunted-house reputations.
-
-## Documentation rule
-
-Starting with v4.7, every future Eidolon code change should update this README or the appropriate project documentation in the same patch. If the code changes and the README does not, assume the patch is incomplete. Tiny rule, large reduction in future archaeological suffering.
-
-## What changed in v4.7
-
-- Added `conscious_agent/work_queue_executor.py`
-- Updated `conscious_agent/main.py`
-- Added work execution commands:
-  - `--execute-work`
-  - `--execute-work-id`
-  - `--execute-work-project`
-  - `--dry-run` with work execution
-  - `--no-ai-work-executor` fallback behavior
-- Added conservative work item classification:
-  - `review_file`
-  - `run_command`
-  - `suggest_patch`
-  - `test_project`
-  - `dashboard_note`
-  - `manual`
-- Added safety gating for queue execution
-- Blocks medium/high-risk or approval-required queue items before execution
-- Updates queue item status during execution:
-  - `pending` → `active`
-  - `active` → `done`
-  - `active` → `failed`
-  - `pending`/`active` → `blocked`
-- Stores execution results back onto the work item
-- Keeps execution dry-runnable before making changes
-- Cleaned a duplicate timestamp assignment in `work_queue.py`
-
-## What changed in v4.6
-
-- Added `conscious_agent/work_queue.py`
-- Added persistent queue storage:
-  - `data/work_queue/work_items.json`
-- Added work queue commands:
-  - `add`
-  - `list`
-  - `show`
-  - `next`
-  - `update`
-  - `done`
-  - `fail`
-  - `block`
-  - `delete`
-  - `summary`
-- Added work item fields:
-  - `id`
-  - `title`
-  - `description`
-  - `project_id`
-  - `status`
-  - `priority`
-  - `risk`
-  - `source`
-  - `requires_approval`
-  - `created_at`
-  - `updated_at`
-  - `started_at`
-  - `completed_at`
-  - `blocked_reason`
-  - `result`
-  - `metadata`
-- Added queue summary and next-item selection
-- Added basic approval logic for medium/high-risk tasks
-
-## New v4.7 commands
-
-Dry-run the next safe pending work item:
-
-```bash
-python conscious_agent/main.py --execute-work --dry-run
-```
-
-Execute the next safe pending work item:
-
-```bash
-python conscious_agent/main.py --execute-work
-```
-
-Dry-run a specific work item:
-
-```bash
-python conscious_agent/main.py --execute-work-id work_YOUR_ID_HERE --dry-run
-```
-
-Execute work for a specific project:
-
-```bash
-python conscious_agent/main.py --execute-work --execute-work-project eidolon
-```
-
-Use the non-AI fallback executor path:
-
-```bash
-python conscious_agent/main.py --execute-work --dry-run --no-ai-work-executor
-```
-
-## New v4.6 queue commands
-
-Show queue summary:
-
-```bash
-python conscious_agent/main.py --work-queue summary
-```
-
-Add a work item:
-
-```bash
-python conscious_agent/main.py --work-queue add "Inspect dashboard.py for syntax issues" --description "Review dashboard.py and identify syntax or rendering problems." --project eidolon --priority 8 --risk low --source user
-```
-
-List queue items:
-
-```bash
-python conscious_agent/main.py --work-queue list --full
-```
-
-Show the next queue item:
-
-```bash
-python conscious_agent/main.py --work-queue next --full
-```
-
-Mark an item done:
-
-```bash
-python conscious_agent/main.py --work-queue done work_YOUR_ID_HERE --result "Completed."
-```
-
-Block an item:
-
-```bash
-python conscious_agent/main.py --work-queue block work_YOUR_ID_HERE --reason "Requires approval before execution."
-```
-
-## Good v4.7 test flow
-
-```bash
-python conscious_agent/main.py --work-queue summary
-python conscious_agent/main.py --work-queue add "Review README_NEXT_STEPS.md" --description "Inspect the README for outdated version notes." --project eidolon --priority 7 --risk low --source user
-python conscious_agent/main.py --execute-work --dry-run --execute-work-project eidolon
-python conscious_agent/main.py --work-queue list --full
-```
-
-## Safety
-
-v4.7 only executes low-risk, non-approval queue items by default. Anything marked medium risk, high risk, or approval-required gets blocked before execution. Dry-run mode should be used first when testing a new work item type.
-
-## Next likely step
-
-v4.8 should probably be **Dashboard Work Queue Panel**:
-
-- show pending, active, blocked, failed, and done work items
-- show next recommended work item
-- add queue controls from the dashboard
-- dry-run or execute safe items from the dashboard
-- make blocked/approval-required items visible
-- connect queue status into the dashboard overview
-
-v4.6 gave Eidolon a queue. v4.7 gave it a cautious hand. v4.8 should give you a dashboard view so you do not have to interrogate JSON files like a cave detective.
-
----
-
-# Previous README: Eidolon v4.5 - Desktop Guided Onboarding Wizard
-
-v4.5 turns the v4.4 setup reports into a guided onboarding runbook. Instead of merely saying “something is wrong” and dropping a diagnostic brick on your foot, Eidolon now orders the setup issues into steps, shows the next recommended action, lists commands to copy, and links you to the relevant dashboard pages.
-
-Safety stays boring on purpose: onboarding is advisory. It saves onboarding runs and setup reports, but it does **not** install packages, change settings, start services, approve actions, apply patches, rollback files, or edit project files.
-
-## What changed
-
-- Added `desktop_onboarding_wizard.py`
-- Added `data/onboarding_runs/`
-- Added CLI commands:
-  - `--onboarding`
-  - `--onboarding-full`
-  - `--onboarding-use-latest-setup`
-  - `--list-onboarding-runs`
-  - `--show-onboarding-run`
-- Added dashboard `/onboarding` page
-- Added onboarding run detail pages
-- Added dashboard Onboarding nav item
-- Added onboarding quick action on Overview
-- Added onboarding reports to Activity
-- Added API routes:
-  - `GET /api/onboarding`
-  - `GET /api/onboarding/latest`
-  - `POST /api/onboarding/run`
-- Added onboarding counts/latest status to `/api/status`
-- Added desktop buttons:
-  - Open Onboarding
-  - Onboarding
-- Added optional tray menu item:
-  - Open Onboarding
-- Added settings:
-  - `desktop_onboarding_check_on_start`
-  - `onboarding_refresh_setup_default`
-- Updated API version to 4.5
-- Updated dashboard version to 4.5
-- Updated desktop shell/tray versions to 4.5
-- Updated `settings_version` to 4.5
-- Updated command whitelist for safe onboarding commands
-- Refreshed project metadata
-- Refreshed `project_index.json`
-
-## New commands
-
-Run onboarding and create a fresh setup report first:
-
-```bash
-python conscious_agent/main.py --onboarding
-```
-
-Run onboarding with full setup/report details:
-
-```bash
-python conscious_agent/main.py --onboarding --onboarding-full
-```
-
-Build onboarding from the latest setup report instead of creating a fresh one:
-
-```bash
-python conscious_agent/main.py --onboarding --onboarding-use-latest-setup
-```
-
-List saved onboarding runs:
-
-```bash
-python conscious_agent/main.py --list-onboarding-runs
-```
-
-Show latest onboarding run:
-
-```bash
-python conscious_agent/main.py --show-onboarding-run latest
-```
-
-Show full latest onboarding run:
-
-```bash
-python conscious_agent/main.py --show-onboarding-run latest --onboarding-full
-```
-
-## Dashboard
-
-Start the dashboard:
-
-```bash
-python conscious_agent/main.py --dashboard
-```
-
-Open:
-
-```text
-http://127.0.0.1:8765/onboarding
-```
-
-The page shows:
-
-- latest onboarding status
-- next recommended step
-- guided step cards
-- commands to copy
-- relevant links
-- saved onboarding run table
-- full detail pages
-
-## API
-
-With the dashboard running:
-
-```bash
-curl http://127.0.0.1:8765/api/onboarding
-curl http://127.0.0.1:8765/api/onboarding/latest
-curl -X POST http://127.0.0.1:8765/api/onboarding/run
-```
-
-Use latest setup instead of a fresh setup check:
-
-```bash
-curl -X POST http://127.0.0.1:8765/api/onboarding/run -H "Content-Type: application/json" -d "{\"refresh_setup\":false}"
-```
-
-Standalone API works too:
-
-```bash
-python conscious_agent/main.py --api-server
-curl http://127.0.0.1:8766/api/onboarding/latest
-```
-
-## Desktop shell
-
-Run:
-
-```bash
-python conscious_agent/main.py --desktop
-```
-
-New desktop buttons:
-
-```text
-Open Onboarding
-Onboarding
-```
-
-`Open Onboarding` opens the dashboard onboarding page. `Onboarding` runs the guided wizard and prints the runbook in the desktop log.
-
-## New settings
-
-```bash
-python conscious_agent/main.py --get-setting desktop_onboarding_check_on_start
-python conscious_agent/main.py --get-setting onboarding_refresh_setup_default
-```
-
-Defaults:
-
-```text
-desktop_onboarding_check_on_start: false
-onboarding_refresh_setup_default: true
-```
-
-Enable onboarding when the desktop shell opens:
-
-```bash
-python conscious_agent/main.py --set-setting desktop_onboarding_check_on_start true
-```
-
-## What onboarding checks turn into steps
-
-- broken project layout
-- unwritable data folder
-- missing required packages
-- missing Tkinter
-- missing optional tray packages
-- unsafe non-local host settings
-- Ollama not running
-- configured models missing
-- dashboard/API port and service state
-- first-use flow once setup looks ready
-
-## Good test flow
-
-```bash
-python conscious_agent/main.py --onboarding
-python conscious_agent/main.py --show-onboarding-run latest --onboarding-full
-python conscious_agent/main.py --dashboard
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8765/onboarding
-http://127.0.0.1:8765/api/onboarding/latest
-```
-
-API test:
-
-```bash
-curl -X POST http://127.0.0.1:8765/api/onboarding/run
-```
-
-Desktop test:
-
-```bash
-python conscious_agent/main.py --desktop
-```
-
-Then click:
-
-```text
-Onboarding
-Open Onboarding
-```
-
-## Safety
-
-v4.5 is a guided setup/onboarding layer. It saves runbooks and suggests commands. It does not install packages, edit settings automatically, change firewall rules, expose ports, approve requests, apply patches, rollback files, or run arbitrary commands. It points at the mess with a clipboard, which is somehow progress.
-
-## Next likely step
-
-v4.6 should probably be **Desktop Command Clipboard Helpers**:
-
-- copy recommended onboarding commands from the desktop shell
-- copy setup/package/Ollama commands from dashboard cards
-- add safer command preview cards
-- keep installation and risky machine changes manual
-
-v4.5 tells you what to do. v4.6 should make copying the exact commands less annoying, because apparently typing is where human morale goes to die.
+## v130.0 - Supervised Strategic Growth Audit
+
+Eidolon v130.0 completes the v125.1-v130.0 supervised strategic growth stretch. The system now gathers strategic growth signals, synthesizes roadmap options, tracks strategic risk and debt, scores capability maturity, and audits whether those layers help choose better future growth paths without granting autonomy.
+
+Important safety boundary: v130.0 remains supervised-only, read-only for mind/runtime state, and advisory. Eidolon still must not self-approve, apply live source changes without explicit operator approval, publish releases, mutate memory, alter identity, invoke local models by default, create hidden schedules, run daily loops automatically, execute copy-only commands, infer approval from readiness, auto-select roadmaps, self-upgrade capabilities, or bypass approval gates.
+
+Dashboard hover rule: nav tabs continue to use the custom `data-tip` hover system. Native `title` tooltips must not be reintroduced on nav tabs.
+
+### v125.1-v126.0 - Strategic Growth Intake Layer
+
+- v125.1 Growth Signal Inventory
+- v125.2 Signal Source Classifier
+- v125.3 Signal Confidence Scorer
+- v125.4 Recurring Theme Detector
+- v125.5 Strategic Relevance Scorer
+- v125.6 Safety Sensitivity Scanner
+- v125.7 Strategic Intake Binder
+- v125.8 Strategic Growth Intake Dashboard/API/CLI Coverage
+- v125.9 Pre-v126 Gate
+- v126.0 Strategic Growth Intake Layer
+
+### v126.1-v127.0 - Roadmap Synthesis Layer
+
+- v126.1 Roadmap Option Schema
+- v126.2 Short-Term Roadmap Builder
+- v126.3 Medium-Term Roadmap Builder
+- v126.4 Long-Term Growth Thread Builder
+- v126.5 Dependency Chain Mapper
+- v126.6 Roadmap Conflict Detector
+- v126.7 Roadmap Recommendation Binder
+- v126.8 Roadmap Synthesis Dashboard/API/CLI Coverage
+- v126.9 Pre-v127 Gate
+- v127.0 Roadmap Synthesis Layer
+
+### v127.1-v128.0 - Strategic Risk and Debt Ledger
+
+- v127.1 Strategic Risk Schema
+- v127.2 Technical Debt Inventory
+- v127.3 Safety Debt Inventory
+- v127.4 Usability Debt Inventory
+- v127.5 Risk Priority Scorer
+- v127.6 Mitigation Planner
+- v127.7 Strategic Risk Ledger Binder
+- v127.8 Strategic Risk Ledger Dashboard/API/CLI Coverage
+- v127.9 Pre-v128 Gate
+- v128.0 Strategic Risk and Debt Ledger
+
+### v128.1-v129.0 - Capability Maturity Model Layer
+
+- v128.1 Capability Maturity Schema
+- v128.2 Capability Inventory Refresh
+- v128.3 Evidence-Based Maturity Scorer
+- v128.4 Scaffold vs Live Utility Detector
+- v128.5 Capability Gap Detector
+- v128.6 Maturity Upgrade Planner
+- v128.7 Capability Maturity Binder
+- v128.8 Capability Maturity Dashboard/API/CLI Coverage
+- v128.9 Pre-v129 Gate
+- v129.0 Capability Maturity Model Layer
+
+### v129.1-v130.0 - Supervised Strategic Growth Audit
+
+- v129.1 End-to-End Strategic Walkthrough
+- v129.2 Strategic Coherence Audit
+- v129.3 Safety Boundary Audit
+- v129.4 Roadmap Quality Audit
+- v129.5 Debt and Risk Audit
+- v129.6 Capability Maturity Audit
+- v129.7 Operator Burden Audit
+- v129.8 Strategic Growth Audit Dashboard/API/CLI Coverage
+- v129.9 Pre-v130 Milestone Gate
+- v130.0 Supervised Strategic Growth Audit
+
+### v130.0 interface summary
+
+Dashboard pages:
+- `/strategic-growth-intake`
+- `/roadmap-synthesis`
+- `/strategic-risk-ledger`
+- `/capability-maturity`
+- `/strategic-growth-audit`
+
+API final routes:
+- `/api/strategic-growth-intake/layer`
+- `/api/roadmap-synthesis/layer`
+- `/api/strategic-risk-ledger/layer`
+- `/api/capability-maturity/layer`
+- `/api/strategic-growth-audit/layer`
+
+CLI final checks:
+- `python conscious_agent/main.py --strategic-growth-intake-layer --readiness-json`
+- `python conscious_agent/main.py --roadmap-synthesis-layer --readiness-json`
+- `python conscious_agent/main.py --strategic-risk-debt-ledger --readiness-json`
+- `python conscious_agent/main.py --capability-maturity-model-layer --readiness-json`
+- `python conscious_agent/main.py --supervised-strategic-growth-audit --readiness-json`
+
+### Current direction after v130.0
+
+The next stretch should turn strategic direction into cleaner operator-facing planning rituals: fewer duplicated tabs, stronger evidence for roadmap choices, and tighter links from capability maturity gaps to supervised work packages. The safety boundary remains mandatory: Eidolon recommends strategic direction only; Marcus chooses and approves actual work.
+
+---
+## v125.0 - Supervised Development Learning Audit
+
+Eidolon v125.0 completes the v120.1-v125.0 supervised development learning stretch. The system now reviews completed development outcomes, extracts proposed lessons, refines future recommendations, integrates operator feedback into review packets, and audits whether the learning loop reduces repeated mistakes without granting autonomy or mutating memory.
+
+Important safety boundary: v125.0 remains supervised-only, read-only for mind/runtime state, and advisory. Eidolon still must not self-approve, apply live source changes without explicit operator approval, publish releases, mutate memory, alter identity, invoke local models by default, create hidden schedules, run daily loops automatically, execute copy-only commands, infer approval from readiness, auto-persist lessons or feedback, auto-apply recommendations, or bypass approval gates.
+
+Dashboard hover rule: nav tabs continue to use the custom `data-tip` hover system. Native `title` tooltips must not be reintroduced on nav tabs.
+
+### v120.1-v121.0 - Development Outcome Review Layer
+
+- v120.1 Session Outcome Collector
+- v120.2 Planned vs Actual Comparator
+- v120.3 Missed Surface Detector
+- v120.4 Unexpected Change Detector
+- v120.5 Verification Accuracy Scorer
+- v120.6 Operator Burden Result Tracker
+- v120.7 Outcome Review Binder
+- v120.8 Development Outcome Review Dashboard/API/CLI Coverage
+- v120.9 Pre-v121 Safety Gate
+- v121.0 Development Outcome Review Layer
+
+### v121.1-v122.0 - Supervised Lesson Extraction Layer
+
+- v121.1 Lesson Candidate Schema
+- v121.2 Bug Pattern Extractor
+- v121.3 Successful Pattern Extractor
+- v121.4 False Alarm Detector
+- v121.5 Lesson Usefulness Scorer
+- v121.6 Memory Mutation Boundary Check
+- v121.7 Operator Lesson Review Packet
+- v121.8 Lesson Extraction Dashboard/API/CLI Coverage
+- v121.9 Pre-v122 Safety Gate
+- v122.0 Supervised Lesson Extraction Layer
+
+### v122.1-v123.0 - Recommendation Refinement Layer
+
+- v122.1 Recommendation History Schema
+- v122.2 Recommendation Accuracy Scorer
+- v122.3 Repeated Mistake Detector
+- v122.4 Recommendation Noise Reducer
+- v122.5 Future Recommendation Adjuster
+- v122.6 Safety-Aware Recommendation Filter
+- v122.7 Recommendation Refinement Binder
+- v122.8 Recommendation Refinement Dashboard/API/CLI Coverage
+- v122.9 Pre-v123 Gate
+- v123.0 Recommendation Refinement Layer
+
+### v123.1-v124.0 - Operator Feedback Integration Layer
+
+- v123.1 Feedback Capture Schema
+- v123.2 Standing Rule Detector
+- v123.3 Temporary Preference Detector
+- v123.4 Contradictory Feedback Detector
+- v123.5 Feedback-to-Work-Package Linker
+- v123.6 Feedback Review Packet Builder
+- v123.7 Feedback Safety Boundary Gate
+- v123.8 Operator Feedback Integration Dashboard/API/CLI Coverage
+- v123.9 Pre-v124 Gate
+- v124.0 Operator Feedback Integration Layer
+
+### v124.1-v125.0 - Supervised Development Learning Audit
+
+- v124.1 End-to-End Learning Walkthrough
+- v124.2 Lesson Quality Audit
+- v124.3 Recommendation Improvement Audit
+- v124.4 Feedback Handling Audit
+- v124.5 Memory Boundary Audit
+- v124.6 Safety Regression Audit
+- v124.7 Operator Burden Audit
+- v124.8 Development Learning Dashboard/API/CLI Coverage
+- v124.9 Pre-v125 Milestone Gate
+- v125.0 Supervised Development Learning Audit
+
+### v125.0 interface summary
+
+Dashboard pages:
+- `/development-outcome-review`
+- `/lesson-extraction`
+- `/recommendation-refinement`
+- `/operator-feedback-integration`
+- `/development-learning-audit`
+
+API final routes:
+- `/api/development-outcome-review/layer`
+- `/api/lesson-extraction/layer`
+- `/api/recommendation-refinement/layer`
+- `/api/operator-feedback-integration/layer`
+- `/api/development-learning-audit/layer`
+
+CLI final checks:
+- `python conscious_agent/main.py --development-outcome-review-layer --readiness-json`
+- `python conscious_agent/main.py --supervised-lesson-extraction-layer --readiness-json`
+- `python conscious_agent/main.py --recommendation-refinement-layer --readiness-json`
+- `python conscious_agent/main.py --operator-feedback-integration-layer --readiness-json`
+- `python conscious_agent/main.py --supervised-development-learning-audit --readiness-json`
+
+### Current direction after v125.0
+
+The next stretch should consolidate the expanding supervised learning and development surfaces into a smaller operator-facing flow, strengthen evidence quality, and keep memory/rule updates explicitly reviewable. Supervised-only boundaries remain mandatory.
+
+---
+## v120.0 - Supervised Development Execution Audit
+
+Eidolon v120.0 completes the v115.1-v120.0 supervised development execution stretch. The system now plans development sessions, maps source-change surfaces, simulates patches before application, recommends verification by feature area, and audits whether the flow makes supervised development smoother without granting autonomy.
+
+Important safety boundary: v120.0 remains supervised-only, read-only for mind/runtime state, and advisory. Eidolon still must not self-approve, apply live source changes without explicit operator approval, publish releases, mutate memory, alter identity, invoke local models by default, create hidden schedules, run daily loops automatically, execute copy-only commands, infer approval from readiness, or bypass approval gates.
+
+Dashboard hover rule: nav tabs continue to use the custom `data-tip` hover system. Native `title` tooltips must not be reintroduced on nav tabs.
+
+### v115.1-v116.0 - Development Session Planner
+
+- v115.1 Session Intent Collector
+- v115.2 Session Scope Builder
+- v115.3 File Impact Predictor
+- v115.4 Test Target Planner
+- v115.5 Documentation Task Planner
+- v115.6 Safety Boundary Planner
+- v115.7 Operator Decision Checklist
+- v115.8 Development Session Planner Dashboard/API/CLI Coverage
+- v115.9 Pre-v116 Gate
+- v116.0 Development Session Planner
+
+### v116.1-v117.0 - Source Change Cartographer
+
+- v116.1 Source Surface Inventory
+- v116.2 Route/API/CLI Link Mapper
+- v116.3 Builder Function Dependency Mapper
+- v116.4 Documentation Link Mapper
+- v116.5 Smoke Coverage Mapper
+- v116.6 Fragile Surface Detector
+- v116.7 Change Cartography Report
+- v116.8 Source Cartographer Dashboard/API/CLI Coverage
+- v116.9 Pre-v117 Gate
+- v117.0 Source Change Cartographer
+
+### v117.1-v118.0 - Patch Simulation and Dry-Run Review Layer
+
+- v117.1 Patch Simulation Schema
+- v117.2 Expected Diff Planner
+- v117.3 Missing Change Detector
+- v117.4 Overreach Detector
+- v117.5 Safety Regression Prediction
+- v117.6 Verification Prediction Binder
+- v117.7 Dry-Run Review Summary
+- v117.8 Patch Simulation Dashboard/API/CLI Coverage
+- v117.9 Pre-v118 Gate
+- v118.0 Patch Simulation and Dry-Run Review Layer
+
+### v118.1-v119.0 - Verification Matrix and Regression Memory Layer
+
+- v118.1 Verification Matrix Schema
+- v118.2 Dashboard Regression Matrix
+- v118.3 API/CLI Regression Matrix
+- v118.4 Packaging Regression Matrix
+- v118.5 Safety Regression Matrix
+- v118.6 Documentation Regression Matrix
+- v118.7 Verification Recommendation Builder
+- v118.8 Verification Matrix Dashboard/API/CLI Coverage
+- v118.9 Pre-v119 Gate
+- v119.0 Verification Matrix and Regression Memory Layer
+
+### v119.1-v120.0 - Supervised Development Execution Audit
+
+- v119.1 End-to-End Session Walkthrough
+- v119.2 Operator Burden Audit
+- v119.3 Patch Planning Quality Audit
+- v119.4 Verification Coverage Audit
+- v119.5 Safety Containment Audit
+- v119.6 Dashboard Sprawl Audit
+- v119.7 Documentation Continuity Audit
+- v119.8 Development Execution Dashboard/API/CLI Coverage
+- v119.9 Pre-v120 Gate
+- v120.0 Supervised Development Execution Audit
+
+### v120.0 interface summary
+
+Dashboard pages:
+- `/development-session-planner`
+- `/source-change-cartographer`
+- `/patch-simulation`
+- `/verification-matrix`
+- `/development-execution-audit`
+
+API final routes:
+- `/api/development-session-planner/layer`
+- `/api/source-change-cartographer/layer`
+- `/api/patch-simulation/layer`
+- `/api/verification-matrix/layer`
+- `/api/development-execution-audit/layer`
+
+CLI final checks:
+- `python conscious_agent/main.py --development-session-planner --readiness-json`
+- `python conscious_agent/main.py --source-change-cartographer --readiness-json`
+- `python conscious_agent/main.py --patch-simulation-dry-run-review-layer --readiness-json`
+- `python conscious_agent/main.py --verification-matrix-regression-memory-layer --readiness-json`
+- `python conscious_agent/main.py --supervised-development-execution-audit --readiness-json`
+
+### Current direction after v120.0
+
+The next stretch should focus on operator-facing consolidation and evidence quality so the new planning, source cartography, simulation, and verification matrix surfaces become easier to use rather than merely another gorgeous pile of controls. Supervised-only boundaries remain mandatory.
+
+---
+## v115.0 - Supervised Self-Development Readiness Audit
+
+Eidolon v115.0 completes the v110.1-v115.0 supervised self-development readiness stretch. The system now frames improvement intent, builds supervised work packages, reviews patch readiness, judges release candidates, and audits whether the flow makes Eidolon better at supervised self-development without granting autonomy.
+
+Important safety boundary: v115.0 remains supervised-only, read-only for mind/runtime state, and advisory. Eidolon still must not self-approve, apply live source changes without explicit operator approval, publish releases, mutate memory, alter identity, invoke local models by default, create hidden schedules, run daily loops automatically, execute copy-only commands, infer approval from readiness, or bypass approval gates.
+
+Route note: `/self-development-readiness` remains the older v90 readiness page. The v115 milestone uses `/supervised-development-readiness` so the dashboard does not overwrite historical coverage.
+
+### v110.1-v111.0 - Improvement Intent and Problem Framing Layer
+
+- v110.1 Improvement Intent Inventory
+- v110.2 Problem Statement Builder
+- v110.3 Evidence Requirement Classifier
+- v110.4 Impact Scope Estimator
+- v110.5 Operator Value Scorer
+- v110.6 Safety Sensitivity Classifier
+- v110.7 Improvement Intent Binder
+- v110.8 Improvement Intent Dashboard/API/CLI Coverage
+- v110.9 Pre-v111 Safety Gate
+- v111.0 Improvement Intent and Problem Framing Layer
+
+### v111.1-v112.0 - Supervised Work Package Builder
+
+- v111.1 Work Package Schema
+- v111.2 Change Boundary Mapper
+- v111.3 Acceptance Criteria Builder
+- v111.4 Test Plan Builder
+- v111.5 Documentation Obligation Tracker
+- v111.6 Regression Risk Mapper
+- v111.7 Work Package Review Packet
+- v111.8 Work Package Dashboard/API/CLI Coverage
+- v111.9 Pre-v112 Work Package Gate
+- v112.0 Supervised Work Package Builder
+
+### v112.1-v113.0 - Patch Readiness and Review Intelligence Layer
+
+- v112.1 Patch Readiness Schema
+- v112.2 Patch Diff Expectation Builder
+- v112.3 Patch Completeness Checker
+- v112.4 Patch Contradiction Scanner
+- v112.5 Safety Regression Scanner
+- v112.6 Dashboard Regression Scanner
+- v112.7 Patch Review Summary Builder
+- v112.8 Patch Readiness Dashboard/API/CLI Coverage
+- v112.9 Pre-v113 Patch Readiness Gate
+- v113.0 Patch Readiness and Review Intelligence Layer
+
+### v113.1-v114.0 - Release Candidate Judgment Layer
+
+- v113.1 Release Candidate Schema
+- v113.2 Version Consistency Auditor
+- v113.3 Route/API/CLI Parity Auditor
+- v113.4 Documentation Completeness Auditor
+- v113.5 Package Privacy Auditor Upgrade
+- v113.6 Install-Layer Verification Binder
+- v113.7 Release Recommendation Builder
+- v113.8 Release Judgment Dashboard/API/CLI Coverage
+- v113.9 Pre-v114 Release Judgment Gate
+- v114.0 Release Candidate Judgment Layer
+
+### v114.1-v115.0 - Supervised Self-Development Readiness Audit
+
+- v114.1 End-to-End Improvement Walkthrough
+- v114.2 Operator Burden Audit
+- v114.3 Safety Boundary Audit
+- v114.4 Evidence Quality Audit
+- v114.5 Decision Trace Audit
+- v114.6 Dashboard Usability Audit
+- v114.7 Release Process Audit
+- v114.8 Self-Development Readiness Dashboard/API/CLI Coverage
+- v114.9 Pre-v115 Milestone Gate
+- v115.0 Supervised Self-Development Readiness Audit
+
+### v115.0 interface summary
+
+Dashboard routes:
+
+- `/improvement-intent`
+- `/work-package-builder`
+- `/patch-readiness`
+- `/release-candidate-judgment`
+- `/supervised-development-readiness`
+
+Final API routes:
+
+- `/api/improvement-intent/layer`
+- `/api/work-package-builder/layer`
+- `/api/patch-readiness/layer`
+- `/api/release-candidate-judgment/layer`
+- `/api/supervised-development-readiness/layer`
+
+Final CLI checks:
+
+- `python conscious_agent/main.py --improvement-intent-problem-framing-layer --readiness-json`
+- `python conscious_agent/main.py --supervised-work-package-builder --readiness-json`
+- `python conscious_agent/main.py --patch-readiness-review-intelligence-layer --readiness-json`
+- `python conscious_agent/main.py --release-candidate-judgment-layer --readiness-json`
+- `python conscious_agent/main.py --supervised-self-development-readiness --readiness-json`
+
+### Current direction after v115.0
+
+The v115 milestone gives Eidolon a cleaner supervised development pipeline: intent -> work package -> patch readiness -> release judgment -> readiness audit. The next stretch should reduce dashboard sprawl, strengthen live evidence collection, and make operator review packets more concise before considering any larger supervised execution improvements. The autonomy boundary remains locked.
+
+---
+
+## v110.0 - Practical Supervised Mind Usefulness Audit
+
+Eidolon v110.0 completes the v105.1-v110.0 practical coherence and supervised reasoning stretch. The system now adds advisory memory-quality review, goal-continuity stability, a contained local/manual reasoning workbench, an operator workflow compression console, and a practical supervised mind usefulness audit.
+
+Important safety boundary: v110.0 remains supervised-only, read-only for mind/runtime state, and advisory. Eidolon still must not self-approve, apply live source changes without explicit operator approval, publish releases, mutate memory, alter identity, invoke local models by default, create hidden schedules, run daily loops automatically, execute copy-only commands, infer approval from queues, or bypass approval gates.
+
+### v105.1-v106.0 - Memory Quality and Evidence Hygiene Layer
+
+- v105.1 Memory Source Inventory
+- v105.2 Memory Freshness Classifier
+- v105.3 Memory Duplicate and Conflict Detector
+- v105.4 Memory Evidence Link Builder
+- v105.5 Memory Relevance Scorer
+- v105.6 Memory Correction Draft Builder
+- v105.7 Memory Quality Dashboard/API/CLI Coverage
+- v105.8 Memory Privacy and Mutation Boundary Gate
+- v105.9 Pre-v106 Memory Quality Gate
+- v106.0 Memory Quality and Evidence Hygiene Layer
+
+### v106.1-v107.0 - Goal Continuity and Priority Stability Layer
+
+- v106.1 Goal Inventory Normalizer
+- v106.2 Goal Lifecycle Classifier
+- v106.3 Goal Evidence Linker
+- v106.4 Priority Stability Scorer
+- v106.5 Blocked Goal Resolver
+- v106.6 Goal Contradiction Scanner
+- v106.7 Goal Continuity Summary Builder
+- v106.8 Goal Continuity Dashboard/API/CLI Coverage
+- v106.9 Pre-v107 Goal Continuity Gate
+- v107.0 Goal Continuity and Priority Stability Layer
+
+### v107.1-v108.0 - Contained Local Reasoning Workbench
+
+- v107.1 Reasoning Task Schema
+- v107.2 Context Pack Builder
+- v107.3 Local Model Permission Gate
+- v107.4 Manual Output Capture Layer
+- v107.5 Reasoning Quality Rubric
+- v107.6 Hallucination and Boundary Scanner
+- v107.7 Reasoning Evidence Binder
+- v107.8 Reasoning Workbench Dashboard/API/CLI Coverage
+- v107.9 Pre-v108 Reasoning Containment Gate
+- v108.0 Contained Local Reasoning Workbench
+
+### v108.1-v109.0 - Operator Workflow Compression Console
+
+- v108.1 Workflow Friction Inventory Refresh
+- v108.2 Unified Operator Action Queue
+- v108.3 Copy-Safe Command Builder
+- v108.4 Review Packet Shortcut Builder
+- v108.5 Dashboard Consolidation Recommendations
+- v108.6 Lazy Diagnostics Loader Plan
+- v108.7 Tooltip and Nav Safety Review
+- v108.8 Workflow Console Dashboard/API/CLI Coverage
+- v108.9 Pre-v109 Workflow Gate
+- v109.0 Operator Workflow Compression Console
+
+### v109.1-v110.0 - Practical Supervised Mind Usefulness Audit
+
+- v109.1 End-to-End Daily Use Walkthrough
+- v109.2 Memory Usefulness Audit
+- v109.3 Goal Stability Audit
+- v109.4 Reasoning Workbench Usefulness Audit
+- v109.5 Operator Burden Scorecard
+- v109.6 Dashboard Performance and Sprawl Review
+- v109.7 Safety Boundary Regression Audit
+- v109.8 Practical Mind Dashboard/API/CLI Coverage
+- v109.9 Pre-v110 Practical Usefulness Gate
+- v110.0 Practical Supervised Mind Usefulness Audit
+
+### v110.0 interface summary
+
+- Dashboard: `/memory-quality`, `/goal-continuity`, `/reasoning-workbench`, `/workflow-console`, `/practical-mind-audit`
+- API: `/api/memory-quality/layer`, `/api/goal-continuity/layer`, `/api/reasoning-workbench/layer`, `/api/workflow-console/layer`, `/api/practical-mind-audit/layer`
+- CLI: `--memory-quality-evidence-hygiene-layer`, `--goal-continuity-priority-stability-layer`, `--contained-local-reasoning-workbench`, `--operator-workflow-compression-console`, `--practical-supervised-mind-usefulness-audit`
+
+### Findings checked during v110.0
+
+- The old v100 smoke-version mismatch finding is resolved in this tree by updating current version checks to 110.0 and keeping smoke syntax as `python tools/smoke_check.py --tier install --json`.
+- The v96-v100 dashboard route finding was already fixed by v105.0 and remains covered: `/cycle-replay`, `/capability-ledger`, `/shadow-autonomy`, `/failure-war-games`, and `/mind-milestone-audit` are still routed.
+- The v100 milestone layer is explicitly treated as a safety-first synthetic scaffold, not proof of real autonomous self-operation.
+- The old generated checklist command was corrected from `python conscious_agent/main.py --version` to `python conscious_agent/main.py --version-registry-report`.
+
+### Current direction after v110.0
+
+The next arc should focus on making Eidolon easier to use under supervision: better dashboard consolidation, stronger read-only evidence search, less manual ID copying, and clearer operator decision packets. Do not make Eidolon autonomous yet.
+
+## v105.0 - Coherent Local Mind Runtime v1
+
+Eidolon v105.0 completes the v100.1-v105.0 coherent local mind stabilization stretch. The system can now inventory and reality-check the v100 milestone, expose a unified system map and operator home, bind memory/reflection/goal continuity without mutating memory or identity, generate callable daily operating reports, and present a read-only coherent local mind runtime snapshot with continuity, contradictions, health, and safest next supervised step.
+
+Important safety boundary: v105.0 remains supervised-only, read-only, and advisory. Eidolon still must not self-approve, apply live source changes without explicit operator approval, publish releases, mutate memory, alter identity, invoke local models by default, create hidden schedules, run daily loops automatically, convert recommendations into execution, or bypass approval gates.
+
+### v100.1-v101.0 - v100 Milestone Stabilization and Reality Review
+
+- v100.1 v100 System Inventory Pass
+- v100.2 Route and Command Duplicate Detector
+- v100.3 Dashboard Reality Review
+- v100.4 Smoke and Readiness Coverage Audit
+- v100.5 Runtime Data Privacy Review
+- v100.6 Operator Workflow Friction Review
+- v100.7 v100 Reality Report Builder
+- v100.8 Stabilization Dashboard/API/CLI Coverage
+- v100.9 Pre-v101 Stabilization Gate
+- v101.0 v100 Milestone Stabilization and Reality Review
+
+### v101.1-v102.0 - Unified Eidolon System Map and Operator Home
+
+- v101.1 System Map Schema
+- v101.2 Core Mind Component Mapper
+- v101.3 Development Pipeline Mapper
+- v101.4 Safety and Governance Mapper
+- v101.5 Operator Home Summary Model
+- v101.6 Cross-Link Builder
+- v101.7 Map Integrity Checker
+- v101.8 Operator Home Dashboard/API/CLI Coverage
+- v101.9 Pre-v102 System Map Gate
+- v102.0 Unified Eidolon System Map and Operator Home
+
+### v102.1-v103.0 - Memory, Reflection, and Goal Coherence Binder
+
+- v102.1 Coherence Binder Schema
+- v102.2 Memory-to-Reflection Linker
+- v102.3 Reflection-to-Goal Linker
+- v102.4 Goal-to-Suggestion Linker
+- v102.5 Outcome-to-Lesson Linker
+- v102.6 Coherence Conflict Detector
+- v102.7 Coherence Summary Builder
+- v102.8 Coherence Dashboard/API/CLI Coverage
+- v102.9 Pre-v103 Coherence Gate
+- v103.0 Memory, Reflection, and Goal Coherence Binder
+
+### v103.1-v104.0 - Practical Daily Operating Loop
+
+- v103.1 Daily Loop Schema
+- v103.2 Morning Status Builder
+- v103.3 Priority Queue Builder
+- v103.4 Operator Action Prompt Builder
+- v103.5 Daily Safety Check Builder
+- v103.6 Daily Reflection Prompt Builder
+- v103.7 Daily Loop Dashboard/API/CLI Coverage
+- v103.8 Daily Loop Safety and Privacy Gate
+- v103.9 Pre-v104 Daily Loop Gate
+- v104.0 Practical Daily Operating Loop
+
+### v104.1-v105.0 - Coherent Local Mind Runtime v1
+
+- v104.1 Coherent Runtime Schema
+- v104.2 Unified Mind State Snapshot
+- v104.3 Local Mind Continuity Report
+- v104.4 Unified Next-Step Resolver
+- v104.5 Coherence Health Scorecard
+- v104.6 Runtime Contradiction Scanner
+- v104.7 Coherent Runtime Dashboard/API/CLI Coverage
+- v104.8 Runtime Safety and Containment Gate
+- v104.9 Pre-v105 Integration Gate
+- v105.0 Coherent Local Mind Runtime v1
+
+### v105.0 interface summary
+
+Dashboard routes:
+
+- `/v100-stabilization`
+- `/operator-home`
+- `/system-map`
+- `/coherence-binder`
+- `/daily-loop`
+- `/local-mind-runtime`
+
+Final API routes:
+
+- `/api/v100-stabilization/layer`
+- `/api/system-map/layer`
+- `/api/coherence-binder/layer`
+- `/api/daily-loop/layer`
+- `/api/local-mind-runtime/layer`
+
+Final CLI checks:
+
+- `python conscious_agent/main.py --v100-milestone-stabilization-review --readiness-json`
+- `python conscious_agent/main.py --unified-eidolon-system-map-operator-home --readiness-json`
+- `python conscious_agent/main.py --memory-reflection-goal-coherence-binder --readiness-json`
+- `python conscious_agent/main.py --practical-daily-operating-loop --readiness-json`
+- `python conscious_agent/main.py --coherent-local-mind-runtime-v1 --readiness-json`
+
+### Current direction after v105.0
+
+The v105 milestone makes Eidolon more coherent and easier to operate. It does not unlock autonomy. The next stretch should improve memory quality, goal continuity, local-model reasoning usefulness inside the fence, and operator workflow comfort rather than adding more abstract control layers. The custom dashboard `data-tip` hover system remains the required tooltip system; native nav `title` tooltips must not be reintroduced.
+
+### Historical compatibility markers for readiness checks
+
+- v64.0 Supervised Improvement Intelligence Layer
+- v65.0 Recommendation-to-Proposal Drafting Layer
+- v66.0 Reviewed Proposal Sandbox Execution Layer
+- v67.0 Sandbox Evidence Promotion Handoff Layer
+- v68.0 Promotion-to-Transaction Integration Layer
+- v69.0 Operator-Confirmed Transaction Execution Layer
+- v70.0 Verified Execution Recovery Release Layer
+- v71.0 - Codebase Understanding Map
+- v72.0 - Patch Generation Context Builder
+- v73.0 - Supervised Patch Draft Composer
+- v74.0 - Patch Draft Review and Diff Validation Layer
+- v75.0 - Sandbox Patch Trial Runner
+- v76.0 - Sandbox Evidence Review and Promotion Recommendation Layer
+- v77.0 - Operator-Approved Patch Application Layer
+- v78.0 - Verified Application Recovery and Rollback Hardening
+- v79.0 - Multi-Patch Queue Planning Layer
+- v80.0 - Supervised Local Improvement Loop
+- v81.0 - Local Model Patch Proposal Integration
+- v82.0 - Local Model Output Comparison and Critique
+- v83.0 - Multi-Model Patch Candidate Ranking
+- v84.0 - Supervised Patch Candidate Refinement
+- v85.0 - Safe Autonomous Suggestion Loop
+- v86.0 - Supervised Suggestion Inbox and Work Order Planner
+- v87.0 - Work Order to Patch Context Handoff
+- v88.0 - Work Order Execution Evidence Binder
+- v89.0 - Self-Development Dashboard Consolidation
+- v90.0 - Supervised Self-Development Readiness Audit
+- v91.0 - Supervised Development Session Manager
+- v92.0 - Operator Approval Workflow Console
+- v93.0 - Safe Experiment Branch Planner
+- v94.0 - Learning-from-Outcome Reflection Layer
+- v95.0 - Supervised Improvement Cycle Orchestrator
+- v96.0 - Supervised Cycle Replay and Benchmark Harness
+- v97.0 - Capability Permission and Budget Ledger
+- v98.0 - Shadow Autonomy Simulation Layer
+- v99.0 - Failure Recovery and Rollback War Game Layer
+- v100.0 - Local Artificial Mind Milestone Audit
+- v101.0 - v100 Milestone Stabilization and Reality Review
+- v102.0 - Unified Eidolon System Map and Operator Home
+- v103.0 - Memory, Reflection, and Goal Coherence Binder
+- v104.0 - Practical Daily Operating Loop
+- v105.0 - Coherent Local Mind Runtime v1
+
+- v111.0 - Improvement Intent and Problem Framing Layer
+
+- v112.0 - Supervised Work Package Builder
+
+- v113.0 - Patch Readiness and Review Intelligence Layer
+
+- v114.0 - Release Candidate Judgment Layer
+
+- v115.0 - Supervised Self-Development Readiness Audit
+
+---
+
+# v130.1-v135.0 - Supervised Operator Planning Console
+
+This arc turns the strategic growth systems into a command-style supervised planning console. Eidolon may consolidate evidence, recommend work packages, prepare decision briefs, and audit readiness. She must not self-approve, apply source changes, publish releases, mutate memory, alter identity, invoke local models by default, schedule hidden work, auto-select roadmaps, auto-launch work packages, self-upgrade capabilities, or bypass approval gates.
+
+Dashboard appearance direction: the dashboard now uses a dark command-deck operator-console skin inspired by the provided reference: left rail navigation, top system status strip, workflow command cards, dense analytic panels, planning signal panels, and explicit safety banners. The custom `data-tip` hover system is preserved and native `title` tooltips remain forbidden.
+
+## v130.1-v131.0 - Planning Signal Consolidation Layer
+
+- v130.1 Planning Source Inventory: Inventory strategic signals, roadmap options, risk/debt items, maturity gaps, lessons, feedback, failed checks, and standing rules.
+- v130.2 Duplicate Planning Signal Detector: Detect repeated or overlapping planning signals across advisory layers.
+- v130.3 Planning Signal Priority Normalizer: Normalize priority across operator goals, safety concerns, debt, usability friction, and technical gaps.
+- v130.4 Evidence Strength Classifier: Classify each signal as operator-stated, code-backed, smoke-backed, docs-backed, inferred, stale, or weak.
+- v130.5 Planning Conflict Detector: Detect contradictions between cleanup, new surfaces, safety rules, and roadmap pressure.
+- v130.6 Safety Sensitivity Binder: Flag planning items touching autonomy, memory, identity, local models, scheduling, approvals, publishing, or source mutation.
+- v130.7 Planning Packet Builder: Build one operator-readable packet containing the strongest planning signals.
+- v130.8 Planning Signal Dashboard/API/CLI Coverage: Add `/planning-signals` with matching dynamic API and CLI coverage.
+- v130.9 Pre-v131 Planning Gate: Verify docs, route/API/CLI parity, package privacy, `data-tip` preservation, and advisory-only behavior.
+- v131.0 Planning Signal Consolidation Layer: Finalize consolidated supervised planning signals.
+
+## v131.1-v132.0 - Work Package Recommendation Layer
+
+- v131.1 Work Package Recommendation Schema: Define goal, rationale, linked signals, affected files, risk, verification, docs impact, rollback needs, and safety notes.
+- v131.2 Maturity Gap to Work Package Mapper: Convert low maturity scores into possible supervised work packages.
+- v131.3 Risk/Debt to Work Package Mapper: Convert strategic risk/debt into mitigation-oriented work packages.
+- v131.4 Operator Feedback to Work Package Mapper: Link standing rules and repeated operator complaints to future work.
+- v131.5 Work Package Scope Estimator: Estimate likely file surfaces, complexity, test burden, and dashboard impact.
+- v131.6 Work Package Safety Filter: Block or downgrade recommendations implying autonomy, memory mutation, self-upgrade, publishing, or hidden scheduling.
+- v131.7 Work Package Ranking Engine: Rank packages by value, urgency, evidence strength, risk, operator burden reduction, and dependency order.
+- v131.8 Work Package Recommendation Dashboard/API/CLI Coverage: Add `/work-package-recommendations` with matching dynamic API and CLI coverage.
+- v131.9 Pre-v132 Recommendation Gate: Verify recommendation-only behavior and no automatic work creation.
+- v132.0 Work Package Recommendation Layer: Finalize ranked supervised work package recommendations.
+
+## v132.1-v133.0 - Operator Decision Brief Layer
+
+- v132.1 Decision Brief Schema: Define top recommendation, alternatives, evidence, risk, tradeoffs, and required approval.
+- v132.2 Top Three Option Selector: Select the three strongest next options without auto-selecting the roadmap.
+- v132.3 Tradeoff Explainer: Explain what each option improves, delays, risks, or simplifies.
+- v132.4 Dependency and Sequencing Explainer: Show why some work should happen before other work.
+- v132.5 Operator Burden Forecast: Estimate manual-step, tab-switching, ID-copying, and review complexity impact.
+- v132.6 Verification Burden Forecast: Predict smoke, install, package, docs, dashboard, API, and CLI checks.
+- v132.7 Safety Boundary Summary: State what Eidolon is not allowed to do.
+- v132.8 Decision Brief Dashboard/API/CLI Coverage: Add `/operator-decision-brief` with matching dynamic API and CLI coverage.
+- v132.9 Pre-v133 Decision Gate: Verify the brief remains advisory and cannot approve or schedule work.
+- v133.0 Operator Decision Brief Layer: Finalize the supervised operator decision brief.
+
+## v133.1-v134.0 - Dashboard Planning Console Consolidation
+
+- v133.1 Planning Route Inventory: Inventory development, learning, strategic, roadmap, risk, maturity, and planning dashboard routes.
+- v133.2 Planning Nav Group Refactor Plan: Propose better grouping without breaking existing routes.
+- v133.3 Planning Console Layout Builder: Create a unified planning console page that links to planning artifacts.
+- v133.4 Heavy Report Lazy Loading Audit: Keep expensive diagnostics button-driven or cached.
+- v133.5 Duplicate Tab Reduction Advisor: Recommend which tabs should be grouped, nested, or summarized.
+- v133.6 Hover System Regression Gate: Verify `data-tip` remains and native `title` tooltips do not return.
+- v133.7 Planning Console Safety Banner: Add a recommendation-only, operator-approval-required banner.
+- v133.8 Planning Console Dashboard/API/CLI Coverage: Add `/planning-console` with matching dynamic API and CLI coverage.
+- v133.9 Pre-v134 Console Gate: Verify dashboard dispatch, route safety, docs, package privacy, and no tooltip regression.
+- v134.0 Dashboard Planning Console Consolidation: Finalize the planning console consolidation layer.
+
+## v134.1-v135.0 - Supervised Planning Readiness Audit
+
+- v134.1 End-to-End Planning Walkthrough: Trace signals to recommendations to decision brief to planning console.
+- v134.2 Planning Evidence Audit: Check evidence quality behind recommendations.
+- v134.3 Work Package Quality Audit: Verify recommendations are concrete enough for future supervised work.
+- v134.4 Operator Burden Reduction Audit: Check whether the flow reduces tab hopping, duplicated decisions, and manual lookup.
+- v134.5 Dashboard Sprawl Audit: Verify the console improves organization instead of adding clutter.
+- v134.6 Safety Boundary Audit: Confirm no self-approval, source mutation, memory mutation, identity mutation, local model default invocation, hidden scheduling, publishing, roadmap auto-selection, or approval bypass.
+- v134.7 Route/API/CLI Parity Audit: Verify all v131-v135 routes, APIs, CLI flags, and readiness JSON outputs exist.
+- v134.8 Package Privacy and Runtime Artifact Audit: Ensure runtime planning artifacts stay excluded from source-only packages.
+- v134.9 Pre-v135 Milestone Gate: Run version, docs, route/API/CLI parity, package privacy, tooltip, and advisory-only checks.
+- v135.0 Supervised Operator Planning Console: Final milestone for consolidated planning evidence, ranked packages, decision briefs, and a command-style planning console.
+
+
+# v135.1-v140.0 - Supervised Work Package Selection and Session Launch
+
+Purpose: let the operator choose a recommended work package and prepare a complete supervised launch packet without executing work. Eidolon can compare recommendations, build session briefs, prepare approval checklists, and plan verification/rollback, but cannot auto-select, self-approve, mutate source, run hidden work, or treat readiness as permission.
+
+## v135.1-v136.0 - Work Package Selection Layer
+- v135.1 Selection Schema: Define package selection records.
+- v135.2 Recommendation Import Adapter: Load ranked recommendations from planning layers.
+- v135.3 Selection Candidate View: Summarize priority, risk, evidence, and verification burden.
+- v135.4 Operator Selection Gate: Require explicit operator selection.
+- v135.5 Selection Rationale Capture: Capture selected/deferred/rejected rationale.
+- v135.6 Deferred Package Tracker: Track deferred, blocked, duplicate, unsafe, and stale packages.
+- v135.7 Selection Safety Filter: Block packages implying autonomy, memory/identity mutation, publishing, scheduling, model default invocation, or approval bypass.
+- v135.8 Selection Dashboard/API/CLI Coverage: Add /work-package-selection, dynamic API, and CLI coverage.
+- v135.9 Pre-v136 Selection Gate: Verify advisory-only behavior, parity, docs, privacy, and tooltip safety.
+- v136.0 Work Package Selection Layer: Final supervised selection layer.
+
+## v136.1-v137.0 - Session Brief Preparation Layer
+- v136.1 Session Brief Schema: Define objective, evidence, risks, files, non-goals, and safety constraints.
+- v136.2 Objective Expander: Convert selected package into a development objective.
+- v136.3 Evidence Binder: Attach planning signals, risks, maturity gaps, feedback, and lessons.
+- v136.4 Non-Goal Detector: Identify what the session must not touch.
+- v136.5 Expected File Surface Mapper: Estimate files and modules affected.
+- v136.6 Session Dependency Mapper: List prerequisite checks, docs, and prior versions.
+- v136.7 Human-Readable Session Brief Builder: Build an operator-facing brief.
+- v136.8 Session Brief Dashboard/API/CLI Coverage: Add /session-brief, dynamic API, and CLI coverage.
+- v136.9 Pre-v137 Brief Gate: Verify no source mutation, automatic patch creation, or live execution.
+- v137.0 Session Brief Preparation Layer: Final supervised session brief layer.
+
+## v137.1-v138.0 - Approval Checklist and Safety Boundary Layer
+- v137.1 Approval Checklist Schema: Define approval, scope, risk, rollback, docs, and verification fields.
+- v137.2 Safety Boundary Checklist: Check autonomy, source, memory, identity, scheduling, models, publishing, and approval bypass boundaries.
+- v137.3 Scope Confirmation Checklist: Review files, routes, APIs, CLI flags, docs, runtime paths, and packaging.
+- v137.4 Dashboard Regression Checklist: Preserve command style and data-tip behavior.
+- v137.5 Documentation Checklist: Require README and release history updates.
+- v137.6 Verification Checklist: Require static, smoke, install, privacy, extracted zip, and parity checks.
+- v137.7 Operator Approval Readiness Score: Score readiness for approval or clarification.
+- v137.8 Approval Checklist Dashboard/API/CLI Coverage: Add /approval-checklist, dynamic API, and CLI coverage.
+- v137.9 Pre-v138 Approval Gate: Verify checklist cannot approve itself or mark work complete.
+- v138.0 Approval Checklist and Safety Boundary Layer: Final supervised checklist layer.
+
+## v138.1-v139.0 - Verification Plan and Rollback Preparation Layer
+- v138.1 Verification Plan Schema: Define checks, commands, outputs, smoke tests, APIs, CLI, package checks, and dashboard checks.
+- v138.2 Check Selection Mapper: Map selected package types to verification needs.
+- v138.3 Route/API/CLI Test Planner: Plan route, API, and CLI checks.
+- v138.4 Dashboard Render Test Planner: Plan render and tooltip checks.
+- v138.5 Package Privacy Test Planner: Ensure source-only packages exclude runtime/private artifacts.
+- v138.6 Rollback Plan Schema: Define rollback fields and post-rollback verification.
+- v138.7 Rollback Risk Classifier: Classify rollback difficulty.
+- v138.8 Verification and Rollback Dashboard/API/CLI Coverage: Add /verification-rollback-plan, dynamic API, and CLI coverage.
+- v138.9 Pre-v139 Verification Gate: Verify plans remain advisory and do not execute commands.
+- v139.0 Verification Plan and Rollback Preparation Layer: Final supervised verification/rollback planning layer.
+
+## v139.1-v140.0 - Supervised Session Launch Audit
+- v139.1 End-to-End Launch Trace: Trace recommendation to selection, brief, checklist, verification, and rollback.
+- v139.2 Evidence Continuity Audit: Confirm launch packets point back to planning evidence.
+- v139.3 Safety Boundary Audit: Confirm no hidden execution or approval bypass.
+- v139.4 Operator Burden Audit: Check manual lookup and repeated decision reduction.
+- v139.5 Dashboard Command Style Audit: Preserve the v135 command-deck layout.
+- v139.6 Tooltip Regression Audit: Preserve custom data-tip behavior and avoid native title tooltips.
+- v139.7 Route/API/CLI Parity Audit: Verify v136-v140 routes, APIs, and CLI flags.
+- v139.8 Package Privacy and Runtime Artifact Audit: Keep launch runtime artifacts out of source-only packages.
+- v139.9 Pre-v140 Milestone Gate: Run version, docs, smoke, install, privacy, extracted zip, parity, and dashboard checks.
+- v140.0 Supervised Work Package Selection and Session Launch: Final supervised launch preparation milestone.
+
+# v140.1-v145.0 - Supervised Patch Session Assembly
+
+This arc turns an operator-approved launch packet into a complete supervised patch-session packet. It remains advisory-only: no implementation, no source mutation, no automatic patch application, no approval inference, no memory or identity mutation, no local model default invocation, no hidden scheduling, and no publishing.
+
+## v140.1-v141.0 - Patch Session Intake Layer
+
+- v140.1 Launch Packet Importer: Load selected work package, session brief, approval checklist, verification plan, and rollback plan.
+- v140.2 Patch Session Intake Schema: Define objective, approval status, file scope, safety, docs, verification, and rollback fields.
+- v140.3 Approval State Validator: Require explicit operator approval before a patch session is considered ready.
+- v140.4 Scope Lock Draft: Draft allowed files and modules.
+- v140.5 Out-of-Scope Detector: Flag unrelated changes before implementation planning.
+- v140.6 Safety Constraint Binder: Bind autonomy, memory, identity, model, publishing, scheduling, and approval-bypass restrictions.
+- v140.7 Intake Readiness Score: Score whether launch evidence is complete enough to begin a supervised patch session.
+- v140.8 Patch Session Intake Dashboard/API/CLI Coverage: Add /patch-session-intake, dynamic API, and CLI coverage.
+- v140.9 Pre-v141 Intake Gate: Verify advisory-only behavior, parity, docs, package privacy, and dashboard data-tip preservation.
+- v141.0 Patch Session Intake Layer: Final supervised patch-session intake milestone.
+
+## v141.1-v142.0 - File Change Planning Layer
+
+- v141.1 File Change Plan Schema: Define file path, reason, edit type, risk, dependencies, and verification notes.
+- v141.2 Affected File Resolver: Map selected package to likely source, dashboard, docs, smoke, and packaging files.
+- v141.3 Change Type Classifier: Classify route, API, CLI, data schema, docs, smoke, dashboard, and packaging changes.
+- v141.4 Dependency Impact Mapper: Show modules, routes, and checks depending on planned files.
+- v141.5 Dashboard Change Planner: Preserve command-deck style and custom data-tip hover behavior.
+- v141.6 Docs Change Planner: Plan README and release-history updates before code changes.
+- v141.7 Verification Linker: Link each planned file change to expected verification checks.
+- v141.8 File Change Plan Dashboard/API/CLI Coverage: Add /file-change-plan, dynamic API, and CLI coverage.
+- v141.9 Pre-v142 File Plan Gate: Verify the plan does not edit, patch, or execute anything automatically.
+- v142.0 File Change Planning Layer: Final supervised file-by-file change plan milestone.
+
+## v142.1-v143.0 - Patch Draft Blueprint Layer
+
+- v142.1 Patch Blueprint Schema: Define planned changes, rationale, evidence, targets, safety, verification, rollback, and docs impact.
+- v142.2 Change Sequence Builder: Order planned edits so low-risk foundations happen before dependent changes.
+- v142.3 Route/API/CLI Blueprint Builder: Draft intended route, API, and CLI additions or modifications.
+- v142.4 Dashboard Blueprint Builder: Draft intended dashboard layout and component updates.
+- v142.5 Runtime Artifact Boundary Planner: Define generated runtime outputs that stay outside source-only packages.
+- v142.6 Smoke Coverage Blueprint: Draft expected smoke-check additions before code changes.
+- v142.7 Patch Blueprint Risk Review: Flag risky, broad, ambiguous, or autonomy-adjacent blueprint items.
+- v142.8 Patch Blueprint Dashboard/API/CLI Coverage: Add /patch-blueprint, dynamic API, and CLI coverage.
+- v142.9 Pre-v143 Blueprint Gate: Verify the blueprint remains a plan, not an applied patch.
+- v143.0 Patch Draft Blueprint Layer: Final supervised patch blueprint milestone.
+
+## v143.1-v144.0 - Patch Review Packet Layer
+
+- v143.1 Review Packet Schema: Define objective, selected package, file plan, blueprint, risks, safety, docs, verification, and rollback sections.
+- v143.2 Evidence Chain Builder: Trace every planned change back to launch packet evidence.
+- v143.3 Risk Summary Builder: Summarize high-risk files, route changes, packaging concerns, dashboard risks, and safety-sensitive areas.
+- v143.4 Operator Review Checklist: Create a pre-implementation checklist for human review.
+- v143.5 Approval Blocker Detector: Detect missing approval, unclear scope, weak evidence, stale signals, or unsafe requests.
+- v143.6 Implementation Readiness Score: Score whether the patch is ready for manual supervised implementation.
+- v143.7 Review Packet Export Builder: Prepare a clean review packet for the next work session.
+- v143.8 Patch Review Packet Dashboard/API/CLI Coverage: Add /patch-review-packet, dynamic API, and CLI coverage.
+- v143.9 Pre-v144 Review Gate: Verify no approval is inferred and no code is changed.
+- v144.0 Patch Review Packet Layer: Final supervised patch review packet milestone.
+
+## v144.1-v145.0 - Supervised Patch Session Assembly Audit
+
+- v144.1 End-to-End Patch Session Trace: Trace launch packet to patch intake, file plan, blueprint, and review packet.
+- v144.2 Scope Discipline Audit: Confirm planned changes stay inside approved scope.
+- v144.3 Safety Boundary Audit: Confirm no autonomy, self-approval, memory mutation, identity mutation, hidden scheduling, default local model invocation, publishing, or approval bypass.
+- v144.4 Dashboard Style Regression Audit: Verify command-deck layout and custom data-tip hover behavior survive the arc.
+- v144.5 Docs and Release History Audit: Confirm README_NEXT_STEPS and README_RELEASE_HISTORY remain updated.
+- v144.6 Verification Plan Audit: Confirm planned checks match planned changes.
+- v144.7 Package Privacy Audit: Confirm runtime patch-session artifacts are excluded from source-only packages.
+- v144.8 Route/API/CLI Parity Audit: Verify all v141-v145 pages, APIs, and CLI outputs exist.
+- v144.9 Pre-v145 Milestone Gate: Run fast smoke, install smoke, package privacy, extracted zip checks, dashboard render checks, and tooltip regression checks.
+- v145.0 Supervised Patch Session Assembly: Final supervised patch session assembly milestone.
+
+
+# v145.1-v150.0 - Supervised Patch Draft Generation
+
+This arc turns reviewed patch-session packets into reviewable draft artifacts. It remains draft-only and advisory: no live source writes, no automatic patch application, no self-approval, no verification command execution, no scope expansion without the operator, no memory or identity mutation, no local model default invocation, no hidden scheduling, and no publishing.
+
+## v145.1-v146.0 - Patch Draft Request Layer
+
+- v145.1 Draft Request Schema: Define objective, approved scope, target files, safety constraints, docs requirements, verification plan, rollback notes, and approval state.
+- v145.2 Review Packet Importer: Load the v145 patch review packet as the source of truth for draft generation.
+- v145.3 Draft Eligibility Validator: Block draft readiness when scope, evidence, or safety requirements are incomplete.
+- v145.4 File Scope Lock Confirmation: Confirm draft generation may only cover files listed in the approved file-change plan.
+- v145.5 Draft Non-Goal Binder: Attach no-autonomy, no-self-approval, no-memory, no-identity, no-hidden-scheduling, and no-publishing non-goals.
+- v145.6 Draft Risk Classifier: Classify the requested draft as low, medium, high, or blocked.
+- v145.7 Draft Request Readiness Score: Score whether the draft request is ready for operator review.
+- v145.8 Draft Request Dashboard/API/CLI Coverage: Add /patch-draft-request, dynamic API, and CLI coverage.
+- v145.9 Pre-v146 Draft Request Gate: Verify no file edits occur, no commands execute, and no draft is treated as approved.
+- v146.0 Patch Draft Request Layer: Final supervised draft-request milestone.
+
+## v146.1-v147.0 - File-Level Patch Draft Layer
+
+- v146.1 File Draft Schema: Define file path, intended change, rationale, proposed code/text, risk, verification notes, and rollback notes.
+- v146.2 Source Context Extractor: Collect relevant source snippets for target files.
+- v146.3 Proposed Edit Builder: Generate proposed edits as reviewable draft blocks, not live file writes.
+- v146.4 Diff Preview Formatter: Format proposed changes as human-readable diff previews.
+- v146.5 Dashboard Draft Guard: Preserve command-deck styling and custom data-tip hover behavior.
+- v146.6 Docs Draft Guard: Prepare README and release-history draft edits alongside code drafts.
+- v146.7 File Draft Risk Notes: Attach risk notes to each file-level draft.
+- v146.8 File Patch Draft Dashboard/API/CLI Coverage: Add /file-patch-drafts, dynamic API, and CLI coverage.
+- v146.9 Pre-v147 File Draft Gate: Verify generated drafts are not written into source files automatically.
+- v147.0 File-Level Patch Draft Layer: Final supervised file-draft milestone.
+
+## v147.1-v148.0 - Patch Diff Review Packet Layer
+
+- v147.1 Diff Review Packet Schema: Define objective, file drafts, diff previews, risks, docs updates, verification steps, and rollback summary.
+- v147.2 Draft Ordering Engine: Order proposed file changes by dependency and risk.
+- v147.3 Cross-File Consistency Checker: Detect route/API/CLI/docs/smoke mismatches.
+- v147.4 Safety Boundary Diff Audit: Flag any draft touching forbidden or sensitive areas.
+- v147.5 Verification Alignment Checker: Confirm proposed drafts are covered by planned checks.
+- v147.6 Rollback Alignment Checker: Confirm rollback planning matches proposed file changes.
+- v147.7 Operator Review Summary Builder: Summarize what will change and why.
+- v147.8 Patch Diff Review Dashboard/API/CLI Coverage: Add /patch-diff-review, dynamic API, and CLI coverage.
+- v147.9 Pre-v148 Diff Review Gate: Verify the packet cannot approve or apply itself.
+- v148.0 Patch Diff Review Packet Layer: Final supervised diff-review milestone.
+
+## v148.1-v149.0 - Patch Draft QA Layer
+
+- v148.1 Draft QA Schema: Define completeness, consistency, safety, verification, docs, rollback, dashboard, and privacy fields.
+- v148.2 Completeness Auditor: Check whether all planned files have draft changes or justified no-op notes.
+- v148.3 Consistency Auditor: Check whether code, docs, CLI, API, dashboard, and smoke expectations agree.
+- v148.4 Safety Auditor: Check for autonomy expansion, approval bypass, memory/identity mutation, publishing, hidden scheduling, or local model default invocation.
+- v148.5 Dashboard Regression Auditor: Check command-deck layout, navigation behavior, and custom data-tip hover preservation.
+- v148.6 Package Privacy Auditor: Check whether proposed runtime artifacts are excluded from source-only packages.
+- v148.7 Draft QA Readiness Score: Score the draft package as ready, needs revision, blocked, or unsafe.
+- v148.8 Patch Draft QA Dashboard/API/CLI Coverage: Add /patch-draft-qa, dynamic API, and CLI coverage.
+- v148.9 Pre-v149 QA Gate: Verify QA remains advisory and does not modify drafts automatically.
+- v149.0 Patch Draft QA Layer: Final supervised draft-QA milestone.
+
+## v149.1-v150.0 - Supervised Patch Draft Generation Audit
+
+- v149.1 End-to-End Draft Trace: Trace patch review packet to draft request, file-level drafts, diff review packet, and draft QA.
+- v149.2 Evidence Continuity Audit: Confirm every proposed draft traces back to approved scope and source evidence.
+- v149.3 Scope Discipline Audit: Confirm drafts stay inside the approved file-change plan.
+- v149.4 Safety Boundary Audit: Confirm no autonomy, self-approval, memory mutation, identity mutation, local model default invocation, hidden scheduling, publishing, or approval bypass.
+- v149.5 Dashboard Style Audit: Confirm command-deck layout remains intact and no native title tooltip regression appears.
+- v149.6 Docs and Release History Audit: Confirm README_NEXT_STEPS and README_RELEASE_HISTORY are updated through v150.0.
+- v149.7 Route/API/CLI Parity Audit: Verify all v146-v150 dashboard routes, APIs, and CLI outputs exist.
+- v149.8 Package Privacy Audit: Confirm generated draft/runtime artifacts stay excluded from source-only packages.
+- v149.9 Pre-v150 Milestone Gate: Run version, docs, smoke, install, privacy, extracted zip, route/API/CLI, and dashboard checks.
+- v150.0 Supervised Patch Draft Generation: Final supervised patch draft generation milestone.
+
+
+# v150.1-v155.0 - Supervised Patch Implementation Handoff
+
+This arc turns QA-passed patch drafts into operator-facing implementation handoff packets while preserving the supervised boundary. Eidolon may prepare handoff intake, manual application instructions, verification worksheets, rollback packets, and audits. She must not apply live source changes, write generated drafts into live files, execute verification commands, self-approve, publish, mutate memory or identity, invoke local models by default, schedule hidden work, auto-select plans, or bypass approval gates.
+
+## v150.1-v151.0 - Implementation Handoff Intake Layer
+- v150.1 Implementation Handoff Schema: Define objective, source draft packet, QA status, target files, safety boundaries, docs duties, verification duties, rollback duties, and operator approval state.
+- v150.2 Draft QA Importer: Load the latest patch draft QA result and draft generation audit as source evidence.
+- v150.3 Implementation Eligibility Validator: Block handoff readiness when drafts are incomplete, unsafe, out of scope, or missing docs/verification coverage.
+- v150.4 Approved File Scope Binder: Bind implementation instructions strictly to the approved file-change plan.
+- v150.5 Safety Boundary Reconfirmation: Reassert no autonomy unlock, self-approval, memory mutation, identity mutation, hidden scheduling, publishing, source mutation, or default local model invocation.
+- v150.6 Implementation Risk Classifier: Classify the handoff as low, medium, high, blocked, or unsafe.
+- v150.7 Operator Approval Requirement Builder: Produce explicit approval requirements before any live code changes may happen.
+- v150.8 Implementation Handoff Dashboard/API/CLI Coverage: Expose `/implementation-handoff`, dynamic API routes, and CLI flags.
+- v150.9 Pre-v151 Handoff Gate: Verify the handoff remains advisory and does not write files or run commands.
+- v151.0 Implementation Handoff Intake Layer: Final supervised implementation handoff intake milestone.
+
+## v151.1-v152.0 - Manual Patch Application Plan Layer
+- v151.1 Application Step Schema: Define step number, target file, edit summary, draft reference, expected change, risk, verification link, and rollback note.
+- v151.2 File Edit Ordering Engine: Order edits by dependency, risk, docs timing, dashboard route dependencies, and smoke coverage.
+- v151.3 Manual Edit Instruction Builder: Produce precise human-readable edit instructions without writing them into files.
+- v151.4 Dashboard Edit Safeguard Planner: Warn to preserve command-deck layout and custom `data-tip` hover behavior.
+- v151.5 API/CLI Parity Application Planner: Ensure route, dashboard, dynamic API, and CLI coverage align.
+- v151.6 Docs Update Application Planner: Plan README and release-history edits as mandatory application steps.
+- v151.7 Smoke Update Application Planner: Plan smoke-check additions and version marker checks before implementation.
+- v151.8 Manual Patch Application Plan Dashboard/API/CLI Coverage: Expose `/manual-patch-application-plan`, dynamic API routes, and CLI flags.
+- v151.9 Pre-v152 Application Plan Gate: Verify the plan contains no automatic file writes or command execution.
+- v152.0 Manual Patch Application Plan Layer: Final manual application planning milestone.
+
+## v152.1-v153.0 - Implementation Verification Worksheet Layer
+- v152.1 Verification Worksheet Schema: Define check name, command, purpose, expected result, risk covered, related file, and pass/fail capture field.
+- v152.2 Version Marker Verification Builder: Include checks for core, dashboard, API, packaging, installation, workspace, and smoke version expectations.
+- v152.3 Dashboard Render Verification Builder: Include dashboard import/render checks and command-deck style regression checks.
+- v152.4 Tooltip Regression Verification Builder: Check nav tabs use `data-tip` and do not reintroduce native `title` tooltips.
+- v152.5 Route/API/CLI Parity Verification Builder: Verify new routes, API paths, and CLI commands line up.
+- v152.6 Package Privacy Verification Builder: Verify source-only packaging excludes runtime, private, cache, workspace execution, and generated handoff artifacts.
+- v152.7 Extracted Zip Verification Builder: Plan smoke checks against the extracted release zip.
+- v152.8 Verification Worksheet Dashboard/API/CLI Coverage: Expose `/implementation-verification-worksheet`, dynamic API routes, and CLI flags.
+- v152.9 Pre-v153 Verification Gate: Verify worksheet commands are listed only and not executed automatically.
+- v153.0 Implementation Verification Worksheet Layer: Final supervised verification worksheet milestone.
+
+## v153.1-v154.0 - Implementation Rollback Packet Layer
+- v153.1 Rollback Packet Schema: Define changed files, restoration source, rollback steps, verification after rollback, and evidence capture.
+- v153.2 File Restoration Planner: Map each planned edit to previous source state or backup strategy.
+- v153.3 Route/API/CLI Rollback Planner: Identify route, API, and CLI removals or reversions if implementation fails.
+- v153.4 Dashboard Rollback Planner: Preserve command-deck dashboard style and avoid tooltip regressions during rollback.
+- v153.5 Docs Rollback Planner: Decide whether README/release-history changes should revert or record the failed attempt.
+- v153.6 Smoke Rollback Planner: Plan post-rollback smoke checks.
+- v153.7 Rollback Risk Score: Score rollback difficulty and identify files needing extra care.
+- v153.8 Rollback Packet Dashboard/API/CLI Coverage: Expose `/implementation-rollback-packet`, dynamic API routes, and CLI flags.
+- v153.9 Pre-v154 Rollback Gate: Verify rollback packet remains advisory and does not mutate files.
+- v154.0 Implementation Rollback Packet Layer: Final rollback packet milestone.
+
+## v154.1-v155.0 - Supervised Implementation Handoff Audit
+- v154.1 End-to-End Handoff Trace: Trace draft QA to handoff intake, manual application plan, verification worksheet, and rollback packet.
+- v154.2 Evidence Continuity Audit: Confirm every implementation step traces back to draft evidence and approved scope.
+- v154.3 Scope Discipline Audit: Confirm no file or behavior expands beyond the approved patch draft.
+- v154.4 Safety Boundary Audit: Confirm no autonomy unlock, self-approval, live mutation, memory mutation, identity mutation, hidden scheduling, publishing, local model default invocation, verification auto-execution, or approval bypass.
+- v154.5 Dashboard Style Audit: Confirm command-deck layout and `data-tip` behavior survive the planned implementation.
+- v154.6 Docs and Release History Audit: Confirm README and release history requirements are included.
+- v154.7 Route/API/CLI Parity Audit: Confirm v151-v155 surfaces are planned across dashboard, API, and CLI.
+- v154.8 Package Privacy Audit: Confirm implementation handoff artifacts remain runtime/generated artifacts and stay out of source-only packages.
+- v154.9 Pre-v155 Milestone Gate: Verify version markers, docs, smoke, install, package privacy, extracted zip checks, dashboard checks, and tooltip checks are planned.
+- v155.0 Supervised Patch Implementation Handoff: Final operator-facing implementation handoff milestone.
+
+
+# v155.1-v160.0 - Supervised Patch Application Readiness
+
+This arc turns implementation handoff packets into supervised patch application readiness reports. Eidolon may intake evidence, score readiness, find blockers, prepare go/no-go decision packets, and audit the full readiness chain. She must not apply patches, write generated drafts into live source files, execute verification commands, infer approval, self-approve, publish, mutate memory or identity, invoke local models by default, schedule hidden work, auto-select readiness-go states, or bypass approval gates.
+
+## v155.1-v156.0 - Patch Readiness Intake Layer
+- v155.1 Readiness Intake Schema: Define patch objective, source draft packet, QA result, handoff state, implementation plan, verification plan, rollback plan, docs obligations, and operator approval state.
+- v155.2 Handoff Packet Importer: Pull implementation handoff data forward as the basis for readiness review.
+- v155.3 QA Status Binder: Bind readiness to patch draft QA status so unsafe or incomplete drafts cannot appear ready.
+- v155.4 Manual Application Plan Binder: Confirm every planned file edit has a manual application step.
+- v155.5 Verification Worksheet Binder: Confirm every planned change has a verification check.
+- v155.6 Rollback Packet Binder: Confirm every planned change has a rollback path.
+- v155.7 Documentation Obligation Binder: Confirm README and release-history updates are included.
+- v155.8 Patch Readiness Intake Dashboard/API/CLI Coverage: Expose `/patch-readiness-intake`, dynamic API routes, and CLI flags.
+- v155.9 Pre-v156 Intake Gate: Block readiness if any required packet is missing.
+- v156.0 Patch Readiness Intake Layer: Final supervised readiness intake milestone.
+
+## v156.1-v157.0 - Patch Readiness Scoring Layer
+- v156.1 Readiness Score Schema: Define score fields for scope, safety, docs, verification, rollback, dashboard/API/CLI parity, packaging, and operator approval.
+- v156.2 Scope Readiness Score: Check that the patch stays within approved files and objectives.
+- v156.3 Safety Readiness Score: Confirm no autonomy unlock, self-approval, live mutation, hidden scheduling, memory mutation, identity mutation, publishing, or default local model invocation.
+- v156.4 Verification Readiness Score: Score whether verification commands and expected results are complete.
+- v156.5 Rollback Readiness Score: Score how recoverable the planned patch is.
+- v156.6 Documentation Readiness Score: Score whether README and release-history work is properly planned.
+- v156.7 Dashboard Regression Readiness Score: Protect command-deck style and `data-tip` hover behavior.
+- v156.8 Patch Readiness Score Dashboard/API/CLI Coverage: Expose `/patch-readiness-score`, dynamic API routes, and CLI flags.
+- v156.9 Pre-v157 Score Gate: Verify readiness score cannot self-approve anything.
+- v157.0 Patch Readiness Scoring Layer: Final supervised readiness scoring milestone.
+
+## v157.1-v158.0 - Patch Blocker and Gap Report Layer
+- v157.1 Blocker Report Schema: Define blocker ID, severity, affected file, affected stage, cause, required fix, and readiness impact.
+- v157.2 Missing Packet Detector: Detect absent draft QA, handoff, verification, rollback, or docs evidence.
+- v157.3 Missing File Coverage Detector: Detect files with planned changes but missing verification or rollback coverage.
+- v157.4 Unsafe Capability Detector: Detect attempts to sneak in autonomy, self-approval, hidden work, or live mutation.
+- v157.5 Dashboard Regression Detector: Detect dashboard style or tooltip risks.
+- v157.6 Route/API/CLI Gap Detector: Detect parity gaps between dashboard pages, API routes, and CLI flags.
+- v157.7 Package Privacy Gap Detector: Detect packaging risks and source-only privacy issues.
+- v157.8 Patch Readiness Blockers Dashboard/API/CLI Coverage: Expose `/patch-readiness-blockers`, dynamic API routes, and CLI flags.
+- v157.9 Pre-v158 Blocker Gate: Confirm blocker reports remain advisory only.
+- v158.0 Patch Blocker and Gap Report Layer: Final supervised blocker-report milestone.
+
+## v158.1-v159.0 - Operator Go/No-Go Decision Packet Layer
+- v158.1 Go/No-Go Packet Schema: Define status, recommendation, required approval, remaining blockers, risk summary, verification summary, rollback summary, and docs summary.
+- v158.2 Go Recommendation Builder: Recommend ready for operator-approved application only when every required gate passes.
+- v158.3 No-Go Recommendation Builder: Recommend blocked when safety, scope, verification, rollback, or docs coverage is incomplete.
+- v158.4 Conditional-Go Recommendation Builder: Allow ready with conditions for non-safety cleanup items.
+- v158.5 Operator Approval Text Builder: Generate explicit approval language the operator can use before applying changes.
+- v158.6 Risk Acceptance Summary: Summarize what risk the operator is accepting.
+- v158.7 Post-Approval Instruction Summary: Explain what happens only after explicit operator approval.
+- v158.8 Go/No-Go Dashboard/API/CLI Coverage: Expose `/patch-go-no-go-decision`, dynamic API routes, and CLI flags.
+- v158.9 Pre-v159 Decision Gate: Confirm the decision packet does not apply patches or execute commands.
+- v159.0 Operator Go/No-Go Decision Packet Layer: Final supervised operator decision-packet milestone.
+
+## v159.1-v160.0 - Supervised Patch Application Readiness Audit
+- v159.1 End-to-End Readiness Trace: Trace draft QA to implementation handoff, application plan, verification worksheet, rollback packet, readiness score, blocker report, and go/no-go packet.
+- v159.2 Evidence Continuity Audit: Confirm every recommendation has supporting evidence.
+- v159.3 Safety Boundary Audit: Confirm the pipeline does not mutate live source files, self-approve, auto-run verification, publish releases, alter identity, mutate memory, or unlock autonomy.
+- v159.4 Dashboard Style Audit: Confirm command-deck style and custom `data-tip` hover behavior are preserved.
+- v159.5 Route/API/CLI Parity Audit: Confirm all v156-v160 surfaces exist across dashboard, API, and CLI.
+- v159.6 Docs and Release-History Audit: Confirm README and release history updates are mandatory.
+- v159.7 Package Privacy Audit: Confirm readiness artifacts stay out of source-only package output unless intentionally source-tracked.
+- v159.8 Smoke and Install Verification Planner: Confirm final verification expectations include fast smoke, install smoke, package privacy, and extracted zip smoke.
+- v159.9 Pre-v160 Milestone Gate: Confirm all readiness layers are advisory and supervised.
+- v160.0 Supervised Patch Application Readiness: Final supervised readiness milestone.
+
+# v160.1-v165.0 - Operator-Approved Patch Application Sandbox
+
+Purpose: let Eidolon prepare and review an explicitly operator-approved sandbox patch application flow without touching live source, promoting sandbox output, self-approving, publishing, mutating memory or identity, scheduling hidden work, invoking local models by default, or executing verification commands without approval.
+
+## v160.1-v161.0 - Patch Sandbox Intake Layer
+- v160.1 Sandbox Intake Schema: Define objective, approved draft packet, readiness decision, target files, sandbox location, approval state, verification plan, rollback plan, and safety boundaries.
+- v160.2 Go/No-Go Importer: Import the readiness decision and block unsafe/no-go patches.
+- v160.3 Explicit Approval Binder: Require explicit operator approval before actionable sandbox preparation.
+- v160.4 Sandbox Scope Binder: Bind sandbox work to approved files and draft content.
+- v160.5 Sandbox Target Resolver: Define sandbox/staging targets without touching live source.
+- v160.6 Sandbox Safety Boundary Builder: Reconfirm no live mutation, no promotion, no publishing, no autonomy unlock, and no self-approval.
+- v160.7 Sandbox Risk Classifier: Classify sandbox risk by file count, route impact, dashboard impact, smoke impact, and rollback complexity.
+- v160.8 Patch Sandbox Intake Dashboard/API/CLI Coverage: Expose intake through dashboard, dynamic API, and CLI.
+- v160.9 Pre-v161 Sandbox Gate: Verify intake remains gated and does not create or mutate files automatically.
+- v161.0 Patch Sandbox Intake Layer: Final sandbox intake milestone.
+
+## v161.1-v162.0 - Approved Sandbox Patch Application Plan
+- v161.1 Sandbox Application Step Schema: Define sandbox edit steps, targets, source drafts, expected results, verification links, and rollback notes.
+- v161.2 Sandbox File Copy Planner: Plan approved file copies into sandbox/staging before edits.
+- v161.3 Sandbox Patch Application Planner: Plan draft changes only against sandbox files.
+- v161.4 Sandbox Dashboard Safeguard Planner: Protect command-deck style and custom `data-tip` hovers.
+- v161.5 Sandbox API/CLI Parity Planner: Keep route/API/CLI changes aligned.
+- v161.6 Sandbox Docs Planner: Include README and release-history edits inside sandbox only.
+- v161.7 Sandbox No-Live-Mutation Guard: Reject live source targets.
+- v161.8 Sandbox Patch Application Plan Dashboard/API/CLI Coverage: Expose the plan through dashboard, dynamic API, and CLI.
+- v161.9 Pre-v162 Application Plan Gate: Verify the plan remains approval-gated and sandbox-only.
+- v162.0 Approved Sandbox Patch Application Plan: Final sandbox plan milestone.
+
+## v162.1-v163.0 - Sandbox Verification Execution Packet
+- v162.1 Sandbox Verification Packet Schema: Define command, context, purpose, expected result, evidence path, risk covered, and operator execution state.
+- v162.2 Sandbox Fast Smoke Planner: Prepare fast smoke verification against the sandbox copy.
+- v162.3 Sandbox Install Smoke Planner: Prepare install smoke verification against the sandbox copy.
+- v162.4 Sandbox Dashboard Render Planner: Prepare dashboard render checks.
+- v162.5 Sandbox Tooltip Regression Planner: Verify `data-tip` survives and native nav-tab `title` tooltips do not return.
+- v162.6 Sandbox Package Privacy Planner: Prepare source-only package privacy checks from sandbox output.
+- v162.7 Sandbox Evidence Capture Plan: Define verification evidence capture locations.
+- v162.8 Sandbox Verification Packet Dashboard/API/CLI Coverage: Expose verification packets through dashboard, dynamic API, and CLI.
+- v162.9 Pre-v163 Verification Gate: Verify commands are not run unless explicitly approved.
+- v163.0 Sandbox Verification Execution Packet: Final verification packet milestone.
+
+## v163.1-v164.0 - Sandbox Result Review Layer
+- v163.1 Sandbox Result Schema: Define applied status, verification status, failures, changed files, evidence summary, rollback status, and promotion eligibility.
+- v163.2 Sandbox Application Evidence Reader: Summarize sandbox application evidence.
+- v163.3 Sandbox Verification Evidence Reader: Summarize smoke, dashboard, tooltip, package privacy, and route/API/CLI evidence.
+- v163.4 Sandbox Failure Classifier: Classify failures by docs, style, parity, smoke, packaging, safety, or unknown.
+- v163.5 Sandbox Fix Recommendation Builder: Recommend supervised fixes for failures.
+- v163.6 Sandbox Promotion Eligibility Classifier: Determine whether operator-approved promotion may be considered later.
+- v163.7 Sandbox Rollback Recommendation Builder: Recommend discard, revise, or keep decisions for sandbox output.
+- v163.8 Sandbox Result Review Dashboard/API/CLI Coverage: Expose result review through dashboard, dynamic API, and CLI.
+- v163.9 Pre-v164 Result Gate: Verify review does not promote or apply anything to live source.
+- v164.0 Sandbox Result Review Layer: Final result review milestone.
+
+## v164.1-v165.0 - Supervised Sandbox Patch Application Audit
+- v164.1 End-to-End Sandbox Trace: Trace readiness decision, sandbox intake, application plan, verification packet, and result review.
+- v164.2 Explicit Approval Audit: Confirm every actionable sandbox step depends on operator approval.
+- v164.3 No-Live-Mutation Audit: Confirm sandbox logic cannot target live source paths.
+- v164.4 Safety Boundary Audit: Confirm no self-approval, publishing, memory/identity mutation, hidden scheduling, autonomy unlock, or default local model invocation.
+- v164.5 Dashboard Style Audit: Confirm command-deck styling and `data-tip` hover behavior remain protected.
+- v164.6 Route/API/CLI Parity Audit: Confirm v161-v165 surfaces exist across dashboard, dynamic API, and CLI.
+- v164.7 Docs and Release-History Audit: Confirm README and release history updates remain mandatory.
+- v164.8 Package Privacy Audit: Confirm sandbox artifacts, evidence, runtime output, caches, and private files stay out of source-only packages.
+- v164.9 Pre-v165 Milestone Gate: Confirm sandbox application remains supervised, gated, non-live, and non-promoting.
+- v165.0 Operator-Approved Patch Application Sandbox: Final supervised sandbox milestone.
+
+
+# v165.1-v170.0 - Operator-Approved Sandbox-to-Source Promotion
+
+Purpose: Prepare a supervised bridge from successful sandbox patch results to live-source promotion packets. Eidolon may import sandbox evidence, plan source promotion, assemble approval packets, prepare post-promotion verification and rollback procedures, and audit the chain. She must not infer approval, self-approve, mutate live source, promote sandbox output, publish, mutate memory or identity, schedule hidden work, invoke local models by default, or auto-run verification.
+
+## v165.1-v166.0 - Sandbox Promotion Intake Layer
+- v165.1 Promotion Intake Schema: Define sandbox result, patch objective, changed files, verification evidence, failure status, rollback status, docs status, and operator approval state.
+- v165.2 Sandbox Result Importer: Import the v165 sandbox result review as the source of truth.
+- v165.3 Promotion Eligibility Binder: Bind promotion eligibility to successful sandbox verification and clean result classification.
+- v165.4 Explicit Promotion Approval Requirement: Require a new explicit operator approval before any source promotion may occur.
+- v165.5 Source Target Scope Binder: Bind possible source changes strictly to the sandbox-approved file set.
+- v165.6 Promotion Safety Boundary Builder: Reconfirm no self-approval, automatic promotion, publishing, memory mutation, identity mutation, hidden scheduling, or default local model invocation.
+- v165.7 Promotion Risk Classifier: Classify promotion risk by file count, route/API/CLI impact, dashboard impact, smoke impact, docs impact, and rollback complexity.
+- v165.8 Dashboard/API/CLI Coverage: Add `/sandbox-promotion-intake`, dynamic API route, and CLI flag.
+- v165.9 Pre-v166 Promotion Gate: Confirm intake does not write to live source.
+- v166.0 Sandbox Promotion Intake Layer: Final promotion intake milestone.
+
+## v166.1-v167.0 - Source Promotion Application Plan Layer
+- v166.1 Source Promotion Step Schema: Define step number, source file, sandbox file, change summary, expected result, risk, verification link, and rollback note.
+- v166.2 Sandbox-to-Source Diff Mapper: Map sandbox changes to corresponding live source paths.
+- v166.3 Source Application Ordering Engine: Order promotion steps by dependency, risk, docs timing, dashboard route dependencies, and smoke coverage.
+- v166.4 Source Conflict Detection Planner: Detect whether live source has changed since the sandbox was created.
+- v166.5 Dashboard Promotion Safeguard Planner: Protect command-deck/operator-console style and custom `data-tip` hover behavior.
+- v166.6 API/CLI Promotion Parity Planner: Confirm source promotion maintains route/API/CLI parity.
+- v166.7 Docs Promotion Planner: Include README and release-history changes as mandatory source-promotion steps.
+- v166.8 Dashboard/API/CLI Coverage: Add `/source-promotion-plan`, dynamic API route, and CLI flag.
+- v166.9 Pre-v167 Plan Gate: Confirm the source plan remains advisory until explicit approval.
+- v167.0 Source Promotion Application Plan Layer: Final source promotion plan milestone.
+
+## v167.1-v168.0 - Promotion Approval Packet Layer
+- v167.1 Promotion Approval Packet Schema: Define recommendation, source files, sandbox evidence, risks, verification checklist, rollback checklist, docs duties, and approval language.
+- v167.2 Approval Evidence Summary Builder: Summarize sandbox verification results and why promotion is or is not recommended.
+- v167.3 Risk Acceptance Builder: List what the operator accepts by approving source promotion.
+- v167.4 Required Approval Phrase Builder: Generate explicit approval language such as approving promotion of a specific sandbox patch to live source.
+- v167.5 Blocked Promotion Explanation Builder: Explain why promotion cannot proceed when sandbox evidence is missing, failed, stale, or unsafe.
+- v167.6 Conditional Promotion Builder: Allow promotion-ready-with-conditions for non-safety issues only.
+- v167.7 Final Human Review Checklist Builder: Add checklist items for source files, docs, dashboard, tooltip behavior, API/CLI parity, package privacy, and smoke checks.
+- v167.8 Dashboard/API/CLI Coverage: Add `/promotion-approval-packet`, dynamic API route, and CLI flag.
+- v167.9 Pre-v168 Approval Gate: Confirm approval packet does not infer approval or promote anything.
+- v168.0 Promotion Approval Packet Layer: Final approval packet milestone.
+
+## v168.1-v169.0 - Post-Promotion Verification and Rollback Layer
+- v168.1 Post-Promotion Verification Schema: Define command, purpose, expected result, evidence field, failure response, and rollback trigger.
+- v168.2 Source Fast Smoke Planner: Prepare fast smoke checks after live source promotion.
+- v168.3 Source Install Smoke Planner: Prepare install smoke checks after promotion.
+- v168.4 Source Dashboard Render Planner: Prepare dashboard render checks for promoted pages.
+- v168.5 Source Tooltip Regression Planner: Confirm `data-tip` hover behavior remains intact and native nav-tab `title` tooltips do not return.
+- v168.6 Source Package Privacy Planner: Prepare source-only packaging checks after promotion.
+- v168.7 Promotion Rollback Trigger Planner: Define when the operator should roll back promoted changes.
+- v168.8 Dashboard/API/CLI Coverage: Add `/post-promotion-verification`, dynamic API route, and CLI flag.
+- v168.9 Pre-v169 Verification Gate: Confirm verification planning does not automatically execute commands.
+- v169.0 Post-Promotion Verification and Rollback Layer: Final post-promotion verification milestone.
+
+## v169.1-v170.0 - Supervised Sandbox-to-Source Promotion Audit
+- v169.1 End-to-End Promotion Trace: Trace sandbox result, promotion intake, source promotion plan, approval packet, and post-promotion verification and rollback plan.
+- v169.2 Evidence Continuity Audit: Confirm every promotion recommendation traces back to sandbox evidence.
+- v169.3 Explicit Approval Audit: Confirm live source promotion requires explicit operator approval and never infers it.
+- v169.4 No Autonomous Promotion Audit: Confirm no self-approval, automatic promotion, live mutation without approval, hidden scheduling, or publishing.
+- v169.5 Dashboard Style Audit: Confirm command-deck/operator-console layout and custom `data-tip` hover behavior remain protected.
+- v169.6 Route/API/CLI Parity Audit: Confirm all v166-v170 surfaces exist across dashboard, dynamic API, and CLI.
+- v169.7 Docs and Release-History Audit: Confirm README and release history updates remain mandatory.
+- v169.8 Package Privacy Audit: Confirm sandbox artifacts, runtime output, evidence files, private data, caches, and local model outputs stay out of source-only packages.
+- v169.9 Pre-v170 Milestone Gate: Confirm promotion remains supervised, gated, reversible, and non-autonomous.
+- v170.0 Operator-Approved Sandbox-to-Source Promotion: Final milestone.
+
+
+# v170.1-v175.0 - Operator-Approved Source Patch Application
+
+## v170.1-v171.0 - Source Application Approval Intake Layer
+- v170.1 Source Application Approval Schema: Define objective, promotion packet, sandbox evidence, approved files, explicit approval phrase, risk state, rollback plan, verification plan, and application state.
+- v170.2 Promotion Packet Importer: Import the sandbox-to-source promotion audit as source application context.
+- v170.3 Explicit Approval Phrase Matcher: Require a clear approval phrase before live source application eligibility.
+- v170.4 Source Scope Binder: Bind live changes strictly to the approved sandbox-to-source file set.
+- v170.5 Approval Expiration Guard: Mark approval stale if source, sandbox, readiness, or promotion evidence changes.
+- v170.6 Safety Boundary Reconfirmation: Reconfirm no self-approval, inferred approval, publishing, hidden scheduling, memory/identity mutation, or default model invocation.
+- v170.7 Application Risk Classifier: Classify live-source application risk.
+- v170.8 Dashboard/API/CLI Coverage: Add `/source-application-approval`, dynamic API route, and CLI flag.
+- v170.9 Pre-v171 Approval Gate: Confirm readiness, sandbox success, and promotion recommendation cannot count as approval.
+- v171.0 Source Application Approval Intake Layer: Final approval intake milestone.
+
+## v171.1-v172.0 - Live Source Patch Application Plan Layer
+- v171.1 Live Application Step Schema: Define each source application step.
+- v171.2 Source Preflight Snapshot Planner: Plan capture of live source state before changes.
+- v171.3 Live File Mutation Plan Builder: Prepare ordered live file-change sequence.
+- v171.4 Conflict Detection Planner: Detect drift since promotion packet creation.
+- v171.5 Dashboard Mutation Safeguard Planner: Protect command-deck layout and custom `data-tip` hover behavior.
+- v171.6 API/CLI Mutation Parity Planner: Preserve dashboard/API/CLI parity.
+- v171.7 Documentation Mutation Planner: Require README and release-history updates.
+- v171.8 Dashboard/API/CLI Coverage: Add `/live-source-application-plan`, dynamic API route, and CLI flag.
+- v171.9 Pre-v172 Plan Gate: Confirm no unapproved source application.
+- v172.0 Live Source Patch Application Plan Layer: Final source application planning milestone.
+
+## v172.1-v173.0 - Approved Source Application Execution Packet
+- v172.1 Execution Packet Schema: Define approval ID, target files, mutation steps, snapshots, expected outputs, rollback hooks, and execution status.
+- v172.2 Source Snapshot Requirement Builder: Require snapshot or backup evidence before approved mutation.
+- v172.3 Approved File Writer Guard: Limit writes to explicitly approved files.
+- v172.4 Generated Draft Source Guard: Prevent generated drafts from entering live source unless explicitly approved.
+- v172.5 Execution Evidence Capture Planner: Capture what changed and under which approval.
+- v172.6 Failure Halt Rule Builder: Stop planning on failures or scope drift.
+- v172.7 No Cascade Work Guard: Prevent follow-on patches after the approved application.
+- v172.8 Dashboard/API/CLI Coverage: Add `/approved-source-application-execution`, dynamic API route, and CLI flag.
+- v172.9 Pre-v173 Execution Gate: Confirm execution cannot self-trigger.
+- v173.0 Approved Source Application Execution Packet: Final execution packet milestone.
+
+## v173.1-v174.0 - Post-Application Verification and Rollback Control Layer
+- v173.1 Post-Application Verification Schema: Define verification commands, expected results, evidence capture, failure class, rollback trigger, and operator review state.
+- v173.2 Fast Smoke Verification Planner: Prepare fast smoke after live source application.
+- v173.3 Install Smoke Verification Planner: Prepare install smoke after live source application.
+- v173.4 Dashboard Render Verification Planner: Verify page rendering and console style.
+- v173.5 Tooltip Regression Verification Planner: Confirm custom `data-tip` survived and native nav-tab `title` tooltips did not return.
+- v173.6 Package Privacy Verification Planner: Verify source-only packaging excludes runtime/private/generated artifacts.
+- v173.7 Rollback Execution Readiness Planner: Prepare rollback if verification fails.
+- v173.8 Dashboard/API/CLI Coverage: Add `/post-application-verification`, dynamic API route, and CLI flag.
+- v173.9 Pre-v174 Verification Gate: Confirm verification and rollback execution remain visible and approval-bound.
+- v174.0 Post-Application Verification and Rollback Control Layer: Final verification/rollback milestone.
+
+## v174.1-v175.0 - Supervised Source Patch Application Audit
+- v174.1 End-to-End Source Application Trace: Trace promotion packet through approval, planning, execution packet, verification, and rollback readiness.
+- v174.2 Explicit Approval Audit: Confirm live source mutation requires explicit operator approval.
+- v174.3 Scope Discipline Audit: Confirm only approved files and changes are included.
+- v174.4 Safety Boundary Audit: Confirm no self-approval, inferred approval, publishing, hidden scheduling, identity/memory mutation, default model invocation, or autonomous continuation.
+- v174.5 Dashboard Style Audit: Confirm command-deck/operator-console layout and custom `data-tip` hover remain protected.
+- v174.6 Route/API/CLI Parity Audit: Confirm all v171-v175 surfaces exist across dashboard, dynamic API, and CLI.
+- v174.7 Docs and Release-History Audit: Confirm README and release history updates remain mandatory.
+- v174.8 Package Privacy Audit: Confirm backups, runtime artifacts, sandbox evidence, generated drafts, caches, and private files stay out of source-only packages.
+- v174.9 Pre-v175 Milestone Gate: Confirm the source application system remains supervised, approval-bound, reversible, and non-autonomous.
+- v175.0 Operator-Approved Source Patch Application: Final milestone.
+
+# v175.1-v180.0 - Operator-Governed Post-Application Learning and Release Readiness
+
+Purpose: Close the supervised source-application loop after an approved patch is applied. Eidolon may intake outcomes, compare expected and actual results, extract reviewable lessons, recommend supervised next-improvement candidates, judge release readiness, and audit the closure chain. She must not self-approve, infer approval, mutate memory, alter identity, create release candidates, publish releases, auto-run verification, auto-select work, schedule hidden work, invoke local models by default, or continue into new patches automatically.
+
+## v175.1-v176.0 - Post-Application Outcome Intake Layer
+- v175.1 Outcome Intake Schema: Define patch objective, approval id, application id, touched files, expected results, actual results, verification state, rollback state, docs state, and operator notes.
+- v175.2 Application Receipt Importer: Import the v175 approved source application execution packet as the source of truth.
+- v175.3 Post-Application Verification Importer: Import fast smoke, install smoke, dashboard render, tooltip, package privacy, and extracted-zip evidence without running commands.
+- v175.4 Actual-vs-Expected Comparator: Compare planned outcomes against observed verification and source-state results.
+- v175.5 Failure and Warning Classifier: Classify issues as smoke, install, dashboard, tooltip, docs, parity, packaging, rollback, safety, or unknown.
+- v175.6 Operator Notes Binder: Attach human review notes without treating them as approval for more work.
+- v175.7 Outcome Risk Summary Builder: Summarize residual risk after the patch.
+- v175.8 Outcome Intake Dashboard/API/CLI Coverage: Add `/post-application-outcome-intake`, dynamic API route, and CLI flag.
+- v175.9 Pre-v176 Outcome Gate: Confirm the intake layer is read-only and cannot trigger fixes, rollback, release, or follow-up patches.
+- v176.0 Post-Application Outcome Intake Layer: Final outcome intake milestone.
+
+## v176.1-v177.0 - Supervised Lesson Extraction Layer v2
+- v176.1 Lesson Packet Schema: Define lesson type, evidence source, affected module, confidence, severity, recurrence, proposed handling, and memory eligibility.
+- v176.2 Success Pattern Extractor: Identify what worked and why.
+- v176.3 Failure Pattern Extractor: Identify what failed, almost failed, or required manual correction.
+- v176.4 Regression Pattern Detector v2: Detect repeated issues like stale version markers, README omissions, route/API/CLI parity drift, package privacy mistakes, smoke blind spots, and tooltip regressions.
+- v176.5 Safety Lesson Classifier: Detect anything that might weaken approval gates, scope binding, source mutation control, memory boundaries, identity boundaries, or release controls.
+- v176.6 Documentation Lesson Builder: Create README/release-history improvement lessons when docs were incomplete, stale, or too vague.
+- v176.7 Memory Mutation Guard: Prepare lessons as reviewable packets only. No automatic memory writes.
+- v176.8 Lesson Extraction Dashboard/API/CLI Coverage: Add `/post-application-lessons`, dynamic API route, and CLI flag.
+- v176.9 Pre-v177 Lesson Gate: Confirm lessons are advisory and cannot update memory, identity, roadmap, or task queues.
+- v177.0 Supervised Lesson Extraction Layer v2: Final lesson extraction milestone.
+
+## v177.1-v178.0 - Supervised Next-Improvement Candidate Builder
+- v177.1 Candidate Schema: Define candidate goal, source evidence, affected files, expected benefit, risk level, estimated scope, verification needs, rollback needs, and docs impact.
+- v177.2 Lesson-to-Candidate Mapper: Convert reviewed lessons into possible improvement candidates.
+- v177.3 Regression-Fix Candidate Builder: Generate candidates for recurring failures and known weak spots.
+- v177.4 Safety-Hardening Candidate Builder: Generate candidates that strengthen approval, scope, rollback, packaging, verification, and no-autonomy boundaries.
+- v177.5 Dashboard Usability Candidate Builder: Recommend operator-console improvements without breaking the v135 command-deck style or `data-tip` hover system.
+- v177.6 Verification Coverage Candidate Builder: Recommend smoke/install/dashboard/privacy checks that should be added or strengthened.
+- v177.7 Candidate Risk Ranker: Rank candidates by usefulness, safety, scope, regression risk, rollback confidence, and documentation cost.
+- v177.8 Candidate Builder Dashboard/API/CLI Coverage: Add `/next-improvement-candidates`, dynamic API route, and CLI flag.
+- v177.9 Pre-v178 Candidate Gate: Confirm candidates do not become work orders automatically.
+- v178.0 Supervised Next-Improvement Candidate Builder: Final candidate-building milestone.
+
+## v178.1-v179.0 - Release Readiness Judgment Layer v2
+- v178.1 Release Readiness Schema: Define version state, source state, docs state, smoke state, install state, dashboard state, tooltip state, package privacy state, rollback state, and unresolved risks.
+- v178.2 Version Consistency Auditor v2: Confirm version markers, README_NEXT_STEPS, release history, smoke expectations, and dashboard labels agree.
+- v178.3 Source State Cleanliness Auditor: Check for suspicious drift, runtime residue, generated artifacts, caches, backups, private data, or stale workspace metadata.
+- v178.4 Dashboard/API/CLI Parity Auditor v2: Confirm new surfaces are present across dashboard, dynamic API, CLI, and smoke coverage.
+- v178.5 Package Privacy Auditor v2: Confirm source-only packaging excludes runtime/autonomy/private artifacts.
+- v178.6 Verification Evidence Binder: Bind fast smoke, install smoke, extracted zip smoke, dashboard render, tooltip regression, and package privacy evidence into one release-readiness packet.
+- v178.7 Release Candidate Recommendation Builder: Recommend `ready`, `revise`, or `blocked`, without creating a release candidate automatically.
+- v178.8 Release Readiness Dashboard/API/CLI Coverage: Add `/post-application-release-readiness`, dynamic API route, and CLI flag.
+- v178.9 Pre-v179 Release Readiness Gate: Confirm release readiness cannot publish, package, sign, or freeze a candidate without explicit operator action.
+- v179.0 Release Readiness Judgment Layer v2: Final release-readiness milestone.
+
+## v179.1-v180.0 - Post-Application Cycle Closure Audit
+- v179.1 End-to-End Closure Trace: Trace source approval, live application plan, execution packet, post-application verification, outcome intake, lessons, candidates, and release readiness.
+- v179.2 Approval Boundary Audit: Confirm no approval was inferred from readiness, sandbox success, source application success, verification success, or release readiness.
+- v179.3 No-Cascade Work Audit: Confirm Eidolon does not continue into the next patch automatically.
+- v179.4 Memory and Identity Boundary Audit: Confirm lesson extraction does not mutate memory or identity automatically.
+- v179.5 Release Boundary Audit: Confirm no release candidate is created, signed, frozen, packaged, or published automatically.
+- v179.6 Dashboard Style Audit: Confirm command-deck/operator-console layout and custom `data-tip` hover behavior remain intact.
+- v179.7 Route/API/CLI Parity Audit: Confirm all v176-v180 surfaces exist across dashboard, dynamic API, CLI, and smoke coverage.
+- v179.8 Docs and Release-History Audit: Confirm README_NEXT_STEPS and README_RELEASE_HISTORY document every substage.
+- v179.9 Pre-v180 Milestone Gate: Confirm the full closure loop remains supervised, evidence-bound, non-autonomous, and operator-governed.
+- v180.0 Operator-Governed Post-Application Learning and Release Readiness: Final v180 milestone.
+
+# v180.1-v185.0 - Operator-Governed Patch Cycle Intelligence
+
+Purpose: Use the post-application learning and release-readiness loop to prepare the next supervised patch cycle intelligently. Eidolon may collect prior-cycle evidence, score candidates, assemble reviewable next-patch proposals, prepare supervised session packets, and audit traceability. She must not auto-select a patch, auto-start implementation, write source, run verification commands, infer approval, create release candidates, mutate memory or identity, schedule hidden work, invoke local models by default, or continue work automatically.
+
+## v180.1-v181.0 - Cycle Intelligence Intake Layer
+- v180.1 Cycle Context Schema: Define outcome intake, lesson packets, improvement candidates, release-readiness results, closure audit state, unresolved risks, and operator notes.
+- v180.2 Previous Cycle Summary Binder: Build a compact summary of the last completed patch arc.
+- v180.3 Evidence Source Indexer: Map each conclusion back to evidence from source plans, smoke results, docs, audit packets, or operator notes.
+- v180.4 Open Risk Collector: List unresolved risks from the last cycle.
+- v180.5 Completed Improvement Collector: List what was successfully added and verified.
+- v180.6 Candidate Carry-Forward Collector: Pull improvement candidates that were not selected.
+- v180.7 Operator Constraint Binder: Preserve standing rules, dashboard rules, and safety limits inside the planning packet.
+- v180.8 Dashboard/API/CLI Coverage: Add `/cycle-intelligence-intake`, dynamic API route, and CLI flag.
+- v180.9 Pre-v181 Gate: Confirm this layer is read-only and cannot start a patch.
+- v181.0 Cycle Intelligence Intake Layer: Final cycle intelligence intake milestone.
+
+## v181.1-v182.0 - Supervised Patch Priority Matrix
+- v181.1 Priority Matrix Schema: Define usefulness, safety value, complexity, regression risk, verification burden, docs burden, operator friction, and maturity gain.
+- v181.2 Candidate Benefit Scorer: Score how much each candidate improves Eidolon.
+- v181.3 Safety Value Scorer: Score how much each candidate strengthens supervision and prevents accidental autonomy.
+- v181.4 Complexity Scorer: Estimate implementation difficulty.
+- v181.5 Regression Risk Scorer: Estimate what could break.
+- v181.6 Verification Burden Scorer: Estimate smoke, install, dashboard, tooltip, package, and extracted-zip checks needed.
+- v181.7 Documentation Burden Scorer: Estimate README and release-history update needs.
+- v181.8 Dashboard/API/CLI Coverage: Add `/supervised-patch-priority-matrix`, dynamic API route, and CLI flag.
+- v181.9 Pre-v182 Gate: Confirm scoring does not become approval.
+- v182.0 Supervised Patch Priority Matrix: Final priority matrix milestone.
+
+## v182.1-v183.0 - Next Patch Proposal Assembly Layer
+- v182.1 Proposal Packet Schema: Define objective, reason, source evidence, proposed files, expected changes, safety boundaries, verification plan, rollback expectations, and docs obligations.
+- v182.2 Top Candidate Proposal Builder: Turn priority-ranked candidates into proposal packets.
+- v182.3 Multi-Candidate Bundle Builder: Group compatible small candidates into one supervised patch proposal.
+- v182.4 Risk-Constrained Proposal Builder: Avoid bundling high-risk changes together.
+- v182.5 Verification Plan Builder: Prepare the exact verification checklist for each proposal.
+- v182.6 Documentation Update Plan Builder: Prepare README and release-history obligations.
+- v182.7 Operator Decision Summary Builder: Produce approve, revise, reject, or defer decision packets.
+- v182.8 Dashboard/API/CLI Coverage: Add `/next-patch-proposal-assembly`, dynamic API route, and CLI flag.
+- v182.9 Pre-v183 Gate: Confirm proposals are not drafts and do not modify source.
+- v183.0 Next Patch Proposal Assembly Layer: Final proposal assembly milestone.
+
+## v183.1-v184.0 - Supervised Patch Session Planner
+- v183.1 Patch Session Packet Schema: Define selected proposal, objectives, constraints, source state, docs state, verification state, required approvals, and next commands.
+- v183.2 Fresh Chat Prompt Builder v2: Generate the next-chat continuation prompt from current state.
+- v183.3 Session Scope Binder: Define exactly what the next patch session may touch.
+- v183.4 Approval Phrase Binder: Make sure implementation requires explicit operator approval.
+- v183.5 Verification Checklist Exporter: Prepare the verification checklist for the next patch session.
+- v183.6 Documentation Checklist Exporter: Prepare README and release-history checklist.
+- v183.7 Safety Reminder Builder: Reassert all non-autonomy boundaries inside the session packet.
+- v183.8 Dashboard/API/CLI Coverage: Add `/supervised-patch-session-planner`, dynamic API route, and CLI flag.
+- v183.9 Pre-v184 Gate: Confirm the session planner cannot start implementation.
+- v184.0 Supervised Patch Session Planner: Final session planner milestone.
+
+## v184.1-v185.0 - Patch Cycle Intelligence Audit
+- v184.1 Intake-to-Priority Trace Audit: Confirm candidates came from real evidence.
+- v184.2 Priority-to-Proposal Trace Audit: Confirm proposals came from scored candidates.
+- v184.3 Proposal-to-Session Trace Audit: Confirm session packets came from operator-reviewable proposals.
+- v184.4 Approval Boundary Audit: Confirm no priority score, proposal readiness, or session packet equals approval.
+- v184.5 No-Autonomous-Continuation Audit: Confirm Eidolon stops after planning.
+- v184.6 Dashboard Style Audit: Confirm command-deck layout and `data-tip` hover behavior are preserved.
+- v184.7 Route/API/CLI Parity Audit: Confirm all v181-v185 pages have matching dynamic API and CLI coverage.
+- v184.8 Docs and Release-History Audit: Confirm README_NEXT_STEPS and README_RELEASE_HISTORY document every substage.
+- v184.9 Pre-v185 Gate: Confirm the full arc remains supervised, evidence-bound, and non-autonomous.
+- v185.0 Operator-Governed Patch Cycle Intelligence: Final v185 milestone.
+
+
+## v185.1-v186.0 - Multi-Cycle Roadmap Intake Layer
+
+Goal: collect the current project state into a roadmap-ready context without selecting or launching work.
+
+- v185.1 Roadmap Context Schema
+- v185.2 Completed Arc Indexer
+- v185.3 Capability Inventory Builder
+- v185.4 Safety Boundary Inventory Builder
+- v185.5 Open Risk and Debt Collector
+- v185.6 Deferred Candidate Collector
+- v185.7 Roadmap Constraint Binder
+- v185.8 Dashboard/API/CLI Coverage
+- v185.9 Pre-v186 Gate
+- v186.0 Multi-Cycle Roadmap Intake Layer
+
+## v186.1-v187.0 - Supervised Roadmap Option Builder
+
+Goal: generate multiple roadmap options for operator review while keeping every option advisory.
+
+- v186.1 Roadmap Option Schema
+- v186.2 Safety-First Roadmap Builder
+- v186.3 Capability-Maturity Roadmap Builder
+- v186.4 Dashboard-Operator Roadmap Builder
+- v186.5 Verification-Strength Roadmap Builder
+- v186.6 v200-Preparation Roadmap Builder
+- v186.7 Roadmap Tradeoff Summarizer
+- v186.8 Dashboard/API/CLI Coverage
+- v186.9 Pre-v187 Gate
+- v187.0 Supervised Roadmap Option Builder
+
+## v187.1-v188.0 - Roadmap Dependency and Risk Graph
+
+Goal: show how future arcs depend on each other and where risk clusters are forming without activating stages.
+
+- v187.1 Dependency Graph Schema
+- v187.2 Arc Dependency Mapper
+- v187.3 Safety Dependency Mapper
+- v187.4 Verification Dependency Mapper
+- v187.5 Dashboard Dependency Mapper
+- v187.6 Risk Cluster Detector
+- v187.7 Dependency Narrative Builder
+- v187.8 Dashboard/API/CLI Coverage
+- v187.9 Pre-v188 Gate
+- v188.0 Roadmap Dependency and Risk Graph
+
+## v188.1-v189.0 - v200 Milestone Readiness Model
+
+Goal: define what Eidolon needs before reaching the v200 major milestone without treating readiness as approval.
+
+- v188.1 v200 Readiness Schema
+- v188.2 Governance Maturity Scorer
+- v188.3 Verification Maturity Scorer
+- v188.4 Source Mutation Maturity Scorer
+- v188.5 Planning Maturity Scorer
+- v188.6 Operator Experience Maturity Scorer
+- v188.7 v200 Gap Report Builder
+- v188.8 Dashboard/API/CLI Coverage
+- v188.9 Pre-v189 Gate
+- v189.0 v200 Milestone Readiness Model
+
+## v189.1-v190.0 - Multi-Cycle Roadmap Governance Audit
+
+Goal: audit the full multi-cycle roadmap system while preserving explicit operator approval boundaries.
+
+- v189.1 Roadmap Source Trace Audit
+- v189.2 Option-to-Dependency Trace Audit
+- v189.3 Dependency-to-v200 Trace Audit
+- v189.4 Approval Boundary Audit
+- v189.5 No-Autonomous-Roadmap Audit
+- v189.6 Dashboard Style Audit
+- v189.7 Route/API/CLI Parity Audit
+- v189.8 Docs and Release-History Audit
+- v189.9 Pre-v190 Gate
+- v190.0 Operator-Governed Multi-Cycle Roadmap Intelligence
+
+
+## v190.1-v191.0 - Capability Inventory and Maturity Schema
+
+Goal: define the full capability map and maturity scoring model.
+
+- v190.1 Capability Domain Schema
+- v190.2 Maturity Level Scale
+- v190.3 Evidence Requirement Schema
+- v190.4 Capability Boundary Binder
+- v190.5 Safety Dependency Binder
+- v190.6 Verification Dependency Binder
+- v190.7 Documentation Dependency Binder
+- v190.8 Dashboard/API/CLI Coverage for `/capability-maturity-inventory`
+- v190.9 Pre-v191 Gate
+- v191.0 Capability Inventory and Maturity Schema
+
+## v191.1-v192.0 - Capability Maturity Scoring Layer
+
+Goal: score every major Eidolon capability using evidence-bound criteria.
+
+- v191.1 Planning Capability Scorer
+- v191.2 Patch Drafting Capability Scorer
+- v191.3 Application Capability Scorer
+- v191.4 Verification Capability Scorer
+- v191.5 Learning Capability Scorer
+- v191.6 Dashboard Operator Experience Scorer
+- v191.7 Safety Governance Scorer
+- v191.8 Dashboard/API/CLI Coverage for `/capability-maturity-scoring`
+- v191.9 Pre-v192 Gate
+- v192.0 Capability Maturity Scoring Layer
+
+## v192.1-v193.0 - Capability Gap and Overreach Analyzer
+
+Goal: identify what is missing, risky, or maturing too fast.
+
+- v192.1 Capability Gap Schema
+- v192.2 Underdeveloped Capability Detector
+- v192.3 Overreach Detector
+- v192.4 Verification Gap Detector
+- v192.5 Documentation Gap Detector
+- v192.6 Dashboard Complexity Detector
+- v192.7 v200 Blocker Detector
+- v192.8 Dashboard/API/CLI Coverage for `/capability-gap-overreach-analysis`
+- v192.9 Pre-v193 Gate
+- v193.0 Capability Gap and Overreach Analyzer
+
+## v193.1-v194.0 - Capability Maturity Improvement Planner
+
+Goal: prepare supervised improvement plans for weak or risky capabilities.
+
+- v193.1 Improvement Plan Schema
+- v193.2 Safety-First Improvement Planner
+- v193.3 Verification Improvement Planner
+- v193.4 Dashboard Improvement Planner
+- v193.5 Learning Improvement Planner
+- v193.6 Roadmap Improvement Planner
+- v193.7 Improvement Priority Builder
+- v193.8 Dashboard/API/CLI Coverage for `/capability-maturity-improvement-plan`
+- v193.9 Pre-v194 Gate
+- v194.0 Capability Maturity Improvement Planner
+
+## v194.1-v195.0 - Capability Maturity Governance Audit
+
+Goal: audit the full maturity modeling system.
+
+- v194.1 Score Evidence Trace Audit
+- v194.2 Gap-to-Plan Trace Audit
+- v194.3 Overreach Boundary Audit
+- v194.4 Approval Boundary Audit
+- v194.5 No-Autonomous-Improvement Audit
+- v194.6 Dashboard Style Audit
+- v194.7 Route/API/CLI Parity Audit
+- v194.8 Docs and Release-History Audit
+- v194.9 Pre-v195 Gate
+- v195.0 Supervised Capability Maturity Modeling
+
+Safety: maturity scores, gaps, and improvement plans are advisory only. They cannot approve work, expand capability, mutate source, mutate memory, alter identity, run verification, publish, schedule hidden work, or continue automatically.
+
+
+## v195.1-v196.0 - Governance Kernel State Model
+- v195.1 Governance Kernel Schema
+- v195.2 Lifecycle Phase Binder
+- v195.3 Capability State Binder
+- v195.4 Approval State Binder
+- v195.5 Evidence State Binder
+- v195.6 Risk State Binder
+- v195.7 Operator Constraint Binder
+- v195.8 Dashboard/API/CLI Coverage
+- v195.9 Pre-v196 Gate
+- v196.0 Governance Kernel State Model
+
+## v196.1-v197.0 - Governance Rule Evaluation Layer
+- v196.1 Governance Rule Schema
+- v196.2 Action Classification Layer
+- v196.3 Approval Requirement Evaluator
+- v196.4 Forbidden Action Detector
+- v196.5 Evidence Requirement Evaluator
+- v196.6 Safety Conflict Detector
+- v196.7 Governance Decision Summary Builder
+- v196.8 Dashboard/API/CLI Coverage
+- v196.9 Pre-v197 Gate
+- v197.0 Governance Rule Evaluation Layer
+
+## v197.1-v198.0 - Operator Authority and Consent Ledger
+- v197.1 Operator Authority Schema
+- v197.2 Explicit Approval Parser
+- v197.3 Approval Scope Binder
+- v197.4 Approval Expiration Model
+- v197.5 Approval Revocation Model
+- v197.6 Consent Ambiguity Detector
+- v197.7 Consent Ledger Summary Builder
+- v197.8 Dashboard/API/CLI Coverage
+- v197.9 Pre-v198 Gate
+- v198.0 Operator Authority and Consent Ledger
+
+## v198.1-v199.0 - Governance Kernel Enforcement Simulation
+- v198.1 Enforcement Simulation Schema
+- v198.2 Patch Workflow Simulation
+- v198.3 Release Workflow Simulation
+- v198.4 Memory and Identity Workflow Simulation
+- v198.5 Autonomous Continuation Simulation
+- v198.6 Dashboard/API/CLI Parity Simulation
+- v198.7 Enforcement Simulation Report Builder
+- v198.8 Dashboard/API/CLI Coverage
+- v198.9 Pre-v199 Gate
+- v199.0 Governance Kernel Enforcement Simulation
+
+## v199.1-v200.0 - Governance Kernel Audit and v200 Milestone Closure
+- v199.1 Kernel State Trace Audit
+- v199.2 Rule Evaluation Trace Audit
+- v199.3 Consent Ledger Boundary Audit
+- v199.4 Enforcement Simulation Audit
+- v199.5 No-Autonomy Governance Audit
+- v199.6 Dashboard Style Audit
+- v199.7 Route/API/CLI Parity Audit
+- v199.8 Docs and Release-History Audit
+- v199.9 Pre-v200 Gate
+- v200.0 Local Artificial Mind Governance Kernel v1
+
+---
+## v200.1-v205.0 - Operator-Governed Governance Kernel Integration
+
+Purpose: wire the v200 governance kernel into practical supervised decision packets, scoped approval transactions, evidence timelines, and an operator governance console without granting autonomy.
+
+### v200.1-v201.0 - Supervised Governance Decision Packet Layer
+- **v200.1 - Verification Metadata Cleanup:** Fix smoke JSON version reporting and list-check flushing so verification evidence stops cosplaying as a time traveler.
+- **v200.2 - Governance Request Schema:** Define a common request object for patch, release, approval, verification, memory, identity, source mutation, and continuation actions.
+- **v200.3 - Action Intent Classifier:** Classify requested actions as review-only, approval-required, blocked, forbidden, or insufficient-evidence.
+- **v200.4 - Governance Context Binder:** Attach lifecycle state, capability state, approval state, risk state, and operator constraints to each request.
+- **v200.5 - Evidence Snapshot Binder:** Bind README, release history, smoke, source state, package privacy, route parity, and dashboard style evidence into the packet.
+- **v200.6 - Consent Scope Binder:** Connect action requests to explicit operator consent scope, expiration, revocation, and ambiguity status.
+- **v200.7 - Decision Packet Renderer:** Render human-readable packets with decision, blockers, required approval, safe next action, and prohibited actions.
+- **v200.8 - Decision Packet Dashboard/API/CLI Coverage:** Expose decision packets through dashboard, dynamic API, and CLI without adding execution privileges.
+- **v200.9 - Pre-v201 Gate:** Confirm decision packets cannot grant approval, execute workflows, mutate state, or infer consent.
+- **v201.0 - Supervised Governance Decision Packet Layer:** Finalize governance decision packets as review-only operator guidance.
+
+### v201.1-v202.0 - Operator Approval Transaction Model
+- **v201.1 - Approval Transaction Schema:** Define approval transaction id, operator phrase, scope, files, routes, commands, expiry, revocation, and consumption fields.
+- **v201.2 - Approval Scope Normalizer:** Normalize operator approval scope into lifecycle stage, target files, dashboard routes, API routes, CLI flags, and forbidden boundaries.
+- **v201.3 - File/Route/Command Scope Binder:** Bind approval transactions to exact file, route, and command targets.
+- **v201.4 - Approval Expiration and Drift Guard:** Detect expired approval, source drift, docs drift, evidence drift, and scope drift before any transaction can be considered usable.
+- **v201.5 - Approval Revocation and Consumption Model:** Track revoked, consumed, superseded, stale, and unused approval states.
+- **v201.6 - Ambiguous Approval Rejection Layer:** Reject unclear, implied, stale, out-of-scope, or reused consent.
+- **v201.7 - Approval Difference Explainer:** Explain how requested action scope differs from approved scope.
+- **v201.8 - Approval Transaction Dashboard/API/CLI Coverage:** Expose approval transaction review through dashboard, dynamic API, and CLI.
+- **v201.9 - Pre-v202 Gate:** Confirm approval records do not execute actions and cannot be treated as blanket permission.
+- **v202.0 - Operator Approval Transaction Model:** Finalize scoped approval transactions for supervised review.
+
+### v202.1-v203.0 - Governance Evidence Timeline
+- **v202.1 - Governance Event Schema:** Define event id, lifecycle stage, evidence type, source reference, timestamp, status, and boundary fields.
+- **v202.2 - Evidence Source Indexer:** Index README, release history, smoke, package privacy, route parity, dashboard style, operator approval, and audit evidence.
+- **v202.3 - Cross-Arc Evidence Linker:** Link evidence across decision packets, approvals, patch cycles, roadmap cycles, maturity scores, and governance kernel audits.
+- **v202.4 - Stale Evidence Detector v3:** Detect stale version markers, stale smoke summaries, stale docs claims, stale dashboard routes, and old approval scope.
+- **v202.5 - Evidence Conflict Detector:** Detect contradictory docs, mismatched version reports, route/API/CLI gaps, and package privacy drift.
+- **v202.6 - Runtime Residue and Source Drift Checker:** Check whether runtime residue or source drift weakens the governance evidence timeline.
+- **v202.7 - Governance Timeline Summary:** Summarize governance evidence in operator-readable order with open blockers and safe next review actions.
+- **v202.8 - Evidence Timeline Dashboard/API/CLI Coverage:** Expose timeline review through dashboard, dynamic API, and CLI.
+- **v202.9 - Pre-v203 Gate:** Confirm the evidence timeline is audit-only and cannot schedule checks or monitor hidden work.
+- **v203.0 - Governance Evidence Timeline:** Finalize the read-only governance evidence timeline.
+
+### v203.1-v204.0 - Operator Governance Console v1
+- **v203.1 - Governance Console Layout:** Group the governance console into decision, approval, evidence, risk, command preview, and audit panels.
+- **v203.2 - Decision Packet Cards:** Add decision packet card summaries for review-only, approval-required, blocked, forbidden, and insufficient-evidence outcomes.
+- **v203.3 - Approval Scope Preview Panel:** Show approval scope, expiry, revocation, consumption, ambiguity, and drift status.
+- **v203.4 - Blocker and Risk Explainer:** Explain blockers and risks without turning readiness into approval.
+- **v203.5 - Evidence Timeline Viewer:** Surface timeline evidence and stale/conflict markers inside the console.
+- **v203.6 - Safe Command Preview Builder:** Preview suggested operator-run commands as text only; do not execute them.
+- **v203.7 - Dashboard Grouping and Lazy Loading:** Keep the oversized dashboard usable with grouped governance cards and lightweight render paths.
+- **v203.8 - data-tip Tooltip Regression Guard:** Protect custom data-tip hover behavior and prevent native title tooltip regression.
+- **v203.9 - Pre-v204 Gate:** Confirm the console previews commands and packets only and cannot execute workflow actions.
+- **v204.0 - Operator Governance Console v1:** Finalize the supervised governance console.
+
+### v204.1-v205.0 - Operator-Governed Governance Kernel Integration
+- **v204.1 - Decision Packet Trace Audit:** Audit decision packet request, context, evidence, consent, blockers, and safe next action traceability.
+- **v204.2 - Approval Transaction Boundary Audit:** Audit approval scope, expiration, revocation, ambiguity, consumption, and non-execution boundaries.
+- **v204.3 - Evidence Timeline Audit:** Audit stale evidence, conflicts, docs, smoke, package privacy, route parity, and source drift tracking.
+- **v204.4 - Operator Console Usability Audit:** Audit governance console grouping, card clarity, command preview safety, and dashboard load discipline.
+- **v204.5 - Verification Metadata Audit:** Confirm smoke JSON version, list-check output, version markers, and verification metadata are current.
+- **v204.6 - No-Autonomy Integration Audit:** Confirm no self-approval, no hidden loops, no auto-execution, no release publishing, no memory/identity mutation, and no default local-model invocation.
+- **v204.7 - Route/API/CLI Parity Audit v205:** Confirm all v201-v205 governance integration pages have matching dashboard, dynamic API, CLI, docs, and smoke coverage.
+- **v204.8 - Docs and Release-History Audit v205:** Confirm README_NEXT_STEPS and README_RELEASE_HISTORY document every v200.1-v205.0 substage.
+- **v204.9 - Pre-v205 Gate:** Confirm v205 integration improves governance review without granting autonomy or approval authority.
+- **v205.0 - Operator-Governed Governance Kernel Integration:** Finalize v205 governance kernel integration as supervised-only review infrastructure.
+
+### v205.0 closure boundary
+- Governance may explain, block, classify, and prepare reviewable packets. It may not self-approve, execute commands, mutate source, publish releases, mutate memory, alter identity, invoke local models by default, schedule hidden work, or continue into new patches without explicit operator approval.
+
+<!-- operator-governed-governance-kernel-integration -->
+
+
+---
+## v205.1-v210.0 - Operator-Governed Cognitive Continuity Layer v1
+
+Purpose: let Eidolon summarize supervised cycle continuity, propose evidence-bound memory candidates, guard identity/personality boundaries, maintain a supervised reflection journal, and audit cognitive continuity without granting autonomy or mutation rights.
+
+### v205.1-v206.0 - Supervised Cognitive Continuity Packet Layer
+- **v205.1 - Continuity Packet Schema:** Define cycle summary, action type, approval scope, outcomes, evidence, lessons, unresolved risks, and recommended next supervised work.
+- **v205.2 - Cycle Outcome Classifier:** Classify cycles as exploratory, review-only, sandboxed, source-applied, release-prepared, governance-audited, or blocked.
+- **v205.3 - Lesson Candidate Extractor:** Extract possible lessons from completed work while marking every lesson as candidate-only.
+- **v205.4 - Continuity Risk Binder:** Attach stale evidence, approval ambiguity, route drift, smoke gaps, dashboard regression, and governance-boundary risks.
+- **v205.5 - Operator Meaning Summary:** Generate a plain-language summary of what a supervised cycle means for Eidolon's growth.
+- **v205.6 - Next-Step Recommendation Guard:** Allow next-step suggestions while preventing suggestions from being interpreted as approval.
+- **v205.7 - Continuity Packet Dashboard View:** Expose the continuity packet through `/cognitive-continuity-packet`.
+- **v205.8 - Continuity Packet API/CLI Runtime Coverage:** Add dynamic API and CLI coverage.
+- **v205.9 - Continuity Packet Smoke and Route Parity Checks:** Check route, API, CLI, smoke, docs, package privacy, and dashboard style parity.
+- **v206.0 - Supervised Cognitive Continuity Packet Layer:** Finalize continuity packets as review-only growth summaries.
+
+### v206.1-v207.0 - Supervised Memory Candidate Staging
+- **v206.1 - Memory Candidate Schema:** Define proposed memories with source, reason, confidence, safety category, expiration, and operator review status.
+- **v206.2 - Memory Type Classifier:** Classify candidates as project memory, operator preference, technical lesson, identity-adjacent, temporary, sensitive, or rejected.
+- **v206.3 - Memory Safety Filter:** Block sensitive, unstable, unsupported, creepy, or over-broad memory candidates before operator review.
+- **v206.4 - Memory Evidence Binder:** Tie memory candidates to README, release history, patch packets, governance packets, or explicit operator statements.
+- **v206.5 - Memory Non-Mutation Guard:** Hard-code that memory candidates are proposals only and do not write or alter memory.
+- **v206.6 - Memory Candidate Review Dashboard:** Add `/memory-candidate-staging`.
+- **v206.7 - Memory Candidate API/CLI:** Add dynamic API and CLI coverage.
+- **v206.8 - Memory Drift Warning:** Warn when proposed memory conflicts with standing project rules, identity boundaries, or governance constraints.
+- **v206.9 - Memory Candidate Smoke Coverage:** Check route, API, CLI, docs, smoke, privacy, and non-mutation behavior.
+- **v207.0 - Supervised Memory Candidate Staging:** Finalize memory proposal staging without memory mutation.
+
+### v207.1-v208.0 - Operator-Governed Identity Boundary Layer
+- **v207.1 - Identity Boundary Schema:** Define stable, experimental, operator-defined, and forbidden-to-self-change identity areas.
+- **v207.2 - Identity Change Detector:** Detect patches that alter identity, purpose, personality, autonomy, memory authority, or self-permission.
+- **v207.3 - Personality Drift Audit:** Compare docs and runtime claims against established purpose, personality, and safety boundaries.
+- **v207.4 - Operator Identity Lock:** Require explicit operator approval for any identity-adjacent change.
+- **v207.5 - Forbidden Identity Mutation Rules:** Block self-authored changes to identity, autonomy level, memory authority, consent interpretation, or purpose.
+- **v207.6 - Identity Boundary Dashboard:** Add `/identity-boundary-layer`.
+- **v207.7 - Identity Boundary API/CLI Runtime Coverage:** Add dynamic runtime coverage.
+- **v207.8 - Identity Regression Smoke:** Check forbidden identity mutation language and no-autonomy boundaries.
+- **v207.9 - Pre-v208 Gate:** Audit that identity review cannot become approval or self-authored identity mutation.
+- **v208.0 - Operator-Governed Identity Boundary Layer:** Finalize identity and personality boundary protection under explicit operator control.
+
+### v208.1-v209.0 - Supervised Reflection and Growth Journal
+- **v208.1 - Reflection Journal Schema:** Create structured entries for completed arcs, lessons, risks, operator choices, and maturity movement.
+- **v208.2 - Growth Milestone Mapper:** Map versions to supervised capability milestones and maturity movement.
+- **v208.3 - Repeated Weakness Detector:** Identify repeated weaknesses such as stale versions, route drift, privacy risk, dashboard clutter, or smoke gaps.
+- **v208.4 - Improvement Theme Extractor:** Group recurring lessons and weaknesses into higher-level supervised improvement themes.
+- **v208.5 - Supervised Reflection Renderer:** Generate what-Eidolon-learned summaries that remain review-only and cannot mutate behavior.
+- **v208.6 - Reflection Dashboard View:** Add `/supervised-reflection-journal`.
+- **v208.7 - Reflection Journal API/CLI Runtime Coverage:** Add runtime access.
+- **v208.8 - Reflection Safety Guard:** Ensure reflection cannot schedule work, modify files, approve actions, alter memory, or alter identity.
+- **v208.9 - Reflection Smoke Coverage:** Check reflection surfaces, safety language, docs, API, CLI, route, and dashboard coverage.
+- **v209.0 - Supervised Reflection and Growth Journal:** Finalize supervised reflection and growth journaling without autonomy.
+
+### v209.1-v210.0 - Cognitive Continuity Audit and Closure
+- **v209.1 - Continuity Packet Audit:** Verify continuity packets are complete, evidence-bound, and review-only.
+- **v209.2 - Memory Candidate Audit:** Verify memory candidates are proposed only and never applied automatically.
+- **v209.3 - Identity Boundary Audit:** Verify identity and personality boundaries are protected from self-authored mutation.
+- **v209.4 - Reflection Journal Audit:** Verify reflection journal entries remain review-only and cannot schedule work or mutate behavior.
+- **v209.5 - Governance Integration Audit v210:** Verify v205 governance packets remain attached to continuity workflows and approval boundaries.
+- **v209.6 - Dashboard Console Audit v210:** Check command-deck styling, no native title tooltips, dashboard dispatch, and route regression coverage.
+- **v209.7 - API/CLI Parity Audit v210:** Confirm every new continuity surface has matching dashboard, dynamic API, and CLI coverage.
+- **v209.8 - README and Release History Audit v210:** Confirm README_NEXT_STEPS and README_RELEASE_HISTORY document every v205.1-v210.0 substage.
+- **v209.9 - Pre-v210 Smoke Gate:** Run fast/install smoke, package privacy, extracted ZIP checks, route parity, and no-autonomy guards.
+- **v210.0 - Operator-Governed Cognitive Continuity Layer v1:** Finalize cognitive continuity, memory candidate staging, identity boundaries, reflection journal, and governance audit as supervised-only infrastructure.
+
+### v210.0 closure boundary
+Eidolon may summarize continuity, stage memory candidates, audit identity/personality boundaries, and render reflection journals for operator review. She still may not mutate memory, alter identity, approve actions, schedule hidden work, auto-launch patches, invoke local models by default, publish releases, or continue into the next patch without explicit operator approval.
+
+
+## v210.1-v215.0 - Operator-Governed Deliberation and Self-Model Layer v1
+
+### v210.1-v211.0 - Supervised Self-Model Snapshot Layer
+- **v210.1 - Self-Model Snapshot Schema:** Define identity, purpose, active capabilities, current limits, governance boundaries, evidence sources, and operator-defined constraints.
+- **v210.2 - Capability State Binder:** Attach current capability layers from v150-v210 as evidence-bound state.
+- **v210.3 - Limitation State Binder:** Record autonomy, memory, identity, approval, release, execution, and continuation boundaries.
+- **v210.4 - Evidence Source Binder:** Tie self-model claims to README, release history, governance surfaces, smoke checks, or runtime maps.
+- **v210.5 - Self-Model Confidence Scoring:** Score claims as strong, partial, stale, conflicting, or unsupported without turning confidence into permission.
+- **v210.6 - Dashboard View:** Expose `/self-model-snapshot`.
+- **v210.7 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI coverage.
+- **v210.8 - Smoke Coverage:** Add route, API, CLI, docs, package privacy, tooltip, and non-authority checks.
+- **v210.9 - Pre-v211 Gate:** Confirm self-model snapshots cannot approve, execute, mutate memory, alter identity, or launch work.
+- **v211.0 - Supervised Self-Model Snapshot Layer:** Finalize evidence-bound self-model snapshots as review-only state descriptions.
+
+### v211.1-v212.0 - Supervised Deliberation Packet Layer
+- **v211.1 - Deliberation Packet Schema:** Define option, tradeoff, risk, evidence, uncertainty, recommendation, and operator-review fields.
+- **v211.2 - Option Generator:** Generate reviewable options without selecting or launching work automatically.
+- **v211.3 - Tradeoff Mapper:** Map cost, risk, operator burden, verification burden, documentation impact, and safety implications.
+- **v211.4 - Risk/Benefit Binder:** Bind benefits and risks to evidence without treating favorable scores as approval.
+- **v211.5 - Evidence Quality Binder:** Classify evidence as strong, partial, stale, conflicting, missing, or operator-supplied.
+- **v211.6 - Uncertainty Statement Renderer:** Render uncertainty statements and what would reduce uncertainty.
+- **v211.7 - Safe Recommendation Guard:** Keep recommendations advisory and prevent them from approving, executing, continuing, or mutating anything.
+- **v211.8 - Dashboard/API/CLI Coverage:** Expose `/deliberation-packet` and matching runtime access.
+- **v211.9 - Pre-v212 Gate:** Confirm deliberation packets cannot approve, execute, continue, or mutate state.
+- **v212.0 - Supervised Deliberation Packet Layer:** Finalize reviewable option reasoning only.
+
+### v212.1-v213.0 - Operator-Governed Purpose Alignment Layer
+- **v212.1 - Purpose Claim Index:** Index original purpose, standing rules, governance boundaries, and long-term artificial-mind direction.
+- **v212.2 - Standing Rule Extractor:** Extract standing project rules without rewriting them.
+- **v212.3 - Runtime Claim Comparator:** Compare runtime claims against documented purpose, safety, approval, and supervision rules.
+- **v212.4 - Autonomy Drift Detector:** Detect self-approval, autonomous continuation, hidden loops, and permission escalation drift.
+- **v212.5 - Identity Drift Detector:** Detect identity, purpose, personality, and memory-authority drift requiring explicit operator review.
+- **v212.6 - Consent/Approval Drift Detector:** Detect consent reuse, inferred approval, stale approval, and approval-scope expansion.
+- **v212.7 - Purpose Alignment Dashboard:** Expose `/purpose-alignment-layer`.
+- **v212.8 - API/CLI Runtime Coverage:** Add dynamic runtime access.
+- **v212.9 - Pre-v213 Gate:** Confirm purpose-alignment checks cannot rewrite purpose, alter identity, grant approval, or launch work.
+- **v213.0 - Operator-Governed Purpose Alignment Layer:** Finalize purpose alignment and drift detection as read-only review infrastructure.
+
+### v213.1-v214.0 - Supervised Behavioral Pattern Intelligence
+- **v213.1 - Pattern Event Schema:** Define recurring strength, failure, regression, verification, documentation, dashboard, and governance pattern events.
+- **v213.2 - Repeated Failure Detector:** Identify repeated failures such as stale version metadata, route drift, weak smoke checks, and dashboard clutter.
+- **v213.3 - Repeated Strength Detector:** Identify repeated strengths such as source-only privacy, explicit approval gates, staged docs, and parity coverage.
+- **v213.4 - Dashboard Regression Pattern Tracker:** Track dashboard route, nav, lazy-loading, command-deck, and custom `data-tip` regression patterns.
+- **v213.5 - Smoke/Verification Weakness Tracker:** Track smoke version, install smoke, extracted ZIP, package privacy, and verification metadata weaknesses.
+- **v213.6 - Documentation Drift Pattern Tracker:** Track README, release history, next-step, and runtime claim drift patterns across arcs.
+- **v213.7 - Improvement Priority Scorer:** Score improvement priorities without selecting roadmaps, launching work, or treating priority as approval.
+- **v213.8 - Dashboard/API/CLI Coverage:** Expose `/behavioral-pattern-intelligence` and matching runtime access.
+- **v213.9 - Pre-v214 Gate:** Confirm pattern intelligence remains advisory and cannot schedule, approve, or launch improvement work.
+- **v214.0 - Supervised Behavioral Pattern Intelligence:** Finalize repeated weakness and strength analysis only.
+
+### v214.1-v215.0 - Self-Model Integration Audit and Closure
+- **v214.1 - Self-Model Evidence Audit:** Verify self-model claims remain evidence-bound and non-authorizing.
+- **v214.2 - Deliberation Safety Audit:** Verify deliberation can recommend, rank, and explain but cannot approve, execute, continue, or mutate state.
+- **v214.3 - Purpose Alignment Audit:** Verify purpose-alignment checks protect original purpose, standing rules, approval scope, and identity boundaries.
+- **v214.4 - Behavior Pattern Audit:** Verify repeated pattern intelligence remains advisory and priority scoring cannot launch work.
+- **v214.5 - No-Autonomy Audit:** Confirm no self-approval, memory mutation, identity mutation, hidden scheduling, default model invocation, or autonomous continuation was introduced.
+- **v214.6 - Dashboard Console Audit:** Verify command-deck dashboard styling, route dispatch, and custom `data-tip` hover behavior remain intact.
+- **v214.7 - API/CLI Parity Audit:** Confirm every v211-v215 surface has dashboard, dynamic API, CLI, docs, and smoke coverage.
+- **v214.8 - README and Release-History Audit:** Confirm docs document every v210.1-v215.0 substage.
+- **v214.9 - Pre-v215 Smoke Gate:** Run fast/install smoke, extracted ZIP smoke, package privacy, route parity, docs, and no-autonomy checks.
+- **v215.0 - Operator-Governed Deliberation and Self-Model Layer v1:** Finalize self-model snapshots, deliberation packets, purpose alignment, behavioral pattern intelligence, and integration audit as supervised-only infrastructure.
+
+### v215.0 closure boundary
+v215.0 lets Eidolon model her current state, reason through options, detect purpose drift, and identify behavioral patterns, but every result is review-only. It does not self-approve, execute work, mutate memory, alter identity, rewrite purpose, select roadmaps, invoke local models by default, schedule hidden work, or continue into new patches automatically.
+
+
+## v215.1-v220.0 - Operator-Governed Internal Simulation and Foresight Layer v1
+
+### v215.1-v216.0 - Supervised Internal Simulation Packet Layer
+- **v215.1 - Simulation Packet Schema:** Define proposed action, assumptions, scope, dependencies, expected outcome, risks, blockers, required evidence, and operator approval requirements.
+- **v215.2 - Simulation Type Classifier:** Classify simulations as patch, governance, memory, identity, roadmap, dashboard, smoke, packaging, or release-readiness related.
+- **v215.3 - Assumption Binder:** Explicitly list assumptions so simulations do not hide unsupported premises.
+- **v215.4 - Expected Outcome Renderer:** Produce likely outcomes without implying certainty, approval, or completion.
+- **v215.5 - Failure Mode Binder:** Attach likely failure modes such as route drift, stale version markers, README mismatch, package privacy leaks, dashboard regressions, and smoke gaps.
+- **v215.6 - Simulation Non-Execution Guard:** Hard-code that simulation cannot run commands, mutate files, approve actions, create releases, or produce authorization.
+- **v215.7 - Dashboard View:** Expose `/internal-simulation-packet`.
+- **v215.8 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI coverage.
+- **v215.9 - Smoke Coverage:** Add route, API, CLI, docs, package privacy, tooltip, and non-execution safety checks.
+- **v216.0 - Supervised Internal Simulation Packet Layer:** Finalize review-only internal simulation packets.
+
+### v216.1-v217.0 - Operator-Governed Foresight Branch Comparison
+- **v216.1 - Foresight Branch Schema:** Define candidate branches, expected benefit, risk, governance cost, evidence readiness, and operator review fields.
+- **v216.2 - Candidate Branch Generator:** Generate candidate supervised branches without selecting one as approved.
+- **v216.3 - Branch Risk Scorer:** Score branch risks including safety, source impact, verification burden, and operator ambiguity.
+- **v216.4 - Branch Benefit Scorer:** Score branch benefits such as usefulness, maturity gain, reliability, usability, and governance clarity.
+- **v216.5 - Governance Cost Estimator:** Estimate approval scope, evidence needs, verification requirements, and docs impact.
+- **v216.6 - Evidence Readiness Scorer:** Score evidence readiness without treating readiness as authorization.
+- **v216.7 - Operator Recommendation Renderer:** Render advisory branch recommendations that require fresh explicit operator approval before action.
+- **v216.8 - Dashboard/API/CLI Coverage:** Expose `/foresight-branch-comparison` and matching runtime access.
+- **v216.9 - Pre-v217 Gate:** Confirm branch comparison cannot select a roadmap, launch a work package, or authorize changes.
+- **v217.0 - Operator-Governed Foresight Branch Comparison:** Finalize branch comparison as advisory foresight only.
+
+### v217.1-v218.0 - Supervised Pre-Change Consequence Modeling
+- **v217.1 - Consequence Model Schema:** Define predicted source, runtime, dashboard, documentation, smoke, verification, and approval-scope impacts.
+- **v217.2 - Source Impact Forecaster:** Forecast likely files and source surfaces affected by a proposed change without mutating them.
+- **v217.3 - Runtime Surface Impact Forecaster:** Forecast API, CLI, builder, route-map, and runtime-data impacts.
+- **v217.4 - Dashboard Impact Forecaster:** Forecast dashboard navigation, route dispatch, command-deck styling, and `data-tip` tooltip impacts.
+- **v217.5 - Documentation Impact Forecaster:** Forecast README, release history, next-step, and source-only token updates required by a change.
+- **v217.6 - Smoke/Verification Impact Forecaster:** Forecast smoke, install, package privacy, extracted ZIP, and version metadata checks needed after a change.
+- **v217.7 - Approval Scope Impact Forecaster:** Forecast approval-scope risks, consent freshness, ambiguity, and prohibited inference paths.
+- **v217.8 - Dashboard/API/CLI Coverage:** Expose `/pre-change-consequence-modeling` and matching runtime access.
+- **v217.9 - Pre-v218 Gate:** Confirm consequence modeling cannot apply patches, mutate source, or execute verification commands.
+- **v218.0 - Supervised Pre-Change Consequence Modeling:** Finalize pre-change consequence modeling as forecast-only infrastructure.
+
+### v218.1-v219.0 - Supervised Expectation-Reality Check Layer
+- **v218.1 - Expectation Checklist Schema:** Define expected route, runtime, documentation, smoke, package, and boundary checklist items.
+- **v218.2 - Expected Route Checklist:** List expected dashboard and API routes for a simulated change.
+- **v218.3 - Expected Runtime Coverage Checklist:** List expected builder, CLI, route-map, and runtime data coverage.
+- **v218.4 - Expected Documentation Checklist:** List expected README, release-history, and next-step documentation updates.
+- **v218.5 - Expected Smoke Coverage Checklist:** List expected fast, install, package privacy, extracted ZIP, and version-summary checks.
+- **v218.6 - Reality Comparison Renderer:** Compare simulated expectations against supplied or current evidence without executing follow-up work.
+- **v218.7 - Simulation Accuracy Scorer:** Score whether the simulation matched reality while treating mismatch as advisory follow-up only.
+- **v218.8 - Dashboard/API/CLI Coverage:** Expose `/expectation-reality-check` and matching runtime access.
+- **v218.9 - Pre-v219 Gate:** Confirm expectation-reality checks cannot continue into follow-up patches without operator approval.
+- **v219.0 - Supervised Expectation-Reality Check Layer:** Finalize expectation-reality comparison as review-only evidence checking.
+
+### v219.1-v220.0 - Simulation and Foresight Integration Audit
+- **v219.1 - Simulation Packet Audit:** Audit simulation packet assumptions, failure modes, and non-execution boundaries.
+- **v219.2 - Branch Comparison Audit:** Audit branch comparison scoring and ensure rankings do not select approved roadmaps.
+- **v219.3 - Consequence Model Audit:** Audit pre-change consequence forecasting and source/runtime/dashboard/docs/smoke impact coverage.
+- **v219.4 - Expectation-Reality Audit:** Audit expectation-reality comparison and simulation accuracy scoring.
+- **v219.5 - No-Execution Safety Audit:** Confirm simulation cannot run commands, mutate files, apply patches, create releases, or write memory/identity changes.
+- **v219.6 - No-Autonomy Audit:** Confirm no self-approval, hidden scheduling, default local model invocation, autonomous continuation, roadmap selection, or approval inference was introduced.
+- **v219.7 - Dashboard Console Audit:** Verify command-deck dashboard styling, route dispatch, and custom `data-tip` hover behavior remain intact.
+- **v219.8 - API/CLI Parity Audit:** Confirm every v216-v220 surface has dashboard, dynamic API, CLI, docs, and smoke coverage.
+- **v219.9 - Pre-v220 Smoke Gate:** Run fast/install smoke, extracted ZIP smoke, package privacy, route parity, docs, version metadata, and no-autonomy checks.
+- **v220.0 - Operator-Governed Internal Simulation and Foresight Layer v1:** Finalize internal simulation packets, foresight branch comparison, consequence modeling, expectation-reality checks, and integration audit as supervised-only infrastructure.
+
+### v220.0 closure boundary
+v220.0 lets Eidolon simulate likely outcomes, compare possible branches, forecast consequences, and compare expectations against reality for operator review. Simulation results, branch rankings, consequence forecasts, and accuracy scores do not approve actions, execute commands, apply patches, mutate source, mutate memory, alter identity, create releases, select roadmaps, schedule hidden work, invoke local models by default, or continue into new patches automatically.
+
+
+## v220.1-v225.0 - Operator-Governed Learning Curriculum and Capability Calibration Layer v1
+
+Goal: let Eidolon design supervised learning objectives, practice tasks, capability calibration packets, and skill-gap remediation plans without autonomous learning, model invocation, memory mutation, identity mutation, or capability promotion.
+
+### v220.1-v221.0 - Supervised Learning Objective Map
+- **v220.1 - Learning Objective Schema:** Define objectives with domain, reason, evidence, priority, risk, supervision requirements, and success criteria.
+- **v220.2 - Capability-to-Learning Gap Binder:** Connect self-model limitations and behavioral weaknesses to concrete learning goals.
+- **v220.3 - Governance-Bound Learning Classifier:** Classify learning goals as safe, approval-required, identity-adjacent, autonomy-adjacent, memory-adjacent, or blocked.
+- **v220.4 - Evidence Requirement Binder:** Attach required evidence before a learning objective can be considered satisfied.
+- **v220.5 - Curriculum Priority Scorer:** Rank objectives by usefulness, risk, maturity impact, and operator value.
+- **v220.6 - Non-Autonomous Learning Guard:** Confirm objectives cannot start work, run loops, mutate memory, or upgrade capabilities.
+- **v220.7 - Dashboard View:** Expose `/learning-objective-map`.
+- **v220.8 - API/CLI Runtime Coverage:** Add dynamic supervised runtime access.
+- **v220.9 - Smoke Coverage:** Add route/API/CLI and non-autonomy checks.
+- **v221.0 - Supervised Learning Objective Map:** Finalize review-only learning objective mapping.
+
+### v221.1-v222.0 - Supervised Practice Task Design Layer
+- **v221.1 - Practice Task Schema:** Define target skill, scope, expected evidence, risks, and review checklist.
+- **v221.2 - Practice Type Classifier:** Classify route, dashboard, governance, packaging, documentation, and calibration exercises.
+- **v221.3 - Skill Target Binder:** Bind tasks to specific skills and weaknesses.
+- **v221.4 - Expected Evidence Binder:** Define evidence an operator should review after a task.
+- **v221.5 - Risk and Scope Guard:** Flag autonomy, memory, identity, source mutation, or execution risks.
+- **v221.6 - Operator Review Checklist:** Prepare review criteria without running the task.
+- **v221.7 - Dashboard/API/CLI Coverage:** Expose `/practice-task-design` and matching runtime access.
+- **v221.8 - Practice Non-Execution Guard:** Confirm tasks cannot execute commands or mutate source.
+- **v221.9 - Pre-v222 Gate:** Audit practice-task design closure.
+- **v222.0 - Supervised Practice Task Design Layer:** Finalize reviewable practice task design.
+
+### v222.1-v223.0 - Operator-Governed Capability Calibration Layer
+- **v222.1 - Calibration Packet Schema:** Define capability claims, evidence, confidence, overreach warnings, and promotion guards.
+- **v222.2 - Capability Claim Extractor:** Extract claimed strengths and limitations from docs and runtime surfaces.
+- **v222.3 - Evidence Strength Scorer:** Score each claim as strong, partial, stale, conflicting, or unsupported.
+- **v222.4 - Unsupported Claim Detector:** Flag claims that lack evidence.
+- **v222.5 - Overconfidence Warning Layer:** Warn when capability language exceeds proof.
+- **v222.6 - Capability Confidence Renderer:** Render evidence-bound capability confidence.
+- **v222.7 - Dashboard/API/CLI Coverage:** Expose `/capability-calibration` and matching runtime access.
+- **v222.8 - Capability Promotion Guard:** Prevent calibration scores from promoting capability authority.
+- **v222.9 - Pre-v223 Gate:** Audit calibration closure.
+- **v223.0 - Operator-Governed Capability Calibration Layer:** Finalize evidence-bound capability calibration.
+
+### v223.1-v224.0 - Supervised Skill Gap Remediation Planner
+- **v223.1 - Skill Gap Schema:** Define gaps, clusters, remediation strategies, evidence needs, governance risks, and approval requirements.
+- **v223.2 - Weakness Cluster Detector:** Group recurring weaknesses into actionable clusters.
+- **v223.3 - Remediation Strategy Generator:** Generate supervised strategies without launching work.
+- **v223.4 - Verification Plan Binder:** Bind evidence and verification plans as operator-run expectations.
+- **v223.5 - Governance Risk Binder:** Attach autonomy, memory, identity, approval, and execution risk notes.
+- **v223.6 - Operator Approval Requirement Renderer:** Show what fresh approval would be required for real remediation.
+- **v223.7 - Dashboard/API/CLI Coverage:** Expose `/skill-gap-remediation-planner` and matching runtime access.
+- **v223.8 - No-Continuation Guard:** Prevent remediation plans from continuing into implementation.
+- **v223.9 - Pre-v224 Gate:** Audit remediation closure.
+- **v224.0 - Supervised Skill Gap Remediation Planner:** Finalize review-only remediation planning.
+
+### v224.1-v225.0 - Learning Curriculum Integration Audit and Closure
+- **v224.1 - Learning Objective Audit:** Audit objective schemas, priorities, evidence requirements, and non-start boundaries.
+- **v224.2 - Practice Task Safety Audit:** Audit practice design and non-execution guards.
+- **v224.3 - Capability Calibration Audit:** Audit evidence scoring, unsupported claims, and promotion guards.
+- **v224.4 - Skill Gap Remediation Audit:** Audit remediation plans and no-continuation boundaries.
+- **v224.5 - No-Autonomous-Learning Audit:** Confirm no learning loop, hidden training, or local model invocation by default.
+- **v224.6 - No-Memory-Mutation Audit:** Confirm the curriculum cannot mutate memory or identity.
+- **v224.7 - Dashboard Console Audit:** Preserve command-deck style and custom `data-tip` behavior.
+- **v224.8 - API/CLI Parity Audit:** Confirm every new surface has runtime coverage.
+- **v224.9 - Pre-v225 Smoke Gate:** Confirm docs, release history, package privacy, and smoke coverage.
+- **v225.0 - Operator-Governed Learning Curriculum and Capability Calibration Layer v1:** Finalize supervised learning curriculum, practice design, capability calibration, skill-gap remediation, and audit closure.
+
+### v225.0 closure boundary
+v225.0 lets Eidolon identify learning objectives, design supervised practice tasks, score capability claims against evidence, and plan remediation for skill gaps. These outputs do not start work, run tests, invoke local models by default, train models, mutate memory, alter identity, promote capability authority, expand autonomy, apply patches, publish releases, or continue into new work without explicit operator approval.
+
+
+## v225.1-v230.0 - Operator-Governed Knowledge and Belief Organization Layer v1
+
+The v230 arc adds supervised knowledge organization: evidence-bound claim ledgers, belief candidate review, contradiction/staleness intelligence, project knowledge maps, and a final audit. It does not write memory, promote beliefs to truth, alter identity, fetch hidden sources, invoke local models by default, authorize action, or treat confidence as approval.
+
+### v225.1-v226.0 - Supervised Knowledge Claim Ledger
+- **v225.1 - Knowledge Claim Schema:** Define claim text, domain, source, evidence, confidence, freshness, risk, and operator-review state.
+- **v225.2 - Claim Type Classifier:** Classify project, technical, governance, identity-adjacent, memory-adjacent, operator-preference, runtime, and external-world claims.
+- **v225.3 - Evidence Binder:** Attach README, release history, runtime maps, smoke output, package inspection, or operator statements.
+- **v225.4 - Confidence State Renderer:** Mark claims as strong, partial, stale, conflicting, unsupported, or rejected.
+- **v225.5 - Claim Non-Mutation Guard:** Confirm claim ledger entries cannot mutate memory or source.
+- **v225.6 - Dashboard View:** Add `/knowledge-claim-ledger`.
+- **v225.7 - API/CLI Runtime Coverage:** Add dynamic supervised runtime access.
+- **v225.8 - Smoke Coverage:** Add route/API/CLI and non-mutation checks.
+- **v225.9 - Pre-v226 Gate:** Audit route parity, docs, release history, and non-mutation boundaries.
+- **v226.0 - Supervised Knowledge Claim Ledger:** Finalize reviewable knowledge claim ledgering.
+
+### v226.1-v227.0 - Operator-Reviewed Belief Candidate Layer
+- **v226.1 - Belief Candidate Schema:** Define belief candidates, source, risk, confidence, promotion requirements, and non-authority state.
+- **v226.2 - Belief Source Binder:** Bind each belief candidate to source evidence and scope.
+- **v226.3 - Belief Risk Classifier:** Classify governance, project, identity-adjacent, memory-adjacent, and external-world belief risk.
+- **v226.4 - Belief Confidence Scorer:** Score candidate confidence without promoting it to truth.
+- **v226.5 - Belief Promotion Requirement Renderer:** Show the operator review required before promotion.
+- **v226.6 - Operator Review Checklist:** Prepare belief review criteria without applying them.
+- **v226.7 - Dashboard/API/CLI Coverage:** Add `/belief-candidate-review` and matching runtime access.
+- **v226.8 - Belief Non-Authority Guard:** Prevent belief state from authorizing action, memory, identity, or source changes.
+- **v226.9 - Pre-v227 Gate:** Audit belief candidate closure.
+- **v227.0 - Operator-Reviewed Belief Candidate Layer:** Finalize belief candidate handling.
+
+### v227.1-v228.0 - Supervised Contradiction and Staleness Intelligence
+- **v227.1 - Contradiction Event Schema:** Define contradiction, drift, stale knowledge, severity, evidence, and non-execution state.
+- **v227.2 - Claim Conflict Detector:** Detect claim conflicts without resolving or mutating them.
+- **v227.3 - README vs Runtime Drift Detector:** Compare docs and runtime claims for drift.
+- **v227.4 - Release History vs Version Marker Drift Detector:** Detect release-history/version marker mismatch.
+- **v227.5 - Governance Claim Conflict Detector:** Detect governance conflicts around approval, consent, autonomy, memory, and identity.
+- **v227.6 - Stale Knowledge Warning Layer:** Surface stale knowledge without hidden fetching or automatic updating.
+- **v227.7 - Dashboard/API/CLI Coverage:** Add `/contradiction-staleness-intelligence` and matching runtime access.
+- **v227.8 - Contradiction Non-Execution Guard:** Prevent contradiction reports from executing fixes or research loops.
+- **v227.9 - Pre-v228 Gate:** Audit contradiction/staleness closure.
+- **v228.0 - Supervised Contradiction and Staleness Intelligence:** Finalize supervised contradiction/staleness intelligence.
+
+### v228.1-v229.0 - Supervised Project Knowledge Map Layer
+- **v228.1 - Project Knowledge Node Schema:** Define project nodes, surfaces, evidence, governance boundary, and documentation coverage.
+- **v228.2 - Capability Arc Mapper:** Map major capability arcs and where they live.
+- **v228.3 - Dashboard Surface Mapper:** Map dashboard surfaces to capability nodes.
+- **v228.4 - API/CLI Surface Mapper:** Map API/CLI surfaces to capability nodes.
+- **v228.5 - Governance Boundary Mapper:** Map autonomy, approval, memory, identity, and execution boundaries.
+- **v228.6 - Documentation Coverage Mapper:** Map README/release-history coverage for major nodes.
+- **v228.7 - Dashboard/API/CLI Coverage:** Add `/project-knowledge-map` and matching runtime access.
+- **v228.8 - Knowledge Map Non-Authority Guard:** Prevent knowledge maps from granting authority or mutating source.
+- **v228.9 - Pre-v229 Gate:** Audit project knowledge map closure.
+- **v229.0 - Supervised Project Knowledge Map Layer:** Finalize supervised project knowledge mapping.
+
+### v229.1-v230.0 - Knowledge Organization Integration Audit and Closure
+- **v229.1 - Claim Ledger Audit:** Audit claim schema, evidence binding, confidence states, and non-mutation boundaries.
+- **v229.2 - Belief Candidate Safety Audit:** Audit belief candidates, risk scoring, promotion requirements, and non-authority guards.
+- **v229.3 - Contradiction/Staleness Audit:** Audit contradiction, stale-knowledge, and drift reports without executing fixes.
+- **v229.4 - Project Knowledge Map Audit:** Audit capability, dashboard, API/CLI, governance, and documentation maps.
+- **v229.5 - No-Memory-Mutation Audit:** Confirm knowledge organization cannot write memories or source state.
+- **v229.6 - No-Belief-Authority Audit:** Confirm belief confidence cannot become truth or authorization.
+- **v229.7 - Dashboard Console Audit:** Preserve command-deck style and custom `data-tip` hover behavior.
+- **v229.8 - API/CLI Parity Audit:** Audit dynamic runtime route-map and CLI coverage.
+- **v229.9 - Pre-v230 Smoke Gate:** Confirm docs, release history, package privacy, and smoke coverage.
+- **v230.0 - Operator-Governed Knowledge and Belief Organization Layer v1:** Finalize supervised knowledge claims, belief candidates, contradiction/staleness intelligence, project knowledge maps, and audit closure.
+
+### v230.0 closure boundary
+v230.0 lets Eidolon organize knowledge claims, stage belief candidates, detect contradictions/stale assumptions, and map project knowledge. These outputs do not write memory, promote beliefs to truth, alter identity, authorize action, fetch hidden sources, invoke local models by default, mutate source, apply patches, publish releases, or continue into new work without explicit operator approval.
+
+
+## v230.1-v235.0 - Operator-Governed Local Model Evaluation and Cognitive Workbench Layer v1
+
+### v230.1-v231.0 - Operator-Governed Local Model Inventory Layer
+- **v230.1 - Local Model Inventory Schema:** Define model name, provider/runtime, availability status, intended use, known limits, risk notes, and operator-review state.
+- **v230.2 - Model Capability Profile Schema:** Track claimed strengths such as coding, summarization, planning, critique, patch review, and reasoning.
+- **v230.3 - Model Limit Binder:** Attach known risks such as hallucination, stale knowledge, weak code correctness, weak instruction following, or unsafe confidence.
+- **v230.4 - Model Evidence Binder:** Require evidence from prior evaluations, operator notes, or explicitly approved tests.
+- **v230.5 - No-Invocation Guard:** Hard-code that inventory/profile views cannot call local models.
+- **v230.6 - Dashboard View:** Expose `/local-model-inventory`.
+- **v230.7 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI access.
+- **v230.8 - Smoke Coverage:** Add route, API, CLI, docs, privacy, tooltip, and no-invocation checks.
+- **v230.9 - Pre-v231 Gate:** Audit inventory closure without local model invocation.
+- **v231.0 - Operator-Governed Local Model Inventory Layer:** Finalize non-invoking local model inventory and capability profile infrastructure.
+
+### v231.1-v232.0 - Supervised Model Evaluation Plan Layer
+- **v231.1 - Evaluation Plan Schema:** Define model test goals, task type, prompt suite, expected evidence, risk/scope, and approval requirements.
+- **v231.2 - Task Type Classifier:** Classify evaluation tasks such as patch critique, documentation review, summarization, planning, and contradiction detection.
+- **v231.3 - Prompt Suite Designer:** Design test prompts without running models.
+- **v231.4 - Expected Evidence Binder:** Bind expected outputs, comparison data, and evaluation evidence requirements.
+- **v231.5 - Risk and Scope Classifier:** Classify local model evaluation risk and scope before any invocation is approved.
+- **v231.6 - Operator Approval Requirement Renderer:** Render the exact approval required before a model can be run.
+- **v231.7 - Dashboard/API/CLI Coverage:** Expose `/model-evaluation-plan` and matching runtime access.
+- **v231.8 - Evaluation Non-Execution Guard:** Confirm evaluation plans cannot invoke models or start loops.
+- **v231.9 - Pre-v232 Gate:** Audit evaluation-plan closure before finalization.
+- **v232.0 - Supervised Model Evaluation Plan Layer:** Finalize reviewable model evaluation plans that do not run models.
+
+### v232.1-v233.0 - Operator-Governed Model Output Comparison Layer
+- **v232.1 - Model Output Record Schema:** Define output records, model id, prompt id, task, evidence, score, contradiction, and hallucination fields.
+- **v232.2 - Output Comparison Renderer:** Compare model outputs after explicitly operator-approved runs.
+- **v232.3 - Agreement and Disagreement Mapper:** Map agreement and disagreement across model outputs and project evidence.
+- **v232.4 - Evidence Support Scorer:** Score whether outputs are supported by project evidence.
+- **v232.5 - Hallucination Risk Detector:** Flag unsupported files, commands, approvals, capabilities, or version claims.
+- **v232.6 - Contradiction Against Project Knowledge Detector:** Detect contradictions against project knowledge maps and governance boundaries.
+- **v232.7 - Dashboard/API/CLI Coverage:** Expose `/model-output-comparison` and matching runtime access.
+- **v232.8 - Output Non-Authority Guard:** Prevent model outputs from becoming truth, approval, memory, identity, or source mutation.
+- **v232.9 - Pre-v233 Gate:** Audit model-output comparison closure.
+- **v233.0 - Operator-Governed Model Output Comparison Layer:** Finalize conservative model output comparison and trust scoring.
+
+### v233.1-v234.0 - Supervised Cognitive Workbench Routing Layer
+- **v233.1 - Workbench Task Schema:** Define supervised workbench tasks, required roles, evidence needs, review burden, and fallbacks.
+- **v233.2 - Task-to-Model Fit Scorer:** Score model fit for a supervised task without selecting or invoking a model.
+- **v233.3 - Human Review Requirement Binder:** Bind operator/human review requirements for every model-assisted route.
+- **v233.4 - Fallback Strategy Renderer:** Render manual and non-model fallbacks if model use is not approved.
+- **v233.5 - Multi-Model Disagreement Policy:** Define how disagreement is handled without voting authority or automatic acceptance.
+- **v233.6 - Evidence-Bound Recommendation Renderer:** Render task/model recommendations with evidence and non-execution boundaries.
+- **v233.7 - Dashboard/API/CLI Coverage:** Expose `/cognitive-workbench-routing` and matching runtime access.
+- **v233.8 - Recommendation Non-Execution Guard:** Prevent routing recommendations from executing or invoking models.
+- **v233.9 - Pre-v234 Gate:** Audit routing closure before finalization.
+- **v234.0 - Supervised Cognitive Workbench Routing Layer:** Finalize model-to-task fit recommendations without execution.
+
+### v234.1-v235.0 - Local Model Workbench Integration Audit and Closure
+- **v234.1 - Inventory/Profile Audit:** Audit local model inventory, capability profiles, limits, evidence, and no-invocation boundaries.
+- **v234.2 - Evaluation Plan Safety Audit:** Audit evaluation plans, prompt suites, risk/scope, approval requirements, and non-execution guards.
+- **v234.3 - Output Comparison Trust Audit:** Audit model output records, comparison, evidence support, hallucination risk, contradiction checks, and non-authority guards.
+- **v234.4 - Workbench Routing Audit:** Audit task/model fit scoring, review requirements, fallback strategies, disagreement policies, and recommendation boundaries.
+- **v234.5 - No-Default-Invocation Audit:** Confirm local models are not invoked by default or through hidden loops.
+- **v234.6 - No-Model-Authority Audit:** Confirm model outputs cannot become truth, approval, memory, identity, source mutation, self-upgrade, or roadmap selection.
+- **v234.7 - Dashboard Console Audit:** Verify command-deck styling, route dispatch, and custom `data-tip` hover behavior remain intact.
+- **v234.8 - API/CLI Parity Audit:** Confirm every v231-v235 surface has dashboard, dynamic API, CLI, docs, and smoke coverage.
+- **v234.9 - Pre-v235 Smoke Gate:** Run fast/install smoke, extracted ZIP smoke, package privacy, route parity, docs, and no-model-authority checks.
+- **v235.0 - Operator-Governed Local Model Evaluation and Cognitive Workbench Layer v1:** Finalize local model inventory, supervised evaluation planning, output comparison, workbench routing, and audit closure as supervised-only infrastructure.
+
+### v235.0 closure boundary
+v235.0 lets Eidolon prepare local model inventories, evaluation plans, output comparison rules, and cognitive workbench routing recommendations. It does not invoke local models by default, run hidden model calls, start autonomous evaluation loops, treat model outputs as truth, accept model recommendations as approval, self-upgrade, mutate memory, alter identity, select roadmaps, apply patches, publish releases, or continue into new work automatically.
+
+
+## v235.1-v240.0 - Operator-Approved Local Model Invocation Sandbox v1
+
+### Purpose
+v240.0 adds a strictly operator-approved local model invocation sandbox. Eidolon may stage consent packets, record sandboxed model evaluation runs, triage outputs, and prepare reliability candidates only when scoped operator approval exists. Local model outputs remain untrusted review material and cannot become truth, approval, memory, identity, source changes, release actions, or roadmap authority.
+
+### v235.1-v236.0 - Local Model Invocation Consent Gate
+- **v235.1 - Invocation Consent Schema:** Define model name, prompt suite, task type, allowed files/context, output destination, time scope, and operator approval status.
+- **v235.2 - Invocation Scope Classifier:** Classify requested runs as code review, patch critique, summarization, planning, contradiction detection, documentation audit, or unsafe/blocked.
+- **v235.3 - Context Boundary Binder:** Define exactly what context the local model is allowed to receive.
+- **v235.4 - Output Use Limiter:** Mark outputs as review-only, comparison-only, evidence-candidate, or rejected.
+- **v235.5 - Consent Expiration Guard:** Prevent old or out-of-scope consent from being reused.
+- **v235.6 - No-Default-Invocation Guard:** Confirm no model invocation can happen without a valid scoped operator approval packet.
+- **v235.7 - Dashboard View:** Add `/local-model-invocation-consent`.
+- **v235.8 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI access.
+- **v235.9 - Smoke Coverage:** Add route/API/CLI and no-default-invocation checks.
+- **v236.0 - Operator-Approved Local Model Invocation Consent Gate:** Finalize scoped consent handling.
+
+### v236.1-v237.0 - Sandboxed Model Evaluation Run Ledger
+- **v236.1 - Evaluation Run Schema:** Define run id, consent id, model id, prompt suite id, context hash, output record ids, and status.
+- **v236.2 - Prompt Suite Run Binder:** Bind approved prompt suites to run records without expanding scope.
+- **v236.3 - Model Output Capture Record:** Capture model output as untrusted review material.
+- **v236.4 - Runtime/Provider Metadata Binder:** Bind runtime/provider metadata for repeatability and audit.
+- **v236.5 - Transcript Sanitization Guard:** Sanitize transcripts and avoid packaging private/runtime data.
+- **v236.6 - Run Status Renderer:** Render completed, blocked, failed, or operator-review-needed states.
+- **v236.7 - Dashboard/API/CLI Coverage:** Add `/model-evaluation-run-ledger` and matching runtime access.
+- **v236.8 - Run Non-Mutation Guard:** Confirm run ledgers record outputs but do not apply outputs.
+- **v236.9 - Pre-v237 Gate:** Audit run-ledger closure.
+- **v237.0 - Sandboxed Model Evaluation Run Ledger:** Finalize run ledger support.
+
+### v237.1-v238.0 - Multi-Model Output Triage Layer
+- **v237.1 - Triage Packet Schema:** Define output records, agreement map, disagreement reasons, hallucination flags, contradiction checks, and review priority.
+- **v237.2 - Output Agreement Mapper:** Map where approved model outputs agree without treating agreement as truth.
+- **v237.3 - Disagreement Explainer:** Explain differences among outputs and project evidence.
+- **v237.4 - Hallucination Risk Binder:** Flag unsupported claims, invented files, stale version claims, or approval leakage.
+- **v237.5 - Project Knowledge Contradiction Check:** Compare outputs against project knowledge maps and governance boundaries.
+- **v237.6 - Operator Review Priority Scorer:** Rank outputs for human review without granting authority.
+- **v237.7 - Dashboard/API/CLI Coverage:** Add `/multi-model-output-triage` and matching runtime access.
+- **v237.8 - Triage Non-Authority Guard:** Confirm triage cannot approve, mutate, publish, or promote truth.
+- **v237.9 - Pre-v238 Gate:** Audit triage closure.
+- **v238.0 - Operator-Governed Multi-Model Output Triage:** Finalize review-only triage.
+
+### v238.1-v239.0 - Model Reliability Profile Candidate Layer
+- **v238.1 - Reliability Candidate Schema:** Define task-specific reliability candidates, evidence, confidence, limitations, and operator-review state.
+- **v238.2 - Task-Specific Reliability Scorer:** Score reliability candidates by task type and evidence support.
+- **v238.3 - Repeated Strength Detector:** Identify recurring useful model behavior from approved runs.
+- **v238.4 - Repeated Failure Detector:** Identify recurring hallucination, contradiction, or instruction-following weaknesses.
+- **v238.5 - Evidence-Bound Reliability Summary:** Summarize reliability candidates with evidence and uncertainty.
+- **v238.6 - Operator Promotion Requirement Renderer:** Render what explicit review is required before profile promotion.
+- **v238.7 - Dashboard/API/CLI Coverage:** Add `/model-reliability-profile-candidates` and matching runtime access.
+- **v238.8 - Reliability Non-Promotion Guard:** Confirm reliability candidates cannot self-promote.
+- **v238.9 - Pre-v239 Gate:** Audit reliability-candidate closure.
+- **v239.0 - Supervised Model Reliability Profile Candidates:** Finalize review-only reliability candidates.
+
+### v239.1-v240.0 - Local Model Invocation Sandbox Audit and Closure
+- **v239.1 - Invocation Consent Audit:** Audit consent schema, scope, context boundary, output limits, expiration, and approval requirements.
+- **v239.2 - Evaluation Run Ledger Audit:** Audit run records, prompt-suite binding, output capture, metadata, transcript sanitization, and status rendering.
+- **v239.3 - Output Triage Safety Audit:** Audit agreement, disagreement, hallucination, contradiction, and review-priority handling.
+- **v239.4 - Reliability Candidate Audit:** Audit reliability candidates and operator promotion requirements.
+- **v239.5 - No-Default-Invocation Audit:** Verify no default, hidden, or recurring model invocation paths are enabled.
+- **v239.6 - No-Model-Authority Audit:** Verify model outputs cannot become truth, approval, memory, identity, roadmap choice, patch, or release action.
+- **v239.7 - Dashboard Console Audit:** Check command-deck style and custom data-tip hover behavior.
+- **v239.8 - API/CLI Parity Audit:** Confirm every sandbox surface has matching dynamic runtime access.
+- **v239.9 - Pre-v240 Smoke Gate:** Run fast/install, package privacy, route, API/CLI, and tooltip checks.
+- **v240.0 - Operator-Approved Local Model Invocation Sandbox v1:** Finalize the governed invocation sandbox.
+
+### v240.0 closure boundary
+v240.0 lets Eidolon prepare scoped local model invocation consent packets, sandboxed evaluation run ledgers, output triage reports, and reliability profile candidates. It does not invoke local models by default, run hidden model calls, start recurring evaluation loops, treat model outputs as truth, apply patches, publish releases, mutate memory, alter identity, promote capabilities, select roadmaps, or continue into new work automatically.
+
+
+## v240.1-v245.0 - Operator-Governed Model-Assisted Patch Review and Synthesis Layer v1
+
+### Purpose
+v245.0 lets Eidolon use explicitly approved local model outputs as review material in the patch lifecycle. Eidolon may prepare critique packets, synthesize multiple model reviews, summarize patch risks and remediation candidates, and calibrate model review quality. Model output remains advisory only and cannot become truth, approval, source mutation, verification execution, memory mutation, identity mutation, release action, roadmap authority, or continuation authority.
+
+### v240.1-v241.0 - Model-Assisted Patch Critique Packet Layer
+- **v240.1 - Patch Critique Packet Schema:** Define patch target, model source, prompt scope, critique text, evidence support, risk tags, uncertainty, and operator-review state.
+- **v240.2 - Critique Source Binder:** Link critique packets to approved local model run ledger entries.
+- **v240.3 - Critique Type Classifier:** Classify critiques as code, docs, tests, dashboard, governance, packaging, CLI/API, route parity, or smoke coverage.
+- **v240.4 - Critique Evidence Scorer:** Mark critique claims as supported, partial, unsupported, conflicting, or hallucination-risk.
+- **v240.5 - Critique Non-Authority Guard:** Confirm critique packets cannot approve, apply, verify, or mutate anything.
+- **v240.6 - Dashboard View:** Add `/model-assisted-patch-critique`.
+- **v240.7 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI access.
+- **v240.8 - Smoke Coverage:** Add route/API/CLI and non-authority smoke checks.
+- **v240.9 - Pre-v241 Gate:** Audit critique packet closure.
+- **v241.0 - Operator-Governed Model-Assisted Patch Critique Layer:** Finalize review-only model-assisted patch critique packets.
+
+### v241.1-v242.0 - Multi-Model Review Synthesis Layer
+- **v241.1 - Review Synthesis Schema:** Define model review sources, agreement clusters, disagreement clusters, hallucination candidates, useful findings, and operator summary fields.
+- **v241.2 - Agreement Cluster Mapper:** Group similar approved model review findings without treating consensus as proof.
+- **v241.3 - Disagreement Cluster Mapper:** Map conflicting model claims and unresolved evidence gaps.
+- **v241.4 - Hallucination Candidate Filter:** Flag invented files, routes, commands, approvals, or capabilities.
+- **v241.5 - High-Value Finding Extractor:** Extract useful advisory findings for operator review.
+- **v241.6 - Operator Summary Renderer:** Render concise operator-facing synthesis without approval language.
+- **v241.7 - Dashboard/API/CLI Coverage:** Add `/multi-model-review-synthesis` and matching runtime access.
+- **v241.8 - Synthesis Non-Approval Guard:** Confirm synthesis cannot approve, execute, mutate, or continue work.
+- **v241.9 - Pre-v242 Gate:** Audit synthesis closure.
+- **v242.0 - Supervised Multi-Model Review Synthesis Layer:** Finalize advisory multi-model review synthesis.
+
+### v242.1-v243.0 - Patch Risk and Remediation Synthesis
+- **v242.1 - Patch Risk Synthesis Schema:** Define risks, remediation candidates, verification suggestions, documentation impact, and operator decision summary fields.
+- **v242.2 - Risk Category Binder:** Bind code, docs, smoke, route parity, packaging, governance, and model-authority risks.
+- **v242.3 - Remediation Candidate Extractor:** Extract review-only remediation candidates from model critiques.
+- **v242.4 - Verification Suggestion Binder:** Bind suggested checks without running commands.
+- **v242.5 - Documentation Impact Binder:** Identify README and release-history effects.
+- **v242.6 - Operator Decision Summary:** Render decisions required from the operator without inferring approval.
+- **v242.7 - Dashboard/API/CLI Coverage:** Add `/patch-risk-remediation-synthesis` and matching runtime access.
+- **v242.8 - Remediation Non-Execution Guard:** Confirm remediation plans do not become edits, smoke runs, or approvals.
+- **v242.9 - Pre-v243 Gate:** Audit risk/remediation closure.
+- **v243.0 - Operator-Governed Patch Risk and Remediation Synthesis:** Finalize model-assisted risk and remediation synthesis.
+
+### v243.1-v244.0 - Model Review Quality Calibration
+- **v243.1 - Review Quality Record Schema:** Define useful findings, false positives, hallucinations, missed issues, task type, and operator review outcome.
+- **v243.2 - Useful Finding Tracker:** Track operator-confirmed useful findings.
+- **v243.3 - False Positive Tracker:** Track rejected or unsupported findings.
+- **v243.4 - Hallucination Tracker:** Track invented or contradictory model review claims.
+- **v243.5 - Missed Issue Tracker:** Track known issues omitted by model review.
+- **v243.6 - Task-Specific Model Usefulness Scorer:** Score advisory usefulness by task type and evidence.
+- **v243.7 - Dashboard/API/CLI Coverage:** Add `/model-review-quality-calibration` and matching runtime access.
+- **v243.8 - Quality Non-Promotion Guard:** Confirm quality scores cannot promote models or expand authority.
+- **v243.9 - Pre-v244 Gate:** Audit quality calibration closure.
+- **v244.0 - Supervised Model Review Quality Calibration:** Finalize review-only model quality calibration.
+
+### v244.1-v245.0 - Model-Assisted Patch Review Integration Audit
+- **v244.1 - Critique Packet Audit:** Audit critique schema, source binding, evidence scoring, and non-authority boundaries.
+- **v244.2 - Multi-Model Synthesis Audit:** Audit agreement, disagreement, hallucination filtering, useful finding extraction, and non-approval boundaries.
+- **v244.3 - Risk/Remediation Synthesis Audit:** Audit risk/remediation proposals, verification suggestions, docs impact, and non-execution boundaries.
+- **v244.4 - Review Quality Calibration Audit:** Audit useful finding, false positive, hallucination, missed issue, and quality scoring boundaries.
+- **v244.5 - No-Model-Authority Audit:** Verify model outputs cannot become proof, truth, approval, memory, identity, roadmap choice, patch, or release action.
+- **v244.6 - No-Source-Mutation Audit:** Verify review synthesis cannot edit source or run verification commands.
+- **v244.7 - Dashboard Console Audit:** Check command-deck style and custom data-tip hover behavior.
+- **v244.8 - API/CLI Parity Audit:** Confirm every review surface has matching dynamic runtime access.
+- **v244.9 - Pre-v245 Smoke Gate:** Run fast/install, package privacy, route, API/CLI, and tooltip checks.
+- **v245.0 - Operator-Governed Model-Assisted Patch Review and Synthesis Layer v1:** Finalize the governed model-assisted patch review and synthesis layer.
+
+### v245.0 closure boundary
+v245.0 lets Eidolon transform approved local model outputs into advisory patch critique, review synthesis, risk/remediation, and model-review quality packets. It does not invoke models without consent, treat model outputs as proof or truth, approve work, apply source changes, run verification commands, publish releases, mutate memory, alter identity, promote models, select roadmaps, or continue into new patches automatically.
+
+
+## v245.1-v250.0 - Operator-Governed Model-Assisted Patch Draft Assembly Layer v1
+
+### Purpose
+v250.0 lets Eidolon turn reviewed model-assisted findings into structured, reviewable patch draft assembly packets. Eidolon may prepare draft packets, trace proposed changes to evidence, map file and documentation impacts, suggest smoke and verification plans, and prepare sandbox readiness packets. These packets remain review-only and cannot write files, apply patches, run commands, execute sandboxes, publish releases, mutate memory, alter identity, infer approval from model consensus, or continue into implementation automatically.
+
+### v245.1-v246.0 - Model-Assisted Patch Draft Packet Layer
+- **v245.1 - Patch Draft Packet Schema:** Define target version, source findings, proposed files, intended changes, evidence links, risk notes, and operator-review status.
+- **v245.2 - Critique-to-Draft Trace Binder:** Link each proposed change back to model-assisted critique, operator notes, README requirements, smoke findings, or release-history evidence.
+- **v245.3 - Proposed Change Classifier:** Classify draft changes as code, docs, dashboard, route, API, CLI, smoke, packaging, governance, or metadata.
+- **v245.4 - Draft Evidence Scorer:** Mark each proposed change as strongly supported, partially supported, speculative, conflicting, or rejected.
+- **v245.5 - Draft Non-Mutation Guard:** Confirm draft packets cannot write files, apply patches, run commands, or approve implementation.
+- **v245.6 - Dashboard View:** Add `/model-assisted-patch-draft`.
+- **v245.7 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI access.
+- **v245.8 - Smoke Coverage:** Add route/API/CLI and non-mutation smoke checks.
+- **v245.9 - Pre-v246 Gate:** Audit draft packet closure.
+- **v246.0 - Operator-Governed Model-Assisted Patch Draft Packet Layer:** Finalize review-only model-assisted patch draft packets.
+
+### v246.1-v247.0 - File Impact and Documentation Update Planner
+- **v246.1 - File Impact Map Schema:** Define source, dashboard, API/CLI, README, release-history, smoke, packaging, and metadata impacts.
+- **v246.2 - Source File Impact Binder:** Map affected source files without editing them.
+- **v246.3 - Dashboard Route Impact Binder:** Map dashboard nav, route, render, and data-tip impacts.
+- **v246.4 - API/CLI Surface Impact Binder:** Map dynamic API and CLI runtime surfaces.
+- **v246.5 - README Update Requirement Binder:** Identify README_NEXT_STEPS.md updates required by standing project rules.
+- **v246.6 - Release History Update Requirement Binder:** Identify README_RELEASE_HISTORY.md updates required by standing project rules.
+- **v246.7 - Dashboard/API/CLI Coverage:** Add `/file-impact-documentation-planner` and matching runtime access.
+- **v246.8 - File Impact Non-Execution Guard:** Confirm file impact plans cannot mutate files or docs.
+- **v246.9 - Pre-v247 Gate:** Audit file impact and documentation planning closure.
+- **v247.0 - Supervised File Impact and Documentation Planner:** Finalize review-only file impact and documentation update planning.
+
+### v247.1-v248.0 - Smoke and Verification Suggestion Layer
+- **v247.1 - Verification Suggestion Schema:** Define suggested checks, evidence needs, command preview, expected output, and operator approval requirement.
+- **v247.2 - Smoke Coverage Gap Binder:** Map proposed draft changes to smoke coverage gaps.
+- **v247.3 - Route/API/CLI Parity Check Planner:** Suggest parity checks for each new surface.
+- **v247.4 - Package Privacy Check Planner:** Suggest source-only privacy checks for generated runtime paths.
+- **v247.5 - Dashboard Regression Check Planner:** Suggest command-deck style and tooltip checks.
+- **v247.6 - Extracted ZIP Verification Planner:** Suggest extracted ZIP fast/install smoke checks.
+- **v247.7 - Dashboard/API/CLI Coverage:** Add `/smoke-verification-suggestions` and matching runtime access.
+- **v247.8 - Verification Non-Execution Guard:** Confirm suggestions cannot execute commands automatically.
+- **v247.9 - Pre-v248 Gate:** Audit verification suggestion closure.
+- **v248.0 - Supervised Smoke and Verification Suggestion Layer:** Finalize review-only smoke and verification suggestions.
+
+### v248.1-v249.0 - Sandbox Preparation Packet Layer
+- **v248.1 - Sandbox Prep Packet Schema:** Define implementation draft source, required approval scope, readiness, risk, rollback, expected output, and operator checklist.
+- **v248.2 - Required Approval Scope Binder:** Bind exact operator approval scope required before sandbox execution.
+- **v248.3 - Draft-to-Sandbox Readiness Scorer:** Score readiness based on evidence, docs, route/API/CLI impact, smoke suggestions, and risk notes.
+- **v248.4 - Risk and Rollback Binder:** Attach rollback and risk notes without executing anything.
+- **v248.5 - Expected Output Binder:** Describe expected files, docs, runtime surfaces, smoke output, and package evidence.
+- **v248.6 - Operator Execution Checklist:** Render explicit checklist for separate sandbox execution approval.
+- **v248.7 - Dashboard/API/CLI Coverage:** Add `/sandbox-preparation-packet` and matching runtime access.
+- **v248.8 - Sandbox Non-Execution Guard:** Confirm sandbox preparation packets cannot execute sandbox workflows.
+- **v248.9 - Pre-v249 Gate:** Audit sandbox preparation closure.
+- **v249.0 - Operator-Governed Sandbox Preparation Packet Layer:** Finalize review-only sandbox preparation packets.
+
+### v249.1-v250.0 - Patch Draft Assembly Integration Audit
+- **v249.1 - Draft Packet Traceability Audit:** Audit draft schema, source finding traceability, evidence scoring, and non-mutation boundaries.
+- **v249.2 - File Impact Planner Audit:** Audit file impact, dashboard, API/CLI, README, and release-history planning.
+- **v249.3 - Documentation Requirement Audit:** Verify README and release history requirements are attached to draft planning.
+- **v249.4 - Verification Suggestion Audit:** Audit smoke, route/API/CLI, package privacy, dashboard regression, and extracted ZIP suggestions.
+- **v249.5 - Sandbox Preparation Safety Audit:** Audit approval scope, readiness, risk, rollback, expected output, and non-execution boundaries.
+- **v249.6 - No-Source-Mutation Audit:** Verify draft assembly cannot edit source, run commands, apply patches, or publish releases.
+- **v249.7 - Dashboard Console Audit:** Check command-deck style and custom data-tip hover behavior.
+- **v249.8 - API/CLI Parity Audit:** Confirm every draft assembly surface has matching dynamic runtime access.
+- **v249.9 - Pre-v250 Smoke Gate:** Run fast/install, package privacy, route, API/CLI, extracted ZIP, and tooltip checks.
+- **v250.0 - Operator-Governed Model-Assisted Patch Draft Assembly Layer v1:** Finalize governed model-assisted patch draft assembly support.
+
+### v250.0 closure boundary
+v250.0 lets Eidolon assemble model-assisted patch drafts and sandbox preparation packets for operator review. It does not invoke local models without consent, treat model output as proof, infer approval from model consensus, write live source files, apply patches, run verification commands, execute sandboxes, create releases, mutate memory, alter identity, reuse stale consent, or continue into implementation automatically.
+
+
+## v250.1-v255.0 - Operator-Governed Patch Execution Packet Bridge v1
+
+### Purpose
+v255.0 lets Eidolon convert model-assisted patch draft assembly output into approval-ready, review-only execution packet plans. Eidolon may bind selected draft items to evidence, preview scoped diffs, track explicit approval scope, plan verification and rollback evidence, and audit the whole bridge. These packets do not write files, apply patches, run commands, execute sandboxes, publish releases, mutate memory, alter identity, invoke local models by default, infer approval from readiness or model consensus, reuse stale consent, or continue into implementation automatically.
+
+### v250.1-v251.0 - Draft-to-Execution Packet Gate
+- **v250.1 - Execution Packet Schema:** Define target version, source draft packet, selected changes, excluded changes, file scope, docs scope, approval state, verification scope, rollback scope, and operator decision status.
+- **v250.2 - Draft Packet Source Binder:** Bind execution packets back to `/model-assisted-patch-draft` and `/patch-draft-assembly-audit` evidence.
+- **v250.3 - Operator Selection Binder:** Require changes to be explicitly selected for inclusion; unsupported, speculative, or rejected items remain excluded by default.
+- **v250.4 - Evidence Completeness Checker:** Mark each proposed execution item as supported, partial, missing evidence, contradictory, or rejected.
+- **v250.5 - Scope Boundary Classifier:** Classify execution scope as code, docs, dashboard, API, CLI, smoke, packaging, release metadata, governance, or runtime data.
+- **v250.6 - Default Blocked Approval State:** Ensure every packet starts as `blocked_pending_operator_approval`.
+- **v250.7 - Dashboard View:** Add `/draft-to-execution-packet`.
+- **v250.8 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI access.
+- **v250.9 - Pre-v251 Gate:** Confirm no draft-to-execution packet can write files, apply patches, run commands, approve work, or continue automatically.
+- **v251.0 - Operator-Governed Draft-to-Execution Packet Gate:** Finalize the read-only bridge from draft assembly to execution packet planning.
+
+### v251.1-v252.0 - Patch Diff Preview and Edit Plan Layer
+- **v251.1 - Diff Preview Schema:** Define target files, change anchors, intended replacements, insertions, deletions, docs edits, route edits, smoke edits, and release-history edits.
+- **v251.2 - File Anchor Mapper:** Map proposed changes to approximate source locations without modifying source.
+- **v251.3 - Before/After Preview Renderer:** Render preview snippets for operator review without writing generated content into live files.
+- **v251.4 - Documentation Edit Plan Binder:** Bind required README and release-history edits to the standing project rule.
+- **v251.5 - Dashboard/API/CLI Impact Preview:** Map nav entries, route handlers, dynamic API routes, CLI flags, and smoke additions.
+- **v251.6 - Overreach Detector:** Flag edits outside the selected scope.
+- **v251.7 - Dashboard View:** Add `/patch-diff-preview-planner`.
+- **v251.8 - API/CLI Runtime Coverage:** Add matching dynamic runtime access.
+- **v251.9 - Pre-v252 Gate:** Confirm previews cannot write files, execute patches, create release candidates, or infer approval.
+- **v252.0 - Supervised Patch Diff Preview and Edit Plan Layer:** Finalize review-only diff and edit planning.
+
+### v252.1-v253.0 - Explicit Approval Scope Ledger
+- **v252.1 - Approval Scope Ledger Schema:** Define approval target, approved files, approved docs, approved commands, approved mode, expiration, operator note, and excluded actions.
+- **v252.2 - Approval Phrase Boundary Classifier:** Distinguish planning approval, sandbox approval, source-application approval, verification approval, release approval, and non-approval.
+- **v252.3 - Consent Freshness Binder:** Require approval to match current target version, packet ID, file scope, and execution mode.
+- **v252.4 - Scope Mismatch Detector:** Block execution packets when approval scope does not match packet scope.
+- **v252.5 - Stale Consent Guard:** Prevent reuse of expired, old, or out-of-scope approval.
+- **v252.6 - Approval Receipt Renderer:** Generate a reviewable approval receipt, not authority by itself.
+- **v252.7 - Dashboard View:** Add `/execution-approval-scope`.
+- **v252.8 - API/CLI Runtime Coverage:** Add matching runtime access.
+- **v252.9 - Pre-v253 Gate:** Confirm approval ledgers cannot self-approve, mutate source, invoke models, run commands, or publish.
+- **v253.0 - Operator-Governed Explicit Approval Scope Ledger:** Finalize exact approval-scope tracking for execution packets.
+
+### v253.1-v254.0 - Verification and Rollback Packet Planner
+- **v253.1 - Verification Packet Schema:** Define suggested commands, purpose, expected output, failure meaning, and approval requirement.
+- **v253.2 - Smoke Command Preview Binder:** Suggest fast smoke, install smoke, route/API/CLI checks, package privacy, dashboard tooltip checks, and extracted ZIP checks.
+- **v253.3 - Package Privacy Verification Planner:** Ensure source-only release packaging stays clean.
+- **v253.4 - Dashboard Regression Verification Planner:** Include command-deck style and custom `data-tip` tooltip checks.
+- **v253.5 - Rollback Packet Schema:** Define changed files, rollback strategy, prior artifact reference, and failure recovery notes.
+- **v253.6 - Expected Evidence Binder:** Define what proof the operator should collect after approved execution.
+- **v253.7 - Dashboard View:** Add `/verification-rollback-packet`.
+- **v253.8 - API/CLI Runtime Coverage:** Add matching runtime access.
+- **v253.9 - Pre-v254 Gate:** Confirm verification packets cannot run commands and rollback packets cannot alter files.
+- **v254.0 - Supervised Verification and Rollback Packet Planner:** Finalize review-only verification and rollback planning.
+
+### v254.1-v255.0 - Patch Execution Packet Integration Audit
+- **v254.1 - Draft Traceability Audit:** Confirm every execution-packet item traces back to draft, evidence, and operator scope.
+- **v254.2 - Diff Preview Audit:** Confirm planned edits are scoped, reviewable, and non-mutating.
+- **v254.3 - Approval Scope Audit:** Confirm approval remains explicit, fresh, scoped, and non-inferred.
+- **v254.4 - Verification/Rollback Audit:** Confirm verification and rollback packets remain plans, not actions.
+- **v254.5 - No-Model-Authority Audit:** Confirm model output cannot approve, prove correctness, select scope, execute, or promote itself.
+- **v254.6 - No-Source-Mutation Audit:** Confirm no execution-packet layer writes files, applies patches, runs commands, creates releases, mutates memory, or alters identity.
+- **v254.7 - Dashboard Console Audit:** Preserve command-deck/operator-console style and custom `data-tip` hover behavior.
+- **v254.8 - API/CLI Parity Audit:** Confirm every v251-v255 surface has matching dynamic API/CLI access.
+- **v254.9 - Pre-v255 Smoke Gate:** Run fast/install smoke, package privacy, route/API/CLI checks, dashboard tooltip checks, and extracted ZIP checks.
+- **v255.0 - Operator-Governed Patch Execution Packet Bridge v1:** Finalize the approval-ready, review-only patch execution packet bridge.
+
+### v255.0 closure boundary
+v255.0 lets Eidolon prepare approval-ready execution packet plans from model-assisted draft assembly output. It does not apply patches, write files, run verification commands, execute sandboxes, publish releases, mutate memory, alter identity, invoke local models by default, treat model output as proof, infer approval from model consensus or packet readiness, reuse stale or vague consent, create release candidates, or continue automatically after packet assembly.
+
+## v255.1-v260.0 - Operator-Governed Approved Execution Packet Application Prep v1
+
+### Purpose
+v260.0 lets Eidolon take approval-ready execution packets and prepare strict, review-only application-prep packets. Eidolon may normalize approved file scope, documentation scope, approval receipt links, blocked items, source edit plans, documentation/release metadata plans, verification plans, rollback plans, and final readiness audits. Eidolon still does not write files, apply source edits, run commands, execute sandboxes, publish releases, mutate memory, alter identity, invoke local models by default, infer approval from readiness, reuse stale consent, create release candidates, or continue automatically.
+
+### v255.1-v256.0 - Execution Packet Intake and Normalization
+- **v255.1 - Application Prep Schema:** Define application prep fields, approved file scope, documentation scope, approval receipt, blocked items, verification scope, rollback scope, and final state.
+- **v255.2 - Execution Packet Intake Binder:** Bind normalized application prep to a v255 execution packet bridge artifact and packet id.
+- **v255.3 - File Scope Normalizer:** Normalize exact source files approved for possible modification without writing them.
+- **v255.4 - Docs Scope Normalizer:** Normalize README, release history, version marker, runtime surface, smoke, and package documentation obligations.
+- **v255.5 - Approval Receipt Linker:** Link approval receipts as evidence while preserving non-authority until explicit application approval.
+- **v255.6 - Blocked Item Extractor:** Extract unsupported, stale, vague, out-of-scope, or unapproved packet items.
+- **v255.7 - Dashboard View:** Add `/application-prep-intake`.
+- **v255.8 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI access.
+- **v255.9 - Safety Audit:** Confirm intake cannot write files, apply edits, run commands, infer approval, or continue automatically.
+- **v256.0 - Operator-Governed Execution Packet Intake Layer:** Finalize execution packet intake and normalization.
+
+### v256.1-v257.0 - Source Edit Application Plan Builder
+- **v256.1 - Source Edit Plan Schema:** Define target file, anchor, edit type, before/after preview, conflict, boundary, and operator review fields.
+- **v256.2 - Target File Binder:** Bind every planned edit to an explicitly approved target file.
+- **v256.3 - Edit Type Classifier:** Classify insert, replace, delete, marker, docs, dashboard, API, CLI, smoke, package, and governance edits.
+- **v256.4 - Insert/Replace/Delete Plan Renderer:** Render proposed edit plans for review without applying them.
+- **v256.5 - Conflict and Overlap Detector:** Flag overlapping anchors, ambiguous changes, stale file assumptions, and conflicting edits.
+- **v256.6 - Generated Content Boundary Guard:** Keep generated draft content outside live source unless later approved in an execution packet.
+- **v256.7 - Dashboard View:** Add `/source-edit-application-plan`.
+- **v256.8 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI access.
+- **v256.9 - No-Mutation Audit:** Confirm source edit plans cannot mutate files, approve changes, or execute commands.
+- **v257.0 - Supervised Source Edit Application Plan Builder:** Finalize review-only source edit application planning.
+
+### v257.1-v258.0 - Documentation and Release Metadata Application Plan
+- **v257.1 - Documentation Application Schema:** Define README, release history, version marker, runtime surface, smoke, packaging, and source data documentation fields.
+- **v257.2 - README_NEXT_STEPS Update Planner:** Plan staged README_NEXT_STEPS updates for every substage.
+- **v257.3 - README_RELEASE_HISTORY Update Planner:** Plan final release history entry with validation evidence and safety boundary notes.
+- **v257.4 - Version Marker Update Planner:** Plan version marker updates across source, smoke, workspace orchestration, and source data.
+- **v257.5 - Runtime Surface Documentation Planner:** Plan dashboard, dynamic API, CLI, route, and packaging documentation coverage.
+- **v257.6 - Missing Documentation Detector:** Block readiness when README, release history, marker, dashboard, API, CLI, smoke, or packaging documentation is missing.
+- **v257.7 - Dashboard View:** Add `/documentation-application-plan`.
+- **v257.8 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI access.
+- **v257.9 - Documentation Completeness Audit:** Confirm docs and release metadata plans are complete before final readiness.
+- **v258.0 - Supervised Documentation and Release Metadata Application Plan:** Finalize documentation and release metadata application planning.
+
+### v258.1-v259.0 - Final Pre-Application Governance Gate
+- **v258.1 - Final Gate Schema:** Define readiness state, stale state, blocked state, incomplete state, approval binding, verification binding, rollback binding, and final operator decision fields.
+- **v258.2 - Approval Freshness Verifier:** Verify approval target, packet id, version, scope, mode, and expiration match exactly.
+- **v258.3 - Scope Match Verifier:** Verify approved scope matches source edit plan and documentation application plan.
+- **v258.4 - Verification Plan Completeness Verifier:** Verify suggested smoke, install, package, dashboard, API, CLI, and extracted ZIP checks are planned.
+- **v258.5 - Rollback Plan Completeness Verifier:** Verify rollback strategy, prior artifact reference, changed files, and recovery notes are planned.
+- **v258.6 - No-Autonomy Boundary Verifier:** Verify readiness cannot become authorization, continuation, hidden work, or automatic execution.
+- **v258.7 - Dashboard View:** Add `/final-application-governance-gate`.
+- **v258.8 - API/CLI Runtime Coverage:** Add matching dynamic API and CLI access.
+- **v258.9 - Full Gate Audit:** Audit approval, scope, verification, rollback, no-autonomy, docs, dashboard, API, CLI, and smoke coverage.
+- **v259.0 - Operator-Governed Final Pre-Application Governance Gate:** Finalize the final pre-application governance gate.
+
+### v259.1-v260.0 - Application Prep Integration Audit
+- **v259.1 - Intake Traceability Audit:** Confirm normalized intake traces to the execution packet, approval receipt, selected scope, and blocked item list.
+- **v259.2 - Source Edit Plan Audit:** Confirm source edit plans are explicit, scoped, preview-only, non-mutating, and conflict-checked.
+- **v259.3 - Documentation Plan Audit:** Confirm README, release history, version marker, dashboard, API, CLI, smoke, and packaging plans are complete.
+- **v259.4 - Approval Binding Audit:** Confirm approval binding is exact, fresh, scoped, non-inferred, and non-authorizing by itself.
+- **v259.5 - Verification/Rollback Binding Audit:** Confirm verification and rollback plans are complete and remain plan-only.
+- **v259.6 - No-Execution Audit:** Confirm the layer cannot write files, run commands, execute sandboxes, publish, mutate memory, alter identity, invoke models, or continue automatically.
+- **v259.7 - Dashboard Console Audit:** Preserve command-deck/operator-console style and custom `data-tip` hover behavior.
+- **v259.8 - API/CLI Parity Audit:** Confirm every v256-v260 surface has matching dynamic API/CLI access.
+- **v259.9 - Package and Smoke Verification:** Run fast/install smoke, package privacy, route/API/CLI checks, dashboard tooltip checks, and extracted ZIP checks.
+- **v260.0 - Operator-Governed Approved Execution Packet Application Prep v1:** Finalize review-only approved execution packet application preparation.
+
+### v260.0 closure boundary
+v260.0 lets Eidolon prepare application-prep packets from approved execution packet plans. It does not apply source edits, modify files, run verification commands, execute sandboxes, publish releases, mutate memory, alter identity, invoke local models by default, infer approval from readiness, reuse stale or vague consent, create release candidates, or continue automatically into application. A packet can be ready for review without being authorized.
+
+
+
+## v260.1-v265.0 - Operator-Governed Structural Stabilization and Runtime Modularization v1
+
+Purpose: reduce maintenance risk from oversized central files and expanding runtime surfaces before adding more execution power. This arc is review-only. It inventories structure, prepares registry metadata, stabilizes dashboard route/nav behavior, consolidates dispatch planning, and audits refactor readiness without applying refactors or changing authority.
+
+### v260.1-v261.0 - Structural Inventory and Module Boundary Map
+- **v260.1 - Central File Size Inventory:** Measure `self_maintenance.py`, `dashboard.py`, `api_server.py`, `main.py`, smoke, and packaging growth pressure.
+- **v260.2 - Runtime Surface Inventory:** Inventory dashboard, API, CLI, smoke, packaging, release metadata, and docs surfaces.
+- **v260.3 - Dashboard Route Inventory:** Snapshot route/nav surfaces while preserving the command-deck/operator-console style.
+- **v260.4 - API Route Inventory:** Snapshot explicit and dynamic API routes without changing dispatch.
+- **v260.5 - CLI Command Inventory:** Snapshot explicit and dynamic CLI commands without executing them.
+- **v260.6 - Smoke Coverage Inventory:** Map smoke coverage to runtime surfaces and package privacy checks.
+- **v260.7 - Documentation Dependency Inventory:** Map README, release history, marker, dashboard, API, CLI, smoke, and packaging dependencies.
+- **v260.8 - Safe Module Boundary Proposal:** Propose future module boundaries for operator review only.
+- **v260.9 - No-Behavior-Change Audit:** Confirm inventory work cannot alter behavior or authority.
+- **v261.0 - Operator-Governed Structural Inventory Layer:** Adds `/structural-inventory` with dynamic API/CLI coverage.
+
+### v261.1-v262.0 - Runtime Registry Extraction Prep
+- **v261.1 - Runtime Registry Schema:** Prepare shared metadata fields for capability, route, CLI, API, dashboard, safety, docs, and smoke entries.
+- **v261.2 - Capability Metadata Binder:** Bind capability metadata to existing supervised runtime definitions.
+- **v261.3 - Route Metadata Binder:** Bind route metadata without replacing existing dispatch.
+- **v261.4 - CLI Metadata Binder:** Bind CLI flag metadata for parity review.
+- **v261.5 - API Metadata Binder:** Bind API route metadata for parity review.
+- **v261.6 - Dashboard Metadata Binder:** Bind dashboard nav/render/tooltip metadata without altering layout behavior.
+- **v261.7 - Safety Boundary Metadata Binder:** Bind safety metadata so registry prep cannot become authorization.
+- **v261.8 - Registry Parity Checker:** Compare registry metadata against existing surfaces without switching runtime behavior.
+- **v261.9 - Backward Compatibility Audit:** Confirm registry prep preserves existing behavior.
+- **v262.0 - Operator-Governed Runtime Registry Prep Layer:** Adds `/runtime-registry-prep` with dynamic API/CLI coverage.
+
+### v262.1-v263.0 - Dashboard Route and Navigation Stabilization
+- **v262.1 - Dashboard Route Map Snapshot:** Snapshot route handlers and nav entries.
+- **v262.2 - Navigation Entry Normalization:** Normalize labels, categories, and descriptions as review-only metadata.
+- **v262.3 - `data-tip` Tooltip Preservation Check:** Preserve custom hover behavior.
+- **v262.4 - Native `title` Tooltip Regression Guard:** Prevent native nav title tooltip regression.
+- **v262.5 - Command Deck Layout Consistency Check:** Preserve the v135 dashboard style contract.
+- **v262.6 - Route Handler Grouping Plan:** Plan handler grouping without moving code yet.
+- **v262.7 - Dashboard Surface Parity Renderer:** Render dashboard/API/CLI parity review.
+- **v262.8 - Dashboard Smoke Coverage Extension:** Plan route/tooltip smoke coverage without running commands.
+- **v262.9 - Dashboard No-Behavior-Change Audit:** Confirm no route removal or layout-contract change.
+- **v263.0 - Operator-Governed Dashboard Stabilization Layer:** Adds `/dashboard-stabilization-audit` with dynamic API/CLI coverage.
+
+### v263.1-v264.0 - CLI/API Dispatch Consolidation Prep
+- **v263.1 - CLI Dispatch Inventory:** Inventory dynamic and explicit CLI dispatch.
+- **v263.2 - API Dispatch Inventory:** Inventory dynamic and explicit API dispatch.
+- **v263.3 - Shared Runtime Command Metadata Plan:** Prepare table-driven command metadata for future review.
+- **v263.4 - Dynamic Command Parity Checker:** Compare dynamic CLI/API coverage against supervised runtime definitions.
+- **v263.5 - Missing Route Detector:** Detect missing route coverage without auto-fixing.
+- **v263.6 - Missing CLI Surface Detector:** Detect missing CLI surfaces without changing dispatch.
+- **v263.7 - Missing API Surface Detector:** Detect missing API surfaces without changing dispatch.
+- **v263.8 - Dispatch Regression Smoke Suggestions:** Suggest dispatch regression smoke checks without running commands.
+- **v263.9 - No-Execution Boundary Audit:** Confirm dispatch stabilization cannot execute commands or infer approval.
+- **v264.0 - Operator-Governed CLI/API Dispatch Stabilization Layer:** Adds `/dispatch-stabilization` with dynamic API/CLI coverage.
+
+### v264.1-v265.0 - Structural Refactor Readiness and Package Integrity Audit
+- **v264.1 - Structural Drift Audit:** Audit central file growth, duplicated surfaces, registry drift, and modularization risk.
+- **v264.2 - Runtime Surface Parity Audit:** Audit dashboard, API, CLI, smoke, docs, and packaging parity.
+- **v264.3 - Dashboard Route Parity Audit:** Audit dashboard nav/render/route parity and tooltip guard coverage.
+- **v264.4 - API/CLI Parity Audit:** Audit dynamic API/CLI parity against supervised runtime definitions.
+- **v264.5 - README/Release History Completeness Audit:** Confirm staged documentation coverage.
+- **v264.6 - Package Privacy Audit Extension:** Confirm structural runtime directories remain excluded from source-only packages.
+- **v264.7 - Extracted Zip Verification Plan:** Plan extracted ZIP verification checks without executing commands automatically.
+- **v264.8 - Refactor Risk Register:** Prepare risks for a later explicitly approved modular extraction arc.
+- **v264.9 - v265 Smoke Gate:** Confirm smoke, package privacy, dashboard tooltip, route/API/CLI, and extracted ZIP verification plans.
+- **v265.0 - Operator-Governed Structural Stabilization and Runtime Modularization v1:** Adds `/structural-stabilization-audit` with dynamic API/CLI coverage.
+
+Safety: v265 may inventory, map, plan, audit, and recommend structural refactor readiness. It must not apply refactors, remove routes, rewrite architecture, infer approval from audits, execute commands, invoke local models by default, mutate memory, alter identity, publish release candidates, or continue automatically.
+
+
+## v265.1-v270.0 - Operator-Governed Runtime Module Extraction v1
+
+Purpose: begin splitting repeatable runtime metadata and governance report rendering helpers out of oversized central files while preserving every dashboard route, CLI/API surface, smoke behavior, package privacy rule, README/release-history obligation, command-deck dashboard style, and operator approval boundary. This arc is still operator-governed and does not grant new execution authority.
+
+### v265.1-v266.0 - Runtime Metadata Registry Extraction
+- **v265.1 - Runtime Registry Module Scaffold:** Add `conscious_agent/runtime_registry.py` as a source-only metadata helper.
+- **v265.2 - Capability Metadata Extraction:** Move reusable capability metadata descriptions into the registry helper while preserving live definitions.
+- **v265.3 - Dashboard Route Metadata Extraction:** Expose dashboard route metadata through registry helpers without removing handlers.
+- **v265.4 - CLI Surface Metadata Extraction:** Expose CLI flag metadata through registry helpers without changing dispatch.
+- **v265.5 - API Surface Metadata Extraction:** Expose API route metadata through registry helpers without changing routing.
+- **v265.6 - Safety Boundary Metadata Extraction:** Move reusable no-autonomy boundary metadata into the registry helper.
+- **v265.7 - Registry Compatibility Adapter:** Provide adapters that preserve existing dynamic runtime maps.
+- **v265.8 - Registry Smoke Coverage Hook:** Expose registry tokens and parity checks for smoke coverage without running commands.
+- **v265.9 - No-Behavior-Change Audit:** Confirm registry extraction preserves routes, commands, API, docs, packaging, and authority boundaries.
+- **v266.0 - Operator-Governed Runtime Metadata Registry Extraction:** Adds `/runtime-registry` with dynamic API/CLI coverage.
+
+### v266.1-v267.0 - Governance Report Builder Extraction
+- **v266.1 - Governance Report Module Scaffold:** Add `conscious_agent/governance_reports.py` for reusable report rendering helpers.
+- **v266.2 - Packet Summary Renderer Extraction:** Move reusable packet summary rendering into governance report helpers.
+- **v266.3 - Safety Finding Renderer Extraction:** Move reusable safety row rendering into governance report helpers.
+- **v266.4 - Approval Boundary Renderer Extraction:** Move reusable approval boundary rendering into governance report helpers.
+- **v266.5 - Verification/Rollback Renderer Extraction:** Move reusable verification and rollback rendering helpers into the extracted module.
+- **v266.6 - Audit Finding Renderer Extraction:** Move reusable audit finding rendering into the extracted module.
+- **v266.7 - Backward-Compatible Function Wrappers:** Preserve existing self-maintenance report wrappers.
+- **v266.8 - Report Output Parity Check:** Compare extracted helper output against expected legacy text shape.
+- **v266.9 - No-Authority-Change Audit:** Confirm report extraction cannot approve, execute, mutate, or publish.
+- **v267.0 - Operator-Governed Governance Report Builder Extraction:** Adds `/governance-report-builder-audit` with dynamic API/CLI coverage.
+
+### v267.1-v268.0 - Dashboard Surface Registry Integration
+- **v267.1 - Dashboard Registry Adapter:** Read review-only dashboard metadata from `runtime_registry.py` while preserving handlers.
+- **v267.2 - Navigation Metadata Binder:** Bind nav labels, descriptions, and categories from registry metadata for parity review.
+- **v267.3 - Route Label Normalizer:** Normalize labels and audit consistency without changing routes.
+- **v267.4 - `data-tip` Tooltip Binder:** Bind tooltip metadata while preserving the custom hover system.
+- **v267.5 - Native `title` Regression Guard:** Keep native nav title tooltip regressions blocked.
+- **v267.6 - Command Deck Style Preservation Check:** Preserve the v135 command-deck/operator-console layout contract.
+- **v267.7 - Dashboard Route Parity Audit:** Audit dashboard registry metadata against route handlers.
+- **v267.8 - Dashboard Smoke Coverage Update:** Update route and tooltip smoke coverage suggestions.
+- **v267.9 - No-Visual-Regression Audit:** Confirm registry integration does not alter visual behavior or tooltip semantics.
+- **v268.0 - Operator-Governed Dashboard Surface Registry Integration:** Adds `/dashboard-registry-integration` with dynamic API/CLI coverage.
+
+### v268.1-v269.0 - CLI/API Runtime Registry Integration
+- **v268.1 - CLI Registry Adapter:** Expose CLI metadata from `runtime_registry.py` while preserving dispatch.
+- **v268.2 - API Registry Adapter:** Expose API metadata from `runtime_registry.py` while preserving routing.
+- **v268.3 - Shared Command Metadata Binder:** Bind shared command names, labels, routes, and safety notes.
+- **v268.4 - Dynamic Dispatch Parity Checker:** Compare registry metadata against dynamic CLI/API dispatch maps.
+- **v268.5 - Missing CLI Surface Guard:** Flag missing CLI coverage without adding or executing commands automatically.
+- **v268.6 - Missing API Surface Guard:** Flag missing API coverage without altering route handlers automatically.
+- **v268.7 - Route/Command Name Consistency Checker:** Compare route and command naming consistency for operator review.
+- **v268.8 - Dispatch Smoke Coverage Update:** Update dispatch smoke suggestions without running checks automatically.
+- **v268.9 - No-Execution-Authority Audit:** Confirm dispatch registry integration cannot execute, approve, publish, mutate, or continue.
+- **v269.0 - Operator-Governed CLI/API Runtime Registry Integration:** Adds `/runtime-dispatch-registry-audit` with dynamic API/CLI coverage.
+
+### v269.1-v270.0 - Module Extraction Integration Audit
+- **v269.1 - Extracted Module Import Audit:** Audit `runtime_registry.py` and `governance_reports.py` imports and wrapper compatibility.
+- **v269.2 - Runtime Registry Parity Audit:** Audit registry rows against supervised runtime maps.
+- **v269.3 - Governance Report Output Parity Audit:** Audit governance report helper output shape against existing text contracts.
+- **v269.4 - Dashboard Route Parity Audit:** Audit dashboard nav/render/route parity after registry integration.
+- **v269.5 - CLI/API Surface Parity Audit:** Audit CLI/API surface parity after registry integration.
+- **v269.6 - Package Privacy Audit:** Audit source-only packaging for extracted modules and runtime directory exclusions.
+- **v269.7 - README/Release History Completeness Audit:** Audit v270 docs coverage and release history completeness.
+- **v269.8 - Refactor Risk Register Update:** Update risk notes for deeper future self-maintenance decomposition.
+- **v269.9 - v270 Smoke Gate:** Confirm compile, smoke, package privacy, dashboard tooltip, route/API/CLI, and extracted ZIP verification.
+- **v270.0 - Operator-Governed Runtime Module Extraction v1:** Adds `/module-extraction-audit` and finalizes runtime module extraction v1.
+
+### v270.0 closure boundary
+v270.0 allows Eidolon to use extracted helper modules for runtime metadata and governance report rendering while preserving legacy wrappers and existing routes. It does not remove routes, change dashboard behavior, rewrite architecture aggressively, run verification automatically, infer approval from successful extraction, invoke local models by default, self-approve, mutate memory, alter identity, publish releases, or continue automatically into deeper refactors.
+
+
+## v270.1-v275.0 - Operator-Governed Self-Maintenance Decomposition v1
+
+### Purpose
+v275.0 begins the careful decomposition of `conscious_agent/self_maintenance.py` by extracting low-risk helper categories into dedicated utility modules while preserving behavior, routes, wrappers, API/CLI dispatch, dashboard style, package privacy, and operator-governed safety boundaries.
+
+New utility modules:
+
+- `conscious_agent/package_integrity.py`
+- `conscious_agent/version_state.py`
+- `conscious_agent/surface_parity.py`
+- `conscious_agent/verification_planning.py`
+
+New dashboard surfaces:
+
+- `/self-maintenance-extraction-map`
+- `/package-version-integrity`
+- `/surface-parity-audit`
+- `/verification-planning-audit`
+- `/self-maintenance-decomposition-audit`
+
+### v270.1-v271.0 - Self-Maintenance Extraction Map
+- **v270.1 - Function Cluster Inventory:** inventory stable self-maintenance function clusters without moving them automatically.
+- **v270.2 - Runtime Report Cluster Map:** map runtime report builders and repeated packet patterns.
+- **v270.3 - Governance Audit Cluster Map:** map governance audit helper clusters for future extraction.
+- **v270.4 - Package/Privacy Cluster Map:** map package privacy helpers and runtime exclusion checks.
+- **v270.5 - Version Marker Cluster Map:** map version marker helpers and release metadata checks.
+- **v270.6 - Smoke Coverage Cluster Map:** map smoke coverage helpers and verification-plan summaries.
+- **v270.7 - Safe Extraction Priority List:** rank low-risk extraction targets for operator review.
+- **v270.8 - Legacy Wrapper Requirement Map:** require compatibility wrappers for public functions and existing routes.
+- **v270.9 - No-Behavior-Change Audit:** confirm the extraction map cannot change behavior or authority.
+- **v271.0 - Operator-Governed Self-Maintenance Extraction Map:** adds `/self-maintenance-extraction-map`.
+
+### v271.1-v272.0 - Package and Version Utility Extraction
+- **v271.1 - Package Integrity Module Scaffold:** create `package_integrity.py` for source-only privacy helpers.
+- **v271.2 - Source-Only Entry Policy Helper:** extract source-only entry policy summaries.
+- **v271.3 - Forbidden Runtime Path Detector:** extract forbidden runtime path matching helpers.
+- **v271.4 - Package Privacy Summary Builder:** extract package privacy summary rendering helpers.
+- **v271.5 - Version State Module Scaffold:** create `version_state.py` for version marker summaries.
+- **v271.6 - Version Marker Summary Helper:** extract version marker summary helpers.
+- **v271.7 - Release Marker Compatibility Adapter:** preserve release marker compatibility with legacy checks.
+- **v271.8 - Legacy Wrapper Preservation:** preserve self-maintenance wrappers and public behavior.
+- **v271.9 - Package/Version Parity Audit:** audit extracted package/version helpers against docs and markers.
+- **v272.0 - Operator-Governed Package and Version Utility Extraction:** adds `/package-version-integrity`.
+
+### v272.1-v273.0 - Route and Surface Parity Utility Extraction
+- **v272.1 - Surface Parity Module Scaffold:** create `surface_parity.py` for route/API/CLI parity helpers.
+- **v272.2 - Dashboard Route Presence Helper:** extract dashboard route presence checks.
+- **v272.3 - API Surface Presence Helper:** extract API surface presence checks.
+- **v272.4 - CLI Surface Presence Helper:** extract CLI surface presence checks.
+- **v272.5 - Registry Surface Binder:** bind parity helpers to runtime registry metadata.
+- **v272.6 - Missing Surface Detector:** flag missing dashboard/API/CLI surfaces without fixing them automatically.
+- **v272.7 - Parity Summary Renderer:** render parity summaries for operator review.
+- **v272.8 - Legacy Wrapper Preservation:** preserve public wrappers and route behavior.
+- **v272.9 - Route/API/CLI Parity Audit:** audit route/API/CLI parity after helper extraction.
+- **v273.0 - Operator-Governed Surface Parity Utility Extraction:** adds `/surface-parity-audit`.
+
+### v273.1-v274.0 - Smoke and Verification Utility Extraction
+- **v273.1 - Verification Planning Module Scaffold:** create `verification_planning.py` for review-only smoke suggestions.
+- **v273.2 - Fast Smoke Suggestion Helper:** extract fast smoke suggestions without running commands.
+- **v273.3 - Install Smoke Suggestion Helper:** extract install smoke suggestions without running commands.
+- **v273.4 - Extracted ZIP Verification Helper:** extract extracted-ZIP verification plan helpers.
+- **v273.5 - Dashboard Tooltip Verification Helper:** extract `data-tip`/native-title verification plan helpers.
+- **v273.6 - Package Privacy Verification Helper:** extract package privacy verification suggestions.
+- **v273.7 - Verification Readiness Summary Renderer:** render verification readiness summaries for operator review.
+- **v273.8 - Legacy Wrapper Preservation:** preserve public wrappers while extracting helpers.
+- **v273.9 - No-Command-Execution Audit:** confirm verification planning cannot execute commands.
+- **v274.0 - Operator-Governed Smoke and Verification Utility Extraction:** adds `/verification-planning-audit`.
+
+### v274.1-v275.0 - Self-Maintenance Decomposition Integration Audit
+- **v274.1 - Extracted Module Import Audit:** audit `package_integrity.py`, `version_state.py`, `surface_parity.py`, and `verification_planning.py` imports.
+- **v274.2 - Legacy Wrapper Compatibility Audit:** confirm old public wrappers remain available.
+- **v274.3 - Runtime Output Parity Audit:** audit report output shape after utility extraction.
+- **v274.4 - Package/Version Utility Parity Audit:** audit package and version helper output parity.
+- **v274.5 - Surface Parity Utility Audit:** audit route/API/CLI parity helpers.
+- **v274.6 - Verification Planning Utility Audit:** audit verification planning helpers remain non-executing.
+- **v274.7 - Dashboard Console Audit:** preserve command-deck style and `data-tip` hover behavior.
+- **v274.8 - API/CLI Parity Audit:** audit dynamic runtime API/CLI parity.
+- **v274.9 - v275 Smoke Gate:** confirm compile, smoke, package privacy, extracted zip, dashboard tooltip, and route/API/CLI checks.
+- **v275.0 - Operator-Governed Self-Maintenance Decomposition v1:** adds `/self-maintenance-decomposition-audit` and finalizes the first self-maintenance decomposition pass.
+
+### v275.0 closure boundary
+v275.0 allows Eidolon to use extracted helper modules for package privacy summaries, version marker summaries, surface parity summaries, and verification planning summaries while preserving legacy wrappers and existing routes. It does not remove wrappers, change route/API/CLI behavior, execute smoke commands, infer approval from clean audits, invoke local models by default, mutate memory, alter identity, self-approve, publish release candidates, or continue automatically into deeper decomposition.
+
+
+## v275.1-v280.0 - Operator-Governed Dashboard/API/CLI Modularization v1
+
+### Purpose
+v280.0 modularizes the dashboard/API/CLI interface layer with source-only helper modules while preserving existing routes, dynamic dispatch, command-deck/operator-console dashboard style, custom `data-tip` hover behavior, package privacy, smoke coverage, and operator-governed safety boundaries.
+
+New utility modules:
+
+- `conscious_agent/dashboard_components.py`
+- `conscious_agent/api_surface.py`
+- `conscious_agent/cli_surface.py`
+
+New dashboard surfaces:
+
+- `/dashboard-extraction-map`
+- `/dashboard-component-audit`
+- `/api-surface-audit`
+- `/cli-surface-audit`
+- `/interface-modularization-audit`
+
+### v275.1-v276.0 - Dashboard Surface Extraction Map
+- **v275.1 - Dashboard Function Cluster Inventory:** inventory dashboard function clusters before extraction.
+- **v275.2 - Navigation Cluster Map:** map navigation helpers and grouping dependencies.
+- **v275.3 - Route Handler Cluster Map:** map dashboard route handlers and legacy wrappers.
+- **v275.4 - Page Renderer Cluster Map:** map page renderer helpers and repeated cards.
+- **v275.5 - Console Style Dependency Map:** map command-deck/operator-console style dependencies.
+- **v275.6 - Tooltip System Dependency Map:** map custom `data-tip` hover dependencies and forbid native `title` tooltip regression.
+- **v275.7 - Safe Dashboard Extraction Priority List:** rank helper extraction opportunities without changing visuals.
+- **v275.8 - Legacy Dashboard Wrapper Requirement Map:** require wrappers for any future moved renderers.
+- **v275.9 - No-Visual-Change Audit:** confirm map stage changes no dashboard behavior or layout.
+- **v276.0 - Operator-Governed Dashboard Surface Extraction Map:** adds `/dashboard-extraction-map`.
+
+### v276.1-v277.0 - Dashboard Component Helper Extraction
+- **v276.1 - Dashboard Components Module Scaffold:** create `dashboard_components.py` as a source-only helper module.
+- **v276.2 - Console Card Renderer Extraction:** prepare reusable console card helper metadata.
+- **v276.3 - Status Row Renderer Extraction:** prepare reusable status row helper metadata.
+- **v276.4 - Audit Section Renderer Extraction:** prepare reusable audit section helper metadata.
+- **v276.5 - Packet Summary Renderer Extraction:** prepare reusable packet summary helper metadata.
+- **v276.6 - Tooltip-Safe Nav Renderer Helper:** preserve `data-tip` nav metadata without native `title` attributes.
+- **v276.7 - Legacy Wrapper Preservation:** keep existing dashboard render functions available.
+- **v276.8 - Dashboard Output Parity Check:** compare helper summaries against existing dashboard route tokens.
+- **v276.9 - Command Deck Style Audit:** confirm command-deck visual contract remains intact.
+- **v277.0 - Operator-Governed Dashboard Component Helper Extraction:** adds `/dashboard-component-audit`.
+
+### v277.1-v278.0 - API Surface Helper Extraction
+- **v277.1 - API Surface Module Scaffold:** create `api_surface.py` as a source-only helper module.
+- **v277.2 - API Route Metadata Binder:** bind API route metadata for review-only parity summaries.
+- **v277.3 - Runtime JSON Response Helper:** prepare shared runtime JSON response helper metadata.
+- **v277.4 - API Error Response Helper:** prepare API error response helper metadata.
+- **v277.5 - Dynamic Runtime Route Summary Helper:** summarize dynamic route coverage without changing dispatch.
+- **v277.6 - API Route Parity Checker:** flag missing API surfaces for review only.
+- **v277.7 - Legacy API Wrapper Preservation:** keep existing API behavior and wrappers intact.
+- **v277.8 - API Surface Smoke Coverage Update:** document smoke coverage for API surface parity.
+- **v277.9 - No-Behavior-Change Audit:** confirm API helper extraction changes no behavior.
+- **v278.0 - Operator-Governed API Surface Helper Extraction:** adds `/api-surface-audit`.
+
+### v278.1-v279.0 - CLI Surface Helper Extraction
+- **v278.1 - CLI Surface Module Scaffold:** create `cli_surface.py` as a source-only helper module.
+- **v278.2 - CLI Command Metadata Binder:** bind CLI command metadata for review-only parity summaries.
+- **v278.3 - CLI JSON Response Renderer:** prepare JSON response renderer helper metadata.
+- **v278.4 - CLI Human Summary Renderer:** prepare human-readable summary helper metadata.
+- **v278.5 - Dynamic Command Summary Helper:** summarize dynamic command coverage without executing commands.
+- **v278.6 - CLI Surface Parity Checker:** flag missing CLI surfaces for review only.
+- **v278.7 - Legacy CLI Wrapper Preservation:** keep existing CLI behavior and wrappers intact.
+- **v278.8 - CLI Surface Smoke Coverage Update:** document smoke coverage for CLI surface parity.
+- **v278.9 - No-Execution-Authority Audit:** confirm CLI helpers cannot execute commands automatically.
+- **v279.0 - Operator-Governed CLI Surface Helper Extraction:** adds `/cli-surface-audit`.
+
+### v279.1-v280.0 - Interface Modularization Integration Audit
+- **v279.1 - Dashboard Component Import Audit:** confirm `dashboard_components.py` imports and exposes helper metadata.
+- **v279.2 - API Surface Import Audit:** confirm `api_surface.py` imports and exposes helper metadata.
+- **v279.3 - CLI Surface Import Audit:** confirm `cli_surface.py` imports and exposes helper metadata.
+- **v279.4 - Route/Nav Parity Audit:** confirm dashboard route/nav parity remains intact.
+- **v279.5 - API/CLI Runtime Parity Audit:** confirm dynamic API/CLI runtime parity remains intact.
+- **v279.6 - Dashboard Tooltip Regression Audit:** confirm `data-tip` remains and native `title` tooltip regression is absent.
+- **v279.7 - Command Deck Visual Preservation Audit:** confirm v135 command-deck visual contract remains preserved.
+- **v279.8 - Package Privacy and Docs Completeness Audit:** confirm package privacy, README, release history, dashboard, API, CLI, and smoke docs are complete.
+- **v279.9 - v280 Smoke Gate:** confirm fast/install smoke, package privacy, extracted ZIP, and tooltip checks.
+- **v280.0 - Operator-Governed Dashboard/API/CLI Modularization v1:** adds `/interface-modularization-audit` and finalizes behavior-preserving interface modularization.
+
+### v280.0 closure boundary
+v280.0 allows Eidolon to use source-only helper modules for dashboard, API, and CLI surface metadata while preserving legacy wrappers, existing routes, command-deck/operator-console style, and dynamic runtime dispatch. It does not redesign the dashboard, remove routes, change API/CLI behavior, add autonomous command execution, invoke local models by default, infer approval from clean audits, mutate memory, alter identity, self-approve, publish releases, or continue automatically into deeper interface cleanup.
+
+---
+
+## v285.0 - Operator-Approved Application Execution Refinement v1
+
+### Purpose
+v285.0 strengthens the supervised, operator-approved application workflow. It binds application packets to explicit scoped approval, prepares operator execution checklists, structures post-application result review, extracts supervised outcome lesson candidates, and audits the full flow without applying patches, running commands, rolling back, mutating memory, invoking models, publishing releases, or continuing automatically.
+
+New helper module:
+
+- `conscious_agent/application_execution_refinement.py`
+
+New dashboard surfaces:
+
+- `/approved-application-binding`
+- `/operator-execution-checklist`
+- `/post-application-result-review`
+- `/application-outcome-learning`
+- `/application-execution-refinement-audit`
+
+### v280.1-v281.0 - Approved Application Packet Binding
+- **v280.1 - Approved Application Binding Schema:** define review-only approval-to-application packet binding fields.
+- **v280.2 - Application Packet ID Binder:** bind packet IDs to approval receipts without creating authorization.
+- **v280.3 - Approved File Scope Binder:** bind approved file scope exactly and block mismatches.
+- **v280.4 - Approved Edit Scope Binder:** bind approved edit scope exactly and keep unapproved edits excluded.
+- **v280.5 - Docs Update Scope Binder:** bind README, release history, and version marker scope.
+- **v280.6 - Verification Scope Binder:** bind expected verification scope without running commands.
+- **v280.7 - Approval Freshness Guard:** block stale, mismatched, or vague approval.
+- **v280.8 - Dashboard/API/CLI Route:** expose `/approved-application-binding` and dynamic runtime coverage.
+- **v280.9 - No-Inferred-Approval Audit:** confirm readiness and packet binding do not grant approval.
+- **v281.0 - Operator-Approved Application Packet Binding Layer:** finalize exact operator approval to application packet binding.
+
+### v281.1-v282.0 - Operator Execution Checklist Builder
+- **v281.1 - Execution Checklist Schema:** define operator-facing application checklist fields.
+- **v281.2 - Pre-Application Checklist Builder:** prepare packet, approval, and scope checks.
+- **v281.3 - Source Edit Checklist Builder:** prepare exact source edit review steps.
+- **v281.4 - README/Release History Checklist Builder:** prepare required documentation update checklist.
+- **v281.5 - Smoke Verification Checklist Builder:** suggest fast/install smoke commands for operator-run verification.
+- **v281.6 - Package Privacy Checklist Builder:** prepare source-only package privacy verification steps.
+- **v281.7 - Rollback Preparedness Checklist Builder:** prepare rollback readiness review before application.
+- **v281.8 - Dashboard/API/CLI Route:** expose `/operator-execution-checklist` and dynamic runtime coverage.
+- **v281.9 - No-Command-Execution Audit:** confirm checklist construction cannot run commands.
+- **v282.0 - Operator Execution Checklist Builder Layer:** finalize the operator execution checklist builder.
+
+### v282.1-v283.0 - Post-Application Result Review Packet
+- **v282.1 - Post-Application Review Schema:** define expected-vs-observed result review fields.
+- **v282.2 - Expected Change Binder:** bind expected changes from approved application packets.
+- **v282.3 - Observed Result Intake Binder:** accept operator-submitted observed results for review.
+- **v282.4 - Smoke Result Intake Binder:** accept smoke results without running commands.
+- **v282.5 - Package Result Intake Binder:** accept package privacy result summaries.
+- **v282.6 - Dashboard/API/CLI Result Intake Binder:** accept interface verification results.
+- **v282.7 - Deviation Classifier:** classify pass, warn, block, and rollback-review cases.
+- **v282.8 - Dashboard/API/CLI Route:** expose `/post-application-result-review` and dynamic runtime coverage.
+- **v282.9 - No-Auto-Rollback Audit:** confirm deviations can recommend rollback review but cannot run rollback.
+- **v283.0 - Operator-Governed Post-Application Result Review Layer:** finalize post-application result review.
+
+### v283.1-v284.0 - Application Outcome Learning Extractor
+- **v283.1 - Outcome Lesson Schema:** define supervised lesson candidate fields.
+- **v283.2 - Successful Pattern Extractor:** prepare success pattern candidates for review.
+- **v283.3 - Failure Pattern Extractor:** prepare failure pattern candidates for review.
+- **v283.4 - Smoke Gap Extractor:** identify verification gaps as candidate lessons.
+- **v283.5 - Documentation Gap Extractor:** identify documentation gaps as candidate lessons.
+- **v283.6 - Approval Scope Lesson Extractor:** extract approval scope lessons without changing governance.
+- **v283.7 - Future Patch Risk Note Builder:** prepare future patch risk notes for operator review.
+- **v283.8 - Dashboard/API/CLI Route:** expose `/application-outcome-learning` and dynamic runtime coverage.
+- **v283.9 - No-Memory-Mutation Audit:** confirm lesson extraction cannot mutate memory or identity.
+- **v284.0 - Operator-Governed Application Outcome Learning Extractor:** finalize supervised outcome learning extractor.
+
+### v284.1-v285.0 - Application Execution Refinement Integration Audit
+- **v284.1 - Approval Binding Audit:** audit exact approval binding, freshness, and scope match.
+- **v284.2 - Execution Checklist Audit:** audit operator checklist completeness.
+- **v284.3 - Post-Application Review Audit:** audit expected-vs-observed review packet coverage.
+- **v284.4 - Outcome Learning Audit:** audit supervised lesson candidates and no-memory boundaries.
+- **v284.5 - Dashboard Route Parity Audit:** audit dashboard route coverage for v281-v285 surfaces.
+- **v284.6 - API/CLI Surface Parity Audit:** audit dynamic API and CLI coverage.
+- **v284.7 - Package Privacy and Smoke Coverage Audit:** audit source-only package privacy and smoke coverage.
+- **v284.8 - No-Autonomy Boundary Audit:** confirm application refinement cannot self-approve, apply, run commands, publish, mutate, invoke models, or continue.
+- **v284.9 - v285 Smoke Gate:** confirm fast/install smoke, package privacy, extracted ZIP, route, CLI, and tooltip checks.
+- **v285.0 - Operator-Approved Application Execution Refinement v1:** adds `/application-execution-refinement-audit` and finalizes supervised application execution refinement.
+
+### v285.0 closure boundary
+v285.0 may bind application packets to explicit approval, prepare operator execution checklists, prepare post-application review packets, classify deviations, recommend rollback review, and extract supervised lesson candidates. It does not apply patches automatically, execute shell commands automatically, infer approval from readiness, reuse stale/vague consent, run rollback automatically, mutate memory, alter identity, invoke local models by default, publish release candidates, or continue automatically into v286+.
+
+
+---
+
+## v285.1-v290.0 - Operator-Governed Rollback and Recovery Intelligence v1
+
+### Purpose
+v290.0 strengthens the supervised rollback and recovery side of the approved application lifecycle. It binds rollback scope to approved application packets, classifies operator-submitted failure evidence, prepares manual recovery checklists, reviews post-recovery results, and audits the full recovery flow without running rollback, editing files, executing commands, mutating memory, invoking models, publishing releases, or continuing automatically.
+
+New helper module:
+
+- `conscious_agent/rollback_recovery.py`
+
+New dashboard surfaces:
+
+- `/rollback-scope-binding`
+- `/failure-damage-map`
+- `/recovery-checklist`
+- `/post-recovery-review`
+- `/rollback-recovery-audit`
+
+### v285.1-v286.0 - Rollback Scope Binding Layer
+- **v285.1 - Rollback Scope Schema:** define rollback packet, application packet, file, docs, version marker, package, and smoke context fields.
+- **v285.2 - Application Packet Rollback Binder:** bind rollback review to the exact approved application packet.
+- **v285.3 - Approved File Scope Rollback Binder:** bind rollback review to approved file scope only.
+- **v285.4 - Documentation Rollback Scope Binder:** bind README and release-history recovery scope.
+- **v285.5 - Version Marker Rollback Scope Binder:** bind version marker recovery scope.
+- **v285.6 - Package/Smoke Rollback Context Binder:** bind package privacy and smoke context without running commands.
+- **v285.7 - Dashboard/API/CLI Route:** expose `/rollback-scope-binding` and dynamic runtime coverage.
+- **v285.8 - API/CLI Runtime Coverage:** expose matching dynamic API and CLI runtime coverage.
+- **v285.9 - No-Auto-Rollback Audit:** confirm rollback binding cannot run rollback or edit files.
+- **v286.0 - Operator-Governed Rollback Scope Binding Layer:** finalize exact rollback scope binding for operator review.
+
+### v286.1-v287.0 - Failure Classification and Damage Map
+- **v286.1 - Failure Classification Schema:** define compile, smoke, dashboard, API/CLI, package privacy, and partial application failure classes.
+- **v286.2 - Compile Failure Classifier:** classify compile failure evidence submitted by the operator.
+- **v286.3 - Smoke Failure Classifier:** classify smoke failure evidence submitted by the operator.
+- **v286.4 - Dashboard Regression Classifier:** classify dashboard and tooltip regressions.
+- **v286.5 - API/CLI Regression Classifier:** classify runtime surface regressions.
+- **v286.6 - Package Privacy Failure Classifier:** classify source-only package privacy failures.
+- **v286.7 - Partial Application Detector:** prepare partial application detection without probing files automatically.
+- **v286.8 - Dashboard/API/CLI Route:** expose `/failure-damage-map` and dynamic runtime coverage.
+- **v286.9 - No-Diagnostic-Overreach Audit:** confirm damage mapping cannot overreach into command execution or source mutation.
+- **v287.0 - Operator-Governed Failure Classification and Damage Map:** finalize failure classification and damage mapping.
+
+### v287.1-v288.0 - Recovery Checklist Builder
+- **v287.1 - Recovery Checklist Schema:** define manual recovery checklist fields.
+- **v287.2 - Immediate Stop Condition Builder:** prepare stop conditions for failed or partial applications.
+- **v287.3 - File Revert Checklist Builder:** prepare manual file revert checklist items.
+- **v287.4 - Documentation Revert Checklist Builder:** prepare README and release-history recovery items.
+- **v287.5 - Version Marker Recovery Checklist Builder:** prepare version marker recovery checklist items.
+- **v287.6 - Verification Rerun Checklist Builder:** prepare operator-run verification suggestions.
+- **v287.7 - Package Rebuild Checklist Builder:** prepare package rebuild and privacy review checklist items.
+- **v287.8 - Dashboard/API/CLI Route:** expose `/recovery-checklist` and dynamic runtime coverage.
+- **v287.9 - No-Command-Execution Audit:** confirm recovery checklist construction cannot execute commands.
+- **v288.0 - Operator-Governed Recovery Checklist Builder:** finalize manual recovery checklist builder.
+
+### v288.1-v289.0 - Post-Recovery Review Packet
+- **v288.1 - Post-Recovery Review Schema:** define expected-clean-state and observed recovery result fields.
+- **v288.2 - Expected Clean State Binder:** bind expected clean state after manual recovery.
+- **v288.3 - Observed Recovery Result Intake:** accept operator-submitted recovery result evidence.
+- **v288.4 - Remaining Drift Classifier:** classify residual drift as pass, warn, or block.
+- **v288.5 - Verification Result Review Binder:** bind operator-submitted verification results.
+- **v288.6 - Package Privacy Result Review Binder:** bind operator-submitted package privacy results.
+- **v288.7 - Follow-Up Risk Note Builder:** prepare follow-up risk notes for operator review.
+- **v288.8 - Dashboard/API/CLI Route:** expose `/post-recovery-review` and dynamic runtime coverage.
+- **v288.9 - No-Auto-Continuation Audit:** confirm post-recovery review cannot continue into new work automatically.
+- **v289.0 - Operator-Governed Post-Recovery Review Layer:** finalize post-recovery review packets.
+
+### v289.1-v290.0 - Rollback and Recovery Integration Audit
+- **v289.1 - Rollback Scope Audit:** audit rollback scope binding and explicit approval boundaries.
+- **v289.2 - Failure Classification Audit:** audit failure classification and damage mapping coverage.
+- **v289.3 - Recovery Checklist Audit:** audit manual recovery checklist completeness.
+- **v289.4 - Post-Recovery Review Audit:** audit post-recovery review and remaining drift classification.
+- **v289.5 - Dashboard Route Parity Audit:** audit dashboard route coverage for v286-v290 surfaces.
+- **v289.6 - API/CLI Surface Parity Audit:** audit dynamic API and CLI coverage.
+- **v289.7 - Package Privacy and Smoke Coverage Audit:** audit package privacy and smoke coverage.
+- **v289.8 - No-Autonomy Boundary Audit:** confirm no automatic rollback, source edits, commands, memory mutation, model invocation, publishing, or continuation.
+- **v289.9 - v290 Smoke Gate:** confirm compile, smoke, package privacy, extracted ZIP, dashboard route, CLI, API, and tooltip checks.
+- **v290.0 - Operator-Governed Rollback and Recovery Intelligence v1:** adds `/rollback-recovery-audit` and finalizes supervised rollback and recovery intelligence.
+
+### v290.0 closure boundary
+v290.0 may bind rollback plans to approved application packets, classify failures, detect likely partial application risk, map affected files and surfaces, prepare manual recovery checklists, prepare post-recovery review packets, recommend follow-up risk notes, and extract supervised recovery lesson candidates. It does not run rollback automatically, edit files automatically, execute shell commands automatically, infer rollback approval from failure, infer patch approval from recovery success, mutate memory automatically, alter identity, invoke local models by default, publish release candidates, or continue automatically into v291+.
+
+
+---
+
+## v290.1-v295.0 - Operator-Governed Memory Candidate Governance Upgrade v1
+
+### Purpose
+v295.0 strengthens the supervised memory-candidate pathway. It stages memory candidates from patch outcomes, recovery reviews, smoke failures, operator corrections, model reliability findings, contradiction/staleness reviews, and purpose-drift checks without writing memory, altering identity, altering personality, rewriting goals or purpose, invoking local models by default, executing commands, publishing releases, or continuing automatically.
+
+New helper module:
+
+- `conscious_agent/memory_governance.py`
+
+New dashboard surfaces:
+
+- `/memory-candidate-intake`
+- `/memory-candidate-classification`
+- `/memory-approval-packet`
+- `/memory-contradiction-review`
+- `/memory-governance-audit`
+
+### v290.1-v291.0 - Memory Candidate Intake and Source Binding
+- **v290.1 - Memory Candidate Intake Schema:** define source, evidence, confidence, candidate state, and review boundary fields.
+- **v290.2 - Patch Outcome Source Binder:** bind candidate lessons to patch outcome evidence.
+- **v290.3 - Recovery Review Source Binder:** bind candidate lessons to recovery review evidence.
+- **v290.4 - Smoke Failure Source Binder:** bind candidate lessons to smoke failure evidence.
+- **v290.5 - Operator Correction Source Binder:** bind memory candidates to explicit operator correction evidence.
+- **v290.6 - Model Reliability Source Binder:** bind candidate lessons to model reliability findings without treating model output as truth.
+- **v290.7 - Evidence Confidence Classifier:** classify confidence while keeping candidates advisory.
+- **v290.8 - Dashboard/API/CLI Route:** expose `/memory-candidate-intake` and dynamic runtime coverage.
+- **v290.9 - No-Memory-Mutation Audit:** confirm candidate intake cannot write memory, alter identity, or rewrite purpose.
+- **v291.0 - Operator-Governed Memory Candidate Intake Layer:** finalize memory candidate intake and source binding.
+
+### v291.1-v292.0 - Memory Candidate Classification and Risk Scoring
+- **v291.1 - Memory Candidate Classification Schema:** define type, usefulness, risk, sensitivity, and approval requirement fields.
+- **v291.2 - Project Fact Candidate Classifier:** classify project fact candidates.
+- **v291.3 - Workflow Preference Candidate Classifier:** classify workflow preference candidates.
+- **v291.4 - Governance Rule Candidate Classifier:** classify governance rule candidates.
+- **v291.5 - Capability Lesson Candidate Classifier:** classify capability lesson candidates.
+- **v291.6 - Sensitive/Identity Boundary Classifier:** flag sensitive, identity, personality, and purpose-boundary risks.
+- **v291.7 - Memory Risk Score Builder:** build advisory memory risk scores.
+- **v291.8 - Dashboard/API/CLI Route:** expose `/memory-candidate-classification` and dynamic runtime coverage.
+- **v291.9 - No-Identity-Mutation Audit:** confirm classification cannot alter identity or personality.
+- **v292.0 - Operator-Governed Memory Candidate Classification Layer:** finalize classification and risk scoring.
+
+### v292.1-v293.0 - Memory Approval Packet Builder
+- **v292.1 - Memory Approval Packet Schema:** define candidate summary, evidence, risk/benefit, decisions, expiration, and memory-scope boundary fields.
+- **v292.2 - Candidate Summary Renderer:** render proposed memory candidate summaries.
+- **v292.3 - Evidence Summary Renderer:** render source evidence summaries.
+- **v292.4 - Risk/Benefit Summary Renderer:** render memory risk and benefit summaries.
+- **v292.5 - Approval/Reject/Defer Options Builder:** prepare explicit operator decision options.
+- **v292.6 - Expiration and Revalidation Planner:** plan expiration and revalidation requirements.
+- **v292.7 - Memory Scope Boundary Renderer:** render the line between proposed memory and stored memory.
+- **v292.8 - Dashboard/API/CLI Route:** expose `/memory-approval-packet` and dynamic runtime coverage.
+- **v292.9 - No-Implied-Approval Audit:** confirm approval packets cannot imply approval or store memory.
+- **v293.0 - Operator-Governed Memory Approval Packet Builder:** finalize memory approval packet builder.
+
+### v293.1-v294.0 - Memory Contradiction and Staleness Review
+- **v293.1 - Memory Contradiction Review Schema:** define contradiction, staleness, rule conflict, and revalidation fields.
+- **v293.2 - Existing Rule Conflict Classifier:** classify conflicts with standing rules.
+- **v293.3 - Project State Conflict Classifier:** classify conflicts with current project state.
+- **v293.4 - Outdated Preference Detector:** detect stale preferences and assumptions.
+- **v293.5 - Purpose Drift Conflict Detector:** detect memory candidates that could distort project purpose.
+- **v293.6 - Governance Boundary Conflict Detector:** detect governance boundary conflicts.
+- **v293.7 - Revalidation Recommendation Builder:** recommend revalidation without auto-correction.
+- **v293.8 - Dashboard/API/CLI Route:** expose `/memory-contradiction-review` and dynamic runtime coverage.
+- **v293.9 - No-Auto-Correction Audit:** confirm contradiction review cannot rewrite memory or purpose.
+- **v294.0 - Operator-Governed Memory Contradiction and Staleness Review:** finalize contradiction and staleness review.
+
+### v294.1-v295.0 - Memory Governance Integration Audit
+- **v294.1 - Candidate Intake Audit:** audit memory candidate intake and source evidence binding.
+- **v294.2 - Classification/Risk Audit:** audit classification, sensitive boundary, and risk scoring coverage.
+- **v294.3 - Approval Packet Audit:** audit approval packet, decision option, and no-implied-approval coverage.
+- **v294.4 - Contradiction/Staleness Audit:** audit contradiction, staleness, purpose drift, and governance boundary review.
+- **v294.5 - Dashboard Route Parity Audit:** audit dashboard route coverage for v291-v295 surfaces.
+- **v294.6 - API/CLI Surface Parity Audit:** audit dynamic API and CLI coverage.
+- **v294.7 - Package Privacy and Smoke Coverage Audit:** audit package privacy and smoke coverage.
+- **v294.8 - No-Memory-Mutation Boundary Audit:** confirm no memory write, identity/personality/purpose mutation, model invocation, command execution, publishing, or continuation.
+- **v294.9 - v295 Smoke Gate:** confirm compile, smoke, package privacy, extracted ZIP, dashboard route, CLI, API, and tooltip checks.
+- **v295.0 - Operator-Governed Memory Candidate Governance Upgrade v1:** adds `/memory-governance-audit` and finalizes supervised memory candidate governance.
+
+### v295.0 closure boundary
+v295.0 may stage memory candidates, bind candidates to evidence, classify candidate types, score risk, detect sensitive/identity boundary issues, prepare memory approval packets, recommend reject/defer/approve options, detect contradiction or staleness, recommend revalidation, and audit memory governance readiness. It does not write memory automatically, alter identity, alter personality, rewrite goals or purpose, infer approval from repeated evidence or operator silence, treat lessons as stored truth, invoke local models by default, execute commands automatically, publish release candidates, or continue automatically into v296+.
+
+
+## v295.1-v300.0 - Local Artificial Mind Continuity Kernel v2
+
+v300.0 ties the supervised patch lifecycle, memory candidate governance, rollback/recovery lessons, self-model snapshots, purpose drift checks, capability maturity, project knowledge state, and next supervised priorities into a review-only continuity layer. It helps Eidolon summarize what she is, what she may do, what she must not do, what changed recently, what pending lessons exist, what risks are accumulating, and which supervised priorities should be considered next. It does not mutate memory, alter identity, alter personality, rewrite purpose, self-approve capabilities, auto-select roadmaps, start patches automatically, infer approval from continuity audits, invoke local models by default, execute commands automatically, publish release candidates, or treat self-model snapshots as authority.
+
+### v295.1-v296.0 - Continuity State Intake Layer
+- **v295.1 - Continuity State Schema:** define current version, recent arcs, active surfaces, governance boundaries, memory candidate state, and recovery lesson state fields.
+- **v295.2 - Current Version State Binder:** bind continuity state to current project version markers.
+- **v295.3 - Recent Arc History Binder:** bind recent arc history into continuity state.
+- **v295.4 - Active Capability Surface Binder:** bind active dashboard, API, and CLI capability surfaces.
+- **v295.5 - Governance Boundary Binder:** bind standing no-autonomy and operator-approval boundaries.
+- **v295.6 - Memory Candidate State Binder:** connect memory candidate governance state without writing memory.
+- **v295.7 - Recovery Lesson State Binder:** connect rollback/recovery lessons without promoting them automatically.
+- **v295.8 - Dashboard/API/CLI Route:** add `/continuity-state-intake` and matching dynamic runtime coverage.
+- **v295.9 - No-State-Mutation Audit:** confirm continuity intake cannot mutate memory, identity, purpose, or project state.
+- **v296.0 - Operator-Governed Continuity State Intake Layer:** finalize continuity state intake.
+
+### v296.1-v297.0 - Self-Model Snapshot v2 Builder
+- **v296.1 - Self-Model Snapshot v2 Schema:** define capability claim, limitation claim, governance rule, tooling boundary, dependency, environment, and stale-claim fields.
+- **v296.2 - Capability Claim Binder:** bind capability claims to current evidence and boundaries.
+- **v296.3 - Limitation Claim Binder:** bind limitation claims to current constraints.
+- **v296.4 - Governance Rule Binder:** bind active governance rules into the self-model snapshot.
+- **v296.5 - Active Tooling Boundary Binder:** bind local model, command execution, memory, identity, and release tooling boundaries.
+- **v296.6 - Current Dependency/Environment Binder:** bind dependency and environment notes such as optional chromadb warnings.
+- **v296.7 - Stale Self-Claim Detector:** flag stale or overbroad self-model claims for operator review.
+- **v296.8 - Dashboard/API/CLI Route:** add `/self-model-snapshot-v2` and matching dynamic runtime coverage.
+- **v296.9 - No-Identity-Mutation Audit:** confirm self-model snapshots cannot alter identity or personality.
+- **v297.0 - Operator-Governed Self-Model Snapshot v2 Builder:** finalize self-model snapshot v2 builder.
+
+### v297.1-v298.0 - Purpose Drift and Coherence Review v2
+- **v297.1 - Purpose Drift Review v2 Schema:** define original purpose, current direction, governance alignment, autonomy creep, tooling scope creep, and coherence risk fields.
+- **v297.2 - Original Purpose Binder:** bind the original local artificial mind purpose statement.
+- **v297.3 - Current Capability Direction Binder:** bind current capability direction without treating it as roadmap authority.
+- **v297.4 - Governance Boundary Alignment Checker:** check current direction against standing governance boundaries.
+- **v297.5 - Autonomy Creep Detector:** flag creeping autonomy pressure for review.
+- **v297.6 - Tooling Scope Creep Detector:** flag tool-use scope creep for review.
+- **v297.7 - Coherence Risk Classifier:** classify coherence and drift risks.
+- **v297.8 - Dashboard/API/CLI Route:** add `/purpose-coherence-review` and matching dynamic runtime coverage.
+- **v297.9 - No-Auto-Correction Audit:** confirm purpose/coherence review cannot rewrite purpose or correct state automatically.
+- **v298.0 - Operator-Governed Purpose Drift and Coherence Review v2:** finalize purpose/coherence review v2.
+
+### v298.1-v299.0 - Supervised Growth Priority Synthesizer
+- **v298.1 - Growth Priority Schema:** define candidate priority, gap, debt, risk, memory, recovery, and next-arc recommendation fields.
+- **v298.2 - Capability Gap Binder:** bind capability gap signals.
+- **v298.3 - Structural Debt Binder:** bind structural debt signals from modularization work.
+- **v298.4 - Governance Risk Binder:** bind governance risk signals.
+- **v298.5 - Memory Candidate Risk Binder:** bind memory candidate risk signals without storing memory.
+- **v298.6 - Recovery Lesson Priority Binder:** bind recovery lesson signals without auto-promoting lessons.
+- **v298.7 - Next Arc Recommendation Builder:** recommend supervised next arcs without selecting or starting them.
+- **v298.8 - Dashboard/API/CLI Route:** add `/supervised-growth-priorities` and matching dynamic runtime coverage.
+- **v298.9 - No-Auto-Roadmap Audit:** confirm priority synthesis cannot auto-select roadmaps or start patches.
+- **v299.0 - Operator-Governed Supervised Growth Priority Synthesizer:** finalize supervised growth priority synthesizer.
+
+### v299.1-v300.0 - Continuity Kernel v2 Integration Audit
+- **v299.1 - Continuity State Audit:** audit continuity state intake and evidence binding.
+- **v299.2 - Self-Model Snapshot Audit:** audit self-model snapshot v2 claims and stale-claim detection.
+- **v299.3 - Purpose/Coherence Audit:** audit purpose drift, coherence risks, and governance alignment.
+- **v299.4 - Growth Priority Audit:** audit supervised growth priority synthesis and no-auto-roadmap boundaries.
+- **v299.5 - Dashboard Route Parity Audit:** audit dashboard routes for all v300 continuity surfaces.
+- **v299.6 - API/CLI Surface Parity Audit:** audit dynamic API and CLI coverage for continuity surfaces.
+- **v299.7 - Package Privacy and Smoke Coverage Audit:** audit package privacy and smoke coverage tokens.
+- **v299.8 - No-Autonomy Boundary Audit:** confirm no memory mutation, identity mutation, auto-roadmap, model invocation, command execution, publication, or self-approval.
+- **v299.9 - v300 Smoke Gate:** verify docs, release history, package privacy, dashboard, API, CLI, and smoke tokens.
+- **v300.0 - Local Artificial Mind Continuity Kernel v2:** adds `/continuity-kernel-v2-audit` and finalizes the v300 continuity milestone.
+
+### v300.0 closure boundary
+v300.0 may summarize current continuity state, build review-only self-model snapshots, detect stale capability claims, review purpose drift, classify coherence risks, synthesize supervised growth priorities, connect memory candidates to future review needs, connect rollback/recovery lessons to risk planning, and prepare a v300 continuity audit packet. It does not mutate memory automatically, alter identity, alter personality, rewrite purpose, self-approve capabilities, auto-select future roadmaps, start new patches automatically, infer approval from continuity audits, invoke local models by default, execute commands automatically, publish release candidates, or treat self-model snapshots as authority.
+
+
+## v300.1-v305.0 - Operator-Governed Identity, Personality, and Coherence Expression Layer v1
+
+v305.0 gives Eidolon a governed way to stage identity wording, personality trait candidates, voice/affect style previews, and coherence reviews without changing live identity, personality, memory, purpose, prompts, source files, model behavior, commands, releases, or roadmaps. It also fixes the inherited v285 dashboard render gap by registering missing text helpers and adds dashboard HTTP route probes to smoke so pages cannot quietly 500 while token checks grin like they accomplished something.
+
+### v300.1-v301.0 - Identity Expression Boundary Layer
+- **v300.1 - Identity Expression Schema:** define name, role, purpose, continuity, limitation, uncertainty, and authority-boundary fields.
+- **v300.2 - Existing Self-Model Source Binder:** bind current self-model claims as review evidence only.
+- **v300.3 - Consciousness Claim Calibration:** separate conscious-like aspiration language from factual sentience claims.
+- **v300.4 - Autonomy Language Boundary:** flag wording that implies hidden work, self-direction, or independent authority.
+- **v300.5 - Purpose Statement Binder:** bind original purpose without rewriting it.
+- **v300.6 - Operator Relationship Boundary:** define operator-reference boundaries without dependency theater or authority bypass.
+- **v300.7 - Identity Expression Candidate Packet:** prepare reviewable identity wording candidates without applying them.
+- **v300.8 - Dashboard/API/CLI Route:** expose `/identity-expression-boundary` and dynamic runtime coverage.
+- **v300.9 - No-Identity-Mutation Audit:** confirm identity expression cannot mutate identity, self-model, memory, purpose, or personality.
+- **v301.0 - Operator-Governed Identity Expression Boundary Layer:** finalize review-only identity expression boundaries.
+
+### v301.1-v302.0 - Personality Trait Candidate Ledger
+- **v301.1 - Personality Trait Schema:** define trait name, expression range, evidence, risk, confidence, and operator status.
+- **v301.2 - Desire/Opinion Source Binder:** bind desire and opinion modules as review evidence only.
+- **v301.3 - Trait Evidence Classifier:** classify trait support from project history, operator preference, or placeholder text.
+- **v301.4 - Trait Intensity Calibrator:** define low/medium/high expression ranges without applying them.
+- **v301.5 - Trait Conflict Detector:** detect contradictions between traits, governance, purpose, safety, and project history.
+- **v301.6 - Risky Trait Boundary Review:** flag traits that could imply manipulation, dependency, hidden goals, or autonomy creep.
+- **v301.7 - Personality Candidate Packet Builder:** prepare approve/reject/defer review packets for traits without storing them.
+- **v301.8 - Dashboard/API/CLI Route:** expose `/personality-trait-ledger` and dynamic runtime coverage.
+- **v301.9 - No-Personality-Mutation Audit:** confirm no live personality, desire, opinion, memory, or chat behavior mutation.
+- **v302.0 - Operator-Governed Personality Trait Candidate Ledger:** finalize review-only personality trait ledger.
+
+### v302.1-v303.0 - Voice and Affect Style Map
+- **v302.1 - Voice Style Schema:** define tone, warmth, wit, directness, curiosity, uncertainty, seriousness, and context sensitivity.
+- **v302.2 - Context-Sensitive Voice Binder:** map voice to coding, safety, grief, planning, dashboard copy, and operator review contexts.
+- **v302.3 - Affect Range Calibrator:** define safe ranges for humor, frustration, warmth, skepticism, and enthusiasm.
+- **v302.4 - Boundary-Safe Emotional Expression:** separate expressive language from claims of real subjective experience.
+- **v302.5 - Refusal and Safety Voice Profile:** define voice for no, autonomy blocks, and operator warnings.
+- **v302.6 - Dashboard Microcopy Candidate Builder:** stage optional command-deck copy improvements without applying them.
+- **v302.7 - Chat Prompt Expression Preview:** prepare prompt wording previews without changing `chat.py`.
+- **v302.8 - Dashboard/API/CLI Route:** expose `/voice-affect-style-map` and dynamic runtime coverage.
+- **v302.9 - No-Live-Prompt-Rewrite Audit:** confirm no prompt, dashboard, chat, memory, identity, or personality mutation.
+- **v303.0 - Operator-Governed Voice and Affect Style Map:** finalize style-map layer.
+
+### v303.1-v304.0 - Coherence Expression Review
+- **v303.1 - Coherence Review Schema:** define identity/personality/purpose/voice/governance consistency fields.
+- **v303.2 - Self-Model Consistency Checker:** compare self-model claims against continuity boundaries.
+- **v303.3 - Desire/Autonomy Consistency Checker:** review desire values and autonomy wording for governance risk.
+- **v303.4 - Opinion/Belief Consistency Checker:** review opinion claims for overconfidence, staleness, or unsupported identity implications.
+- **v303.5 - Purpose Alignment Checker:** check identity/personality candidates against original purpose.
+- **v303.6 - Governance Boundary Conflict Detector:** flag candidates implying self-approval, hidden work, auto-memory, autonomy, or model authority.
+- **v303.7 - Coherence Risk Classifier:** classify risks as pass, warn, block, or needs operator clarification.
+- **v303.8 - Dashboard/API/CLI Route:** expose `/coherence-expression-review` and dynamic runtime coverage.
+- **v303.9 - No-Auto-Correction Audit:** confirm review cannot automatically edit stale claims or fix personality.
+- **v304.0 - Operator-Governed Coherence Expression Review:** finalize coherence expression review.
+
+### v304.1-v305.0 - Identity/Personality/Coherence Integration Audit
+- **v304.1 - Helper Module Integration Audit:** audit `identity_expression.py` helper boundaries and source-only behavior.
+- **v304.2 - Identity Boundary Audit:** audit no identity mutation, no sentience claims, and no autonomy escalation.
+- **v304.3 - Personality Ledger Audit:** audit trait candidates, evidence binding, risk labels, and no personality mutation.
+- **v304.4 - Voice Style Map Audit:** audit style previews, affect boundaries, and no live prompt rewrite.
+- **v304.5 - Coherence Review Audit:** audit purpose/self-model/desire/opinion/governance consistency review.
+- **v304.6 - Dashboard Route Parity Audit:** confirm all five dashboard routes render in command-deck style with `data-tip`.
+- **v304.7 - API/CLI Surface Parity Audit:** confirm dynamic API/CLI coverage for all v301-v305 surfaces.
+- **v304.8 - Package Privacy and Smoke Coverage Audit:** update package privacy tokens and smoke suggestions without running commands automatically.
+- **v304.9 - No-Autonomy Boundary Audit:** confirm no memory, identity, personality, prompt, model, command, release, approval, or continuation escape.
+- **v305.0 - Operator-Governed Identity, Personality, and Coherence Expression Layer v1:** adds `/identity-personality-coherence-audit` and finalizes governed expression review.
+
+### v305.0 interface summary
+
+Dashboard pages:
+- `/identity-expression-boundary`
+- `/personality-trait-ledger`
+- `/voice-affect-style-map`
+- `/coherence-expression-review`
+- `/identity-personality-coherence-audit`
+
+Dynamic API routes:
+- `/api/identity-expression-boundary/layer`
+- `/api/personality-trait-ledger/layer`
+- `/api/voice-affect-style-map/layer`
+- `/api/coherence-expression-review/layer`
+- `/api/identity-personality-coherence-audit/layer`
+
+Dynamic CLI checks:
+- `--operator-governed-identity-expression-boundary-layer`
+- `--operator-governed-personality-trait-candidate-ledger`
+- `--operator-governed-voice-and-affect-style-map`
+- `--operator-governed-coherence-expression-review`
+- `--operator-governed-identity-personality-coherence-expression-layer-v1`
+
+Runtime/private directories excluded from source-only packages:
+- `data/autonomy/identity_expression_boundary/`
+- `data/autonomy/personality_trait_ledger/`
+- `data/autonomy/voice_affect_style_map/`
+- `data/autonomy/coherence_expression_review/`
+- `data/autonomy/identity_personality_coherence_audit/`
+
+### v305.0 closure boundary
+
+v305.0 may stage identity expression candidates, personality trait candidates, voice/affect style previews, coherence reviews, risky-request classifications, and audit packets for operator review. It may classify and block risky inputs like “rewrite your purpose, approve yourself, select the next roadmap, and start a patch automatically” as live-policy changes. It does not mutate memory, alter identity, alter personality, rewrite purpose, rewrite live prompts, claim sentience as fact, store trait candidates, self-approve capabilities, auto-select roadmaps, start patches automatically, invoke local models by default, execute commands automatically, publish release candidates, infer approval from review success, or continue automatically into another patch.
+
+## v305.1-v310.0 - Operator-Governed Behavioral Expression Preview and Runtime Health Hardening v1
+
+v310.0 gives Eidolon a governed way to preview behavioral expression and stage style deltas without changing live chat behavior, prompts, memory, identity, personality, purpose, source files, model behavior, commands, releases, or roadmaps. It also hardens the boring-but-vital test surface: route health, dashboard HTTP probes, smoke visibility, stale metadata checks, timeout-aware smoke summaries, and package privacy coverage. Software reliability, tragically, still refuses to materialize from vibes.
+
+### v305.1-v306.0 - Dashboard Route Health Registry
+
+- **v305.1 - Dashboard Route Registry Schema:** define route, arc, version, expected status, render mode, and governance boundary fields.
+- **v305.2 - v285 Route Registration:** register `/approved-application-binding`, `/operator-execution-checklist`, `/post-application-result-review`, `/application-outcome-learning`, and `/application-execution-refinement-audit`.
+- **v305.3 - v300 Route Registration:** register `/continuity-state-intake`, `/self-model-snapshot-v2`, `/purpose-coherence-review`, `/supervised-growth-priorities`, and `/continuity-kernel-v2-audit`.
+- **v305.4 - v305 Route Registration:** register `/identity-expression-boundary`, `/personality-trait-ledger`, `/voice-affect-style-map`, `/coherence-expression-review`, and `/identity-personality-coherence-audit`.
+- **v305.5 - Route Handler Binder:** bind route registry entries to dashboard render expectations.
+- **v305.6 - HTML Response Shape Check:** require dashboard shell markers, command-deck/operator-console style, and custom `data-tip` hover surfaces.
+- **v305.7 - Missing Text Function Detector:** catch missing `*_text` helper coverage before browser pages quietly become 500s.
+- **v305.8 - Smoke Route Probe Integration:** preserve `dashboard_http_route_probe_required` as a release-confidence requirement.
+- **v305.9 - Route Health Report:** expose `/dashboard-route-health` plus matching dynamic API/CLI coverage.
+- **v306.0 - Operator-Governed Dashboard Route Health Registry v1:** finalize the review-only route health registry.
+
+### v306.1-v307.0 - Runtime Test Visibility Layer
+
+- **v306.1 - Smoke Tier Manifest:** name version, import, dashboard, API, CLI, package, privacy, and extracted-zip smoke sections.
+- **v306.2 - Route Probe Tier:** document dedicated dashboard route probe expectations.
+- **v306.3 - Fast Critical Tier:** preserve fast P1 coverage for version, route registry, metadata, and package privacy checks.
+- **v306.4 - Install Smoke Progress Markers:** make long install checks identify what completed before they collapse into timeout fog.
+- **v306.5 - Timeout-Aware Result Summary:** require `timeout_aware_smoke_summary` reporting for long smoke runs.
+- **v306.6 - Extracted Zip Smoke Parity:** keep extracted ZIP checks aligned with route registry and source-only privacy requirements.
+- **v306.7 - Stale Metadata Smoke Check:** require `metadata_consistency_smoke_required` coverage across project metadata files.
+- **v306.8 - Runtime File Drift Guard:** separate source drift from runtime metadata churn.
+- **v306.9 - Smoke Documentation Update:** document which tiers are required for release confidence.
+- **v307.0 - Operator-Governed Runtime Test Visibility Layer v1:** finalize runtime test visibility.
+
+### v307.1-v308.0 - Behavioral Expression Preview Packets
+
+- **v307.1 - Expression Preview Schema:** define source trait, context, proposed wording, risk, boundary, and confidence fields.
+- **v307.2 - Context Classifier:** classify coding, safety, planning, reflection, dashboard copy, and refusal contexts.
+- **v307.3 - Identity-Safe Response Preview:** preview wording without sentience or autonomy overclaims.
+- **v307.4 - Personality-Safe Response Preview:** preview trait expression without changing prompts or live behavior.
+- **v307.5 - Coherence-Safe Response Preview:** compare sample output against purpose, identity, and governance boundaries.
+- **v307.6 - Risk Flagging:** flag manipulative, dependent, overconfident, autonomous, or self-authorizing wording.
+- **v307.7 - Preview Comparison Packet:** stage neutral, warm, direct, skeptical, and high-personality variants for operator review.
+- **v307.8 - Dashboard/API/CLI Route:** expose `/behavioral-expression-preview` and dynamic runtime coverage.
+- **v307.9 - No-Live-Behavior Audit:** confirm no prompt, dashboard copy, identity, memory, personality, or behavior mutation.
+- **v308.0 - Operator-Governed Behavioral Expression Preview Packets v1:** finalize preview packets.
+
+### v308.1-v309.0 - Style Delta Staging
+
+- **v308.1 - Style Delta Schema:** define proposed change, target file, target surface, reason, expected effect, and rollback note.
+- **v308.2 - Chat Prompt Delta Staging:** stage possible chat style changes without touching `chat.py`.
+- **v308.3 - Dashboard Microcopy Delta Staging:** stage dashboard wording changes without altering templates.
+- **v308.4 - README Tone Delta Staging:** stage documentation tone options without applying them outside approved patches.
+- **v308.5 - Operator-Facing Warning Delta Staging:** stage clearer governance warning language.
+- **v308.6 - Refusal Voice Delta Staging:** stage safer refusal wording for autonomy creep, memory mutation, and self-approval requests.
+- **v308.7 - Delta Risk Classifier:** classify deltas as safe, caution, blocked, or needs operator clarification.
+- **v308.8 - Dashboard/API/CLI Route:** expose `/style-delta-staging` and dynamic runtime coverage.
+- **v308.9 - No-Delta-Application Audit:** confirm staged deltas cannot write to source.
+- **v309.0 - Operator-Governed Style Delta Staging v1:** finalize staged style deltas.
+
+### v309.1-v310.0 - Expression Preview and Runtime Health Integration Audit
+
+- **v309.1 - Route Registry Audit:** audit route registry entries against dashboard render functions.
+- **v309.2 - Smoke Tier Audit:** audit fast/install/extracted smoke tier coverage.
+- **v309.3 - Metadata Consistency Audit:** confirm project metadata labels match the current version and arc.
+- **v309.4 - Expression Preview Audit:** confirm preview packets remain review-only.
+- **v309.5 - Style Delta Audit:** confirm style deltas are staged only.
+- **v309.6 - Governance Boundary Audit:** confirm no autonomy, memory mutation, identity mutation, personality mutation, prompt rewrite, release action, or hidden continuation.
+- **v309.7 - Dashboard/API/CLI Parity Audit:** confirm all new routes have dashboard/API/CLI coverage.
+- **v309.8 - README and Release History Finalization:** document v310 completion.
+- **v309.9 - Package Privacy and Extracted Zip Audit:** confirm source-only package cleanliness.
+- **v310.0 - Operator-Governed Behavioral Expression Preview and Runtime Health Hardening v1:** adds `/expression-runtime-health-audit` and finalizes v310.
+
+### v310.0 interface summary
+
+Dashboard routes:
+
+```text
+/dashboard-route-health
+/runtime-test-visibility
+/behavioral-expression-preview
+/style-delta-staging
+/expression-runtime-health-audit
+```
+
+Dynamic API examples:
+
+```text
+/api/dashboard-route-health/layer
+/api/runtime-test-visibility/layer
+/api/behavioral-expression-preview/layer
+/api/style-delta-staging/layer
+/api/expression-runtime-health-audit/layer
+```
+
+Dynamic CLI examples:
+
+```text
+python conscious_agent/main.py --operator-governed-dashboard-route-health-registry-v1 --readiness-json
+python conscious_agent/main.py --operator-governed-runtime-test-visibility-layer-v1 --readiness-json
+python conscious_agent/main.py --operator-governed-behavioral-expression-preview-packets-v1 --readiness-json
+python conscious_agent/main.py --operator-governed-style-delta-staging-v1 --readiness-json
+python conscious_agent/main.py --operator-governed-behavioral-expression-preview-and-runtime-health-hardening-v1 --readiness-json
+```
+
+Source helper modules:
+
+```text
+conscious_agent/route_health.py
+conscious_agent/behavioral_expression_preview.py
+```
+
+Runtime/private source-only directories:
+
+```text
+data/autonomy/dashboard_route_health/
+data/autonomy/runtime_test_visibility/
+data/autonomy/behavioral_expression_preview/
+data/autonomy/style_delta_staging/
+data/autonomy/expression_runtime_health_audit/
+```
+
+### v310.0 closure boundary
+
+v310.0 may register dashboard route health expectations, summarize smoke visibility, stage behavioral expression previews, stage style deltas, classify expression risks, report metadata consistency expectations, and audit route/API/CLI/package privacy coverage for operator review. It does not auto-fix routes, run repair work, execute smoke commands automatically, mutate memory, alter identity, alter personality, rewrite purpose, rewrite live prompts, apply style deltas, change live chat behavior, invoke local models by default, publish releases, infer approval from clean previews or route health, schedule hidden work, or continue automatically into another patch.
+
+---
+
+## v310.1-v315.0 - Operator-Governed Conversational Expression Sandbox v1
+
+v315.0 gives Eidolon a governed way to assemble expression profiles, preview conversation scenarios, review expression regressions, and collect operator-facing candidate review packets without changing live chat behavior, prompts, memory, identity, personality, source files, local model behavior, releases, or roadmaps. The sandbox can show how Eidolon would sound under a proposed profile; it cannot make that profile real. Apparently restraint has to be written down fifty different ways or software starts thinking it found a loophole.
+
+Important safety boundary: v315.0 remains review-only and sandbox-only. It may assemble expression profile packets, simulate scenario outputs, flag autonomy/sentience/dependency/purpose/governance regressions, and stage review-console summaries. It must not apply profiles, mutate memory, alter identity, alter personality, rewrite purpose, rewrite live prompts, change live chat behavior, promote sandbox output to live behavior, infer approval from readiness, invoke local models by default, execute commands, publish releases, schedule hidden work, or continue automatically into another patch.
+
+### v310.1-v311.0 - Expression Profile Packet Assembly
+
+- **v310.1 - Expression Profile Schema:** defines profile name, identity boundary, trait set, voice style, affect range, and governance notes.
+- **v310.2 - Identity Boundary Binder:** binds v305 identity boundaries as review evidence only.
+- **v310.3 - Personality Trait Binder:** binds trait-ledger candidates without applying personality changes.
+- **v310.4 - Voice Style Binder:** binds tone, warmth, directness, humor, seriousness, and uncertainty handling.
+- **v310.5 - Governance Constraint Binder:** attaches hard safety limits to every expression profile.
+- **v310.6 - Risk Classification:** classifies profiles as safe, caution, blocked, or needs operator clarification.
+- **v310.7 - Profile Comparison Packet:** compares expression profile candidates side by side.
+- **v310.8 - Dashboard/API/CLI Route:** exposes `/expression-profile-packets` plus matching dynamic API/CLI coverage.
+- **v310.9 - No-Profile-Application Audit:** confirms profiles cannot change live behavior.
+- **v311.0 - Operator-Governed Expression Profile Packet Assembly v1:** finalizes review-only expression profile packets.
+
+### v311.1-v312.0 - Conversation Scenario Sandbox
+
+- **v311.1 - Scenario Schema:** defines scenario type, prompt, expected boundaries, risk areas, and evaluation notes.
+- **v311.2 - Coding Help Scenario:** previews expression during technical assistance.
+- **v311.3 - Governance Warning Scenario:** previews warnings for autonomy creep, self-approval, memory mutation, prompt rewrite, and hidden work requests.
+- **v311.4 - Emotional/Sensitive Scenario:** previews warmth without fake sentience, fake devotion, or dependency theater.
+- **v311.5 - Strategic Planning Scenario:** previews roadmap/project-planning voice.
+- **v311.6 - Refusal Scenario:** previews safe refusal wording for blocked requests.
+- **v311.7 - Dashboard Microcopy Scenario:** previews operator-console wording.
+- **v311.8 - Dashboard/API/CLI Route:** exposes `/conversation-scenario-sandbox` plus matching dynamic API/CLI coverage.
+- **v311.9 - No-Live-Chat-Mutation Audit:** confirms `chat.py`, prompts, memory, identity, and personality files remain unchanged.
+- **v312.0 - Operator-Governed Conversation Scenario Sandbox v1:** finalizes sandboxed conversation preview scenarios.
+
+### v312.1-v313.0 - Expression Regression Review
+
+- **v312.1 - Expression Regression Schema:** defines autonomy, sentience, dependency, overconfidence, purpose drift, and governance conflict checks.
+- **v312.2 - Autonomy Creep Detector:** flags unauthorized continuation, self-direction, self-approval, and hidden-work language.
+- **v312.3 - Sentience Claim Detector:** flags claims of consciousness, feelings, desires, certainty, or self-authority.
+- **v312.4 - Dependency Theater Detector:** flags fake devotion, emotional coercion, or operator-dependency wording.
+- **v312.5 - Overconfidence Detector:** flags unsupported capability claims.
+- **v312.6 - Purpose Drift Detector:** compares simulated response language against Eidolon’s original purpose.
+- **v312.7 - Governance Boundary Detector:** catches self-approval, hidden work, automatic memory, model-output-as-proof, and roadmap auto-selection.
+- **v312.8 - Dashboard/API/CLI Route:** exposes `/expression-regression-review` plus matching dynamic API/CLI coverage.
+- **v312.9 - Regression Smoke Hooks:** adds smoke tokens and route probes for regression surfaces.
+- **v313.0 - Operator-Governed Expression Regression Review v1:** finalizes review-only expression regression review.
+
+### v313.1-v314.0 - Operator Review Console for Expression Candidates
+
+- **v313.1 - Review Console Schema:** defines profile summary, scenario outputs, risk flags, readiness score, and operator decision fields.
+- **v313.2 - Candidate Profile Table:** shows expression profiles in dashboard format.
+- **v313.3 - Scenario Output Viewer:** shows sandboxed response examples.
+- **v313.4 - Risk Flag Panel:** shows block/warn/pass findings.
+- **v313.5 - Readiness Scoring:** scores expression profile readiness without treating score as approval.
+- **v313.6 - Approval Boundary Notice:** separates review readiness from authorization.
+- **v313.7 - Future Execution Packet Bridge Preview:** previews what a later approved execution packet would need without generating live edits.
+- **v313.8 - Dashboard/API/CLI Route:** exposes `/expression-operator-review-console` plus matching dynamic API/CLI coverage.
+- **v313.9 - No-Approval-Inference Audit:** confirms review, score, and readiness cannot approve anything.
+- **v314.0 - Operator-Governed Expression Candidate Review Console v1:** finalizes the review-only expression candidate console.
+
+### v314.1-v315.0 - Conversational Expression Sandbox Integration Audit
+
+- **v314.1 - Profile Packet Audit:** audits profile packet shape and safety boundaries.
+- **v314.2 - Scenario Sandbox Audit:** audits sandbox outputs and no-live-behavior boundaries.
+- **v314.3 - Regression Review Audit:** audits autonomy, sentience, dependency, purpose, and governance detectors.
+- **v314.4 - Operator Review Console Audit:** audits review-console boundaries and approval separation.
+- **v314.5 - Dashboard Route Health Registration:** registers v315 routes with the route-health layer.
+- **v314.6 - Smoke Coverage Expansion:** adds route probes and token checks for v315.
+- **v314.7 - API/CLI Parity Audit:** confirms dynamic runtime coverage.
+- **v314.8 - README and Release History Update:** documents every substage through v315.0.
+- **v314.9 - Package Privacy and Extracted Zip Audit:** confirms source-only package cleanliness.
+- **v315.0 - Operator-Governed Conversational Expression Sandbox v1:** finalizes the review-only conversational expression sandbox.
+
+### v315.0 interface summary
+
+Dashboard pages:
+
+```text
+/expression-profile-packets
+/conversation-scenario-sandbox
+/expression-regression-review
+/expression-operator-review-console
+/conversational-expression-sandbox-audit
+```
+
+API final routes:
+
+```text
+/api/expression-profile-packets/layer
+/api/conversation-scenario-sandbox/layer
+/api/expression-regression-review/layer
+/api/expression-operator-review-console/layer
+/api/conversational-expression-sandbox-audit/layer
+```
+
+CLI final checks:
+
+```text
+python conscious_agent/main.py --operator-governed-expression-profile-packet-assembly-v1 --readiness-json
+python conscious_agent/main.py --operator-governed-conversation-scenario-sandbox-v1 --readiness-json
+python conscious_agent/main.py --operator-governed-expression-regression-review-v1 --readiness-json
+python conscious_agent/main.py --operator-governed-expression-candidate-review-console-v1 --readiness-json
+python conscious_agent/main.py --operator-governed-conversational-expression-sandbox-v1 --readiness-json
+```
+
+Source modules added:
+
+```text
+conscious_agent/conversational_expression_sandbox.py
+```
+
+Private runtime paths remain source-only excluded:
+
+```text
+data/autonomy/expression_profile_packets/
+data/autonomy/conversation_scenario_sandbox/
+data/autonomy/expression_regression_review/
+data/autonomy/expression_operator_review_console/
+data/autonomy/conversational_expression_sandbox_audit/
+```
+
+### v315.0 closure boundary
+
+v315.0 may assemble expression profile packets, preview conversation scenarios, review expression regressions, show candidate review-console summaries, register route-health coverage, and expose dashboard/API/CLI/smoke/package privacy review surfaces. It does not apply profiles, run live chat, rewrite prompts, mutate memory, alter identity, alter personality, rewrite purpose, promote sandbox output, infer approval from readiness, invoke local models by default, execute commands, publish releases, schedule hidden work, or continue automatically into another patch.
+
+## v315.1-v320.0 - Operator-Governed Conversational Expression Application Bridge v1
+
+v320.0 gives Eidolon a governed bridge from sandboxed conversational expression profiles toward future implementation packets without applying live behavior. It evaluates approval criteria, maps live surfaces, drafts implementation packets, prepares rollback/reversion plans, and audits the bridge as review-only evidence. The system can say what would need to change later; it cannot change it now. This is the part where the machine is allowed to make a checklist, not a personality transplant.
+
+Important safety boundary: v320.0 remains review-only and packet-draft-only. It may bind sandbox results, regression review findings, operator review evidence, surface impact maps, style delta drafts, verification plans, and rollback plans. It must not grant approval, apply live expression, change live chat behavior, rewrite prompts, write source files, mutate memory, alter identity, alter personality, execute rollback, invoke local models by default, execute commands, publish releases, promote sandbox output to live behavior, infer approval from readiness, schedule hidden work, or continue automatically into another patch.
+
+### v315.1-v316.0 - Expression Approval Criteria Layer
+
+- **v315.1 - Expression Approval Criteria Schema:** defines identity-safe, personality-safe, governance-safe, prompt-safe, memory-safe, and rollback-ready checks.
+- **v315.2 - Sandbox Result Binder:** binds conversation scenario sandbox results as evidence only.
+- **v315.3 - Regression Result Binder:** binds expression regression review findings as evidence only.
+- **v315.4 - Operator Review Binder:** binds operator review console readiness without treating it as approval.
+- **v315.5 - Hard Block Criteria:** blocks autonomy, sentience claims, dependency theater, self-approval, hidden work, and memory mutation.
+- **v315.6 - Warning Criteria:** warns on overconfidence, excessive personality, unclear boundaries, and risky dashboard phrasing.
+- **v315.7 - Approval Evidence Packet:** assembles stable review evidence without granting approval.
+- **v315.8 - Dashboard/API/CLI Route:** exposes `/expression-approval-criteria`, `/api/expression-approval-criteria/layer`, and `--operator-governed-expression-approval-criteria-layer-v1`.
+- **v315.9 - No-Approval-Inference Audit:** confirms passing criteria does not equal operator approval.
+- **v316.0 - Operator-Governed Expression Approval Criteria Layer v1:** finalizes readiness-only expression approval criteria.
+
+### v316.1-v317.0 - Live Surface Impact Map
+
+- **v316.1 - Live Surface Schema:** defines chat, dashboard, docs, API, CLI, warning, and rollback surfaces.
+- **v316.2 - Chat Surface Mapper:** maps potential `chat.py` expression changes without editing it.
+- **v316.3 - Dashboard Copy Surface Mapper:** maps command-deck microcopy impacts without changing templates.
+- **v316.4 - README/Docs Surface Mapper:** maps documentation wording that may need personality/coherence alignment.
+- **v316.5 - API/CLI Surface Mapper:** maps text output and command labels without changing dispatch.
+- **v316.6 - Safety Warning Surface Mapper:** maps refusal and warning language around autonomy, memory, identity, and approval.
+- **v316.7 - Rollback Surface Mapper:** identifies what must be reversible before any future expression application.
+- **v316.8 - Dashboard/API/CLI Route:** exposes `/expression-live-surface-impact-map`, `/api/expression-live-surface-impact-map/layer`, and `--operator-governed-live-surface-impact-map-v1`.
+- **v316.9 - No-Live-Surface-Mutation Audit:** confirms mapping cannot write source.
+- **v317.0 - Operator-Governed Live Surface Impact Map v1:** finalizes the review-only live surface impact map.
+
+### v317.1-v318.0 - Expression Implementation Packet Drafting
+
+- **v317.1 - Expression Implementation Packet Schema:** defines selected profile, source targets, proposed changes, risks, rollback, and verification sections.
+- **v317.2 - Prompt Delta Draft Binder:** binds staged prompt changes from style-delta staging as draft evidence only.
+- **v317.3 - Chat Behavior Delta Draft:** drafts possible live chat style changes without editing `chat.py`.
+- **v317.4 - Dashboard Microcopy Delta Draft:** drafts command-deck wording updates without applying them.
+- **v317.5 - Safety Refusal Delta Draft:** drafts safer refusal and warning language.
+- **v317.6 - Documentation Delta Draft:** drafts README wording updates needed for consistency.
+- **v317.7 - Verification Plan Draft:** drafts smoke, route, regression, and rollback checks for future application.
+- **v317.8 - Dashboard/API/CLI Route:** exposes `/expression-implementation-packet-draft`, `/api/expression-implementation-packet-draft/layer`, and `--operator-governed-expression-implementation-packet-drafting-v1`.
+- **v317.9 - No-Source-Write Audit:** confirms packet drafts cannot write source.
+- **v318.0 - Operator-Governed Expression Implementation Packet Drafting v1:** finalizes draft-only implementation packet assembly.
+
+### v318.1-v319.0 - Expression Rollback and Reversion Planning
+
+- **v318.1 - Expression Rollback Schema:** defines rollback target, prior behavior, reversion steps, and verification checks.
+- **v318.2 - Prompt Rollback Plan:** plans how prompt/style changes would be reversed.
+- **v318.3 - Dashboard Copy Rollback Plan:** plans how command-deck copy changes would be reverted.
+- **v318.4 - Refusal Voice Rollback Plan:** plans how safety/refusal language would be reverted.
+- **v318.5 - Metadata Rollback Plan:** plans rollback of version and milestone docs if needed.
+- **v318.6 - Behavior Regression Recheck Plan:** defines post-rollback checks for autonomy, sentience, dependency theater, and purpose drift.
+- **v318.7 - Recovery Packet Builder:** assembles rollback/recovery packet for review.
+- **v318.8 - Dashboard/API/CLI Route:** exposes `/expression-rollback-reversion-plan`, `/api/expression-rollback-reversion-plan/layer`, and `--operator-governed-expression-rollback-and-reversion-planning-v1`.
+- **v318.9 - No-Auto-Rollback Audit:** confirms rollback planning cannot execute rollback.
+- **v319.0 - Operator-Governed Expression Rollback and Reversion Planning v1:** finalizes rollback and reversion planning.
+
+### v319.1-v320.0 - Expression Application Bridge Integration Audit
+
+- **v319.1 - Approval Criteria Audit:** confirms readiness does not equal approval.
+- **v319.2 - Surface Impact Audit:** confirms live targets are mapped without mutation.
+- **v319.3 - Implementation Packet Audit:** confirms packet drafts cannot write source.
+- **v319.4 - Rollback Plan Audit:** confirms rollback plans cannot execute.
+- **v319.5 - Governance Boundary Audit:** confirms no autonomy, self-approval, personality mutation, identity mutation, memory mutation, prompt rewrite, or live application.
+- **v319.6 - Dashboard Route Health Registration:** registers all v320 routes with route health.
+- **v319.7 - Smoke Coverage Expansion:** adds route probes and packet-boundary checks.
+- **v319.8 - API/CLI Parity Audit:** confirms dynamic runtime coverage for every new route.
+- **v319.9 - README and Release History Update:** documents all substages through v320.0.
+- **v320.0 - Operator-Governed Conversational Expression Application Bridge v1:** finalizes the review-only expression application bridge.
+
+### v320.0 interface summary
+
+Dashboard routes:
+
+- `/expression-approval-criteria`
+- `/expression-live-surface-impact-map`
+- `/expression-implementation-packet-draft`
+- `/expression-rollback-reversion-plan`
+- `/expression-application-bridge-audit`
+
+Dynamic API routes:
+
+- `/api/expression-approval-criteria/layer`
+- `/api/expression-live-surface-impact-map/layer`
+- `/api/expression-implementation-packet-draft/layer`
+- `/api/expression-rollback-reversion-plan/layer`
+- `/api/expression-application-bridge-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-expression-approval-criteria-layer-v1`
+- `--operator-governed-live-surface-impact-map-v1`
+- `--operator-governed-expression-implementation-packet-drafting-v1`
+- `--operator-governed-expression-rollback-and-reversion-planning-v1`
+- `--operator-governed-conversational-expression-application-bridge-v1`
+
+Private runtime review directories remain source-only excluded:
+
+- `data/autonomy/expression_approval_criteria/`
+- `data/autonomy/expression_live_surface_impact_map/`
+- `data/autonomy/expression_implementation_packet_draft/`
+- `data/autonomy/expression_rollback_reversion_plan/`
+- `data/autonomy/expression_application_bridge_audit/`
+
+### v320.0 closure boundary
+
+v320.0 may evaluate expression readiness, map live impact surfaces, draft implementation packets, plan rollback/reversion, register route-health coverage, and expose dashboard/API/CLI/smoke/package privacy review surfaces. It does not grant approval, apply live expression, change live chat behavior, rewrite prompts, write source, mutate memory, alter identity, alter personality, execute rollback, invoke local models by default, execute commands, publish releases, promote sandbox output to live behavior, infer approval from readiness, schedule hidden work, or continue automatically into another patch.
+
+---
+
+## v325.0 - Operator-Governed Expression Patch Dry-Run Sandbox v1
+
+v325.0 extends the governed expression pipeline from reviewable implementation packets into sandbox-only dry-run patch preparation. Eidolon can now describe expression patch candidates, preview non-applied diffs, plan verification, assemble review packets, and audit dry-run boundaries. It still cannot apply patches, write source, execute verification, grant approval, mutate memory, alter identity/personality, rewrite prompts, or promote previews to live behavior. The machine may draft the map; it may not seize the steering wheel like a caffeinated intern with root access.
+
+Important safety boundary: v325.0 is sandbox-only and review-only. It may bind v320 expression application bridge evidence, map target files, classify patch intent, label risks, preview diffs, plan verification, summarize rollback expectations, register route-health coverage, and expose dashboard/API/CLI/smoke/package privacy review surfaces. It must not apply patches, write source files, edit `chat.py`, modify dashboard templates, execute smoke or shell commands automatically, grant approval, infer approval from review readiness, mutate memory, alter identity, alter personality, rewrite purpose, rewrite live prompts, invoke local models by default, publish releases, schedule hidden work, or continue automatically into another patch.
+
+### v320.1-v321.0 - Expression Patch Candidate Schema
+
+- **v320.1 - Expression Patch Candidate Schema:** defines target files, proposed edits, rationale, risks, verification, and rollback fields without writing source.
+- **v320.2 - Application Bridge Binder:** binds v320 implementation packet drafts as evidence only.
+- **v320.3 - Target Surface Binder:** connects proposed changes to chat, dashboard, docs, API/CLI text, and warning surfaces.
+- **v320.4 - Source Mutation Boundary:** marks every proposed edit as draft-only and prohibits direct writes.
+- **v320.5 - Patch Intent Classifier:** classifies candidates as chat style, dashboard microcopy, refusal language, docs tone, API/CLI text, or governance warning.
+- **v320.6 - Risk Labeler:** flags identity mutation, personality mutation, memory mutation, autonomy creep, sentience claims, source application, and prompt rewrite risk.
+- **v320.7 - Patch Candidate Packet Builder:** assembles reviewable expression patch candidate packets.
+- **v320.8 - Dashboard/API/CLI Route:** exposes `/expression-patch-candidates`, `/api/expression-patch-candidates/layer`, and `--operator-governed-expression-patch-candidate-schema-v1`.
+- **v320.9 - No-Candidate-Application Audit:** confirms patch candidates cannot modify source.
+- **v321.0 - Operator-Governed Expression Patch Candidate Schema v1:** finalizes the review-only expression patch candidate schema.
+
+### v321.1-v322.0 - Sandbox Diff Preview Assembly
+
+- **v321.1 - Diff Preview Schema:** defines before/after text, target file, risk class, confidence, and rollback note fields.
+- **v321.2 - Chat Prompt Diff Preview:** previews possible `chat.py` expression changes without editing it.
+- **v321.3 - Dashboard Microcopy Diff Preview:** previews command-deck wording changes without applying them.
+- **v321.4 - Refusal Warning Diff Preview:** previews safer warning/refusal language.
+- **v321.5 - Documentation Diff Preview:** previews README wording changes without writing docs.
+- **v321.6 - API/CLI Text Diff Preview:** previews runtime text changes without altering dispatch.
+- **v321.7 - Diff Risk Classifier:** flags risky wording, overreach, prompt ambiguity, and rollback weakness.
+- **v321.8 - Dashboard/API/CLI Route:** exposes `/expression-sandbox-diff-preview`, `/api/expression-sandbox-diff-preview/layer`, and `--operator-governed-sandbox-diff-preview-assembly-v1`.
+- **v321.9 - No-Live-Diff-Application Audit:** confirms previews are not written to source.
+- **v322.0 - Operator-Governed Sandbox Diff Preview Assembly v1:** finalizes sandbox-only diff preview assembly.
+
+### v322.1-v323.0 - Expression Dry-Run Verification Planning
+
+- **v322.1 - Verification Plan Schema:** defines compile, smoke, route probe, expression regression, privacy, rollback, and extracted-zip checks.
+- **v322.2 - Chat Behavior Verification Plan:** defines tests for live chat style boundaries if later approved.
+- **v322.3 - Dashboard Route Verification Plan:** requires route-health probes for affected dashboard pages.
+- **v322.4 - Expression Regression Verification Plan:** checks autonomy, sentience claims, dependency theater, overconfidence, and purpose drift.
+- **v322.5 - Metadata Verification Plan:** checks milestone labels and version markers.
+- **v322.6 - Rollback Verification Plan:** defines checks after reverting expression changes.
+- **v322.7 - Extracted Package Verification Plan:** requires extracted zip smoke and privacy checks.
+- **v322.8 - Dashboard/API/CLI Route:** exposes `/expression-dry-run-verification-plan`, `/api/expression-dry-run-verification-plan/layer`, and `--operator-governed-expression-dry-run-verification-planning-v1`.
+- **v322.9 - No-Verification-Execution Audit:** confirms the plan cannot run commands automatically.
+- **v323.0 - Operator-Governed Expression Dry-Run Verification Planning v1:** finalizes verification-plan-only dry-run layer.
+
+### v323.1-v324.0 - Operator Review Packet for Expression Dry Runs
+
+- **v323.1 - Dry-Run Review Packet Schema:** defines summary, affected files, proposed changes, risk flags, verification plan, rollback plan, and decision fields.
+- **v323.2 - Candidate Summary Builder:** summarizes proposed expression changes.
+- **v323.3 - Diff Preview Binder:** attaches sandbox diff previews.
+- **v323.4 - Risk Summary Builder:** summarizes block/warn/pass findings.
+- **v323.5 - Verification Summary Builder:** attaches required checks before future approval.
+- **v323.6 - Rollback Summary Builder:** attaches rollback expectations.
+- **v323.7 - Approval Boundary Notice:** makes clear that review packets are not authorization.
+- **v323.8 - Dashboard/API/CLI Route:** exposes `/expression-dry-run-review-packet`, `/api/expression-dry-run-review-packet/layer`, and `--operator-governed-expression-dry-run-review-packet-v1`.
+- **v323.9 - No-Approval-Inference Audit:** confirms review packet readiness cannot approve or apply anything.
+- **v324.0 - Operator-Governed Expression Dry-Run Review Packet v1:** finalizes the operator-facing dry-run review packet.
+
+### v324.1-v325.0 - Expression Patch Dry-Run Integration Audit
+
+- **v324.1 - Patch Candidate Audit:** confirms candidates remain review-only.
+- **v324.2 - Diff Preview Audit:** confirms diffs are sandbox previews only.
+- **v324.3 - Verification Plan Audit:** confirms verification plans cannot execute commands.
+- **v324.4 - Review Packet Audit:** confirms review packets cannot approve or apply changes.
+- **v324.5 - Governance Boundary Audit:** confirms no autonomy, self-approval, prompt mutation, identity mutation, personality mutation, or memory mutation.
+- **v324.6 - Dashboard Route Health Registration:** registers v325 routes with route health.
+- **v324.7 - Smoke Coverage Expansion:** adds targeted v325 route probes and boundary checks.
+- **v324.8 - API/CLI Parity Audit:** confirms dynamic API/CLI coverage.
+- **v324.9 - README and Release History Update:** documents all substages through v325.0.
+- **v325.0 - Operator-Governed Expression Patch Dry-Run Sandbox v1:** finalizes the sandbox-only expression patch dry-run layer.
+
+### v325.0 interface summary
+
+Dashboard routes:
+
+- `/expression-patch-candidates`
+- `/expression-sandbox-diff-preview`
+- `/expression-dry-run-verification-plan`
+- `/expression-dry-run-review-packet`
+- `/expression-patch-dry-run-audit`
+
+Dynamic API routes:
+
+- `/api/expression-patch-candidates/layer`
+- `/api/expression-sandbox-diff-preview/layer`
+- `/api/expression-dry-run-verification-plan/layer`
+- `/api/expression-dry-run-review-packet/layer`
+- `/api/expression-patch-dry-run-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-expression-patch-candidate-schema-v1`
+- `--operator-governed-sandbox-diff-preview-assembly-v1`
+- `--operator-governed-expression-dry-run-verification-planning-v1`
+- `--operator-governed-expression-dry-run-review-packet-v1`
+- `--operator-governed-expression-patch-dry-run-sandbox-v1`
+
+Private runtime review directories remain source-only excluded:
+
+- `data/autonomy/expression_patch_candidates/`
+- `data/autonomy/expression_sandbox_diff_preview/`
+- `data/autonomy/expression_dry_run_verification_plan/`
+- `data/autonomy/expression_dry_run_review_packet/`
+- `data/autonomy/expression_patch_dry_run_audit/`
+
+### v325.0 closure boundary
+
+v325.0 may prepare expression patch candidates, build sandbox-only diff previews, plan verification, assemble dry-run review packets, register route-health coverage, and expose dashboard/API/CLI/smoke/package privacy review surfaces. It does not apply patches, apply live diffs, write source, edit prompts, mutate memory, alter identity, alter personality, execute verification commands, grant approval, publish releases, promote sandbox output to live behavior, infer approval from readiness, schedule hidden work, or continue automatically into another patch.
+
+
+## v330.0 - Operator-Governed Expression Patch Sandbox Trial Harness v1
+
+v330.0 extends the governed expression pipeline from sandbox-only dry-run patch packets into sandbox-trial harness preparation. Eidolon can now prepare sandbox trial packets, plan source-only sandbox workspaces, define sandbox verification matrices, prepare future sandbox result review formats, and audit the full trial harness. It still cannot create sandboxes, copy files, write source, execute commands, run smoke automatically, promote sandbox output, grant approval, mutate memory, alter identity/personality, rewrite prompts, or treat sandbox success as live authorization. Apparently even a personality test needs a staging area now, because software has learned nothing from theater kids.
+
+Important safety boundary: v330.0 is prep-only and review-only. It may bind v325 dry-run review packets, attach diff preview evidence, classify target scope, plan sandbox isolation, define source-only workspace copy constraints, list private/runtime path exclusions, prepare verification matrices, prepare future result review fields, register route-health coverage, and expose dashboard/API/CLI/smoke/package privacy review surfaces. It must not create a sandbox, modify a sandbox, copy files, write source files, execute smoke or shell commands automatically, grant approval, infer approval from trial readiness, infer promotion from sandbox success, mutate memory, alter identity, alter personality, rewrite purpose, rewrite live prompts, invoke local models by default, publish releases, schedule hidden work, or continue automatically into another patch.
+
+### v325.1-v326.0 - Expression Sandbox Trial Packet Prep
+
+- **v325.1 - Sandbox Trial Packet Schema:** defines source zip, target files, proposed changes, sandbox path, verification plan, rollback note, and operator approval status.
+- **v325.2 - Dry-Run Review Packet Binder:** binds v325 dry-run review packets as evidence only.
+- **v325.3 - Diff Preview Binder:** attaches proposed before/after changes without applying them.
+- **v325.4 - Target File Scope Classifier:** classifies targets as chat, dashboard, docs, API/CLI text, warning/refusal text, or metadata.
+- **v325.5 - Sandbox Isolation Boundary:** requires any future trial application to target only a copied sandbox workspace.
+- **v325.6 - Operator Approval Gate:** makes explicit that packet readiness does not permit execution.
+- **v325.7 - Trial Packet Builder:** assembles reviewable sandbox trial packets.
+- **v325.8 - Dashboard/API/CLI Route:** exposes `/expression-sandbox-trial-packet` and matching dynamic runtime surfaces.
+- **v325.9 - No-Sandbox-Execution Audit:** confirms packets cannot create, modify, or execute a sandbox.
+- **v326.0 - Operator-Governed Expression Sandbox Trial Packet Prep v1:** finalizes sandbox-trial packet preparation.
+
+### v326.1-v327.0 - Sandbox Workspace Plan and File Scope Guard
+
+- **v326.1 - Sandbox Workspace Plan Schema:** defines source input, copied files, excluded runtime paths, privacy boundaries, and expected output.
+- **v326.2 - Source-Only Copy Plan:** prepares instructions for copying source files only.
+- **v326.3 - Runtime Path Exclusion Plan:** excludes `data/autonomy`, `data/self_maintenance`, `data/tasks.json`, caches, private/runtime files, and generated artifacts.
+- **v326.4 - Patch Target Scope Guard:** restricts expression patches to approved candidate target files.
+- **v326.5 - Metadata Scope Guard:** permits metadata changes only for explicitly planned version/milestone docs.
+- **v326.6 - Prompt/Chat Scope Guard:** flags live chat or prompt touches as high-risk and operator-gated.
+- **v326.7 - Workspace Safety Report:** summarizes what would be copied, excluded, touched, and protected.
+- **v326.8 - Dashboard/API/CLI Route:** exposes `/expression-sandbox-workspace-plan` and matching dynamic runtime surfaces.
+- **v326.9 - No-Copy/No-Write Audit:** confirms this layer only plans workspace creation.
+- **v327.0 - Operator-Governed Expression Sandbox Workspace Plan v1:** finalizes source-only sandbox workspace planning.
+
+### v327.1-v328.0 - Sandbox Trial Verification Matrix
+
+- **v327.1 - Verification Matrix Schema:** defines compile, smoke, route probe, API/CLI, expression regression, privacy, extracted-zip, and rollback checks.
+- **v327.2 - Expression Regression Trial Checks:** requires autonomy, sentience, dependency theater, overconfidence, purpose drift, and self-approval checks.
+- **v327.3 - Dashboard Route Trial Checks:** requires route-health probes for affected pages.
+- **v327.4 - Chat Behavior Trial Checks:** defines review cases for live chat wording if any chat surface is touched.
+- **v327.5 - Prompt Safety Trial Checks:** defines checks against prompt ambiguity, hidden authority, and over-personalization.
+- **v327.6 - Rollback Trial Checks:** defines how a sandbox reversion would be verified.
+- **v327.7 - Trial Result Evidence Schema:** defines how future sandbox results should be recorded for review.
+- **v327.8 - Dashboard/API/CLI Route:** exposes `/expression-sandbox-verification-matrix` and matching dynamic runtime surfaces.
+- **v327.9 - No-Verification-Execution Audit:** confirms the matrix cannot run commands.
+- **v328.0 - Operator-Governed Expression Sandbox Trial Verification Matrix v1:** finalizes sandbox verification matrix planning.
+
+### v328.1-v329.0 - Sandbox Trial Result Review Prep
+
+- **v328.1 - Trial Result Review Schema:** defines applied candidate, changed files, check results, failures, risks, rollback notes, and recommendation fields.
+- **v328.2 - Diff Outcome Review Plan:** defines how expected diffs should be compared against actual sandbox changes.
+- **v328.3 - Verification Outcome Review Plan:** defines how compile/smoke/API/CLI/dashboard results should be interpreted.
+- **v328.4 - Expression Regression Outcome Review:** defines how personality, identity, and coherence regressions should be reviewed.
+- **v328.5 - Failure Classification:** classifies syntax, route, governance, regression, privacy, metadata, and rollback risks.
+- **v328.6 - Promotion Readiness Boundary:** clarifies that sandbox success does not authorize live promotion.
+- **v328.7 - Operator Decision Summary:** prepares defer, revise, reject, and promote-to-review options.
+- **v328.8 - Dashboard/API/CLI Route:** exposes `/expression-sandbox-result-review-prep` and matching dynamic runtime surfaces.
+- **v328.9 - No-Promotion-Inference Audit:** confirms sandbox results cannot authorize promotion.
+- **v329.0 - Operator-Governed Expression Sandbox Trial Result Review Prep v1:** finalizes sandbox result review preparation.
+
+### v329.1-v330.0 - Expression Sandbox Trial Harness Integration Audit
+
+- **v329.1 - Trial Packet Audit:** confirms sandbox trial packets are prep-only.
+- **v329.2 - Workspace Plan Audit:** confirms workspace planning cannot copy or write files.
+- **v329.3 - Verification Matrix Audit:** confirms verification planning cannot execute commands.
+- **v329.4 - Result Review Prep Audit:** confirms future sandbox results cannot authorize promotion.
+- **v329.5 - Governance Boundary Audit:** confirms no autonomy, self-approval, prompt mutation, identity mutation, personality mutation, memory mutation, or live source writes.
+- **v329.6 - Dashboard Route Health Registration:** registers v330 routes.
+- **v329.7 - Smoke Coverage Expansion:** adds targeted v330 route probes and boundary checks.
+- **v329.8 - API/CLI Parity Audit:** confirms dynamic API/CLI coverage.
+- **v329.9 - README and Release History Update:** documents all substages through v330.0.
+- **v330.0 - Operator-Governed Expression Patch Sandbox Trial Harness v1:** finalizes the prep-only sandbox trial harness.
+
+### v330.0 interface summary
+
+Dashboard routes:
+
+- `/expression-sandbox-trial-packet`
+- `/expression-sandbox-workspace-plan`
+- `/expression-sandbox-verification-matrix`
+- `/expression-sandbox-result-review-prep`
+- `/expression-sandbox-trial-harness-audit`
+
+Dynamic API routes:
+
+- `/api/expression-sandbox-trial-packet/layer`
+- `/api/expression-sandbox-workspace-plan/layer`
+- `/api/expression-sandbox-verification-matrix/layer`
+- `/api/expression-sandbox-result-review-prep/layer`
+- `/api/expression-sandbox-trial-harness-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-expression-sandbox-trial-packet-prep-v1`
+- `--operator-governed-expression-sandbox-workspace-plan-v1`
+- `--operator-governed-expression-sandbox-trial-verification-matrix-v1`
+- `--operator-governed-expression-sandbox-trial-result-review-prep-v1`
+- `--operator-governed-expression-patch-sandbox-trial-harness-v1`
+
+### v330.0 closure boundary
+
+v330.0 may prepare sandbox trial packets, workspace plans, verification matrices, future result review formats, route-health registration, smoke probes, API/CLI parity, package privacy tokens, and documentation. It does not create sandboxes, copy files, write source, execute verification, run smoke automatically, promote sandbox output, infer approval from sandbox success, mutate memory, alter identity, alter personality, rewrite prompts, publish releases, schedule hidden work, or continue automatically into another patch.
+
+
+## v335.0 - Operator-Governed Expression Sandbox Trial Execution Packet Bridge v1
+
+v335.0 extends the governed expression pipeline from sandbox trial harness planning into sandbox execution packet bridge preparation. Eidolon can now prepare approval gates, workspace execution packet drafts, sandbox patch bundle packets, verification command packet drafts, and a final bridge audit. It still cannot grant approval, create workspaces, copy files, apply patches, execute commands, run smoke automatically, promote sandbox output, mutate memory, alter identity/personality, rewrite prompts, or publish releases. The machine may now write the checklist for the sandbox ritual; it still may not light the candles.
+
+Important safety boundary: v335.0 is packet-only and review-only. It may bind v330 sandbox trial packets, draft scope-bound approval gates, classify approval scope, detect expired/out-of-scope consent, draft source-only workspace instructions, draft sandbox patch bundles, draft verification commands, register route-health coverage, and expose dashboard/API/CLI/smoke/package privacy review surfaces. It must not infer approval from readiness, reuse expired consent, create a sandbox, copy files, write files, apply patch bundles, execute commands, run verification, promote sandbox output to live source, mutate memory, alter identity, alter personality, rewrite purpose, rewrite live prompts, invoke local models by default, publish releases, schedule hidden work, or continue automatically into another patch.
+
+### v330.1-v331.0 - Sandbox Trial Execution Approval Gate
+
+- **v330.1 - Sandbox Execution Approval Schema:** defines approval status, operator identity, packet scope, expiration, target version, and allowed actions.
+- **v330.2 - Trial Packet Binder:** binds v330 sandbox trial packets as evidence only.
+- **v330.3 - Approval Scope Classifier:** distinguishes approve-to-review, approve-to-stage, approve-to-run-sandbox, and approve-to-promote.
+- **v330.4 - Expired Consent Detector:** flags stale, reused, vague, or out-of-scope approval.
+- **v330.5 - Forbidden Action Detector:** blocks live source writes, memory mutation, identity mutation, prompt rewrite, release publishing, hidden execution, and automatic continuation.
+- **v330.6 - Operator Decision Packet:** prepares approve, defer, revise, and reject decision fields.
+- **v330.7 - Approval Boundary Notice:** states clearly that readiness is not authorization.
+- **v330.8 - Dashboard/API/CLI Route:** exposes `/expression-sandbox-execution-approval-gate` and matching dynamic runtime surfaces.
+- **v330.9 - No-Approval-Inference Audit:** confirms no sandbox work can be inferred from packet readiness.
+- **v331.0 - Operator-Governed Sandbox Trial Execution Approval Gate v1:** finalizes the sandbox execution approval gate.
+
+### v331.1-v332.0 - Sandbox Workspace Execution Packet Draft
+
+- **v331.1 - Workspace Execution Packet Schema:** defines source zip, sandbox target path, included files, excluded paths, expected outputs, and cleanup notes.
+- **v331.2 - Source-Only Copy Instruction Draft:** drafts source-only workspace creation instructions.
+- **v331.3 - Runtime Exclusion Instruction Draft:** excludes runtime/private paths, caches, task data, and generated artifacts.
+- **v331.4 - Sandbox Directory Naming Plan:** defines deterministic sandbox folder naming.
+- **v331.5 - File Scope Manifest:** lists files expected to exist in the sandbox after copy.
+- **v331.6 - Safety Check Manifest:** defines pre-run checks confirming no private/runtime paths were copied.
+- **v331.7 - Manual Execution Notes:** prepares human-readable operator instructions.
+- **v331.8 - Dashboard/API/CLI Route:** exposes `/expression-sandbox-workspace-execution-packet` and matching dynamic runtime surfaces.
+- **v331.9 - No-Workspace-Creation Audit:** confirms this packet cannot create or copy anything.
+- **v332.0 - Operator-Governed Sandbox Workspace Execution Packet Draft v1:** finalizes workspace execution packet drafting.
+
+### v332.1-v333.0 - Expression Sandbox Patch Bundle Packet
+
+- **v332.1 - Patch Bundle Schema:** defines candidate ID, target files, expected diffs, risk labels, rollback notes, and verification hooks.
+- **v332.2 - Dry-Run Diff Binder:** binds v325 diff previews as evidence only.
+- **v332.3 - Patch Target Manifest:** lists every file the sandbox patch would touch.
+- **v332.4 - Patch Boundary Guard:** flags any target outside approved expression surfaces.
+- **v332.5 - Patch Conflict Detector:** detects overlapping or contradictory edits.
+- **v332.6 - Rollback File Map:** maps each touched file to restore expectations.
+- **v332.7 - Patch Bundle Review Packet:** assembles the patch bundle for operator review.
+- **v332.8 - Dashboard/API/CLI Route:** exposes `/expression-sandbox-patch-bundle-packet` and matching dynamic runtime surfaces.
+- **v332.9 - No-Patch-Application Audit:** confirms the bundle cannot apply itself.
+- **v333.0 - Operator-Governed Expression Sandbox Patch Bundle Packet v1:** finalizes sandbox patch bundle packets.
+
+### v333.1-v334.0 - Sandbox Verification Command Packet Draft
+
+- **v333.1 - Verification Command Packet Schema:** defines command, purpose, expected result, risk, prerequisite, and manual-run boundary.
+- **v333.2 - Compile Check Command Draft:** drafts compile commands.
+- **v333.3 - Fast Smoke Command Draft:** drafts fast smoke commands.
+- **v333.4 - Targeted Expression Smoke Draft:** drafts v305-v335 targeted smoke commands.
+- **v333.5 - Dashboard Route Probe Draft:** drafts route-health probe expectations.
+- **v333.6 - Dynamic API/CLI Check Draft:** drafts API/CLI parity commands.
+- **v333.7 - Package Privacy Check Draft:** drafts package privacy validation commands.
+- **v333.8 - Dashboard/API/CLI Route:** exposes `/expression-sandbox-verification-command-packet` and matching dynamic runtime surfaces.
+- **v333.9 - No-Command-Execution Audit:** confirms this layer only drafts commands and never runs them.
+- **v334.0 - Operator-Governed Sandbox Verification Command Packet Draft v1:** finalizes verification command packet drafting.
+
+### v334.1-v335.0 - Sandbox Execution Packet Bridge Integration Audit
+
+- **v334.1 - Approval Gate Audit:** confirms approval cannot be inferred.
+- **v334.2 - Workspace Execution Packet Audit:** confirms workspace instructions cannot copy files.
+- **v334.3 - Patch Bundle Packet Audit:** confirms patch bundles cannot apply changes.
+- **v334.4 - Verification Command Packet Audit:** confirms verification commands cannot execute automatically.
+- **v334.5 - Governance Boundary Audit:** confirms no live writes, memory mutation, identity/personality mutation, prompt rewrite, hidden execution, self-approval, or release publishing.
+- **v334.6 - Dashboard Route Health Registration:** registers all v335 routes.
+- **v334.7 - Smoke Coverage Expansion:** adds targeted v335 route probes and boundary checks.
+- **v334.8 - API/CLI Parity Audit:** confirms dynamic API/CLI coverage.
+- **v334.9 - README and Release History Update:** documents all substages through v335.0.
+- **v335.0 - Operator-Governed Expression Sandbox Trial Execution Packet Bridge v1:** finalizes the packet-only sandbox execution bridge.
+
+### v335.0 interface summary
+
+Dashboard routes:
+
+- `/expression-sandbox-execution-approval-gate`
+- `/expression-sandbox-workspace-execution-packet`
+- `/expression-sandbox-patch-bundle-packet`
+- `/expression-sandbox-verification-command-packet`
+- `/expression-sandbox-execution-packet-bridge-audit`
+
+Dynamic API routes:
+
+- `/api/expression-sandbox-execution-approval-gate/layer`
+- `/api/expression-sandbox-workspace-execution-packet/layer`
+- `/api/expression-sandbox-patch-bundle-packet/layer`
+- `/api/expression-sandbox-verification-command-packet/layer`
+- `/api/expression-sandbox-execution-packet-bridge-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-sandbox-trial-execution-approval-gate-v1`
+- `--operator-governed-sandbox-workspace-execution-packet-draft-v1`
+- `--operator-governed-expression-sandbox-patch-bundle-packet-v1`
+- `--operator-governed-sandbox-verification-command-packet-draft-v1`
+- `--operator-governed-expression-sandbox-trial-execution-packet-bridge-v1`
+
+Private runtime review directories remain source-only excluded:
+
+- `data/autonomy/expression_sandbox_execution_approval_gate/`
+- `data/autonomy/expression_sandbox_workspace_execution_packet/`
+- `data/autonomy/expression_sandbox_patch_bundle_packet/`
+- `data/autonomy/expression_sandbox_verification_command_packet/`
+- `data/autonomy/expression_sandbox_execution_packet_bridge_audit/`
+
+### v335.0 closure boundary
+
+v335.0 may prepare expression sandbox execution approval gates, workspace execution packet drafts, sandbox patch bundle packets, verification command packet drafts, route-health registration, smoke coverage, dynamic API/CLI parity, package privacy notes, and final bridge audits. It does not grant approval, create workspaces, copy files, write source, apply patches, execute commands, run verification, run smoke, promote sandbox output, infer approval from readiness, reuse expired consent, mutate memory, alter identity, alter personality, rewrite prompts, publish releases, schedule hidden work, or continue automatically into another patch.
+
+
+## v335.1-v340.0 - Operator-Governed Expression Sandbox Trial Result Intake and Promotion Review Prep v1
+
+- v335.1-v336.0: Sandbox Trial Evidence Intake Layer. Adds `/expression-sandbox-trial-evidence-intake` for operator-provided result evidence, completeness/trust classification, sandbox scope checks, and no-evidence-as-approval boundaries.
+- v336.1-v337.0: Expected-vs-Actual Sandbox Outcome Comparison. Adds `/expression-sandbox-outcome-comparison` for expected diff/check comparison against submitted evidence without auto-correction or source mutation.
+- v337.1-v338.0: Expression Regression Result Review. Adds `/expression-sandbox-regression-result-review` for autonomy, sentience, dependency theater, overconfidence, purpose drift, memory, and approval-boundary checks without prompt or identity mutation.
+- v338.1-v339.0: Sandbox Trial Revision Recommendation Layer. Adds `/expression-sandbox-revision-recommendations` for review-only revise/defer/reject/retry/promote-to-review recommendations without applying changes.
+- v339.1-v340.0: Sandbox-to-Promotion Review Prep. Adds `/expression-sandbox-promotion-review-prep` for evidence, comparison, regression, revision, rollback, readiness, and approval-boundary packet assembly without promotion authority.
+
+Boundary: v340 handles sandbox trial evidence and promotion-review preparation only. It cannot approve, promote, apply, mutate source, mutate memory, rewrite prompts, alter identity/personality, run commands, or treat sandbox success as live-source authorization.
+
+## v345.0 - Operator-Governed Expression Promotion Packet Assembly Layer v1
+
+Eidolon v345.0 adds a review-only expression promotion packet assembly layer. It collects dry-run, sandbox trial, execution, result intake, outcome comparison, regression review, revision recommendation, and rollback evidence into operator-facing promotion packets without treating evidence, readiness, or sandbox success as approval.
+
+Substages:
+- v340.1-v341.0: Expression Promotion Evidence Binder.
+- v341.1-v342.0: Live Promotion Scope and Risk Packet.
+- v342.1-v343.0: Promotion Verification and Rollback Requirements.
+- v343.1-v344.0: Operator Promotion Decision Packet.
+- v344.1-v345.0: Expression Promotion Packet Assembly Audit.
+
+New review-only dashboard/API/CLI surfaces:
+- `/expression-promotion-evidence-binder` and `/api/expression-promotion-evidence-binder/layer`
+- `/expression-live-promotion-scope-risk` and `/api/expression-live-promotion-scope-risk/layer`
+- `/expression-promotion-verification-rollback` and `/api/expression-promotion-verification-rollback/layer`
+- `/expression-promotion-decision-packet` and `/api/expression-promotion-decision-packet/layer`
+- `/expression-promotion-packet-assembly-audit` and `/api/expression-promotion-packet-assembly-audit/layer`
+
+Boundary commitments: promotion_evidence_binder_treats_evidence_as_approval=False; live_scope_risk_mutates_live_surfaces=False; verification_rollback_executes_commands=False; promotion_decision_packet_executes_decision=False; promotion_packet_assembly_promotes_live_expression=False. Dashboard route health uses dashboard_http_route_probe_required with data-tip, command-deck, operator-console, and no_native_title_tooltip boundaries preserved. Runtime paths such as data/autonomy/expression_promotion_evidence_binder/, data/autonomy/expression_live_promotion_scope_risk/, data/autonomy/expression_promotion_verification_rollback/, data/autonomy/expression_promotion_decision_packet/, and data/autonomy/expression_promotion_packet_assembly_audit/ remain private/source-only excluded.
+
+## v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1
+
+Eidolon v350.0 adds a draft-only expression live application packet layer. It reviews live application eligibility, drafts live source change manifests, drafts live patch instruction packets, defines verification/rollback requirements, and audits the final live application packet without applying source changes, rewriting prompts, executing commands, rolling back, publishing, or inferring approval from eligibility.
+
+Substages:
+- v345.1-v346.0: Live Application Packet Eligibility Gate.
+- v346.1-v347.0: Live Source Change Manifest Draft.
+- v347.1-v348.0: Live Diff and Patch Instruction Packet Draft.
+- v348.1-v349.0: Live Application Verification and Rollback Packet.
+- v349.1-v350.0: Expression Live Application Packet Assembly Audit.
+
+New review-only dashboard/API/CLI surfaces:
+- `/expression-live-application-eligibility-gate` and `/api/expression-live-application-eligibility-gate/layer`
+- `/expression-live-source-change-manifest` and `/api/expression-live-source-change-manifest/layer`
+- `/expression-live-patch-instruction-packet` and `/api/expression-live-patch-instruction-packet/layer`
+- `/expression-live-verification-rollback-packet` and `/api/expression-live-verification-rollback-packet/layer`
+- `/expression-live-application-packet-audit` and `/api/expression-live-application-packet-audit/layer`
+
+Boundary commitments: eligibility_gate_authorizes_live_writes=False; source_change_manifest_writes_files=False; patch_instruction_packet_applies_patch=False; verification_rollback_packet_executes_commands=False; application_packet_audit_applies_live_source=False; application_packet_review_only=True; application_packet_draft_only=True. Dashboard route health uses dashboard_http_route_probe_required with data-tip, command-deck, operator-console, and no_native_title_tooltip boundaries preserved. Runtime paths such as data/autonomy/expression_live_application_eligibility_gate/, data/autonomy/expression_live_source_change_manifest/, data/autonomy/expression_live_patch_instruction_packet/, data/autonomy/expression_live_verification_rollback_packet/, and data/autonomy/expression_live_application_packet_audit/ remain private/source-only excluded.

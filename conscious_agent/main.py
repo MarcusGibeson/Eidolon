@@ -410,7 +410,573 @@ from self_maintenance import (
     print_api_signing_status,
     print_pre_v30_signing_prep_audit,
     print_signed_release_preparation_system,
+    print_signing_api_hardening,
+    print_canonical_schema_validator,
+    print_source_data_sanitizer,
+    print_signing_trust_model,
+    print_release_signing_tamper_drill,
+    print_public_key_policy_design,
+    print_detached_signature_contract,
+    print_signature_fixture_verification,
+    print_external_signer_workflow,
+    print_detached_signature_verification_system,
+    print_signature_verification_hardening,
+    print_public_trust_root_config,
+    print_external_signing_payload_export,
+    print_signed_fixture_test_suite,
+    print_release_publish_gate,
+    print_release_trust_dashboard_polish,
+    print_api_route_safety_audit,
+    print_release_reproducibility_check,
+    print_pre_v32_release_candidate_gate,
+    print_signed_release_governance,
+    print_governance_report_cleanup,
+    print_release_candidate_workspace,
+    print_artifact_binding_audit_v2,
+    print_surface_consistency_audit,
+    print_external_signing_handoff,
+    print_signature_intake_validation,
+    print_trusted_signer_registry,
+    print_governance_scenario_suite,
+    print_pre_v33_operations_gate,
+    print_release_operations_console,
+    print_operations_console_cleanup,
+    print_release_candidate_review,
+    print_signed_artifact_intake,
+    print_trust_root_lifecycle,
+    print_publish_decision_explainer,
+    print_operator_action_guardrails,
+    print_unsigned_release_drill,
+    print_signed_fixture_release_drill,
+    print_pre_v34_operator_workflow_gate,
+    print_release_operator_workflow,
+    print_release_candidate_record_v2,
+    print_signed_artifact_intake_v2,
+    print_trust_root_management_policy,
+    print_trust_root_mutation_guardrails,
+    print_signed_release_publish_decision,
+    print_operator_dashboard_action_states,
+    print_release_workflow_audit_trail,
+    print_trusted_fixture_workflow,
+    print_pre_v35_trusted_candidate_gate,
+    print_trusted_release_candidate_system,
+    print_candidate_review_state,
+    print_publish_approval_policy,
+    print_publish_approval_dry_run,
+    print_publish_approval_record_schema,
+    print_dashboard_approval_state_preview,
+    print_approval_route_safety_audit,
+    print_approval_fixture_drill,
+    print_publish_approval_explainer,
+    print_pre_v36_approval_separation_gate,
+    print_publish_approval_separation_system,
+    print_publish_approval_record_validator,
+    print_publish_approval_dry_run_v2,
+    print_approval_storage_quarantine,
+    print_publish_approval_api_preview,
+    print_dashboard_approval_workflow_preview,
+    print_approval_confirmation_policy,
+    print_approval_record_fixture_drill,
+    print_approval_audit_trail,
+    print_pre_v37_approval_records_gate,
+    print_controlled_publish_approval_system,
+    print_publish_approval_write_preflight,
+    print_publish_approval_write_schema_lock,
+    print_publish_approval_confirmation_validator,
+    print_post_only_approval_write_route_design,
+    print_approval_write_dashboard_preview,
+    print_write_publish_approval,
+    print_approval_write_rollback_safety_audit,
+    print_approval_write_fixture_drill,
+    print_pre_v38_approval_write_gate,
+    print_controlled_publish_approval_write_system,
+    print_publish_approval_record_reader,
+    print_approval_artifact_revalidation,
+    print_approval_record_conflict_detector,
+    print_approval_status_viewer,
+    print_approval_revocation_policy,
+    print_approval_revocation_dry_run,
+    print_approval_lifecycle_audit,
+    print_approval_lifecycle_fixture_drill,
+    print_pre_v39_approval_lifecycle_gate,
+    print_publish_approval_lifecycle_system,
+    print_approval_revocation_record_schema,
+    print_approval_revocation_confirmation_validator,
+    print_approval_revocation_write_preflight,
+    print_revocation_storage_quarantine,
+    print_post_only_revocation_route_design,
+    print_write_approval_revocation,
+    print_dashboard_revocation_preview,
+    print_approval_revocation_fixture_drill,
+    print_pre_v40_revocation_gate,
+    print_controlled_publish_approval_revocation_system,
+    print_autonomy_capability_inventory,
+    print_autonomous_task_proposal_schema,
+    print_autonomous_dry_run_plan,
+    print_autonomy_action_policy_engine,
+    print_autonomous_patch_sandbox,
+    print_autonomous_patch_risk_classifier,
+    print_autonomous_test_selection,
+    print_autonomy_human_checkpoint,
+    print_pre_v41_autonomy_readiness_gate,
+    print_autonomy_readiness_boundary_system,
+    print_patch_proposal_schema,
+    print_autonomous_change_target_selector,
+    print_generate_sandbox_patch,
+    print_sandbox_patch_diff,
+    print_sandbox_patch_validation,
+    print_sandbox_patch_test_run,
+    print_patch_review_checkpoint,
+    print_source_apply_dry_run,
+    print_pre_v42_autonomous_patch_gate,
+    print_autonomous_patch_proposal_system,
+    print_source_apply_eligibility,
+    print_source_apply_confirmation_policy,
+    print_source_apply_dry_run_v2,
+    print_source_apply_backup_quarantine,
+    print_apply_reviewed_patch,
+    print_post_source_apply_verification,
+    print_source_apply_rollback_preview,
+    print_source_apply_fixture_drill,
+    print_pre_v43_source_apply_gate,
+    print_controlled_source_apply_system,
+    print_source_apply_record_reader,
+    print_source_rollback_eligibility,
+    print_source_rollback_confirmation_policy,
+    print_source_rollback_dry_run_v2,
+    print_rollback_applied_patch,
+    print_post_source_rollback_verification,
+    print_source_rollback_audit_trail,
+    print_source_rollback_fixture_drill,
+    print_pre_v44_source_rollback_gate,
+    print_controlled_source_rollback_system,
+ )
+from self_maintenance import (
+    print_self_maintenance_cycle_schema as print_v45_self_maintenance_cycle_schema,
+    print_self_maintenance_plan as print_v45_self_maintenance_plan,
+    print_self_maintenance_sandbox_cycle as print_v45_self_maintenance_sandbox_cycle,
+    print_maintenance_checkpoint_binder as print_v45_maintenance_checkpoint_binder,
+    print_self_maintenance_apply_dry_run as print_v45_self_maintenance_apply_dry_run,
+    print_self_maintenance_apply_handoff as print_v45_self_maintenance_apply_handoff,
+    print_post_maintenance_verification_summary as print_v45_post_maintenance_verification_summary,
+    print_self_maintenance_fixture_drill as print_v45_self_maintenance_fixture_drill,
+    print_pre_v45_self_maintenance_gate as print_v45_pre_v45_self_maintenance_gate,
+    print_controlled_self_maintenance_loop as print_v45_controlled_self_maintenance_loop,
+    print_maintenance_task_record_schema as print_v46_maintenance_task_record_schema,
+    print_maintenance_task_priority_risk_scoring as print_v46_maintenance_task_priority_risk_scoring,
+    print_maintenance_task_queue_registry as print_v46_maintenance_task_queue_registry,
+    print_maintenance_task_selection_policy as print_v46_maintenance_task_selection_policy,
+    print_maintenance_task_cycle_orchestrator as print_v46_maintenance_task_cycle_orchestrator,
+    print_maintenance_task_checkpoint_binding as print_v46_maintenance_task_checkpoint_binding,
+    print_maintenance_task_source_apply_lockout as print_v46_maintenance_task_source_apply_lockout,
+    print_maintenance_task_dashboard_api_views as print_v46_maintenance_task_dashboard_api_views,
+    print_maintenance_task_fixture_drill as print_v46_maintenance_task_fixture_drill,
+    print_pre_v46_maintenance_queue_gate as print_v46_pre_v46_maintenance_queue_gate,
+    print_controlled_self_maintenance_work_queue as print_v46_controlled_self_maintenance_work_queue,
+    print_autonomy_queue_report_cache as print_v47_autonomy_queue_report_cache,
+    print_maintenance_task_drilldown_view as print_v47_maintenance_task_drilldown_view,
+    print_maintenance_queue_stale_state_warnings as print_v47_maintenance_queue_stale_state_warnings,
+    print_maintenance_runtime_privacy_audit as print_v47_maintenance_runtime_privacy_audit,
+    print_operator_command_palette_report as print_v47_operator_command_palette_report,
+    print_dashboard_api_queue_parity as print_v47_dashboard_api_queue_parity,
+    print_queue_verification_receipt as print_v47_queue_verification_receipt,
+    print_dashboard_accessibility_compact_layout as print_v47_dashboard_accessibility_compact_layout,
+    print_pre_v47_attention_scheduler_gate as print_v47_pre_v47_attention_scheduler_gate,
+    print_controlled_attention_scheduler as print_v47_controlled_attention_scheduler,
+    print_attention_selection_receipt as print_v47_attention_selection_receipt,
+    print_pre_v47_1_attention_receipt_gate as print_v47_pre_v47_1_attention_receipt_gate,
+    print_attention_budget_ledger as print_v48_attention_budget_ledger,
+    print_deferred_task_memory as print_v48_deferred_task_memory,
+    print_blocked_task_handling as print_v48_blocked_task_handling,
+    print_attention_resume_context as print_v48_attention_resume_context,
+    print_attention_dashboard_polish as print_v48_attention_dashboard_polish,
+    print_attention_api_parity_gate as print_v48_attention_api_parity_gate,
+    print_reflection_hooks_read_only as print_v48_reflection_hooks_read_only,
+    print_pre_v48_reflection_gate as print_v48_pre_v48_reflection_gate,
+    print_controlled_reflection_memory_loop as print_v48_controlled_reflection_memory_loop,
+    print_reflection_review_receipts as print_v49_reflection_review_receipts,
+    print_reflection_candidate_deduplication as print_v49_reflection_candidate_deduplication,
+    print_reflection_rejection_memory as print_v49_reflection_rejection_memory,
+    print_reflection_promotion_drafts as print_v49_reflection_promotion_drafts,
+    print_memory_safety_classifier as print_v49_memory_safety_classifier,
+    print_reflection_dashboard_polish as print_v49_reflection_dashboard_polish,
+    print_reflection_api_parity_gate as print_v49_reflection_api_parity_gate,
+    print_reflection_privacy_package_hardening as print_v49_reflection_privacy_package_hardening,
+    print_pre_v49_identity_continuity_gate as print_v49_pre_v49_identity_continuity_gate,
+    print_identity_continuity_layer as print_v49_identity_continuity_layer,
+    print_identity_receipts as print_v50_0_identity_receipts,
+    print_pre_v49_1_identity_receipts_gate as print_v50_0_pre_v49_1_identity_receipts_gate,
+    print_stable_principles_ledger as print_v50_stable_principles_ledger,
+    print_identity_drift_classifier as print_v50_identity_drift_classifier,
+    print_identity_snapshot_comparison as print_v50_identity_snapshot_comparison,
+    print_operator_identity_review_drafts as print_v50_operator_identity_review_drafts,
+    print_identity_dashboard_polish as print_v50_identity_dashboard_polish,
+    print_identity_api_parity_gate as print_v50_identity_api_parity_gate,
+    print_identity_privacy_package_hardening as print_v50_identity_privacy_package_hardening,
+    print_pre_v50_durable_memory_gate as print_v50_pre_v50_durable_memory_gate,
+    print_supervised_durable_memory_promotion as print_v50_supervised_durable_memory_promotion,
+    print_memory_promotion_receipts as print_v51_memory_promotion_receipts,
+    print_memory_promotion_deduplication as print_v51_memory_promotion_deduplication,
+    print_memory_rejection_runtime_ledger as print_v51_memory_rejection_runtime_ledger,
+    print_memory_promotion_confirmation_gate as print_v51_memory_promotion_confirmation_gate,
+    print_memory_removal_drafts as print_v51_memory_removal_drafts,
+    print_memory_dashboard_polish as print_v51_memory_dashboard_polish,
+    print_memory_api_parity_gate as print_v51_memory_api_parity_gate,
+    print_memory_privacy_package_hardening as print_v51_memory_privacy_package_hardening,
+    print_pre_v51_durable_write_gate as print_v51_pre_v51_durable_write_gate,
+    print_controlled_durable_memory_write_path as print_v51_controlled_durable_memory_write_path,
+    print_durable_memory_write_receipts as print_v52_durable_memory_write_receipts,
+    print_memory_store_schema_hardening as print_v52_memory_store_schema_hardening,
+    print_memory_read_path as print_v52_memory_read_path,
+    print_memory_search_filter as print_v52_memory_search_filter,
+    print_memory_correction_drafts as print_v52_memory_correction_drafts,
+    print_memory_removal_confirmation_path as print_v52_memory_removal_confirmation_path,
+    print_memory_store_dashboard_polish as print_v52_memory_store_dashboard_polish,
+    print_memory_store_api_parity_gate as print_v52_memory_store_api_parity_gate,
+    print_pre_v52_recall_gate as print_v52_pre_v52_recall_gate,
+    print_memory_recall_self_context as print_v52_memory_recall_self_context,
+    print_memory_recall_receipts as print_v53_memory_recall_receipts,
+    print_recall_conflict_resolver as print_v53_recall_conflict_resolver,
+    print_stale_memory_handling as print_v53_stale_memory_handling,
+    print_recall_scope_controls as print_v53_recall_scope_controls,
+    print_recall_privacy_classifier as print_v53_recall_privacy_classifier,
+    print_recall_dashboard_polish as print_v53_recall_dashboard_polish,
+    print_recall_api_parity_gate as print_v53_recall_api_parity_gate,
+    print_recall_privacy_package_hardening as print_v53_recall_privacy_package_hardening,
+    print_pre_v53_memory_informed_planning_gate as print_v53_pre_v53_memory_informed_planning_gate,
+    print_memory_informed_planning_loop as print_v53_memory_informed_planning_loop,
+    print_memory_informed_planning_receipts as print_v54_memory_informed_planning_receipts,
+    print_plan_conflict_classifier as print_v54_plan_conflict_classifier,
+    print_plan_revision_drafts as print_v54_plan_revision_drafts,
+    print_planning_scope_controls as print_v54_planning_scope_controls,
+    print_planning_risk_budget as print_v54_planning_risk_budget,
+    print_planning_dashboard_polish as print_v54_planning_dashboard_polish,
+    print_planning_api_parity_gate as print_v54_planning_api_parity_gate,
+    print_planning_privacy_package_hardening as print_v54_planning_privacy_package_hardening,
+    print_pre_v54_action_planning_gate as print_v54_pre_v54_action_planning_gate,
+    print_supervised_action_planning_loop as print_v54_supervised_action_planning_loop,
+    print_action_plan_receipts as print_v55_action_plan_receipts,
+    print_action_step_classifier as print_v55_action_step_classifier,
+    print_action_dependency_graph as print_v55_action_dependency_graph,
+    print_action_risk_budget as print_v55_action_risk_budget,
+    print_action_rehearsal_dry_run_preview as print_v55_action_rehearsal_dry_run_preview,
+    print_action_dashboard_polish as print_v55_action_dashboard_polish,
+    print_action_api_parity_gate as print_v55_action_api_parity_gate,
+    print_action_privacy_package_hardening as print_v55_action_privacy_package_hardening,
+    print_pre_v55_controlled_execution_gate as print_v55_pre_v55_controlled_execution_gate,
+    print_controlled_action_execution_preview as print_v55_controlled_action_execution_preview,
+    print_execution_preview_receipts as print_v56_execution_preview_receipts,
+    print_execution_step_permission_classifier as print_v56_execution_step_permission_classifier,
+    print_read_only_command_allowlist as print_v56_read_only_command_allowlist,
+    print_execution_sandbox_evidence_binder as print_v56_execution_sandbox_evidence_binder,
+    print_execution_result_receipts as print_v56_execution_result_receipts,
+    print_execution_dashboard_polish as print_v56_execution_dashboard_polish,
+    print_execution_api_parity_gate as print_v56_execution_api_parity_gate,
+    print_execution_privacy_package_hardening as print_v56_execution_privacy_package_hardening,
+    print_pre_v56_read_only_execution_gate as print_v56_pre_v56_read_only_execution_gate,
+    print_controlled_read_only_action_execution as print_v56_controlled_read_only_action_execution,
+    print_read_only_execution_receipts as print_v57_read_only_execution_receipts,
+    print_expanded_diagnostic_allowlist as print_v57_expanded_diagnostic_allowlist,
+    print_read_only_output_classifier as print_v57_read_only_output_classifier,
+    print_diagnostic_evidence_binder as print_v57_diagnostic_evidence_binder,
+    print_diagnostic_result_summaries as print_v57_diagnostic_result_summaries,
+    print_read_only_execution_dashboard_polish as print_v57_read_only_execution_dashboard_polish,
+    print_read_only_execution_api_parity_gate as print_v57_read_only_execution_api_parity_gate,
+    print_read_only_execution_privacy_package_hardening as print_v57_read_only_execution_privacy_package_hardening,
+    print_pre_v57_evidence_gathering_gate as print_v57_pre_v57_evidence_gathering_gate,
+    print_evidence_gathering_maintenance_loop as print_v57_evidence_gathering_maintenance_loop,
+    print_evidence_collection_receipts as print_v58_evidence_collection_receipts,
+    print_diagnostic_issue_classifier as print_v58_diagnostic_issue_classifier,
+    print_evidence_conflict_staleness_resolver as print_v58_evidence_conflict_staleness_resolver,
+    print_evidence_to_plan_update_drafts as print_v58_evidence_to_plan_update_drafts,
+    print_diagnostic_coverage_map as print_v58_diagnostic_coverage_map,
+    print_evidence_dashboard_polish as print_v58_evidence_dashboard_polish,
+    print_evidence_api_parity_gate as print_v58_evidence_api_parity_gate,
+    print_evidence_privacy_package_hardening as print_v58_evidence_privacy_package_hardening,
+    print_pre_v58_patch_proposal_gate as print_v58_pre_v58_patch_proposal_gate,
+    print_evidence_grounded_patch_proposal_loop as print_v58_evidence_grounded_patch_proposal_loop,
+    print_patch_proposal_receipts as print_v59_patch_proposal_receipts,
+    print_patch_scope_classifier as print_v59_patch_scope_classifier,
+    print_patch_risk_budget as print_v59_patch_risk_budget,
+    print_patch_diff_preview_drafts as print_v59_patch_diff_preview_drafts,
+    print_patch_verification_plan as print_v59_patch_verification_plan,
+    print_patch_dashboard_polish as print_v59_patch_dashboard_polish,
+    print_patch_api_parity_gate as print_v59_patch_api_parity_gate,
+    print_patch_privacy_package_hardening as print_v59_patch_privacy_package_hardening,
+    print_pre_v59_sandbox_patch_execution_gate as print_v59_pre_v59_sandbox_patch_execution_gate,
+    print_controlled_sandbox_patch_execution as print_v59_controlled_sandbox_patch_execution,
+    print_sandbox_execution_receipts as print_v60_sandbox_execution_receipts,
+    print_sandbox_verification_matrix as print_v60_sandbox_verification_matrix,
+    print_sandbox_drift_detector as print_v60_sandbox_drift_detector,
+    print_sandbox_rollback_rehearsal as print_v60_sandbox_rollback_rehearsal,
+    print_sandbox_apply_candidate_drafts as print_v60_sandbox_apply_candidate_drafts,
+    print_sandbox_dashboard_polish as print_v60_sandbox_dashboard_polish,
+    print_sandbox_api_parity_gate as print_v60_sandbox_api_parity_gate,
+    print_sandbox_privacy_package_hardening as print_v60_sandbox_privacy_package_hardening,
+    print_pre_v60_source_apply_handoff_gate as print_v60_pre_v60_source_apply_handoff_gate,
+    print_controlled_sandbox_source_apply_handoff as print_v60_controlled_sandbox_source_apply_handoff,
+    print_source_apply_handoff_receipts as print_v61_source_apply_handoff_receipts,
+    print_source_baseline_drift_resolver as print_v61_source_baseline_drift_resolver,
+    print_reviewed_artifact_set_binder as print_v61_reviewed_artifact_set_binder,
+    print_source_apply_handoff_eligibility_classifier as print_v61_source_apply_handoff_eligibility_classifier,
+    print_source_apply_dry_run_bridge as print_v61_source_apply_dry_run_bridge,
+    print_source_apply_handoff_dashboard_polish as print_v61_source_apply_handoff_dashboard_polish,
+    print_source_apply_handoff_api_parity_gate as print_v61_source_apply_handoff_api_parity_gate,
+    print_source_apply_handoff_privacy_hardening as print_v61_source_apply_handoff_privacy_hardening,
+    print_pre_v61_controlled_apply_bridge_gate as print_v61_pre_v61_controlled_apply_bridge_gate,
+    print_controlled_source_apply_bridge_refinement as print_v61_controlled_source_apply_bridge_refinement,
+    print_source_apply_transaction_planner as print_v62_source_apply_transaction_planner,
+    print_source_apply_backup_binder as print_v62_source_apply_backup_binder,
+    print_source_apply_transaction_dry_run_verifier as print_v62_source_apply_transaction_dry_run_verifier,
+    print_source_apply_transaction_confirmation_gate as print_v62_source_apply_transaction_confirmation_gate,
+    print_supervised_source_apply_executor as print_v62_supervised_source_apply_executor,
+    print_post_apply_verification_runner as print_v62_post_apply_verification_runner,
+    print_transaction_rollback_rehearsal as print_v62_transaction_rollback_rehearsal,
+    print_source_apply_transaction_dashboard_command_center as print_v62_source_apply_transaction_dashboard_command_center,
+    print_pre_v62_transaction_release_gate as print_v62_pre_v62_transaction_release_gate,
+    print_supervised_source_apply_transaction_layer as print_v62_supervised_source_apply_transaction_layer,
+    print_transaction_receipt_ledger as print_v63_transaction_receipt_ledger,
+    print_transaction_diff_viewer as print_v63_transaction_diff_viewer,
+    print_transaction_conflict_detector as print_v63_transaction_conflict_detector,
+    print_transaction_approval_record_binder as print_v63_transaction_approval_record_binder,
+    print_transaction_package_evidence_exporter as print_v63_transaction_package_evidence_exporter,
+    print_transaction_replay_audit as print_v63_transaction_replay_audit,
+    print_transaction_dashboard_receipt_timeline as print_v63_transaction_dashboard_receipt_timeline,
+    print_transaction_api_search_filtering as print_v63_transaction_api_search_filtering,
+    print_pre_v63_transaction_evidence_gate as print_v63_pre_v63_transaction_evidence_gate,
+    print_durable_transaction_evidence_system as print_v63_durable_transaction_evidence_system,
+    print_transaction_evidence_summarizer as print_v64_transaction_evidence_summarizer,
+    print_improvement_candidate_registry as print_v64_improvement_candidate_registry,
+    print_evidence_based_candidate_scoring as print_v64_evidence_based_candidate_scoring,
+    print_improvement_regression_pattern_detector as print_v64_improvement_regression_pattern_detector,
+    print_improvement_risk_blast_radius_forecaster as print_v64_improvement_risk_blast_radius_forecaster,
+    print_supervised_recommendation_queue as print_v64_supervised_recommendation_queue,
+    print_improvement_intelligence_dashboard as print_v64_improvement_intelligence_dashboard,
+    print_improvement_intelligence_api_cli_access as print_v64_improvement_intelligence_api_cli_access,
+    print_pre_v64_improvement_intelligence_gate as print_v64_pre_v64_improvement_intelligence_gate,
+    print_supervised_improvement_intelligence_layer as print_v64_supervised_improvement_intelligence_layer,
+    print_accepted_recommendation_intake as print_v65_accepted_recommendation_intake,
+    print_proposal_draft_skeleton as print_v65_proposal_draft_skeleton,
+    print_evidence_requirement_mapper as print_v65_evidence_requirement_mapper,
+    print_proposal_risk_contract as print_v65_proposal_risk_contract,
+    print_sandbox_patch_request_compiler as print_v65_sandbox_patch_request_compiler,
+    print_proposal_review_packet_binder as print_v65_proposal_review_packet_binder,
+    print_proposal_dashboard_review_console as print_v65_proposal_dashboard_review_console,
+    print_proposal_api_cli_access as print_v65_proposal_api_cli_access,
+    print_pre_v65_proposal_drafting_gate as print_v65_pre_v65_proposal_drafting_gate,
+    print_recommendation_to_proposal_drafting_layer as print_v65_recommendation_to_proposal_drafting_layer,
+    print_reviewed_proposal_acceptance_gate as print_v66_reviewed_proposal_acceptance_gate,
+    print_sandbox_workspace_plan as print_v66_sandbox_workspace_plan,
+    print_patch_implementation_request as print_v66_patch_implementation_request,
+    print_proposal_sandbox_execution_harness as print_v66_proposal_sandbox_execution_harness,
+    print_proposal_sandbox_verification_matrix as print_v66_proposal_sandbox_verification_matrix,
+    print_proposal_sandbox_evidence_binder as print_v66_proposal_sandbox_evidence_binder,
+    print_proposal_sandbox_failure_triage as print_v66_proposal_sandbox_failure_triage,
+    print_proposal_sandbox_api_cli_access as print_v66_proposal_sandbox_api_cli_access,
+    print_pre_v66_proposal_sandbox_gate as print_v66_pre_v66_proposal_sandbox_gate,
+    print_reviewed_proposal_sandbox_execution_layer as print_v66_reviewed_proposal_sandbox_execution_layer,
+    print_sandbox_promotion_candidate as print_v67_sandbox_promotion_candidate,
+    print_sandbox_source_diff_normalizer as print_v67_sandbox_source_diff_normalizer,
+    print_promotion_safety_boundary_gate as print_v67_promotion_safety_boundary_gate,
+    print_transaction_draft_from_sandbox as print_v67_transaction_draft_from_sandbox,
+    print_promotion_review_packet_binder as print_v67_promotion_review_packet_binder,
+    print_promotion_conflict_staleness_detector as print_v67_promotion_conflict_staleness_detector,
+    print_sandbox_promotion_api_cli_access as print_v67_sandbox_promotion_api_cli_access,
+    print_pre_v67_sandbox_promotion_gate as print_v67_pre_v67_sandbox_promotion_gate,
+    print_sandbox_evidence_promotion_handoff_layer as print_v67_sandbox_evidence_promotion_handoff_layer,
+    print_promotion_packet_intake_gate as print_v68_promotion_packet_intake_gate,
+    print_transaction_plan_materializer as print_v68_transaction_plan_materializer,
+    print_source_baseline_reconciliation as print_v68_source_baseline_reconciliation,
+    print_backup_rollback_preflight_binder as print_v68_backup_rollback_preflight_binder,
+    print_final_transaction_safety_gate as print_v68_final_transaction_safety_gate,
+    print_transaction_ledger_preregistration as print_v68_transaction_ledger_preregistration,
+    print_source_transaction_review_console as print_v68_source_transaction_review_console,
+    print_transaction_review_api_cli_access as print_v68_transaction_review_api_cli_access,
+    print_pre_v68_transaction_integration_gate as print_v68_pre_v68_transaction_integration_gate,
+    print_promotion_to_transaction_integration_layer as print_v68_promotion_to_transaction_integration_layer,
+    print_transaction_execution_eligibility as print_v69_transaction_execution_eligibility,
+    print_exact_confirmation_binder as print_v69_exact_confirmation_binder,
+    print_backup_snapshot_materializer as print_v69_backup_snapshot_materializer,
+    print_transaction_apply_rehearsal as print_v69_transaction_apply_rehearsal,
+    print_operator_confirmed_apply_executor as print_v69_operator_confirmed_apply_executor,
+    print_post_execution_verification as print_v69_post_execution_verification,
+    print_rollback_recommendation_gate as print_v69_rollback_recommendation_gate,
+    print_transaction_execution_dashboard_api_cli as print_v69_transaction_execution_dashboard_api_cli,
+    print_pre_v69_execution_gate as print_v69_pre_v69_execution_gate,
+    print_operator_confirmed_transaction_execution_layer as print_v69_operator_confirmed_transaction_execution_layer,
+    print_execution_result_ledger_finalizer as print_v70_execution_result_ledger_finalizer,
+    print_rollback_decision_resolver as print_v70_rollback_decision_resolver,
+    print_operator_confirmed_rollback_executor as print_v70_operator_confirmed_rollback_executor,
+    print_post_rollback_verification as print_v70_post_rollback_verification,
+    print_release_candidate_finalization_gate as print_v70_release_candidate_finalization_gate,
+    print_source_only_package_certifier as print_v70_source_only_package_certifier,
+    print_release_finalization_dashboard_api_cli as print_v70_release_finalization_dashboard_api_cli,
+    print_recovery_simulation_harness as print_v70_recovery_simulation_harness,
+    print_pre_v70_recovery_finalization_gate as print_v70_pre_v70_recovery_finalization_gate,
+    print_verified_execution_recovery_release_layer as print_v70_verified_execution_recovery_release_layer,
+    print_source_tree_inventory as print_v71_source_tree_inventory,
+    print_module_responsibility_map as print_v71_module_responsibility_map,
+    print_dependency_call_surface_map as print_v71_dependency_call_surface_map,
+    print_module_risk_profile as print_v71_module_risk_profile,
+    print_historical_failure_memory as print_v71_historical_failure_memory,
+    print_verification_command_map as print_v71_verification_command_map,
+    print_improvement_opportunity_detector as print_v71_improvement_opportunity_detector,
+    print_codebase_understanding_dashboard_api_cli as print_v71_codebase_understanding_dashboard_api_cli,
+    print_pre_v71_codebase_understanding_gate as print_v71_pre_v71_codebase_understanding_gate,
+    print_codebase_understanding_map as print_v71_codebase_understanding_map,
+    print_patch_goal_intake_classifier as print_v72_patch_goal_intake_classifier,
+    print_relevant_file_context_selector as print_v72_relevant_file_context_selector,
+    print_historical_failure_context_binder as print_v72_historical_failure_context_binder,
+    print_risk_aware_context_budgeter as print_v72_risk_aware_context_budgeter,
+    print_verification_requirement_compiler as print_v72_verification_requirement_compiler,
+    print_patch_prompt_context_packet_builder as print_v72_patch_prompt_context_packet_builder,
+    print_context_completeness_reviewer as print_v72_context_completeness_reviewer,
+    print_patch_context_dashboard_api_cli as print_v72_patch_context_dashboard_api_cli,
+    print_pre_v72_patch_context_gate as print_v72_pre_v72_patch_context_gate,
+    print_patch_generation_context_builder as print_v72_patch_generation_context_builder,
+    print_patch_intent_normalizer as print_v73_patch_intent_normalizer,
+    print_patch_scope_contract_builder as print_v73_patch_scope_contract_builder,
+    print_patch_prompt_composer as print_v73_patch_prompt_composer,
+    print_patch_draft_output_schema as print_v73_patch_draft_output_schema,
+    print_patch_draft_safety_reviewer as print_v73_patch_draft_safety_reviewer,
+    print_patch_draft_evidence_binder as print_v73_patch_draft_evidence_binder,
+    print_patch_draft_dashboard_api_cli as print_v73_patch_draft_dashboard_api_cli,
+    print_local_model_handoff_stub as print_v73_local_model_handoff_stub,
+    print_pre_v73_patch_draft_gate as print_v73_pre_v73_patch_draft_gate,
+    print_supervised_patch_draft_composer as print_v73_supervised_patch_draft_composer,
+    print_patch_review_intake_parser as print_v74_patch_review_intake_parser,
+    print_patch_review_diff_boundary_extractor as print_v74_patch_review_diff_boundary_extractor,
+    print_patch_review_scope_contract_validator as print_v74_patch_review_scope_contract_validator,
+    print_patch_review_safety_boundary_validator as print_v74_patch_review_safety_boundary_validator,
+    print_documentation_update_validator as print_v74_documentation_update_validator,
+    print_verification_plan_validator as print_v74_verification_plan_validator,
+    print_patch_risk_scorer as print_v74_patch_risk_scorer,
+    print_patch_review_report_builder as print_v74_patch_review_report_builder,
+    print_patch_review_dashboard_api_cli as print_v74_patch_review_dashboard_api_cli,
+    print_pre_v74_patch_review_gate as print_v74_pre_v74_patch_review_gate,
+    print_patch_draft_review_diff_validation_layer as print_v74_patch_draft_review_diff_validation_layer,
+    print_patch_trial_intake_binder as print_v75_patch_trial_intake_binder,
+    print_disposable_workspace_builder as print_v75_disposable_workspace_builder,
+    print_patch_draft_materializer as print_v75_patch_draft_materializer,
+    print_sandbox_verification_runner as print_v75_sandbox_verification_runner,
+    print_sandbox_evidence_collector as print_v75_sandbox_evidence_collector,
+    print_sandbox_escape_mutation_guard as print_v75_sandbox_escape_mutation_guard,
+    print_patch_trial_dashboard_api_cli as print_v75_patch_trial_dashboard_api_cli,
+    print_patch_trial_cleanup_retention as print_v75_patch_trial_cleanup_retention,
+    print_pre_v75_sandbox_trial_gate as print_v75_pre_v75_sandbox_trial_gate,
+    print_sandbox_patch_trial_runner as print_v75_sandbox_patch_trial_runner,
+    print_patch_evidence_intake_reader as print_v76_patch_evidence_intake_reader,
+    print_trial_integrity_validator as print_v76_trial_integrity_validator,
+    print_verification_evidence_scorer as print_v76_verification_evidence_scorer,
+    print_scope_documentation_evidence_reviewer as print_v76_scope_documentation_evidence_reviewer,
+    print_risk_acceptance_classifier as print_v76_risk_acceptance_classifier,
+    print_promotion_readiness_packet_builder as print_v76_promotion_readiness_packet_builder,
+    print_patch_evidence_dashboard_api_cli as print_v76_patch_evidence_dashboard_api_cli,
+    print_recommendation_archive_comparison as print_v76_recommendation_archive_comparison,
+    print_pre_v76_evidence_review_gate as print_v76_pre_v76_evidence_review_gate,
+    print_sandbox_evidence_review_recommendation_layer as print_v76_sandbox_evidence_review_recommendation_layer,
+    print_patch_approval_intake_contract as print_v77_patch_approval_intake_contract,
+    print_recommendation_approval_binder as print_v77_recommendation_approval_binder,
+    print_live_source_snapshot_builder as print_v77_live_source_snapshot_builder,
+    print_approved_patch_materializer as print_v77_approved_patch_materializer,
+    print_post_apply_verification_runner as print_v77_post_apply_verification_runner,
+    print_automatic_rollback_executor as print_v77_automatic_rollback_executor,
+    print_application_evidence_recorder as print_v77_application_evidence_recorder,
+    print_patch_application_dashboard_api_cli as print_v77_patch_application_dashboard_api_cli,
+    print_pre_v77_application_gate as print_v77_pre_v77_application_gate,
+    print_operator_approved_patch_application_layer as print_v77_operator_approved_patch_application_layer,
+    print_dirty_tree_preflight_detector as print_v78_dirty_tree_preflight_detector,
+    print_snapshot_completeness_validator as print_v78_snapshot_completeness_validator,
+    print_partial_apply_detector as print_v78_partial_apply_detector,
+    print_rollback_integrity_verifier as print_v78_rollback_integrity_verifier,
+    print_failed_verification_triage as print_v78_failed_verification_triage,
+    print_recovery_recommendation_builder as print_v78_recovery_recommendation_builder,
+    print_application_audit_timeline as print_v78_application_audit_timeline,
+    print_patch_recovery_dashboard_api_cli as print_v78_patch_recovery_dashboard_api_cli,
+    print_pre_v78_recovery_gate as print_v78_pre_v78_recovery_gate,
+    print_verified_application_recovery_rollback_hardening as print_v78_verified_application_recovery_rollback_hardening,
+    print_patch_queue_record_schema as print_v79_patch_queue_record_schema,
+    print_patch_queue_intake_organizer as print_v79_patch_queue_intake_organizer,
+    print_patch_queue_conflict_detector as print_v79_patch_queue_conflict_detector,
+    print_patch_queue_risk_priority_scheduler as print_v79_patch_queue_risk_priority_scheduler,
+    print_patch_queue_stale_evidence_detector as print_v79_patch_queue_stale_evidence_detector,
+    print_patch_queue_serial_trial_plan_builder as print_v79_patch_queue_serial_trial_plan_builder,
+    print_patch_queue_operator_review_packet as print_v79_patch_queue_operator_review_packet,
+    print_patch_queue_dashboard_api_cli as print_v79_patch_queue_dashboard_api_cli,
+    print_pre_v79_queue_gate as print_v79_pre_v79_queue_gate,
+    print_multi_patch_queue_planning_layer as print_v79_multi_patch_queue_planning_layer,
+    print_improvement_opportunity_intake as print_v80_improvement_opportunity_intake,
+    print_improvement_cycle_state_machine as print_v80_improvement_cycle_state_machine,
+    print_pipeline_stage_binder as print_v80_pipeline_stage_binder,
+    print_local_model_invocation_stub as print_v80_local_model_invocation_stub,
+    print_improvement_loop_evidence_recorder as print_v80_improvement_loop_evidence_recorder,
+    print_operator_stop_gate as print_v80_operator_stop_gate,
+    print_improvement_loop_dashboard_api_cli as print_v80_improvement_loop_dashboard_api_cli,
+    print_loop_safety_auditor as print_v80_loop_safety_auditor,
+    print_pre_v80_supervised_loop_gate as print_v80_pre_v80_supervised_loop_gate,
+    print_supervised_local_improvement_loop as print_v80_supervised_local_improvement_loop,
+    print_local_model_adapter_contract as print_v81_local_model_adapter_contract,
+    print_model_capability_profile as print_v81_model_capability_profile,
+    print_prompt_export_invocation_guard as print_v81_prompt_export_invocation_guard,
+    print_proposal_capture_parser as print_v81_proposal_capture_parser,
+    print_proposal_safety_precheck as print_v81_proposal_safety_precheck,
+    print_model_output_provenance_recorder as print_v81_model_output_provenance_recorder,
+    print_proposal_integration_dashboard_api_cli as print_v81_proposal_integration_dashboard_api_cli,
+    print_disabled_by_default_invocation_gate as print_v81_disabled_by_default_invocation_gate,
+    print_pre_v81_model_integration_gate as print_v81_pre_v81_model_integration_gate,
+    print_local_model_patch_proposal_integration as print_v81_local_model_patch_proposal_integration,
+    print_proposal_collection_intake as print_v82_proposal_collection_intake,
+    print_candidate_diff_normalizer as print_v82_candidate_diff_normalizer,
+    print_proposal_quality_heuristic_scorer as print_v82_proposal_quality_heuristic_scorer,
+    print_safety_scope_comparison as print_v82_safety_scope_comparison,
+    print_verification_plan_comparison as print_v82_verification_plan_comparison,
+    print_critique_report_builder as print_v82_critique_report_builder,
+    print_critique_dashboard_api_cli as print_v82_critique_dashboard_api_cli,
+    print_operator_review_bundle_exporter as print_v82_operator_review_bundle_exporter,
+    print_pre_v82_output_critique_gate as print_v82_pre_v82_output_critique_gate,
+    print_local_model_output_comparison_critique as print_v82_local_model_output_comparison_critique,
+    print_candidate_registry_schema as print_v83_candidate_registry_schema,
+    print_candidate_deduplication as print_v83_candidate_deduplication,
+    print_risk_weighted_ranking as print_v83_risk_weighted_ranking,
+    print_conflict_aware_grouping as print_v83_conflict_aware_grouping,
+    print_evidence_completeness_ranker as print_v83_evidence_completeness_ranker,
+    print_ranking_explainer as print_v83_ranking_explainer,
+    print_ranking_dashboard_api_cli as print_v83_ranking_dashboard_api_cli,
+    print_operator_selection_packet as print_v83_operator_selection_packet,
+    print_pre_v83_ranking_gate as print_v83_pre_v83_ranking_gate,
+    print_multi_model_patch_candidate_ranking as print_v83_multi_model_patch_candidate_ranking,
+    print_refinement_goal_binder as print_v84_refinement_goal_binder,
+    print_critique_revision_prompt_builder as print_v84_critique_revision_prompt_builder,
+    print_constrained_revision_scope_builder as print_v84_constrained_revision_scope_builder,
+    print_refinement_safety_reviewer as print_v84_refinement_safety_reviewer,
+    print_refinement_evidence_recorder as print_v84_refinement_evidence_recorder,
+    print_refinement_iteration_limiter as print_v84_refinement_iteration_limiter,
+    print_refinement_dashboard_api_cli as print_v84_refinement_dashboard_api_cli,
+    print_operator_revision_packet as print_v84_operator_revision_packet,
+    print_pre_v84_refinement_gate as print_v84_pre_v84_refinement_gate,
+    print_supervised_patch_candidate_refinement as print_v84_supervised_patch_candidate_refinement,
+    print_suggestion_source_intake as print_v85_suggestion_source_intake,
+    print_suggestion_cycle_state_machine as print_v85_suggestion_cycle_state_machine,
+    print_recurring_suggestion_budgeter as print_v85_recurring_suggestion_budgeter,
+    print_safety_boundary_enforcer as print_v85_safety_boundary_enforcer,
+    print_suggestion_deduplication_memory as print_v85_suggestion_deduplication_memory,
+    print_operator_attention_packet as print_v85_operator_attention_packet,
+    print_suggestion_loop_dashboard_api_cli as print_v85_suggestion_loop_dashboard_api_cli,
+    print_no_autonomous_apply_auditor as print_v85_no_autonomous_apply_auditor,
+    print_pre_v85_suggestion_loop_gate as print_v85_pre_v85_suggestion_loop_gate,
+    print_safe_autonomous_suggestion_loop as print_v85_safe_autonomous_suggestion_loop,
+    print_suggestion_inbox_record_schema as print_v86_suggestion_inbox_record_schema,
+    print_suggestion_intake_normalizer as print_v86_suggestion_intake_normalizer,
+    print_suggestion_deduplication_drift_resolver as print_v86_suggestion_deduplication_drift_resolver,
+    print_operator_triage_state_machine as print_v86_operator_triage_state_machine,
+    print_work_order_draft_builder as print_v86_work_order_draft_builder,
+    print_safety_scope_contract_binder as print_v86_safety_scope_contract_binder,
+    print_pipeline_handoff_planner as print_v86_pipeline_handoff_planner,
+    print_suggestion_inbox_dashboard_api_cli as print_v86_suggestion_inbox_dashboard_api_cli,
+    print_pre_v86_suggestion_inbox_gate as print_v86_pre_v86_suggestion_inbox_gate,
+    print_supervised_suggestion_inbox_work_order_planner as print_v86_supervised_suggestion_inbox_work_order_planner,
 )
+import self_maintenance as sm_v90
 from task_queue import (
     print_task_status,
     print_task_list,
@@ -1140,7 +1706,9 @@ def main() -> None:
     parser.add_argument("--real-apply-rollback-verification", action="store_true", help="Run v22.10 real apply rollback verification preview")
     parser.add_argument("--self-update-ux-polish", action="store_true", help="Run v22.11 self-update UX polish check")
     parser.add_argument("--v23-readiness-gate", action="store_true", help="Run v22.12 v23 readiness gate")
-    parser.add_argument("--controlled-self-maintenance-loop", action="store_true", help="Run v23.0 controlled self-maintenance loop preview")
+    parser.add_argument("--controlled-self-maintenance-loop", action="store_true", help="Run v45.0 controlled self-maintenance loop")
+    parser.add_argument("--controlled-self-maintenance-work-queue", action="store_true", help="Run v46.x controlled self-maintenance work queue")
+    parser.add_argument("--controlled-attention-scheduler", action="store_true", help="Run v47.0 controlled attention scheduler")
 
     parser.add_argument("--self-maintenance-proposal", action="store_true", help="Run v23.1 self-maintenance proposal sandbox")
     parser.add_argument("--build-patch-plan", action="store_true", help="Run v23.2 maintenance patch plan builder")
@@ -1217,6 +1785,673 @@ def main() -> None:
     parser.add_argument("--api-signing-status", action="store_true", help="Run v29.9 API signing status check")
     parser.add_argument("--pre-v30-signing-prep-audit", action="store_true", help="Run v29.10 pre-v30 signing prep audit")
     parser.add_argument("--signed-release-preparation-system", action="store_true", help="Run v30.0 signed release preparation system")
+    parser.add_argument("--signing-api-hardening", action="store_true", help="Run v30.1 signing API hardening audit")
+    parser.add_argument("--canonical-schema-validator", action="store_true", help="Run v30.2 strict canonical schema validator")
+    parser.add_argument("--source-data-sanitizer", action="store_true", help="Run v30.3 source data sanitizer audit")
+    parser.add_argument("--signing-trust-model", action="store_true", help="Run v30.4 signing trust model split")
+    parser.add_argument("--release-signing-tamper-drill", action="store_true", help="Run v30.5 release signing tamper drill")
+    parser.add_argument("--public-key-policy-design", action="store_true", help="Run v30.6 public key policy design")
+    parser.add_argument("--detached-signature-contract", action="store_true", help="Run v30.7 detached signature contract")
+    parser.add_argument("--signature-fixture-verification", action="store_true", help="Run v30.8 signature fixture verification harness")
+    parser.add_argument("--external-signer-workflow", action="store_true", help="Run v30.9 external signer workflow preview")
+    parser.add_argument("--detached-signature-verification-system", action="store_true", help="Run v31.0 detached signature verification system")
+    parser.add_argument("--signature-verification-hardening", action="store_true", help="Run v31.1 signature verification hardening")
+    parser.add_argument("--public-trust-root-config", action="store_true", help="Run v31.2 public trust root config audit")
+    parser.add_argument("--external-signing-payload-export", action="store_true", help="Run v31.3 external signing payload export")
+    parser.add_argument("--signed-fixture-test-suite", action="store_true", help="Run v31.4 signed fixture test suite")
+    parser.add_argument("--release-publish-gate", action="store_true", help="Run v31.5 release publish readiness gate")
+    parser.add_argument("--release-trust-dashboard-polish", action="store_true", help="Run v31.6 release trust dashboard polish audit")
+    parser.add_argument("--api-route-safety-audit", action="store_true", help="Run v31.7 API route safety audit")
+    parser.add_argument("--release-reproducibility-check", action="store_true", help="Run v31.8 release reproducibility check")
+    parser.add_argument("--pre-v32-release-candidate-gate", action="store_true", help="Run v31.9 pre-v32 release candidate gate")
+    parser.add_argument("--signed-release-governance", action="store_true", help="Run v32.0 signed release governance report")
+    parser.add_argument("--governance-report-cleanup", action="store_true", help="Run v32.1 governance report cleanup")
+    parser.add_argument("--release-candidate-workspace", action="store_true", help="Run v32.2 release candidate workspace report")
+    parser.add_argument("--artifact-binding-audit", action="store_true", help="Run v32.3 artifact binding audit v2")
+    parser.add_argument("--surface-consistency-audit", action="store_true", help="Run v32.4 dashboard/API/CLI surface consistency audit")
+    parser.add_argument("--external-signing-handoff", action="store_true", help="Run v32.5 external signing handoff report")
+    parser.add_argument("--signature-intake-validation", action="store_true", help="Run v32.6 signature intake validation")
+    parser.add_argument("--trusted-signer-registry", action="store_true", help="Run v32.7 trusted signer registry viewer")
+    parser.add_argument("--governance-scenario-suite", action="store_true", help="Run v32.8 governance dry-run scenario suite")
+    parser.add_argument("--pre-v33-operations-gate", action="store_true", help="Run v32.9 pre-v33 operations gate")
+    parser.add_argument("--release-operations-console", action="store_true", help="Run v33.0 release operations console")
+    parser.add_argument("--operations-console-cleanup", action="store_true", help="Run v33.1 operations console cleanup")
+    parser.add_argument("--release-candidate-review", action="store_true", help="Run v33.2 release candidate review workflow")
+    parser.add_argument("--signed-artifact-intake", action="store_true", help="Run v33.3 signed artifact intake workflow")
+    parser.add_argument("--trust-root-lifecycle", action="store_true", help="Run v33.4 trust root lifecycle report")
+    parser.add_argument("--publish-decision-explainer", action="store_true", help="Run v33.5 publish decision explainer")
+    parser.add_argument("--operator-action-guardrails", action="store_true", help="Run v33.6 operator action guardrails")
+    parser.add_argument("--unsigned-release-drill", action="store_true", help="Run v33.7 unsigned release drill")
+    parser.add_argument("--signed-fixture-release-drill", action="store_true", help="Run v33.8 signed fixture release drill")
+    parser.add_argument("--pre-v34-operator-workflow-gate", action="store_true", help="Run v33.9 pre-v34 operator workflow gate")
+    parser.add_argument("--release-operator-workflow", action="store_true", help="Run v34.0 release operator workflow")
+    parser.add_argument("--release-candidate-record", action="store_true", help="Run v34.1 release candidate record v2")
+    parser.add_argument("--signed-artifact-intake-v2", action="store_true", help="Run v34.2 signed artifact intake v2")
+    parser.add_argument("--trust-root-management-policy", action="store_true", help="Run v34.3 trust root management policy")
+    parser.add_argument("--trust-root-mutation-guardrails", action="store_true", help="Run v34.4 trust root mutation guardrails")
+    parser.add_argument("--signed-release-publish-decision", action="store_true", help="Run v34.5 signed release publish decision v2")
+    parser.add_argument("--operator-dashboard-action-states", action="store_true", help="Run v34.6 operator dashboard action states")
+    parser.add_argument("--release-workflow-audit-trail", action="store_true", help="Run v34.7 release workflow audit trail viewer")
+    parser.add_argument("--trusted-fixture-workflow", action="store_true", help="Run v34.8 trusted fixture workflow")
+    parser.add_argument("--pre-v35-trusted-candidate-gate", action="store_true", help="Run v34.9 pre-v35 trusted candidate gate")
+    parser.add_argument("--trusted-release-candidate-system", action="store_true", help="Run v35.0 trusted release candidate system")
+    parser.add_argument("--candidate-review-state", action="store_true", help="Run v35.1 candidate review state hardening")
+    parser.add_argument("--publish-approval-policy", action="store_true", help="Run v35.2 publish approval policy")
+    parser.add_argument("--publish-approval-dry-run", action="store_true", help="Run v35.3 publish approval dry-run")
+    parser.add_argument("--publish-approval-record-schema", action="store_true", help="Run v35.4 publish approval record schema")
+    parser.add_argument("--dashboard-approval-state-preview", action="store_true", help="Run v35.5 dashboard approval state preview")
+    parser.add_argument("--approval-route-safety-audit", action="store_true", help="Run v35.6 approval route safety audit")
+    parser.add_argument("--approval-fixture-drill", action="store_true", help="Run v35.7 approval fixture drill")
+    parser.add_argument("--publish-approval-explainer", action="store_true", help="Run v35.8 publish approval explainer")
+    parser.add_argument("--pre-v36-approval-separation-gate", action="store_true", help="Run v35.9 pre-v36 approval separation gate")
+    parser.add_argument("--publish-approval-separation-system", action="store_true", help="Run v36.0 publish approval separation system")
+    parser.add_argument("--publish-approval-record-validator", action="store_true", help="Run v36.1 publish approval record validator")
+    parser.add_argument("--publish-approval-dry-run-v2", action="store_true", help="Run v36.2 publish approval dry-run v2")
+    parser.add_argument("--approval-storage-quarantine", action="store_true", help="Run v36.3 approval storage quarantine")
+    parser.add_argument("--publish-approval-api-preview", action="store_true", help="Run v36.4 publish approval API preview")
+    parser.add_argument("--dashboard-approval-workflow-preview", action="store_true", help="Run v36.5 dashboard approval workflow preview")
+    parser.add_argument("--approval-confirmation-policy", action="store_true", help="Run v36.6 approval confirmation policy")
+    parser.add_argument("--approval-record-fixture-drill", action="store_true", help="Run v36.7 approval record fixture drill")
+    parser.add_argument("--approval-audit-trail", action="store_true", help="Run v36.8 approval audit trail viewer")
+    parser.add_argument("--pre-v37-approval-records-gate", action="store_true", help="Run v36.9 pre-v37 approval records gate")
+    parser.add_argument("--controlled-publish-approval-system", action="store_true", help="Run v37.0 controlled publish approval system")
+    parser.add_argument("--publish-approval-write-preflight", action="store_true", help="Run v37.1 publish approval write preflight")
+    parser.add_argument("--publish-approval-write-schema-lock", action="store_true", help="Run v37.2 publish approval write schema lock")
+    parser.add_argument("--publish-approval-confirmation-validator", action="store_true", help="Run v37.3 publish approval confirmation validator")
+    parser.add_argument("--post-only-approval-write-route-design", action="store_true", help="Run v37.4 POST-only approval write route design")
+    parser.add_argument("--approval-write-dashboard-preview", action="store_true", help="Run v37.5 approval write dashboard preview")
+    parser.add_argument("--write-publish-approval", action="store_true", help="Run v37.6 guarded publish approval write; dry-run unless --approve-publish-approval-write is used")
+    parser.add_argument("--approve-publish-approval-write", action="store_true", help="Allow v37.6 publish approval write when eligibility and confirmation pass")
+    parser.add_argument("--approval-write-rollback-safety-audit", action="store_true", help="Run v37.7 approval write rollback/apply pointer safety audit")
+    parser.add_argument("--approval-write-fixture-drill", action="store_true", help="Run v37.8 approval write fixture drill")
+    parser.add_argument("--pre-v38-approval-write-gate", action="store_true", help="Run v37.9 pre-v38 approval write gate")
+    parser.add_argument("--controlled-publish-approval-write-system", action="store_true", help="Run v38.0 controlled publish approval write system")
+    parser.add_argument("--publish-approval-record-reader", action="store_true", help="Run v38.1 publish approval record reader")
+    parser.add_argument("--approval-artifact-revalidation", action="store_true", help="Run v38.2 approval artifact revalidation")
+    parser.add_argument("--approval-record-conflict-detector", action="store_true", help="Run v38.3 approval record conflict detector")
+    parser.add_argument("--approval-status-viewer", action="store_true", help="Run v38.4 approval status dashboard/API viewer")
+    parser.add_argument("--approval-revocation-policy", action="store_true", help="Run v38.5 approval revocation policy")
+    parser.add_argument("--approval-revocation-dry-run", action="store_true", help="Run v38.6 approval revocation dry-run")
+    parser.add_argument("--approval-record-id", help="Approval record ID or hash for lifecycle/revocation checks")
+    parser.add_argument("--approval-lifecycle-audit", action="store_true", help="Run v38.7 approval lifecycle audit viewer")
+    parser.add_argument("--approval-lifecycle-fixture-drill", action="store_true", help="Run v38.8 approval lifecycle fixture drill")
+    parser.add_argument("--pre-v39-approval-lifecycle-gate", action="store_true", help="Run v38.9 pre-v39 approval lifecycle gate")
+    parser.add_argument("--publish-approval-lifecycle-system", action="store_true", help="Run v39.0 publish approval lifecycle system")
+    parser.add_argument("--approval-revocation-record-schema", action="store_true", help="Run v39.1 approval revocation record schema")
+    parser.add_argument("--approval-revocation-confirmation-validator", action="store_true", help="Run v39.2 approval revocation confirmation validator")
+    parser.add_argument("--approval-revocation-write-preflight", action="store_true", help="Run v39.3 approval revocation write preflight")
+    parser.add_argument("--revocation-storage-quarantine", action="store_true", help="Run v39.4 revocation storage quarantine")
+    parser.add_argument("--post-only-revocation-route-design", action="store_true", help="Run v39.5 POST-only revocation route design")
+    parser.add_argument("--write-approval-revocation", action="store_true", help="Run v39.6 guarded approval revocation write; dry-run unless --approve-publish-approval-revocation is used")
+    parser.add_argument("--approve-publish-approval-revocation", action="store_true", help="Allow v39.6 publish approval revocation write when eligibility and confirmation pass")
+    parser.add_argument("--dashboard-revocation-preview", action="store_true", help="Run v39.7 dashboard revocation preview")
+    parser.add_argument("--approval-revocation-fixture-drill", action="store_true", help="Run v39.8 approval revocation fixture drill")
+    parser.add_argument("--pre-v40-revocation-gate", action="store_true", help="Run v39.9 pre-v40 revocation gate")
+    parser.add_argument("--controlled-publish-approval-revocation-system", action="store_true", help="Run v40.0 controlled publish approval revocation system")
+    parser.add_argument("--autonomy-capability-inventory", action="store_true", help="Run v40.1 autonomy capability inventory")
+    parser.add_argument("--autonomous-task-proposal-schema", action="store_true", help="Run v40.2 autonomous task proposal schema")
+    parser.add_argument("--autonomous-dry-run-plan", action="store_true", help="Run v40.3 autonomous dry-run planner")
+    parser.add_argument("--autonomy-action-policy-engine", action="store_true", help="Run v40.4 autonomy action policy engine")
+    parser.add_argument("--autonomous-patch-sandbox", action="store_true", help="Run v40.5 autonomous patch sandbox report")
+    parser.add_argument("--autonomous-patch-risk-classifier", action="store_true", help="Run v40.6 autonomous patch risk classifier")
+    parser.add_argument("--autonomous-test-selection", action="store_true", help="Run v40.7 autonomous test selection")
+    parser.add_argument("--autonomy-human-checkpoint", action="store_true", help="Run v40.8 autonomy human checkpoint report")
+    parser.add_argument("--pre-v41-autonomy-readiness-gate", action="store_true", help="Run v40.9 pre-v41 autonomy readiness gate")
+    parser.add_argument("--autonomy-readiness-boundary-system", action="store_true", help="Run v41.0 autonomy readiness boundary system")
+    parser.add_argument("--patch-proposal-schema", action="store_true", help="Run v41.1 patch proposal schema")
+    parser.add_argument("--autonomous-change-target-selector", action="store_true", help="Run v41.2 autonomous change target selector")
+    parser.add_argument("--generate-sandbox-patch", action="store_true", help="Run v41.3 sandbox patch generator")
+    parser.add_argument("--sandbox-patch-diff", action="store_true", help="Run v41.4 sandbox patch diff viewer")
+    parser.add_argument("--sandbox-patch-validation", action="store_true", help="Run v41.5 sandbox patch validation")
+    parser.add_argument("--sandbox-patch-test-run", action="store_true", help="Run v41.6 sandbox patch test run")
+    parser.add_argument("--patch-review-checkpoint", action="store_true", help="Run v41.7 patch review checkpoint")
+    parser.add_argument("--source-apply-dry-run", action="store_true", help="Run v41.8 controlled source apply dry-run")
+    parser.add_argument("--pre-v42-autonomous-patch-gate", action="store_true", help="Run v41.9 pre-v42 autonomous patch gate")
+    parser.add_argument("--autonomous-patch-proposal-system", action="store_true", help="Run v42.0 autonomous patch proposal system")
+    parser.add_argument("--source-apply-eligibility", action="store_true", help="Run v42.1 source apply eligibility report")
+    parser.add_argument("--source-apply-confirmation-policy", action="store_true", help="Run v42.2 source apply confirmation policy")
+    parser.add_argument("--source-apply-dry-run-v2", action="store_true", help="Run v42.3 exact source apply dry-run")
+    parser.add_argument("--source-apply-backup-quarantine", action="store_true", help="Run v42.4 source apply backup quarantine")
+    parser.add_argument("--apply-reviewed-patch", action="store_true", help="Run v42.5 guarded reviewed patch apply; dry-run unless --approve-source-apply is provided")
+    parser.add_argument("--approve-source-apply", action="store_true", help="Allow v42.5 guarded source apply when eligibility and confirmation pass")
+    parser.add_argument("--post-source-apply-verification", action="store_true", help="Run v42.6 post source apply verification")
+    parser.add_argument("--source-apply-rollback-preview", action="store_true", help="Run v42.7 source apply rollback preview")
+    parser.add_argument("--source-apply-fixture-drill", action="store_true", help="Run v42.8 source apply fixture drill")
+    parser.add_argument("--pre-v43-source-apply-gate", action="store_true", help="Run v42.9 pre-v43 source apply gate")
+    parser.add_argument("--controlled-source-apply-system", action="store_true", help="Run v43.0 controlled source apply system")
+    parser.add_argument("--source-apply-record-reader", action="store_true", help="Run v43.1 source apply record reader")
+    parser.add_argument("--source-rollback-eligibility", action="store_true", help="Run v43.2 source rollback eligibility report")
+    parser.add_argument("--source-rollback-confirmation-policy", action="store_true", help="Run v43.3 source rollback confirmation policy")
+    parser.add_argument("--source-rollback-dry-run-v2", action="store_true", help="Run v43.4 exact source rollback dry-run")
+    parser.add_argument("--rollback-applied-patch", action="store_true", help="Run v43.5 guarded applied patch rollback; dry-run unless --approve-source-rollback is provided")
+    parser.add_argument("--approve-source-rollback", action="store_true", help="Allow v43.5 guarded source rollback when eligibility and confirmation pass")
+    parser.add_argument("--post-source-rollback-verification", action="store_true", help="Run v43.6 post source rollback verification")
+    parser.add_argument("--source-rollback-audit-trail", action="store_true", help="Run v43.7 source rollback audit trail")
+    parser.add_argument("--source-rollback-fixture-drill", action="store_true", help="Run v43.8 source rollback fixture drill")
+    parser.add_argument("--pre-v44-source-rollback-gate", action="store_true", help="Run v43.9 pre-v44 source rollback gate")
+    parser.add_argument("--controlled-source-rollback-system", action="store_true", help="Run v44.0 controlled source rollback system")
+    parser.add_argument("--self-maintenance-cycle-schema", action="store_true", help="Run v44.1 self-maintenance cycle schema")
+    parser.add_argument("--self-maintenance-plan", action="store_true", help="Run v44.2 self-maintenance planner")
+    parser.add_argument("--self-maintenance-sandbox-cycle", action="store_true", help="Run v44.3 self-maintenance sandbox cycle")
+    parser.add_argument("--maintenance-checkpoint-binder", action="store_true", help="Run v44.4 maintenance checkpoint binder")
+    parser.add_argument("--self-maintenance-apply-dry-run", action="store_true", help="Run v44.5 self-maintenance apply dry-run")
+    parser.add_argument("--self-maintenance-apply-handoff", action="store_true", help="Run v44.6 self-maintenance apply handoff")
+    parser.add_argument("--post-maintenance-verification-summary", action="store_true", help="Run v44.7 post-maintenance verification summary")
+    parser.add_argument("--self-maintenance-fixture-drill", action="store_true", help="Run v44.8 self-maintenance fixture drill")
+    parser.add_argument("--pre-v45-self-maintenance-gate", action="store_true", help="Run v44.9 pre-v45 self-maintenance gate")
+    parser.add_argument("--maintenance-task-record-schema", action="store_true", help="Run v45.1 maintenance task record schema")
+    parser.add_argument("--maintenance-task-priority-risk-scoring", action="store_true", help="Run v45.2 maintenance task priority/risk scoring")
+    parser.add_argument("--maintenance-task-queue-registry", action="store_true", help="Run v45.3 maintenance task queue registry")
+    parser.add_argument("--maintenance-task-selection-policy", action="store_true", help="Run v45.4 maintenance task selection policy")
+    parser.add_argument("--maintenance-task-cycle-orchestrator", action="store_true", help="Run v45.5 maintenance task cycle orchestrator")
+    parser.add_argument("--maintenance-task-checkpoint-binding", action="store_true", help="Run v45.6 maintenance task checkpoint binding")
+    parser.add_argument("--maintenance-task-source-apply-lockout", action="store_true", help="Run v45.7 maintenance task source apply lockout")
+    parser.add_argument("--maintenance-task-dashboard-api-views", action="store_true", help="Run v45.8 maintenance task dashboard/API views")
+    parser.add_argument("--maintenance-task-fixture-drill", action="store_true", help="Run v45.9 maintenance task fixture drill")
+    parser.add_argument("--pre-v46-maintenance-queue-gate", action="store_true", help="Run v45.10 pre-v46 maintenance queue gate")
+    parser.add_argument("--autonomy-queue-report-cache", action="store_true", help="Run v46.2 autonomy/queue report cache")
+    parser.add_argument("--maintenance-task-drilldown", action="store_true", help="Run v46.3 maintenance task drill-down view")
+    parser.add_argument("--queue-stale-state-warnings", action="store_true", help="Run v46.4 maintenance queue stale-state warnings")
+    parser.add_argument("--maintenance-runtime-privacy-audit", action="store_true", help="Run v46.5 runtime privacy audit hardening")
+    parser.add_argument("--operator-command-palette", action="store_true", help="Run v46.6 operator command palette/filter report")
+    parser.add_argument("--dashboard-api-queue-parity", action="store_true", help="Run v46.7 dashboard/API queue parity report")
+    parser.add_argument("--queue-verification-receipt", action="store_true", help="Run v46.8 queue verification receipt")
+    parser.add_argument("--dashboard-accessibility-compact-layout", action="store_true", help="Run v46.9 dashboard accessibility and compact layout audit")
+    parser.add_argument("--pre-v47-attention-scheduler-gate", action="store_true", help="Run v46.10 pre-v47 attention scheduler gate")
+    parser.add_argument("--attention-selection-receipt", action="store_true", help="Run v47.1 attention selection receipt and explainability report")
+    parser.add_argument("--pre-v47-1-attention-receipt-gate", action="store_true", help="Run v47.1 attention receipt explainability gate")
+    parser.add_argument("--attention-budget-ledger", action="store_true", help="Run v47.2 attention budget ledger")
+    parser.add_argument("--deferred-task-memory", action="store_true", help="Run v47.3 deferred task memory preview")
+    parser.add_argument("--blocked-task-handling", action="store_true", help="Run v47.4 blocked task handling report")
+    parser.add_argument("--attention-resume-context", action="store_true", help="Run v47.5 attention resume context")
+    parser.add_argument("--attention-dashboard-polish", action="store_true", help="Run v47.6 attention dashboard polish audit")
+    parser.add_argument("--attention-api-parity-gate", action="store_true", help="Run v47.7 attention/API parity gate")
+    parser.add_argument("--reflection-hooks-read-only", action="store_true", help="Run v47.8 read-only reflection hooks")
+    parser.add_argument("--pre-v48-reflection-gate", action="store_true", help="Run v47.9 pre-v48 reflection gate")
+    parser.add_argument("--reflection-memory-loop", action="store_true", help="Run v48.0 controlled reflection memory loop")
+    parser.add_argument("--reflection-review-receipts", action="store_true", help="Run v48.1 reflection receipts and review console")
+    parser.add_argument("--reflection-candidate-deduplication", action="store_true", help="Run v48.2 reflection candidate deduplication")
+    parser.add_argument("--reflection-rejection-memory", action="store_true", help="Run v48.3 runtime-only reflection rejection memory")
+    parser.add_argument("--reflection-promotion-drafts", action="store_true", help="Run v48.4 reflection promotion drafts")
+    parser.add_argument("--memory-safety-classifier", action="store_true", help="Run v48.5 memory safety classifier")
+    parser.add_argument("--reflection-dashboard-polish", action="store_true", help="Run v48.6 reflection dashboard polish audit")
+    parser.add_argument("--reflection-api-parity-gate", action="store_true", help="Run v48.7 reflection/API parity gate")
+    parser.add_argument("--reflection-privacy-package-hardening", action="store_true", help="Run v48.8 reflection privacy package hardening")
+    parser.add_argument("--pre-v49-identity-continuity-gate", action="store_true", help="Run v48.9 pre-v49 identity continuity gate")
+    parser.add_argument("--identity-continuity-layer", action="store_true", help="Run v49.0 identity continuity layer")
+    parser.add_argument("--identity-receipts", action="store_true", help="Run v49.1 identity receipts and drift explainability")
+    parser.add_argument("--pre-v49-1-identity-receipts-gate", action="store_true", help="Run v50.0 identity receipt explainability gate")
+    parser.add_argument("--stable-principles-ledger", action="store_true", help="Run v49.2 stable principles ledger")
+    parser.add_argument("--identity-drift-classifier", action="store_true", help="Run v49.3 identity drift classifier")
+    parser.add_argument("--identity-snapshot-comparison", action="store_true", help="Run v49.4 identity snapshot comparison")
+    parser.add_argument("--operator-identity-review-drafts", action="store_true", help="Run v49.5 operator identity review drafts")
+    parser.add_argument("--identity-dashboard-polish", action="store_true", help="Run v49.6 identity dashboard polish audit")
+    parser.add_argument("--identity-api-parity-gate", action="store_true", help="Run v49.7 identity/API parity gate")
+    parser.add_argument("--identity-privacy-package-hardening", action="store_true", help="Run v49.8 identity privacy package hardening")
+    parser.add_argument("--pre-v50-durable-memory-gate", action="store_true", help="Run v49.9 pre-v50 durable memory gate")
+    parser.add_argument("--durable-memory-promotion", action="store_true", help="Run v50.0 supervised durable-memory promotion queue")
+    parser.add_argument("--memory-promotion-receipts", action="store_true", help="Run v50.1 memory promotion receipts and review console")
+    parser.add_argument("--memory-promotion-deduplication", action="store_true", help="Run v50.2 memory promotion deduplication")
+    parser.add_argument("--memory-rejection-runtime-ledger", action="store_true", help="Run v50.3 runtime-only memory rejection ledger")
+    parser.add_argument("--memory-promotion-confirmation-gate", action="store_true", help="Run v50.4 memory promotion confirmation gate")
+    parser.add_argument("--memory-removal-drafts", action="store_true", help="Run v50.5 memory removal drafts")
+    parser.add_argument("--memory-dashboard-polish", action="store_true", help="Run v50.6 memory dashboard polish audit")
+    parser.add_argument("--memory-api-parity-gate", action="store_true", help="Run v50.7 memory/API parity gate")
+    parser.add_argument("--memory-privacy-package-hardening", action="store_true", help="Run v50.8 memory privacy and package hardening")
+    parser.add_argument("--pre-v51-durable-write-gate", action="store_true", help="Run v50.9 pre-v51 durable write gate")
+    parser.add_argument("--durable-memory-write", action="store_true", help="Run v51.0 controlled durable memory write path; preview unless execute and exact confirmation are supplied")
+    parser.add_argument("--memory-promotion-id", default="", help="Promotion id for memory confirmation/write checks")
+    parser.add_argument("--memory-confirm-phrase", default="", help="Exact durable-memory confirmation phrase")
+    parser.add_argument("--execute-durable-memory-write", action="store_true", help="Execute v51.0 durable-memory write only with exact confirmation")
+    parser.add_argument("--durable-memory-write-receipts", action="store_true", help="Run v51.1 durable-memory write receipts and audit console")
+    parser.add_argument("--memory-store-schema-hardening", action="store_true", help="Run v51.2 memory store schema hardening")
+    parser.add_argument("--memory-read-path", action="store_true", help="Run v51.3 read-only memory read path")
+    parser.add_argument("--memory-search-filter", action="store_true", help="Run v51.4 memory search and filter")
+    parser.add_argument("--memory-correction-drafts", action="store_true", help="Run v51.5 memory correction drafts")
+    parser.add_argument("--memory-removal-confirmation-path", action="store_true", help="Run v51.6 memory removal confirmation path; preview unless execute and exact confirmation are supplied")
+    parser.add_argument("--memory-store-dashboard-polish", action="store_true", help="Run v51.7 memory dashboard polish gate")
+    parser.add_argument("--memory-store-api-parity-gate", action="store_true", help="Run v51.8 memory/API parity gate")
+    parser.add_argument("--pre-v52-recall-gate", action="store_true", help="Run v51.9 pre-v52 memory recall gate")
+    parser.add_argument("--memory-recall-self-context", action="store_true", help="Run v52.0 memory recall and self-context retrieval")
+    parser.add_argument("--memory-recall-receipts", action="store_true", help="Run v52.1 recall receipts and evidence console")
+    parser.add_argument("--recall-conflict-resolver", action="store_true", help="Run v52.2 recall conflict resolver")
+    parser.add_argument("--stale-memory-handling", action="store_true", help="Run v52.3 stale memory handling")
+    parser.add_argument("--recall-scope-controls", action="store_true", help="Run v52.4 recall scope controls")
+    parser.add_argument("--recall-privacy-classifier", action="store_true", help="Run v52.5 recall privacy classifier")
+    parser.add_argument("--recall-dashboard-polish", action="store_true", help="Run v52.6 recall dashboard polish audit")
+    parser.add_argument("--recall-api-parity-gate", action="store_true", help="Run v52.7 recall/API parity gate")
+    parser.add_argument("--recall-privacy-package-hardening", action="store_true", help="Run v52.8 recall privacy and package hardening")
+    parser.add_argument("--pre-v53-memory-informed-planning-gate", action="store_true", help="Run v52.9 pre-v53 memory-informed planning gate")
+    parser.add_argument("--memory-informed-planning", action="store_true", help="Run v53.0 memory-informed planning loop")
+    parser.add_argument("--memory-informed-planning-receipts", action="store_true", help="Run v53.1 planning receipts and evidence console")
+    parser.add_argument("--plan-conflict-classifier", action="store_true", help="Run v53.2 plan conflict classifier")
+    parser.add_argument("--plan-revision-drafts", action="store_true", help="Run v53.3 plan revision drafts")
+    parser.add_argument("--planning-scope-controls", action="store_true", help="Run v53.4 planning scope controls")
+    parser.add_argument("--planning-risk-budget", action="store_true", help="Run v53.5 planning risk budget")
+    parser.add_argument("--planning-dashboard-polish", action="store_true", help="Run v53.6 planning dashboard polish audit")
+    parser.add_argument("--planning-api-parity-gate", action="store_true", help="Run v53.7 planning/API parity gate")
+    parser.add_argument("--planning-privacy-package-hardening", action="store_true", help="Run v53.8 planning privacy and package hardening")
+    parser.add_argument("--pre-v54-action-planning-gate", action="store_true", help="Run v53.9 pre-v54 action planning gate")
+    parser.add_argument("--supervised-action-planning", action="store_true", help="Run v54.0 supervised action planning loop")
+    parser.add_argument("--action-plan-receipts", action="store_true", help="Run v54.1 action plan receipts and evidence console")
+    parser.add_argument("--action-step-classifier", action="store_true", help="Run v54.2 action step classifier")
+    parser.add_argument("--action-dependency-graph", action="store_true", help="Run v54.3 action dependency graph")
+    parser.add_argument("--action-risk-budget", action="store_true", help="Run v54.4 action risk budget")
+    parser.add_argument("--action-rehearsal-dry-run-preview", action="store_true", help="Run v54.5 action rehearsal / dry-run preview")
+    parser.add_argument("--action-dashboard-polish", action="store_true", help="Run v54.6 action dashboard polish audit")
+    parser.add_argument("--action-api-parity-gate", action="store_true", help="Run v54.7 action/API parity gate")
+    parser.add_argument("--action-privacy-package-hardening", action="store_true", help="Run v54.8 action privacy and package hardening")
+    parser.add_argument("--pre-v55-controlled-execution-gate", action="store_true", help="Run v54.9 pre-v55 controlled execution gate")
+    parser.add_argument("--controlled-action-execution-preview", action="store_true", help="Run v55.0 controlled action execution preview; no real operations are executed")
+    parser.add_argument("--execution-preview-receipts", action="store_true", help="Run v55.1 execution preview receipts and evidence console")
+    parser.add_argument("--execution-step-permission-classifier", action="store_true", help="Run v55.2 execution step permission classifier")
+    parser.add_argument("--read-only-command-allowlist", action="store_true", help="Run v55.3 read-only command allowlist")
+    parser.add_argument("--execution-sandbox-evidence-binder", action="store_true", help="Run v55.4 execution sandbox evidence binder")
+    parser.add_argument("--execution-result-receipts", action="store_true", help="Run v55.5 execution result receipts")
+    parser.add_argument("--execution-dashboard-polish", action="store_true", help="Run v55.6 execution dashboard polish audit")
+    parser.add_argument("--execution-api-parity-gate", action="store_true", help="Run v55.7 execution/API parity gate")
+    parser.add_argument("--execution-privacy-package-hardening", action="store_true", help="Run v55.8 execution privacy and package hardening")
+    parser.add_argument("--pre-v56-read-only-execution-gate", action="store_true", help="Run v55.9 pre-v56 read-only execution gate")
+    parser.add_argument("--controlled-read-only-action-execution", action="store_true", help="Run v56.0 controlled read-only action execution")
+    parser.add_argument("--read-only-command-key", default="version-import", help="Allowlisted read-only command key for v56 execution")
+    parser.add_argument("--read-only-confirm-phrase", default="", help="Exact confirmation phrase for v56 read-only execution")
+    parser.add_argument("--execute-read-only-action", action="store_true", help="Execute one allowlisted read-only command after exact confirmation")
+    parser.add_argument("--read-only-execution-receipts", action="store_true", help="Run v56.1 read-only execution receipts and audit console")
+    parser.add_argument("--expanded-diagnostic-allowlist", action="store_true", help="Run v56.2 expanded diagnostic allowlist")
+    parser.add_argument("--read-only-output-classifier", action="store_true", help="Run v56.3 read-only output classifier")
+    parser.add_argument("--diagnostic-evidence-binder", action="store_true", help="Run v56.4 diagnostic evidence binder")
+    parser.add_argument("--diagnostic-result-summaries", action="store_true", help="Run v56.5 diagnostic result summaries")
+    parser.add_argument("--read-only-execution-dashboard-polish", action="store_true", help="Run v56.6 read-only execution dashboard polish audit")
+    parser.add_argument("--read-only-execution-api-parity-gate", action="store_true", help="Run v56.7 read-only execution/API parity gate")
+    parser.add_argument("--read-only-execution-privacy-package-hardening", action="store_true", help="Run v56.8 read-only execution privacy and package hardening")
+    parser.add_argument("--pre-v57-evidence-gathering-gate", action="store_true", help="Run v56.9 pre-v57 evidence-gathering gate")
+    parser.add_argument("--evidence-gathering-maintenance-loop", action="store_true", help="Run v57.0 evidence-gathering maintenance loop")
+    parser.add_argument("--evidence-collection-receipts", action="store_true", help="Run v57.1 evidence receipts and diagnostic audit console")
+    parser.add_argument("--diagnostic-issue-classifier", action="store_true", help="Run v57.2 diagnostic issue classifier")
+    parser.add_argument("--evidence-conflict-staleness-resolver", action="store_true", help="Run v57.3 evidence conflict and staleness resolver")
+    parser.add_argument("--evidence-to-plan-update-drafts", action="store_true", help="Run v57.4 evidence-to-plan update drafts")
+    parser.add_argument("--diagnostic-coverage-map", action="store_true", help="Run v57.5 diagnostic coverage map")
+    parser.add_argument("--evidence-dashboard-polish", action="store_true", help="Run v57.6 evidence dashboard polish audit")
+    parser.add_argument("--evidence-api-parity-gate", action="store_true", help="Run v57.7 evidence/API parity gate")
+    parser.add_argument("--evidence-privacy-package-hardening", action="store_true", help="Run v57.8 evidence privacy and package hardening")
+    parser.add_argument("--pre-v58-patch-proposal-gate", action="store_true", help="Run v57.9 pre-v58 patch proposal gate")
+    parser.add_argument("--evidence-grounded-patch-proposal", action="store_true", help="Run v58.0 evidence-grounded sandbox patch proposal loop")
+    parser.add_argument("--patch-proposal-receipts", action="store_true", help="Run v58.1 patch proposal receipts")
+    parser.add_argument("--patch-scope-classifier", action="store_true", help="Run v58.2 patch scope classifier")
+    parser.add_argument("--patch-risk-budget", action="store_true", help="Run v58.3 patch risk budget")
+    parser.add_argument("--patch-diff-preview-drafts", action="store_true", help="Run v58.4 patch diff preview drafts")
+    parser.add_argument("--patch-verification-plan", action="store_true", help="Run v58.5 patch verification plan")
+    parser.add_argument("--patch-dashboard-polish", action="store_true", help="Run v58.6 patch dashboard polish audit")
+    parser.add_argument("--patch-api-parity-gate", action="store_true", help="Run v58.7 patch/API parity gate")
+    parser.add_argument("--patch-privacy-package-hardening", action="store_true", help="Run v58.8 patch privacy and package hardening")
+    parser.add_argument("--pre-v59-sandbox-patch-execution-gate", action="store_true", help="Run v58.9 pre-v59 sandbox patch execution gate")
+    parser.add_argument("--controlled-sandbox-patch-execution", action="store_true", help="Run v59.0 controlled sandbox patch execution preview or confirmed sandbox-only rehearsal")
+    parser.add_argument("--sandbox-patch-confirm-phrase", default="", help="Exact confirmation phrase for controlled sandbox patch execution")
+    parser.add_argument("--execute-sandbox-patch", action="store_true", help="Execute v59 sandbox patch rehearsal only inside a temporary sandbox copy with exact confirmation")
+    parser.add_argument("--sandbox-execution-receipts", action="store_true", help="Run v59.1 sandbox execution receipts and review console")
+    parser.add_argument("--sandbox-verification-matrix", action="store_true", help="Run v59.2 sandbox verification matrix")
+    parser.add_argument("--sandbox-drift-detector", action="store_true", help="Run v59.3 sandbox drift detector")
+    parser.add_argument("--sandbox-rollback-rehearsal", action="store_true", help="Run v59.4 sandbox rollback rehearsal")
+    parser.add_argument("--sandbox-apply-candidate-drafts", action="store_true", help="Run v59.5 sandbox apply candidate drafts")
+    parser.add_argument("--sandbox-dashboard-polish", action="store_true", help="Run v59.6 sandbox dashboard polish audit")
+    parser.add_argument("--sandbox-api-parity-gate", action="store_true", help="Run v59.7 sandbox/API parity gate")
+    parser.add_argument("--sandbox-privacy-package-hardening", action="store_true", help="Run v59.8 sandbox privacy and package hardening")
+    parser.add_argument("--pre-v60-source-apply-handoff-gate", action="store_true", help="Run v59.9 pre-v60 source apply handoff gate")
+    parser.add_argument("--controlled-sandbox-source-apply-handoff", action="store_true", help="Run v60.0 controlled sandbox-to-source apply handoff preview or record")
+    parser.add_argument("--source-apply-handoff-confirm-phrase", default="", help="Exact confirmation phrase for controlled sandbox-to-source apply handoff record")
+    parser.add_argument("--record-source-apply-handoff", action="store_true", help="Record v60 source-apply handoff packet only; never applies source")
+    parser.add_argument("--source-apply-handoff-receipts", action="store_true", help="Run v60.1 source apply handoff receipts and review console")
+    parser.add_argument("--source-baseline-drift-resolver", action="store_true", help="Run v60.2 source baseline drift resolver")
+    parser.add_argument("--reviewed-artifact-set-binder", action="store_true", help="Run v60.3 reviewed artifact set binder")
+    parser.add_argument("--source-apply-handoff-eligibility", action="store_true", help="Run v60.4 source apply handoff eligibility classifier")
+    parser.add_argument("--source-apply-dry-run-bridge", action="store_true", help="Run v60.5 source apply dry-run bridge")
+    parser.add_argument("--source-apply-handoff-dashboard-polish", action="store_true", help="Run v60.6 source apply handoff dashboard polish audit")
+    parser.add_argument("--source-apply-handoff-api-parity-gate", action="store_true", help="Run v60.7 source apply handoff/API parity gate")
+    parser.add_argument("--source-apply-handoff-privacy-hardening", action="store_true", help="Run v60.8 source apply handoff privacy hardening")
+    parser.add_argument("--pre-v61-controlled-apply-bridge-gate", action="store_true", help="Run v60.9 pre-v61 controlled apply bridge gate")
+    parser.add_argument("--controlled-source-apply-bridge-refinement", action="store_true", help="Run v61.0 controlled source apply bridge refinement")
+    parser.add_argument("--source-apply-transaction-planner", action="store_true", help="Run v61.1 source apply transaction planner")
+    parser.add_argument("--source-apply-backup-binder", action="store_true", help="Run v61.2 source apply backup binder")
+    parser.add_argument("--source-apply-transaction-dry-run-verifier", action="store_true", help="Run v61.3 transaction dry-run verifier")
+    parser.add_argument("--source-apply-transaction-confirmation-gate", action="store_true", help="Run v61.4 exact confirmation transaction gate")
+    parser.add_argument("--transaction-confirm-phrase", default="", help="Exact confirmation phrase for supervised source apply transactions")
+    parser.add_argument("--supervised-source-apply-executor", action="store_true", help="Run v61.5 supervised source apply executor preview")
+    parser.add_argument("--approve-source-apply-transaction", action="store_true", help="Request supervised source apply transaction execution; exact phrase still required")
+    parser.add_argument("--post-apply-verification-runner", action="store_true", help="Run v61.6 post-apply verification runner")
+    parser.add_argument("--transaction-rollback-rehearsal", action="store_true", help="Run v61.7 transaction rollback rehearsal fixture")
+    parser.add_argument("--source-apply-transaction-dashboard-command-center", action="store_true", help="Run v61.8 source apply transaction dashboard command center audit")
+    parser.add_argument("--pre-v62-transaction-release-gate", action="store_true", help="Run v61.9 pre-v62 transaction release gate")
+    parser.add_argument("--supervised-source-apply-transaction-layer", action="store_true", help="Run v62.0 supervised source apply transaction layer")
+    parser.add_argument("--transaction-receipt-ledger", action="store_true", help="Run v62.1 transaction receipt ledger")
+    parser.add_argument("--transaction-diff-viewer", action="store_true", help="Run v62.2 transaction diff viewer")
+    parser.add_argument("--transaction-conflict-detector", action="store_true", help="Run v62.3 transaction conflict detector")
+    parser.add_argument("--transaction-approval-record-binder", action="store_true", help="Run v62.4 transaction approval record binder")
+    parser.add_argument("--transaction-package-evidence-exporter", action="store_true", help="Run v62.5 transaction package evidence exporter")
+    parser.add_argument("--transaction-replay-audit", action="store_true", help="Run v62.6 transaction replay audit")
+    parser.add_argument("--transaction-dashboard-receipt-timeline", action="store_true", help="Run v62.7 transaction dashboard receipt timeline")
+    parser.add_argument("--transaction-api-search-filtering", action="store_true", help="Run v62.8 transaction API search/filtering")
+    parser.add_argument("--transaction-filter-id", default="", help="Filter transaction receipt API search by transaction id fragment")
+    parser.add_argument("--transaction-filter-status", default="", help="Filter transaction receipt API search by status")
+    parser.add_argument("--transaction-filter-stage", default="", help="Filter transaction receipt API search by stage")
+    parser.add_argument("--transaction-filter-file", default="", help="Filter transaction receipt API search by touched file")
+    parser.add_argument("--pre-v63-transaction-evidence-gate", action="store_true", help="Run v62.9 pre-v63 transaction evidence gate")
+    parser.add_argument("--durable-transaction-evidence-system", action="store_true", help="Run v63.0 durable transaction evidence system")
+    parser.add_argument("--transaction-evidence-summarizer", action="store_true", help="Run v63.1 transaction evidence summarizer")
+    parser.add_argument("--improvement-candidate-registry", action="store_true", help="Run v63.2 improvement candidate registry")
+    parser.add_argument("--evidence-based-candidate-scoring", action="store_true", help="Run v63.3 evidence-based candidate scoring")
+    parser.add_argument("--improvement-regression-pattern-detector", action="store_true", help="Run v63.4 regression pattern detector")
+    parser.add_argument("--improvement-risk-blast-radius-forecaster", action="store_true", help="Run v63.5 risk and blast-radius forecaster")
+    parser.add_argument("--supervised-recommendation-queue", action="store_true", help="Run v63.6 supervised recommendation queue")
+    parser.add_argument("--improvement-intelligence-dashboard", action="store_true", help="Run v63.7 improvement intelligence dashboard audit")
+    parser.add_argument("--improvement-intelligence-api-cli-access", action="store_true", help="Run v63.8 improvement intelligence API/CLI parity")
+    parser.add_argument("--pre-v64-improvement-intelligence-gate", action="store_true", help="Run v63.9 pre-v64 improvement intelligence gate")
+    parser.add_argument("--supervised-improvement-intelligence-layer", action="store_true", help="Run v64.0 supervised improvement intelligence layer")
+    parser.add_argument("--accepted-recommendation-intake", action="store_true", help="Run v64.1 accepted recommendation intake")
+    parser.add_argument("--proposal-draft-skeleton", action="store_true", help="Run v64.2 proposal draft skeleton builder")
+    parser.add_argument("--evidence-requirement-mapper", action="store_true", help="Run v64.3 evidence-to-requirement mapper")
+    parser.add_argument("--proposal-risk-contract", action="store_true", help="Run v64.4 proposal risk contract")
+    parser.add_argument("--sandbox-patch-request-compiler", action="store_true", help="Run v64.5 sandbox patch request compiler")
+    parser.add_argument("--proposal-review-packet-binder", action="store_true", help="Run v64.6 proposal review packet binder")
+    parser.add_argument("--proposal-dashboard-review-console", action="store_true", help="Run v64.7 proposal dashboard review console audit")
+    parser.add_argument("--proposal-api-cli-access", action="store_true", help="Run v64.8 proposal API/CLI parity")
+    parser.add_argument("--pre-v65-proposal-drafting-gate", action="store_true", help="Run v64.9 pre-v65 proposal drafting gate")
+    parser.add_argument("--recommendation-to-proposal-drafting-layer", action="store_true", help="Run v65.0 recommendation-to-proposal drafting layer")
+    parser.add_argument("--reviewed-proposal-acceptance-gate", action="store_true", help="Run v65.1 reviewed proposal acceptance gate")
+    parser.add_argument("--sandbox-workspace-plan", action="store_true", help="Run v65.2 sandbox workspace plan builder")
+    parser.add_argument("--patch-implementation-request", action="store_true", help="Run v65.3 patch implementation request compiler")
+    parser.add_argument("--proposal-sandbox-execution-harness", action="store_true", help="Run v65.4 sandbox execution harness preview")
+    parser.add_argument("--proposal-sandbox-execute-copy", action="store_true", help="Exercise v65.4 sandbox copy only; never mutates live source")
+    parser.add_argument("--proposal-sandbox-verification-matrix", action="store_true", help="Run v65.5 sandbox verification matrix")
+    parser.add_argument("--proposal-sandbox-evidence-binder", action="store_true", help="Run v65.6 sandbox evidence binder")
+    parser.add_argument("--proposal-sandbox-failure-triage", action="store_true", help="Run v65.7 sandbox failure triage")
+    parser.add_argument("--proposal-sandbox-api-cli-access", action="store_true", help="Run v65.8 proposal sandbox API/CLI parity")
+    parser.add_argument("--pre-v66-proposal-sandbox-gate", action="store_true", help="Run v65.9 pre-v66 proposal sandbox gate")
+    parser.add_argument("--reviewed-proposal-sandbox-execution-layer", action="store_true", help="Run v66.0 reviewed proposal sandbox execution layer")
+    parser.add_argument("--sandbox-promotion-candidate", action="store_true", help="Run v66.1 sandbox promotion candidate builder")
+    parser.add_argument("--sandbox-source-diff-normalizer", action="store_true", help="Run v66.2 sandbox-to-source diff normalizer")
+    parser.add_argument("--promotion-safety-boundary-gate", action="store_true", help="Run v66.3 promotion safety boundary gate")
+    parser.add_argument("--transaction-draft-from-sandbox", action="store_true", help="Run v66.4 transaction draft from sandbox evidence")
+    parser.add_argument("--promotion-review-packet-binder", action="store_true", help="Run v66.5 promotion review packet binder")
+    parser.add_argument("--promotion-conflict-staleness-detector", action="store_true", help="Run v66.6 promotion conflict and staleness detector")
+    parser.add_argument("--sandbox-promotion-api-cli-access", action="store_true", help="Run v66.8 sandbox promotion API/CLI parity")
+    parser.add_argument("--pre-v67-sandbox-promotion-gate", action="store_true", help="Run v66.9 pre-v67 sandbox promotion gate")
+    parser.add_argument("--sandbox-evidence-promotion-handoff-layer", action="store_true", help="Run v67.0 sandbox evidence promotion handoff layer")
+    parser.add_argument("--promotion-packet-intake-gate", action="store_true", help="Run v67.1 promotion packet intake gate")
+    parser.add_argument("--transaction-plan-materializer", action="store_true", help="Run v67.2 transaction plan materializer")
+    parser.add_argument("--source-baseline-reconciliation", action="store_true", help="Run v67.3 source baseline reconciliation")
+    parser.add_argument("--backup-rollback-preflight-binder", action="store_true", help="Run v67.4 backup and rollback preflight binder")
+    parser.add_argument("--final-transaction-safety-gate", action="store_true", help="Run v67.5 final transaction safety gate")
+    parser.add_argument("--transaction-ledger-preregistration", action="store_true", help="Run v67.6 transaction ledger pre-registration")
+    parser.add_argument("--source-transaction-review-console", action="store_true", help="Run v67.7 source transaction review console audit")
+    parser.add_argument("--transaction-review-api-cli-access", action="store_true", help="Run v67.8 transaction review API/CLI parity")
+    parser.add_argument("--pre-v68-transaction-integration-gate", action="store_true", help="Run v67.9 pre-v68 transaction integration gate")
+    parser.add_argument("--promotion-to-transaction-integration-layer", action="store_true", help="Run v68.0 promotion-to-transaction integration layer")
+    parser.add_argument("--transaction-execution-eligibility", action="store_true", help="Run v68.1 transaction execution eligibility resolver")
+    parser.add_argument("--exact-confirmation-binder", action="store_true", help="Run v68.2 exact confirmation binder")
+    parser.add_argument("--backup-snapshot-materializer", action="store_true", help="Run v68.3 backup snapshot materializer")
+    parser.add_argument("--transaction-apply-rehearsal", action="store_true", help="Run v68.4 transaction apply rehearsal")
+    parser.add_argument("--operator-confirmed-apply-executor", action="store_true", help="Run v68.5 operator-confirmed apply executor guard")
+    parser.add_argument("--post-execution-verification", action="store_true", help="Run v68.6 post-execution verification planner")
+    parser.add_argument("--rollback-recommendation-gate", action="store_true", help="Run v68.7 rollback recommendation gate")
+    parser.add_argument("--transaction-execution-dashboard-api-cli", action="store_true", help="Run v68.8 transaction execution dashboard/API/CLI parity")
+    parser.add_argument("--pre-v69-execution-gate", action="store_true", help="Run v68.9 pre-v69 execution gate")
+    parser.add_argument("--operator-confirmed-transaction-execution-layer", action="store_true", help="Run v69.0 operator-confirmed transaction execution layer")
+    parser.add_argument("--execution-result-ledger-finalizer", action="store_true", help="Run v69.1 execution result ledger finalizer")
+    parser.add_argument("--rollback-decision-resolver", action="store_true", help="Run v69.2 rollback decision resolver")
+    parser.add_argument("--operator-confirmed-rollback-executor", action="store_true", help="Run v69.3 operator-confirmed rollback executor guard")
+    parser.add_argument("--rollback-confirm-phrase", default="", help="Exact rollback confirmation phrase for guarded rollback execution")
+    parser.add_argument("--post-rollback-verification", action="store_true", help="Run v69.4 post-rollback verification runner")
+    parser.add_argument("--release-candidate-finalization-gate", action="store_true", help="Run v69.5 release candidate finalization gate")
+    parser.add_argument("--source-only-package-certifier", action="store_true", help="Run v69.6 source-only package certifier")
+    parser.add_argument("--release-finalization-dashboard-api-cli", action="store_true", help="Run v69.7 release finalization dashboard/API/CLI parity")
+    parser.add_argument("--recovery-simulation-harness", action="store_true", help="Run v69.8 recovery simulation harness")
+    parser.add_argument("--pre-v70-recovery-finalization-gate", action="store_true", help="Run v69.9 pre-v70 recovery and finalization gate")
+    parser.add_argument("--verified-execution-recovery-release-layer", action="store_true", help="Run v70.0 verified execution recovery and release finalization layer")
+    parser.add_argument("--source-tree-inventory", action="store_true", help="Run v70.1 source tree inventory builder")
+    parser.add_argument("--module-responsibility-map", action="store_true", help="Run v70.2 module responsibility classifier")
+    parser.add_argument("--dependency-call-surface-map", action="store_true", help="Run v70.3 dependency and call surface mapper")
+    parser.add_argument("--module-risk-profile", action="store_true", help="Run v70.4 module risk profile builder")
+    parser.add_argument("--historical-failure-memory", action="store_true", help="Run v70.5 historical failure memory binder")
+    parser.add_argument("--verification-command-map", action="store_true", help="Run v70.6 verification command mapper")
+    parser.add_argument("--improvement-opportunity-detector", action="store_true", help="Run v70.7 improvement opportunity detector")
+    parser.add_argument("--codebase-understanding-dashboard-api-cli", action="store_true", help="Run v70.8 codebase understanding dashboard/API/CLI parity")
+    parser.add_argument("--pre-v71-codebase-understanding-gate", action="store_true", help="Run v70.9 pre-v71 codebase understanding gate")
+    parser.add_argument("--codebase-understanding-map", action="store_true", help="Run v71.0 codebase understanding map")
+    parser.add_argument("--patch-goal-intake-classifier", action="store_true", help="Run v71.1 patch goal intake classifier")
+    parser.add_argument("--relevant-file-context-selector", action="store_true", help="Run v71.2 relevant file context selector")
+    parser.add_argument("--historical-failure-context-binder", action="store_true", help="Run v71.3 historical failure context binder")
+    parser.add_argument("--risk-aware-context-budgeter", action="store_true", help="Run v71.4 risk-aware context budgeter")
+    parser.add_argument("--verification-requirement-compiler", action="store_true", help="Run v71.5 verification requirement compiler")
+    parser.add_argument("--patch-prompt-context-packet-builder", action="store_true", help="Run v71.6 patch prompt context packet builder")
+    parser.add_argument("--context-completeness-reviewer", action="store_true", help="Run v71.7 context completeness reviewer")
+    parser.add_argument("--patch-context-dashboard-api-cli", action="store_true", help="Run v71.8 patch context dashboard/API/CLI parity")
+    parser.add_argument("--pre-v72-patch-context-gate", action="store_true", help="Run v71.9 pre-v72 patch context gate")
+    parser.add_argument("--patch-generation-context-builder", action="store_true", help="Run v72.0 patch generation context builder")
+    parser.add_argument("--patch-intent-normalizer", action="store_true", help="Run v72.1 patch intent normalizer")
+    parser.add_argument("--patch-scope-contract-builder", action="store_true", help="Run v72.2 patch scope contract builder")
+    parser.add_argument("--patch-prompt-composer", action="store_true", help="Run v72.3 patch prompt composer")
+    parser.add_argument("--patch-draft-output-schema", action="store_true", help="Run v72.4 patch draft output schema")
+    parser.add_argument("--patch-draft-safety-reviewer", action="store_true", help="Run v72.5 patch draft safety reviewer")
+    parser.add_argument("--patch-draft-evidence-binder", action="store_true", help="Run v72.6 patch draft evidence binder")
+    parser.add_argument("--patch-draft-dashboard-api-cli", action="store_true", help="Run v72.7 patch draft dashboard/API/CLI parity")
+    parser.add_argument("--local-model-handoff-stub", action="store_true", help="Run v72.8 local model handoff stub")
+    parser.add_argument("--pre-v73-patch-draft-gate", action="store_true", help="Run v72.9 pre-v73 patch draft gate")
+    parser.add_argument("--supervised-patch-draft-composer", action="store_true", help="Run v73.0 supervised patch draft composer")
+    parser.add_argument("--patch-review-intake", action="store_true", help="Run v73.1 patch draft intake parser")
+    parser.add_argument("--patch-review-diff-boundary", action="store_true", help="Run v73.2 diff boundary extractor")
+    parser.add_argument("--patch-review-scope", action="store_true", help="Run v73.3 scope contract validator")
+    parser.add_argument("--patch-review-safety", action="store_true", help="Run v73.4 safety boundary validator")
+    parser.add_argument("--patch-review-docs", action="store_true", help="Run v73.5 documentation update validator")
+    parser.add_argument("--patch-review-verification", action="store_true", help="Run v73.6 verification plan validator")
+    parser.add_argument("--patch-review-risk", action="store_true", help="Run v73.7 patch risk scorer")
+    parser.add_argument("--patch-review-report", action="store_true", help="Run v73.8 patch review report builder")
+    parser.add_argument("--patch-review-dashboard-api-cli", action="store_true", help="Run v73.9 patch review dashboard/API/CLI parity")
+    parser.add_argument("--pre-v74-patch-review-gate", action="store_true", help="Run v73.9 pre-v74 patch review gate")
+    parser.add_argument("--patch-draft-review-diff-validation-layer", action="store_true", help="Run v74.0 patch draft review and diff validation layer")
+    parser.add_argument("--patch-trial-intake", action="store_true", help="Run v74.1 sandbox trial intake binder")
+    parser.add_argument("--patch-trial-workspace", action="store_true", help="Run v74.2 disposable workspace builder")
+    parser.add_argument("--patch-trial-materialize", action="store_true", help="Run v74.3 patch draft materializer inside sandbox")
+    parser.add_argument("--patch-trial-verify", action="store_true", help="Run v74.4 sandbox verification runner")
+    parser.add_argument("--patch-trial-evidence", action="store_true", help="Run v74.5 sandbox evidence collector")
+    parser.add_argument("--patch-trial-escape-guard", action="store_true", help="Run v74.6 sandbox escape/mutation guard")
+    parser.add_argument("--patch-trial-dashboard-api-cli", action="store_true", help="Run v74.7 patch trial dashboard/API/CLI parity")
+    parser.add_argument("--patch-trial-cleanup", action="store_true", help="Run v74.8 patch trial cleanup retention policy and prune old trials")
+    parser.add_argument("--patch-trial-list", action="store_true", help="List retained v75 patch trial sandboxes without deleting them")
+    parser.add_argument("--pre-v75-sandbox-trial-gate", action="store_true", help="Run v74.9 pre-v75 sandbox trial gate")
+    parser.add_argument("--sandbox-patch-trial-runner", action="store_true", help="Run v75.0 sandbox patch trial runner")
+    parser.add_argument("--patch-evidence-intake", action="store_true", help="Run v75.1 sandbox evidence intake reader")
+    parser.add_argument("--patch-evidence-integrity", action="store_true", help="Run v75.2 trial integrity validator")
+    parser.add_argument("--patch-evidence-verification", action="store_true", help="Run v75.3 verification evidence scorer")
+    parser.add_argument("--patch-evidence-scope-docs", action="store_true", help="Run v75.4 scope and documentation evidence reviewer")
+    parser.add_argument("--patch-evidence-risk", action="store_true", help="Run v75.5 risk acceptance classifier")
+    parser.add_argument("--patch-evidence-readiness", action="store_true", help="Run v75.6 promotion readiness packet builder")
+    parser.add_argument("--patch-evidence-dashboard-api-cli", action="store_true", help="Run v75.7 patch evidence dashboard/API/CLI parity")
+    parser.add_argument("--patch-evidence-archive", action="store_true", help="Run v75.8 recommendation archive and comparison")
+    parser.add_argument("--pre-v76-evidence-review-gate", action="store_true", help="Run v75.9 pre-v76 evidence review gate")
+    parser.add_argument("--sandbox-evidence-review-recommendation-layer", action="store_true", help="Run v76.0 sandbox evidence review and promotion recommendation layer")
+    parser.add_argument("--patch-apply-approval", action="store_true", help="Run v76.1 approval intake contract")
+    parser.add_argument("--patch-apply-bind", action="store_true", help="Run v76.2 recommendation-to-approval binder")
+    parser.add_argument("--patch-apply-snapshot", action="store_true", help="Run v76.3 live source snapshot builder")
+    parser.add_argument("--patch-apply-materialize", action="store_true", help="Run v76.4 approved patch materializer")
+    parser.add_argument("--patch-apply-verify", action="store_true", help="Run v76.5 post-apply verification runner")
+    parser.add_argument("--patch-apply-rollback", action="store_true", help="Run v76.6 automatic rollback executor")
+    parser.add_argument("--patch-apply-evidence", action="store_true", help="Run v76.7 application evidence recorder")
+    parser.add_argument("--patch-application-dashboard-api-cli", action="store_true", help="Run v76.8 patch application dashboard/API/CLI parity")
+    parser.add_argument("--pre-v77-application-gate", action="store_true", help="Run v76.9 pre-v77 application gate")
+    parser.add_argument("--operator-approved-patch-application-layer", action="store_true", help="Run v77.0 operator-approved patch application layer")
+    parser.add_argument("--patch-recovery-preflight", action="store_true", help="Run v77.1 dirty tree preflight detector")
+    parser.add_argument("--patch-recovery-snapshot", action="store_true", help="Run v77.2 snapshot completeness validator")
+    parser.add_argument("--patch-recovery-partial-apply", action="store_true", help="Run v77.3 partial apply detector")
+    parser.add_argument("--patch-recovery-rollback-integrity", action="store_true", help="Run v77.4 rollback integrity verifier")
+    parser.add_argument("--patch-recovery-triage", action="store_true", help="Run v77.5 failed verification triage")
+    parser.add_argument("--patch-recovery-recommendation", action="store_true", help="Run v77.6 recovery recommendation builder")
+    parser.add_argument("--patch-recovery-timeline", action="store_true", help="Run v77.7 application audit timeline")
+    parser.add_argument("--patch-recovery-dashboard-api-cli", action="store_true", help="Run v77.8 patch recovery dashboard/API/CLI parity")
+    parser.add_argument("--pre-v78-recovery-gate", action="store_true", help="Run v77.9 pre-v78 recovery gate")
+    parser.add_argument("--verified-application-recovery-rollback-hardening", action="store_true", help="Run v78.0 verified application recovery and rollback hardening layer")
+    parser.add_argument("--patch-queue-schema", action="store_true", help="Run v78.1 patch queue record schema")
+    parser.add_argument("--patch-queue-intake", action="store_true", help="Run v78.2 patch queue intake organizer")
+    parser.add_argument("--patch-queue-conflicts", action="store_true", help="Run v78.3 patch queue conflict detector")
+    parser.add_argument("--patch-queue-priority", action="store_true", help="Run v78.4 patch queue risk priority scheduler")
+    parser.add_argument("--patch-queue-stale-evidence", action="store_true", help="Run v78.5 patch queue stale evidence detector")
+    parser.add_argument("--patch-queue-serial-plan", action="store_true", help="Run v78.6 patch queue serial trial plan builder")
+    parser.add_argument("--patch-queue-review-packet", action="store_true", help="Run v78.7 patch queue operator review packet")
+    parser.add_argument("--patch-queue-dashboard-api-cli", action="store_true", help="Run v78.8 patch queue dashboard/API/CLI parity")
+    parser.add_argument("--pre-v79-queue-gate", action="store_true", help="Run v78.9 pre-v79 queue gate")
+    parser.add_argument("--multi-patch-queue-planning-layer", action="store_true", help="Run v79.0 multi-patch queue planning layer")
+    parser.add_argument("--patch-apply-approved", action="store_true", help="Explicitly request approved patch application; still requires exact --approval-phrase")
+    parser.add_argument("--patch-apply-live", action="store_true", help="Allow live source materialization after exact approval; omitted means dry-run")
+    parser.add_argument("--approval-phrase", type=str, default=None, help="Exact v77 approval phrase, required as APPROVE PATCH APPLICATION for live patch application")
+    parser.add_argument("--patch-approval-file", type=str, default=None, help="Optional JSON approval contract file for v77 patch application")
+    parser.add_argument("--patch-approved-files", type=str, default=None, help="Optional comma-separated approved file scope for v77 patch application")
+    parser.add_argument("--patch-application-id", type=str, default=None, help="Optional stable v77 patch application id")
+    parser.add_argument("--patch-queue-file", type=str, default=None, help="Optional JSON file containing queued patch records for v79 planning")
+    parser.add_argument("--patch-queue-id", type=str, default=None, help="Optional stable v79 patch queue id")
+    parser.add_argument("--improvement-opportunity-intake", action="store_true", help="Run v79.1 improvement opportunity intake")
+    parser.add_argument("--improvement-cycle-state-machine", action="store_true", help="Run v79.2 improvement cycle state machine")
+    parser.add_argument("--pipeline-stage-binder", action="store_true", help="Run v79.3 pipeline stage binder")
+    parser.add_argument("--local-model-invocation-stub", action="store_true", help="Run v79.4 local model invocation stub")
+    parser.add_argument("--improvement-loop-evidence-recorder", action="store_true", help="Run v79.5 improvement loop evidence recorder")
+    parser.add_argument("--operator-stop-gate", action="store_true", help="Run v79.6 operator stop gate")
+    parser.add_argument("--improvement-loop-dashboard-api-cli", action="store_true", help="Run v79.7 improvement loop dashboard/api/cli")
+    parser.add_argument("--loop-safety-auditor", action="store_true", help="Run v79.8 loop safety auditor")
+    parser.add_argument("--pre-v80-supervised-loop-gate", action="store_true", help="Run v79.9 pre-v80 supervised loop gate")
+    parser.add_argument("--supervised-local-improvement-loop", action="store_true", help="Run v80.0 supervised local improvement loop")
+    parser.add_argument("--local-model-adapter-contract", action="store_true", help="Run v80.1 local model adapter contract")
+    parser.add_argument("--model-capability-profile", action="store_true", help="Run v80.2 model capability profile")
+    parser.add_argument("--prompt-export-invocation-guard", action="store_true", help="Run v80.3 prompt export and invocation guard")
+    parser.add_argument("--proposal-capture-parser", action="store_true", help="Run v80.4 proposal capture parser")
+    parser.add_argument("--proposal-safety-precheck", action="store_true", help="Run v80.5 proposal safety precheck")
+    parser.add_argument("--model-output-provenance-recorder", action="store_true", help="Run v80.6 model output provenance recorder")
+    parser.add_argument("--proposal-integration-dashboard-api-cli", action="store_true", help="Run v80.7 proposal integration dashboard/api/cli")
+    parser.add_argument("--disabled-by-default-invocation-gate", action="store_true", help="Run v80.8 disabled-by-default invocation gate")
+    parser.add_argument("--pre-v81-model-integration-gate", action="store_true", help="Run v80.9 pre-v81 model integration gate")
+    parser.add_argument("--local-model-patch-proposal-integration", action="store_true", help="Run v81.0 local model patch proposal integration")
+    parser.add_argument("--proposal-collection-intake", action="store_true", help="Run v81.1 proposal collection intake")
+    parser.add_argument("--candidate-diff-normalizer", action="store_true", help="Run v81.2 candidate diff normalizer")
+    parser.add_argument("--proposal-quality-heuristic-scorer", action="store_true", help="Run v81.3 proposal quality heuristic scorer")
+    parser.add_argument("--safety-scope-comparison", action="store_true", help="Run v81.4 safety and scope comparison")
+    parser.add_argument("--verification-plan-comparison", action="store_true", help="Run v81.5 verification plan comparison")
+    parser.add_argument("--critique-report-builder", action="store_true", help="Run v81.6 critique report builder")
+    parser.add_argument("--critique-dashboard-api-cli", action="store_true", help="Run v81.7 critique dashboard/api/cli")
+    parser.add_argument("--operator-review-bundle-exporter", action="store_true", help="Run v81.8 operator review bundle exporter")
+    parser.add_argument("--pre-v82-output-critique-gate", action="store_true", help="Run v81.9 pre-v82 output critique gate")
+    parser.add_argument("--local-model-output-comparison-critique", action="store_true", help="Run v82.0 local model output comparison and critique")
+    parser.add_argument("--candidate-registry-schema", action="store_true", help="Run v82.1 candidate registry schema")
+    parser.add_argument("--candidate-deduplication", action="store_true", help="Run v82.2 candidate deduplication")
+    parser.add_argument("--risk-weighted-ranking", action="store_true", help="Run v82.3 risk-weighted ranking")
+    parser.add_argument("--conflict-aware-grouping", action="store_true", help="Run v82.4 conflict-aware grouping")
+    parser.add_argument("--evidence-completeness-ranker", action="store_true", help="Run v82.5 evidence completeness ranker")
+    parser.add_argument("--ranking-explainer", action="store_true", help="Run v82.6 ranking explainer")
+    parser.add_argument("--ranking-dashboard-api-cli", action="store_true", help="Run v82.7 ranking dashboard/api/cli")
+    parser.add_argument("--operator-selection-packet", action="store_true", help="Run v82.8 operator selection packet")
+    parser.add_argument("--pre-v83-ranking-gate", action="store_true", help="Run v82.9 pre-v83 ranking gate")
+    parser.add_argument("--multi-model-patch-candidate-ranking", action="store_true", help="Run v83.0 multi-model patch candidate ranking")
+    parser.add_argument("--refinement-goal-binder", action="store_true", help="Run v83.1 refinement goal binder")
+    parser.add_argument("--critique-revision-prompt-builder", action="store_true", help="Run v83.2 critique-to-revision prompt builder")
+    parser.add_argument("--constrained-revision-scope-builder", action="store_true", help="Run v83.3 constrained revision scope builder")
+    parser.add_argument("--refinement-safety-reviewer", action="store_true", help="Run v83.4 refinement safety reviewer")
+    parser.add_argument("--refinement-evidence-recorder", action="store_true", help="Run v83.5 refinement evidence recorder")
+    parser.add_argument("--refinement-iteration-limiter", action="store_true", help="Run v83.6 refinement iteration limiter")
+    parser.add_argument("--refinement-dashboard-api-cli", action="store_true", help="Run v83.7 refinement dashboard/api/cli")
+    parser.add_argument("--operator-revision-packet", action="store_true", help="Run v83.8 operator revision packet")
+    parser.add_argument("--pre-v84-refinement-gate", action="store_true", help="Run v83.9 pre-v84 refinement gate")
+    parser.add_argument("--supervised-patch-candidate-refinement", action="store_true", help="Run v84.0 supervised patch candidate refinement")
+    parser.add_argument("--suggestion-source-intake", action="store_true", help="Run v84.1 suggestion source intake")
+    parser.add_argument("--suggestion-cycle-state-machine", action="store_true", help="Run v84.2 suggestion cycle state machine")
+    parser.add_argument("--recurring-suggestion-budgeter", action="store_true", help="Run v84.3 recurring suggestion budgeter")
+    parser.add_argument("--safety-boundary-enforcer", action="store_true", help="Run v84.4 safety boundary enforcer")
+    parser.add_argument("--suggestion-deduplication-memory", action="store_true", help="Run v84.5 suggestion deduplication memory")
+    parser.add_argument("--operator-attention-packet", action="store_true", help="Run v84.6 operator attention packet")
+    parser.add_argument("--suggestion-loop-dashboard-api-cli", action="store_true", help="Run v84.7 suggestion loop dashboard/api/cli")
+    parser.add_argument("--no-autonomous-apply-auditor", action="store_true", help="Run v84.8 no-autonomous-apply auditor")
+    parser.add_argument("--pre-v85-suggestion-loop-gate", action="store_true", help="Run v84.9 pre-v85 suggestion loop gate")
+    parser.add_argument("--safe-autonomous-suggestion-loop", action="store_true", help="Run v85.0 safe autonomous suggestion loop")
+    parser.add_argument("--suggestion-inbox-record-schema", action="store_true", help="Run v85.1 suggestion inbox record schema")
+    parser.add_argument("--suggestion-intake-normalizer", action="store_true", help="Run v85.2 suggestion intake normalizer")
+    parser.add_argument("--suggestion-deduplication-drift-resolver", action="store_true", help="Run v85.3 suggestion deduplication and drift resolver")
+    parser.add_argument("--operator-triage-state-machine", action="store_true", help="Run v85.4 operator triage state machine")
+    parser.add_argument("--work-order-draft-builder", action="store_true", help="Run v85.5 work order draft builder")
+    parser.add_argument("--safety-scope-contract-binder", action="store_true", help="Run v85.6 safety and scope contract binder")
+    parser.add_argument("--pipeline-handoff-planner", action="store_true", help="Run v85.7 pipeline handoff planner")
+    parser.add_argument("--suggestion-inbox-dashboard-api-cli", action="store_true", help="Run v85.8 suggestion inbox dashboard/api/cli")
+    parser.add_argument("--pre-v86-suggestion-inbox-gate", action="store_true", help="Run v85.9 pre-v86 suggestion inbox gate")
+    parser.add_argument("--supervised-suggestion-inbox-work-order-planner", action="store_true", help="Run v86.0 supervised suggestion inbox and work order planner")
+    parser.add_argument("--work-order-context-schema", action="store_true", help="Run v86.1 work order context schema")
+    parser.add_argument("--patch-context-preflight-validator", action="store_true", help="Run v86.2 patch context preflight validator")
+    parser.add_argument("--source-impact-mapper", action="store_true", help="Run v86.3 source impact mapper")
+    parser.add_argument("--handoff-packet-builder", action="store_true", help="Run v86.4 handoff packet builder")
+    parser.add_argument("--patch-context-risk-classifier", action="store_true", help="Run v86.5 patch context risk classifier")
+    parser.add_argument("--context-to-draft-compatibility-layer", action="store_true", help="Run v86.6 context-to-draft compatibility layer")
+    parser.add_argument("--handoff-dashboard-api-cli-coverage", action="store_true", help="Run v86.7 handoff dashboard/api/cli coverage")
+    parser.add_argument("--handoff-parity-privacy-gate", action="store_true", help="Run v86.8 handoff parity and privacy gate")
+    parser.add_argument("--pre-v87-integration-gate", action="store_true", help="Run v86.9 pre-v87 integration gate")
+    parser.add_argument("--work-order-to-patch-context-handoff", action="store_true", help="Run v87.0 work order to patch context handoff")
+    parser.add_argument("--execution-evidence-schema", action="store_true", help="Run v87.1 execution evidence schema")
+    parser.add_argument("--patch-attempt-linker", action="store_true", help="Run v87.2 patch attempt linker")
+    parser.add_argument("--sandbox-evidence-binder", action="store_true", help="Run v87.3 sandbox evidence binder")
+    parser.add_argument("--review-decision-ledger", action="store_true", help="Run v87.4 review decision ledger")
+    parser.add_argument("--regression-drift-tracker", action="store_true", help="Run v87.5 regression and drift tracker")
+    parser.add_argument("--evidence-summary-builder", action="store_true", help="Run v87.6 evidence summary builder")
+    parser.add_argument("--evidence-dashboard-api-cli-coverage", action="store_true", help="Run v87.7 evidence dashboard/api/cli coverage")
+    parser.add_argument("--evidence-privacy-safety-gate", action="store_true", help="Run v87.8 evidence privacy and safety gate")
+    parser.add_argument("--pre-v88-integration-gate", action="store_true", help="Run v87.9 pre-v88 integration gate")
+    parser.add_argument("--work-order-execution-evidence-binder", action="store_true", help="Run v88.0 work order execution evidence binder")
+    parser.add_argument("--dashboard-route-inventory", action="store_true", help="Run v88.1 dashboard route inventory")
+    parser.add_argument("--navigation-grouping-model", action="store_true", help="Run v88.2 navigation grouping model")
+    parser.add_argument("--self-development-console-page", action="store_true", help="Run v88.3 self-development console page")
+    parser.add_argument("--operator-action-queue", action="store_true", help="Run v88.4 operator action queue")
+    parser.add_argument("--dashboard-performance-pass", action="store_true", help="Run v88.5 performance")
+    parser.add_argument("--dashboard-safety-banner-system", action="store_true", help="Run v88.6 safety-banners")
+    parser.add_argument("--dashboard-api-cli-console-parity", action="store_true", help="Run v88.7 console dashboard/api/cli parity")
+    parser.add_argument("--tooltip-regression-ux-gate", action="store_true", help="Run v88.8 tooltip regression and ux gate")
+    parser.add_argument("--pre-v89-integration-gate", action="store_true", help="Run v88.9 pre-v89 integration gate")
+    parser.add_argument("--self-development-dashboard-consolidation", action="store_true", help="Run v89.0 self-development dashboard consolidation")
+    parser.add_argument("--readiness-audit-schema", action="store_true", help="Run v89.1 readiness audit schema")
+    parser.add_argument("--capability-boundary-scanner", action="store_true", help="Run v89.2 capability boundary scanner")
+    parser.add_argument("--approval-gate-integrity-audit", action="store_true", help="Run v89.3 approval gate integrity audit")
+    parser.add_argument("--evidence-traceability-audit", action="store_true", help="Run v89.4 evidence traceability audit")
+    parser.add_argument("--verification-coverage-audit", action="store_true", help="Run v89.5 verification coverage audit")
+    parser.add_argument("--autonomy-risk-register", action="store_true", help="Run v89.6 autonomy risk register")
+    parser.add_argument("--readiness-scorecard-builder", action="store_true", help="Run v89.7 readiness scorecard builder")
+    parser.add_argument("--readiness-audit-dashboard-api-cli-coverage", action="store_true", help="Run v89.8 readiness audit dashboard/api/cli coverage")
+    parser.add_argument("--pre-v90-final-governance-gate", action="store_true", help="Run v89.9 pre-v90 final governance gate")
+    parser.add_argument("--supervised-self-development-readiness-audit", action="store_true", help="Run v90.0 supervised self-development readiness audit")
+    for _flag_name, _slug in getattr(sm_v90, "SUPERVISED_RUNTIME_CLI_MAP", {}).items():
+        _definition = sm_v90.SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug]
+        parser.add_argument(f"--{_flag_name}", action="store_true", help=f"Run {_definition['stage']} {_definition['label'].lower()}")
+    # v90.1-v95.0 supervised runtime CLI flags intentionally registered dynamically and listed for parity checks: --development-session-schema --session-creation-planner --session-scope-binder --session-state-machine --session-linkage-builder --session-summary-builder --session-dashboard-api-cli-coverage --session-privacy-safety-gate --pre-v91-integration-gate --supervised-development-session-manager --approval-request-schema --approval-queue-builder --approval-decision-ledger --approval-dependency-resolver --approval-risk-explainer --approval-reversal-audit-trail --approval-console-dashboard-api-cli --approval-safety-gate --pre-v92-integration-gate --operator-approval-workflow-console --experiment-branch-schema --experiment-eligibility-checker --experiment-plan-builder --sandbox-workspace-allocator --experiment-evidence-contract --experiment-promotion-blocker --experiment-dashboard-api-cli-coverage --experiment-privacy-safety-gate --pre-v93-integration-gate --safe-experiment-branch-planner --outcome-reflection-schema --completion-outcome-classifier --evidence-to-lesson-extractor --recurring-issue-detector --reflection-safety-filter --reflection-to-suggestion-handoff --reflection-dashboard-api-cli-coverage --reflection-privacy-containment-gate --pre-v94-integration-gate --learning-from-outcome-reflection-layer --improvement-cycle-schema --cycle-stage-resolver --cycle-blocker-detector --cycle-next-step-recommender --cycle-timeline-builder --cycle-governance-gate --cycle-dashboard-api-cli-coverage --cycle-privacy-package-gate --pre-v95-integration-gate --supervised-improvement-cycle-orchestrator
+    # v95.1-v100.0 governed simulation CLI flags intentionally registered dynamically and listed for parity checks: --replay-record-schema --synthetic-cycle-fixture-builder --replay-runner --expected-decision-comparator --benchmark-scoring-model --regression-benchmark-set --replay-dashboard-api-cli-coverage --replay-safety-privacy-gate --pre-v96-integration-gate --supervised-cycle-replay-benchmark-harness --capability-ledger-schema --default-capability-policy-builder --capability-request-classifier --capability-budget-tracker --permission-conflict-detector --denial-reason-builder --permission-ledger-dashboard-api-cli-coverage --capability-safety-gate --pre-v97-integration-gate --capability-permission-budget-ledger --shadow-simulation-schema --autonomous-intention-simulator --action-shadowing-engine --simulation-to-approval-request-mapper --unsafe-simulation-detector --shadow-plan-comparator --shadow-simulation-dashboard-api-cli-coverage --simulation-containment-gate --pre-v98-integration-gate --shadow-autonomy-simulation-layer --failure-scenario-schema --known-failure-scenario-builder --recovery-path-planner --rollback-readiness-checker --failure-containment-simulator --recovery-evidence-binder --war-game-dashboard-api-cli-coverage --failure-safety-privacy-gate --pre-v99-integration-gate --failure-recovery-rollback-war-game-layer --mind-milestone-audit-schema --architecture-coherence-mapper --identity-memory-boundary-audit --goal-motivation-audit --self-development-maturity-scorecard --human-operator-burden-review --v100-milestone-dashboard-api-cli-coverage --v100-governance-autonomy-boundary-gate --pre-v100-final-integration-gate --local-artificial-mind-milestone-audit
+    # v120.1-v125.0 supervised development learning CLI flags intentionally registered dynamically and listed for parity checks: --session-outcome-collector --planned-vs-actual-comparator --missed-surface-detector --unexpected-change-detector --verification-accuracy-scorer --operator-burden-result-tracker --outcome-review-binder --development-outcome-review-dashboard-api-cli --pre-v121-outcome-review-gate --development-outcome-review-layer --lesson-candidate-schema --bug-pattern-extractor --successful-pattern-extractor --false-alarm-detector --lesson-usefulness-scorer --memory-mutation-boundary-check --operator-lesson-review-packet --lesson-extraction-dashboard-api-cli --pre-v122-lesson-extraction-gate --supervised-lesson-extraction-layer --recommendation-history-schema --recommendation-accuracy-scorer --repeated-mistake-detector --recommendation-noise-reducer --future-recommendation-adjuster --safety-aware-recommendation-filter --recommendation-refinement-binder --recommendation-refinement-dashboard-api-cli --pre-v123-recommendation-refinement-gate --recommendation-refinement-layer --feedback-capture-schema --standing-rule-detector --temporary-preference-detector --contradictory-feedback-detector --feedback-to-work-package-linker --feedback-review-packet-builder --feedback-safety-boundary-gate --operator-feedback-integration-dashboard-api-cli --pre-v124-feedback-gate --operator-feedback-integration-layer --end-to-end-learning-walkthrough --lesson-quality-audit --recommendation-improvement-audit --feedback-handling-audit --learning-memory-boundary-audit --learning-safety-regression-audit --learning-operator-burden-audit --development-learning-dashboard-api-cli --pre-v125-learning-audit-gate --supervised-development-learning-audit
+    # v115.1-v120.0 supervised development execution CLI flags intentionally registered dynamically and listed for parity checks: --session-intent-collector --session-scope-builder --file-impact-predictor --test-target-planner --documentation-task-planner --safety-boundary-planner --operator-decision-checklist --development-session-planner-dashboard-api-cli --pre-v116-session-planner-gate --development-session-planner --source-surface-inventory --route-api-cli-link-mapper --builder-function-dependency-mapper --documentation-link-mapper --smoke-coverage-mapper --fragile-surface-detector --change-cartography-report --source-cartographer-dashboard-api-cli --pre-v117-source-cartographer-gate --source-change-cartographer --patch-simulation-schema --expected-diff-planner --missing-change-detector --overreach-detector --safety-regression-prediction --verification-prediction-binder --dry-run-review-summary --patch-simulation-dashboard-api-cli --pre-v118-patch-simulation-gate --patch-simulation-dry-run-review-layer --verification-matrix-schema --dashboard-regression-matrix --api-cli-regression-matrix --packaging-regression-matrix --safety-regression-matrix --documentation-regression-matrix --verification-recommendation-builder --verification-matrix-dashboard-api-cli --pre-v119-verification-matrix-gate --verification-matrix-regression-memory-layer --end-to-end-session-walkthrough --execution-operator-burden-audit --patch-planning-quality-audit --execution-verification-coverage-audit --execution-safety-containment-audit --execution-dashboard-sprawl-audit --execution-documentation-continuity-audit --development-execution-dashboard-api-cli --pre-v120-execution-audit-gate --supervised-development-execution-audit
+    # v110.1-v115.0 supervised self-development CLI flags intentionally registered dynamically and listed for parity checks: --improvement-intent-inventory --problem-statement-builder --evidence-requirement-classifier --impact-scope-estimator --operator-value-scorer --safety-sensitivity-classifier --improvement-intent-binder --improvement-intent-dashboard-api-cli --pre-v111-improvement-intent-gate --improvement-intent-problem-framing-layer --work-package-schema --change-boundary-mapper --acceptance-criteria-builder --test-plan-builder --documentation-obligation-tracker --regression-risk-mapper --work-package-review-packet --work-package-dashboard-api-cli --pre-v112-work-package-gate --supervised-work-package-builder --patch-readiness-schema --patch-diff-expectation-builder --patch-completeness-checker --patch-contradiction-scanner --patch-safety-regression-scanner --dashboard-regression-scanner --patch-review-summary-builder --patch-readiness-dashboard-api-cli --pre-v113-patch-readiness-gate --patch-readiness-review-intelligence-layer --release-candidate-schema --version-consistency-auditor --route-api-cli-parity-auditor --documentation-completeness-auditor --package-privacy-auditor-upgrade --install-layer-verification-binder --release-recommendation-builder --release-judgment-dashboard-api-cli --pre-v114-release-judgment-gate --release-candidate-judgment-layer --end-to-end-improvement-walkthrough --self-development-operator-burden-audit --self-development-safety-boundary-audit --evidence-quality-audit --decision-trace-audit --self-development-dashboard-usability-audit --self-development-release-process-audit --self-development-readiness-dashboard-api-cli --pre-v115-milestone-gate --supervised-self-development-readiness
+    # v105.1-v110.0 practical coherence CLI flags intentionally registered dynamically and listed for parity checks: --memory-source-inventory --memory-freshness-classifier --memory-duplicate-conflict-detector --memory-evidence-link-builder --memory-relevance-scorer --memory-correction-draft-builder --memory-quality-dashboard-api-cli --memory-privacy-mutation-boundary-gate --pre-v106-memory-quality-gate --memory-quality-evidence-hygiene-layer --goal-inventory-normalizer --goal-lifecycle-classifier --goal-evidence-linker --priority-stability-scorer --blocked-goal-resolver --goal-contradiction-scanner --goal-continuity-summary-builder --goal-continuity-dashboard-api-cli --pre-v107-goal-continuity-gate --goal-continuity-priority-stability-layer --reasoning-task-schema --context-pack-builder --local-model-permission-gate --manual-output-capture-layer --reasoning-quality-rubric --hallucination-boundary-scanner --reasoning-evidence-binder --reasoning-workbench-dashboard-api-cli --pre-v108-reasoning-containment-gate --contained-local-reasoning-workbench --workflow-friction-inventory-refresh --unified-operator-action-queue --copy-safe-command-builder --review-packet-shortcut-builder --dashboard-consolidation-recommendations --lazy-diagnostics-loader-plan --tooltip-nav-safety-review --workflow-console-dashboard-api-cli --pre-v109-workflow-gate --operator-workflow-compression-console --end-to-end-daily-use-walkthrough --memory-usefulness-audit --goal-stability-audit --reasoning-workbench-usefulness-audit --operator-burden-scorecard --dashboard-performance-sprawl-review --safety-boundary-regression-audit --practical-mind-dashboard-api-cli --pre-v110-practical-usefulness-gate --practical-supervised-mind-usefulness-audit
+    # v100.1-v105.0 coherent local mind CLI flags intentionally registered dynamically and listed for parity checks: --v100-system-inventory-pass --route-command-duplicate-detector --dashboard-reality-review --smoke-readiness-coverage-audit --runtime-data-privacy-review --operator-workflow-friction-review --v100-reality-report-builder --stabilization-dashboard-api-cli-coverage --pre-v101-stabilization-gate --v100-milestone-stabilization-review --system-map-schema --core-mind-component-mapper --development-pipeline-mapper --safety-governance-mapper --operator-home-summary-model --cross-link-builder --map-integrity-checker --operator-home-dashboard-api-cli-coverage --pre-v102-system-map-gate --unified-eidolon-system-map-operator-home --coherence-binder-schema --memory-to-reflection-linker --reflection-to-goal-linker --goal-to-suggestion-linker --outcome-to-lesson-linker --coherence-conflict-detector --coherence-summary-builder --coherence-dashboard-api-cli-coverage --pre-v103-coherence-gate --memory-reflection-goal-coherence-binder --daily-loop-schema --morning-status-builder --priority-queue-builder --operator-action-prompt-builder --daily-safety-check-builder --daily-reflection-prompt-builder --daily-loop-dashboard-api-cli-coverage --daily-loop-safety-privacy-gate --pre-v104-daily-loop-gate --practical-daily-operating-loop --coherent-runtime-schema --unified-mind-state-snapshot --local-mind-continuity-report --unified-next-step-resolver --coherence-health-scorecard --runtime-contradiction-scanner --coherent-runtime-dashboard-api-cli-coverage --runtime-safety-containment-gate --pre-v105-integration-gate --coherent-local-mind-runtime-v1
+    parser.add_argument("--improvement-goal", type=str, default=None, help="Optional supervised improvement goal for v80-v85 loop stages")
+    parser.add_argument("--local-model-name", type=str, default=None, help="Optional local model name for v81-v85 proposal stages; invocation remains disabled by default")
+    parser.add_argument("--improvement-cycle-id", type=str, default=None, help="Optional stable supervised improvement cycle id")
+    parser.add_argument("--candidate-file", type=str, default=None, help="Optional JSON/text file containing patch candidates for v82-v85 review/ranking/refinement")
+    parser.add_argument("--patch-trial-id", type=str, default=None, help="Optional stable sandbox patch trial id")
+    parser.add_argument("--patch-draft-file", type=str, default=None, help="Optional patch draft/diff text file for v74/v75/v76 review and sandbox validation")
+    parser.add_argument("--patch-evidence-file", type=str, default=None, help="Optional v75 sandbox evidence JSON file for v76 review")
+    parser.add_argument("--patch-goal", type=str, default=None, help="Optional natural-language patch goal for v72+ patch context/review/trial/evidence building")
+    parser.add_argument("--proposal-recommendation-id", type=str, default=None, help="Optional recommendation/candidate id for proposal drafting")
+    parser.add_argument("--recall-scope", default="project", help="Optional recall scope: project, identity, safety, operator_preference, or release_task")
+    parser.add_argument("--planning-scope", default="release_maintenance", help="Optional planning scope: release_maintenance, dashboard_cleanup, memory_review, identity_review, safety_hardening, coding_proposal, or documentation_update")
+    parser.add_argument("--action-plan-id", default="", help="Action plan id for controlled execution preview binding")
+    parser.add_argument("--action-confirm-phrase", default="", help="Exact action preview confirmation phrase")
+    parser.add_argument("--execute-action-preview", action="store_true", help="Validate a controlled action execution preview only; never executes real source/memory/publish/live/rollback/identity operations")
+    parser.add_argument("--memory-query", default="", help="Query text for memory search or recall")
+    parser.add_argument("--memory-type", default="", help="Optional memory type filter for memory search")
+    parser.add_argument("--memory-id", default="", help="Memory id for correction/removal preview")
+    parser.add_argument("--execute-memory-removal", action="store_true", help="Execute v51.6 removal only with exact confirmation and a real durable store record")
+    parser.add_argument("--maintenance-task-id", default="", help="Maintenance task id for queue checkpoint binding")
+    parser.add_argument("--cycle-id", default="", help="Controlled self-maintenance cycle id")
+    parser.add_argument("--proposal-id", default="", help="Sandbox autonomy patch proposal id")
+    parser.add_argument("--autonomy-goal", default="", help="Goal text for autonomous dry-run planning and patch proposals")
+    parser.add_argument("--revocation-reason", default="superseded release", help="Reason for guarded publish approval revocation writes")
+    parser.add_argument("--revoker-label", default="local-operator", help="Revoker label for guarded publish approval revocation records")
+    parser.add_argument("--approver-label", default="local-operator", help="Approver label for guarded publish approval write records")
     parser.add_argument("--release-evidence-bundle-path", help="Path to a release evidence bundle JSON for verification")
     parser.add_argument("--trust-snapshot-before", help="Before snapshot JSON path for --trust-console-diff")
     parser.add_argument("--trust-snapshot-after", help="After snapshot JSON path for --trust-console-diff")
@@ -1226,13 +2461,16 @@ def main() -> None:
     parser.add_argument("--release-confirm-phrase", default="", help="Explicit release confirmation phrase for guarded checks")
     parser.add_argument("--run-heavy-release-checks", action="store_true", help="Run heavier zip compile/smoke checks inside v23 gates")
     parser.add_argument("--release-zip-path", help="Path to an external release zip for install/update verification")
+    parser.add_argument("--signature-path", help="Path to detached signature sidecar JSON for public-key verification")
+    parser.add_argument("--public-key-path", help="Path to public key PEM for detached signature verification")
+    parser.add_argument("--trusted-fingerprint", help="Comma-separated trusted public key fingerprint(s) for detached signature verification")
     parser.add_argument("--expected-manifest-hash", help="Exact deterministic manifest SHA-256 required for live source update")
     parser.add_argument("--run-clean-room", action="store_true", help="Run clean-room install harness inside v22 self-update pipeline")
     parser.add_argument("--smoke-tier", default="fast", help="Smoke tier for clean-room or hardened smoke workflows")
     parser.add_argument("--run-install-smoke", action="store_true", help="Run full smoke check inside release install verification")
     parser.add_argument("--patch-draft-task", help="Patch draft task title/summary")
     parser.add_argument("--patch-draft-intent", help="Patch draft intent/why this patch exists")
-    parser.add_argument("--patch-draft-target-version", default="30.0", help="Target version for a patch draft request")
+    parser.add_argument("--patch-draft-target-version", default="50.0", help="Target version for a patch draft request")
     parser.add_argument("--patch-draft-risk-limit", default="medium", help="Maximum accepted draft risk for approval")
     parser.add_argument("--list-stable-loops", action="store_true", help="List saved stable supervised loop records")
     parser.add_argument("--show-stable-loop", nargs="?", const="latest", help="Show a saved stable supervised loop by id or alias")
@@ -2418,9 +3656,1325 @@ def main() -> None:
         return
 
     if args.controlled_self_maintenance_loop:
-        print_controlled_self_maintenance_loop(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        print_v45_controlled_self_maintenance_loop(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
         return
 
+    if args.controlled_self_maintenance_work_queue:
+        print_v46_controlled_self_maintenance_work_queue(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.controlled_attention_scheduler:
+        print_v47_controlled_attention_scheduler(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.attention_selection_receipt:
+        print_v47_attention_selection_receipt(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v47_1_attention_receipt_gate:
+        print_v47_pre_v47_1_attention_receipt_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.attention_budget_ledger:
+        print_v48_attention_budget_ledger(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.deferred_task_memory:
+        print_v48_deferred_task_memory(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.blocked_task_handling:
+        print_v48_blocked_task_handling(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.attention_resume_context:
+        print_v48_attention_resume_context(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.attention_dashboard_polish:
+        print_v48_attention_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.attention_api_parity_gate:
+        print_v48_attention_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reflection_hooks_read_only:
+        print_v48_reflection_hooks_read_only(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v48_reflection_gate:
+        print_v48_pre_v48_reflection_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reflection_memory_loop:
+        print_v48_controlled_reflection_memory_loop(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reflection_review_receipts:
+        print_v49_reflection_review_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reflection_candidate_deduplication:
+        print_v49_reflection_candidate_deduplication(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reflection_rejection_memory:
+        print_v49_reflection_rejection_memory(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reflection_promotion_drafts:
+        print_v49_reflection_promotion_drafts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_safety_classifier:
+        print_v49_memory_safety_classifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reflection_dashboard_polish:
+        print_v49_reflection_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reflection_api_parity_gate:
+        print_v49_reflection_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.reflection_privacy_package_hardening:
+        print_v49_reflection_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v49_identity_continuity_gate:
+        print_v49_pre_v49_identity_continuity_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.identity_continuity_layer:
+        print_v49_identity_continuity_layer(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.identity_receipts:
+        print_v50_0_identity_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v49_1_identity_receipts_gate:
+        print_v50_0_pre_v49_1_identity_receipts_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.stable_principles_ledger:
+        print_v50_stable_principles_ledger(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.identity_drift_classifier:
+        print_v50_identity_drift_classifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.identity_snapshot_comparison:
+        print_v50_identity_snapshot_comparison(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.operator_identity_review_drafts:
+        print_v50_operator_identity_review_drafts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.identity_dashboard_polish:
+        print_v50_identity_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.identity_api_parity_gate:
+        print_v50_identity_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.identity_privacy_package_hardening:
+        print_v50_identity_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v50_durable_memory_gate:
+        print_v50_pre_v50_durable_memory_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.durable_memory_promotion:
+        print_v50_supervised_durable_memory_promotion(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_promotion_receipts:
+        print_v51_memory_promotion_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_promotion_deduplication:
+        print_v51_memory_promotion_deduplication(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_rejection_runtime_ledger:
+        print_v51_memory_rejection_runtime_ledger(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_promotion_confirmation_gate:
+        print_v51_memory_promotion_confirmation_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, promotion_id=args.memory_promotion_id or None, confirmation=args.memory_confirm_phrase or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_removal_drafts:
+        print_v51_memory_removal_drafts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_dashboard_polish:
+        print_v51_memory_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_api_parity_gate:
+        print_v51_memory_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_privacy_package_hardening:
+        print_v51_memory_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v51_durable_write_gate:
+        print_v51_pre_v51_durable_write_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.durable_memory_write:
+        print_v51_controlled_durable_memory_write_path(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, promotion_id=args.memory_promotion_id or None, confirmation=args.memory_confirm_phrase or None, execute=bool(args.execute_durable_memory_write), full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.durable_memory_write_receipts:
+        print_v52_durable_memory_write_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_store_schema_hardening:
+        print_v52_memory_store_schema_hardening(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_read_path:
+        print_v52_memory_read_path(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_search_filter:
+        print_v52_memory_search_filter(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, memory_type=args.memory_type or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_correction_drafts:
+        print_v52_memory_correction_drafts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_removal_confirmation_path:
+        print_v52_memory_removal_confirmation_path(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, memory_id=args.memory_id or None, confirmation=args.memory_confirm_phrase or None, execute=bool(args.execute_memory_removal), full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_store_dashboard_polish:
+        print_v52_memory_store_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_store_api_parity_gate:
+        print_v52_memory_store_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v52_recall_gate:
+        print_v52_pre_v52_recall_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_recall_self_context:
+        print_v52_memory_recall_self_context(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_recall_receipts:
+        print_v53_memory_recall_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.recall_conflict_resolver:
+        print_v53_recall_conflict_resolver(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.stale_memory_handling:
+        print_v53_stale_memory_handling(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.recall_scope_controls:
+        print_v53_recall_scope_controls(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, scope=args.recall_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.recall_privacy_classifier:
+        print_v53_recall_privacy_classifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.recall_dashboard_polish:
+        print_v53_recall_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.recall_api_parity_gate:
+        print_v53_recall_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.recall_privacy_package_hardening:
+        print_v53_recall_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v53_memory_informed_planning_gate:
+        print_v53_pre_v53_memory_informed_planning_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_informed_planning:
+        print_v53_memory_informed_planning_loop(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.memory_informed_planning_receipts:
+        print_v54_memory_informed_planning_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.plan_conflict_classifier:
+        print_v54_plan_conflict_classifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.plan_revision_drafts:
+        print_v54_plan_revision_drafts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.planning_scope_controls:
+        print_v54_planning_scope_controls(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.planning_risk_budget:
+        print_v54_planning_risk_budget(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.planning_dashboard_polish:
+        print_v54_planning_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.planning_api_parity_gate:
+        print_v54_planning_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.planning_privacy_package_hardening:
+        print_v54_planning_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v54_action_planning_gate:
+        print_v54_pre_v54_action_planning_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.supervised_action_planning:
+        print_v54_supervised_action_planning_loop(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+
+    if args.action_plan_receipts:
+        print_v55_action_plan_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.action_step_classifier:
+        print_v55_action_step_classifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.action_dependency_graph:
+        print_v55_action_dependency_graph(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.action_risk_budget:
+        print_v55_action_risk_budget(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.action_rehearsal_dry_run_preview:
+        print_v55_action_rehearsal_dry_run_preview(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.action_dashboard_polish:
+        print_v55_action_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.action_api_parity_gate:
+        print_v55_action_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.action_privacy_package_hardening:
+        print_v55_action_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v55_controlled_execution_gate:
+        print_v55_pre_v55_controlled_execution_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.controlled_action_execution_preview:
+        print_v55_controlled_action_execution_preview(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, action_plan_id=args.action_plan_id or None, confirmation=args.action_confirm_phrase or None, execute_preview=args.execute_action_preview, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.execution_preview_receipts:
+        print_v56_execution_preview_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.execution_step_permission_classifier:
+        print_v56_execution_step_permission_classifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.read_only_command_allowlist:
+        print_v56_read_only_command_allowlist(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.execution_sandbox_evidence_binder:
+        print_v56_execution_sandbox_evidence_binder(project_id=args.workspace_project_id or args.stable_loop_project, command_key=args.read_only_command_key, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.execution_result_receipts:
+        print_v56_execution_result_receipts(project_id=args.workspace_project_id or args.stable_loop_project, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.execution_dashboard_polish:
+        print_v56_execution_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.execution_api_parity_gate:
+        print_v56_execution_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.execution_privacy_package_hardening:
+        print_v56_execution_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v56_read_only_execution_gate:
+        print_v56_pre_v56_read_only_execution_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.controlled_read_only_action_execution:
+        print_v56_controlled_read_only_action_execution(project_id=args.workspace_project_id or args.stable_loop_project, command_key=args.read_only_command_key, confirmation=args.read_only_confirm_phrase or None, execute=args.execute_read_only_action, goal=args.autonomy_goal or None, query=args.memory_query or args.autonomy_goal or None, planning_scope=args.planning_scope or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.read_only_execution_receipts:
+        print_v57_read_only_execution_receipts(project_id=args.workspace_project_id or args.stable_loop_project, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.expanded_diagnostic_allowlist:
+        print_v57_expanded_diagnostic_allowlist(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.read_only_output_classifier:
+        print_v57_read_only_output_classifier(project_id=args.workspace_project_id or args.stable_loop_project, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.diagnostic_evidence_binder:
+        print_v57_diagnostic_evidence_binder(project_id=args.workspace_project_id or args.stable_loop_project, command_key=args.read_only_command_key, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.diagnostic_result_summaries:
+        print_v57_diagnostic_result_summaries(project_id=args.workspace_project_id or args.stable_loop_project, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.read_only_execution_dashboard_polish:
+        print_v57_read_only_execution_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.read_only_execution_api_parity_gate:
+        print_v57_read_only_execution_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.read_only_execution_privacy_package_hardening:
+        print_v57_read_only_execution_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v57_evidence_gathering_gate:
+        print_v57_pre_v57_evidence_gathering_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_gathering_maintenance_loop:
+        print_v57_evidence_gathering_maintenance_loop(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, confirmation=args.read_only_confirm_phrase or None, execute=args.execute_read_only_action, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_collection_receipts:
+        print_v58_evidence_collection_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.diagnostic_issue_classifier:
+        print_v58_diagnostic_issue_classifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_conflict_staleness_resolver:
+        print_v58_evidence_conflict_staleness_resolver(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_to_plan_update_drafts:
+        print_v58_evidence_to_plan_update_drafts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.diagnostic_coverage_map:
+        print_v58_diagnostic_coverage_map(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_dashboard_polish:
+        print_v58_evidence_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_api_parity_gate:
+        print_v58_evidence_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_privacy_package_hardening:
+        print_v58_evidence_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v58_patch_proposal_gate:
+        print_v58_pre_v58_patch_proposal_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_grounded_patch_proposal:
+        print_v58_evidence_grounded_patch_proposal_loop(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_proposal_receipts:
+        print_v59_patch_proposal_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_scope_classifier:
+        print_v59_patch_scope_classifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_risk_budget:
+        print_v59_patch_risk_budget(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_diff_preview_drafts:
+        print_v59_patch_diff_preview_drafts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_verification_plan:
+        print_v59_patch_verification_plan(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_dashboard_polish:
+        print_v59_patch_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_api_parity_gate:
+        print_v59_patch_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_privacy_package_hardening:
+        print_v59_patch_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v59_sandbox_patch_execution_gate:
+        print_v59_pre_v59_sandbox_patch_execution_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.controlled_sandbox_patch_execution:
+        print_v59_controlled_sandbox_patch_execution(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, confirmation=args.sandbox_patch_confirm_phrase or None, execute=args.execute_sandbox_patch, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.sandbox_execution_receipts:
+        print_v60_sandbox_execution_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_verification_matrix:
+        print_v60_sandbox_verification_matrix(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_drift_detector:
+        print_v60_sandbox_drift_detector(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_rollback_rehearsal:
+        print_v60_sandbox_rollback_rehearsal(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_apply_candidate_drafts:
+        print_v60_sandbox_apply_candidate_drafts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_dashboard_polish:
+        print_v60_sandbox_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_api_parity_gate:
+        print_v60_sandbox_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_privacy_package_hardening:
+        print_v60_sandbox_privacy_package_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v60_source_apply_handoff_gate:
+        print_v60_pre_v60_source_apply_handoff_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.controlled_sandbox_source_apply_handoff:
+        print_v60_controlled_sandbox_source_apply_handoff(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, confirmation=args.source_apply_handoff_confirm_phrase or None, execute=args.record_source_apply_handoff, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.source_apply_handoff_receipts:
+        print_v61_source_apply_handoff_receipts(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_baseline_drift_resolver:
+        print_v61_source_baseline_drift_resolver(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.reviewed_artifact_set_binder:
+        print_v61_reviewed_artifact_set_binder(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_handoff_eligibility:
+        print_v61_source_apply_handoff_eligibility_classifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_dry_run_bridge:
+        print_v61_source_apply_dry_run_bridge(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_handoff_dashboard_polish:
+        print_v61_source_apply_handoff_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_handoff_api_parity_gate:
+        print_v61_source_apply_handoff_api_parity_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_handoff_privacy_hardening:
+        print_v61_source_apply_handoff_privacy_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v61_controlled_apply_bridge_gate:
+        print_v61_pre_v61_controlled_apply_bridge_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.controlled_source_apply_bridge_refinement:
+        print_v61_controlled_source_apply_bridge_refinement(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_transaction_planner:
+        print_v62_source_apply_transaction_planner(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_backup_binder:
+        print_v62_source_apply_backup_binder(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_transaction_dry_run_verifier:
+        print_v62_source_apply_transaction_dry_run_verifier(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_transaction_confirmation_gate:
+        print_v62_source_apply_transaction_confirmation_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, confirmation=args.transaction_confirm_phrase or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.supervised_source_apply_executor:
+        print_v62_supervised_source_apply_executor(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, confirmation=args.transaction_confirm_phrase or None, approve=args.approve_source_apply_transaction, dry_run=args.dry_run or not args.approve_source_apply_transaction, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.post_apply_verification_runner:
+        print_v62_post_apply_verification_runner(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_rollback_rehearsal:
+        print_v62_transaction_rollback_rehearsal(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_transaction_dashboard_command_center:
+        print_v62_source_apply_transaction_dashboard_command_center(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v62_transaction_release_gate:
+        print_v62_pre_v62_transaction_release_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.supervised_source_apply_transaction_layer:
+        print_v62_supervised_source_apply_transaction_layer(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_receipt_ledger:
+        print_v63_transaction_receipt_ledger(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_diff_viewer:
+        print_v63_transaction_diff_viewer(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_conflict_detector:
+        print_v63_transaction_conflict_detector(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_approval_record_binder:
+        print_v63_transaction_approval_record_binder(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_package_evidence_exporter:
+        print_v63_transaction_package_evidence_exporter(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_replay_audit:
+        print_v63_transaction_replay_audit(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_dashboard_receipt_timeline:
+        print_v63_transaction_dashboard_receipt_timeline(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_api_search_filtering:
+        print_v63_transaction_api_search_filtering(project_id=args.workspace_project_id or args.stable_loop_project, transaction_id=args.transaction_filter_id or None, status_filter=args.transaction_filter_status or None, stage_filter=args.transaction_filter_stage or None, file_touched=args.transaction_filter_file or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v63_transaction_evidence_gate:
+        print_v63_pre_v63_transaction_evidence_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.durable_transaction_evidence_system:
+        print_v63_durable_transaction_evidence_system(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, command_key=args.read_only_command_key, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_evidence_summarizer:
+        print_v64_transaction_evidence_summarizer(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.improvement_candidate_registry:
+        print_v64_improvement_candidate_registry(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_based_candidate_scoring:
+        print_v64_evidence_based_candidate_scoring(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.improvement_regression_pattern_detector:
+        print_v64_improvement_regression_pattern_detector(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.improvement_risk_blast_radius_forecaster:
+        print_v64_improvement_risk_blast_radius_forecaster(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.supervised_recommendation_queue:
+        print_v64_supervised_recommendation_queue(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.improvement_intelligence_dashboard:
+        print_v64_improvement_intelligence_dashboard(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.improvement_intelligence_api_cli_access:
+        print_v64_improvement_intelligence_api_cli_access(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v64_improvement_intelligence_gate:
+        print_v64_pre_v64_improvement_intelligence_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.supervised_improvement_intelligence_layer:
+        print_v64_supervised_improvement_intelligence_layer(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.accepted_recommendation_intake:
+        print_v65_accepted_recommendation_intake(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_draft_skeleton:
+        print_v65_proposal_draft_skeleton(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_requirement_mapper:
+        print_v65_evidence_requirement_mapper(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_risk_contract:
+        print_v65_proposal_risk_contract(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_patch_request_compiler:
+        print_v65_sandbox_patch_request_compiler(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_review_packet_binder:
+        print_v65_proposal_review_packet_binder(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_dashboard_review_console:
+        print_v65_proposal_dashboard_review_console(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_api_cli_access:
+        print_v65_proposal_api_cli_access(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v65_proposal_drafting_gate:
+        print_v65_pre_v65_proposal_drafting_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.recommendation_to_proposal_drafting_layer:
+        print_v65_recommendation_to_proposal_drafting_layer(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.reviewed_proposal_acceptance_gate:
+        print_v66_reviewed_proposal_acceptance_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_workspace_plan:
+        print_v66_sandbox_workspace_plan(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_implementation_request:
+        print_v66_patch_implementation_request(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_sandbox_execution_harness:
+        print_v66_proposal_sandbox_execution_harness(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, execute_copy=args.proposal_sandbox_execute_copy, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_sandbox_verification_matrix:
+        print_v66_proposal_sandbox_verification_matrix(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_sandbox_evidence_binder:
+        print_v66_proposal_sandbox_evidence_binder(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_sandbox_failure_triage:
+        print_v66_proposal_sandbox_failure_triage(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_sandbox_api_cli_access:
+        print_v66_proposal_sandbox_api_cli_access(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v66_proposal_sandbox_gate:
+        print_v66_pre_v66_proposal_sandbox_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.reviewed_proposal_sandbox_execution_layer:
+        print_v66_reviewed_proposal_sandbox_execution_layer(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_promotion_candidate:
+        print_v67_sandbox_promotion_candidate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_source_diff_normalizer:
+        print_v67_sandbox_source_diff_normalizer(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.promotion_safety_boundary_gate:
+        print_v67_promotion_safety_boundary_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_draft_from_sandbox:
+        print_v67_transaction_draft_from_sandbox(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.promotion_review_packet_binder:
+        print_v67_promotion_review_packet_binder(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.promotion_conflict_staleness_detector:
+        print_v67_promotion_conflict_staleness_detector(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_promotion_api_cli_access:
+        print_v67_sandbox_promotion_api_cli_access(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v67_sandbox_promotion_gate:
+        print_v67_pre_v67_sandbox_promotion_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_evidence_promotion_handoff_layer:
+        print_v67_sandbox_evidence_promotion_handoff_layer(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.promotion_packet_intake_gate:
+        print_v68_promotion_packet_intake_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_plan_materializer:
+        print_v68_transaction_plan_materializer(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_baseline_reconciliation:
+        print_v68_source_baseline_reconciliation(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.backup_rollback_preflight_binder:
+        print_v68_backup_rollback_preflight_binder(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.final_transaction_safety_gate:
+        print_v68_final_transaction_safety_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_ledger_preregistration:
+        print_v68_transaction_ledger_preregistration(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_transaction_review_console:
+        print_v68_source_transaction_review_console(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_review_api_cli_access:
+        print_v68_transaction_review_api_cli_access(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v68_transaction_integration_gate:
+        print_v68_pre_v68_transaction_integration_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.promotion_to_transaction_integration_layer:
+        print_v68_promotion_to_transaction_integration_layer(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.transaction_execution_eligibility:
+        print_v69_transaction_execution_eligibility(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.exact_confirmation_binder:
+        print_v69_exact_confirmation_binder(project_id=args.workspace_project_id or args.stable_loop_project, confirmation_phrase=args.transaction_confirm_phrase, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.backup_snapshot_materializer:
+        print_v69_backup_snapshot_materializer(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_apply_rehearsal:
+        print_v69_transaction_apply_rehearsal(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_confirmed_apply_executor:
+        print_v69_operator_confirmed_apply_executor(project_id=args.workspace_project_id or args.stable_loop_project, confirmation_phrase=args.transaction_confirm_phrase, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.post_execution_verification:
+        print_v69_post_execution_verification(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.rollback_recommendation_gate:
+        print_v69_rollback_recommendation_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.transaction_execution_dashboard_api_cli:
+        print_v69_transaction_execution_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v69_execution_gate:
+        print_v69_pre_v69_execution_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_confirmed_transaction_execution_layer:
+        print_v69_operator_confirmed_transaction_execution_layer(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.execution_result_ledger_finalizer:
+        print_v70_execution_result_ledger_finalizer(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.rollback_decision_resolver:
+        print_v70_rollback_decision_resolver(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_confirmed_rollback_executor:
+        print_v70_operator_confirmed_rollback_executor(project_id=args.workspace_project_id or args.stable_loop_project, rollback_confirmation_phrase=args.rollback_confirm_phrase, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.post_rollback_verification:
+        print_v70_post_rollback_verification(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.release_candidate_finalization_gate:
+        print_v70_release_candidate_finalization_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_only_package_certifier:
+        print_v70_source_only_package_certifier(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.release_finalization_dashboard_api_cli:
+        print_v70_release_finalization_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.recovery_simulation_harness:
+        print_v70_recovery_simulation_harness(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v70_recovery_finalization_gate:
+        print_v70_pre_v70_recovery_finalization_gate(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.verified_execution_recovery_release_layer:
+        print_v70_verified_execution_recovery_release_layer(project_id=args.workspace_project_id or args.stable_loop_project, recommendation_id=args.proposal_recommendation_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.source_tree_inventory:
+        print_v71_source_tree_inventory(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.module_responsibility_map:
+        print_v71_module_responsibility_map(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.dependency_call_surface_map:
+        print_v71_dependency_call_surface_map(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.module_risk_profile:
+        print_v71_module_risk_profile(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.historical_failure_memory:
+        print_v71_historical_failure_memory(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.verification_command_map:
+        print_v71_verification_command_map(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.improvement_opportunity_detector:
+        print_v71_improvement_opportunity_detector(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.codebase_understanding_dashboard_api_cli:
+        print_v71_codebase_understanding_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v71_codebase_understanding_gate:
+        print_v71_pre_v71_codebase_understanding_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.codebase_understanding_map:
+        print_v71_codebase_understanding_map(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_goal_intake_classifier:
+        print_v72_patch_goal_intake_classifier(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.relevant_file_context_selector:
+        print_v72_relevant_file_context_selector(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.historical_failure_context_binder:
+        print_v72_historical_failure_context_binder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.risk_aware_context_budgeter:
+        print_v72_risk_aware_context_budgeter(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.verification_requirement_compiler:
+        print_v72_verification_requirement_compiler(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_prompt_context_packet_builder:
+        print_v72_patch_prompt_context_packet_builder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.context_completeness_reviewer:
+        print_v72_context_completeness_reviewer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_context_dashboard_api_cli:
+        print_v72_patch_context_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v72_patch_context_gate:
+        print_v72_pre_v72_patch_context_gate(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_generation_context_builder:
+        print_v72_patch_generation_context_builder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_intent_normalizer:
+        print_v73_patch_intent_normalizer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_scope_contract_builder:
+        print_v73_patch_scope_contract_builder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_prompt_composer:
+        print_v73_patch_prompt_composer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_draft_output_schema:
+        print_v73_patch_draft_output_schema(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_draft_safety_reviewer:
+        print_v73_patch_draft_safety_reviewer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_draft_evidence_binder:
+        print_v73_patch_draft_evidence_binder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_draft_dashboard_api_cli:
+        print_v73_patch_draft_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.local_model_handoff_stub:
+        print_v73_local_model_handoff_stub(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v73_patch_draft_gate:
+        print_v73_pre_v73_patch_draft_gate(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.supervised_patch_draft_composer:
+        print_v73_supervised_patch_draft_composer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_review_intake:
+        print_v74_patch_review_intake_parser(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_review_diff_boundary:
+        print_v74_patch_review_diff_boundary_extractor(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_review_scope:
+        print_v74_patch_review_scope_contract_validator(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_review_safety:
+        print_v74_patch_review_safety_boundary_validator(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_review_docs:
+        print_v74_documentation_update_validator(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_review_verification:
+        print_v74_verification_plan_validator(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_review_risk:
+        print_v74_patch_risk_scorer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_review_report:
+        print_v74_patch_review_report_builder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_review_dashboard_api_cli:
+        print_v74_patch_review_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v74_patch_review_gate:
+        print_v74_pre_v74_patch_review_gate(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_draft_review_diff_validation_layer:
+        print_v74_patch_draft_review_diff_validation_layer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_trial_intake:
+        print_v75_patch_trial_intake_binder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_trial_workspace:
+        print_v75_disposable_workspace_builder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_trial_materialize:
+        print_v75_patch_draft_materializer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_trial_verify:
+        print_v75_sandbox_verification_runner(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_trial_evidence:
+        print_v75_sandbox_evidence_collector(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_trial_escape_guard:
+        print_v75_sandbox_escape_mutation_guard(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_trial_dashboard_api_cli:
+        print_v75_patch_trial_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_trial_cleanup:
+        print_v75_patch_trial_cleanup_retention(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, cleanup=True, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_trial_list:
+        print_v75_patch_trial_cleanup_retention(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, cleanup=False, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v75_sandbox_trial_gate:
+        print_v75_pre_v75_sandbox_trial_gate(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_patch_trial_runner:
+        print_v75_sandbox_patch_trial_runner(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_evidence_intake:
+        print_v76_patch_evidence_intake_reader(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_evidence_integrity:
+        print_v76_trial_integrity_validator(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_evidence_verification:
+        print_v76_verification_evidence_scorer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_evidence_scope_docs:
+        print_v76_scope_documentation_evidence_reviewer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_evidence_risk:
+        print_v76_risk_acceptance_classifier(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_evidence_readiness:
+        print_v76_promotion_readiness_packet_builder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_evidence_dashboard_api_cli:
+        print_v76_patch_evidence_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_evidence_archive:
+        print_v76_recommendation_archive_comparison(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v76_evidence_review_gate:
+        print_v76_pre_v76_evidence_review_gate(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_evidence_review_recommendation_layer:
+        print_v76_sandbox_evidence_review_recommendation_layer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    patch_apply_dry_run = not args.patch_apply_live
+    if args.patch_apply_approval:
+        print_v77_patch_approval_intake_contract(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approval_phrase=args.approval_phrase, approved_files=args.patch_approved_files, application_id=args.patch_application_id, operator_label=args.approver_label, apply_approved=args.patch_apply_approved, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_apply_bind:
+        print_v77_recommendation_approval_binder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approval_phrase=args.approval_phrase, approved_files=args.patch_approved_files, application_id=args.patch_application_id, operator_label=args.approver_label, apply_approved=args.patch_apply_approved, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_apply_snapshot:
+        print_v77_live_source_snapshot_builder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approval_phrase=args.approval_phrase, approved_files=args.patch_approved_files, application_id=args.patch_application_id, operator_label=args.approver_label, apply_approved=args.patch_apply_approved, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_apply_materialize:
+        print_v77_approved_patch_materializer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approval_phrase=args.approval_phrase, approved_files=args.patch_approved_files, application_id=args.patch_application_id, operator_label=args.approver_label, apply_approved=args.patch_apply_approved, dry_run=patch_apply_dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_apply_verify:
+        print_v77_post_apply_verification_runner(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approval_phrase=args.approval_phrase, approved_files=args.patch_approved_files, application_id=args.patch_application_id, operator_label=args.approver_label, apply_approved=args.patch_apply_approved, dry_run=patch_apply_dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_apply_rollback:
+        print_v77_automatic_rollback_executor(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approval_phrase=args.approval_phrase, approved_files=args.patch_approved_files, application_id=args.patch_application_id, operator_label=args.approver_label, apply_approved=args.patch_apply_approved, dry_run=patch_apply_dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_apply_evidence:
+        print_v77_application_evidence_recorder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approval_phrase=args.approval_phrase, approved_files=args.patch_approved_files, application_id=args.patch_application_id, operator_label=args.approver_label, apply_approved=args.patch_apply_approved, dry_run=patch_apply_dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_application_dashboard_api_cli:
+        print_v77_patch_application_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.pre_v77_application_gate:
+        print_v77_pre_v77_application_gate(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, operator_label=args.approver_label, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.operator_approved_patch_application_layer:
+        print_v77_operator_approved_patch_application_layer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approval_phrase=args.approval_phrase, approved_files=args.patch_approved_files, application_id=args.patch_application_id, operator_label=args.approver_label, apply_approved=args.patch_apply_approved, dry_run=patch_apply_dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_recovery_preflight:
+        print_v78_dirty_tree_preflight_detector(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_recovery_snapshot:
+        print_v78_snapshot_completeness_validator(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_recovery_partial_apply:
+        print_v78_partial_apply_detector(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_recovery_rollback_integrity:
+        print_v78_rollback_integrity_verifier(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_recovery_triage:
+        print_v78_failed_verification_triage(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_recovery_recommendation:
+        print_v78_recovery_recommendation_builder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_recovery_timeline:
+        print_v78_application_audit_timeline(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_recovery_dashboard_api_cli:
+        print_v78_patch_recovery_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v78_recovery_gate:
+        print_v78_pre_v78_recovery_gate(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.verified_application_recovery_rollback_hardening:
+        print_v78_verified_application_recovery_rollback_hardening(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, draft_file=args.patch_draft_file, trial_id=args.patch_trial_id, evidence_file=args.patch_evidence_file, approval_file=args.patch_approval_file, approved_files=args.patch_approved_files, application_id=args.patch_application_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.patch_queue_schema:
+        print_v79_patch_queue_record_schema(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, queue_file=args.patch_queue_file, queue_id=args.patch_queue_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_queue_intake:
+        print_v79_patch_queue_intake_organizer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, queue_file=args.patch_queue_file, queue_id=args.patch_queue_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_queue_conflicts:
+        print_v79_patch_queue_conflict_detector(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, queue_file=args.patch_queue_file, queue_id=args.patch_queue_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_queue_priority:
+        print_v79_patch_queue_risk_priority_scheduler(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, queue_file=args.patch_queue_file, queue_id=args.patch_queue_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_queue_stale_evidence:
+        print_v79_patch_queue_stale_evidence_detector(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, queue_file=args.patch_queue_file, queue_id=args.patch_queue_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_queue_serial_plan:
+        print_v79_patch_queue_serial_trial_plan_builder(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, queue_file=args.patch_queue_file, queue_id=args.patch_queue_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_queue_review_packet:
+        print_v79_patch_queue_operator_review_packet(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, queue_file=args.patch_queue_file, queue_id=args.patch_queue_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_queue_dashboard_api_cli:
+        print_v79_patch_queue_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v79_queue_gate:
+        print_v79_pre_v79_queue_gate(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, queue_file=args.patch_queue_file, queue_id=args.patch_queue_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.multi_patch_queue_planning_layer:
+        print_v79_multi_patch_queue_planning_layer(project_id=args.workspace_project_id or args.stable_loop_project, patch_goal=args.patch_goal, queue_file=args.patch_queue_file, queue_id=args.patch_queue_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.improvement_opportunity_intake:
+        print_v80_improvement_opportunity_intake(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.improvement_cycle_state_machine:
+        print_v80_improvement_cycle_state_machine(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pipeline_stage_binder:
+        print_v80_pipeline_stage_binder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.local_model_invocation_stub:
+        print_v80_local_model_invocation_stub(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.improvement_loop_evidence_recorder:
+        print_v80_improvement_loop_evidence_recorder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_stop_gate:
+        print_v80_operator_stop_gate(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.improvement_loop_dashboard_api_cli:
+        print_v80_improvement_loop_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.loop_safety_auditor:
+        print_v80_loop_safety_auditor(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v80_supervised_loop_gate:
+        print_v80_pre_v80_supervised_loop_gate(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.supervised_local_improvement_loop:
+        print_v80_supervised_local_improvement_loop(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.local_model_adapter_contract:
+        print_v81_local_model_adapter_contract(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.model_capability_profile:
+        print_v81_model_capability_profile(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.prompt_export_invocation_guard:
+        print_v81_prompt_export_invocation_guard(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_capture_parser:
+        print_v81_proposal_capture_parser(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_safety_precheck:
+        print_v81_proposal_safety_precheck(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.model_output_provenance_recorder:
+        print_v81_model_output_provenance_recorder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_integration_dashboard_api_cli:
+        print_v81_proposal_integration_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.disabled_by_default_invocation_gate:
+        print_v81_disabled_by_default_invocation_gate(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v81_model_integration_gate:
+        print_v81_pre_v81_model_integration_gate(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.local_model_patch_proposal_integration:
+        print_v81_local_model_patch_proposal_integration(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_collection_intake:
+        print_v82_proposal_collection_intake(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.candidate_diff_normalizer:
+        print_v82_candidate_diff_normalizer(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.proposal_quality_heuristic_scorer:
+        print_v82_proposal_quality_heuristic_scorer(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.safety_scope_comparison:
+        print_v82_safety_scope_comparison(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.verification_plan_comparison:
+        print_v82_verification_plan_comparison(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.critique_report_builder:
+        print_v82_critique_report_builder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.critique_dashboard_api_cli:
+        print_v82_critique_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_review_bundle_exporter:
+        print_v82_operator_review_bundle_exporter(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v82_output_critique_gate:
+        print_v82_pre_v82_output_critique_gate(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.local_model_output_comparison_critique:
+        print_v82_local_model_output_comparison_critique(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.candidate_registry_schema:
+        print_v83_candidate_registry_schema(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.candidate_deduplication:
+        print_v83_candidate_deduplication(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.risk_weighted_ranking:
+        print_v83_risk_weighted_ranking(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.conflict_aware_grouping:
+        print_v83_conflict_aware_grouping(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.evidence_completeness_ranker:
+        print_v83_evidence_completeness_ranker(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.ranking_explainer:
+        print_v83_ranking_explainer(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.ranking_dashboard_api_cli:
+        print_v83_ranking_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_selection_packet:
+        print_v83_operator_selection_packet(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v83_ranking_gate:
+        print_v83_pre_v83_ranking_gate(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.multi_model_patch_candidate_ranking:
+        print_v83_multi_model_patch_candidate_ranking(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.refinement_goal_binder:
+        print_v84_refinement_goal_binder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.critique_revision_prompt_builder:
+        print_v84_critique_revision_prompt_builder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.constrained_revision_scope_builder:
+        print_v84_constrained_revision_scope_builder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.refinement_safety_reviewer:
+        print_v84_refinement_safety_reviewer(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.refinement_evidence_recorder:
+        print_v84_refinement_evidence_recorder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.refinement_iteration_limiter:
+        print_v84_refinement_iteration_limiter(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.refinement_dashboard_api_cli:
+        print_v84_refinement_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_revision_packet:
+        print_v84_operator_revision_packet(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v84_refinement_gate:
+        print_v84_pre_v84_refinement_gate(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.supervised_patch_candidate_refinement:
+        print_v84_supervised_patch_candidate_refinement(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.suggestion_source_intake:
+        print_v85_suggestion_source_intake(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.suggestion_cycle_state_machine:
+        print_v85_suggestion_cycle_state_machine(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.recurring_suggestion_budgeter:
+        print_v85_recurring_suggestion_budgeter(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.safety_boundary_enforcer:
+        print_v85_safety_boundary_enforcer(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.suggestion_deduplication_memory:
+        print_v85_suggestion_deduplication_memory(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_attention_packet:
+        print_v85_operator_attention_packet(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.suggestion_loop_dashboard_api_cli:
+        print_v85_suggestion_loop_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.no_autonomous_apply_auditor:
+        print_v85_no_autonomous_apply_auditor(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v85_suggestion_loop_gate:
+        print_v85_pre_v85_suggestion_loop_gate(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.safe_autonomous_suggestion_loop:
+        print_v85_safe_autonomous_suggestion_loop(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, model_name=args.local_model_name, cycle_id=args.improvement_cycle_id, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.suggestion_inbox_record_schema:
+        print_v86_suggestion_inbox_record_schema(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.suggestion_intake_normalizer:
+        print_v86_suggestion_intake_normalizer(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.suggestion_deduplication_drift_resolver:
+        print_v86_suggestion_deduplication_drift_resolver(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_triage_state_machine:
+        print_v86_operator_triage_state_machine(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.work_order_draft_builder:
+        print_v86_work_order_draft_builder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.safety_scope_contract_binder:
+        print_v86_safety_scope_contract_binder(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pipeline_handoff_planner:
+        print_v86_pipeline_handoff_planner(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.suggestion_inbox_dashboard_api_cli:
+        print_v86_suggestion_inbox_dashboard_api_cli(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v86_suggestion_inbox_gate:
+        print_v86_pre_v86_suggestion_inbox_gate(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.supervised_suggestion_inbox_work_order_planner:
+        print_v86_supervised_suggestion_inbox_work_order_planner(project_id=args.workspace_project_id or args.stable_loop_project, improvement_goal=args.improvement_goal or args.patch_goal, candidate_file=args.candidate_file, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    for _flag_name, _slug in sm_v90.SUPERVISED_DEV_CLI_MAP.items():
+        if getattr(args, _flag_name.replace("-", "_"), False):
+            getattr(sm_v90, f"print_{_slug}")(
+                project_id=args.workspace_project_id or args.stable_loop_project,
+                improvement_goal=args.improvement_goal or args.patch_goal,
+                candidate_file=args.candidate_file,
+                full=args.doctor_full,
+                json_output=args.readiness_json,
+            )
+            return
+
+    for _flag_name, _slug in getattr(sm_v90, "SUPERVISED_RUNTIME_CLI_MAP", {}).items():
+        if getattr(args, _flag_name.replace("-", "_"), False):
+            getattr(sm_v90, f"print_{_slug}")(
+                project_id=args.workspace_project_id or args.stable_loop_project,
+                improvement_goal=args.improvement_goal or args.patch_goal,
+                candidate_file=args.candidate_file,
+                full=args.doctor_full,
+                json_output=args.readiness_json,
+            )
+            return
 
     if args.self_maintenance_proposal:
         print_self_maintenance_proposal(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
@@ -2693,7 +5247,7 @@ def main() -> None:
         return
 
     if args.release_signing_status:
-        print_release_signing_status(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        print_release_signing_status(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
         return
 
     if args.signature_placeholder_contract:
@@ -2722,6 +5276,536 @@ def main() -> None:
 
     if args.signed_release_preparation_system:
         print_signed_release_preparation_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.signing_api_hardening:
+        print_signing_api_hardening(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.canonical_schema_validator:
+        print_canonical_schema_validator(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.source_data_sanitizer:
+        print_source_data_sanitizer(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.signing_trust_model:
+        print_signing_trust_model(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_signing_tamper_drill:
+        print_release_signing_tamper_drill(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.public_key_policy_design:
+        print_public_key_policy_design(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.detached_signature_contract:
+        print_detached_signature_contract(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.signature_fixture_verification:
+        print_signature_fixture_verification(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.external_signer_workflow:
+        print_external_signer_workflow(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.detached_signature_verification_system:
+        print_detached_signature_verification_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.signature_verification_hardening:
+        print_signature_verification_hardening(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.public_trust_root_config:
+        print_public_trust_root_config(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.external_signing_payload_export:
+        print_external_signing_payload_export(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.signed_fixture_test_suite:
+        print_signed_fixture_test_suite(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_publish_gate:
+        print_release_publish_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.release_trust_dashboard_polish:
+        print_release_trust_dashboard_polish(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.api_route_safety_audit:
+        print_api_route_safety_audit(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.release_reproducibility_check:
+        print_release_reproducibility_check(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v32_release_candidate_gate:
+        print_pre_v32_release_candidate_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.signed_release_governance:
+        print_signed_release_governance(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.governance_report_cleanup:
+        print_governance_report_cleanup(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.release_candidate_workspace:
+        print_release_candidate_workspace(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.artifact_binding_audit:
+        print_artifact_binding_audit_v2(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.surface_consistency_audit:
+        print_surface_consistency_audit(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.external_signing_handoff:
+        print_external_signing_handoff(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.signature_intake_validation:
+        print_signature_intake_validation(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.trusted_signer_registry:
+        print_trusted_signer_registry(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.governance_scenario_suite:
+        print_governance_scenario_suite(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v33_operations_gate:
+        print_pre_v33_operations_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.release_operations_console:
+        print_release_operations_console(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operations_console_cleanup:
+        print_operations_console_cleanup(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.release_candidate_review:
+        print_release_candidate_review(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.signed_artifact_intake:
+        print_signed_artifact_intake(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.trust_root_lifecycle:
+        print_trust_root_lifecycle(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_decision_explainer:
+        print_publish_decision_explainer(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_action_guardrails:
+        print_operator_action_guardrails(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.unsigned_release_drill:
+        print_unsigned_release_drill(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.signed_fixture_release_drill:
+        print_signed_fixture_release_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v34_operator_workflow_gate:
+        print_pre_v34_operator_workflow_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.release_operator_workflow:
+        print_release_operator_workflow(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.release_candidate_record:
+        print_release_candidate_record_v2(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.signed_artifact_intake_v2:
+        print_signed_artifact_intake_v2(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.trust_root_management_policy:
+        print_trust_root_management_policy(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.trust_root_mutation_guardrails:
+        print_trust_root_mutation_guardrails(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.signed_release_publish_decision:
+        print_signed_release_publish_decision(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_dashboard_action_states:
+        print_operator_dashboard_action_states(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.release_workflow_audit_trail:
+        print_release_workflow_audit_trail(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.trusted_fixture_workflow:
+        print_trusted_fixture_workflow(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v35_trusted_candidate_gate:
+        print_pre_v35_trusted_candidate_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.trusted_release_candidate_system:
+        print_trusted_release_candidate_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.candidate_review_state:
+        print_candidate_review_state(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_policy:
+        print_publish_approval_policy(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_dry_run:
+        print_publish_approval_dry_run(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_record_schema:
+        print_publish_approval_record_schema(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.dashboard_approval_state_preview:
+        print_dashboard_approval_state_preview(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_route_safety_audit:
+        print_approval_route_safety_audit(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_fixture_drill:
+        print_approval_fixture_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_explainer:
+        print_publish_approval_explainer(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v36_approval_separation_gate:
+        print_pre_v36_approval_separation_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_separation_system:
+        print_publish_approval_separation_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.publish_approval_record_validator:
+        print_publish_approval_record_validator(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_dry_run_v2:
+        print_publish_approval_dry_run_v2(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_storage_quarantine:
+        print_approval_storage_quarantine(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_api_preview:
+        print_publish_approval_api_preview(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.dashboard_approval_workflow_preview:
+        print_dashboard_approval_workflow_preview(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_confirmation_policy:
+        print_approval_confirmation_policy(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_record_fixture_drill:
+        print_approval_record_fixture_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_audit_trail:
+        print_approval_audit_trail(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v37_approval_records_gate:
+        print_pre_v37_approval_records_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.controlled_publish_approval_system:
+        print_controlled_publish_approval_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.publish_approval_write_preflight:
+        print_publish_approval_write_preflight(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_write_schema_lock:
+        print_publish_approval_write_schema_lock(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_confirmation_validator:
+        print_publish_approval_confirmation_validator(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, confirmation=args.release_confirm_phrase, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.post_only_approval_write_route_design:
+        print_post_only_approval_write_route_design(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_write_dashboard_preview:
+        print_approval_write_dashboard_preview(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, confirmation=args.release_confirm_phrase, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.write_publish_approval:
+        print_write_publish_approval(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, confirmation=args.release_confirm_phrase, approver_label=args.approver_label, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, dry_run=(not args.approve_publish_approval_write or args.dry_run), full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_write_rollback_safety_audit:
+        print_approval_write_rollback_safety_audit(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_write_fixture_drill:
+        print_approval_write_fixture_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v38_approval_write_gate:
+        print_pre_v38_approval_write_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.controlled_publish_approval_write_system:
+        print_controlled_publish_approval_write_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, signature_path=args.signature_path, public_key_path=args.public_key_path, trusted_fingerprint=args.trusted_fingerprint, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_record_reader:
+        print_publish_approval_record_reader(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_artifact_revalidation:
+        print_approval_artifact_revalidation(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_record_conflict_detector:
+        print_approval_record_conflict_detector(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_status_viewer:
+        print_approval_status_viewer(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_revocation_policy:
+        print_approval_revocation_policy(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_revocation_dry_run:
+        print_approval_revocation_dry_run(project_id=args.workspace_project_id or args.stable_loop_project, approval_record_id=args.approval_record_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_lifecycle_audit:
+        print_approval_lifecycle_audit(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_lifecycle_fixture_drill:
+        print_approval_lifecycle_fixture_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v39_approval_lifecycle_gate:
+        print_pre_v39_approval_lifecycle_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.publish_approval_lifecycle_system:
+        print_publish_approval_lifecycle_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.approval_revocation_record_schema:
+        print_approval_revocation_record_schema(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_revocation_confirmation_validator:
+        print_approval_revocation_confirmation_validator(project_id=args.workspace_project_id or args.stable_loop_project, approval_record_id=args.approval_record_id, confirmation=args.release_confirm_phrase, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_revocation_write_preflight:
+        print_approval_revocation_write_preflight(project_id=args.workspace_project_id or args.stable_loop_project, approval_record_id=args.approval_record_id, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.revocation_storage_quarantine:
+        print_revocation_storage_quarantine(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.post_only_revocation_route_design:
+        print_post_only_revocation_route_design(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.write_approval_revocation:
+        approved = bool(args.approve_publish_approval_revocation)
+        print_write_approval_revocation(project_id=args.workspace_project_id or args.stable_loop_project, approval_record_id=args.approval_record_id, confirmation=args.release_confirm_phrase, revocation_reason=args.revocation_reason, revoker_label=args.revoker_label, dry_run=not approved or args.dry_run, approve=approved, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.dashboard_revocation_preview:
+        print_dashboard_revocation_preview(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.approval_revocation_fixture_drill:
+        print_approval_revocation_fixture_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v40_revocation_gate:
+        print_pre_v40_revocation_gate(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.controlled_publish_approval_revocation_system:
+        print_controlled_publish_approval_revocation_system(project_id=args.workspace_project_id or args.stable_loop_project, package_name=args.release_package_name, zip_path=args.release_zip_path, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.autonomy_capability_inventory:
+        print_autonomy_capability_inventory(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomous_task_proposal_schema:
+        print_autonomous_task_proposal_schema(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomous_dry_run_plan:
+        print_autonomous_dry_run_plan(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomy_action_policy_engine:
+        print_autonomy_action_policy_engine(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomous_patch_sandbox:
+        print_autonomous_patch_sandbox(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomous_patch_risk_classifier:
+        print_autonomous_patch_risk_classifier(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomous_test_selection:
+        print_autonomous_test_selection(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomy_human_checkpoint:
+        print_autonomy_human_checkpoint(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v41_autonomy_readiness_gate:
+        print_pre_v41_autonomy_readiness_gate(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomy_readiness_boundary_system:
+        print_autonomy_readiness_boundary_system(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_proposal_schema:
+        print_patch_proposal_schema(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomous_change_target_selector:
+        print_autonomous_change_target_selector(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.generate_sandbox_patch:
+        print_generate_sandbox_patch(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_patch_diff:
+        print_sandbox_patch_diff(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_patch_validation:
+        print_sandbox_patch_validation(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.sandbox_patch_test_run:
+        print_sandbox_patch_test_run(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.patch_review_checkpoint:
+        print_patch_review_checkpoint(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_dry_run:
+        print_source_apply_dry_run(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v42_autonomous_patch_gate:
+        print_pre_v42_autonomous_patch_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomous_patch_proposal_system:
+        print_autonomous_patch_proposal_system(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.source_apply_eligibility:
+        print_source_apply_eligibility(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_confirmation_policy:
+        print_source_apply_confirmation_policy(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, confirmation=args.release_confirm_phrase or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_dry_run_v2:
+        print_source_apply_dry_run_v2(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_backup_quarantine:
+        print_source_apply_backup_quarantine(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.apply_reviewed_patch:
+        approved = bool(args.approve_source_apply)
+        print_apply_reviewed_patch(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, confirmation=args.release_confirm_phrase or None, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.post_source_apply_verification:
+        print_post_source_apply_verification(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_rollback_preview:
+        print_source_apply_rollback_preview(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_fixture_drill:
+        print_source_apply_fixture_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v43_source_apply_gate:
+        print_pre_v43_source_apply_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.controlled_source_apply_system:
+        print_controlled_source_apply_system(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_apply_record_reader:
+        print_source_apply_record_reader(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_rollback_eligibility:
+        print_source_rollback_eligibility(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_rollback_confirmation_policy:
+        print_source_rollback_confirmation_policy(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, confirmation=args.release_confirm_phrase or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_rollback_dry_run_v2:
+        print_source_rollback_dry_run_v2(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.rollback_applied_patch:
+        approved = bool(args.approve_source_rollback)
+        print_rollback_applied_patch(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, confirmation=args.release_confirm_phrase or None, approve=approved, dry_run=not approved or args.dry_run, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.post_source_rollback_verification:
+        print_post_source_rollback_verification(project_id=args.workspace_project_id or args.stable_loop_project, proposal_id=args.proposal_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_rollback_audit_trail:
+        print_source_rollback_audit_trail(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.source_rollback_fixture_drill:
+        print_source_rollback_fixture_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v44_source_rollback_gate:
+        print_pre_v44_source_rollback_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.controlled_source_rollback_system:
+        print_controlled_source_rollback_system(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+
+    if args.self_maintenance_cycle_schema:
+        print_v45_self_maintenance_cycle_schema(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.self_maintenance_plan:
+        print_v45_self_maintenance_plan(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.self_maintenance_sandbox_cycle:
+        print_v45_self_maintenance_sandbox_cycle(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_checkpoint_binder:
+        print_v45_maintenance_checkpoint_binder(project_id=args.workspace_project_id or args.stable_loop_project, cycle_id=args.cycle_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.self_maintenance_apply_dry_run:
+        print_v45_self_maintenance_apply_dry_run(project_id=args.workspace_project_id or args.stable_loop_project, cycle_id=args.cycle_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.self_maintenance_apply_handoff:
+        print_v45_self_maintenance_apply_handoff(project_id=args.workspace_project_id or args.stable_loop_project, cycle_id=args.cycle_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.post_maintenance_verification_summary:
+        print_v45_post_maintenance_verification_summary(project_id=args.workspace_project_id or args.stable_loop_project, cycle_id=args.cycle_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.self_maintenance_fixture_drill:
+        print_v45_self_maintenance_fixture_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v45_self_maintenance_gate:
+        print_v45_pre_v45_self_maintenance_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_record_schema:
+        print_v46_maintenance_task_record_schema(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_priority_risk_scoring:
+        print_v46_maintenance_task_priority_risk_scoring(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_queue_registry:
+        print_v46_maintenance_task_queue_registry(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_selection_policy:
+        print_v46_maintenance_task_selection_policy(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_cycle_orchestrator:
+        print_v46_maintenance_task_cycle_orchestrator(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_checkpoint_binding:
+        print_v46_maintenance_task_checkpoint_binding(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, task_id=args.maintenance_task_id or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_source_apply_lockout:
+        print_v46_maintenance_task_source_apply_lockout(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_dashboard_api_views:
+        print_v46_maintenance_task_dashboard_api_views(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_fixture_drill:
+        print_v46_maintenance_task_fixture_drill(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v46_maintenance_queue_gate:
+        print_v46_pre_v46_maintenance_queue_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.autonomy_queue_report_cache:
+        print_v47_autonomy_queue_report_cache(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_task_drilldown:
+        print_v47_maintenance_task_drilldown_view(project_id=args.workspace_project_id or args.stable_loop_project, task_id=args.maintenance_task_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.queue_stale_state_warnings:
+        print_v47_maintenance_queue_stale_state_warnings(project_id=args.workspace_project_id or args.stable_loop_project, task_id=args.maintenance_task_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.maintenance_runtime_privacy_audit:
+        print_v47_maintenance_runtime_privacy_audit(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.operator_command_palette:
+        print_v47_operator_command_palette_report(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.dashboard_api_queue_parity:
+        print_v47_dashboard_api_queue_parity(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.queue_verification_receipt:
+        print_v47_queue_verification_receipt(project_id=args.workspace_project_id or args.stable_loop_project, task_id=args.maintenance_task_id or None, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.dashboard_accessibility_compact_layout:
+        print_v47_dashboard_accessibility_compact_layout(project_id=args.workspace_project_id or args.stable_loop_project, full=args.doctor_full, json_output=args.readiness_json)
+        return
+    if args.pre_v47_attention_scheduler_gate:
+        print_v47_pre_v47_attention_scheduler_gate(project_id=args.workspace_project_id or args.stable_loop_project, goal=args.autonomy_goal or None, full=args.doctor_full, json_output=args.readiness_json)
         return
 
     if args.stable_loop:
@@ -3640,3 +6724,53 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# v215.1-v220.0 simulation/foresight CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --supervised-internal-simulation-packet-layer --operator-governed-foresight-branch-comparison --supervised-pre-change-consequence-modeling --supervised-expectation-reality-check-layer --operator-governed-internal-simulation-and-foresight-layer-v1
+
+# v220.1-v225.0 learning curriculum CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --supervised-learning-objective-map --supervised-practice-task-design-layer --operator-governed-capability-calibration-layer --supervised-skill-gap-remediation-planner --operator-governed-learning-curriculum-and-capability-calibration-layer-v1
+
+# v225.1-v230.0 knowledge/belief CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --supervised-knowledge-claim-ledger --operator-reviewed-belief-candidate-layer --supervised-contradiction-and-staleness-intelligence --supervised-project-knowledge-map-layer --operator-governed-knowledge-and-belief-organization-layer-v1
+
+# v230.1-v235.0 local model workbench CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-local-model-inventory-layer --supervised-model-evaluation-plan-layer --operator-governed-model-output-comparison-layer --supervised-cognitive-workbench-routing-layer --operator-governed-local-model-evaluation-and-cognitive-workbench-layer-v1
+# v235.1-v240.0 local model invocation sandbox CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-approved-local-model-invocation-consent-gate --sandboxed-model-evaluation-run-ledger --operator-governed-multi-model-output-triage --supervised-model-reliability-profile-candidates --operator-approved-local-model-invocation-sandbox-v1
+
+# v240.1-v245.0 model-assisted patch review CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-model-assisted-patch-critique-layer --supervised-multi-model-review-synthesis-layer --operator-governed-patch-risk-and-remediation-synthesis --supervised-model-review-quality-calibration --operator-governed-model-assisted-patch-review-and-synthesis-layer-v1
+
+# v245.1-v250.0 model-assisted patch draft assembly CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-model-assisted-patch-draft-packet-layer --supervised-file-impact-and-documentation-planner --supervised-smoke-and-verification-suggestion-layer --operator-governed-sandbox-preparation-packet-layer --operator-governed-model-assisted-patch-draft-assembly-layer-v1
+
+# v250.1-v255.0 patch execution packet bridge CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-draft-to-execution-packet-gate --supervised-patch-diff-preview-and-edit-plan-layer --operator-governed-explicit-approval-scope-ledger --supervised-verification-and-rollback-packet-planner --operator-governed-patch-execution-packet-bridge-v1
+
+# v255.1-v260.0 approved application prep CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-execution-packet-intake-layer --supervised-source-edit-application-plan-builder --supervised-documentation-and-release-metadata-application-plan --operator-governed-final-pre-application-governance-gate --operator-governed-approved-execution-packet-application-prep-v1
+
+# v260.1-v265.0 structural stabilization CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-structural-inventory-layer --operator-governed-runtime-registry-prep-layer --operator-governed-dashboard-stabilization-layer --operator-governed-cli-api-dispatch-stabilization-layer --operator-governed-structural-stabilization-and-runtime-modularization-v1
+
+# v265.1-v270.0 module extraction CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-runtime-metadata-registry-extraction --operator-governed-governance-report-builder-extraction --operator-governed-dashboard-surface-registry-integration --operator-governed-cli-api-runtime-registry-integration --operator-governed-runtime-module-extraction-v1
+
+# v270.1-v275.0 self-maintenance decomposition CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-self-maintenance-extraction-map --operator-governed-package-and-version-utility-extraction --operator-governed-surface-parity-utility-extraction --operator-governed-smoke-and-verification-utility-extraction --operator-governed-self-maintenance-decomposition-v1
+
+# v275.1-v280.0 dashboard/API/CLI modularization CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-dashboard-surface-extraction-map --operator-governed-dashboard-component-helper-extraction --operator-governed-api-surface-helper-extraction --operator-governed-cli-surface-helper-extraction --operator-governed-dashboard-api-cli-modularization-v1
+
+# v280.1-v285.0 application execution refinement CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-approved-application-packet-binding-layer --operator-execution-checklist-builder-layer --operator-governed-post-application-result-review-layer --operator-governed-application-outcome-learning-extractor --operator-approved-application-execution-refinement-v1 application_execution_refinement.py
+
+# v285.1-v290.0 rollback and recovery intelligence CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-rollback-scope-binding-layer --operator-governed-failure-classification-and-damage-map --operator-governed-recovery-checklist-builder --operator-governed-post-recovery-review-layer --operator-governed-rollback-and-recovery-intelligence-v1 rollback_recovery.py
+
+# v290.1-v295.0 memory candidate governance CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --memory-candidate-intake --memory-candidate-classification --memory-approval-packet --memory-contradiction-review --memory-governance-audit memory_governance.py
+
+# v295.1-v300.0 continuity kernel CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --continuity-state-intake --self-model-snapshot-v2 --purpose-coherence-review --supervised-growth-priorities --continuity-kernel-v2-audit continuity_kernel.py
+# v300.1-v305.0 identity/personality/coherence expression CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-identity-expression-boundary-layer --operator-governed-personality-trait-candidate-ledger --operator-governed-voice-and-affect-style-map --operator-governed-coherence-expression-review --operator-governed-identity-personality-coherence-expression-layer-v1 identity_expression.py risky_request_classifier
+# v305.1-v310.0 behavioral expression preview and runtime health CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-dashboard-route-health-registry-v1 --operator-governed-runtime-test-visibility-layer-v1 --operator-governed-behavioral-expression-preview-packets-v1 --operator-governed-style-delta-staging-v1 --operator-governed-behavioral-expression-preview-and-runtime-health-hardening-v1 route_health.py behavioral_expression_preview.py
+
+# v310.1-v315.0 conversational expression sandbox CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-expression-profile-packet-assembly-v1 --operator-governed-conversation-scenario-sandbox-v1 --operator-governed-expression-regression-review-v1 --operator-governed-expression-candidate-review-console-v1 --operator-governed-conversational-expression-sandbox-v1 conversational_expression_sandbox.py
+
+# v315.1-v320.0 expression application bridge CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-expression-approval-criteria-layer-v1 --operator-governed-live-surface-impact-map-v1 --operator-governed-expression-implementation-packet-drafting-v1 --operator-governed-expression-rollback-and-reversion-planning-v1 --operator-governed-conversational-expression-application-bridge-v1 expression_application_bridge.py
+# v320.1-v325.0 expression patch dry-run CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-expression-patch-candidate-schema-v1 --operator-governed-sandbox-diff-preview-assembly-v1 --operator-governed-expression-dry-run-verification-planning-v1 --operator-governed-expression-dry-run-review-packet-v1 --operator-governed-expression-patch-dry-run-sandbox-v1 expression_patch_dry_run.py
+
+# v325.1-v330.0 expression sandbox trial harness CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-expression-sandbox-trial-packet-prep-v1 --operator-governed-expression-sandbox-workspace-plan-v1 --operator-governed-expression-sandbox-trial-verification-matrix-v1 --operator-governed-expression-sandbox-trial-result-review-prep-v1 --operator-governed-expression-patch-sandbox-trial-harness-v1 expression_sandbox_trial_harness.py
+
+# v330.1-v335.0 expression sandbox execution bridge CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-sandbox-trial-execution-approval-gate-v1 --operator-governed-sandbox-workspace-execution-packet-draft-v1 --operator-governed-expression-sandbox-patch-bundle-packet-v1 --operator-governed-sandbox-verification-command-packet-draft-v1 --operator-governed-expression-sandbox-trial-execution-packet-bridge-v1 expression_sandbox_execution_bridge.py
+
+# v335.1-v340.0 expression sandbox result intake CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-sandbox-trial-evidence-intake-layer-v1 --operator-governed-sandbox-outcome-comparison-v1 --operator-governed-expression-regression-result-review-v1 --operator-governed-sandbox-trial-revision-recommendation-layer-v1 --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 expression_sandbox_result_intake.py
+
+# v340.1-v345.0 expression promotion packet CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-expression-promotion-evidence-binder-v1 --operator-governed-live-promotion-scope-and-risk-packet-v1 --operator-governed-promotion-verification-and-rollback-requirements-v1 --operator-governed-expression-promotion-decision-packet-v1 --operator-governed-expression-promotion-packet-assembly-layer-v1 expression_promotion_packet.py
+
+# v345.1-v350.0 expression live application packet CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-live-application-packet-eligibility-gate-v1 --operator-governed-live-source-change-manifest-draft-v1 --operator-governed-live-diff-and-patch-instruction-packet-draft-v1 --operator-governed-live-application-verification-and-rollback-packet-v1 --operator-governed-expression-live-application-packet-drafting-layer-v1 expression_live_application_packet.py

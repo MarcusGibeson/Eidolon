@@ -1,0 +1,13 @@
+{
+  "schema_version": "eidolon.release_candidate_workspace.v1",
+  "candidate_id": "rc-ee398a1d260ba0a4",
+  "project_id": "eidolon",
+  "release_version": "33.0",
+  "package_name": "Eidolon_v33_0.zip",
+  "package_sha256": "8ad49eaf0e16f31d035361e8955a6c56684569eb5842157ab86a014fb8f6e2d4",
+  "manifest_sha256": "51348be5cf8b387cffd014d3d2ba32d0bced2774b1270ce4fcfc2d69b3444058",
+  "evidence_sha256": "b77b2d82cc429f0eeb64fb80480746c2f7980325d49ebd3af9af03ba3a37e181",
+  "review_state": "unreviewed",
+  "live_apply_approved": false,
+  "private_key_material_allowed": false
+}

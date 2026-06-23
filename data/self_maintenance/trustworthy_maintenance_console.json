@@ -1,15 +1,15 @@
 {
-  "version": "27.0",
-  "checked_at": "2026-06-20T12:50:48",
+  "version": "33.0",
+  "checked_at": "2026-06-20T18:12:02",
   "project_id": "eidolon",
   "stage": "v26.0",
-  "status": "warn",
-  "ok": true,
-  "package_name": "Eidolon_v27_0.zip",
+  "status": "blocked",
+  "ok": false,
+  "package_name": "Eidolon_v33_0.zip",
   "zip_path": null,
   "steps": {
     "hotfix": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.1",
       "status": "warn",
       "ok": true,
@@ -52,14 +52,14 @@
         },
         {
           "name": "readme-hotfix-entry",
-          "status": "pass",
+          "status": "warn",
           "message": "README includes the v25.0.1 hotfix entry."
         }
       ],
       "row_count": 8
     },
     "routes": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.2",
       "status": "pass",
       "ok": true,
@@ -68,12 +68,12 @@
         {
           "name": "nav-path-count",
           "status": "pass",
-          "message": "Found 31 dashboard navigation path(s)."
+          "message": "Found 35 dashboard navigation path(s)."
         },
         {
           "name": "router-path-count",
           "status": "pass",
-          "message": "Found 34 dashboard router path(s)."
+          "message": "Found 38 dashboard router path(s)."
         },
         {
           "name": "nav-routes-covered",
@@ -89,7 +89,7 @@
       "row_count": 4
     },
     "defaults": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.3",
       "status": "pass",
       "ok": true,
@@ -103,19 +103,19 @@
         {
           "name": "api-uses-package-helper",
           "status": "pass",
-          "message": "api_server.py uses _package_name() 61 time(s)."
+          "message": "api_server.py uses _package_name() 104 time(s)."
         },
         {
           "name": "current-helper-package",
           "status": "pass",
-          "message": "Current helper resolves package name as Eidolon_v27_0.zip."
+          "message": "Current helper resolves package name as Eidolon_v33_0.zip."
         }
       ],
       "row_count": 3,
-      "package_name": "Eidolon_v27_0.zip"
+      "package_name": "Eidolon_v33_0.zip"
     },
     "severity": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.4",
       "status": "pass",
       "ok": true,
@@ -155,7 +155,7 @@
       "row_count": 6
     },
     "contract": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.5",
       "status": "pass",
       "ok": true,
@@ -169,7 +169,7 @@
         {
           "name": "whole-bundle-hash",
           "status": "pass",
-          "message": "14ccc1a1c5be6e3bfcbac9cd2672ac090748026925f373a0aac333b294190dc0"
+          "message": "0d5f1f47f69eb9d0f22ffcd2a522337b8b3397df90e873ddb5b069637efb3a31"
         },
         {
           "name": "approval-binds-whole-bundle",
@@ -185,7 +185,7 @@
       "row_count": 4
     },
     "diff": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.6",
       "status": "pass",
       "ok": true,
@@ -210,7 +210,7 @@
       "row_count": 3
     },
     "composition": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.7",
       "status": "pass",
       "ok": true,
@@ -240,7 +240,7 @@
       "row_count": 4
     },
     "parity": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.8",
       "status": "pass",
       "ok": true,
@@ -265,7 +265,7 @@
       "row_count": 3
     },
     "trust": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.9",
       "status": "warn",
       "ok": true,
@@ -305,15 +305,15 @@
       "row_count": 6
     },
     "semi_autonomous_review": {
-      "version": "27.0",
+      "version": "33.0",
       "stage": "v25.0.1",
-      "status": "warn",
-      "ok": true,
+      "status": "blocked",
+      "ok": false,
       "message": "Semi-autonomous maintenance review gate completed; real apply remains human-approved.",
       "rows": [
         {
           "name": "assisted-improvement-cycle",
-          "status": "pass",
+          "status": "warn",
           "message": "Assisted improvement cycle completed and stopped before live apply."
         },
         {
@@ -333,7 +333,7 @@
         },
         {
           "name": "regression-detector",
-          "status": "pass",
+          "status": "warn",
           "message": "Candidate regression detector completed."
         },
         {
@@ -343,7 +343,7 @@
         },
         {
           "name": "assisted-self-improvement-release",
-          "status": "warn",
+          "status": "blocked",
           "message": "Assisted self-improvement release gate completed."
         },
         {
@@ -358,7 +358,7 @@
         }
       ],
       "row_count": 9,
-      "package_name": "Eidolon_v27_0.zip",
+      "package_name": "Eidolon_v33_0.zip",
       "zip_path": null
     }
   },
@@ -410,7 +410,7 @@
     },
     {
       "name": "semi_autonomous_review",
-      "status": "warn",
+      "status": "blocked",
       "message": "Semi-autonomous maintenance review gate completed; real apply remains human-approved."
     },
     {

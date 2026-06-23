@@ -1,23 +1,33 @@
 {
-  "version": "30.0",
-  "checked_at": "2026-06-20T15:21:38",
+  "version": "31.5",
+  "checked_at": "2026-06-20T17:35:07",
   "project_id": "eidolon",
   "stage": "v29.4",
   "status": "warn",
   "ok": true,
-  "package_name": "Eidolon_v30_0.zip",
+  "operational_ok": true,
+  "package_name": "Eidolon_v31_5.zip",
   "zip_path": null,
   "package_sha256": null,
   "signed": false,
   "signing_status": "unsigned",
+  "signature_valid": false,
+  "signature_trusted": false,
+  "safe_to_publish": false,
+  "trust_level": "unsigned",
+  "public_key_fingerprint": null,
   "signing_ready": true,
-  "reason": "No cryptographic signature or key policy is configured yet.",
+  "reason": "No detached signature supplied; unsigned artifact is warn/ok only.",
+  "signing_payload": {
+    "schema_version": "eidolon.signing_payload.v1",
+    "project_name": "Eidolon",
+    "release_version": "31.5",
+    "package_name": "Eidolon_v31_5.zip",
+    "package_sha256": null,
+    "manifest_sha256": "68712d8e11aa022bc55dd1a2cbca217316fb6f00b420284e6f33f1cc78be097d",
+    "evidence_sha256": "0ad4122e2ebb2a73ba1427fc4b17500fc642a3ed0e50075c74a402fa2ad55d65"
+  },
   "rows": [
-    {
-      "name": "signed",
-      "status": "warn",
-      "message": "signed=false; package is unsigned"
-    },
     {
       "name": "signing-ready",
       "status": "pass",
@@ -27,7 +37,22 @@
       "name": "package-hash",
       "status": "pass",
       "message": "zip not supplied"
+    },
+    {
+      "name": "signed",
+      "status": "warn",
+      "message": "signed=False trusted=False"
+    },
+    {
+      "name": "safe-to-publish",
+      "status": "warn",
+      "message": "Only trusted detached signatures can set safe_to_publish=true."
+    },
+    {
+      "name": "detached-signature",
+      "status": "warn",
+      "message": "No detached signature supplied; artifact remains unsigned."
     }
   ],
-  "message": "Release signing status reported as unsigned."
+  "message": "Release signing status reported with explicit trust fields."
 }

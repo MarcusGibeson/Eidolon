@@ -10,7 +10,7 @@ from paths import DATA_DIR, ROOT_DIR
 from settings_manager import load_settings
 from task_queue import list_tasks
 
-WORKSPACE_ORCHESTRATION_VERSION = "30.0"
+WORKSPACE_ORCHESTRATION_VERSION = "350.0"
 WORKSPACES_DIR = DATA_DIR / "workspaces"
 PROJECTS_FILE = WORKSPACES_DIR / "projects.json"
 ACTIVE_PROJECT_FILE = WORKSPACES_DIR / "active_project.json"

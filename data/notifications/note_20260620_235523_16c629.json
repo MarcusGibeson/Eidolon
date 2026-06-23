@@ -1,0 +1,19 @@
+{
+  "id": "note_20260620_235523_16c629",
+  "type": "watch_attention",
+  "severity": "warning",
+  "title": "Watch mode needs attention",
+  "message": "Watch report watch_20260620_235523 ended with status attention_needed. Safe next command: python conscious_agent/main.py --show-patch latest-proposed",
+  "recommended_command": "python conscious_agent/main.py --show-patch latest-proposed",
+  "status": "unread",
+  "created_at": "2026-06-20T23:55:23",
+  "last_seen_at": "2026-06-20T23:55:23",
+  "seen_count": 1,
+  "source": "watch_mode",
+  "related_id": "watch_20260620_235523",
+  "dedupe_key": "watch_attention:attention_needed:python conscious_agent/main.py --show-patch latest-proposed",
+  "metadata": {
+    "watch_report_id": "watch_20260620_235523",
+    "status": "attention_needed"
+  }
+}

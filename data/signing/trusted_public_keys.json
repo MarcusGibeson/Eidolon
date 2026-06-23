@@ -1,0 +1,8 @@
+{
+  "notes": [
+    "Public trust roots only. Store signer labels and public key fingerprints here, never private keys."
+  ],
+  "private_key_material_allowed": false,
+  "schema_version": "eidolon.trusted_public_keys.v1",
+  "trusted_public_keys": []
+}

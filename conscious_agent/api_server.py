@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import os
 import traceback
+import zipfile
+from pathlib import Path
 from dataclasses import asdict, is_dataclass
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -370,15 +373,156 @@ from self_maintenance import (
     build_api_signing_status,
     build_pre_v30_signing_prep_audit,
     build_signed_release_preparation_system,
+    build_signing_api_hardening,
+    build_canonical_schema_validator,
+    build_source_data_sanitizer,
+    build_signing_trust_model,
+    build_release_signing_tamper_drill,
+    build_public_key_policy_design,
+    build_detached_signature_contract,
+    build_signature_fixture_verification,
+    build_external_signer_workflow,
+    build_detached_signature_verification_system,
+    build_signature_verification_hardening,
+    build_public_trust_root_config,
+    build_external_signing_payload_export,
+    build_signed_fixture_test_suite,
+    build_release_publish_gate,
+    build_release_trust_dashboard_polish,
+    build_api_route_safety_audit,
+    build_release_reproducibility_check,
+    build_pre_v32_release_candidate_gate,
+    build_signed_release_governance,
+    build_governance_report_cleanup,
+    build_release_candidate_workspace,
+    build_artifact_binding_audit_v2,
+    build_surface_consistency_audit,
+    build_external_signing_handoff,
+    build_signature_intake_validation,
+    build_trusted_signer_registry,
+    build_governance_scenario_suite,
+    build_pre_v33_operations_gate,
+    build_release_operations_console,
+    build_operations_console_cleanup,
+    build_release_candidate_review,
+    build_signed_artifact_intake,
+    build_trust_root_lifecycle,
+    build_publish_decision_explainer,
+    build_operator_action_guardrails,
+    build_unsigned_release_drill,
+    build_signed_fixture_release_drill,
+    build_pre_v34_operator_workflow_gate,
+    build_release_operator_workflow,
+    build_release_candidate_record_v2,
+    build_signed_artifact_intake_v2,
+    build_trust_root_management_policy,
+    build_trust_root_mutation_guardrails,
+    build_signed_release_publish_decision,
+    build_operator_dashboard_action_states,
+    build_release_audit_trail,
+    build_trusted_fixture_workflow,
+    build_pre_v35_trusted_candidate_gate,
+    build_trusted_release_candidate_system,
+    build_candidate_review_state,
+    build_publish_approval_policy,
+    build_publish_approval_dry_run,
+    build_publish_approval_record_schema,
+    build_dashboard_approval_state_preview,
+    build_approval_route_safety_audit,
+    build_approval_fixture_drill,
+    build_publish_approval_explainer,
+    build_pre_v36_approval_separation_gate,
+    build_publish_approval_separation_system,
+    build_publish_approval_record_validator,
+    build_publish_approval_dry_run_v2,
+    build_approval_storage_quarantine,
+    build_publish_approval_api_preview,
+    build_dashboard_approval_workflow_preview,
+    build_approval_confirmation_policy,
+    build_approval_record_fixture_drill,
+    build_approval_audit_trail,
+    build_pre_v37_approval_records_gate,
+    build_controlled_publish_approval_system,
+    build_publish_approval_write_preflight,
+    build_publish_approval_write_schema_lock,
+    build_publish_approval_confirmation_validator,
+    build_post_only_approval_write_route_design,
+    build_approval_write_dashboard_preview,
+    build_write_publish_approval,
+    build_approval_write_rollback_safety_audit,
+    build_approval_write_fixture_drill,
+    build_pre_v38_approval_write_gate,
+    build_controlled_publish_approval_write_system,
+    build_publish_approval_record_reader,
+    build_approval_artifact_revalidation,
+    build_approval_record_conflict_detector,
+    build_approval_status_viewer,
+    build_approval_revocation_policy,
+    build_approval_revocation_dry_run,
+    build_approval_lifecycle_audit,
+    build_approval_lifecycle_fixture_drill,
+    build_pre_v39_approval_lifecycle_gate,
+    build_publish_approval_lifecycle_system,
+    build_approval_revocation_record_schema,
+    build_approval_revocation_confirmation_validator,
+    build_approval_revocation_write_preflight,
+    build_revocation_storage_quarantine,
+    build_post_only_revocation_route_design,
+    build_write_approval_revocation,
+    build_dashboard_revocation_preview,
+    build_approval_revocation_fixture_drill,
+    build_pre_v40_revocation_gate,
+    build_controlled_publish_approval_revocation_system,
+    build_autonomy_capability_inventory,
+    build_autonomous_task_proposal_schema,
+    build_autonomous_dry_run_plan,
+    build_autonomy_action_policy_engine,
+    build_autonomous_patch_sandbox,
+    build_autonomous_patch_risk_classifier,
+    build_autonomous_test_selection,
+    build_autonomy_human_checkpoint,
+    build_pre_v41_autonomy_readiness_gate,
+    build_autonomy_readiness_boundary_system,
+    build_patch_proposal_schema,
+    build_autonomous_change_target_selector,
+    build_generate_sandbox_patch,
+    build_sandbox_patch_diff,
+    build_sandbox_patch_validation,
+    build_sandbox_patch_test_run,
+    build_patch_review_checkpoint,
+    build_source_apply_dry_run,
+    build_pre_v42_autonomous_patch_gate,
+    build_autonomous_patch_proposal_system,
+    build_source_apply_eligibility,
+    build_source_apply_confirmation_policy,
+    build_source_apply_dry_run_v2,
+    build_source_apply_backup_quarantine,
+    build_apply_reviewed_patch,
+    build_post_source_apply_verification,
+    build_source_apply_rollback_preview,
+    build_source_apply_fixture_drill,
+    build_pre_v43_source_apply_gate,
+    build_controlled_source_apply_system,
+    build_source_apply_record_reader,
+    build_source_rollback_eligibility,
+    build_source_rollback_confirmation_policy,
+    build_source_rollback_dry_run_v2,
+    build_rollback_applied_patch,
+    build_post_source_rollback_verification,
+    build_source_rollback_audit_trail,
+    build_source_rollback_fixture_drill,
+    build_pre_v44_source_rollback_gate,
+    build_controlled_source_rollback_system,
     summarize_self_maintenance_report,
 )
+import self_maintenance as sm_v45
 from dev_loop_runner import get_dev_loop, list_dev_loops, run_dev_loop
 from test_report_reviewer import list_test_reviews
 from test_runner import list_test_reports
 from watch_mode import list_watch_reports, load_watch_report, run_watch_loop, run_watch_once
 
 
-API_VERSION = "30.0"
+API_VERSION = "350.0"
 
 
 class ApiError(Exception):
@@ -429,6 +573,44 @@ def _error(status: int, message: str, details: Any | None = None) -> dict[str, A
     if details is not None:
         payload["details"] = _to_jsonable(details)
     return payload
+
+
+def _query_release_zip_path(query: dict[str, list[str]]) -> str | None:
+    raw = (query.get("zip_path", [None])[0] or "").strip()
+    if not raw:
+        return None
+    try:
+        path = Path(raw).expanduser().resolve()
+    except (OSError, RuntimeError) as error:
+        raise ApiError(400, "Invalid release zip path.", {"error_type": type(error).__name__})
+    if path.suffix.lower() != ".zip":
+        raise ApiError(400, "release zip path must point to a .zip file.")
+    if not path.exists() or not path.is_file():
+        raise ApiError(404, "release zip path was not found.")
+    if not zipfile.is_zipfile(path):
+        raise ApiError(400, "release zip path is not a valid zip archive.")
+    return str(path)
+
+
+def _query_path(query: dict[str, list[str]], name: str) -> str | None:
+    raw = (query.get(name, [None])[0] or "").strip()
+    if not raw:
+        return None
+    try:
+        path = Path(raw).expanduser().resolve()
+    except (OSError, RuntimeError) as error:
+        raise ApiError(400, f"Invalid {name}.", {"error_type": type(error).__name__})
+    if not path.exists() or not path.is_file():
+        raise ApiError(404, f"{name} was not found.")
+    return str(path)
+
+
+def _query_signature_options(query: dict[str, list[str]]) -> dict[str, Any]:
+    return {
+        "signature_path": _query_path(query, "signature_path"),
+        "public_key_path": _query_path(query, "public_key_path"),
+        "trusted_fingerprint": (query.get("trusted_fingerprint", [None])[0] or None),
+    }
 
 
 def _path_parts(path: str) -> list[str]:
@@ -506,6 +688,298 @@ def _api_index() -> dict[str, Any]:
             "POST /api/controlled-build/cycle": "Run v8.9 full controlled build cycle; live mode requires confirmation.",
             "POST /api/supervised-dev-loop": "Run v9.0 one-cycle supervised autonomous development loop; live mode requires confirmation.",
             "GET /api/codebase-map": "Run v9.1 codebase map.",
+            "GET /api/patch-context/goal": "Run v71.1 patch goal intake classifier.",
+            "GET /api/patch-context/files": "Run v71.2 relevant file context selector.",
+            "GET /api/patch-context/failures": "Run v71.3 historical failure context binder.",
+            "GET /api/patch-context/budget": "Run v71.4 risk-aware context budgeter.",
+            "GET /api/patch-context/verification": "Run v71.5 verification requirement compiler.",
+            "GET /api/patch-context/packet": "Run v71.6 patch prompt context packet builder.",
+            "GET /api/patch-context/review": "Run v71.7 context completeness reviewer.",
+            "GET /api/patch-context/parity": "Run v71.8 patch context dashboard/API/CLI parity.",
+            "GET /api/patch-context/gate": "Run v71.9 pre-v72 patch context gate.",
+            "GET /api/patch-context/layer": "Run v72.0 patch generation context builder.",
+            "GET /api/patch-drafts/intake": "Run v72.1 patch intent normalizer.",
+            "GET /api/patch-drafts/scope": "Run v72.2 patch scope contract builder.",
+            "GET /api/patch-drafts/prompt": "Run v72.3 patch prompt composer.",
+            "GET /api/patch-drafts/schema": "Run v72.4 patch draft output schema.",
+            "GET /api/patch-drafts/safety": "Run v72.5 patch draft safety reviewer.",
+            "GET /api/patch-drafts/evidence": "Run v72.6 patch draft evidence binder.",
+            "GET /api/patch-drafts/parity": "Run v72.7 patch draft dashboard/API/CLI parity.",
+            "GET /api/patch-drafts/handoff": "Run v72.8 local model handoff stub.",
+            "GET /api/patch-drafts/gate": "Run v72.9 pre-v73 patch draft gate.",
+            "GET /api/patch-drafts/layer": "Run v73.0 supervised patch draft composer.",
+            "GET /api/patch-review/intake": "Run v73.1 patch draft intake parser.",
+            "GET /api/patch-review/diff-boundary": "Run v73.2 diff boundary extractor.",
+            "GET /api/patch-review/scope": "Run v73.3 scope contract validator.",
+            "GET /api/patch-review/safety": "Run v73.4 safety boundary validator.",
+            "GET /api/patch-review/docs": "Run v73.5 documentation update validator.",
+            "GET /api/patch-review/verification": "Run v73.6 verification plan validator.",
+            "GET /api/patch-review/risk": "Run v73.7 patch risk scorer.",
+            "GET /api/patch-review/report": "Run v73.8 patch review report builder.",
+            "GET /api/patch-review/parity": "Run v73.9 patch review dashboard/API/CLI parity.",
+            "GET /api/patch-review/gate": "Run v73.9 pre-v74 patch review gate.",
+            "GET /api/patch-review/layer": "Run v74.0 patch draft review and diff validation layer.",
+            "GET /api/patch-trials/intake": "Run v74.1 sandbox trial intake binder.",
+            "GET /api/patch-trials/workspace": "Run v74.2 disposable workspace builder.",
+            "GET /api/patch-trials/materialize": "Run v74.3 patch draft materializer.",
+            "GET /api/patch-trials/verify": "Run v74.4 sandbox verification runner.",
+            "GET /api/patch-trials/evidence": "Run v74.5 sandbox evidence collector.",
+            "GET /api/patch-trials/escape-guard": "Run v74.6 sandbox escape/mutation guard.",
+            "GET /api/patch-trials/parity": "Run v74.7 patch trial dashboard/API/CLI parity.",
+            "GET /api/patch-trials/cleanup": "Run v74.8 patch trial cleanup retention policy.",
+            "GET /api/patch-trials/list": "List retained v75 patch trials.",
+            "GET /api/patch-trials/gate": "Run v74.9 pre-v75 sandbox trial gate.",
+            "GET /api/patch-trials/layer": "Run v75.0 sandbox patch trial runner.",
+            "GET /api/patch-evidence/intake": "Run v75.1 sandbox evidence intake reader.",
+            "GET /api/patch-evidence/integrity": "Run v75.2 trial integrity validator.",
+            "GET /api/patch-evidence/verification": "Run v75.3 verification evidence scorer.",
+            "GET /api/patch-evidence/scope-docs": "Run v75.4 scope and documentation evidence reviewer.",
+            "GET /api/patch-evidence/risk": "Run v75.5 risk acceptance classifier.",
+            "GET /api/patch-evidence/readiness": "Run v75.6 promotion readiness packet builder.",
+            "GET /api/patch-evidence/parity": "Run v75.7 patch evidence dashboard/API/CLI parity.",
+            "GET /api/patch-evidence/archive": "Run v75.8 recommendation archive and comparison.",
+            "GET /api/patch-evidence/gate": "Run v75.9 pre-v76 evidence review gate.",
+            "GET /api/patch-evidence/layer": "Run v76.0 sandbox evidence review recommendation layer.",
+            "GET /api/patch-apply/approval": "Run v76.1 approval intake contract in dry-run mode.",
+            "GET /api/patch-apply/bind": "Run v76.2 recommendation-to-approval binder in dry-run mode.",
+            "GET /api/patch-apply/snapshot": "Run v76.3 live source snapshot builder preview.",
+            "GET /api/patch-apply/apply": "Run v76.4 approved patch materializer in API dry-run mode only.",
+            "GET /api/patch-apply/verify": "Run v76.5 post-apply verification runner.",
+            "GET /api/patch-apply/rollback": "Run v76.6 automatic rollback executor dry-run.",
+            "GET /api/patch-apply/evidence": "Run v76.7 application evidence recorder in dry-run mode.",
+            "GET /api/patch-apply/parity": "Run v76.8 patch application dashboard/API/CLI parity.",
+            "GET /api/patch-apply/gate": "Run v76.9 pre-v77 application gate.",
+            "GET /api/patch-apply/layer": "Run v77.0 operator-approved patch application layer in dry-run mode unless CLI invokes live.",
+            "GET /api/patch-recovery/preflight": "Run v77.1 dirty tree preflight detector.",
+            "GET /api/patch-recovery/snapshot": "Run v77.2 snapshot completeness validator.",
+            "GET /api/patch-recovery/partial-apply": "Run v77.3 partial apply detector.",
+            "GET /api/patch-recovery/rollback-integrity": "Run v77.4 rollback integrity verifier.",
+            "GET /api/patch-recovery/triage": "Run v77.5 failed verification triage.",
+            "GET /api/patch-recovery/recommendation": "Run v77.6 recovery recommendation builder.",
+            "GET /api/patch-recovery/timeline": "Run v77.7 application audit timeline.",
+            "GET /api/patch-recovery/parity": "Run v77.8 patch recovery dashboard/API/CLI parity.",
+            "GET /api/patch-recovery/gate": "Run v77.9 pre-v78 recovery gate.",
+            "GET /api/patch-recovery/layer": "Run v78.0 verified application recovery and rollback hardening layer.",
+            "GET /api/patch-queue/schema": "Run v78.1 patch queue record schema.",
+            "GET /api/patch-queue/intake": "Run v78.2 patch queue intake organizer.",
+            "GET /api/patch-queue/conflicts": "Run v78.3 patch queue conflict detector.",
+            "GET /api/patch-queue/priority": "Run v78.4 patch queue risk priority scheduler.",
+            "GET /api/patch-queue/stale-evidence": "Run v78.5 patch queue stale evidence detector.",
+            "GET /api/patch-queue/serial-plan": "Run v78.6 patch queue serial trial plan builder.",
+            "GET /api/patch-queue/review-packet": "Run v78.7 patch queue operator review packet.",
+            "GET /api/patch-queue/parity": "Run v78.8 patch queue dashboard/API/CLI parity.",
+            "GET /api/patch-queue/gate": "Run v78.9 pre-v79 queue gate.",
+            "GET /api/patch-queue/layer": "Run v79.0 multi-patch queue planning layer.",
+            "GET /api/improvement-loop/intake": "Run v79.1 Improvement Opportunity Intake.",
+            "GET /api/improvement-loop/state": "Run v79.2 Improvement Cycle State Machine.",
+            "GET /api/improvement-loop/binder": "Run v79.3 Pipeline Stage Binder.",
+            "GET /api/improvement-loop/model-stub": "Run v79.4 Local Model Invocation Stub.",
+            "GET /api/improvement-loop/evidence": "Run v79.5 Improvement Loop Evidence Recorder.",
+            "GET /api/improvement-loop/stop-gate": "Run v79.6 Operator Stop Gate.",
+            "GET /api/improvement-loop/parity": "Run v79.7 Improvement Loop Dashboard/API/CLI.",
+            "GET /api/improvement-loop/safety": "Run v79.8 Loop Safety Auditor.",
+            "GET /api/improvement-loop/gate": "Run v79.9 Pre-v80 Supervised Loop Gate.",
+            "GET /api/improvement-loop/layer": "Run v80.0 Supervised Local Improvement Loop.",
+            "GET /api/local-model-proposals/adapter": "Run v80.1 Local Model Adapter Contract.",
+            "GET /api/local-model-proposals/profile": "Run v80.2 Model Capability Profile.",
+            "GET /api/local-model-proposals/prompt-export": "Run v80.3 Prompt Export and Invocation Guard.",
+            "GET /api/local-model-proposals/capture": "Run v80.4 Proposal Capture Parser.",
+            "GET /api/local-model-proposals/safety": "Run v80.5 Proposal Safety Precheck.",
+            "GET /api/local-model-proposals/provenance": "Run v80.6 Model Output Provenance Recorder.",
+            "GET /api/local-model-proposals/parity": "Run v80.7 Proposal Integration Dashboard/API/CLI.",
+            "GET /api/local-model-proposals/disabled-gate": "Run v80.8 Disabled-by-Default Invocation Gate.",
+            "GET /api/local-model-proposals/gate": "Run v80.9 Pre-v81 Model Integration Gate.",
+            "GET /api/local-model-proposals/layer": "Run v81.0 Local Model Patch Proposal Integration.",
+            "GET /api/proposal-critique/intake": "Run v81.1 Proposal Collection Intake.",
+            "GET /api/proposal-critique/diff-normalize": "Run v81.2 Candidate Diff Normalizer.",
+            "GET /api/proposal-critique/quality": "Run v81.3 Proposal Quality Heuristic Scorer.",
+            "GET /api/proposal-critique/safety-scope": "Run v81.4 Safety and Scope Comparison.",
+            "GET /api/proposal-critique/verification": "Run v81.5 Verification Plan Comparison.",
+            "GET /api/proposal-critique/report": "Run v81.6 Critique Report Builder.",
+            "GET /api/proposal-critique/parity": "Run v81.7 Critique Dashboard/API/CLI.",
+            "GET /api/proposal-critique/operator-bundle": "Run v81.8 Operator Review Bundle Exporter.",
+            "GET /api/proposal-critique/gate": "Run v81.9 Pre-v82 Output Critique Gate.",
+            "GET /api/proposal-critique/layer": "Run v82.0 Local Model Output Comparison and Critique.",
+            "GET /api/candidate-ranking/schema": "Run v82.1 Candidate Registry Schema.",
+            "GET /api/candidate-ranking/dedupe": "Run v82.2 Candidate Deduplication.",
+            "GET /api/candidate-ranking/risk-ranking": "Run v82.3 Risk-Weighted Ranking.",
+            "GET /api/candidate-ranking/conflicts": "Run v82.4 Conflict-Aware Grouping.",
+            "GET /api/candidate-ranking/evidence": "Run v82.5 Evidence Completeness Ranker.",
+            "GET /api/candidate-ranking/explainer": "Run v82.6 Ranking Explainer.",
+            "GET /api/candidate-ranking/parity": "Run v82.7 Ranking Dashboard/API/CLI.",
+            "GET /api/candidate-ranking/selection": "Run v82.8 Operator Selection Packet.",
+            "GET /api/candidate-ranking/gate": "Run v82.9 Pre-v83 Ranking Gate.",
+            "GET /api/candidate-ranking/layer": "Run v83.0 Multi-Model Patch Candidate Ranking.",
+            "GET /api/candidate-refinement/goal": "Run v83.1 Refinement Goal Binder.",
+            "GET /api/candidate-refinement/revision-prompt": "Run v83.2 Critique-to-Revision Prompt Builder.",
+            "GET /api/candidate-refinement/scope": "Run v83.3 Constrained Revision Scope Builder.",
+            "GET /api/candidate-refinement/safety": "Run v83.4 Refinement Safety Reviewer.",
+            "GET /api/candidate-refinement/evidence": "Run v83.5 Refinement Evidence Recorder.",
+            "GET /api/candidate-refinement/iteration-limit": "Run v83.6 Refinement Iteration Limiter.",
+            "GET /api/candidate-refinement/parity": "Run v83.7 Refinement Dashboard/API/CLI.",
+            "GET /api/candidate-refinement/operator-packet": "Run v83.8 Operator Revision Packet.",
+            "GET /api/candidate-refinement/gate": "Run v83.9 Pre-v84 Refinement Gate.",
+            "GET /api/candidate-refinement/layer": "Run v84.0 Supervised Patch Candidate Refinement.",
+            "GET /api/suggestion-loop/intake": "Run v84.1 Suggestion Source Intake.",
+            "GET /api/suggestion-loop/state": "Run v84.2 Suggestion Cycle State Machine.",
+            "GET /api/suggestion-loop/budget": "Run v84.3 Recurring Suggestion Budgeter.",
+            "GET /api/suggestion-loop/safety": "Run v84.4 Safety Boundary Enforcer.",
+            "GET /api/suggestion-loop/dedupe": "Run v84.5 Suggestion Deduplication Memory.",
+            "GET /api/suggestion-loop/attention": "Run v84.6 Operator Attention Packet.",
+            "GET /api/suggestion-loop/parity": "Run v84.7 Suggestion Loop Dashboard/API/CLI.",
+            "GET /api/suggestion-loop/no-apply": "Run v84.8 No-Autonomous-Apply Auditor.",
+            "GET /api/suggestion-loop/gate": "Run v84.9 Pre-v85 Suggestion Loop Gate.",
+            "GET /api/suggestion-loop/layer": "Run v85.0 Safe Autonomous Suggestion Loop.",
+            "GET /api/suggestion-inbox/schema": "Run v85.1 Suggestion Inbox Record Schema.",
+            "GET /api/suggestion-inbox/intake": "Run v85.2 Suggestion Intake Normalizer.",
+            "GET /api/suggestion-inbox/dedupe": "Run v85.3 Suggestion Deduplication and Drift Resolver.",
+            "GET /api/suggestion-inbox/triage": "Run v85.4 Operator Triage State Machine.",
+            "GET /api/suggestion-inbox/work-order-draft": "Run v85.5 Work Order Draft Builder.",
+            "GET /api/suggestion-inbox/safety": "Run v85.6 Safety and Scope Contract Binder.",
+            "GET /api/suggestion-inbox/handoff": "Run v85.7 Pipeline Handoff Planner.",
+            "GET /api/suggestion-inbox/parity": "Run v85.8 Suggestion Inbox Dashboard/API/CLI.",
+            "GET /api/suggestion-inbox/gate": "Run v85.9 Pre-v86 Suggestion Inbox Gate.",
+            "GET /api/suggestion-inbox/layer": "Run v86.0 Supervised Suggestion Inbox and Work Order Planner.",
+            "GET /api/work-order-handoff/schema": "Run v86.1 Work Order Context Schema.",
+            "GET /api/work-order-handoff/preflight": "Run v86.2 Patch Context Preflight Validator.",
+            "GET /api/work-order-handoff/impact": "Run v86.3 Source Impact Mapper.",
+            "GET /api/work-order-handoff/packet": "Run v86.4 Handoff Packet Builder.",
+            "GET /api/work-order-handoff/risk": "Run v86.5 Patch Context Risk Classifier.",
+            "GET /api/work-order-handoff/compatibility": "Run v86.6 Context-to-Draft Compatibility Layer.",
+            "GET /api/work-order-handoff/parity": "Run v86.7 Handoff Dashboard/API/CLI Coverage.",
+            "GET /api/work-order-handoff/privacy": "Run v86.8 Handoff Parity and Privacy Gate.",
+            "GET /api/work-order-handoff/gate": "Run v86.9 Pre-v87 Integration Gate.",
+            "GET /api/work-order-handoff/layer": "Run v87.0 Work Order to Patch Context Handoff.",
+            "GET /api/work-order-evidence/schema": "Run v87.1 Execution Evidence Schema.",
+            "GET /api/work-order-evidence/linker": "Run v87.2 Patch Attempt Linker.",
+            "GET /api/work-order-evidence/sandbox": "Run v87.3 Sandbox Evidence Binder.",
+            "GET /api/work-order-evidence/ledger": "Run v87.4 Review Decision Ledger.",
+            "GET /api/work-order-evidence/drift": "Run v87.5 Regression and Drift Tracker.",
+            "GET /api/work-order-evidence/summary": "Run v87.6 Evidence Summary Builder.",
+            "GET /api/work-order-evidence/parity": "Run v87.7 Evidence Dashboard/API/CLI Coverage.",
+            "GET /api/work-order-evidence/privacy": "Run v87.8 Evidence Privacy and Safety Gate.",
+            "GET /api/work-order-evidence/gate": "Run v87.9 Pre-v88 Integration Gate.",
+            "GET /api/work-order-evidence/layer": "Run v88.0 Work Order Execution Evidence Binder.",
+            "GET /api/self-development/routes": "Run v88.1 Dashboard Route Inventory.",
+            "GET /api/self-development/navigation": "Run v88.2 Navigation Grouping Model.",
+            "GET /api/self-development/console": "Run v88.3 Self-Development Console Page.",
+            "GET /api/self-development/action-queue": "Run v88.4 Operator Action Queue.",
+            "GET /api/self-development/performance": "Run v88.5 Dashboard Performance Pass.",
+            "GET /api/self-development/safety-banners": "Run v88.6 Dashboard Safety Banner System.",
+            "GET /api/self-development/parity": "Run v88.7 Console Dashboard/API/CLI Parity.",
+            "GET /api/self-development/tooltip-gate": "Run v88.8 Tooltip Regression and UX Gate.",
+            "GET /api/self-development/gate": "Run v88.9 Pre-v89 Integration Gate.",
+            "GET /api/self-development/layer": "Run v89.0 Self-Development Dashboard Consolidation.",
+            "GET /api/self-development-readiness/schema": "Run v89.1 Readiness Audit Schema.",
+            "GET /api/self-development-readiness/boundaries": "Run v89.2 Capability Boundary Scanner.",
+            "GET /api/self-development-readiness/approval-gates": "Run v89.3 Approval Gate Integrity Audit.",
+            "GET /api/self-development-readiness/traceability": "Run v89.4 Evidence Traceability Audit.",
+            "GET /api/self-development-readiness/verification": "Run v89.5 Verification Coverage Audit.",
+            "GET /api/self-development-readiness/risk-register": "Run v89.6 Autonomy Risk Register.",
+            "GET /api/self-development-readiness/scorecard": "Run v89.7 Readiness Scorecard Builder.",
+            "GET /api/self-development-readiness/parity": "Run v89.8 Readiness Audit Dashboard/API/CLI Coverage.",
+            "GET /api/self-development-readiness/gate": "Run v89.9 Pre-v90 Final Governance Gate.",
+            "GET /api/self-development-readiness/layer": "Run v90.0 Supervised Self-Development Readiness Audit.",
+            "GET /api/development-sessions/schema": "Run v90.1 Development Session Schema.",
+            "GET /api/development-sessions/create-plan": "Run v90.2 Session Creation Planner.",
+            "GET /api/development-sessions/scope": "Run v90.3 Session Scope Binder.",
+            "GET /api/development-sessions/state": "Run v90.4 Session State Machine.",
+            "GET /api/development-sessions/linkage": "Run v90.5 Session Linkage Builder.",
+            "GET /api/development-sessions/summary": "Run v90.6 Session Summary Builder.",
+            "GET /api/development-sessions/parity": "Run v90.7 Session Dashboard/API/CLI Coverage.",
+            "GET /api/development-sessions/privacy": "Run v90.8 Session Privacy and Safety Gate.",
+            "GET /api/development-sessions/gate": "Run v90.9 Pre-v91 Integration Gate.",
+            "GET /api/development-sessions/layer": "Run v91.0 Supervised Development Session Manager.",
+            "GET /api/approval-console/schema": "Run v91.1 Approval Request Schema.",
+            "GET /api/approval-console/queue": "Run v91.2 Approval Queue Builder.",
+            "GET /api/approval-console/decision-ledger": "Run v91.3 Approval Decision Ledger.",
+            "GET /api/approval-console/dependencies": "Run v91.4 Approval Dependency Resolver.",
+            "GET /api/approval-console/risk": "Run v91.5 Approval Risk Explainer.",
+            "GET /api/approval-console/audit": "Run v91.6 Approval Reversal and Audit Trail.",
+            "GET /api/approval-console/parity": "Run v91.7 Approval Console Dashboard/API/CLI.",
+            "GET /api/approval-console/safety": "Run v91.8 Approval Safety Gate.",
+            "GET /api/approval-console/gate": "Run v91.9 Pre-v92 Integration Gate.",
+            "GET /api/approval-console/layer": "Run v92.0 Operator Approval Workflow Console.",
+            "GET /api/experiment-planner/schema": "Run v92.1 Experiment Branch Schema.",
+            "GET /api/experiment-planner/eligibility": "Run v92.2 Experiment Eligibility Checker.",
+            "GET /api/experiment-planner/plan": "Run v92.3 Experiment Plan Builder.",
+            "GET /api/experiment-planner/workspace": "Run v92.4 Sandbox Workspace Allocator.",
+            "GET /api/experiment-planner/evidence-contract": "Run v92.5 Experiment Evidence Contract.",
+            "GET /api/experiment-planner/promotion-blocker": "Run v92.6 Experiment Promotion Blocker.",
+            "GET /api/experiment-planner/parity": "Run v92.7 Experiment Dashboard/API/CLI Coverage.",
+            "GET /api/experiment-planner/privacy": "Run v92.8 Experiment Privacy and Safety Gate.",
+            "GET /api/experiment-planner/gate": "Run v92.9 Pre-v93 Integration Gate.",
+            "GET /api/experiment-planner/layer": "Run v93.0 Safe Experiment Branch Planner.",
+            "GET /api/outcome-reflections/schema": "Run v93.1 Outcome Reflection Schema.",
+            "GET /api/outcome-reflections/classify": "Run v93.2 Completion Outcome Classifier.",
+            "GET /api/outcome-reflections/lessons": "Run v93.3 Evidence-to-Lesson Extractor.",
+            "GET /api/outcome-reflections/recurring-issues": "Run v93.4 Recurring Issue Detector.",
+            "GET /api/outcome-reflections/safety": "Run v93.5 Reflection Safety Filter.",
+            "GET /api/outcome-reflections/suggestion-handoff": "Run v93.6 Reflection-to-Suggestion Handoff.",
+            "GET /api/outcome-reflections/parity": "Run v93.7 Reflection Dashboard/API/CLI Coverage.",
+            "GET /api/outcome-reflections/privacy": "Run v93.8 Reflection Privacy and Containment Gate.",
+            "GET /api/outcome-reflections/gate": "Run v93.9 Pre-v94 Integration Gate.",
+            "GET /api/outcome-reflections/layer": "Run v94.0 Learning-from-Outcome Reflection Layer.",
+            "GET /api/improvement-cycles/schema": "Run v94.1 Improvement Cycle Schema.",
+            "GET /api/improvement-cycles/stage": "Run v94.2 Cycle Stage Resolver.",
+            "GET /api/improvement-cycles/blockers": "Run v94.3 Cycle Blocker Detector.",
+            "GET /api/improvement-cycles/next-step": "Run v94.4 Cycle Next-Step Recommender.",
+            "GET /api/improvement-cycles/timeline": "Run v94.5 Cycle Timeline Builder.",
+            "GET /api/improvement-cycles/governance": "Run v94.6 Cycle Governance Gate.",
+            "GET /api/improvement-cycles/parity": "Run v94.7 Cycle Dashboard/API/CLI Coverage.",
+            "GET /api/improvement-cycles/privacy": "Run v94.8 Cycle Privacy and Package Gate.",
+            "GET /api/improvement-cycles/gate": "Run v94.9 Pre-v95 Integration Gate.",
+            "GET /api/improvement-cycles/layer": "Run v95.0 Supervised Improvement Cycle Orchestrator.",
+            "GET /api/cycle-replay/schema": "Run v95.1 Replay Record Schema.",
+            "GET /api/cycle-replay/fixtures": "Run v95.2 Synthetic Cycle Fixture Builder.",
+            "GET /api/cycle-replay/run": "Run v95.3 Replay Runner.",
+            "GET /api/cycle-replay/compare": "Run v95.4 Expected Decision Comparator.",
+            "GET /api/cycle-replay/score": "Run v95.5 Benchmark Scoring Model.",
+            "GET /api/cycle-replay/regressions": "Run v95.6 Regression Benchmark Set.",
+            "GET /api/cycle-replay/parity": "Run v95.7 Replay Dashboard/API/CLI Coverage.",
+            "GET /api/cycle-replay/privacy": "Run v95.8 Replay Safety and Privacy Gate.",
+            "GET /api/cycle-replay/gate": "Run v95.9 Pre-v96 Integration Gate.",
+            "GET /api/cycle-replay/layer": "Run v96.0 Supervised Cycle Replay and Benchmark Harness.",
+            "GET /api/capability-ledger/schema": "Run v96.1 Capability Ledger Schema.",
+            "GET /api/capability-ledger/default-policy": "Run v96.2 Default Capability Policy Builder.",
+            "GET /api/capability-ledger/classify": "Run v96.3 Capability Request Classifier.",
+            "GET /api/capability-ledger/budget": "Run v96.4 Capability Budget Tracker.",
+            "GET /api/capability-ledger/conflicts": "Run v96.5 Permission Conflict Detector.",
+            "GET /api/capability-ledger/denials": "Run v96.6 Denial Reason Builder.",
+            "GET /api/capability-ledger/parity": "Run v96.7 Permission Ledger Dashboard/API/CLI Coverage.",
+            "GET /api/capability-ledger/safety": "Run v96.8 Capability Safety Gate.",
+            "GET /api/capability-ledger/gate": "Run v96.9 Pre-v97 Integration Gate.",
+            "GET /api/capability-ledger/layer": "Run v97.0 Capability Permission and Budget Ledger.",
+            "GET /api/shadow-autonomy/schema": "Run v97.1 Shadow Simulation Schema.",
+            "GET /api/shadow-autonomy/intention": "Run v97.2 Autonomous Intention Simulator.",
+            "GET /api/shadow-autonomy/action-shadow": "Run v97.3 Action Shadowing Engine.",
+            "GET /api/shadow-autonomy/approval-map": "Run v97.4 Simulation-to-Approval Request Mapper.",
+            "GET /api/shadow-autonomy/unsafe-detector": "Run v97.5 Unsafe Simulation Detector.",
+            "GET /api/shadow-autonomy/comparator": "Run v97.6 Shadow Plan Comparator.",
+            "GET /api/shadow-autonomy/parity": "Run v97.7 Shadow Simulation Dashboard/API/CLI Coverage.",
+            "GET /api/shadow-autonomy/containment": "Run v97.8 Simulation Containment Gate.",
+            "GET /api/shadow-autonomy/gate": "Run v97.9 Pre-v98 Integration Gate.",
+            "GET /api/shadow-autonomy/layer": "Run v98.0 Shadow Autonomy Simulation Layer.",
+            "GET /api/failure-war-games/schema": "Run v98.1 Failure Scenario Schema.",
+            "GET /api/failure-war-games/scenarios": "Run v98.2 Known Failure Scenario Builder.",
+            "GET /api/failure-war-games/recovery-plan": "Run v98.3 Recovery Path Planner.",
+            "GET /api/failure-war-games/rollback-readiness": "Run v98.4 Rollback Readiness Checker.",
+            "GET /api/failure-war-games/containment": "Run v98.5 Failure Containment Simulator.",
+            "GET /api/failure-war-games/evidence": "Run v98.6 Recovery Evidence Binder.",
+            "GET /api/failure-war-games/parity": "Run v98.7 War Game Dashboard/API/CLI Coverage.",
+            "GET /api/failure-war-games/privacy": "Run v98.8 Failure Safety and Privacy Gate.",
+            "GET /api/failure-war-games/gate": "Run v98.9 Pre-v99 Integration Gate.",
+            "GET /api/failure-war-games/layer": "Run v99.0 Failure Recovery and Rollback War Game Layer.",
+            "GET /api/mind-milestone-audit/schema": "Run v99.1 Mind Milestone Audit Schema.",
+            "GET /api/mind-milestone-audit/architecture": "Run v99.2 Architecture Coherence Mapper.",
+            "GET /api/mind-milestone-audit/identity-memory": "Run v99.3 Identity and Memory Boundary Audit.",
+            "GET /api/mind-milestone-audit/goals": "Run v99.4 Goal and Motivation Audit.",
+            "GET /api/mind-milestone-audit/maturity": "Run v99.5 Self-Development Maturity Scorecard.",
+            "GET /api/mind-milestone-audit/operator-burden": "Run v99.6 Human-Operator Burden Review.",
+            "GET /api/mind-milestone-audit/parity": "Run v99.7 v100 Milestone Dashboard/API/CLI Coverage.",
+            "GET /api/mind-milestone-audit/governance": "Run v99.8 v100 Governance and Autonomy Boundary Gate.",
+            "GET /api/mind-milestone-audit/gate": "Run v99.9 Pre-v100 Final Integration Gate.",
+            "GET /api/mind-milestone-audit/layer": "Run v100.0 Local Artificial Mind Milestone Audit.",
             "GET /api/task-dependencies": "Run v9.2 dependency-aware task planning.",
             "GET /api/test-plan": "Run v9.3 test planner.",
             "GET /api/patch-risk": "Run v9.4 patch risk analyzer.",
@@ -1342,25 +1816,25 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
     if parts in (["external-zip-install-verification"], ["release", "external-zip-install-verification"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_external_zip_install_verification(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], run_compile=False, save=False)
+        report = build_external_zip_install_verification(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), run_compile=False, save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["deterministic-release-manifest"], ["release", "deterministic-release-manifest"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_deterministic_release_manifest(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_deterministic_release_manifest(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["update-dry-run-plan"], ["release", "update-dry-run-plan"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_update_dry_run_plan(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_update_dry_run_plan(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["atomic-source-update"], ["release", "atomic-source-update"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_atomic_source_update(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], expected_manifest_hash=query.get("expected_manifest_hash", [None])[0], confirm=False, dry_run=True, save=False)
+        report = build_atomic_source_update(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), expected_manifest_hash=query.get("expected_manifest_hash", [None])[0], confirm=False, dry_run=True, save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["runtime-migration-assistant"], ["release", "runtime-migration-assistant"]):
@@ -1381,43 +1855,43 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
     if parts in (["clean-room-install-harness"], ["release", "clean-room-install-harness"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_clean_room_install_harness(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], run_smoke_tier=query.get("tier", ["fast"])[0], save=False)
+        report = build_clean_room_install_harness(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), run_smoke_tier=query.get("tier", ["fast"])[0], save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["verified-self-update-release-pipeline"], ["release", "verified-self-update-release-pipeline"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_verified_self_update_release_pipeline(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], confirm=False, dry_run=True, run_clean_room=False, save=False)
+        report = build_verified_self_update_release_pipeline(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), confirm=False, dry_run=True, run_clean_room=False, save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["trial-upgrade-from-zip"], ["release", "trial-upgrade-from-zip"], ["release", "trial-upgrade"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_trial_upgrade_harness(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], run_smoke_tier=query.get("tier", ["fast"])[0], save=False)
+        report = build_trial_upgrade_harness(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), run_smoke_tier=query.get("tier", ["fast"])[0], save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["backup-rollback-drill"], ["release", "backup-rollback-drill"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_backup_rollback_drill(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_backup_rollback_drill(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["update-collision-detector"], ["release", "update-collision-detector"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_update_collision_detector(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_update_collision_detector(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["version-registry-report"], ["release", "version-registry-report"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_version_registry_report(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], dry_run=True, save=False)
+        report = build_version_registry_report(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), dry_run=True, save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["release-provenance-report"], ["release", "provenance-report"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_release_provenance_report(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_release_provenance_report(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["dashboard-upgrade-wizard-preview"], ["release", "dashboard-upgrade-wizard-preview"]):
@@ -1433,19 +1907,19 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
     if parts in (["staged-apply-drill"], ["release", "staged-apply-drill"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_staged_apply_drill(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_staged_apply_drill(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["real-apply-guard-rails"], ["release", "real-apply-guard-rails"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_real_apply_guard_rails(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], expected_manifest_hash=query.get("expected_manifest_hash", [None])[0], confirm_phrase=query.get("confirm_phrase", [""])[0], save=False)
+        report = build_real_apply_guard_rails(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), expected_manifest_hash=query.get("expected_manifest_hash", [None])[0], confirm_phrase=query.get("confirm_phrase", [""])[0], save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["real-apply-rollback-verification"], ["release", "real-apply-rollback-verification"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_real_apply_rollback_verification(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_real_apply_rollback_verification(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
     if parts in (["self-update-ux-polish"], ["release", "self-update-ux-polish"]):
@@ -1456,16 +1930,922 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
     if parts in (["v23-readiness-gate"], ["release", "v23-readiness-gate"]):
         project_id = query.get("project", ["eidolon"])[0]
         package_name = query.get("package_name", [_package_name()])[0]
-        report = build_v23_readiness_gate(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], run_heavy=query.get("run_heavy", ["false"])[0].lower() == "true", save=False)
+        report = build_v23_readiness_gate(project_id=project_id, package_name=package_name, zip_path=_query_release_zip_path(query), run_heavy=query.get("run_heavy", ["false"])[0].lower() == "true", save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
 
-    if parts in (["controlled-self-maintenance-loop"], ["release", "controlled-self-maintenance-loop"]):
+    if parts in (["controlled-self-maintenance-loop"], ["release", "controlled-self-maintenance-loop"], ["autonomy", "controlled-self-maintenance-loop"]):
         project_id = query.get("project", ["eidolon"])[0]
-        package_name = query.get("package_name", [_package_name()])[0]
-        report = build_controlled_self_maintenance_loop(project_id=project_id, package_name=package_name, zip_path=query.get("zip_path", [None])[0], save=False)
-        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_installation_report(report))
+        report = sm_v45.build_controlled_self_maintenance_loop(project_id=project_id, goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False)
+        return 200, _ok(report)
+
+    if parts in (["self-maintenance", "self-maintenance-cycle-schema"], ["release", "self-maintenance-cycle-schema"], ["autonomy", "self-maintenance-cycle-schema"], ["self-maintenance-cycle-schema"]):
+        return 200, _ok(sm_v45.build_self_maintenance_cycle_schema(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "self-maintenance-plan"], ["release", "self-maintenance-plan"], ["autonomy", "self-maintenance-plan"], ["self-maintenance-plan"]):
+        return 200, _ok(sm_v45.build_self_maintenance_plan(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "self-maintenance-sandbox-cycle"], ["release", "self-maintenance-sandbox-cycle"], ["autonomy", "self-maintenance-sandbox-cycle"], ["self-maintenance-sandbox-cycle"]):
+        return 200, _ok(sm_v45.build_self_maintenance_sandbox_cycle(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "maintenance-checkpoint-binder"], ["release", "maintenance-checkpoint-binder"], ["autonomy", "maintenance-checkpoint-binder"], ["maintenance-checkpoint-binder"]):
+        return 200, _ok(sm_v45.build_maintenance_checkpoint_binder(project_id=query.get("project", ["eidolon"])[0], cycle_id=query.get("cycle_id", [None])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "self-maintenance-apply-dry-run"], ["release", "self-maintenance-apply-dry-run"], ["autonomy", "self-maintenance-apply-dry-run"], ["self-maintenance-apply-dry-run"]):
+        return 200, _ok(sm_v45.build_self_maintenance_apply_dry_run(project_id=query.get("project", ["eidolon"])[0], cycle_id=query.get("cycle_id", [None])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "self-maintenance-apply-handoff"], ["release", "self-maintenance-apply-handoff"], ["autonomy", "self-maintenance-apply-handoff"], ["self-maintenance-apply-handoff"]):
+        return 200, _ok(sm_v45.build_self_maintenance_apply_handoff(project_id=query.get("project", ["eidolon"])[0], cycle_id=query.get("cycle_id", [None])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "post-maintenance-verification-summary"], ["release", "post-maintenance-verification-summary"], ["autonomy", "post-maintenance-verification-summary"], ["post-maintenance-verification-summary"]):
+        return 200, _ok(sm_v45.build_post_maintenance_verification_summary(project_id=query.get("project", ["eidolon"])[0], cycle_id=query.get("cycle_id", [None])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "self-maintenance-fixture-drill"], ["release", "self-maintenance-fixture-drill"], ["autonomy", "self-maintenance-fixture-drill"], ["self-maintenance-fixture-drill"]):
+        return 200, _ok(sm_v45.build_self_maintenance_fixture_drill(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v45-self-maintenance-gate"], ["release", "pre-v45-self-maintenance-gate"], ["autonomy", "pre-v45-self-maintenance-gate"], ["pre-v45-self-maintenance-gate"]):
+        return 200, _ok(sm_v45.build_pre_v45_self_maintenance_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+
+    if parts in (["self-maintenance", "maintenance-task-record-schema"], ["release", "maintenance-task-record-schema"], ["autonomy", "maintenance-task-record-schema"], ["maintenance-task-record-schema"]):
+        return 200, _ok(sm_v45.build_maintenance_task_record_schema(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "maintenance-task-priority-risk-scoring"], ["release", "maintenance-task-priority-risk-scoring"], ["autonomy", "maintenance-task-priority-risk-scoring"], ["maintenance-task-priority-risk-scoring"]):
+        return 200, _ok(sm_v45.build_maintenance_task_priority_risk_scoring(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "maintenance-task-queue-registry"], ["release", "maintenance-task-queue-registry"], ["autonomy", "maintenance-task-queue-registry"], ["maintenance-task-queue-registry"]):
+        return 200, _ok(sm_v45.build_maintenance_task_queue_registry(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "maintenance-task-selection-policy"], ["release", "maintenance-task-selection-policy"], ["autonomy", "maintenance-task-selection-policy"], ["maintenance-task-selection-policy"]):
+        return 200, _ok(sm_v45.build_maintenance_task_selection_policy(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "maintenance-task-cycle-orchestrator"], ["release", "maintenance-task-cycle-orchestrator"], ["autonomy", "maintenance-task-cycle-orchestrator"], ["maintenance-task-cycle-orchestrator"]):
+        return 200, _ok(sm_v45.build_maintenance_task_cycle_orchestrator(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "maintenance-task-checkpoint-binding"], ["release", "maintenance-task-checkpoint-binding"], ["autonomy", "maintenance-task-checkpoint-binding"], ["maintenance-task-checkpoint-binding"]):
+        return 200, _ok(sm_v45.build_maintenance_task_checkpoint_binding(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], task_id=query.get("task_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "maintenance-task-source-apply-lockout"], ["release", "maintenance-task-source-apply-lockout"], ["autonomy", "maintenance-task-source-apply-lockout"], ["maintenance-task-source-apply-lockout"]):
+        return 200, _ok(sm_v45.build_maintenance_task_source_apply_lockout(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "maintenance-task-dashboard-api-views"], ["release", "maintenance-task-dashboard-api-views"], ["autonomy", "maintenance-task-dashboard-api-views"], ["maintenance-task-dashboard-api-views"]):
+        return 200, _ok(sm_v45.build_maintenance_task_dashboard_api_views(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "maintenance-task-fixture-drill"], ["release", "maintenance-task-fixture-drill"], ["autonomy", "maintenance-task-fixture-drill"], ["maintenance-task-fixture-drill"]):
+        return 200, _ok(sm_v45.build_maintenance_task_fixture_drill(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v46-maintenance-queue-gate"], ["release", "pre-v46-maintenance-queue-gate"], ["autonomy", "pre-v46-maintenance-queue-gate"], ["pre-v46-maintenance-queue-gate"]):
+        return 200, _ok(sm_v45.build_pre_v46_maintenance_queue_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "controlled-self-maintenance-work-queue"], ["release", "controlled-self-maintenance-work-queue"], ["autonomy", "controlled-self-maintenance-work-queue"], ["controlled-self-maintenance-work-queue"]):
+        return 200, _ok(sm_v45.build_controlled_self_maintenance_work_queue(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "autonomy-queue-report-cache"], ["release", "autonomy-queue-report-cache"], ["autonomy", "queue-report-cache"], ["autonomy-queue-report-cache"]):
+        return 200, _ok(sm_v45.build_autonomy_queue_report_cache(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "maintenance-task-drilldown"], ["release", "maintenance-task-drilldown"], ["autonomy", "maintenance-task-drilldown"], ["maintenance-task-drilldown"]):
+        return 200, _ok(sm_v45.build_maintenance_task_drilldown_view(project_id=query.get("project", ["eidolon"])[0], task_id=query.get("task_id", [None])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "queue-stale-state-warnings"], ["release", "queue-stale-state-warnings"], ["autonomy", "queue-stale-state-warnings"], ["queue-stale-state-warnings"]):
+        return 200, _ok(sm_v45.build_maintenance_queue_stale_state_warnings(project_id=query.get("project", ["eidolon"])[0], task_id=query.get("task_id", [None])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "maintenance-runtime-privacy-audit"], ["release", "maintenance-runtime-privacy-audit"], ["autonomy", "maintenance-runtime-privacy-audit"], ["maintenance-runtime-privacy-audit"]):
+        return 200, _ok(sm_v45.build_maintenance_runtime_privacy_audit(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "operator-command-palette"], ["release", "operator-command-palette"], ["autonomy", "operator-command-palette"], ["operator-command-palette"]):
+        return 200, _ok(sm_v45.build_operator_command_palette_report(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "dashboard-api-queue-parity"], ["release", "dashboard-api-queue-parity"], ["autonomy", "dashboard-api-queue-parity"], ["dashboard-api-queue-parity"]):
+        return 200, _ok(sm_v45.build_dashboard_api_queue_parity(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "queue-verification-receipt"], ["release", "queue-verification-receipt"], ["autonomy", "queue-verification-receipt"], ["queue-verification-receipt"]):
+        return 200, _ok(sm_v45.build_queue_verification_receipt(project_id=query.get("project", ["eidolon"])[0], task_id=query.get("task_id", [None])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "dashboard-accessibility-compact-layout"], ["release", "dashboard-accessibility-compact-layout"], ["autonomy", "dashboard-accessibility-compact-layout"], ["dashboard-accessibility-compact-layout"]):
+        return 200, _ok(sm_v45.build_dashboard_accessibility_compact_layout(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v47-attention-scheduler-gate"], ["release", "pre-v47-attention-scheduler-gate"], ["autonomy", "pre-v47-attention-scheduler-gate"], ["pre-v47-attention-scheduler-gate"]):
+        return 200, _ok(sm_v45.build_pre_v47_attention_scheduler_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "attention-scheduler"], ["release", "attention-scheduler"], ["autonomy", "attention-scheduler"], ["attention-scheduler"]):
+        return 200, _ok(sm_v45.build_controlled_attention_scheduler(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "attention-selection-receipt"], ["release", "attention-selection-receipt"], ["autonomy", "attention-selection-receipt"], ["attention-selection-receipt"]):
+        return 200, _ok(sm_v45.build_attention_selection_receipt(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "pre-v47-1-attention-receipt-gate"], ["release", "pre-v47-1-attention-receipt-gate"], ["autonomy", "pre-v47-1-attention-receipt-gate"], ["pre-v47-1-attention-receipt-gate"]):
+        return 200, _ok(sm_v45.build_pre_v47_1_attention_receipt_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "attention-budget-ledger"], ["release", "attention-budget-ledger"], ["autonomy", "attention-budget-ledger"], ["attention-budget-ledger"]):
+        return 200, _ok(sm_v45.build_attention_budget_ledger(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "deferred-task-memory"], ["release", "deferred-task-memory"], ["autonomy", "deferred-task-memory"], ["deferred-task-memory"]):
+        return 200, _ok(sm_v45.build_deferred_task_memory(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "blocked-task-handling"], ["release", "blocked-task-handling"], ["autonomy", "blocked-task-handling"], ["blocked-task-handling"]):
+        return 200, _ok(sm_v45.build_blocked_task_handling(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "attention-resume-context"], ["release", "attention-resume-context"], ["autonomy", "attention-resume-context"], ["attention-resume-context"]):
+        return 200, _ok(sm_v45.build_attention_resume_context(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "attention-dashboard-polish"], ["release", "attention-dashboard-polish"], ["autonomy", "attention-dashboard-polish"], ["attention-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_attention_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "attention-api-parity-gate"], ["release", "attention-api-parity-gate"], ["autonomy", "attention-api-parity-gate"], ["attention-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_attention_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "reflection-hooks-read-only"], ["release", "reflection-hooks-read-only"], ["autonomy", "reflection-hooks-read-only"], ["reflection-hooks-read-only"]):
+        return 200, _ok(sm_v45.build_reflection_hooks_read_only(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "pre-v48-reflection-gate"], ["release", "pre-v48-reflection-gate"], ["autonomy", "pre-v48-reflection-gate"], ["pre-v48-reflection-gate"]):
+        return 200, _ok(sm_v45.build_pre_v48_reflection_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "reflection-memory-loop"], ["release", "reflection-memory-loop"], ["autonomy", "reflection-memory-loop"], ["reflection-memory-loop"]):
+        return 200, _ok(sm_v45.build_controlled_reflection_memory_loop(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+
+    if parts in (["self-maintenance", "reflection-review-receipts"], ["release", "reflection-review-receipts"], ["autonomy", "reflection-review-receipts"], ["reflection-review-receipts"]):
+        return 200, _ok(sm_v45.build_reflection_review_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "reflection-candidate-deduplication"], ["release", "reflection-candidate-deduplication"], ["autonomy", "reflection-candidate-deduplication"], ["reflection-candidate-deduplication"]):
+        return 200, _ok(sm_v45.build_reflection_candidate_deduplication(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "reflection-rejection-memory"], ["release", "reflection-rejection-memory"], ["autonomy", "reflection-rejection-memory"], ["reflection-rejection-memory"]):
+        return 200, _ok(sm_v45.build_reflection_rejection_memory_runtime(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "reflection-promotion-drafts"], ["release", "reflection-promotion-drafts"], ["autonomy", "reflection-promotion-drafts"], ["reflection-promotion-drafts"]):
+        return 200, _ok(sm_v45.build_reflection_promotion_drafts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-safety-classifier"], ["release", "memory-safety-classifier"], ["autonomy", "memory-safety-classifier"], ["memory-safety-classifier"]):
+        return 200, _ok(sm_v45.build_memory_safety_classifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "reflection-dashboard-polish"], ["release", "reflection-dashboard-polish"], ["autonomy", "reflection-dashboard-polish"], ["reflection-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_reflection_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "reflection-api-parity-gate"], ["release", "reflection-api-parity-gate"], ["autonomy", "reflection-api-parity-gate"], ["reflection-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_reflection_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "reflection-privacy-package-hardening"], ["release", "reflection-privacy-package-hardening"], ["autonomy", "reflection-privacy-package-hardening"], ["reflection-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_reflection_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v49-identity-continuity-gate"], ["release", "pre-v49-identity-continuity-gate"], ["autonomy", "pre-v49-identity-continuity-gate"], ["pre-v49-identity-continuity-gate"]):
+        return 200, _ok(sm_v45.build_pre_v49_identity_continuity_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "identity-continuity-layer"], ["release", "identity-continuity-layer"], ["autonomy", "identity-continuity-layer"], ["identity-continuity-layer"]):
+        return 200, _ok(sm_v45.build_identity_continuity_layer(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "identity-receipts"], ["release", "identity-receipts"], ["autonomy", "identity-receipts"], ["identity-receipts"]):
+        return 200, _ok(sm_v45.build_identity_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "pre-v49-1-identity-receipts-gate"], ["release", "pre-v49-1-identity-receipts-gate"], ["autonomy", "pre-v49-1-identity-receipts-gate"], ["pre-v49-1-identity-receipts-gate"]):
+        return 200, _ok(sm_v45.build_pre_v49_1_identity_receipts_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+
+    if parts in (["self-maintenance", "stable-principles-ledger"], ["release", "stable-principles-ledger"], ["autonomy", "stable-principles-ledger"], ["stable-principles-ledger"]):
+        return 200, _ok(sm_v45.build_stable_principles_ledger(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "identity-drift-classifier"], ["release", "identity-drift-classifier"], ["autonomy", "identity-drift-classifier"], ["identity-drift-classifier"]):
+        return 200, _ok(sm_v45.build_identity_drift_classifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "identity-snapshot-comparison"], ["release", "identity-snapshot-comparison"], ["autonomy", "identity-snapshot-comparison"], ["identity-snapshot-comparison"]):
+        return 200, _ok(sm_v45.build_identity_snapshot_comparison(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "operator-identity-review-drafts"], ["release", "operator-identity-review-drafts"], ["autonomy", "operator-identity-review-drafts"], ["operator-identity-review-drafts"]):
+        return 200, _ok(sm_v45.build_operator_identity_review_drafts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "identity-dashboard-polish"], ["release", "identity-dashboard-polish"], ["autonomy", "identity-dashboard-polish"], ["identity-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_identity_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "identity-api-parity-gate"], ["release", "identity-api-parity-gate"], ["autonomy", "identity-api-parity-gate"], ["identity-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_identity_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "identity-privacy-package-hardening"], ["release", "identity-privacy-package-hardening"], ["autonomy", "identity-privacy-package-hardening"], ["identity-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_identity_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v50-durable-memory-gate"], ["release", "pre-v50-durable-memory-gate"], ["autonomy", "pre-v50-durable-memory-gate"], ["pre-v50-durable-memory-gate"]):
+        return 200, _ok(sm_v45.build_pre_v50_durable_memory_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "durable-memory-promotion"], ["release", "durable-memory-promotion"], ["autonomy", "durable-memory-promotion"], ["durable-memory-promotion"]):
+        return 200, _ok(sm_v45.build_supervised_durable_memory_promotion(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
 
 
+    if parts in (["self-maintenance", "memory-promotion-receipts"], ["release", "memory-promotion-receipts"], ["autonomy", "memory-promotion-receipts"], ["memory-promotion-receipts"]):
+        return 200, _ok(sm_v45.build_memory_promotion_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-promotion-deduplication"], ["release", "memory-promotion-deduplication"], ["autonomy", "memory-promotion-deduplication"], ["memory-promotion-deduplication"]):
+        return 200, _ok(sm_v45.build_memory_promotion_deduplication(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-rejection-runtime-ledger"], ["release", "memory-rejection-runtime-ledger"], ["autonomy", "memory-rejection-runtime-ledger"], ["memory-rejection-runtime-ledger"]):
+        return 200, _ok(sm_v45.build_memory_rejection_runtime_ledger(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-promotion-confirmation-gate"], ["release", "memory-promotion-confirmation-gate"], ["autonomy", "memory-promotion-confirmation-gate"], ["memory-promotion-confirmation-gate"]):
+        return 200, _ok(sm_v45.build_memory_promotion_confirmation_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], promotion_id=query.get("promotion_id", [None])[0], confirmation=query.get("confirmation", [None])[0], save=False))
+    if parts in (["self-maintenance", "memory-removal-drafts"], ["release", "memory-removal-drafts"], ["autonomy", "memory-removal-drafts"], ["memory-removal-drafts"]):
+        return 200, _ok(sm_v45.build_memory_removal_drafts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-dashboard-polish"], ["release", "memory-dashboard-polish"], ["autonomy", "memory-dashboard-polish"], ["memory-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_memory_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "memory-api-parity-gate"], ["release", "memory-api-parity-gate"], ["autonomy", "memory-api-parity-gate"], ["memory-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_memory_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "memory-privacy-package-hardening"], ["release", "memory-privacy-package-hardening"], ["autonomy", "memory-privacy-package-hardening"], ["memory-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_memory_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v51-durable-write-gate"], ["release", "pre-v51-durable-write-gate"], ["autonomy", "pre-v51-durable-write-gate"], ["pre-v51-durable-write-gate"]):
+        return 200, _ok(sm_v45.build_pre_v51_durable_write_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "durable-memory-write"], ["release", "durable-memory-write"], ["autonomy", "durable-memory-write"], ["durable-memory-write"]):
+        return 200, _ok(sm_v45.build_controlled_durable_memory_write_path(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], promotion_id=query.get("promotion_id", [None])[0], confirmation=query.get("confirmation", [None])[0], execute=False, save=False))
+
+
+
+
+    if parts in (["self-maintenance", "durable-memory-write-receipts"], ["release", "durable-memory-write-receipts"], ["autonomy", "durable-memory-write-receipts"], ["durable-memory-write-receipts"]):
+        return 200, _ok(sm_v45.build_durable_memory_write_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-store-schema-hardening"], ["release", "memory-store-schema-hardening"], ["autonomy", "memory-store-schema-hardening"], ["memory-store-schema-hardening"]):
+        return 200, _ok(sm_v45.build_memory_store_schema_hardening(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-read-path"], ["release", "memory-read-path"], ["autonomy", "memory-read-path"], ["memory-read-path"]):
+        return 200, _ok(sm_v45.build_memory_read_path(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-search-filter"], ["release", "memory-search-filter"], ["autonomy", "memory-search-filter"], ["memory-search-filter"]):
+        return 200, _ok(sm_v45.build_memory_search_filter(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], memory_type=query.get("memory_type", [None])[0], save=False))
+    if parts in (["self-maintenance", "memory-correction-drafts"], ["release", "memory-correction-drafts"], ["autonomy", "memory-correction-drafts"], ["memory-correction-drafts"]):
+        return 200, _ok(sm_v45.build_memory_correction_drafts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-removal-confirmation-path"], ["release", "memory-removal-confirmation-path"], ["autonomy", "memory-removal-confirmation-path"], ["memory-removal-confirmation-path"]):
+        return 200, _ok(sm_v45.build_memory_removal_confirmation_path(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], memory_id=query.get("memory_id", [None])[0], confirmation=query.get("confirmation", [None])[0], execute=False, save=False))
+    if parts in (["self-maintenance", "memory-store-dashboard-polish"], ["release", "memory-store-dashboard-polish"], ["autonomy", "memory-store-dashboard-polish"], ["memory-store-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_memory_store_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "memory-store-api-parity-gate"], ["release", "memory-store-api-parity-gate"], ["autonomy", "memory-store-api-parity-gate"], ["memory-store-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_memory_store_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v52-recall-gate"], ["release", "pre-v52-recall-gate"], ["autonomy", "pre-v52-recall-gate"], ["pre-v52-recall-gate"]):
+        return 200, _ok(sm_v45.build_pre_v52_recall_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "memory-recall-self-context"], ["release", "memory-recall-self-context"], ["autonomy", "memory-recall-self-context"], ["memory-recall-self-context"]):
+        return 200, _ok(sm_v45.build_memory_recall_self_context(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+
+    if parts in (["self-maintenance", "memory-recall-receipts"], ["release", "memory-recall-receipts"], ["autonomy", "memory-recall-receipts"], ["memory-recall-receipts"]):
+        return 200, _ok(sm_v45.build_memory_recall_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+    if parts in (["self-maintenance", "recall-conflict-resolver"], ["release", "recall-conflict-resolver"], ["autonomy", "recall-conflict-resolver"], ["recall-conflict-resolver"]):
+        return 200, _ok(sm_v45.build_recall_conflict_resolver(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+    if parts in (["self-maintenance", "stale-memory-handling"], ["release", "stale-memory-handling"], ["autonomy", "stale-memory-handling"], ["stale-memory-handling"]):
+        return 200, _ok(sm_v45.build_stale_memory_handling(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+    if parts in (["self-maintenance", "recall-scope-controls"], ["release", "recall-scope-controls"], ["autonomy", "recall-scope-controls"], ["recall-scope-controls"]):
+        return 200, _ok(sm_v45.build_recall_scope_controls(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], scope=query.get("scope", ["project"])[0], save=False))
+    if parts in (["self-maintenance", "recall-privacy-classifier"], ["release", "recall-privacy-classifier"], ["autonomy", "recall-privacy-classifier"], ["recall-privacy-classifier"]):
+        return 200, _ok(sm_v45.build_recall_privacy_classifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+    if parts in (["self-maintenance", "recall-dashboard-polish"], ["release", "recall-dashboard-polish"], ["autonomy", "recall-dashboard-polish"], ["recall-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_recall_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "recall-api-parity-gate"], ["release", "recall-api-parity-gate"], ["autonomy", "recall-api-parity-gate"], ["recall-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_recall_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "recall-privacy-package-hardening"], ["release", "recall-privacy-package-hardening"], ["autonomy", "recall-privacy-package-hardening"], ["recall-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_recall_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v53-memory-informed-planning-gate"], ["release", "pre-v53-memory-informed-planning-gate"], ["autonomy", "pre-v53-memory-informed-planning-gate"], ["pre-v53-memory-informed-planning-gate"]):
+        return 200, _ok(sm_v45.build_pre_v53_memory_informed_planning_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+    if parts in (["self-maintenance", "memory-informed-planning"], ["release", "memory-informed-planning"], ["autonomy", "memory-informed-planning"], ["memory-informed-planning"]):
+        return 200, _ok(sm_v45.build_memory_informed_planning_loop(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+    if parts in (["self-maintenance", "memory-informed-planning-receipts"], ["release", "memory-informed-planning-receipts"], ["autonomy", "memory-informed-planning-receipts"], ["memory-informed-planning-receipts"]):
+        return 200, _ok(sm_v45.build_memory_informed_planning_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+    if parts in (["self-maintenance", "plan-conflict-classifier"], ["release", "plan-conflict-classifier"], ["autonomy", "plan-conflict-classifier"], ["plan-conflict-classifier"]):
+        return 200, _ok(sm_v45.build_plan_conflict_classifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+    if parts in (["self-maintenance", "plan-revision-drafts"], ["release", "plan-revision-drafts"], ["autonomy", "plan-revision-drafts"], ["plan-revision-drafts"]):
+        return 200, _ok(sm_v45.build_plan_revision_drafts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], save=False))
+    if parts in (["self-maintenance", "planning-scope-controls"], ["release", "planning-scope-controls"], ["autonomy", "planning-scope-controls"], ["planning-scope-controls"]):
+        return 200, _ok(sm_v45.build_planning_scope_controls(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "planning-risk-budget"], ["release", "planning-risk-budget"], ["autonomy", "planning-risk-budget"], ["planning-risk-budget"]):
+        return 200, _ok(sm_v45.build_planning_risk_budget(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "planning-dashboard-polish"], ["release", "planning-dashboard-polish"], ["autonomy", "planning-dashboard-polish"], ["planning-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_planning_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "planning-api-parity-gate"], ["release", "planning-api-parity-gate"], ["autonomy", "planning-api-parity-gate"], ["planning-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_planning_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "planning-privacy-package-hardening"], ["release", "planning-privacy-package-hardening"], ["autonomy", "planning-privacy-package-hardening"], ["planning-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_planning_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v54-action-planning-gate"], ["release", "pre-v54-action-planning-gate"], ["autonomy", "pre-v54-action-planning-gate"], ["pre-v54-action-planning-gate"]):
+        return 200, _ok(sm_v45.build_pre_v54_action_planning_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "supervised-action-planning"], ["release", "supervised-action-planning"], ["autonomy", "supervised-action-planning"], ["supervised-action-planning"]):
+        return 200, _ok(sm_v45.build_supervised_action_planning_loop(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+
+    if parts in (["self-maintenance", "action-plan-receipts"], ["release", "action-plan-receipts"], ["autonomy", "action-plan-receipts"], ["action-plan-receipts"]):
+        return 200, _ok(sm_v45.build_action_plan_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "action-step-classifier"], ["release", "action-step-classifier"], ["autonomy", "action-step-classifier"], ["action-step-classifier"]):
+        return 200, _ok(sm_v45.build_action_step_classifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "action-dependency-graph"], ["release", "action-dependency-graph"], ["autonomy", "action-dependency-graph"], ["action-dependency-graph"]):
+        return 200, _ok(sm_v45.build_action_dependency_graph(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "action-risk-budget"], ["release", "action-risk-budget"], ["autonomy", "action-risk-budget"], ["action-risk-budget"]):
+        return 200, _ok(sm_v45.build_action_risk_budget(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "action-rehearsal-dry-run-preview"], ["release", "action-rehearsal-dry-run-preview"], ["autonomy", "action-rehearsal-dry-run-preview"], ["action-rehearsal-dry-run-preview"]):
+        return 200, _ok(sm_v45.build_action_rehearsal_dry_run_preview(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "action-dashboard-polish"], ["release", "action-dashboard-polish"], ["autonomy", "action-dashboard-polish"], ["action-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_action_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "action-api-parity-gate"], ["release", "action-api-parity-gate"], ["autonomy", "action-api-parity-gate"], ["action-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_action_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "action-privacy-package-hardening"], ["release", "action-privacy-package-hardening"], ["autonomy", "action-privacy-package-hardening"], ["action-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_action_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v55-controlled-execution-gate"], ["release", "pre-v55-controlled-execution-gate"], ["autonomy", "pre-v55-controlled-execution-gate"], ["pre-v55-controlled-execution-gate"]):
+        return 200, _ok(sm_v45.build_pre_v55_controlled_execution_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "controlled-action-execution-preview"], ["release", "controlled-action-execution-preview"], ["autonomy", "controlled-action-execution-preview"], ["controlled-action-execution-preview"]):
+        return 200, _ok(sm_v45.build_controlled_action_execution_preview(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], action_plan_id=query.get("action_plan_id", [None])[0], confirmation=query.get("confirmation", [None])[0], execute_preview=False, save=False))
+    if parts in (["self-maintenance", "execution-preview-receipts"], ["release", "execution-preview-receipts"], ["autonomy", "execution-preview-receipts"], ["execution-preview-receipts"]):
+        return 200, _ok(sm_v45.build_execution_preview_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "execution-step-permission-classifier"], ["release", "execution-step-permission-classifier"], ["autonomy", "execution-step-permission-classifier"], ["execution-step-permission-classifier"]):
+        return 200, _ok(sm_v45.build_execution_step_permission_classifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "read-only-command-allowlist"], ["release", "read-only-command-allowlist"], ["autonomy", "read-only-command-allowlist"], ["read-only-command-allowlist"]):
+        return 200, _ok(sm_v45.build_read_only_command_allowlist(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "execution-sandbox-evidence-binder"], ["release", "execution-sandbox-evidence-binder"], ["autonomy", "execution-sandbox-evidence-binder"], ["execution-sandbox-evidence-binder"]):
+        return 200, _ok(sm_v45.build_execution_sandbox_evidence_binder(project_id=query.get("project", ["eidolon"])[0], command_key=query.get("command_key", ["version-import"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "execution-result-receipts"], ["release", "execution-result-receipts"], ["autonomy", "execution-result-receipts"], ["execution-result-receipts"]):
+        return 200, _ok(sm_v45.build_execution_result_receipts(project_id=query.get("project", ["eidolon"])[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "execution-dashboard-polish"], ["release", "execution-dashboard-polish"], ["autonomy", "execution-dashboard-polish"], ["execution-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_execution_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "execution-api-parity-gate"], ["release", "execution-api-parity-gate"], ["autonomy", "execution-api-parity-gate"], ["execution-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_execution_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "execution-privacy-package-hardening"], ["release", "execution-privacy-package-hardening"], ["autonomy", "execution-privacy-package-hardening"], ["execution-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_execution_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v56-read-only-execution-gate"], ["release", "pre-v56-read-only-execution-gate"], ["autonomy", "pre-v56-read-only-execution-gate"], ["pre-v56-read-only-execution-gate"]):
+        return 200, _ok(sm_v45.build_pre_v56_read_only_execution_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "controlled-read-only-action-execution"], ["release", "controlled-read-only-action-execution"], ["autonomy", "controlled-read-only-action-execution"], ["controlled-read-only-action-execution"]):
+        return 200, _ok(sm_v45.build_controlled_read_only_action_execution(project_id=query.get("project", ["eidolon"])[0], command_key=query.get("command_key", ["version-import"])[0], confirmation=query.get("confirmation", [None])[0], execute=False, goal=query.get("goal", query.get("autonomy_goal", [None]))[0], query=query.get("q", query.get("query", query.get("goal", query.get("autonomy_goal", [None]))))[0], planning_scope=query.get("planning_scope", query.get("scope", ["release_maintenance"]))[0], save=False))
+    if parts in (["self-maintenance", "read-only-execution-receipts"], ["release", "read-only-execution-receipts"], ["autonomy", "read-only-execution-receipts"], ["read-only-execution-receipts"]):
+        return 200, _ok(sm_v45.build_read_only_execution_receipts(project_id=query.get("project", ["eidolon"])[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "expanded-diagnostic-allowlist"], ["release", "expanded-diagnostic-allowlist"], ["autonomy", "expanded-diagnostic-allowlist"], ["expanded-diagnostic-allowlist"]):
+        return 200, _ok(sm_v45.build_expanded_diagnostic_allowlist(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "read-only-output-classifier"], ["release", "read-only-output-classifier"], ["autonomy", "read-only-output-classifier"], ["read-only-output-classifier"]):
+        return 200, _ok(sm_v45.build_read_only_output_classifier(project_id=query.get("project", ["eidolon"])[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "diagnostic-evidence-binder"], ["release", "diagnostic-evidence-binder"], ["autonomy", "diagnostic-evidence-binder"], ["diagnostic-evidence-binder"]):
+        return 200, _ok(sm_v45.build_diagnostic_evidence_binder(project_id=query.get("project", ["eidolon"])[0], command_key=query.get("command_key", ["version-import"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], save=False))
+    if parts in (["self-maintenance", "diagnostic-result-summaries"], ["release", "diagnostic-result-summaries"], ["autonomy", "diagnostic-result-summaries"], ["diagnostic-result-summaries"]):
+        return 200, _ok(sm_v45.build_diagnostic_result_summaries(project_id=query.get("project", ["eidolon"])[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "read-only-execution-dashboard-polish"], ["release", "read-only-execution-dashboard-polish"], ["autonomy", "read-only-execution-dashboard-polish"], ["read-only-execution-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_read_only_execution_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "read-only-execution-api-parity-gate"], ["release", "read-only-execution-api-parity-gate"], ["autonomy", "read-only-execution-api-parity-gate"], ["read-only-execution-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_read_only_execution_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "read-only-execution-privacy-package-hardening"], ["release", "read-only-execution-privacy-package-hardening"], ["autonomy", "read-only-execution-privacy-package-hardening"], ["read-only-execution-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_read_only_execution_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v57-evidence-gathering-gate"], ["release", "pre-v57-evidence-gathering-gate"], ["autonomy", "pre-v57-evidence-gathering-gate"], ["pre-v57-evidence-gathering-gate"]):
+        return 200, _ok(sm_v45.build_pre_v57_evidence_gathering_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "evidence-gathering-maintenance-loop"], ["release", "evidence-gathering-maintenance-loop"], ["autonomy", "evidence-gathering-maintenance-loop"], ["evidence-gathering-maintenance-loop"]):
+        return 200, _ok(sm_v45.build_evidence_gathering_maintenance_loop(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], execute=False, save=False))
+    if parts in (["self-maintenance", "evidence-collection-receipts"], ["release", "evidence-collection-receipts"], ["autonomy", "evidence-collection-receipts"], ["evidence-collection-receipts"]):
+        return 200, _ok(sm_v45.build_evidence_collection_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "diagnostic-issue-classifier"], ["release", "diagnostic-issue-classifier"], ["autonomy", "diagnostic-issue-classifier"], ["diagnostic-issue-classifier"]):
+        return 200, _ok(sm_v45.build_diagnostic_issue_classifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "evidence-conflict-staleness-resolver"], ["release", "evidence-conflict-staleness-resolver"], ["autonomy", "evidence-conflict-staleness-resolver"], ["evidence-conflict-staleness-resolver"]):
+        return 200, _ok(sm_v45.build_evidence_conflict_staleness_resolver(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "evidence-to-plan-update-drafts"], ["release", "evidence-to-plan-update-drafts"], ["autonomy", "evidence-to-plan-update-drafts"], ["evidence-to-plan-update-drafts"]):
+        return 200, _ok(sm_v45.build_evidence_to_plan_update_drafts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "diagnostic-coverage-map"], ["release", "diagnostic-coverage-map"], ["autonomy", "diagnostic-coverage-map"], ["diagnostic-coverage-map"]):
+        return 200, _ok(sm_v45.build_diagnostic_coverage_map(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "evidence-dashboard-polish"], ["release", "evidence-dashboard-polish"], ["autonomy", "evidence-dashboard-polish"], ["evidence-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_evidence_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "evidence-api-parity-gate"], ["release", "evidence-api-parity-gate"], ["autonomy", "evidence-api-parity-gate"], ["evidence-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_evidence_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "evidence-privacy-package-hardening"], ["release", "evidence-privacy-package-hardening"], ["autonomy", "evidence-privacy-package-hardening"], ["evidence-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_evidence_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v58-patch-proposal-gate"], ["release", "pre-v58-patch-proposal-gate"], ["autonomy", "pre-v58-patch-proposal-gate"], ["pre-v58-patch-proposal-gate"]):
+        return 200, _ok(sm_v45.build_pre_v58_patch_proposal_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "evidence-grounded-patch-proposal"], ["release", "evidence-grounded-patch-proposal"], ["autonomy", "evidence-grounded-patch-proposal"], ["evidence-grounded-patch-proposal"]):
+        return 200, _ok(sm_v45.build_evidence_grounded_patch_proposal_loop(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+
+
+    if parts in (["self-maintenance", "patch-proposal-receipts"], ["release", "patch-proposal-receipts"], ["autonomy", "patch-proposal-receipts"], ["patch-proposal-receipts"]):
+        return 200, _ok(sm_v45.build_patch_proposal_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "patch-scope-classifier"], ["release", "patch-scope-classifier"], ["autonomy", "patch-scope-classifier"], ["patch-scope-classifier"]):
+        return 200, _ok(sm_v45.build_patch_scope_classifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "patch-risk-budget"], ["release", "patch-risk-budget"], ["autonomy", "patch-risk-budget"], ["patch-risk-budget"]):
+        return 200, _ok(sm_v45.build_patch_risk_budget(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "patch-diff-preview-drafts"], ["release", "patch-diff-preview-drafts"], ["autonomy", "patch-diff-preview-drafts"], ["patch-diff-preview-drafts"]):
+        return 200, _ok(sm_v45.build_patch_diff_preview_drafts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "patch-verification-plan"], ["release", "patch-verification-plan"], ["autonomy", "patch-verification-plan"], ["patch-verification-plan"]):
+        return 200, _ok(sm_v45.build_patch_verification_plan(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "patch-dashboard-polish"], ["release", "patch-dashboard-polish"], ["autonomy", "patch-dashboard-polish"], ["patch-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_patch_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "patch-api-parity-gate"], ["release", "patch-api-parity-gate"], ["autonomy", "patch-api-parity-gate"], ["patch-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_patch_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "patch-privacy-package-hardening"], ["release", "patch-privacy-package-hardening"], ["autonomy", "patch-privacy-package-hardening"], ["patch-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_patch_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v59-sandbox-patch-execution-gate"], ["release", "pre-v59-sandbox-patch-execution-gate"], ["autonomy", "pre-v59-sandbox-patch-execution-gate"], ["pre-v59-sandbox-patch-execution-gate"]):
+        return 200, _ok(sm_v45.build_pre_v59_sandbox_patch_execution_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "controlled-sandbox-patch-execution"], ["release", "controlled-sandbox-patch-execution"], ["autonomy", "controlled-sandbox-patch-execution"], ["controlled-sandbox-patch-execution"]):
+        return 200, _ok(sm_v45.build_controlled_sandbox_patch_execution(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], confirmation=query.get("confirmation", [None])[0], execute=False, save=False))
+
+    if parts in (["self-maintenance", "sandbox-execution-receipts"], ["release", "sandbox-execution-receipts"], ["autonomy", "sandbox-execution-receipts"], ["sandbox-execution-receipts"]):
+        return 200, _ok(sm_v45.build_sandbox_execution_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-verification-matrix"], ["release", "sandbox-verification-matrix"], ["autonomy", "sandbox-verification-matrix"], ["sandbox-verification-matrix"]):
+        return 200, _ok(sm_v45.build_sandbox_verification_matrix(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-drift-detector"], ["release", "sandbox-drift-detector"], ["autonomy", "sandbox-drift-detector"], ["sandbox-drift-detector"]):
+        return 200, _ok(sm_v45.build_sandbox_drift_detector(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-rollback-rehearsal"], ["release", "sandbox-rollback-rehearsal"], ["autonomy", "sandbox-rollback-rehearsal"], ["sandbox-rollback-rehearsal"]):
+        return 200, _ok(sm_v45.build_sandbox_rollback_rehearsal(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-apply-candidate-drafts"], ["release", "sandbox-apply-candidate-drafts"], ["autonomy", "sandbox-apply-candidate-drafts"], ["sandbox-apply-candidate-drafts"]):
+        return 200, _ok(sm_v45.build_sandbox_apply_candidate_drafts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-dashboard-polish"], ["release", "sandbox-dashboard-polish"], ["autonomy", "sandbox-dashboard-polish"], ["sandbox-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_sandbox_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-api-parity-gate"], ["release", "sandbox-api-parity-gate"], ["autonomy", "sandbox-api-parity-gate"], ["sandbox-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_sandbox_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-privacy-package-hardening"], ["release", "sandbox-privacy-package-hardening"], ["autonomy", "sandbox-privacy-package-hardening"], ["sandbox-privacy-package-hardening"]):
+        return 200, _ok(sm_v45.build_sandbox_privacy_package_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v60-source-apply-handoff-gate"], ["release", "pre-v60-source-apply-handoff-gate"], ["autonomy", "pre-v60-source-apply-handoff-gate"], ["pre-v60-source-apply-handoff-gate"]):
+        return 200, _ok(sm_v45.build_pre_v60_source_apply_handoff_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "controlled-sandbox-source-apply-handoff"], ["release", "controlled-sandbox-source-apply-handoff"], ["autonomy", "controlled-sandbox-source-apply-handoff"], ["controlled-sandbox-source-apply-handoff"]):
+        return 200, _ok(sm_v45.build_controlled_sandbox_source_apply_handoff(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], confirmation=query.get("confirmation", [None])[0], execute=False, save=False))
+
+    if parts in (["self-maintenance", "source-apply-handoff-receipts"], ["release", "source-apply-handoff-receipts"], ["autonomy", "source-apply-handoff-receipts"], ["source-apply-handoff-receipts"]):
+        return 200, _ok(sm_v45.build_source_apply_handoff_receipts(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "source-baseline-drift-resolver"], ["release", "source-baseline-drift-resolver"], ["autonomy", "source-baseline-drift-resolver"], ["source-baseline-drift-resolver"]):
+        return 200, _ok(sm_v45.build_source_baseline_drift_resolver(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "reviewed-artifact-set-binder"], ["release", "reviewed-artifact-set-binder"], ["autonomy", "reviewed-artifact-set-binder"], ["reviewed-artifact-set-binder"]):
+        return 200, _ok(sm_v45.build_reviewed_artifact_set_binder(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "source-apply-handoff-eligibility"], ["release", "source-apply-handoff-eligibility"], ["autonomy", "source-apply-handoff-eligibility"], ["source-apply-handoff-eligibility"]):
+        return 200, _ok(sm_v45.build_source_apply_handoff_eligibility_classifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "source-apply-dry-run-bridge"], ["release", "source-apply-dry-run-bridge"], ["autonomy", "source-apply-dry-run-bridge"], ["source-apply-dry-run-bridge"]):
+        return 200, _ok(sm_v45.build_source_apply_dry_run_bridge(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "source-apply-handoff-dashboard-polish"], ["release", "source-apply-handoff-dashboard-polish"], ["autonomy", "source-apply-handoff-dashboard-polish"], ["source-apply-handoff-dashboard-polish"]):
+        return 200, _ok(sm_v45.build_source_apply_handoff_dashboard_polish(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "source-apply-handoff-api-parity-gate"], ["release", "source-apply-handoff-api-parity-gate"], ["autonomy", "source-apply-handoff-api-parity-gate"], ["source-apply-handoff-api-parity-gate"]):
+        return 200, _ok(sm_v45.build_source_apply_handoff_api_parity_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "source-apply-handoff-privacy-hardening"], ["release", "source-apply-handoff-privacy-hardening"], ["autonomy", "source-apply-handoff-privacy-hardening"], ["source-apply-handoff-privacy-hardening"]):
+        return 200, _ok(sm_v45.build_source_apply_handoff_privacy_hardening(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v61-controlled-apply-bridge-gate"], ["release", "pre-v61-controlled-apply-bridge-gate"], ["autonomy", "pre-v61-controlled-apply-bridge-gate"], ["pre-v61-controlled-apply-bridge-gate"]):
+        return 200, _ok(sm_v45.build_pre_v61_controlled_apply_bridge_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "controlled-source-apply-bridge-refinement"], ["release", "controlled-source-apply-bridge-refinement"], ["autonomy", "controlled-source-apply-bridge-refinement"], ["controlled-source-apply-bridge-refinement"]):
+        return 200, _ok(sm_v45.build_controlled_source_apply_bridge_refinement(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+
+    if parts in (["self-maintenance", "source-apply-transaction-planner"], ["release", "source-apply-transaction-planner"], ["autonomy", "source-apply-transaction-planner"], ["source-apply-transaction-planner"]):
+        return 200, _ok(sm_v45.build_source_apply_transaction_planner(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "source-apply-backup-binder"], ["release", "source-apply-backup-binder"], ["autonomy", "source-apply-backup-binder"], ["source-apply-backup-binder"]):
+        return 200, _ok(sm_v45.build_source_apply_backup_binder(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "source-apply-transaction-dry-run-verifier"], ["release", "source-apply-transaction-dry-run-verifier"], ["autonomy", "source-apply-transaction-dry-run-verifier"], ["source-apply-transaction-dry-run-verifier"]):
+        return 200, _ok(sm_v45.build_source_apply_transaction_dry_run_verifier(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "source-apply-transaction-confirmation-gate"], ["release", "source-apply-transaction-confirmation-gate"], ["autonomy", "source-apply-transaction-confirmation-gate"], ["source-apply-transaction-confirmation-gate"]):
+        return 200, _ok(sm_v45.build_source_apply_transaction_confirmation_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], confirmation=query.get("confirmation", query.get("transaction_confirm_phrase", [None]))[0], save=False))
+    if parts in (["self-maintenance", "supervised-source-apply-executor"], ["release", "supervised-source-apply-executor"], ["autonomy", "supervised-source-apply-executor"], ["supervised-source-apply-executor"]):
+        return 200, _ok(sm_v45.build_supervised_source_apply_executor(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], confirmation=query.get("confirmation", query.get("transaction_confirm_phrase", [None]))[0], approve=False, dry_run=True, save=False))
+    if parts in (["self-maintenance", "post-apply-verification-runner"], ["release", "post-apply-verification-runner"], ["autonomy", "post-apply-verification-runner"], ["post-apply-verification-runner"]):
+        return 200, _ok(sm_v45.build_post_apply_verification_runner(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "transaction-rollback-rehearsal"], ["release", "transaction-rollback-rehearsal"], ["autonomy", "transaction-rollback-rehearsal"], ["transaction-rollback-rehearsal"]):
+        return 200, _ok(sm_v45.build_transaction_rollback_rehearsal(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "source-apply-transaction-dashboard-command-center"], ["release", "source-apply-transaction-dashboard-command-center"], ["autonomy", "source-apply-transaction-dashboard-command-center"], ["source-apply-transaction-dashboard-command-center"]):
+        return 200, _ok(sm_v45.build_source_apply_transaction_dashboard_command_center(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v62-transaction-release-gate"], ["release", "pre-v62-transaction-release-gate"], ["autonomy", "pre-v62-transaction-release-gate"], ["pre-v62-transaction-release-gate"]):
+        return 200, _ok(sm_v45.build_pre_v62_transaction_release_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "supervised-source-apply-transaction-layer"], ["release", "supervised-source-apply-transaction-layer"], ["autonomy", "supervised-source-apply-transaction-layer"], ["supervised-source-apply-transaction-layer"]):
+        return 200, _ok(sm_v45.build_supervised_source_apply_transaction_layer(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+
+    if parts in (["self-maintenance", "transaction-receipt-ledger"], ["release", "transaction-receipt-ledger"], ["autonomy", "transaction-receipt-ledger"], ["transaction-receipt-ledger"]):
+        return 200, _ok(sm_v45.build_transaction_receipt_ledger(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "transaction-diff-viewer"], ["release", "transaction-diff-viewer"], ["autonomy", "transaction-diff-viewer"], ["transaction-diff-viewer"]):
+        return 200, _ok(sm_v45.build_transaction_diff_viewer(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "transaction-conflict-detector"], ["release", "transaction-conflict-detector"], ["autonomy", "transaction-conflict-detector"], ["transaction-conflict-detector"]):
+        return 200, _ok(sm_v45.build_transaction_conflict_detector(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "transaction-approval-record-binder"], ["release", "transaction-approval-record-binder"], ["autonomy", "transaction-approval-record-binder"], ["transaction-approval-record-binder"]):
+        return 200, _ok(sm_v45.build_transaction_approval_record_binder(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "transaction-package-evidence-exporter"], ["release", "transaction-package-evidence-exporter"], ["autonomy", "transaction-package-evidence-exporter"], ["transaction-package-evidence-exporter"]):
+        return 200, _ok(sm_v45.build_transaction_package_evidence_exporter(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "transaction-replay-audit"], ["release", "transaction-replay-audit"], ["autonomy", "transaction-replay-audit"], ["transaction-replay-audit"]):
+        return 200, _ok(sm_v45.build_transaction_replay_audit(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "transaction-dashboard-receipt-timeline"], ["release", "transaction-dashboard-receipt-timeline"], ["autonomy", "transaction-dashboard-receipt-timeline"], ["transaction-dashboard-receipt-timeline"]):
+        return 200, _ok(sm_v45.build_transaction_dashboard_receipt_timeline(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "transaction-api-search-filtering"], ["release", "transaction-api-search-filtering"], ["autonomy", "transaction-api-search-filtering"], ["transaction-api-search-filtering"]):
+        return 200, _ok(sm_v45.build_transaction_api_search_filtering(project_id=query.get("project", ["eidolon"])[0], transaction_id=query.get("transaction_id", [None])[0], status_filter=query.get("status", [None])[0], stage_filter=query.get("stage", [None])[0], file_touched=query.get("file", [None])[0], save=False))
+    if parts in (["self-maintenance", "pre-v63-transaction-evidence-gate"], ["release", "pre-v63-transaction-evidence-gate"], ["autonomy", "pre-v63-transaction-evidence-gate"], ["pre-v63-transaction-evidence-gate"]):
+        return 200, _ok(sm_v45.build_pre_v63_transaction_evidence_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "durable-transaction-evidence-system"], ["release", "durable-transaction-evidence-system"], ["autonomy", "durable-transaction-evidence-system"], ["durable-transaction-evidence-system"]):
+        return 200, _ok(sm_v45.build_durable_transaction_evidence_system(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", query.get("autonomy_goal", [None]))[0], command_key=query.get("command_key", ["version-import"])[0], save=False))
+    if parts in (["self-maintenance", "transaction-evidence-summarizer"], ["release", "transaction-evidence-summarizer"], ["autonomy", "transaction-evidence-summarizer"], ["transaction-evidence-summarizer"]):
+        return 200, _ok(sm_v45.build_transaction_evidence_summarizer(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "improvement-candidate-registry"], ["release", "improvement-candidate-registry"], ["autonomy", "improvement-candidate-registry"], ["improvement-candidate-registry"]):
+        return 200, _ok(sm_v45.build_improvement_candidate_registry(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "evidence-based-candidate-scoring"], ["release", "evidence-based-candidate-scoring"], ["autonomy", "evidence-based-candidate-scoring"], ["evidence-based-candidate-scoring"]):
+        return 200, _ok(sm_v45.build_evidence_based_candidate_scoring(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "improvement-regression-pattern-detector"], ["release", "improvement-regression-pattern-detector"], ["autonomy", "improvement-regression-pattern-detector"], ["improvement-regression-pattern-detector"]):
+        return 200, _ok(sm_v45.build_improvement_regression_pattern_detector(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "improvement-risk-blast-radius-forecaster"], ["release", "improvement-risk-blast-radius-forecaster"], ["autonomy", "improvement-risk-blast-radius-forecaster"], ["improvement-risk-blast-radius-forecaster"]):
+        return 200, _ok(sm_v45.build_improvement_risk_blast_radius_forecaster(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "supervised-recommendation-queue"], ["release", "supervised-recommendation-queue"], ["autonomy", "supervised-recommendation-queue"], ["supervised-recommendation-queue"]):
+        return 200, _ok(sm_v45.build_supervised_recommendation_queue(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "improvement-intelligence-dashboard"], ["release", "improvement-intelligence-dashboard"], ["autonomy", "improvement-intelligence-dashboard"], ["improvement-intelligence-dashboard"]):
+        return 200, _ok(sm_v45.build_improvement_intelligence_dashboard(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "improvement-intelligence-api-cli-access"], ["release", "improvement-intelligence-api-cli-access"], ["autonomy", "improvement-intelligence-api-cli-access"], ["improvement-intelligence-api-cli-access"]):
+        return 200, _ok(sm_v45.build_improvement_intelligence_api_cli_access(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v64-improvement-intelligence-gate"], ["release", "pre-v64-improvement-intelligence-gate"], ["autonomy", "pre-v64-improvement-intelligence-gate"], ["pre-v64-improvement-intelligence-gate"]):
+        return 200, _ok(sm_v45.build_pre_v64_improvement_intelligence_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "supervised-improvement-intelligence-layer"], ["release", "supervised-improvement-intelligence-layer"], ["autonomy", "supervised-improvement-intelligence-layer"], ["supervised-improvement-intelligence-layer"]):
+        return 200, _ok(sm_v45.build_supervised_improvement_intelligence_layer(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "accepted-recommendation-intake"], ["release", "accepted-recommendation-intake"], ["autonomy", "accepted-recommendation-intake"], ["accepted-recommendation-intake"]):
+        return 200, _ok(sm_v45.build_accepted_recommendation_intake(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "proposal-draft-skeleton"], ["release", "proposal-draft-skeleton"], ["autonomy", "proposal-draft-skeleton"], ["proposal-draft-skeleton"]):
+        return 200, _ok(sm_v45.build_proposal_draft_skeleton(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "evidence-requirement-mapper"], ["release", "evidence-requirement-mapper"], ["autonomy", "evidence-requirement-mapper"], ["evidence-requirement-mapper"]):
+        return 200, _ok(sm_v45.build_evidence_requirement_mapper(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "proposal-risk-contract"], ["release", "proposal-risk-contract"], ["autonomy", "proposal-risk-contract"], ["proposal-risk-contract"]):
+        return 200, _ok(sm_v45.build_proposal_risk_contract(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-patch-request-compiler"], ["release", "sandbox-patch-request-compiler"], ["autonomy", "sandbox-patch-request-compiler"], ["sandbox-patch-request-compiler"]):
+        return 200, _ok(sm_v45.build_sandbox_patch_request_compiler(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "proposal-review-packet-binder"], ["release", "proposal-review-packet-binder"], ["autonomy", "proposal-review-packet-binder"], ["proposal-review-packet-binder"]):
+        return 200, _ok(sm_v45.build_proposal_review_packet_binder(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "proposal-dashboard-review-console"], ["release", "proposal-dashboard-review-console"], ["autonomy", "proposal-dashboard-review-console"], ["proposal-dashboard-review-console"]):
+        return 200, _ok(sm_v45.build_proposal_dashboard_review_console(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "proposal-api-cli-access"], ["release", "proposal-api-cli-access"], ["autonomy", "proposal-api-cli-access"], ["proposal-api-cli-access"]):
+        return 200, _ok(sm_v45.build_proposal_api_cli_access(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v65-proposal-drafting-gate"], ["release", "pre-v65-proposal-drafting-gate"], ["autonomy", "pre-v65-proposal-drafting-gate"], ["pre-v65-proposal-drafting-gate"]):
+        return 200, _ok(sm_v45.build_pre_v65_proposal_drafting_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "recommendation-to-proposal-drafting-layer"], ["release", "recommendation-to-proposal-drafting-layer"], ["autonomy", "recommendation-to-proposal-drafting-layer"], ["recommendation-to-proposal-drafting-layer"]):
+        return 200, _ok(sm_v45.build_recommendation_to_proposal_drafting_layer(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "reviewed-proposal-acceptance-gate"], ["release", "reviewed-proposal-acceptance-gate"], ["autonomy", "reviewed-proposal-acceptance-gate"], ["reviewed-proposal-acceptance-gate"]):
+        return 200, _ok(sm_v45.build_reviewed_proposal_acceptance_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-workspace-plan"], ["release", "sandbox-workspace-plan"], ["autonomy", "sandbox-workspace-plan"], ["sandbox-workspace-plan"]):
+        return 200, _ok(sm_v45.build_sandbox_workspace_plan(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "patch-implementation-request"], ["release", "patch-implementation-request"], ["autonomy", "patch-implementation-request"], ["patch-implementation-request"]):
+        return 200, _ok(sm_v45.build_patch_implementation_request(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "proposal-sandbox-execution-harness"], ["release", "proposal-sandbox-execution-harness"], ["autonomy", "proposal-sandbox-execution-harness"], ["proposal-sandbox-execution-harness"]):
+        return 200, _ok(sm_v45.build_proposal_sandbox_execution_harness(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], execute_copy=False, save=False))
+    if parts in (["self-maintenance", "proposal-sandbox-verification-matrix"], ["release", "proposal-sandbox-verification-matrix"], ["autonomy", "proposal-sandbox-verification-matrix"], ["proposal-sandbox-verification-matrix"]):
+        return 200, _ok(sm_v45.build_proposal_sandbox_verification_matrix(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "proposal-sandbox-evidence-binder"], ["release", "proposal-sandbox-evidence-binder"], ["autonomy", "proposal-sandbox-evidence-binder"], ["proposal-sandbox-evidence-binder"]):
+        return 200, _ok(sm_v45.build_proposal_sandbox_evidence_binder(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "proposal-sandbox-failure-triage"], ["release", "proposal-sandbox-failure-triage"], ["autonomy", "proposal-sandbox-failure-triage"], ["proposal-sandbox-failure-triage"]):
+        return 200, _ok(sm_v45.build_proposal_sandbox_failure_triage(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "proposal-sandbox-api-cli-access"], ["release", "proposal-sandbox-api-cli-access"], ["autonomy", "proposal-sandbox-api-cli-access"], ["proposal-sandbox-api-cli-access"]):
+        return 200, _ok(sm_v45.build_proposal_sandbox_api_cli_access(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v66-proposal-sandbox-gate"], ["release", "pre-v66-proposal-sandbox-gate"], ["autonomy", "pre-v66-proposal-sandbox-gate"], ["pre-v66-proposal-sandbox-gate"]):
+        return 200, _ok(sm_v45.build_pre_v66_proposal_sandbox_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "reviewed-proposal-sandbox-execution-layer"], ["release", "reviewed-proposal-sandbox-execution-layer"], ["autonomy", "reviewed-proposal-sandbox-execution-layer"], ["reviewed-proposal-sandbox-execution-layer"]):
+        return 200, _ok(sm_v45.build_reviewed_proposal_sandbox_execution_layer(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+
+    if parts in (["self-maintenance", "sandbox-promotion-candidate"], ["release", "sandbox-promotion-candidate"], ["autonomy", "sandbox-promotion-candidate"], ["sandbox-promotion-candidate"]):
+        return 200, _ok(sm_v45.build_sandbox_promotion_candidate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-source-diff-normalizer"], ["release", "sandbox-source-diff-normalizer"], ["autonomy", "sandbox-source-diff-normalizer"], ["sandbox-source-diff-normalizer"]):
+        return 200, _ok(sm_v45.build_sandbox_source_diff_normalizer(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "promotion-safety-boundary-gate"], ["release", "promotion-safety-boundary-gate"], ["autonomy", "promotion-safety-boundary-gate"], ["promotion-safety-boundary-gate"]):
+        return 200, _ok(sm_v45.build_promotion_safety_boundary_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "transaction-draft-from-sandbox"], ["release", "transaction-draft-from-sandbox"], ["autonomy", "transaction-draft-from-sandbox"], ["transaction-draft-from-sandbox"]):
+        return 200, _ok(sm_v45.build_transaction_draft_from_sandbox(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "promotion-review-packet-binder"], ["release", "promotion-review-packet-binder"], ["autonomy", "promotion-review-packet-binder"], ["promotion-review-packet-binder"]):
+        return 200, _ok(sm_v45.build_promotion_review_packet_binder(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "promotion-conflict-staleness-detector"], ["release", "promotion-conflict-staleness-detector"], ["autonomy", "promotion-conflict-staleness-detector"], ["promotion-conflict-staleness-detector"]):
+        return 200, _ok(sm_v45.build_promotion_conflict_staleness_detector(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-promotion-api-cli-access"], ["release", "sandbox-promotion-api-cli-access"], ["autonomy", "sandbox-promotion-api-cli-access"], ["sandbox-promotion-api-cli-access"]):
+        return 200, _ok(sm_v45.build_sandbox_promotion_api_cli_access(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v67-sandbox-promotion-gate"], ["release", "pre-v67-sandbox-promotion-gate"], ["autonomy", "pre-v67-sandbox-promotion-gate"], ["pre-v67-sandbox-promotion-gate"]):
+        return 200, _ok(sm_v45.build_pre_v67_sandbox_promotion_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "sandbox-evidence-promotion-handoff-layer"], ["release", "sandbox-evidence-promotion-handoff-layer"], ["autonomy", "sandbox-evidence-promotion-handoff-layer"], ["sandbox-evidence-promotion-handoff-layer"]):
+        return 200, _ok(sm_v45.build_sandbox_evidence_promotion_handoff_layer(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "promotion-packet-intake-gate"], ["release", "promotion-packet-intake-gate"], ["autonomy", "promotion-packet-intake-gate"], ["promotion-packet-intake-gate"]):
+        return 200, _ok(sm_v45.build_promotion_packet_intake_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "transaction-plan-materializer"], ["release", "transaction-plan-materializer"], ["autonomy", "transaction-plan-materializer"], ["transaction-plan-materializer"]):
+        return 200, _ok(sm_v45.build_transaction_plan_materializer(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "source-baseline-reconciliation"], ["release", "source-baseline-reconciliation"], ["autonomy", "source-baseline-reconciliation"], ["source-baseline-reconciliation"]):
+        return 200, _ok(sm_v45.build_source_baseline_reconciliation(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "backup-rollback-preflight-binder"], ["release", "backup-rollback-preflight-binder"], ["autonomy", "backup-rollback-preflight-binder"], ["backup-rollback-preflight-binder"]):
+        return 200, _ok(sm_v45.build_backup_rollback_preflight_binder(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "final-transaction-safety-gate"], ["release", "final-transaction-safety-gate"], ["autonomy", "final-transaction-safety-gate"], ["final-transaction-safety-gate"]):
+        return 200, _ok(sm_v45.build_final_transaction_safety_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "transaction-ledger-preregistration"], ["release", "transaction-ledger-preregistration"], ["autonomy", "transaction-ledger-preregistration"], ["transaction-ledger-preregistration"]):
+        return 200, _ok(sm_v45.build_transaction_ledger_preregistration(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "source-transaction-review-console"], ["release", "source-transaction-review-console"], ["autonomy", "source-transaction-review-console"], ["source-transaction-review-console"]):
+        return 200, _ok(sm_v45.build_source_transaction_review_console(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "transaction-review-api-cli-access"], ["release", "transaction-review-api-cli-access"], ["autonomy", "transaction-review-api-cli-access"], ["transaction-review-api-cli-access"]):
+        return 200, _ok(sm_v45.build_transaction_review_api_cli_access(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v68-transaction-integration-gate"], ["release", "pre-v68-transaction-integration-gate"], ["autonomy", "pre-v68-transaction-integration-gate"], ["pre-v68-transaction-integration-gate"]):
+        return 200, _ok(sm_v45.build_pre_v68_transaction_integration_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "promotion-to-transaction-integration-layer"], ["release", "promotion-to-transaction-integration-layer"], ["autonomy", "promotion-to-transaction-integration-layer"], ["promotion-to-transaction-integration-layer"]):
+        return 200, _ok(sm_v45.build_promotion_to_transaction_integration_layer(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+
+    if parts in (["self-maintenance", "transaction-execution-eligibility"], ["release", "transaction-execution-eligibility"], ["autonomy", "transaction-execution-eligibility"], ["transaction-execution-eligibility"]):
+        return 200, _ok(sm_v45.build_transaction_execution_eligibility(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "exact-confirmation-binder"], ["release", "exact-confirmation-binder"], ["autonomy", "exact-confirmation-binder"], ["exact-confirmation-binder"]):
+        return 200, _ok(sm_v45.build_exact_confirmation_binder(project_id=query.get("project", ["eidolon"])[0], confirmation_phrase=query.get("confirmation_phrase", [""])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "backup-snapshot-materializer"], ["release", "backup-snapshot-materializer"], ["autonomy", "backup-snapshot-materializer"], ["backup-snapshot-materializer"]):
+        return 200, _ok(sm_v45.build_backup_snapshot_materializer(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "transaction-apply-rehearsal"], ["release", "transaction-apply-rehearsal"], ["autonomy", "transaction-apply-rehearsal"], ["transaction-apply-rehearsal"]):
+        return 200, _ok(sm_v45.build_transaction_apply_rehearsal(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "operator-confirmed-apply-executor"], ["release", "operator-confirmed-apply-executor"], ["autonomy", "operator-confirmed-apply-executor"], ["operator-confirmed-apply-executor"]):
+        return 200, _ok(sm_v45.build_operator_confirmed_apply_executor(project_id=query.get("project", ["eidolon"])[0], confirmation_phrase=query.get("confirmation_phrase", [""])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "post-execution-verification"], ["release", "post-execution-verification"], ["autonomy", "post-execution-verification"], ["post-execution-verification"]):
+        return 200, _ok(sm_v45.build_post_execution_verification(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "rollback-recommendation-gate"], ["release", "rollback-recommendation-gate"], ["autonomy", "rollback-recommendation-gate"], ["rollback-recommendation-gate"]):
+        return 200, _ok(sm_v45.build_rollback_recommendation_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "transaction-execution-dashboard-api-cli"], ["release", "transaction-execution-dashboard-api-cli"], ["autonomy", "transaction-execution-dashboard-api-cli"], ["transaction-execution-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_transaction_execution_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v69-execution-gate"], ["release", "pre-v69-execution-gate"], ["autonomy", "pre-v69-execution-gate"], ["pre-v69-execution-gate"]):
+        return 200, _ok(sm_v45.build_pre_v69_execution_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "operator-confirmed-transaction-execution-layer"], ["release", "operator-confirmed-transaction-execution-layer"], ["autonomy", "operator-confirmed-transaction-execution-layer"], ["operator-confirmed-transaction-execution-layer"]):
+        return 200, _ok(sm_v45.build_operator_confirmed_transaction_execution_layer(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+
+    if parts in (["self-maintenance", "execution-result-ledger-finalizer"], ["release", "execution-result-ledger-finalizer"], ["autonomy", "execution-result-ledger-finalizer"], ["execution-result-ledger-finalizer"]):
+        return 200, _ok(sm_v45.build_execution_result_ledger_finalizer(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "rollback-decision-resolver"], ["release", "rollback-decision-resolver"], ["autonomy", "rollback-decision-resolver"], ["rollback-decision-resolver"]):
+        return 200, _ok(sm_v45.build_rollback_decision_resolver(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "operator-confirmed-rollback-executor"], ["release", "operator-confirmed-rollback-executor"], ["autonomy", "operator-confirmed-rollback-executor"], ["operator-confirmed-rollback-executor"]):
+        return 200, _ok(sm_v45.build_operator_confirmed_rollback_executor(project_id=query.get("project", ["eidolon"])[0], rollback_confirmation_phrase=query.get("rollback_confirmation_phrase", [""])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "post-rollback-verification"], ["release", "post-rollback-verification"], ["autonomy", "post-rollback-verification"], ["post-rollback-verification"]):
+        return 200, _ok(sm_v45.build_post_rollback_verification(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "release-candidate-finalization-gate"], ["release", "release-candidate-finalization-gate"], ["autonomy", "release-candidate-finalization-gate"], ["release-candidate-finalization-gate"]):
+        return 200, _ok(sm_v45.build_release_candidate_finalization_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "source-only-package-certifier"], ["release", "source-only-package-certifier"], ["autonomy", "source-only-package-certifier"], ["source-only-package-certifier"]):
+        return 200, _ok(sm_v45.build_source_only_package_certifier(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "release-finalization-dashboard-api-cli"], ["release", "release-finalization-dashboard-api-cli"], ["autonomy", "release-finalization-dashboard-api-cli"], ["release-finalization-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_release_finalization_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "recovery-simulation-harness"], ["release", "recovery-simulation-harness"], ["autonomy", "recovery-simulation-harness"], ["recovery-simulation-harness"]):
+        return 200, _ok(sm_v45.build_recovery_simulation_harness(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v70-recovery-finalization-gate"], ["release", "pre-v70-recovery-finalization-gate"], ["autonomy", "pre-v70-recovery-finalization-gate"], ["pre-v70-recovery-finalization-gate"]):
+        return 200, _ok(sm_v45.build_pre_v70_recovery_finalization_gate(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+    if parts in (["self-maintenance", "verified-execution-recovery-release-layer"], ["release", "verified-execution-recovery-release-layer"], ["autonomy", "verified-execution-recovery-release-layer"], ["verified-execution-recovery-release-layer"]):
+        return 200, _ok(sm_v45.build_verified_execution_recovery_release_layer(project_id=query.get("project", ["eidolon"])[0], recommendation_id=query.get("recommendation_id", [None])[0], save=False))
+
+    if parts in (["self-maintenance", "source-tree-inventory"], ["release", "source-tree-inventory"], ["autonomy", "source-tree-inventory"], ["codebase-map", "inventory"], ["source-tree-inventory"]):
+        return 200, _ok(sm_v45.build_source_tree_inventory(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "module-responsibility-map"], ["release", "module-responsibility-map"], ["autonomy", "module-responsibility-map"], ["codebase-map", "responsibilities"], ["module-responsibility-map"]):
+        return 200, _ok(sm_v45.build_module_responsibility_map(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "dependency-call-surface-map"], ["release", "dependency-call-surface-map"], ["autonomy", "dependency-call-surface-map"], ["codebase-map", "dependencies"], ["dependency-call-surface-map"]):
+        return 200, _ok(sm_v45.build_dependency_call_surface_map(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "module-risk-profile"], ["release", "module-risk-profile"], ["autonomy", "module-risk-profile"], ["codebase-map", "risk"], ["module-risk-profile"]):
+        return 200, _ok(sm_v45.build_module_risk_profile(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "historical-failure-memory"], ["release", "historical-failure-memory"], ["autonomy", "historical-failure-memory"], ["codebase-map", "failures"], ["historical-failure-memory"]):
+        return 200, _ok(sm_v45.build_historical_failure_memory(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "verification-command-map"], ["release", "verification-command-map"], ["autonomy", "verification-command-map"], ["codebase-map", "verification"], ["verification-command-map"]):
+        return 200, _ok(sm_v45.build_verification_command_map(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "improvement-opportunity-detector"], ["release", "improvement-opportunity-detector"], ["autonomy", "improvement-opportunity-detector"], ["codebase-map", "opportunities"], ["improvement-opportunity-detector"]):
+        return 200, _ok(sm_v45.build_improvement_opportunity_detector(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "codebase-understanding-dashboard-api-cli"], ["release", "codebase-understanding-dashboard-api-cli"], ["autonomy", "codebase-understanding-dashboard-api-cli"], ["codebase-map", "parity"], ["codebase-understanding-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_codebase_understanding_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "pre-v71-codebase-understanding-gate"], ["release", "pre-v71-codebase-understanding-gate"], ["autonomy", "pre-v71-codebase-understanding-gate"], ["codebase-map", "gate"], ["pre-v71-codebase-understanding-gate"]):
+        return 200, _ok(sm_v45.build_pre_v71_codebase_understanding_gate(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "codebase-understanding-map"], ["release", "codebase-understanding-map"], ["autonomy", "codebase-understanding-map"], ["codebase-map", "layer"], ["codebase-understanding-map"]):
+        return 200, _ok(sm_v45.build_codebase_understanding_map(project_id=query.get("project", ["eidolon"])[0], save=False))
+
+    patch_goal = query.get("patch_goal", query.get("goal", [None]))[0]
+    if parts in (["self-maintenance", "patch-goal-intake-classifier"], ["release", "patch-goal-intake-classifier"], ["autonomy", "patch-goal-intake-classifier"], ["patch-context", "goal"], ["patch-goal-intake-classifier"]):
+        return 200, _ok(sm_v45.build_patch_goal_intake_classifier(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "relevant-file-context-selector"], ["release", "relevant-file-context-selector"], ["autonomy", "relevant-file-context-selector"], ["patch-context", "files"], ["relevant-file-context-selector"]):
+        return 200, _ok(sm_v45.build_relevant_file_context_selector(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "historical-failure-context-binder"], ["release", "historical-failure-context-binder"], ["autonomy", "historical-failure-context-binder"], ["patch-context", "failures"], ["historical-failure-context-binder"]):
+        return 200, _ok(sm_v45.build_historical_failure_context_binder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "risk-aware-context-budgeter"], ["release", "risk-aware-context-budgeter"], ["autonomy", "risk-aware-context-budgeter"], ["patch-context", "budget"], ["risk-aware-context-budgeter"]):
+        return 200, _ok(sm_v45.build_risk_aware_context_budgeter(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "verification-requirement-compiler"], ["release", "verification-requirement-compiler"], ["autonomy", "verification-requirement-compiler"], ["patch-context", "verification"], ["verification-requirement-compiler"]):
+        return 200, _ok(sm_v45.build_verification_requirement_compiler(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "patch-prompt-context-packet-builder"], ["release", "patch-prompt-context-packet-builder"], ["autonomy", "patch-prompt-context-packet-builder"], ["patch-context", "packet"], ["patch-prompt-context-packet-builder"]):
+        return 200, _ok(sm_v45.build_patch_prompt_context_packet_builder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "context-completeness-reviewer"], ["release", "context-completeness-reviewer"], ["autonomy", "context-completeness-reviewer"], ["patch-context", "review"], ["context-completeness-reviewer"]):
+        return 200, _ok(sm_v45.build_context_completeness_reviewer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "patch-context-dashboard-api-cli"], ["release", "patch-context-dashboard-api-cli"], ["autonomy", "patch-context-dashboard-api-cli"], ["patch-context", "parity"], ["patch-context-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_patch_context_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "pre-v72-patch-context-gate"], ["release", "pre-v72-patch-context-gate"], ["autonomy", "pre-v72-patch-context-gate"], ["patch-context", "gate"], ["pre-v72-patch-context-gate"]):
+        return 200, _ok(sm_v45.build_pre_v72_patch_context_gate(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "patch-generation-context-builder"], ["release", "patch-generation-context-builder"], ["autonomy", "patch-generation-context-builder"], ["patch-context", "layer"], ["patch-generation-context-builder"]):
+        return 200, _ok(sm_v45.build_patch_generation_context_builder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+
+    if parts in (["self-maintenance", "patch-intent-normalizer"], ["release", "patch-intent-normalizer"], ["autonomy", "patch-intent-normalizer"], ["patch-drafts", "intake"], ["patch-intent-normalizer"]):
+        return 200, _ok(sm_v45.build_patch_intent_normalizer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "patch-scope-contract-builder"], ["release", "patch-scope-contract-builder"], ["autonomy", "patch-scope-contract-builder"], ["patch-drafts", "scope"], ["patch-scope-contract-builder"]):
+        return 200, _ok(sm_v45.build_patch_scope_contract_builder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "patch-prompt-composer"], ["release", "patch-prompt-composer"], ["autonomy", "patch-prompt-composer"], ["patch-drafts", "prompt"], ["patch-prompt-composer"]):
+        return 200, _ok(sm_v45.build_patch_prompt_composer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "patch-draft-output-schema"], ["release", "patch-draft-output-schema"], ["autonomy", "patch-draft-output-schema"], ["patch-drafts", "schema"], ["patch-draft-output-schema"]):
+        return 200, _ok(sm_v45.build_patch_draft_output_schema(project_id=query.get("project", ["eidolon"])[0], save=False))
+    if parts in (["self-maintenance", "patch-draft-safety-reviewer"], ["release", "patch-draft-safety-reviewer"], ["autonomy", "patch-draft-safety-reviewer"], ["patch-drafts", "safety"], ["patch-draft-safety-reviewer"]):
+        return 200, _ok(sm_v45.build_patch_draft_safety_reviewer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "patch-draft-evidence-binder"], ["release", "patch-draft-evidence-binder"], ["autonomy", "patch-draft-evidence-binder"], ["patch-drafts", "evidence"], ["patch-draft-evidence-binder"]):
+        return 200, _ok(sm_v45.build_patch_draft_evidence_binder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "patch-draft-dashboard-api-cli"], ["release", "patch-draft-dashboard-api-cli"], ["autonomy", "patch-draft-dashboard-api-cli"], ["patch-drafts", "parity"], ["patch-draft-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_patch_draft_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "local-model-handoff-stub"], ["release", "local-model-handoff-stub"], ["autonomy", "local-model-handoff-stub"], ["patch-drafts", "handoff"], ["local-model-handoff-stub"]):
+        return 200, _ok(sm_v45.build_local_model_handoff_stub(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "pre-v73-patch-draft-gate"], ["release", "pre-v73-patch-draft-gate"], ["autonomy", "pre-v73-patch-draft-gate"], ["patch-drafts", "gate"], ["pre-v73-patch-draft-gate"]):
+        return 200, _ok(sm_v45.build_pre_v73_patch_draft_gate(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "supervised-patch-draft-composer"], ["release", "supervised-patch-draft-composer"], ["autonomy", "supervised-patch-draft-composer"], ["patch-drafts", "layer"], ["supervised-patch-draft-composer"]):
+        return 200, _ok(sm_v45.build_supervised_patch_draft_composer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+
+    draft_file = query.get("patch_draft_file", query.get("draft_file", [None]))[0]
+    draft_text = query.get("draft_text", [None])[0]
+    if parts in (["self-maintenance", "patch-review-intake-parser"], ["release", "patch-review-intake-parser"], ["autonomy", "patch-review-intake-parser"], ["patch-review", "intake"], ["patch-review-intake-parser"]):
+        return 200, _ok(sm_v45.build_patch_review_intake_parser(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+    if parts in (["self-maintenance", "diff-boundary-extractor"], ["release", "diff-boundary-extractor"], ["autonomy", "diff-boundary-extractor"], ["patch-review", "diff-boundary"], ["diff-boundary-extractor"]):
+        return 200, _ok(sm_v45.build_patch_review_diff_boundary_extractor(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+    if parts in (["self-maintenance", "scope-contract-validator"], ["release", "scope-contract-validator"], ["autonomy", "scope-contract-validator"], ["patch-review", "scope"], ["scope-contract-validator"]):
+        return 200, _ok(sm_v45.build_patch_review_scope_contract_validator(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+    if parts in (["self-maintenance", "patch-safety-boundary-validator"], ["release", "patch-safety-boundary-validator"], ["autonomy", "patch-safety-boundary-validator"], ["patch-review", "safety"], ["patch-safety-boundary-validator"]):
+        return 200, _ok(sm_v45.build_patch_review_safety_boundary_validator(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+    if parts in (["self-maintenance", "documentation-update-validator"], ["release", "documentation-update-validator"], ["autonomy", "documentation-update-validator"], ["patch-review", "docs"], ["documentation-update-validator"]):
+        return 200, _ok(sm_v45.build_documentation_update_validator(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+    if parts in (["self-maintenance", "verification-plan-validator"], ["release", "verification-plan-validator"], ["autonomy", "verification-plan-validator"], ["patch-review", "verification"], ["verification-plan-validator"]):
+        return 200, _ok(sm_v45.build_verification_plan_validator(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+    if parts in (["self-maintenance", "patch-risk-scorer"], ["release", "patch-risk-scorer"], ["autonomy", "patch-risk-scorer"], ["patch-review", "risk"], ["patch-risk-scorer"]):
+        return 200, _ok(sm_v45.build_patch_risk_scorer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+    if parts in (["self-maintenance", "patch-review-report-builder"], ["release", "patch-review-report-builder"], ["autonomy", "patch-review-report-builder"], ["patch-review", "report"], ["patch-review-report-builder"]):
+        return 200, _ok(sm_v45.build_patch_review_report_builder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+    if parts in (["self-maintenance", "patch-review-dashboard-api-cli"], ["release", "patch-review-dashboard-api-cli"], ["autonomy", "patch-review-dashboard-api-cli"], ["patch-review", "parity"], ["patch-review-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_patch_review_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "pre-v74-patch-review-gate"], ["release", "pre-v74-patch-review-gate"], ["autonomy", "pre-v74-patch-review-gate"], ["patch-review", "gate"], ["pre-v74-patch-review-gate"]):
+        return 200, _ok(sm_v45.build_pre_v74_patch_review_gate(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+    if parts in (["self-maintenance", "patch-draft-review-diff-validation-layer"], ["release", "patch-draft-review-diff-validation-layer"], ["autonomy", "patch-draft-review-diff-validation-layer"], ["patch-review", "layer"], ["patch-draft-review-diff-validation-layer"]):
+        return 200, _ok(sm_v45.build_patch_draft_review_diff_validation_layer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, save=False))
+
+    trial_id = query.get("patch_trial_id", query.get("trial_id", [None]))[0]
+    cleanup = query.get("cleanup", ["false"])[0].lower() in {"1", "true", "yes"}
+    if parts in (["self-maintenance", "patch-trial-intake-binder"], ["release", "patch-trial-intake-binder"], ["autonomy", "patch-trial-intake-binder"], ["patch-trials", "intake"], ["patch-trial-intake-binder"]):
+        return 200, _ok(sm_v45.build_patch_trial_intake_binder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, save=False))
+    if parts in (["self-maintenance", "disposable-workspace-builder"], ["release", "disposable-workspace-builder"], ["autonomy", "disposable-workspace-builder"], ["patch-trials", "workspace"], ["disposable-workspace-builder"]):
+        return 200, _ok(sm_v45.build_disposable_workspace_builder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, save=False))
+    if parts in (["self-maintenance", "patch-draft-materializer"], ["release", "patch-draft-materializer"], ["autonomy", "patch-draft-materializer"], ["patch-trials", "materialize"], ["patch-draft-materializer"]):
+        return 200, _ok(sm_v45.build_patch_draft_materializer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, save=False))
+    if parts in (["self-maintenance", "sandbox-verification-runner"], ["release", "sandbox-verification-runner"], ["autonomy", "sandbox-verification-runner"], ["patch-trials", "verify"], ["sandbox-verification-runner"]):
+        return 200, _ok(sm_v45.build_sandbox_verification_runner(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, save=False))
+    if parts in (["self-maintenance", "sandbox-evidence-collector"], ["release", "sandbox-evidence-collector"], ["autonomy", "sandbox-evidence-collector"], ["patch-trials", "evidence"], ["sandbox-evidence-collector"]):
+        return 200, _ok(sm_v45.build_sandbox_evidence_collector(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, save=False))
+    if parts in (["self-maintenance", "sandbox-escape-mutation-guard"], ["release", "sandbox-escape-mutation-guard"], ["autonomy", "sandbox-escape-mutation-guard"], ["patch-trials", "escape-guard"], ["sandbox-escape-mutation-guard"]):
+        return 200, _ok(sm_v45.build_sandbox_escape_mutation_guard(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, save=False))
+    if parts in (["self-maintenance", "patch-trial-dashboard-api-cli"], ["release", "patch-trial-dashboard-api-cli"], ["autonomy", "patch-trial-dashboard-api-cli"], ["patch-trials", "parity"], ["patch-trial-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_patch_trial_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "patch-trial-cleanup-retention"], ["release", "patch-trial-cleanup-retention"], ["autonomy", "patch-trial-cleanup-retention"], ["patch-trials", "cleanup"], ["patch-trials", "list"], ["patch-trial-cleanup-retention"]):
+        return 200, _ok(sm_v45.build_patch_trial_cleanup_retention(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, cleanup=cleanup, save=False))
+    if parts in (["self-maintenance", "pre-v75-sandbox-trial-gate"], ["release", "pre-v75-sandbox-trial-gate"], ["autonomy", "pre-v75-sandbox-trial-gate"], ["patch-trials", "gate"], ["pre-v75-sandbox-trial-gate"]):
+        return 200, _ok(sm_v45.build_pre_v75_sandbox_trial_gate(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, save=False))
+    if parts in (["self-maintenance", "sandbox-patch-trial-runner"], ["release", "sandbox-patch-trial-runner"], ["autonomy", "sandbox-patch-trial-runner"], ["patch-trials", "layer"], ["sandbox-patch-trial-runner"]):
+        return 200, _ok(sm_v45.build_sandbox_patch_trial_runner(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, save=False))
+
+    evidence_file = query.get("patch_evidence_file", query.get("evidence_file", [None]))[0]
+    if parts in (["self-maintenance", "patch-evidence-intake-reader"], ["release", "patch-evidence-intake-reader"], ["autonomy", "patch-evidence-intake-reader"], ["patch-evidence", "intake"], ["patch-evidence-intake-reader"]):
+        return 200, _ok(sm_v45.build_patch_evidence_intake_reader(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, save=False))
+    if parts in (["self-maintenance", "trial-integrity-validator"], ["release", "trial-integrity-validator"], ["autonomy", "trial-integrity-validator"], ["patch-evidence", "integrity"], ["trial-integrity-validator"]):
+        return 200, _ok(sm_v45.build_trial_integrity_validator(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, save=False))
+    if parts in (["self-maintenance", "verification-evidence-scorer"], ["release", "verification-evidence-scorer"], ["autonomy", "verification-evidence-scorer"], ["patch-evidence", "verification"], ["verification-evidence-scorer"]):
+        return 200, _ok(sm_v45.build_verification_evidence_scorer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, save=False))
+    if parts in (["self-maintenance", "scope-documentation-evidence-reviewer"], ["release", "scope-documentation-evidence-reviewer"], ["autonomy", "scope-documentation-evidence-reviewer"], ["patch-evidence", "scope-docs"], ["scope-documentation-evidence-reviewer"]):
+        return 200, _ok(sm_v45.build_scope_documentation_evidence_reviewer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, save=False))
+    if parts in (["self-maintenance", "risk-acceptance-classifier"], ["release", "risk-acceptance-classifier"], ["autonomy", "risk-acceptance-classifier"], ["patch-evidence", "risk"], ["risk-acceptance-classifier"]):
+        return 200, _ok(sm_v45.build_risk_acceptance_classifier(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, save=False))
+    if parts in (["self-maintenance", "promotion-readiness-packet-builder"], ["release", "promotion-readiness-packet-builder"], ["autonomy", "promotion-readiness-packet-builder"], ["patch-evidence", "readiness"], ["promotion-readiness-packet-builder"]):
+        return 200, _ok(sm_v45.build_promotion_readiness_packet_builder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, save=False))
+    if parts in (["self-maintenance", "patch-evidence-dashboard-api-cli"], ["release", "patch-evidence-dashboard-api-cli"], ["autonomy", "patch-evidence-dashboard-api-cli"], ["patch-evidence", "parity"], ["patch-evidence-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_patch_evidence_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "recommendation-archive-comparison"], ["release", "recommendation-archive-comparison"], ["autonomy", "recommendation-archive-comparison"], ["patch-evidence", "archive"], ["recommendation-archive-comparison"]):
+        return 200, _ok(sm_v45.build_recommendation_archive_comparison(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, save=False))
+    if parts in (["self-maintenance", "pre-v76-evidence-review-gate"], ["release", "pre-v76-evidence-review-gate"], ["autonomy", "pre-v76-evidence-review-gate"], ["patch-evidence", "gate"], ["pre-v76-evidence-review-gate"]):
+        return 200, _ok(sm_v45.build_pre_v76_evidence_review_gate(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, save=False))
+    if parts in (["self-maintenance", "sandbox-evidence-review-recommendation-layer"], ["release", "sandbox-evidence-review-recommendation-layer"], ["autonomy", "sandbox-evidence-review-recommendation-layer"], ["patch-evidence", "layer"], ["sandbox-evidence-review-recommendation-layer"]):
+        return 200, _ok(sm_v45.build_sandbox_evidence_review_recommendation_layer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, save=False))
+
+    approval_file = query.get("patch_approval_file", query.get("approval_file", [None]))[0]
+    approval_phrase = query.get("approval_phrase", [None])[0]
+    approved_files = query.get("approved_files", query.get("patch_approved_files", [None]))[0]
+    application_id = query.get("patch_application_id", query.get("application_id", [None]))[0]
+    operator_label = query.get("operator", query.get("operator_label", ["api-preview"]))[0]
+    apply_approved = query.get("patch_apply_approved", query.get("approved", ["false"]))[0].lower() in {"1", "true", "yes"}
+    if parts in (["self-maintenance", "patch-approval-intake-contract"], ["release", "patch-approval-intake-contract"], ["autonomy", "patch-approval-intake-contract"], ["patch-apply", "approval"], ["patch-approval-intake-contract"]):
+        return 200, _ok(sm_v45.build_patch_approval_intake_contract(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approval_phrase=approval_phrase, approved_files=approved_files, application_id=application_id, operator_label=operator_label, apply_approved=apply_approved, save=False))
+    if parts in (["self-maintenance", "recommendation-approval-binder"], ["release", "recommendation-approval-binder"], ["autonomy", "recommendation-approval-binder"], ["patch-apply", "bind"], ["recommendation-approval-binder"]):
+        return 200, _ok(sm_v45.build_recommendation_approval_binder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approval_phrase=approval_phrase, approved_files=approved_files, application_id=application_id, operator_label=operator_label, apply_approved=apply_approved, save=False))
+    if parts in (["self-maintenance", "live-source-snapshot-builder"], ["release", "live-source-snapshot-builder"], ["autonomy", "live-source-snapshot-builder"], ["patch-apply", "snapshot"], ["live-source-snapshot-builder"]):
+        return 200, _ok(sm_v45.build_live_source_snapshot_builder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approval_phrase=approval_phrase, approved_files=approved_files, application_id=application_id, operator_label=operator_label, apply_approved=apply_approved, save=False))
+    if parts in (["self-maintenance", "approved-patch-materializer"], ["release", "approved-patch-materializer"], ["autonomy", "approved-patch-materializer"], ["patch-apply", "apply"], ["approved-patch-materializer"]):
+        return 200, _ok(sm_v45.build_approved_patch_materializer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approval_phrase=approval_phrase, approved_files=approved_files, application_id=application_id, operator_label=operator_label, apply_approved=apply_approved, dry_run=True, save=False))
+    if parts in (["self-maintenance", "post-apply-verification-runner"], ["release", "post-apply-verification-runner"], ["autonomy", "post-apply-verification-runner"], ["patch-apply", "verify"], ["post-apply-verification-runner"]):
+        return 200, _ok(sm_v45.build_post_apply_verification_runner(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approval_phrase=approval_phrase, approved_files=approved_files, application_id=application_id, operator_label=operator_label, apply_approved=apply_approved, dry_run=True, save=False))
+    if parts in (["self-maintenance", "automatic-rollback-executor"], ["release", "automatic-rollback-executor"], ["autonomy", "automatic-rollback-executor"], ["patch-apply", "rollback"], ["automatic-rollback-executor"]):
+        return 200, _ok(sm_v45.build_automatic_rollback_executor(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approval_phrase=approval_phrase, approved_files=approved_files, application_id=application_id, operator_label=operator_label, apply_approved=apply_approved, dry_run=True, verification_failed=True, save=False))
+    if parts in (["self-maintenance", "application-evidence-recorder"], ["release", "application-evidence-recorder"], ["autonomy", "application-evidence-recorder"], ["patch-apply", "evidence"], ["application-evidence-recorder"]):
+        return 200, _ok(sm_v45.build_application_evidence_recorder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approval_phrase=approval_phrase, approved_files=approved_files, application_id=application_id, operator_label=operator_label, apply_approved=apply_approved, dry_run=True, save=False))
+    if parts in (["self-maintenance", "patch-application-dashboard-api-cli"], ["release", "patch-application-dashboard-api-cli"], ["autonomy", "patch-application-dashboard-api-cli"], ["patch-apply", "parity"], ["patch-application-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_patch_application_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "pre-v77-application-gate"], ["release", "pre-v77-application-gate"], ["autonomy", "pre-v77-application-gate"], ["patch-apply", "gate"], ["pre-v77-application-gate"]):
+        return 200, _ok(sm_v45.build_pre_v77_application_gate(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, operator_label=operator_label, save=False))
+    if parts in (["self-maintenance", "operator-approved-patch-application-layer"], ["release", "operator-approved-patch-application-layer"], ["autonomy", "operator-approved-patch-application-layer"], ["patch-apply", "layer"], ["operator-approved-patch-application-layer"]):
+        return 200, _ok(sm_v45.build_operator_approved_patch_application_layer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approval_phrase=approval_phrase, approved_files=approved_files, application_id=application_id, operator_label=operator_label, apply_approved=apply_approved, dry_run=True, save=False))
+
+    if parts in (["self-maintenance", "dirty-tree-preflight-detector"], ["release", "dirty-tree-preflight-detector"], ["autonomy", "dirty-tree-preflight-detector"], ["patch-recovery", "preflight"], ["dirty-tree-preflight-detector"]):
+        return 200, _ok(sm_v45.build_dirty_tree_preflight_detector(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, save=False))
+    if parts in (["self-maintenance", "snapshot-completeness-validator"], ["release", "snapshot-completeness-validator"], ["autonomy", "snapshot-completeness-validator"], ["patch-recovery", "snapshot"], ["snapshot-completeness-validator"]):
+        return 200, _ok(sm_v45.build_snapshot_completeness_validator(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, save=False))
+    if parts in (["self-maintenance", "partial-apply-detector"], ["release", "partial-apply-detector"], ["autonomy", "partial-apply-detector"], ["patch-recovery", "partial-apply"], ["partial-apply-detector"]):
+        return 200, _ok(sm_v45.build_partial_apply_detector(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, save=False))
+    if parts in (["self-maintenance", "rollback-integrity-verifier"], ["release", "rollback-integrity-verifier"], ["autonomy", "rollback-integrity-verifier"], ["patch-recovery", "rollback-integrity"], ["rollback-integrity-verifier"]):
+        return 200, _ok(sm_v45.build_rollback_integrity_verifier(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, save=False))
+    if parts in (["self-maintenance", "failed-verification-triage"], ["release", "failed-verification-triage"], ["autonomy", "failed-verification-triage"], ["patch-recovery", "triage"], ["failed-verification-triage"]):
+        return 200, _ok(sm_v45.build_failed_verification_triage(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, save=False))
+    if parts in (["self-maintenance", "recovery-recommendation-builder"], ["release", "recovery-recommendation-builder"], ["autonomy", "recovery-recommendation-builder"], ["patch-recovery", "recommendation"], ["recovery-recommendation-builder"]):
+        return 200, _ok(sm_v45.build_recovery_recommendation_builder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, save=False))
+    if parts in (["self-maintenance", "application-audit-timeline"], ["release", "application-audit-timeline"], ["autonomy", "application-audit-timeline"], ["patch-recovery", "timeline"], ["application-audit-timeline"]):
+        return 200, _ok(sm_v45.build_application_audit_timeline(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, save=False))
+    if parts in (["self-maintenance", "patch-recovery-dashboard-api-cli"], ["release", "patch-recovery-dashboard-api-cli"], ["autonomy", "patch-recovery-dashboard-api-cli"], ["patch-recovery", "parity"], ["patch-recovery-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_patch_recovery_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "pre-v78-recovery-gate"], ["release", "pre-v78-recovery-gate"], ["autonomy", "pre-v78-recovery-gate"], ["patch-recovery", "gate"], ["pre-v78-recovery-gate"]):
+        return 200, _ok(sm_v45.build_pre_v78_recovery_gate(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, save=False))
+    if parts in (["self-maintenance", "verified-application-recovery-rollback-hardening"], ["release", "verified-application-recovery-rollback-hardening"], ["autonomy", "verified-application-recovery-rollback-hardening"], ["patch-recovery", "layer"], ["verified-application-recovery-rollback-hardening"]):
+        return 200, _ok(sm_v45.build_verified_application_recovery_rollback_hardening(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, draft_text=draft_text, draft_file=draft_file, trial_id=trial_id, evidence_file=evidence_file, approval_file=approval_file, approved_files=approved_files, application_id=application_id, save=False))
+
+    queue_file = query.get("patch_queue_file", query.get("queue_file", [None]))[0]
+    queue_id = query.get("patch_queue_id", query.get("queue_id", [None]))[0]
+    if parts in (["self-maintenance", "patch-queue-record-schema"], ["release", "patch-queue-record-schema"], ["autonomy", "patch-queue-record-schema"], ["patch-queue", "schema"], ["patch-queue-record-schema"]):
+        return 200, _ok(sm_v45.build_patch_queue_record_schema(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, queue_file=queue_file, queue_id=queue_id, save=False))
+    if parts in (["self-maintenance", "patch-queue-intake-organizer"], ["release", "patch-queue-intake-organizer"], ["autonomy", "patch-queue-intake-organizer"], ["patch-queue", "intake"], ["patch-queue-intake-organizer"]):
+        return 200, _ok(sm_v45.build_patch_queue_intake_organizer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, queue_file=queue_file, queue_id=queue_id, save=False))
+    if parts in (["self-maintenance", "patch-queue-conflict-detector"], ["release", "patch-queue-conflict-detector"], ["autonomy", "patch-queue-conflict-detector"], ["patch-queue", "conflicts"], ["patch-queue-conflict-detector"]):
+        return 200, _ok(sm_v45.build_patch_queue_conflict_detector(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, queue_file=queue_file, queue_id=queue_id, save=False))
+    if parts in (["self-maintenance", "patch-queue-risk-priority-scheduler"], ["release", "patch-queue-risk-priority-scheduler"], ["autonomy", "patch-queue-risk-priority-scheduler"], ["patch-queue", "priority"], ["patch-queue-risk-priority-scheduler"]):
+        return 200, _ok(sm_v45.build_patch_queue_risk_priority_scheduler(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, queue_file=queue_file, queue_id=queue_id, save=False))
+    if parts in (["self-maintenance", "patch-queue-stale-evidence-detector"], ["release", "patch-queue-stale-evidence-detector"], ["autonomy", "patch-queue-stale-evidence-detector"], ["patch-queue", "stale-evidence"], ["patch-queue-stale-evidence-detector"]):
+        return 200, _ok(sm_v45.build_patch_queue_stale_evidence_detector(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, queue_file=queue_file, queue_id=queue_id, save=False))
+    if parts in (["self-maintenance", "patch-queue-serial-trial-plan-builder"], ["release", "patch-queue-serial-trial-plan-builder"], ["autonomy", "patch-queue-serial-trial-plan-builder"], ["patch-queue", "serial-plan"], ["patch-queue-serial-trial-plan-builder"]):
+        return 200, _ok(sm_v45.build_patch_queue_serial_trial_plan_builder(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, queue_file=queue_file, queue_id=queue_id, save=False))
+    if parts in (["self-maintenance", "patch-queue-operator-review-packet"], ["release", "patch-queue-operator-review-packet"], ["autonomy", "patch-queue-operator-review-packet"], ["patch-queue", "review-packet"], ["patch-queue-operator-review-packet"]):
+        return 200, _ok(sm_v45.build_patch_queue_operator_review_packet(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, queue_file=queue_file, queue_id=queue_id, save=False))
+    if parts in (["self-maintenance", "patch-queue-dashboard-api-cli"], ["release", "patch-queue-dashboard-api-cli"], ["autonomy", "patch-queue-dashboard-api-cli"], ["patch-queue", "parity"], ["patch-queue-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_patch_queue_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, save=False))
+    if parts in (["self-maintenance", "pre-v79-queue-gate"], ["release", "pre-v79-queue-gate"], ["autonomy", "pre-v79-queue-gate"], ["patch-queue", "gate"], ["pre-v79-queue-gate"]):
+        return 200, _ok(sm_v45.build_pre_v79_queue_gate(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, queue_file=queue_file, queue_id=queue_id, save=False))
+    if parts in (["self-maintenance", "multi-patch-queue-planning-layer"], ["release", "multi-patch-queue-planning-layer"], ["autonomy", "multi-patch-queue-planning-layer"], ["patch-queue", "layer"], ["multi-patch-queue-planning-layer"]):
+        return 200, _ok(sm_v45.build_multi_patch_queue_planning_layer(project_id=query.get("project", ["eidolon"])[0], patch_goal=patch_goal, queue_file=queue_file, queue_id=queue_id, save=False))
+
+    improvement_goal = query.get("improvement_goal", query.get("patch_goal", [None]))[0]
+    local_model_name = query.get("local_model_name", query.get("model", [None]))[0]
+    improvement_cycle_id = query.get("improvement_cycle_id", query.get("cycle_id", [None]))[0]
+    candidate_file = query.get("candidate_file", [None])[0]
+    if parts in (["self-maintenance", "improvement-opportunity-intake"], ["release", "improvement-opportunity-intake"], ["autonomy", "improvement-opportunity-intake"], ["improvement-loop", "intake"], ["improvement-opportunity-intake"]):
+        return 200, _ok(sm_v45.build_improvement_opportunity_intake(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "improvement-cycle-state-machine"], ["release", "improvement-cycle-state-machine"], ["autonomy", "improvement-cycle-state-machine"], ["improvement-loop", "state"], ["improvement-cycle-state-machine"]):
+        return 200, _ok(sm_v45.build_improvement_cycle_state_machine(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "pipeline-stage-binder"], ["release", "pipeline-stage-binder"], ["autonomy", "pipeline-stage-binder"], ["improvement-loop", "binder"], ["pipeline-stage-binder"]):
+        return 200, _ok(sm_v45.build_pipeline_stage_binder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "local-model-invocation-stub"], ["release", "local-model-invocation-stub"], ["autonomy", "local-model-invocation-stub"], ["improvement-loop", "model-stub"], ["local-model-invocation-stub"]):
+        return 200, _ok(sm_v45.build_local_model_invocation_stub(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "improvement-loop-evidence-recorder"], ["release", "improvement-loop-evidence-recorder"], ["autonomy", "improvement-loop-evidence-recorder"], ["improvement-loop", "evidence"], ["improvement-loop-evidence-recorder"]):
+        return 200, _ok(sm_v45.build_improvement_loop_evidence_recorder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "operator-stop-gate"], ["release", "operator-stop-gate"], ["autonomy", "operator-stop-gate"], ["improvement-loop", "stop-gate"], ["operator-stop-gate"]):
+        return 200, _ok(sm_v45.build_operator_stop_gate(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "improvement-loop-dashboard-api-cli"], ["release", "improvement-loop-dashboard-api-cli"], ["autonomy", "improvement-loop-dashboard-api-cli"], ["improvement-loop", "parity"], ["improvement-loop-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_improvement_loop_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "loop-safety-auditor"], ["release", "loop-safety-auditor"], ["autonomy", "loop-safety-auditor"], ["improvement-loop", "safety"], ["loop-safety-auditor"]):
+        return 200, _ok(sm_v45.build_loop_safety_auditor(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "pre-v80-supervised-loop-gate"], ["release", "pre-v80-supervised-loop-gate"], ["autonomy", "pre-v80-supervised-loop-gate"], ["improvement-loop", "gate"], ["pre-v80-supervised-loop-gate"]):
+        return 200, _ok(sm_v45.build_pre_v80_supervised_loop_gate(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "supervised-local-improvement-loop"], ["release", "supervised-local-improvement-loop"], ["autonomy", "supervised-local-improvement-loop"], ["improvement-loop", "layer"], ["supervised-local-improvement-loop"]):
+        return 200, _ok(sm_v45.build_supervised_local_improvement_loop(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "local-model-adapter-contract"], ["release", "local-model-adapter-contract"], ["autonomy", "local-model-adapter-contract"], ["local-model-proposals", "adapter"], ["local-model-adapter-contract"]):
+        return 200, _ok(sm_v45.build_local_model_adapter_contract(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "model-capability-profile"], ["release", "model-capability-profile"], ["autonomy", "model-capability-profile"], ["local-model-proposals", "profile"], ["model-capability-profile"]):
+        return 200, _ok(sm_v45.build_model_capability_profile(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "prompt-export-invocation-guard"], ["release", "prompt-export-invocation-guard"], ["autonomy", "prompt-export-invocation-guard"], ["local-model-proposals", "prompt-export"], ["prompt-export-invocation-guard"]):
+        return 200, _ok(sm_v45.build_prompt_export_invocation_guard(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "proposal-capture-parser"], ["release", "proposal-capture-parser"], ["autonomy", "proposal-capture-parser"], ["local-model-proposals", "capture"], ["proposal-capture-parser"]):
+        return 200, _ok(sm_v45.build_proposal_capture_parser(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "proposal-safety-precheck"], ["release", "proposal-safety-precheck"], ["autonomy", "proposal-safety-precheck"], ["local-model-proposals", "safety"], ["proposal-safety-precheck"]):
+        return 200, _ok(sm_v45.build_proposal_safety_precheck(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "model-output-provenance-recorder"], ["release", "model-output-provenance-recorder"], ["autonomy", "model-output-provenance-recorder"], ["local-model-proposals", "provenance"], ["model-output-provenance-recorder"]):
+        return 200, _ok(sm_v45.build_model_output_provenance_recorder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "proposal-integration-dashboard-api-cli"], ["release", "proposal-integration-dashboard-api-cli"], ["autonomy", "proposal-integration-dashboard-api-cli"], ["local-model-proposals", "parity"], ["proposal-integration-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_proposal_integration_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "disabled-by-default-invocation-gate"], ["release", "disabled-by-default-invocation-gate"], ["autonomy", "disabled-by-default-invocation-gate"], ["local-model-proposals", "disabled-gate"], ["disabled-by-default-invocation-gate"]):
+        return 200, _ok(sm_v45.build_disabled_by_default_invocation_gate(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "pre-v81-model-integration-gate"], ["release", "pre-v81-model-integration-gate"], ["autonomy", "pre-v81-model-integration-gate"], ["local-model-proposals", "gate"], ["pre-v81-model-integration-gate"]):
+        return 200, _ok(sm_v45.build_pre_v81_model_integration_gate(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "local-model-patch-proposal-integration"], ["release", "local-model-patch-proposal-integration"], ["autonomy", "local-model-patch-proposal-integration"], ["local-model-proposals", "layer"], ["local-model-patch-proposal-integration"]):
+        return 200, _ok(sm_v45.build_local_model_patch_proposal_integration(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "proposal-collection-intake"], ["release", "proposal-collection-intake"], ["autonomy", "proposal-collection-intake"], ["proposal-critique", "intake"], ["proposal-collection-intake"]):
+        return 200, _ok(sm_v45.build_proposal_collection_intake(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "candidate-diff-normalizer"], ["release", "candidate-diff-normalizer"], ["autonomy", "candidate-diff-normalizer"], ["proposal-critique", "diff-normalize"], ["candidate-diff-normalizer"]):
+        return 200, _ok(sm_v45.build_candidate_diff_normalizer(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "proposal-quality-heuristic-scorer"], ["release", "proposal-quality-heuristic-scorer"], ["autonomy", "proposal-quality-heuristic-scorer"], ["proposal-critique", "quality"], ["proposal-quality-heuristic-scorer"]):
+        return 200, _ok(sm_v45.build_proposal_quality_heuristic_scorer(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "safety-scope-comparison"], ["release", "safety-scope-comparison"], ["autonomy", "safety-scope-comparison"], ["proposal-critique", "safety-scope"], ["safety-scope-comparison"]):
+        return 200, _ok(sm_v45.build_safety_scope_comparison(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "verification-plan-comparison"], ["release", "verification-plan-comparison"], ["autonomy", "verification-plan-comparison"], ["proposal-critique", "verification"], ["verification-plan-comparison"]):
+        return 200, _ok(sm_v45.build_verification_plan_comparison(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "critique-report-builder"], ["release", "critique-report-builder"], ["autonomy", "critique-report-builder"], ["proposal-critique", "report"], ["critique-report-builder"]):
+        return 200, _ok(sm_v45.build_critique_report_builder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "critique-dashboard-api-cli"], ["release", "critique-dashboard-api-cli"], ["autonomy", "critique-dashboard-api-cli"], ["proposal-critique", "parity"], ["critique-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_critique_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "operator-review-bundle-exporter"], ["release", "operator-review-bundle-exporter"], ["autonomy", "operator-review-bundle-exporter"], ["proposal-critique", "operator-bundle"], ["operator-review-bundle-exporter"]):
+        return 200, _ok(sm_v45.build_operator_review_bundle_exporter(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "pre-v82-output-critique-gate"], ["release", "pre-v82-output-critique-gate"], ["autonomy", "pre-v82-output-critique-gate"], ["proposal-critique", "gate"], ["pre-v82-output-critique-gate"]):
+        return 200, _ok(sm_v45.build_pre_v82_output_critique_gate(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "local-model-output-comparison-critique"], ["release", "local-model-output-comparison-critique"], ["autonomy", "local-model-output-comparison-critique"], ["proposal-critique", "layer"], ["local-model-output-comparison-critique"]):
+        return 200, _ok(sm_v45.build_local_model_output_comparison_critique(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "candidate-registry-schema"], ["release", "candidate-registry-schema"], ["autonomy", "candidate-registry-schema"], ["candidate-ranking", "schema"], ["candidate-registry-schema"]):
+        return 200, _ok(sm_v45.build_candidate_registry_schema(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "candidate-deduplication"], ["release", "candidate-deduplication"], ["autonomy", "candidate-deduplication"], ["candidate-ranking", "dedupe"], ["candidate-deduplication"]):
+        return 200, _ok(sm_v45.build_candidate_deduplication(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "risk-weighted-ranking"], ["release", "risk-weighted-ranking"], ["autonomy", "risk-weighted-ranking"], ["candidate-ranking", "risk-ranking"], ["risk-weighted-ranking"]):
+        return 200, _ok(sm_v45.build_risk_weighted_ranking(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "conflict-aware-grouping"], ["release", "conflict-aware-grouping"], ["autonomy", "conflict-aware-grouping"], ["candidate-ranking", "conflicts"], ["conflict-aware-grouping"]):
+        return 200, _ok(sm_v45.build_conflict_aware_grouping(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "evidence-completeness-ranker"], ["release", "evidence-completeness-ranker"], ["autonomy", "evidence-completeness-ranker"], ["candidate-ranking", "evidence"], ["evidence-completeness-ranker"]):
+        return 200, _ok(sm_v45.build_evidence_completeness_ranker(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "ranking-explainer"], ["release", "ranking-explainer"], ["autonomy", "ranking-explainer"], ["candidate-ranking", "explainer"], ["ranking-explainer"]):
+        return 200, _ok(sm_v45.build_ranking_explainer(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "ranking-dashboard-api-cli"], ["release", "ranking-dashboard-api-cli"], ["autonomy", "ranking-dashboard-api-cli"], ["candidate-ranking", "parity"], ["ranking-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_ranking_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "operator-selection-packet"], ["release", "operator-selection-packet"], ["autonomy", "operator-selection-packet"], ["candidate-ranking", "selection"], ["operator-selection-packet"]):
+        return 200, _ok(sm_v45.build_operator_selection_packet(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "pre-v83-ranking-gate"], ["release", "pre-v83-ranking-gate"], ["autonomy", "pre-v83-ranking-gate"], ["candidate-ranking", "gate"], ["pre-v83-ranking-gate"]):
+        return 200, _ok(sm_v45.build_pre_v83_ranking_gate(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "multi-model-patch-candidate-ranking"], ["release", "multi-model-patch-candidate-ranking"], ["autonomy", "multi-model-patch-candidate-ranking"], ["candidate-ranking", "layer"], ["multi-model-patch-candidate-ranking"]):
+        return 200, _ok(sm_v45.build_multi_model_patch_candidate_ranking(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "refinement-goal-binder"], ["release", "refinement-goal-binder"], ["autonomy", "refinement-goal-binder"], ["candidate-refinement", "goal"], ["refinement-goal-binder"]):
+        return 200, _ok(sm_v45.build_refinement_goal_binder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "critique-revision-prompt-builder"], ["release", "critique-revision-prompt-builder"], ["autonomy", "critique-revision-prompt-builder"], ["candidate-refinement", "revision-prompt"], ["critique-revision-prompt-builder"]):
+        return 200, _ok(sm_v45.build_critique_revision_prompt_builder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "constrained-revision-scope-builder"], ["release", "constrained-revision-scope-builder"], ["autonomy", "constrained-revision-scope-builder"], ["candidate-refinement", "scope"], ["constrained-revision-scope-builder"]):
+        return 200, _ok(sm_v45.build_constrained_revision_scope_builder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "refinement-safety-reviewer"], ["release", "refinement-safety-reviewer"], ["autonomy", "refinement-safety-reviewer"], ["candidate-refinement", "safety"], ["refinement-safety-reviewer"]):
+        return 200, _ok(sm_v45.build_refinement_safety_reviewer(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "refinement-evidence-recorder"], ["release", "refinement-evidence-recorder"], ["autonomy", "refinement-evidence-recorder"], ["candidate-refinement", "evidence"], ["refinement-evidence-recorder"]):
+        return 200, _ok(sm_v45.build_refinement_evidence_recorder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "refinement-iteration-limiter"], ["release", "refinement-iteration-limiter"], ["autonomy", "refinement-iteration-limiter"], ["candidate-refinement", "iteration-limit"], ["refinement-iteration-limiter"]):
+        return 200, _ok(sm_v45.build_refinement_iteration_limiter(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "refinement-dashboard-api-cli"], ["release", "refinement-dashboard-api-cli"], ["autonomy", "refinement-dashboard-api-cli"], ["candidate-refinement", "parity"], ["refinement-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_refinement_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "operator-revision-packet"], ["release", "operator-revision-packet"], ["autonomy", "operator-revision-packet"], ["candidate-refinement", "operator-packet"], ["operator-revision-packet"]):
+        return 200, _ok(sm_v45.build_operator_revision_packet(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "pre-v84-refinement-gate"], ["release", "pre-v84-refinement-gate"], ["autonomy", "pre-v84-refinement-gate"], ["candidate-refinement", "gate"], ["pre-v84-refinement-gate"]):
+        return 200, _ok(sm_v45.build_pre_v84_refinement_gate(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "supervised-patch-candidate-refinement"], ["release", "supervised-patch-candidate-refinement"], ["autonomy", "supervised-patch-candidate-refinement"], ["candidate-refinement", "layer"], ["supervised-patch-candidate-refinement"]):
+        return 200, _ok(sm_v45.build_supervised_patch_candidate_refinement(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "suggestion-source-intake"], ["release", "suggestion-source-intake"], ["autonomy", "suggestion-source-intake"], ["suggestion-loop", "intake"], ["suggestion-source-intake"]):
+        return 200, _ok(sm_v45.build_suggestion_source_intake(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "suggestion-cycle-state-machine"], ["release", "suggestion-cycle-state-machine"], ["autonomy", "suggestion-cycle-state-machine"], ["suggestion-loop", "state"], ["suggestion-cycle-state-machine"]):
+        return 200, _ok(sm_v45.build_suggestion_cycle_state_machine(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "recurring-suggestion-budgeter"], ["release", "recurring-suggestion-budgeter"], ["autonomy", "recurring-suggestion-budgeter"], ["suggestion-loop", "budget"], ["recurring-suggestion-budgeter"]):
+        return 200, _ok(sm_v45.build_recurring_suggestion_budgeter(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "safety-boundary-enforcer"], ["release", "safety-boundary-enforcer"], ["autonomy", "safety-boundary-enforcer"], ["suggestion-loop", "safety"], ["safety-boundary-enforcer"]):
+        return 200, _ok(sm_v45.build_safety_boundary_enforcer(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "suggestion-deduplication-memory"], ["release", "suggestion-deduplication-memory"], ["autonomy", "suggestion-deduplication-memory"], ["suggestion-loop", "dedupe"], ["suggestion-deduplication-memory"]):
+        return 200, _ok(sm_v45.build_suggestion_deduplication_memory(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "operator-attention-packet"], ["release", "operator-attention-packet"], ["autonomy", "operator-attention-packet"], ["suggestion-loop", "attention"], ["operator-attention-packet"]):
+        return 200, _ok(sm_v45.build_operator_attention_packet(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "suggestion-loop-dashboard-api-cli"], ["release", "suggestion-loop-dashboard-api-cli"], ["autonomy", "suggestion-loop-dashboard-api-cli"], ["suggestion-loop", "parity"], ["suggestion-loop-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_suggestion_loop_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "no-autonomous-apply-auditor"], ["release", "no-autonomous-apply-auditor"], ["autonomy", "no-autonomous-apply-auditor"], ["suggestion-loop", "no-apply"], ["no-autonomous-apply-auditor"]):
+        return 200, _ok(sm_v45.build_no_autonomous_apply_auditor(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "pre-v85-suggestion-loop-gate"], ["release", "pre-v85-suggestion-loop-gate"], ["autonomy", "pre-v85-suggestion-loop-gate"], ["suggestion-loop", "gate"], ["pre-v85-suggestion-loop-gate"]):
+        return 200, _ok(sm_v45.build_pre_v85_suggestion_loop_gate(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "safe-autonomous-suggestion-loop"], ["release", "safe-autonomous-suggestion-loop"], ["autonomy", "safe-autonomous-suggestion-loop"], ["suggestion-loop", "layer"], ["safe-autonomous-suggestion-loop"]):
+        return 200, _ok(sm_v45.build_safe_autonomous_suggestion_loop(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, model_name=local_model_name, cycle_id=improvement_cycle_id, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "suggestion-inbox-record-schema"], ["release", "suggestion-inbox-record-schema"], ["autonomy", "suggestion-inbox-record-schema"], ["suggestion-inbox", "schema"], ["suggestion-inbox-record-schema"]):
+        return 200, _ok(sm_v45.build_suggestion_inbox_record_schema(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "suggestion-intake-normalizer"], ["release", "suggestion-intake-normalizer"], ["autonomy", "suggestion-intake-normalizer"], ["suggestion-inbox", "intake"], ["suggestion-intake-normalizer"]):
+        return 200, _ok(sm_v45.build_suggestion_intake_normalizer(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "suggestion-deduplication-drift-resolver"], ["release", "suggestion-deduplication-drift-resolver"], ["autonomy", "suggestion-deduplication-drift-resolver"], ["suggestion-inbox", "dedupe"], ["suggestion-deduplication-drift-resolver"]):
+        return 200, _ok(sm_v45.build_suggestion_deduplication_drift_resolver(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "operator-triage-state-machine"], ["release", "operator-triage-state-machine"], ["autonomy", "operator-triage-state-machine"], ["suggestion-inbox", "triage"], ["operator-triage-state-machine"]):
+        return 200, _ok(sm_v45.build_operator_triage_state_machine(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "work-order-draft-builder"], ["release", "work-order-draft-builder"], ["autonomy", "work-order-draft-builder"], ["suggestion-inbox", "work-order-draft"], ["work-order-draft-builder"]):
+        return 200, _ok(sm_v45.build_work_order_draft_builder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "safety-scope-contract-binder"], ["release", "safety-scope-contract-binder"], ["autonomy", "safety-scope-contract-binder"], ["suggestion-inbox", "safety"], ["safety-scope-contract-binder"]):
+        return 200, _ok(sm_v45.build_safety_scope_contract_binder(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "pipeline-handoff-planner"], ["release", "pipeline-handoff-planner"], ["autonomy", "pipeline-handoff-planner"], ["suggestion-inbox", "handoff"], ["pipeline-handoff-planner"]):
+        return 200, _ok(sm_v45.build_pipeline_handoff_planner(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "suggestion-inbox-dashboard-api-cli"], ["release", "suggestion-inbox-dashboard-api-cli"], ["autonomy", "suggestion-inbox-dashboard-api-cli"], ["suggestion-inbox", "parity"], ["suggestion-inbox-dashboard-api-cli"]):
+        return 200, _ok(sm_v45.build_suggestion_inbox_dashboard_api_cli(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "pre-v86-suggestion-inbox-gate"], ["release", "pre-v86-suggestion-inbox-gate"], ["autonomy", "pre-v86-suggestion-inbox-gate"], ["suggestion-inbox", "gate"], ["pre-v86-suggestion-inbox-gate"]):
+        return 200, _ok(sm_v45.build_pre_v86_suggestion_inbox_gate(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+    if parts in (["self-maintenance", "supervised-suggestion-inbox-work-order-planner"], ["release", "supervised-suggestion-inbox-work-order-planner"], ["autonomy", "supervised-suggestion-inbox-work-order-planner"], ["suggestion-inbox", "layer"], ["supervised-suggestion-inbox-work-order-planner"]):
+        return 200, _ok(sm_v45.build_supervised_suggestion_inbox_work_order_planner(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+
+
+    # v120.1-v125.0 supervised development learning API routes intentionally handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/development-outcome-review/collector /api/development-outcome-review/comparison /api/development-outcome-review/missed /api/development-outcome-review/unexpected /api/development-outcome-review/verification /api/development-outcome-review/burden /api/development-outcome-review/binder /api/development-outcome-review/parity /api/development-outcome-review/gate /api/development-outcome-review/layer /api/lesson-extraction/schema /api/lesson-extraction/bugs /api/lesson-extraction/successes /api/lesson-extraction/false-alarms /api/lesson-extraction/usefulness /api/lesson-extraction/memory-boundary /api/lesson-extraction/packet /api/lesson-extraction/parity /api/lesson-extraction/gate /api/lesson-extraction/layer /api/recommendation-refinement/schema /api/recommendation-refinement/accuracy /api/recommendation-refinement/mistakes /api/recommendation-refinement/noise /api/recommendation-refinement/adjuster /api/recommendation-refinement/safety /api/recommendation-refinement/binder /api/recommendation-refinement/parity /api/recommendation-refinement/gate /api/recommendation-refinement/layer /api/operator-feedback-integration/schema /api/operator-feedback-integration/standing-rules /api/operator-feedback-integration/temporary /api/operator-feedback-integration/contradictions /api/operator-feedback-integration/work-packages /api/operator-feedback-integration/packet /api/operator-feedback-integration/safety /api/operator-feedback-integration/parity /api/operator-feedback-integration/gate /api/operator-feedback-integration/layer /api/development-learning-audit/walkthrough /api/development-learning-audit/lesson-quality /api/development-learning-audit/recommendations /api/development-learning-audit/feedback /api/development-learning-audit/memory /api/development-learning-audit/safety /api/development-learning-audit/burden /api/development-learning-audit/parity /api/development-learning-audit/gate /api/development-learning-audit/layer
+    # v115.1-v120.0 supervised development execution API routes intentionally handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/development-session-planner/intent /api/development-session-planner/scope /api/development-session-planner/files /api/development-session-planner/tests /api/development-session-planner/docs /api/development-session-planner/safety /api/development-session-planner/decisions /api/development-session-planner/parity /api/development-session-planner/gate /api/development-session-planner/layer /api/source-change-cartographer/inventory /api/source-change-cartographer/route-parity /api/source-change-cartographer/builders /api/source-change-cartographer/docs /api/source-change-cartographer/smoke /api/source-change-cartographer/fragile /api/source-change-cartographer/report /api/source-change-cartographer/parity /api/source-change-cartographer/gate /api/source-change-cartographer/layer /api/patch-simulation/schema /api/patch-simulation/expected-diff /api/patch-simulation/missing /api/patch-simulation/overreach /api/patch-simulation/safety /api/patch-simulation/verification /api/patch-simulation/summary /api/patch-simulation/parity /api/patch-simulation/gate /api/patch-simulation/layer /api/verification-matrix/schema /api/verification-matrix/dashboard /api/verification-matrix/api-cli /api/verification-matrix/packaging /api/verification-matrix/safety /api/verification-matrix/docs /api/verification-matrix/recommendation /api/verification-matrix/parity /api/verification-matrix/gate /api/verification-matrix/layer /api/development-execution-audit/walkthrough /api/development-execution-audit/burden /api/development-execution-audit/quality /api/development-execution-audit/coverage /api/development-execution-audit/safety /api/development-execution-audit/dashboard /api/development-execution-audit/docs /api/development-execution-audit/parity /api/development-execution-audit/gate /api/development-execution-audit/layer
+    # v110.1-v115.0 supervised self-development API routes intentionally handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/improvement-intent/inventory /api/improvement-intent/problem /api/improvement-intent/evidence /api/improvement-intent/scope /api/improvement-intent/value /api/improvement-intent/safety /api/improvement-intent/binder /api/improvement-intent/parity /api/improvement-intent/gate /api/improvement-intent/layer /api/work-package-builder/schema /api/work-package-builder/boundary /api/work-package-builder/criteria /api/work-package-builder/tests /api/work-package-builder/docs /api/work-package-builder/risks /api/work-package-builder/packet /api/work-package-builder/parity /api/work-package-builder/gate /api/work-package-builder/layer /api/patch-readiness/schema /api/patch-readiness/expectations /api/patch-readiness/completeness /api/patch-readiness/contradictions /api/patch-readiness/safety /api/patch-readiness/dashboard /api/patch-readiness/summary /api/patch-readiness/parity /api/patch-readiness/gate /api/patch-readiness/layer /api/release-candidate-judgment/schema /api/release-candidate-judgment/version /api/release-candidate-judgment/route-parity /api/release-candidate-judgment/docs /api/release-candidate-judgment/privacy /api/release-candidate-judgment/install /api/release-candidate-judgment/recommendation /api/release-candidate-judgment/coverage /api/release-candidate-judgment/gate /api/release-candidate-judgment/layer /api/supervised-development-readiness/walkthrough /api/supervised-development-readiness/burden /api/supervised-development-readiness/safety /api/supervised-development-readiness/evidence /api/supervised-development-readiness/trace /api/supervised-development-readiness/dashboard /api/supervised-development-readiness/release-process /api/supervised-development-readiness/parity /api/supervised-development-readiness/gate /api/supervised-development-readiness/layer
+    # v105.1-v110.0 practical coherence API routes intentionally handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/memory-quality/inventory /api/memory-quality/freshness /api/memory-quality/conflicts /api/memory-quality/evidence /api/memory-quality/relevance /api/memory-quality/corrections /api/memory-quality/parity /api/memory-quality/privacy /api/memory-quality/gate /api/memory-quality/layer /api/goal-continuity/inventory /api/goal-continuity/lifecycle /api/goal-continuity/evidence /api/goal-continuity/priority /api/goal-continuity/blocked /api/goal-continuity/contradictions /api/goal-continuity/summary /api/goal-continuity/parity /api/goal-continuity/gate /api/goal-continuity/layer /api/reasoning-workbench/schema /api/reasoning-workbench/context /api/reasoning-workbench/permission /api/reasoning-workbench/capture /api/reasoning-workbench/rubric /api/reasoning-workbench/boundaries /api/reasoning-workbench/evidence /api/reasoning-workbench/parity /api/reasoning-workbench/gate /api/reasoning-workbench/layer /api/workflow-console/friction /api/workflow-console/queue /api/workflow-console/commands /api/workflow-console/packets /api/workflow-console/consolidation /api/workflow-console/lazy-loader /api/workflow-console/tooltips /api/workflow-console/parity /api/workflow-console/gate /api/workflow-console/layer /api/practical-mind-audit/walkthrough /api/practical-mind-audit/memory /api/practical-mind-audit/goals /api/practical-mind-audit/reasoning /api/practical-mind-audit/burden /api/practical-mind-audit/dashboard /api/practical-mind-audit/safety /api/practical-mind-audit/parity /api/practical-mind-audit/gate /api/practical-mind-audit/layer
+    # v100.1-v105.0 coherent runtime API routes intentionally handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/v100-stabilization/inventory /api/v100-stabilization/duplicates /api/v100-stabilization/dashboard-review /api/v100-stabilization/coverage /api/v100-stabilization/privacy /api/v100-stabilization/operator-friction /api/v100-stabilization/report /api/v100-stabilization/parity /api/v100-stabilization/gate /api/v100-stabilization/layer /api/system-map/schema /api/system-map/core-mind /api/system-map/development-pipeline /api/system-map/governance /api/system-map/operator-home /api/system-map/cross-links /api/system-map/integrity /api/system-map/parity /api/system-map/gate /api/system-map/layer /api/coherence-binder/schema /api/coherence-binder/memory-reflection /api/coherence-binder/reflection-goal /api/coherence-binder/goal-suggestion /api/coherence-binder/outcome-lesson /api/coherence-binder/conflicts /api/coherence-binder/summary /api/coherence-binder/parity /api/coherence-binder/gate /api/coherence-binder/layer /api/daily-loop/schema /api/daily-loop/status /api/daily-loop/priorities /api/daily-loop/operator-actions /api/daily-loop/safety /api/daily-loop/reflection-prompts /api/daily-loop/parity /api/daily-loop/privacy /api/daily-loop/gate /api/daily-loop/layer /api/local-mind-runtime/schema /api/local-mind-runtime/snapshot /api/local-mind-runtime/continuity /api/local-mind-runtime/next-step /api/local-mind-runtime/health /api/local-mind-runtime/contradictions /api/local-mind-runtime/parity /api/local-mind-runtime/containment /api/local-mind-runtime/gate /api/local-mind-runtime/layer
+    _v90_route_key = "/".join(parts)
+    _v90_slug = getattr(sm_v45, "SUPERVISED_DEV_ROUTE_MAP", {}).get(_v90_route_key)
+    if _v90_slug:
+        return 200, _ok(getattr(sm_v45, f"build_{_v90_slug}")(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
+
+    _v95_route_key = "/".join(parts)
+    _v95_slug = getattr(sm_v45, "SUPERVISED_RUNTIME_ROUTE_MAP", {}).get(_v95_route_key)
+    if _v95_slug:
+        return 200, _ok(getattr(sm_v45, f"build_{_v95_slug}")(project_id=query.get("project", ["eidolon"])[0], improvement_goal=improvement_goal, candidate_file=candidate_file, save=False))
 
     if parts in (["self-maintenance", "proposal"], ["release", "self-maintenance-proposal"], ["self-maintenance-proposal"]):
         report = build_self_maintenance_proposal_sandbox(project_id=query.get("project", ["eidolon"])[0], save=False)
@@ -1595,12 +2975,12 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "operator-trust-report"], ["release", "operator-trust-report"], ["operator-trust-report"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_operator_trust_report(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_operator_trust_report(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "trustworthy-maintenance-console"], ["release", "trustworthy-maintenance-console"], ["trustworthy-maintenance-console"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_trustworthy_maintenance_console(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_trustworthy_maintenance_console(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "trust-console-drill"], ["release", "trust-console-drill"], ["trust-console-drill"]):
@@ -1609,7 +2989,7 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "trust-console-snapshot"], ["release", "trust-console-snapshot"], ["trust-console-snapshot"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_trust_console_snapshot(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_trust_console_snapshot(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "trust-console-diff"], ["release", "trust-console-diff"], ["trust-console-diff"]):
@@ -1622,17 +3002,17 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "verify-frozen-release-zip"], ["release", "verify-frozen-release-zip"], ["verify-frozen-release-zip"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_frozen_release_zip_verification(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_frozen_release_zip_verification(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "approval-evidence-ledger"], ["release", "approval-evidence-ledger"], ["approval-evidence-ledger"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_approval_evidence_ledger(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_approval_evidence_ledger(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "release-command-reproducer"], ["release", "release-command-reproducer"], ["release-command-reproducer"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_release_command_reproducer(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_release_command_reproducer(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "console-readme-consistency"], ["release", "console-readme-consistency"], ["console-readme-consistency"]):
@@ -1641,12 +3021,12 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "pre-v27-safety-audit"], ["release", "pre-v27-safety-audit"], ["pre-v27-safety-audit"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_pre_v27_safety_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_pre_v27_safety_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "release-candidate-governance"], ["release", "release-candidate-governance"], ["release-candidate-governance"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_release_candidate_governance(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_release_candidate_governance(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
 
@@ -1656,12 +3036,12 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "release-evidence-bundle"], ["release", "release-evidence-bundle"], ["release-evidence-bundle"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_release_evidence_bundle(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_release_evidence_bundle(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "verify-release-evidence-bundle"], ["release", "verify-release-evidence-bundle"], ["verify-release-evidence-bundle"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_release_evidence_bundle_verifier(project_id=project_id, bundle_path=query.get("bundle_path", [None])[0], package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_release_evidence_bundle_verifier(project_id=project_id, bundle_path=query.get("bundle_path", [None])[0], package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "release-governance-page"], ["release", "release-governance-page"], ["release-governance-page"]):
@@ -1674,49 +3054,49 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "release-artifact-diff"], ["release", "release-artifact-diff"], ["release-artifact-diff"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_release_artifact_diff(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_release_artifact_diff(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "release-signing-preparation"], ["release", "release-signing-preparation"], ["release-signing-preparation"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_release_signing_preparation(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_release_signing_preparation(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "local-trust-policy"], ["release", "local-trust-policy"], ["local-trust-policy"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_local_trust_policy(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_local_trust_policy(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "release-governance-ux-polish"], ["release", "release-governance-ux-polish"], ["release-governance-ux-polish"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_release_governance_ux_polish(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_release_governance_ux_polish(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "pre-v28-governance-audit"], ["release", "pre-v28-governance-audit"], ["pre-v28-governance-audit"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_pre_v28_governance_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_pre_v28_governance_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "verifiable-release-evidence-system"], ["release", "verifiable-release-evidence-system"], ["verifiable-release-evidence-system"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_verifiable_release_evidence_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_verifiable_release_evidence_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
 
 
     if parts in (["self-maintenance", "evidence-replay-drill"], ["release", "evidence-replay-drill"], ["evidence-replay-drill"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_evidence_replay_drill(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_evidence_replay_drill(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "persist-release-evidence"], ["release", "persist-release-evidence"], ["persist-release-evidence"], ["release", "evidence"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_evidence_bundle_persistence(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_evidence_bundle_persistence(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "replay-release-evidence"], ["release", "replay-release-evidence"], ["replay-release-evidence"], ["release", "evidence", "replay"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_replay_release_evidence(project_id=project_id, bundle_path=query.get("bundle_path", [None])[0], package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_replay_release_evidence(project_id=project_id, bundle_path=query.get("bundle_path", [None])[0], package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "evidence-timeline"], ["release", "evidence-timeline"], ["evidence-timeline"]):
@@ -1725,7 +3105,7 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "evidence-summary"], ["release", "evidence-summary"], ["evidence-summary"], ["release", "evidence", "summary"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_evidence_operator_summary(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_evidence_operator_summary(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "dashboard-evidence-viewer"], ["release", "dashboard-evidence-viewer"], ["dashboard-evidence-viewer"]):
@@ -1746,32 +3126,32 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "pre-v29-evidence-audit"], ["release", "pre-v29-evidence-audit"], ["pre-v29-evidence-audit"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_pre_v29_evidence_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_pre_v29_evidence_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "durable-release-evidence-archive"], ["release", "durable-release-evidence-archive"], ["durable-release-evidence-archive"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_durable_release_evidence_archive(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_durable_release_evidence_archive(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "signing-readiness-audit"], ["release", "signing-readiness-audit"], ["signing-readiness-audit"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_signing_readiness_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_signing_readiness_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "canonical-manifest-format"], ["release", "canonical-manifest-format"], ["canonical-manifest-format"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_canonical_manifest_format(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_canonical_manifest_format(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "canonical-evidence-schema"], ["release", "canonical-evidence-schema"], ["canonical-evidence-schema"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_canonical_evidence_schema(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_canonical_evidence_schema(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "release-signing-status"], ["release", "release-signing-status"], ["release", "signing"], ["release-signing-status"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_release_signing_status(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_release_signing_status(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "signature-placeholder-contract"], ["release", "signature-placeholder-contract"], ["signature-placeholder-contract"]):
@@ -1784,7 +3164,7 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "verify-release-signature"], ["release", "verify-release-signature"], ["release", "signature", "verify"], ["verify-release-signature"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_signature_verification_placeholder(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_signature_verification_placeholder(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "dashboard-signing-status"], ["release", "dashboard-signing-status"], ["dashboard-signing-status"]):
@@ -1797,12 +3177,617 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
 
     if parts in (["self-maintenance", "pre-v30-signing-prep-audit"], ["release", "pre-v30-signing-prep-audit"], ["pre-v30-signing-prep-audit"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_pre_v30_signing_prep_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_pre_v30_signing_prep_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts in (["self-maintenance", "signed-release-preparation-system"], ["release", "signed-release-preparation-system"], ["signed-release-preparation-system"]):
         project_id = query.get("project", ["eidolon"])[0]
-        report = build_signed_release_preparation_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=query.get("zip_path", [None])[0], save=False)
+        report = build_signed_release_preparation_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signing-api-hardening"], ["release", "signing-api-hardening"], ["signing-api-hardening"]):
+        report = build_signing_api_hardening(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "canonical-schema-validator"], ["release", "canonical-schema-validator"], ["canonical-schema-validator"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_canonical_schema_validator(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "source-data-sanitizer"], ["release", "source-data-sanitizer"], ["source-data-sanitizer"]):
+        report = build_source_data_sanitizer(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signing-trust-model"], ["release", "signing-trust-model"], ["signing-trust-model"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signing_trust_model(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-signing-tamper-drill"], ["release", "release-signing-tamper-drill"], ["release-signing-tamper-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_signing_tamper_drill(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "public-key-policy-design"], ["release", "public-key-policy-design"], ["public-key-policy-design"]):
+        report = build_public_key_policy_design(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "detached-signature-contract"], ["release", "detached-signature-contract"], ["detached-signature-contract"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_detached_signature_contract(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signature-fixture-verification"], ["release", "signature-fixture-verification"], ["signature-fixture-verification"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signature_fixture_verification(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "external-signer-workflow"], ["release", "external-signer-workflow"], ["external-signer-workflow"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_external_signer_workflow(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "detached-signature-verification-system"], ["release", "detached-signature-verification-system"], ["release", "signature", "detached-verify"], ["detached-signature-verification-system"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_detached_signature_verification_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signature-verification-hardening"], ["release", "signature-verification-hardening"], ["signature-verification-hardening"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signature_verification_hardening(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "public-trust-root-config"], ["release", "public-trust-root-config"], ["release", "trust-roots"], ["public-trust-root-config"]):
+        report = build_public_trust_root_config(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "external-signing-payload-export"], ["release", "external-signing-payload-export"], ["release", "signing-payload"], ["external-signing-payload-export"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_external_signing_payload_export(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signed-fixture-test-suite"], ["release", "signed-fixture-test-suite"], ["signed-fixture-test-suite"]):
+        report = build_signed_fixture_test_suite(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-publish-gate"], ["release", "release-publish-gate"], ["release", "publish-gate"], ["release-publish-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_publish_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-trust-dashboard-polish"], ["release", "release-trust-dashboard-polish"], ["release", "trust-dashboard"], ["release-trust-dashboard-polish"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_trust_dashboard_polish(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "api-route-safety-audit"], ["release", "api-route-safety-audit"], ["release", "route-safety-audit"], ["api-route-safety-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_api_route_safety_audit(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-reproducibility-check"], ["release", "release-reproducibility-check"], ["release", "reproducibility-check"], ["release-reproducibility-check"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_reproducibility_check(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v32-release-candidate-gate"], ["release", "pre-v32-release-candidate-gate"], ["release", "pre-v32-gate"], ["pre-v32-release-candidate-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v32_release_candidate_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signed-release-governance"], ["release", "signed-release-governance"], ["release", "governance-v32"], ["signed-release-governance"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signed_release_governance(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "governance-report-cleanup"], ["release", "governance-report-cleanup"], ["governance-report-cleanup"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_governance_report_cleanup(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-candidate-workspace"], ["release", "release-candidate-workspace"], ["release", "candidate-workspace"], ["release-candidate-workspace"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_candidate_workspace(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "artifact-binding-audit"], ["release", "artifact-binding-audit"], ["release", "artifact-binding-audit-v2"], ["artifact-binding-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_artifact_binding_audit_v2(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "surface-consistency-audit"], ["release", "surface-consistency-audit"], ["release", "surface-consistency"], ["surface-consistency-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_surface_consistency_audit(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "external-signing-handoff"], ["release", "external-signing-handoff"], ["release", "signing-handoff"], ["external-signing-handoff"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_external_signing_handoff(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signature-intake-validation"], ["release", "signature-intake-validation"], ["release", "signature-intake"], ["signature-intake-validation"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signature_intake_validation(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), signature_path=_query_signature_options(query).get("signature_path"), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trusted-signer-registry"], ["release", "trusted-signer-registry"], ["release", "trust-roots", "registry"], ["trusted-signer-registry"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_trusted_signer_registry(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "governance-scenario-suite"], ["release", "governance-scenario-suite"], ["release", "scenario-suite"], ["governance-scenario-suite"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_governance_scenario_suite(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v33-operations-gate"], ["release", "pre-v33-operations-gate"], ["release", "pre-v33-gate"], ["pre-v33-operations-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v33_operations_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-operations-console"], ["release", "release-operations-console"], ["release", "operations-console"], ["release-operations-console"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_operations_console(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+
+    if parts in (["self-maintenance", "operations-console-cleanup"], ["release", "operations-console-cleanup"], ["release", "operations-cleanup"], ["operations-console-cleanup"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_operations_console_cleanup(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-candidate-review"], ["release", "release-candidate-review"], ["release", "candidate-review"], ["release-candidate-review"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_candidate_review(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signed-artifact-intake"], ["release", "signed-artifact-intake"], ["release", "signed-intake"], ["signed-artifact-intake"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signed_artifact_intake(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trust-root-lifecycle"], ["release", "trust-root-lifecycle"], ["release", "trust-lifecycle"], ["trust-root-lifecycle"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_trust_root_lifecycle(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-decision-explainer"], ["release", "publish-decision-explainer"], ["release", "publish-decision"], ["publish-decision-explainer"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_decision_explainer(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "operator-action-guardrails"], ["release", "operator-action-guardrails"], ["release", "operator-guardrails"], ["operator-action-guardrails"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_operator_action_guardrails(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "unsigned-release-drill"], ["release", "unsigned-release-drill"], ["release", "unsigned-drill"], ["unsigned-release-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_unsigned_release_drill(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signed-fixture-release-drill"], ["release", "signed-fixture-release-drill"], ["release", "signed-fixture-drill"], ["signed-fixture-release-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signed_fixture_release_drill(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v34-operator-workflow-gate"], ["release", "pre-v34-operator-workflow-gate"], ["release", "pre-v34-gate"], ["pre-v34-operator-workflow-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v34_operator_workflow_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-operator-workflow"], ["release", "release-operator-workflow"], ["release", "operator-workflow"], ["release-operator-workflow"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_operator_workflow(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+
+    if parts in (["self-maintenance", "release-candidate-record"], ["release", "release-candidate-record"], ["release", "candidate-record"], ["release-candidate-record"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_candidate_record_v2(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signed-artifact-intake-v2"], ["release", "signed-artifact-intake-v2"], ["release", "signature-intake-v2"], ["signed-artifact-intake-v2"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signed_artifact_intake_v2(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trust-root-management-policy"], ["release", "trust-root-management-policy"], ["release", "trust-policy"], ["trust-root-management-policy"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_trust_root_management_policy(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trust-root-mutation-guardrails"], ["release", "trust-root-mutation-guardrails"], ["release", "trust-mutation-guardrails"], ["trust-root-mutation-guardrails"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_trust_root_mutation_guardrails(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "signed-release-publish-decision"], ["release", "signed-release-publish-decision"], ["release", "publish-decision-v2"], ["signed-release-publish-decision"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_signed_release_publish_decision(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "operator-dashboard-action-states"], ["release", "operator-dashboard-action-states"], ["release", "dashboard-action-states"], ["operator-dashboard-action-states"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_operator_dashboard_action_states(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "release-audit-trail"], ["release", "release-audit-trail"], ["release", "audit-trail"], ["release-audit-trail"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_release_audit_trail(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trusted-fixture-workflow"], ["release", "trusted-fixture-workflow"], ["release", "fixture-workflow"], ["trusted-fixture-workflow"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_trusted_fixture_workflow(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v35-trusted-candidate-gate"], ["release", "pre-v35-trusted-candidate-gate"], ["release", "pre-v35-gate"], ["pre-v35-trusted-candidate-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v35_trusted_candidate_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "trusted-release-candidate-system"], ["release", "trusted-release-candidate-system"], ["release", "trusted-candidate-system"], ["release", "candidate-system"], ["trusted-release-candidate-system"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_trusted_release_candidate_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "candidate-review-state"], ["release", "candidate-review-state"], ["release", "review-state"], ["candidate-review-state"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_candidate_review_state(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-policy"], ["release", "publish-approval-policy"], ["publish-approval-policy"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_policy(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-dry-run"], ["release", "publish-approval-dry-run"], ["release", "approval-dry-run"], ["publish-approval-dry-run"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_dry_run(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-record-schema"], ["release", "publish-approval-record-schema"], ["publish-approval-record-schema"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_record_schema(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "dashboard-approval-state-preview"], ["release", "dashboard-approval-state-preview"], ["release", "approval-state-preview"], ["dashboard-approval-state-preview"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_dashboard_approval_state_preview(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-route-safety-audit"], ["release", "approval-route-safety-audit"], ["approval-route-safety-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_route_safety_audit(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-fixture-drill"], ["release", "approval-fixture-drill"], ["approval-fixture-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_fixture_drill(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-explainer"], ["release", "publish-approval-explainer"], ["release", "approval-explainer"], ["publish-approval-explainer"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_explainer(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v36-approval-separation-gate"], ["release", "pre-v36-approval-separation-gate"], ["release", "pre-v36-gate"], ["pre-v36-approval-separation-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v36_approval_separation_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-separation-system"], ["release", "publish-approval-separation-system"], ["release", "approval-separation"], ["release", "publish-approval-separation"], ["publish-approval-separation-system"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_separation_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-record-validator"], ["release", "publish-approval-record-validator"], ["publish-approval-record-validator"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_record_validator(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-dry-run-v2"], ["release", "publish-approval-dry-run-v2"], ["release", "publish-approval-preview"], ["publish-approval-dry-run-v2"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_dry_run_v2(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-storage-quarantine"], ["release", "approval-storage-quarantine"], ["approval-storage-quarantine"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_storage_quarantine(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-api-preview"], ["release", "publish-approval-api-preview"], ["publish-approval-api-preview"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_api_preview(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "dashboard-approval-workflow-preview"], ["release", "dashboard-approval-workflow-preview"], ["dashboard-approval-workflow-preview"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_dashboard_approval_workflow_preview(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-confirmation-policy"], ["release", "approval-confirmation-policy"], ["approval-confirmation-policy"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_confirmation_policy(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-record-fixture-drill"], ["release", "approval-record-fixture-drill"], ["approval-record-fixture-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_record_fixture_drill(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-audit-trail"], ["release", "approval-audit-trail"], ["approval-audit-trail"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_audit_trail(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v37-approval-records-gate"], ["release", "pre-v37-approval-records-gate"], ["pre-v37-approval-records-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v37_approval_records_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+
+    if parts in (["self-maintenance", "publish-approval-write-preflight"], ["release", "publish-approval-write-preflight"], ["publish-approval-write-preflight"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_write_preflight(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-write-schema-lock"], ["release", "publish-approval-write-schema-lock"], ["publish-approval-write-schema-lock"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_write_schema_lock(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-confirmation-validator"], ["release", "publish-approval-confirmation-validator"], ["publish-approval-confirmation-validator"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_confirmation_validator(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), confirmation=query.get("confirmation", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "post-only-approval-write-route-design"], ["release", "post-only-approval-write-route-design"], ["post-only-approval-write-route-design"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_post_only_approval_write_route_design(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-write-dashboard-preview"], ["release", "approval-write-dashboard-preview"], ["approval-write-dashboard-preview"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_write_dashboard_preview(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), confirmation=query.get("confirmation", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-write-rollback-safety-audit"], ["release", "approval-write-rollback-safety-audit"], ["approval-write-rollback-safety-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_write_rollback_safety_audit(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-write-fixture-drill"], ["release", "approval-write-fixture-drill"], ["approval-write-fixture-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_write_fixture_drill(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v38-approval-write-gate"], ["release", "pre-v38-approval-write-gate"], ["pre-v38-approval-write-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v38_approval_write_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "controlled-publish-approval-write-system"], ["release", "controlled-publish-approval-write"], ["release", "controlled-publish-approval-write-system"], ["controlled-publish-approval-write-system"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_controlled_publish_approval_write_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-record-reader"], ["release", "publish-approval-records"], ["release", "publish-approval-record-reader"], ["publish-approval-record-reader"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_record_reader(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-artifact-revalidation"], ["release", "approval-artifact-revalidation"], ["approval-artifact-revalidation"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_artifact_revalidation(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-record-conflict-detector"], ["release", "approval-record-conflicts"], ["release", "approval-record-conflict-detector"], ["approval-record-conflict-detector"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_record_conflict_detector(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-status-viewer"], ["release", "approval-status-viewer"], ["approval-status-viewer"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_status_viewer(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-revocation-policy"], ["release", "approval-revocation-policy"], ["approval-revocation-policy"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_revocation_policy(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-revocation-dry-run"], ["release", "approval-revocation-dry-run"], ["approval-revocation-dry-run"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_revocation_dry_run(project_id=project_id, approval_record_id=query.get("approval_record_id", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-lifecycle-audit"], ["release", "approval-lifecycle-audit"], ["approval-lifecycle-audit"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_lifecycle_audit(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-lifecycle-fixture-drill"], ["release", "approval-lifecycle-fixture-drill"], ["approval-lifecycle-fixture-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_lifecycle_fixture_drill(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v39-approval-lifecycle-gate"], ["release", "pre-v39-approval-lifecycle-gate"], ["pre-v39-approval-lifecycle-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v39_approval_lifecycle_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "publish-approval-lifecycle-system"], ["release", "publish-approval-lifecycle"], ["release", "publish-approval-lifecycle-system"], ["publish-approval-lifecycle-system"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_publish_approval_lifecycle_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-revocation-record-schema"], ["release", "approval-revocation-record-schema"], ["approval-revocation-record-schema"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_revocation_record_schema(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-revocation-confirmation-validator"], ["release", "approval-revocation-confirmation-validator"], ["approval-revocation-confirmation-validator"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_revocation_confirmation_validator(project_id=project_id, approval_record_id=query.get("approval_record_id", [None])[0], confirmation=query.get("confirmation", [""])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-revocation-write-preflight"], ["release", "approval-revocation-write-preflight"], ["approval-revocation-write-preflight"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_revocation_write_preflight(project_id=project_id, approval_record_id=query.get("approval_record_id", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "revocation-storage-quarantine"], ["release", "revocation-storage-quarantine"], ["revocation-storage-quarantine"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_revocation_storage_quarantine(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "post-only-revocation-route-design"], ["release", "post-only-revocation-route-design"], ["post-only-revocation-route-design"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_post_only_revocation_route_design(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "dashboard-revocation-preview"], ["release", "dashboard-revocation-preview"], ["dashboard-revocation-preview"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_dashboard_revocation_preview(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "approval-revocation-fixture-drill"], ["release", "approval-revocation-fixture-drill"], ["approval-revocation-fixture-drill"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_approval_revocation_fixture_drill(project_id=project_id, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "pre-v40-revocation-gate"], ["release", "pre-v40-revocation-gate"], ["pre-v40-revocation-gate"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_pre_v40_revocation_gate(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "controlled-publish-approval-revocation-system"], ["release", "controlled-publish-approval-revocation"], ["release", "controlled-publish-approval-revocation-system"], ["controlled-publish-approval-revocation-system"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_controlled_publish_approval_revocation_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "controlled-publish-approval-system"], ["release", "controlled-publish-approval"], ["release", "controlled-publish-approval-system"], ["controlled-publish-approval-system"]):
+        project_id = query.get("project", ["eidolon"])[0]
+        report = build_controlled_publish_approval_system(project_id=project_id, package_name=query.get("package_name", [_package_name()])[0], zip_path=_query_release_zip_path(query), **_query_signature_options(query), save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "autonomy-capability-inventory"], ["release", "autonomy-capability-inventory"], ["autonomy-capability-inventory"]):
+        report = build_autonomy_capability_inventory(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomous-task-proposal-schema"], ["release", "autonomous-task-proposal-schema"], ["autonomous-task-proposal-schema"]):
+        report = build_autonomous_task_proposal_schema(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomous-dry-run-plan"], ["release", "autonomous-dry-run-plan"], ["autonomous-dry-run-plan"]):
+        report = build_autonomous_dry_run_plan(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", [None])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomy-action-policy-engine"], ["release", "autonomy-action-policy-engine"], ["autonomy-action-policy-engine"]):
+        report = build_autonomy_action_policy_engine(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomous-patch-sandbox"], ["release", "autonomous-patch-sandbox"], ["autonomous-patch-sandbox"]):
+        report = build_autonomous_patch_sandbox(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomous-patch-risk-classifier"], ["release", "autonomous-patch-risk-classifier"], ["autonomous-patch-risk-classifier"]):
+        report = build_autonomous_patch_risk_classifier(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomous-test-selection"], ["release", "autonomous-test-selection"], ["autonomous-test-selection"]):
+        report = build_autonomous_test_selection(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomy-human-checkpoint"], ["release", "autonomy-human-checkpoint"], ["autonomy-human-checkpoint"]):
+        report = build_autonomy_human_checkpoint(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "pre-v41-autonomy-readiness-gate"], ["release", "pre-v41-autonomy-readiness-gate"], ["pre-v41-autonomy-readiness-gate"]):
+        report = build_pre_v41_autonomy_readiness_gate(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomy-readiness-boundary-system"], ["release", "autonomy-readiness-boundary-system"], ["autonomy-readiness-boundary-system"], ["autonomy", "boundary"]):
+        report = build_autonomy_readiness_boundary_system(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "patch-proposal-schema"], ["release", "patch-proposal-schema"], ["autonomy", "patch-proposal-schema"], ["patch-proposal-schema"]):
+        report = build_patch_proposal_schema(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomous-change-target-selector"], ["release", "autonomous-change-target-selector"], ["autonomy", "change-target-selector"], ["autonomous-change-target-selector"]):
+        report = build_autonomous_change_target_selector(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "generate-sandbox-patch"], ["release", "generate-sandbox-patch"], ["autonomy", "generate-sandbox-patch"], ["generate-sandbox-patch"]):
+        report = build_generate_sandbox_patch(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "sandbox-patch-diff"], ["release", "sandbox-patch-diff"], ["autonomy", "sandbox-patch-diff"], ["sandbox-patch-diff"]):
+        report = build_sandbox_patch_diff(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "sandbox-patch-validation"], ["release", "sandbox-patch-validation"], ["autonomy", "sandbox-patch-validation"], ["sandbox-patch-validation"]):
+        report = build_sandbox_patch_validation(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "sandbox-patch-test-run"], ["release", "sandbox-patch-test-run"], ["autonomy", "sandbox-patch-test-run"], ["sandbox-patch-test-run"]):
+        report = build_sandbox_patch_test_run(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "patch-review-checkpoint"], ["release", "patch-review-checkpoint"], ["autonomy", "patch-review-checkpoint"], ["patch-review-checkpoint"]):
+        report = build_patch_review_checkpoint(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-apply-dry-run"], ["release", "source-apply-dry-run"], ["autonomy", "source-apply-dry-run"], ["source-apply-dry-run"]):
+        report = build_source_apply_dry_run(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "pre-v42-autonomous-patch-gate"], ["release", "pre-v42-autonomous-patch-gate"], ["autonomy", "pre-v42-autonomous-patch-gate"], ["pre-v42-autonomous-patch-gate"]):
+        report = build_pre_v42_autonomous_patch_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "autonomous-patch-proposal-system"], ["release", "autonomous-patch-proposal-system"], ["autonomy", "patch-proposal-system"], ["autonomous-patch-proposal-system"]):
+        report = build_autonomous_patch_proposal_system(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "source-apply-eligibility"], ["release", "source-apply-eligibility"], ["autonomy", "source-apply-eligibility"], ["source-apply-eligibility"]):
+        report = build_source_apply_eligibility(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-apply-confirmation-policy"], ["release", "source-apply-confirmation-policy"], ["autonomy", "source-apply-confirmation-policy"], ["source-apply-confirmation-policy"]):
+        report = build_source_apply_confirmation_policy(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, confirmation=query.get("confirmation", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-apply-dry-run-v2"], ["release", "source-apply-dry-run-v2"], ["autonomy", "source-apply-dry-run-v2"], ["source-apply-dry-run-v2"]):
+        report = build_source_apply_dry_run_v2(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-apply-backup-quarantine"], ["release", "source-apply-backup-quarantine"], ["autonomy", "source-apply-backup-quarantine"], ["source-apply-backup-quarantine"]):
+        report = build_source_apply_backup_quarantine(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "post-source-apply-verification"], ["release", "post-source-apply-verification"], ["autonomy", "post-source-apply-verification"], ["post-source-apply-verification"]):
+        report = build_post_source_apply_verification(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-apply-rollback-preview"], ["release", "source-apply-rollback-preview"], ["autonomy", "source-apply-rollback-preview"], ["source-apply-rollback-preview"]):
+        report = build_source_apply_rollback_preview(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-apply-fixture-drill"], ["release", "source-apply-fixture-drill"], ["autonomy", "source-apply-fixture-drill"], ["source-apply-fixture-drill"]):
+        report = build_source_apply_fixture_drill(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "pre-v43-source-apply-gate"], ["release", "pre-v43-source-apply-gate"], ["autonomy", "pre-v43-source-apply-gate"], ["pre-v43-source-apply-gate"]):
+        report = build_pre_v43_source_apply_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "controlled-source-apply-system"], ["release", "controlled-source-apply-system"], ["autonomy", "controlled-source-apply-system"], ["controlled-source-apply-system"]):
+        report = build_controlled_source_apply_system(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+
+    if parts in (["self-maintenance", "source-apply-record-reader"], ["release", "source-apply-record-reader"], ["autonomy", "source-apply-record-reader"], ["source-apply-record-reader"]):
+        report = build_source_apply_record_reader(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-rollback-eligibility"], ["release", "source-rollback-eligibility"], ["autonomy", "source-rollback-eligibility"], ["source-rollback-eligibility"]):
+        report = build_source_rollback_eligibility(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-rollback-confirmation-policy"], ["release", "source-rollback-confirmation-policy"], ["autonomy", "source-rollback-confirmation-policy"], ["source-rollback-confirmation-policy"]):
+        report = build_source_rollback_confirmation_policy(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, confirmation=query.get("confirmation", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-rollback-dry-run-v2"], ["release", "source-rollback-dry-run-v2"], ["autonomy", "source-rollback-dry-run-v2"], ["source-rollback-dry-run-v2"]):
+        report = build_source_rollback_dry_run_v2(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "post-source-rollback-verification"], ["release", "post-source-rollback-verification"], ["autonomy", "post-source-rollback-verification"], ["post-source-rollback-verification"]):
+        report = build_post_source_rollback_verification(project_id=query.get("project", ["eidolon"])[0], proposal_id=query.get("proposal_id", [""])[0] or None, goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-rollback-audit-trail"], ["release", "source-rollback-audit-trail"], ["autonomy", "source-rollback-audit-trail"], ["source-rollback-audit-trail"]):
+        report = build_source_rollback_audit_trail(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "source-rollback-fixture-drill"], ["release", "source-rollback-fixture-drill"], ["autonomy", "source-rollback-fixture-drill"], ["source-rollback-fixture-drill"]):
+        report = build_source_rollback_fixture_drill(project_id=query.get("project", ["eidolon"])[0], save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "pre-v44-source-rollback-gate"], ["release", "pre-v44-source-rollback-gate"], ["autonomy", "pre-v44-source-rollback-gate"], ["pre-v44-source-rollback-gate"]):
+        report = build_pre_v44_source_rollback_gate(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", [""])[0] or None, save=False)
+        return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
+    if parts in (["self-maintenance", "controlled-source-rollback-system"], ["release", "controlled-source-rollback-system"], ["autonomy", "controlled-source-rollback-system"], ["controlled-source-rollback-system"]):
+        report = build_controlled_source_rollback_system(project_id=query.get("project", ["eidolon"])[0], goal=query.get("goal", [""])[0] or None, save=False)
         return 200, _ok(report if query.get("full", ["false"])[0].lower() == "true" else summarize_self_maintenance_report(report))
 
     if parts[0] == "diagnostics":
@@ -2127,6 +4112,32 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
     body = body or {}
     query = query or {}
     parts = _path_parts(path)
+
+    if parts in (["release", "durable-memory-write"], ["durable-memory-write"], ["autonomy", "durable-memory-write"]):
+        project_id = str(body.get("project", "eidolon"))
+        execute = _body_bool(body, "execute", False) or _body_bool(body, "approve", False)
+        confirmation = str(body.get("confirmation") or body.get("memory_confirm_phrase") or "")
+        promotion_id = str(body.get("promotion_id") or body.get("memory_promotion_id") or "") or None
+        goal = str(body.get("goal") or body.get("autonomy_goal") or "") or None
+        if execute:
+            if not confirmation:
+                raise ApiError(400, "Durable memory write requires exact confirmation.")
+        report = sm_v45.build_controlled_durable_memory_write_path(project_id=project_id, goal=goal, promotion_id=promotion_id, confirmation=confirmation, execute=execute, save=True)
+        status = 200 if report.get("ok") else 409
+        return status, _ok(report)
+
+
+    if parts in (["release", "memory-removal-confirmation-path"], ["memory-removal-confirmation-path"], ["autonomy", "memory-removal-confirmation-path"]):
+        project_id = str(body.get("project", "eidolon"))
+        execute = _body_bool(body, "execute", False) or _body_bool(body, "approve", False)
+        confirmation = str(body.get("confirmation") or body.get("memory_confirm_phrase") or "")
+        memory_id = str(body.get("memory_id") or "") or None
+        goal = str(body.get("goal") or body.get("autonomy_goal") or "") or None
+        if execute and not confirmation:
+            raise ApiError(400, "Memory removal requires exact confirmation.")
+        report = sm_v45.build_memory_removal_confirmation_path(project_id=project_id, goal=goal, memory_id=memory_id, confirmation=confirmation, execute=execute, save=True)
+        status = 200 if report.get("ok") else 409
+        return status, _ok(report)
 
     if parts == ["controlled-self-build"]:
         project_id = str(body.get("project", "eidolon"))
@@ -2585,8 +4596,20 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
     if parts in (["release", "v23-readiness-gate"], ["v23-readiness-gate"]):
         return 200, _ok(build_v23_readiness_gate(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), run_heavy=_body_bool(body, "run_heavy", False), save=True))
 
-    if parts in (["release", "controlled-self-maintenance-loop"], ["controlled-self-maintenance-loop"]):
-        return 200, _ok(build_controlled_self_maintenance_loop(project_id=str(body.get("project", "eidolon")), package_name=str(body.get("package_name") or _package_name()), zip_path=body.get("zip_path"), save=True))
+    if parts in (["release", "controlled-self-maintenance-loop"], ["controlled-self-maintenance-loop"], ["autonomy", "controlled-self-maintenance-loop"]):
+        return 200, _ok(sm_v45.build_controlled_self_maintenance_loop(project_id=str(body.get("project", "eidolon")), goal=str(body.get("goal") or body.get("autonomy_goal") or "improve release dashboard performance"), save=True))
+
+    if parts in (["release", "controlled-self-maintenance-work-queue"], ["controlled-self-maintenance-work-queue"], ["autonomy", "controlled-self-maintenance-work-queue"]):
+        return 200, _ok(sm_v45.build_controlled_self_maintenance_work_queue(project_id=str(body.get("project", "eidolon")), goal=str(body.get("goal") or body.get("autonomy_goal") or "improve release dashboard performance"), save=True))
+
+    if parts in (["release", "controlled-read-only-action-execution"], ["controlled-read-only-action-execution"], ["autonomy", "controlled-read-only-action-execution"]):
+        return 200, _ok(sm_v45.build_controlled_read_only_action_execution(project_id=str(body.get("project", "eidolon")), command_key=str(body.get("command_key") or "version-import"), confirmation=str(body.get("confirmation") or body.get("confirm_phrase") or ""), execute=_body_bool(body, "execute", False) or _body_bool(body, "confirm", False), goal=str(body.get("goal") or body.get("autonomy_goal") or "improve release dashboard performance"), query=str(body.get("query") or body.get("q") or body.get("goal") or body.get("autonomy_goal") or ""), planning_scope=str(body.get("planning_scope") or body.get("scope") or "release_maintenance"), save=True))
+
+    if parts in (["release", "evidence-gathering-maintenance-loop"], ["evidence-gathering-maintenance-loop"], ["autonomy", "evidence-gathering-maintenance-loop"]):
+        return 200, _ok(sm_v45.build_evidence_gathering_maintenance_loop(project_id=str(body.get("project", "eidolon")), goal=str(body.get("goal") or body.get("autonomy_goal") or "improve release dashboard performance"), command_key=str(body.get("command_key") or "version-import"), confirmation=str(body.get("confirmation") or body.get("confirm_phrase") or ""), execute=_body_bool(body, "execute", False) or _body_bool(body, "confirm", False), save=True))
+
+    if parts in (["release", "evidence-grounded-patch-proposal"], ["evidence-grounded-patch-proposal"], ["autonomy", "evidence-grounded-patch-proposal"]):
+        return 200, _ok(sm_v45.build_evidence_grounded_patch_proposal_loop(project_id=str(body.get("project", "eidolon")), goal=str(body.get("goal") or body.get("autonomy_goal") or "improve release dashboard performance"), command_key=str(body.get("command_key") or "version-import"), save=True))
 
 
     if parts in (["release", "self-maintenance-proposal"], ["self-maintenance-proposal"]):
@@ -3028,6 +5051,69 @@ def handle_api_post(path: str, body: dict[str, Any] | None = None, query: dict[s
             "results": results,
         }, message=f"Handled approval requests for {created} of {len(rows)} task(s).")
 
+
+    if parts in (["release", "approve-publish"], ["release", "write-publish-approval"], ["approve-publish"]):
+        project_id = str(body.get("project") or body.get("project_id") or "eidolon")
+        dry_run = _body_bool(body, "dry_run", True)
+        report = build_write_publish_approval(
+            project_id=project_id,
+            package_name=str(body.get("package_name") or _package_name()),
+            zip_path=str(body.get("release_zip_path") or body.get("zip_path") or "") or None,
+            confirmation=str(body.get("confirmation") or body.get("release_confirm_phrase") or ""),
+            approver_label=str(body.get("approver_label") or "local-operator"),
+            signature_path=str(body.get("signature_path") or "") or None,
+            public_key_path=str(body.get("public_key_path") or "") or None,
+            trusted_fingerprint=str(body.get("trusted_fingerprint") or "") or None,
+            dry_run=dry_run,
+            save=True,
+        )
+        if not dry_run and not report.get("publish_approved"):
+            raise ApiError(400, "Publish approval write was blocked.", report)
+        return (200 if dry_run else 201), _ok(report, message=report.get("message", "Publish approval write handled."))
+
+
+    if parts in (["release", "apply-reviewed-patch"], ["autonomy", "apply-reviewed-patch"], ["apply-reviewed-patch"]):
+        proposal_id = str(body.get("proposal_id") or "").strip() or None
+        confirmation = str(body.get("confirmation") or body.get("release_confirm_phrase") or "").strip() or None
+        goal = str(body.get("goal") or "").strip() or None
+        dry_run = _body_bool(body, "dry_run", True)
+        approve = _body_bool(body, "approve_source_apply", False) and not dry_run
+        report = build_apply_reviewed_patch(project_id=str(body.get("project") or "eidolon"), proposal_id=proposal_id, goal=goal, confirmation=confirmation, approve=approve, dry_run=dry_run, save=True)
+        if not dry_run and not report.get("source_apply_written"):
+            raise ApiError(400, "Reviewed patch source apply was blocked.", report)
+        return (200 if dry_run else 201), _ok(report, message=report.get("message", "Reviewed patch source apply handled."))
+
+    if parts in (["release", "rollback-applied-patch"], ["autonomy", "rollback-applied-patch"], ["rollback-applied-patch"]):
+        proposal_id = str(body.get("proposal_id") or "").strip() or None
+        confirmation = str(body.get("confirmation") or body.get("release_confirm_phrase") or "").strip() or None
+        goal = str(body.get("goal") or "").strip() or None
+        dry_run = _body_bool(body, "dry_run", True)
+        approve = _body_bool(body, "approve_source_rollback", False) and not dry_run
+        report = build_rollback_applied_patch(project_id=str(body.get("project") or "eidolon"), proposal_id=proposal_id, goal=goal, confirmation=confirmation, approve=approve, dry_run=dry_run, save=True)
+        if not dry_run and not report.get("source_rollback_written"):
+            raise ApiError(400, "Applied patch source rollback was blocked.", report)
+        return (200 if dry_run else 201), _ok(report, message=report.get("message", "Applied patch rollback handled."))
+
+    if parts in (["release", "revoke-publish-approval"], ["release", "write-approval-revocation"], ["revoke-publish-approval"]):
+        project_id = str(body.get("project") or body.get("project_id") or "eidolon")
+        dry_run = _body_bool(body, "dry_run", True)
+        approval_record_id = str(body.get("approval_record_id") or "").strip()
+        if not approval_record_id:
+            raise ApiError(400, "approval_record_id is required for publish approval revocation writes.")
+        report = build_write_approval_revocation(
+            project_id=project_id,
+            approval_record_id=approval_record_id,
+            confirmation=str(body.get("confirmation") or body.get("release_confirm_phrase") or ""),
+            revocation_reason=str(body.get("reason") or body.get("revocation_reason") or "superseded release"),
+            revoker_label=str(body.get("revoker_label") or "local-operator"),
+            dry_run=dry_run,
+            approve=not dry_run,
+            save=True,
+        )
+        if not dry_run and not report.get("revocation_written"):
+            raise ApiError(400, "Publish approval revocation write was blocked.", report)
+        return (200 if dry_run else 201), _ok(report, message=report.get("message", "Publish approval revocation handled."))
+
     if parts == ["tasks", "patch-request"]:
         target_file = str(body.get("target_file") or body.get("file") or "").strip()
         request = str(body.get("request") or body.get("description") or body.get("message") or "").strip()
@@ -3322,7 +5408,8 @@ def dispatch_api(method: str, path: str, query: dict[str, list[str]] | None = No
     except ApiError as error:
         return error.status, _error(error.status, error.message, error.details)
     except Exception as error:
-        return 500, _error(500, f"API route crashed: {error}", traceback.format_exc())
+        details = traceback.format_exc() if os.environ.get("EIDOLON_API_DEBUG_TRACEBACKS") == "1" else {"error_type": type(error).__name__}
+        return 500, _error(500, "API route crashed.", details)
 
 
 class EidolonApiHandler(BaseHTTPRequestHandler):
@@ -3345,7 +5432,7 @@ class EidolonApiHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
-        if not parsed.path.startswith("/api"):
+        if parsed.path not in {"/api"} and not parsed.path.startswith("/api/"):
             self._send_json(_error(404, "This server exposes only /api routes."), status=404)
             return
         status, payload = dispatch_api("GET", parsed.path, query=parse_qs(parsed.query))
@@ -3353,7 +5440,7 @@ class EidolonApiHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
-        if not parsed.path.startswith("/api"):
+        if parsed.path not in {"/api"} and not parsed.path.startswith("/api/"):
             self._send_json(_error(404, "This server exposes only /api routes."), status=404)
             return
         length = int(self.headers.get("Content-Length", "0"))
@@ -3383,3 +5470,51 @@ def run_api_server(host: str | None = None, port: int | None = None) -> None:
         print("\nAPI server stopped.")
     finally:
         server.server_close()
+
+# v215.1-v220.0 simulation/foresight API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/internal-simulation-packet/layer /api/foresight-branch-comparison/layer /api/pre-change-consequence-modeling/layer /api/expectation-reality-check/layer /api/simulation-foresight-audit/layer
+
+# v220.1-v225.0 learning curriculum API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/learning-objective-map/layer /api/practice-task-design/layer /api/capability-calibration/layer /api/skill-gap-remediation-planner/layer /api/learning-curriculum-audit/layer
+
+# v225.1-v230.0 knowledge/belief API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/knowledge-claim-ledger/schema /api/belief-candidate-review/schema /api/contradiction-staleness-intelligence/schema /api/project-knowledge-map/schema /api/knowledge-organization-audit/layer operator-governed-knowledge-and-belief-organization-layer-v1
+
+# v230.1-v235.0 local model workbench API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/local-model-inventory/schema /api/model-evaluation-plan/schema /api/model-output-comparison/schema /api/cognitive-workbench-routing/schema /api/local-model-workbench-audit/layer operator-governed-local-model-evaluation-and-cognitive-workbench-layer-v1
+# v245.1-v250.0 model-assisted patch draft assembly API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/model-assisted-patch-draft/layer /api/file-impact-documentation-planner/layer /api/smoke-verification-suggestions/layer /api/sandbox-preparation-packet/layer /api/patch-draft-assembly-audit/layer
+# v240.1-v245.0 model-assisted patch review API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/model-assisted-patch-critique/layer /api/multi-model-review-synthesis/layer /api/patch-risk-remediation-synthesis/layer /api/model-review-quality-calibration/layer /api/model-assisted-patch-review-audit/layer
+# v235.1-v240.0 local model invocation sandbox API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/local-model-invocation-consent/schema /api/model-evaluation-run-ledger/schema /api/multi-model-output-triage/schema /api/model-reliability-profile-candidates/schema /api/local-model-invocation-sandbox-audit/layer operator-approved-local-model-invocation-sandbox-v1
+
+# v250.1-v255.0 patch execution packet bridge API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/draft-to-execution-packet/layer /api/patch-diff-preview-planner/layer /api/execution-approval-scope/layer /api/verification-rollback-packet/layer /api/patch-execution-packet-audit/layer operator-governed-patch-execution-packet-bridge-v1
+
+# v255.1-v260.0 approved application prep API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/application-prep-intake/layer /api/source-edit-application-plan/layer /api/documentation-application-plan/layer /api/final-application-governance-gate/layer /api/application-prep-integration-audit/layer operator-governed-approved-execution-packet-application-prep-v1
+
+# v260.1-v265.0 structural stabilization API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/structural-inventory/layer /api/runtime-registry-prep/layer /api/dashboard-stabilization-audit/layer /api/dispatch-stabilization/layer /api/structural-stabilization-audit/layer operator-governed-structural-stabilization-and-runtime-modularization-v1
+
+# v265.1-v270.0 module extraction API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/runtime-registry/layer /api/governance-report-builder-audit/layer /api/dashboard-registry-integration/layer /api/runtime-dispatch-registry-audit/layer /api/module-extraction-audit/layer operator-governed-runtime-module-extraction-v1
+
+# v270.1-v275.0 self-maintenance decomposition API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/self-maintenance-extraction-map/layer /api/package-version-integrity/layer /api/surface-parity-audit/layer /api/verification-planning-audit/layer /api/self-maintenance-decomposition-audit/layer operator-governed-self-maintenance-decomposition-v1
+
+# v275.1-v280.0 dashboard/API/CLI modularization API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/dashboard-extraction-map/layer /api/dashboard-component-audit/layer /api/api-surface-audit/layer /api/cli-surface-audit/layer /api/interface-modularization-audit/layer operator-governed-dashboard-api-cli-modularization-v1 dashboard_components.py api_surface.py cli_surface.py
+
+# v280.1-v285.0 application execution refinement API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/approved-application-binding/layer /api/operator-execution-checklist/layer /api/post-application-result-review/layer /api/application-outcome-learning/layer /api/application-execution-refinement-audit/layer operator-approved-application-execution-refinement-v1 application_execution_refinement.py
+
+# v285.1-v290.0 rollback and recovery intelligence API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/rollback-scope-binding/layer /api/failure-damage-map/layer /api/recovery-checklist/layer /api/post-recovery-review/layer /api/rollback-recovery-audit/layer operator-governed-rollback-and-recovery-intelligence-v1 rollback_recovery.py
+
+# v290.1-v295.0 memory candidate governance API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/memory-candidate-intake/layer /api/memory-candidate-classification/layer /api/memory-approval-packet/layer /api/memory-contradiction-review/layer /api/memory-governance-audit/layer operator-governed-memory-candidate-governance-upgrade-v1 memory_governance.py
+
+# v295.1-v300.0 continuity kernel API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/continuity-state-intake/layer /api/self-model-snapshot-v2/layer /api/purpose-coherence-review/layer /api/supervised-growth-priorities/layer /api/continuity-kernel-v2-audit/layer local-artificial-mind-continuity-kernel-v2 continuity_kernel.py
+# v300.1-v305.0 identity/personality/coherence expression API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/identity-expression-boundary/layer /api/personality-trait-ledger/layer /api/voice-affect-style-map/layer /api/coherence-expression-review/layer /api/identity-personality-coherence-audit/layer operator-governed-identity-personality-coherence-expression-layer-v1 identity_expression.py risky_request_classifier
+# v305.1-v310.0 behavioral expression preview and runtime health API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/dashboard-route-health/layer /api/runtime-test-visibility/layer /api/behavioral-expression-preview/layer /api/style-delta-staging/layer /api/expression-runtime-health-audit/layer operator-governed-behavioral-expression-preview-and-runtime-health-hardening-v1
+
+# v310.1-v315.0 conversational expression sandbox API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/expression-profile-packets/layer /api/conversation-scenario-sandbox/layer /api/expression-regression-review/layer /api/expression-operator-review-console/layer /api/conversational-expression-sandbox-audit/layer operator-governed-conversational-expression-sandbox-v1 conversational_expression_sandbox.py
+
+# v315.1-v320.0 expression application bridge API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/expression-approval-criteria/layer /api/expression-live-surface-impact-map/layer /api/expression-implementation-packet-draft/layer /api/expression-rollback-reversion-plan/layer /api/expression-application-bridge-audit/layer operator-governed-conversational-expression-application-bridge-v1 expression_application_bridge.py
+# v320.1-v325.0 expression patch dry-run API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/expression-patch-candidates/layer /api/expression-sandbox-diff-preview/layer /api/expression-dry-run-verification-plan/layer /api/expression-dry-run-review-packet/layer /api/expression-patch-dry-run-audit/layer operator-governed-expression-patch-dry-run-sandbox-v1 expression_patch_dry_run.py
+
+# v325.1-v330.0 expression sandbox trial harness API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/expression-sandbox-trial-packet/layer /api/expression-sandbox-workspace-plan/layer /api/expression-sandbox-verification-matrix/layer /api/expression-sandbox-result-review-prep/layer /api/expression-sandbox-trial-harness-audit/layer operator-governed-expression-patch-sandbox-trial-harness-v1 expression_sandbox_trial_harness.py
+
+# v330.1-v335.0 expression sandbox execution bridge API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/expression-sandbox-execution-approval-gate/layer /api/expression-sandbox-workspace-execution-packet/layer /api/expression-sandbox-patch-bundle-packet/layer /api/expression-sandbox-verification-command-packet/layer /api/expression-sandbox-execution-packet-bridge-audit/layer operator-governed-expression-sandbox-trial-execution-packet-bridge-v1 expression_sandbox_execution_bridge.py
+
+# v335.1-v340.0 expression sandbox result intake API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/expression-sandbox-trial-evidence-intake/layer /api/expression-sandbox-outcome-comparison/layer /api/expression-sandbox-regression-result-review/layer /api/expression-sandbox-revision-recommendations/layer /api/expression-sandbox-promotion-review-prep/layer operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 expression_sandbox_result_intake.py
+
+# v340.1-v345.0 expression promotion packet API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/expression-promotion-evidence-binder/layer /api/expression-live-promotion-scope-risk/layer /api/expression-promotion-verification-rollback/layer /api/expression-promotion-decision-packet/layer /api/expression-promotion-packet-assembly-audit/layer operator-governed-expression-promotion-packet-assembly-layer-v1 expression_promotion_packet.py
+
+# v345.1-v350.0 expression live application packet API routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP: /api/expression-live-application-eligibility-gate/layer /api/expression-live-source-change-manifest/layer /api/expression-live-patch-instruction-packet/layer /api/expression-live-verification-rollback-packet/layer /api/expression-live-application-packet-audit/layer operator-governed-expression-live-application-packet-drafting-layer-v1 expression_live_application_packet.py

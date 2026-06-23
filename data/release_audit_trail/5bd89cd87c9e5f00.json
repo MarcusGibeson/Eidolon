@@ -1,0 +1,9 @@
+{
+  "schema_version": "eidolon.release_audit_event.v1",
+  "event_id": "5bd89cd87c9e5f00",
+  "event_type": "signed_artifact_intake_v2_checked",
+  "created_at": "2026-06-20T18:58:13",
+  "payload_hash": "a44854a1130f831ecd725c685315afc4037e55ddfb2588e029deb9bf0c8b805b",
+  "source_only_packaged": false,
+  "live_apply_approved": false
+}

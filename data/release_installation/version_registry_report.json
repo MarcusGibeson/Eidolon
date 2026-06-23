@@ -1,0 +1,38 @@
+{
+  "version": "85.0",
+  "checked_at": "2026-06-22T11:32:37",
+  "project_id": "eidolon",
+  "status": "pass",
+  "ok": true,
+  "dry_run": true,
+  "package_name": "Eidolon_v85_0.zip",
+  "zip_path": null,
+  "registry_path": "data\\release_registry.json",
+  "existing_entry_count": 0,
+  "proposed_entry": {
+    "version": "85.0",
+    "package_name": "Eidolon_v85_0.zip",
+    "zip_path": null,
+    "manifest_sha256": "2803e4b5842c065f7003f2a3536c96ce534692b44fd8398968b515a2735bd1e8",
+    "recorded_at": "2026-06-22T11:32:37",
+    "dry_run": true
+  },
+  "rows": [
+    {
+      "name": "registry-location",
+      "status": "pass",
+      "message": "data/release_registry.json is runtime state and remains excluded from source-only packages."
+    },
+    {
+      "name": "manifest-binding",
+      "status": "pass",
+      "message": "2803e4b5842c065f7003f2a3536c96ce534692b44fd8398968b515a2735bd1e8"
+    },
+    {
+      "name": "dry-run-default",
+      "status": "pass",
+      "message": "Registry report previews by default; live writes require an explicit caller path."
+    }
+  ],
+  "message": "Version registry report completed."
+}

@@ -1,12 +1,12 @@
 {
-  "version": "30.0",
-  "checked_at": "2026-06-20T15:19:23",
+  "version": "300.0",
+  "checked_at": "2026-06-23T09:56:56",
   "project_id": "eidolon",
   "status": "pass",
   "ok": true,
   "violations": [],
   "warnings": [],
-  "included_count": 96,
+  "included_count": 111,
   "rows": [
     {
       "name": "inventory-ok",

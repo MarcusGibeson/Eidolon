@@ -13,3 +13,7 @@ data/backups/
 Thumbs.db
 .idea/
 .vscode/
+
+# Local supervised autonomy runtime artifacts.
+data/autonomy/
+data/self_maintenance/

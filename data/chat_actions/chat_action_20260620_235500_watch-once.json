@@ -1,0 +1,47 @@
+{
+  "id": "chat_action_20260620_235500_watch-once",
+  "type": "chat_action",
+  "created_at": "2026-06-20T23:55:00",
+  "updated_at": "2026-06-20T23:55:37",
+  "status": "executed",
+  "user_request": "check what needs attention",
+  "intent": "watch_once",
+  "title": "Run watch check",
+  "summary": "Run a no-AI watch check and save a watch report.",
+  "explanation": "This maps to an approved read-only or low-risk command.",
+  "execution_mode": "direct_command",
+  "risk_level": "low",
+  "command": "python conscious_agent/main.py --watch-once --no-ai-watch",
+  "function_name": "",
+  "function_args": {},
+  "approval_action_type": "",
+  "approval_object_id": "",
+  "approval_command": "",
+  "blocked_reason": "",
+  "source": "chat_action_router",
+  "result": {
+    "ok": true,
+    "command": "python conscious_agent/main.py --watch-once --no-ai-watch",
+    "args": [
+      "python",
+      "conscious_agent/main.py",
+      "--watch-once",
+      "--no-ai-watch"
+    ],
+    "return_code": 0,
+    "stdout": "# Watch Report: watch_20260620_235523\nCreated: 2026-06-20T23:55:13\nStatus: ATTENTION_NEEDED\nDiagnostic status: warn\nDiagnostic report: diag_20260620_235519\nMaintenance scan: maint_20260620_235519\nSession plan: session_20260620_235521\nNotifications: 8\n\nSummary counts:\n- pending_approvals: 0\n- total_approvals: 3\n- proposed_patches: 2\n- applied_patches: 4\n- test_reports: 7\n- test_reviews: 1\n- ready_tasks: 0\n- active_tasks: 0\n- blocked_tasks: 6\n- active_memories: 287\n\nRecommendations: 9\n1. [HIGH] Inspect latest proposed patch\n   Reason: There are 2 proposed patch(es) waiting for review.\n   Command: python conscious_agent/main.py --show-patch latest-proposed\n2. [HIGH] Run tests for an applied patch\n   Reason: Applied patch patch_20260618_095713_conscious_agent-memory-py has no saved test report.\n   Command: python conscious_agent/main.py --run-test-workflow patch_20260618_095713_conscious_agent-memory-py --auto-review\n3. [MEDIUM] Review diagnostic warnings\n   Reason: System is usable, but review warnings before depending on autonomous workflows.\n   Command: python conscious_agent/main.py --show-diagnostic-report latest --diagnostics-full\n4. [MEDIUM] Review latest unreviewed test report\n   Reason: Test report test_20260619_233928_general has no saved review.\n   Command: python conscious_agent/main.py --review-test-report test_20260619_233928_general\n5. [MEDIUM] Review blocked tasks\n   Reason: There are 6 blocked task(s).\n   Command: python conscious_agent/main.py --list-tasks --task-filter-status blocked\n6. [MEDIUM] Create or queue a next task\n   Reason: No ready or active task was found.\n   Command: python conscious_agent/main.py --plan-session --no-ai-session\n7. [MEDIUM] Preview memory compaction\n   Reason: Active memory count is 287, meeting or exceeding threshold 80.\n   Command: python conscious_agent/main.py --compact-memory --dry-run\n8. [LOW] Review latest maintenance scan\n   Reason: Watch mode created maintenance scan maint_20260620_235519 with 7 suggestion(s).\n   Command: python conscious_agent/main.py --show-maintenance-scan latest --show-maintenance-full\n9. [LOW] Review latest session plan\n   Reason: Watch mode created session plan session_20260620_235521.\n   Command: python conscious_agent/main.py --show-session-plan latest --show-session-plan-full\n\nSafe next command: python conscious_agent/main.py --show-patch latest-proposed\n",
+    "stderr": "",
+    "message": "Command completed successfully.",
+    "error": "",
+    "dry_run": false,
+    "started_at": "2026-06-20T23:55:12",
+    "finished_at": "2026-06-20T23:55:35",
+    "cwd": "C:\\Users\\marcu\\Eidolon"
+  },
+  "approval_id": "",
+  "useful_commands": [
+    "python conscious_agent/main.py --show-chat-action chat_action_20260620_235500_watch-once",
+    "python conscious_agent/main.py --execute-chat-action chat_action_20260620_235500_watch-once --dry-run",
+    "python conscious_agent/main.py --execute-chat-action chat_action_20260620_235500_watch-once"
+  ]
+}
