@@ -1,39 +1,57 @@
 {
   "active_project": "Eidolon",
   "current_project": {
-    "current_milestone": "v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1",
-    "last_updated_for": "v350.0",
+    "current_milestone": "v500.0 Operator-Governed Autonomy Readiness Review Board v1",
+    "last_updated_for": "v500.0",
     "next_steps": [
-      "Use /expression-sandbox-trial-evidence-intake and --operator-governed-sandbox-trial-evidence-intake-layer-v1 to review operator-provided sandbox evidence without treating it as approval.",
-      "Use /expression-sandbox-outcome-comparison and --operator-governed-sandbox-outcome-comparison-v1 to compare expected versus actual sandbox results without auto-correction.",
-      "Use /expression-sandbox-regression-result-review and --operator-governed-expression-regression-result-review-v1 to review expression regressions without rewriting prompts or identity.",
-      "Use /expression-sandbox-revision-recommendations and --operator-governed-sandbox-trial-revision-recommendation-layer-v1 to review revise/defer/reject/retry/promote-to-review options without applying changes.",
-      "Use /expression-sandbox-promotion-review-prep and --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 to assemble promotion-review prep without live promotion authority."
+      "Review v500 autonomy readiness board, then proceed to v501-v505 manual observation-to-sandbox packet bridge only after confirming readiness_status remains not_ready_for_autonomy and authorization_status remains not_authorized."
     ],
-    "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+    "notes": "v500.0 adds a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and smoke/API/CLI/dashboard coverage without sandbox execution, source writes, memory writes, schedules, default model invocation, approval creation, release candidates, live promotion, automatic continuation, or autonomy expansion.",
     "recommended_next_actions": [
-      "Use /expression-sandbox-trial-evidence-intake and --operator-governed-sandbox-trial-evidence-intake-layer-v1 to review operator-provided sandbox evidence without treating it as approval.",
-      "Use /expression-sandbox-outcome-comparison and --operator-governed-sandbox-outcome-comparison-v1 to compare expected versus actual sandbox results without auto-correction.",
-      "Use /expression-sandbox-regression-result-review and --operator-governed-expression-regression-result-review-v1 to review expression regressions without rewriting prompts or identity.",
-      "Use /expression-sandbox-revision-recommendations and --operator-governed-sandbox-trial-revision-recommendation-layer-v1 to review revise/defer/reject/retry/promote-to-review options without applying changes.",
-      "Use /expression-sandbox-promotion-review-prep and --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 to assemble promotion-review prep without live promotion authority."
+      "Review v495 sandbox-only boundary prep before v496-v500 autonomy readiness review board."
     ],
-    "version": "350.0"
+    "version": "500.0",
+    "updated_at": "2026-06-24T07:00:00",
+    "name": "v500.0 - Operator-Governed Autonomy Readiness Review Board v1",
+    "release_notes": [
+      {
+        "version": "500.0",
+        "notes": "v470.0 removes shadowed duplicate top-level self_maintenance definitions, preserves canonical final helpers, replaces stale v68/v70 exact-version blockers with explicit historical compatibility gates, and audits the cleanup without granting authorization or expanding autonomy."
+      },
+      {
+        "version": "500.0",
+        "notes": "v475.0 adds a current-state README header, separates historical next-step records, adds a reusable operator/new-chat handoff packet, hardens documentation no-authorization language, and audits documentation continuity without granting approval or expanding autonomy."
+      },
+      {
+        "version": "500.0",
+        "notes": "v480.0 adds a manual, operator-invoked, read-only observation scope, structured observation packet builder, no-mutation observation audit, and operator invocation boundary without scheduling, source writes, memory writes, model invocation, approval creation, automatic continuation, or autonomy expansion."
+      },
+      {
+        "version": "500.0",
+        "notes": "v490.0 adds a review-only observation-to-proposal candidate mapper, proposal queue schema, ranking and risk notes, non-execution audit, and smoke/API/CLI/dashboard coverage without source writes, memory writes, schedules, model invocation, execution packet creation, proposal approval, automatic continuation, or autonomy expansion."
+      },
+      {
+        "version": "500.0",
+        "notes": "v500.0 adds a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and smoke/API/CLI/dashboard coverage without sandbox execution, source writes, memory writes, schedules, default model invocation, approval creation, release candidates, live promotion, automatic continuation, or autonomy expansion."
+      },
+      {
+        "version": "500.0",
+        "notes": "v500.0 adds a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and smoke/API/CLI/dashboard coverage without sandbox execution, source writes, memory writes, schedules, default model invocation, approval creation, release candidates, live promotion, automatic continuation, or autonomy expansion."
+      }
+    ],
+    "root_version": "500.0",
+    "next_recommended_arc": "v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1"
   },
-  "last_updated_for": "v350.0",
-  "next_recommended_arc": "v340.1-v345.0 Operator-Governed Expression Promotion Decision Packet Bridge v1",
+  "last_updated_for": "v500.0",
+  "next_recommended_arc": "v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1",
   "next_steps": [
-    "Use /expression-sandbox-trial-evidence-intake and --operator-governed-sandbox-trial-evidence-intake-layer-v1 to review operator-provided sandbox evidence without treating it as approval.",
-    "Use /expression-sandbox-outcome-comparison and --operator-governed-sandbox-outcome-comparison-v1 to compare expected versus actual sandbox results without auto-correction.",
-    "Use /expression-sandbox-regression-result-review and --operator-governed-expression-regression-result-review-v1 to review expression regressions without rewriting prompts or identity.",
-    "Use /expression-sandbox-revision-recommendations and --operator-governed-sandbox-trial-revision-recommendation-layer-v1 to review revise/defer/reject/retry/promote-to-review options without applying changes.",
-    "Use /expression-sandbox-promotion-review-prep and --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 to assemble promotion-review prep without live promotion authority."
+    "Review v500 autonomy readiness board, then proceed to v501-v505 manual observation-to-sandbox packet bridge only after confirming readiness_status remains not_ready_for_autonomy and authorization_status remains not_authorized."
   ],
-  "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+  "notes": "v500.0 adds a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and smoke/API/CLI/dashboard coverage without sandbox execution, source writes, memory writes, schedules, default model invocation, approval creation, release candidates, live promotion, automatic continuation, or autonomy expansion.",
   "projects": [
     {
       "created_at": "2026-06-17T20:30:00",
-      "current_milestone": "v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1",
+      "current_milestone": "v500.0 Operator-Governed Autonomy Readiness Review Board v1",
       "description": "Eidolon local artificial mind project with supervised improvement suggestion loops, suggestion inbox/work-order planning, codebase understanding, release governance, and strict operator approval boundaries.",
       "goals": [
         "Use v56.0 controlled read-only execution only for exact allowlisted diagnostics after explicit confirmation.",
@@ -162,16 +180,16 @@
       ],
       "history": [
         {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
+          "notes": "v440.0 adds dashboard route inventory, route probe, lazy render audit, tooltip regression audit, and route health audit without redesigning the dashboard or authorizing execution.",
+          "version": "500.0"
         },
         {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
+          "notes": "v440.0 adds dashboard route inventory, route probe, lazy render audit, tooltip regression audit, and route health audit without redesigning the dashboard or authorizing execution.",
+          "version": "500.0"
         },
         {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
+          "notes": "v440.0 adds dashboard route inventory, route probe, lazy render audit, tooltip regression audit, and route health audit without redesigning the dashboard or authorizing execution.",
+          "version": "500.0"
         }
       ],
       "known_issues": [
@@ -216,73 +234,75 @@
         "Dashboard chat console still depends on local Ollama for conversational responses when enabled."
       ],
       "language": "Python",
-      "last_updated_for": "v350.0",
+      "last_updated_for": "v500.0",
       "last_worked_on": "2026-06-21T23:50:00",
-      "name": "v350.0 - Operator-Governed Expression Live Application Packet Drafting Layer v1",
+      "name": "v500.0 - Operator-Governed Autonomy Readiness Review Board v1",
       "next_steps": [
-        "Use /expression-sandbox-trial-evidence-intake and --operator-governed-sandbox-trial-evidence-intake-layer-v1 to review operator-provided sandbox evidence without treating it as approval.",
-        "Use /expression-sandbox-outcome-comparison and --operator-governed-sandbox-outcome-comparison-v1 to compare expected versus actual sandbox results without auto-correction.",
-        "Use /expression-sandbox-regression-result-review and --operator-governed-expression-regression-result-review-v1 to review expression regressions without rewriting prompts or identity.",
-        "Use /expression-sandbox-revision-recommendations and --operator-governed-sandbox-trial-revision-recommendation-layer-v1 to review revise/defer/reject/retry/promote-to-review options without applying changes.",
-        "Use /expression-sandbox-promotion-review-prep and --operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1 to assemble promotion-review prep without live promotion authority."
+        "Review v500 autonomy readiness board, then proceed to v501-v505 manual observation-to-sandbox packet bridge only after confirming readiness_status remains not_ready_for_autonomy and authorization_status remains not_authorized."
       ],
-      "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
+      "notes": "v500.0 adds a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and smoke/API/CLI/dashboard coverage without sandbox execution, source writes, memory writes, schedules, default model invocation, approval creation, release candidates, live promotion, automatic continuation, or autonomy expansion.",
       "path": "",
       "release_notes": [
         {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
-        },
-        {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
+          "notes": "v440.0 adds dashboard route inventory, route probe, lazy render audit, tooltip regression audit, and route health audit without redesigning the dashboard or authorizing execution.",
+          "version": "500.0"
         },
         "v27.0 adds trustworthy maintenance console checks for hotfix regression lockdown, dashboard route coverage, API default source-of-truth auditing, nested readiness severity, review bundle approval contracts, maintenance report diffs, release gate composition, dashboard/API parity, and operator trust reporting.",
         {
-          "notes": "v350.0 adds draft-only expression live application eligibility, live source change manifests, live patch instruction packets, verification/rollback requirements, route-health coverage, dynamic API/CLI parity, and final live application packet audits while preserving no-eligibility-as-approval, no-live-source-write, no-patch-application, no-command-execution, no-rollback-execution, no-publishing, no-memory/identity/personality-mutation, no-prompt-rewrite, and non-autonomy boundaries.",
-          "version": "350.0"
+          "version": "500.0",
+          "notes": "v450.0 adds a review-only governance-state-to-authorization firewall detecting readiness/approval, route-health/approval, manifest/authorization, smoke/permission, prior-approval/current-approval, sandbox/live-permission, model-consensus/truth, and review-packet/execution confusion without enforcing, approving, mutating memory, applying source edits, or expanding autonomy."
+        },
+        {
+          "version": "500.0",
+          "notes": "v455.0 repairs source-of-truth drift across settings, project metadata, workspace metadata, release package version resolution, and current-state documentation without granting authorization, publishing releases, mutating memory, or expanding autonomy."
+        },
+        {
+          "version": "500.0",
+          "notes": "v460.0 adds review-only authorization firewall signal triage: severity classification, safe-boundary filtering, warning-preserving status, audit-status split, and smoke/API/CLI/dashboard coverage without approving, enforcing, mutating memory, applying source edits, or expanding autonomy."
+        },
+        {
+          "version": "500.0",
+          "notes": "v470.0 removes shadowed duplicate top-level self_maintenance definitions, preserves canonical final helpers, replaces stale v68/v70 exact-version blockers with explicit historical compatibility gates, and audits the cleanup without granting authorization or expanding autonomy."
+        },
+        {
+          "version": "500.0",
+          "notes": "v475.0 adds a current-state README header, separates historical next-step records, adds a reusable operator/new-chat handoff packet, hardens documentation no-authorization language, and audits documentation continuity without granting approval or expanding autonomy."
+        },
+        {
+          "version": "500.0",
+          "notes": "v480.0 adds a manual, operator-invoked, read-only observation scope, structured observation packet builder, no-mutation observation audit, and operator invocation boundary without scheduling, source writes, memory writes, model invocation, approval creation, automatic continuation, or autonomy expansion."
+        },
+        {
+          "version": "500.0",
+          "notes": "v490.0 adds a review-only observation-to-proposal candidate mapper, proposal queue schema, ranking and risk notes, non-execution audit, and smoke/API/CLI/dashboard coverage without source writes, memory writes, schedules, model invocation, execution packet creation, proposal approval, automatic continuation, or autonomy expansion."
+        },
+        {
+          "version": "500.0",
+          "notes": "v500.0 adds a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and smoke/API/CLI/dashboard coverage without sandbox execution, source writes, memory writes, schedules, default model invocation, approval creation, release candidates, live promotion, automatic continuation, or autonomy expansion."
         }
       ],
       "status": "active",
-      "version": "350.0"
+      "version": "500.0",
+      "updated_at": "2026-06-24T07:00:00",
+      "root_version": "500.0",
+      "next_recommended_arc": "v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1",
+      "recommended_next_actions": [
+        "Review v495 sandbox-only boundary prep before v496-v500 autonomy readiness review board."
+      ]
     }
   ],
-  "root_version": "350.0",
-  "version": "350.0"
+  "root_version": "500.0",
+  "version": "500.0",
+  "updated_at": "2026-06-24T07:00:00",
+  "current_milestone": "v500.0 Operator-Governed Autonomy Readiness Review Board v1",
+  "recommended_next_actions": [
+    "Review v495 sandbox-only boundary prep before v496-v500 autonomy readiness review board."
+  ],
+  "name": "v500.0 - Operator-Governed Autonomy Readiness Review Board v1",
+  "release_notes": [
+    {
+      "version": "500.0",
+      "notes": "v500.0 adds a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and smoke/API/CLI/dashboard coverage without sandbox execution, source writes, memory writes, schedules, default model invocation, approval creation, release candidates, live promotion, automatic continuation, or autonomy expansion."
+    }
+  ]
 }

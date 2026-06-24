@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-DASHBOARD_COMPONENTS_VERSION = "350.0"
+DASHBOARD_COMPONENTS_VERSION = "500.0"
 
 DEFAULT_DASHBOARD_COMPONENTS = [
     {"name": "console_card", "purpose": "render command-deck cards with existing classes", "changes_visual_contract": False},
@@ -25,9 +25,9 @@ def dashboard_route_tokens() -> list[str]:
 
 def native_nav_title_regression_present(dashboard_text: str) -> bool:
     for line in dashboard_text.splitlines():
-        if "data-tip" in line and "title=" in line:
+        if "data-tip" in line and " title=" in line and "data-route-title" not in line:
             return True
-        if "nav" in line.lower() and "title=" in line and "data-route-title" not in line:
+        if "nav" in line.lower() and " title=" in line and "data-route-title" not in line:
             return True
     return False
 

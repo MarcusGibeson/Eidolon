@@ -1,19 +1,19 @@
 {
   "version": "15.0",
-  "checked_at": "2026-06-23T09:57:53",
+  "checked_at": "2026-06-24T10:27:50",
   "project_id": "eidolon",
   "status": "pass",
   "ok": true,
-  "plan_id": "plan_20260623_095753_synthetic-v9-safe-readme-task",
+  "plan_id": "plan_20260624_102750_synthetic-v9-safe-readme-task",
   "rows": [
     {
       "path": "README_NEXT_STEPS.md",
       "action": "modify",
       "status": "staged",
       "diff_path": "data\\patch_workspace\\file_diffs\\README_NEXT_STEPS.md.diff",
-      "added_lines": 3,
+      "added_lines": 2,
       "removed_lines": 0,
-      "diff_preview": "--- a/README_NEXT_STEPS.md\n+++ b/README_NEXT_STEPS.md\n@@ -3028,3 +3028,6 @@\n \n ### v300.0 closure boundary\n v300.0 may summarize current continuity state, build review-only self-model snapshots, detect stale capability claims, review purpose drift, classify coherence risks, synthesize supervised growth priorities, connect memory candidates to future review needs, connect rollback/recovery lessons to risk planning, and prepare a v300 continuity audit packet. It does not mutate memory automatically, alter identity, alter personality, rewrite purpose, self-approve capabilities, auto-select future roadmaps, start new patches automatically, infer approval from continuity audits, invoke local models by default, execute commands automatically, publish release candidates, or treat self-model snapshots as authority.\n+\n+<!-- EIDOLON_CONTROLLED_BUILD_STAGE_MARKER -->\n+Staged controlled-build probe for plan_20260623_095753_synthetic-v9-safe-readme-task. This line is only written if the operator explicitly applies the staged patch.\n"
+      "diff_preview": "--- a/README_NEXT_STEPS.md\n+++ b/README_NEXT_STEPS.md\n@@ -6260,3 +6260,5 @@\n \n Recommended next arc after v450.0: v451.0-v455.0 Operator-Governed Recurring Read-Only Observation Trial v1. Build a strictly read-only recurring observation plan, activity ledger, command whitelist, and stop/pause controls without scheduling hidden work or mutating source/memory.\n \n+<!-- EIDOLON_CONTROLLED_BUILD_STAGE_MARKER -->\n+Staged controlled-build probe for plan_20260624_102750_synthetic-v9-safe-readme-task. This line is only written if the operator explicitly applies the staged patch.\n"
     }
   ],
   "warnings": [],

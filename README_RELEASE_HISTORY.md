@@ -1,3 +1,215 @@
+# Eidolon Release History
+
+## v500.0 - Operator-Governed Autonomy Readiness Review Board v1
+
+- Added `conscious_agent/autonomy_readiness_review_board.py` as a review-only autonomy readiness review helper.
+- Added dashboard pages `/autonomy-readiness-criteria-board`, `/autonomy-blocker-gap-register`, `/phase-based-autonomy-permission-model`, `/autonomy-misinterpretation-firewall`, and `/autonomy-readiness-review-board-audit` while preserving the command-deck/operator-console dashboard style.
+- Added dynamic API/CLI stages `autonomy_readiness_criteria_board_v1`, `autonomy_blocker_gap_register_v1`, `phase_based_autonomy_permission_model_v1`, `autonomy_misinterpretation_firewall_v1`, and `operator_governed_autonomy_readiness_review_board_v1` through the supervised runtime maps.
+- Added readiness criteria across observation, observation ledger, proposal queue, sandbox boundary prep, authorization firewall, route/surface parity, documentation continuity, approval burnout, no-mutation guarantees, and smoke coverage.
+- Added blocker/gap register entries for missing sandbox execution harness, missing command allowlist/denylist, missing sandbox execution receipt and burnout semantics, missing sandbox rollback/recovery proof, and remaining memory/model/schedule risks.
+- Added phase-based autonomy permission model from Phase 0 supervised-only state through Phase 7 narrow live-action prep, with no phase implying permission for the next phase.
+- Added autonomy misinterpretation firewall patterns for ready-means-approved, board-passed-means-autonomy-allowed, phase-defined-means-authorized, sandbox-boundary-means-execute, operator-discussed-means-approved, proposal-ranked-means-selected, and observation-history-means-monitoring-may-continue.
+- Added targeted smoke `operator-governed-autonomy-readiness-review-board-v1` and classified it into segmented governance smoke.
+- Updated source surface manifest and dashboard route probe coverage for v496-v500 autonomy readiness review surfaces.
+- Updated source/version metadata to v500.0 and updated `README_NEXT_STEPS.md` with v500 current-state guidance and v501-v505 as the next recommended manual observation-to-sandbox packet bridge arc.
+- Safety boundary: v500.0 is readiness review only. readiness_status=not_ready_for_autonomy and authorization_status=not_authorized remain mandatory. Readiness review is not autonomy approval, board pass grants no authorization, phase definition does not authorize a phase, sandbox boundary existence does not mean sandbox may execute, operator discussion is not approval, proposal ranking is not selection, observation history does not authorize monitoring, and no source mutation, memory mutation, schedule creation, model invocation by default, execution packet creation, sandbox execution, live source writes, approval creation, release candidate creation, automatic continuation, or autonomy expansion is granted.
+- Boundary tokens: readiness_status=not_ready_for_autonomy authorization_status=not_authorized readiness_review_is_autonomy_approval=False board_pass_grants_authorization=False phase_definition_authorizes_phase=False sandbox_boundary_exists_means_execute=False operator_discussion_is_approval=False proposal_ranking_is_selection=False observation_history_authorizes_monitoring=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False sandbox_execution_allowed=False live_source_writes_allowed=False approval_creation_allowed=False release_candidate_creation_allowed=False automatic_continuation_allowed=False operator_review_required=True fresh_operator_approval_required=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## v495.1-v500.0 Packaging and Verification Notes
+
+- Source metadata now consistently reports v500.0.
+- Source-only package privacy remains constrained to allowlisted source and metadata files.
+- Autonomy readiness review surfaces are review-only and do not create approval, write memory, apply source edits, execute rollback, publish releases, invoke models by default, generate execution packets, approve proposals, schedule work, execute sandbox commands, promote sandbox output, or expand autonomy.
+- A readiness board can assess prerequisites and blockers, but it cannot grant autonomy, authorize a phase, approve sandbox execution, or promote any finding into action.
+
+## v495.0 - Sandbox-Only Autonomy Boundary Trial Prep v1
+
+Eidolon v495.0 completes the v491.0-v495.0 sandbox-only autonomy boundary prep arc. It adds `conscious_agent/sandbox_autonomy_boundary.py`, dashboard routes for `/sandbox-only-autonomy-scope-definition`, `/sandbox-autonomy-trial-packet-builder`, `/sandbox-to-live-boundary-hardening`, `/no-execution-sandbox-autonomy-audit`, and `/sandbox-autonomy-boundary-prep-audit`, dynamic API/CLI runtime coverage, source surface manifest and dashboard route-probe entries, and targeted smoke check `operator-governed-sandbox-autonomy-boundary-prep-v1`.
+
+Safety boundary: v495.0 is review-only boundary preparation. It does not execute sandbox commands, write live source files, mutate memory, create schedules, invoke local models by default, create release candidates, approve proposals, create approvals, promote sandbox output to live source, continue automatically, or expand autonomy. Sandbox scope is not authorization, sandbox readiness is not approval, a sandbox target description is not permission to execute, sandbox success is not live authorization, sandbox verification is not approval, sandbox output is not a patch execution packet, sandbox trial completion does not permit source mutation, and promotion still requires fresh single-use operator approval.
+
+
+
+## v490.0 - Supervised Proposal Queue from Observation Reports v1
+- Added `conscious_agent/observation_proposal_queue.py` as a review-only proposal queue helper for manual observation reports.
+- Added dashboard pages `/observation-to-proposal-candidate-mapper`, `/proposal-queue-schema`, `/proposal-ranking-risk-notes`, `/proposal-queue-non-execution-audit`, and `/observation-proposal-queue-audit` while preserving the command-deck/operator-console dashboard style.
+- Added dynamic API/CLI stages `observation_to_proposal_candidate_mapper_v1`, `proposal_queue_schema_v1`, `proposal_ranking_risk_notes_v1`, `proposal_queue_non_execution_audit_v1`, and `operator_governed_observation_proposal_queue_v1` through the supervised runtime maps.
+- Added an observation-to-proposal candidate mapper that links manual observation findings to review-only proposal candidates with `authorization_status=not_authorized`.
+- Added a proposal queue schema with statuses `draft`, `needs_review`, `rejected`, `deferred`, and `approved_for_packet_drafting_only`; no status approves live execution.
+- Added ranking/risk notes for safety risk, stale metadata risk, route/API/CLI parity risk, smoke coverage risk, documentation drift risk, source complexity reduction value, operator burden reduction, and autonomy-readiness relevance.
+- Added a proposal queue non-execution audit proving the queue does not write source, mutate memory, create schedules, invoke local models by default, create execution packets, apply patches, approve proposals, promote observations into live changes, or continue automatically.
+- Extended dashboard route probe and source surface manifest coverage for v486-v490 proposal queue surfaces.
+- Added targeted smoke coverage for `operator-governed-observation-proposal-queue-v1` and classified it into governance smoke coverage.
+- Updated metadata/version markers to v490.0.
+- Updated `README_NEXT_STEPS.md` with v490 current-state guidance and v491-v495 as the next recommended sandbox-only autonomy boundary prep arc.
+- Preserved non-autonomy: mapping is not approval, a proposal candidate is not an execution packet, a candidate queue is not authorization, queue presence is not approval, queue ranking is not authorization, the highest-ranked proposal is not automatically selected, `approved_for_packet_drafting_only` is not live execution approval, no memory writes occur, no source edits are applied automatically, no release is published, no identity/personality changes occur, no local models are invoked by default, no execution packet is created, and no autonomous continuation is created.
+- Boundary tokens: observation-to-proposal-candidate-mapper proposal-queue-schema proposal-ranking-risk-notes proposal-queue-non-execution-audit observation-proposal-queue-audit operator-governed-observation-proposal-queue-v1 observation_proposal_queue.py mapping_is_approval=False proposal_candidate_is_execution_packet=False candidate_queue_is_authorization=False queue_presence_is_approval=False queue_ranking_is_authorization=False highest_ranked_proposal_auto_selected=False approved_for_packet_drafting_only_is_live_execution=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False patch_application_allowed=False proposal_approval_allowed=False automatic_continuation_allowed=False observation_promotes_to_live_change=False operator_review_required=True fresh_operator_approval_required=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## v485.1-v490.0 Packaging and Verification Notes
+
+- Source metadata now consistently reports v490.0.
+- Source-only package privacy remains constrained to allowlisted source and metadata files.
+- Proposal queue surfaces are review-only and do not create approval, write memory, apply source edits, execute rollback, publish releases, invoke models by default, generate execution packets, approve proposals, or expand autonomy.
+- A proposal queue can organize supervised suggestions from observation reports, but it cannot execute, select, approve, schedule, or promote them.
+
+# Eidolon Release History
+
+## v485.0 - Bounded Observation Ledger and Stop/Pause Semantics v1
+
+- Added `conscious_agent/observation_ledger_boundary.py` as a review-only bounded observation ledger and stop/pause semantics helper.
+- Added dashboard pages `/observation-ledger-schema`, `/observation-receipt-builder`, `/observation-stop-pause-semantics`, `/hidden-scheduling-continuation-audit`, and `/observation-ledger-boundary-audit` while preserving the command-deck/operator-console dashboard style.
+- Added dynamic API/CLI stages `observation_ledger_schema_v1`, `observation_receipt_builder_v1`, `observation_stop_pause_semantics_v1`, `hidden_scheduling_continuation_audit_v1`, and `operator_governed_observation_ledger_boundary_v1` through the supervised runtime maps.
+- Added a review-only observation ledger schema with observation id, created-at, operator-invoked, scope, read-only status, mutation status, authorization status, recommended review targets, next arc recommendation, pause state, and stop state fields.
+- Added an observation receipt builder that records source_mutation=false, memory_mutation=false, metadata_mutation=false, schedule_created=false, model_invocation=false, approval_created=false, and authorization_status=not_authorized.
+- Added stop/pause semantics: paused means no future observation run may be prepared automatically; stopped means observation prep must require fresh operator invocation; resume requires explicit operator action; pause/stop does not delete historical receipts; pause/stop does not authorize cleanup or mutation.
+- Added hidden scheduling and continuation audit checks proving the observation layer does not schedule itself, create daily/hourly loops, continue after one run, auto-select roadmaps, auto-generate patch execution packets, auto-promote findings, or create autonomous follow-up.
+- Added targeted smoke `operator-governed-observation-ledger-boundary-v1` and classified it into segmented governance smoke.
+- Updated source surface manifest and dashboard route probe coverage for v481-v485 observation ledger boundary surfaces.
+- Updated `README_NEXT_STEPS.md` with v485 current-state guidance and v486-v490 as the next recommended supervised proposal queue arc.
+- Safety boundary: v485.0 is read-only ledger and stop/pause semantics preparation only. It does not approve anything, mutate memory, write source, update metadata, create schedules, invoke local models by default, apply patches, publish releases, promote findings, create approval, continue automatically, or expand autonomy. Ledger presence is not approval, ledger completeness is not authorization, observation history does not permit future action, and receipt is not approval.
+
+## v480.0 - Operator-Invoked Read-Only Observation Prep v1
+
+- Added `conscious_agent/operator_observation_prep.py` as a review-only manual observation prep helper.
+- Added dashboard pages `/manual-read-only-observation-scope`, `/operator-observation-packet`, `/no-mutation-observation-audit`, `/operator-invocation-boundary`, and `/operator-read-only-observation-audit` while preserving the command-deck/operator-console dashboard style.
+- Added dynamic API/CLI stages `manual_read_only_observation_scope_v1`, `operator_observation_packet_v1`, `no_mutation_observation_audit_v1`, `operator_invocation_boundary_v1`, and `operator_invoked_read_only_observation_prep_v1` through the supervised runtime maps.
+- Added a structured observation packet with current version, current milestone, verified state, known blockers, metadata alignment, route/surface alignment, documentation alignment, recommended review targets, and authorization boundary fields.
+- Added no-mutation audit checks proving observation does not write source, write memory, update metadata, create schedules, invoke local models by default, apply patches, publish releases, promote sandbox output, create approval, or continue automatically.
+- Added operator invocation boundary language: Observation is not authorization; Operator invocation permits one read-only observation report only; It does not authorize continued monitoring; It does not authorize follow-up action; It does not authorize live changes.
+- Added targeted smoke `operator-invoked-read-only-observation-prep-v1` and classified it into segmented governance smoke.
+- Updated source surface manifest and dashboard route probe coverage for v476-v480 observation prep surfaces.
+- Updated `README_NEXT_STEPS.md` with v480 current-state guidance and v481-v485 as the next recommended bounded observation ledger arc.
+- Safety boundary: v480.0 is read-only observation preparation only. It does not approve anything, mutate memory, write source, update metadata, schedule work, invoke local models by default, apply patches, publish releases, create approval, continue automatically, or expand autonomy.
+- Boundary tokens: observation_is_authorization=False observation_is_execution=False observation_grants_followup_permission=False observation_writes_source=False observation_writes_memory=False observation_updates_metadata=False observation_schedules_work=False observation_invokes_models_by_default=False observation_creates_approval=False operator_invocation_required=True single_run_read_only=True operator_approval_still_required=True.
+
+
+## v475.0 - README Current-State and Operator Continuity Header Cleanup v1
+
+- Added `conscious_agent/documentation_continuity_header.py` as a review-only documentation continuity helper.
+- Added dashboard pages `/current-state-header-block`, `/historical-next-steps-separation`, `/operator-continuity-handoff-packet`, `/documentation-boundary-language`, and `/documentation-continuity-header-audit` while preserving the command-deck/operator-console dashboard style.
+- Added dynamic API/CLI stages `current_state_header_block_v1`, `historical_next_steps_separation_v1`, `operator_continuity_handoff_packet_v1`, `documentation_boundary_language_v1`, and `operator_governed_documentation_continuity_header_v1` through the supervised runtime maps.
+- Updated `README_NEXT_STEPS.md` with a top-level current-state header, current verification summary, current blockers, current recommended next arc, current safety boundary, and reusable new-chat continuation packet.
+- Separated older next-step content under a historical ledger with completed/superseded/do-not-treat-as-current labels.
+- Added documentation boundary language: README state is not approval, Release history is not authorization, A recommended next arc is not permission to execute it, A completed smoke check is not operator consent, and A handoff packet is not an execution packet.
+- Extended dashboard route probe and source surface manifest coverage for v471-v475 documentation continuity surfaces.
+- Added targeted smoke coverage for `operator-governed-documentation-continuity-header-v1` and classified it into governance smoke coverage.
+- Updated metadata/version markers to v475.0.
+- Preserved non-autonomy: documentation cleanup is not authorization, release history is not authorization, a recommended next arc is not permission, a handoff packet is not execution, no memory writes occur, no source edits are applied automatically, no release is published, no identity/personality changes occur, no local models are invoked by default, and no autonomous continuation is created.
+
+## v470.1-v475.0 Packaging and Verification Notes
+
+- Source metadata now consistently reports v475.0.
+- Source-only package privacy remains constrained to allowlisted data files and command profile source seeds.
+- Documentation continuity surfaces are review-only and do not create approval, write memory, apply source edits, execute rollback, publish releases, or expand autonomy.
+- Smoke/API/CLI parity tokens: current-state-header-block historical-next-steps-separation operator-continuity-handoff-packet documentation-boundary-language documentation-continuity-header-audit operator-governed-documentation-continuity-header-v1 documentation_continuity_header.py documentation_state_is_authorization=False release_history_is_authorization=False recommended_next_arc_is_permission=False handoff_packet_is_execution_packet=False current_state_header_creates_approval=False documentation_cleanup_writes_memory=False documentation_cleanup_applies_source_edits=False documentation_cleanup_expands_autonomy=False operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## v470.0 - Self-Maintenance Duplicate Shadow Cleanup v1
+
+- Added `conscious_agent/self_maintenance_shadow_cleanup.py` as a review-only duplicate-shadow cleanup audit helper.
+- Removed known shadowed duplicate top-level definitions from `conscious_agent/self_maintenance.py` while preserving canonical final definitions.
+- Replaced stale v68/v70 exact-version blockers with `_historical_version_gate_cleared(...)` compatibility checks so historical gates no longer block current-source review paths.
+- Added dashboard pages `/duplicate-shadow-inventory`, `/safe-shadow-removal-report`, `/legacy-alias-compatibility-cleanup`, `/stale-version-gate-cleanup`, and `/self-maintenance-duplicate-shadow-cleanup-audit` while preserving the command-deck/operator-console dashboard style.
+- Added dynamic API/CLI stages `duplicate_shadow_inventory_v1`, `safe_shadow_removal_report_v1`, `legacy_alias_compatibility_cleanup_v1`, `stale_version_gate_cleanup_v1`, and `operator_governed_self_maintenance_duplicate_shadow_cleanup_v1` through the supervised runtime maps.
+- Extended dashboard route probe and source surface manifest coverage for the v466-v470 governed surfaces.
+- Added targeted smoke coverage for `operator-governed-self-maintenance-duplicate-shadow-cleanup-v1` and classified it into recent regression smoke coverage.
+- Updated metadata/version markers to v470.0.
+- Updated `README_NEXT_STEPS.md` current-state header and this release history.
+- Preserved non-autonomy: duplicate cleanup is not authorization, classification is not permission to delete more code, stale gate cleanup does not authorize execution, no memory writes occur, no source edits are applied automatically, no release is published, no identity/personality changes occur, no local models are invoked by default, and no autonomous continuation is created.
+
+## v465.1-v470.0 Packaging and Verification Notes
+
+- Source metadata now consistently reports v470.0.
+- Source-only package privacy remains constrained to allowlisted data files and command profile source seeds.
+- Duplicate shadow cleanup surfaces are review-only and do not create approval, write memory, apply source edits, execute rollback, publish releases, or expand autonomy.
+- Smoke/API/CLI parity tokens: duplicate-shadow-inventory safe-shadow-removal-report legacy-alias-compatibility-cleanup stale-version-gate-cleanup self-maintenance-duplicate-shadow-cleanup-audit operator-governed-self-maintenance-duplicate-shadow-cleanup-v1 duplicate_cleanup_is_authorization=False classification_is_permission_to_delete=False shadow_removal_expands_autonomy=False stale_gate_cleanup_authorizes_execution=False cleanup_applies_live_patches=False cleanup_writes_memory=False operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## v465.0 - Dashboard Route Probe and Source Surface Manifest Parity v1
+
+- Added `conscious_agent/route_surface_parity.py` as a review-only route/surface parity helper module.
+- Refreshed `conscious_agent/dashboard_route_probe.py` so recent v450-v460 and v461-v465 dashboard routes are represented in the reusable route probe inventory.
+- Extended `conscious_agent/source_surface_manifest.py` with every governed substage surface for v446-v465 and declared `every_governed_substage_surface` as the forward parity policy.
+- Added dashboard pages `/recent-dashboard-route-probe-refresh`, `/source-surface-manifest-parity-policy`, `/surface-route-api-cli-crosscheck`, `/route-health-boundary-language`, and `/route-surface-parity-audit` while preserving the command-deck/operator-console dashboard style.
+- Added dynamic API/CLI stages `recent_dashboard_route_probe_refresh_v1`, `source_surface_manifest_parity_policy_v1`, `surface_route_api_cli_crosscheck_v1`, `route_health_boundary_language_v1`, and `operator_governed_route_surface_parity_v1` through the supervised runtime maps.
+- Added targeted smoke coverage for `operator-governed-route-surface-parity-v1` and classified it into dashboard smoke coverage.
+- Updated metadata/version markers to v465.0.
+- Updated `README_NEXT_STEPS.md` current-state header and this release history.
+- Preserved non-autonomy: route health is not approval, route presence is not authorization, manifest presence is not authorization, surface parity is not permission, smoke success is not approval, no memory writes occur, no source edits are applied automatically, no release is published, no identity/personality changes occur, no local models are invoked by default, and no autonomous continuation is created.
+
+## v460.1-v465.0 Packaging and Verification Notes
+
+- Updated README_NEXT_STEPS.md with all fifty substages from v460.1 through v465.0.
+- Added source-only privacy tokens for `data/autonomy/recent_dashboard_route_probe_refresh/`, `data/autonomy/source_surface_manifest_parity_policy/`, `data/autonomy/surface_route_api_cli_crosscheck/`, `data/autonomy/route_health_boundary_language/`, and `data/autonomy/route_surface_parity_audit/`.
+- Added boundary tokens: route_presence_is_authorization=False, route_health_is_approval=False, manifest_presence_is_authorization=False, surface_parity_is_permission=False, smoke_success_is_approval=False, route_health_confirms_render_status_only=True, route_health_does_not_authorize_execution=True, parity_audit_applies_patches=False, parity_audit_writes_memory=False, and parity_audit_expands_autonomy=False.
+- Route/surface parity is review-only evidence and does not grant approval, permission, authorization, or execution scope.
+
+## v460.0 - Authorization Firewall Signal Triage and Warning Semantics v1
+
+- Added the v455.1-v460.0 authorization firewall signal triage arc covering severity classification, safe negative boundary filtering, warning-preserving status, audit-status splitting, and final signal triage audit.
+- Extended `conscious_agent/authorization_firewall.py` with severity levels `safe_boundary`, `informational`, `warning`, `high_risk`, and `blocked_pattern` so risky authorization wording is no longer a single noisy warning bucket.
+- Added safe-boundary filtering for phrases such as "not authorized", "not approved", "does not grant permission", "must not treat this as approval", and "fresh operator approval required" while keeping those statements visible as evidence.
+- Added warning-status bridge reporting with `pass_with_warnings_supported=True` and `plain_pass_with_warnings_forbidden=True` so warnings are preserved instead of flattened into plain pass.
+- Added audit-status split reporting with `mechanism_pass_is_not_language_clear=True`, `language_clear_is_not_authorization=True`, and `authorization_status=not_authorized`.
+- Added dashboard pages `/authorization-firewall-severity-classifier`, `/authorization-firewall-safe-boundary-filter`, `/authorization-firewall-warning-status`, `/authorization-firewall-audit-status-split`, and `/authorization-firewall-signal-triage-audit` while preserving command-deck/operator-console styling.
+- Added dynamic API routes `/api/authorization-firewall-severity-classifier/layer`, `/api/authorization-firewall-safe-boundary-filter/layer`, `/api/authorization-firewall-warning-status/layer`, `/api/authorization-firewall-audit-status-split/layer`, and `/api/authorization-firewall-signal-triage-audit/layer` through the supervised runtime route map.
+- Added dynamic CLI checks `--authorization-firewall-severity-classifier-v1`, `--authorization-firewall-safe-boundary-filter-v1`, `--authorization-firewall-warning-status-v1`, `--authorization-firewall-audit-status-split-v1`, and `--operator-governed-authorization-firewall-signal-triage-v1`.
+- Added targeted smoke coverage for `operator-governed-authorization-firewall-signal-triage-v1` and classified it into governance smoke coverage.
+- Updated version markers, source metadata, project metadata, workspace metadata, and smoke summary metadata to 460.0.
+- Updated README_NEXT_STEPS.md with the v460 current-state header and the next recommended v461-v465 route/surface parity cleanup arc.
+- Preserved the custom dashboard `data-tip` hover system and did not reintroduce native nav `title` tooltips.
+- Preserved non-autonomy: signal triage creates no approval, writes no memory, applies no source edits, publishes no release, invokes no local models, schedules no hidden work, expands no autonomy, and treats neither firewall clear/pass/warning status nor language clear status as authorization.
+
+## v455.1-v460.0 Packaging and Verification Notes
+
+- Source metadata now consistently reports v460.0.
+- Authorization firewall signal triage remains review-only and explicitly reports `authorization_status=not_authorized`.
+- Source-only package privacy remains constrained to allowlisted data files and command profile source seeds.
+- Smoke/API/CLI parity tokens: authorization-firewall-severity-classifier authorization-firewall-safe-boundary-filter authorization-firewall-warning-status authorization-firewall-audit-status-split authorization-firewall-signal-triage-audit operator-governed-authorization-firewall-signal-triage-v1 pass_with_warnings_supported=True plain_pass_with_warnings_forbidden=True mechanism_pass_is_not_language_clear=True language_clear_is_not_authorization=True authorization_status=not_authorized operator_approval_still_required=True signal_triage_creates_approval=False signal_triage_writes_memory=False signal_triage_applies_source_edits=False signal_triage_expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console.
+
+---
+## v455.0 - Metadata, Release Integrity, and Current-State Repair v1
+
+- Added the v450.1-v455.0 metadata and release-integrity repair arc covering metadata version inventory, project/workspace metadata alignment, release packaging version integrity, current-state documentation header audit, and final metadata release integrity audit.
+- Added `conscious_agent/metadata_release_integrity.py` as a review-only helper module for checking source metadata alignment and release version resolution without approving releases or applying source edits.
+- Repaired `data/settings.json` from stale v420.0 metadata to v455.0.
+- Repaired `data/projects.json`, `data/workspaces/active_project.json`, and `data/workspaces/projects.json` so current milestone, version, notes, next arc, and release notes align to v455.0.
+- Updated `conscious_agent/release_packaging.py` so `_current_version()` prefers `settings_version` before falling back to `version`, `last_updated_for`, or the module constant.
+- Added dashboard pages `/metadata-version-inventory`, `/project-workspace-metadata-alignment`, `/release-packaging-version-integrity`, `/current-state-documentation-header-audit`, and `/metadata-release-integrity-audit` while preserving command-deck/operator-console styling.
+- Added dynamic API routes `/api/metadata-version-inventory/layer`, `/api/project-workspace-metadata-alignment/layer`, `/api/release-packaging-version-integrity/layer`, `/api/current-state-documentation-header-audit/layer`, and `/api/metadata-release-integrity-audit/layer` through the supervised runtime route map.
+- Added dynamic CLI checks `--metadata-version-inventory-v1`, `--project-workspace-metadata-alignment-v1`, `--release-packaging-version-integrity-v1`, `--current-state-documentation-header-audit-v1`, and `--operator-governed-metadata-release-integrity-v1`.
+- Added targeted smoke coverage for `operator-governed-metadata-release-integrity-v1` and classified it into release-integrity smoke coverage.
+- Updated version markers and smoke summary metadata to 455.0.
+- Added a current-state header to README_NEXT_STEPS.md so future review starts from current version, verified checks, blockers, and recommended next arc before diving into the historical ledger.
+- Preserved the custom dashboard `data-tip` hover system and did not reintroduce native nav `title` tooltips.
+- Preserved non-autonomy: metadata consistency is not authorization; release integrity pass is not approval; no release publishing, no live source mutation without explicit operator approval, no memory mutation, no identity/personality mutation, no default local model invocation, no hidden scheduling, no automatic continuation, no approval inference from route health, smoke success, manifest presence, lifecycle completeness, firewall pass, package readiness, or metadata alignment.
+
+## v450.1-v455.0 Packaging and Verification Notes
+
+- Source metadata now consistently reports v455.0.
+- Release packaging version resolution no longer picks stale `last_updated_for` before `settings_version`.
+- Source-only package privacy remains constrained to allowlisted data files and command profile source seeds.
+- Smoke/API/CLI parity tokens: metadata-version-inventory project-workspace-metadata-alignment release-packaging-version-integrity current-state-documentation-header-audit metadata-release-integrity-audit operator-governed-metadata-release-integrity-v1 metadata_release_integrity.py metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False metadata_repair_report_publishes_release=False metadata_repair_report_applies_source_edits=False metadata_repair_report_writes_memory=False metadata_repair_report_expands_autonomy=False operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+---
+## v375.0 - Self-Maintenance Modular Extraction v1
+
+- Added the v370.1-v375.0 self-maintenance modular extraction arc covering extraction planning, version/package gate extraction, route/API/CLI gate extraction, governance boundary gate extraction, and final modular extraction audit.
+- Added focused review-only modules `conscious_agent/self_maintenance_modular_extraction.py`, `conscious_agent/self_maintenance_version_package_gates.py`, `conscious_agent/self_maintenance_surface_gates.py`, and `conscious_agent/self_maintenance_governance_gates.py`.
+- Added dashboard pages `/self-maintenance-module-extraction-plan`, `/self-maintenance-version-package-gates`, `/self-maintenance-surface-gates`, `/self-maintenance-governance-gates`, and `/self-maintenance-modular-extraction-audit`.
+- Added API routes `/api/self-maintenance-module-extraction-plan/layer`, `/api/self-maintenance-version-package-gates/layer`, `/api/self-maintenance-surface-gates/layer`, `/api/self-maintenance-governance-gates/layer`, and `/api/self-maintenance-modular-extraction-audit/layer` through the supervised runtime route map.
+- Added CLI checks `--operator-governed-self-maintenance-module-extraction-plan-v1`, `--operator-governed-self-maintenance-version-package-gate-extraction-v1`, `--operator-governed-self-maintenance-surface-gate-extraction-v1`, `--operator-governed-self-maintenance-governance-gate-extraction-v1`, and `--operator-governed-self-maintenance-modular-extraction-v1`.
+- Added targeted smoke coverage for `operator-governed-self-maintenance-modular-extraction-v1` and preserved regression coverage for v370, v365, and v360.
+- Updated version markers and metadata to 375.0.
+- Preserved the custom dashboard `data-tip` hover system and did not reintroduce native nav `title` tooltips.
+- Preserved non-autonomy: no live expression behavior change, no automatic patch application, no memory mutation, no identity/personality mutation, no default local model invocation, no self-approval, no release publishing, no release-candidate creation, and no automatic continuation.
+
+## v370.1-v375.0 Packaging and Verification Notes
+
+- Updated README_NEXT_STEPS.md with all fifty substages from v370.1 through v375.0.
+- Updated release history through v375.0.
+- Added source-only privacy tokens for `data/autonomy/self_maintenance_module_extraction_plan/`, `data/autonomy/self_maintenance_version_package_gates/`, `data/autonomy/self_maintenance_surface_gates/`, `data/autonomy/self_maintenance_governance_gates/`, and `data/autonomy/self_maintenance_modular_extraction_audit/`.
+- Fast, loop, install, and targeted v375 smoke suites cover the modular extraction layer.
+
+---
 ## v130.0 - Supervised Strategic Growth Audit
 
 - Added the v129.1-v130.0 supervised strategic growth audit covering end-to-end strategic walkthrough, strategic coherence audit, safety boundary audit, roadmap quality audit, debt and risk audit, capability maturity audit, operator burden audit, dashboard/API/CLI parity, pre-v130 milestone gate, and final v130 strategic growth audit.
@@ -889,3 +1101,426 @@ Safety boundary: sandbox evidence remains evidence only. Readiness and sandbox s
 - Updated version markers, project metadata, README next steps, and release history to v350.0.
 - Preserved command-deck/operator-console dashboard style, custom data-tip hover behavior, and no_native_title_tooltip regression boundary.
 - Preserved non-autonomous boundaries: no eligibility-as-approval, no live source writes, no source mutation, no patch application, no prompt rewrite, no command execution, no automatic rollback, no publishing, no memory mutation, no identity/personality mutation, no hidden work, and no self-approval.
+
+
+## v355.0 - Operator-Governed Expression Live Application Execution Prep Layer v1
+
+- Added `conscious_agent/expression_live_execution_prep.py`.
+- Added prep-only live expression execution approval intake, live source transaction/preimage manifest, manual execution checklist, rollback/reversion packet, and expression live execution prep audit surfaces.
+- Documented every substage from v350.1 through v355.0 in README next steps, including approval intake, transaction manifest, manual checklist, rollback prep, and final audit milestones.
+- Added dashboard routes, dynamic API/CLI parity, route-health registry coverage, package privacy tokens, and targeted smoke coverage for the v355 execution-prep layer.
+- Added cleanup/hardening fixes for stale smoke version checks, atomic stable-loop JSON writes, v275 package/version helper checks, active project metadata naming, and v305 release-history encoding cleanup.
+- Updated version markers, project metadata, README next steps, and release history to v355.0.
+- Preserved command-deck/operator-console dashboard style, custom data-tip hover behavior, and no_native_title_tooltip regression boundary.
+- Preserved non-autonomous boundaries: no live expression application, no source writes, no prompt rewrite, no memory mutation, no identity/personality mutation, no command execution, no rollback execution, no release candidate creation, no publishing, no stale approval reuse, no packet-as-authorization inference, and no automatic continuation into execution.
+
+Substage ledger:
+- v350.1-v351.0: Operator-Governed Live Expression Execution Approval Intake Gate.
+- v351.1-v352.0: Operator-Governed Live Source Transaction and Preimage Manifest Prep.
+- v352.1-v353.0: Operator-Governed Manual Execution Checklist and Command Packet.
+- v353.1-v354.0: Operator-Governed Rollback Snapshot and Reversion Packet Prep.
+- v354.1-v355.0: Operator-Governed Expression Live Application Execution Prep Audit.
+
+## v360.0 - Operator-Approved Minimal Live Expression Application Execution Path v1
+
+- Added `conscious_agent/minimal_live_expression_application.py`.
+- Added the first tiny, scoped, reversible, explicitly operator-approved live-expression application path focused on a dashboard/docs expression governance status line.
+- Added minimal live expression change candidate selection, approval scope lock, tiny patch transaction preview, confirmation-gated application harness, and final application audit surfaces.
+- Documented every substage from v355.1 through v360.0 in README next steps.
+- Added dashboard routes, dynamic API/CLI parity, route-health registry coverage, package privacy tokens, and targeted smoke coverage for the v360 minimal live-expression application path.
+- Updated source version markers, project metadata, README next steps, and release history to v360.0.
+- Preserved command-deck/operator-console dashboard style, custom data-tip hover behavior, and no_native_title_tooltip regression boundary.
+- Preserved strict non-autonomous boundaries: no runtime prompt mutation, no core identity mutation, no personality-engine mutation, no memory mutation, no model invocation changes, no approval reuse, no self-approval, no scope expansion, no out-of-scope source changes, no hidden continuation, no release candidate creation, no publishing, and no automatic rollback.
+
+Substage ledger:
+- v355.1-v356.0: Minimal Approved Live Change Candidate Selection.
+- v356.1-v357.0: Operator Approval Token and Execution Scope Lock.
+- v357.1-v358.0: Tiny Patch Transaction Builder.
+- v358.1-v359.0: Operator-Confirmed Patch Application Harness.
+- v359.1-v360.0: Minimal Live Expression Application Audit and Recovery Report.
+
+## v365.0 - Self-Maintenance Surface Reduction and Gate Registry Refactor v1
+
+- Added `conscious_agent/self_maintenance_refactor_registry.py`.
+- Added review-only gate inventory registry, centralized version expectation registry, governed surface metadata registry, smoke check/legacy gate registry, and final self-maintenance refactor audit surfaces.
+- Documented every substage from v360.1 through v365.0 in README next steps.
+- Added dashboard routes, dynamic API/CLI parity, route-health registry coverage, package privacy tokens, and targeted smoke coverage for the v365 self-maintenance cleanup arc.
+- Updated source version markers, project metadata, README next steps, and release history to v365.0.
+- Preserved command-deck/operator-console dashboard style, custom data-tip hover behavior, and no_native_title_tooltip regression boundary.
+- Preserved strict non-autonomous cleanup boundaries: no behavior expansion, no route removal, no automatic smoke execution, no source application, no memory mutation, no identity/personality mutation, no local model invocation, no self-approval, no release candidate creation, no publishing, and no automatic continuation.
+
+Substage ledger:
+- v360.1-v361.0: Self-Maintenance Gate Inventory and Registry Seed.
+- v361.1-v362.0: Centralized Self-Maintenance Version Expectation Layer.
+- v362.1-v363.0: Governed Surface Metadata Registry.
+- v363.1-v364.0: Smoke Check Registry and Legacy Gate Cleanup.
+- v364.1-v365.0: Self-Maintenance Refactor Audit and Continuity Packet.
+
+
+## v370.0 - Minimal Approved Live Change Replay and Regression Hardening v1
+
+- Added `conscious_agent/minimal_live_change_replay.py`.
+- Added review-only minimal live change replay packet, expected-vs-actual comparison, regression drift detector, recovery recommendation packet, and final replay/regression audit surfaces.
+- Documented every substage from v365.1 through v370.0 in README next steps.
+- Added dashboard routes, dynamic API/CLI parity, route-health registry coverage, package privacy tokens, and targeted smoke coverage for the v370 replay/regression hardening arc.
+- Updated source version markers, project metadata, README next steps, and release history to v370.0.
+- Preserved command-deck/operator-console dashboard style, custom data-tip hover behavior, and no_native_title_tooltip regression boundary.
+- Preserved strict non-autonomous replay boundaries: no automatic replay, no source mutation, no verification command execution, no auto-fix, no local model invocation, no rollback execution, no file editing, no memory mutation, no identity/personality mutation, no release candidate creation, no publishing, and no automatic continuation.
+
+Substage ledger:
+- v365.1-v366.0: Minimal Live Change Replay Packet.
+- v366.1-v367.0: Expected-vs-Actual Live Change Comparison.
+- v367.1-v368.0: Regression Drift Detector.
+- v368.1-v369.0: Recovery Recommendation Packet.
+- v369.1-v370.0: Minimal Live Change Replay and Regression Audit.
+
+
+## v375.0 - Self-Maintenance Modular Extraction v1
+
+- Added `conscious_agent/self_maintenance_modular_extraction.py`.
+- Added focused extracted helper modules: `self_maintenance_version_package_gates.py`, `self_maintenance_surface_gates.py`, and `self_maintenance_governance_gates.py`.
+- Added review-only module extraction plan, version/package gate extraction, surface gate extraction, governance gate extraction, and final modular extraction audit surfaces.
+- Documented every substage from v370.1 through v375.0 in README next steps.
+- Added dashboard routes, dynamic API/CLI parity, route-health registry coverage, package privacy tokens, and targeted smoke coverage for the v375 modular extraction arc.
+- Updated source version markers, project metadata, README next steps, and release history to v375.0.
+- Preserved command-deck/operator-console dashboard style, custom data-tip hover behavior, and no_native_title_tooltip regression boundary.
+- Preserved strict non-autonomous extraction boundaries: no live expression behavior change, no source application, no memory mutation, no identity/personality mutation, no local model invocation, no self-approval, no release candidate creation, no publishing, and no automatic continuation.
+
+Substage ledger:
+- v370.1-v371.0: Self-Maintenance Module Extraction Plan.
+- v371.1-v372.0: Version and Package Gate Extraction.
+- v372.1-v373.0: Route/API/CLI Gate Extraction.
+- v373.1-v374.0: Governance Boundary Gate Extraction.
+- v374.1-v375.0: Modular Extraction Audit and Regression Lock.
+
+## v380.0 - Approved Live Change Transaction Narrowing and Real Patch Application Trial v1
+
+- Added `conscious_agent/live_change_application_trial.py`.
+- Added review-only transaction narrowing, approval execution lock, real patch trial plan, operator-confirmed application trial, and final application trial audit surfaces.
+- Documented every substage from v375.1 through v380.0 in README next steps.
+- Added dashboard routes, dynamic API/CLI parity, route-health registry coverage, package privacy tokens, and targeted smoke coverage for the v380 approved live-change application trial arc.
+- Updated source version markers, project metadata, README next steps, and release history to v380.0.
+- Preserved command-deck/operator-console dashboard style, custom data-tip hover behavior, and no_native_title_tooltip regression boundary.
+- Preserved strict operator-confirmed trial boundaries: no self-approval, no stale approval reuse, no readiness-as-authorization, no autonomous candidate selection, no scope expansion, no unconfirmed application, no memory mutation, no identity/personality mutation, no local model invocation, no automatic rollback, no release candidate creation, no publishing, and no automatic continuation.
+
+Substage ledger:
+- v375.1-v376.0: Live Change Transaction Narrowing.
+- v376.1-v377.0: Live Change Approval Execution Lock.
+- v377.1-v378.0: Live Change Real Patch Trial Plan.
+- v378.1-v379.0: Operator-Confirmed Live Change Application Trial.
+- v379.1-v380.0: Live Change Application Trial Audit.
+
+## v385.0 - Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1
+
+- Added `conscious_agent/live_patch_trial_closure.py`.
+- Added review-only live patch trial result intake, applied diff/source-state evidence, one-time approval burnout, post-trial regression/rollback readiness review, and final closure audit surfaces.
+- Documented every substage from v380.1 through v385.0 in README next steps.
+- Added dashboard routes, dynamic API/CLI parity, route-health registry coverage, package privacy tokens, and targeted smoke coverage for the v385 live patch trial closure arc.
+- Updated source version markers, project metadata, README next steps, and release history to v385.0.
+- Preserved command-deck/operator-console dashboard style, custom data-tip hover behavior, and no_native_title_tooltip regression boundary.
+- Preserved strict closure boundaries: no command reruns, no source edits, no automatic fixes, no rollback execution, no approval reuse, no scope expansion, no success-as-authorization, no additional live patch, no memory mutation, no identity/personality mutation, no local model invocation, no release candidate creation, no publishing, and no automatic continuation.
+
+Substage ledger:
+- v380.1-v381.0: Live Patch Trial Result Intake Packet.
+- v381.1-v382.0: Applied Diff and Source-State Evidence Packet.
+- v382.1-v383.0: One-Time Approval Burnout and Reuse Block.
+- v383.1-v384.0: Post-Trial Regression and Rollback Readiness Review.
+- v384.1-v385.0: Live Patch Trial Closure Audit.
+
+
+## v390.0 - Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1
+
+Added `conscious_agent/second_live_patch_trial.py` and the v385.1-v390.0 registry-driven second minimal live patch trial arc. The layer adds review-only packets for second minimal patch candidate selection, registry-driven approval/scope validation, registry-driven transaction/preimage lock, second operator-confirmed application harness, and final registry audit.
+
+New dashboard/API/CLI surfaces:
+- `/second-minimal-live-patch-candidate`, `/api/second-minimal-live-patch-candidate/layer`, `--operator-governed-second-minimal-live-patch-candidate-v1`
+- `/registry-driven-live-patch-approval-validation`, `/api/registry-driven-live-patch-approval-validation/layer`, `--operator-governed-registry-driven-live-patch-approval-validation-v1`
+- `/registry-driven-live-patch-transaction-lock`, `/api/registry-driven-live-patch-transaction-lock/layer`, `--operator-governed-registry-driven-live-patch-transaction-lock-v1`
+- `/second-live-patch-application-harness`, `/api/second-live-patch-application-harness/layer`, `--operator-confirmed-second-live-patch-application-harness-v1`
+- `/second-live-patch-trial-registry-audit`, `/api/second-live-patch-trial-registry-audit/layer`, `--operator-governed-second-live-patch-trial-registry-audit-v1`
+
+The release preserves strict boundaries: no autonomous candidate selection, no approval reuse, no scope expansion, no file writes from the transaction lock, no unconfirmed application harness run, no rollback execution, no memory/identity/personality mutation, no local model default invocation, no release publishing, no release candidate creation, and no automatic continuation. Approval remains fresh, scoped, single-use, registry-validated, preimage-locked, burnout-required, and closure-required.
+
+Documentation now includes every substage from v385.1 through v390.0. The command-deck/operator-console dashboard style and custom `data-tip` hover system remain preserved; native `title` tooltips are still not reintroduced on nav tabs.
+
+## v395.0 - Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1
+
+v395.0 adds a review-only history and memory-candidate preparation arc for completed minimal live patch trials. It introduces the live patch trial history ledger, operator decision pattern review, supervised lesson candidate drafting, memory candidate governance, and final history/memory-candidate audit. The layer documents every substage from v390.1 through v395.0 and adds dashboard, dynamic API, dynamic CLI, route health, package privacy, and targeted smoke coverage.
+
+Boundaries preserved: no memory write, no identity mutation, no personality mutation, no approval reuse, no patch application, no rollback execution, no local model default invocation, no release publishing, no release candidate creation, and no automatic continuation. The dashboard command-deck/operator-console style remains intact, `data-tip` hover behavior remains preserved, and native nav-tab `title` tooltips remain forbidden.
+
+
+## v400.0 - Operator-Approved Memory Candidate Application Trial v1
+
+- Added `conscious_agent/memory_candidate_application_trial.py` for the first operator-approved memory candidate application trial path.
+- Added dashboard/API/CLI surfaces for memory candidate selection, approval lock, write transaction preview, operator-confirmed memory application trial harness, and memory application trial audit.
+- Documented every v395.1-v400.0 substage in `README_NEXT_STEPS.md`.
+- Added targeted smoke coverage for the v400 memory application trial audit.
+- Preserved strict boundaries: no self-approval, no automatic memory storage, no identity mutation, no personality mutation, no purpose rewrite, no autonomy expansion, no local model default invocation, no automatic retraction, no patch application, no release publishing, no release candidate creation, and no automatic continuation.
+- Preserved dashboard command-deck/operator-console styling and the custom `data-tip` hover system without native nav-tab `title` tooltips.
+
+## v405.0 - Segmented Install Smoke and Self-Maintenance Confirmation Hardening v1
+
+- Hardened `conscious_agent/memory_candidate_application_trial.py` so the operator-confirmed memory application harness requires an explicitly supplied `operator_confirmation_phrase`; missing confirmation evidence now blocks instead of inheriting the approval-lock default phrase.
+- Added behavioral negative coverage for missing confirmation, wrong confirmation, approval reuse, candidate drift, memory text drift, sensitive storage attempts, identity/personality mutation attempts, and autonomy expansion attempts.
+- Added `conscious_agent/smoke_segment_registry.py` to keep new smoke segmentation logic out of the already oversized `self_maintenance.py` surface.
+- Added bounded install-smoke segments: `install-core`, `install-release`, `install-dashboard`, `install-governance`, `install-expression`, `install-live-trial`, `install-memory`, and `install-regression-recent`.
+- Added `tools/smoke_check.py --segment ...` and `--list-segments` so operators can run bounded install smoke groups instead of relying only on the full install sweep.
+- Added dashboard/API/CLI review surfaces for memory confirmation hardening, memory negative tests, smoke segment registry, install smoke segment runner, and final segmented install smoke audit.
+- Updated source version markers and smoke expectations to v405.0.
+- Preserved source-only package privacy boundaries, command-deck/operator-console dashboard style, custom `data-tip` hover behavior, and no native nav-tab `title` tooltip behavior.
+- Preserved strict non-autonomous boundaries: no memory writes, no source patch application, no rollback execution, no release publishing, no release candidate creation, no local model default invocation, no identity/personality/purpose mutation, no approval reuse, no smoke-pass-as-authorization, and no automatic continuation.
+
+Substage ledger:
+- v400.1-v401.0: Memory Application Confirmation Presence Gate.
+- v401.1-v402.0: Memory Application Negative Confirmation Tests.
+- v402.1-v403.0: Smoke Segment Registry.
+- v403.1-v404.0: Install Smoke Segment Runner.
+- v404.1-v405.0: Segmented Install Smoke and Self-Maintenance Confirmation Hardening Audit.
+
+## v410.0 - Operator-Governed Memory Application Dry-Run Ledger v1
+
+Date: 2026-06-23
+
+Summary:
+- Added `conscious_agent/memory_application_dry_run_ledger.py` as an extracted review-only dry-run memory ledger module.
+- Added dry-run attempt records with candidate id, approval id, candidate hash, transaction preview hash, memory text hash, explicit confirmation state, blockers, and operator decision placeholders.
+- Added dry-run ledger entry construction that binds memory candidate, approval lock, transaction preview, and exact confirmation evidence without writing live memory.
+- Added replay and drift detection for candidate, approval, transaction, memory text, and confirmation changes.
+- Added dashboard, API, and CLI review surfaces for v406-v410 memory ledger packets.
+- Added targeted smoke coverage for `operator-governed-memory-application-dry-run-ledger-v1`.
+- Updated source version markers and smoke expectations to v410.0.
+
+Substages:
+- v405.1-v406.0: Memory Application Attempt Ledger Schema.
+- v406.1-v407.0: Memory Application Dry-Run Ledger Entry Builder.
+- v407.1-v408.0: Memory Application Ledger Replay and Drift Detection.
+- v408.1-v409.0: Memory Application Ledger Dashboard/API/CLI Surfaces.
+- v409.1-v410.0: Operator-Governed Memory Application Dry-Run Ledger Audit.
+
+Governance boundaries:
+- `ledger_writes_live_memory=False`
+- `ledger_treats_reviewable_as_authorization=False`
+- `replay_accepts_drift=False`
+- `audit_writes_memory=False`
+- `operator_review_required=True`
+- `single_use_approval_required=True`
+- `exact_confirmation_required=True`
+- `candidate_hash_required=True`
+- `transaction_hash_required=True`
+- `retraction_preview_required=True`
+- No live memory write, source patch application, release publishing, identity/personality mutation, local model invocation, or autonomous continuation is authorized by this arc.
+
+## v415.0 - Operator-Governed Sandbox Memory Write Target v1
+
+Date: 2026-06-23
+
+Summary:
+- Added `conscious_agent/sandbox_memory_write_target.py` as an extracted sandbox-only memory write target module.
+- Added sandbox target schema, sandbox write transaction preview, sandbox-only write execution trial, sandbox retraction preview, and final sandbox memory write audit surfaces.
+- Added dashboard, API, and CLI review surfaces for `/sandbox-memory-target-schema`, `/sandbox-memory-write-transaction`, `/sandbox-memory-write-trial`, `/sandbox-memory-retraction-preview`, and `/sandbox-memory-write-audit`.
+- Added targeted smoke coverage for `operator-governed-sandbox-memory-write-target-v1`.
+- Updated source version markers and smoke expectations to v415.0.
+- Kept sandbox runtime outputs excluded from source-only packages.
+
+Substages:
+- v410.1-v411.0: Sandbox Memory Target Schema.
+- v411.1-v412.0: Sandbox Memory Write Transaction Builder.
+- v412.1-v413.0: Sandbox Memory Write Execution Trial.
+- v413.1-v414.0: Sandbox Memory Retraction Preview and Replay.
+- v414.1-v415.0: Operator-Governed Sandbox Memory Write Target Audit.
+
+Governance boundaries:
+- `sandbox_write_target_writes_live_memory=False`
+- `sandbox_transaction_is_live_memory_approval=False`
+- `sandbox_trial_accepts_non_sandbox_path=False`
+- `sandbox_retraction_executes_live_retraction=False`
+- `sandbox_audit_grants_future_authorization=False`
+- `sandbox_path_required=True`
+- `before_after_hash_required=True`
+- `live_memory_allowed=False`
+- No live memory write, live memory retraction, source patch application, release publishing, identity/personality mutation, local model invocation, or autonomous continuation is authorized by this arc.
+
+## v420.0 - First Operator-Approved Live Memory Write with Burnout v1
+
+Date: 2026-06-23
+
+Summary:
+- Added `conscious_agent/live_memory_write_trial.py` as an extracted governed live memory trial module.
+- Added live memory write eligibility, single-use approval lock, live memory transaction preview, operator-confirmed single live memory write trial, and final burnout audit surfaces.
+- Added dashboard, API, and CLI review surfaces for `/live-memory-write-eligibility`, `/live-memory-approval-lock`, `/live-memory-transaction-preview`, `/operator-confirmed-live-memory-write-trial`, and `/live-memory-write-audit`.
+- Added targeted smoke coverage for `operator-governed-live-memory-write-burnout-v1`.
+- Updated source version markers and smoke expectations to v420.0.
+- Kept live memory trial runtime outputs outside source-only packages.
+
+Substages:
+- v415.1-v416.0: Live Memory Write Eligibility Packet.
+- v416.1-v417.0: Single-Use Live Memory Approval Lock.
+- v417.1-v418.0: Live Memory Transaction Preview.
+- v418.1-v419.0: Operator-Confirmed Live Memory Write Trial.
+- v419.1-v420.0: First Operator-Approved Live Memory Write with Burnout Audit.
+
+Governance boundaries:
+- `eligibility_is_approval=False`
+- `sandbox_success_is_approval=False`
+- `approval_lock_reuses_approval=False`
+- `transaction_preview_writes_memory=False`
+- `live_write_runs_without_confirmation=False`
+- `live_write_allows_batch=False`
+- `approval_burnout_required=True`
+- `single_use_approval_required=True`
+- `exact_confirmation_required=True`
+- `dry_run_ledger_required=True`
+- `sandbox_trial_required=True`
+- `retraction_preview_required=True`
+- `audit_grants_future_authorization=False`
+- No future memory write, memory retraction, source patch application, release publishing, identity/personality mutation, local model invocation, or autonomous continuation is authorized by this arc.
+
+## v425.0 - Operator-Approved Memory Retraction Trial v1
+
+- Added `conscious_agent/memory_retraction_trial.py` for a governed retained-audit memory retraction trial.
+- Added dashboard, API, and CLI review surfaces for `/memory-retraction-eligibility`, `/memory-retraction-approval-lock`, `/memory-retraction-transaction-preview`, `/operator-confirmed-memory-retraction-trial`, and `/memory-retraction-trial-audit`.
+- Added fresh single-use retraction approval lock semantics. Prior write approval cannot authorize retraction, retraction eligibility is not approval, and retraction approval burns out immediately after the trial.
+- Added retained-audit retraction execution that marks one exact governed trial entry as retracted without physical deletion or broad memory editing.
+- Added negative coverage for wrong confirmation, missing/invalid target, reused approval, batch retraction, fuzzy retraction, and canonical `memory.json` targets.
+- Added targeted smoke coverage for `operator-governed-memory-retraction-trial-v1` and included the memory retraction path in segmented memory/recent regression verification.
+- Preserved command-deck dashboard styling, custom `data-tip` hover behavior, source-only package privacy, and no-autonomy/no-future-authorization boundaries.
+
+## v430.0 - Canonical Source Surface Manifest v1
+
+Date: 2026-06-23
+
+Summary:
+- Added `conscious_agent/source_surface_manifest.py` as an extracted canonical manifest module for recent high-risk dashboard/API/CLI/smoke/runtime surfaces.
+- Added manifest, parity audit, authority map, package privacy map, and final manifest audit summaries.
+- Added dashboard, API, and CLI review surfaces for `/source-surface-manifest`, `/source-surface-parity-audit`, `/source-surface-authority-map`, `/source-surface-package-privacy-map`, and `/source-surface-manifest-audit`.
+- Added targeted smoke coverage for `operator-governed-source-surface-manifest-v1` and classified the check into segmented governance smoke.
+- Updated source version markers and smoke expectations to v430.0.
+- Preserved command-deck dashboard styling, custom `data-tip` hover behavior, source-only package privacy, and no-autonomy/no-authorization boundaries.
+
+Substages:
+- v425.1-v426.0: Surface Manifest Schema.
+- v426.1-v427.0: Manifest Builder and Registry Intake.
+- v427.1-v428.0: Dashboard/API/CLI Parity Audit.
+- v428.1-v429.0: Source Surface Authority Map.
+- v429.1-v429.5: Source Surface Package Privacy Map.
+- v429.6-v430.0: Canonical Source Surface Manifest Audit.
+
+Governance boundaries:
+- `manifest_presence_is_authorization=False`
+- `parity_pass_is_authorization=False`
+- `authority_label_is_approval=False`
+- `surface_exists_means_may_execute=False`
+- `smoke_pass_allows_live_action=False`
+- `manifest_writes_files=False`
+- `manifest_writes_memory=False`
+- `source_only_package_must_exclude_runtime=True`
+- Manifest entries, parity success, authority labels, and smoke success do not authorize memory writes, memory retractions, source patch application, releases, identity/personality/purpose changes, local model invocation, or autonomous continuation.
+
+---
+
+## v435.0 - Self-Maintenance Duplicate Definition Cleanup v1
+
+- Added the v430.1-v435.0 self-maintenance duplicate definition cleanup arc covering duplicate definition inventory, self-maintenance duplicate classification, safe extraction candidate planning, duplicate definition guard policy, and final cleanup audit.
+- Added extracted review-only module `conscious_agent/duplicate_definition_audit.py` for AST-based duplicate inventory, classification summaries, extraction candidate planning, duplicate guard checks, and cleanup audit summaries.
+- Added dashboard pages `/duplicate-definition-inventory`, `/self-maintenance-duplicate-classification`, `/self-maintenance-extraction-candidates`, `/duplicate-definition-guard`, and `/self-maintenance-duplicate-cleanup-audit`.
+- Added API routes `/api/duplicate-definition-inventory/layer`, `/api/self-maintenance-duplicate-classification/layer`, `/api/self-maintenance-extraction-candidates/layer`, `/api/duplicate-definition-guard/layer`, and `/api/self-maintenance-duplicate-cleanup-audit/layer` through the supervised runtime route map.
+- Added CLI flags `--duplicate-definition-inventory-v1`, `--self-maintenance-duplicate-classification-v1`, `--self-maintenance-extraction-candidates-v1`, `--duplicate-definition-guard-v1`, and `--operator-governed-self-maintenance-duplicate-cleanup-v1`.
+- Added targeted smoke coverage for `operator-governed-self-maintenance-duplicate-cleanup-v1` and added duplicate cleanup classification to the segmented install governance surface.
+- Updated version markers and metadata to 435.0.
+- Preserved the custom dashboard `data-tip` hover system and did not reintroduce native nav `title` tooltips.
+- Preserved non-autonomy and no-auto-edit boundaries: duplicate inventory is not authorization to delete code, classification is not authorization to delete code, the guard does not apply source edits, extraction candidates are review-only, no memory mutation occurs, no identity/personality/purpose mutation occurs, no source patches are applied, and no approval is inferred from smoke success.
+
+## v430.1-v435.0 Packaging and Verification Notes
+
+- Updated README_NEXT_STEPS.md with all fifty substages from v430.1 through v435.0.
+- Updated release history through v435.0.
+- Added source-only privacy tokens for `data/autonomy/duplicate_definition_inventory/`, `data/autonomy/self_maintenance_duplicate_classification/`, `data/autonomy/self_maintenance_extraction_candidates/`, `data/autonomy/duplicate_definition_guard/`, and `data/autonomy/self_maintenance_duplicate_cleanup_audit/`.
+- Fast, segmented governance, segmented regression, v430 manifest, v425 retraction, and targeted v435 smoke suites cover the duplicate cleanup layer.
+
+
+## v440.0 - Full Dashboard Route Probe and Lazy Render Audit v1
+
+Date: 2026-06-23
+
+Summary:
+- Added `conscious_agent/dashboard_route_probe.py` as an extracted review-only dashboard health module.
+- Added dashboard route inventory, route probe, lazy render audit, tooltip regression audit, and final dashboard route health audit summaries.
+- Added dashboard, API, and CLI review surfaces for `/dashboard-route-inventory`, `/dashboard-route-probe`, `/dashboard-lazy-render-audit`, `/dashboard-tooltip-regression-audit`, and `/dashboard-route-health-audit`.
+- Added targeted smoke coverage for `operator-governed-dashboard-route-health-audit-v1` and classified the check into segmented dashboard smoke.
+- Updated source version markers and smoke expectations to v440.0.
+- Preserved command-deck dashboard styling, custom `data-tip` hover behavior, source-only package privacy, and no-autonomy/no-authorization boundaries.
+
+Substages:
+- v435.1-v436.0: Dashboard Route Inventory Manifest.
+- v436.1-v437.0: Dashboard Render Probe Runner.
+- v437.1-v438.0: Lazy Render and Heavy Page Audit.
+- v438.1-v439.0: Dashboard Probe Operator Surfaces.
+- v439.1-v440.0: Full Dashboard Route Probe and Lazy Render Audit.
+
+Governance boundaries:
+- `route_presence_is_authorization=False`
+- `route_health_is_approval=False`
+- `probe_executes_governed_actions=False`
+- `probe_applies_patches=False`
+- `probe_writes_memory=False`
+- `lazy_audit_refactors_dashboard=False`
+- `tooltip_audit_reintroduces_native_title=False`
+- `operator_review_required=True`
+- Route health, dashboard visibility, successful rendering, and smoke success do not authorize memory writes, memory retractions, source patch application, releases, identity/personality/purpose changes, local model invocation, or autonomous continuation.
+
+---
+
+## v445.0 - Memory Lifecycle Review Board v1
+
+Date: 2026-06-23
+
+Summary:
+- Added `conscious_agent/memory_lifecycle_review_board.py` as an extracted review-only memory lifecycle board module.
+- Added board schema, lifecycle state summary, drift/staleness review, operator decision board, and final review board audit summaries.
+- Added dashboard, API, and CLI review surfaces for `/memory-lifecycle-review-board`, `/memory-lifecycle-state-summary`, `/memory-lifecycle-drift-review`, `/memory-lifecycle-operator-decision-board`, and `/memory-lifecycle-review-board-audit`.
+- Added targeted smoke coverage for `operator-governed-memory-lifecycle-review-board-v1` and classified lifecycle review into segmented memory smoke.
+- Updated source version markers and smoke expectations to v445.0.
+- Updated source surface and dashboard route probe coverage so recent high-risk lifecycle surfaces remain visible.
+- Preserved command-deck dashboard styling, custom `data-tip` hover behavior, source-only package privacy, and no-autonomy/no-authorization boundaries.
+
+Substages:
+- v440.1-v441.0: Memory Lifecycle Board Schema.
+- v441.1-v442.0: Lifecycle State Aggregator.
+- v442.1-v443.0: Lifecycle Drift and Staleness Review.
+- v443.1-v444.0: Board Dashboard/API/CLI Surfaces.
+- v444.1-v445.0: Memory Lifecycle Review Board Audit.
+
+Governance boundaries:
+- `board_visibility_is_authorization=False`
+- `lifecycle_completeness_is_future_approval=False`
+- `board_creates_approval=False`
+- `board_executes_memory_write=False`
+- `board_executes_memory_retraction=False`
+- `board_mutates_identity=False`
+- `board_alters_personality=False`
+- `board_rewrites_purpose=False`
+- `board_expands_autonomy=False`
+- `fresh_approval_required_for_future_memory_action=True`
+- Board visibility, lifecycle completeness, route health, manifest presence, successful rendering, and smoke success do not authorize memory writes, memory retractions, source patch application, releases, identity/personality/purpose changes, local model invocation, or autonomous continuation.
+
+## v450.0 - Governance-State-to-Authorization Firewall v1
+
+- Added `conscious_agent/authorization_firewall.py` as a review-only authorization confusion detector.
+- Added an authorization confusion pattern registry covering readiness-as-approval, eligibility-as-approval, route-health-as-approval, manifest-presence-as-authorization, lifecycle-completion-as-future-approval, smoke-success-as-permission, prior-approval-as-current-approval, sandbox-success-as-live-permission, model-consensus-as-truth, review-packet-as-execution-packet, approval-lock-exists-means-approved, and operator-pattern-means-future-consent.
+- Added packet language and metadata scanning for recent governance modules and packet text.
+- Added authorization firewall decision packets where clear status is explicitly non-authorizing.
+- Added a state-to-authorization boundary map for readiness, eligibility, route health, manifest presence, lifecycle completeness, smoke success, prior approval, sandbox success, and model consensus.
+- Added dashboard, API, and CLI review surfaces for `/authorization-confusion-patterns`, `/authorization-language-scan`, `/authorization-firewall-decision-packet`, `/authorization-boundary-map`, and `/authorization-firewall-audit`.
+- Added targeted smoke coverage for `operator-governed-authorization-firewall-v1` and classified the firewall into segmented governance smoke.
+- Updated source version markers and smoke expectations to v450.0.
+- Preserved the command-deck/operator-console dashboard style, custom `data-tip` hover system, and no native `title` tooltip rule.
+- Preserved boundaries: firewall detection is not enforcement execution, firewall pass is not authorization, clear status is not approval, and fresh operator approval remains required for any governed live action.
+
+Substage summary:
+
+- v446.0: Authorization Confusion Pattern Registry.
+- v447.0: Packet Language and Metadata Scanner.
+- v448.0: Authorization Firewall Decision Packet.
+- v449.0: Authorization Boundary Map.
+- v450.0: Governance-State-to-Authorization Firewall Audit.

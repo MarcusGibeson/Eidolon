@@ -1,24 +1,33 @@
 {
-  "version": "30.0",
-  "checked_at": "2026-06-20T15:18:30",
+  "version": "500.0",
+  "checked_at": "2026-06-24T10:35:25",
   "project_id": "eidolon",
-  "status": "pass",
-  "ok": true,
-  "package_name": "Eidolon_v30_0.zip",
-  "zip_path": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v30_0.zip",
+  "status": "blocked",
+  "ok": false,
+  "package_name": "Eidolon_v500_0.zip",
+  "zip_path": "C:\\Users\\marcu\\Downloads\\Eidolon_v500_0_source_only.zip",
   "common_root": "Eidolon",
-  "file_count": 96,
-  "violations": [],
+  "file_count": 156,
+  "violations": [
+    {
+      "path": "data/tasks.json",
+      "reason": "private/runtime data path included"
+    },
+    {
+      "path": "data/workspaces/timeline.json",
+      "reason": "private/runtime data path included"
+    }
+  ],
   "rows": [
     {
       "name": "zip-present",
       "status": "pass",
-      "message": "C:\\Users\\marcu\\Eidolon\\data\\release_installation\\incoming\\Eidolon_v30_0.zip"
+      "message": "C:\\Users\\marcu\\Downloads\\Eidolon_v500_0_source_only.zip"
     },
     {
       "name": "zip-member-count",
       "status": "pass",
-      "message": "96 file member(s) found."
+      "message": "156 file member(s) found."
     },
     {
       "name": "zip-root",
@@ -28,113 +37,16 @@
     {
       "name": "source-files",
       "status": "pass",
-      "message": "84 Python source file(s) found."
+      "message": "140 Python source file(s) found."
     },
     {
       "name": "privacy-and-paths",
-      "status": "pass",
-      "message": "0 zip path/privacy violation(s)."
-    },
-    {
-      "name": "temp-extract-compile",
-      "status": "pass",
-      "message": "Temporary extract compiled."
+      "status": "blocked",
+      "message": "2 zip path/privacy violation(s)."
     }
   ],
   "compile": {
-    "args": [
-      "C:\\Users\\marcu\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
-      "-m",
-      "py_compile",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\actions.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\ai_patch_assistance.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\api_server.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\approval_manager.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\approval_release_workflow.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\autonomous_dev_cycle.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\brain.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\chat.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\chat_action_router.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\code_patch_release.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\code_reviewer.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\command_runner.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\controlled_build_cycle.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\dashboard.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\dashboard_chat_console.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\desires.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\desktop_notifier.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\desktop_onboarding_wizard.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\desktop_setup_helper.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\desktop_shell.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\desktop_tray.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\dev_loop_runner.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\diagnostics.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\file_tools.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\goal_manager.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\guided_work_session.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\inner_loop.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\local_brain.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\main.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\maintenance_advisor.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\memory.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\memory_compactor.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\notification_manager.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\operational_readiness.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\opinions.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\patch_applier.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\patch_drafting.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\patch_suggester.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\paths.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\planner.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\project_indexer.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\project_intelligence.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\project_manager.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\reflection.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\release_installation.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\release_packaging.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\release_pipeline.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\safety.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\self_improver.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\self_maintenance.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\self_model.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\session_planner.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\settings_manager.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stabilization_checkpoint.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stable_loop_audit.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stable_loop_decision_report.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stable_loop_followup_completion.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stable_loop_followup_lifecycle.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stable_loop_followup_tasks.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stable_loop_guardrails.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stable_loop_operator_notes.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stable_loop_review.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\stable_supervised_loop.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\task_approval_bridge.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\task_cycle_policy.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\task_executor.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\task_lifecycle.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\task_patch_bridge.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\task_queue.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\task_recovery.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\task_result_evaluator.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\task_work_executor.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\test_report_reviewer.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\test_runner.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\validated_ai_patch_loop.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\vector_memory.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\watch_mode.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\work_cycle.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\work_queue.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\work_queue_executor.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\work_queue_patch_bridge.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\workspace_execution.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\conscious_agent\\workspace_orchestration.py",
-      "C:\\Users\\marcu\\AppData\\Local\\Temp\\eidolon_zip_verify_qjdpd2bv\\Eidolon\\tools\\smoke_check.py"
-    ],
-    "returncode": 0,
-    "ok": true,
-    "stdout_tail": "",
-    "stderr_tail": ""
+    "skipped": false
   },
   "message": "External release zip install verification completed."
 }

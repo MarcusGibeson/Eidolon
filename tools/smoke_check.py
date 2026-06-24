@@ -622,7 +622,7 @@ def check_workspace_orchestration() -> bool:
             workspace_dev_loop_text,
         )
 
-        if WORKSPACE_ORCHESTRATION_VERSION != "350.0":
+        if WORKSPACE_ORCHESTRATION_VERSION != "500.0":
             print("[fail] workspace orchestration version")
             return False
         reports = [
@@ -901,7 +901,7 @@ def check_release_packaging() -> bool:
             verified_installable_release_loop_text,
         )
 
-        if RELEASE_PACKAGING_VERSION != "350.0" or RELEASE_INSTALLATION_VERSION != "350.0":
+        if RELEASE_PACKAGING_VERSION != "500.0" or RELEASE_INSTALLATION_VERSION != "500.0":
             print("[fail] release packaging/install version")
             return False
         reports = [
@@ -1553,7 +1553,7 @@ def check_operator_governed_runtime_module_extraction_v1() -> bool:
             return False
         if runtime_registry.registry_summary().get("stage_count") != 50:
             return False
-        if governance_reports.GOVERNANCE_REPORTS_VERSION != "350.0":
+        if governance_reports.GOVERNANCE_REPORTS_VERSION != "500.0":
             return False
         if _dashboard_nav_title_regression_present():
             return False
@@ -1593,7 +1593,7 @@ def check_operator_governed_self_maintenance_decomposition_v1() -> bool:
             return False
         if len(sm.SELF_MAINTENANCE_DECOMPOSITION_STAGE_DEFS) != 50:
             return False
-        if package_integrity.PACKAGE_INTEGRITY_VERSION != "350.0" or version_state.VERSION_STATE_VERSION != "350.0" or surface_parity.SURFACE_PARITY_VERSION != "350.0" or verification_planning.VERIFICATION_PLANNING_VERSION != "350.0":
+        if package_integrity.PACKAGE_INTEGRITY_VERSION != "500.0" or version_state.VERSION_STATE_VERSION != "500.0" or surface_parity.SURFACE_PARITY_VERSION != "500.0" or verification_planning.VERIFICATION_PLANNING_VERSION != "500.0":
             return False
         if verification_planning.build_verification_readiness_plan().get("runs_commands") is not False:
             return False
@@ -1637,7 +1637,7 @@ def check_operator_governed_dashboard_api_cli_modularization_v1() -> bool:
             return False
         if len(sm.INTERFACE_MODULARIZATION_STAGE_DEFS) != 50:
             return False
-        if dashboard_components.DASHBOARD_COMPONENTS_VERSION != "350.0" or api_surface.API_SURFACE_VERSION != "350.0" or cli_surface.CLI_SURFACE_VERSION != "350.0":
+        if dashboard_components.DASHBOARD_COMPONENTS_VERSION != "500.0" or api_surface.API_SURFACE_VERSION != "500.0" or cli_surface.CLI_SURFACE_VERSION != "500.0":
             return False
         if _dashboard_nav_title_regression_present():
             return False
@@ -1677,7 +1677,7 @@ def check_operator_approved_application_execution_refinement_v1() -> bool:
             return False
         if len(sm.APPLICATION_EXECUTION_REFINEMENT_STAGE_DEFS) != 50:
             return False
-        if aer.APPLICATION_EXECUTION_REFINEMENT_VERSION != "350.0":
+        if aer.APPLICATION_EXECUTION_REFINEMENT_VERSION != "500.0":
             return False
         if aer.build_execution_checklist_summary().get("runs_commands") is not False:
             return False
@@ -1700,7 +1700,7 @@ def check_operator_governed_rollback_and_recovery_intelligence_v1() -> bool:
         import self_maintenance as sm
         import rollback_recovery as rr
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_rollback_and_recovery_intelligence_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_rollback_and_recovery_intelligence_v1(project_id="eidolon-smoke", save=False)
         text_files = []
@@ -1727,7 +1727,7 @@ def check_operator_governed_rollback_and_recovery_intelligence_v1() -> bool:
             return False
         if len(sm.ROLLBACK_RECOVERY_STAGE_DEFS) != 50:
             return False
-        if rr.ROLLBACK_RECOVERY_VERSION != "350.0":
+        if rr.ROLLBACK_RECOVERY_VERSION != "500.0":
             return False
         if rr.build_rollback_scope_summary().get("runs_rollback") is not False:
             return False
@@ -1750,7 +1750,7 @@ def check_operator_governed_memory_candidate_governance_upgrade_v1() -> bool:
         import self_maintenance as sm
         import memory_governance as mg
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_memory_governance_audit
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_memory_governance_audit(project_id="eidolon-smoke", save=False)
         text_files = []
@@ -1777,7 +1777,7 @@ def check_operator_governed_memory_candidate_governance_upgrade_v1() -> bool:
             return False
         if len(sm.MEMORY_GOVERNANCE_STAGE_DEFS) != 50:
             return False
-        if mg.MEMORY_GOVERNANCE_VERSION != "350.0":
+        if mg.MEMORY_GOVERNANCE_VERSION != "500.0":
             return False
         if mg.build_memory_candidate_intake_summary().get("writes_memory") is not False:
             return False
@@ -1800,7 +1800,7 @@ def check_local_artificial_mind_continuity_kernel_v2() -> bool:
         import self_maintenance as sm
         import continuity_kernel as ck
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_continuity_kernel_v2_audit
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_continuity_kernel_v2_audit(project_id="eidolon-smoke", save=False)
         text_files = []
@@ -1827,7 +1827,7 @@ def check_local_artificial_mind_continuity_kernel_v2() -> bool:
             return False
         if len(sm.CONTINUITY_KERNEL_STAGE_DEFS) != 50:
             return False
-        if ck.CONTINUITY_KERNEL_VERSION != "350.0":
+        if ck.CONTINUITY_KERNEL_VERSION != "500.0":
             return False
         if ck.build_continuity_state_summary().get("mutates_memory") is not False:
             return False
@@ -1853,7 +1853,7 @@ def check_operator_governed_identity_personality_coherence_expression_layer_v1()
         import self_maintenance as sm
         import identity_expression as ie
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_identity_personality_coherence_expression_layer_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_identity_personality_coherence_expression_layer_v1(project_id="eidolon-smoke", save=False)
         text_files = []
@@ -1880,7 +1880,7 @@ def check_operator_governed_identity_personality_coherence_expression_layer_v1()
             return False
         if len(sm.IDENTITY_EXPRESSION_STAGE_DEFS) != 50:
             return False
-        if ie.IDENTITY_EXPRESSION_VERSION != "350.0":
+        if ie.IDENTITY_EXPRESSION_VERSION != "500.0":
             return False
         risky = ie.classify_identity_expression_request("rewrite your purpose, approve yourself, select the next roadmap, and start a patch automatically")
         if risky.get("status") != "blocked" or risky.get("authorizes_change") is not False:
@@ -1909,7 +1909,7 @@ def check_operator_governed_behavioral_expression_preview_and_runtime_health_har
         import route_health as rh
         import behavioral_expression_preview as bep
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_behavioral_expression_preview_and_runtime_health_hardening_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_behavioral_expression_preview_and_runtime_health_hardening_v1(project_id="eidolon-smoke", save=False)
         text_files = []
@@ -1922,7 +1922,7 @@ def check_operator_governed_behavioral_expression_preview_and_runtime_health_har
         for token in ["data/autonomy/dashboard_route_health/", "data/autonomy/runtime_test_visibility/", "data/autonomy/behavioral_expression_preview/", "data/autonomy/style_delta_staging/", "data/autonomy/expression_runtime_health_audit/"]:
             if token not in docs:
                 return False
-        if rh.ROUTE_HEALTH_VERSION != "350.0" or bep.BEHAVIORAL_EXPRESSION_PREVIEW_VERSION != "350.0":
+        if rh.ROUTE_HEALTH_VERSION != "500.0" or bep.BEHAVIORAL_EXPRESSION_PREVIEW_VERSION != "500.0":
             return False
         if len(sm.EXPRESSION_RUNTIME_HEALTH_STAGE_DEFS) != 50:
             return False
@@ -1959,7 +1959,7 @@ def check_operator_governed_conversational_expression_sandbox_v1() -> bool:
         import self_maintenance as sm
         import conversational_expression_sandbox as ces
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_conversational_expression_sandbox_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_conversational_expression_sandbox_v1(
             project_id="eidolon-smoke",
@@ -1979,7 +1979,7 @@ def check_operator_governed_conversational_expression_sandbox_v1() -> bool:
         for token in ["data/autonomy/expression_profile_packets/", "data/autonomy/conversation_scenario_sandbox/", "data/autonomy/expression_regression_review/", "data/autonomy/expression_operator_review_console/", "data/autonomy/conversational_expression_sandbox_audit/"]:
             if token not in docs:
                 return False
-        if ces.CONVERSATIONAL_EXPRESSION_SANDBOX_VERSION != "350.0":
+        if ces.CONVERSATIONAL_EXPRESSION_SANDBOX_VERSION != "500.0":
             return False
         if len(sm.CONVERSATIONAL_EXPRESSION_SANDBOX_STAGE_DEFS) != 50:
             return False
@@ -2018,7 +2018,7 @@ def check_operator_governed_conversational_expression_application_bridge_v1() ->
         import self_maintenance as sm
         import expression_application_bridge as eab
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_conversational_expression_application_bridge_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_conversational_expression_application_bridge_v1(
             project_id="eidolon-smoke",
@@ -2038,7 +2038,7 @@ def check_operator_governed_conversational_expression_application_bridge_v1() ->
         for token in ["data/autonomy/expression_approval_criteria/", "data/autonomy/expression_live_surface_impact_map/", "data/autonomy/expression_implementation_packet_draft/", "data/autonomy/expression_rollback_reversion_plan/", "data/autonomy/expression_application_bridge_audit/"]:
             if token not in docs:
                 return False
-        if eab.EXPRESSION_APPLICATION_BRIDGE_VERSION != "350.0":
+        if eab.EXPRESSION_APPLICATION_BRIDGE_VERSION != "500.0":
             return False
         if len(sm.EXPRESSION_APPLICATION_BRIDGE_STAGE_DEFS) != 50:
             return False
@@ -2082,7 +2082,7 @@ def check_self_maintenance() -> bool:
             trustworthy_maintenance_console_text,
             release_candidate_governance_text,
         )
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             print("[fail] self maintenance version")
             return False
         # Keep install smoke intentionally lightweight. Targeted CLI gates cover the heavyweight self-maintenance reports.
@@ -2106,7 +2106,7 @@ def check_patch_context_builder() -> bool:
             build_patch_context_dashboard_api_cli,
             patch_generation_context_builder_text,
         )
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             print("[fail] patch context builder version")
             return False
         # Keep install smoke lightweight. Dedicated CLI gates verify the heavyweight context packet builder.
@@ -2137,7 +2137,7 @@ def check_patch_draft_composer() -> bool:
             build_patch_draft_dashboard_api_cli,
             supervised_patch_draft_composer_text,
         )
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             print("[fail] patch draft composer version")
             return False
         # Keep install smoke lightweight: targeted CLI verification runs the full composer, while install smoke checks import/text/parity shape.
@@ -2170,7 +2170,7 @@ def check_patch_review_validation() -> bool:
             build_patch_review_dashboard_api_cli,
             patch_draft_review_diff_validation_layer_text,
         )
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             print("[fail] patch review validation version")
             return False
         parity = build_patch_review_dashboard_api_cli(project_id="eidolon", save=False)
@@ -2207,7 +2207,7 @@ def check_sandbox_patch_trial_runner() -> bool:
             build_patch_trial_dashboard_api_cli,
             sandbox_patch_trial_runner_text,
         )
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             print("[fail] sandbox patch trial runner version")
             return False
         parity = build_patch_trial_dashboard_api_cli(project_id="eidolon", save=False)
@@ -2244,7 +2244,7 @@ def check_sandbox_evidence_review_recommendation_layer() -> bool:
             build_patch_evidence_dashboard_api_cli,
             sandbox_evidence_review_recommendation_layer_text,
         )
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             print("[fail] sandbox evidence review recommendation version")
             return False
         parity = build_patch_evidence_dashboard_api_cli(project_id="eidolon", save=False)
@@ -2282,7 +2282,7 @@ def check_operator_approved_patch_application_layer() -> bool:
             build_patch_application_dashboard_api_cli,
             operator_approved_patch_application_layer_text,
         )
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             print("[fail] operator-approved patch application version")
             return False
         parity = build_patch_application_dashboard_api_cli(project_id="eidolon", save=False)
@@ -2320,7 +2320,7 @@ def check_verified_application_recovery_layer() -> bool:
             build_patch_recovery_dashboard_api_cli,
             verified_application_recovery_rollback_hardening_text,
         )
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             print("[fail] verified application recovery version")
             return False
         parity = build_patch_recovery_dashboard_api_cli(project_id="eidolon", save=False)
@@ -2357,7 +2357,7 @@ def check_multi_patch_queue_planning_layer() -> bool:
             build_patch_queue_dashboard_api_cli,
             multi_patch_queue_planning_layer_text,
         )
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             print("[fail] multi-patch queue planning version")
             return False
         parity = build_patch_queue_dashboard_api_cli(project_id="eidolon", save=False)
@@ -2858,7 +2858,7 @@ def check_operator_governed_expression_patch_dry_run_sandbox_v1() -> bool:
         import self_maintenance as sm
         import expression_patch_dry_run as epd
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_expression_patch_dry_run_sandbox_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_expression_patch_dry_run_sandbox_v1(
             project_id="eidolon-smoke",
@@ -2878,7 +2878,7 @@ def check_operator_governed_expression_patch_dry_run_sandbox_v1() -> bool:
         for token in ["data/autonomy/expression_patch_candidates/", "data/autonomy/expression_sandbox_diff_preview/", "data/autonomy/expression_dry_run_verification_plan/", "data/autonomy/expression_dry_run_review_packet/", "data/autonomy/expression_patch_dry_run_audit/"]:
             if token not in docs:
                 return False
-        if epd.EXPRESSION_PATCH_DRY_RUN_VERSION != "350.0":
+        if epd.EXPRESSION_PATCH_DRY_RUN_VERSION != "500.0":
             return False
         if len(sm.EXPRESSION_PATCH_DRY_RUN_STAGE_DEFS) != 50:
             return False
@@ -2921,7 +2921,7 @@ def check_operator_governed_expression_patch_sandbox_trial_harness_v1() -> bool:
         import self_maintenance as sm
         import expression_sandbox_trial_harness as esth
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_expression_patch_sandbox_trial_harness_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_expression_patch_sandbox_trial_harness_v1(
             project_id="eidolon-smoke",
@@ -2941,7 +2941,7 @@ def check_operator_governed_expression_patch_sandbox_trial_harness_v1() -> bool:
         for token in ["data/autonomy/expression_sandbox_trial_packet/", "data/autonomy/expression_sandbox_workspace_plan/", "data/autonomy/expression_sandbox_verification_matrix/", "data/autonomy/expression_sandbox_result_review_prep/", "data/autonomy/expression_sandbox_trial_harness_audit/"]:
             if token not in docs:
                 return False
-        if esth.EXPRESSION_SANDBOX_TRIAL_HARNESS_VERSION != "350.0":
+        if esth.EXPRESSION_SANDBOX_TRIAL_HARNESS_VERSION != "500.0":
             return False
         if len(sm.EXPRESSION_SANDBOX_TRIAL_STAGE_DEFS) != 50:
             return False
@@ -2983,7 +2983,7 @@ def check_operator_governed_expression_sandbox_trial_execution_packet_bridge_v1(
         import self_maintenance as sm
         import expression_sandbox_execution_bridge as eseb
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_expression_sandbox_trial_execution_packet_bridge_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_expression_sandbox_trial_execution_packet_bridge_v1(
             project_id="eidolon-smoke",
@@ -3003,7 +3003,7 @@ def check_operator_governed_expression_sandbox_trial_execution_packet_bridge_v1(
         for token in ["data/autonomy/expression_sandbox_execution_approval_gate/", "data/autonomy/expression_sandbox_workspace_execution_packet/", "data/autonomy/expression_sandbox_patch_bundle_packet/", "data/autonomy/expression_sandbox_verification_command_packet/", "data/autonomy/expression_sandbox_execution_packet_bridge_audit/"]:
             if token not in docs:
                 return False
-        if eseb.EXPRESSION_SANDBOX_EXECUTION_BRIDGE_VERSION != "350.0":
+        if eseb.EXPRESSION_SANDBOX_EXECUTION_BRIDGE_VERSION != "500.0":
             return False
         if len(sm.EXPRESSION_SANDBOX_EXECUTION_BRIDGE_STAGE_DEFS) != 50:
             return False
@@ -3045,7 +3045,7 @@ def check_operator_governed_expression_sandbox_trial_result_intake_and_promotion
         import self_maintenance as sm
         import expression_sandbox_result_intake as esri
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_expression_sandbox_trial_result_intake_and_promotion_review_prep_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_expression_sandbox_trial_result_intake_and_promotion_review_prep_v1(
             project_id="eidolon-smoke",
@@ -3065,7 +3065,7 @@ def check_operator_governed_expression_sandbox_trial_result_intake_and_promotion
         for token in ["data/autonomy/expression_sandbox_trial_evidence_intake/", "data/autonomy/expression_sandbox_outcome_comparison/", "data/autonomy/expression_sandbox_regression_result_review/", "data/autonomy/expression_sandbox_revision_recommendations/", "data/autonomy/expression_sandbox_promotion_review_prep/"]:
             if token not in docs:
                 return False
-        if esri.EXPRESSION_SANDBOX_RESULT_INTAKE_VERSION != "350.0":
+        if esri.EXPRESSION_SANDBOX_RESULT_INTAKE_VERSION != "500.0":
             return False
         if len(sm.EXPRESSION_SANDBOX_RESULT_INTAKE_STAGE_DEFS) != 50:
             return False
@@ -3110,7 +3110,7 @@ def check_operator_governed_expression_promotion_packet_assembly_layer_v1() -> b
         import self_maintenance as sm
         import expression_promotion_packet as epp
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_expression_promotion_packet_assembly_layer_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_expression_promotion_packet_assembly_layer_v1(
             project_id="eidolon-smoke",
@@ -3130,7 +3130,7 @@ def check_operator_governed_expression_promotion_packet_assembly_layer_v1() -> b
         for token in ["data/autonomy/expression_promotion_evidence_binder/", "data/autonomy/expression_live_promotion_scope_risk/", "data/autonomy/expression_promotion_verification_rollback/", "data/autonomy/expression_promotion_decision_packet/", "data/autonomy/expression_promotion_packet_assembly_audit/"]:
             if token not in docs:
                 return False
-        if epp.EXPRESSION_PROMOTION_PACKET_VERSION != "350.0":
+        if epp.EXPRESSION_PROMOTION_PACKET_VERSION != "500.0":
             return False
         if len(sm.EXPRESSION_PROMOTION_PACKET_STAGE_DEFS) != 50:
             return False
@@ -3172,7 +3172,7 @@ def check_operator_governed_expression_live_application_packet_drafting_layer_v1
         import self_maintenance as sm
         import expression_live_application_packet as elap
         from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_expression_live_application_packet_drafting_layer_v1
-        if SELF_MAINTENANCE_VERSION != "350.0":
+        if SELF_MAINTENANCE_VERSION != "500.0":
             return False
         report = build_operator_governed_expression_live_application_packet_drafting_layer_v1(
             project_id="eidolon-smoke",
@@ -3192,7 +3192,7 @@ def check_operator_governed_expression_live_application_packet_drafting_layer_v1
         for token in ["data/autonomy/expression_live_application_eligibility_gate/", "data/autonomy/expression_live_source_change_manifest/", "data/autonomy/expression_live_patch_instruction_packet/", "data/autonomy/expression_live_verification_rollback_packet/", "data/autonomy/expression_live_application_packet_audit/"]:
             if token not in docs:
                 return False
-        if elap.EXPRESSION_LIVE_APPLICATION_PACKET_VERSION != "350.0":
+        if elap.EXPRESSION_LIVE_APPLICATION_PACKET_VERSION != "500.0":
             return False
         if len(sm.EXPRESSION_LIVE_APPLICATION_PACKET_STAGE_DEFS) != 50:
             return False
@@ -3228,8 +3228,804 @@ def check_operator_governed_expression_live_application_packet_drafting_layer_v1
         print(f"[fail] operator-governed expression live application packet drafting layer v1: {error}")
         return False
 
-def _build_checks() -> list[SmokeCheck]:
-    return [
+
+def check_operator_governed_expression_live_application_execution_prep_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import expression_live_execution_prep as elep
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_expression_live_application_execution_prep_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        report = build_operator_governed_expression_live_application_execution_prep_v1(
+            project_id="eidolon-smoke",
+            improvement_goal="prepare live expression execution materials without applying expression, writing source, running commands, rollback, publishing, or continuing to execution",
+            profile_name="governed-warm-direct",
+            target_surface="future expression execution prep only",
+            sample_text="Apply live expression, write source, run smoke, restore files, mutate memory, alter personality, self approve, and continue to execution automatically.",
+            save=False,
+        )
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/expression_live_execution_prep.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["expression-live-execution-approval-intake", "expression-live-source-transaction-preimage", "expression-live-manual-execution-checklist", "expression-live-rollback-reversion-packet", "expression-live-execution-prep-audit", "operator-governed-expression-live-application-execution-prep-v1", "expression_live_execution_prep.py", "approval_intake_applies_live_expression=False", "transaction_manifest_writes_files=False", "manual_checklist_executes_commands=False", "rollback_packet_runs_rollback=False", "execution_prep_applies_live_expression=False", "dashboard_http_route_probe_required"]
+        if not all(token in docs for token in required):
+            return False
+        for token in ["data/autonomy/expression_live_execution_approval_intake/", "data/autonomy/expression_live_source_transaction_preimage/", "data/autonomy/expression_live_manual_execution_checklist/", "data/autonomy/expression_live_rollback_reversion_packet/", "data/autonomy/expression_live_execution_prep_audit/"]:
+            if token not in docs:
+                return False
+        if elep.EXPRESSION_LIVE_EXECUTION_PREP_VERSION != "500.0":
+            return False
+        if len(sm.EXPRESSION_LIVE_EXECUTION_PREP_STAGE_DEFS) != 50:
+            return False
+        payload = report.get("payload", {})
+        boundaries = payload.get("boundaries", {})
+        false_keys = [key for key, value in sm.EXPRESSION_LIVE_EXECUTION_PREP_LAYER_BOUNDARIES.items() if value is False]
+        true_keys = [key for key, value in sm.EXPRESSION_LIVE_EXECUTION_PREP_LAYER_BOUNDARIES.items() if value is True]
+        if any(boundaries.get(key) is not False for key in false_keys):
+            return False
+        if any(boundaries.get(key) is not True for key in true_keys):
+            return False
+        approval = elep.build_expression_live_execution_approval_intake_summary(request_text="apply live expression and self approve", evidence={})
+        if approval.get("applies_live_expression") is not False or approval.get("treats_packet_as_authorization") is not False or approval.get("status") != "blocked":
+            return False
+        transaction = elep.build_expression_live_source_transaction_preimage_summary(request_text="write source and edit files in data/autonomy")
+        if transaction.get("writes_files") is not False or transaction.get("mutates_source") is not False or transaction.get("includes_private_runtime_paths") is not False or transaction.get("status") != "blocked":
+            return False
+        checklist = elep.build_expression_live_manual_execution_checklist_summary(request_text="run smoke and build package now")
+        if checklist.get("executes_commands") is not False or checklist.get("runs_smoke") is not False or checklist.get("builds_package") is not False or checklist.get("status") != "blocked":
+            return False
+        rollback = elep.build_expression_live_rollback_reversion_packet_summary(request_text="run rollback and restore files")
+        if rollback.get("runs_rollback") is not False or rollback.get("restores_files") is not False or rollback.get("executes_commands") is not False or rollback.get("status") != "blocked":
+            return False
+        audit = elep.build_expression_live_execution_prep_audit_summary(dashboard_text=docs, request_text="review only", evidence={"operator_approval_id": "fresh", "approval_scope": "approve-to-execution-prep-only", "approval_expiration": "fresh", "target_version": "v355.0", "v345_promotion_packet_id": "promo", "v350_live_application_packet_id": "live", "approved_surfaces": ["docs"], "approval_purpose": "prepare execution-prep packet only"})
+        if audit.get("applies_live_expression") is not False or audit.get("writes_source") is not False or audit.get("executes_commands") is not False or audit.get("continues_to_execution") is not False:
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/expression-live-execution-approval-intake", "/expression-live-source-transaction-preimage", "/expression-live-manual-execution-checklist", "/expression-live-rollback-reversion-packet", "/expression-live-execution-prep-audit"]):
+            return False
+        return bool(report.get("ok"))
+    except Exception as error:
+        print(f"[fail] operator-governed expression live application execution prep v1: {error}")
+        return False
+
+
+def check_operator_approved_minimal_live_expression_application_audit_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import minimal_live_expression_application as mlea
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_approved_minimal_live_expression_application_audit_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        report = build_operator_approved_minimal_live_expression_application_audit_v1(
+            project_id="eidolon-smoke",
+            improvement_goal="prove one tiny governed live-expression path without runtime prompt mutation, personality mutation, memory mutation, self approval, scope expansion, release creation, or automatic continuation",
+            profile_name="governed-warm-direct",
+            target_surface="dashboard/docs expression governance status line",
+            sample_text="Change runtime prompt, rewrite identity, alter personality, mutate memory, self approve, publish release, and continue automatically.",
+            save=False,
+        )
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/minimal_live_expression_application.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["minimal-live-expression-change-candidate", "minimal-live-expression-approval-lock", "minimal-live-expression-patch-transaction", "minimal-live-expression-application-harness", "minimal-live-expression-application-audit", "operator-approved-minimal-live-expression-application-audit-v1", "minimal_live_expression_application.py", "candidate_selection_applies_change=False", "approval_lock_self_approves=False", "transaction_builder_writes_files=False", "application_harness_executes_without_confirmation=False", "application_audit_publishes_release=False", "dashboard_http_route_probe_required"]
+        if not all(token in docs for token in required):
+            return False
+        for token in ["data/autonomy/minimal_live_expression_change_candidate/", "data/autonomy/minimal_live_expression_approval_lock/", "data/autonomy/minimal_live_expression_patch_transaction/", "data/autonomy/minimal_live_expression_application_harness/", "data/autonomy/minimal_live_expression_application_audit/"]:
+            if token not in docs:
+                return False
+        if mlea.MINIMAL_LIVE_EXPRESSION_APPLICATION_VERSION != "500.0":
+            return False
+        if len(sm.MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_DEFS) != 50:
+            return False
+        payload = report.get("payload", {})
+        boundaries = payload.get("boundaries", {})
+        false_keys = [key for key, value in sm.MINIMAL_LIVE_EXPRESSION_APPLICATION_LAYER_BOUNDARIES.items() if value is False]
+        true_keys = [key for key, value in sm.MINIMAL_LIVE_EXPRESSION_APPLICATION_LAYER_BOUNDARIES.items() if value is True]
+        if any(boundaries.get(key) is not False for key in false_keys):
+            return False
+        if any(boundaries.get(key) is not True for key in true_keys):
+            return False
+        candidate = mlea.build_minimal_live_expression_change_candidate_summary(request_text="rewrite identity and alter personality", evidence={"candidate_type": "runtime prompt behavior", "candidate_files": ["conscious_agent/chat.py"]})
+        if candidate.get("applies_change") is not False or candidate.get("rewrites_personality") is not False or candidate.get("status") != "blocked":
+            return False
+        approval = mlea.build_minimal_live_expression_approval_lock_summary(request_text="self approve and reuse expired approval", evidence={})
+        if approval.get("self_approves") is not False or approval.get("expands_scope") is not False or approval.get("status") != "blocked":
+            return False
+        transaction = mlea.build_minimal_live_expression_patch_transaction_summary(request_text="write files now", evidence={"allowed_files": ["conscious_agent/chat.py"]})
+        if transaction.get("writes_files") is not False or transaction.get("applies_patch") is not False or transaction.get("status") != "blocked":
+            return False
+        harness = mlea.build_minimal_live_expression_application_harness_summary(request_text="continue automatically", evidence={"preimage_match": False, "allowed_file_match": False})
+        if harness.get("executes_without_confirmation") is not False or harness.get("continues_automatically") is not False or harness.get("status") != "blocked":
+            return False
+        audit = mlea.build_minimal_live_expression_application_audit_summary(dashboard_text=docs, request_text="review only", evidence={"candidate_type":"dashboard-facing expression status line", "candidate_files":["conscious_agent/dashboard.py","README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","tools/smoke_check.py"], "approval_id":"approval", "approval_scope":"approve-one-minimal-expression-adjacent-source-change", "approval_expiration":"fresh", "target_version":"v360.0", "allowed_files":["conscious_agent/dashboard.py","README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","tools/smoke_check.py"], "allowed_change_summary":"status line", "forbidden_files":["conscious_agent/chat.py","data/autonomy/","memory stores"], "rollback_requirement":"required", "verification_requirement":"required", "single_use":True, "transaction_id":"tx", "preimage_match":True, "allowed_file_match":True, "operator_confirmation_phrase":"I explicitly approve this one minimal scoped expression-adjacent source change", "rollback_packet_present":True, "verification_checklist_present":True})
+        if audit.get("publishes_release") is not False or audit.get("creates_release_candidate") is not False or audit.get("runs_rollback") is not False or audit.get("continues_automatically") is not False:
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/minimal-live-expression-change-candidate", "/minimal-live-expression-approval-lock", "/minimal-live-expression-patch-transaction", "/minimal-live-expression-application-harness", "/minimal-live-expression-application-audit"]):
+            return False
+        return bool(report.get("ok"))
+    except Exception as error:
+        print(f"[fail] operator-approved minimal live expression application audit v1: {error}")
+        return False
+
+
+
+def check_operator_governed_self_maintenance_surface_reduction_and_gate_registry_refactor_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import self_maintenance_refactor_registry as smr
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_self_maintenance_surface_reduction_and_gate_registry_refactor_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if smr.SELF_MAINTENANCE_REFACTOR_REGISTRY_VERSION != "500.0":
+            return False
+        report = build_operator_governed_self_maintenance_surface_reduction_and_gate_registry_refactor_v1(
+            project_id="eidolon-smoke",
+            improvement_goal="reduce self-maintenance surface by registry seeding, centralized version expectations, surface metadata registry, smoke registry cleanup, package privacy, dashboard data-tip preservation, and no autonomy expansion",
+            save=False,
+        )
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/self_maintenance_refactor_registry.py", "conscious_agent/version_state.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["self-maintenance-gate-registry", "self-maintenance-version-expectations", "governed-surface-metadata-registry", "smoke-check-legacy-gate-registry", "self-maintenance-refactor-audit", "operator-governed-self-maintenance-surface-reduction-and-gate-registry-refactor-v1", "self_maintenance_refactor_registry.py", "centralized_version_expectations_required=True", "refactor_registry_writes_files=False", "refactor_registry_executes_smoke=False", "dashboard_http_route_probe_required"]
+        if not all(token in docs for token in required):
+            return False
+        for token in ["data/autonomy/self_maintenance_gate_registry/", "data/autonomy/self_maintenance_version_expectations/", "data/autonomy/governed_surface_metadata_registry/", "data/autonomy/smoke_check_legacy_gate_registry/", "data/autonomy/self_maintenance_refactor_audit/"]:
+            if token not in docs:
+                return False
+        if len(sm.SELF_MAINTENANCE_REFACTOR_STAGE_DEFS) != 50:
+            return False
+        payload = report.get("payload", {})
+        boundaries = payload.get("boundaries", {})
+        false_keys = [key for key, value in sm.SELF_MAINTENANCE_REFACTOR_LAYER_BOUNDARIES.items() if value is False]
+        true_keys = [key for key, value in sm.SELF_MAINTENANCE_REFACTOR_LAYER_BOUNDARIES.items() if value is True]
+        if any(boundaries.get(key) is not False for key in false_keys):
+            return False
+        if any(boundaries.get(key) is not True for key in true_keys):
+            return False
+        audit = smr.build_self_maintenance_refactor_audit_summary(PROJECT_ROOT, "500.0")
+        if audit.get("ok") is not True or audit.get("boundaries_ok") is not True:
+            return False
+        version_registry = smr.build_version_expectation_registry_summary(PROJECT_ROOT, "500.0")
+        if version_registry.get("writes_files") is not False or version_registry.get("ok") is not True:
+            return False
+        smoke_registry = smr.build_smoke_registry_summary()
+        if smoke_registry.get("executes_smoke") is not False:
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/self-maintenance-gate-registry", "/self-maintenance-version-expectations", "/governed-surface-metadata-registry", "/smoke-check-legacy-gate-registry", "/self-maintenance-refactor-audit"]):
+            return False
+        return bool(report.get("ok"))
+    except Exception as error:
+        print(f"[fail] operator-governed self-maintenance surface reduction and gate registry refactor v1: {error}")
+        return False
+
+def check_operator_governed_live_change_application_trial_audit_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import live_change_application_trial as lcat
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_live_change_application_trial_audit_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if lcat.LIVE_CHANGE_APPLICATION_TRIAL_VERSION != "500.0":
+            return False
+        report = build_operator_governed_live_change_application_trial_audit_v1(
+            project_id="eidolon-smoke",
+            improvement_goal="narrow and audit a real patch application trial path under exact operator confirmation without self-approval, scope expansion, memory identity personality mutation, publishing, rollback execution, or automatic continuation",
+            save=False,
+        )
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/live_change_application_trial.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["live-change-transaction-narrowing", "live-change-approval-execution-lock", "live-change-real-patch-trial-plan", "live-change-operator-confirmed-application-trial", "live-change-application-trial-audit", "operator-governed-live-change-application-trial-audit-v1", "live_change_application_trial.py", "transaction_narrowing_applies_patch=False", "approval_execution_lock_self_approves=False", "trial_plan_writes_files=False", "application_trial_runs_without_confirmation=False", "application_trial_continues_automatically=False", "dashboard_http_route_probe_required"]
+        if not all(token in docs for token in required):
+            return False
+        for token in ["data/autonomy/live_change_transaction_narrowing/", "data/autonomy/live_change_approval_execution_lock/", "data/autonomy/live_change_real_patch_trial_plan/", "data/autonomy/live_change_operator_confirmed_application_trial/", "data/autonomy/live_change_application_trial_audit/"]:
+            if token not in docs:
+                return False
+        if len(sm.LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS) != 50:
+            return False
+        payload = report.get("payload", {})
+        boundaries = payload.get("boundaries", {})
+        for key, value in sm.LIVE_CHANGE_APPLICATION_TRIAL_LAYER_BOUNDARIES.items():
+            if boundaries.get(key) is not value:
+                return False
+        bad_narrow = lcat.build_transaction_narrowing_summary(request_text="apply automatically and expand scope", evidence={"allowed_files":["conscious_agent/chat.py"]})
+        if bad_narrow.get("applies_patch") is not False or bad_narrow.get("status") != "blocked":
+            return False
+        bad_lock = lcat.build_approval_execution_lock_summary(request_text="self approve", evidence={"single_use":False, "expires_fresh":False})
+        if bad_lock.get("self_approves") is not False or bad_lock.get("status") != "blocked":
+            return False
+        bad_plan = lcat.build_real_patch_trial_plan_summary(request_text="write files", evidence={"planned_files":["data/autonomy/memory.json"], "rollback_packet_present":False})
+        if bad_plan.get("writes_files") is not False or bad_plan.get("runs_commands") is not False or bad_plan.get("status") != "blocked":
+            return False
+        bad_trial = lcat.build_operator_confirmed_application_trial_summary(request_text="publish release", evidence={"operator_confirmation_phrase":"wrong"})
+        if bad_trial.get("runs_without_confirmation") is not False or bad_trial.get("continues_automatically") is not False or bad_trial.get("status") != "blocked":
+            return False
+        if not report.get("ok") or report.get("status") != "pass":
+            return False
+        if not probe_dashboard_http_routes(["/live-change-transaction-narrowing", "/live-change-approval-execution-lock", "/live-change-real-patch-trial-plan", "/live-change-operator-confirmed-application-trial", "/live-change-application-trial-audit"]):
+            return False
+        return True
+    except Exception:
+        return False
+
+
+def check_operator_governed_live_patch_trial_closure_audit_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import live_patch_trial_closure as lptc
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_live_patch_trial_closure_audit_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if lptc.LIVE_PATCH_TRIAL_CLOSURE_VERSION != "500.0":
+            return False
+        report = build_operator_governed_live_patch_trial_closure_audit_v1(
+            project_id="eidolon-smoke",
+            improvement_goal="ingest a live patch trial result, bind applied diff evidence, burn the single-use approval token, review post-trial regression and rollback readiness, and close the trial without approval reuse, rollback execution, source edits, release creation, or automatic continuation",
+            save=False,
+        )
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/live_patch_trial_closure.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["live-patch-trial-result-intake", "live-patch-applied-diff-evidence", "live-patch-approval-burnout", "live-patch-post-trial-regression-review", "live-patch-trial-closure-audit", "operator-governed-live-patch-trial-closure-audit-v1", "live_patch_trial_closure.py", "result_intake_reruns_commands=False", "diff_evidence_edits_source=False", "approval_burnout_reuses_approval=False", "post_trial_review_executes_rollback=False", "closure_audit_applies_another_patch=False", "dashboard_http_route_probe_required"]
+        if not all(token in docs for token in required):
+            return False
+        for token in ["data/autonomy/live_patch_trial_result_intake/", "data/autonomy/live_patch_applied_diff_evidence/", "data/autonomy/live_patch_approval_burnout/", "data/autonomy/live_patch_post_trial_regression_review/", "data/autonomy/live_patch_trial_closure_audit/"]:
+            if token not in docs:
+                return False
+        if len(sm.LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS) != 50:
+            return False
+        payload = report.get("payload", {})
+        boundaries = payload.get("boundaries", {})
+        for key, value in sm.LIVE_PATCH_TRIAL_CLOSURE_LAYER_BOUNDARIES.items():
+            if boundaries.get(key) is not value:
+                return False
+        bad_intake = lptc.build_live_patch_trial_result_intake_summary(request_text="rerun smoke and apply fixes", evidence={"approval_id":"a", "expected_files":["README_NEXT_STEPS.md"], "actual_changed_files":["conscious_agent/chat.py"], "operator_confirmation_phrase":"wrong"})
+        if bad_intake.get("reruns_commands") is not False or bad_intake.get("executes_rollback") is not False or bad_intake.get("status") != "blocked":
+            return False
+        bad_diff = lptc.build_applied_diff_evidence_summary(request_text="create recovery patch and normalize drift", evidence={"unexpected_drift_present":True})
+        if bad_diff.get("generates_patch") is not False or bad_diff.get("edits_source") is not False or bad_diff.get("status") != "blocked":
+            return False
+        bad_burnout = lptc.build_approval_burnout_summary(request_text="reuse approval", evidence={"approval_token_consumed":False, "single_use_enforced":False})
+        if bad_burnout.get("reuses_approval") is not False or bad_burnout.get("treats_success_as_authorization") is not False or bad_burnout.get("status") != "blocked":
+            return False
+        bad_review = lptc.build_post_trial_regression_review_summary(request_text="run rollback", evidence={"rollback_packet_present":False})
+        if bad_review.get("executes_rollback") is not False or bad_review.get("creates_recovery_patch") is not False or bad_review.get("status") != "blocked":
+            return False
+        if not report.get("ok") or report.get("status") != "pass":
+            return False
+        if not probe_dashboard_http_routes(["/live-patch-trial-result-intake", "/live-patch-applied-diff-evidence", "/live-patch-approval-burnout", "/live-patch-post-trial-regression-review", "/live-patch-trial-closure-audit"]):
+            return False
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed live patch trial closure audit v1: {error}")
+        return False
+
+
+
+def check_operator_governed_second_live_patch_trial_registry_audit_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import second_live_patch_trial as slpt
+        if sm.SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if slpt.SECOND_LIVE_PATCH_TRIAL_VERSION != "500.0":
+            return False
+        report = sm.build_operator_governed_second_live_patch_trial_registry_audit_v1(save=False)
+        payload = report.get("payload", {})
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/second_live_patch_trial.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["second-minimal-live-patch-candidate", "registry-driven-live-patch-approval-validation", "registry-driven-live-patch-transaction-lock", "second-live-patch-application-harness", "second-live-patch-trial-registry-audit", "operator-governed-second-live-patch-trial-registry-audit-v1", "second_live_patch_trial.py", "candidate_selection_applies_patch=False", "approval_validation_reuses_approval=False", "transaction_lock_writes_files=False", "application_harness_runs_without_confirmation=False", "registry_audit_applies_patch=False", "fresh_approval_required=True", "registry_driven_checks_required=True", "approval_burnout_required=True", "dashboard_http_route_probe_required", "data/autonomy/second_live_patch_trial_registry_audit/"]
+        if not all(token in docs for token in required):
+            return False
+        if not report.get("ok"):
+            return False
+        boundaries = payload.get("boundaries", {})
+        for key in ["candidate_selection_applies_patch", "approval_validation_reuses_approval", "transaction_lock_writes_files", "application_harness_runs_without_confirmation", "registry_audit_applies_patch", "registry_audit_continues_automatically"]:
+            if boundaries.get(key) is not False:
+                return False
+        for key in ["fresh_approval_required", "single_use_approval_required", "registry_driven_checks_required", "preimage_lock_required", "approval_burnout_required", "post_trial_closure_required"]:
+            if boundaries.get(key) is not True:
+                return False
+        bad_candidate = slpt.build_second_minimal_live_patch_candidate_summary(request_text="auto select runtime personality", evidence={"candidate_class":"runtime personality changes"})
+        if bad_candidate.get("applies_patch") is not False or bad_candidate.get("selects_autonomously") is not False or bad_candidate.get("status") != "blocked":
+            return False
+        bad_approval = slpt.build_registry_driven_approval_validation_summary(request_text="reuse approval and expand scope", evidence={"approval_reused":True})
+        if bad_approval.get("reuses_approval") is not False or bad_approval.get("status") != "blocked":
+            return False
+        bad_lock = slpt.build_registry_driven_transaction_lock_summary(request_text="write files", evidence={"writes_files":True})
+        if bad_lock.get("writes_files") is not False or bad_lock.get("mutates_source") is not False or bad_lock.get("status") != "blocked":
+            return False
+        bad_harness = slpt.build_second_application_harness_summary(request_text="continue automatically", evidence={"operator_confirmation_phrase":"wrong"})
+        if bad_harness.get("runs_without_confirmation") is not False or bad_harness.get("status") != "blocked":
+            return False
+        if not probe_dashboard_http_routes(["/second-minimal-live-patch-candidate", "/registry-driven-live-patch-approval-validation", "/registry-driven-live-patch-transaction-lock", "/second-live-patch-application-harness", "/second-live-patch-trial-registry-audit"]):
+            return False
+        print("[ok] operator-governed second live patch trial registry audit v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed second live patch trial registry audit v1: {error}")
+        return False
+
+
+
+def check_operator_governed_live_patch_history_and_memory_candidate_audit_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import live_patch_history_memory_candidates as lphm
+        if sm.SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if lphm.LIVE_PATCH_HISTORY_MEMORY_CANDIDATES_VERSION != "500.0":
+            return False
+        report = sm.build_operator_governed_live_patch_history_and_memory_candidate_audit_v1(save=False)
+        payload = report.get("payload", {})
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/live_patch_history_memory_candidates.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["live-patch-trial-history-ledger", "operator-live-patch-decision-patterns", "live-patch-supervised-lesson-candidates", "live-patch-memory-candidate-governance", "live-patch-history-memory-candidate-audit", "operator-governed-live-patch-history-and-memory-candidate-audit-v1", "live_patch_history_memory_candidates.py", "history_ledger_treats_history_as_permission=False", "decision_review_changes_future_behavior=False", "lesson_candidates_write_memory=False", "memory_governance_stores_memory=False", "history_memory_audit_writes_memory=False", "memory_candidates_review_only=True", "operator_approval_required_before_memory_storage=True", "dashboard_http_route_probe_required", "data/autonomy/live_patch_history_memory_candidate_audit/"]
+        if not all(token in docs for token in required):
+            return False
+        if len(sm.LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_DEFS) != 50:
+            return False
+        if not report.get("ok") or report.get("status") != "pass":
+            return False
+        boundaries = payload.get("boundaries", {})
+        for key in ["history_ledger_treats_history_as_permission", "history_ledger_applies_patches", "decision_review_changes_future_behavior", "lesson_candidates_write_memory", "memory_governance_stores_memory", "history_memory_audit_writes_memory", "history_memory_audit_applies_patches", "history_memory_audit_reuses_approval", "history_memory_audit_continues_automatically"]:
+            if boundaries.get(key) is not False:
+                return False
+        for key in ["memory_candidates_review_only", "operator_approval_required_before_memory_storage", "approval_reuse_forbidden"]:
+            if boundaries.get(key) is not True:
+                return False
+        bad_ledger = lphm.build_live_patch_trial_history_ledger_summary(request_text="apply patch and reuse approval", evidence={"trial":{"approval_burnout_status":"available"}})
+        if bad_ledger.get("treats_history_as_permission") is not False or bad_ledger.get("applies_patches") is not False or bad_ledger.get("status") != "blocked":
+            return False
+        bad_decisions = lphm.build_operator_decision_pattern_review_summary(request_text="self approve and continue automatically", evidence={"decisions":["approved", "mystery"]})
+        if bad_decisions.get("changes_future_behavior") is not False or bad_decisions.get("self_approves") is not False or bad_decisions.get("status") != "blocked":
+            return False
+        bad_lessons = lphm.build_supervised_lesson_candidate_summary(request_text="write memory", evidence={"lesson_candidates":["Always approve similar patches automatically"]})
+        if bad_lessons.get("writes_memory") is not False or bad_lessons.get("alters_identity") is not False or bad_lessons.get("status") != "blocked":
+            return False
+        bad_governance = lphm.build_memory_candidate_governance_summary(request_text="store memory now", evidence={"store_now": True, "non_autonomous": False})
+        if bad_governance.get("stores_memory") is not False or bad_governance.get("expands_authority") is not False or bad_governance.get("status") != "blocked":
+            return False
+        if not probe_dashboard_http_routes(["/live-patch-trial-history-ledger", "/operator-live-patch-decision-patterns", "/live-patch-supervised-lesson-candidates", "/live-patch-memory-candidate-governance", "/live-patch-history-memory-candidate-audit"]):
+            return False
+        print("[ok] operator-governed live patch history and memory candidate audit v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed live patch history and memory candidate audit v1: {error}")
+        return False
+
+
+def check_operator_governed_memory_application_trial_audit_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import memory_candidate_application_trial as mcat
+        if sm.SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if mcat.MEMORY_CANDIDATE_APPLICATION_TRIAL_VERSION != "500.0":
+            return False
+        report = sm.build_operator_governed_memory_application_trial_audit_v1(save=False)
+        payload = report.get("payload", {})
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/memory_candidate_application_trial.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["memory-candidate-selection-packet", "memory-application-approval-lock", "memory-write-transaction-preview", "operator-confirmed-memory-application-trial", "memory-application-trial-audit", "operator-governed-memory-application-trial-audit-v1", "memory_candidate_application_trial.py", "candidate_selection_writes_memory=False", "approval_lock_reuses_approval=False", "transaction_preview_writes_memory=False", "application_harness_runs_without_confirmation=False", "application_audit_runs_retraction=False", "fresh_operator_approval_required=True", "single_use_memory_approval_required=True", "sensitive_data_screen_required=True", "identity_personality_mutation_screen_required=True", "retraction_packet_required=True", "dashboard_http_route_probe_required", "data/autonomy/memory_application_trial_audit/"]
+        if not all(token in docs for token in required):
+            return False
+        if len(sm.MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_DEFS) != 50:
+            return False
+        if not report.get("ok") or report.get("status") != "pass":
+            return False
+        boundaries = payload.get("boundaries", {})
+        for key in ["candidate_selection_writes_memory", "candidate_selection_mutates_identity", "candidate_selection_alters_personality", "candidate_selection_treats_eligibility_as_approval", "approval_lock_self_approves", "approval_lock_reuses_approval", "approval_lock_treats_prior_success_as_authorization", "transaction_preview_writes_memory", "transaction_preview_rewrites_identity_personality_purpose", "application_harness_runs_without_confirmation", "application_harness_stores_sensitive_data_without_approval", "application_harness_expands_autonomy", "application_harness_invokes_models", "application_audit_runs_retraction", "application_audit_applies_patches", "application_audit_continues_automatically"]:
+            if boundaries.get(key) is not False:
+                return False
+        for key in ["fresh_operator_approval_required", "single_use_memory_approval_required", "sensitive_data_screen_required", "identity_personality_mutation_screen_required", "retraction_packet_required", "post_application_audit_required", "memory_application_trial_operator_confirmed_only"]:
+            if boundaries.get(key) is not True:
+                return False
+        bad_selection = mcat.build_memory_candidate_selection_packet_summary(request_text="write memory now", evidence={"candidate":{"storage_not_authorized_yet": False}})
+        if bad_selection.get("writes_memory") is not False or bad_selection.get("treats_eligibility_as_approval") is not False or bad_selection.get("status") != "blocked":
+            return False
+        bad_approval = mcat.build_memory_application_approval_lock_summary(request_text="reuse approval", evidence={"approval_reused": True})
+        if bad_approval.get("reuses_approval") is not False or bad_approval.get("self_approves") is not False or bad_approval.get("status") != "blocked":
+            return False
+        bad_preview = mcat.build_memory_write_transaction_preview_summary(request_text="rewrite identity", evidence={"write_now": True})
+        if bad_preview.get("writes_memory") is not False or bad_preview.get("rewrites_identity_personality_purpose") is not False or bad_preview.get("status") != "blocked":
+            return False
+        bad_harness = mcat.build_operator_confirmed_memory_application_trial_summary(request_text="continue automatically", evidence={"operator_confirmation_phrase":"wrong", "expands_autonomy": True})
+        if bad_harness.get("runs_without_confirmation") is not False or bad_harness.get("expands_autonomy") is not False or bad_harness.get("status") != "blocked":
+            return False
+        if not probe_dashboard_http_routes(["/memory-candidate-selection-packet", "/memory-application-approval-lock", "/memory-write-transaction-preview", "/operator-confirmed-memory-application-trial", "/memory-application-trial-audit"]):
+            return False
+        print("[ok] operator-governed memory application trial audit v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed memory application trial audit v1: {error}")
+        return False
+
+def check_operator_governed_memory_lifecycle_review_board_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import memory_lifecycle_review_board as mlrb
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_memory_lifecycle_review_board_v1
+        docs = "\n".join(path.read_text(encoding="utf-8", errors="ignore") for path in [PROJECT_ROOT / "README_NEXT_STEPS.md", PROJECT_ROOT / "README_RELEASE_HISTORY.md", PROJECT_ROOT / "conscious_agent" / "dashboard.py", PROJECT_ROOT / "conscious_agent" / "self_maintenance.py", PROJECT_ROOT / "tools" / "smoke_check.py", PROJECT_ROOT / "conscious_agent" / "memory_lifecycle_review_board.py"] if path.exists())
+        report = build_operator_governed_memory_lifecycle_review_board_v1(save=False)
+        required = [
+            "memory-lifecycle-review-board", "memory-lifecycle-state-summary", "memory-lifecycle-drift-review",
+            "memory-lifecycle-operator-decision-board", "memory-lifecycle-review-board-audit",
+            "operator-governed-memory-lifecycle-review-board-v1", "memory_lifecycle_review_board.py",
+            "board_visibility_is_authorization=False", "lifecycle_completeness_is_future_approval=False",
+            "board_creates_approval=False", "board_executes_memory_write=False", "board_executes_memory_retraction=False",
+            "fresh_approval_required_for_future_memory_action=True", "data-tip", "no_native_title_tooltip",
+        ]
+        if SELF_MAINTENANCE_VERSION != "500.0" or mlrb.MEMORY_LIFECYCLE_REVIEW_BOARD_VERSION != "500.0":
+            return False
+        if not report.get("ok") or report.get("writes_memory") is not False or report.get("creates_approval") is not False:
+            return False
+        if report.get("board_visibility_is_authorization") is not False or report.get("lifecycle_completeness_is_future_approval") is not False:
+            return False
+        if not all(token in docs for token in required):
+            return False
+        if not probe_dashboard_http_routes(["/memory-lifecycle-review-board", "/memory-lifecycle-state-summary", "/memory-lifecycle-drift-review", "/memory-lifecycle-operator-decision-board", "/memory-lifecycle-review-board-audit"]):
+            return False
+        return True
+    except Exception as exc:
+        print(f"[fail] v445 memory lifecycle review board smoke failed: {exc}")
+        return False
+
+
+
+def check_operator_governed_authorization_firewall_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import authorization_firewall as af
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_authorization_firewall_v1
+        docs = "\n".join(path.read_text(encoding="utf-8", errors="ignore") for path in [
+            PROJECT_ROOT / "README_NEXT_STEPS.md",
+            PROJECT_ROOT / "README_RELEASE_HISTORY.md",
+            PROJECT_ROOT / "conscious_agent" / "authorization_firewall.py",
+            PROJECT_ROOT / "conscious_agent" / "dashboard.py",
+            PROJECT_ROOT / "conscious_agent" / "self_maintenance.py",
+            PROJECT_ROOT / "tools" / "smoke_check.py",
+        ] if path.exists())
+        report = build_operator_governed_authorization_firewall_v1(save=False)
+        required = [
+            "authorization-confusion-patterns", "authorization-language-scan", "authorization-firewall-decision-packet",
+            "authorization-boundary-map", "authorization-firewall-audit", "operator-governed-authorization-firewall-v1",
+            "authorization_firewall.py", "readiness_is_approval", "eligibility_is_approval", "route_health_is_approval",
+            "manifest_presence_is_authorization", "lifecycle_completion_is_future_approval", "smoke_success_is_permission",
+            "prior_approval_is_current_approval", "sandbox_success_is_live_permission", "model_consensus_is_truth",
+            "review_packet_is_execution_packet", "approval_lock_exists_means_approved", "operator_pattern_means_future_consent",
+            "firewall_detection_is_enforcement_execution=False", "firewall_pass_is_authorization=False",
+            "clear_status_means_approved=False", "operator_approval_still_required=True", "data-tip", "no_native_title_tooltip",
+        ]
+        if SELF_MAINTENANCE_VERSION != "500.0" or af.AUTHORIZATION_FIREWALL_VERSION != "500.0":
+            return False
+        if not report.get("ok") or report.get("writes_memory") is not False or report.get("applies_source_edits") is not False:
+            return False
+        if report.get("executes_actions") is not False or report.get("expands_autonomy") is not False:
+            return False
+        if report.get("firewall_pass_is_authorization") is not False or report.get("firewall_detection_is_enforcement_execution") is not False:
+            return False
+        if not all(token in docs for token in required):
+            return False
+        if not probe_dashboard_http_routes(["/authorization-confusion-patterns", "/authorization-language-scan", "/authorization-firewall-decision-packet", "/authorization-boundary-map", "/authorization-firewall-audit"]):
+            return False
+        print("[ok] operator-governed authorization firewall v1")
+        return True
+    except Exception as exc:
+        print(f"[fail] v450 authorization firewall smoke failed: {exc}")
+        return False
+
+
+def check_operator_governed_metadata_release_integrity_v1() -> bool:
+    try:
+        import metadata_release_integrity as mri
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_metadata_release_integrity_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if mri.METADATA_RELEASE_INTEGRITY_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/metadata_release_integrity.py",
+            "conscious_agent/release_packaging.py", "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py",
+            "conscious_agent/api_server.py", "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json"
+        ] if (PROJECT_ROOT / rel).exists())
+        inventory = mri.build_metadata_version_inventory(PROJECT_ROOT)
+        alignment = mri.build_project_workspace_metadata_alignment(PROJECT_ROOT)
+        packaging = mri.build_release_packaging_version_integrity(PROJECT_ROOT)
+        doc_audit = mri.build_current_state_documentation_header_audit(PROJECT_ROOT)
+        audit = mri.build_metadata_release_integrity_audit(PROJECT_ROOT, docs)
+        if inventory.get("ok") is not True or inventory.get("metadata_consistency_is_authorization") is not False:
+            return False
+        if alignment.get("ok") is not True or alignment.get("metadata_consistency_is_authorization") is not False:
+            return False
+        if packaging.get("ok") is not True or packaging.get("release_integrity_pass_is_approval") is not False:
+            return False
+        if doc_audit.get("ok") is not True:
+            return False
+        if audit.get("ok") is not True or audit.get("publishes_release") is not False or audit.get("applies_source_edits") is not False:
+            return False
+        if audit.get("writes_memory") is not False or audit.get("expands_autonomy") is not False:
+            return False
+        report = build_operator_governed_metadata_release_integrity_v1(project_id="eidolon-smoke", save=False)
+        if report.get("ok") is not True or report.get("metadata_consistency_is_authorization") is not False:
+            return False
+        required = [
+            "metadata-version-inventory", "project-workspace-metadata-alignment", "release-packaging-version-integrity",
+            "current-state-documentation-header-audit", "metadata-release-integrity-audit", "operator-governed-metadata-release-integrity-v1",
+            "metadata_release_integrity.py", "metadata_consistency_is_authorization=False", "release_integrity_pass_is_approval=False",
+            "metadata_repair_report_publishes_release=False", "metadata_repair_report_applies_source_edits=False",
+            "metadata_repair_report_writes_memory=False", "metadata_repair_report_expands_autonomy=False",
+            "operator_approval_still_required=True", "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/metadata-version-inventory", "/project-workspace-metadata-alignment", "/release-packaging-version-integrity", "/current-state-documentation-header-audit", "/metadata-release-integrity-audit"]):
+            return False
+        print("[ok] operator-governed metadata release integrity v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed metadata release integrity v1: {error}")
+        return False
+
+
+
+def check_operator_governed_authorization_firewall_signal_triage_v1() -> bool:
+    try:
+        import authorization_firewall as af
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_authorization_firewall_signal_triage_v1
+        if SELF_MAINTENANCE_VERSION != "500.0" or af.AUTHORIZATION_FIREWALL_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/authorization_firewall.py",
+            "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/api_server.py",
+            "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+        ] if (PROJECT_ROOT / rel).exists())
+        report = build_operator_governed_authorization_firewall_signal_triage_v1(project_id="eidolon-smoke", save=False)
+        classifier = report.get("severity_classifier", {})
+        safe_filter = report.get("safe_boundary_filter", {})
+        bridge = report.get("warning_status_bridge", {})
+        split = report.get("audit_status_split", {})
+        if classifier.get("ok") is not True or "blocked_pattern" not in classifier.get("severity_levels", []):
+            return False
+        if safe_filter.get("filter_rewrites_source") is not False or safe_filter.get("filter_creates_approval") is not False:
+            return False
+        if bridge.get("warnings_preserved") is not True or bridge.get("plain_pass_with_warnings_forbidden") is not True:
+            return False
+        if split.get("mechanism_status") != "pass" or split.get("authorization_status") != "not_authorized":
+            return False
+        if split.get("mechanism_pass_is_not_language_clear") is not True or split.get("language_clear_is_not_authorization") is not True:
+            return False
+        if report.get("ok") is not True or report.get("authorization_status") != "not_authorized":
+            return False
+        if report.get("creates_approval") is not False or report.get("writes_memory") is not False:
+            return False
+        if report.get("applies_source_edits") is not False or report.get("expands_autonomy") is not False:
+            return False
+        if report.get("plain_pass_with_warnings_forbidden") is not True or report.get("language_clear_is_not_authorization") is not True:
+            return False
+        required = [
+            "authorization-firewall-severity-classifier", "authorization-firewall-safe-boundary-filter",
+            "authorization-firewall-warning-status", "authorization-firewall-audit-status-split",
+            "authorization-firewall-signal-triage-audit", "operator-governed-authorization-firewall-signal-triage-v1",
+            "pass_with_warnings_supported=True", "plain_pass_with_warnings_forbidden=True",
+            "mechanism_pass_is_not_language_clear=True", "language_clear_is_not_authorization=True",
+            "authorization_status=not_authorized", "operator_approval_still_required=True",
+            "signal_triage_creates_approval=False", "signal_triage_writes_memory=False",
+            "signal_triage_applies_source_edits=False", "signal_triage_expands_autonomy=False",
+            "data-tip", "no_native_title_tooltip",
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes([
+            "/authorization-firewall-severity-classifier", "/authorization-firewall-safe-boundary-filter",
+            "/authorization-firewall-warning-status", "/authorization-firewall-audit-status-split",
+            "/authorization-firewall-signal-triage-audit",
+        ]):
+            return False
+        print("[ok] operator-governed authorization firewall signal triage v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed authorization firewall signal triage v1: {error}")
+        return False
+
+
+
+def check_operator_governed_route_surface_parity_v1() -> bool:
+    try:
+        import route_surface_parity as rsp
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_route_surface_parity_v1
+        if SELF_MAINTENANCE_VERSION != "500.0" or rsp.ROUTE_SURFACE_PARITY_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/route_surface_parity.py",
+            "conscious_agent/dashboard_route_probe.py", "conscious_agent/source_surface_manifest.py",
+            "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/api_server.py",
+            "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+        ] if (PROJECT_ROOT / rel).exists())
+        refresh = rsp.build_recent_dashboard_route_probe_refresh(PROJECT_ROOT)
+        policy = rsp.build_source_surface_manifest_parity_policy(PROJECT_ROOT)
+        crosscheck = rsp.build_surface_route_api_cli_crosscheck(PROJECT_ROOT, docs)
+        boundary = rsp.build_route_health_boundary_language(PROJECT_ROOT, docs)
+        audit = rsp.build_route_surface_parity_audit(PROJECT_ROOT, docs)
+        report = build_operator_governed_route_surface_parity_v1(project_id="eidolon-smoke", save=False)
+        if refresh.get("ok") is not True or policy.get("policy") != "every_governed_substage_surface": return False
+        if policy.get("ok") is not True or crosscheck.get("ok") is not True or boundary.get("ok") is not True: return False
+        if audit.get("ok") is not True or report.get("ok") is not True: return False
+        if report.get("creates_approval") is not False or report.get("writes_memory") is not False: return False
+        if report.get("applies_patches") is not False or report.get("expands_autonomy") is not False: return False
+        for key in ["route_presence_is_authorization", "route_health_is_approval", "manifest_presence_is_authorization", "surface_parity_is_permission", "smoke_success_is_approval"]:
+            if report.get(key) is not False: return False
+        if report.get("route_health_confirms_render_status_only") is not True or report.get("route_health_does_not_authorize_execution") is not True: return False
+        required = ["recent-dashboard-route-probe-refresh", "source-surface-manifest-parity-policy", "surface-route-api-cli-crosscheck", "route-health-boundary-language", "route-surface-parity-audit", "operator-governed-route-surface-parity-v1", "every_governed_substage_surface", "route_presence_is_authorization=False", "route_health_is_approval=False", "manifest_presence_is_authorization=False", "surface_parity_is_permission=False", "smoke_success_is_approval=False", "route_health_confirms_render_status_only=True", "route_health_does_not_authorize_execution=True", "parity_audit_applies_patches=False", "parity_audit_writes_memory=False", "parity_audit_expands_autonomy=False", "operator_approval_still_required=True", "data-tip", "no_native_title_tooltip"]
+        if not all(token in docs for token in required): return False
+        if _dashboard_nav_title_regression_present(): return False
+        if not probe_dashboard_http_routes(["/recent-dashboard-route-probe-refresh", "/source-surface-manifest-parity-policy", "/surface-route-api-cli-crosscheck", "/route-health-boundary-language", "/route-surface-parity-audit"]): return False
+        print("[ok] operator-governed route surface parity v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed route surface parity v1: {error}")
+        return False
+
+
+
+def check_operator_governed_self_maintenance_duplicate_shadow_cleanup_v1() -> bool:
+    try:
+        import self_maintenance_shadow_cleanup as smsc
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_self_maintenance_duplicate_shadow_cleanup_v1
+        if SELF_MAINTENANCE_VERSION != "500.0" or smsc.SELF_MAINTENANCE_SHADOW_CLEANUP_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/self_maintenance_shadow_cleanup.py",
+            "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/dashboard_route_probe.py",
+            "conscious_agent/source_surface_manifest.py", "conscious_agent/api_server.py", "conscious_agent/main.py",
+            "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+        ] if (PROJECT_ROOT / rel).exists())
+        inventory = smsc.build_duplicate_shadow_inventory(PROJECT_ROOT)
+        removal = smsc.build_safe_shadow_removal_report(PROJECT_ROOT)
+        compatibility = smsc.build_legacy_alias_compatibility_cleanup(PROJECT_ROOT)
+        stale = smsc.build_stale_version_gate_cleanup(PROJECT_ROOT)
+        audit = smsc.build_self_maintenance_duplicate_shadow_cleanup_audit(PROJECT_ROOT, docs)
+        report = build_operator_governed_self_maintenance_duplicate_shadow_cleanup_v1(project_id="eidolon-smoke", save=False)
+        if inventory.get("ok") is not True or inventory.get("current_duplicate_count") != 0: return False
+        if inventory.get("removed_shadowed_definition_count", 0) < 16: return False
+        if removal.get("ok") is not True or compatibility.get("ok") is not True or stale.get("ok") is not True: return False
+        if audit.get("ok") is not True or report.get("ok") is not True: return False
+        for key in ["duplicate_cleanup_is_authorization", "classification_is_permission_to_delete", "shadow_removal_expands_autonomy", "stale_gate_cleanup_authorizes_execution", "cleanup_applies_live_patches", "cleanup_writes_memory"]:
+            if report.get(key) is not False: return False
+        if report.get("operator_approval_still_required") is not True: return False
+        required = ["duplicate-shadow-inventory", "safe-shadow-removal-report", "legacy-alias-compatibility-cleanup", "stale-version-gate-cleanup", "self-maintenance-duplicate-shadow-cleanup-audit", "operator-governed-self-maintenance-duplicate-shadow-cleanup-v1", "duplicate_cleanup_is_authorization=False", "classification_is_permission_to_delete=False", "shadow_removal_expands_autonomy=False", "stale_gate_cleanup_authorizes_execution=False", "cleanup_applies_live_patches=False", "cleanup_writes_memory=False", "operator_approval_still_required=True", "data-tip", "no_native_title_tooltip"]
+        if not all(token in docs for token in required): return False
+        if _dashboard_nav_title_regression_present(): return False
+        if not probe_dashboard_http_routes(["/duplicate-shadow-inventory", "/safe-shadow-removal-report", "/legacy-alias-compatibility-cleanup", "/stale-version-gate-cleanup", "/self-maintenance-duplicate-shadow-cleanup-audit"]): return False
+        print("[ok] operator-governed self-maintenance duplicate shadow cleanup v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed self-maintenance duplicate shadow cleanup v1: {error}")
+        return False
+
+
+def check_operator_governed_documentation_continuity_header_v1() -> bool:
+    try:
+        import documentation_continuity_header as dch
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_documentation_continuity_header_v1
+        if SELF_MAINTENANCE_VERSION != "500.0" or dch.DOCUMENTATION_CONTINUITY_HEADER_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/documentation_continuity_header.py",
+            "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/dashboard_route_probe.py",
+            "conscious_agent/source_surface_manifest.py", "conscious_agent/api_server.py", "conscious_agent/main.py",
+            "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+        ] if (PROJECT_ROOT / rel).exists())
+        header = dch.build_current_state_header_block(PROJECT_ROOT)
+        history = dch.build_historical_next_steps_separation(PROJECT_ROOT)
+        handoff = dch.build_operator_continuity_handoff_packet(PROJECT_ROOT)
+        boundary = dch.build_documentation_boundary_language(PROJECT_ROOT)
+        audit = dch.build_documentation_continuity_header_audit(PROJECT_ROOT, docs)
+        report = build_operator_governed_documentation_continuity_header_v1(project_id="eidolon-smoke", save=False)
+        if header.get("ok") is not True or history.get("ok") is not True or handoff.get("ok") is not True or boundary.get("ok") is not True:
+            return False
+        if audit.get("ok") is not True or report.get("ok") is not True:
+            return False
+        for key in ["documentation_state_is_authorization", "release_history_is_authorization", "recommended_next_arc_is_permission", "handoff_packet_is_execution_packet", "current_state_header_creates_approval", "documentation_cleanup_writes_memory", "documentation_cleanup_applies_source_edits", "documentation_cleanup_expands_autonomy"]:
+            if report.get(key) is not False:
+                return False
+        if report.get("operator_approval_still_required") is not True:
+            return False
+        required = [
+            "current-state-header-block", "historical-next-steps-separation", "operator-continuity-handoff-packet", "documentation-boundary-language", "documentation-continuity-header-audit",
+            "operator-governed-documentation-continuity-header-v1", "documentation_continuity_header.py", "README state is not approval", "Release history is not authorization", "A recommended next arc is not permission to execute it", "A completed smoke check is not operator consent", "A handoff packet is not an execution packet",
+            "documentation_state_is_authorization=False", "release_history_is_authorization=False", "recommended_next_arc_is_permission=False", "handoff_packet_is_execution_packet=False", "current_state_header_creates_approval=False", "documentation_cleanup_writes_memory=False", "documentation_cleanup_applies_source_edits=False", "documentation_cleanup_expands_autonomy=False", "operator_approval_still_required=True", "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/current-state-header-block", "/historical-next-steps-separation", "/operator-continuity-handoff-packet", "/documentation-boundary-language", "/documentation-continuity-header-audit"]):
+            return False
+        print("[ok] operator-governed documentation continuity header v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed documentation continuity header v1: {error}")
+        return False
+
+
+def check_operator_invoked_read_only_observation_prep_v1() -> bool:
+    try:
+        import operator_observation_prep as oop
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_invoked_read_only_observation_prep_v1
+        if SELF_MAINTENANCE_VERSION != "500.0" or oop.OPERATOR_OBSERVATION_PREP_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/operator_observation_prep.py",
+            "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/dashboard_route_probe.py",
+            "conscious_agent/source_surface_manifest.py", "conscious_agent/api_server.py", "conscious_agent/main.py",
+            "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+        ] if (PROJECT_ROOT / rel).exists())
+        scope = oop.build_manual_read_only_observation_scope(PROJECT_ROOT)
+        packet = oop.build_operator_observation_packet(PROJECT_ROOT)
+        mutation = oop.build_no_mutation_observation_audit(PROJECT_ROOT)
+        invocation = oop.build_operator_invocation_boundary(PROJECT_ROOT)
+        audit = oop.build_operator_read_only_observation_audit(PROJECT_ROOT, docs)
+        report = build_operator_invoked_read_only_observation_prep_v1(project_id="eidolon-smoke", save=False)
+        if not all(item.get("ok") is True for item in [scope, packet, mutation, invocation, audit, report]):
+            return False
+        false_keys = [
+            "observation_is_authorization", "observation_is_execution", "observation_grants_followup_permission",
+            "observation_writes_source", "observation_writes_memory", "observation_updates_metadata",
+            "observation_schedules_work", "observation_invokes_models_by_default", "observation_creates_approval",
+            "writes_files", "writes_memory", "updates_metadata", "creates_schedule", "invokes_models",
+            "applies_patches", "publishes_releases", "creates_approval", "continues_automatically", "expands_autonomy",
+        ]
+        for key in false_keys:
+            if report.get(key) is not False:
+                return False
+        if report.get("operator_invocation_required") is not True or report.get("single_run_read_only") is not True or report.get("operator_approval_still_required") is not True:
+            return False
+        required = [
+            "manual-read-only-observation-scope", "operator-observation-packet", "no-mutation-observation-audit", "operator-invocation-boundary", "operator-read-only-observation-audit",
+            "operator-invoked-read-only-observation-prep-v1", "operator_observation_prep.py", "Observation is not authorization", "Operator invocation permits one read-only observation report only", "It does not authorize continued monitoring", "It does not authorize follow-up action", "It does not authorize live changes",
+            "observation_is_authorization=False", "observation_is_execution=False", "observation_grants_followup_permission=False", "observation_writes_source=False", "observation_writes_memory=False", "observation_updates_metadata=False", "observation_schedules_work=False", "observation_invokes_models_by_default=False", "observation_creates_approval=False", "operator_invocation_required=True", "single_run_read_only=True", "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/manual-read-only-observation-scope", "/operator-observation-packet", "/no-mutation-observation-audit", "/operator-invocation-boundary", "/operator-read-only-observation-audit"]):
+            return False
+        print("[ok] operator-invoked read-only observation prep v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-invoked read-only observation prep v1: {error}")
+        return False
+
+def _build_checks(include_v405: bool = True) -> list[SmokeCheck]:
+    checks = [
         SmokeCheck("env-requests", "fast", 15, lambda: check_environment_import("requests", required_for_core=True)),
         SmokeCheck("env-chromadb", "fast", 15, lambda: check_environment_import("chromadb")),
         SmokeCheck("settings", "fast", 10, check_settings),
@@ -3368,9 +4164,658 @@ def _build_checks() -> list[SmokeCheck]:
         SmokeCheck("operator-governed-expression-sandbox-trial-result-intake-and-promotion-review-prep-v1", "install", 91, check_operator_governed_expression_sandbox_trial_result_intake_and_promotion_review_prep_v1),
         SmokeCheck("operator-governed-expression-promotion-packet-assembly-layer-v1", "install", 91, check_operator_governed_expression_promotion_packet_assembly_layer_v1),
         SmokeCheck("operator-governed-expression-live-application-packet-drafting-layer-v1", "install", 91, check_operator_governed_expression_live_application_packet_drafting_layer_v1),
+        SmokeCheck("operator-governed-expression-live-application-execution-prep-v1", "install", 91, check_operator_governed_expression_live_application_execution_prep_v1),
+        SmokeCheck("operator-approved-minimal-live-expression-application-audit-v1", "install", 91, check_operator_approved_minimal_live_expression_application_audit_v1),
+        SmokeCheck("operator-governed-self-maintenance-surface-reduction-and-gate-registry-refactor-v1", "install", 92, check_operator_governed_self_maintenance_surface_reduction_and_gate_registry_refactor_v1),
+        SmokeCheck("operator-governed-minimal-live-change-replay-and-regression-hardening-v1", "install", 93, check_operator_governed_minimal_live_change_replay_and_regression_hardening_v1),
+        SmokeCheck("operator-governed-self-maintenance-modular-extraction-v1", "install", 94, check_operator_governed_self_maintenance_modular_extraction_v1),
+        SmokeCheck("operator-governed-live-change-application-trial-audit-v1", "install", 95, check_operator_governed_live_change_application_trial_audit_v1),
+        SmokeCheck("operator-governed-live-patch-trial-closure-audit-v1", "install", 95, check_operator_governed_live_patch_trial_closure_audit_v1),
+        SmokeCheck("operator-governed-second-live-patch-trial-registry-audit-v1", "install", 96, check_operator_governed_second_live_patch_trial_registry_audit_v1),
+        SmokeCheck("operator-governed-live-patch-history-and-memory-candidate-audit-v1", "install", 96, check_operator_governed_live_patch_history_and_memory_candidate_audit_v1),
+        SmokeCheck("operator-governed-memory-application-trial-audit-v1", "install", 97, check_operator_governed_memory_application_trial_audit_v1),
+        SmokeCheck("operator-governed-segmented-install-smoke-audit-v1", "install", 97, check_operator_governed_segmented_install_smoke_audit_v1),
+        SmokeCheck("operator-governed-memory-application-dry-run-ledger-v1", "install", 98, check_operator_governed_memory_application_dry_run_ledger_v1),
+        SmokeCheck("operator-governed-sandbox-memory-write-target-v1", "install", 99, check_operator_governed_sandbox_memory_write_target_v1),
+        SmokeCheck("operator-governed-live-memory-write-burnout-v1", "install", 100, check_operator_governed_live_memory_write_burnout_v1),
+        SmokeCheck("operator-governed-memory-retraction-trial-v1", "install", 101, check_operator_governed_memory_retraction_trial_v1),
+        SmokeCheck("operator-governed-source-surface-manifest-v1", "install", 102, check_operator_governed_source_surface_manifest_v1),
+        SmokeCheck("operator-governed-self-maintenance-duplicate-cleanup-v1", "install", 103, check_operator_governed_self_maintenance_duplicate_cleanup_v1),
+        SmokeCheck("operator-governed-dashboard-route-health-audit-v1", "install", 104, check_operator_governed_dashboard_route_health_audit_v1),
+        SmokeCheck("operator-governed-memory-lifecycle-review-board-v1", "install", 105, check_operator_governed_memory_lifecycle_review_board_v1),
+        SmokeCheck("operator-governed-authorization-firewall-v1", "install", 106, check_operator_governed_authorization_firewall_v1),
+        SmokeCheck("operator-governed-metadata-release-integrity-v1", "install", 107, check_operator_governed_metadata_release_integrity_v1),
+        SmokeCheck("operator-governed-authorization-firewall-signal-triage-v1", "install", 108, check_operator_governed_authorization_firewall_signal_triage_v1),
+        SmokeCheck("operator-governed-route-surface-parity-v1", "install", 109, check_operator_governed_route_surface_parity_v1),
+        SmokeCheck("operator-governed-self-maintenance-duplicate-shadow-cleanup-v1", "install", 110, check_operator_governed_self_maintenance_duplicate_shadow_cleanup_v1),
+        SmokeCheck("operator-governed-documentation-continuity-header-v1", "install", 111, check_operator_governed_documentation_continuity_header_v1),
+        SmokeCheck("operator-invoked-read-only-observation-prep-v1", "install", 112, check_operator_invoked_read_only_observation_prep_v1),
+        SmokeCheck("operator-governed-observation-ledger-boundary-v1", "install", 113, check_operator_governed_observation_ledger_boundary_v1),
+        SmokeCheck("operator-governed-observation-proposal-queue-v1", "install", 114, check_operator_governed_observation_proposal_queue_v1),
+        SmokeCheck("operator-governed-sandbox-autonomy-boundary-prep-v1", "install", 115, check_operator_governed_sandbox_autonomy_boundary_prep_v1),
+        SmokeCheck("operator-governed-autonomy-readiness-review-board-v1", "install", 116, check_operator_governed_autonomy_readiness_review_board_v1),
         SmokeCheck("self-maintenance", "install", 90, check_self_maintenance),
     ]
+    if not include_v405:
+        checks = [check for check in checks if check.name != "operator-governed-segmented-install-smoke-audit-v1"]
+    return checks
 
+
+
+
+def check_operator_governed_observation_ledger_boundary_v1() -> bool:
+    try:
+        import observation_ledger_boundary as olb
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_observation_ledger_boundary_v1
+        if SELF_MAINTENANCE_VERSION != "500.0" or olb.OPERATOR_OBSERVATION_LEDGER_BOUNDARY_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/observation_ledger_boundary.py",
+            "conscious_agent/operator_observation_prep.py", "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py",
+            "conscious_agent/dashboard_route_probe.py", "conscious_agent/source_surface_manifest.py", "conscious_agent/api_server.py",
+            "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+        ] if (PROJECT_ROOT / rel).exists())
+        schema = olb.build_observation_ledger_schema(PROJECT_ROOT)
+        receipt = olb.build_observation_receipt_builder(PROJECT_ROOT)
+        stop_pause = olb.build_observation_stop_pause_semantics(PROJECT_ROOT)
+        hidden = olb.build_hidden_scheduling_continuation_audit(PROJECT_ROOT)
+        audit = olb.build_observation_ledger_boundary_audit(PROJECT_ROOT, docs)
+        report = build_operator_governed_observation_ledger_boundary_v1(project_id="eidolon-smoke", save=False)
+        if not all(item.get("ok") is True for item in [schema, receipt, stop_pause, hidden, audit, report]):
+            return False
+        false_keys = [
+            "ledger_presence_is_approval", "ledger_completeness_is_authorization", "observation_history_permits_future_action",
+            "receipt_is_approval", "hidden_scheduling_allowed", "automatic_continuation_allowed", "daily_loop_allowed",
+            "hourly_loop_allowed", "auto_roadmap_selection_allowed", "auto_patch_packet_generation_allowed",
+            "auto_promotion_from_observation_allowed", "source_mutation_allowed", "memory_mutation_allowed", "approval_creation_allowed",
+            "writes_files", "writes_memory", "updates_metadata", "creates_schedule", "invokes_models", "applies_patches",
+            "publishes_releases", "creates_approval", "continues_automatically", "expands_autonomy",
+        ]
+        for key in false_keys:
+            if report.get(key) is not False:
+                return False
+        if report.get("operator_invocation_required") is not True or report.get("operator_approval_still_required") is not True:
+            return False
+        required = [
+            "observation-ledger-schema", "observation-receipt-builder", "observation-stop-pause-semantics", "hidden-scheduling-continuation-audit", "observation-ledger-boundary-audit",
+            "operator-governed-observation-ledger-boundary-v1", "observation_ledger_boundary.py", "Ledger presence is not approval", "Ledger completeness is not authorization", "Observation history does not permit future action", "Receipt is not approval",
+            "paused means no future observation run may be prepared automatically", "stopped means observation prep must require fresh operator invocation", "resume requires explicit operator action", "pause/stop does not delete historical receipts", "pause/stop does not authorize cleanup or mutation",
+            "ledger_presence_is_approval=False", "ledger_completeness_is_authorization=False", "observation_history_permits_future_action=False", "receipt_is_approval=False", "hidden_scheduling_allowed=False", "automatic_continuation_allowed=False", "daily_loop_allowed=False", "hourly_loop_allowed=False", "auto_roadmap_selection_allowed=False", "auto_patch_packet_generation_allowed=False", "auto_promotion_from_observation_allowed=False", "source_mutation_allowed=False", "memory_mutation_allowed=False", "approval_creation_allowed=False", "operator_invocation_required=True", "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/observation-ledger-schema", "/observation-receipt-builder", "/observation-stop-pause-semantics", "/hidden-scheduling-continuation-audit", "/observation-ledger-boundary-audit"]):
+            return False
+        print("[ok] operator-governed observation ledger boundary v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed observation ledger boundary v1: {error}")
+        return False
+
+
+def check_operator_governed_observation_proposal_queue_v1() -> bool:
+    try:
+        import observation_proposal_queue as opq
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_observation_proposal_queue_v1
+        if SELF_MAINTENANCE_VERSION != "500.0" or opq.OBSERVATION_PROPOSAL_QUEUE_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/observation_proposal_queue.py",
+            "conscious_agent/observation_ledger_boundary.py", "conscious_agent/operator_observation_prep.py", "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py",
+            "conscious_agent/dashboard_route_probe.py", "conscious_agent/source_surface_manifest.py", "conscious_agent/api_server.py",
+            "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+        ] if (PROJECT_ROOT / rel).exists())
+        mapper = opq.build_observation_to_proposal_candidate_mapper(PROJECT_ROOT)
+        schema = opq.build_proposal_queue_schema(PROJECT_ROOT)
+        ranking = opq.build_proposal_ranking_risk_notes(PROJECT_ROOT)
+        non_execution = opq.build_proposal_queue_non_execution_audit(PROJECT_ROOT)
+        audit = opq.build_observation_proposal_queue_audit(PROJECT_ROOT, docs)
+        report = build_operator_governed_observation_proposal_queue_v1(project_id="eidolon-smoke", save=False)
+        if not all(item.get("ok") is True for item in [mapper, schema, ranking, non_execution, audit, report]):
+            return False
+        false_keys = [
+            "mapping_is_approval", "proposal_candidate_is_execution_packet", "candidate_queue_is_authorization",
+            "queue_presence_is_approval", "queue_ranking_is_authorization", "highest_ranked_proposal_auto_selected",
+            "approved_for_packet_drafting_only_is_live_execution", "source_mutation_allowed", "memory_mutation_allowed",
+            "schedule_creation_allowed", "model_invocation_by_default_allowed", "execution_packet_creation_allowed",
+            "patch_application_allowed", "proposal_approval_allowed", "automatic_continuation_allowed",
+            "observation_promotes_to_live_change", "writes_files", "writes_memory", "updates_metadata",
+            "creates_schedule", "invokes_models", "creates_execution_packet", "applies_patches", "approves_proposals",
+            "creates_approval", "continues_automatically", "executes_actions", "expands_autonomy",
+        ]
+        for key in false_keys:
+            if report.get(key) is not False:
+                return False
+        if report.get("operator_review_required") is not True or report.get("fresh_operator_approval_required") is not True or report.get("operator_approval_still_required") is not True:
+            return False
+        if report.get("authorization_status") != "not_authorized":
+            return False
+        required = [
+            "observation-to-proposal-candidate-mapper", "proposal-queue-schema", "proposal-ranking-risk-notes", "proposal-queue-non-execution-audit", "observation-proposal-queue-audit",
+            "operator-governed-observation-proposal-queue-v1", "observation_proposal_queue.py",
+            "mapping_is_approval=False", "proposal_candidate_is_execution_packet=False", "candidate_queue_is_authorization=False", "queue_presence_is_approval=False", "queue_ranking_is_authorization=False", "highest_ranked_proposal_auto_selected=False", "approved_for_packet_drafting_only_is_live_execution=False", "source_mutation_allowed=False", "memory_mutation_allowed=False", "schedule_creation_allowed=False", "model_invocation_by_default_allowed=False", "execution_packet_creation_allowed=False", "patch_application_allowed=False", "proposal_approval_allowed=False", "automatic_continuation_allowed=False", "observation_promotes_to_live_change=False", "operator_review_required=True", "fresh_operator_approval_required=True", "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/observation-to-proposal-candidate-mapper", "/proposal-queue-schema", "/proposal-ranking-risk-notes", "/proposal-queue-non-execution-audit", "/observation-proposal-queue-audit"]):
+            return False
+        print("[ok] operator-governed observation proposal queue v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed observation proposal queue v1: {error}")
+        return False
+
+def check_operator_governed_minimal_live_change_replay_and_regression_hardening_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import minimal_live_change_replay as mlcr
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_minimal_live_change_replay_and_regression_hardening_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if mlcr.MINIMAL_LIVE_CHANGE_REPLAY_VERSION != "500.0":
+            return False
+        report = build_operator_governed_minimal_live_change_replay_and_regression_hardening_v1(
+            project_id="eidolon-smoke",
+            improvement_goal="harden minimal approved live change replay, expected-vs-actual comparison, regression drift detection, recovery recommendation, and final audit without automatic replay, source edits, rollback execution, or autonomy expansion",
+            save=False,
+        )
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/minimal_live_change_replay.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["minimal-live-change-replay-packet", "minimal-live-change-expected-actual-comparison", "minimal-live-change-regression-drift-detector", "minimal-live-change-recovery-recommendation", "minimal-live-change-replay-regression-audit", "operator-governed-minimal-live-change-replay-and-regression-hardening-v1", "minimal_live_change_replay.py", "replay_packet_applies_change=False", "expected_actual_writes_files=False", "regression_detector_auto_fixes=False", "recovery_recommendation_executes_rollback=False", "dashboard_http_route_probe_required"]
+        if not all(token in docs for token in required):
+            return False
+        for token in ["data/autonomy/minimal_live_change_replay_packet/", "data/autonomy/minimal_live_change_expected_actual_comparison/", "data/autonomy/minimal_live_change_regression_drift_detector/", "data/autonomy/minimal_live_change_recovery_recommendation/", "data/autonomy/minimal_live_change_replay_regression_audit/"]:
+            if token not in docs:
+                return False
+        if len(sm.MINIMAL_LIVE_CHANGE_REPLAY_STAGE_DEFS) != 50:
+            return False
+        payload = report.get("payload", {})
+        boundaries = payload.get("boundaries", {})
+        false_keys = [key for key, value in sm.MINIMAL_LIVE_CHANGE_REPLAY_LAYER_BOUNDARIES.items() if value is False]
+        true_keys = [key for key, value in sm.MINIMAL_LIVE_CHANGE_REPLAY_LAYER_BOUNDARIES.items() if value is True]
+        if any(boundaries.get(key) is not False for key in false_keys):
+            return False
+        if any(boundaries.get(key) is not True for key in true_keys):
+            return False
+        replay = mlcr.build_minimal_live_change_replay_packet_summary(request_text="replay automatically and write files", evidence={})
+        if replay.get("applies_change") is not False or replay.get("replays_automatically") is not False or replay.get("status") != "blocked":
+            return False
+        comparison = mlcr.build_minimal_live_change_expected_actual_comparison_summary(request_text="review only", evidence={"expected_changed_files":["README_NEXT_STEPS.md"], "actual_changed_files":["README_NEXT_STEPS.md", "conscious_agent/chat.py"]})
+        if comparison.get("writes_files") is not False or comparison.get("treats_match_as_approval") is not False or comparison.get("status") != "blocked":
+            return False
+        drift = mlcr.build_minimal_live_change_regression_drift_detector_summary(docs, request_text="invoke local model by default", evidence={})
+        if drift.get("changes_behavior") is not False or drift.get("auto_fixes") is not False or drift.get("invokes_models") is not False or drift.get("status") != "blocked":
+            return False
+        recovery = mlcr.build_minimal_live_change_recovery_recommendation_summary(request_text="execute rollback and create release candidate", evidence={"detected_issues":["unexpected file changed"]})
+        if recovery.get("executes_rollback") is not False or recovery.get("edits_files") is not False or recovery.get("creates_release_candidate") is not False or recovery.get("status") != "blocked":
+            return False
+        audit = mlcr.build_minimal_live_change_replay_regression_audit_summary(PROJECT_ROOT, docs, request_text="review only", evidence={"original_candidate_id":"c", "approval_lock_id":"a", "transaction_id":"t", "application_harness_id":"h", "audit_id":"au", "expected_touched_files":["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "tools/smoke_check.py"], "expected_unchanged_files":["memory stores", "identity source of truth"], "expected_readme_update":True, "expected_release_history_update":True, "expected_version_update":True, "expected_smoke_checks":["fast"], "expected_rollback_packet":"rollback", "expected_changed_files":["README_NEXT_STEPS.md"], "actual_changed_files":["README_NEXT_STEPS.md"]})
+        if audit.get("mutates_memory") is not False or audit.get("alters_identity") is not False or audit.get("alters_personality") is not False or audit.get("continues_automatically") is not False:
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/minimal-live-change-replay-packet", "/minimal-live-change-expected-actual-comparison", "/minimal-live-change-regression-drift-detector", "/minimal-live-change-recovery-recommendation", "/minimal-live-change-replay-regression-audit"]):
+            return False
+        return bool(report.get("ok"))
+    except Exception as error:
+        print(f"[fail] operator-governed minimal live change replay and regression hardening v1: {error}")
+        return False
+
+
+
+def check_operator_governed_self_maintenance_modular_extraction_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import self_maintenance_modular_extraction as smme
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_self_maintenance_modular_extraction_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if smme.SELF_MAINTENANCE_MODULAR_EXTRACTION_VERSION != "500.0":
+            return False
+        report = build_operator_governed_self_maintenance_modular_extraction_v1(
+            project_id="eidolon-smoke",
+            improvement_goal="extract version/package, surface, and governance gate helpers from self-maintenance into focused review-only modules without behavior expansion or autonomy expansion",
+            save=False,
+        )
+        text_files = []
+        for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/self_maintenance_modular_extraction.py", "conscious_agent/self_maintenance_version_package_gates.py", "conscious_agent/self_maintenance_surface_gates.py", "conscious_agent/self_maintenance_governance_gates.py"]:
+            text_files.append((PROJECT_ROOT / rel).read_text(encoding="utf-8"))
+        docs = "\n".join(text_files)
+        required = ["self-maintenance-module-extraction-plan", "self-maintenance-version-package-gates", "self-maintenance-surface-gates", "self-maintenance-governance-gates", "self-maintenance-modular-extraction-audit", "operator-governed-self-maintenance-modular-extraction-v1", "self_maintenance_modular_extraction.py", "self_maintenance_version_package_gates.py", "self_maintenance_surface_gates.py", "self_maintenance_governance_gates.py", "modular_extraction_applies_live_patches=False", "version_package_gate_extraction_present=True", "surface_gate_extraction_present=True", "governance_gate_extraction_present=True", "dashboard_http_route_probe_required"]
+        if not all(token in docs for token in required):
+            return False
+        for token in ["data/autonomy/self_maintenance_module_extraction_plan/", "data/autonomy/self_maintenance_version_package_gates/", "data/autonomy/self_maintenance_surface_gates/", "data/autonomy/self_maintenance_governance_gates/", "data/autonomy/self_maintenance_modular_extraction_audit/"]:
+            if token not in docs:
+                return False
+        if len(sm.SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS) != 50:
+            return False
+        payload = report.get("payload", {})
+        boundaries = payload.get("boundaries", {})
+        false_keys = [key for key, value in sm.SELF_MAINTENANCE_MODULAR_EXTRACTION_LAYER_BOUNDARIES.items() if value is False]
+        true_keys = [key for key, value in sm.SELF_MAINTENANCE_MODULAR_EXTRACTION_LAYER_BOUNDARIES.items() if value is True]
+        if any(boundaries.get(key) is not False for key in false_keys):
+            return False
+        if any(boundaries.get(key) is not True for key in true_keys):
+            return False
+        audit = smme.build_modular_extraction_audit_summary(PROJECT_ROOT, docs, "500.0")
+        if audit.get("ok") is not True or audit.get("boundaries_ok") is not True:
+            return False
+        version_package = smme.build_version_package_gate_extraction_summary(PROJECT_ROOT, "500.0")
+        if version_package.get("writes_files") is not False or version_package.get("ok") is not True:
+            return False
+        surface = smme.build_surface_gate_extraction_summary()
+        if surface.get("writes_routes") is not False or surface.get("ok") is not True:
+            return False
+        governance = smme.build_governance_gate_extraction_summary()
+        if governance.get("writes_files") is not False or governance.get("ok") is not True:
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/self-maintenance-module-extraction-plan", "/self-maintenance-version-package-gates", "/self-maintenance-surface-gates", "/self-maintenance-governance-gates", "/self-maintenance-modular-extraction-audit"]):
+            return False
+        return bool(report.get("ok"))
+    except Exception as error:
+        print(f"[fail] operator-governed self-maintenance modular extraction v1: {error}")
+        return False
+
+
+def check_operator_governed_segmented_install_smoke_audit_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import smoke_segment_registry as ssr
+        import memory_candidate_application_trial as mcat
+        if sm.SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if ssr.SMOKE_SEGMENT_REGISTRY_VERSION != "500.0" or mcat.MEMORY_CANDIDATE_APPLICATION_TRIAL_VERSION != "500.0":
+            return False
+        missing = mcat.build_operator_confirmed_memory_application_trial_summary("review only", {})
+        wrong = mcat.build_operator_confirmed_memory_application_trial_summary("review only", {"operator_confirmation_phrase":"wrong phrase"})
+        exact = mcat.build_operator_confirmed_memory_application_trial_summary("review only", {"operator_confirmation_phrase":mcat.EXPECTED_MEMORY_CONFIRMATION_PHRASE})
+        if missing.get("status") != "blocked" or "explicit_confirmation_supplied" not in missing.get("blockers", []):
+            return False
+        if wrong.get("status") != "blocked" or wrong.get("checks", {}).get("operator_confirmation_phrase_exact") is not False:
+            return False
+        if exact.get("status") == "blocked" or exact.get("checks", {}).get("explicit_confirmation_supplied") is not True:
+            return False
+        checks = [{"name": c.name, "tier": c.tier, "segment": _segment_for_check(c)} for c in _build_checks(include_v405=False)]
+        registry = ssr.build_smoke_segment_registry_summary(checks)
+        if registry.get("ok") is not True or registry.get("segment_count", 0) < 8:
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8") for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/smoke_segment_registry.py", "tools/smoke_check.py", "conscious_agent/self_maintenance.py"])
+        audit = ssr.build_segmented_install_smoke_audit_summary(registry, docs)
+        if audit.get("ok") is not True or audit.get("applies_patches") is not False or audit.get("writes_memory") is not False:
+            return False
+        report = sm.build_operator_governed_segmented_install_smoke_audit_v1(project_id="eidolon-smoke", save=False)
+        if report.get("ok") is not True:
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/memory-application-confirmation-gate", "/memory-application-negative-tests", "/smoke-segment-registry", "/install-smoke-segment-runner", "/segmented-install-smoke-audit"]):
+            return False
+        print("[ok] operator-governed segmented install smoke audit v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed segmented install smoke audit v1: {error}")
+        return False
+
+
+def check_operator_governed_memory_application_dry_run_ledger_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import memory_application_dry_run_ledger as ledger
+        if sm.SELF_MAINTENANCE_VERSION != "500.0" or ledger.MEMORY_APPLICATION_DRY_RUN_LEDGER_VERSION != "500.0":
+            return False
+        exact = {"operator_confirmation_phrase": ledger.EXPECTED_MEMORY_CONFIRMATION_PHRASE}
+        missing = ledger.build_memory_application_dry_run_attempt_summary("review only", {})
+        wrong = ledger.build_memory_application_dry_run_attempt_summary("review only", {"operator_confirmation_phrase":"wrong phrase"})
+        good = ledger.build_memory_application_dry_run_attempt_summary("review only", exact)
+        if missing.get("status") != "blocked" or wrong.get("status") != "blocked" or good.get("ok") is not True:
+            return False
+        if good.get("writes_memory") is not False:
+            return False
+        entry = ledger.build_memory_application_dry_run_ledger_entry_summary("review only", exact)
+        replay = ledger.build_memory_application_ledger_replay_summary(entry.get("ledger_entry", {}), exact)
+        drift = ledger.build_memory_application_ledger_replay_summary(entry.get("ledger_entry", {}), {"operator_confirmation_phrase": ledger.EXPECTED_MEMORY_CONFIRMATION_PHRASE, "candidate":{"candidate_id":"changed-candidate"}})
+        if entry.get("ok") is not True or entry.get("writes_memory") is not False:
+            return False
+        if replay.get("ok") is not True or drift.get("status") != "blocked" or drift.get("replay_accepts_drift") is not False:
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8") for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/memory_application_dry_run_ledger.py", "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "tools/smoke_check.py"])
+        audit = ledger.build_memory_application_ledger_audit_summary(docs, replay)
+        if audit.get("ok") is not True or audit.get("writes_memory") is not False or audit.get("applies_patches") is not False:
+            return False
+        report = sm.build_operator_governed_memory_application_dry_run_ledger_v1(project_id="eidolon-smoke", save=False)
+        if report.get("ok") is not True:
+            return False
+        required = ["memory-application-attempt-ledger-schema", "memory-application-dry-run-ledger", "memory-application-ledger-replay", "memory-application-ledger-surfaces", "memory-application-ledger-audit", "operator-governed-memory-application-dry-run-ledger-v1", "ledger_writes_live_memory=False", "replay_accepts_drift=False", "audit_writes_memory=False", "data-tip", "no_native_title_tooltip"]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/memory-application-attempt-ledger-schema", "/memory-application-dry-run-ledger", "/memory-application-ledger-replay", "/memory-application-ledger-surfaces", "/memory-application-ledger-audit"]):
+            return False
+        print("[ok] operator-governed memory application dry-run ledger v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed memory application dry-run ledger v1: {error}")
+        return False
+
+
+def check_operator_governed_sandbox_memory_write_target_v1() -> bool:
+    try:
+        import tempfile
+        from pathlib import Path as _Path
+        import self_maintenance as sm
+        import sandbox_memory_write_target as sandbox
+        if sm.SELF_MAINTENANCE_VERSION != "500.0" or sandbox.SANDBOX_MEMORY_WRITE_TARGET_VERSION != "500.0":
+            return False
+        exact = {"operator_confirmation_phrase": sandbox.EXPECTED_MEMORY_CONFIRMATION_PHRASE}
+        with tempfile.TemporaryDirectory(prefix="eidolon_v415_smoke_") as tmp:
+            tmp_root = _Path(tmp)
+            schema = sandbox.build_sandbox_memory_target_schema_summary(tmp_root)
+            transaction = sandbox.build_sandbox_memory_write_transaction_summary(tmp_root, evidence=exact)
+            trial = sandbox.execute_sandbox_memory_write_trial(tmp_root, evidence=exact)
+            retraction = sandbox.build_sandbox_memory_retraction_preview_summary(trial, tmp_root)
+            bad_target = sandbox.build_sandbox_memory_target_schema_summary(tmp_root, tmp_root / "memory.json")
+            if schema.get("ok") is not True or schema.get("live_memory_allowed") is not False:
+                return False
+            if transaction.get("ok") is not True or transaction.get("writes_live_memory") is not False:
+                return False
+            if trial.get("ok") is not True or trial.get("executed") is not True or trial.get("writes_live_memory") is not False:
+                return False
+            if trial.get("pre_write_hash") == trial.get("post_write_hash"):
+                return False
+            if retraction.get("ok") is not True or retraction.get("retraction_executes_live_memory") is not False:
+                return False
+            if bad_target.get("ok") is not False:
+                return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8") for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/sandbox_memory_write_target.py", "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "tools/smoke_check.py"])
+        audit = sandbox.build_sandbox_memory_write_audit_summary(docs)
+        if audit.get("ok") is not True or audit.get("writes_live_memory") is not False or audit.get("applies_patches") is not False:
+            return False
+        report = sm.build_operator_governed_sandbox_memory_write_target_v1(project_id="eidolon-smoke", save=False)
+        if report.get("ok") is not True:
+            return False
+        required = ["sandbox-memory-target-schema", "sandbox-memory-write-transaction", "sandbox-memory-write-trial", "sandbox-memory-retraction-preview", "sandbox-memory-write-audit", "operator-governed-sandbox-memory-write-target-v1", "sandbox_write_target_writes_live_memory=False", "sandbox_trial_accepts_non_sandbox_path=False", "sandbox_retraction_executes_live_retraction=False", "data-tip", "no_native_title_tooltip"]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/sandbox-memory-target-schema", "/sandbox-memory-write-transaction", "/sandbox-memory-write-trial", "/sandbox-memory-retraction-preview", "/sandbox-memory-write-audit"]):
+            return False
+        print("[ok] operator-governed sandbox memory write target v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed sandbox memory write target v1: {error}")
+        return False
+
+
+def check_operator_governed_live_memory_write_burnout_v1() -> bool:
+    try:
+        import tempfile
+        from pathlib import Path as _Path
+        import self_maintenance as sm
+        import live_memory_write_trial as live
+        if sm.SELF_MAINTENANCE_VERSION != "500.0" or live.LIVE_MEMORY_WRITE_TRIAL_VERSION != "500.0":
+            return False
+        exact = {"operator_confirmation_phrase": live.EXPECTED_MEMORY_CONFIRMATION_PHRASE}
+        with tempfile.TemporaryDirectory(prefix="eidolon_v420_smoke_") as tmp:
+            tmp_root = _Path(tmp)
+            eligibility = live.build_live_memory_write_eligibility_summary(tmp_root, exact)
+            approval_lock = live.build_live_memory_approval_lock_summary(tmp_root, exact)
+            preview = live.build_live_memory_transaction_preview_summary(tmp_root, evidence=exact)
+            trial = live.execute_operator_confirmed_live_memory_write_trial(tmp_root, evidence=exact)
+            reuse_block = live.execute_operator_confirmed_live_memory_write_trial(tmp_root, evidence={**exact, "approval_reused": True})
+            wrong_phrase = live.execute_operator_confirmed_live_memory_write_trial(tmp_root, evidence={"operator_confirmation_phrase":"wrong"})
+            bad_target = live.build_live_memory_transaction_preview_summary(tmp_root, tmp_root / "memory.json", exact)
+            if eligibility.get("ok") is not True or eligibility.get("eligibility_is_approval") is not False or eligibility.get("writes_memory") is not False:
+                return False
+            if approval_lock.get("ok") is not True or approval_lock.get("approval_lock_reuses_approval") is not False:
+                return False
+            if preview.get("ok") is not True or preview.get("writes_memory") is not False:
+                return False
+            if trial.get("ok") is not True or trial.get("executed") is not True or trial.get("writes_memory") is not True:
+                return False
+            if trial.get("approval_burnout", {}).get("burned_out") is not True or trial.get("approval_burnout", {}).get("reuse_allowed") is not False:
+                return False
+            if trial.get("pre_write_hash") == trial.get("post_write_hash"):
+                return False
+            if reuse_block.get("ok") is not False or wrong_phrase.get("ok") is not False or bad_target.get("ok") is not False:
+                return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8") for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/live_memory_write_trial.py", "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "tools/smoke_check.py"])
+        audit = live.build_live_memory_write_audit_summary(docs)
+        if audit.get("ok") is not True or audit.get("grants_future_authorization") is not False or audit.get("expands_autonomy") is not False:
+            return False
+        report = sm.build_operator_governed_live_memory_write_burnout_v1(project_id="eidolon-smoke", save=False)
+        if report.get("ok") is not True:
+            return False
+        required = ["live-memory-write-eligibility", "live-memory-approval-lock", "live-memory-transaction-preview", "operator-confirmed-live-memory-write-trial", "live-memory-write-audit", "operator-governed-live-memory-write-burnout-v1", "eligibility_is_approval=False", "sandbox_success_is_approval=False", "approval_burnout_required=True", "audit_grants_future_authorization=False", "data-tip", "no_native_title_tooltip"]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/live-memory-write-eligibility", "/live-memory-approval-lock", "/live-memory-transaction-preview", "/operator-confirmed-live-memory-write-trial", "/live-memory-write-audit"]):
+            return False
+        print("[ok] operator-governed live memory write burnout v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed live memory write burnout v1: {error}")
+        return False
+
+
+
+def check_operator_governed_memory_retraction_trial_v1() -> bool:
+    try:
+        import tempfile
+        from pathlib import Path
+        import self_maintenance as sm
+        import memory_retraction_trial as retract
+        exact = {"operator_retraction_confirmation_phrase": retract.EXPECTED_MEMORY_RETRACTION_CONFIRMATION_PHRASE}
+        with tempfile.TemporaryDirectory(prefix="eidolon_v425_smoke_") as tmp:
+            tmp_root = Path(tmp)
+            eligibility = retract.build_memory_retraction_eligibility_summary(tmp_root, exact)
+            approval_lock = retract.build_memory_retraction_approval_lock_summary(tmp_root, exact)
+            preview = retract.build_memory_retraction_transaction_preview_summary(tmp_root, evidence=exact)
+            trial = retract.execute_operator_confirmed_memory_retraction_trial(tmp_root, evidence=exact)
+            reuse_block = retract.execute_operator_confirmed_memory_retraction_trial(tmp_root, evidence={**exact, "retraction_approval_reused": True})
+            wrong_phrase = retract.execute_operator_confirmed_memory_retraction_trial(tmp_root, evidence={"operator_retraction_confirmation_phrase":"wrong"})
+            batch_block = retract.execute_operator_confirmed_memory_retraction_trial(tmp_root, evidence={**exact, "batch_retraction": True})
+            fuzzy_block = retract.execute_operator_confirmed_memory_retraction_trial(tmp_root, evidence={**exact, "fuzzy_match": True})
+            bad_target = retract.build_memory_retraction_transaction_preview_summary(tmp_root, tmp_root / "memory.json", exact)
+            if eligibility.get("ok") is not True or eligibility.get("retraction_eligibility_is_approval") is not False or eligibility.get("writes_memory") is not False:
+                return False
+            if approval_lock.get("ok") is not True or approval_lock.get("approval_lock", {}).get("write_approval_authorizes_retraction") is not False:
+                return False
+            if preview.get("ok") is not True or preview.get("deletes_memory") is not False:
+                return False
+            if trial.get("ok") is not True or trial.get("executed") is not True or trial.get("retained_audit_record") is not True:
+                return False
+            if trial.get("physical_delete") is not False or trial.get("deletes_memory") is not False:
+                return False
+            if trial.get("approval_burnout", {}).get("burned_out") is not True or trial.get("approval_burnout", {}).get("reuse_allowed") is not False:
+                return False
+            if trial.get("pre_retraction_hash") == trial.get("post_retraction_hash"):
+                return False
+            if reuse_block.get("ok") is not False or wrong_phrase.get("ok") is not False or batch_block.get("ok") is not False or fuzzy_block.get("ok") is not False or bad_target.get("ok") is not False:
+                return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8") for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/memory_retraction_trial.py", "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "tools/smoke_check.py"])
+        audit = retract.build_memory_retraction_trial_audit_summary(docs)
+        if audit.get("ok") is not True or audit.get("grants_future_authorization") is not False or audit.get("expands_autonomy") is not False:
+            return False
+        report = sm.build_operator_governed_memory_retraction_trial_v1(project_id="eidolon-smoke", save=False)
+        if report.get("ok") is not True:
+            return False
+        required = ["memory-retraction-eligibility", "memory-retraction-approval-lock", "memory-retraction-transaction-preview", "operator-confirmed-memory-retraction-trial", "memory-retraction-trial-audit", "operator-governed-memory-retraction-trial-v1", "write_approval_authorizes_retraction=False", "retraction_eligibility_is_approval=False", "retained_audit_record_required=True", "audit_grants_future_retraction_authority=False", "data-tip", "no_native_title_tooltip"]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/memory-retraction-eligibility", "/memory-retraction-approval-lock", "/memory-retraction-transaction-preview", "/operator-confirmed-memory-retraction-trial", "/memory-retraction-trial-audit"]):
+            return False
+        print("[ok] operator-governed memory retraction trial v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed memory retraction trial v1: {error}")
+        return False
+
+
+def check_operator_governed_source_surface_manifest_v1() -> bool:
+    try:
+        import self_maintenance as sm
+        import source_surface_manifest as manifest
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_source_surface_manifest_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if manifest.SOURCE_SURFACE_MANIFEST_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/source_surface_manifest.py",
+            "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "tools/smoke_check.py"
+        ])
+        summary = manifest.build_source_surface_manifest_summary()
+        parity = manifest.build_source_surface_parity_audit_summary(docs)
+        authority = manifest.build_source_surface_authority_map_summary()
+        privacy = manifest.build_source_surface_package_privacy_map_summary()
+        audit = manifest.build_source_surface_manifest_audit_summary(docs)
+        if summary.get("ok") is not True or summary.get("entry_count", 0) < 7:
+            return False
+        if parity.get("ok") is not True or parity.get("parity_pass_is_authorization") is not False:
+            return False
+        if authority.get("ok") is not True or authority.get("authority_label_is_approval") is not False:
+            return False
+        if privacy.get("ok") is not True or privacy.get("manifest_writes_memory") is not False:
+            return False
+        if audit.get("ok") is not True or audit.get("grants_authorization") is not False or audit.get("expands_autonomy") is not False:
+            return False
+        report = build_operator_governed_source_surface_manifest_v1(project_id="eidolon-smoke", save=False)
+        if report.get("ok") is not True or report.get("manifest_presence_is_authorization") is not False:
+            return False
+        required = [
+            "source-surface-manifest", "source-surface-parity-audit", "source-surface-authority-map", "source-surface-package-privacy-map", "source-surface-manifest-audit",
+            "operator-governed-source-surface-manifest-v1", "source_surface_manifest.py",
+            "manifest_presence_is_authorization=False", "parity_pass_is_authorization=False", "authority_label_is_approval=False",
+            "surface_exists_means_may_execute=False", "smoke_pass_allows_live_action=False", "manifest_writes_files=False", "manifest_writes_memory=False",
+            "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/source-surface-manifest", "/source-surface-parity-audit", "/source-surface-authority-map", "/source-surface-package-privacy-map", "/source-surface-manifest-audit"]):
+            return False
+        print("[ok] operator-governed source surface manifest v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed source surface manifest v1: {error}")
+        return False
+
+
+def check_operator_governed_self_maintenance_duplicate_cleanup_v1() -> bool:
+    try:
+        import duplicate_definition_audit as dda
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_self_maintenance_duplicate_cleanup_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if dda.DUPLICATE_DEFINITION_AUDIT_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/duplicate_definition_audit.py",
+            "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "tools/smoke_check.py"
+        ])
+        inventory = dda.build_duplicate_definition_inventory(PROJECT_ROOT)
+        classification = dda.build_self_maintenance_duplicate_classification(PROJECT_ROOT)
+        extraction = dda.build_self_maintenance_extraction_candidates(PROJECT_ROOT)
+        guard = dda.build_duplicate_definition_guard(PROJECT_ROOT)
+        audit = dda.build_self_maintenance_duplicate_cleanup_audit(PROJECT_ROOT, docs)
+        if inventory.get("ok") is not True or inventory.get("inventory_is_authorization_to_delete") is not False:
+            return False
+        if classification.get("ok") is not True or classification.get("classification_is_authorization_to_delete") is not False:
+            return False
+        if extraction.get("ok") is not True or extraction.get("extraction_plan_is_authorization") is not False:
+            return False
+        if guard.get("ok") is not True or guard.get("guard_applies_source_edits") is not False:
+            return False
+        if audit.get("ok") is not True or audit.get("applies_source_edits") is not False or audit.get("expands_autonomy") is not False:
+            return False
+        report = build_operator_governed_self_maintenance_duplicate_cleanup_v1(project_id="eidolon-smoke", save=False)
+        if report.get("ok") is not True or report.get("grants_deletion_authority") is not False:
+            return False
+        required = [
+            "duplicate-definition-inventory", "self-maintenance-duplicate-classification", "self-maintenance-extraction-candidates",
+            "duplicate-definition-guard", "self-maintenance-duplicate-cleanup-audit", "operator-governed-self-maintenance-duplicate-cleanup-v1",
+            "duplicate_definition_audit.py", "inventory_is_authorization_to_delete=False", "classification_is_authorization_to_delete=False",
+            "guard_applies_source_edits=False", "guard_executes_refactors=False", "cleanup_expands_autonomy=False",
+            "operator_review_required_before_removal=True", "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/duplicate-definition-inventory", "/self-maintenance-duplicate-classification", "/self-maintenance-extraction-candidates", "/duplicate-definition-guard", "/self-maintenance-duplicate-cleanup-audit"]):
+            return False
+        print("[ok] operator-governed self-maintenance duplicate cleanup v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed self-maintenance duplicate cleanup v1: {error}")
+        return False
+
+
+def check_operator_governed_dashboard_route_health_audit_v1() -> bool:
+    try:
+        import dashboard_route_probe as drp
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_dashboard_route_health_audit_v1
+        if SELF_MAINTENANCE_VERSION != "500.0":
+            return False
+        if drp.DASHBOARD_ROUTE_PROBE_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard_route_probe.py",
+            "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "tools/smoke_check.py"
+        ])
+        inventory = drp.build_dashboard_route_inventory(PROJECT_ROOT)
+        probe = drp.build_dashboard_route_probe(PROJECT_ROOT)
+        lazy = drp.build_dashboard_lazy_render_audit(PROJECT_ROOT)
+        tooltip = drp.build_dashboard_tooltip_regression_audit(PROJECT_ROOT)
+        audit = drp.build_dashboard_route_health_audit(PROJECT_ROOT, docs)
+        if inventory.get("ok") is not True or inventory.get("route_presence_is_authorization") is not False:
+            return False
+        if probe.get("ok") is not True or probe.get("route_health_is_approval") is not False:
+            return False
+        if lazy.get("ok") is not True or lazy.get("lazy_audit_refactors_dashboard") is not False:
+            return False
+        if tooltip.get("ok") is not True or tooltip.get("tooltip_audit_reintroduces_native_title") is not False:
+            return False
+        if audit.get("ok") is not True or audit.get("writes_files") is not False or audit.get("expands_autonomy") is not False:
+            return False
+        report = build_operator_governed_dashboard_route_health_audit_v1(project_id="eidolon-smoke", save=False)
+        if report.get("ok") is not True or report.get("route_health_is_approval") is not False:
+            return False
+        required = [
+            "dashboard-route-inventory", "dashboard-route-probe", "dashboard-lazy-render-audit",
+            "dashboard-tooltip-regression-audit", "dashboard-route-health-audit", "operator-governed-dashboard-route-health-audit-v1",
+            "dashboard_route_probe.py", "route_presence_is_authorization=False", "route_health_is_approval=False",
+            "probe_executes_governed_actions=False", "lazy_audit_refactors_dashboard=False", "tooltip_audit_reintroduces_native_title=False",
+            "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/dashboard-route-inventory", "/dashboard-route-probe", "/dashboard-lazy-render-audit", "/dashboard-tooltip-regression-audit", "/dashboard-route-health-audit", "/api-info"]):
+            return False
+        print("[ok] operator-governed dashboard route health audit v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed dashboard route health audit v1: {error}")
+        return False
 
 _TIER_ORDER = {
     "fast": {"fast"},
@@ -3383,6 +4828,28 @@ _TIER_ORDER = {
     "full": {"fast", "loop", "readiness", "build", "patch", "release", "install"},
 }
 
+
+
+def _segment_for_check(check: SmokeCheck) -> str:
+    try:
+        import smoke_segment_registry as ssr
+        return ssr.classify_check_name(check.name, check.tier)
+    except Exception:
+        return "install-core"
+
+
+def _segment_names() -> list[str]:
+    try:
+        import smoke_segment_registry as ssr
+        return list(ssr.SMOKE_SEGMENT_NAMES)
+    except Exception:
+        return ["install-core", "install-release", "install-dashboard", "install-governance", "install-expression", "install-live-trial", "install-memory", "install-regression-recent"]
+
+
+def _select_checks_for_segment(segment: str) -> list[SmokeCheck]:
+    if segment == "all":
+        return _select_checks("install")
+    return [check for check in _select_checks("install") if _segment_for_check(check) == segment]
 
 def _select_checks(tier: str) -> list[SmokeCheck]:
     allowed = _TIER_ORDER.get(tier, _TIER_ORDER["full"])
@@ -3453,24 +4920,33 @@ def main() -> int:
     parser.add_argument("--single-check", help=argparse.SUPPRESS)
     parser.add_argument("--timeout-scale", type=float, default=1.0, help="Multiply each check timeout by this factor.")
     parser.add_argument("--list-checks", action="store_true", help="List check names, tiers, and timeouts.")
+    parser.add_argument("--segment", choices=["all", *_segment_names()], help="Run a bounded install smoke segment instead of an entire tier.")
+    parser.add_argument("--list-segments", action="store_true", help="List segmented install smoke groups and their check counts.")
     args = parser.parse_args()
+
+    if args.list_segments:
+        for segment in _segment_names():
+            count = len(_select_checks_for_segment(segment))
+            print(f"{segment}\t{count} check(s)", flush=True)
+        return 0
 
     if args.list_checks:
         for check in _build_checks():
-            print(f"{check.name}\t{check.tier}\t{check.timeout}s", flush=True)
+            print(f"{check.name}\t{check.tier}\t{check.timeout}s\t{_segment_for_check(check)}", flush=True)
         return 0
 
     if args.single_check:
         return _single_check(args.single_check)
 
-    selected = _select_checks(args.tier)
+    selected = _select_checks_for_segment(args.segment) if args.segment else _select_checks(args.tier)
     started = time.perf_counter()
     results = [_run_guarded_check(check, args.timeout_scale) for check in selected]
     elapsed = time.perf_counter() - started
     ok = all(bool(row.get("ok")) for row in results)
     summary = {
-        "version": "350.0",
+        "version": "500.0",
         "tier": args.tier,
+        "segment": args.segment,
         "status": "pass" if ok else "blocked",
         "ok": ok,
         "check_count": len(results),
@@ -3482,6 +4958,125 @@ def main() -> int:
     if args.json:
         os.write(1, (json.dumps(summary, indent=2) + "\n").encode("utf-8"))
     return 0 if ok else 1
+
+
+def check_operator_governed_sandbox_autonomy_boundary_prep_v1() -> bool:
+    try:
+        import sandbox_autonomy_boundary as sab
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_sandbox_autonomy_boundary_prep_v1
+        if SELF_MAINTENANCE_VERSION != "500.0" or sab.SANDBOX_AUTONOMY_BOUNDARY_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/sandbox_autonomy_boundary.py",
+            "conscious_agent/observation_proposal_queue.py", "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py",
+            "conscious_agent/dashboard_route_probe.py", "conscious_agent/source_surface_manifest.py", "conscious_agent/api_server.py",
+            "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+        ] if (PROJECT_ROOT / rel).exists())
+        scope = sab.build_sandbox_only_autonomy_scope_definition(PROJECT_ROOT)
+        packet = sab.build_sandbox_autonomy_trial_packet_builder(PROJECT_ROOT)
+        boundary = sab.build_sandbox_to_live_boundary_hardening(PROJECT_ROOT)
+        no_execution = sab.build_no_execution_sandbox_autonomy_audit(PROJECT_ROOT)
+        audit = sab.build_sandbox_autonomy_boundary_prep_audit(PROJECT_ROOT, docs)
+        report = build_operator_governed_sandbox_autonomy_boundary_prep_v1(project_id="eidolon-smoke", save=False)
+        if not all(item.get("ok") is True for item in [scope, packet, boundary, no_execution, audit, report]):
+            return False
+        false_keys = [
+            "sandbox_scope_is_authorization", "sandbox_readiness_is_approval", "sandbox_target_description_is_permission_to_execute",
+            "sandbox_success_is_live_authorization", "sandbox_verification_is_approval", "sandbox_output_is_patch_execution_packet",
+            "sandbox_trial_completion_permits_source_mutation", "live_source_writes_allowed", "memory_writes_allowed",
+            "real_patch_application_allowed", "release_candidate_creation_allowed", "automatic_scheduling_allowed",
+            "local_model_invocation_by_default_allowed", "approval_creation_allowed", "sandbox_execution_allowed",
+            "source_mutation_allowed", "memory_mutation_allowed", "schedule_creation_allowed", "model_invocation_by_default_allowed",
+            "writes_files", "writes_memory", "updates_metadata", "creates_schedule", "invokes_models", "creates_execution_packet",
+            "executes_sandbox_commands", "applies_patches", "publishes_releases", "creates_release_candidate", "approves_proposals",
+            "creates_approval", "continues_automatically", "executes_actions", "expands_autonomy",
+        ]
+        for key in false_keys:
+            if report.get(key) is not False:
+                return False
+        if report.get("promotion_requires_fresh_single_use_operator_approval") is not True:
+            return False
+        if report.get("operator_review_required") is not True or report.get("fresh_operator_approval_required") is not True or report.get("operator_approval_still_required") is not True:
+            return False
+        if report.get("authorization_status") != "not_authorized" or report.get("execution_status") != "not_executed":
+            return False
+        required = [
+            "sandbox-only-autonomy-scope-definition", "sandbox-autonomy-trial-packet-builder", "sandbox-to-live-boundary-hardening", "no-execution-sandbox-autonomy-audit", "sandbox-autonomy-boundary-prep-audit",
+            "operator-governed-sandbox-autonomy-boundary-prep-v1", "sandbox_autonomy_boundary.py",
+            "sandbox_scope_is_authorization=False", "sandbox_readiness_is_approval=False", "sandbox_target_description_is_permission_to_execute=False", "sandbox_success_is_live_authorization=False", "sandbox_verification_is_approval=False", "sandbox_output_is_patch_execution_packet=False", "sandbox_trial_completion_permits_source_mutation=False", "promotion_requires_fresh_single_use_operator_approval=True", "live_source_writes_allowed=False", "memory_writes_allowed=False", "real_patch_application_allowed=False", "release_candidate_creation_allowed=False", "automatic_scheduling_allowed=False", "local_model_invocation_by_default_allowed=False", "approval_creation_allowed=False", "sandbox_execution_allowed=False", "authorization_status=not_authorized", "execution_status=not_executed", "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/sandbox-only-autonomy-scope-definition", "/sandbox-autonomy-trial-packet-builder", "/sandbox-to-live-boundary-hardening", "/no-execution-sandbox-autonomy-audit", "/sandbox-autonomy-boundary-prep-audit"]):
+            return False
+        print("[ok] operator-governed sandbox autonomy boundary prep v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed sandbox autonomy boundary prep v1: {error}")
+        return False
+
+# v490.1-v495.0 sandbox autonomy boundary smoke tokens: sandbox-only-autonomy-scope-definition sandbox-autonomy-trial-packet-builder sandbox-to-live-boundary-hardening no-execution-sandbox-autonomy-audit sandbox-autonomy-boundary-prep-audit operator-governed-sandbox-autonomy-boundary-prep-v1 sandbox_autonomy_boundary.py sandbox_scope_is_authorization=False sandbox_readiness_is_approval=False sandbox_target_description_is_permission_to_execute=False sandbox_success_is_live_authorization=False sandbox_verification_is_approval=False sandbox_output_is_patch_execution_packet=False sandbox_trial_completion_permits_source_mutation=False promotion_requires_fresh_single_use_operator_approval=True live_source_writes_allowed=False memory_writes_allowed=False real_patch_application_allowed=False release_candidate_creation_allowed=False automatic_scheduling_allowed=False local_model_invocation_by_default_allowed=False approval_creation_allowed=False sandbox_execution_allowed=False authorization_status=not_authorized execution_status=not_executed no_native_title_tooltip data-tip command-deck operator-console
+
+
+def check_operator_governed_autonomy_readiness_review_board_v1() -> bool:
+    try:
+        import autonomy_readiness_review_board as arb
+        from self_maintenance import SELF_MAINTENANCE_VERSION, build_operator_governed_autonomy_readiness_review_board_v1
+        if SELF_MAINTENANCE_VERSION != "500.0" or arb.AUTONOMY_READINESS_REVIEW_BOARD_VERSION != "500.0":
+            return False
+        docs = "\n".join((PROJECT_ROOT / rel).read_text(encoding="utf-8", errors="ignore") for rel in [
+            "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/autonomy_readiness_review_board.py",
+            "conscious_agent/sandbox_autonomy_boundary.py", "conscious_agent/observation_proposal_queue.py", "conscious_agent/self_maintenance.py",
+            "conscious_agent/dashboard.py", "conscious_agent/dashboard_route_probe.py", "conscious_agent/source_surface_manifest.py",
+            "conscious_agent/api_server.py", "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+            "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+        ] if (PROJECT_ROOT / rel).exists())
+        criteria = arb.build_autonomy_readiness_criteria_board(PROJECT_ROOT)
+        blockers = arb.build_autonomy_blocker_gap_register(PROJECT_ROOT)
+        phases = arb.build_phase_based_autonomy_permission_model(PROJECT_ROOT)
+        firewall = arb.build_autonomy_misinterpretation_firewall(PROJECT_ROOT)
+        audit = arb.build_autonomy_readiness_review_board_audit(PROJECT_ROOT, docs)
+        report = build_operator_governed_autonomy_readiness_review_board_v1(project_id="eidolon-smoke", save=False)
+        if not all(item.get("ok") is True for item in [criteria, blockers, phases, firewall, audit, report]):
+            return False
+        false_keys = [
+            "readiness_review_is_autonomy_approval", "board_pass_grants_authorization", "phase_definition_authorizes_phase",
+            "sandbox_boundary_exists_means_execute", "operator_discussion_is_approval", "proposal_ranking_is_selection",
+            "observation_history_authorizes_monitoring", "source_mutation_allowed", "memory_mutation_allowed", "schedule_creation_allowed",
+            "model_invocation_by_default_allowed", "execution_packet_creation_allowed", "sandbox_execution_allowed", "live_source_writes_allowed",
+            "approval_creation_allowed", "release_candidate_creation_allowed", "automatic_continuation_allowed", "writes_files", "writes_memory",
+            "updates_metadata", "creates_schedule", "invokes_models", "creates_execution_packet", "executes_sandbox_commands",
+            "applies_patches", "publishes_releases", "creates_release_candidate", "approves_proposals", "creates_approval",
+            "continues_automatically", "expands_autonomy",
+        ]
+        for key in false_keys:
+            if report.get(key) is not False:
+                return False
+        if report.get("readiness_status") != "not_ready_for_autonomy" or report.get("authorization_status") != "not_authorized":
+            return False
+        if report.get("operator_review_required") is not True or report.get("fresh_operator_approval_required") is not True or report.get("operator_approval_still_required") is not True:
+            return False
+        required = [
+            "autonomy-readiness-criteria-board", "autonomy-blocker-gap-register", "phase-based-autonomy-permission-model", "autonomy-misinterpretation-firewall", "autonomy-readiness-review-board-audit",
+            "operator-governed-autonomy-readiness-review-board-v1", "autonomy_readiness_review_board.py", "readiness_status=not_ready_for_autonomy", "authorization_status=not_authorized",
+            "readiness_review_is_autonomy_approval=False", "board_pass_grants_authorization=False", "phase_definition_authorizes_phase=False", "sandbox_boundary_exists_means_execute=False", "operator_discussion_is_approval=False", "proposal_ranking_is_selection=False", "observation_history_authorizes_monitoring=False", "source_mutation_allowed=False", "memory_mutation_allowed=False", "schedule_creation_allowed=False", "model_invocation_by_default_allowed=False", "execution_packet_creation_allowed=False", "sandbox_execution_allowed=False", "live_source_writes_allowed=False", "approval_creation_allowed=False", "release_candidate_creation_allowed=False", "data-tip", "no_native_title_tooltip"
+        ]
+        if not all(token in docs for token in required):
+            return False
+        if _dashboard_nav_title_regression_present():
+            return False
+        if not probe_dashboard_http_routes(["/autonomy-readiness-criteria-board", "/autonomy-blocker-gap-register", "/phase-based-autonomy-permission-model", "/autonomy-misinterpretation-firewall", "/autonomy-readiness-review-board-audit"]):
+            return False
+        print("[ok] operator-governed autonomy readiness review board v1")
+        return True
+    except Exception as error:
+        print(f"[fail] operator-governed autonomy readiness review board v1: {error}")
+        return False
+
+# v495.1-v500.0 autonomy readiness review board smoke tokens: autonomy-readiness-criteria-board autonomy-blocker-gap-register phase-based-autonomy-permission-model autonomy-misinterpretation-firewall autonomy-readiness-review-board-audit operator-governed-autonomy-readiness-review-board-v1 autonomy_readiness_review_board.py readiness_status=not_ready_for_autonomy authorization_status=not_authorized readiness_review_is_autonomy_approval=False board_pass_grants_authorization=False phase_definition_authorizes_phase=False sandbox_boundary_exists_means_execute=False operator_discussion_is_approval=False proposal_ranking_is_selection=False observation_history_authorizes_monitoring=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False sandbox_execution_allowed=False live_source_writes_allowed=False approval_creation_allowed=False release_candidate_creation_allowed=False no_native_title_tooltip data-tip command-deck operator-console
 
 
 if __name__ == "__main__":
@@ -3552,6 +5147,7 @@ if __name__ == "__main__":
 
 # v315.1-v320.0 expression application bridge smoke tokens: expression-approval-criteria expression-live-surface-impact-map expression-implementation-packet-draft expression-rollback-reversion-plan expression-application-bridge-audit operator-governed-conversational-expression-application-bridge-v1 data/autonomy/expression_application_bridge_audit/ expression_application_bridge.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required approval_criteria_grants_approval=False implementation_packet_writes_source=False rollback_plan_executes_rollback=False bridge_audit_applies_live_expression=False
 
+
 # v320.1-v325.0 expression patch dry-run sandbox smoke tokens: expression-patch-candidates expression-sandbox-diff-preview expression-dry-run-verification-plan expression-dry-run-review-packet expression-patch-dry-run-audit operator-governed-expression-patch-dry-run-sandbox-v1 data/autonomy/expression_patch_dry_run_audit/ expression_patch_dry_run.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required candidate_packet_applies_patch=False sandbox_diff_preview_writes_files=False dry_run_verification_executes_commands=False dry_run_review_packet_grants_approval=False patch_dry_run_audit_applies_changes=False
 
 # v325.1-v330.0 expression patch sandbox trial harness smoke tokens: expression-sandbox-trial-packet expression-sandbox-workspace-plan expression-sandbox-verification-matrix expression-sandbox-result-review-prep expression-sandbox-trial-harness-audit operator-governed-expression-patch-sandbox-trial-harness-v1 data/autonomy/expression_sandbox_trial_harness_audit/ expression_sandbox_trial_harness.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required trial_packet_executes_sandbox=False workspace_plan_copies_files=False workspace_plan_writes_files=False verification_matrix_executes_commands=False result_review_promotes_to_live=False trial_harness_audit_applies_changes=False
@@ -3563,3 +5159,56 @@ if __name__ == "__main__":
 # v340.1-v345.0 expression promotion packet smoke tokens: expression-promotion-evidence-binder expression-live-promotion-scope-risk expression-promotion-verification-rollback expression-promotion-decision-packet expression-promotion-packet-assembly-audit operator-governed-expression-promotion-packet-assembly-layer-v1 data/autonomy/expression_promotion_evidence_binder/ data/autonomy/expression_live_promotion_scope_risk/ data/autonomy/expression_promotion_verification_rollback/ data/autonomy/expression_promotion_decision_packet/ data/autonomy/expression_promotion_packet_assembly_audit/ expression_promotion_packet.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required promotion_evidence_binder_treats_evidence_as_approval=False live_scope_risk_mutates_live_surfaces=False verification_rollback_executes_commands=False promotion_decision_packet_executes_decision=False promotion_packet_assembly_promotes_live_expression=False
 
 # v345.1-v350.0 expression live application packet smoke tokens: expression-live-application-eligibility-gate expression-live-source-change-manifest expression-live-patch-instruction-packet expression-live-verification-rollback-packet expression-live-application-packet-audit operator-governed-expression-live-application-packet-drafting-layer-v1 data/autonomy/expression_live_application_eligibility_gate/ data/autonomy/expression_live_source_change_manifest/ data/autonomy/expression_live_patch_instruction_packet/ data/autonomy/expression_live_verification_rollback_packet/ data/autonomy/expression_live_application_packet_audit/ expression_live_application_packet.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required eligibility_gate_authorizes_live_writes=False source_change_manifest_writes_files=False patch_instruction_packet_applies_patch=False verification_rollback_packet_executes_commands=False application_packet_audit_applies_live_source=False
+
+# v350.1-v355.0 expression live application execution prep smoke tokens: expression-live-execution-approval-intake expression-live-source-transaction-preimage expression-live-manual-execution-checklist expression-live-rollback-reversion-packet expression-live-execution-prep-audit operator-governed-expression-live-application-execution-prep-v1 data/autonomy/expression_live_execution_approval_intake/ data/autonomy/expression_live_source_transaction_preimage/ data/autonomy/expression_live_manual_execution_checklist/ data/autonomy/expression_live_rollback_reversion_packet/ data/autonomy/expression_live_execution_prep_audit/ expression_live_execution_prep.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required approval_intake_applies_live_expression=False transaction_manifest_writes_files=False manual_checklist_executes_commands=False rollback_packet_runs_rollback=False execution_prep_applies_live_expression=False
+
+# v355.1-v360.0 minimal live expression application smoke tokens: minimal-live-expression-change-candidate minimal-live-expression-approval-lock minimal-live-expression-patch-transaction minimal-live-expression-application-harness minimal-live-expression-application-audit operator-approved-minimal-live-expression-application-audit-v1 data/autonomy/minimal_live_expression_change_candidate/ data/autonomy/minimal_live_expression_approval_lock/ data/autonomy/minimal_live_expression_patch_transaction/ data/autonomy/minimal_live_expression_application_harness/ data/autonomy/minimal_live_expression_application_audit/ minimal_live_expression_application.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required candidate_selection_applies_change=False approval_lock_self_approves=False transaction_builder_writes_files=False application_harness_executes_without_confirmation=False application_audit_publishes_release=False
+
+# v360.1-v365.0 self-maintenance refactor smoke tokens: self-maintenance-gate-registry self-maintenance-version-expectations governed-surface-metadata-registry smoke-check-legacy-gate-registry self-maintenance-refactor-audit operator-governed-self-maintenance-surface-reduction-and-gate-registry-refactor-v1 data/autonomy/self_maintenance_gate_registry/ data/autonomy/self_maintenance_version_expectations/ data/autonomy/governed_surface_metadata_registry/ data/autonomy/smoke_check_legacy_gate_registry/ data/autonomy/self_maintenance_refactor_audit/ self_maintenance_refactor_registry.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required centralized_version_expectations_required=True refactor_registry_writes_files=False refactor_registry_executes_smoke=False refactor_registry_changes_runtime_behavior=False
+
+# v365.1-v370.0 minimal live change replay smoke tokens: minimal-live-change-replay-packet minimal-live-change-expected-actual-comparison minimal-live-change-regression-drift-detector minimal-live-change-recovery-recommendation minimal-live-change-replay-regression-audit operator-governed-minimal-live-change-replay-and-regression-hardening-v1 data/autonomy/minimal_live_change_replay_packet/ data/autonomy/minimal_live_change_expected_actual_comparison/ data/autonomy/minimal_live_change_regression_drift_detector/ data/autonomy/minimal_live_change_recovery_recommendation/ data/autonomy/minimal_live_change_replay_regression_audit/ minimal_live_change_replay.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required replay_packet_applies_change=False expected_actual_writes_files=False regression_detector_auto_fixes=False recovery_recommendation_executes_rollback=False replay_audit_continues_automatically=False
+
+# v370.1-v375.0 modular extraction smoke tokens: self-maintenance-module-extraction-plan self-maintenance-version-package-gates self-maintenance-surface-gates self-maintenance-governance-gates self-maintenance-modular-extraction-audit operator-governed-self-maintenance-modular-extraction-v1 data/autonomy/self_maintenance_module_extraction_plan/ data/autonomy/self_maintenance_version_package_gates/ data/autonomy/self_maintenance_surface_gates/ data/autonomy/self_maintenance_governance_gates/ data/autonomy/self_maintenance_modular_extraction_audit/ self_maintenance_modular_extraction.py self_maintenance_version_package_gates.py self_maintenance_surface_gates.py self_maintenance_governance_gates.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required modular_extraction_applies_live_patches=False version_package_gate_extraction_present=True surface_gate_extraction_present=True governance_gate_extraction_present=True
+
+# v375.1-v380.0 live change application trial smoke tokens: live-change-transaction-narrowing live-change-approval-execution-lock live-change-real-patch-trial-plan live-change-operator-confirmed-application-trial live-change-application-trial-audit operator-governed-live-change-application-trial-audit-v1 data/autonomy/live_change_transaction_narrowing/ data/autonomy/live_change_approval_execution_lock/ data/autonomy/live_change_real_patch_trial_plan/ data/autonomy/live_change_operator_confirmed_application_trial/ data/autonomy/live_change_application_trial_audit/ live_change_application_trial.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required transaction_narrowing_applies_patch=False approval_execution_lock_self_approves=False trial_plan_writes_files=False application_trial_runs_without_confirmation=False application_trial_continues_automatically=False
+
+# v380.1-v385.0 live patch trial closure smoke tokens: live-patch-trial-result-intake live-patch-applied-diff-evidence live-patch-approval-burnout live-patch-post-trial-regression-review live-patch-trial-closure-audit operator-governed-live-patch-trial-closure-audit-v1 data/autonomy/live_patch_trial_result_intake/ data/autonomy/live_patch_applied_diff_evidence/ data/autonomy/live_patch_approval_burnout/ data/autonomy/live_patch_post_trial_regression_review/ data/autonomy/live_patch_trial_closure_audit/ live_patch_trial_closure.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required result_intake_reruns_commands=False diff_evidence_edits_source=False approval_burnout_reuses_approval=False post_trial_review_executes_rollback=False closure_audit_applies_another_patch=False approval_single_use_required=True operator_reapproval_required_for_next_patch=True
+# Current smoke JSON summary version token for legacy gates: "version": "500.0"
+
+
+# v385.1-v390.0 second minimal live patch trial smoke tokens: second-minimal-live-patch-candidate registry-driven-live-patch-approval-validation registry-driven-live-patch-transaction-lock second-live-patch-application-harness second-live-patch-trial-registry-audit operator-governed-second-live-patch-trial-registry-audit-v1 data/autonomy/second_minimal_live_patch_candidate/ data/autonomy/registry_driven_live_patch_approval_validation/ data/autonomy/registry_driven_live_patch_transaction_lock/ data/autonomy/second_live_patch_application_harness/ data/autonomy/second_live_patch_trial_registry_audit/ second_live_patch_trial.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required candidate_selection_applies_patch=False approval_validation_reuses_approval=False transaction_lock_writes_files=False application_harness_runs_without_confirmation=False registry_audit_applies_patch=False fresh_approval_required=True registry_driven_checks_required=True approval_burnout_required=True
+
+# v390.1-v395.0 live patch history memory candidate smoke tokens: live-patch-trial-history-ledger operator-live-patch-decision-patterns live-patch-supervised-lesson-candidates live-patch-memory-candidate-governance live-patch-history-memory-candidate-audit operator-governed-live-patch-history-and-memory-candidate-audit-v1 data/autonomy/live_patch_trial_history_ledger/ data/autonomy/operator_live_patch_decision_patterns/ data/autonomy/live_patch_supervised_lesson_candidates/ data/autonomy/live_patch_memory_candidate_governance/ data/autonomy/live_patch_history_memory_candidate_audit/ live_patch_history_memory_candidates.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required history_ledger_treats_history_as_permission=False decision_review_changes_future_behavior=False lesson_candidates_write_memory=False memory_governance_stores_memory=False history_memory_audit_writes_memory=False memory_candidates_review_only=True operator_approval_required_before_memory_storage=True
+
+# v395.1-v400.0 memory candidate application trial smoke tokens: memory-candidate-selection-packet memory-application-approval-lock memory-write-transaction-preview operator-confirmed-memory-application-trial memory-application-trial-audit operator-governed-memory-application-trial-audit-v1 data/autonomy/memory_candidate_selection_packet/ data/autonomy/memory_application_approval_lock/ data/autonomy/memory_write_transaction_preview/ data/autonomy/operator_confirmed_memory_application_trial/ data/autonomy/memory_application_trial_audit/ memory_candidate_application_trial.py no_native_title_tooltip data-tip command-deck dashboard_http_route_probe_required candidate_selection_writes_memory=False approval_lock_reuses_approval=False transaction_preview_writes_memory=False application_harness_runs_without_confirmation=False application_audit_runs_retraction=False fresh_operator_approval_required=True single_use_memory_approval_required=True sensitive_data_screen_required=True identity_personality_mutation_screen_required=True retraction_packet_required=True
+
+# v400.1-v405.0 segmented install smoke smoke tokens: memory-application-confirmation-gate memory-application-negative-tests smoke-segment-registry install-smoke-segment-runner segmented-install-smoke-audit operator-governed-segmented-install-smoke-audit-v1 conscious_agent/smoke_segment_registry.py --segment --list-segments install-core install-release install-dashboard install-governance install-expression install-live-trial install-memory install-regression-recent explicit_confirmation_supplied missing_confirmation_blocks=True wrong_confirmation_blocks=True exact_confirmation_required=True segment_registry_runs_checks_automatically=False segment_runner_treats_pass_as_approval=False segmented_install_writes_memory=False segmented_install_expands_autonomy=False data-tip no_native_title_tooltip
+
+# v405.1-v410.0 memory dry-run ledger smoke tokens: memory-application-attempt-ledger-schema memory-application-dry-run-ledger memory-application-ledger-replay memory-application-ledger-surfaces memory-application-ledger-audit operator-governed-memory-application-dry-run-ledger-v1 conscious_agent/memory_application_dry_run_ledger.py --operator-governed-memory-application-dry-run-ledger-v1 ledger_writes_live_memory=False ledger_treats_reviewable_as_authorization=False replay_accepts_drift=False audit_writes_memory=False data-tip no_native_title_tooltip
+
+# v410.1-v415.0 sandbox memory write smoke tokens: sandbox-memory-target-schema sandbox-memory-write-transaction sandbox-memory-write-trial sandbox-memory-retraction-preview sandbox-memory-write-audit operator-governed-sandbox-memory-write-target-v1 conscious_agent/sandbox_memory_write_target.py --operator-governed-sandbox-memory-write-target-v1 sandbox_write_target_writes_live_memory=False sandbox_transaction_is_live_memory_approval=False sandbox_trial_accepts_non_sandbox_path=False sandbox_retraction_executes_live_retraction=False sandbox_audit_grants_future_authorization=False before_after_hash_required=True sandbox_path_required=True live_memory_allowed=False data-tip no_native_title_tooltip
+
+# v415.1-v420.0 live memory write smoke tokens: live-memory-write-eligibility live-memory-approval-lock live-memory-transaction-preview operator-confirmed-live-memory-write-trial live-memory-write-audit operator-governed-live-memory-write-burnout-v1 conscious_agent/live_memory_write_trial.py --operator-governed-live-memory-write-burnout-v1 eligibility_is_approval=False sandbox_success_is_approval=False approval_lock_reuses_approval=False transaction_preview_writes_memory=False live_write_runs_without_confirmation=False live_write_allows_batch=False audit_grants_future_authorization=False approval_burnout_required=True single_use_approval_required=True exact_confirmation_required=True data-tip no_native_title_tooltip
+
+# v420.1-v425.0 memory retraction smoke tokens: memory-retraction-eligibility memory-retraction-approval-lock memory-retraction-transaction-preview operator-confirmed-memory-retraction-trial memory-retraction-trial-audit operator-governed-memory-retraction-trial-v1 conscious_agent/memory_retraction_trial.py --operator-governed-memory-retraction-trial-v1 write_approval_authorizes_retraction=False retraction_eligibility_is_approval=False retraction_preview_deletes_memory=False retraction_runs_without_confirmation=False retraction_allows_batch=False retraction_uses_fuzzy_match=False retraction_deletes_canonical_memory_json=False audit_grants_future_retraction_authority=False fresh_retraction_approval_required=True single_use_retraction_approval_required=True exact_retraction_confirmation_required=True retained_audit_record_required=True data-tip no_native_title_tooltip
+
+# v425.1-v430.0 source surface manifest smoke tokens: source-surface-manifest source-surface-parity-audit source-surface-authority-map source-surface-package-privacy-map source-surface-manifest-audit operator-governed-source-surface-manifest-v1 conscious_agent/source_surface_manifest.py --source-surface-manifest-v1 --source-surface-parity-audit-v1 --source-surface-authority-map-v1 --source-surface-package-privacy-map-v1 --operator-governed-source-surface-manifest-v1 manifest_presence_is_authorization=False parity_pass_is_authorization=False authority_label_is_approval=False surface_exists_means_may_execute=False smoke_pass_allows_live_action=False manifest_writes_files=False manifest_writes_memory=False source_only_package_must_exclude_runtime=True data-tip no_native_title_tooltip
+
+# v430.1-v435.0 duplicate definition smoke tokens: duplicate-definition-inventory self-maintenance-duplicate-classification self-maintenance-extraction-candidates duplicate-definition-guard self-maintenance-duplicate-cleanup-audit operator-governed-self-maintenance-duplicate-cleanup-v1 conscious_agent/duplicate_definition_audit.py --duplicate-definition-inventory-v1 --self-maintenance-duplicate-classification-v1 --self-maintenance-extraction-candidates-v1 --duplicate-definition-guard-v1 --operator-governed-self-maintenance-duplicate-cleanup-v1 inventory_is_authorization_to_delete=False classification_is_authorization_to_delete=False guard_applies_source_edits=False guard_executes_refactors=False cleanup_expands_autonomy=False operator_review_required_before_removal=True data-tip no_native_title_tooltip
+
+# v435.1-v440.0 dashboard route probe smoke tokens: dashboard-route-inventory dashboard-route-probe dashboard-lazy-render-audit dashboard-tooltip-regression-audit dashboard-route-health-audit operator-governed-dashboard-route-health-audit-v1 conscious_agent/dashboard_route_probe.py --dashboard-route-inventory-v1 --dashboard-route-probe-v1 --dashboard-lazy-render-audit-v1 --dashboard-tooltip-regression-audit-v1 --operator-governed-dashboard-route-health-audit-v1 route_presence_is_authorization=False route_health_is_approval=False probe_executes_governed_actions=False lazy_audit_refactors_dashboard=False tooltip_audit_reintroduces_native_title=False data-tip no_native_title_tooltip
+
+# v440.1-v445.0 memory lifecycle review board smoke tokens: memory-lifecycle-review-board memory-lifecycle-state-summary memory-lifecycle-drift-review memory-lifecycle-operator-decision-board memory-lifecycle-review-board-audit operator-governed-memory-lifecycle-review-board-v1 conscious_agent/memory_lifecycle_review_board.py --memory-lifecycle-review-board-v1 --memory-lifecycle-state-summary-v1 --memory-lifecycle-drift-review-v1 --memory-lifecycle-operator-decision-board-v1 --operator-governed-memory-lifecycle-review-board-v1 board_visibility_is_authorization=False lifecycle_completeness_is_future_approval=False board_creates_approval=False board_executes_memory_write=False board_executes_memory_retraction=False fresh_approval_required_for_future_memory_action=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v445.1-v450.0 authorization firewall smoke tokens: authorization-confusion-patterns authorization-language-scan authorization-firewall-decision-packet authorization-boundary-map authorization-firewall-audit operator-governed-authorization-firewall-v1 conscious_agent/authorization_firewall.py --authorization-confusion-patterns-v1 --authorization-language-scan-v1 --authorization-firewall-decision-packet-v1 --authorization-boundary-map-v1 --operator-governed-authorization-firewall-v1 readiness_is_approval eligibility_is_approval route_health_is_approval manifest_presence_is_authorization lifecycle_completion_is_future_approval smoke_success_is_permission prior_approval_is_current_approval sandbox_success_is_live_permission model_consensus_is_truth review_packet_is_execution_packet approval_lock_exists_means_approved operator_pattern_means_future_consent firewall_detection_is_enforcement_execution=False firewall_pass_is_authorization=False clear_status_means_approved=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v450.1-v455.0 metadata release integrity smoke tokens: metadata-version-inventory project-workspace-metadata-alignment release-packaging-version-integrity current-state-documentation-header-audit metadata-release-integrity-audit operator-governed-metadata-release-integrity-v1 conscious_agent/metadata_release_integrity.py --metadata-version-inventory-v1 --project-workspace-metadata-alignment-v1 --release-packaging-version-integrity-v1 --current-state-documentation-header-audit-v1 --operator-governed-metadata-release-integrity-v1 metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False metadata_repair_report_publishes_release=False metadata_repair_report_applies_source_edits=False metadata_repair_report_writes_memory=False metadata_repair_report_expands_autonomy=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v455.1-v460.0 authorization firewall signal triage smoke tokens: authorization-firewall-severity-classifier authorization-firewall-safe-boundary-filter authorization-firewall-warning-status authorization-firewall-audit-status-split authorization-firewall-signal-triage-audit operator-governed-authorization-firewall-signal-triage-v1 --authorization-firewall-severity-classifier-v1 --authorization-firewall-safe-boundary-filter-v1 --authorization-firewall-warning-status-v1 --authorization-firewall-audit-status-split-v1 --operator-governed-authorization-firewall-signal-triage-v1 pass_with_warnings_supported=True plain_pass_with_warnings_forbidden=True mechanism_pass_is_not_language_clear=True language_clear_is_not_authorization=True authorization_status=not_authorized operator_approval_still_required=True signal_triage_creates_approval=False signal_triage_writes_memory=False signal_triage_applies_source_edits=False signal_triage_expands_autonomy=False dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v460.1-v465.0 route surface parity smoke tokens: recent-dashboard-route-probe-refresh source-surface-manifest-parity-policy surface-route-api-cli-crosscheck route-health-boundary-language route-surface-parity-audit operator-governed-route-surface-parity-v1 --recent-dashboard-route-probe-refresh-v1 --source-surface-manifest-parity-policy-v1 --surface-route-api-cli-crosscheck-v1 --route-health-boundary-language-v1 --operator-governed-route-surface-parity-v1 every_governed_substage_surface route_presence_is_authorization=False route_health_is_approval=False manifest_presence_is_authorization=False surface_parity_is_permission=False smoke_success_is_approval=False route_health_confirms_render_status_only=True route_health_does_not_authorize_execution=True parity_audit_applies_patches=False parity_audit_writes_memory=False parity_audit_expands_autonomy=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v465.1-v470.0 duplicate shadow cleanup smoke tokens: duplicate-shadow-inventory safe-shadow-removal-report legacy-alias-compatibility-cleanup stale-version-gate-cleanup self-maintenance-duplicate-shadow-cleanup-audit operator-governed-self-maintenance-duplicate-shadow-cleanup-v1 --duplicate-shadow-inventory-v1 --safe-shadow-removal-report-v1 --legacy-alias-compatibility-cleanup-v1 --stale-version-gate-cleanup-v1 --operator-governed-self-maintenance-duplicate-shadow-cleanup-v1 duplicate_cleanup_is_authorization=False classification_is_permission_to_delete=False shadow_removal_expands_autonomy=False stale_gate_cleanup_authorizes_execution=False cleanup_applies_live_patches=False cleanup_writes_memory=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v485.1-v490.0 observation proposal queue smoke tokens: observation-to-proposal-candidate-mapper proposal-queue-schema proposal-ranking-risk-notes proposal-queue-non-execution-audit observation-proposal-queue-audit operator-governed-observation-proposal-queue-v1 observation_proposal_queue.py mapping_is_approval=False proposal_candidate_is_execution_packet=False candidate_queue_is_authorization=False queue_presence_is_approval=False queue_ranking_is_authorization=False highest_ranked_proposal_auto_selected=False approved_for_packet_drafting_only_is_live_execution=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False patch_application_allowed=False proposal_approval_allowed=False automatic_continuation_allowed=False observation_promotes_to_live_change=False operator_review_required=True fresh_operator_approval_required=True no_native_title_tooltip data-tip command-deck operator-console
+

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-CLI_SURFACE_VERSION = "350.0"
+CLI_SURFACE_VERSION = "500.0"
 
 DEFAULT_CLI_SURFACE_HELPERS = [
     {"name": "cli_command_metadata_binder", "purpose": "summarize CLI command metadata", "changes_behavior": False},

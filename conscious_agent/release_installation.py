@@ -30,7 +30,7 @@ from release_packaging import (
     _package_name,
 )
 
-RELEASE_INSTALLATION_VERSION = "350.0"
+RELEASE_INSTALLATION_VERSION = "500.0"
 RELEASE_INSTALLATION_DIR = DATA_DIR / "release_installation"
 RELEASE_PROFILES = RELEASE_INSTALLATION_DIR / "release_profiles.json"
 PACKAGE_PRIVACY_SCAN = RELEASE_INSTALLATION_DIR / "package_privacy_scan.json"

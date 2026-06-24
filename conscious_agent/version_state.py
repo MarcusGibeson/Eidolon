@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-VERSION_STATE_VERSION = "350.0"
+VERSION_STATE_VERSION = "500.0"
 
 VERSION_MARKER_PATTERNS = {
     "conscious_agent/self_maintenance.py": "SELF_MAINTENANCE_VERSION",
@@ -19,6 +19,8 @@ VERSION_MARKER_PATTERNS = {
     "conscious_agent/surface_parity.py": "SURFACE_PARITY_VERSION",
     "conscious_agent/verification_planning.py": "VERIFICATION_PLANNING_VERSION",
     "conscious_agent/identity_expression.py": "IDENTITY_EXPRESSION_VERSION",
+    "conscious_agent/self_maintenance_refactor_registry.py": "SELF_MAINTENANCE_REFACTOR_REGISTRY_VERSION",
+    "conscious_agent/minimal_live_change_replay.py": "MINIMAL_LIVE_CHANGE_REPLAY_VERSION",
 }
 
 def _extract_marker(text: str, marker: str) -> str | None:

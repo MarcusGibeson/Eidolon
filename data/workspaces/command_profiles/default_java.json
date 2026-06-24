@@ -1,4 +1,6 @@
 {
+  "id": "default_java",
+  "language": "Java",
   "allowed_compile_commands": [
     "mvn test",
     "gradle test"
@@ -7,15 +9,14 @@
     "mvn test",
     "gradle test"
   ],
-  "destructive_commands_require_approval": true,
   "forbidden_commands": [
     "rm -rf",
     "del /s",
     "format"
   ],
-  "id": "default_java",
-  "language": "Java",
   "package_install_requires_approval": true,
+  "destructive_commands_require_approval": true,
   "shell_commands_require_approval": true,
-  "workspace_version": "30.0"
+  "workspace_version": "30.0",
+  "updated_at": "2026-06-24T10:28:10"
 }

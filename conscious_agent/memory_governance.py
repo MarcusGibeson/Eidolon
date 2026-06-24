@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-MEMORY_GOVERNANCE_VERSION = "350.0"
+MEMORY_GOVERNANCE_VERSION = "500.0"
 
 MEMORY_GOVERNANCE_BOUNDARY_SUMMARY = {
     "writes_memory": False,

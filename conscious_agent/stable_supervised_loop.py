@@ -11,6 +11,9 @@ v6.9 note:
 """
 
 import json
+import os
+import tempfile
+import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -80,9 +83,52 @@ def _loop_path(loop_id: str) -> Path:
 
 
 def save_stable_loop(record: dict[str, Any]) -> None:
+    """Persist a stable-loop record with an atomic replace and short lock retries.
+
+    Dashboard live-refresh on Windows can briefly hold the destination JSON open.
+    Writing to a temp file first avoids truncating the final record, and retrying
+    os.replace() lets the smoke suite and dashboard coexist instead of fighting
+    over a tiny JSON file like raccoons in a server closet.
+    """
     _ensure_storage()
-    with _loop_path(record["id"]).open("w", encoding="utf-8") as file:
-        json.dump(record, file, indent=2)
+    path = _loop_path(record["id"])
+    tmp_name = ""
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as file:
+            tmp_name = file.name
+            json.dump(record, file, indent=2)
+            file.write("\n")
+            file.flush()
+            os.fsync(file.fileno())
+
+        last_error: OSError | None = None
+        for attempt in range(8):
+            try:
+                os.replace(tmp_name, path)
+                return
+            except PermissionError as error:
+                last_error = error
+                time.sleep(0.05 * (attempt + 1))
+            except OSError as error:
+                last_error = error
+                time.sleep(0.05 * (attempt + 1))
+        if last_error is not None:
+            raise last_error
+    finally:
+        if tmp_name:
+            try:
+                tmp_path = Path(tmp_name)
+                if tmp_path.exists():
+                    tmp_path.unlink()
+            except OSError:
+                pass
 
 
 def list_stable_loops() -> list[dict[str, Any]]:

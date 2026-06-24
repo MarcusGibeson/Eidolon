@@ -1,7 +1,6 @@
 {
-  "allowed_commands": [
-    "python conscious_agent/main.py --safe-autonomous-suggestion-loop --readiness-json"
-  ],
+  "id": "eidolon",
+  "language": "Python",
   "allowed_compile_commands": [
     "python -m py_compile conscious_agent/*.py tools/smoke_check.py"
   ],
@@ -16,16 +15,18 @@
     "python conscious_agent/main.py --verified-application-recovery-rollback-hardening --readiness-json",
     "python conscious_agent/main.py --safe-autonomous-suggestion-loop --readiness-json"
   ],
-  "destructive_commands_require_approval": true,
   "forbidden_commands": [
     "rm -rf",
     "del /s",
     "format",
     "git push --force"
   ],
-  "id": "eidolon",
-  "language": "Python",
   "package_install_requires_approval": true,
+  "destructive_commands_require_approval": true,
   "shell_commands_require_approval": true,
-  "workspace_version": "90.0"
+  "allowed_commands": [
+    "python conscious_agent/main.py --safe-autonomous-suggestion-loop --readiness-json"
+  ],
+  "workspace_version": "90.0",
+  "updated_at": "2026-06-24T10:28:10"
 }

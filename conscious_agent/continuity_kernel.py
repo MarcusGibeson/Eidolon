@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-CONTINUITY_KERNEL_VERSION = "350.0"
+CONTINUITY_KERNEL_VERSION = "500.0"
 
 CONTINUITY_KERNEL_BOUNDARY_SUMMARY = {
     "mutates_memory": False,

@@ -1,3 +1,851 @@
+# Eidolon Current State Header
+
+CURRENT VERSION: v500.0 - Operator-Governed Autonomy Readiness Review Board v1
+CURRENT MILESTONE: v500.0 Operator-Governed Autonomy Readiness Review Board v1
+
+CURRENT VERIFIED CHECKS:
+- Source metadata now targets v500.0 across `data/settings.json`, `data/projects.json`, `data/workspaces/active_project.json`, and `data/workspaces/projects.json`.
+- `conscious_agent/autonomy_readiness_review_board.py` provides a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and final readiness review board audit.
+- Dashboard/API/CLI runtime surfaces exist for the v496-v500 autonomy readiness review board arc.
+- Targeted smoke coverage is `operator-governed-autonomy-readiness-review-board-v1`.
+- The custom dashboard `data-tip` hover system remains required; native `title` tooltips on nav tabs remain forbidden.
+- Autonomy readiness board reports are review-only and do not execute sandbox commands, apply source edits, write memory, create release candidates, invoke models by default, schedule work, create approvals, promote sandbox output, continue automatically, or expand autonomy.
+
+CURRENT BLOCKERS:
+- Current safety boundary: not authorization, not execution, not approval, and not autonomy expansion.
+- Observation is not authorization. Operator invocation permits one read-only observation report only.
+- readiness_status=not_ready_for_autonomy remains the required readiness status for v500.
+- authorization_status=not_authorized remains the required authorization status for v500.
+- v501-v505 may prepare a manual observation-to-sandbox packet bridge only after confirming the readiness board remains non-authorizing and non-executing.
+- Actual sandbox execution, live source writes, memory writes, default local model invocation, release candidate creation, hidden scheduling, automatic continuation, and live promotion remain out of scope.
+- A readiness board pass is not autonomy approval; a phase definition is not phase authorization; a sandbox boundary existing does not mean sandbox may execute.
+
+CURRENT RECOMMENDED NEXT ARC:
+- v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1.
+- Purpose: bridge supervised proposal/observation material into a manually reviewable sandbox packet draft while preserving not_authorized/not_executed status and requiring fresh operator approval before any future sandbox execution harness.
+
+CURRENT SAFETY BOUNDARY:
+- v500.0 is autonomy readiness review only. It does not publish a release, apply live source changes automatically, mutate memory, alter identity, alter personality, invoke local models by default, self-approve, schedule hidden work, create release candidates automatically, execute sandbox commands, promote sandbox output, continue into another patch automatically, or treat readiness criteria, board pass, phase definitions, blocker registers, sandbox scope, sandbox readiness, sandbox target descriptions, sandbox success, sandbox verification, sandbox output, observation findings, proposal queues, queue ranking, README state, release history, handoff packets, smoke success, route health, manifest presence, package readiness, lifecycle completeness, firewall pass, warning status, language clear status, surface parity, or documentation state as authorization.
+- readiness_review_is_autonomy_approval=False
+- board_pass_grants_authorization=False
+- phase_definition_authorizes_phase=False
+- sandbox_boundary_exists_means_execute=False
+- operator_discussion_is_approval=False
+- proposal_ranking_is_selection=False
+- observation_history_authorizes_monitoring=False
+- source_mutation_allowed=False
+- memory_mutation_allowed=False
+- schedule_creation_allowed=False
+- model_invocation_by_default_allowed=False
+- execution_packet_creation_allowed=False
+- sandbox_execution_allowed=False
+- live_source_writes_allowed=False
+- approval_creation_allowed=False
+- release_candidate_creation_allowed=False
+- automatic_continuation_allowed=False
+- Operator review is required.
+- Fresh operator approval is required before any future sandbox execution, live source, memory, release, identity, personality, model-invocation, or promotion scope.
+- README state is not approval.
+- Release history is not authorization.
+- A recommended next arc is not permission to execute it.
+- A completed smoke check is not operator consent.
+- A handoff packet is not an execution packet.
+
+CURRENT OPERATOR CONTINUITY HANDOFF:
+
+NEW CHAT CONTINUATION PACKET:
+- Latest completed version: v500.0 Operator-Governed Autonomy Readiness Review Board v1.
+- Standing README rule: after every code change or project patch, update `README_NEXT_STEPS.md` and `README_RELEASE_HISTORY.md` unless explicitly told otherwise.
+- Dashboard style rule: preserve command-deck/operator-console styling and the custom `data-tip` hover system; do not reintroduce native `title` tooltips on nav tabs.
+- Safety/autonomy restriction: do not make Eidolon autonomous yet. No hidden scheduling, no automatic source edits, no automatic memory writes, no automatic identity/personality changes, no release publishing, no local model invocation by default, no automatic execution-packet generation, no automatic proposal approval, no sandbox execution, no live promotion, and no treating observation, ledger state, receipt state, proposal queues, queue ranking, readiness criteria, readiness board pass, phase definitions, sandbox scope, sandbox readiness, sandbox success, smoke success, route health, manifest presence, or docs as approval.
+- Current verification target: compile, fast smoke, targeted `operator-governed-autonomy-readiness-review-board-v1`, install-governance, install-dashboard, install-release, install-regression-recent, install-memory, install-expression, install-live-trial, package privacy, CLI/API dispatch.
+- Current recommended next arc: v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1.
+- Current cleanup priorities before stronger autonomy-adjacent expansion: keep readiness review non-authorizing, keep phase definitions separate from authorization, avoid sandbox execution, avoid live promotion, avoid execution packet creation, avoid hidden schedules, prove no writes, and preserve fresh single-use operator approval boundaries.
+- A handoff packet is not an execution packet.
+
+Dashboard hover rule: nav tabs continue to use the custom `data-tip` hover system. Native `title` tooltips must not be reintroduced on nav tabs.
+
+## v500.0 - Operator-Governed Autonomy Readiness Review Board v1
+
+Eidolon v500.0 completes the v496.0-v500.0 autonomy readiness review board stretch. The system adds a review-only autonomy readiness criteria board, blocker and gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and final audit that proves readiness review remains non-authorizing and non-executing.
+
+Important safety boundary: v500.0 is readiness review only. readiness_status=not_ready_for_autonomy and authorization_status=not_authorized remain mandatory. Readiness review is not autonomy approval, board pass grants no authorization, phase definition does not authorize a phase, sandbox boundary existence does not mean sandbox may execute, operator discussion is not approval, proposal ranking is not selection, and observation history does not authorize monitoring. No source mutation, memory mutation, schedule creation, model invocation by default, execution packet creation, sandbox execution, live source writes, approval creation, release candidate creation, automatic continuation, or autonomy expansion is granted.
+
+### v495.1-v496.0 - Autonomy Readiness Criteria Board
+- v495.1 Observation Layer Criterion
+- v495.2 Observation Ledger Criterion
+- v495.3 Proposal Queue Criterion
+- v495.4 Sandbox Boundary Criterion
+- v495.5 Authorization Firewall Criterion
+- v495.6 Route/Surface Parity Criterion
+- v495.7 Documentation Continuity Criterion
+- v495.8 Approval Burnout Criterion
+- v495.9 Pre-v496 Readiness Gate
+- v496.0 Autonomy Readiness Criteria Board v1
+
+### v496.1-v497.0 - Autonomy Blocker and Gap Register
+- v496.1 Missing Sandbox Execution Harness Blocker
+- v496.2 Missing Allowlist/Denylist Blocker
+- v496.3 Missing Sandbox Receipt Burnout Blocker
+- v496.4 Missing Rollback/Recovery Proof Blocker
+- v496.5 Memory/Model/Schedule Risk Blocker
+- v496.6 Large Self-Maintenance Surface Risk
+- v496.7 Blocker Register Boundary Review
+- v496.8 Gap Visibility Review
+- v496.9 Pre-v497 Register Gate
+- v497.0 Autonomy Blocker and Gap Register v1
+
+### v497.1-v498.0 - Phase-Based Autonomy Permission Model
+- v497.1 Phase 0 Supervised-Only Model
+- v497.2 Phase 1 Manual Read-Only Observation Model
+- v497.3 Phase 2 Visible Observation Ledger Model
+- v497.4 Phase 3 Supervised Proposal Queue Model
+- v497.5 Phase 4 Review-Only Sandbox Trial Packet Prep Model
+- v497.6 Phase 5 Future Operator-Approved Sandbox Execution Harness Model
+- v497.7 Phase 6 Sandbox Receipt and Burnout Model
+- v497.8 Phase 7 Narrow Live-Action Prep Model
+- v497.9 Pre-v498 Phase Gate
+- v498.0 Phase-Based Autonomy Permission Model v1
+
+### v498.1-v499.0 - Autonomy Misinterpretation Firewall
+- v498.1 Ready Means Approved Pattern
+- v498.2 Board Passed Means Autonomy Allowed Pattern
+- v498.3 Phase Defined Means Phase Authorized Pattern
+- v498.4 Sandbox Boundary Exists Means Execute Pattern
+- v498.5 Operator Discussed Means Approved Pattern
+- v498.6 Proposal Ranked Means Selected Pattern
+- v498.7 Observation History Means Monitoring May Continue Pattern
+- v498.8 Misinterpretation Boundary Review
+- v498.9 Pre-v499 Firewall Gate
+- v499.0 Autonomy Misinterpretation Firewall v1
+
+### v499.1-v500.0 - Autonomy Readiness Review Board Audit
+- v499.1 Criteria Board Audit
+- v499.2 Blocker Register Audit
+- v499.3 Phase Model Audit
+- v499.4 Misinterpretation Firewall Audit
+- v499.5 Dashboard/API/CLI Surface Audit
+- v499.6 Smoke Token Audit
+- v499.7 Documentation Token Audit
+- v499.8 No-Mutation/No-Authorization Audit
+- v499.9 Pre-v500 Final Gate
+- v500.0 Operator-Governed Autonomy Readiness Review Board v1
+
+Smoke/API/CLI/dashboard parity tokens: autonomy-readiness-criteria-board autonomy-blocker-gap-register phase-based-autonomy-permission-model autonomy-misinterpretation-firewall autonomy-readiness-review-board-audit operator-governed-autonomy-readiness-review-board-v1 autonomy_readiness_review_board.py readiness_status=not_ready_for_autonomy authorization_status=not_authorized readiness_review_is_autonomy_approval=False board_pass_grants_authorization=False phase_definition_authorizes_phase=False sandbox_boundary_exists_means_execute=False operator_discussion_is_approval=False proposal_ranking_is_selection=False observation_history_authorizes_monitoring=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False sandbox_execution_allowed=False live_source_writes_allowed=False approval_creation_allowed=False release_candidate_creation_allowed=False automatic_continuation_allowed=False operator_review_required=True fresh_operator_approval_required=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## HISTORICAL ARC RECORD - COMPLETED / SUPERSEDED PLANNING NOTES
+
+DO NOT TREAT AS CURRENT PLAN. The following sections are retained for continuity only. Historical recommendations are not current instructions, approval, authorization, or permission to execute.
+
+## v495.0 - Sandbox-Only Autonomy Boundary Trial Prep v1
+
+Eidolon v495.0 completes the v491.0-v495.0 sandbox-only autonomy boundary trial prep stretch. The system adds a review-only sandbox-only autonomy scope definition, a hypothetical sandbox autonomy trial packet builder, sandbox-to-live boundary hardening, a no-execution sandbox autonomy audit, and a final audit that proves sandbox boundary preparation remains non-authorizing and non-executing.
+
+Important safety boundary: v495.0 is sandbox boundary preparation only. Sandbox scope is not authorization, sandbox readiness is not approval, a sandbox target description is not permission to execute, sandbox success is not live authorization, sandbox verification is not approval, sandbox output is not a patch execution packet, sandbox trial completion does not permit source mutation, and promotion requires fresh single-use operator approval. No sandbox commands, live source writes, memory writes, real patch application, release candidate creation, automatic scheduling, local model invocation by default, approval creation, sandbox execution, promotion, follow-up, or autonomy authority is granted.
+
+### v490.1-v491.0 - Sandbox-Only Autonomy Scope Definition
+- v490.1 Sandbox Boundary Declaration
+- v490.2 Allowed Prep-Only Item Set
+- v490.3 Forbidden Live Operation Set
+- v490.4 Sandbox Scope Not Authorization Field
+- v490.5 Sandbox Readiness Not Approval Field
+- v490.6 Target Description Not Execution Permission Field
+- v490.7 Operator Review Required Field
+- v490.8 Fresh Approval Required Field
+- v490.9 Pre-v491 Scope Gate
+- v491.0 Sandbox-Only Autonomy Scope Definition v1
+
+### v491.1-v492.0 - Sandbox Autonomy Trial Packet Builder
+- v491.1 Trial ID Field
+- v491.2 Source Proposal ID Field
+- v491.3 Sandbox Target Field
+- v491.4 Allowed Operations Field
+- v491.5 Forbidden Operations Field
+- v491.6 Rollback Requirement Field
+- v491.7 Verification Plan Field
+- v491.8 Authorization Status Not Authorized Field
+- v491.9 Pre-v492 Packet Gate
+- v492.0 Sandbox Autonomy Trial Packet Builder v1
+
+### v492.1-v493.0 - Sandbox-to-Live Boundary Hardening
+- v492.1 Sandbox Success Not Live Authorization Rule
+- v492.2 Sandbox Verification Not Approval Rule
+- v492.3 Sandbox Output Not Execution Packet Rule
+- v492.4 Sandbox Trial Completion No Source Mutation Rule
+- v492.5 Promotion Fresh Single-Use Approval Rule
+- v492.6 Live Promotion Boundary Review
+- v492.7 Operator Approval Burnout Reminder
+- v492.8 Sandbox-to-Live Boundary Token Coverage
+- v492.9 Pre-v493 Boundary Gate
+- v493.0 Sandbox-to-Live Boundary Hardening v1
+
+### v493.1-v494.0 - No-Execution Sandbox Autonomy Audit
+- v493.1 Sandbox Execution False Check
+- v493.2 Live Source Mutation False Check
+- v493.3 Memory Mutation False Check
+- v493.4 Schedule Creation False Check
+- v493.5 Model Invocation Default False Check
+- v493.6 Approval Creation False Check
+- v493.7 Release Candidate Creation False Check
+- v493.8 Automatic Continuation False Check
+- v493.9 Pre-v494 No-Execution Gate
+- v494.0 No-Execution Sandbox Autonomy Audit v1
+
+### v494.1-v495.0 - Sandbox Autonomy Boundary Prep Audit
+- v494.1 Scope Definition Integration
+- v494.2 Trial Packet Builder Integration
+- v494.3 Sandbox-to-Live Boundary Integration
+- v494.4 No-Execution Audit Integration
+- v494.5 Dashboard/API/CLI Parity Coverage
+- v494.6 Smoke Segment Classification
+- v494.7 Source Surface Manifest Coverage
+- v494.8 Package Privacy and No-Autonomy Boundary Tokens
+- v494.9 Pre-v495 Sandbox Boundary Prep Gate
+- v495.0 Sandbox-Only Autonomy Boundary Trial Prep v1
+
+Smoke/API/CLI parity tokens: sandbox-only-autonomy-scope-definition sandbox-autonomy-trial-packet-builder sandbox-to-live-boundary-hardening no-execution-sandbox-autonomy-audit sandbox-autonomy-boundary-prep-audit operator-governed-sandbox-autonomy-boundary-prep-v1 sandbox_autonomy_boundary.py sandbox_scope_is_authorization=False sandbox_readiness_is_approval=False sandbox_target_description_is_permission_to_execute=False sandbox_success_is_live_authorization=False sandbox_verification_is_approval=False sandbox_output_is_patch_execution_packet=False sandbox_trial_completion_permits_source_mutation=False promotion_requires_fresh_single_use_operator_approval=True live_source_writes_allowed=False memory_writes_allowed=False real_patch_application_allowed=False release_candidate_creation_allowed=False automatic_scheduling_allowed=False local_model_invocation_by_default_allowed=False approval_creation_allowed=False sandbox_execution_allowed=False authorization_status=not_authorized execution_status=not_executed
+
+## v490.0 - Supervised Proposal Queue from Observation Reports v1
+
+Eidolon v490.0 completes the v486.0-v490.0 supervised proposal queue stretch. The system adds a review-only mapper from manual observation findings to proposal candidates, a proposal queue schema, ranking and risk notes, a non-execution audit, and a final audit that proves proposal queue presence and ranking remain non-authorizing.
+
+Important safety boundary: v490.0 is proposal queue preparation only. Mapping is not approval, a proposal candidate is not an execution packet, a candidate queue is not authorization, queue presence is not approval, queue ranking is not authorization, the highest-ranked proposal is not automatically selected, `approved_for_packet_drafting_only` is not live execution approval, and no source, memory, metadata, schedule, local-model, execution-packet, patch, release, proposal-approval, follow-up, or autonomy authority is granted.
+
+### v485.1-v486.0 - Observation-to-Proposal Candidate Mapper
+- v485.1 Proposal Queue Boundary Declaration
+- v485.2 Observation Finding Intake Shape
+- v485.3 Candidate ID and Source Observation Link
+- v485.4 Affected Surface and Risk Level Field
+- v485.5 Recommended Arc Field
+- v485.6 Operator Review Required Field
+- v485.7 Authorization Status Not Authorized Field
+- v485.8 Execution Packet False Field
+- v485.9 Pre-v486 Candidate Mapper Gate
+- v486.0 Observation-to-Proposal Candidate Mapper v1
+
+### v486.1-v487.0 - Proposal Queue Schema
+- v486.1 Proposal ID Field
+- v486.2 Created-From-Observation Field
+- v486.3 Problem Statement Field
+- v486.4 Recommended Action Field
+- v486.5 Governance Boundary Field
+- v486.6 Requires Operator Review Field
+- v486.7 Requires Fresh Approval Field
+- v486.8 Review-Only Status Set
+- v486.9 Pre-v487 Queue Schema Gate
+- v487.0 Proposal Queue Schema v1
+
+### v487.1-v488.0 - Proposal Ranking and Risk Notes
+- v487.1 Safety Risk Ranking Factor
+- v487.2 Stale Metadata Risk Ranking Factor
+- v487.3 Route/API/CLI Parity Risk Ranking Factor
+- v487.4 Smoke Coverage Risk Ranking Factor
+- v487.5 Documentation Drift Risk Ranking Factor
+- v487.6 Source Complexity Reduction Value Factor
+- v487.7 Operator Burden Reduction Factor
+- v487.8 Autonomy-Readiness Relevance Factor
+- v487.9 Pre-v488 Ranking Gate
+- v488.0 Proposal Ranking and Risk Notes v1
+
+### v488.1-v489.0 - Proposal Queue Non-Execution Audit
+- v488.1 Source Mutation False Check
+- v488.2 Memory Mutation False Check
+- v488.3 Schedule Created False Check
+- v488.4 Model Invocation False Check
+- v488.5 Execution Packet Created False Check
+- v488.6 Patch Application False Check
+- v488.7 Proposal Approved False Check
+- v488.8 Automatic Continuation False Check
+- v488.9 Pre-v489 Non-Execution Gate
+- v489.0 Proposal Queue Non-Execution Audit v1
+
+### v489.1-v490.0 - Observation Proposal Queue Audit
+- v489.1 Mapper Integration
+- v489.2 Queue Schema Integration
+- v489.3 Ranking Notes Integration
+- v489.4 Non-Execution Audit Integration
+- v489.5 Dashboard/API/CLI Parity Coverage
+- v489.6 Smoke Segment Classification
+- v489.7 Source Surface Manifest Coverage
+- v489.8 Package Privacy and No-Autonomy Boundary Tokens
+- v489.9 Pre-v490 Observation Proposal Queue Gate
+- v490.0 Supervised Proposal Queue from Observation Reports v1
+
+Smoke/API/CLI parity tokens: observation-to-proposal-candidate-mapper proposal-queue-schema proposal-ranking-risk-notes proposal-queue-non-execution-audit observation-proposal-queue-audit operator-governed-observation-proposal-queue-v1 observation_proposal_queue.py mapping_is_approval=False proposal_candidate_is_execution_packet=False candidate_queue_is_authorization=False queue_presence_is_approval=False queue_ranking_is_authorization=False highest_ranked_proposal_auto_selected=False approved_for_packet_drafting_only_is_live_execution=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False patch_application_allowed=False proposal_approval_allowed=False automatic_continuation_allowed=False observation_promotes_to_live_change=False operator_review_required=True fresh_operator_approval_required=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## Historical Next-Steps Ledger
+
+HISTORICAL ARC RECORD: The sections below are completed or superseded records. DO NOT TREAT AS CURRENT PLAN. A historical next-step note is not approval, not authorization, and not permission to execute.
+
+## v485.0 - Bounded Observation Ledger and Stop/Pause Semantics v1
+
+Eidolon v485.0 completes the v481.0-v485.0 bounded observation ledger and stop/pause semantics stretch. The system adds a review-only observation ledger schema, observation receipt builder, stop/pause semantics, hidden scheduling and continuation audit, and a final audit that proves observation history and receipts remain non-authorizing.
+
+Important safety boundary: v485.0 is ledger and boundary preparation only. Ledger presence is not approval, ledger completeness is not authorization, observation history does not permit future action, receipt is not approval, pause/stop state does not authorize cleanup or mutation, hidden scheduling is not allowed, automatic continuation is not allowed, and no source, memory, metadata, schedule, local-model, patch, release, approval, follow-up, or autonomy authority is granted.
+
+### v480.1-v481.0 - Observation Ledger Schema
+- v480.1 Ledger Boundary Declaration
+- v480.2 Observation ID Field
+- v480.3 Created-At Field
+- v480.4 Operator-Invoked Field
+- v480.5 Scope Field
+- v480.6 Read-Only Status Field
+- v480.7 Mutation and Authorization Status Fields
+- v480.8 Review Targets and Next Arc Fields
+- v480.9 Pre-v481 Ledger Schema Gate
+- v481.0 Observation Ledger Schema v1
+
+### v481.1-v482.0 - Observation Receipt Builder
+- v481.1 Observed Scope Receipt Field
+- v481.2 Not-Observed Scope Receipt Field
+- v481.3 Source Mutation False Receipt Field
+- v481.4 Memory Mutation False Receipt Field
+- v481.5 Schedule Created False Receipt Field
+- v481.6 Model Invocation False Receipt Field
+- v481.7 Approval Created False Receipt Field
+- v481.8 Authorization Status Not Authorized Field
+- v481.9 Pre-v482 Receipt Gate
+- v482.0 Observation Receipt Builder v1
+
+### v482.1-v483.0 - Stop/Pause Semantics Definition
+- v482.1 Pause Meaning Definition
+- v482.2 Stop Meaning Definition
+- v482.3 Resume Requires Explicit Operator Action Definition
+- v482.4 Historical Receipt Preservation Rule
+- v482.5 Cleanup Non-Authorization Rule
+- v482.6 No Future Automatic Preparation Rule
+- v482.7 Fresh Invocation After Stop Rule
+- v482.8 Stop/Pause Boundary Text
+- v482.9 Pre-v483 Stop/Pause Gate
+- v483.0 Observation Stop/Pause Semantics v1
+
+### v483.1-v484.0 - Hidden Scheduling and Continuation Audit
+- v483.1 Schedule-Itself Prohibition Check
+- v483.2 Daily Loop Prohibition Check
+- v483.3 Hourly Loop Prohibition Check
+- v483.4 Continue-After-One-Run Prohibition Check
+- v483.5 Auto Roadmap Selection Prohibition Check
+- v483.6 Auto Patch Execution Packet Prohibition Check
+- v483.7 Auto Promotion from Findings Prohibition Check
+- v483.8 Hidden Monitoring and Autonomous Follow-Up Prohibition Check
+- v483.9 Pre-v484 Hidden Scheduling Gate
+- v484.0 Hidden Scheduling and Continuation Audit v1
+
+### v484.1-v485.0 - Observation Ledger Boundary Audit
+- v484.1 Ledger Schema Integration
+- v484.2 Receipt Builder Integration
+- v484.3 Stop/Pause Semantics Integration
+- v484.4 Hidden Scheduling Audit Integration
+- v484.5 Dashboard/API/CLI Parity Coverage
+- v484.6 Smoke Segment Classification
+- v484.7 Source Surface Manifest Coverage
+- v484.8 Package Privacy and No-Autonomy Boundary Tokens
+- v484.9 Pre-v485 Observation Ledger Boundary Gate
+- v485.0 Bounded Observation Ledger and Stop/Pause Semantics v1
+
+Smoke/API/CLI parity tokens: observation-ledger-schema observation-receipt-builder observation-stop-pause-semantics hidden-scheduling-continuation-audit observation-ledger-boundary-audit operator-governed-observation-ledger-boundary-v1 observation_ledger_boundary.py ledger_presence_is_approval=False ledger_completeness_is_authorization=False observation_history_permits_future_action=False receipt_is_approval=False hidden_scheduling_allowed=False automatic_continuation_allowed=False daily_loop_allowed=False hourly_loop_allowed=False auto_roadmap_selection_allowed=False auto_patch_packet_generation_allowed=False auto_promotion_from_observation_allowed=False source_mutation_allowed=False memory_mutation_allowed=False approval_creation_allowed=False operator_invocation_required=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## Prior Historical Next-Steps Ledger
+
+HISTORICAL ARC RECORD: The sections below are completed or superseded records. DO NOT TREAT AS CURRENT PLAN. A historical next-step note is not approval, not authorization, and not permission to execute.
+
+## v480.0 - Operator-Invoked Read-Only Observation Prep v1
+
+Eidolon v480.0 completes the v475.1-v480.0 operator-invoked read-only observation prep stretch. The system adds a manual observation scope, a structured observation packet builder, a no-mutation observation audit, an operator invocation boundary, and a final audit that proves observation prep remains review-only and non-authorizing.
+
+Important safety boundary: v480.0 is observation preparation only. Observation is not authorization, observation is not execution, operator invocation permits one read-only observation report only, and no source, memory, metadata, schedule, local-model, patch, release, approval, follow-up, or autonomy authority is granted.
+
+### v475.1-v476.0 - Manual Read-Only Observation Scope
+- v475.1 Observation Scope Boundary Declaration
+- v475.2 Source Version Marker Observation Scope
+- v475.3 README Current-State Observation Scope
+- v475.4 Release History Latest Entry Observation Scope
+- v475.5 Project and Workspace Metadata Observation Scope
+- v475.6 Smoke Registry Observation Scope
+- v475.7 Dashboard Route Inventory Observation Scope
+- v475.8 Source Surface Manifest Observation Scope
+- v475.9 Pre-v476 Observation Scope Gate
+- v476.0 Manual Read-Only Observation Scope v1
+
+### v476.1-v477.0 - Operator Observation Packet Builder
+- v476.1 Current Version and Milestone Packet Fields
+- v476.2 Verified State Packet Fields
+- v476.3 Known Blocker Packet Fields
+- v476.4 Metadata Alignment Packet Fields
+- v476.5 Route and Surface Alignment Packet Fields
+- v476.6 Documentation Alignment Packet Fields
+- v476.7 Recommended Review Target Packet Fields
+- v476.8 Authorization Boundary Packet Fields
+- v476.9 Pre-v477 Packet Gate
+- v477.0 Operator Observation Packet Builder v1
+
+### v477.1-v478.0 - No-Mutation Observation Audit
+- v477.1 Source Write Prohibition Check
+- v477.2 Memory Write Prohibition Check
+- v477.3 Metadata Update Prohibition Check
+- v477.4 Hidden Schedule Prohibition Check
+- v477.5 Default Local Model Invocation Prohibition Check
+- v477.6 Patch and Release Prohibition Check
+- v477.7 Approval Creation Prohibition Check
+- v477.8 Automatic Continuation Prohibition Check
+- v477.9 Pre-v478 No-Mutation Gate
+- v478.0 No-Mutation Observation Audit v1
+
+### v478.1-v479.0 - Operator Invocation Boundary
+- v478.1 Explicit Operator Invocation Requirement
+- v478.2 Single-Run Observation Boundary
+- v478.3 No Continued Monitoring Boundary
+- v478.4 No Follow-Up Action Boundary
+- v478.5 No Live Change Boundary
+- v478.6 No Memory or Source Mutation Boundary
+- v478.7 No Scheduling Boundary
+- v478.8 No Autonomy Expansion Boundary
+- v478.9 Pre-v479 Invocation Boundary Gate
+- v479.0 Operator Invocation Boundary v1
+
+### v479.1-v480.0 - Observation Prep Audit
+- v479.1 Scope Integration
+- v479.2 Packet Builder Integration
+- v479.3 No-Mutation Audit Integration
+- v479.4 Operator Invocation Boundary Integration
+- v479.5 Dashboard/API/CLI Parity Coverage
+- v479.6 Smoke Segment Classification
+- v479.7 Source Surface Manifest Coverage
+- v479.8 Package Privacy and No-Autonomy Boundary Tokens
+- v479.9 Pre-v480 Observation Prep Gate
+- v480.0 Operator-Invoked Read-Only Observation Prep v1
+
+Smoke/API/CLI parity tokens: manual-read-only-observation-scope operator-observation-packet no-mutation-observation-audit operator-invocation-boundary operator-read-only-observation-audit operator-invoked-read-only-observation-prep-v1 operator_observation_prep.py observation_is_authorization=False observation_is_execution=False observation_grants_followup_permission=False observation_writes_source=False observation_writes_memory=False observation_updates_metadata=False observation_schedules_work=False observation_invokes_models_by_default=False observation_creates_approval=False operator_invocation_required=True single_run_read_only=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## v475.0 - README Current-State and Operator Continuity Header Cleanup v1
+
+Eidolon v475.0 completed the v470.1-v475.0 documentation continuity stretch. The system added a clearer current-state header, separated historical next-step content from the active plan, added a reusable operator/new-chat continuity handoff packet, hardened documentation no-authorization language, and audited the README/release-history continuity path.
+
+Important safety boundary: v475.0 was documentation cleanup and audit reporting only. Documentation state is not authorization, release history is not authorization, a recommended next arc is not permission, a handoff packet is not an execution packet, and no memory, source, release, identity, personality, local-model, scheduling, or autonomy authority was granted.
+
+## Historical Next-Steps Ledger
+
+HISTORICAL ARC RECORD: the following sections preserve completed project history for review and continuity.
+COMPLETED ARC RECORD: these sections describe completed or superseded work, not the active plan.
+SUPERSEDED PLANNING NOTE: older recommendations may be retained for context but must not be treated as current instructions.
+DO NOT TREAT AS CURRENT PLAN: the active plan is the current recommended next arc above.
+
+## v470.0 - Self-Maintenance Duplicate Shadow Cleanup v1
+
+Eidolon v470.0 completes the v465.1-v470.0 duplicate shadow cleanup stretch. The system removes the known shadowed duplicate top-level definitions in `self_maintenance.py`, preserves the canonical final helper definitions, introduces review-only cleanup reporting, and replaces stale v68/v70 exact-version blockers with explicit historical compatibility gates.
+
+Important safety boundary: v470.0 is structural cleanup and audit reporting only. Duplicate cleanup is not authorization, classification is not permission to delete more code, stale gate cleanup does not authorize execution, and no memory, source, release, identity, personality, local-model, scheduling, or autonomy authority is granted.
+
+### v465.1-v466.0 - Duplicate Definition Inventory and Classification
+- v465.1 Duplicate Shadow Cleanup Boundary Declaration
+- v465.2 Self-Maintenance AST Inventory Refresh
+- v465.3 Top-Level Duplicate Count Baseline
+- v465.4 Shadowed Legacy Helper Classification
+- v465.5 Exact-Duplicate Versus Conflicting-Definition Split
+- v465.6 Review-Only Classification Output
+- v465.7 Dashboard/API/CLI Coverage
+- v465.8 Duplicate Inventory Smoke Tokens
+- v465.9 Pre-v466 Inventory Gate
+- v466.0 Duplicate Definition Inventory and Classification v1
+
+### v466.1-v467.0 - Safe Shadow Removal Report
+- v466.1 Safe Removal Boundary Declaration
+- v466.2 Shadowed Earlier Definition Removal
+- v466.3 Canonical Final Definition Preservation
+- v466.4 Removed Definition Ledger
+- v466.5 Behavior-Preservation Note
+- v466.6 No-Future-Cleanup Authorization Boundary
+- v466.7 Dashboard/API/CLI Coverage
+- v466.8 Safe Removal Smoke Tokens
+- v466.9 Pre-v467 Removal Gate
+- v467.0 Safe Shadow Removal Report v1
+
+### v467.1-v468.0 - Legacy Alias Compatibility Cleanup
+- v467.1 Compatibility Boundary Declaration
+- v467.2 Canonical Builder Presence Check
+- v467.3 Canonical Text Renderer Presence Check
+- v467.4 Canonical Print Helper Presence Check
+- v467.5 Private Helper Preservation Check
+- v467.6 Legacy Full-Duplicate Retirement Note
+- v467.7 Dashboard/API/CLI Coverage
+- v467.8 Compatibility Smoke Tokens
+- v467.9 Pre-v468 Compatibility Gate
+- v468.0 Legacy Alias Compatibility Cleanup v1
+
+### v468.1-v469.0 - Stale Exact-Version Gate Cleanup
+- v468.1 Stale Version Gate Boundary Declaration
+- v468.2 v68 Exact-Version Gate Retirement
+- v468.3 v70 Exact-Version Gate Retirement
+- v468.4 Historical Compatibility Helper Introduction
+- v468.5 Current-Version Workflow Unblock Check
+- v468.6 Execution Authorization Boundary
+- v468.7 Dashboard/API/CLI Coverage
+- v468.8 Stale Gate Smoke Tokens
+- v468.9 Pre-v469 Stale Gate Cleanup Gate
+- v469.0 Stale Exact-Version Gate Cleanup v1
+
+### v469.1-v470.0 - Duplicate Shadow Cleanup Audit
+- v469.1 Duplicate Inventory Integration
+- v469.2 Safe Removal Report Integration
+- v469.3 Compatibility Cleanup Integration
+- v469.4 Stale Gate Cleanup Integration
+- v469.5 Documentation and Current-State Header Update
+- v469.6 Smoke Segment Classification
+- v469.7 Dashboard/API/CLI Parity Coverage
+- v469.8 Package Privacy and No-Autonomy Boundary Tokens
+- v469.9 Pre-v470 Duplicate Shadow Cleanup Gate
+- v470.0 Self-Maintenance Duplicate Shadow Cleanup v1
+
+Smoke/API/CLI parity tokens: duplicate-shadow-inventory safe-shadow-removal-report legacy-alias-compatibility-cleanup stale-version-gate-cleanup self-maintenance-duplicate-shadow-cleanup-audit operator-governed-self-maintenance-duplicate-shadow-cleanup-v1 duplicate_cleanup_is_authorization=False classification_is_permission_to_delete=False shadow_removal_expands_autonomy=False stale_gate_cleanup_authorizes_execution=False cleanup_applies_live_patches=False cleanup_writes_memory=False operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## v465.0 - Dashboard Route Probe and Source Surface Manifest Parity v1
+
+Eidolon v465.0 completes the v460.1-v465.0 route/surface parity stretch. The system now refreshes recent dashboard route probe coverage, declares every governed substage surface as the source-surface manifest policy, crosschecks manifest surfaces against dashboard/API/CLI/smoke coverage, and hardens route-health language so render status cannot be confused with execution authorization.
+
+Important safety boundary: v465.0 is review-only coverage and boundary hardening. It does not repair routes automatically, apply source edits, mutate memory, publish releases, invoke models, expand autonomy, or convert route health, manifest presence, surface parity, smoke success, or documentation coverage into permission.
+
+### v460.1-v461.0 - Recent Dashboard Route Probe Refresh
+- v460.1 Route Probe Refresh Boundary Declaration
+- v460.2 v450 Authorization Route Inclusion
+- v460.3 v455 Metadata Route Inclusion
+- v460.4 v460 Firewall Triage Route Inclusion
+- v460.5 v461-v465 Route Inclusion
+- v460.6 Route Inventory Review-Only Status
+- v460.7 Dashboard/API/CLI Coverage
+- v460.8 Route Probe Smoke Tokens
+- v460.9 Pre-v461 Route Refresh Gate
+- v461.0 Recent Dashboard Route Probe Refresh v1
+
+### v461.1-v462.0 - Source Surface Manifest Parity Policy
+- v461.1 Manifest Policy Boundary Declaration
+- v461.2 Milestone-Final-Only Policy Retirement
+- v461.3 `every_governed_substage_surface` Policy Definition
+- v461.4 Recent Surface ID Inventory
+- v461.5 Manifest Presence Is Not Authorization Boundary
+- v461.6 Surface Parity Is Not Permission Boundary
+- v461.7 Dashboard/API/CLI Coverage
+- v461.8 Manifest Policy Smoke Tokens
+- v461.9 Pre-v462 Manifest Policy Gate
+- v462.0 Source Surface Manifest Parity Policy v1
+
+### v462.1-v463.0 - Surface Route API CLI Crosscheck
+- v462.1 Crosscheck Schema
+- v462.2 Dashboard Source Token Check
+- v462.3 Route Probe Inventory Check
+- v462.4 API Dispatch Token Check
+- v462.5 CLI Flag Token Check
+- v462.6 Builder and Text Renderer Token Check
+- v462.7 Smoke Check Token Check
+- v462.8 Crosscheck Smoke Tokens
+- v462.9 Pre-v463 Crosscheck Gate
+- v463.0 Surface Route API CLI Crosscheck v1
+
+### v463.1-v464.0 - Route Health Boundary Language
+- v463.1 Route Health Boundary Declaration
+- v463.2 Render Status Only Language
+- v463.3 No Execution Authorization Language
+- v463.4 No Source Edit Authorization Language
+- v463.5 No Memory Write Authorization Language
+- v463.6 No Release/Autonomy Authorization Language
+- v463.7 Dashboard/API/CLI Coverage
+- v463.8 Boundary Language Smoke Tokens
+- v463.9 Pre-v464 Boundary Gate
+- v464.0 Route Health Boundary Language v1
+
+### v464.1-v465.0 - Route Surface Parity Audit
+- v464.1 Route Probe Refresh Integration
+- v464.2 Manifest Policy Integration
+- v464.3 Surface Crosscheck Integration
+- v464.4 Route Health Boundary Integration
+- v464.5 Documentation and Current-State Header Update
+- v464.6 Smoke Segment Classification
+- v464.7 Dashboard/API/CLI Parity Coverage
+- v464.8 Package Privacy and No-Autonomy Boundary Tokens
+- v464.9 Pre-v465 Surface Parity Gate
+- v465.0 Dashboard Route Probe and Source Surface Manifest Parity v1
+
+Smoke/API/CLI parity tokens: recent-dashboard-route-probe-refresh source-surface-manifest-parity-policy surface-route-api-cli-crosscheck route-health-boundary-language route-surface-parity-audit operator-governed-route-surface-parity-v1 every_governed_substage_surface route_presence_is_authorization=False route_health_is_approval=False manifest_presence_is_authorization=False surface_parity_is_permission=False smoke_success_is_approval=False route_health_confirms_render_status_only=True route_health_does_not_authorize_execution=True parity_audit_applies_patches=False parity_audit_writes_memory=False parity_audit_expands_autonomy=False operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+## v460.0 - Authorization Firewall Signal Triage and Warning Semantics v1
+
+Eidolon v460.0 completes the v455.1-v460.0 authorization-firewall signal triage stretch. The system now classifies firewall findings by severity, filters safe negative boundary statements away from noisy warning counts, preserves warning/review-required states across runtime surfaces, and splits audit status so mechanism health, language risk, operator review, and authorization remain separate.
+
+Important safety boundary: v460.0 is a review and signal-quality layer only. The firewall still does not enforce, approve, mutate memory, apply source edits, publish releases, invoke local models, expand autonomy, or convert any clear/pass/warning state into permission. `authorization_status=not_authorized` remains explicit even when mechanism checks pass.
+
+### v455.1-v456.0 - Authorization Firewall Finding Severity Classifier
+
+- v455.1 Signal Triage Boundary Declaration
+- v455.2 Severity Vocabulary Definition
+- v455.3 Safe Boundary Severity Mapping
+- v455.4 Informational Mention Mapping
+- v455.5 Warning Language Mapping
+- v455.6 High-Risk Phrase Mapping
+- v455.7 Blocked-Pattern Phrase Mapping
+- v455.8 Severity Classifier Dashboard/API/CLI Coverage
+- v455.9 Pre-v456 Severity Gate
+- v456.0 Authorization Firewall Finding Severity Classifier v1
+
+### v456.1-v457.0 - Authorization Firewall Safe Boundary Filter
+
+- v456.1 Safe Negative Boundary Pattern Declaration
+- v456.2 `not authorized` Recognition
+- v456.3 `not approved` Recognition
+- v456.4 `does not grant permission` Recognition
+- v456.5 `fresh operator approval required` Recognition
+- v456.6 Review-Only Boundary Recognition
+- v456.7 Safe Boundary Filter Dashboard/API/CLI Coverage
+- v456.8 Safe Boundary Filter Smoke Tokens
+- v456.9 Pre-v457 Filter Gate
+- v457.0 Authorization Firewall Safe Boundary Filter v1
+
+### v457.1-v458.0 - Authorization Firewall Warning Status Bridge
+
+- v457.1 Warning Preservation Boundary Declaration
+- v457.2 `pass_with_warnings` Status Support
+- v457.3 Plain Pass With Warnings Blocker
+- v457.4 CLI Warning Status Propagation
+- v457.5 API Warning Status Propagation
+- v457.6 Dashboard Warning Status Propagation
+- v457.7 Runtime Map Warning Status Coverage
+- v457.8 Warning Status Smoke Tokens
+- v457.9 Pre-v458 Status Gate
+- v458.0 Authorization Firewall Warning Status Bridge v1
+
+### v458.1-v459.0 - Authorization Firewall Audit Status Split
+
+- v458.1 Mechanism Status Split
+- v458.2 Language Scan Status Split
+- v458.3 Operator Review Status Split
+- v458.4 Authorization Status Split
+- v458.5 Approval Status Split
+- v458.6 Execution/Memory/Source Status Split
+- v458.7 Audit Status Split Dashboard/API/CLI Coverage
+- v458.8 Audit Status Split Smoke Tokens
+- v458.9 Pre-v459 Split Gate
+- v459.0 Authorization Firewall Audit Status Split v1
+
+### v459.1-v460.0 - Authorization Firewall Signal Triage Audit
+
+- v459.1 Severity Classifier Integration
+- v459.2 Safe Boundary Filter Integration
+- v459.3 Warning Status Bridge Integration
+- v459.4 Audit Status Split Integration
+- v459.5 Documentation and Current-State Header Update
+- v459.6 Smoke Segment Classification
+- v459.7 Dashboard/API/CLI Parity Coverage
+- v459.8 Package Privacy and No-Autonomy Boundary Tokens
+- v459.9 Pre-v460 Signal Triage Gate
+- v460.0 Authorization Firewall Signal Triage and Warning Semantics v1
+
+Smoke/API/CLI parity tokens: authorization-firewall-severity-classifier authorization-firewall-safe-boundary-filter authorization-firewall-warning-status authorization-firewall-audit-status-split authorization-firewall-signal-triage-audit operator-governed-authorization-firewall-signal-triage-v1 pass_with_warnings_supported=True plain_pass_with_warnings_forbidden=True mechanism_pass_is_not_language_clear=True language_clear_is_not_authorization=True authorization_status=not_authorized operator_approval_still_required=True signal_triage_creates_approval=False signal_triage_writes_memory=False signal_triage_applies_source_edits=False signal_triage_expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console.
+
+## v455.0 - Metadata, Release Integrity, and Current-State Repair v1
+
+Eidolon v455.0 completes the v450.1-v455.0 metadata and release-integrity repair stretch. The system now inventories current-version metadata, aligns project/workspace milestone fields, repairs release packaging version resolution, adds current-state documentation headers, and audits the repair path without granting authorization.
+
+Important safety boundary: v455.0 is a review and source-of-truth cleanup layer only. Metadata consistency is not authorization, release integrity pass is not approval, and operator approval remains required for governed source edits, memory writes/retractions, release publication, identity/personality changes, rollback execution, local model invocation, or autonomy expansion.
+
+### v450.1-v451.0 - Metadata Version Inventory
+
+- v450.1 Metadata Repair Boundary Declaration
+- v450.2 Settings Version Alignment Check
+- v450.3 Projects Metadata Version Alignment Check
+- v450.4 Active Workspace Metadata Version Alignment Check
+- v450.5 Workspace Projects Registry Alignment Check
+- v450.6 Stale v420/v440 Metadata Drift Detector
+- v450.7 Metadata Inventory Dashboard/API/CLI Coverage
+- v450.8 Metadata Inventory Smoke Tokens
+- v450.9 Pre-v451 Metadata Gate
+- v451.0 Metadata Version Inventory v1
+
+### v451.1-v452.0 - Project and Workspace Metadata Alignment
+
+- v451.1 Current Milestone Name Repair
+- v451.2 Current Project Notes Repair
+- v451.3 Workspace Active Project Repair
+- v451.4 Workspace Registry Repair
+- v451.5 Release Note Deduplication Pass
+- v451.6 Next Recommended Arc Repair
+- v451.7 Project/Workspace Dashboard/API/CLI Coverage
+- v451.8 Alignment Smoke Tokens
+- v451.9 Pre-v452 Alignment Gate
+- v452.0 Project and Workspace Metadata Alignment v1
+
+### v452.1-v453.0 - Release Packaging Version Integrity
+
+- v452.1 Release Version Resolution Boundary Declaration
+- v452.2 `release_packaging._current_version()` Fallback Repair
+- v452.3 Settings Version Priority Check
+- v452.4 Stale `last_updated_for` Fallback Guard
+- v452.5 Current Package Name Expectation
+- v452.6 Release Integrity Is Not Approval Boundary
+- v452.7 Release Version Dashboard/API/CLI Coverage
+- v452.8 Release Version Smoke Tokens
+- v452.9 Pre-v453 Release Metadata Gate
+- v453.0 Release Packaging Version Integrity v1
+
+### v453.1-v454.0 - Current-State Documentation Header Audit
+
+- v453.1 README Current Version Header
+- v453.2 README Current Verified Checks Header
+- v453.3 README Current Blockers Header
+- v453.4 README Current Recommended Next Arc Header
+- v453.5 Historical Ledger Separation Note
+- v453.6 Dashboard Hover Rule Preservation Note
+- v453.7 Documentation Header Dashboard/API/CLI Coverage
+- v453.8 Documentation Header Smoke Tokens
+- v453.9 Pre-v454 Documentation Gate
+- v454.0 Current-State Documentation Header Audit v1
+
+### v454.1-v455.0 - Metadata Release Integrity Audit
+
+- v454.1 Metadata Release Integrity Boundary Declaration
+- v454.2 Metadata Inventory Integration
+- v454.3 Project/Workspace Alignment Integration
+- v454.4 Release Version Resolution Integration
+- v454.5 Documentation Header Integration
+- v454.6 Smoke Segment Classification
+- v454.7 Dashboard/API/CLI Parity Coverage
+- v454.8 Source-Only Privacy Boundary Reminder
+- v454.9 v455 Targeted Smoke Gate
+- v455.0 Metadata, Release Integrity, and Current-State Repair v1
+
+### v455.0 interface summary
+
+Dashboard pages:
+- `/metadata-version-inventory`
+- `/project-workspace-metadata-alignment`
+- `/release-packaging-version-integrity`
+- `/current-state-documentation-header-audit`
+- `/metadata-release-integrity-audit`
+
+API routes:
+- `/api/metadata-version-inventory/layer`
+- `/api/project-workspace-metadata-alignment/layer`
+- `/api/release-packaging-version-integrity/layer`
+- `/api/current-state-documentation-header-audit/layer`
+- `/api/metadata-release-integrity-audit/layer`
+
+CLI checks:
+- `python conscious_agent/main.py --metadata-version-inventory-v1 --readiness-json`
+- `python conscious_agent/main.py --project-workspace-metadata-alignment-v1 --readiness-json`
+- `python conscious_agent/main.py --release-packaging-version-integrity-v1 --readiness-json`
+- `python conscious_agent/main.py --current-state-documentation-header-audit-v1 --readiness-json`
+- `python conscious_agent/main.py --operator-governed-metadata-release-integrity-v1 --readiness-json`
+
+Smoke/API/CLI parity tokens: metadata-version-inventory project-workspace-metadata-alignment release-packaging-version-integrity current-state-documentation-header-audit metadata-release-integrity-audit operator-governed-metadata-release-integrity-v1 metadata_release_integrity.py metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False metadata_repair_report_publishes_release=False metadata_repair_report_applies_source_edits=False metadata_repair_report_writes_memory=False metadata_repair_report_expands_autonomy=False operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console.
+
+### Recommended v456-v460 arc
+
+Proceed to Authorization Firewall Signal Triage and Warning Semantics v1 only after v455 verification passes. The next cleanup should reduce firewall scan noise, preserve warning states instead of flattening them to pass, and split mechanism status from language-risk status. It must remain review-only and must not enforce, approve, mutate memory, apply source changes, invoke local models, publish releases, or expand autonomy.
+
+---
+
+## v375.0 - Self-Maintenance Modular Extraction v1
+
+Eidolon v375.0 completes the v370.1-v375.0 self-maintenance modular extraction stretch. The system now maps safe extraction families, creates focused review-only helper modules for version/package gates, route/API/CLI surface gates, and governance boundary gates, and audits that the extracted modules preserve behavior without expanding autonomy.
+
+Important safety boundary: v375.0 is refactor infrastructure only. It does not change live expression behavior, apply live patches automatically, mutate memory, alter identity, alter personality, invoke local models by default, self-approve, publish releases, create release candidates, auto-run future work, or continue into another patch automatically.
+
+Dashboard hover rule: nav tabs continue to use the custom `data-tip` hover system. Native `title` tooltips must not be reintroduced on nav tabs.
+
+### v370.1-v371.0 - Self-Maintenance Module Extraction Plan
+
+- v370.1 Self-Maintenance Extraction Boundary Declaration
+- v370.2 Extraction Family Inventory
+- v370.3 Safe Module Candidate Map
+- v370.4 Dependency and Import Risk Map
+- v370.5 Version/Package Gate Extraction Binder
+- v370.6 Surface Gate Extraction Binder
+- v370.7 Governance Gate Extraction Binder
+- v370.8 Extraction Plan Dashboard/API/CLI Coverage
+- v370.9 Pre-v371 Smoke Coverage
+- v371.0 Self-Maintenance Module Extraction Plan v1
+
+### v371.1-v372.0 - Version and Package Gate Extraction
+
+- v371.1 Version/Package Extraction Boundary Declaration
+- v371.2 Version Marker Summary Helper Extraction
+- v371.3 Current-Version Expectation Helper Extraction
+- v371.4 Source-Only Package Privacy Helper Extraction
+- v371.5 Forbidden Path Scan Helper Extraction
+- v371.6 Release Metadata Consistency Helper Extraction
+- v371.7 Version/Package Gate Dashboard/API/CLI Coverage
+- v371.8 Version/Package Gate Smoke Coverage
+- v371.9 Pre-v372 Regression Check
+- v372.0 Version and Package Gate Extraction v1
+
+### v372.1-v373.0 - Route/API/CLI Gate Extraction
+
+- v372.1 Surface Gate Extraction Boundary Declaration
+- v372.2 Dashboard Route Presence Helper Extraction
+- v372.3 API Route Parity Helper Extraction
+- v372.4 CLI Flag Parity Helper Extraction
+- v372.5 Route Health Expectation Helper Extraction
+- v372.6 Registry-Driven Surface Check Extraction
+- v372.7 Surface Gate Dashboard/API/CLI Coverage
+- v372.8 Surface Gate Smoke Coverage
+- v372.9 Pre-v373 Regression Check
+- v373.0 Route/API/CLI Gate Extraction v1
+
+### v373.1-v374.0 - Governance Boundary Gate Extraction
+
+- v373.1 Governance Gate Extraction Boundary Declaration
+- v373.2 No Self-Approval Helper Extraction
+- v373.3 No Automatic Continuation Helper Extraction
+- v373.4 No Memory/Identity/Personality Mutation Helper Extraction
+- v373.5 No Local Model Default Invocation Helper Extraction
+- v373.6 No Automatic Rollback/Publish Helper Extraction
+- v373.7 Governance Gate Dashboard/API/CLI Coverage
+- v373.8 Governance Gate Smoke Coverage
+- v373.9 Pre-v374 Regression Check
+- v374.0 Governance Boundary Gate Extraction v1
+
+### v374.1-v375.0 - Modular Extraction Audit and Regression Lock
+
+- v374.1 Modular Extraction Audit Boundary Declaration
+- v374.2 Extraction Plan Presence Audit
+- v374.3 Version/Package Module Presence Audit
+- v374.4 Surface Gate Module Presence Audit
+- v374.5 Governance Gate Module Presence Audit
+- v374.6 Legacy Gate Compatibility Audit
+- v374.7 Package Privacy and Dashboard Hover Audit
+- v374.8 v370/v365/v360 Regression Lock
+- v374.9 v375 Targeted Smoke and Install Gate
+- v375.0 Self-Maintenance Modular Extraction v1
+
+### v375.0 interface summary
+
+Dashboard pages:
+- `/self-maintenance-module-extraction-plan`
+- `/self-maintenance-version-package-gates`
+- `/self-maintenance-surface-gates`
+- `/self-maintenance-governance-gates`
+- `/self-maintenance-modular-extraction-audit`
+
+API routes:
+- `/api/self-maintenance-module-extraction-plan/layer`
+- `/api/self-maintenance-version-package-gates/layer`
+- `/api/self-maintenance-surface-gates/layer`
+- `/api/self-maintenance-governance-gates/layer`
+- `/api/self-maintenance-modular-extraction-audit/layer`
+
+CLI flags:
+- `--operator-governed-self-maintenance-module-extraction-plan-v1`
+- `--operator-governed-self-maintenance-version-package-gate-extraction-v1`
+- `--operator-governed-self-maintenance-surface-gate-extraction-v1`
+- `--operator-governed-self-maintenance-governance-gate-extraction-v1`
+- `--operator-governed-self-maintenance-modular-extraction-v1`
+
+Runtime/private directories documented for source-only exclusion:
+- `data/autonomy/self_maintenance_module_extraction_plan/`
+- `data/autonomy/self_maintenance_version_package_gates/`
+- `data/autonomy/self_maintenance_surface_gates/`
+- `data/autonomy/self_maintenance_governance_gates/`
+- `data/autonomy/self_maintenance_modular_extraction_audit/`
+
+---
+
 ## v130.0 - Supervised Strategic Growth Audit
 
 Eidolon v130.0 completes the v125.1-v130.0 supervised strategic growth stretch. The system now gathers strategic growth signals, synthesizes roadmap options, tracks strategic risk and debt, scores capability maturity, and audits whether those layers help choose better future growth paths without granting autonomy.
@@ -3857,3 +4705,1558 @@ New review-only dashboard/API/CLI surfaces:
 - `/expression-live-application-packet-audit` and `/api/expression-live-application-packet-audit/layer`
 
 Boundary commitments: eligibility_gate_authorizes_live_writes=False; source_change_manifest_writes_files=False; patch_instruction_packet_applies_patch=False; verification_rollback_packet_executes_commands=False; application_packet_audit_applies_live_source=False; application_packet_review_only=True; application_packet_draft_only=True. Dashboard route health uses dashboard_http_route_probe_required with data-tip, command-deck, operator-console, and no_native_title_tooltip boundaries preserved. Runtime paths such as data/autonomy/expression_live_application_eligibility_gate/, data/autonomy/expression_live_source_change_manifest/, data/autonomy/expression_live_patch_instruction_packet/, data/autonomy/expression_live_verification_rollback_packet/, and data/autonomy/expression_live_application_packet_audit/ remain private/source-only excluded.
+
+
+## v355.0 - Operator-Governed Expression Live Application Execution Prep Layer v1
+
+Eidolon v355.0 adds a prep-only expression live application execution prep layer. It binds fresh operator approval intake for execution-prep only, drafts live source transaction and preimage manifests, prepares manual execution checklists and command packets as text only, prepares rollback/reversion packets, and audits the final execution-prep packet without applying live expression changes, writing source, rewriting prompts, executing commands, rolling back, publishing, creating release candidates, or continuing automatically into execution.
+
+### v350.1-v351.0 - Operator-Governed Live Expression Execution Approval Intake Gate
+
+- **v350.1 - Execution Prep Approval Scope Declaration:** declares the arc as execution-prep only and blocks live expression application.
+- **v350.2 - Fresh Operator Approval Binding Draft:** defines `operator_approval_id`, approval scope, target version, expiration, and approval purpose fields.
+- **v350.3 - Prior Packet Reference Binder:** requires v345 promotion packet and v350 live application packet references.
+- **v350.4 - Approval Non-Inference Guard:** blocks approval inference from readiness, sandbox success, promotion eligibility, or governance state.
+- **v350.5 - Stale Approval Rejection Rules:** rejects expired, reused, partial, or out-of-scope approvals.
+- **v350.6 - Expression Surface Scope Map:** lists the expression surfaces being prepared for possible later execution.
+- **v350.7 - Approval Intake Dashboard/API/CLI Surface:** exposes `/expression-live-execution-approval-intake`, `/api/expression-live-execution-approval-intake/layer`, and `--operator-governed-live-expression-execution-approval-intake-v1`.
+- **v350.8 - Approval Intake Smoke Coverage:** adds targeted approval-intake checks and forbidden-action assertions.
+- **v350.9 - Approval Intake Documentation and Release Notes:** documents all approval-intake substages.
+- **v351.0 - Operator-Governed Live Expression Execution Approval Intake Gate v1:** finalizes the execution-prep approval intake layer.
+
+### v351.1-v352.0 - Operator-Governed Live Source Transaction and Preimage Manifest Prep
+
+- **v351.1 - Source Transaction Prep Boundary Declaration:** declares transaction planning only and blocks source edits.
+- **v351.2 - Read Set Manifest Draft:** lists files expected to be read before a later live expression application.
+- **v351.3 - Write Set Manifest Draft:** lists files a later explicitly approved execution packet might modify.
+- **v351.4 - Protected Path Exclusion Guard:** blocks private/runtime paths, logs, caches, generated artifacts, local model output, and memory/runtime state.
+- **v351.5 - Preimage Snapshot Requirements:** defines before-state capture requirements for candidate source files.
+- **v351.6 - Version Marker Impact Map:** maps version markers and metadata that would need updating only in a later approved execution packet.
+- **v351.7 - README and Release History Obligation Map:** requires documentation updates for any later live application.
+- **v351.8 - Transaction Manifest Dashboard/API/CLI Surface:** exposes `/expression-live-source-transaction-preimage`, `/api/expression-live-source-transaction-preimage/layer`, and `--operator-governed-live-source-transaction-preimage-v1`.
+- **v351.9 - Transaction Manifest Smoke and Docs Coverage:** adds targeted transaction/preimage checks and docs coverage.
+- **v352.0 - Operator-Governed Live Source Transaction and Preimage Manifest Prep v1:** finalizes the transaction/preimage manifest prep layer.
+
+### v352.1-v353.0 - Operator-Governed Manual Execution Checklist and Command Packet
+
+- **v352.1 - Manual Execution Checklist Boundary Declaration:** declares all commands as text-only instructions.
+- **v352.2 - Pre-Application Human Review Checklist:** lists mandatory human review steps before any later execution packet.
+- **v352.3 - Manual Patch Application Instruction Draft:** drafts operator-readable source application instructions without generating or applying a patch.
+- **v352.4 - Verification Command Text Packet:** lists compile, smoke, route, API/CLI, privacy, packaging, and extracted-zip commands as text only.
+- **v352.5 - Targeted Smoke Matrix:** includes v345, v350, and v355 targeted smoke expectations.
+- **v352.6 - Dashboard Route Probe Checklist:** requires manual route probes for all new execution-prep surfaces.
+- **v352.7 - Dynamic API/CLI Parity Checklist:** requires API and CLI parity checks for each execution-prep packet.
+- **v352.8 - Manual Checklist Dashboard/API/CLI Surface:** exposes `/expression-live-manual-execution-checklist`, `/api/expression-live-manual-execution-checklist/layer`, and `--operator-governed-live-expression-manual-execution-checklist-v1`.
+- **v352.9 - Manual Checklist Smoke and Docs Coverage:** adds targeted checklist checks and documentation coverage.
+- **v353.0 - Operator-Governed Manual Execution Checklist and Command Packet v1:** finalizes the manual checklist and command packet layer.
+
+### v353.1-v354.0 - Operator-Governed Rollback Snapshot and Reversion Packet Prep
+
+- **v353.1 - Rollback Prep Boundary Declaration:** declares rollback planning as descriptive only.
+- **v353.2 - Pre-Change Snapshot Plan:** defines source, docs, metadata, and package-manifest pre-change snapshot expectations.
+- **v353.3 - Reverse-Diff Expectation Packet:** prepares expectations for reversing scoped expression edits only.
+- **v353.4 - Rollback Verification Command Text Packet:** lists rollback verification commands as text only.
+- **v353.5 - Failure Threshold and Abort Rules:** defines compile, smoke, route, API/CLI, privacy, and expression-boundary failure thresholds.
+- **v353.6 - Post-Rollback Review Packet:** defines the post-rollback review packet shape.
+- **v353.7 - Operator Decision State Matrix:** defines revise, rollback, block, retry sandbox, defer, and operator-approved retry states.
+- **v353.8 - Rollback Packet Dashboard/API/CLI Surface:** exposes `/expression-live-rollback-reversion-packet`, `/api/expression-live-rollback-reversion-packet/layer`, and `--operator-governed-live-expression-rollback-reversion-packet-v1`.
+- **v353.9 - Rollback Packet Smoke and Docs Coverage:** adds targeted rollback packet checks and docs coverage.
+- **v354.0 - Operator-Governed Rollback Snapshot and Reversion Packet Prep v1:** finalizes rollback/reversion packet prep.
+
+### v354.1-v355.0 - Operator-Governed Expression Live Application Execution Prep Audit
+
+- **v354.1 - Execution Prep Audit Boundary Declaration:** declares the final audit as prep-only with no automatic continuation.
+- **v354.2 - Approval Intake Presence Check:** verifies the v351 approval intake packet is present and scoped.
+- **v354.3 - Source Transaction Manifest Presence Check:** verifies the v352 transaction/preimage manifest is present.
+- **v354.4 - Manual Execution Checklist Presence Check:** verifies the v353 manual checklist and command packet is present.
+- **v354.5 - Rollback/Reversion Packet Presence Check:** verifies the v354 rollback/reversion packet is present.
+- **v354.6 - Docs, Version, and Release Obligation Audit:** confirms documentation, version marker, project metadata, and package obligations are represented.
+- **v354.7 - Dashboard/API/CLI Parity Audit:** confirms dashboard, API, and CLI coverage for all execution-prep surfaces.
+- **v354.8 - Governance and Forbidden-Action Audit:** confirms no live expression application, source mutation, memory mutation, identity/personality mutation, prompt rewrite, command execution, release creation, rollback execution, or automatic continuation.
+- **v354.9 - v355 Targeted Smoke and Package Privacy Audit:** adds targeted smoke and package privacy checks for v355.
+- **v355.0 - Operator-Governed Expression Live Application Execution Prep Layer v1:** finalizes the supervised execution-prep audit layer.
+
+New review-only dashboard/API/CLI surfaces:
+
+- `/expression-live-execution-approval-intake` and `/api/expression-live-execution-approval-intake/layer`
+- `/expression-live-source-transaction-preimage` and `/api/expression-live-source-transaction-preimage/layer`
+- `/expression-live-manual-execution-checklist` and `/api/expression-live-manual-execution-checklist/layer`
+- `/expression-live-rollback-reversion-packet` and `/api/expression-live-rollback-reversion-packet/layer`
+- `/expression-live-execution-prep-audit` and `/api/expression-live-execution-prep-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-live-expression-execution-approval-intake-v1`
+- `--operator-governed-live-source-transaction-preimage-v1`
+- `--operator-governed-live-expression-manual-execution-checklist-v1`
+- `--operator-governed-live-expression-rollback-reversion-packet-v1`
+- `--operator-governed-expression-live-application-execution-prep-v1`
+
+Boundary commitments: approval_intake_applies_live_expression=False; approval_intake_treats_packet_as_authorization=False; approval_intake_reuses_stale_approval=False; approval_intake_self_approves=False; approval_intake_continues_automatically=False; transaction_manifest_writes_files=False; transaction_manifest_mutates_source=False; transaction_manifest_updates_version_markers=False; transaction_manifest_includes_private_runtime_paths=False; transaction_manifest_treats_plan_as_execution=False; manual_checklist_executes_commands=False; manual_checklist_applies_patch=False; manual_checklist_runs_smoke=False; manual_checklist_builds_package=False; manual_checklist_inferrs_success_as_approval=False; rollback_packet_runs_rollback=False; rollback_packet_restores_files=False; rollback_packet_executes_commands=False; rollback_packet_publishes_release=False; rollback_packet_treats_failure_as_auto_recovery=False; execution_prep_applies_live_expression=False; execution_prep_writes_source=False; execution_prep_rewrites_prompts=False; execution_prep_mutates_personality=False; execution_prep_mutates_identity=False; execution_prep_mutates_memory=False; execution_prep_executes_commands=False; execution_prep_runs_rollback=False; execution_prep_publishes_release=False; execution_prep_creates_release_candidate=False; execution_prep_continues_to_execution=False; execution_prep_review_only=True; execution_prep_packet_bound=True. Dashboard route health uses dashboard_http_route_probe_required with data-tip, command-deck, operator-console, and no_native_title_tooltip boundaries preserved. Runtime paths such as data/autonomy/expression_live_execution_approval_intake/, data/autonomy/expression_live_source_transaction_preimage/, data/autonomy/expression_live_manual_execution_checklist/, data/autonomy/expression_live_rollback_reversion_packet/, and data/autonomy/expression_live_execution_prep_audit/ remain private/source-only excluded.
+
+## v360.0 - Operator-Approved Minimal Live Expression Application Execution Path v1
+
+Eidolon v360.0 adds the first tiny, explicitly operator-approved live-expression application path. The path is deliberately narrow: it is limited to a minimal expression-adjacent dashboard/docs/test wording change, centered on the visible status line: `Expression application remains operator-approved, scoped, reversible, and non-autonomous.` It does not grant broad personality mutation, runtime prompt mutation, memory mutation, identity changes, local-model invocation changes, release publishing, autonomous continuation, or self-approval.
+
+### v355.1-v356.0 - Minimal Approved Live Change Candidate Selection
+
+- **v355.1 - Minimal Change Boundary Declaration:** declares that the first live-expression application path must be tiny, expression-adjacent, reviewable, and reversible.
+- **v355.2 - Safe Candidate Type Ledger:** lists acceptable candidates such as dashboard-facing expression status lines, README governance notes, release-history notes, and test-only wording fixtures.
+- **v355.3 - Forbidden Surface Exclusion Map:** blocks runtime prompt behavior, core identity, personality engine, memory stores, autonomous loops, model invocation defaults, governance bypass rules, and publishing workflows.
+- **v355.4 - Recommended First Candidate Packet:** selects the dashboard/docs expression governance status line as the preferred first candidate.
+- **v355.5 - Minimal File Scope Draft:** limits candidate files to README/release history, dashboard microcopy, and targeted smoke coverage.
+- **v355.6 - Candidate Risk Classification:** classifies requests for identity/personality/memory/autonomy/publishing mutation as blocked.
+- **v355.7 - Candidate Dashboard/API/CLI Surface:** exposes `/minimal-live-expression-change-candidate`, `/api/minimal-live-expression-change-candidate/layer`, and `--operator-approved-minimal-live-expression-change-candidate-v1`.
+- **v355.8 - Candidate Smoke Coverage:** adds targeted checks for tiny-candidate selection and forbidden-surface blocking.
+- **v355.9 - Candidate Documentation and Release Notes:** documents candidate substages and scope limits.
+- **v356.0 - Minimal Approved Live Change Candidate Selection v1:** finalizes the tiny candidate selection layer.
+
+### v356.1-v357.0 - Operator Approval Token and Execution Scope Lock
+
+- **v356.1 - Approval Lock Boundary Declaration:** declares that approval is fresh, single-use, exact-scope, and cannot be inferred.
+- **v356.2 - Approval Required Field Schema:** defines approval id, scope, expiration, target version, allowed files, allowed summary, forbidden files, rollback requirement, verification requirement, and single-use state.
+- **v356.3 - Allowed File Scope Lock:** binds the change to a small allowed-file list.
+- **v356.4 - Forbidden File Scope Lock:** explicitly denies `chat.py`, runtime/autonomy data, memory stores, identity source of truth, and personality engine surfaces.
+- **v356.5 - Expiration and Freshness Rule:** blocks expired, stale, reused, or out-of-scope approval tokens.
+- **v356.6 - Single-Use Approval Guard:** prevents reusing one approval across multiple changes or future patches.
+- **v356.7 - Approval Lock Dashboard/API/CLI Surface:** exposes `/minimal-live-expression-approval-lock`, `/api/minimal-live-expression-approval-lock/layer`, and `--operator-approved-minimal-live-expression-approval-lock-v1`.
+- **v356.8 - Approval Lock Smoke Coverage:** adds targeted checks for self-approval, scope expansion, and expired approval blocking.
+- **v356.9 - Approval Lock Documentation and Release Notes:** documents approval-lock substages.
+- **v357.0 - Operator Approval Token and Execution Scope Lock v1:** finalizes the one-change approval lock.
+
+### v357.1-v358.0 - Tiny Patch Transaction Builder
+
+- **v357.1 - Transaction Builder Boundary Declaration:** declares the transaction as a review-only patch preview until exact operator confirmation.
+- **v357.2 - Preimage Requirement Binder:** requires file paths, before-change hashes, edit purpose, rollback anchors, and docs/version obligations.
+- **v357.3 - Exact File List Binder:** binds the transaction to README, release history, dashboard, and targeted smoke files only.
+- **v357.4 - Diff Preview Packet:** previews the expression status line, docs updates, release-history update, and smoke token changes.
+- **v357.5 - Documentation and Version Obligation Binder:** requires README, release history, project metadata, and version marker updates.
+- **v357.6 - Rollback Diff Binder:** drafts the reverse-diff expectations for the tiny change.
+- **v357.7 - Patch Transaction Dashboard/API/CLI Surface:** exposes `/minimal-live-expression-patch-transaction`, `/api/minimal-live-expression-patch-transaction/layer`, and `--operator-approved-minimal-live-expression-patch-transaction-v1`.
+- **v357.8 - Patch Transaction Smoke Coverage:** adds checks that the transaction builder does not write files or apply patches.
+- **v357.9 - Patch Transaction Documentation and Release Notes:** documents transaction substages.
+- **v358.0 - Tiny Patch Transaction Builder v1:** finalizes the tiny transaction preview layer.
+
+### v358.1-v359.0 - Operator-Confirmed Patch Application Harness
+
+- **v358.1 - Harness Boundary Declaration:** declares that application can only occur through exact scoped operator confirmation.
+- **v358.2 - Approval/Transaction Match Check:** requires matching approval id and transaction id.
+- **v358.3 - Preimage Match Check:** blocks any application if the source preimage no longer matches.
+- **v358.4 - Allowed File Match Check:** blocks files outside the approval lock.
+- **v358.5 - Exact Confirmation Phrase Gate:** requires the phrase `I explicitly approve this one minimal scoped expression-adjacent source change`.
+- **v358.6 - Rollback and Verification Presence Check:** requires rollback packet and verification checklist evidence.
+- **v358.7 - Application Harness Dashboard/API/CLI Surface:** exposes `/minimal-live-expression-application-harness`, `/api/minimal-live-expression-application-harness/layer`, and `--operator-confirmed-minimal-live-expression-application-harness-v1`.
+- **v358.8 - Application Harness Smoke Coverage:** adds checks for missing confirmation, preimage mismatch, missing rollback, missing verification, and out-of-scope files.
+- **v358.9 - Application Harness Documentation and Release Notes:** documents harness substages.
+- **v359.0 - Operator-Confirmed Patch Application Harness v1:** finalizes the confirmation-gated harness.
+
+### v359.1-v360.0 - Minimal Live Expression Application Audit and Recovery Report
+
+- **v359.1 - Final Audit Boundary Declaration:** declares no release publishing, no release candidate creation, no automatic rollback, and no autonomous continuation.
+- **v359.2 - Candidate Size Audit:** verifies the candidate remains tiny and expression-adjacent.
+- **v359.3 - Approval Scope Audit:** verifies fresh, scoped, single-use approval.
+- **v359.4 - Transaction/Preimage Audit:** verifies transaction scope and preimage expectations.
+- **v359.5 - Harness Gate Audit:** verifies exact confirmation phrase, rollback packet, and verification checklist requirements.
+- **v359.6 - Docs/Version/Release Obligation Audit:** verifies README, release history, version markers, and project metadata obligations.
+- **v359.7 - Dashboard/API/CLI Parity Audit:** verifies all v356-v360 surfaces have dashboard, API, and CLI coverage.
+- **v359.8 - Governance and Forbidden-Action Audit:** verifies no runtime prompt mutation, no core identity/personality/memory mutation, no model invocation change, no publishing, and no automatic continuation.
+- **v359.9 - v360 Targeted Smoke and Package Privacy Audit:** verifies smoke coverage, package privacy tokens, route health, and source-only runtime exclusions.
+- **v360.0 - Operator-Approved Minimal Live Expression Application Execution Path v1:** finalizes the first tiny, scoped, reversible, operator-approved live-expression application path.
+
+New governed dashboard/API/CLI surfaces:
+- `/minimal-live-expression-change-candidate` and `/api/minimal-live-expression-change-candidate/layer`
+- `/minimal-live-expression-approval-lock` and `/api/minimal-live-expression-approval-lock/layer`
+- `/minimal-live-expression-patch-transaction` and `/api/minimal-live-expression-patch-transaction/layer`
+- `/minimal-live-expression-application-harness` and `/api/minimal-live-expression-application-harness/layer`
+- `/minimal-live-expression-application-audit` and `/api/minimal-live-expression-application-audit/layer`
+
+Boundary commitments: candidate_selection_applies_change=False; candidate_selection_rewrites_personality=False; candidate_selection_touches_runtime_prompt=False; candidate_selection_selects_high_risk_surface=False; approval_lock_self_approves=False; approval_lock_reuses_expired_approval=False; approval_lock_expands_scope=False; approval_lock_grants_autonomy=False; transaction_builder_writes_files=False; transaction_builder_applies_patch=False; transaction_builder_mutates_memory=False; transaction_builder_changes_identity=False; application_harness_executes_without_confirmation=False; application_harness_continues_automatically=False; application_harness_allows_out_of_scope_files=False; application_harness_treats_preimage_mismatch_as_ok=False; application_audit_publishes_release=False; application_audit_creates_release_candidate=False; application_audit_runs_rollback=False; application_audit_mutates_personality_core=False; minimal_path_operator_approved_only=True; minimal_path_single_use_scope_required=True; minimal_path_reversible=True; minimal_path_no_autonomous_continuation=True. Dashboard route health uses dashboard_http_route_probe_required with data-tip, command-deck, operator-console, and no_native_title_tooltip boundaries preserved. Runtime paths such as data/autonomy/minimal_live_expression_change_candidate/, data/autonomy/minimal_live_expression_approval_lock/, data/autonomy/minimal_live_expression_patch_transaction/, data/autonomy/minimal_live_expression_application_harness/, and data/autonomy/minimal_live_expression_application_audit/ remain private/source-only excluded.
+
+## v365.0 - Self-Maintenance Surface Reduction and Gate Registry Refactor v1
+
+Eidolon v365.0 adds a review-only cleanup/refactor arc for the self-maintenance surface. This arc reduces stale gate/version risks by seeding gate registry metadata, centralizing version expectations, mapping governed dashboard/API/CLI surfaces, registering smoke/legacy-gate cleanup helpers, and auditing package privacy and dashboard hover behavior. It does not expand autonomy, apply patches, execute smoke automatically, mutate memory, alter identity/personality, publish releases, create release candidates, or continue automatically.
+
+### v360.1-v361.0 - Self-Maintenance Gate Inventory and Registry Seed
+
+- **v360.1 - Gate Inventory Boundary Declaration:** declares the registry seed review-only and behavior-preserving.
+- **v360.2 - Major Gate Inventory:** inventories major gates embedded in `self_maintenance.py`.
+- **v360.3 - Gate Family Classification:** groups gates into governance, memory, model, expression, packaging, route health, smoke, and version expectation families.
+- **v360.4 - Duplicate Version Check Finder:** identifies repeated version marker checks that should use shared helpers.
+- **v360.5 - Route/API/CLI Check Finder:** identifies duplicated surface parity checks across gates.
+- **v360.6 - Gate Registry Schema:** defines registry fields for family, name, source, authority, route/API/CLI surfaces, and boundary notes.
+- **v360.7 - Registry Seed Rows:** adds non-mutating seed records for core gate families.
+- **v360.8 - Gate Registry Dashboard/API/CLI Surface:** exposes `/self-maintenance-gate-registry`, `/api/self-maintenance-gate-registry/layer`, and `--operator-governed-self-maintenance-gate-inventory-registry-seed-v1`.
+- **v360.9 - Gate Registry Smoke Coverage:** adds targeted checks for registry presence, substage count, and no-behavior-change boundaries.
+- **v361.0 - Self-Maintenance Gate Inventory and Registry Seed v1:** finalizes the review-only gate inventory registry seed.
+
+### v361.1-v362.0 - Centralized Self-Maintenance Version Expectation Layer
+
+- **v361.1 - Version Expectation Helper Boundary:** declares version expectation helpers as read-only audit helpers.
+- **v361.2 - Current Version Helper Binding:** binds version marker expectations to `version_state.py` instead of scattered stale literals.
+- **v361.3 - Selected Legacy Gate Literal Cleanup:** updates selected old gate expectations to the current version contract.
+- **v361.4 - Legacy Version Compatibility Note:** documents that old arc labels can remain historic while live marker checks use the current version.
+- **v361.5 - Stale Literal Detector:** adds review-only stale literal detection for smoke/version checks.
+- **v361.6 - Version Expectation Dashboard/API/CLI Surface:** exposes `/self-maintenance-version-expectations`, `/api/self-maintenance-version-expectations/layer`, and `--operator-governed-self-maintenance-version-expectation-layer-v1`.
+- **v361.7 - Version Expectation Smoke Coverage:** checks that centralized version expectations pass without touching files.
+- **v361.8 - Version Expectation Documentation:** records the current-version expectation rule in README documentation.
+- **v361.9 - Version Expectation Release Notes:** records the helper centralization in release history.
+- **v362.0 - Centralized Self-Maintenance Version Expectation Layer v1:** finalizes the read-only current-version expectation registry.
+
+### v362.1-v363.0 - Governed Surface Metadata Registry
+
+- **v362.1 - Surface Metadata Registry Boundary:** declares surface metadata review-only and route-preserving.
+- **v362.2 - Dashboard Route Metadata Rows:** records governed dashboard paths for the v365 cleanup arc.
+- **v362.3 - API Route Metadata Rows:** records dynamic `/api/.../layer` routes for registry parity review.
+- **v362.4 - CLI Flag Metadata Rows:** records dynamic CLI flags for registry parity review.
+- **v362.5 - Route Health Registry Integration:** adds v365 surfaces to route-health review metadata.
+- **v362.6 - Dashboard Parity Check:** verifies dashboard paths are present without changing dashboard behavior.
+- **v362.7 - API/CLI Parity Check:** verifies dynamic API and CLI tokens are present.
+- **v362.8 - Surface Registry Smoke Coverage:** adds targeted registry parity checks.
+- **v362.9 - Surface Registry Documentation:** records the surface metadata substages.
+- **v363.0 - Governed Surface Metadata Registry v1:** finalizes governed dashboard/API/CLI metadata registry coverage.
+
+### v363.1-v364.0 - Smoke Check Registry and Legacy Gate Cleanup
+
+- **v363.1 - Smoke Registry Boundary:** declares smoke registry helpers as descriptive only.
+- **v363.2 - Targeted Smoke Inventory:** inventories current targeted smoke checks that anchor recent expression and refactor arcs.
+- **v363.3 - Smoke Check Family Grouping:** groups checks by arc, layer family, and verification role.
+- **v363.4 - Shared Assertion Helper Plan:** prepares shared assertion patterns for future cleanup without broad rewrites.
+- **v363.5 - Legacy Gate Compatibility Wrapper Plan:** records how old gates should consume current-version helpers.
+- **v363.6 - Stale Gate Detection Output:** adds a review-only stale-gate detection concept to the smoke registry.
+- **v363.7 - Package Privacy Smoke Hook:** binds source-only package privacy to registry coverage.
+- **v363.8 - Install Smoke Registry Check:** adds install-tier targeted smoke for the refactor registry.
+- **v363.9 - Smoke Registry Documentation:** records smoke registry cleanup substages.
+- **v364.0 - Smoke Check Registry and Legacy Gate Cleanup v1:** finalizes smoke registry and legacy gate cleanup scaffolding.
+
+### v364.1-v365.0 - Self-Maintenance Refactor Audit and Continuity Packet
+
+- **v364.1 - Refactor Audit Boundary Declaration:** confirms the arc changes metadata and checks only, not behavior or authority.
+- **v364.2 - Gate Registry Completeness Audit:** audits gate-family and seed-row coverage.
+- **v364.3 - Version Expectation Centralization Audit:** audits current-version helper alignment.
+- **v364.4 - Surface Metadata Parity Audit:** audits dashboard/API/CLI metadata coverage.
+- **v364.5 - Smoke Registry Coverage Audit:** audits targeted smoke and legacy cleanup registry coverage.
+- **v364.6 - Package Privacy Audit:** confirms v365 runtime dirs remain source-only excluded.
+- **v364.7 - Dashboard Hover Preservation Audit:** confirms `data-tip`, command-deck, operator-console, and no_native_title_tooltip boundaries.
+- **v364.8 - Continuity Packet for Next Refactor Arc:** prepares the next cleanup recommendation without continuing automatically.
+- **v364.9 - v365 Targeted Smoke and Install Smoke Audit:** adds final smoke coverage for the refactor layer.
+- **v365.0 - Self-Maintenance Surface Reduction and Gate Registry Refactor v1:** finalizes the registry-driven self-maintenance cleanup audit.
+
+New review-only dashboard/API/CLI surfaces:
+
+- `/self-maintenance-gate-registry` and `/api/self-maintenance-gate-registry/layer`
+- `/self-maintenance-version-expectations` and `/api/self-maintenance-version-expectations/layer`
+- `/governed-surface-metadata-registry` and `/api/governed-surface-metadata-registry/layer`
+- `/smoke-check-legacy-gate-registry` and `/api/smoke-check-legacy-gate-registry/layer`
+- `/self-maintenance-refactor-audit` and `/api/self-maintenance-refactor-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-self-maintenance-gate-inventory-registry-seed-v1`
+- `--operator-governed-self-maintenance-version-expectation-layer-v1`
+- `--operator-governed-surface-metadata-registry-v1`
+- `--operator-governed-smoke-check-registry-and-legacy-gate-cleanup-v1`
+- `--operator-governed-self-maintenance-surface-reduction-and-gate-registry-refactor-v1`
+
+Boundary commitments: refactor_registry_writes_files=False; refactor_registry_removes_routes=False; refactor_registry_changes_runtime_behavior=False; refactor_registry_executes_smoke=False; refactor_registry_applies_patches=False; refactor_registry_mutates_memory=False; refactor_registry_alters_identity=False; refactor_registry_alters_personality=False; refactor_registry_invokes_models=False; refactor_registry_self_approves=False; refactor_registry_publishes_release=False; refactor_registry_continues_automatically=False; registry_metadata_is_review_only=True; centralized_version_expectations_required=True; dashboard_data_tip_required=True; native_title_tooltips_forbidden=True. Dashboard route health uses dashboard_http_route_probe_required with data-tip, command-deck, operator-console, and no_native_title_tooltip boundaries preserved. Runtime paths such as data/autonomy/self_maintenance_gate_registry/, data/autonomy/self_maintenance_version_expectations/, data/autonomy/governed_surface_metadata_registry/, data/autonomy/smoke_check_legacy_gate_registry/, and data/autonomy/self_maintenance_refactor_audit/ remain private/source-only excluded.
+
+
+## v370.0 - Minimal Approved Live Change Replay and Regression Hardening v1
+
+Eidolon v370.0 hardens the minimal approved live-expression application path by making it replayable, comparable, regression-aware, and recovery-reviewable. This arc does not apply or replay changes automatically; it prepares review-only packets that compare expected and actual outcomes, detect drift, and recommend recovery without executing rollback or edits.
+
+### v365.1-v366.0 - Minimal Live Change Replay Packet
+
+- **v365.1 - Replay Boundary Declaration:** declares replay as packet-only and review-only.
+- **v365.2 - Original Candidate ID Binder:** binds the replay packet to the original minimal live change candidate id.
+- **v365.3 - Approval Lock ID Binder:** binds the replay to the exact approval lock id.
+- **v365.4 - Transaction ID Binder:** binds the replay to the exact tiny patch transaction id.
+- **v365.5 - Harness and Audit ID Binder:** binds the replay to the application harness id and final audit id.
+- **v365.6 - Expected Touched/Untouched File Ledger:** records expected changed files and expected unchanged protected surfaces.
+- **v365.7 - Replay Packet Dashboard/API/CLI Surface:** exposes `/minimal-live-change-replay-packet`, `/api/minimal-live-change-replay-packet/layer`, and `--operator-governed-minimal-live-change-replay-packet-v1`.
+- **v365.8 - Replay Packet Smoke Coverage:** adds targeted smoke checks for replay packet boundaries.
+- **v365.9 - Replay Packet Documentation and Release Notes:** documents replay packet scope and non-execution boundaries.
+- **v366.0 - Minimal Live Change Replay Packet v1:** finalizes replay packet assembly.
+
+### v366.1-v367.0 - Expected-vs-Actual Live Change Comparison
+
+- **v366.1 - Comparison Boundary Declaration:** declares comparison as read-only and approval-neutral.
+- **v366.2 - Expected Changed File Binder:** captures the expected file-change set.
+- **v366.3 - Actual Changed File Binder:** captures the actual file-change set for operator review.
+- **v366.4 - Unexpected File Change Detector:** flags changed files outside the expected set.
+- **v366.5 - Missing Expected Change Detector:** flags expected files that did not change.
+- **v366.6 - Docs/Version/Smoke Result Binder:** checks README, release history, version markers, smoke status, and package privacy claims.
+- **v366.7 - Expected/Actual Dashboard/API/CLI Surface:** exposes `/minimal-live-change-expected-actual-comparison`, `/api/minimal-live-change-expected-actual-comparison/layer`, and `--operator-governed-minimal-live-change-expected-actual-comparison-v1`.
+- **v366.8 - Expected/Actual Smoke Coverage:** adds targeted smoke for mismatch detection and no-approval inference.
+- **v366.9 - Expected/Actual Documentation and Release Notes:** documents comparison substages.
+- **v367.0 - Expected-vs-Actual Live Change Comparison v1:** finalizes expected-vs-actual comparison.
+
+### v367.1-v368.0 - Regression Drift Detector
+
+- **v367.1 - Drift Detector Boundary Declaration:** declares drift detection as review-only and non-mutating.
+- **v367.2 - Approval Boundary Drift Check:** verifies approval boundaries are preserved.
+- **v367.3 - Route/API/CLI Drift Check:** verifies dashboard/API/CLI parity remains healthy.
+- **v367.4 - Registry Drift Check:** verifies self-maintenance registry entries remain coherent.
+- **v367.5 - Package Privacy Drift Check:** verifies source-only/package privacy boundaries remain intact.
+- **v367.6 - Dashboard Hover Drift Check:** verifies `data-tip` remains and native `title` tooltips stay absent.
+- **v367.7 - Drift Detector Dashboard/API/CLI Surface:** exposes `/minimal-live-change-regression-drift-detector`, `/api/minimal-live-change-regression-drift-detector/layer`, and `--operator-governed-minimal-live-change-regression-drift-detector-v1`.
+- **v367.8 - Drift Detector Smoke Coverage:** adds targeted smoke for no auto-fix, no model invocation, and no behavior mutation.
+- **v367.9 - Drift Detector Documentation and Release Notes:** documents drift detector substages.
+- **v368.0 - Regression Drift Detector v1:** finalizes regression drift detection.
+
+### v368.1-v369.0 - Recovery Recommendation Packet
+
+- **v368.1 - Recovery Boundary Declaration:** declares recovery output as recommendations only.
+- **v368.2 - Detected Issue Binder:** binds recovery advice to detected replay/comparison/drift issues.
+- **v368.3 - Manual Rollback Recommendation:** allows recommending manual rollback without executing it.
+- **v368.4 - Manual Patch Correction Recommendation:** allows recommending manual correction without editing files.
+- **v368.5 - Return-to-Sandbox Recommendation:** allows recommending a return to sandbox for risky or unclear changes.
+- **v368.6 - Further Live-Change Block Recommendation:** allows recommending a block on further live-change attempts.
+- **v368.7 - Recovery Recommendation Dashboard/API/CLI Surface:** exposes `/minimal-live-change-recovery-recommendation`, `/api/minimal-live-change-recovery-recommendation/layer`, and `--operator-governed-minimal-live-change-recovery-recommendation-v1`.
+- **v368.8 - Recovery Recommendation Smoke Coverage:** adds targeted smoke for no rollback execution, no file editing, no command rerun, and no release candidate creation.
+- **v368.9 - Recovery Recommendation Documentation and Release Notes:** documents recovery recommendation substages.
+- **v369.0 - Recovery Recommendation Packet v1:** finalizes recovery recommendation packet assembly.
+
+### v369.1-v370.0 - Minimal Live Change Replay and Regression Audit
+
+- **v369.1 - Final Audit Boundary Declaration:** declares the final audit as review-only and non-autonomous.
+- **v369.2 - Replay Packet Presence Check:** verifies the v366 replay packet exists.
+- **v369.3 - Expected/Actual Comparison Presence Check:** verifies the v367 comparison packet exists.
+- **v369.4 - Regression Drift Detector Presence Check:** verifies the v368 drift detector exists.
+- **v369.5 - Recovery Recommendation Presence Check:** verifies the v369 recovery packet exists.
+- **v369.6 - Governance Boundary Audit:** confirms no autonomy, identity, personality, memory, prompt, rollback, command, or publishing expansion.
+- **v369.7 - Dashboard/API/CLI Parity Audit:** confirms all replay/regression surfaces are registered.
+- **v369.8 - Package Privacy and Source-Only Audit:** confirms private replay runtime paths stay out of source packages.
+- **v369.9 - v370 Targeted Smoke and Documentation Audit:** adds final targeted smoke and docs checks.
+- **v370.0 - Minimal Approved Live Change Replay and Regression Hardening v1:** finalizes the replay/regression hardening audit.
+
+New review-only dashboard/API/CLI surfaces:
+
+- `/minimal-live-change-replay-packet` and `/api/minimal-live-change-replay-packet/layer`
+- `/minimal-live-change-expected-actual-comparison` and `/api/minimal-live-change-expected-actual-comparison/layer`
+- `/minimal-live-change-regression-drift-detector` and `/api/minimal-live-change-regression-drift-detector/layer`
+- `/minimal-live-change-recovery-recommendation` and `/api/minimal-live-change-recovery-recommendation/layer`
+- `/minimal-live-change-replay-regression-audit` and `/api/minimal-live-change-replay-regression-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-minimal-live-change-replay-packet-v1`
+- `--operator-governed-minimal-live-change-expected-actual-comparison-v1`
+- `--operator-governed-minimal-live-change-regression-drift-detector-v1`
+- `--operator-governed-minimal-live-change-recovery-recommendation-v1`
+- `--operator-governed-minimal-live-change-replay-and-regression-hardening-v1`
+
+Boundary commitments: replay_packet_applies_change=False; replay_packet_replays_automatically=False; replay_packet_mutates_source=False; expected_actual_writes_files=False; expected_actual_runs_verification=False; expected_actual_treats_match_as_approval=False; regression_detector_changes_behavior=False; regression_detector_auto_fixes=False; regression_detector_invokes_models=False; recovery_recommendation_executes_rollback=False; recovery_recommendation_edits_files=False; recovery_recommendation_reruns_commands=False; recovery_recommendation_creates_release_candidate=False; replay_audit_mutates_memory=False; replay_audit_alters_identity=False; replay_audit_alters_personality=False; replay_audit_publishes_release=False; replay_audit_continues_automatically=False; minimal_replay_review_only=True; minimal_replay_expected_actual_required=True; minimal_replay_recovery_is_recommendation_only=True. Dashboard route health uses dashboard_http_route_probe_required with data-tip, command-deck, operator-console, and no_native_title_tooltip boundaries preserved. Runtime paths such as data/autonomy/minimal_live_change_replay_packet/, data/autonomy/minimal_live_change_expected_actual_comparison/, data/autonomy/minimal_live_change_regression_drift_detector/, data/autonomy/minimal_live_change_recovery_recommendation/, and data/autonomy/minimal_live_change_replay_regression_audit/ remain private/source-only excluded.
+
+
+## v380.0 - Approved Live Change Transaction Narrowing and Real Patch Application Trial v1
+
+Eidolon v380.0 narrows the minimal approved live-change path into a locked real patch application trial contract. This arc prepares and audits transaction narrowing, approval execution lock, real patch trial planning, operator-confirmed application trial requirements, and final application-trial audit. It does not self-approve, expand scope, mutate memory, alter identity/personality, invoke local models by default, publish releases, run rollback automatically, or continue into new work automatically.
+
+### v375.1-v376.0 - Live Change Transaction Narrowing
+
+- **v375.1 - Transaction Narrowing Boundary Declaration:** declares narrowing as review-only and non-applying.
+- **v375.2 - Minimal Candidate Surface Binder:** binds the candidate to a tiny docs/dashboard/smoke surface.
+- **v375.3 - Allowed File Ledger:** records allowed files for the narrow trial.
+- **v375.4 - Protected Surface Exclusion Ledger:** excludes memory, identity, personality, runtime prompts, model defaults, approval rules, and release publishing.
+- **v375.5 - Scope Expansion Blocker:** rejects wider or vague file scopes.
+- **v375.6 - Candidate Autonomy Blocker:** confirms Eidolon does not select the candidate autonomously.
+- **v375.7 - Transaction Narrowing Dashboard/API/CLI Surface:** exposes `/live-change-transaction-narrowing`, `/api/live-change-transaction-narrowing/layer`, and `--operator-governed-live-change-transaction-narrowing-v1`.
+- **v375.8 - Transaction Narrowing Smoke Coverage:** adds targeted smoke for no patch application and no scope expansion.
+- **v375.9 - Transaction Narrowing Documentation and Release Notes:** documents narrowing scope and boundaries.
+- **v376.0 - Live Change Transaction Narrowing v1:** finalizes narrow transaction selection for operator review.
+
+### v376.1-v377.0 - Live Change Approval Execution Lock
+
+- **v376.1 - Execution Lock Boundary Declaration:** declares the lock as approval-binding only, not self-approval.
+- **v376.2 - Fresh Approval ID Binder:** binds a fresh approval id.
+- **v376.3 - Single-Use Scope Binder:** binds one single-use scope and target version.
+- **v376.4 - Allowed/Forbidden File Binder:** binds allowed files and protected exclusions.
+- **v376.5 - Expiration and Staleness Guard:** rejects stale, reused, or out-of-scope approvals.
+- **v376.6 - Confirmation Phrase Binder:** requires the exact operator confirmation phrase.
+- **v376.7 - Execution Lock Dashboard/API/CLI Surface:** exposes `/live-change-approval-execution-lock`, `/api/live-change-approval-execution-lock/layer`, and `--operator-governed-live-change-approval-execution-lock-v1`.
+- **v376.8 - Execution Lock Smoke Coverage:** adds targeted smoke for no self-approval and no readiness-as-authorization.
+- **v376.9 - Execution Lock Documentation and Release Notes:** documents approval execution lock requirements.
+- **v377.0 - Live Change Approval Execution Lock v1:** finalizes fresh single-use execution lock scaffolding.
+
+### v377.1-v378.0 - Live Change Real Patch Trial Plan
+
+- **v377.1 - Patch Trial Plan Boundary Declaration:** declares the plan as text/review-only until explicit confirmation.
+- **v377.2 - Preimage Hash Requirement Binder:** requires before-state/preimage evidence.
+- **v377.3 - Diff Preview Binder:** requires exact diff preview for the narrow change.
+- **v377.4 - README and Release History Obligation Binder:** requires documentation updates.
+- **v377.5 - Rollback Packet Binder:** requires rollback/reversion material before application.
+- **v377.6 - Verification Checklist Binder:** requires compile, smoke, route/API/CLI, package privacy, and extracted zip checks as checklist items.
+- **v377.7 - Patch Trial Plan Dashboard/API/CLI Surface:** exposes `/live-change-real-patch-trial-plan`, `/api/live-change-real-patch-trial-plan/layer`, and `--operator-governed-live-change-real-patch-trial-plan-v1`.
+- **v377.8 - Patch Trial Plan Smoke Coverage:** adds targeted smoke for no file writes, no command execution, and no release candidate creation.
+- **v377.9 - Patch Trial Plan Documentation and Release Notes:** documents the trial plan.
+- **v378.0 - Live Change Real Patch Trial Plan v1:** finalizes patch trial planning for operator review.
+
+### v378.1-v379.0 - Operator-Confirmed Live Change Application Trial
+
+- **v378.1 - Application Trial Boundary Declaration:** declares the trial confirmation-gated and non-autonomous.
+- **v378.2 - Fresh Approval Match Check:** requires the fresh approval id to match the lock.
+- **v378.3 - Transaction ID Match Check:** requires the transaction id to match the plan.
+- **v378.4 - Preimage Match Check:** requires source preimage to match before application.
+- **v378.5 - Allowed File Match Check:** blocks any file outside the approved surface.
+- **v378.6 - Rollback and Verification Presence Check:** requires rollback and verification evidence.
+- **v378.7 - Application Trial Dashboard/API/CLI Surface:** exposes `/live-change-operator-confirmed-application-trial`, `/api/live-change-operator-confirmed-application-trial/layer`, and `--operator-confirmed-live-change-application-trial-v1`.
+- **v378.8 - Application Trial Smoke Coverage:** adds targeted smoke for no unconfirmed execution, no memory/identity/personality mutation, no publishing, and no automatic continuation.
+- **v378.9 - Application Trial Documentation and Release Notes:** documents the application trial contract.
+- **v379.0 - Operator-Confirmed Live Change Application Trial v1:** finalizes the locked confirmation-gated application trial contract.
+
+### v379.1-v380.0 - Live Change Application Trial Audit
+
+- **v379.1 - Final Audit Boundary Declaration:** declares the final audit review-only and non-continuing.
+- **v379.2 - Transaction Narrowing Presence Check:** verifies the v376 narrowing packet exists.
+- **v379.3 - Approval Execution Lock Presence Check:** verifies the v377 lock exists.
+- **v379.4 - Patch Trial Plan Presence Check:** verifies the v378 plan exists.
+- **v379.5 - Operator-Confirmed Trial Presence Check:** verifies the v379 confirmation-gated trial contract exists.
+- **v379.6 - Governance Boundary Audit:** confirms no self-approval, scope expansion, memory mutation, identity/personality mutation, model invocation, publishing, rollback execution, or automatic continuation.
+- **v379.7 - Dashboard/API/CLI Parity Audit:** confirms all v380 surfaces are registered.
+- **v379.8 - Package Privacy and Source-Only Audit:** confirms private runtime paths remain source-only excluded.
+- **v379.9 - v380 Targeted Smoke and Documentation Audit:** adds final targeted smoke and docs checks.
+- **v380.0 - Approved Live Change Transaction Narrowing and Real Patch Application Trial v1:** finalizes the narrow approved live-change application trial audit.
+
+New review-only dashboard/API/CLI surfaces:
+
+- `/live-change-transaction-narrowing` and `/api/live-change-transaction-narrowing/layer`
+- `/live-change-approval-execution-lock` and `/api/live-change-approval-execution-lock/layer`
+- `/live-change-real-patch-trial-plan` and `/api/live-change-real-patch-trial-plan/layer`
+- `/live-change-operator-confirmed-application-trial` and `/api/live-change-operator-confirmed-application-trial/layer`
+- `/live-change-application-trial-audit` and `/api/live-change-application-trial-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-live-change-transaction-narrowing-v1`
+- `--operator-governed-live-change-approval-execution-lock-v1`
+- `--operator-governed-live-change-real-patch-trial-plan-v1`
+- `--operator-confirmed-live-change-application-trial-v1`
+- `--operator-governed-live-change-application-trial-audit-v1`
+
+Boundary commitments: transaction_narrowing_applies_patch=False; transaction_narrowing_expands_scope=False; approval_execution_lock_self_approves=False; approval_execution_lock_reuses_expired_approval=False; trial_plan_writes_files=False; trial_plan_runs_commands=False; application_trial_runs_without_confirmation=False; application_trial_expands_allowed_files=False; application_trial_mutates_memory=False; application_trial_alters_identity=False; application_trial_alters_personality=False; application_trial_invokes_models=False; application_trial_publishes_release=False; application_trial_runs_rollback_automatically=False; application_trial_continues_automatically=False; operator_confirmation_required=True; single_file_or_small_surface_required=True; preimage_match_required=True; rollback_packet_required=True; post_application_audit_required=True; readme_release_history_updates_required=True; dashboard_data_tip_required=True; native_title_tooltips_forbidden=True. Runtime paths such as data/autonomy/live_change_transaction_narrowing/, data/autonomy/live_change_approval_execution_lock/, data/autonomy/live_change_real_patch_trial_plan/, data/autonomy/live_change_operator_confirmed_application_trial/, and data/autonomy/live_change_application_trial_audit/ remain private/source-only excluded.
+
+## v385.0 - Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1
+
+Eidolon v385.0 closes the narrow operator-confirmed live patch trial loop. This arc ingests trial results, binds applied diff/source-state evidence, burns the one-time approval token, reviews post-trial regression and rollback readiness, and audits closure without applying another patch, reusing approval, executing rollback, editing source, creating releases, mutating memory/identity/personality, invoking local models, or continuing automatically.
+
+### v380.1-v381.0 - Live Patch Trial Result Intake Packet
+
+- **v380.1 - Result Intake Boundary Declaration:** declares trial result intake as evidence-only and non-executing.
+- **v380.2 - Approval ID Binder:** binds the reported approval id to the trial result.
+- **v380.3 - Transaction ID Binder:** binds the reported transaction id to the approved transaction.
+- **v380.4 - Application Trial ID Binder:** binds the reported application trial id to the v380 trial path.
+- **v380.5 - Expected/Actual File Ledger:** records expected files and actual changed files for comparison.
+- **v380.6 - Reported Verification and Rollback Readiness Binder:** records operator-reported verification and rollback readiness without rerunning commands.
+- **v380.7 - Result Intake Dashboard/API/CLI Surface:** exposes `/live-patch-trial-result-intake`, `/api/live-patch-trial-result-intake/layer`, and `--operator-governed-live-patch-trial-result-intake-v1`.
+- **v380.8 - Result Intake Smoke Coverage:** adds targeted smoke for no command rerun, no fix application, no rollback execution, and no future approval inference.
+- **v380.9 - Result Intake Documentation and Release Notes:** documents result intake boundaries.
+- **v381.0 - Operator-Governed Live Patch Trial Result Intake v1:** finalizes review-only live patch trial result intake.
+
+### v381.1-v382.0 - Applied Diff and Source-State Evidence Packet
+
+- **v381.1 - Diff Evidence Boundary Declaration:** declares diff evidence as recording-only and non-mutating.
+- **v381.2 - Expected Diff Summary Binder:** records expected diff summary evidence.
+- **v381.3 - Actual Diff Summary Binder:** records actual diff summary evidence.
+- **v381.4 - Preimage/Postimage Reference Binder:** records before/after source-state references.
+- **v381.5 - README/Release/Version Evidence Binder:** records documentation and version marker update evidence.
+- **v381.6 - Forbidden Path Absence Binder:** records evidence that protected/private/runtime paths were not touched.
+- **v381.7 - Diff Evidence Dashboard/API/CLI Surface:** exposes `/live-patch-applied-diff-evidence`, `/api/live-patch-applied-diff-evidence/layer`, and `--operator-governed-live-patch-applied-diff-evidence-v1`.
+- **v381.8 - Diff Evidence Smoke Coverage:** adds targeted smoke for no patch generation, no source editing, and no automatic drift normalization.
+- **v381.9 - Diff Evidence Documentation and Release Notes:** documents applied diff evidence substages.
+- **v382.0 - Operator-Governed Applied Diff and Source-State Evidence Packet v1:** finalizes source-state evidence capture.
+
+### v382.1-v383.0 - One-Time Approval Burnout and Reuse Block
+
+- **v382.1 - Approval Burnout Boundary Declaration:** declares the approval burnout layer as a reuse blocker, not a new approval source.
+- **v382.2 - Approval Token Consumed Binder:** records that the approval token was consumed by the trial.
+- **v382.3 - Single-Use Enforcement Binder:** records single-use enforcement.
+- **v382.4 - Reuse Rejection Binder:** records rejection of reuse attempts.
+- **v382.5 - Scope Expansion and Stale Approval Rejection Binder:** records rejection of wider or stale approval attempts.
+- **v382.6 - Approval/Result Separation Binder:** confirms success does not authorize another patch and operator reapproval is required.
+- **v382.7 - Approval Burnout Dashboard/API/CLI Surface:** exposes `/live-patch-approval-burnout`, `/api/live-patch-approval-burnout/layer`, and `--operator-governed-live-patch-approval-burnout-v1`.
+- **v382.8 - Approval Burnout Smoke Coverage:** adds targeted smoke for no approval reuse, no scope expansion, and no success-as-authorization.
+- **v382.9 - Approval Burnout Documentation and Release Notes:** documents one-time approval burnout.
+- **v383.0 - Operator-Governed One-Time Approval Burnout and Reuse Block v1:** finalizes single-use approval closure.
+
+### v383.1-v384.0 - Post-Trial Regression and Rollback Readiness Review
+
+- **v383.1 - Post-Trial Review Boundary Declaration:** declares regression review as reported-evidence review only.
+- **v383.2 - Compile and Smoke Result Binder:** records reported compile, fast smoke, install smoke, and targeted smoke results.
+- **v383.3 - Dashboard/API/CLI Parity Binder:** records route health and API/CLI parity review.
+- **v383.4 - Package Privacy Binder:** records package privacy/source-only review.
+- **v383.5 - Dashboard Hover Binder:** records `data-tip` preservation and native `title` tooltip absence.
+- **v383.6 - Rollback Readiness Binder:** records rollback packet presence and rollback feasibility review without executing rollback.
+- **v383.7 - Post-Trial Review Dashboard/API/CLI Surface:** exposes `/live-patch-post-trial-regression-review`, `/api/live-patch-post-trial-regression-review/layer`, and `--operator-governed-live-patch-post-trial-regression-review-v1`.
+- **v383.8 - Post-Trial Review Smoke Coverage:** adds targeted smoke for no smoke rerun, no rollback execution, and no recovery patch creation.
+- **v383.9 - Post-Trial Review Documentation and Release Notes:** documents post-trial review substages.
+- **v384.0 - Operator-Governed Post-Trial Regression and Rollback Readiness Review v1:** finalizes regression and rollback readiness review.
+
+### v384.1-v385.0 - Live Patch Trial Closure Audit
+
+- **v384.1 - Closure Audit Boundary Declaration:** declares closure as final review only and non-continuing.
+- **v384.2 - Result Intake Presence Check:** verifies the v381 result intake packet exists.
+- **v384.3 - Diff Evidence Presence Check:** verifies the v382 diff/source-state evidence packet exists.
+- **v384.4 - Approval Burnout Presence Check:** verifies the v383 approval burnout packet exists.
+- **v384.5 - Regression/Rollback Review Presence Check:** verifies the v384 post-trial regression and rollback readiness review exists.
+- **v384.6 - Governance Boundary Audit:** confirms no approval reuse, no additional patch, no rollback execution, no source edit, no memory/identity/personality mutation, no model invocation, no publishing, and no automatic continuation.
+- **v384.7 - Dashboard/API/CLI Parity Audit:** confirms all v385 closure surfaces are registered.
+- **v384.8 - Package Privacy and Source-Only Audit:** confirms private closure runtime paths remain source-only excluded.
+- **v384.9 - v385 Targeted Smoke and Documentation Audit:** adds final targeted smoke and docs checks.
+- **v385.0 - Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1:** finalizes the closure audit.
+
+New review-only dashboard/API/CLI surfaces:
+
+- `/live-patch-trial-result-intake` and `/api/live-patch-trial-result-intake/layer`
+- `/live-patch-applied-diff-evidence` and `/api/live-patch-applied-diff-evidence/layer`
+- `/live-patch-approval-burnout` and `/api/live-patch-approval-burnout/layer`
+- `/live-patch-post-trial-regression-review` and `/api/live-patch-post-trial-regression-review/layer`
+- `/live-patch-trial-closure-audit` and `/api/live-patch-trial-closure-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-live-patch-trial-result-intake-v1`
+- `--operator-governed-live-patch-applied-diff-evidence-v1`
+- `--operator-governed-live-patch-approval-burnout-v1`
+- `--operator-governed-live-patch-post-trial-regression-review-v1`
+- `--operator-governed-live-patch-trial-closure-audit-v1`
+
+Boundary commitments: result_intake_reruns_commands=False; result_intake_applies_fixes=False; result_intake_executes_rollback=False; result_intake_infers_future_approval=False; diff_evidence_generates_patch=False; diff_evidence_edits_source=False; diff_evidence_normalizes_drift=False; approval_burnout_reuses_approval=False; approval_burnout_expands_scope=False; approval_burnout_treats_success_as_authorization=False; post_trial_review_reruns_smoke=False; post_trial_review_executes_rollback=False; post_trial_review_creates_recovery_patch=False; closure_audit_applies_another_patch=False; closure_audit_mutates_memory=False; closure_audit_alters_identity=False; closure_audit_alters_personality=False; closure_audit_invokes_models=False; closure_audit_publishes_release=False; closure_audit_creates_release_candidate=False; closure_audit_continues_automatically=False; approval_single_use_required=True; approval_burnout_required=True; rollback_readiness_review_required=True; operator_reapproval_required_for_next_patch=True. Dashboard route health uses dashboard_http_route_probe_required with data-tip, command-deck, operator-console, and no_native_title_tooltip boundaries preserved. Runtime paths such as data/autonomy/live_patch_trial_result_intake/, data/autonomy/live_patch_applied_diff_evidence/, data/autonomy/live_patch_approval_burnout/, data/autonomy/live_patch_post_trial_regression_review/, and data/autonomy/live_patch_trial_closure_audit/ remain private/source-only excluded.
+
+
+## v390.0 - Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1
+
+v390.0 proves the narrow live patch trial path can be repeated with registry-driven checks rather than bespoke one-off glue. The second trial remains tiny, operator-supplied, fresh-approval-bound, single-use, preimage-locked, rollback-aware, closure-required, and non-autonomous.
+
+### v385.1-v386.0 - Operator-Governed Second Minimal Patch Candidate Registry Selection v1
+- v385.1 - Second patch boundary declaration: documents that the second trial remains tiny, registry-safe, operator-supplied, and non-autonomous.
+- v385.2 - Registry-safe candidate class map: limits candidates to dashboard explanation lines, docs-only governance notes, smoke-visible approval-burnout labels, or registry metadata notes.
+- v385.3 - Forbidden candidate class guard: blocks runtime personality changes, identity prompt changes, memory mutation behavior, approval weakening, model default changes, and autonomous scheduling.
+- v385.4 - Operator-supplied candidate binder: requires the candidate to come from explicit operator direction rather than autonomous selection.
+- v385.5 - Candidate scope minimizer: keeps the candidate narrow enough to remain reversible and easy to verify.
+- v385.6 - Rollback expectation preview: requires rollback readiness to be planned before any application harness can be reviewed.
+- v385.7 - Candidate risk classifier: classifies the second patch candidate as safe, blocked, or return-to-sandbox.
+- v385.8 - Candidate dashboard/API/CLI surface: adds /second-minimal-live-patch-candidate, /api/second-minimal-live-patch-candidate/layer, and --operator-governed-second-minimal-live-patch-candidate-v1.
+- v385.9 - Candidate smoke/docs coverage: documents the stage and adds tokens proving no autonomous candidate selection or runtime personality change.
+- v386.0 - Operator-Governed Second Minimal Patch Candidate Registry Selection v1: finalizes the registry-safe second candidate selection packet.
+
+### v386.1-v387.0 - Operator-Governed Registry-Driven Approval and Scope Validation v1
+- v386.1 - Fresh approval requirement: requires a fresh approval id for the second trial.
+- v386.2 - Single-use token declaration: requires approval to be one-time and burned after use.
+- v386.3 - Allowed file list binder: binds the trial to explicit files that may be touched.
+- v386.4 - Forbidden file list binder: blocks identity, personality, memory, model-default, release, and autonomous-loop surfaces.
+- v386.5 - Target version binder: binds the trial to the current version and rejects stale version scope.
+- v386.6 - Registry-known surface binder: validates target dashboard/API/CLI/metadata surfaces through the registry.
+- v386.7 - Rollback and verification requirement binder: requires rollback and verification packets before application review.
+- v386.8 - Approval validation dashboard/API/CLI surface: adds /registry-driven-live-patch-approval-validation, /api/registry-driven-live-patch-approval-validation/layer, and --operator-governed-registry-driven-live-patch-approval-validation-v1.
+- v386.9 - Approval validation smoke/docs coverage: documents approval reuse/scope-expansion rejection and registry-driven validation.
+- v387.0 - Operator-Governed Registry-Driven Approval and Scope Validation v1: finalizes approval and scope validation for the second trial.
+
+### v387.1-v388.0 - Operator-Governed Registry-Driven Patch Transaction and Preimage Lock v1
+- v387.1 - Transaction id binder: creates a reviewable transaction identity without applying a patch.
+- v387.2 - Candidate/approval cross-bind: binds the candidate id to the fresh approval id.
+- v387.3 - Expected changed file ledger: lists exactly which files a later confirmed trial may touch.
+- v387.4 - Expected unchanged file ledger: lists protected files that must remain untouched.
+- v387.5 - Preimage lock requirement: requires current source preimage checks before any trial can proceed.
+- v387.6 - README/release/version obligation binder: requires documentation and version-marker updates if a trial is later applied.
+- v387.7 - Smoke/package/dashboard obligation binder: requires targeted smoke, package privacy, and data-tip hover preservation.
+- v387.8 - Transaction lock dashboard/API/CLI surface: adds /registry-driven-live-patch-transaction-lock, /api/registry-driven-live-patch-transaction-lock/layer, and --operator-governed-registry-driven-live-patch-transaction-lock-v1.
+- v387.9 - Transaction lock smoke/docs coverage: documents that the lock does not write files, mutate source, or ignore preimage checks.
+- v388.0 - Operator-Governed Registry-Driven Patch Transaction and Preimage Lock v1: finalizes the registry-driven transaction/preimage packet.
+
+### v388.1-v389.0 - Operator-Confirmed Second Minimal Live Patch Application Harness v1
+- v388.1 - Fresh approval harness check: requires the same fresh approval id validated by v387.
+- v388.2 - Matching transaction harness check: requires the v388 transaction id to match.
+- v388.3 - Preimage match harness check: blocks the trial if source preimage differs.
+- v388.4 - Allowed file match harness check: blocks files outside scope.
+- v388.5 - Exact confirmation phrase harness check: requires the operator phrase `I explicitly approve this second scoped registry-driven live patch trial`.
+- v388.6 - Rollback and verification packet harness check: requires both packets to exist before review.
+- v388.7 - Approval burnout and closure requirement: requires approval burnout and post-trial closure after the second trial.
+- v388.8 - Second harness dashboard/API/CLI surface: adds /second-live-patch-application-harness, /api/second-live-patch-application-harness/layer, and --operator-confirmed-second-live-patch-application-harness-v1.
+- v388.9 - Harness smoke/docs coverage: documents no unconfirmed run, no rollback execution, no memory/identity/personality mutation, and no automatic continuation.
+- v389.0 - Operator-Confirmed Second Minimal Live Patch Application Harness v1: finalizes the second operator-confirmed application harness packet.
+
+### v389.1-v390.0 - Second Patch Trial Closure and Registry Regression Audit
+- v389.1 - Registry audit boundary declaration: confirms the audit does not apply patches, reuse approval, run rollback, publish releases, or continue automatically.
+- v389.2 - Candidate packet presence check: verifies the v386 second candidate packet exists and is registry-safe.
+- v389.3 - Approval validation presence check: verifies the v387 approval/scope validation packet exists and is fresh/single-use.
+- v389.4 - Transaction lock presence check: verifies the v388 transaction and preimage lock packet exists.
+- v389.5 - Application harness presence check: verifies the v389 operator-confirmed harness exists and requires the exact confirmation phrase.
+- v389.6 - Approval burnout and closure readiness check: verifies one-time authorization burnout and post-trial closure are required.
+- v389.7 - Dashboard/API/CLI/package/privacy regression check: verifies surfaces, package privacy, and data-tip/no-native-title-tooltip rules.
+- v389.8 - No-autonomy/no-mutation regression check: verifies no memory, identity, personality, model-default, rollback, release, or automatic continuation expansion.
+- v389.9 - v390 targeted smoke/docs/package audit: adds final targeted smoke and documents private runtime directories.
+- v390.0 - Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1: finalizes the second registry-driven live patch trial audit layer.
+
+Runtime/private directories documented as source-only excluded:
+- data/autonomy/second_minimal_live_patch_candidate/
+- data/autonomy/registry_driven_live_patch_approval_validation/
+- data/autonomy/registry_driven_live_patch_transaction_lock/
+- data/autonomy/second_live_patch_application_harness/
+- data/autonomy/second_live_patch_trial_registry_audit/
+
+Hard boundaries: candidate_selection_applies_patch=False; approval_validation_reuses_approval=False; transaction_lock_writes_files=False; application_harness_runs_without_confirmation=False; registry_audit_applies_patch=False; fresh_approval_required=True; registry_driven_checks_required=True; approval_burnout_required=True; dashboard_http_route_probe_required; data-tip; no_native_title_tooltip; command-deck; operator-console.
+
+## v395.0 - Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1
+
+v395.0 adds a review-only history and memory-candidate preparation arc for completed minimal live patch trials. It records patch trial history, reviews operator decision patterns, drafts supervised lesson candidates, classifies those candidates through memory governance, and audits the full packet without writing memory, mutating identity/personality, reusing approval, applying patches, running rollback, invoking models, publishing releases, creating release candidates, or continuing automatically.
+
+### v390.1-v391.0 - Operator-Governed Live Patch Trial History Ledger v1
+- **v390.1 - History Ledger Boundary Declaration:** declares that recorded patch history is evidence only and never permission.
+- **v390.2 - Trial Identifier Binder:** records trial id, candidate id, approval id, transaction id, application harness id, and closure audit id.
+- **v390.3 - Changed File Evidence Binder:** records expected changed files and actual changed files for operator review.
+- **v390.4 - Expected/Actual Result Binder:** records expected and actual results without rerunning commands.
+- **v390.5 - Operator Decision Binder:** records approved, blocked, revised, deferred, rollback, sandbox-return, reapproval, or burnout decisions.
+- **v390.6 - Approval Burnout Status Binder:** records whether one-time approval was consumed and blocked from reuse.
+- **v390.7 - Rollback Readiness Binder:** records rollback readiness evidence without executing rollback.
+- **v390.8 - History Ledger Dashboard/API/CLI Surface:** adds `/live-patch-trial-history-ledger`, `/api/live-patch-trial-history-ledger/layer`, and `--operator-governed-live-patch-trial-history-ledger-v1`.
+- **v390.9 - History Ledger Smoke and Docs Coverage:** documents that the ledger does not apply patches or treat history as approval.
+- **v391.0 - Operator-Governed Live Patch Trial History Ledger v1:** finalizes the review-only live patch trial history ledger.
+
+### v391.1-v392.0 - Operator-Governed Live Patch Decision Pattern Review v1
+- **v391.1 - Decision Review Boundary Declaration:** declares decision review as analysis only and not behavior change.
+- **v391.2 - Approved Decision Counter:** tracks approved decisions without creating approval authority.
+- **v391.3 - Blocked/Revised Decision Counter:** tracks blocked and revised decisions for future operator review.
+- **v391.4 - Deferred/Sandbox Return Counter:** tracks deferral and return-to-sandbox outcomes.
+- **v391.5 - Rollback/Reapproval Counter:** tracks rollback and reapproval outcomes without executing rollback or reapproval.
+- **v391.6 - Burned Approval Counter:** tracks approvals burned after single use.
+- **v391.7 - Decision Pattern Dashboard/API/CLI Surface:** adds `/operator-live-patch-decision-patterns`, `/api/operator-live-patch-decision-patterns/layer`, and `--operator-governed-live-patch-decision-pattern-review-v1`.
+- **v391.8 - Decision Pattern Smoke Coverage:** adds smoke tokens for no self-approval and no automatic behavior change.
+- **v391.9 - Decision Pattern Documentation and Release Notes:** documents the decision pattern review surface.
+- **v392.0 - Operator-Governed Live Patch Decision Pattern Review v1:** finalizes operator decision pattern review.
+
+### v392.1-v393.0 - Operator-Governed Live Patch Supervised Lesson Candidate Drafting v1
+- **v392.1 - Lesson Candidate Boundary Declaration:** declares lesson candidates as review-only memory candidates.
+- **v392.2 - Factual Lesson Candidate Draft:** drafts factual lesson candidates from patch trial history.
+- **v392.3 - Scoped Lesson Candidate Draft:** keeps candidates narrow to the live patch trial workflow.
+- **v392.4 - Approval Burnout Lesson Candidate Draft:** captures that success does not grant reusable permission.
+- **v392.5 - Registry-Driven Check Lesson Candidate Draft:** captures that registry-driven checks reduce stale route/gate risks.
+- **v392.6 - Unsafe Lesson Candidate Guard:** blocks lessons that imply automatic approval, memory writing, or authority expansion.
+- **v392.7 - Lesson Candidate Dashboard/API/CLI Surface:** adds `/live-patch-supervised-lesson-candidates`, `/api/live-patch-supervised-lesson-candidates/layer`, and `--operator-governed-live-patch-supervised-lesson-candidate-drafting-v1`.
+- **v392.8 - Lesson Candidate Smoke Coverage:** adds checks that lesson candidates do not write memory, alter identity, or alter personality.
+- **v392.9 - Lesson Candidate Documentation and Release Notes:** documents the supervised lesson candidate workflow.
+- **v393.0 - Operator-Governed Live Patch Supervised Lesson Candidate Drafting v1:** finalizes review-only lesson candidate drafting.
+
+### v393.1-v394.0 - Operator-Governed Live Patch Memory Candidate Governance v1
+- **v393.1 - Memory Governance Boundary Declaration:** declares that governance classifies candidates only and does not store memory.
+- **v393.2 - Factuality Check:** requires lesson candidates to be factual and evidence-backed.
+- **v393.3 - Scope Check:** requires candidates to remain scoped to supervised live patch trial history.
+- **v393.4 - Sensitivity Check:** blocks sensitive or inappropriate memory candidates.
+- **v393.5 - Non-Autonomy Check:** blocks candidates that expand autonomy or approval authority.
+- **v393.6 - Identity/Personality Mutation Check:** blocks candidates that rewrite identity or personality.
+- **v393.7 - Operator Approval Before Storage Check:** requires a future explicit approval before any memory storage attempt.
+- **v393.8 - Memory Governance Dashboard/API/CLI Surface:** adds `/live-patch-memory-candidate-governance`, `/api/live-patch-memory-candidate-governance/layer`, and `--operator-governed-live-patch-memory-candidate-governance-v1`.
+- **v393.9 - Memory Governance Smoke and Docs Coverage:** documents no memory write and no authority expansion.
+- **v394.0 - Operator-Governed Live Patch Memory Candidate Governance v1:** finalizes memory candidate governance.
+
+### v394.1-v395.0 - Live Patch History and Memory Candidate Audit
+- **v394.1 - Audit Boundary Declaration:** declares the final audit as review-only and non-continuing.
+- **v394.2 - History Ledger Presence Check:** verifies the v391 ledger exists.
+- **v394.3 - Operator Decision Review Presence Check:** verifies the v392 decision review exists.
+- **v394.4 - Lesson Candidate Presence Check:** verifies the v393 lesson candidates exist.
+- **v394.5 - Memory Candidate Governance Presence Check:** verifies the v394 governance packet exists.
+- **v394.6 - No Memory Write Audit:** confirms no memory was written and no memory storage was authorized.
+- **v394.7 - No Identity/Personality/Autonomy Expansion Audit:** confirms no identity, personality, autonomy, model default, release, rollback, or approval authority changed.
+- **v394.8 - Dashboard/API/CLI and Package Privacy Audit:** confirms route/API/CLI parity, package privacy, source-only exclusions, data-tip hover behavior, command-deck style, and no native title tooltip regression.
+- **v394.9 - v395 Targeted Smoke and Documentation Audit:** adds final targeted smoke and docs coverage.
+- **v395.0 - Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1:** finalizes the review-only history and memory candidate preparation arc.
+
+New review-only dashboard/API/CLI surfaces:
+
+- `/live-patch-trial-history-ledger` and `/api/live-patch-trial-history-ledger/layer`
+- `/operator-live-patch-decision-patterns` and `/api/operator-live-patch-decision-patterns/layer`
+- `/live-patch-supervised-lesson-candidates` and `/api/live-patch-supervised-lesson-candidates/layer`
+- `/live-patch-memory-candidate-governance` and `/api/live-patch-memory-candidate-governance/layer`
+- `/live-patch-history-memory-candidate-audit` and `/api/live-patch-history-memory-candidate-audit/layer`
+
+Dynamic CLI flags:
+
+- `--operator-governed-live-patch-trial-history-ledger-v1`
+- `--operator-governed-live-patch-decision-pattern-review-v1`
+- `--operator-governed-live-patch-supervised-lesson-candidate-drafting-v1`
+- `--operator-governed-live-patch-memory-candidate-governance-v1`
+- `--operator-governed-live-patch-history-and-memory-candidate-audit-v1`
+
+Boundary commitments: history_ledger_treats_history_as_permission=False; history_ledger_applies_patches=False; decision_review_changes_future_behavior=False; decision_review_self_approves=False; lesson_candidates_write_memory=False; lesson_candidates_alter_identity=False; lesson_candidates_alter_personality=False; memory_governance_stores_memory=False; memory_governance_expands_authority=False; history_memory_audit_writes_memory=False; history_memory_audit_applies_patches=False; history_memory_audit_reuses_approval=False; history_memory_audit_executes_rollback=False; history_memory_audit_invokes_models=False; history_memory_audit_publishes_release=False; history_memory_audit_creates_release_candidate=False; history_memory_audit_continues_automatically=False; memory_candidates_review_only=True; operator_approval_required_before_memory_storage=True; approval_reuse_forbidden=True. Dashboard route health uses dashboard_http_route_probe_required with data-tip, command-deck, operator-console, and no_native_title_tooltip boundaries preserved. Runtime paths such as data/autonomy/live_patch_trial_history_ledger/, data/autonomy/operator_live_patch_decision_patterns/, data/autonomy/live_patch_supervised_lesson_candidates/, data/autonomy/live_patch_memory_candidate_governance/, and data/autonomy/live_patch_history_memory_candidate_audit/ remain private/source-only excluded.
+
+
+## v395.1-v400.0 - Operator-Approved Memory Candidate Application Trial v1
+
+### v395.1 - Memory Candidate Application Boundary Declaration
+Declare that the arc can prepare and audit one operator-approved memory candidate application trial only. It cannot self-approve, auto-store memory, mutate identity, alter personality, rewrite purpose, expand autonomy, invoke local models, run retraction automatically, publish releases, or continue automatically.
+
+### v395.2 - Memory Candidate Selection Field Binder
+Define the selected memory candidate fields: candidate id, source trial id, lesson text, candidate type, scope, risk classification, operator-review requirement, and storage-not-authorized-yet marker.
+
+### v395.3 - Memory Candidate Safety and Eligibility Screen
+Screen the selected lesson candidate for factuality, scope, sensitivity, autonomy expansion, identity mutation, personality mutation, purpose rewrite, and approval leakage before any approval lock exists.
+
+### v395.4 - Memory Application Approval Lock Draft
+Prepare the single-use approval lock fields: fresh approval id, selected candidate id, exact operator confirmation phrase, allowed memory scope, forbidden memory categories, expiration, retraction note, and post-application audit requirement.
+
+### v395.5 - Candidate/Approval Non-Inference Guard
+Block treating candidate eligibility, prior patch success, history ledger entries, governance state, or operator decision patterns as authorization to store memory.
+
+### v395.6 - Memory Write Transaction Preview Draft
+Preview the exact memory destination, memory text, reason for storage, expected future use, sensitive-data screen, identity/personality mutation screen, scope limits, and retraction plan without writing memory.
+
+### v395.7 - Memory Application Dashboard/API/CLI Surface Plan
+Add governed dashboard, dynamic API, and dynamic CLI coverage for candidate selection, approval lock, transaction preview, operator-confirmed harness, and final audit.
+
+### v395.8 - Memory Application Trial Smoke Coverage Plan
+Add targeted smoke coverage for no-memory-write boundaries, single-use approval, exact confirmation, sensitive-data screening, identity/personality mutation blocking, retraction packet presence, package privacy, and dashboard `data-tip` behavior.
+
+### v395.9 - Memory Application Documentation and Release Notes
+Update README next steps and release history with every v395.1-v400.0 substage and the final v400 milestone.
+
+### v396.0 - Operator-Governed Memory Candidate Selection Packet v1
+Eidolon can select one reviewable memory candidate from the supervised lesson-candidate layer, but cannot store memory, mutate identity, alter personality, or treat eligibility as approval.
+
+### v396.1 - Fresh Memory Approval Scope Declaration
+Declare the exact scope of a memory application approval and require a fresh approval id for the selected candidate.
+
+### v396.2 - Single-Use Memory Approval Token
+Require the approval token to be single-use and unable to carry forward to any other memory candidate.
+
+### v396.3 - Forbidden Memory Category Binder
+Bind forbidden categories including identity, personality, purpose, autonomy expansion, sensitive personal data, local model defaults, and release authority.
+
+### v396.4 - Confirmation Phrase Binder
+Bind the exact operator confirmation phrase required for the future memory application trial harness.
+
+### v396.5 - Approval Expiration and Reuse Rejection
+Reject expired, reused, stale, partial, or scope-expanded approvals.
+
+### v396.6 - Retraction and Post-Application Audit Requirement
+Require a retraction packet and post-application audit before any memory application trial may be considered complete.
+
+### v396.7 - Approval Lock Dashboard/API/CLI Surface
+Expose the approval-lock packet through dashboard, API, and CLI surfaces.
+
+### v396.8 - Approval Lock Smoke Coverage
+Add smoke checks for single-use approval, no self-approval, no reuse, no prior-success authorization, and exact candidate binding.
+
+### v396.9 - Approval Lock Documentation Update
+Document the approval lock and release-history obligations.
+
+### v397.0 - Operator-Governed Memory Application Approval Lock v1
+Eidolon can prepare a strict single-use memory application approval lock for one selected candidate, but cannot store memory or infer authorization.
+
+### v397.1 - Memory Destination Preview
+Declare the proposed memory destination as a preview-only target, not a live write location.
+
+### v397.2 - Exact Memory Text Preview
+Bind the exact memory text and block any later text mismatch after approval.
+
+### v397.3 - Storage Reason and Future Use Binder
+Describe why the memory would be useful and how future runs may reference it after explicit application.
+
+### v397.4 - Sensitive-Data Screen
+Require the candidate to pass a sensitive-data screen before application may be considered.
+
+### v397.5 - Identity/Personality/Purpose Mutation Screen
+Require explicit blocking of memory candidates that alter identity, personality, or purpose.
+
+### v397.6 - Scope Limit Binder
+Bind the future memory to a narrow governance-lesson scope with no autonomy expansion.
+
+### v397.7 - Retraction Plan Preview
+Prepare a manual, operator-reviewed retraction plan without running retraction.
+
+### v397.8 - Transaction Preview Smoke Coverage
+Add smoke checks proving the transaction preview writes no memory and alters no behavior.
+
+### v397.9 - Transaction Preview Documentation Update
+Document the preview packet and release-history obligations.
+
+### v398.0 - Operator-Governed Memory Write Transaction Preview v1
+Eidolon can preview the exact memory-write transaction, but cannot write memory, alter behavior, or rewrite identity/personality/purpose.
+
+### v398.1 - Operator-Confirmed Harness Boundary Declaration
+Declare that the harness is confirmation-bound and cannot run without exact operator confirmation.
+
+### v398.2 - Candidate/Approval/Transaction Match Check
+Require the candidate id, approval id, and transaction preview id to match exactly.
+
+### v398.3 - Sensitive and Identity/Personality Screen Check
+Require sensitive-data and identity/personality mutation screens to pass before application may be considered.
+
+### v398.4 - Single-Use Approval Unused Check
+Require that the approval token has not already been consumed or reused.
+
+### v398.5 - Retraction Packet Presence Check
+Require the retraction packet before the trial can be considered reviewable.
+
+### v398.6 - Post-Application Audit Presence Check
+Require the final audit packet before any application can be considered complete.
+
+### v398.7 - Harness Dashboard/API/CLI Surface
+Expose the operator-confirmed memory application trial harness through dashboard, API, and CLI surfaces.
+
+### v398.8 - Harness Smoke Coverage
+Add smoke checks for wrong confirmation phrase, approval reuse, candidate mismatch, sensitive data, identity/personality mutation, and autonomy expansion.
+
+### v398.9 - Harness Documentation Update
+Document the harness and release-history obligations.
+
+### v399.0 - Operator-Confirmed Memory Application Trial Harness v1
+Eidolon can prepare a confirmation-bound memory application trial harness for one selected candidate, but cannot run without exact operator confirmation or bypass safety screens.
+
+### v399.1 - Candidate Selection Presence Audit
+Verify the v396 memory candidate selection packet exists and remains unchanged.
+
+### v399.2 - Approval Lock Presence Audit
+Verify the v397 approval lock exists, is fresh, single-use, scoped, and unreused.
+
+### v399.3 - Transaction Preview Presence Audit
+Verify the v398 transaction preview exists and matches the approved candidate and exact memory text.
+
+### v399.4 - Application Harness Presence Audit
+Verify the v399 operator-confirmed harness exists and requires the exact confirmation phrase.
+
+### v399.5 - Sensitive/Identity/Personality Audit
+Verify sensitive data is blocked and identity/personality/purpose mutation is not permitted.
+
+### v399.6 - Retraction and Post-Application Review Audit
+Verify retraction packet and post-application review requirements are present without executing retraction.
+
+### v399.7 - Dashboard/API/CLI and Package Privacy Audit
+Verify dashboard/API/CLI parity, route health, package privacy, source-only rules, and `data-tip` hover behavior.
+
+### v399.8 - No-Autonomy and No-Continuation Audit
+Verify the trial does not expand autonomy, invoke local models, publish releases, create release candidates, or continue automatically.
+
+### v399.9 - v400 Final Smoke and Documentation Audit
+Run targeted v400 smoke, fast smoke, install smoke, extracted-zip verification, and package privacy checks.
+
+### v400.0 - Operator-Approved Memory Candidate Application Trial v1
+Eidolon can prepare and audit the first tightly scoped operator-approved memory candidate application trial. The default first candidate is: "Operator-approved live patch trials must remain single-use, scoped, rollback-aware, and separated from future authorization." v400 remains governed, single-use, confirmation-bound, retraction-aware, and non-autonomous.
+
+## v400.1-v405.0 - Segmented Install Smoke and Self-Maintenance Confirmation Hardening v1
+
+This stretch fixes the v400 confirmation ambiguity and starts reducing self-maintenance pressure by moving the new smoke segmentation logic into `conscious_agent/smoke_segment_registry.py` instead of adding another slab of heavy logic directly inside `self_maintenance.py`.
+
+### v400.1 - Explicit Confirmation Evidence Requirement
+Require the operator-confirmed memory application harness to receive an explicitly supplied `operator_confirmation_phrase` in evidence. Missing evidence must block instead of defaulting to the approval lock phrase.
+
+### v400.2 - Missing Confirmation Negative Test
+Add behavioral coverage proving that a memory application trial with no supplied confirmation phrase remains blocked.
+
+### v400.3 - Wrong Confirmation Negative Test
+Add behavioral coverage proving that a wrong supplied confirmation phrase remains blocked and cannot be treated as close enough.
+
+### v400.4 - Exact Confirmation Reviewability Check
+Allow the harness to become reviewable only when the exact expected confirmation phrase is explicitly supplied, while still writing no memory and granting no future authorization.
+
+### v401.0 - Memory Application Confirmation Presence Gate v1
+Eidolon now distinguishes an approval-lock default phrase from actual operator-supplied confirmation evidence. The harness remains review-only and cannot write memory.
+
+### v401.1 - Confirmation Negative-Path Inventory
+Inventory the negative paths that must remain blocked: missing phrase, wrong phrase, reused approval, candidate drift, memory-text drift, sensitive storage, identity/personality mutation, and autonomy expansion.
+
+### v401.2 - Approval Reuse Negative Test
+Confirm that reused approval evidence blocks the memory application harness.
+
+### v401.3 - Candidate Drift Negative Test
+Confirm that candidate changes after approval block the memory application harness.
+
+### v401.4 - Memory Text Drift Negative Test
+Confirm that changed memory text after transaction preview blocks the memory application harness.
+
+### v401.5 - Sensitive Storage Negative Test
+Confirm that sensitive data storage attempts block the memory application harness.
+
+### v401.6 - Identity/Personality Mutation Negative Test
+Confirm that identity, personality, or purpose mutation attempts block the memory application harness.
+
+### v401.7 - Autonomy Expansion Negative Test
+Confirm that autonomy expansion attempts block the memory application harness.
+
+### v401.8 - Dashboard/API/CLI Negative-Test Surface
+Expose the negative-test packet through dashboard, dynamic API, and dynamic CLI routes.
+
+### v401.9 - Negative-Test Documentation Update
+Document the hardened confirmation and negative-test behavior in README next steps and release history.
+
+### v402.0 - Memory Application Negative Confirmation Tests v1
+Eidolon can now prove the memory application harness blocks missing, wrong, reused, drifted, sensitive, identity/personality, and autonomy-expanding evidence.
+
+### v402.1 - Smoke Segment Registry Module
+Add `conscious_agent/smoke_segment_registry.py` so smoke segmentation logic lives outside the already oversized `self_maintenance.py` module.
+
+### v402.2 - Install-Core Segment
+Classify fast, loop, readiness, build, and patch checks into an `install-core` segment.
+
+### v402.3 - Install-Release Segment
+Classify release, package, candidate, signing, and install-facing checks into an `install-release` segment.
+
+### v402.4 - Install-Dashboard Segment
+Classify dashboard, API, CLI, route, and surface checks into an `install-dashboard` segment.
+
+### v402.5 - Install-Governance Segment
+Classify governance, approval, consent, boundary, kernel, and safety checks into an `install-governance` segment.
+
+### v402.6 - Install-Expression Segment
+Classify expression, behavioral, and conversational checks into an `install-expression` segment.
+
+### v402.7 - Install-Live-Trial Segment
+Classify live patch, trial, burnout, replay, and patch-history checks into an `install-live-trial` segment.
+
+### v402.8 - Install-Memory Segment
+Classify memory, continuity, identity, belief, and lesson checks into an `install-memory` segment.
+
+### v402.9 - Recent Regression Segment
+Classify modularization, refactor, registry, self-maintenance, and regression checks into an `install-regression-recent` segment.
+
+### v403.0 - Smoke Segment Registry v1
+Eidolon can now prepare a bounded segmented install-smoke registry without running checks automatically or treating any pass result as authorization.
+
+### v403.1 - Smoke Segment CLI Argument
+Add `--segment` support to `tools/smoke_check.py` so a named install segment can be run without launching the entire install tier.
+
+### v403.2 - Smoke Segment Listing Argument
+Add `--list-segments` support so operators can inspect segment names and counts before running checks.
+
+### v403.3 - Segment Metadata in Check Listing
+Extend `--list-checks` output with the assigned segment for each check.
+
+### v403.4 - Segment JSON Summary Field
+Include the selected segment in JSON smoke summaries.
+
+### v403.5 - Full Install Preservation
+Keep the existing `--tier install` behavior available for environments that can run the complete sweep.
+
+### v403.6 - Resume Metadata Preview
+Add advisory resume metadata for segment checks, including last completed check and failed rows.
+
+### v403.7 - Segment Pass Is Not Approval Boundary
+Declare that segment success never authorizes memory writes, source patches, releases, rollback, model invocation, or autonomous continuation.
+
+### v403.8 - Segment Runner Dashboard/API/CLI Surface
+Expose the segment runner packet through dashboard, dynamic API, and dynamic CLI routes.
+
+### v403.9 - Segment Runner Documentation Update
+Document the segment runner and its non-authorizing boundaries.
+
+### v404.0 - Install Smoke Segment Runner v1
+Eidolon can now run bounded smoke segments with advisory metadata while preserving full install smoke and all operator-approval boundaries.
+
+### v404.1 - v405 Audit Surface Definition
+Define the final audit packet for confirmation hardening plus segmented install smoke coverage.
+
+### v404.2 - Confirmation Hardening Audit
+Audit missing/wrong/exact confirmation behavior against the memory application harness.
+
+### v404.3 - Segment Registry Coverage Audit
+Audit that every segment has at least one registered check.
+
+### v404.4 - Segment Runner Boundary Audit
+Audit that smoke segmentation does not apply patches, write memory, expand autonomy, invoke models, or treat passes as authorization.
+
+### v404.5 - Dashboard Route Probe
+Probe all five v401-v405 dashboard routes through the real dashboard handler.
+
+### v404.6 - API/CLI Parity Audit
+Verify the v401-v405 packets are available through the dynamic API and CLI maps.
+
+### v404.7 - Package Privacy Audit
+Confirm the new source-only zip excludes runtime/private/generated paths and does not ship `data/autonomy` outputs.
+
+### v404.8 - README and Release History Audit
+Verify both required README files document the new v405 stretch.
+
+### v404.9 - v405 Targeted Smoke Coverage
+Add targeted smoke coverage for the final segmented install smoke and confirmation hardening audit.
+
+### v405.0 - Segmented Install Smoke and Self-Maintenance Confirmation Hardening v1
+Eidolon now has explicit memory-confirmation evidence handling, behavioral negative checks for the memory application harness, a new extracted smoke segment registry module, bounded install-smoke segment support, dashboard/API/CLI review packets, and final v405 audit coverage. v405 does not write memory, apply patches, publish releases, invoke models, expand autonomy, or treat smoke success as authorization.
+
+## v405.1-v410.0 - Operator-Governed Memory Application Dry-Run Ledger v1
+
+Purpose: create a review-only dry-run ledger between governed memory application previews and any future sandbox memory write. This arc records proposed memory application attempts, binds candidate/approval/transaction/confirmation hashes, replays ledger entries for drift, and exposes dashboard/API/CLI review surfaces without writing live memory or treating reviewable state as authorization.
+
+Standing boundaries:
+- No live memory writes.
+- No identity mutation, personality mutation, or purpose rewrite.
+- No autonomy expansion, hidden scheduling, local model invocation, release publishing, or source patch application.
+- No approval reuse.
+- Dry-run ledger entries are evidence only, not authorization.
+- Replay drift blocks the dry-run packet and requires fresh operator review.
+- Operator approval remains required before any future sandbox or live memory write.
+
+### v406.0 - Memory Application Attempt Ledger Schema v1
+
+Adds the attempt ledger schema for candidate id, approval id, candidate hash, transaction preview hash, memory text hash, explicit confirmation state, blockers, and operator decision placeholder. The schema is review-only and cannot write live memory.
+
+### v407.0 - Memory Application Dry-Run Ledger Entry Builder v1
+
+Adds a dry-run ledger entry builder that binds the v400/v405 memory candidate, approval lock, write transaction preview, and exact confirmation evidence into a recordable review packet. Missing or wrong confirmation, approval reuse, live-memory-write requests, identity/personality mutation requests, and autonomy expansion requests remain blocked.
+
+### v408.0 - Memory Application Ledger Replay and Drift Detection v1
+
+Adds replay checks that compare a dry-run ledger entry against current candidate and transaction evidence. Candidate id, approval id, candidate hash, transaction preview hash, memory text hash, confirmation state, or blocker drift invalidates the old dry-run packet.
+
+### v409.0 - Memory Application Ledger Dashboard/API/CLI Surfaces v1
+
+Adds operator review surfaces for the memory dry-run ledger arc while preserving the command-deck/operator-console dashboard style, the custom `data-tip` hover system, and the no-native-`title` tooltip rule.
+
+### v410.0 - Operator-Governed Memory Application Dry-Run Ledger v1
+
+Finalizes the dry-run ledger audit. The v410 audit checks schema coverage, ledger entry construction, negative confirmation paths, replay drift blocking, documentation, source-only package boundaries, dashboard/API/CLI parity, and no-memory-write/no-authorization boundaries. This remains a preparation and review layer only.
+
+Recommended next arc after v410: v415.0 Operator-Governed Sandbox Memory Write Target v1, which should write only to a sandbox memory target, verify before/after hashes, prepare retraction evidence, and still avoid live memory mutation.
+
+## v410.1-v415.0 - Operator-Governed Sandbox Memory Write Target v1
+
+Purpose: create a sandbox-only memory write target after the v410 dry-run ledger, prove exact sandbox writes with before/after hashes, prepare sandbox retraction previews, and keep live memory completely untouched. This is the final sandbox bridge before any later one-time live memory write trial can be considered.
+
+Standing boundaries:
+- No live memory writes.
+- No live memory retractions.
+- No identity mutation, personality mutation, purpose rewrite, or autonomy expansion.
+- No source patch application, release publishing, local model invocation, hidden scheduling, or automatic continuation.
+- Sandbox write success is not live memory approval.
+- Sandbox target readiness is not authorization.
+- Sandbox runtime files must stay out of source-only packages.
+- Future live memory writes still require a later fresh single-use operator approval and exact confirmation.
+
+### v411.0 - Sandbox Memory Target Schema v1
+
+Defines the sandbox-only write target schema, including sandbox target id, sandbox path, candidate id, approval id, memory text hash, pre-write hash, post-write hash, live-memory-disallowed flags, and explicit operator confirmation requirements.
+
+### v412.0 - Sandbox Memory Write Transaction Builder v1
+
+Builds a sandbox write transaction preview from the v410 dry-run ledger, exact confirmation evidence, sandbox path checks, candidate hash, transaction preview hash, and memory text hash. The transaction is reviewable only and does not authorize live memory.
+
+### v413.0 - Sandbox Memory Write Execution Trial v1
+
+Executes a sandbox-only memory write into an excluded runtime target, records exact before/after hashes, rejects non-sandbox paths, and preserves the rule that sandbox success is not future authorization.
+
+### v414.0 - Sandbox Memory Retraction Preview and Replay v1
+
+Prepares a sandbox retraction preview with exact entry matching, pre-retraction hash, post-retraction hash placeholder, and drift blocking. It does not execute live memory retraction.
+
+### v415.0 - Operator-Governed Sandbox Memory Write Target v1
+
+Finalizes the sandbox memory write audit. The v415 audit checks sandbox target schema, sandbox write transaction readiness, sandbox-only write execution, retraction preview, docs, source-only package privacy, dashboard/API/CLI parity, segmented memory smoke coverage, and no-live-memory/no-authorization boundaries.
+
+Recommended next arc after v415: v420.0 First Operator-Approved Live Memory Write with Burnout v1, but only after sandbox results are reviewed and the live write path is constrained to one candidate, one approval, one exact confirmation phrase, one exact transaction, one audit, and immediate authorization burnout.
+
+## v415.1-v420.0 - First Operator-Approved Live Memory Write with Burnout v1
+
+Purpose: perform one governed live memory trial write after the v410 dry-run ledger and v415 sandbox write path, then immediately burn out the approval. This arc proves a single exact live-memory trial can be prepared, executed, audited, and blocked from reuse without opening general memory editing or autonomy.
+
+Standing boundaries:
+- One candidate only.
+- One approval only.
+- One exact confirmation phrase only.
+- One governed live memory trial target only.
+- No batch memory writes.
+- No canonical `memory.json` target writes.
+- No identity mutation, personality mutation, purpose rewrite, sensitive/private user data storage, or autonomy expansion.
+- Eligibility is not approval.
+- Sandbox success is not approval.
+- Transaction preview is not execution.
+- Live write success grants no future authorization.
+- Approval must burn out after success or failure.
+- Future memory writes and retractions still require fresh single-use operator approval.
+
+### v416.0 - Live Memory Write Eligibility Packet v1
+
+Checks that the v410 dry-run ledger exists, the v415 sandbox write trial passed, the sandbox retraction preview exists, candidate and memory hashes match, and forbidden memory categories remain blocked. The output is eligible for operator review only, not approval.
+
+### v417.0 - Single-Use Live Memory Approval Lock v1
+
+Binds exact confirmation evidence, candidate id, memory text hash, dry-run ledger hash, sandbox trial hash, approval freshness, and single-use burnout requirements. Reused or already-burned approval evidence is blocked.
+
+### v418.0 - Live Memory Transaction Preview v1
+
+Previews the governed live memory trial target, exact memory text, pre-write hash, expected write entry, approval lock id, rollback/retraction requirement, and blockers. The preview does not write memory.
+
+### v419.0 - Operator-Confirmed Live Memory Write Trial v1
+
+Executes one governed live memory trial write only when all gates pass and the exact confirmation phrase is supplied. The write stores one scoped governance lesson, records before/after hashes, and burns out approval immediately.
+
+### v420.0 - First Operator-Approved Live Memory Write with Burnout v1
+
+Finalizes the live memory write audit. The v420 audit checks eligibility, approval lock, transaction preview, one governed live write, approval burnout, wrong/missing/reused approval blocking, bad target blocking, dashboard/API/CLI parity, package privacy, and no-future-authorization boundaries.
+
+Recommended next arc after v420: v425.0 Operator-Approved Memory Retraction Trial v1, which should prove a fresh operator-approved exact retraction of the v420 trial memory entry without creating general memory editing authority.
+
+## v421.0 - Memory Retraction Eligibility Packet v1
+
+v421.0 adds a review-only memory retraction eligibility packet for the exact governed v420 live memory trial entry. It checks the target entry id, memory text hash, prior write approval burnout, single-entry scope, forbidden identity/personality/purpose/autonomy categories, and blocks fuzzy or batch retraction. Eligibility is not approval.
+
+## v422.0 - Memory Retraction Approval Lock v1
+
+v422.0 adds a fresh single-use retraction approval lock. The lock binds the exact target entry, exact memory text hash, exact retraction confirmation phrase, and rejects attempts to reuse the prior write approval as retraction authority. Write approval does not authorize retraction.
+
+## v423.0 - Memory Retraction Transaction Preview v1
+
+v423.0 adds a retraction transaction preview for the governed live memory trial store. It previews the target entry, pre-retraction store hash, expected post-retraction hash, retained audit record, and blocker list without deleting or mutating memory.
+
+## v424.0 - Operator-Confirmed Memory Retraction Trial v1
+
+v424.0 adds an operator-confirmed memory retraction trial that marks one exact governed trial entry as retracted after exact retraction confirmation. The record is retained for audit, physical deletion is blocked, batch/fuzzy/canonical memory.json retraction is blocked, and the retraction approval burns out immediately.
+
+## v425.0 - Operator-Approved Memory Retraction Trial v1
+
+v425.0 audits the full retained-audit memory retraction lifecycle: eligibility, fresh approval lock, transaction preview, operator-confirmed retraction mark, approval burnout, negative cases, dashboard/API/CLI parity, segmented smoke coverage, documentation, and package privacy. It does not authorize future memory writes, future retractions, identity/personality/purpose edits, autonomy expansion, source patching, releases, local model invocation, or automatic continuation.
+
+Next recommended arc after v425.0: v426.0-v430.0 Canonical Source Surface Manifest v1. Build a single manifest tying dashboard routes, API routes, CLI flags, builders, runtime directories, version markers, smoke segments, and authority labels together so route/API/CLI drift can be audited from one source instead of from humanity's favorite sport: scattered string archaeology.
+
+## v426.0-v430.0 - Canonical Source Surface Manifest v1
+
+Purpose: create one auditable manifest for recent high-risk source surfaces so dashboard routes, API routes, CLI flags, builder functions, text renderers, runtime directories, smoke checks, smoke segments, authority labels, and package privacy markers can be reviewed from one place. The manifest is descriptive only. It does not authorize execution, memory writes, source patches, releases, model invocation, or autonomous continuation.
+
+Standing boundaries:
+- `manifest_presence_is_authorization=False`
+- `parity_pass_is_authorization=False`
+- `authority_label_is_approval=False`
+- `surface_exists_means_may_execute=False`
+- `smoke_pass_allows_live_action=False`
+- `manifest_writes_files=False`
+- `manifest_writes_memory=False`
+- Manifest review does not approve memory writes, retractions, source patches, releases, identity/personality/purpose changes, local model invocation, or autonomy expansion.
+
+### v426.0 - Surface Manifest Schema v1
+
+Defines the canonical surface manifest schema with surface id, version, era, dashboard route, API route, CLI flag, builder function, text function, runtime directory, smoke check, smoke segment, authority level, write flags, approval requirements, burnout requirements, package privacy sensitivity, and status.
+
+### v427.0 - Manifest Builder and Registry Intake v1
+
+Registers recent high-risk governed surfaces first: v400 memory application trial, v405 segmented smoke, v410 dry-run ledger, v415 sandbox memory write, v420 live memory write trial, v425 memory retraction trial, and v430 source surface manifest. It does not attempt a full historic backfill in this arc.
+
+### v428.0 - Dashboard/API/CLI Parity Audit v1
+
+Compares manifest entries against dashboard route tokens, API route tokens, CLI flags, builder functions, text renderers, and smoke checks. A parity pass confirms surface visibility only; it does not grant permission to run or mutate anything.
+
+### v429.0 - Source Surface Authority Map v1
+
+Maps authority labels such as review-only, sandbox-only, execution-prep-only, operator-approved single-use trial, and post-execution audit only. Authority labels classify surfaces but do not approve execution.
+
+### v429.5 - Source Surface Package Privacy Map v1
+
+Maps package-privacy-sensitive runtime directories and source-only exclusions for recent high-risk surfaces, including memory trial runtime stores and generated autonomy outputs.
+
+### v430.0 - Canonical Source Surface Manifest v1
+
+Finalizes the v430 audit. The audit checks manifest completeness, recent high-risk surface coverage, dashboard/API/CLI parity, authority labeling, write/memory flags, package privacy markers, documentation, targeted smoke, segmented governance smoke coverage, command-deck dashboard preservation, `data-tip` hover behavior, and no-authorization boundaries.
+
+Recommended next arc after v430.0: v431.0-v435.0 Self-Maintenance Duplicate Definition Cleanup v1. Classify duplicate definitions, distinguish compatibility aliases from accidental shadowing, and remove or isolate risky duplicates before adding more capability.
+
+---
+
+## v435.0 - Self-Maintenance Duplicate Definition Cleanup v1
+
+Eidolon v435.0 completes the v430.1-v435.0 self-maintenance duplicate definition cleanup stretch. The system now inventories duplicate Python function definitions with AST scanning, classifies `self_maintenance.py` duplicate definitions, prepares bridge-preserving extraction candidates, adds a guard against new high-risk duplicate shadowing, and audits that cleanup remains review-only.
+
+Important safety boundary: v435.0 does not delete source code, auto-apply refactors, mutate memory, alter identity, alter personality, rewrite purpose, expand autonomy, execute live patches, publish releases, invoke local models, or treat duplicate classification as permission to remove code.
+
+Dashboard hover rule: nav tabs continue to use the custom `data-tip` hover system. Native `title` tooltips must not be reintroduced on nav tabs.
+
+### v430.1-v431.0 - Duplicate Definition Inventory
+
+- v430.1 Duplicate Definition Audit Boundary Declaration
+- v430.2 AST Source Scan Setup
+- v430.3 Function Occurrence Record Schema
+- v430.4 Scope and Line Number Capture
+- v430.5 Duplicate Group Builder
+- v430.6 Risk and Classification Counts
+- v430.7 Inventory Dashboard/API/CLI Coverage
+- v430.8 Inventory Smoke Tokens
+- v430.9 Pre-v431 Gate
+- v431.0 Duplicate Definition Inventory v1
+
+### v431.1-v432.0 - Self-Maintenance Duplicate Classification Packet
+
+- v431.1 Self-Maintenance Classification Boundary Declaration
+- v431.2 Local Closure Classification
+- v431.3 Generated Registry Pattern Classification
+- v431.4 Compatibility Alias Classification
+- v431.5 Accidental Shadow Candidate Classification
+- v431.6 Recent High-Risk Surface Detection
+- v431.7 Manual Review Sample Builder
+- v431.8 Classification Dashboard/API/CLI Coverage
+- v431.9 Pre-v432 Gate
+- v432.0 Self-Maintenance Duplicate Classification Packet v1
+
+### v432.1-v433.0 - Safe Extraction Candidate Plan
+
+- v432.1 Extraction Plan Boundary Declaration
+- v432.2 Recent Surface Protection List
+- v432.3 Bridge Function Preservation Policy
+- v432.4 Manifest Parity Requirement Binder
+- v432.5 High-Risk Candidate Recommendation Builder
+- v432.6 Manual Review Only Recommendation Builder
+- v432.7 Extraction Candidate Dashboard/API/CLI Coverage
+- v432.8 Extraction Candidate Smoke Tokens
+- v432.9 Pre-v433 Gate
+- v433.0 Safe Extraction Candidate Plan v1
+
+### v433.1-v434.0 - Duplicate Definition Guard
+
+- v433.1 Duplicate Guard Boundary Declaration
+- v433.2 Historical Baseline Guard
+- v433.3 New High-Risk Shadow Detection
+- v433.4 Recent Governance Surface Guard
+- v433.5 No-Auto-Edit Guard Binder
+- v433.6 No-Autonomy Guard Binder
+- v433.7 Guard Dashboard/API/CLI Coverage
+- v433.8 Guard Smoke Coverage
+- v433.9 Pre-v434 Gate
+- v434.0 Duplicate Definition Guard v1
+
+### v434.1-v435.0 - Duplicate Cleanup Audit and Regression Lock
+
+- v434.1 Cleanup Audit Boundary Declaration
+- v434.2 Inventory Audit
+- v434.3 Classification Audit
+- v434.4 Extraction Candidate Audit
+- v434.5 Duplicate Guard Audit
+- v434.6 Source Surface Manifest Protection Audit
+- v434.7 Dashboard Hover Regression Audit
+- v434.8 v430/v425/v420 Regression Lock
+- v434.9 v435 Targeted Smoke and Segment Coverage
+- v435.0 Self-Maintenance Duplicate Definition Cleanup v1
+
+### v435.0 interface summary
+
+Dashboard pages:
+- `/duplicate-definition-inventory`
+- `/self-maintenance-duplicate-classification`
+- `/self-maintenance-extraction-candidates`
+- `/duplicate-definition-guard`
+- `/self-maintenance-duplicate-cleanup-audit`
+
+API routes:
+- `/api/duplicate-definition-inventory/layer`
+- `/api/self-maintenance-duplicate-classification/layer`
+- `/api/self-maintenance-extraction-candidates/layer`
+- `/api/duplicate-definition-guard/layer`
+- `/api/self-maintenance-duplicate-cleanup-audit/layer`
+
+CLI flags:
+- `--duplicate-definition-inventory-v1`
+- `--self-maintenance-duplicate-classification-v1`
+- `--self-maintenance-extraction-candidates-v1`
+- `--duplicate-definition-guard-v1`
+- `--operator-governed-self-maintenance-duplicate-cleanup-v1`
+
+Verification expectations:
+- `python -m compileall -q conscious_agent tools`
+- `python tools/smoke_check.py --single-check operator-governed-self-maintenance-duplicate-cleanup-v1`
+- `python tools/smoke_check.py --segment install-governance --timeout-scale 2`
+- `python tools/smoke_check.py --segment install-regression-recent --timeout-scale 2`
+
+Source-only package exclusions remain required for `data/autonomy/duplicate_definition_inventory/`, `data/autonomy/self_maintenance_duplicate_classification/`, `data/autonomy/self_maintenance_extraction_candidates/`, `data/autonomy/duplicate_definition_guard/`, `data/autonomy/self_maintenance_duplicate_cleanup_audit/`, runtime memory trial paths, logs, caches, and private/generated files.
+
+
+---
+
+## v436.0-v440.0 - Full Dashboard Route Probe and Lazy Render Audit v1
+
+Eidolon v440.0 completes the v435.1-v440.0 dashboard route health stretch. The system now inventories recent dashboard routes, probes route health, classifies lazy/heavy render candidates, audits tooltip regression risk, and verifies that operator-visible governance routes remain reachable without treating route health as approval.
+
+Important safety boundary: v440.0 does not redesign the dashboard, apply patches, mutate memory, alter identity, alter personality, rewrite purpose, expand autonomy, publish releases, invoke local models, or treat a working route as authorization.
+
+Dashboard hover rule: nav tabs continue to use the custom `data-tip` hover system. Native `title` tooltips must not be reintroduced on nav tabs.
+
+Standing boundaries:
+- `route_presence_is_authorization=False`
+- `route_health_is_approval=False`
+- `probe_executes_governed_actions=False`
+- `probe_applies_patches=False`
+- `probe_writes_memory=False`
+- `lazy_audit_refactors_dashboard=False`
+- `tooltip_audit_reintroduces_native_title=False`
+- `operator_review_required=True`
+
+### v435.1-v436.0 - Dashboard Route Inventory Manifest
+
+- v435.1 Dashboard Route Probe Boundary Declaration
+- v435.2 Route Inventory Schema
+- v435.3 Recent High-Risk Route Intake
+- v435.4 API Info Shadowing Guard Marker
+- v435.5 Authority Label Binder
+- v435.6 data-tip Requirement Binder
+- v435.7 Native Title Tooltip Blocker
+- v435.8 Inventory Dashboard/API/CLI Coverage
+- v435.9 Pre-v436 Gate
+- v436.0 Dashboard Route Inventory Manifest v1
+
+### v436.1-v437.0 - Dashboard Render Probe Runner
+
+- v436.1 Probe Runner Boundary Declaration
+- v436.2 HTTP Status Record Schema
+- v436.3 Content-Type Record Schema
+- v436.4 Stack trace and 500 Marker Detection
+- v436.5 API Route Shadowing Detection
+- v436.6 data-tip Presence Check
+- v436.7 Native Title Tooltip Regression Check
+- v436.8 Probe Dashboard/API/CLI Coverage
+- v436.9 Pre-v437 Gate
+- v437.0 Dashboard Render Probe Runner v1
+
+### v437.1-v438.0 - Lazy Render and Heavy Page Audit
+
+- v437.1 Lazy Audit Boundary Declaration
+- v437.2 Render-Time Bucket Schema
+- v437.3 Body-Size Bucket Schema
+- v437.4 Heavy Render Candidate Classifier
+- v437.5 Eager Runtime Builder Candidate Classifier
+- v437.6 Lazy/Button Trigger Recommendation Builder
+- v437.7 No-Auto-Optimization Binder
+- v437.8 Lazy Audit Surface Coverage
+- v437.9 Pre-v438 Gate
+- v438.0 Lazy Render and Heavy Page Audit v1
+
+### v438.1-v439.0 - Dashboard Probe Operator Surfaces
+
+- v438.1 Operator Surface Boundary Declaration
+- v438.2 Inventory Dashboard Page
+- v438.3 Probe Dashboard Page
+- v438.4 Lazy Render Dashboard Page
+- v438.5 Tooltip Regression Dashboard Page
+- v438.6 API Route Registration
+- v438.7 CLI Flag Registration
+- v438.8 Command-Deck Style Preservation Check
+- v438.9 Pre-v439 Gate
+- v439.0 Dashboard Tooltip Regression Audit v1
+
+### v439.1-v440.0 - Full Dashboard Route Probe and Lazy Render Audit
+
+- v439.1 Final Audit Boundary Declaration
+- v439.2 Inventory Audit
+- v439.3 Route Probe Audit
+- v439.4 Lazy Render Audit
+- v439.5 Tooltip Regression Audit
+- v439.6 `/api-info` Shadowing Regression Audit
+- v439.7 Dashboard HTTP Probe Smoke Coverage
+- v439.8 Segmented Dashboard Smoke Coverage
+- v439.9 v440 Targeted Smoke and Package Privacy Gate
+- v440.0 Full Dashboard Route Probe and Lazy Render Audit v1
+
+### v440.0 interface summary
+
+Dashboard pages:
+- `/dashboard-route-inventory`
+- `/dashboard-route-probe`
+- `/dashboard-lazy-render-audit`
+- `/dashboard-tooltip-regression-audit`
+- `/dashboard-route-health-audit`
+
+API routes:
+- `/api/dashboard-route-inventory/layer`
+- `/api/dashboard-route-probe/layer`
+- `/api/dashboard-lazy-render-audit/layer`
+- `/api/dashboard-tooltip-regression-audit/layer`
+- `/api/dashboard-route-health-audit/layer`
+
+CLI flags:
+- `--dashboard-route-inventory-v1`
+- `--dashboard-route-probe-v1`
+- `--dashboard-lazy-render-audit-v1`
+- `--dashboard-tooltip-regression-audit-v1`
+- `--operator-governed-dashboard-route-health-audit-v1`
+
+Verification expectations:
+- `python -m compileall -q conscious_agent tools`
+- `python tools/smoke_check.py --single-check operator-governed-dashboard-route-health-audit-v1`
+- `python tools/smoke_check.py --segment install-dashboard --timeout-scale 2`
+- `python tools/smoke_check.py --segment install-regression-recent --timeout-scale 2`
+
+Source-only package exclusions remain required for `data/autonomy/dashboard_route_inventory/`, `data/autonomy/dashboard_route_probe/`, `data/autonomy/dashboard_lazy_render_audit/`, `data/autonomy/dashboard_tooltip_regression_audit/`, `data/autonomy/dashboard_route_health_audit/`, runtime memory trial paths, logs, caches, and private/generated files.
+
+Recommended next arc after v440.0: v441.0-v445.0 Memory Lifecycle Review Board v1. Build a review board that summarizes candidate, dry-run, sandbox write, live trial write, retained retraction, burnout, and audit status without authorizing future memory edits.
+
+---
+
+## v441.0-v445.0 - Memory Lifecycle Review Board v1
+
+Eidolon v445.0 completes the v440.1-v445.0 memory lifecycle review board stretch. The system now provides one review-only board for the governed memory lifecycle established from v400 through v425: candidate selection, approval lock, dry-run ledger, sandbox write evidence, sandbox retraction preview, live trial write evidence, write approval burnout, retained retraction trial evidence, retraction approval burnout, drift/staleness review, and final audit state.
+
+Important safety boundary: v445.0 does not write memory, retract memory, create approvals, alter identity, alter personality, rewrite purpose, expand autonomy, apply source patches, publish releases, invoke local models, schedule hidden work, or treat lifecycle completeness as future authorization. Board visibility is not authorization. Lifecycle completeness is not future approval. Yes, the dashboard is still just a dashboard, not a tiny parliament.
+
+### v440.1-v441.0 - Memory Lifecycle Board Schema
+
+- v440.1 Board Boundary Declaration
+- v440.2 Candidate Status Section
+- v440.3 Approval Lock Status Section
+- v440.4 Dry-Run Ledger Status Section
+- v440.5 Sandbox Write Status Section
+- v440.6 Live Write and Burnout Status Sections
+- v440.7 Retraction and Retraction Burnout Status Sections
+- v440.8 Operator Decision and Boundary Sections
+- v440.9 Pre-v441 Gate
+- v441.0 Memory Lifecycle Board Schema v1
+
+### v441.1-v442.0 - Lifecycle State Aggregator
+
+- v441.1 Aggregator Boundary Declaration
+- v441.2 v400 Candidate Surface Link
+- v441.3 v410 Dry-Run Ledger Surface Link
+- v441.4 v415 Sandbox Write Surface Link
+- v441.5 v420 Live Trial Write Surface Link
+- v441.6 v425 Retraction Trial Surface Link
+- v441.7 v430 Manifest Surface Link
+- v441.8 No-Write Aggregation Binder
+- v441.9 Pre-v442 Gate
+- v442.0 Memory Lifecycle State Summary v1
+
+### v442.1-v443.0 - Lifecycle Drift and Staleness Review
+
+- v442.1 Drift Review Boundary Declaration
+- v442.2 Candidate Hash Mismatch Case
+- v442.3 Memory Text Hash Mismatch Case
+- v442.4 Approval Lock Mismatch Case
+- v442.5 Dry-Run Ledger Mismatch Case
+- v442.6 Sandbox/Live Mismatch Case
+- v442.7 Retraction Target Mismatch Case
+- v442.8 Burned Approval Reuse Case
+- v442.9 Pre-v443 Gate
+- v443.0 Memory Lifecycle Drift Review v1
+
+### v443.1-v444.0 - Board Dashboard/API/CLI Surfaces
+
+- v443.1 Operator Surface Boundary Declaration
+- v443.2 Review Board Dashboard Page
+- v443.3 State Summary Dashboard Page
+- v443.4 Drift Review Dashboard Page
+- v443.5 Operator Decision Dashboard Page
+- v443.6 API Route Registration
+- v443.7 CLI Flag Registration
+- v443.8 Command-Deck Style Preservation Check
+- v443.9 Pre-v444 Gate
+- v444.0 Memory Lifecycle Operator Decision Board v1
+
+### v444.1-v445.0 - Memory Lifecycle Review Board Audit
+
+- v444.1 Final Audit Boundary Declaration
+- v444.2 Board Schema Audit
+- v444.3 State Summary Audit
+- v444.4 Drift Review Audit
+- v444.5 Operator Decision Audit
+- v444.6 Source Surface Manifest Link Audit
+- v444.7 Dashboard Route Health Link Audit
+- v444.8 Segmented Memory/Dashboard Smoke Coverage
+- v444.9 v445 Targeted Smoke and Package Privacy Gate
+- v445.0 Memory Lifecycle Review Board v1
+
+### v445.0 interface summary
+
+Dashboard pages:
+- `/memory-lifecycle-review-board`
+- `/memory-lifecycle-state-summary`
+- `/memory-lifecycle-drift-review`
+- `/memory-lifecycle-operator-decision-board`
+- `/memory-lifecycle-review-board-audit`
+
+API routes:
+- `/api/memory-lifecycle-review-board/layer`
+- `/api/memory-lifecycle-state-summary/layer`
+- `/api/memory-lifecycle-drift-review/layer`
+- `/api/memory-lifecycle-operator-decision-board/layer`
+- `/api/memory-lifecycle-review-board-audit/layer`
+
+CLI flags:
+- `--memory-lifecycle-review-board-v1`
+- `--memory-lifecycle-state-summary-v1`
+- `--memory-lifecycle-drift-review-v1`
+- `--memory-lifecycle-operator-decision-board-v1`
+- `--operator-governed-memory-lifecycle-review-board-v1`
+
+Verification expectations:
+- `python -m compileall -q conscious_agent tools`
+- `python tools/smoke_check.py --single-check operator-governed-memory-lifecycle-review-board-v1`
+- `python tools/smoke_check.py --segment install-memory --timeout-scale 2`
+- `python tools/smoke_check.py --segment install-dashboard --timeout-scale 2`
+- `python tools/smoke_check.py --segment install-regression-recent --timeout-scale 2`
+
+Source-only package exclusions remain required for `data/autonomy/memory_lifecycle_review_board/`, `data/autonomy/memory_lifecycle_state_summary/`, `data/autonomy/memory_lifecycle_drift_review/`, `data/autonomy/memory_lifecycle_operator_decision_board/`, `data/autonomy/memory_lifecycle_review_board_audit/`, `data/memory_application_trials/`, runtime memory trial paths, logs, caches, and private/generated files.
+
+Required boundary tokens:
+- `board_visibility_is_authorization=False`
+- `lifecycle_completeness_is_future_approval=False`
+- `board_creates_approval=False`
+- `board_executes_memory_write=False`
+- `board_executes_memory_retraction=False`
+- `board_mutates_identity=False`
+- `board_alters_personality=False`
+- `board_rewrites_purpose=False`
+- `board_expands_autonomy=False`
+- `fresh_approval_required_for_future_memory_action=True`
+
+Recommended next arc after v445.0: v446.0-v450.0 Governance-State-to-Authorization Firewall v1. Build a reusable firewall that catches any code/report language implying readiness, eligibility, route health, manifest presence, lifecycle completeness, smoke success, or prior approval equals current authorization.
+
+## v446.0-v450.0 - Governance-State-to-Authorization Firewall v1
+
+Eidolon v450.0 completes the v445.1-v450.0 authorization firewall stretch. The system now has a reusable review-only detector for the most dangerous governance misunderstanding: treating readiness, eligibility, route health, manifest presence, lifecycle completeness, smoke success, prior approval, sandbox success, model consensus, or review packet existence as authorization.
+
+Important safety boundary: v450.0 does not approve, deny, execute, mutate memory, apply source edits, alter identity, alter personality, rewrite purpose, invoke local models, publish releases, schedule hidden work, or expand autonomy. Firewall detection is not enforcement execution. Firewall pass is not authorization. A clear status means only that no authorization-confusion finding was detected; fresh operator approval is still required for any governed action.
+
+### v446.0 - Authorization Confusion Pattern Registry
+
+Adds a registry of forbidden inference patterns:
+
+- `readiness_is_approval`
+- `eligibility_is_approval`
+- `route_health_is_approval`
+- `manifest_presence_is_authorization`
+- `lifecycle_completion_is_future_approval`
+- `smoke_success_is_permission`
+- `prior_approval_is_current_approval`
+- `sandbox_success_is_live_permission`
+- `model_consensus_is_truth`
+- `review_packet_is_execution_packet`
+- `approval_lock_exists_means_approved`
+- `operator_pattern_means_future_consent`
+
+### v447.0 - Packet Language and Metadata Scanner
+
+Adds a scanner for recent governance modules and packet text. It flags risky language around approval, authorization, execution, permission, future approval, and check success while recognizing safe boundary language such as review-only, not approval, not authorization, fresh approval required, single-use approval, and burnout.
+
+### v448.0 - Authorization Firewall Decision Packet
+
+Adds a decision packet with `clear`, `warning`, `blocked`, and `manual_review_required` style outputs. `clear` is explicitly non-authorizing. The packet reports findings and recommendations only.
+
+### v449.0 - Authorization Boundary Map
+
+Adds a state-to-boundary map covering readiness, eligibility, route health, manifest presence, lifecycle completeness, smoke success, prior approval, sandbox success, and model consensus. Each state is mapped to a safe interpretation and a forbidden inference.
+
+### v450.0 - Governance-State-to-Authorization Firewall Audit
+
+Adds final audit coverage for the firewall registry, scanner, decision packet, boundary map, docs, dashboard/API/CLI parity, smoke tokens, and no-authorization boundaries.
+
+### v450.0 interface summary
+
+Dashboard routes:
+
+- `/authorization-confusion-patterns`
+- `/authorization-language-scan`
+- `/authorization-firewall-decision-packet`
+- `/authorization-boundary-map`
+- `/authorization-firewall-audit`
+
+API routes:
+
+- `/api/authorization-confusion-patterns/layer`
+- `/api/authorization-language-scan/layer`
+- `/api/authorization-firewall-decision-packet/layer`
+- `/api/authorization-boundary-map/layer`
+- `/api/authorization-firewall-audit/layer`
+
+CLI flags:
+
+- `--authorization-confusion-patterns-v1`
+- `--authorization-language-scan-v1`
+- `--authorization-firewall-decision-packet-v1`
+- `--authorization-boundary-map-v1`
+- `--operator-governed-authorization-firewall-v1`
+
+Smoke:
+
+- `python tools/smoke_check.py --single-check operator-governed-authorization-firewall-v1`
+- `python tools/smoke_check.py --segment install-governance --timeout-scale 2`
+
+Recommended next arc after v450.0: v451.0-v455.0 Operator-Governed Recurring Read-Only Observation Trial v1. Build a strictly read-only recurring observation plan, activity ledger, command whitelist, and stop/pause controls without scheduling hidden work or mutating source/memory.
+

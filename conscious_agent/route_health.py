@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-ROUTE_HEALTH_VERSION = "350.0"
+ROUTE_HEALTH_VERSION = "500.0"
 
 CRITICAL_DASHBOARD_ROUTES: tuple[dict[str, str], ...] = (
     {"route": "/approved-application-binding", "arc": "v285", "label": "Approved Application Binding", "expected_status": "200", "governance": "review_only"},
@@ -66,6 +66,21 @@ CRITICAL_DASHBOARD_ROUTES: tuple[dict[str, str], ...] = (
     {"route": "/expression-live-patch-instruction-packet", "arc": "v350", "label": "Expression Live Patch Instruction Packet", "expected_status": "200", "governance": "review_only"},
     {"route": "/expression-live-verification-rollback-packet", "arc": "v350", "label": "Expression Live Verification Rollback Packet", "expected_status": "200", "governance": "review_only"},
     {"route": "/expression-live-application-packet-audit", "arc": "v350", "label": "Expression Live Application Packet Audit", "expected_status": "200", "governance": "review_only"},
+    {"route": "/expression-live-execution-approval-intake", "arc": "v355", "label": "Expression Live Execution Approval Intake", "expected_status": "200", "governance": "review_only"},
+    {"route": "/expression-live-source-transaction-preimage", "arc": "v355", "label": "Expression Live Source Transaction Preimage", "expected_status": "200", "governance": "review_only"},
+    {"route": "/expression-live-manual-execution-checklist", "arc": "v355", "label": "Expression Live Manual Execution Checklist", "expected_status": "200", "governance": "review_only"},
+    {"route": "/expression-live-rollback-reversion-packet", "arc": "v355", "label": "Expression Live Rollback Reversion Packet", "expected_status": "200", "governance": "review_only"},
+    {"route": "/expression-live-execution-prep-audit", "arc": "v355", "label": "Expression Live Execution Prep Audit", "expected_status": "200", "governance": "review_only"},
+    {"route": "/minimal-live-expression-change-candidate", "arc": "v360", "label": "Minimal Live Expression Change Candidate", "expected_status": "200", "governance": "operator_approved_single_use"},
+    {"route": "/minimal-live-expression-approval-lock", "arc": "v360", "label": "Minimal Live Expression Approval Lock", "expected_status": "200", "governance": "operator_approved_single_use"},
+    {"route": "/minimal-live-expression-patch-transaction", "arc": "v360", "label": "Minimal Live Expression Patch Transaction", "expected_status": "200", "governance": "operator_approved_single_use"},
+    {"route": "/minimal-live-expression-application-harness", "arc": "v360", "label": "Minimal Live Expression Application Harness", "expected_status": "200", "governance": "operator_approved_single_use"},
+    {"route": "/minimal-live-expression-application-audit", "arc": "v360", "label": "Minimal Live Expression Application Audit", "expected_status": "200", "governance": "operator_approved_single_use"},
+    {"route": "/self-maintenance-gate-registry", "arc": "v365", "label": "Self-Maintenance Gate Registry", "expected_status": "200", "governance": "review_only"},
+    {"route": "/self-maintenance-version-expectations", "arc": "v365", "label": "Self-Maintenance Version Expectations", "expected_status": "200", "governance": "review_only"},
+    {"route": "/governed-surface-metadata-registry", "arc": "v365", "label": "Governed Surface Metadata Registry", "expected_status": "200", "governance": "review_only"},
+    {"route": "/smoke-check-legacy-gate-registry", "arc": "v365", "label": "Smoke Check Legacy Gate Registry", "expected_status": "200", "governance": "review_only"},
+    {"route": "/self-maintenance-refactor-audit", "arc": "v365", "label": "Self-Maintenance Refactor Audit", "expected_status": "200", "governance": "review_only"},
 )
 
 ROUTE_HEALTH_BOUNDARIES = {
@@ -140,3 +155,19 @@ def render_route_health_lines(summary: dict[str, Any]) -> list[str]:
 # v340.1-v345.0 expression promotion packet assembly route-health tokens: expression-promotion-evidence-binder expression-live-promotion-scope-risk expression-promotion-verification-rollback expression-promotion-decision-packet expression-promotion-packet-assembly-audit operator-governed-expression-promotion-packet-assembly-layer-v1 dashboard_http_route_probe_required
 
 # v345.1-v350.0 expression live application packet route-health tokens: expression-live-application-eligibility-gate expression-live-source-change-manifest expression-live-patch-instruction-packet expression-live-verification-rollback-packet expression-live-application-packet-audit operator-governed-expression-live-application-packet-drafting-layer-v1 dashboard_http_route_probe_required
+
+# v350.1-v355.0 expression live application execution prep route-health tokens: expression-live-execution-approval-intake expression-live-source-transaction-preimage expression-live-manual-execution-checklist expression-live-rollback-reversion-packet expression-live-execution-prep-audit operator-governed-expression-live-application-execution-prep-v1 dashboard_http_route_probe_required
+
+# v355.1-v360.0 minimal live expression application route-health tokens: minimal-live-expression-change-candidate minimal-live-expression-approval-lock minimal-live-expression-patch-transaction minimal-live-expression-application-harness minimal-live-expression-application-audit operator-approved-minimal-live-expression-application-audit-v1 dashboard_http_route_probe_required
+
+# v365.1-v370.0 minimal live change replay route health tokens: /minimal-live-change-replay-packet /minimal-live-change-expected-actual-comparison /minimal-live-change-regression-drift-detector /minimal-live-change-recovery-recommendation /minimal-live-change-replay-regression-audit /api/minimal-live-change-replay-regression-audit/layer operator-governed-minimal-live-change-replay-and-regression-hardening-v1 dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v370.1-v375.0 modular extraction route health tokens: /self-maintenance-module-extraction-plan /self-maintenance-version-package-gates /self-maintenance-surface-gates /self-maintenance-governance-gates /self-maintenance-modular-extraction-audit /api/self-maintenance-modular-extraction-audit/layer operator-governed-self-maintenance-modular-extraction-v1 dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v375.1-v380.0 live change application trial route health tokens: /live-change-transaction-narrowing /live-change-approval-execution-lock /live-change-real-patch-trial-plan /live-change-operator-confirmed-application-trial /live-change-application-trial-audit /api/live-change-application-trial-audit/layer operator-governed-live-change-application-trial-audit-v1 dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+# v380.1-v385.0 live patch trial closure route health tokens: /live-patch-trial-result-intake /live-patch-applied-diff-evidence /live-patch-approval-burnout /live-patch-post-trial-regression-review /live-patch-trial-closure-audit /api/live-patch-trial-closure-audit/layer operator-governed-live-patch-trial-closure-audit-v1 dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v385.1-v390.0 second live patch trial route health tokens: /second-minimal-live-patch-candidate /registry-driven-live-patch-approval-validation /registry-driven-live-patch-transaction-lock /second-live-patch-application-harness /second-live-patch-trial-registry-audit /api/second-live-patch-trial-registry-audit/layer operator-governed-second-live-patch-trial-registry-audit-v1 dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+# v390.1-v395.0 live patch history memory candidate route health tokens: /live-patch-trial-history-ledger /operator-live-patch-decision-patterns /live-patch-supervised-lesson-candidates /live-patch-memory-candidate-governance /live-patch-history-memory-candidate-audit /api/live-patch-history-memory-candidate-audit/layer operator-governed-live-patch-history-and-memory-candidate-audit-v1 dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v395.1-v400.0 memory candidate application trial route health tokens: /memory-candidate-selection-packet /memory-application-approval-lock /memory-write-transaction-preview /operator-confirmed-memory-application-trial /memory-application-trial-audit /api/memory-application-trial-audit/layer operator-governed-memory-application-trial-audit-v1 dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console

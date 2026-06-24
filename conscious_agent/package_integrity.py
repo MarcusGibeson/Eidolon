@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Iterable
 
-PACKAGE_INTEGRITY_VERSION = "350.0"
+PACKAGE_INTEGRITY_VERSION = "500.0"
 
 FORBIDDEN_RUNTIME_PARTS = (
     "/data/autonomy/",

@@ -10,7 +10,8 @@ from paths import DATA_DIR, ROOT_DIR
 from settings_manager import load_settings
 from task_queue import list_tasks
 
-WORKSPACE_ORCHESTRATION_VERSION = "350.0"
+WORKSPACE_ORCHESTRATION_VERSION = "500.0"
+WORKSPACE_CURRENT_MILESTONE = "v500.0 Operator-Governed Autonomy Readiness Review Board v1"
 WORKSPACES_DIR = DATA_DIR / "workspaces"
 PROJECTS_FILE = WORKSPACES_DIR / "projects.json"
 ACTIVE_PROJECT_FILE = WORKSPACES_DIR / "active_project.json"
@@ -148,7 +149,7 @@ def _default_project() -> dict[str, Any]:
         "priority": "high",
         "safe_to_modify": True,
         "last_updated_for": f"v{settings.get('settings_version', WORKSPACE_ORCHESTRATION_VERSION)}",
-        "current_milestone": f"v{settings.get('settings_version', WORKSPACE_ORCHESTRATION_VERSION)} Assisted Self-Improvement Release",
+        "current_milestone": WORKSPACE_CURRENT_MILESTONE,
         "registered_at": _now(),
         "updated_at": _now(),
     }
@@ -188,8 +189,8 @@ def load_workspace_projects(repair: bool = False) -> list[dict[str, Any]]:
     if repair:
         _write_json(PROJECTS_FILE, {"version": WORKSPACE_ORCHESTRATION_VERSION, "updated_at": _now(), "projects": normalized})
         active = _read_json(ACTIVE_PROJECT_FILE, {})
-        active_payload = {"version": f"v{WORKSPACE_ORCHESTRATION_VERSION}", "active_project_id": str(active.get("active_project_id") or "eidolon") if isinstance(active, dict) else "eidolon", "updated_at": _now(), "last_updated_for": f"v{WORKSPACE_ORCHESTRATION_VERSION}", "current_milestone": f"v{WORKSPACE_ORCHESTRATION_VERSION} Assisted Self-Improvement Release"}
-        if not isinstance(active, dict) or active.get("version") != f"v{WORKSPACE_ORCHESTRATION_VERSION}" or active.get("last_updated_for") != f"v{WORKSPACE_ORCHESTRATION_VERSION}":
+        active_payload = {"version": WORKSPACE_ORCHESTRATION_VERSION, "active_project_id": str(active.get("active_project_id") or "eidolon") if isinstance(active, dict) else "eidolon", "updated_at": _now(), "last_updated_for": f"v{WORKSPACE_ORCHESTRATION_VERSION}", "current_milestone": WORKSPACE_CURRENT_MILESTONE}
+        if not isinstance(active, dict) or str(active.get("version", "")).lstrip("v") != WORKSPACE_ORCHESTRATION_VERSION or active.get("last_updated_for") != f"v{WORKSPACE_ORCHESTRATION_VERSION}" or active.get("current_milestone") != WORKSPACE_CURRENT_MILESTONE:
             _write_json(ACTIVE_PROJECT_FILE, active_payload)
     return normalized
 

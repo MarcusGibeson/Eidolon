@@ -5,7 +5,7 @@ from typing import Any
 from identity_expression import classify_identity_expression_request
 from route_health import ROUTE_HEALTH_VERSION, build_route_health_registry_summary, build_smoke_visibility_summary
 
-BEHAVIORAL_EXPRESSION_PREVIEW_VERSION = "350.0"
+BEHAVIORAL_EXPRESSION_PREVIEW_VERSION = "500.0"
 
 EXPRESSION_PREVIEW_BOUNDARIES = {
     "behavioral_expression_changes_live_chat": False,

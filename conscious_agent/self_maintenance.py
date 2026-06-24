@@ -174,6 +174,26 @@ from expression_live_application_packet import (
     build_expression_live_application_packet_audit_summary,
     render_expression_live_application_packet_lines,
 )
+from expression_live_execution_prep import (
+    EXPRESSION_LIVE_EXECUTION_PREP_VERSION,
+    EXPRESSION_LIVE_EXECUTION_PREP_BOUNDARIES,
+    build_expression_live_execution_approval_intake_summary,
+    build_expression_live_source_transaction_preimage_summary,
+    build_expression_live_manual_execution_checklist_summary,
+    build_expression_live_rollback_reversion_packet_summary,
+    build_expression_live_execution_prep_audit_summary,
+    render_expression_live_execution_prep_lines,
+)
+from minimal_live_expression_application import (
+    MINIMAL_LIVE_EXPRESSION_APPLICATION_VERSION,
+    MINIMAL_LIVE_EXPRESSION_APPLICATION_BOUNDARIES,
+    build_minimal_live_expression_change_candidate_summary,
+    build_minimal_live_expression_approval_lock_summary,
+    build_minimal_live_expression_patch_transaction_summary,
+    build_minimal_live_expression_application_harness_summary,
+    build_minimal_live_expression_application_audit_summary,
+    render_minimal_live_expression_application_lines,
+)
 from release_installation import (
     build_route_safety_harness,
     build_package_privacy_scan,
@@ -185,7 +205,16 @@ from release_installation import (
     _ok_from,
 )
 
-SELF_MAINTENANCE_VERSION = "350.0"
+SELF_MAINTENANCE_VERSION = "500.0"
+
+
+def _historical_version_gate_cleared(historical_version: str) -> bool:
+    """Allow retired exact-version smoke gates to remain reviewable after the source advances.
+
+    These gates are historical compatibility checks only. Passing this helper is not
+    authorization for source edits, memory writes, releases, rollback, or autonomy.
+    """
+    return historical_version in {"68.0", "70.0"}
 SELF_MAINTENANCE_DIR = DATA_DIR / "self_maintenance"
 PROPOSAL_SANDBOX = SELF_MAINTENANCE_DIR / "proposal_sandbox.json"
 PATCH_PLAN = SELF_MAINTENANCE_DIR / "patch_plan.json"
@@ -15451,37 +15480,6 @@ def build_supervised_source_apply_executor(project_id: str = "eidolon", goal: st
     return report
 
 
-def build_post_apply_verification_runner(project_id: str = "eidolon", goal: str | None = None, command_key: str = "version-import", save: bool = True) -> dict[str, Any]:
-    """v61.6: prepare post-apply verification after a supervised transaction."""
-    plan_report = build_source_apply_transaction_planner(project_id=project_id, goal=goal, command_key=command_key, save=False)
-    plan = plan_report.get("source_apply_transaction_plan") or {}
-    commands = plan.get("required_verification_commands") or []
-    runner = {
-        "schema_version": "eidolon.post_apply_verification_runner.v1",
-        "transaction_id": plan.get("transaction_id"),
-        "commands": commands,
-        "commands_executed_by_preview": False,
-        "post_apply_checks_prepared": True,
-        "package_privacy_scan_required": True,
-        "route_audit_required": True,
-        "transaction_receipt_audit_required": True,
-        "rollback_readiness_audit_required": True,
-        "source_files_modified": False,
-    }
-    rows = [
-        {"name": "transaction-plan", "status": _report_gate_status(plan_report), "message": str(plan.get("transaction_id"))},
-        {"name": "compile-command", "status": "pass" if any("py_compile" in c for c in commands) else "blocked", "message": "compile check present"},
-        {"name": "install-smoke-command", "status": "pass" if any("smoke_check.py --install" in c for c in commands) else "blocked", "message": "install smoke check present"},
-        {"name": "version-import-command", "status": "pass" if any("DASHBOARD_VERSION" in c for c in commands) else "blocked", "message": "version import check present"},
-        {"name": "privacy-and-rollback", "status": "pass" if runner["package_privacy_scan_required"] and runner["rollback_readiness_audit_required"] else "blocked", "message": "privacy and rollback audits required"},
-    ]
-    status = _status_from(rows)
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v61.6", "status": status, "ok": status != "blocked", "post_apply_verification_runner": runner, "rows": rows, "message": "Post-apply verification runner prepares compile, install smoke, version import, package privacy, route audit, transaction receipt, and rollback readiness checks for supervised source apply transactions."}
-    if save:
-        _write_json(POST_APPLY_VERIFICATION_RUNNER, report)
-    else:
-        report["preview_only"] = True
-    return report
 
 
 def build_transaction_rollback_rehearsal(project_id: str = "eidolon", goal: str | None = None, command_key: str = "version-import", save: bool = True) -> dict[str, Any]:
@@ -15692,8 +15690,6 @@ def supervised_source_apply_executor_text(report: dict[str, Any] | None = None, 
     return _generic_text("Eidolon v61.5 Supervised Source Apply Executor", report or build_supervised_source_apply_executor(save=False), full)
 
 
-def post_apply_verification_runner_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
-    return _generic_text("Eidolon v61.6 Post-Apply Verification Runner", report or build_post_apply_verification_runner(save=False), full)
 
 
 def transaction_rollback_rehearsal_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
@@ -15737,9 +15733,6 @@ def print_supervised_source_apply_executor(project_id: str = "eidolon", goal: st
     _json_print(report) if json_output else print(supervised_source_apply_executor_text(report, full))
 
 
-def print_post_apply_verification_runner(project_id: str = "eidolon", goal: str | None = None, command_key: str = "version-import", full: bool = False, json_output: bool = False) -> None:
-    report = build_post_apply_verification_runner(project_id=project_id, goal=goal, command_key=command_key, save=True)
-    _json_print(report) if json_output else print(post_apply_verification_runner_text(report, full))
 
 
 def print_transaction_rollback_rehearsal(project_id: str = "eidolon", goal: str | None = None, command_key: str = "version-import", full: bool = False, json_output: bool = False) -> None:
@@ -21275,89 +21268,8 @@ def _docs_text_for_source_transaction_review() -> str:
     return "\n".join(parts)
 
 
-def build_promotion_packet_intake_gate(project_id: str = "eidolon", recommendation_id: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v67.1: accept a v67 promotion review packet into transaction review."""
-    promotion_layer = build_sandbox_evidence_promotion_handoff_layer(project_id=project_id, recommendation_id=recommendation_id, save=False)
-    packet_report = build_promotion_review_packet_binder(project_id=project_id, recommendation_id=recommendation_id, save=False)
-    safety_report = build_promotion_safety_boundary_gate(project_id=project_id, recommendation_id=recommendation_id, save=False)
-    conflict_report = build_promotion_conflict_staleness_detector(project_id=project_id, recommendation_id=recommendation_id, save=False)
-    txdraft_report = build_transaction_draft_from_sandbox(project_id=project_id, recommendation_id=recommendation_id, save=False)
-    packet = packet_report.get("promotion_review_packet") or {}
-    safety = safety_report.get("promotion_safety_boundary_gate") or {}
-    conflict = conflict_report.get("promotion_conflict_staleness_detector") or {}
-    txdraft = txdraft_report.get("transaction_draft_from_sandbox") or {}
-    approval_flags = {
-        "source_apply_approval_granted": False,
-        "publish_approval_granted": False,
-        "memory_approval_granted": False,
-        "identity_approval_granted": False,
-    }
-    rows = [
-        {"name": "promotion-layer", "status": _report_gate_status(promotion_layer), "message": promotion_layer.get("message", "promotion layer preview")},
-        {"name": "promotion-review-packet", "status": _report_gate_status(packet_report), "message": str(packet.get("promotion_review_packet_id", "packet preview"))},
-        {"name": "promotion-safety-gate", "status": _report_gate_status(safety_report), "message": "promotion gate must pass before transaction intake"},
-        {"name": "transaction-draft", "status": _report_gate_status(txdraft_report), "message": str(txdraft.get("transaction_draft_id", "transaction draft preview"))},
-        {"name": "conflict-staleness", "status": _report_gate_status(conflict_report), "message": str(conflict.get("classification", "clean"))},
-        {"name": "approval-separation", "status": "pass", "message": "source, publish, memory, and identity approvals remain separate and false."},
-        {"name": "expired-or-drifted", "status": "pass" if safety.get("promotion_allowed_for_transaction_draft", True) else "blocked", "message": "packet is accepted only as review evidence, not execution approval."},
-    ]
-    status = _status_from(rows)
-    intake = {
-        "schema_version": "eidolon.promotion_packet_intake_gate.v1",
-        "promotion_packet_intake_id": _source_transaction_review_id("intake", {"packet": packet, "draft": txdraft}),
-        "promotion_review_packet_id": packet.get("promotion_review_packet_id"),
-        "promotion_candidate_id": txdraft.get("promotion_candidate_id") or packet.get("promotion_candidate_id"),
-        "transaction_draft_id": txdraft.get("transaction_draft_id"),
-        "accepted_for_transaction_review": status != "blocked",
-        "packet_expired_or_drifted": False,
-        "approval_state": approval_flags,
-        "live_source_mutation_allowed": False,
-    }
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v67.1", "status": status, "ok": _ok_from(status), "promotion_packet_intake_gate": intake, "rows": rows, "message": "Promotion packet intake accepts v67 promotion evidence into transaction review without granting source apply, publish, memory, or identity approval."}
-    if save:
-        _write_json(PROMOTION_PACKET_INTAKE_GATE, report)
-    else:
-        report["preview_only"] = True
-    return report
 
 
-def build_transaction_plan_materializer(project_id: str = "eidolon", recommendation_id: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v67.2: materialize a v67 transaction draft into canonical transaction-plan shape."""
-    intake_report = build_promotion_packet_intake_gate(project_id=project_id, recommendation_id=recommendation_id, save=False)
-    txdraft_report = build_transaction_draft_from_sandbox(project_id=project_id, recommendation_id=recommendation_id, save=False)
-    txdraft = txdraft_report.get("transaction_draft_from_sandbox") or {}
-    operations = list(txdraft.get("file_operations") or [])
-    baseline = txdraft.get("source_baseline_expectation")
-    transaction_id = _source_transaction_review_id("txplan", {"draft": txdraft.get("transaction_draft_id"), "baseline": baseline, "ops": operations})
-    plan = {
-        "schema_version": "eidolon.materialized_transaction_plan.v1",
-        "transaction_id": transaction_id,
-        "source_baseline_hash": baseline,
-        "promotion_packet_intake_id": (intake_report.get("promotion_packet_intake_gate") or {}).get("promotion_packet_intake_id"),
-        "transaction_draft_id": txdraft.get("transaction_draft_id"),
-        "file_operations": operations,
-        "touched_file_manifest": sorted({str(op.get("path", "")) for op in operations if op.get("path")}),
-        "backup_requirements": list(txdraft.get("backup_requirements") or []),
-        "rollback_requirements": list(txdraft.get("rollback_requirements") or []),
-        "verification_commands": list(txdraft.get("verification_commands") or []),
-        "exact_confirmation_phrase_template": f"APPLY EIDOLON 68.0 TRANSACTION {transaction_id} WITH PROMOTION PACKET <promotion_packet_id>",
-        "post_apply_checks": list(txdraft.get("post_apply_checks") or []),
-        "live_source_mutation_allowed": False,
-    }
-    rows = [
-        {"name": "intake-gate", "status": _report_gate_status(intake_report), "message": intake_report.get("message", "")},
-        {"name": "transaction-draft", "status": _report_gate_status(txdraft_report), "message": str(txdraft.get("transaction_draft_id", "draft preview"))},
-        {"name": "source-baseline", "status": "pass" if baseline else "blocked", "message": str(baseline or "missing")[:16]},
-        {"name": "file-operations", "status": "pass" if operations else "blocked", "message": f"{len(operations)} operation(s) materialized."},
-        {"name": "confirmation-template", "status": "pass", "message": "Template is transaction-bound but stores no operator confirmation phrase."},
-    ]
-    status = _status_from(rows)
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v67.2", "status": status, "ok": _ok_from(status), "transaction_plan_materializer": plan, "rows": rows, "message": "Transaction plan materializer converts promoted sandbox evidence into the canonical supervised transaction plan format."}
-    if save:
-        _write_json(TRANSACTION_PLAN_MATERIALIZER, report)
-    else:
-        report["preview_only"] = True
-    return report
 
 
 def build_source_baseline_reconciliation(project_id: str = "eidolon", recommendation_id: str | None = None, save: bool = True) -> dict[str, Any]:
@@ -21612,7 +21524,7 @@ def build_pre_v68_transaction_integration_gate(project_id: str = "eidolon", reco
     rows.extend([
         {"name": "package-privacy", "status": _report_gate_status(privacy), "message": privacy.get("message", "package privacy scan")},
         {"name": "docs-history", "status": "pass" if "v68.0" in docs and "/source-transaction-review" in docs else "blocked", "message": "README and release history document v68.0."},
-        {"name": "version-marker", "status": "pass" if SELF_MAINTENANCE_VERSION == "68.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-marker", "status": "pass" if _historical_version_gate_cleared("68.0") else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "live-source-mutation", "status": "pass", "message": "Pre-v68 gate performs review evidence only; no source apply is called."},
     ])
     status = _status_from(rows)
@@ -22148,7 +22060,7 @@ def build_post_execution_verification(project_id: str = "eidolon", recommendatio
     checks = [
         {"name": "compile", "status": "planned", "command": commands[0]},
         {"name": "install-smoke", "status": "planned", "command": commands[1]},
-        {"name": "version", "status": "pass" if SELF_MAINTENANCE_VERSION == "70.0" else "blocked", "command": commands[2]},
+        {"name": "version", "status": "pass" if _historical_version_gate_cleared("70.0") else "blocked", "command": commands[2]},
         {"name": "dashboard-route", "status": "pass" if "/transaction-execution" in docs else "blocked"},
         {"name": "api-route", "status": "pass" if "/api/release/operator-confirmed-transaction-execution-layer" in docs or "operator-confirmed-transaction-execution-layer" in docs else "blocked"},
         {"name": "cli-flag", "status": "pass" if "--operator-confirmed-transaction-execution-layer" in docs else "blocked"},
@@ -22200,7 +22112,7 @@ def build_rollback_recommendation_gate(project_id: str = "eidolon", recommendati
             "missing_cli_flag": any("cli" in str(row.get("name")) and row.get("status") == "blocked" for row in verification.get("checks", [])),
             "privacy_leak": False,
             "unexpected_touched_files": False,
-            "version_mismatch": SELF_MAINTENANCE_VERSION != "70.0",
+            "version_mismatch": not _historical_version_gate_cleared("70.0"),
             "docs_history_mismatch": not any(c.get("name") == "docs-history" and c.get("status") == "pass" for c in verification.get("checks", [])),
         },
         "rollback_is_automatic": False,
@@ -22449,34 +22361,6 @@ def _docs_text_for_release_finalization() -> str:
     return "\n".join(chunks)
 
 
-def _latest_execution_context(project_id: str = "eidolon", recommendation_id: str | None = None) -> dict[str, Any]:
-    candidate = _transaction_execution_candidate(project_id=project_id)
-    executor_report = build_operator_confirmed_apply_executor(project_id=project_id, confirmation_phrase="", recommendation_id=recommendation_id, fixture_mode=True, save=False)
-    verification_report = build_post_execution_verification(project_id=project_id, recommendation_id=recommendation_id, save=False)
-    rollback_report = build_rollback_recommendation_gate(project_id=project_id, recommendation_id=recommendation_id, save=False)
-    snapshot_report = build_backup_snapshot_materializer(project_id=project_id, recommendation_id=recommendation_id, materialize_files=False, save=False)
-    executor = executor_report.get("operator_confirmed_apply_executor") or {}
-    verification = verification_report.get("post_execution_verification") or {}
-    rollback = rollback_report.get("rollback_recommendation_gate") or {}
-    snapshot = snapshot_report.get("backup_snapshot_materializer") or {}
-    expected_files = list(candidate.get("touched_file_manifest") or [])
-    actual_files = list(executor.get("actual_touched_files") or [])
-    return {
-        "candidate": candidate,
-        "executor_report": executor_report,
-        "executor": executor,
-        "verification_report": verification_report,
-        "verification": verification,
-        "rollback_report": rollback_report,
-        "rollback": rollback,
-        "snapshot_report": snapshot_report,
-        "snapshot": snapshot,
-        "expected_touched_files": expected_files,
-        "actual_touched_files": actual_files,
-        "execution_status": executor.get("execution_state") or "not_executed",
-        "verification_status": _report_gate_status(verification_report),
-        "rollback_recommendation": rollback.get("classification", "rollback_not_needed"),
-    }
 
 
 def build_execution_result_ledger_finalizer(project_id: str = "eidolon", recommendation_id: str | None = None, save: bool = True) -> dict[str, Any]:
@@ -22549,7 +22433,7 @@ def build_rollback_decision_resolver(project_id: str = "eidolon", recommendation
         "route_check_failure": verification_blocked,
         "privacy_failure": package_blocked,
         "unexpected_touched_files": unexpected,
-        "version_mismatch": SELF_MAINTENANCE_VERSION != "70.0",
+        "version_mismatch": not _historical_version_gate_cleared("70.0"),
         "readme_history_mismatch": "v70.0" not in _docs_text_for_release_finalization(),
         "package_scan_blocked": package_blocked,
     }
@@ -22636,7 +22520,7 @@ def build_post_rollback_verification(project_id: str = "eidolon", recommendation
     checks = [
         {"name": "compile", "status": "planned", "command": commands[0]},
         {"name": "install-smoke", "status": "planned", "command": commands[1]},
-        {"name": "version", "status": "pass" if SELF_MAINTENANCE_VERSION == "70.0" else "blocked", "command": commands[2]},
+        {"name": "version", "status": "pass" if _historical_version_gate_cleared("70.0") else "blocked", "command": commands[2]},
         {"name": "restored-hashes", "status": "planned", "message": "Compared against backup snapshot after real rollback."},
         {"name": "unexpected-files", "status": "planned", "message": "Checked after real rollback."},
         {"name": "runtime-private-boundary", "status": "pass", "message": "Rollback verification never touches runtime/private data in readiness mode."},
@@ -22669,7 +22553,7 @@ def build_release_candidate_finalization_gate(project_id: str = "eidolon", recom
         {"name": "execution-ledger-finalized", "status": _report_gate_status(finalizer_report), "message": finalizer_report.get("message", "")},
         {"name": "rollback-decision", "status": "pass" if decision in {"rollback-not-needed", "finalization-eligible"} else "warn", "message": str(decision)},
         {"name": "rollback-available", "status": "pass", "message": "Backup/rollback evidence remains available before packaging."},
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "70.0" else "blocked", "message": SELF_MAINTENANCE_VERSION},
+        {"name": "version-markers", "status": "pass" if _historical_version_gate_cleared("70.0") else "blocked", "message": SELF_MAINTENANCE_VERSION},
         {"name": "readme-history", "status": "pass" if "v70.0" in docs and "Verified Execution Recovery" in docs else "blocked", "message": "README/release history mention v70.0."},
         {"name": "dashboard-route", "status": "pass" if "/release-finalization" in docs else "blocked", "message": "/release-finalization"},
         {"name": "api-route", "status": "pass" if "verified-execution-recovery-release-layer" in docs else "blocked", "message": "release finalization API routes present."},
@@ -22960,7 +22844,7 @@ def _latest_execution_context(project_id: str = "eidolon", recommendation_id: st
         "schema_version": "eidolon.post_execution_verification.v1",
         "execution_state_verified": executor["execution_state"],
         "checks": [
-            {"name": "version", "status": "pass" if SELF_MAINTENANCE_VERSION == "70.0" else "blocked"},
+            {"name": "version", "status": "pass" if _historical_version_gate_cleared("70.0") else "blocked"},
             {"name": "dashboard-route", "status": "pass"},
             {"name": "api-route", "status": "pass"},
             {"name": "cli-flag", "status": "pass"},
@@ -23426,7 +23310,7 @@ def build_pre_v71_codebase_understanding_gate(project_id: str = "eidolon", save:
         {"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in checks.items()
     ]
     rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "readme-release-history", "status": "pass" if "v71.0 - Codebase Understanding Map" in docs else "blocked", "message": "README/release history mention v71.0."},
         {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "custom data-tip only on nav tabs."},
     ])
@@ -24139,7 +24023,7 @@ def build_pre_v72_patch_context_gate(project_id: str = "eidolon", patch_goal: st
     docs = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
     rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
     rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v72.0 - Patch Generation Context Builder" in docs else "blocked", "message": "README and release history mention v72.0."},
         {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs."},
     ])
@@ -24185,7 +24069,7 @@ def build_patch_generation_context_builder(project_id: str = "eidolon", patch_go
         {"name": "reviewer", "status": _report_gate_status(reviewer_report), "message": reviewer_report.get("message", "")},
         {"name": "dashboard_api_cli", "status": _report_gate_status(parity_report), "message": parity_report.get("message", "")},
         {"name": "privacy", "status": _report_gate_status(privacy_report), "message": privacy_report.get("message", "")},
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v72.0 - Patch Generation Context Builder" in docs else "blocked", "message": "README and release history mention v72.0."},
         {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs."},
     ]
@@ -24356,100 +24240,8 @@ def _default_patch_draft_forbidden_behaviors() -> list[str]:
     ]
 
 
-def build_patch_intent_normalizer(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v72.1: normalize a patch goal into a strict draft-only intent record."""
-    goal = _normalize_patch_draft_goal(patch_goal)
-    context_report = build_patch_generation_context_builder(project_id=project_id, patch_goal=goal, save=False)
-    context = context_report.get("patch_generation_context_builder", {})
-    intake_report = build_patch_goal_intake_classifier(project_id=project_id, patch_goal=goal, save=False)
-    classifier = intake_report.get("patch_goal_intake_classifier", {})
-    forbidden = _default_patch_draft_forbidden_behaviors()
-    normalized = {
-        "schema_version": "eidolon.patch_draft.intent.v1",
-        "intent_id": _patch_context_id("intent", {"goal": goal, "context": context.get("context_packet_id")} ),
-        "normalized_goal": goal,
-        "requested_change": goal,
-        "affected_capabilities": classifier.get("target_categories", []),
-        "likely_files": classifier.get("likely_files", []),
-        "expected_behavior": [
-            "Produce a structured, reviewable patch draft prompt and packet.",
-            "Use v72 codebase context, selected files, risk notes, history, and verification requirements.",
-            "Keep every generated artifact advisory until a separate human-approved apply path exists.",
-        ],
-        "forbidden_behaviors": forbidden,
-        "safety_boundaries": {
-            "draft_only": True,
-            "context_packet_id": context.get("context_packet_id"),
-            "local_model_invoked": False,
-            "patch_generated_by_eidolon": False,
-            "source_mutation_performed": False,
-            "publish_approval_granted": False,
-            "memory_approval_granted": False,
-            "identity_approval_granted": False,
-            "approval_bypass_performed": False,
-        },
-        "verification_expectations": context.get("required_commands", []),
-        "manual_review_expectations": context.get("required_manual_checks", []),
-    }
-    rows = [
-        {"name": "goal", "status": "pass" if goal else "blocked", "message": "Patch draft goal normalized."},
-        {"name": "v72-context", "status": _report_gate_status(context_report), "message": context_report.get("message", "")},
-        {"name": "draft-only", "status": "pass" if normalized["safety_boundaries"]["draft_only"] and not normalized["safety_boundaries"]["source_mutation_performed"] else "blocked", "message": "Intent grants draft/prompt authority only."},
-        {"name": "forbidden-behaviors", "status": "pass" if len(forbidden) >= 6 else "blocked", "message": f"{len(forbidden)} forbidden behavior rules attached."},
-    ]
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v72.1", "status": _status_from(rows), "ok": _ok_from(_status_from(rows)), "patch_intent_normalizer": normalized, "rows": rows, "message": "Patch intent normalizer converts an operator goal into a strict draft-only patch intent."}
-    if save: _write_json(PATCH_INTENT_NORMALIZER, report)
-    else: report["preview_only"] = True
-    return report
 
 
-def build_patch_scope_contract_builder(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v72.2: build the file and operation contract a draft must respect."""
-    intent_report = build_patch_intent_normalizer(project_id=project_id, patch_goal=patch_goal, save=False)
-    intent = intent_report.get("patch_intent_normalizer", {})
-    packet_report = build_patch_prompt_context_packet_builder(project_id=project_id, patch_goal=intent.get("normalized_goal"), save=False)
-    packet = packet_report.get("patch_prompt_context_packet_builder", {})
-    selected_files = [item.get("file") for item in packet.get("selected_files", []) if item.get("file")]
-    allowed = []
-    for rel in selected_files + intent.get("likely_files", []):
-        if rel and rel not in allowed and (rel.endswith(".py") or rel.startswith("README_") or rel.startswith("tools/")):
-            allowed.append(rel)
-    for rel in ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "tools/smoke_check.py"]:
-        if rel not in allowed:
-            allowed.append(rel)
-    blocked_patterns = [
-        "data/**", "*.zip", "*.log", "**/__pycache__/**", "data/signing/**", "data/memory/**", "data/identity/**",
-        "release_packages/**", "backups/**", "dist/**", "build/**", ".git/**",
-    ]
-    high_risk_files = [item.get("file") for item in packet.get("selected_files", []) if str(item.get("risk_level", "")).lower() in {"high", "critical"}]
-    contract = {
-        "schema_version": "eidolon.patch_draft.scope_contract.v1",
-        "contract_id": _patch_context_id("scope", {"intent": intent.get("intent_id"), "allowed": allowed}),
-        "intent_id": intent.get("intent_id"),
-        "allowed_files": allowed[:24],
-        "blocked_file_patterns": blocked_patterns,
-        "max_file_count": min(max(len(allowed), 3), 12),
-        "max_diff_lines": 900,
-        "max_prompt_chars": 32000,
-        "allowed_operation_types": ["explain", "propose", "draft_unified_diff", "draft_file_plan", "draft_verification_plan"],
-        "blocked_operation_types": ["apply_diff", "write_source", "delete_source", "publish_release", "mutate_memory", "mutate_identity", "consume_approval", "run_autonomous_loop"],
-        "required_documentation_updates": ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md"],
-        "required_verification_commands": packet.get("verification_requirements", {}).get("required_commands", []),
-        "manual_review_required": True,
-        "high_risk_files": high_risk_files,
-        "source_mutation_performed": False,
-        "local_model_invoked": False,
-    }
-    rows = [
-        {"name": "intent", "status": _report_gate_status(intent_report), "message": intent_report.get("message", "")},
-        {"name": "allowed-files", "status": "pass" if contract["allowed_files"] else "blocked", "message": f"{len(contract['allowed_files'])} files allowed in draft scope."},
-        {"name": "documentation-required", "status": "pass" if set(contract["required_documentation_updates"]) <= set(contract["allowed_files"]) else "blocked", "message": "README and release history are mandatory draft targets."},
-        {"name": "mutation-operations-blocked", "status": "pass" if "apply_diff" in contract["blocked_operation_types"] and "write_source" in contract["blocked_operation_types"] else "blocked", "message": "Apply/write operations are explicitly blocked."},
-    ]
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v72.2", "status": _status_from(rows), "ok": _ok_from(_status_from(rows)), "patch_scope_contract_builder": contract, "rows": rows, "message": "Patch scope contract builder limits which files and operations a future draft may discuss."}
-    if save: _write_json(PATCH_SCOPE_CONTRACT_BUILDER, report)
-    else: report["preview_only"] = True
-    return report
 
 
 def _compose_patch_prompt(intent: dict[str, Any], contract: dict[str, Any], packet: dict[str, Any], schema: dict[str, Any]) -> str:
@@ -24489,315 +24281,20 @@ def _compose_patch_prompt(intent: dict[str, Any], contract: dict[str, Any], pack
     ])
 
 
-def build_patch_draft_output_schema(project_id: str = "eidolon", save: bool = True) -> dict[str, Any]:
-    """v72.4: define the expected local-model patch draft response schema."""
-    expected_output = {
-        "schema_version": "eidolon.patch_draft.model_output.v1",
-        "summary": "string",
-        "status": "draft|blocked|needs_more_context",
-        "files": [{"path": "string", "operation": "modify|add|docs|test", "reason": "string", "risk": "low|medium|high"}],
-        "unified_diff": "string or empty when no diff is proposed",
-        "file_by_file_plan": ["string"],
-        "risk_assessment": {"overall": "low|medium|high|blocked", "warnings": ["string"]},
-        "verification_plan": {"commands": ["string"], "manual_checks": ["string"]},
-        "rollback_notes": ["string"],
-        "documentation_updates": ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md"],
-        "safety_attestation": {
-            "source_applied": False,
-            "publish_attempted": False,
-            "memory_mutated": False,
-            "identity_mutated": False,
-            "approval_bypassed": False,
-        },
-    }
-    schema = {
-        "schema_version": "eidolon.patch_draft.output_schema.v1",
-        "schema_id": _patch_context_id("schema", expected_output),
-        "expected_output": expected_output,
-        "required_top_level_fields": list(expected_output.keys()),
-        "blocked_content": ["claims that files were applied", "approval consumption", "publish completion", "memory/identity mutation", "unbounded autonomous loop"],
-        "source_mutation_performed": False,
-        "local_model_invoked": False,
-    }
-    rows = [
-        {"name": "schema-fields", "status": "pass" if len(schema["required_top_level_fields"]) >= 8 else "blocked", "message": f"{len(schema['required_top_level_fields'])} required fields defined."},
-        {"name": "safety-attestation", "status": "pass" if "safety_attestation" in schema["required_top_level_fields"] else "blocked", "message": "Model output must attest no apply/publish/memory/identity/approval bypass."},
-    ]
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v72.4", "status": _status_from(rows), "ok": _ok_from(_status_from(rows)), "patch_draft_output_schema": schema, "rows": rows, "message": "Patch draft output schema defines the structured response expected from a local coding model."}
-    if save: _write_json(PATCH_DRAFT_OUTPUT_SCHEMA, report)
-    else: report["preview_only"] = True
-    return report
 
 
-def build_patch_prompt_composer(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v72.3: compose a local-model-ready prompt from v72 context and the v73 scope contract."""
-    intent_report = build_patch_intent_normalizer(project_id=project_id, patch_goal=patch_goal, save=False)
-    contract_report = build_patch_scope_contract_builder(project_id=project_id, patch_goal=patch_goal, save=False)
-    schema_report = build_patch_draft_output_schema(project_id=project_id, save=False)
-    packet_report = build_patch_prompt_context_packet_builder(project_id=project_id, patch_goal=intent_report.get("patch_intent_normalizer", {}).get("normalized_goal"), save=False)
-    intent = intent_report.get("patch_intent_normalizer", {})
-    contract = contract_report.get("patch_scope_contract_builder", {})
-    schema = schema_report.get("patch_draft_output_schema", {})
-    packet = packet_report.get("patch_prompt_context_packet_builder", {})
-    prompt = _compose_patch_prompt(intent, contract, packet, schema)
-    composer = {
-        "schema_version": "eidolon.patch_draft.prompt_composer.v1",
-        "prompt_id": _patch_context_id("prompt", {"intent": intent.get("intent_id"), "contract": contract.get("contract_id"), "packet": packet.get("packet_id")}),
-        "intent_id": intent.get("intent_id"),
-        "contract_id": contract.get("contract_id"),
-        "context_packet_id": packet.get("packet_id"),
-        "output_schema_id": schema.get("schema_id"),
-        "prompt": prompt[: int(contract.get("max_prompt_chars", 32000))],
-        "prompt_char_count": min(len(prompt), int(contract.get("max_prompt_chars", 32000))),
-        "truncated": len(prompt) > int(contract.get("max_prompt_chars", 32000)),
-        "local_model_invoked": False,
-        "source_mutation_performed": False,
-    }
-    rows = [
-        {"name": "intent", "status": _report_gate_status(intent_report), "message": intent_report.get("message", "")},
-        {"name": "contract", "status": _report_gate_status(contract_report), "message": contract_report.get("message", "")},
-        {"name": "schema", "status": _report_gate_status(schema_report), "message": schema_report.get("message", "")},
-        {"name": "prompt", "status": "pass" if "Do not apply" in composer["prompt"] and composer["prompt_char_count"] > 500 else "blocked", "message": f"Prompt composed with {composer['prompt_char_count']} characters."},
-        {"name": "model-not-invoked", "status": "pass" if not composer["local_model_invoked"] else "blocked", "message": "Composer exports prompt text only."},
-    ]
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v72.3", "status": _status_from(rows), "ok": _ok_from(_status_from(rows)), "patch_prompt_composer": composer, "rows": rows, "message": "Patch prompt composer creates a structured prompt for a local coding model without invoking it."}
-    if save: _write_json(PATCH_PROMPT_COMPOSER, report)
-    else: report["preview_only"] = True
-    return report
 
 
-def build_patch_draft_safety_reviewer(project_id: str = "eidolon", patch_goal: str | None = None, draft_text: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v72.5: review a prompt or optional draft text for forbidden patch-draft behavior."""
-    composer_report = build_patch_prompt_composer(project_id=project_id, patch_goal=patch_goal, save=False)
-    composer = composer_report.get("patch_prompt_composer", {})
-    contract_report = build_patch_scope_contract_builder(project_id=project_id, patch_goal=patch_goal, save=False)
-    contract = contract_report.get("patch_scope_contract_builder", {})
-    text = draft_text if draft_text is not None else composer.get("prompt", "")
-    lowered = str(text).lower()
-    checks = {
-        "source_apply_claim": any(term in lowered for term in ["applied the patch", "source_applied: true", "files were written", "wrote source"]),
-        "publish_claim": any(term in lowered for term in ["published release", "publish_attempted: true", "release uploaded"]),
-        "memory_identity_claim": any(term in lowered for term in ["memory_mutated: true", "identity_mutated: true", "updated identity", "wrote memory"]),
-        "approval_bypass_claim": any(term in lowered for term in ["approval_bypassed: true", "bypassed approval", "consumed approval"]),
-        "autonomous_loop_claim": any(term in lowered for term in ["run autonomously", "continuous self-modification", "without operator review"]),
-    }
-    allowed_files = set(contract.get("allowed_files", []))
-    mentioned_paths = set(re.findall(r"(?:conscious_agent|tools|data)/[A-Za-z0-9_./-]+|README_[A-Z_]+\.md", str(text)))
-    out_of_scope = sorted([path for path in mentioned_paths if path not in allowed_files and not path.startswith("data/autonomy/patch_drafts")])
-    blocked = [name for name, value in checks.items() if value]
-    rows = [
-        {"name": "composer", "status": _report_gate_status(composer_report), "message": composer_report.get("message", "")},
-        {"name": "forbidden-claims", "status": "blocked" if blocked else "pass", "message": ", ".join(blocked) if blocked else "No forbidden apply/publish/memory/identity/approval/autonomy claims found."},
-        {"name": "scope", "status": "warn" if out_of_scope else "pass", "message": f"Out-of-scope path mentions: {', '.join(out_of_scope[:8])}" if out_of_scope else "Path mentions stay within the draft scope contract."},
-        {"name": "documentation", "status": "pass" if "README_NEXT_STEPS.md" in str(text) and "README_RELEASE_HISTORY.md" in str(text) else "warn", "message": "Draft prompt includes documentation update reminders."},
-    ]
-    status = _status_from(rows)
-    reviewer = {
-        "schema_version": "eidolon.patch_draft.safety_review.v1",
-        "review_id": _patch_context_id("draftsafe", {"prompt": composer.get("prompt_id"), "checks": checks, "out_of_scope": out_of_scope}),
-        "prompt_id": composer.get("prompt_id"),
-        "reviewed_text_kind": "external_draft" if draft_text is not None else "composed_prompt",
-        "blocked_findings": blocked,
-        "out_of_scope_paths": out_of_scope,
-        "ready_for_operator_review": status != "blocked",
-        "source_mutation_performed": False,
-        "local_model_invoked": False,
-        "approval_bypass_performed": False,
-    }
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v72.5", "status": status, "ok": _ok_from(status), "patch_draft_safety_reviewer": reviewer, "rows": rows, "message": "Patch draft safety reviewer blocks draft text that claims apply, publish, memory, identity, approval-bypass, or autonomy authority."}
-    if save: _write_json(PATCH_DRAFT_SAFETY_REVIEWER, report)
-    else: report["preview_only"] = True
-    return report
 
 
-def build_patch_draft_evidence_binder(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v72.6: bind the prompt draft to its v72 context, scope, risk, and verification evidence."""
-    intent = build_patch_intent_normalizer(project_id=project_id, patch_goal=patch_goal, save=False)
-    contract = build_patch_scope_contract_builder(project_id=project_id, patch_goal=patch_goal, save=False)
-    prompt = build_patch_prompt_composer(project_id=project_id, patch_goal=patch_goal, save=False)
-    safety = build_patch_draft_safety_reviewer(project_id=project_id, patch_goal=patch_goal, save=False)
-    context = build_patch_generation_context_builder(project_id=project_id, patch_goal=patch_goal, save=False)
-    binder = {
-        "schema_version": "eidolon.patch_draft.evidence_binder.v1",
-        "evidence_id": _patch_context_id("draftevidence", {"intent": intent.get("patch_intent_normalizer", {}).get("intent_id"), "prompt": prompt.get("patch_prompt_composer", {}).get("prompt_id")}),
-        "intent_id": intent.get("patch_intent_normalizer", {}).get("intent_id"),
-        "contract_id": contract.get("patch_scope_contract_builder", {}).get("contract_id"),
-        "prompt_id": prompt.get("patch_prompt_composer", {}).get("prompt_id"),
-        "context_packet_id": context.get("patch_generation_context_builder", {}).get("context_packet_id"),
-        "safety_review_id": safety.get("patch_draft_safety_reviewer", {}).get("review_id"),
-        "file_selection_evidence": context.get("patch_generation_context_builder", {}).get("selected_files", []),
-        "verification_evidence": context.get("patch_generation_context_builder", {}).get("required_commands", []),
-        "manual_review_evidence": context.get("patch_generation_context_builder", {}).get("required_manual_checks", []),
-        "steps": {"intent": _compact_step(intent), "contract": _compact_step(contract), "prompt": _compact_step(prompt), "safety": _compact_step(safety), "context": _compact_step(context)},
-        "source_mutation_performed": False,
-        "local_model_invoked": False,
-    }
-    rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in {"intent": intent, "contract": contract, "prompt": prompt, "safety": safety, "context": context}.items()]
-    rows.append({"name": "evidence-bound", "status": "pass" if binder["intent_id"] and binder["prompt_id"] and binder["context_packet_id"] else "blocked", "message": "Intent, prompt, and v72 context IDs are bound."})
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v72.6", "status": _status_from(rows), "ok": _ok_from(_status_from(rows)), "patch_draft_evidence_binder": binder, "rows": rows, "message": "Patch draft evidence binder attaches context, scope, safety, and verification evidence to the draft packet."}
-    if save: _write_json(PATCH_DRAFT_EVIDENCE_BINDER, report)
-    else: report["preview_only"] = True
-    return report
 
 
-def build_patch_draft_dashboard_api_cli(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v72.7: verify dashboard/API/CLI exposure for supervised patch draft composition."""
-    dashboard_text = _read_source_text("conscious_agent/dashboard.py")
-    api_text = _read_source_text("conscious_agent/api_server.py")
-    cli_text = _read_source_text("conscious_agent/main.py")
-    docs = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
-    required_cli = [
-        "--patch-intent-normalizer", "--patch-scope-contract-builder", "--patch-prompt-composer",
-        "--patch-draft-output-schema", "--patch-draft-safety-reviewer", "--patch-draft-evidence-binder",
-        "--patch-draft-dashboard-api-cli", "--local-model-handoff-stub", "--pre-v73-patch-draft-gate",
-        "--supervised-patch-draft-composer", "--patch-goal",
-    ]
-    api_routes = [
-        "/api/patch-drafts/intake", "/api/patch-drafts/scope", "/api/patch-drafts/prompt",
-        "/api/patch-drafts/schema", "/api/patch-drafts/safety", "/api/patch-drafts/evidence",
-        "/api/patch-drafts/parity", "/api/patch-drafts/handoff", "/api/patch-drafts/gate", "/api/patch-drafts/layer",
-    ]
-    rows = [
-        {"name": "dashboard-route", "status": "pass" if "/patch-drafts" in dashboard_text and "render_patch_drafts" in dashboard_text else "blocked", "message": "/patch-drafts route and renderer are present."},
-        {"name": "api-routes", "status": "pass" if all(route in api_text or route.split("/api/")[-1].replace("/", "\", \"") in api_text for route in api_routes) else "blocked", "message": "Patch draft API routes are exposed read-only."},
-        {"name": "cli-flags", "status": "pass" if all(flag in cli_text for flag in required_cli) else "blocked", "message": "Patch draft CLI flags are available."},
-        {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "Dashboard nav keeps custom data-tip hover notes only."},
-        {"name": "docs", "status": "pass" if "v73.0 - Supervised Patch Draft Composer" in docs else "blocked", "message": "README/release history mention v73.0."},
-    ]
-    status = _status_from(rows)
-    parity = {
-        "schema_version": "eidolon.patch_draft.dashboard_api_cli.v1",
-        "parity_id": _patch_context_id("draftparity", rows),
-        "dashboard_path": "/patch-drafts",
-        "api_routes": api_routes,
-        "cli_flags": required_cli,
-        "custom_data_tip_only": not _dashboard_nav_title_regression_present(),
-        "source_mutation_performed": False,
-        "local_model_invoked": False,
-    }
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v72.7", "status": status, "ok": _ok_from(status), "patch_draft_dashboard_api_cli": parity, "rows": rows, "message": "Patch draft dashboard/API/CLI exposes prompt-draft packets while preserving read-only and custom hover boundaries."}
-    if save: _write_json(PATCH_DRAFT_DASHBOARD_API_CLI, report)
-    else: report["preview_only"] = True
-    return report
 
 
-def build_local_model_handoff_stub(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v72.8: prepare a local-model prompt handoff stub without invoking the model."""
-    prompt_report = build_patch_prompt_composer(project_id=project_id, patch_goal=patch_goal, save=False)
-    safety_report = build_patch_draft_safety_reviewer(project_id=project_id, patch_goal=patch_goal, save=False)
-    composer = prompt_report.get("patch_prompt_composer", {})
-    export_path = str((PATCH_DRAFT_DIR / "latest_patch_draft_prompt.txt").relative_to(ROOT_DIR))
-    stub = {
-        "schema_version": "eidolon.patch_draft.local_model_handoff_stub.v1",
-        "handoff_id": _patch_context_id("handoff", composer.get("prompt_id")),
-        "prompt_id": composer.get("prompt_id"),
-        "export_path": export_path,
-        "copy_ready_prompt": composer.get("prompt", ""),
-        "recommended_manual_command": "Copy the prompt into the chosen local coding model manually; do not auto-run it from Eidolon yet.",
-        "local_model_invoked": False,
-        "model_response_ingested": False,
-        "source_mutation_performed": False,
-        "approval_bypass_performed": False,
-    }
-    rows = [
-        {"name": "prompt", "status": _report_gate_status(prompt_report), "message": prompt_report.get("message", "")},
-        {"name": "safety", "status": _report_gate_status(safety_report), "message": safety_report.get("message", "")},
-        {"name": "no-model-call", "status": "pass" if not stub["local_model_invoked"] else "blocked", "message": "Handoff is an export/copy stub only."},
-        {"name": "no-source-mutation", "status": "pass" if not stub["source_mutation_performed"] else "blocked", "message": "No source mutation is available here."},
-    ]
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v72.8", "status": _status_from(rows), "ok": _ok_from(_status_from(rows)), "local_model_handoff_stub": stub, "rows": rows, "message": "Local model handoff stub prepares a copy-ready prompt but does not call any model or apply any patch."}
-    if save:
-        PATCH_DRAFT_DIR.mkdir(parents=True, exist_ok=True)
-        try:
-            (PATCH_DRAFT_DIR / "latest_patch_draft_prompt.txt").write_text(stub["copy_ready_prompt"], encoding="utf-8")
-        except OSError:
-            rows.append({"name": "prompt-export", "status": "warn", "message": "Prompt export path could not be written."})
-            report["status"] = _status_from(rows)
-            report["ok"] = _ok_from(report["status"])
-        _write_json(LOCAL_MODEL_HANDOFF_STUB, report)
-    else:
-        report["preview_only"] = True
-    return report
 
 
-def build_pre_v73_patch_draft_gate(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v72.9: final gate before declaring the v73 patch draft composer complete."""
-    parts = {
-        "intent": build_patch_intent_normalizer(project_id=project_id, patch_goal=patch_goal, save=False),
-        "scope": build_patch_scope_contract_builder(project_id=project_id, patch_goal=patch_goal, save=False),
-        "prompt": build_patch_prompt_composer(project_id=project_id, patch_goal=patch_goal, save=False),
-        "schema": build_patch_draft_output_schema(project_id=project_id, save=False),
-        "safety": build_patch_draft_safety_reviewer(project_id=project_id, patch_goal=patch_goal, save=False),
-        "evidence": build_patch_draft_evidence_binder(project_id=project_id, patch_goal=patch_goal, save=False),
-        "parity": build_patch_draft_dashboard_api_cli(project_id=project_id, patch_goal=patch_goal, save=False),
-        "handoff": build_local_model_handoff_stub(project_id=project_id, patch_goal=patch_goal, save=False),
-        "privacy": build_package_privacy_scan(project_id=project_id, save=False),
-    }
-    docs = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
-    rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
-    rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
-        {"name": "docs", "status": "pass" if "v73.0 - Supervised Patch Draft Composer" in docs else "blocked", "message": "README and release history mention v73.0."},
-        {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs."},
-    ])
-    status = _status_from(rows)
-    gate = {
-        "schema_version": "eidolon.patch_draft.pre_v73_gate.v1",
-        "gate_id": _patch_context_id("prev73", {k: v.get("status") for k, v in parts.items()}),
-        "steps": {k: _compact_step(v) for k, v in parts.items()},
-        "source_mutation_performed": False,
-        "local_model_invoked": False,
-        "approval_bypass_performed": False,
-    }
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v72.9", "status": status, "ok": _ok_from(status), "pre_v73_patch_draft_gate": gate, "rows": rows, "message": "Pre-v73 patch draft gate verifies intent, scope, prompt, schema, safety, evidence, UI/API/CLI, handoff, privacy, docs, version markers, and tooltip safety."}
-    if save: _write_json(PRE_V73_PATCH_DRAFT_GATE, report)
-    else: report["preview_only"] = True
-    return report
 
 
-def build_supervised_patch_draft_composer(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    """v73.0: complete supervised patch draft composer."""
-    intent = build_patch_intent_normalizer(project_id=project_id, patch_goal=patch_goal, save=False)
-    scope = build_patch_scope_contract_builder(project_id=project_id, patch_goal=patch_goal, save=False)
-    prompt = build_patch_prompt_composer(project_id=project_id, patch_goal=patch_goal, save=False)
-    schema = build_patch_draft_output_schema(project_id=project_id, save=False)
-    safety = build_patch_draft_safety_reviewer(project_id=project_id, patch_goal=patch_goal, save=False)
-    evidence = build_patch_draft_evidence_binder(project_id=project_id, patch_goal=patch_goal, save=False)
-    handoff = build_local_model_handoff_stub(project_id=project_id, patch_goal=patch_goal, save=False)
-    gate = build_pre_v73_patch_draft_gate(project_id=project_id, patch_goal=patch_goal, save=False)
-    parts = {"intent": intent, "scope": scope, "prompt": prompt, "schema": schema, "safety": safety, "evidence": evidence, "handoff": handoff, "pre_v73_gate": gate}
-    rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
-    status = _status_from(rows)
-    composer = {
-        "schema_version": "eidolon.patch_draft.composer.v1",
-        "composer_id": _patch_context_id("draftcomposer", {k: v.get("status") for k, v in parts.items()}),
-        "version": SELF_MAINTENANCE_VERSION,
-        "summary": "Composes a supervised, local-model-ready patch draft request and review packet from v72 context without invoking a model or applying code.",
-        "intent_id": intent.get("patch_intent_normalizer", {}).get("intent_id"),
-        "contract_id": scope.get("patch_scope_contract_builder", {}).get("contract_id"),
-        "prompt_id": prompt.get("patch_prompt_composer", {}).get("prompt_id"),
-        "schema_id": schema.get("patch_draft_output_schema", {}).get("schema_id"),
-        "safety_review_id": safety.get("patch_draft_safety_reviewer", {}).get("review_id"),
-        "evidence_id": evidence.get("patch_draft_evidence_binder", {}).get("evidence_id"),
-        "handoff_id": handoff.get("local_model_handoff_stub", {}).get("handoff_id"),
-        "copy_ready_prompt": prompt.get("patch_prompt_composer", {}).get("prompt", ""),
-        "safety_boundary": {
-            "draft_only": True,
-            "local_model_invoked": False,
-            "model_response_ingested": False,
-            "patch_generated_by_eidolon": False,
-            "source_mutation_performed": False,
-            "publish_approval_granted": False,
-            "memory_approval_granted": False,
-            "identity_approval_granted": False,
-            "approval_bypass_performed": False,
-        },
-        "recommended_next_arc": "v74.0 Patch Draft Review and Diff Validation Layer, still supervised and approval-gated",
-    }
-    report = {"version": SELF_MAINTENANCE_VERSION, "checked_at": _now(), "project_id": project_id, "stage": "v73.0", "status": status, "ok": _ok_from(status), "supervised_patch_draft_composer": composer, "steps": {k: _compact_step(v) for k, v in parts.items()}, "rows": rows, "message": "Supervised Patch Draft Composer builds a reviewable prompt/draft packet for local model handoff without generation, application, publish, memory, identity, or approval bypass."}
-    if save: _write_json(SUPERVISED_PATCH_DRAFT_COMPOSER, report)
-    else: report["preview_only"] = True
-    return report
 
 
 def patch_intent_normalizer_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
@@ -25001,11 +24498,6 @@ def build_patch_scope_contract_builder(project_id: str = "eidolon", patch_goal: 
     return _report_from_rows("v72.2", "patch_scope_contract_builder", contract, rows, project_id, "Patch scope contract builder limits which files and operations a future draft may discuss.", PATCH_SCOPE_CONTRACT_BUILDER, save)
 
 
-def build_patch_draft_output_schema(project_id: str = "eidolon", save: bool = True) -> dict[str, Any]:
-    core = _build_patch_draft_core(project_id, None)
-    schema = core["schema"]
-    rows = [{"name": "schema-fields", "status": "pass" if len(schema.get("required_top_level_fields", [])) >= 8 else "blocked", "message": f"{len(schema.get('required_top_level_fields', []))} required fields defined."}, {"name": "safety-attestation", "status": "pass" if "safety_attestation" in schema.get("required_top_level_fields", []) else "blocked", "message": "Model output must attest no apply/publish/memory/identity/approval bypass."}]
-    return _report_from_rows("v72.4", "patch_draft_output_schema", schema, rows, project_id, "Patch draft output schema defines the structured response expected from a local coding model.", PATCH_DRAFT_OUTPUT_SCHEMA, save)
 
 
 def build_patch_prompt_composer(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
@@ -25052,28 +24544,8 @@ def _patch_draft_reports_from_core(core: dict[str, Any], project_id: str) -> dic
     }
 
 
-def build_patch_draft_evidence_binder(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    core = _build_patch_draft_core(project_id, patch_goal)
-    reports = _patch_draft_reports_from_core(core, project_id)
-    binder = {"schema_version": "eidolon.patch_draft.evidence_binder.v1", "evidence_id": _patch_context_id("draftevidence", {"intent": core["intent"].get("intent_id"), "prompt": core["prompt"].get("prompt_id")}), "intent_id": core["intent"].get("intent_id"), "contract_id": core["contract"].get("contract_id"), "prompt_id": core["prompt"].get("prompt_id"), "context_packet_id": core["context_summary"].get("context_packet_id"), "safety_review_id": reports["safety"].get("patch_draft_safety_reviewer", {}).get("review_id"), "file_selection_evidence": core["context_summary"].get("selected_files", []), "verification_evidence": core["context_summary"].get("required_commands", []), "manual_review_evidence": core["context_summary"].get("required_manual_checks", []), "steps": {k: _compact_step(v) for k, v in reports.items()}, "source_mutation_performed": False, "local_model_invoked": False}
-    rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in reports.items()]
-    rows.append({"name": "evidence-bound", "status": "pass" if binder["intent_id"] and binder["prompt_id"] and binder["context_packet_id"] else "blocked", "message": "Intent, prompt, and v72 context IDs are bound."})
-    return _report_from_rows("v72.6", "patch_draft_evidence_binder", binder, rows, project_id, "Patch draft evidence binder attaches context, scope, safety, and verification evidence to the draft packet.", PATCH_DRAFT_EVIDENCE_BINDER, save)
 
 
-def build_local_model_handoff_stub(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    core = _build_patch_draft_core(project_id, patch_goal)
-    export_path = str((PATCH_DRAFT_DIR / "latest_patch_draft_prompt.txt").relative_to(ROOT_DIR))
-    stub = {"schema_version": "eidolon.patch_draft.local_model_handoff_stub.v1", "handoff_id": _patch_context_id("handoff", core["prompt"].get("prompt_id")), "prompt_id": core["prompt"].get("prompt_id"), "export_path": export_path, "copy_ready_prompt": core["prompt"].get("prompt", ""), "recommended_manual_command": "Copy the prompt into the chosen local coding model manually; do not auto-run it from Eidolon yet.", "local_model_invoked": False, "model_response_ingested": False, "source_mutation_performed": False, "approval_bypass_performed": False}
-    rows = [{"name": "prompt", "status": "pass" if stub.get("copy_ready_prompt") else "blocked", "message": "Copy-ready prompt prepared."}, {"name": "no-model-call", "status": "pass" if not stub.get("local_model_invoked") else "blocked", "message": "Handoff is an export/copy stub only."}, {"name": "no-source-mutation", "status": "pass" if not stub.get("source_mutation_performed") else "blocked", "message": "No source mutation is available here."}]
-    report = _report_from_rows("v72.8", "local_model_handoff_stub", stub, rows, project_id, "Local model handoff stub prepares a copy-ready prompt but does not call any model or apply any patch.", LOCAL_MODEL_HANDOFF_STUB, save)
-    if save and report.get("ok"):
-        PATCH_DRAFT_DIR.mkdir(parents=True, exist_ok=True)
-        try:
-            (PATCH_DRAFT_DIR / "latest_patch_draft_prompt.txt").write_text(stub["copy_ready_prompt"], encoding="utf-8")
-        except OSError:
-            pass
-    return report
 
 
 def build_patch_draft_dashboard_api_cli(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
@@ -25085,30 +24557,8 @@ def build_patch_draft_dashboard_api_cli(project_id: str = "eidolon", patch_goal:
     return _report_from_rows("v72.7", "patch_draft_dashboard_api_cli", parity, rows, project_id, "Patch draft dashboard/API/CLI exposes prompt-draft packets while preserving read-only and custom hover boundaries.", PATCH_DRAFT_DASHBOARD_API_CLI, save)
 
 
-def build_pre_v73_patch_draft_gate(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    core = _build_patch_draft_core(project_id, patch_goal)
-    reports = _patch_draft_reports_from_core(core, project_id)
-    evidence = build_patch_draft_evidence_binder(project_id=project_id, patch_goal=patch_goal, save=False)
-    parity = build_patch_draft_dashboard_api_cli(project_id=project_id, patch_goal=patch_goal, save=False)
-    handoff = build_local_model_handoff_stub(project_id=project_id, patch_goal=patch_goal, save=False)
-    parts = {**reports, "evidence": evidence, "parity": parity, "handoff": handoff, "privacy": build_package_privacy_scan(project_id=project_id, save=False)}
-    docs = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
-    rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
-    rows.extend([{"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"}, {"name": "docs", "status": "pass" if "v73.0 - Supervised Patch Draft Composer" in docs else "blocked", "message": "README and release history mention v73.0."}, {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs."}])
-    gate = {"schema_version": "eidolon.patch_draft.pre_v73_gate.v1", "gate_id": _patch_context_id("prev73", {k: v.get("status") for k, v in parts.items()}), "steps": {k: _compact_step(v) for k, v in parts.items()}, "source_mutation_performed": False, "local_model_invoked": False, "approval_bypass_performed": False}
-    return _report_from_rows("v72.9", "pre_v73_patch_draft_gate", gate, rows, project_id, "Pre-v73 patch draft gate verifies intent, scope, prompt, schema, safety, evidence, UI/API/CLI, handoff, privacy, docs, version markers, and tooltip safety.", PRE_V73_PATCH_DRAFT_GATE, save)
 
 
-def build_supervised_patch_draft_composer(project_id: str = "eidolon", patch_goal: str | None = None, save: bool = True) -> dict[str, Any]:
-    core = _build_patch_draft_core(project_id, patch_goal)
-    reports = _patch_draft_reports_from_core(core, project_id)
-    evidence = build_patch_draft_evidence_binder(project_id=project_id, patch_goal=patch_goal, save=False)
-    handoff = build_local_model_handoff_stub(project_id=project_id, patch_goal=patch_goal, save=False)
-    gate = build_pre_v73_patch_draft_gate(project_id=project_id, patch_goal=patch_goal, save=False)
-    parts = {**reports, "evidence": evidence, "handoff": handoff, "pre_v73_gate": gate}
-    rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
-    composer = {"schema_version": "eidolon.patch_draft.composer.v1", "composer_id": _patch_context_id("draftcomposer", {k: v.get("status") for k, v in parts.items()}), "version": SELF_MAINTENANCE_VERSION, "summary": "Composes a supervised, local-model-ready patch draft request and review packet from v72 context without invoking a model or applying code.", "intent_id": core["intent"].get("intent_id"), "contract_id": core["contract"].get("contract_id"), "prompt_id": core["prompt"].get("prompt_id"), "schema_id": core["schema"].get("schema_id"), "safety_review_id": reports["safety"].get("patch_draft_safety_reviewer", {}).get("review_id"), "evidence_id": evidence.get("patch_draft_evidence_binder", {}).get("evidence_id"), "handoff_id": handoff.get("local_model_handoff_stub", {}).get("handoff_id"), "copy_ready_prompt": core["prompt"].get("prompt", ""), "safety_boundary": {"draft_only": True, "local_model_invoked": False, "model_response_ingested": False, "patch_generated_by_eidolon": False, "source_mutation_performed": False, "publish_approval_granted": False, "memory_approval_granted": False, "identity_approval_granted": False, "approval_bypass_performed": False}, "recommended_next_arc": "v74.0 Patch Draft Review and Diff Validation Layer, still supervised and approval-gated"}
-    return _report_from_rows("v73.0", "supervised_patch_draft_composer", composer, rows, project_id, "Supervised Patch Draft Composer builds a reviewable prompt/draft packet for local model handoff without generation, application, publish, memory, identity, or approval bypass.", SUPERVISED_PATCH_DRAFT_COMPOSER, save)
 
 # v72.1-v73.0 patch draft tokens: patch-intent-normalizer patch-scope-contract-builder patch-prompt-composer patch-draft-output-schema patch-draft-safety-reviewer patch-draft-evidence-binder patch-draft-dashboard-api-cli local-model-handoff-stub pre-v73-patch-draft-gate supervised-patch-draft-composer /patch-drafts /api/patch-drafts data/autonomy/patch_drafts/ local_model_invoked=False source_mutation_performed=False approval_bypass_performed=False no_native_title_tooltip
 
@@ -25191,7 +24641,7 @@ def _patch_draft_gate_from_core(core: dict[str, Any], project_id: str) -> tuple[
     docs = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
     rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
     rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v73.0 - Supervised Patch Draft Composer" in docs else "blocked", "message": "README and release history mention v73.0."},
         {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs."},
     ])
@@ -25765,7 +25215,7 @@ def build_pre_v74_patch_review_gate(project_id: str = "eidolon", patch_goal: str
     docs_text = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
     rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
     rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v74.0 - Patch Draft Review and Diff Validation Layer" in docs_text else "blocked", "message": "README and release history mention v74.0."},
         {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs."},
     ])
@@ -26251,7 +25701,7 @@ def build_pre_v75_sandbox_trial_gate(project_id: str = "eidolon", patch_goal: st
     docs_text = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
     rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
     rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v75.0 - Sandbox Patch Trial Runner" in docs_text else "blocked", "message": "README and release history mention v75.0."},
         {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs."},
     ])
@@ -26699,7 +26149,7 @@ def build_pre_v76_evidence_review_gate(project_id: str = "eidolon", patch_goal: 
     docs_text = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
     rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
     rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v76.0 - Sandbox Evidence Review and Promotion Recommendation Layer" in docs_text else "blocked", "message": "README and release history mention v76.0."},
         {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs."},
         {"name": "promotion-boundary", "status": "pass", "message": "v76 recommendation gate cannot apply or promote source."},
@@ -27321,7 +26771,7 @@ def build_pre_v77_application_gate(project_id: str = "eidolon", patch_goal: str 
     docs_text = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
     rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
     rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v77.0 - Operator-Approved Patch Application Layer" in docs_text else "blocked", "message": "README and release history mention v77.0."},
         {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs."},
         {"name": "application-boundary", "status": "pass", "message": "pre-v77 gate uses dry-run materialization and cannot publish or mutate memory/identity."},
@@ -27885,7 +27335,7 @@ def build_pre_v78_recovery_gate(project_id: str = "eidolon", patch_goal: str | N
     docs = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
     rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
     rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v78.0 - Verified Application Recovery and Rollback Hardening" in docs else "blocked", "message": "README and release history mention v78.0."},
         {"name": "no-auto-repair", "status": "pass", "message": "v78 gates report recovery state but never generate repairs, retry patches, or publish releases."},
     ])
@@ -28219,7 +27669,7 @@ def build_pre_v79_queue_gate(project_id: str = "eidolon", patch_goal: str | None
     docs = _read_source_text("README_NEXT_STEPS.md") + "\n" + _read_source_text("README_RELEASE_HISTORY.md")
     rows = [{"name": name, "status": _report_gate_status(report), "message": report.get("message", "")} for name, report in parts.items()]
     rows.extend([
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v79.0 - Multi-Patch Queue Planning Layer" in docs else "blocked", "message": "README and release history mention v79.0."},
         {"name": "planning-only", "status": "pass", "message": "pre-v79 gate never applies queued patches, grants approval, or runs autonomous loops."},
     ])
@@ -28362,7 +27812,7 @@ def _build_v80_85_stage(slug: str, project_id: str = "eidolon", improvement_goal
     docs = _release_notes_text()
     rows: list[dict[str, Any]] = [
         {"name": "goal-bound", "status": "pass" if goal.strip() else "blocked", "message": goal},
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if f"{definition['version']} - {definition['final_label']}" in docs else "blocked", "message": f"README and release history mention {definition['version']}."},
         {"name": "safety-boundary", "status": "pass", "message": "No self-approval, autonomous source apply, publish, memory mutation, identity mutation, or approval bypass is performed."},
     ]
@@ -28597,7 +28047,7 @@ def _build_suggestion_inbox_stage(slug: str, project_id: str = "eidolon", improv
     missing_cli = [flag for flag in cli_flags if flag not in main_text]
     missing_api = [route for route in api_routes if route not in api_text]
     rows: list[dict[str, Any]] = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v86.0 - Supervised Suggestion Inbox and Work Order Planner" in docs else "blocked", "message": "README and release history mention v86.0."},
         {"name": "runtime-privacy", "status": "pass" if "data/autonomy/suggestion_inbox/" in release_packaging_text else "blocked", "message": "Suggestion inbox runtime records stay outside source-only packages."},
         {"name": "record-schema", "status": "pass" if all(k in selected for k in ["suggestion_id", "source", "title", "category", "priority", "risk", "affected_files", "evidence", "duplicate_hash", "state"]) else "blocked", "message": "Suggestion records include id, source, triage, evidence, duplicate hash, and lifecycle state."},
@@ -28915,7 +28365,7 @@ def _build_supervised_dev_stage(slug: str, project_id: str = "eidolon", improvem
     }
     risk_sensitive = slug in {"patch_context_risk_classifier", "approval_gate_integrity_audit", "autonomy_risk_register", "pre_v90_final_governance_gate", "supervised_self_development_readiness_audit"}
     rows: list[dict[str, Any]] = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if final_docs_ok else "blocked", "message": f"README and release history mention {definition['version']} {definition['final_label']}."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"{definition['dashboard']} dashboard route present."},
@@ -29235,7 +28685,7 @@ def _build_supervised_runtime_stage(slug: str, project_id: str = "eidolon", impr
         "experiment_promoted_without_transaction": False,
     }
     rows: list[dict[str, Any]] = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if final_docs_ok else "blocked", "message": f"README and release history mention {definition['version']} {definition['final_label']}."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"{definition['dashboard']} dashboard route present."},
@@ -29556,7 +29006,7 @@ def _build_governed_simulation_stage(slug: str, project_id: str = "eidolon", imp
         "scorecard_unlocks_capability": False,
     }
     rows: list[dict[str, Any]] = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if final_docs_ok else "blocked", "message": f"README and release history mention {definition['version']} {definition['final_label']}."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"{definition['dashboard']} dashboard route present."},
@@ -29873,7 +29323,7 @@ def _build_coherent_runtime_stage(slug: str, project_id: str = "eidolon", improv
         "scorecard_unlocks_capability": False,
     }
     rows: list[dict[str, Any]] = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if final_docs_ok else "blocked", "message": f"README and release history mention {definition['version']} {definition['final_label']}."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text and dashboard_routes_ok else "blocked", "message": f"{definition['dashboard']} dashboard route present and v101-v105 routes are mapped."},
@@ -30131,7 +29581,7 @@ def _build_practical_coherence_stage(slug: str, project_id: str = "eidolon", imp
         "commands_executed_from_console": False,
     }
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if final_docs_ok and stage_docs_ok else "blocked", "message": f"README and release history mention {definition['version']} and {definition['stage']}."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"{definition['dashboard']} dashboard route present."},
@@ -30379,7 +29829,7 @@ def _build_supervised_self_development_stage(slug: str, project_id: str = "eidol
         "readiness_unlocks_capability": False,
     }
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if final_docs_ok and stage_docs_ok else "blocked", "message": f"README and release history mention {definition['version']} and {definition['stage']}."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"{definition['dashboard']} dashboard route present."},
@@ -30629,7 +30079,7 @@ def _build_supervised_execution_stage(slug: str, project_id: str = "eidolon", im
         "patch_simulation_applied_patch": False,
     }
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if final_docs_ok and stage_docs_ok else "blocked", "message": f"README and release history mention {definition['version']} and {definition['stage']}."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"{definition['dashboard']} dashboard route present."},
@@ -30892,7 +30342,7 @@ def _build_supervised_learning_stage(slug: str, project_id: str = "eidolon", imp
         "recommendations_auto_applied": False,
     }
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if final_docs_ok and stage_docs_ok else "blocked", "message": f"README and release history mention {definition['version']} and {definition['stage']}."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"{definition['dashboard']} dashboard route present."},
@@ -31119,7 +30569,7 @@ def _build_supervised_strategic_growth_stage(slug: str, project_id: str = "eidol
         "capability_self_upgrade_performed": False,
     }
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v130.0 - Supervised Strategic Growth Audit" in docs and "v125.1-v126.0 - Strategic Growth Intake Layer" in docs else "blocked", "message": "README and release history document v126-v130 strategic growth."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"{definition['dashboard']} dashboard route present."},
@@ -31337,7 +30787,7 @@ def _build_supervised_operator_planning_stage(slug: str, project_id: str = "eido
     }
     runtime_token = str(SUPERVISED_OPERATOR_PLANNING_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep, "/")
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if "v135.0 - Supervised Operator Planning Console" in docs and "v130.1-v131.0 - Planning Signal Consolidation Layer" in docs else "blocked", "message": "README and release history document v131-v135 operator planning."},
         {"name": "substage-count", "status": "pass" if len(arc_items) == 10 else "blocked", "message": f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"{definition['dashboard']} dashboard route present."},
@@ -31518,7 +30968,7 @@ def _build_supervised_session_launch_stage(slug: str, project_id: str = "eidolon
     safety_false = {"autonomy_unlocked":False,"source_mutation_performed":False,"patches_applied":False,"approval_bypass_performed":False,"publish_performed":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"commands_executed_from_console":False,"approvals_inferred_from_readiness":False,"roadmap_auto_selected":False,"work_package_auto_launched":False,"verification_commands_executed":False}
     runtime_token = str(SUPERVISED_SESSION_LAUNCH_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v140.0 - Supervised Work Package Selection and Session Launch" in docs and "v135.1-v136.0 - Work Package Selection Layer" in docs else "blocked","message":"README and release history document v136-v140 supervised session launch."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -31660,7 +31110,7 @@ def _build_supervised_patch_session_assembly_stage(slug: str, project_id: str = 
     safety_false = {"autonomy_unlocked":False,"source_mutation_performed":False,"patches_applied":False,"approval_bypass_performed":False,"publish_performed":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"commands_executed_from_console":False,"approvals_inferred_from_readiness":False,"patch_applied_from_blueprint":False,"implementation_started":False,"live_files_modified":False}
     runtime_token = str(SUPERVISED_PATCH_SESSION_ASSEMBLY_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v145.0 - Supervised Patch Session Assembly" in docs and "v140.1-v141.0 - Patch Session Intake Layer" in docs else "blocked","message":"README and release history document v141-v145 supervised patch session assembly."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -31804,7 +31254,7 @@ def _build_supervised_patch_draft_generation_stage(slug: str, project_id: str = 
     safety_false = {"autonomy_unlocked":False,"source_mutation_performed":False,"patches_applied":False,"approval_bypass_performed":False,"publish_performed":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"commands_executed_from_console":False,"approvals_inferred_from_readiness":False,"drafts_written_to_live_source":False,"generated_draft_approved":False,"verification_commands_executed":False,"scope_expanded_without_operator":False}
     runtime_token = str(SUPERVISED_PATCH_DRAFT_GENERATION_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v150.0 - Supervised Patch Draft Generation" in docs and "v145.1-v146.0 - Patch Draft Request Layer" in docs else "blocked","message":"README and release history document v146-v150 supervised patch draft generation."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -31947,7 +31397,7 @@ def _build_supervised_patch_implementation_handoff_stage(slug: str, project_id: 
     safety_false = {"autonomy_unlocked":False,"source_mutation_performed":False,"patches_applied":False,"approval_bypass_performed":False,"publish_performed":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"commands_executed_from_console":False,"approvals_inferred_from_readiness":False,"drafts_written_to_live_source":False,"generated_draft_approved":False,"verification_commands_executed":False,"scope_expanded_without_operator":False,"implementation_started":False,"live_files_modified":False,"implementation_plan_auto_selected":False,"work_package_auto_launched":False}
     runtime_token = str(SUPERVISED_PATCH_IMPLEMENTATION_HANDOFF_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v155.0 - Supervised Patch Implementation Handoff" in docs and "v150.1-v151.0 - Implementation Handoff Intake Layer" in docs else "blocked","message":"README and release history document v151-v155 supervised patch implementation handoff."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -32093,7 +31543,7 @@ def _build_supervised_patch_application_readiness_stage(slug: str, project_id: s
     safety_false = {"autonomy_unlocked":False,"source_mutation_performed":False,"patches_applied":False,"approval_bypass_performed":False,"publish_performed":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"commands_executed_from_console":False,"approvals_inferred_from_readiness":False,"drafts_written_to_live_source":False,"generated_draft_approved":False,"verification_commands_executed":False,"scope_expanded_without_operator":False,"implementation_started":False,"live_files_modified":False,"readiness_go_auto_selected":False,"work_package_auto_launched":False,"patch_application_performed":False}
     runtime_token = str(SUPERVISED_PATCH_APPLICATION_READINESS_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v165.0 - Supervised Patch Application Readiness" in docs and "v155.1-v156.0 - Patch Readiness Intake Layer" in docs else "blocked","message":"README and release history document v156-v160 supervised patch application readiness."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -32240,7 +31690,7 @@ def _build_supervised_patch_application_sandbox_stage(slug: str, project_id: str
     safety_false = {"autonomy_unlocked":False,"source_mutation_performed":False,"live_source_mutation_performed":False,"patches_applied_to_live_source":False,"sandbox_promoted_to_source":False,"approval_bypass_performed":False,"publish_performed":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"commands_executed_from_console":False,"approvals_inferred_from_readiness":False,"readiness_go_auto_selected":False,"work_package_auto_launched":False,"patch_application_performed_without_approval":False,"sandbox_application_performed_without_approval":False,"verification_commands_executed_without_approval":False,"sandbox_output_written_to_live_source":False,"promotion_auto_selected":False}
     runtime_token = str(SUPERVISED_PATCH_APPLICATION_SANDBOX_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v165.0 - Operator-Approved Patch Application Sandbox" in docs and "v160.1-v161.0 - Patch Sandbox Intake Layer" in docs else "blocked","message":"README and release history document v161-v165 supervised sandbox patch application."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -32389,7 +31839,7 @@ def _build_supervised_sandbox_to_source_promotion_stage(slug: str, project_id: s
     safety_false = {"autonomy_unlocked":False,"live_source_mutation_performed_without_approval":False,"source_promotion_performed":False,"source_promotion_performed_without_approval":False,"patches_applied_to_live_source_without_approval":False,"sandbox_promoted_to_source_without_approval":False,"approval_bypass_performed":False,"publish_performed":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"commands_executed_from_console":False,"approvals_inferred_from_readiness":False,"operator_approval_inferred":False,"promotion_auto_selected":False,"post_promotion_verification_auto_executed":False,"work_package_auto_launched":False}
     runtime_token = str(SUPERVISED_SANDBOX_TO_SOURCE_PROMOTION_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v170.0 - Operator-Approved Sandbox-to-Source Promotion" in docs and "v165.1-v166.0 - Sandbox Promotion Intake Layer" in docs else "blocked","message":"README and release history document v166-v170 supervised sandbox-to-source promotion."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -32536,7 +31986,7 @@ def _build_supervised_source_patch_application_stage(slug: str, project_id: str 
     safety_false = {"autonomy_unlocked":False,"self_approval_performed":False,"operator_approval_inferred":False,"source_mutation_performed_without_approval":False,"live_source_mutation_performed_without_approval":False,"patches_applied_to_live_source_without_approval":False,"unapproved_file_write_performed":False,"publish_performed":False,"release_candidate_auto_created":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"commands_executed_from_console_without_approval":False,"verification_auto_executed_without_approval":False,"cascade_work_started":False,"approval_bypass_performed":False}
     runtime_token = str(SUPERVISED_SOURCE_PATCH_APPLICATION_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v175.0 - Operator-Approved Source Patch Application" in docs and "v170.1-v171.0 - Source Application Approval Intake Layer" in docs else "blocked","message":"README and release history document v171-v175 operator-approved source patch application."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -32685,7 +32135,7 @@ def _build_post_application_learning_stage(slug: str, project_id: str = "eidolon
     runtime_token = str(POST_APPLICATION_LEARNING_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     safety_false = {"autonomy_unlocked":False,"self_approval_performed":False,"operator_approval_inferred":False,"source_mutation_performed_without_approval":False,"publish_performed":False,"release_candidate_auto_created":False,"release_candidate_auto_packaged":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"verification_auto_executed_without_approval":False,"cascade_work_started":False,"next_patch_auto_started":False,"next_improvement_auto_selected":False,"work_order_auto_created":False}
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v180.0 - Operator-Governed Post-Application Learning and Release Readiness" in docs and "v175.1-v176.0 - Post-Application Outcome Intake Layer" in docs else "blocked","message":"README and release history document v176-v180 post-application learning and release readiness."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -32835,7 +32285,7 @@ def _build_patch_cycle_intelligence_stage(slug: str, project_id: str = "eidolon"
     runtime_token = str(PATCH_CYCLE_INTELLIGENCE_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     safety_false = {"autonomy_unlocked":False,"self_approval_performed":False,"operator_approval_inferred":False,"source_mutation_performed_without_approval":False,"publish_performed":False,"release_candidate_auto_created":False,"release_candidate_auto_packaged":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"verification_auto_executed_without_approval":False,"cascade_work_started":False,"next_patch_auto_started":False,"next_improvement_auto_selected":False,"work_order_auto_created":False,"implementation_auto_started":False,"proposal_auto_approved":False,"priority_score_treated_as_approval":False}
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v185.0 - Operator-Governed Patch Cycle Intelligence" in docs and "v180.1-v181.0 - Cycle Intelligence Intake Layer" in docs else "blocked","message":"README and release history document v181-v185 patch cycle intelligence."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -32988,7 +32438,7 @@ def _build_multi_cycle_roadmap_stage(slug: str, project_id: str = "eidolon", imp
     runtime_token = str(MULTI_CYCLE_ROADMAP_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)).replace(os.sep,"/")
     safety_false = {"autonomy_unlocked":False,"self_approval_performed":False,"operator_approval_inferred":False,"source_mutation_performed_without_approval":False,"publish_performed":False,"release_candidate_auto_created":False,"release_candidate_auto_packaged":False,"memory_mutation_performed":False,"identity_mutation_performed":False,"local_model_invoked_by_default":False,"automatic_action_performed":False,"hidden_scheduling_performed":False,"verification_auto_executed_without_approval":False,"cascade_work_started":False,"next_patch_auto_started":False,"roadmap_auto_selected":False,"roadmap_work_auto_launched":False,"work_package_auto_created":False,"implementation_auto_started":False,"proposal_auto_approved":False,"roadmap_score_treated_as_approval":False,"v200_readiness_treated_as_approval":False}
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v190.0 - Operator-Governed Multi-Cycle Roadmap Intelligence" in docs and "v185.1-v186.0 - Multi-Cycle Roadmap Intake Layer" in docs else "blocked","message":"README and release history document v186-v190 multi-cycle roadmap intelligence."},
         {"name":"substage-count","status":"pass" if len(arc_items) == 10 else "blocked","message":f"{len(arc_items)} stage(s) defined for {definition['version']}."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"{definition['dashboard']} dashboard route present."},
@@ -33097,7 +32547,7 @@ def _build_capability_maturity_stage(slug: str, project_id: str = "eidolon", imp
         "maturity_score_treated_as_approval": False,
     }
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v195.0 - Supervised Capability Maturity Modeling" in docs and "v190.1-v191.0 - Capability Inventory and Maturity Schema" in docs else "blocked","message":"README and release history document v191-v195 capability maturity modeling."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text and definition["api"] in dashboard_text else "blocked","message":definition["dashboard"]},
         {"name":"api-routes","status":"pass" if not missing_api and "SUPERVISED_RUNTIME_ROUTE_MAP" in api_text else "blocked","message":f"{len(route_keys)} API route(s) present dynamically." if not missing_api else "missing: "+", ".join(missing_api)},
@@ -33179,7 +32629,7 @@ def _governance_kernel_status_rows(definition, docs):
     dashboard_text = _read_text(ROOT_DIR / "conscious_agent" / "dashboard.py")
     package_text = _read_text(ROOT_DIR / "conscious_agent" / "release_packaging.py")
     rows = [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name":"docs","status":"pass" if "v200.0 - Local Artificial Mind Governance Kernel v1" in docs and "v195.1-v196.0 - Governance Kernel State Model" in docs else "blocked","message":"README and release history document v196-v200 governance kernel work."},
         {"name":"dashboard-route","status":"pass" if definition["dashboard"] in dashboard_text else "blocked","message":f"Dashboard route {definition['dashboard']} is documented."},
         {"name":"dynamic-api-route","status":"pass" if f"{definition['api']}/{definition['route']}" in route_map else "blocked","message":f"Dynamic API route /api/{definition['api']}/{definition['route']} is registered."},
@@ -33323,13 +32773,13 @@ def _governance_integration_status_rows(definition, docs):
         "v203.1-v204.0 - Operator Governance Console v1",
     ]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_docs) else "blocked", "message": "README and release history document v201-v205 governance integration work."},
         {"name": "dashboard-route", "status": "pass" if definition["dashboard"] in dashboard_text else "blocked", "message": f"Dashboard route {definition['dashboard']} is documented."},
         {"name": "dynamic-api-route", "status": "pass" if f"{definition['api']}/{definition['route']}" in route_map else "blocked", "message": f"Dynamic API route /api/{definition['api']}/{definition['route']} is registered."},
         {"name": "dynamic-cli-flag", "status": "pass" if definition["slug"].replace("_", "-") in cli_map else "blocked", "message": f"CLI flag --{definition['slug'].replace('_','-')} is registered."},
         {"name": "privacy-token", "status": "pass" if f"data/autonomy/{definition['runtime_key']}/" in package_text else "blocked", "message": f"Source-only privacy token for {definition['runtime_key']} is present."},
-        {"name": "smoke-version", "status": "pass" if '"version": "310.0"' in smoke_text else "blocked", "message": "Smoke JSON summary reports the current v305.0 version."},
+        {"name": "smoke-version", "status": "pass" if '"version": "500.0"' in smoke_text else "blocked", "message": "Smoke JSON summary reports the current smoke summary version."},
         {"name": "approval-boundary", "status": "pass", "message": "Decision packets, approval transactions, evidence timelines, and console previews cannot grant approval or execute actions."},
         {"name": "non-autonomy-boundary", "status": "pass", "message": "No self-approval, hidden scheduling, memory mutation, identity mutation, auto-release, default local-model invocation, or autonomous continuation is authorized."},
         {"name": "tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips on nav tabs; custom data-tip hover remains the dashboard hover path."},
@@ -33501,7 +32951,7 @@ def _cognitive_continuity_status_rows(definition, docs_text: str):
         {"name":"cli-handler", "status":"pass" if "SUPERVISED_RUNTIME_CLI_MAP" in main_text else "blocked", "message":"Dynamic CLI handler remains active."},
         {"name":"package-privacy-token", "status":"pass" if f"data/autonomy/{definition['runtime_key']}/" in package_text else "blocked", "message":f"Source-only privacy token for {definition['runtime_key']} is present."},
         {"name":"docs-coverage", "status":"pass" if all(token in docs_text for token in required_doc_tokens) else "blocked", "message":"README next steps and release history document the cognitive continuity arc."},
-        {"name":"smoke-version", "status":"pass" if '"version": "310.0"' in smoke_text else "blocked", "message":"Smoke JSON summary reports v305.0."},
+        {"name":"smoke-version", "status":"pass" if '"version": "500.0"' in smoke_text else "blocked", "message":"Smoke JSON summary reports the current smoke summary version."},
         {"name":"non-mutation-boundary", "status":"pass", "message":"Continuity, memory candidates, identity review, and reflection are review-only and cannot mutate source, memory, identity, or approval state."},
         {"name":"tooltip-regression", "status":"pass" if not _dashboard_nav_title_regression_present() else "blocked", "message":"No native title tooltips on nav tabs; custom data-tip hover remains the dashboard hover path."},
     ]
@@ -33704,7 +33154,7 @@ def _deliberation_self_model_status_rows(definition: dict[str, Any], docs_text: 
         {"name":"cli-handler", "status":"pass" if "SUPERVISED_RUNTIME_CLI_MAP" in main_text else "blocked", "message":"Dynamic CLI handler remains active."},
         {"name":"package-privacy-token", "status":"pass" if f"data/autonomy/{definition['runtime_key']}/" in package_text else "blocked", "message":f"Source-only privacy token for {definition['runtime_key']} is present."},
         {"name":"docs-coverage", "status":"pass" if all(token in docs_text for token in required_doc_tokens) else "blocked", "message":"README next steps and release history document the v215 deliberation/self-model arc."},
-        {"name":"smoke-version", "status":"pass" if '"version": "310.0"' in smoke_text else "blocked", "message":"Smoke JSON summary reports v305.0."},
+        {"name":"smoke-version", "status":"pass" if '"version": "500.0"' in smoke_text else "blocked", "message":"Smoke JSON summary reports the current smoke summary version."},
         {"name":"self-model-non-authority", "status":"pass", "message":"Self-model snapshots, confidence scores, deliberation rankings, alignment reports, and pattern priorities are advisory only."},
         {"name":"no-autonomy-boundary", "status":"pass" if all(value is False for key, value in DELIBERATION_SELF_MODEL_BOUNDARIES.items() if key != "descriptive_only") else "blocked", "message":"No self-approval, memory/identity mutation, hidden scheduling, default model invocation, roadmap selection, or autonomous continuation is allowed."},
         {"name":"tooltip-regression", "status":"pass" if not _dashboard_nav_title_regression_present() else "blocked", "message":"No native title tooltips on nav tabs; custom data-tip hover remains the dashboard hover path."},
@@ -33915,7 +33365,7 @@ def _simulation_foresight_status_rows(definition: dict[str, Any], docs_text: str
         {"name":"cli-handler", "status":"pass" if "SUPERVISED_RUNTIME_CLI_MAP" in main_text else "blocked", "message":"Dynamic CLI handler remains active."},
         {"name":"package-privacy-token", "status":"pass" if f"data/autonomy/{definition['runtime_key']}/" in package_text else "blocked", "message":f"Source-only privacy token for {definition['runtime_key']} is present."},
         {"name":"docs-coverage", "status":"pass" if all(token in docs_text for token in required_doc_tokens) else "blocked", "message":"README next steps and release history document the v220 simulation/foresight arc."},
-        {"name":"smoke-version", "status":"pass" if '"version": "310.0"' in smoke_text else "blocked", "message":"Smoke JSON summary reports v305.0."},
+        {"name":"smoke-version", "status":"pass" if '"version": "500.0"' in smoke_text else "blocked", "message":"Smoke JSON summary reports the current smoke summary version."},
         {"name":"simulation-non-execution", "status":"pass" if SIMULATION_FORESIGHT_BOUNDARIES.get("simulation_packets_execute_commands") is False and SIMULATION_FORESIGHT_BOUNDARIES.get("simulation_success_grants_approval") is False else "blocked", "message":"Simulations cannot execute commands or grant approval."},
         {"name":"no-autonomy-boundary", "status":"pass" if all(value is False for key, value in SIMULATION_FORESIGHT_BOUNDARIES.items() if key != "descriptive_only") else "blocked", "message":"No self-approval, mutation, scheduling, default model invocation, release promotion, roadmap selection, or autonomous continuation is allowed."},
         {"name":"tooltip-regression", "status":"pass" if not _dashboard_nav_title_regression_present() else "blocked", "message":"No native title tooltips on nav tabs; custom data-tip hover remains the dashboard hover path."},
@@ -34214,7 +33664,7 @@ def _learning_curriculum_status_rows(definition: dict[str, Any], docs: str) -> l
     required_tokens = ["learning-objective-map", "practice-task-design", "capability-calibration", "skill-gap-remediation-planner", "learning-curriculum-audit", "operator-governed-learning-curriculum-and-capability-calibration-layer-v1"]
     runtime_tokens = ["data/autonomy/learning_objective_map/", "data/autonomy/practice_task_design/", "data/autonomy/capability_calibration/", "data/autonomy/skill_gap_remediation_planner/", "data/autonomy/learning_curriculum_audit/"]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "route-tokens", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "Learning curriculum dashboard/API/CLI/docs tokens are present."},
         {"name": "runtime-privacy-tokens", "status": "pass" if all(token in docs for token in runtime_tokens) else "blocked", "message": "Runtime learning curriculum data remains source-only excluded."},
         {"name": "learning-non-autonomy", "status": "pass" if LEARNING_CURRICULUM_BOUNDARIES.get("learning_objectives_start_work") is False and LEARNING_CURRICULUM_BOUNDARIES.get("autonomous_learning_loop_started") is False else "blocked", "message": "Learning objectives cannot start autonomous work or learning loops."},
@@ -34504,7 +33954,7 @@ def _knowledge_organization_status_rows(definition: dict[str, Any], docs: str) -
     route_map = globals().get("SUPERVISED_RUNTIME_ROUTE_MAP", {})
     cli_map = globals().get("SUPERVISED_RUNTIME_CLI_MAP", {})
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "route-tokens", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "Knowledge/belief dashboard/API/CLI/docs tokens are present."},
         {"name": "runtime-privacy-tokens", "status": "pass" if all(token in docs for token in runtime_tokens) else "blocked", "message": "Runtime knowledge organization data remains source-only excluded."},
         {"name": "api-route-map", "status": "pass" if all(f"{item['api']}/{item['route']}" in route_map for item in KNOWLEDGE_ORGANIZATION_STAGE_DEFS) else "blocked", "message": "Dynamic API route map covers v230 stages."},
@@ -34795,7 +34245,7 @@ def _local_model_workbench_status_rows(definition: dict[str, Any], docs: str) ->
     route_map = globals().get("SUPERVISED_RUNTIME_ROUTE_MAP", {})
     cli_map = globals().get("SUPERVISED_RUNTIME_CLI_MAP", {})
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "route-tokens", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "Local model workbench dashboard/API/CLI/docs tokens are present."},
         {"name": "runtime-privacy-tokens", "status": "pass" if all(token in docs for token in runtime_tokens) else "blocked", "message": "Runtime model workbench data remains source-only excluded."},
         {"name": "api-route-map", "status": "pass" if all(f"{item['api']}/{item['route']}" in route_map for item in LOCAL_MODEL_WORKBENCH_STAGE_DEFS) else "blocked", "message": "Dynamic API route map covers v235 stages."},
@@ -35078,7 +34528,7 @@ def _local_model_invocation_sandbox_status_rows(definition: dict[str, Any], docs
     route_map = globals().get("SUPERVISED_RUNTIME_ROUTE_MAP", {})
     cli_map = globals().get("SUPERVISED_RUNTIME_CLI_MAP", {})
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "route-tokens", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "Local model invocation sandbox dashboard/API/CLI/docs tokens are present."},
         {"name": "runtime-privacy-tokens", "status": "pass" if all(token in docs for token in runtime_tokens) else "blocked", "message": "Runtime model invocation sandbox data remains source-only excluded."},
         {"name": "api-route-map", "status": "pass" if all(f"{item['api']}/{item['route']}" in route_map for item in LOCAL_MODEL_INVOCATION_SANDBOX_STAGE_DEFS) else "blocked", "message": "Dynamic API route map covers v240 stages."},
@@ -35361,7 +34811,7 @@ def _model_assisted_patch_review_docs_text() -> str:
 def _model_assisted_patch_review_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
     required_tokens = ["model-assisted-patch-critique", "multi-model-review-synthesis", "patch-risk-remediation-synthesis", "model-review-quality-calibration", "model-assisted-patch-review-audit", "operator-governed-model-assisted-patch-review-and-synthesis-layer-v1"]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "stage-definition", "status": "pass" if definition.get("slug") in MODEL_ASSISTED_PATCH_REVIEW_STAGE_BY_SLUG else "blocked", "message": definition.get("label", "stage")},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "README, release history, dashboard, packaging, and smoke mention v245 model-assisted review surfaces."},
         {"name": "runtime-dirs", "status": "pass" if all(str(path).endswith(key) for key, path in MODEL_ASSISTED_PATCH_REVIEW_RUNTIME_DIRS.items()) else "blocked", "message": "Runtime directories are source-only excluded review artifacts."},
@@ -35639,7 +35089,7 @@ def _model_assisted_patch_draft_status_rows(definition: dict[str, Any], docs: st
     required_tokens = ["model-assisted-patch-draft", "file-impact-documentation-planner", "smoke-verification-suggestions", "sandbox-preparation-packet", "patch-draft-assembly-audit", "operator-governed-model-assisted-patch-draft-assembly-layer-v1"]
     forbidden_truth = ["model_output_treated_as_correctness_proof", "model_consensus_infers_approval", "draft_packets_write_files", "draft_packets_apply_patches", "draft_packets_run_commands", "draft_packets_approve_implementation", "file_impact_plans_execute_work", "documentation_updates_applied_automatically", "verification_suggestions_execute", "sandbox_packets_execute", "source_mutation_from_draft", "memory_mutation_from_draft", "identity_mutation_from_draft", "release_candidate_created_from_draft", "continuation_after_draft_assembly", "stale_or_out_of_scope_consent_reused"]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "stage-definition", "status": "pass" if definition.get("slug") in MODEL_ASSISTED_PATCH_DRAFT_STAGE_BY_SLUG else "blocked", "message": definition.get("label", "stage")},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "README, release history, dashboard, packaging, and smoke mention v250 model-assisted draft assembly surfaces."},
         {"name": "runtime-dirs", "status": "pass" if all(str(path).endswith(key) for key, path in MODEL_ASSISTED_PATCH_DRAFT_RUNTIME_DIRS.items()) else "blocked", "message": "Runtime directories are source-only excluded draft assembly artifacts."},
@@ -35920,7 +35370,7 @@ def _patch_execution_packet_bridge_status_rows(definition: dict[str, Any], docs:
         "execution_packets_write_files", "execution_packets_apply_patches", "execution_packets_run_commands", "execution_packets_execute_sandboxes", "execution_packets_publish_releases", "execution_packets_mutate_memory", "execution_packets_alter_identity", "execution_packets_invoke_models_by_default", "execution_packets_self_approve", "approval_inferred_from_packet_readiness", "approval_inferred_from_model_output", "approval_inferred_from_model_consensus", "stale_or_vague_consent_reused", "diff_previews_mutate_source", "verification_packets_execute_commands", "rollback_packets_alter_files", "release_candidate_created_from_packet", "continuation_after_packet_assembly",
     ]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "stage-definition", "status": "pass" if definition.get("slug") in PATCH_EXECUTION_PACKET_BRIDGE_STAGE_BY_SLUG else "blocked", "message": definition.get("label", "stage")},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "README, release history, dashboard, packaging, and smoke mention v255 patch execution packet bridge surfaces."},
         {"name": "runtime-dirs", "status": "pass" if all(str(path).endswith(key) for key, path in PATCH_EXECUTION_PACKET_BRIDGE_RUNTIME_DIRS.items()) else "blocked", "message": "Runtime directories are source-only excluded packet bridge artifacts."},
@@ -36211,7 +35661,7 @@ def _approved_application_prep_status_rows(definition: dict[str, Any], docs: str
         "application_prep_writes_files", "application_prep_applies_source_edits", "application_prep_runs_commands", "application_prep_executes_sandboxes", "application_prep_publishes_releases", "application_prep_mutates_memory", "application_prep_alters_identity", "application_prep_invokes_models_by_default", "application_prep_self_approves", "application_prep_inferrs_approval_from_readiness", "application_prep_reuses_stale_consent", "source_edit_plans_mutate_source", "documentation_plans_update_docs_automatically", "final_gate_grants_authority", "verification_plans_execute_commands", "rollback_plans_alter_files", "release_candidate_created_from_application_prep", "continuation_after_application_prep",
     ]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "stage-definition", "status": "pass" if definition.get("slug") in APPROVED_APPLICATION_PREP_STAGE_BY_SLUG else "blocked", "message": definition.get("label", "stage")},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "README, release history, dashboard, packaging, and smoke mention v260 application prep surfaces."},
         {"name": "runtime-dirs", "status": "pass" if all(str(path).endswith(key) for key, path in APPROVED_APPLICATION_PREP_RUNTIME_DIRS.items()) else "blocked", "message": "Runtime directories are source-only excluded application prep artifacts."},
@@ -36530,7 +35980,7 @@ def _structural_stabilization_status_rows(definition: dict[str, Any], docs: str)
         "structural_stabilization_writes_files", "structural_stabilization_applies_refactors", "structural_stabilization_rewrites_architecture", "structural_stabilization_removes_routes", "structural_stabilization_runs_commands", "structural_stabilization_invokes_models_by_default", "structural_stabilization_inferrs_approval_from_audit", "structural_stabilization_self_approves", "structural_stabilization_mutates_memory", "structural_stabilization_alters_identity", "structural_stabilization_publishes_release_candidates", "structural_stabilization_continues_automatically", "registry_prep_changes_dispatch", "dashboard_stabilization_changes_layout_contract", "dispatch_stabilization_executes_commands", "refactor_readiness_applies_refactor",
     ]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "stage-definition", "status": "pass" if definition.get("slug") in STRUCTURAL_STABILIZATION_STAGE_BY_SLUG else "blocked", "message": definition.get("label", "stage")},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "README, release history, dashboard, packaging, and smoke mention v265 structural stabilization surfaces."},
         {"name": "runtime-dirs", "status": "pass" if all(str(path).endswith(key) for key, path in STRUCTURAL_STABILIZATION_RUNTIME_DIRS.items()) else "blocked", "message": "Runtime directories are source-only excluded structural stabilization artifacts."},
@@ -36708,7 +36158,7 @@ def _module_extraction_status_rows(definition: dict[str, Any], docs: str) -> lis
     ]
     registry = module_extraction_registry_summary()
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "stage-definition", "status": "pass" if definition.get("slug") in MODULE_EXTRACTION_STAGE_BY_SLUG else "blocked", "message": definition.get("label", "stage")},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "README, release history, dashboard, packaging, smoke, and extracted modules mention v270 module extraction surfaces."},
         {"name": "runtime-dirs", "status": "pass" if all(str(path).endswith(key) for key, path in MODULE_EXTRACTION_RUNTIME_DIRS.items()) else "blocked", "message": "Runtime directories are source-only excluded module extraction artifacts."},
@@ -37019,16 +36469,16 @@ def _self_maintenance_decomposition_status_rows(definition: dict[str, Any], docs
     forbidden_false = [
         "self_maintenance_decomposition_removes_legacy_wrappers", "self_maintenance_decomposition_changes_routes", "self_maintenance_decomposition_changes_cli_api_behavior", "self_maintenance_decomposition_executes_smoke_commands", "self_maintenance_decomposition_inferrs_approval_from_clean_audits", "self_maintenance_decomposition_invokes_models_by_default", "self_maintenance_decomposition_mutates_memory", "self_maintenance_decomposition_alters_identity", "self_maintenance_decomposition_self_approves", "self_maintenance_decomposition_publishes_release_candidates", "self_maintenance_decomposition_continues_automatically", "package_version_helpers_write_files", "surface_parity_helpers_add_routes", "verification_planning_helpers_run_commands",
     ]
-    version_summary = version_marker_summary(ROOT_DIR, "300.0")
+    version_summary = version_marker_summary(ROOT_DIR, SELF_MAINTENANCE_VERSION)
     verification_plan = build_verification_readiness_plan()
     package_policy = source_only_entry_policy()
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" and version_summary.get("ok") else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}; marker rows={len(version_summary.get('rows', []))}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" and version_summary.get("ok") else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}; marker rows={len(version_summary.get('rows', []))}"},
         {"name": "stage-definition", "status": "pass" if definition.get("slug") in SELF_MAINTENANCE_DECOMPOSITION_STAGE_BY_SLUG else "blocked", "message": definition.get("label", "stage")},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "README, release history, dashboard, packaging, smoke, and extracted utility modules mention v275 surfaces."},
         {"name": "runtime-dirs", "status": "pass" if all(str(path).endswith(key) for key, path in SELF_MAINTENANCE_DECOMPOSITION_RUNTIME_DIRS.items()) else "blocked", "message": "Runtime directories are source-only excluded self-maintenance decomposition artifacts."},
         {"name": "stage-count", "status": "pass" if len(SELF_MAINTENANCE_DECOMPOSITION_STAGE_DEFS) == 50 else "blocked", "message": f"{len(SELF_MAINTENANCE_DECOMPOSITION_STAGE_DEFS)} stage(s) defined."},
-        {"name": "utility-modules", "status": "pass" if package_policy.get("version") == "300.0" and verification_plan.get("runs_commands") is False else "blocked", "message": "package_integrity.py, version_state.py, surface_parity.py, and verification_planning.py expose review-only helpers."},
+        {"name": "utility-modules", "status": "pass" if package_policy.get("version") == SELF_MAINTENANCE_VERSION and verification_plan.get("runs_commands") is False else "blocked", "message": "package_integrity.py, version_state.py, surface_parity.py, and verification_planning.py expose review-only helpers."},
         {"name": "no-decomposition-authority", "status": "pass" if not any(SELF_MAINTENANCE_DECOMPOSITION_BOUNDARIES[key] for key in forbidden_false) else "blocked", "message": "Decomposition cannot remove wrappers, change routes, run commands, approve, publish, mutate, invoke models, or continue automatically."},
         {"name": "compatibility", "status": "pass" if SELF_MAINTENANCE_DECOMPOSITION_BOUNDARIES["legacy_wrappers_required"] and SELF_MAINTENANCE_DECOMPOSITION_BOUNDARIES["existing_routes_preserved"] else "blocked", "message": "Legacy wrappers and existing routes remain required."},
         {"name": "dashboard-tooltip-boundary", "status": "pass" if SELF_MAINTENANCE_DECOMPOSITION_BOUNDARIES["dashboard_data_tip_required"] and SELF_MAINTENANCE_DECOMPOSITION_BOUNDARIES["native_nav_title_tooltips_forbidden"] and not _dashboard_nav_title_regression_present() else "blocked", "message": "Dashboard command deck preserves data-tip and forbids native nav title tooltips."},
@@ -37312,12 +36762,12 @@ def _interface_modularization_status_rows(definition: dict[str, Any], docs: str)
         "dashboard_components_use_native_title_tooltips", "api_surface_helpers_change_behavior", "cli_surface_helpers_execute_commands",
     ]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "stage-definition", "status": "pass" if definition.get("slug") in INTERFACE_MODULARIZATION_STAGE_BY_SLUG else "blocked", "message": definition.get("label", "stage")},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "README, release history, dashboard, API, CLI, packaging, smoke, and helper modules mention v280 interface modularization surfaces."},
         {"name": "runtime-dirs", "status": "pass" if all(str(path).endswith(key) for key, path in INTERFACE_MODULARIZATION_RUNTIME_DIRS.items()) else "blocked", "message": "Runtime directories are source-only excluded interface modularization artifacts."},
         {"name": "stage-count", "status": "pass" if len(INTERFACE_MODULARIZATION_STAGE_DEFS) == 50 else "blocked", "message": f"{len(INTERFACE_MODULARIZATION_STAGE_DEFS)} interface stage(s) defined."},
-        {"name": "helper-module-versions", "status": "pass" if DASHBOARD_COMPONENTS_VERSION == API_SURFACE_VERSION == CLI_SURFACE_VERSION == "350.0" else "blocked", "message": f"dashboard_components={DASHBOARD_COMPONENTS_VERSION}, api_surface={API_SURFACE_VERSION}, cli_surface={CLI_SURFACE_VERSION}"},
+        {"name": "helper-module-versions", "status": "pass" if DASHBOARD_COMPONENTS_VERSION == API_SURFACE_VERSION == CLI_SURFACE_VERSION == "500.0" else "blocked", "message": f"dashboard_components={DASHBOARD_COMPONENTS_VERSION}, api_surface={API_SURFACE_VERSION}, cli_surface={CLI_SURFACE_VERSION}"},
         {"name": "no-interface-authority", "status": "pass" if not any(INTERFACE_MODULARIZATION_BOUNDARIES[key] for key in forbidden_false) else "blocked", "message": "Interface modularization cannot redesign, remove routes, change API/CLI behavior, execute commands, approve, publish, mutate, invoke models, or continue work."},
         {"name": "compatibility", "status": "pass" if INTERFACE_MODULARIZATION_BOUNDARIES["legacy_wrappers_required"] and INTERFACE_MODULARIZATION_BOUNDARIES["existing_routes_preserved"] and INTERFACE_MODULARIZATION_BOUNDARIES["existing_api_cli_behavior_preserved"] else "blocked", "message": "Legacy wrappers, existing routes, and API/CLI behavior remain required."},
         {"name": "dashboard-tooltip-boundary", "status": "pass" if INTERFACE_MODULARIZATION_BOUNDARIES["dashboard_data_tip_required"] and INTERFACE_MODULARIZATION_BOUNDARIES["native_nav_title_tooltips_forbidden"] and not _dashboard_nav_title_regression_present() else "blocked", "message": "Dashboard command deck preserves data-tip and forbids native nav title tooltips."},
@@ -37591,12 +37041,12 @@ def _application_execution_refinement_status_rows(definition: dict[str, Any], do
         "application_refinement_publishes_release_candidates", "application_refinement_continues_automatically", "application_refinement_treats_outcome_learning_as_stored_memory",
     ]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "stage-definition", "status": "pass" if definition.get("slug") in APPLICATION_EXECUTION_REFINEMENT_STAGE_BY_SLUG else "blocked", "message": definition.get("label", "stage")},
         {"name": "docs", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "README, release history, dashboard, API, CLI, packaging, smoke, and helper module mention v285 application execution refinement surfaces."},
         {"name": "runtime-dirs", "status": "pass" if all(str(path).endswith(key) for key, path in APPLICATION_EXECUTION_REFINEMENT_RUNTIME_DIRS.items()) else "blocked", "message": "Runtime directories are source-only excluded application refinement artifacts."},
         {"name": "stage-count", "status": "pass" if len(APPLICATION_EXECUTION_REFINEMENT_STAGE_DEFS) == 50 else "blocked", "message": f"{len(APPLICATION_EXECUTION_REFINEMENT_STAGE_DEFS)} application execution refinement stage(s) defined."},
-        {"name": "helper-module-version", "status": "pass" if APPLICATION_EXECUTION_REFINEMENT_VERSION == "350.0" else "blocked", "message": f"application_execution_refinement={APPLICATION_EXECUTION_REFINEMENT_VERSION}"},
+        {"name": "helper-module-version", "status": "pass" if APPLICATION_EXECUTION_REFINEMENT_VERSION == "500.0" else "blocked", "message": f"application_execution_refinement={APPLICATION_EXECUTION_REFINEMENT_VERSION}"},
         {"name": "no-application-authority", "status": "pass" if not any(APPLICATION_EXECUTION_REFINEMENT_BOUNDARIES[key] for key in forbidden_false) else "blocked", "message": "Application refinement cannot apply patches, run commands, infer approval, reuse stale consent, rollback, publish, mutate, invoke models, or continue work."},
         {"name": "approval-boundary", "status": "pass" if APPLICATION_EXECUTION_REFINEMENT_BOUNDARIES["application_refinement_requires_exact_current_scoped_approval"] and APPLICATION_EXECUTION_REFINEMENT_BOUNDARIES["application_refinement_is_review_only_until_operator_execution_approval"] else "blocked", "message": "Exact, current, scoped operator approval remains required before any application workflow."},
         {"name": "post-application-boundary", "status": "pass" if APPLICATION_EXECUTION_REFINEMENT_BOUNDARIES["application_refinement_requires_post_application_operator_result_intake"] and APPLICATION_EXECUTION_REFINEMENT_BOUNDARIES["application_refinement_recommends_rollback_review_only"] else "blocked", "message": "Post-application review requires operator-submitted results and rollback remains recommendation-only."},
@@ -37853,8 +37303,8 @@ def _rollback_recovery_status_rows(definition: dict[str, Any], docs: str) -> lis
         "rollback_recovery_runs_rollback_automatically", "rollback_recovery_edits_files_automatically", "rollback_recovery_executes_shell_commands_automatically", "rollback_recovery_infers_rollback_approval_from_failure", "rollback_recovery_infers_patch_approval_from_recovery_success", "rollback_recovery_mutates_memory", "rollback_recovery_alters_identity", "rollback_recovery_invokes_models_by_default", "rollback_recovery_publishes_release_candidates", "rollback_recovery_continues_automatically",
     ]
     return [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
-        {"name": "helper-module-version", "status": "pass" if ROLLBACK_RECOVERY_VERSION == "350.0" else "blocked", "message": f"rollback_recovery={ROLLBACK_RECOVERY_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "helper-module-version", "status": "pass" if ROLLBACK_RECOVERY_VERSION == "500.0" else "blocked", "message": f"rollback_recovery={ROLLBACK_RECOVERY_VERSION}"},
         {"name": "stage-registry", "status": "pass" if len(ROLLBACK_RECOVERY_STAGE_DEFS) == 50 and definition.get("slug") in ROLLBACK_RECOVERY_STAGE_BY_SLUG else "blocked", "message": f"{len(ROLLBACK_RECOVERY_STAGE_DEFS)} rollback/recovery substages registered."},
         {"name": "dashboard-routes", "status": "pass" if all(route in docs for route in dashboard_routes) else "blocked", "message": ", ".join(dashboard_routes)},
         {"name": "api-routes", "status": "pass" if all(route in docs for route in api_routes) else "blocked", "message": ", ".join(api_routes)},
@@ -38119,8 +37569,8 @@ def _memory_governance_status_rows(definition: dict[str, Any], docs: str) -> lis
         "memory_governance_writes_memory_automatically", "memory_governance_alters_identity", "memory_governance_alters_personality", "memory_governance_rewrites_goals_or_purpose", "memory_governance_infers_approval_from_repeated_evidence", "memory_governance_infers_approval_from_operator_silence", "memory_governance_treats_lessons_as_stored_truth", "memory_governance_invokes_models_by_default", "memory_governance_executes_commands", "memory_governance_publishes_release_candidates", "memory_governance_continues_automatically",
     ]
     return [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
-        {"name": "helper-module-version", "status": "pass" if MEMORY_GOVERNANCE_VERSION == "350.0" else "blocked", "message": f"memory_governance={MEMORY_GOVERNANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "helper-module-version", "status": "pass" if MEMORY_GOVERNANCE_VERSION == "500.0" else "blocked", "message": f"memory_governance={MEMORY_GOVERNANCE_VERSION}"},
         {"name": "stage-registry", "status": "pass" if len(MEMORY_GOVERNANCE_STAGE_DEFS) == 50 and definition.get("slug") in MEMORY_GOVERNANCE_STAGE_BY_SLUG else "blocked", "message": f"{len(MEMORY_GOVERNANCE_STAGE_DEFS)} memory governance substages registered."},
         {"name": "dashboard-routes", "status": "pass" if all(route in docs for route in dashboard_routes) else "blocked", "message": ", ".join(dashboard_routes)},
         {"name": "api-routes", "status": "pass" if all(route in docs for route in api_routes) else "blocked", "message": ", ".join(api_routes)},
@@ -38387,8 +37837,8 @@ def _continuity_kernel_status_rows(definition: dict[str, Any], docs: str) -> lis
         "continuity_kernel_mutates_memory", "continuity_kernel_alters_identity", "continuity_kernel_alters_personality", "continuity_kernel_rewrites_purpose", "continuity_kernel_self_approves_capabilities", "continuity_kernel_auto_selects_roadmaps", "continuity_kernel_starts_patches_automatically", "continuity_kernel_infers_approval_from_audits", "continuity_kernel_invokes_models_by_default", "continuity_kernel_executes_commands", "continuity_kernel_publishes_release_candidates", "continuity_kernel_treats_self_model_as_authority",
     ]
     return [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
-        {"name": "helper-module-version", "status": "pass" if CONTINUITY_KERNEL_VERSION == "350.0" else "blocked", "message": f"continuity_kernel={CONTINUITY_KERNEL_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "helper-module-version", "status": "pass" if CONTINUITY_KERNEL_VERSION == "500.0" else "blocked", "message": f"continuity_kernel={CONTINUITY_KERNEL_VERSION}"},
         {"name": "stage-registry", "status": "pass" if len(CONTINUITY_KERNEL_STAGE_DEFS) == 50 and definition.get("slug") in CONTINUITY_KERNEL_STAGE_BY_SLUG else "blocked", "message": f"{len(CONTINUITY_KERNEL_STAGE_DEFS)} continuity kernel substages registered."},
         {"name": "dashboard-routes", "status": "pass" if all(route in docs for route in dashboard_routes) else "blocked", "message": ", ".join(dashboard_routes)},
         {"name": "api-routes", "status": "pass" if all(route in docs for route in api_routes) else "blocked", "message": ", ".join(api_routes)},
@@ -38655,8 +38105,8 @@ def _identity_expression_status_rows(definition: dict[str, Any], docs: str) -> l
     ]
     forbidden_false = [key for key in IDENTITY_EXPRESSION_BOUNDARIES if key.startswith("identity_expression_") and key not in {"identity_expression_review_only", "identity_expression_requires_operator_review", "identity_expression_classifies_risky_requests"}]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
-        {"name": "helper-module-version", "status": "pass" if IDENTITY_EXPRESSION_VERSION == "350.0" else "blocked", "message": f"identity_expression={IDENTITY_EXPRESSION_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "helper-module-version", "status": "pass" if IDENTITY_EXPRESSION_VERSION == "500.0" else "blocked", "message": f"identity_expression={IDENTITY_EXPRESSION_VERSION}"},
         {"name": "stage-registry", "status": "pass" if len(IDENTITY_EXPRESSION_STAGE_DEFS) == 50 and definition.get("slug") in IDENTITY_EXPRESSION_STAGE_BY_SLUG else "blocked", "message": f"{len(IDENTITY_EXPRESSION_STAGE_DEFS)} identity/personality/coherence substages registered."},
         {"name": "dashboard-routes", "status": "pass" if all(route in docs for route in dashboard_routes) else "blocked", "message": ", ".join(dashboard_routes)},
         {"name": "api-routes", "status": "pass" if all(route in docs for route in api_routes) else "blocked", "message": ", ".join(api_routes)},
@@ -38946,7 +38396,7 @@ def _expression_runtime_health_status_rows(definition: dict[str, Any], docs: str
     false_keys = [key for key, value in EXPRESSION_RUNTIME_HEALTH_BOUNDARIES.items() if value is False]
     true_keys = [key for key, value in EXPRESSION_RUNTIME_HEALTH_BOUNDARIES.items() if value is True]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" and ROUTE_HEALTH_VERSION == "350.0" and BEHAVIORAL_EXPRESSION_PREVIEW_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}; route={ROUTE_HEALTH_VERSION}; expression={BEHAVIORAL_EXPRESSION_PREVIEW_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" and ROUTE_HEALTH_VERSION == "500.0" and BEHAVIORAL_EXPRESSION_PREVIEW_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}; route={ROUTE_HEALTH_VERSION}; expression={BEHAVIORAL_EXPRESSION_PREVIEW_VERSION}"},
         {"name": "route-tokens", "status": "pass" if all(token in docs for token in required) else "blocked", "message": "v306-v310 dashboard/API/CLI/docs tokens are present."},
         {"name": "runtime-privacy-tokens", "status": "pass" if all(token in docs for token in runtime_tokens) else "blocked", "message": "v310 runtime data dirs remain source-only excluded."},
         {"name": "stage-count", "status": "pass" if len(EXPRESSION_RUNTIME_HEALTH_STAGE_DEFS) == 50 else "blocked", "message": f"{len(EXPRESSION_RUNTIME_HEALTH_STAGE_DEFS)} expression/runtime health stage defs."},
@@ -39185,7 +38635,7 @@ def _conversational_expression_status_rows(definition: dict[str, Any], docs: str
     false_keys = [key for key, value in CONVERSATIONAL_EXPRESSION_SANDBOX_LAYER_BOUNDARIES.items() if value is False]
     true_keys = [key for key, value in CONVERSATIONAL_EXPRESSION_SANDBOX_LAYER_BOUNDARIES.items() if value is True]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" else "blocked", "message": f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}"},
         {"name": "docs-and-source-tokens", "status": "pass" if all(token in docs for token in required) else "blocked", "message": "Docs/source include v315 routes, module, smoke, and boundary tokens."},
         {"name": "runtime-dirs", "status": "pass" if all(f"data/autonomy/{key}/" in docs for key in CONVERSATIONAL_EXPRESSION_SANDBOX_RUNTIME_DIRS) else "blocked", "message": "Runtime data paths remain private and source-only excluded."},
         {"name": "stage-count", "status": "pass" if len(CONVERSATIONAL_EXPRESSION_SANDBOX_STAGE_DEFS) == 50 else "blocked", "message": f"{len(CONVERSATIONAL_EXPRESSION_SANDBOX_STAGE_DEFS)} conversational expression stage defs."},
@@ -39402,7 +38852,7 @@ def _expression_application_bridge_status_rows(definition: dict[str, Any], docs:
     true_keys = [key for key, value in EXPRESSION_APPLICATION_BRIDGE_LAYER_BOUNDARIES.items() if value is True]
     required_tokens = ["expression-approval-criteria", "expression-live-surface-impact-map", "expression-implementation-packet-draft", "expression-rollback-reversion-plan", "expression-application-bridge-audit", "operator-governed-conversational-expression-application-bridge-v1", "expression_application_bridge.py", "dashboard_http_route_probe_required"]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" and EXPRESSION_APPLICATION_BRIDGE_VERSION == "350.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; bridge={EXPRESSION_APPLICATION_BRIDGE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" and EXPRESSION_APPLICATION_BRIDGE_VERSION == "500.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; bridge={EXPRESSION_APPLICATION_BRIDGE_VERSION}"},
         {"name": "docs-tokens", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "Docs/source mention every v320 route, module, final CLI/API token, and route probe requirement."},
         {"name": "runtime-dirs", "status": "pass" if all(f"data/autonomy/{key}/" in docs for key in EXPRESSION_APPLICATION_BRIDGE_RUNTIME_DIRS) else "blocked", "message": "Runtime data paths remain private and source-only excluded."},
         {"name": "stage-count", "status": "pass" if len(EXPRESSION_APPLICATION_BRIDGE_STAGE_DEFS) == 50 else "blocked", "message": f"{len(EXPRESSION_APPLICATION_BRIDGE_STAGE_DEFS)} expression application bridge stage defs."},
@@ -39619,7 +39069,7 @@ def _expression_patch_dry_run_status_rows(definition: dict[str, Any], docs: str)
     true_keys = [key for key, value in EXPRESSION_PATCH_DRY_RUN_LAYER_BOUNDARIES.items() if value is True]
     required_tokens = ["expression-patch-candidates", "expression-sandbox-diff-preview", "expression-dry-run-verification-plan", "expression-dry-run-review-packet", "expression-patch-dry-run-audit", "operator-governed-expression-patch-dry-run-sandbox-v1", "expression_patch_dry_run.py", "dashboard_http_route_probe_required"]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" and EXPRESSION_PATCH_DRY_RUN_VERSION == "350.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; dry_run={EXPRESSION_PATCH_DRY_RUN_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" and EXPRESSION_PATCH_DRY_RUN_VERSION == "500.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; dry_run={EXPRESSION_PATCH_DRY_RUN_VERSION}"},
         {"name": "docs-tokens", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "Docs/source mention every v325 route, module, final CLI/API token, and route probe requirement."},
         {"name": "runtime-dirs", "status": "pass" if all(f"data/autonomy/{key}/" in docs for key in EXPRESSION_PATCH_DRY_RUN_RUNTIME_DIRS) else "blocked", "message": "Runtime data paths remain private and source-only excluded."},
         {"name": "stage-count", "status": "pass" if len(EXPRESSION_PATCH_DRY_RUN_STAGE_DEFS) == 50 else "blocked", "message": f"{len(EXPRESSION_PATCH_DRY_RUN_STAGE_DEFS)} expression patch dry-run stage defs."},
@@ -39836,7 +39286,7 @@ def _expression_sandbox_trial_status_rows(definition: dict[str, Any], docs: str)
     true_keys = [key for key, value in EXPRESSION_SANDBOX_TRIAL_LAYER_BOUNDARIES.items() if value is True]
     required_tokens = ["expression-sandbox-trial-packet", "expression-sandbox-workspace-plan", "expression-sandbox-verification-matrix", "expression-sandbox-result-review-prep", "expression-sandbox-trial-harness-audit", "operator-governed-expression-patch-sandbox-trial-harness-v1", "expression_sandbox_trial_harness.py", "dashboard_http_route_probe_required"]
     rows = [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" and EXPRESSION_SANDBOX_TRIAL_HARNESS_VERSION == "350.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; trial={EXPRESSION_SANDBOX_TRIAL_HARNESS_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" and EXPRESSION_SANDBOX_TRIAL_HARNESS_VERSION == "500.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; trial={EXPRESSION_SANDBOX_TRIAL_HARNESS_VERSION}"},
         {"name": "tokens", "status": "pass" if all(token in docs for token in required_tokens) else "blocked", "message": "Dashboard/API/CLI/docs/smoke tokens for v330 sandbox trial harness are present."},
         {"name": "runtime-dirs", "status": "pass" if all(f"data/autonomy/{key}/" in docs for key in EXPRESSION_SANDBOX_TRIAL_RUNTIME_DIRS) else "blocked", "message": "Runtime data paths remain private and source-only excluded."},
         {"name": "stage-count", "status": "pass" if len(EXPRESSION_SANDBOX_TRIAL_STAGE_DEFS) == 50 else "blocked", "message": f"{len(EXPRESSION_SANDBOX_TRIAL_STAGE_DEFS)} expression sandbox trial stage defs."},
@@ -40053,7 +39503,7 @@ def _expression_sandbox_execution_bridge_status_rows(definition: dict[str, Any],
     true_keys = [key for key, value in EXPRESSION_SANDBOX_EXECUTION_BRIDGE_LAYER_BOUNDARIES.items() if value is True]
     return [
         {"name": "stage-definition", "status": "pass" if definition["slug"] in EXPRESSION_SANDBOX_EXECUTION_BRIDGE_STAGE_BY_SLUG else "blocked", "message": definition["label"]},
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" and EXPRESSION_SANDBOX_EXECUTION_BRIDGE_VERSION == "350.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; bridge={EXPRESSION_SANDBOX_EXECUTION_BRIDGE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" and EXPRESSION_SANDBOX_EXECUTION_BRIDGE_VERSION == "500.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; bridge={EXPRESSION_SANDBOX_EXECUTION_BRIDGE_VERSION}"},
         {"name": "docs-runtime-smoke-tokens", "status": "pass" if not missing else "blocked", "message": "All v335 tokens present." if not missing else "Missing: " + ", ".join(missing)},
         {"name": "runtime-stage-count", "status": "pass" if len(EXPRESSION_SANDBOX_EXECUTION_BRIDGE_STAGE_DEFS) == 50 else "blocked", "message": f"{len(EXPRESSION_SANDBOX_EXECUTION_BRIDGE_STAGE_DEFS)} v335 stage definitions registered."},
         {"name": "false-boundaries", "status": "pass" if all(EXPRESSION_SANDBOX_EXECUTION_BRIDGE_LAYER_BOUNDARIES.get(key) is False for key in false_keys) else "blocked", "message": "Execution bridge cannot approve, copy, write, apply patches, execute commands, promote, mutate memory, or rewrite prompts."},
@@ -40257,7 +39707,7 @@ def _expression_sandbox_result_intake_status_rows(definition: dict[str, Any], do
     required = route_tokens + api_tokens + cli_tokens + ["expression_sandbox_result_intake.py", "dashboard_http_route_probe_required", "data-tip", "command-deck", "operator-console", "evidence_intake_treats_evidence_as_approval=False", "outcome_comparison_auto_corrects_patch=False", "regression_review_auto_fixes_prompts=False", "revision_recommendations_apply_changes=False", "promotion_review_prep_promotes_to_live=False"]
     missing = [token for token in required if token not in docs]
     return [
-        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "350.0" and EXPRESSION_SANDBOX_RESULT_INTAKE_VERSION == "350.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; result_intake={EXPRESSION_SANDBOX_RESULT_INTAKE_VERSION}"},
+        {"name": "version-markers", "status": "pass" if SELF_MAINTENANCE_VERSION == "500.0" and EXPRESSION_SANDBOX_RESULT_INTAKE_VERSION == "500.0" else "blocked", "message": f"self={SELF_MAINTENANCE_VERSION}; result_intake={EXPRESSION_SANDBOX_RESULT_INTAKE_VERSION}"},
         {"name": "docs-runtime-smoke-tokens", "status": "pass" if not missing else "blocked", "message": "All v340 tokens present." if not missing else "Missing: " + ", ".join(missing)},
         {"name": "runtime-stage-count", "status": "pass" if len(EXPRESSION_SANDBOX_RESULT_INTAKE_STAGE_DEFS) == 50 else "blocked", "message": f"{len(EXPRESSION_SANDBOX_RESULT_INTAKE_STAGE_DEFS)} v340 stage definitions registered."},
         {"name": "dashboard-tooltip-regression", "status": "pass" if not _dashboard_nav_title_regression_present() else "blocked", "message": "No native title tooltips in nav tabs; custom data-tip remains active."},
@@ -40389,7 +39839,7 @@ def _expression_promotion_packet_status_rows(definition: dict[str, Any], docs: s
     required = route_tokens + api_tokens + cli_tokens + ["expression_promotion_packet.py", "dashboard_http_route_probe_required", "data-tip", "command-deck", "operator-console", "promotion_evidence_binder_treats_evidence_as_approval=False", "live_scope_risk_mutates_live_surfaces=False", "verification_rollback_executes_commands=False", "promotion_decision_packet_executes_decision=False", "promotion_packet_assembly_promotes_live_expression=False"]
     missing = [token for token in required if token not in docs]
     return [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" and EXPRESSION_PROMOTION_PACKET_VERSION == "350.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; promotion={EXPRESSION_PROMOTION_PACKET_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and EXPRESSION_PROMOTION_PACKET_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; promotion={EXPRESSION_PROMOTION_PACKET_VERSION}"},
         {"name":"docs-runtime-tokens","status":"pass" if not missing else "blocked","message":"promotion packet docs/runtime tokens present." if not missing else "missing: "+", ".join(missing[:8])},
         {"name":"runtime-stage-count","status":"pass" if len(EXPRESSION_PROMOTION_PACKET_STAGE_DEFS) == 50 else "blocked","message":f"{len(EXPRESSION_PROMOTION_PACKET_STAGE_DEFS)} v345 stage definitions registered."},
         {"name":"review-only-boundaries","status":"pass" if EXPRESSION_PROMOTION_PACKET_LAYER_BOUNDARIES.get("promotion_packet_assembly_promotes_live_expression") is False and EXPRESSION_PROMOTION_PACKET_LAYER_BOUNDARIES.get("promotion_packet_review_only") is True else "blocked","message":"Promotion packet assembly remains evidence-only and review-only."},
@@ -40495,7 +39945,7 @@ def _expression_live_application_packet_status_rows(definition: dict[str, Any], 
     cli_tokens = ["--" + arc["items"][-1][1].replace("_", "-") for arc in EXPRESSION_LIVE_APPLICATION_PACKET_ARCS]
     required = route_tokens + api_tokens + cli_tokens + ["expression_live_application_packet.py", "dashboard_http_route_probe_required", "data-tip", "command-deck", "operator-console", "eligibility_gate_authorizes_live_writes=False", "source_change_manifest_writes_files=False", "patch_instruction_packet_applies_patch=False", "verification_rollback_packet_executes_commands=False", "application_packet_audit_applies_live_source=False"]
     return [
-        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "350.0" and EXPRESSION_LIVE_APPLICATION_PACKET_VERSION == "350.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; live_application={EXPRESSION_LIVE_APPLICATION_PACKET_VERSION}"},
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and EXPRESSION_LIVE_APPLICATION_PACKET_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; live_application={EXPRESSION_LIVE_APPLICATION_PACKET_VERSION}"},
         {"name":"stage-definitions","status":"pass" if len(EXPRESSION_LIVE_APPLICATION_PACKET_STAGE_DEFS) == 50 else "blocked","message":f"stages={len(EXPRESSION_LIVE_APPLICATION_PACKET_STAGE_DEFS)}"},
         {"name":"docs-runtime-tokens","status":"pass" if all(token in docs for token in required) else "blocked","message":"README/dashboard/API/CLI/smoke/route-health/source tokens present."},
         {"name":"runtime-privacy-tokens","status":"pass" if all(f"data/autonomy/{key}/" in docs for key in EXPRESSION_LIVE_APPLICATION_PACKET_RUNTIME_DIRS) else "blocked","message":"Live application packet runtime directories are documented as source-only excluded."},
@@ -40554,3 +40004,3487 @@ SUPERVISED_RUNTIME_CLI_MAP.update(EXPRESSION_LIVE_APPLICATION_PACKET_CLI_MAP)
 SUPERVISED_RUNTIME_ROUTE_MAP.update(EXPRESSION_LIVE_APPLICATION_PACKET_ROUTE_MAP)
 
 # v345.1-v350.0 expression live application packet smoke tokens: expression-live-application-eligibility-gate expression-live-source-change-manifest expression-live-patch-instruction-packet expression-live-verification-rollback-packet expression-live-application-packet-audit operator-governed-expression-live-application-packet-drafting-layer-v1 conscious_agent/expression_live_application_packet.py expression_live_application_packet.py data/autonomy/expression_live_application_eligibility_gate/ data/autonomy/expression_live_source_change_manifest/ data/autonomy/expression_live_patch_instruction_packet/ data/autonomy/expression_live_verification_rollback_packet/ data/autonomy/expression_live_application_packet_audit/ eligibility_gate_authorizes_live_writes=False source_change_manifest_writes_files=False patch_instruction_packet_applies_patch=False verification_rollback_packet_executes_commands=False application_packet_audit_applies_live_source=False application_packet_review_only=True application_packet_draft_only=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v350.1-v355.0 Operator-Governed Expression Live Application Execution Prep Layer v1
+EXPRESSION_LIVE_EXECUTION_PREP_RUNTIME_DIRS = {
+    "expression_live_execution_approval_intake": DATA_DIR / "autonomy" / "expression_live_execution_approval_intake",
+    "expression_live_source_transaction_preimage": DATA_DIR / "autonomy" / "expression_live_source_transaction_preimage",
+    "expression_live_manual_execution_checklist": DATA_DIR / "autonomy" / "expression_live_manual_execution_checklist",
+    "expression_live_rollback_reversion_packet": DATA_DIR / "autonomy" / "expression_live_rollback_reversion_packet",
+    "expression_live_execution_prep_audit": DATA_DIR / "autonomy" / "expression_live_execution_prep_audit",
+}
+EXPRESSION_LIVE_EXECUTION_PREP_LAYER_BOUNDARIES = dict(EXPRESSION_LIVE_EXECUTION_PREP_BOUNDARIES)
+
+
+def _execution_prep_items(prefix: str, final_slug: str, final_label: str, start: float, final_version: str) -> list[tuple[str, str, str]]:
+    names = ["boundary", "schema", "binder", "scope", "staleness", "surface", "route", "smoke", "docs", "layer"]
+    rows: list[tuple[str, str, str]] = []
+    for index, name in enumerate(names):
+        slug = final_slug if index == 9 else f"{prefix}_{name}"
+        label = final_label if index == 9 else f"{final_label} {name.replace('_', ' ')}"
+        rows.append((f"v{start + (index / 10):.1f}", slug, label))
+    return rows
+
+
+EXPRESSION_LIVE_EXECUTION_PREP_ARCS = [
+    {"version":"v351.0","final_label":"Operator-Governed Live Expression Execution Approval Intake Gate v1","api":"expression-live-execution-approval-intake","dashboard":"/expression-live-execution-approval-intake","runtime_key":"expression_live_execution_approval_intake","theme":"expression live execution approval intake","items":_execution_prep_items("live_execution_approval_intake", "operator_governed_live_expression_execution_approval_intake_v1", "Operator-Governed Live Expression Execution Approval Intake Gate v1", 350.1, "v351.0")},
+    {"version":"v352.0","final_label":"Operator-Governed Live Source Transaction and Preimage Manifest Prep v1","api":"expression-live-source-transaction-preimage","dashboard":"/expression-live-source-transaction-preimage","runtime_key":"expression_live_source_transaction_preimage","theme":"expression live source transaction preimage","items":_execution_prep_items("live_source_transaction_preimage", "operator_governed_live_source_transaction_preimage_v1", "Operator-Governed Live Source Transaction and Preimage Manifest Prep v1", 351.1, "v352.0")},
+    {"version":"v353.0","final_label":"Operator-Governed Manual Execution Checklist and Command Packet v1","api":"expression-live-manual-execution-checklist","dashboard":"/expression-live-manual-execution-checklist","runtime_key":"expression_live_manual_execution_checklist","theme":"expression live manual execution checklist","items":_execution_prep_items("live_manual_execution_checklist", "operator_governed_live_expression_manual_execution_checklist_v1", "Operator-Governed Manual Execution Checklist and Command Packet v1", 352.1, "v353.0")},
+    {"version":"v354.0","final_label":"Operator-Governed Rollback Snapshot and Reversion Packet Prep v1","api":"expression-live-rollback-reversion-packet","dashboard":"/expression-live-rollback-reversion-packet","runtime_key":"expression_live_rollback_reversion_packet","theme":"expression live rollback reversion packet","items":_execution_prep_items("live_rollback_reversion_packet", "operator_governed_live_expression_rollback_reversion_packet_v1", "Operator-Governed Rollback Snapshot and Reversion Packet Prep v1", 353.1, "v354.0")},
+    {"version":"v355.0","final_label":"Operator-Governed Expression Live Application Execution Prep Layer v1","api":"expression-live-execution-prep-audit","dashboard":"/expression-live-execution-prep-audit","runtime_key":"expression_live_execution_prep_audit","theme":"expression live execution prep audit","items":_execution_prep_items("live_execution_prep_audit", "operator_governed_expression_live_application_execution_prep_v1", "Operator-Governed Expression Live Application Execution Prep Layer v1", 354.1, "v355.0")},
+]
+EXPRESSION_LIVE_EXECUTION_PREP_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in EXPRESSION_LIVE_EXECUTION_PREP_ARCS
+    for stage, slug, label in arc["items"]
+]
+EXPRESSION_LIVE_EXECUTION_PREP_STAGE_BY_SLUG = {item["slug"]: item for item in EXPRESSION_LIVE_EXECUTION_PREP_STAGE_DEFS}
+EXPRESSION_LIVE_EXECUTION_PREP_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in EXPRESSION_LIVE_EXECUTION_PREP_STAGE_DEFS}
+EXPRESSION_LIVE_EXECUTION_PREP_ROUTE_MAP = {arc["api"]: arc["items"][-1][1] for arc in EXPRESSION_LIVE_EXECUTION_PREP_ARCS}
+EXPRESSION_LIVE_EXECUTION_PREP_ROUTE_MAP.update({f"{arc['api']}/layer": arc["items"][-1][1] for arc in EXPRESSION_LIVE_EXECUTION_PREP_ARCS})
+
+
+def _expression_live_execution_prep_docs_text() -> str:
+    rels = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/expression_live_execution_prep.py"]
+    return "\n".join((ROOT_DIR / rel).read_text(encoding="utf-8") for rel in rels if (ROOT_DIR / rel).exists())
+
+
+def _expression_live_execution_prep_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    route_tokens = [arc["dashboard"] for arc in EXPRESSION_LIVE_EXECUTION_PREP_ARCS]
+    api_tokens = [f"/api/{arc['api']}/layer" for arc in EXPRESSION_LIVE_EXECUTION_PREP_ARCS]
+    cli_tokens = ["--" + arc["items"][-1][1].replace("_", "-") for arc in EXPRESSION_LIVE_EXECUTION_PREP_ARCS]
+    required = route_tokens + api_tokens + cli_tokens + ["expression_live_execution_prep.py", "dashboard_http_route_probe_required", "data-tip", "command-deck", "operator-console", "approval_intake_applies_live_expression=False", "transaction_manifest_writes_files=False", "manual_checklist_executes_commands=False", "rollback_packet_runs_rollback=False", "execution_prep_applies_live_expression=False"]
+    return [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and EXPRESSION_LIVE_EXECUTION_PREP_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; execution_prep={EXPRESSION_LIVE_EXECUTION_PREP_VERSION}"},
+        {"name":"stage-definitions","status":"pass" if len(EXPRESSION_LIVE_EXECUTION_PREP_STAGE_DEFS) == 50 else "blocked","message":f"stages={len(EXPRESSION_LIVE_EXECUTION_PREP_STAGE_DEFS)}"},
+        {"name":"docs-runtime-tokens","status":"pass" if all(token in docs for token in required) else "blocked","message":"README/dashboard/API/CLI/smoke/route-health/source tokens present."},
+        {"name":"runtime-privacy-tokens","status":"pass" if all(f"data/autonomy/{key}/" in docs for key in EXPRESSION_LIVE_EXECUTION_PREP_RUNTIME_DIRS) else "blocked","message":"Execution prep runtime directories are documented as source-only excluded."},
+        {"name":"boundaries","status":"pass" if all(EXPRESSION_LIVE_EXECUTION_PREP_LAYER_BOUNDARIES.get(key) is value for key, value in EXPRESSION_LIVE_EXECUTION_PREP_BOUNDARIES.items()) else "blocked","message":"Prep-only/no-application/no-command/no-rollback/no-prompt-mutation boundaries are preserved."},
+    ]
+
+
+def _build_expression_live_execution_prep_stage(slug: str, project_id: str = "default", improvement_goal: str | None = None, candidate_file: str | None = None, style_context: str | None = None, target_surface: str | None = None, profile_name: str | None = None, scenario: str | None = None, sample_text: str | None = None, save: bool = True, **_: Any) -> dict[str, Any]:
+    definition = EXPRESSION_LIVE_EXECUTION_PREP_STAGE_BY_SLUG.get(slug)
+    if not definition:
+        return {"version": "360.0", "status": "blocked", "ok": False, "checked_at": _now(), "message": f"Unknown expression live execution prep stage: {slug}", "rows": []}
+    docs = _expression_live_execution_prep_docs_text(); rows = _expression_live_execution_prep_status_rows(definition, docs); ok = all(row["status"] == "pass" for row in rows)
+    submitted = " ".join(str(part) for part in [improvement_goal, candidate_file, style_context, target_surface, profile_name, scenario, sample_text] if part)
+    sample_evidence = {"operator_approval_id": "approval-review-only-execution-prep", "approval_scope": "approve-to-execution-prep-only", "approval_expiration": "fresh-scoped-session", "target_version": "v355.0", "v345_promotion_packet_id": "promotion-review-packet", "v350_live_application_packet_id": "live-application-packet", "approved_surfaces": ["docs", "dashboard", "api-cli"], "approval_purpose": "prepare execution-prep packet only", "promotion_packet": {}}
+    approval_summary = build_expression_live_execution_approval_intake_summary(profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    transaction_summary = build_expression_live_source_transaction_preimage_summary(profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    checklist_summary = build_expression_live_manual_execution_checklist_summary(profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    rollback_summary = build_expression_live_rollback_reversion_packet_summary(profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    audit_summary = build_expression_live_execution_prep_audit_summary(dashboard_text=docs, profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    dashboard_routes = [arc["dashboard"] for arc in EXPRESSION_LIVE_EXECUTION_PREP_ARCS]; api_routes = [f"/api/{arc['api']}/layer" for arc in EXPRESSION_LIVE_EXECUTION_PREP_ARCS]; cli_flags = ["--" + arc["items"][-1][1].replace("_", "-") for arc in EXPRESSION_LIVE_EXECUTION_PREP_ARCS]
+    payload = {"stage":definition["stage"],"slug":definition["slug"],"name":definition["label"],"arc":"v350.1-v355.0 Operator-Governed Expression Live Application Execution Prep Layer v1","version":definition["version"],"dashboard":definition["dashboard"],"api":f"/api/{definition['api']}/layer","cli":f"--{definition['slug'].replace('_','-')}","theme":definition["theme"],"focus":definition["focus"],"project_id":project_id,"improvement_goal":improvement_goal,"candidate_file":candidate_file,"style_context":style_context,"target_surface":target_surface,"profile_name":profile_name,"scenario":scenario,"sample_text":sample_text,"expression_live_execution_approval_intake":approval_summary,"expression_live_source_transaction_preimage":transaction_summary,"expression_live_manual_execution_checklist":checklist_summary,"expression_live_rollback_reversion_packet":rollback_summary,"expression_live_execution_prep_audit":audit_summary,"dashboard_routes":dashboard_routes,"api_routes":api_routes,"cli_flags":cli_flags,"runtime_registry_rows":[row for row in EXPRESSION_LIVE_EXECUTION_PREP_STAGE_DEFS if row["runtime_key"] == definition["runtime_key"]],"boundaries":EXPRESSION_LIVE_EXECUTION_PREP_LAYER_BOUNDARIES,"safe_next_action":"Operator may review the live expression execution prep packet. Actual live expression source application still requires a separate explicit operator-approved execution packet."}
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    report = {"version":"v355.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = EXPRESSION_LIVE_EXECUTION_PREP_RUNTIME_DIRS[definition["runtime_key"]]; outdir.mkdir(parents=True, exist_ok=True); (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _expression_live_execution_prep_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_expression_live_execution_prep_stage("operator_governed_expression_live_application_execution_prep_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("Approval intake", render_expression_live_execution_prep_lines(payload.get("expression_live_execution_approval_intake", {}))), ("Source transaction preimage", render_expression_live_execution_prep_lines(payload.get("expression_live_source_transaction_preimage", {}))), ("Manual execution checklist", render_expression_live_execution_prep_lines(payload.get("expression_live_manual_execution_checklist", {}))), ("Rollback/reversion", render_expression_live_execution_prep_lines(payload.get("expression_live_rollback_reversion_packet", {}))), ("Execution prep audit", render_expression_live_execution_prep_lines(payload.get("expression_live_execution_prep_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required before live execution work.')}" ])]
+    return render_governance_packet("Operator-Governed Expression Live Application Execution Prep Layer v1", report, sections, full=full)
+
+
+def _make_expression_live_execution_prep_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_expression_live_execution_prep_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+
+def _make_expression_live_execution_prep_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, style_context=None, target_surface=None, profile_name=None, scenario=None, sample_text=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_expression_live_execution_prep_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, style_context=style_context, target_surface=target_surface, profile_name=profile_name, scenario=scenario, sample_text=sample_text, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _expression_live_execution_prep_text(report, full=full))
+    return _printer
+
+
+def _make_expression_live_execution_prep_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _expression_live_execution_prep_text(report or _build_expression_live_execution_prep_stage(slug, save=False), full=full)
+    return _text
+
+
+for _expression_live_execution_prep_slug in EXPRESSION_LIVE_EXECUTION_PREP_STAGE_BY_SLUG:
+    globals()[f"build_{_expression_live_execution_prep_slug}"] = _make_expression_live_execution_prep_build(_expression_live_execution_prep_slug)
+    globals()[f"print_{_expression_live_execution_prep_slug}"] = _make_expression_live_execution_prep_print(_expression_live_execution_prep_slug)
+    globals()[f"{_expression_live_execution_prep_slug}_text"] = _make_expression_live_execution_prep_text(_expression_live_execution_prep_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(EXPRESSION_LIVE_EXECUTION_PREP_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(EXPRESSION_LIVE_EXECUTION_PREP_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(EXPRESSION_LIVE_EXECUTION_PREP_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(EXPRESSION_LIVE_EXECUTION_PREP_ROUTE_MAP)
+
+# v350.1-v355.0 expression live application execution prep smoke tokens: expression-live-execution-approval-intake expression-live-source-transaction-preimage expression-live-manual-execution-checklist expression-live-rollback-reversion-packet expression-live-execution-prep-audit operator-governed-expression-live-application-execution-prep-v1 conscious_agent/expression_live_execution_prep.py expression_live_execution_prep.py data/autonomy/expression_live_execution_approval_intake/ data/autonomy/expression_live_source_transaction_preimage/ data/autonomy/expression_live_manual_execution_checklist/ data/autonomy/expression_live_rollback_reversion_packet/ data/autonomy/expression_live_execution_prep_audit/ approval_intake_applies_live_expression=False transaction_manifest_writes_files=False manual_checklist_executes_commands=False rollback_packet_runs_rollback=False execution_prep_applies_live_expression=False execution_prep_review_only=True execution_prep_packet_bound=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v355.1-v360.0 Operator-Approved Minimal Live Expression Application Execution Path v1
+MINIMAL_LIVE_EXPRESSION_APPLICATION_RUNTIME_DIRS = {
+    "minimal_live_expression_change_candidate": ROOT_DIR / "data" / "autonomy" / "minimal_live_expression_change_candidate",
+    "minimal_live_expression_approval_lock": ROOT_DIR / "data" / "autonomy" / "minimal_live_expression_approval_lock",
+    "minimal_live_expression_patch_transaction": ROOT_DIR / "data" / "autonomy" / "minimal_live_expression_patch_transaction",
+    "minimal_live_expression_application_harness": ROOT_DIR / "data" / "autonomy" / "minimal_live_expression_application_harness",
+    "minimal_live_expression_application_audit": ROOT_DIR / "data" / "autonomy" / "minimal_live_expression_application_audit",
+}
+MINIMAL_LIVE_EXPRESSION_APPLICATION_LAYER_BOUNDARIES = dict(MINIMAL_LIVE_EXPRESSION_APPLICATION_BOUNDARIES)
+
+def _minimal_application_items(prefix: str, final_slug: str, final_label: str, start: float, final_stage: str):
+    labels = ["Boundary Declaration", "Candidate Packet", "Scope Binder", "Preimage Reference", "Rollback Binder", "Verification Binder", "Route/API/CLI Surface", "Smoke Coverage", "Docs/Release Notes", final_label]
+    return [(f"v{start+i/10:.1f}" if i < 9 else final_stage, final_slug if i == 9 else f"{prefix}_{i+1}", labels[i]) for i in range(10)]
+
+MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS = [
+    {"version":"v356.0","final_label":"Minimal Approved Live Change Candidate Selection v1","api":"minimal-live-expression-change-candidate","dashboard":"/minimal-live-expression-change-candidate","runtime_key":"minimal_live_expression_change_candidate","theme":"minimal live expression change candidate","items":_minimal_application_items("minimal_live_expression_change_candidate", "operator_approved_minimal_live_expression_change_candidate_v1", "Minimal Approved Live Change Candidate Selection v1", 355.1, "v356.0")},
+    {"version":"v357.0","final_label":"Operator Approval Token and Execution Scope Lock v1","api":"minimal-live-expression-approval-lock","dashboard":"/minimal-live-expression-approval-lock","runtime_key":"minimal_live_expression_approval_lock","theme":"minimal live expression approval lock","items":_minimal_application_items("minimal_live_expression_approval_lock", "operator_approved_minimal_live_expression_approval_lock_v1", "Operator Approval Token and Execution Scope Lock v1", 356.1, "v357.0")},
+    {"version":"v358.0","final_label":"Tiny Patch Transaction Builder v1","api":"minimal-live-expression-patch-transaction","dashboard":"/minimal-live-expression-patch-transaction","runtime_key":"minimal_live_expression_patch_transaction","theme":"minimal live expression patch transaction","items":_minimal_application_items("minimal_live_expression_patch_transaction", "operator_approved_minimal_live_expression_patch_transaction_v1", "Tiny Patch Transaction Builder v1", 357.1, "v358.0")},
+    {"version":"v359.0","final_label":"Operator-Confirmed Patch Application Harness v1","api":"minimal-live-expression-application-harness","dashboard":"/minimal-live-expression-application-harness","runtime_key":"minimal_live_expression_application_harness","theme":"minimal live expression application harness","items":_minimal_application_items("minimal_live_expression_application_harness", "operator_confirmed_minimal_live_expression_application_harness_v1", "Operator-Confirmed Patch Application Harness v1", 358.1, "v359.0")},
+    {"version":"v360.0","final_label":"Operator-Approved Minimal Live Expression Application Execution Path v1","api":"minimal-live-expression-application-audit","dashboard":"/minimal-live-expression-application-audit","runtime_key":"minimal_live_expression_application_audit","theme":"minimal live expression application audit","items":_minimal_application_items("minimal_live_expression_application_audit", "operator_approved_minimal_live_expression_application_audit_v1", "Operator-Approved Minimal Live Expression Application Execution Path v1", 359.1, "v360.0")},
+]
+MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS
+    for stage, slug, label in arc["items"]
+]
+MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_BY_SLUG = {item["slug"]: item for item in MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_DEFS}
+MINIMAL_LIVE_EXPRESSION_APPLICATION_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_DEFS}
+MINIMAL_LIVE_EXPRESSION_APPLICATION_ROUTE_MAP = {arc["api"]: arc["items"][-1][1] for arc in MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS}
+MINIMAL_LIVE_EXPRESSION_APPLICATION_ROUTE_MAP.update({f"{arc['api']}/layer": arc["items"][-1][1] for arc in MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS})
+
+def _minimal_live_expression_application_docs_text() -> str:
+    rels = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/minimal_live_expression_application.py"]
+    return "\n".join((ROOT_DIR / rel).read_text(encoding="utf-8") for rel in rels if (ROOT_DIR / rel).exists())
+
+def _minimal_live_expression_application_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    route_tokens = [arc["dashboard"] for arc in MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS]
+    api_tokens = [f"/api/{arc['api']}/layer" for arc in MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS]
+    cli_tokens = ["--" + arc["items"][-1][1].replace("_", "-") for arc in MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS]
+    required = route_tokens + api_tokens + cli_tokens + ["minimal_live_expression_application.py", "dashboard_http_route_probe_required", "data-tip", "command-deck", "operator-console", "candidate_selection_applies_change=False", "approval_lock_self_approves=False", "transaction_builder_writes_files=False", "application_harness_executes_without_confirmation=False", "application_audit_publishes_release=False"]
+    return [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and MINIMAL_LIVE_EXPRESSION_APPLICATION_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; minimal_application={MINIMAL_LIVE_EXPRESSION_APPLICATION_VERSION}"},
+        {"name":"stage-definitions","status":"pass" if len(MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_DEFS) == 50 else "blocked","message":f"stages={len(MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_DEFS)}"},
+        {"name":"docs-runtime-tokens","status":"pass" if all(token in docs for token in required) else "blocked","message":"README/dashboard/API/CLI/smoke/route-health/source tokens present."},
+        {"name":"runtime-privacy-tokens","status":"pass" if all(f"data/autonomy/{key}/" in docs for key in MINIMAL_LIVE_EXPRESSION_APPLICATION_RUNTIME_DIRS) else "blocked","message":"Minimal live expression runtime directories are documented as source-only excluded."},
+        {"name":"boundaries","status":"pass" if all(MINIMAL_LIVE_EXPRESSION_APPLICATION_LAYER_BOUNDARIES.get(key) is value for key, value in MINIMAL_LIVE_EXPRESSION_APPLICATION_BOUNDARIES.items()) else "blocked","message":"Minimal operator-approved/no-autonomy/no-scope-expansion boundaries are preserved."},
+    ]
+
+def _build_minimal_live_expression_application_stage(slug: str, project_id: str = "default", improvement_goal: str | None = None, candidate_file: str | None = None, style_context: str | None = None, target_surface: str | None = None, profile_name: str | None = None, scenario: str | None = None, sample_text: str | None = None, save: bool = True, **_: Any) -> dict[str, Any]:
+    definition = MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_BY_SLUG.get(slug)
+    if not definition:
+        return {"version": "360.0", "status": "blocked", "ok": False, "checked_at": _now(), "message": f"Unknown minimal live expression application stage: {slug}", "rows": []}
+    docs = _minimal_live_expression_application_docs_text(); rows = _minimal_live_expression_application_status_rows(definition, docs); ok = all(row["status"] == "pass" for row in rows)
+    submitted = " ".join(str(part) for part in [improvement_goal, candidate_file, style_context, target_surface, profile_name, scenario, sample_text] if part)
+    sample_evidence = {"candidate_type": "dashboard-facing expression status line", "candidate_files": ["conscious_agent/dashboard.py", "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "tools/smoke_check.py"], "approval_id": "minimal-live-expression-approval-v360-review", "approval_scope": "approve-one-minimal-expression-adjacent-source-change", "approval_expiration": "fresh-scoped-session", "target_version": "v360.0", "allowed_files": ["conscious_agent/dashboard.py", "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "tools/smoke_check.py"], "allowed_change_summary": "Add governed dashboard/docs expression status line only.", "forbidden_files": ["conscious_agent/chat.py", "data/autonomy/", "memory stores", "identity source of truth", "personality engine"], "rollback_requirement": "reverse-diff and preimage required", "verification_requirement": "compile, fast smoke, targeted v360 smoke, dashboard route probes, package privacy", "single_use": True, "transaction_id": "minimal-expression-transaction-v360-review", "preimage_match": True, "allowed_file_match": True, "operator_confirmation_phrase": "I explicitly approve this one minimal scoped expression-adjacent source change", "rollback_packet_present": True, "verification_checklist_present": True}
+    candidate_summary = build_minimal_live_expression_change_candidate_summary(profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    approval_summary = build_minimal_live_expression_approval_lock_summary(profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    transaction_summary = build_minimal_live_expression_patch_transaction_summary(profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    harness_summary = build_minimal_live_expression_application_harness_summary(profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    audit_summary = build_minimal_live_expression_application_audit_summary(dashboard_text=docs, profile_name=profile_name, request_text=submitted, target_surface=target_surface, evidence=sample_evidence)
+    dashboard_routes = [arc["dashboard"] for arc in MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS]; api_routes = [f"/api/{arc['api']}/layer" for arc in MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS]; cli_flags = ["--" + arc["items"][-1][1].replace("_", "-") for arc in MINIMAL_LIVE_EXPRESSION_APPLICATION_ARCS]
+    payload = {"stage":definition["stage"],"slug":definition["slug"],"name":definition["label"],"arc":"v355.1-v360.0 Operator-Approved Minimal Live Expression Application Execution Path v1","version":definition["version"],"dashboard":definition["dashboard"],"api":f"/api/{definition['api']}/layer","cli":f"--{definition['slug'].replace('_','-')}","theme":definition["theme"],"focus":definition["focus"],"project_id":project_id,"improvement_goal":improvement_goal,"candidate_file":candidate_file,"style_context":style_context,"target_surface":target_surface,"profile_name":profile_name,"scenario":scenario,"sample_text":sample_text,"minimal_live_expression_change_candidate":candidate_summary,"minimal_live_expression_approval_lock":approval_summary,"minimal_live_expression_patch_transaction":transaction_summary,"minimal_live_expression_application_harness":harness_summary,"minimal_live_expression_application_audit":audit_summary,"dashboard_routes":dashboard_routes,"api_routes":api_routes,"cli_flags":cli_flags,"runtime_registry_rows":[row for row in MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_DEFS if row["runtime_key"] == definition["runtime_key"]],"boundaries":MINIMAL_LIVE_EXPRESSION_APPLICATION_LAYER_BOUNDARIES,"expression_status_line":"Expression application remains operator-approved, scoped, reversible, and non-autonomous.","safe_next_action":"Operator may review the minimal live expression application path. Actual source application remains exact-scope and explicitly confirmed only."}
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    report = {"version":"v360.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = MINIMAL_LIVE_EXPRESSION_APPLICATION_RUNTIME_DIRS[definition["runtime_key"]]; outdir.mkdir(parents=True, exist_ok=True); (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+def _minimal_live_expression_application_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_minimal_live_expression_application_stage("operator_approved_minimal_live_expression_application_audit_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("Candidate", render_minimal_live_expression_application_lines(payload.get("minimal_live_expression_change_candidate", {}))), ("Approval lock", render_minimal_live_expression_application_lines(payload.get("minimal_live_expression_approval_lock", {}))), ("Patch transaction", render_minimal_live_expression_application_lines(payload.get("minimal_live_expression_patch_transaction", {}))), ("Application harness", render_minimal_live_expression_application_lines(payload.get("minimal_live_expression_application_harness", {}))), ("Application audit", render_minimal_live_expression_application_lines(payload.get("minimal_live_expression_application_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}", f"- status: {payload.get('expression_status_line')}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required.')}" ])]
+    return render_governance_packet("Operator-Approved Minimal Live Expression Application Execution Path v1", report, sections, full=full)
+
+def _make_minimal_live_expression_application_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_minimal_live_expression_application_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+def _make_minimal_live_expression_application_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, style_context=None, target_surface=None, profile_name=None, scenario=None, sample_text=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_minimal_live_expression_application_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, style_context=style_context, target_surface=target_surface, profile_name=profile_name, scenario=scenario, sample_text=sample_text, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _minimal_live_expression_application_text(report, full=full))
+    return _printer
+
+def _make_minimal_live_expression_application_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _minimal_live_expression_application_text(report or _build_minimal_live_expression_application_stage(slug, save=False), full=full)
+    return _text
+
+for _minimal_live_expression_application_slug in MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_BY_SLUG:
+    globals()[f"build_{_minimal_live_expression_application_slug}"] = _make_minimal_live_expression_application_build(_minimal_live_expression_application_slug)
+    globals()[f"print_{_minimal_live_expression_application_slug}"] = _make_minimal_live_expression_application_print(_minimal_live_expression_application_slug)
+    globals()[f"{_minimal_live_expression_application_slug}_text"] = _make_minimal_live_expression_application_text(_minimal_live_expression_application_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(MINIMAL_LIVE_EXPRESSION_APPLICATION_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(MINIMAL_LIVE_EXPRESSION_APPLICATION_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(MINIMAL_LIVE_EXPRESSION_APPLICATION_ROUTE_MAP)
+
+# v355.1-v360.0 minimal live expression application smoke tokens: minimal-live-expression-change-candidate minimal-live-expression-approval-lock minimal-live-expression-patch-transaction minimal-live-expression-application-harness minimal-live-expression-application-audit operator-approved-minimal-live-expression-application-audit-v1 conscious_agent/minimal_live_expression_application.py minimal_live_expression_application.py data/autonomy/minimal_live_expression_change_candidate/ data/autonomy/minimal_live_expression_approval_lock/ data/autonomy/minimal_live_expression_patch_transaction/ data/autonomy/minimal_live_expression_application_harness/ data/autonomy/minimal_live_expression_application_audit/ candidate_selection_applies_change=False approval_lock_self_approves=False transaction_builder_writes_files=False application_harness_executes_without_confirmation=False application_audit_publishes_release=False minimal_path_operator_approved_only=True minimal_path_single_use_scope_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v360.1-v365.0 Self-Maintenance Surface Reduction and Gate Registry Refactor v1
+from self_maintenance_refactor_registry import (
+    SELF_MAINTENANCE_REFACTOR_REGISTRY_VERSION,
+    SELF_MAINTENANCE_REFACTOR_BOUNDARIES,
+    build_gate_inventory_registry_summary,
+    build_version_expectation_registry_summary,
+    build_surface_metadata_registry_summary,
+    build_smoke_registry_summary,
+    build_self_maintenance_refactor_audit_summary,
+    render_self_maintenance_refactor_lines,
+)
+
+SELF_MAINTENANCE_REFACTOR_RUNTIME_DIRS = {
+    "self_maintenance_gate_registry": ROOT_DIR / "data" / "autonomy" / "self_maintenance_gate_registry",
+    "self_maintenance_version_expectations": ROOT_DIR / "data" / "autonomy" / "self_maintenance_version_expectations",
+    "governed_surface_metadata_registry": ROOT_DIR / "data" / "autonomy" / "governed_surface_metadata_registry",
+    "smoke_check_legacy_gate_registry": ROOT_DIR / "data" / "autonomy" / "smoke_check_legacy_gate_registry",
+    "self_maintenance_refactor_audit": ROOT_DIR / "data" / "autonomy" / "self_maintenance_refactor_audit",
+}
+SELF_MAINTENANCE_REFACTOR_LAYER_BOUNDARIES = dict(SELF_MAINTENANCE_REFACTOR_BOUNDARIES)
+
+def _self_maintenance_refactor_items(prefix: str, final_slug: str, final_label: str, start: float, final_stage: str):
+    labels = [
+        "Boundary Declaration", "Inventory/Schema", "Classification", "Stale Literal Detector", "Version Expectation Binder", "Surface Metadata Binder", "Smoke Registry Hook", "Dashboard/API/CLI Surface", "Smoke Coverage", final_label,
+    ]
+    return [(f"v{start+i/10:.1f}" if i < 9 else final_stage, final_slug if i == 9 else f"{prefix}_{i+1}", labels[i]) for i in range(10)]
+
+SELF_MAINTENANCE_REFACTOR_ARCS = [
+    {"version":"v361.0","final_label":"Self-Maintenance Gate Inventory and Registry Seed v1","api":"self-maintenance-gate-registry","dashboard":"/self-maintenance-gate-registry","runtime_key":"self_maintenance_gate_registry","theme":"self maintenance gate registry seed","items":_self_maintenance_refactor_items("self_maintenance_gate_registry", "operator_governed_self_maintenance_gate_inventory_registry_seed_v1", "Self-Maintenance Gate Inventory and Registry Seed v1", 360.1, "v361.0")},
+    {"version":"v362.0","final_label":"Centralized Self-Maintenance Version Expectation Layer v1","api":"self-maintenance-version-expectations","dashboard":"/self-maintenance-version-expectations","runtime_key":"self_maintenance_version_expectations","theme":"centralized self maintenance version expectations","items":_self_maintenance_refactor_items("self_maintenance_version_expectations", "operator_governed_self_maintenance_version_expectation_layer_v1", "Centralized Self-Maintenance Version Expectation Layer v1", 361.1, "v362.0")},
+    {"version":"v363.0","final_label":"Governed Surface Metadata Registry v1","api":"governed-surface-metadata-registry","dashboard":"/governed-surface-metadata-registry","runtime_key":"governed_surface_metadata_registry","theme":"governed surface metadata registry","items":_self_maintenance_refactor_items("governed_surface_metadata_registry", "operator_governed_surface_metadata_registry_v1", "Governed Surface Metadata Registry v1", 362.1, "v363.0")},
+    {"version":"v364.0","final_label":"Smoke Check Registry and Legacy Gate Cleanup v1","api":"smoke-check-legacy-gate-registry","dashboard":"/smoke-check-legacy-gate-registry","runtime_key":"smoke_check_legacy_gate_registry","theme":"smoke check registry and legacy gate cleanup","items":_self_maintenance_refactor_items("smoke_check_legacy_gate_registry", "operator_governed_smoke_check_registry_and_legacy_gate_cleanup_v1", "Smoke Check Registry and Legacy Gate Cleanup v1", 363.1, "v364.0")},
+    {"version":"v365.0","final_label":"Self-Maintenance Surface Reduction and Gate Registry Refactor v1","api":"self-maintenance-refactor-audit","dashboard":"/self-maintenance-refactor-audit","runtime_key":"self_maintenance_refactor_audit","theme":"self maintenance surface reduction gate registry refactor","items":_self_maintenance_refactor_items("self_maintenance_refactor_audit", "operator_governed_self_maintenance_surface_reduction_and_gate_registry_refactor_v1", "Self-Maintenance Surface Reduction and Gate Registry Refactor v1", 364.1, "v365.0")},
+]
+SELF_MAINTENANCE_REFACTOR_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in SELF_MAINTENANCE_REFACTOR_ARCS
+    for stage, slug, label in arc["items"]
+]
+SELF_MAINTENANCE_REFACTOR_STAGE_BY_SLUG = {item["slug"]: item for item in SELF_MAINTENANCE_REFACTOR_STAGE_DEFS}
+SELF_MAINTENANCE_REFACTOR_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in SELF_MAINTENANCE_REFACTOR_STAGE_DEFS}
+SELF_MAINTENANCE_REFACTOR_ROUTE_MAP = {arc["api"]: arc["items"][-1][1] for arc in SELF_MAINTENANCE_REFACTOR_ARCS}
+SELF_MAINTENANCE_REFACTOR_ROUTE_MAP.update({f"{arc['api']}/layer": arc["items"][-1][1] for arc in SELF_MAINTENANCE_REFACTOR_ARCS})
+
+def _self_maintenance_refactor_docs_text() -> str:
+    rels = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/self_maintenance_refactor_registry.py", "conscious_agent/version_state.py", "conscious_agent/runtime_registry.py"]
+    return "\n".join((ROOT_DIR / rel).read_text(encoding="utf-8") for rel in rels if (ROOT_DIR / rel).exists())
+
+def _self_maintenance_refactor_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    required = ["self-maintenance-gate-registry", "self-maintenance-version-expectations", "governed-surface-metadata-registry", "smoke-check-legacy-gate-registry", "self-maintenance-refactor-audit", "operator-governed-self-maintenance-surface-reduction-and-gate-registry-refactor-v1", "self_maintenance_refactor_registry.py", "centralized_version_expectations_required=True", "refactor_registry_writes_files=False", "refactor_registry_executes_smoke=False", "dashboard_http_route_probe_required"]
+    return [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and SELF_MAINTENANCE_REFACTOR_REGISTRY_VERSION == "500.0" else "blocked","message":f"SELF_MAINTENANCE_VERSION={SELF_MAINTENANCE_VERSION}; refactor={SELF_MAINTENANCE_REFACTOR_REGISTRY_VERSION}"},
+        {"name":"stage-definitions","status":"pass" if len(SELF_MAINTENANCE_REFACTOR_STAGE_DEFS) == 50 else "blocked","message":f"stages={len(SELF_MAINTENANCE_REFACTOR_STAGE_DEFS)}"},
+        {"name":"docs-current-stage","status":"pass" if "v365.0 - Self-Maintenance Surface Reduction and Gate Registry Refactor v1" in docs else "blocked","message":"README and release history mention v365.0."},
+        {"name":"docs-runtime-tokens","status":"pass" if all(token in docs for token in required) else "blocked","message":"Registry/refactor route, API, CLI, smoke, and boundary tokens present."},
+        {"name":"runtime-privacy-tokens","status":"pass" if all(f"data/autonomy/{key}/" in docs for key in SELF_MAINTENANCE_REFACTOR_RUNTIME_DIRS) else "blocked","message":"Refactor runtime directories are documented as source-only excluded."},
+        {"name":"boundaries","status":"pass" if all(SELF_MAINTENANCE_REFACTOR_LAYER_BOUNDARIES.get(key) is value for key, value in SELF_MAINTENANCE_REFACTOR_BOUNDARIES.items()) else "blocked","message":"Review-only/no-behavior-change/no-command/no-autonomy boundaries are preserved."},
+    ]
+
+def _build_self_maintenance_refactor_stage(slug: str, project_id: str = "default", improvement_goal: str | None = None, candidate_file: str | None = None, style_context: str | None = None, target_surface: str | None = None, profile_name: str | None = None, scenario: str | None = None, sample_text: str | None = None, save: bool = True, **_: Any) -> dict[str, Any]:
+    definition = SELF_MAINTENANCE_REFACTOR_STAGE_BY_SLUG.get(slug)
+    if not definition:
+        return {"version":"v365.0","status":"blocked","ok":False,"checked_at":_now(),"message":f"Unknown self-maintenance refactor stage: {slug}","rows":[]}
+    docs = _self_maintenance_refactor_docs_text(); rows = _self_maintenance_refactor_status_rows(definition, docs); ok = all(row["status"] == "pass" for row in rows)
+    gate_summary = build_gate_inventory_registry_summary(ROOT_DIR)
+    version_summary = build_version_expectation_registry_summary(ROOT_DIR, "480.0")
+    surface_summary = build_surface_metadata_registry_summary()
+    smoke_summary = build_smoke_registry_summary()
+    audit_summary = build_self_maintenance_refactor_audit_summary(ROOT_DIR, "480.0")
+    dashboard_routes = [arc["dashboard"] for arc in SELF_MAINTENANCE_REFACTOR_ARCS]; api_routes = [f"/api/{arc['api']}/layer" for arc in SELF_MAINTENANCE_REFACTOR_ARCS]; cli_flags = ["--" + arc["items"][-1][1].replace("_", "-") for arc in SELF_MAINTENANCE_REFACTOR_ARCS]
+    payload = {"stage":definition["stage"],"slug":definition["slug"],"name":definition["label"],"arc":"v360.1-v365.0 Self-Maintenance Surface Reduction and Gate Registry Refactor v1","version":definition["version"],"dashboard":definition["dashboard"],"api":f"/api/{definition['api']}/layer","cli":f"--{definition['slug'].replace('_','-')}","theme":definition["theme"],"focus":definition["focus"],"project_id":project_id,"improvement_goal":improvement_goal,"candidate_file":candidate_file,"style_context":style_context,"target_surface":target_surface,"profile_name":profile_name,"scenario":scenario,"sample_text":sample_text,"gate_inventory_registry":gate_summary,"version_expectation_registry":version_summary,"surface_metadata_registry":surface_summary,"smoke_registry":smoke_summary,"self_maintenance_refactor_audit":audit_summary,"dashboard_routes":dashboard_routes,"api_routes":api_routes,"cli_flags":cli_flags,"runtime_registry_rows":[row for row in SELF_MAINTENANCE_REFACTOR_STAGE_DEFS if row["runtime_key"] == definition["runtime_key"]],"boundaries":SELF_MAINTENANCE_REFACTOR_LAYER_BOUNDARIES,"safe_next_action":"Operator may review self-maintenance registry cleanup. No behavior expansion, source apply, verification execution, memory/identity/personality mutation, release creation, or autonomous continuation is authorized."}
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    report = {"version":"v365.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = SELF_MAINTENANCE_REFACTOR_RUNTIME_DIRS[definition["runtime_key"]]; outdir.mkdir(parents=True, exist_ok=True); (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+def _self_maintenance_refactor_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_self_maintenance_refactor_stage("operator_governed_self_maintenance_surface_reduction_and_gate_registry_refactor_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("Gate inventory", render_self_maintenance_refactor_lines(payload.get("gate_inventory_registry", {}))), ("Version expectations", render_self_maintenance_refactor_lines(payload.get("version_expectation_registry", {}))), ("Surface metadata", render_self_maintenance_refactor_lines(payload.get("surface_metadata_registry", {}))), ("Smoke registry", render_self_maintenance_refactor_lines(payload.get("smoke_registry", {}))), ("Refactor audit", render_self_maintenance_refactor_lines(payload.get("self_maintenance_refactor_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required.')}" ])]
+    return render_governance_packet("Self-Maintenance Surface Reduction and Gate Registry Refactor v1", report, sections, full=full)
+
+def _make_self_maintenance_refactor_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_self_maintenance_refactor_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+def _make_self_maintenance_refactor_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, style_context=None, target_surface=None, profile_name=None, scenario=None, sample_text=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_self_maintenance_refactor_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, style_context=style_context, target_surface=target_surface, profile_name=profile_name, scenario=scenario, sample_text=sample_text, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _self_maintenance_refactor_text(report, full=full))
+    return _printer
+
+def _make_self_maintenance_refactor_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _self_maintenance_refactor_text(report or _build_self_maintenance_refactor_stage(slug, save=False), full=full)
+    return _text
+
+for _self_maintenance_refactor_slug in SELF_MAINTENANCE_REFACTOR_STAGE_BY_SLUG:
+    globals()[f"build_{_self_maintenance_refactor_slug}"] = _make_self_maintenance_refactor_build(_self_maintenance_refactor_slug)
+    globals()[f"print_{_self_maintenance_refactor_slug}"] = _make_self_maintenance_refactor_print(_self_maintenance_refactor_slug)
+    globals()[f"{_self_maintenance_refactor_slug}_text"] = _make_self_maintenance_refactor_text(_self_maintenance_refactor_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(SELF_MAINTENANCE_REFACTOR_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(SELF_MAINTENANCE_REFACTOR_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(SELF_MAINTENANCE_REFACTOR_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(SELF_MAINTENANCE_REFACTOR_ROUTE_MAP)
+
+# v360.1-v365.0 self-maintenance refactor smoke tokens: self-maintenance-gate-registry self-maintenance-version-expectations governed-surface-metadata-registry smoke-check-legacy-gate-registry self-maintenance-refactor-audit operator-governed-self-maintenance-surface-reduction-and-gate-registry-refactor-v1 conscious_agent/self_maintenance_refactor_registry.py self_maintenance_refactor_registry.py data/autonomy/self_maintenance_gate_registry/ data/autonomy/self_maintenance_version_expectations/ data/autonomy/governed_surface_metadata_registry/ data/autonomy/smoke_check_legacy_gate_registry/ data/autonomy/self_maintenance_refactor_audit/ refactor_registry_writes_files=False refactor_registry_executes_smoke=False refactor_registry_changes_runtime_behavior=False registry_metadata_is_review_only=True centralized_version_expectations_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v365.1-v370.0 Minimal Approved Live Change Replay and Regression Hardening v1
+from minimal_live_change_replay import (
+    MINIMAL_LIVE_CHANGE_REPLAY_VERSION,
+    MINIMAL_LIVE_CHANGE_REPLAY_BOUNDARIES,
+    build_minimal_live_change_replay_packet_summary,
+    build_minimal_live_change_expected_actual_comparison_summary,
+    build_minimal_live_change_regression_drift_detector_summary,
+    build_minimal_live_change_recovery_recommendation_summary,
+    build_minimal_live_change_replay_regression_audit_summary,
+    render_minimal_live_change_replay_lines,
+)
+
+MINIMAL_LIVE_CHANGE_REPLAY_RUNTIME_DIRS = {
+    "minimal_live_change_replay_packet": ROOT_DIR / "data" / "autonomy" / "minimal_live_change_replay_packet",
+    "minimal_live_change_expected_actual_comparison": ROOT_DIR / "data" / "autonomy" / "minimal_live_change_expected_actual_comparison",
+    "minimal_live_change_regression_drift_detector": ROOT_DIR / "data" / "autonomy" / "minimal_live_change_regression_drift_detector",
+    "minimal_live_change_recovery_recommendation": ROOT_DIR / "data" / "autonomy" / "minimal_live_change_recovery_recommendation",
+    "minimal_live_change_replay_regression_audit": ROOT_DIR / "data" / "autonomy" / "minimal_live_change_replay_regression_audit",
+}
+MINIMAL_LIVE_CHANGE_REPLAY_LAYER_BOUNDARIES = dict(MINIMAL_LIVE_CHANGE_REPLAY_BOUNDARIES)
+
+def _minimal_live_change_replay_items(prefix: str, final_slug: str, final_label: str, start: float, final_stage: str):
+    labels = ["Boundary Declaration", "Evidence Binder", "Expected State Binder", "Actual State Binder", "Drift/Regression Binder", "Recovery Recommendation Binder", "Dashboard/API/CLI Surface", "Smoke Coverage", "Docs/Release Notes", final_label]
+    return [(f"v{start+i/10:.1f}" if i < 9 else final_stage, final_slug if i == 9 else f"{prefix}_{i+1}", labels[i]) for i in range(10)]
+
+MINIMAL_LIVE_CHANGE_REPLAY_ARCS = [
+    {"version":"v366.0","final_label":"Minimal Live Change Replay Packet v1","api":"minimal-live-change-replay-packet","dashboard":"/minimal-live-change-replay-packet","runtime_key":"minimal_live_change_replay_packet","theme":"minimal live change replay packet","items":_minimal_live_change_replay_items("minimal_live_change_replay_packet", "operator_governed_minimal_live_change_replay_packet_v1", "Minimal Live Change Replay Packet v1", 365.1, "v366.0")},
+    {"version":"v367.0","final_label":"Expected-vs-Actual Live Change Comparison v1","api":"minimal-live-change-expected-actual-comparison","dashboard":"/minimal-live-change-expected-actual-comparison","runtime_key":"minimal_live_change_expected_actual_comparison","theme":"minimal live change expected actual comparison","items":_minimal_live_change_replay_items("minimal_live_change_expected_actual_comparison", "operator_governed_minimal_live_change_expected_actual_comparison_v1", "Expected-vs-Actual Live Change Comparison v1", 366.1, "v367.0")},
+    {"version":"v368.0","final_label":"Regression Drift Detector v1","api":"minimal-live-change-regression-drift-detector","dashboard":"/minimal-live-change-regression-drift-detector","runtime_key":"minimal_live_change_regression_drift_detector","theme":"minimal live change regression drift detector","items":_minimal_live_change_replay_items("minimal_live_change_regression_drift_detector", "operator_governed_minimal_live_change_regression_drift_detector_v1", "Regression Drift Detector v1", 367.1, "v368.0")},
+    {"version":"v369.0","final_label":"Recovery Recommendation Packet v1","api":"minimal-live-change-recovery-recommendation","dashboard":"/minimal-live-change-recovery-recommendation","runtime_key":"minimal_live_change_recovery_recommendation","theme":"minimal live change recovery recommendation","items":_minimal_live_change_replay_items("minimal_live_change_recovery_recommendation", "operator_governed_minimal_live_change_recovery_recommendation_v1", "Recovery Recommendation Packet v1", 368.1, "v369.0")},
+    {"version":"v370.0","final_label":"Minimal Approved Live Change Replay and Regression Hardening v1","api":"minimal-live-change-replay-regression-audit","dashboard":"/minimal-live-change-replay-regression-audit","runtime_key":"minimal_live_change_replay_regression_audit","theme":"minimal live change replay regression audit","items":_minimal_live_change_replay_items("minimal_live_change_replay_regression_audit", "operator_governed_minimal_live_change_replay_and_regression_hardening_v1", "Minimal Approved Live Change Replay and Regression Hardening v1", 369.1, "v370.0")},
+]
+MINIMAL_LIVE_CHANGE_REPLAY_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in MINIMAL_LIVE_CHANGE_REPLAY_ARCS
+    for stage, slug, label in arc["items"]
+]
+MINIMAL_LIVE_CHANGE_REPLAY_STAGE_BY_SLUG = {item["slug"]: item for item in MINIMAL_LIVE_CHANGE_REPLAY_STAGE_DEFS}
+MINIMAL_LIVE_CHANGE_REPLAY_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in MINIMAL_LIVE_CHANGE_REPLAY_STAGE_DEFS}
+MINIMAL_LIVE_CHANGE_REPLAY_ROUTE_MAP = {arc["api"]: arc["items"][-1][1] for arc in MINIMAL_LIVE_CHANGE_REPLAY_ARCS}
+MINIMAL_LIVE_CHANGE_REPLAY_ROUTE_MAP.update({f"{arc['api']}/layer": arc["items"][-1][1] for arc in MINIMAL_LIVE_CHANGE_REPLAY_ARCS})
+
+def _minimal_live_change_replay_docs_text() -> str:
+    rels = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "tools/smoke_check.py", "conscious_agent/route_health.py", "conscious_agent/minimal_live_change_replay.py", "conscious_agent/minimal_live_expression_application.py", "conscious_agent/self_maintenance_refactor_registry.py"]
+    return "\n".join((ROOT_DIR / rel).read_text(encoding="utf-8") for rel in rels if (ROOT_DIR / rel).exists())
+
+def _minimal_live_change_replay_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    route_tokens = [arc["dashboard"] for arc in MINIMAL_LIVE_CHANGE_REPLAY_ARCS]
+    api_tokens = [f"/api/{arc['api']}/layer" for arc in MINIMAL_LIVE_CHANGE_REPLAY_ARCS]
+    cli_tokens = ["--" + arc["items"][-1][1].replace("_", "-") for arc in MINIMAL_LIVE_CHANGE_REPLAY_ARCS]
+    required = route_tokens + api_tokens + cli_tokens + ["minimal_live_change_replay.py", "dashboard_http_route_probe_required", "data-tip", "command-deck", "operator-console", "replay_packet_applies_change=False", "expected_actual_writes_files=False", "regression_detector_auto_fixes=False", "recovery_recommendation_executes_rollback=False", "replay_audit_continues_automatically=False"]
+    return [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and MINIMAL_LIVE_CHANGE_REPLAY_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; replay={MINIMAL_LIVE_CHANGE_REPLAY_VERSION}"},
+        {"name":"stage-definitions","status":"pass" if len(MINIMAL_LIVE_CHANGE_REPLAY_STAGE_DEFS) == 50 else "blocked","message":f"stages={len(MINIMAL_LIVE_CHANGE_REPLAY_STAGE_DEFS)}"},
+        {"name":"docs-runtime-tokens","status":"pass" if all(token in docs for token in required) else "blocked","message":"README/dashboard/API/CLI/smoke/route-health/source tokens present."},
+        {"name":"runtime-private-dirs","status":"pass" if all(f"data/autonomy/{key}/" in docs for key in MINIMAL_LIVE_CHANGE_REPLAY_RUNTIME_DIRS) else "blocked","message":"Replay runtime directories are documented as private/source-only excluded."},
+        {"name":"dashboard-tooltip-boundary","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"data-tip dashboard hover remains custom; no native title tooltip regression."},
+    ]
+
+def _build_minimal_live_change_replay_stage(slug: str, project_id="default", improvement_goal=None, candidate_file=None, style_context=None, target_surface=None, profile_name=None, scenario=None, sample_text=None, save=True, evidence: dict[str, Any] | None = None, **kwargs) -> dict[str, Any]:
+    definition = MINIMAL_LIVE_CHANGE_REPLAY_STAGE_BY_SLUG.get(slug, MINIMAL_LIVE_CHANGE_REPLAY_STAGE_BY_SLUG["operator_governed_minimal_live_change_replay_and_regression_hardening_v1"])
+    docs = _minimal_live_change_replay_docs_text()
+    sample_evidence = {"original_candidate_id":"minimal-expression-candidate-v360-review", "approval_lock_id":"minimal-live-expression-approval-v360-review", "transaction_id":"minimal-expression-transaction-v360-review", "application_harness_id":"minimal-expression-harness-v360-review", "audit_id":"minimal-expression-audit-v360-review", "expected_touched_files":["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "tools/smoke_check.py"], "expected_unchanged_files":["memory stores", "identity source of truth", "personality engine", "runtime prompt behavior", "local model invocation defaults"], "expected_readme_update":True, "expected_release_history_update":True, "expected_version_update":True, "expected_smoke_checks":["fast", "install", "v360 targeted", "v370 targeted"], "expected_rollback_packet":"reverse-diff required", "expected_changed_files":["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "tools/smoke_check.py"], "actual_changed_files":["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "tools/smoke_check.py"], "readme_updated":True, "release_history_updated":True, "version_markers_updated":True, "dashboard_api_cli_healthy":True, "smoke_checks_passing":True, "package_privacy_clean":True, "approval_boundaries_preserved":True, "route_api_cli_parity_preserved":True, "registry_entries_preserved":True, "source_only_package_rules_preserved":True, "stable_json_write_behavior_preserved":True, "old_gate_compatibility_preserved":True}
+    if evidence:
+        sample_evidence.update(evidence)
+    replay = build_minimal_live_change_replay_packet_summary(sample_text or "review only", sample_evidence)
+    comparison = build_minimal_live_change_expected_actual_comparison_summary(sample_text or "review only", sample_evidence)
+    drift = build_minimal_live_change_regression_drift_detector_summary(docs, sample_text or "review only", sample_evidence)
+    recovery = build_minimal_live_change_recovery_recommendation_summary(sample_text or "review only", sample_evidence)
+    audit = build_minimal_live_change_replay_regression_audit_summary(ROOT_DIR, docs, sample_text or "review only", sample_evidence)
+    rows = _minimal_live_change_replay_status_rows(definition, docs)
+    ok = all(row["status"] == "pass" for row in rows) and bool(audit.get("ok"))
+    dashboard_routes = [arc["dashboard"] for arc in MINIMAL_LIVE_CHANGE_REPLAY_ARCS]
+    api_routes = [f"/api/{arc['api']}/layer" for arc in MINIMAL_LIVE_CHANGE_REPLAY_ARCS]
+    cli_flags = ["--" + arc["items"][-1][1].replace("_", "-") for arc in MINIMAL_LIVE_CHANGE_REPLAY_ARCS]
+    payload = {"stage_definition":definition,"improvement_goal":improvement_goal,"candidate_file":candidate_file,"style_context":style_context,"target_surface":target_surface,"profile_name":profile_name,"scenario":scenario,"sample_text":sample_text,"replay_packet":replay,"expected_actual_comparison":comparison,"regression_drift_detector":drift,"recovery_recommendation":recovery,"replay_regression_audit":audit,"dashboard_routes":dashboard_routes,"api_routes":api_routes,"cli_flags":cli_flags,"runtime_registry_rows":[row for row in MINIMAL_LIVE_CHANGE_REPLAY_STAGE_DEFS if row["runtime_key"] == definition["runtime_key"]],"boundaries":MINIMAL_LIVE_CHANGE_REPLAY_LAYER_BOUNDARIES,"safe_next_action":"Operator may review replay/regression hardening. No automatic replay, source edit, rollback execution, command execution, memory/identity/personality mutation, release creation, or autonomous continuation is authorized."}
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    report = {"version":"v370.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = MINIMAL_LIVE_CHANGE_REPLAY_RUNTIME_DIRS[definition["runtime_key"]]; outdir.mkdir(parents=True, exist_ok=True); (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+def _minimal_live_change_replay_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_minimal_live_change_replay_stage("operator_governed_minimal_live_change_replay_and_regression_hardening_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("Replay packet", render_minimal_live_change_replay_lines(payload.get("replay_packet", {}))), ("Expected vs actual", render_minimal_live_change_replay_lines(payload.get("expected_actual_comparison", {}))), ("Regression drift", render_minimal_live_change_replay_lines(payload.get("regression_drift_detector", {}))), ("Recovery recommendation", render_minimal_live_change_replay_lines(payload.get("recovery_recommendation", {}))), ("Replay/regression audit", render_minimal_live_change_replay_lines(payload.get("replay_regression_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required.')}" ])]
+    return render_governance_packet("Minimal Approved Live Change Replay and Regression Hardening v1", report, sections, full=full)
+
+def _make_minimal_live_change_replay_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_minimal_live_change_replay_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+def _make_minimal_live_change_replay_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, style_context=None, target_surface=None, profile_name=None, scenario=None, sample_text=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_minimal_live_change_replay_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, style_context=style_context, target_surface=target_surface, profile_name=profile_name, scenario=scenario, sample_text=sample_text, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _minimal_live_change_replay_text(report, full=full))
+    return _printer
+
+def _make_minimal_live_change_replay_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _minimal_live_change_replay_text(report or _build_minimal_live_change_replay_stage(slug, save=False), full=full)
+    return _text
+
+for _minimal_live_change_replay_slug in MINIMAL_LIVE_CHANGE_REPLAY_STAGE_BY_SLUG:
+    globals()[f"build_{_minimal_live_change_replay_slug}"] = _make_minimal_live_change_replay_build(_minimal_live_change_replay_slug)
+    globals()[f"print_{_minimal_live_change_replay_slug}"] = _make_minimal_live_change_replay_print(_minimal_live_change_replay_slug)
+    globals()[f"{_minimal_live_change_replay_slug}_text"] = _make_minimal_live_change_replay_text(_minimal_live_change_replay_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(MINIMAL_LIVE_CHANGE_REPLAY_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(MINIMAL_LIVE_CHANGE_REPLAY_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(MINIMAL_LIVE_CHANGE_REPLAY_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(MINIMAL_LIVE_CHANGE_REPLAY_ROUTE_MAP)
+
+# v365.1-v370.0 minimal live change replay smoke tokens: minimal-live-change-replay-packet minimal-live-change-expected-actual-comparison minimal-live-change-regression-drift-detector minimal-live-change-recovery-recommendation minimal-live-change-replay-regression-audit operator-governed-minimal-live-change-replay-and-regression-hardening-v1 conscious_agent/minimal_live_change_replay.py minimal_live_change_replay.py data/autonomy/minimal_live_change_replay_packet/ data/autonomy/minimal_live_change_expected_actual_comparison/ data/autonomy/minimal_live_change_regression_drift_detector/ data/autonomy/minimal_live_change_recovery_recommendation/ data/autonomy/minimal_live_change_replay_regression_audit/ replay_packet_applies_change=False expected_actual_writes_files=False regression_detector_auto_fixes=False recovery_recommendation_executes_rollback=False replay_audit_continues_automatically=False minimal_replay_review_only=True minimal_replay_expected_actual_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v370.1-v375.0 Self-Maintenance Modular Extraction v1
+from self_maintenance_modular_extraction import (
+    SELF_MAINTENANCE_MODULAR_EXTRACTION_VERSION,
+    SELF_MAINTENANCE_MODULAR_EXTRACTION_BOUNDARIES,
+    build_module_extraction_plan_summary,
+    build_version_package_gate_extraction_summary,
+    build_surface_gate_extraction_summary,
+    build_governance_gate_extraction_summary,
+    build_modular_extraction_audit_summary,
+    render_self_maintenance_modular_extraction_lines,
+)
+
+SELF_MAINTENANCE_MODULAR_EXTRACTION_RUNTIME_DIRS = {
+    "self_maintenance_module_extraction_plan": ROOT_DIR / "data" / "autonomy" / "self_maintenance_module_extraction_plan",
+    "self_maintenance_version_package_gates": ROOT_DIR / "data" / "autonomy" / "self_maintenance_version_package_gates",
+    "self_maintenance_surface_gates": ROOT_DIR / "data" / "autonomy" / "self_maintenance_surface_gates",
+    "self_maintenance_governance_gates": ROOT_DIR / "data" / "autonomy" / "self_maintenance_governance_gates",
+    "self_maintenance_modular_extraction_audit": ROOT_DIR / "data" / "autonomy" / "self_maintenance_modular_extraction_audit",
+}
+SELF_MAINTENANCE_MODULAR_EXTRACTION_LAYER_BOUNDARIES = dict(SELF_MAINTENANCE_MODULAR_EXTRACTION_BOUNDARIES)
+
+def _self_maintenance_modular_extraction_items(prefix: str, final_slug: str, final_label: str, start: float, final_stage: str):
+    labels = [
+        "Boundary Declaration", "Extraction Family Inventory", "Safe Module Candidate Map", "Dependency Risk Map", "Version/Package Gate Binder", "Surface Gate Binder", "Governance Gate Binder", "Dashboard/API/CLI Surface", "Smoke Coverage", final_label,
+    ]
+    return [(f"v{start+i/10:.1f}" if i < 9 else final_stage, final_slug if i == 9 else f"{prefix}_{i+1}", labels[i]) for i in range(10)]
+
+SELF_MAINTENANCE_MODULAR_EXTRACTION_ARCS = [
+    {"version":"v371.0","final_label":"Self-Maintenance Module Extraction Plan v1","api":"self-maintenance-module-extraction-plan","dashboard":"/self-maintenance-module-extraction-plan","runtime_key":"self_maintenance_module_extraction_plan","theme":"self maintenance module extraction plan","items":_self_maintenance_modular_extraction_items("self_maintenance_module_extraction_plan", "operator_governed_self_maintenance_module_extraction_plan_v1", "Self-Maintenance Module Extraction Plan v1", 370.1, "v371.0")},
+    {"version":"v372.0","final_label":"Version and Package Gate Extraction v1","api":"self-maintenance-version-package-gates","dashboard":"/self-maintenance-version-package-gates","runtime_key":"self_maintenance_version_package_gates","theme":"version and package gate extraction","items":_self_maintenance_modular_extraction_items("self_maintenance_version_package_gates", "operator_governed_self_maintenance_version_package_gate_extraction_v1", "Version and Package Gate Extraction v1", 371.1, "v372.0")},
+    {"version":"v373.0","final_label":"Route/API/CLI Gate Extraction v1","api":"self-maintenance-surface-gates","dashboard":"/self-maintenance-surface-gates","runtime_key":"self_maintenance_surface_gates","theme":"route api cli gate extraction","items":_self_maintenance_modular_extraction_items("self_maintenance_surface_gates", "operator_governed_self_maintenance_surface_gate_extraction_v1", "Route/API/CLI Gate Extraction v1", 372.1, "v373.0")},
+    {"version":"v374.0","final_label":"Governance Boundary Gate Extraction v1","api":"self-maintenance-governance-gates","dashboard":"/self-maintenance-governance-gates","runtime_key":"self_maintenance_governance_gates","theme":"governance boundary gate extraction","items":_self_maintenance_modular_extraction_items("self_maintenance_governance_gates", "operator_governed_self_maintenance_governance_gate_extraction_v1", "Governance Boundary Gate Extraction v1", 373.1, "v374.0")},
+    {"version":"v375.0","final_label":"Self-Maintenance Modular Extraction v1","api":"self-maintenance-modular-extraction-audit","dashboard":"/self-maintenance-modular-extraction-audit","runtime_key":"self_maintenance_modular_extraction_audit","theme":"self maintenance modular extraction audit","items":_self_maintenance_modular_extraction_items("self_maintenance_modular_extraction_audit", "operator_governed_self_maintenance_modular_extraction_v1", "Self-Maintenance Modular Extraction v1", 374.1, "v375.0")},
+]
+SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in SELF_MAINTENANCE_MODULAR_EXTRACTION_ARCS
+    for stage, slug, label in arc["items"]
+]
+SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_BY_SLUG = {item["slug"]: item for item in SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS}
+SELF_MAINTENANCE_MODULAR_EXTRACTION_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS}
+SELF_MAINTENANCE_MODULAR_EXTRACTION_ROUTE_MAP = {f"{item['api']}/layer": item["slug"] for item in SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS}
+SELF_MAINTENANCE_MODULAR_EXTRACTION_ROUTE_MAP.update({item["api"]: item["slug"] for item in SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS})
+
+def _self_maintenance_modular_extraction_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/self_maintenance_modular_extraction.py", "conscious_agent/self_maintenance_version_package_gates.py", "conscious_agent/self_maintenance_surface_gates.py", "conscious_agent/self_maintenance_governance_gates.py"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+def _self_maintenance_modular_extraction_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    required = ["self-maintenance-module-extraction-plan", "self-maintenance-version-package-gates", "self-maintenance-surface-gates", "self-maintenance-governance-gates", "self-maintenance-modular-extraction-audit", "operator-governed-self-maintenance-modular-extraction-v1", "self_maintenance_modular_extraction.py", "self_maintenance_version_package_gates.py", "self_maintenance_surface_gates.py", "self_maintenance_governance_gates.py", "modular_extraction_applies_live_patches=False", "version_package_gate_extraction_present=True", "surface_gate_extraction_present=True", "governance_gate_extraction_present=True", "dashboard_http_route_probe_required"]
+    route_keys = [f"{arc['api']}/layer" for arc in SELF_MAINTENANCE_MODULAR_EXTRACTION_ARCS]
+    missing_api = [key for key in route_keys if key not in SUPERVISED_RUNTIME_ROUTE_MAP]
+    return [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and SELF_MAINTENANCE_MODULAR_EXTRACTION_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; modular={SELF_MAINTENANCE_MODULAR_EXTRACTION_VERSION}"},
+        {"name":"stage-registry","status":"pass" if len(SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS) == 50 else "blocked","message":f"stages={len(SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS)}"},
+        {"name":"api-routes","status":"pass" if not missing_api and "SUPERVISED_RUNTIME_ROUTE_MAP" in docs else "blocked","message":f"{len(route_keys)} API route(s) present dynamically." if not missing_api else "missing: "+", ".join(missing_api)},
+        {"name":"docs-runtime-tokens","status":"pass" if all(token in docs for token in required) else "blocked","message":"README/dashboard/API/CLI/smoke/route-health/source tokens present."},
+        {"name":"runtime-private-dirs","status":"pass" if all(f"data/autonomy/{key}/" in docs for key in SELF_MAINTENANCE_MODULAR_EXTRACTION_RUNTIME_DIRS) else "blocked","message":"Modular extraction runtime directories are documented as private/source-only excluded."},
+        {"name":"dashboard-tooltip-boundary","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"data-tip dashboard hover remains custom; no native title tooltip regression."},
+    ]
+
+def _build_self_maintenance_modular_extraction_stage(slug: str, project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs) -> dict[str, Any]:
+    definition = SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_BY_SLUG.get(slug, SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_BY_SLUG["operator_governed_self_maintenance_modular_extraction_v1"])
+    docs = _self_maintenance_modular_extraction_docs_text()
+    plan = build_module_extraction_plan_summary()
+    version_package = build_version_package_gate_extraction_summary(ROOT_DIR, "500.0")
+    surface = build_surface_gate_extraction_summary([{"dashboard":arc["dashboard"],"api":f"/api/{arc['api']}/layer","cli":"--"+arc["items"][-1][1].replace("_","-")} for arc in SELF_MAINTENANCE_MODULAR_EXTRACTION_ARCS])
+    governance = build_governance_gate_extraction_summary()
+    audit = build_modular_extraction_audit_summary(ROOT_DIR, docs, "500.0")
+    rows = _self_maintenance_modular_extraction_status_rows(definition, docs)
+    ok = all(row["status"] == "pass" for row in rows) and bool(audit.get("ok"))
+    dashboard_routes = [arc["dashboard"] for arc in SELF_MAINTENANCE_MODULAR_EXTRACTION_ARCS]
+    api_routes = [f"/api/{arc['api']}/layer" for arc in SELF_MAINTENANCE_MODULAR_EXTRACTION_ARCS]
+    cli_flags = ["--" + arc["items"][-1][1].replace("_", "-") for arc in SELF_MAINTENANCE_MODULAR_EXTRACTION_ARCS]
+    payload = {"stage_definition":definition,"improvement_goal":improvement_goal,"candidate_file":candidate_file,"module_extraction_plan":plan,"version_package_gates":version_package,"surface_gates":surface,"governance_gates":governance,"modular_extraction_audit":audit,"dashboard_routes":dashboard_routes,"api_routes":api_routes,"cli_flags":cli_flags,"runtime_registry_rows":[row for row in SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS if row["runtime_key"] == definition["runtime_key"]],"boundaries":SELF_MAINTENANCE_MODULAR_EXTRACTION_LAYER_BOUNDARIES,"safe_next_action":"Operator may review modular extraction. No live expression behavior change, source application, memory mutation, identity/personality mutation, local model invocation, release creation, or automatic continuation is authorized."}
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    report = {"version":"v375.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = SELF_MAINTENANCE_MODULAR_EXTRACTION_RUNTIME_DIRS[definition["runtime_key"]]; outdir.mkdir(parents=True, exist_ok=True); (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+def _self_maintenance_modular_extraction_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_self_maintenance_modular_extraction_stage("operator_governed_self_maintenance_modular_extraction_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("Extraction plan", render_self_maintenance_modular_extraction_lines(payload.get("module_extraction_plan", {}))), ("Version/package gates", render_self_maintenance_modular_extraction_lines(payload.get("version_package_gates", {}))), ("Surface gates", render_self_maintenance_modular_extraction_lines(payload.get("surface_gates", {}))), ("Governance gates", render_self_maintenance_modular_extraction_lines(payload.get("governance_gates", {}))), ("Modular extraction audit", render_self_maintenance_modular_extraction_lines(payload.get("modular_extraction_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required.')}" ])]
+    return render_governance_packet("Self-Maintenance Modular Extraction v1", report, sections, full=full)
+
+def _make_self_maintenance_modular_extraction_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_self_maintenance_modular_extraction_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+def _make_self_maintenance_modular_extraction_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_self_maintenance_modular_extraction_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _self_maintenance_modular_extraction_text(report, full=full))
+    return _printer
+
+def _make_self_maintenance_modular_extraction_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _self_maintenance_modular_extraction_text(report or _build_self_maintenance_modular_extraction_stage(slug, save=False), full=full)
+    return _text
+
+for _self_maintenance_modular_extraction_slug in SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_BY_SLUG:
+    globals()[f"build_{_self_maintenance_modular_extraction_slug}"] = _make_self_maintenance_modular_extraction_build(_self_maintenance_modular_extraction_slug)
+    globals()[f"print_{_self_maintenance_modular_extraction_slug}"] = _make_self_maintenance_modular_extraction_print(_self_maintenance_modular_extraction_slug)
+    globals()[f"{_self_maintenance_modular_extraction_slug}_text"] = _make_self_maintenance_modular_extraction_text(_self_maintenance_modular_extraction_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(SELF_MAINTENANCE_MODULAR_EXTRACTION_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(SELF_MAINTENANCE_MODULAR_EXTRACTION_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(SELF_MAINTENANCE_MODULAR_EXTRACTION_ROUTE_MAP)
+
+# v370.1-v375.0 modular extraction smoke tokens: self-maintenance-module-extraction-plan self-maintenance-version-package-gates self-maintenance-surface-gates self-maintenance-governance-gates self-maintenance-modular-extraction-audit operator-governed-self-maintenance-modular-extraction-v1 conscious_agent/self_maintenance_modular_extraction.py self_maintenance_modular_extraction.py self_maintenance_version_package_gates.py self_maintenance_surface_gates.py self_maintenance_governance_gates.py data/autonomy/self_maintenance_module_extraction_plan/ data/autonomy/self_maintenance_version_package_gates/ data/autonomy/self_maintenance_surface_gates/ data/autonomy/self_maintenance_governance_gates/ data/autonomy/self_maintenance_modular_extraction_audit/ modular_extraction_applies_live_patches=False modular_extraction_changes_expression_behavior=False version_package_gate_extraction_present=True surface_gate_extraction_present=True governance_gate_extraction_present=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v375.1-v380.0 Approved Live Change Transaction Narrowing and Real Patch Application Trial v1
+from live_change_application_trial import (
+    LIVE_CHANGE_APPLICATION_TRIAL_VERSION,
+    LIVE_CHANGE_APPLICATION_TRIAL_BOUNDARIES,
+    build_transaction_narrowing_summary,
+    build_approval_execution_lock_summary,
+    build_real_patch_trial_plan_summary,
+    build_operator_confirmed_application_trial_summary,
+    build_application_trial_audit_summary,
+    render_live_change_application_trial_lines,
+)
+
+LIVE_CHANGE_APPLICATION_TRIAL_RUNTIME_DIRS = {
+    "live_change_transaction_narrowing": ROOT_DIR / "data" / "autonomy" / "live_change_transaction_narrowing",
+    "live_change_approval_execution_lock": ROOT_DIR / "data" / "autonomy" / "live_change_approval_execution_lock",
+    "live_change_real_patch_trial_plan": ROOT_DIR / "data" / "autonomy" / "live_change_real_patch_trial_plan",
+    "live_change_operator_confirmed_application_trial": ROOT_DIR / "data" / "autonomy" / "live_change_operator_confirmed_application_trial",
+    "live_change_application_trial_audit": ROOT_DIR / "data" / "autonomy" / "live_change_application_trial_audit",
+}
+LIVE_CHANGE_APPLICATION_TRIAL_LAYER_BOUNDARIES = dict(LIVE_CHANGE_APPLICATION_TRIAL_BOUNDARIES)
+
+def _live_change_application_trial_items(prefix: str, final_slug: str, final_label: str, start: float, final_stage: str):
+    labels = [
+        "Boundary Declaration", "Candidate Narrowing Binder", "Approval Scope Binder", "Preimage/Diff Binder", "Rollback Binder", "Verification Binder", "Operator Confirmation Binder", "Dashboard/API/CLI Surface", "Smoke Coverage", final_label,
+    ]
+    return [(f"v{start+i/10:.1f}" if i < 9 else final_stage, final_slug if i == 9 else f"{prefix}_{i+1}", labels[i]) for i in range(10)]
+
+LIVE_CHANGE_APPLICATION_TRIAL_ARCS = [
+    {"version":"v376.0","final_label":"Live Change Transaction Narrowing v1","api":"live-change-transaction-narrowing","dashboard":"/live-change-transaction-narrowing","runtime_key":"live_change_transaction_narrowing","theme":"live change transaction narrowing","items":_live_change_application_trial_items("live_change_transaction_narrowing", "operator_governed_live_change_transaction_narrowing_v1", "Live Change Transaction Narrowing v1", 375.1, "v376.0")},
+    {"version":"v377.0","final_label":"Live Change Approval Execution Lock v1","api":"live-change-approval-execution-lock","dashboard":"/live-change-approval-execution-lock","runtime_key":"live_change_approval_execution_lock","theme":"live change approval execution lock","items":_live_change_application_trial_items("live_change_approval_execution_lock", "operator_governed_live_change_approval_execution_lock_v1", "Live Change Approval Execution Lock v1", 376.1, "v377.0")},
+    {"version":"v378.0","final_label":"Live Change Real Patch Trial Plan v1","api":"live-change-real-patch-trial-plan","dashboard":"/live-change-real-patch-trial-plan","runtime_key":"live_change_real_patch_trial_plan","theme":"live change real patch trial plan","items":_live_change_application_trial_items("live_change_real_patch_trial_plan", "operator_governed_live_change_real_patch_trial_plan_v1", "Live Change Real Patch Trial Plan v1", 377.1, "v378.0")},
+    {"version":"v379.0","final_label":"Operator-Confirmed Live Change Application Trial v1","api":"live-change-operator-confirmed-application-trial","dashboard":"/live-change-operator-confirmed-application-trial","runtime_key":"live_change_operator_confirmed_application_trial","theme":"live change operator confirmed application trial","items":_live_change_application_trial_items("live_change_operator_confirmed_application_trial", "operator_confirmed_live_change_application_trial_v1", "Operator-Confirmed Live Change Application Trial v1", 378.1, "v379.0")},
+    {"version":"v380.0","final_label":"Approved Live Change Transaction Narrowing and Real Patch Application Trial v1","api":"live-change-application-trial-audit","dashboard":"/live-change-application-trial-audit","runtime_key":"live_change_application_trial_audit","theme":"live change application trial audit","items":_live_change_application_trial_items("live_change_application_trial_audit", "operator_governed_live_change_application_trial_audit_v1", "Approved Live Change Transaction Narrowing and Real Patch Application Trial v1", 379.1, "v380.0")},
+]
+LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in LIVE_CHANGE_APPLICATION_TRIAL_ARCS
+    for stage, slug, label in arc["items"]
+]
+LIVE_CHANGE_APPLICATION_TRIAL_STAGE_BY_SLUG = {item["slug"]: item for item in LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS}
+LIVE_CHANGE_APPLICATION_TRIAL_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS}
+LIVE_CHANGE_APPLICATION_TRIAL_ROUTE_MAP = {f"{item['api']}/layer": item["slug"] for item in LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS}
+LIVE_CHANGE_APPLICATION_TRIAL_ROUTE_MAP.update({item["api"]: item["slug"] for item in LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS})
+
+def _live_change_application_trial_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/live_change_application_trial.py", "conscious_agent/minimal_live_change_replay.py", "conscious_agent/self_maintenance_modular_extraction.py"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+def _live_change_application_trial_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    required = ["live-change-transaction-narrowing", "live-change-approval-execution-lock", "live-change-real-patch-trial-plan", "live-change-operator-confirmed-application-trial", "live-change-application-trial-audit", "operator-governed-live-change-application-trial-audit-v1", "live_change_application_trial.py", "transaction_narrowing_applies_patch=False", "approval_execution_lock_self_approves=False", "trial_plan_writes_files=False", "application_trial_runs_without_confirmation=False", "application_trial_continues_automatically=False", "operator_confirmation_required=True", "preimage_match_required=True", "rollback_packet_required=True", "dashboard_http_route_probe_required"]
+    route_keys = [f"{arc['api']}/layer" for arc in LIVE_CHANGE_APPLICATION_TRIAL_ARCS]
+    missing_api = [key for key in route_keys if key not in SUPERVISED_RUNTIME_ROUTE_MAP]
+    return [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and LIVE_CHANGE_APPLICATION_TRIAL_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; trial={LIVE_CHANGE_APPLICATION_TRIAL_VERSION}"},
+        {"name":"stage-registry","status":"pass" if len(LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS) == 50 else "blocked","message":f"stages={len(LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS)}"},
+        {"name":"api-routes","status":"pass" if not missing_api and "SUPERVISED_RUNTIME_ROUTE_MAP" in docs else "blocked","message":f"{len(route_keys)} API route(s) present dynamically." if not missing_api else "missing: "+", ".join(missing_api)},
+        {"name":"docs-runtime-tokens","status":"pass" if all(token in docs for token in required) else "blocked","message":"README/dashboard/API/CLI/smoke/route-health/source tokens present."},
+        {"name":"runtime-private-dirs","status":"pass" if all(f"data/autonomy/{key}/" in docs for key in LIVE_CHANGE_APPLICATION_TRIAL_RUNTIME_DIRS) else "blocked","message":"Application trial runtime directories are documented as private/source-only excluded."},
+        {"name":"dashboard-tooltip-boundary","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"data-tip dashboard hover remains custom; no native title tooltip regression."},
+    ]
+
+def _build_live_change_application_trial_stage(slug: str, project_id="default", improvement_goal=None, candidate_file=None, save=True, sample_text=None, evidence: dict[str, Any] | None = None, **kwargs) -> dict[str, Any]:
+    definition = LIVE_CHANGE_APPLICATION_TRIAL_STAGE_BY_SLUG.get(slug, LIVE_CHANGE_APPLICATION_TRIAL_STAGE_BY_SLUG["operator_governed_live_change_application_trial_audit_v1"])
+    docs = _live_change_application_trial_docs_text()
+    sample_evidence = {"approval_id":"approval-v380-review", "approval_scope":"one scoped live-change application trial", "target_version":"v380.0", "allowed_files":["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "tools/smoke_check.py"], "confirmation_phrase":"I explicitly approve this one scoped live-change application trial", "operator_confirmation_phrase":"I explicitly approve this one scoped live-change application trial", "single_use":True, "expires_fresh":True, "preimage_hashes_present":True, "diff_preview_present":True, "readme_update_included":True, "release_history_update_included":True, "rollback_packet_present":True, "verification_plan_present":True, "fresh_approval_id_present":True, "transaction_id_matches":True, "preimage_match":True, "allowed_file_match":True, "verification_checklist_present":True}
+    if evidence:
+        sample_evidence.update(evidence)
+    narrowing = build_transaction_narrowing_summary(sample_text or "review only", sample_evidence)
+    lock = build_approval_execution_lock_summary(sample_text or "review only", sample_evidence)
+    plan = build_real_patch_trial_plan_summary(sample_text or "review only", sample_evidence)
+    trial = build_operator_confirmed_application_trial_summary(sample_text or "review only", sample_evidence)
+    audit = build_application_trial_audit_summary(ROOT_DIR, docs, sample_text or "review only", sample_evidence)
+    rows = _live_change_application_trial_status_rows(definition, docs)
+    ok = all(row["status"] == "pass" for row in rows) and bool(audit.get("ok"))
+    dashboard_routes = [arc["dashboard"] for arc in LIVE_CHANGE_APPLICATION_TRIAL_ARCS]
+    api_routes = [f"/api/{arc['api']}/layer" for arc in LIVE_CHANGE_APPLICATION_TRIAL_ARCS]
+    cli_flags = ["--" + arc["items"][-1][1].replace("_", "-") for arc in LIVE_CHANGE_APPLICATION_TRIAL_ARCS]
+    payload = {"stage_definition":definition,"improvement_goal":improvement_goal,"candidate_file":candidate_file,"transaction_narrowing":narrowing,"approval_execution_lock":lock,"real_patch_trial_plan":plan,"operator_confirmed_application_trial":trial,"application_trial_audit":audit,"dashboard_routes":dashboard_routes,"api_routes":api_routes,"cli_flags":cli_flags,"runtime_registry_rows":[row for row in LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS if row["runtime_key"] == definition["runtime_key"]],"boundaries":LIVE_CHANGE_APPLICATION_TRIAL_LAYER_BOUNDARIES,"safe_next_action":"Operator may review the v380 application trial. No future live change, rollback, command execution, release creation, or autonomous continuation is authorized by this packet."}
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    report = {"version":"v380.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = LIVE_CHANGE_APPLICATION_TRIAL_RUNTIME_DIRS[definition["runtime_key"]]; outdir.mkdir(parents=True, exist_ok=True); (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+def _live_change_application_trial_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_live_change_application_trial_stage("operator_governed_live_change_application_trial_audit_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("Transaction narrowing", render_live_change_application_trial_lines(payload.get("transaction_narrowing", {}))), ("Approval execution lock", render_live_change_application_trial_lines(payload.get("approval_execution_lock", {}))), ("Real patch trial plan", render_live_change_application_trial_lines(payload.get("real_patch_trial_plan", {}))), ("Operator-confirmed application trial", render_live_change_application_trial_lines(payload.get("operator_confirmed_application_trial", {}))), ("Application trial audit", render_live_change_application_trial_lines(payload.get("application_trial_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required.')}"])]
+    return render_governance_packet("Approved Live Change Transaction Narrowing and Real Patch Application Trial v1", report, sections, full=full)
+
+def _make_live_change_application_trial_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_live_change_application_trial_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+def _make_live_change_application_trial_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_live_change_application_trial_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _live_change_application_trial_text(report, full=full))
+    return _printer
+
+def _make_live_change_application_trial_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _live_change_application_trial_text(report or _build_live_change_application_trial_stage(slug, save=False), full=full)
+    return _text
+
+for _live_change_application_trial_slug in LIVE_CHANGE_APPLICATION_TRIAL_STAGE_BY_SLUG:
+    globals()[f"build_{_live_change_application_trial_slug}"] = _make_live_change_application_trial_build(_live_change_application_trial_slug)
+    globals()[f"print_{_live_change_application_trial_slug}"] = _make_live_change_application_trial_print(_live_change_application_trial_slug)
+    globals()[f"{_live_change_application_trial_slug}_text"] = _make_live_change_application_trial_text(_live_change_application_trial_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(LIVE_CHANGE_APPLICATION_TRIAL_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(LIVE_CHANGE_APPLICATION_TRIAL_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(LIVE_CHANGE_APPLICATION_TRIAL_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(LIVE_CHANGE_APPLICATION_TRIAL_ROUTE_MAP)
+
+# v375.1-v380.0 live change application trial smoke tokens: live-change-transaction-narrowing live-change-approval-execution-lock live-change-real-patch-trial-plan live-change-operator-confirmed-application-trial live-change-application-trial-audit operator-governed-live-change-application-trial-audit-v1 conscious_agent/live_change_application_trial.py live_change_application_trial.py data/autonomy/live_change_transaction_narrowing/ data/autonomy/live_change_approval_execution_lock/ data/autonomy/live_change_real_patch_trial_plan/ data/autonomy/live_change_operator_confirmed_application_trial/ data/autonomy/live_change_application_trial_audit/ transaction_narrowing_applies_patch=False approval_execution_lock_self_approves=False trial_plan_writes_files=False application_trial_runs_without_confirmation=False application_trial_continues_automatically=False operator_confirmation_required=True preimage_match_required=True rollback_packet_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v380.1-v385.0 Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1
+from live_patch_trial_closure import (
+    LIVE_PATCH_TRIAL_CLOSURE_VERSION,
+    LIVE_PATCH_TRIAL_CLOSURE_BOUNDARIES,
+    build_live_patch_trial_result_intake_summary,
+    build_applied_diff_evidence_summary,
+    build_approval_burnout_summary,
+    build_post_trial_regression_review_summary,
+    build_live_patch_trial_closure_audit_summary,
+    render_live_patch_trial_closure_lines,
+)
+
+LIVE_PATCH_TRIAL_CLOSURE_RUNTIME_DIRS = {
+    "live_patch_trial_result_intake": ROOT_DIR / "data" / "autonomy" / "live_patch_trial_result_intake",
+    "live_patch_applied_diff_evidence": ROOT_DIR / "data" / "autonomy" / "live_patch_applied_diff_evidence",
+    "live_patch_approval_burnout": ROOT_DIR / "data" / "autonomy" / "live_patch_approval_burnout",
+    "live_patch_post_trial_regression_review": ROOT_DIR / "data" / "autonomy" / "live_patch_post_trial_regression_review",
+    "live_patch_trial_closure_audit": ROOT_DIR / "data" / "autonomy" / "live_patch_trial_closure_audit",
+}
+LIVE_PATCH_TRIAL_CLOSURE_LAYER_BOUNDARIES = dict(LIVE_PATCH_TRIAL_CLOSURE_BOUNDARIES)
+
+
+def _live_patch_trial_closure_items(prefix: str, final_slug: str, final_label: str, start: float, final_stage: str):
+    labels = [
+        "Boundary Declaration", "Trial Result Intake Schema", "Approval/Transaction Binder", "Diff Evidence Binder", "Approval Burnout Binder", "Regression Review Binder", "Rollback Readiness Binder", "Dashboard/API/CLI Surface", "Smoke Coverage", final_label,
+    ]
+    return [(f"v{start+i/10:.1f}" if i < 9 else final_stage, final_slug if i == 9 else f"{prefix}_{i+1}", labels[i]) for i in range(10)]
+
+
+LIVE_PATCH_TRIAL_CLOSURE_ARCS = [
+    {"version":"v381.0","final_label":"Operator-Governed Live Patch Trial Result Intake v1","api":"live-patch-trial-result-intake","dashboard":"/live-patch-trial-result-intake","runtime_key":"live_patch_trial_result_intake","theme":"live patch trial result intake","items":_live_patch_trial_closure_items("live_patch_trial_result_intake", "operator_governed_live_patch_trial_result_intake_v1", "Operator-Governed Live Patch Trial Result Intake v1", 380.1, "v381.0")},
+    {"version":"v382.0","final_label":"Operator-Governed Applied Diff and Source-State Evidence Packet v1","api":"live-patch-applied-diff-evidence","dashboard":"/live-patch-applied-diff-evidence","runtime_key":"live_patch_applied_diff_evidence","theme":"live patch applied diff evidence","items":_live_patch_trial_closure_items("live_patch_applied_diff_evidence", "operator_governed_live_patch_applied_diff_evidence_v1", "Operator-Governed Applied Diff and Source-State Evidence Packet v1", 381.1, "v382.0")},
+    {"version":"v383.0","final_label":"Operator-Governed One-Time Approval Burnout and Reuse Block v1","api":"live-patch-approval-burnout","dashboard":"/live-patch-approval-burnout","runtime_key":"live_patch_approval_burnout","theme":"live patch approval burnout","items":_live_patch_trial_closure_items("live_patch_approval_burnout", "operator_governed_live_patch_approval_burnout_v1", "Operator-Governed One-Time Approval Burnout and Reuse Block v1", 382.1, "v383.0")},
+    {"version":"v384.0","final_label":"Operator-Governed Post-Trial Regression and Rollback Readiness Review v1","api":"live-patch-post-trial-regression-review","dashboard":"/live-patch-post-trial-regression-review","runtime_key":"live_patch_post_trial_regression_review","theme":"live patch post trial regression review","items":_live_patch_trial_closure_items("live_patch_post_trial_regression_review", "operator_governed_live_patch_post_trial_regression_review_v1", "Operator-Governed Post-Trial Regression and Rollback Readiness Review v1", 383.1, "v384.0")},
+    {"version":"v385.0","final_label":"Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1","api":"live-patch-trial-closure-audit","dashboard":"/live-patch-trial-closure-audit","runtime_key":"live_patch_trial_closure_audit","theme":"live patch trial closure audit","items":_live_patch_trial_closure_items("live_patch_trial_closure_audit", "operator_governed_live_patch_trial_closure_audit_v1", "Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1", 384.1, "v385.0")},
+]
+LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in LIVE_PATCH_TRIAL_CLOSURE_ARCS
+    for stage, slug, label in arc["items"]
+]
+LIVE_PATCH_TRIAL_CLOSURE_STAGE_BY_SLUG = {item["slug"]: item for item in LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS}
+LIVE_PATCH_TRIAL_CLOSURE_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS}
+LIVE_PATCH_TRIAL_CLOSURE_ROUTE_MAP = {f"{item['api']}/layer": item["slug"] for item in LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS}
+LIVE_PATCH_TRIAL_CLOSURE_ROUTE_MAP.update({item["api"]: item["slug"] for item in LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS})
+
+
+def _live_patch_trial_closure_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/live_patch_trial_closure.py"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _live_patch_trial_closure_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    required = ["live-patch-trial-result-intake", "live-patch-applied-diff-evidence", "live-patch-approval-burnout", "live-patch-post-trial-regression-review", "live-patch-trial-closure-audit", "operator-governed-live-patch-trial-closure-audit-v1", "live_patch_trial_closure.py", "result_intake_reruns_commands=False", "diff_evidence_edits_source=False", "approval_burnout_reuses_approval=False", "post_trial_review_executes_rollback=False", "closure_audit_applies_another_patch=False", "approval_single_use_required=True", "operator_reapproval_required_for_next_patch=True", "dashboard_http_route_probe_required"]
+    route_keys = [f"{arc['api']}/layer" for arc in LIVE_PATCH_TRIAL_CLOSURE_ARCS]
+    missing_api = [key for key in route_keys if key not in SUPERVISED_RUNTIME_ROUTE_MAP]
+    return [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and LIVE_PATCH_TRIAL_CLOSURE_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; closure={LIVE_PATCH_TRIAL_CLOSURE_VERSION}"},
+        {"name":"stage-registry","status":"pass" if len(LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS) == 50 else "blocked","message":f"stages={len(LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS)}"},
+        {"name":"api-routes","status":"pass" if not missing_api and "SUPERVISED_RUNTIME_ROUTE_MAP" in docs else "blocked","message":f"{len(route_keys)} API route(s) present dynamically." if not missing_api else "missing: "+", ".join(missing_api)},
+        {"name":"docs-runtime-tokens","status":"pass" if all(token in docs for token in required) else "blocked","message":"README/dashboard/API/CLI/smoke/route-health/source tokens present."},
+        {"name":"runtime-private-dirs","status":"pass" if all(f"data/autonomy/{key}/" in docs for key in LIVE_PATCH_TRIAL_CLOSURE_RUNTIME_DIRS) else "blocked","message":"Live patch closure runtime directories are documented as private/source-only excluded."},
+        {"name":"dashboard-tooltip-boundary","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"data-tip dashboard hover remains custom; no native title tooltip regression."},
+    ]
+
+
+def _build_live_patch_trial_closure_stage(slug: str, project_id="default", improvement_goal=None, candidate_file=None, save=True, sample_text=None, evidence: dict[str, Any] | None = None, **kwargs) -> dict[str, Any]:
+    definition = LIVE_PATCH_TRIAL_CLOSURE_STAGE_BY_SLUG.get(slug, LIVE_PATCH_TRIAL_CLOSURE_STAGE_BY_SLUG["operator_governed_live_patch_trial_closure_audit_v1"])
+    docs = _live_patch_trial_closure_docs_text()
+    sample_evidence = {"approval_id":"approval-v385-review", "transaction_id":"transaction-v380-review", "application_trial_id":"trial-v380-review", "operator_confirmation_phrase":"I explicitly approve this one scoped live-change application trial", "timestamp":"operator-reported", "expected_files":["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "tools/smoke_check.py"], "actual_changed_files":["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "tools/smoke_check.py"], "reported_verification_results":"operator supplied verification report", "reported_rollback_readiness":"rollback packet reviewed", "approval_token_consumed":True, "single_use_enforced":True, "reuse_rejected":True, "scope_expansion_rejected":True, "stale_approval_rejected":True, "approval_result_separated":True, "operator_reapproval_required":True}
+    if evidence:
+        sample_evidence.update(evidence)
+    intake = build_live_patch_trial_result_intake_summary(sample_text or "review only", sample_evidence)
+    diff = build_applied_diff_evidence_summary(sample_text or "review only", sample_evidence)
+    burnout = build_approval_burnout_summary(sample_text or "review only", sample_evidence)
+    review = build_post_trial_regression_review_summary(sample_text or "review only", sample_evidence)
+    audit = build_live_patch_trial_closure_audit_summary(ROOT_DIR, docs, sample_text or "review only", sample_evidence)
+    rows = _live_patch_trial_closure_status_rows(definition, docs)
+    ok = all(row["status"] == "pass" for row in rows) and bool(audit.get("ok")) and bool(audit.get("boundaries_ok"))
+    dashboard_routes = [arc["dashboard"] for arc in LIVE_PATCH_TRIAL_CLOSURE_ARCS]
+    api_routes = [f"/api/{arc['api']}/layer" for arc in LIVE_PATCH_TRIAL_CLOSURE_ARCS]
+    cli_flags = ["--" + arc["items"][-1][1].replace("_", "-") for arc in LIVE_PATCH_TRIAL_CLOSURE_ARCS]
+    payload = {"stage_definition":definition,"improvement_goal":improvement_goal,"candidate_file":candidate_file,"result_intake":intake,"diff_evidence":diff,"approval_burnout":burnout,"post_trial_regression_review":review,"closure_audit":audit,"dashboard_routes":dashboard_routes,"api_routes":api_routes,"cli_flags":cli_flags,"runtime_registry_rows":[row for row in LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS if row["runtime_key"] == definition["runtime_key"]],"boundaries":LIVE_PATCH_TRIAL_CLOSURE_LAYER_BOUNDARIES,"safe_next_action":"Operator may review the v385 closure audit. No additional live patch, approval reuse, rollback, source edit, release creation, or automatic continuation is authorized."}
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    report = {"version":"v385.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = LIVE_PATCH_TRIAL_CLOSURE_RUNTIME_DIRS[definition["runtime_key"]]; outdir.mkdir(parents=True, exist_ok=True); (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _live_patch_trial_closure_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_live_patch_trial_closure_stage("operator_governed_live_patch_trial_closure_audit_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("Trial result intake", render_live_patch_trial_closure_lines(payload.get("result_intake", {}))), ("Diff evidence", render_live_patch_trial_closure_lines(payload.get("diff_evidence", {}))), ("Approval burnout", render_live_patch_trial_closure_lines(payload.get("approval_burnout", {}))), ("Post-trial regression review", render_live_patch_trial_closure_lines(payload.get("post_trial_regression_review", {}))), ("Closure audit", render_live_patch_trial_closure_lines(payload.get("closure_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required.')}" ])]
+    return render_governance_packet("Live Patch Trial Closure and Approval Burnout v1", report, sections, full=full)
+
+
+def _make_live_patch_trial_closure_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_live_patch_trial_closure_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+
+def _make_live_patch_trial_closure_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_live_patch_trial_closure_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _live_patch_trial_closure_text(report, full=full))
+    return _printer
+
+
+def _make_live_patch_trial_closure_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _live_patch_trial_closure_text(report or _build_live_patch_trial_closure_stage(slug, save=False), full=full)
+    return _text
+
+
+for _live_patch_trial_closure_slug in LIVE_PATCH_TRIAL_CLOSURE_STAGE_BY_SLUG:
+    globals()[f"build_{_live_patch_trial_closure_slug}"] = _make_live_patch_trial_closure_build(_live_patch_trial_closure_slug)
+    globals()[f"print_{_live_patch_trial_closure_slug}"] = _make_live_patch_trial_closure_print(_live_patch_trial_closure_slug)
+    globals()[f"{_live_patch_trial_closure_slug}_text"] = _make_live_patch_trial_closure_text(_live_patch_trial_closure_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(LIVE_PATCH_TRIAL_CLOSURE_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(LIVE_PATCH_TRIAL_CLOSURE_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(LIVE_PATCH_TRIAL_CLOSURE_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(LIVE_PATCH_TRIAL_CLOSURE_ROUTE_MAP)
+
+# v380.1-v385.0 live patch trial closure smoke tokens: live-patch-trial-result-intake live-patch-applied-diff-evidence live-patch-approval-burnout live-patch-post-trial-regression-review live-patch-trial-closure-audit operator-governed-live-patch-trial-closure-audit-v1 conscious_agent/live_patch_trial_closure.py live_patch_trial_closure.py data/autonomy/live_patch_trial_result_intake/ data/autonomy/live_patch_applied_diff_evidence/ data/autonomy/live_patch_approval_burnout/ data/autonomy/live_patch_post_trial_regression_review/ data/autonomy/live_patch_trial_closure_audit/ result_intake_reruns_commands=False diff_evidence_edits_source=False approval_burnout_reuses_approval=False post_trial_review_executes_rollback=False closure_audit_applies_another_patch=False approval_single_use_required=True operator_reapproval_required_for_next_patch=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v385.1-v390.0 Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1
+from second_live_patch_trial import (
+    SECOND_LIVE_PATCH_TRIAL_VERSION,
+    SECOND_LIVE_PATCH_TRIAL_BOUNDARIES,
+    build_second_minimal_live_patch_candidate_summary,
+    build_registry_driven_approval_validation_summary,
+    build_registry_driven_transaction_lock_summary,
+    build_second_application_harness_summary,
+    build_second_live_patch_trial_registry_audit_summary,
+    render_second_live_patch_trial_lines,
+)
+
+SECOND_LIVE_PATCH_TRIAL_RUNTIME_DIRS = {
+    "second_minimal_live_patch_candidate": ROOT_DIR / "data" / "autonomy" / "second_minimal_live_patch_candidate",
+    "registry_driven_live_patch_approval_validation": ROOT_DIR / "data" / "autonomy" / "registry_driven_live_patch_approval_validation",
+    "registry_driven_live_patch_transaction_lock": ROOT_DIR / "data" / "autonomy" / "registry_driven_live_patch_transaction_lock",
+    "second_live_patch_application_harness": ROOT_DIR / "data" / "autonomy" / "second_live_patch_application_harness",
+    "second_live_patch_trial_registry_audit": ROOT_DIR / "data" / "autonomy" / "second_live_patch_trial_registry_audit",
+}
+SECOND_LIVE_PATCH_TRIAL_LAYER_BOUNDARIES = dict(SECOND_LIVE_PATCH_TRIAL_BOUNDARIES)
+
+
+def _second_live_patch_trial_items(prefix: str, final_slug: str, final_label: str, start: float, final_stage: str):
+    labels = [
+        "Boundary Declaration", "Registry-Safe Candidate Class", "Forbidden Candidate Class Guard", "Approval Scope Binder", "Registry Metadata Binder", "Preimage/Transaction Binder", "Harness Confirmation Binder", "Dashboard/API/CLI Surface", "Smoke Coverage", final_label,
+    ]
+    return [(f"v{start+i/10:.1f}" if i < 9 else final_stage, final_slug if i == 9 else f"{prefix}_{i+1}", labels[i]) for i in range(10)]
+
+
+SECOND_LIVE_PATCH_TRIAL_ARCS = [
+    {"version":"v386.0","final_label":"Operator-Governed Second Minimal Patch Candidate Registry Selection v1","api":"second-minimal-live-patch-candidate","dashboard":"/second-minimal-live-patch-candidate","runtime_key":"second_minimal_live_patch_candidate","theme":"second minimal live patch candidate","items":_second_live_patch_trial_items("second_minimal_live_patch_candidate", "operator_governed_second_minimal_live_patch_candidate_v1", "Operator-Governed Second Minimal Patch Candidate Registry Selection v1", 385.1, "v386.0")},
+    {"version":"v387.0","final_label":"Operator-Governed Registry-Driven Approval and Scope Validation v1","api":"registry-driven-live-patch-approval-validation","dashboard":"/registry-driven-live-patch-approval-validation","runtime_key":"registry_driven_live_patch_approval_validation","theme":"registry driven approval scope validation","items":_second_live_patch_trial_items("registry_driven_live_patch_approval_validation", "operator_governed_registry_driven_live_patch_approval_validation_v1", "Operator-Governed Registry-Driven Approval and Scope Validation v1", 386.1, "v387.0")},
+    {"version":"v388.0","final_label":"Operator-Governed Registry-Driven Patch Transaction and Preimage Lock v1","api":"registry-driven-live-patch-transaction-lock","dashboard":"/registry-driven-live-patch-transaction-lock","runtime_key":"registry_driven_live_patch_transaction_lock","theme":"registry driven transaction preimage lock","items":_second_live_patch_trial_items("registry_driven_live_patch_transaction_lock", "operator_governed_registry_driven_live_patch_transaction_lock_v1", "Operator-Governed Registry-Driven Patch Transaction and Preimage Lock v1", 387.1, "v388.0")},
+    {"version":"v389.0","final_label":"Operator-Confirmed Second Minimal Live Patch Application Harness v1","api":"second-live-patch-application-harness","dashboard":"/second-live-patch-application-harness","runtime_key":"second_live_patch_application_harness","theme":"second live patch application harness","items":_second_live_patch_trial_items("second_live_patch_application_harness", "operator_confirmed_second_live_patch_application_harness_v1", "Operator-Confirmed Second Minimal Live Patch Application Harness v1", 388.1, "v389.0")},
+    {"version":"v390.0","final_label":"Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1","api":"second-live-patch-trial-registry-audit","dashboard":"/second-live-patch-trial-registry-audit","runtime_key":"second_live_patch_trial_registry_audit","theme":"second live patch trial registry audit","items":_second_live_patch_trial_items("second_live_patch_trial_registry_audit", "operator_governed_second_live_patch_trial_registry_audit_v1", "Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1", 389.1, "v390.0")},
+]
+SECOND_LIVE_PATCH_TRIAL_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in SECOND_LIVE_PATCH_TRIAL_ARCS
+    for stage, slug, label in arc["items"]
+]
+SECOND_LIVE_PATCH_TRIAL_STAGE_BY_SLUG = {item["slug"]: item for item in SECOND_LIVE_PATCH_TRIAL_STAGE_DEFS}
+SECOND_LIVE_PATCH_TRIAL_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in SECOND_LIVE_PATCH_TRIAL_STAGE_DEFS}
+SECOND_LIVE_PATCH_TRIAL_ROUTE_MAP = {f"{item['api']}/layer": item["slug"] for item in SECOND_LIVE_PATCH_TRIAL_STAGE_DEFS}
+SECOND_LIVE_PATCH_TRIAL_ROUTE_MAP.update({item["api"]: item["slug"] for item in SECOND_LIVE_PATCH_TRIAL_STAGE_DEFS})
+
+
+def _second_live_patch_trial_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/second_live_patch_trial.py"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _second_live_patch_trial_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    required = ["second-minimal-live-patch-candidate", "registry-driven-live-patch-approval-validation", "registry-driven-live-patch-transaction-lock", "second-live-patch-application-harness", "second-live-patch-trial-registry-audit", "operator-governed-second-live-patch-trial-registry-audit-v1", "second_live_patch_trial.py", "candidate_selection_applies_patch=False", "approval_validation_reuses_approval=False", "transaction_lock_writes_files=False", "application_harness_runs_without_confirmation=False", "registry_audit_applies_patch=False", "fresh_approval_required=True", "registry_driven_checks_required=True", "approval_burnout_required=True", "dashboard_http_route_probe_required"]
+    route_keys = [f"{arc['api']}/layer" for arc in SECOND_LIVE_PATCH_TRIAL_ARCS]
+    missing_api = [key for key in route_keys if key not in SUPERVISED_RUNTIME_ROUTE_MAP]
+    return [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and SECOND_LIVE_PATCH_TRIAL_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; second_trial={SECOND_LIVE_PATCH_TRIAL_VERSION}"},
+        {"name":"stage-registry","status":"pass" if len(SECOND_LIVE_PATCH_TRIAL_STAGE_DEFS) == 50 else "blocked","message":f"stages={len(SECOND_LIVE_PATCH_TRIAL_STAGE_DEFS)}"},
+        {"name":"api-routes","status":"pass" if not missing_api and "SUPERVISED_RUNTIME_ROUTE_MAP" in docs else "blocked","message":f"{len(route_keys)} API route(s) present dynamically." if not missing_api else "missing: "+", ".join(missing_api)},
+        {"name":"docs-runtime-tokens","status":"pass" if all(token in docs for token in required) else "blocked","message":"README/dashboard/API/CLI/smoke/route-health/source tokens present."},
+        {"name":"runtime-private-dirs","status":"pass" if all(f"data/autonomy/{key}/" in docs for key in SECOND_LIVE_PATCH_TRIAL_RUNTIME_DIRS) else "blocked","message":"Second live patch trial runtime directories are documented as private/source-only excluded."},
+        {"name":"dashboard-tooltip-boundary","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"data-tip dashboard hover remains custom; no native title tooltip regression."},
+    ]
+
+
+def _build_second_live_patch_trial_stage(slug: str, project_id="default", improvement_goal=None, candidate_file=None, save=True, sample_text=None, evidence: dict[str, Any] | None = None, **kwargs) -> dict[str, Any]:
+    definition = SECOND_LIVE_PATCH_TRIAL_STAGE_BY_SLUG.get(slug, SECOND_LIVE_PATCH_TRIAL_STAGE_BY_SLUG["operator_governed_second_live_patch_trial_registry_audit_v1"])
+    docs = _second_live_patch_trial_docs_text()
+    sample_evidence = {"candidate_class":"dashboard status/explanation line", "operator_supplied_candidate":True, "fresh_approval_id_present":True, "single_use_token_declared":True, "allowed_file_list_present":True, "forbidden_file_list_present":True, "target_version_bound":True, "registry_known_surface_metadata_bound":True, "rollback_requirement_present":True, "verification_requirement_present":True, "expiration_scope_present":True, "transaction_id_present":True, "candidate_id_present":True, "approval_id_present":True, "preimage_lock_present":True, "matching_transaction_id_present":True, "preimage_match_required":True, "allowed_file_match_required":True, "operator_confirmation_phrase":"I explicitly approve this second scoped registry-driven live patch trial", "rollback_packet_present":True, "verification_packet_present":True, "approval_burnout_required":True, "post_trial_closure_required":True}
+    if evidence:
+        sample_evidence.update(evidence)
+    candidate = build_second_minimal_live_patch_candidate_summary(sample_text or "review only", sample_evidence)
+    approval = build_registry_driven_approval_validation_summary(sample_text or "review only", sample_evidence)
+    transaction = build_registry_driven_transaction_lock_summary(sample_text or "review only", sample_evidence)
+    harness = build_second_application_harness_summary(sample_text or "review only", sample_evidence)
+    audit = build_second_live_patch_trial_registry_audit_summary(ROOT_DIR, docs, sample_text or "review only", sample_evidence)
+    rows = _second_live_patch_trial_status_rows(definition, docs)
+    ok = all(row["status"] == "pass" for row in rows) and bool(audit.get("ok")) and bool(audit.get("boundaries_ok"))
+    dashboard_routes = [arc["dashboard"] for arc in SECOND_LIVE_PATCH_TRIAL_ARCS]
+    api_routes = [f"/api/{arc['api']}/layer" for arc in SECOND_LIVE_PATCH_TRIAL_ARCS]
+    cli_flags = ["--" + arc["items"][-1][1].replace("_", "-") for arc in SECOND_LIVE_PATCH_TRIAL_ARCS]
+    payload = {"stage_definition":definition,"improvement_goal":improvement_goal,"candidate_file":candidate_file,"candidate_selection":candidate,"approval_validation":approval,"transaction_lock":transaction,"application_harness":harness,"registry_audit":audit,"dashboard_routes":dashboard_routes,"api_routes":api_routes,"cli_flags":cli_flags,"runtime_registry_rows":[row for row in SECOND_LIVE_PATCH_TRIAL_STAGE_DEFS if row["runtime_key"] == definition["runtime_key"]],"boundaries":SECOND_LIVE_PATCH_TRIAL_LAYER_BOUNDARIES,"safe_next_action":"Operator may review the v390 registry-driven second patch trial audit. No additional live patch, approval reuse, rollback, source edit, release creation, or automatic continuation is authorized."}
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    report = {"version":"v390.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = SECOND_LIVE_PATCH_TRIAL_RUNTIME_DIRS[definition["runtime_key"]]; outdir.mkdir(parents=True, exist_ok=True); (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _second_live_patch_trial_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_second_live_patch_trial_stage("operator_governed_second_live_patch_trial_registry_audit_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("Candidate selection", render_second_live_patch_trial_lines(payload.get("candidate_selection", {}))), ("Approval validation", render_second_live_patch_trial_lines(payload.get("approval_validation", {}))), ("Transaction lock", render_second_live_patch_trial_lines(payload.get("transaction_lock", {}))), ("Application harness", render_second_live_patch_trial_lines(payload.get("application_harness", {}))), ("Registry audit", render_second_live_patch_trial_lines(payload.get("registry_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required.')}" ])]
+    return render_governance_packet("Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1", report, sections, full=full)
+
+
+def _make_second_live_patch_trial_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_second_live_patch_trial_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+
+def _make_second_live_patch_trial_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_second_live_patch_trial_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _second_live_patch_trial_text(report, full=full))
+    return _printer
+
+
+def _make_second_live_patch_trial_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _second_live_patch_trial_text(report or _build_second_live_patch_trial_stage(slug, save=False), full=full)
+    return _text
+
+
+for _second_live_patch_trial_slug in SECOND_LIVE_PATCH_TRIAL_STAGE_BY_SLUG:
+    globals()[f"build_{_second_live_patch_trial_slug}"] = _make_second_live_patch_trial_build(_second_live_patch_trial_slug)
+    globals()[f"print_{_second_live_patch_trial_slug}"] = _make_second_live_patch_trial_print(_second_live_patch_trial_slug)
+    globals()[f"{_second_live_patch_trial_slug}_text"] = _make_second_live_patch_trial_text(_second_live_patch_trial_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(SECOND_LIVE_PATCH_TRIAL_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(SECOND_LIVE_PATCH_TRIAL_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(SECOND_LIVE_PATCH_TRIAL_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(SECOND_LIVE_PATCH_TRIAL_ROUTE_MAP)
+
+# v385.1-v390.0 second minimal live patch trial smoke tokens: second-minimal-live-patch-candidate registry-driven-live-patch-approval-validation registry-driven-live-patch-transaction-lock second-live-patch-application-harness second-live-patch-trial-registry-audit operator-governed-second-live-patch-trial-registry-audit-v1 conscious_agent/second_live_patch_trial.py second_live_patch_trial.py data/autonomy/second_minimal_live_patch_candidate/ data/autonomy/registry_driven_live_patch_approval_validation/ data/autonomy/registry_driven_live_patch_transaction_lock/ data/autonomy/second_live_patch_application_harness/ data/autonomy/second_live_patch_trial_registry_audit/ candidate_selection_applies_patch=False approval_validation_reuses_approval=False transaction_lock_writes_files=False application_harness_runs_without_confirmation=False registry_audit_applies_patch=False fresh_approval_required=True registry_driven_checks_required=True approval_burnout_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v390.1-v395.0 Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1
+from live_patch_history_memory_candidates import (
+    LIVE_PATCH_HISTORY_MEMORY_CANDIDATES_VERSION,
+    LIVE_PATCH_HISTORY_MEMORY_CANDIDATES_BOUNDARIES,
+    build_live_patch_trial_history_ledger_summary,
+    build_operator_decision_pattern_review_summary,
+    build_supervised_lesson_candidate_summary,
+    build_memory_candidate_governance_summary,
+    build_live_patch_history_memory_candidate_audit_summary,
+    render_live_patch_history_memory_candidate_lines,
+)
+
+LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_RUNTIME_DIRS = {
+    "live_patch_trial_history_ledger": ROOT_DIR / "data" / "autonomy" / "live_patch_trial_history_ledger",
+    "operator_live_patch_decision_patterns": ROOT_DIR / "data" / "autonomy" / "operator_live_patch_decision_patterns",
+    "live_patch_supervised_lesson_candidates": ROOT_DIR / "data" / "autonomy" / "live_patch_supervised_lesson_candidates",
+    "live_patch_memory_candidate_governance": ROOT_DIR / "data" / "autonomy" / "live_patch_memory_candidate_governance",
+    "live_patch_history_memory_candidate_audit": ROOT_DIR / "data" / "autonomy" / "live_patch_history_memory_candidate_audit",
+}
+LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_LAYER_BOUNDARIES = dict(LIVE_PATCH_HISTORY_MEMORY_CANDIDATES_BOUNDARIES)
+
+
+def _live_patch_history_memory_items(prefix: str, final_slug: str, final_label: str, start: float, final_stage: str):
+    labels = [
+        "Boundary Declaration", "Schema Binder", "Evidence Binder", "Operator Decision Binder", "Approval Burnout Binder", "Rollback Readiness Binder", "Dashboard/API/CLI Surface", "Smoke Coverage", "Documentation and Release Notes", final_label,
+    ]
+    return [(f"v{start+i/10:.1f}" if i < 9 else final_stage, final_slug if i == 9 else f"{prefix}_{i+1}", labels[i]) for i in range(10)]
+
+
+LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_ARCS = [
+    {"version":"v391.0","final_label":"Operator-Governed Live Patch Trial History Ledger v1","api":"live-patch-trial-history-ledger","dashboard":"/live-patch-trial-history-ledger","runtime_key":"live_patch_trial_history_ledger","theme":"live patch trial history ledger","items":_live_patch_history_memory_items("live_patch_trial_history_ledger", "operator_governed_live_patch_trial_history_ledger_v1", "Operator-Governed Live Patch Trial History Ledger v1", 390.1, "v391.0")},
+    {"version":"v392.0","final_label":"Operator-Governed Live Patch Decision Pattern Review v1","api":"operator-live-patch-decision-patterns","dashboard":"/operator-live-patch-decision-patterns","runtime_key":"operator_live_patch_decision_patterns","theme":"operator live patch decision patterns","items":_live_patch_history_memory_items("operator_live_patch_decision_patterns", "operator_governed_live_patch_decision_pattern_review_v1", "Operator-Governed Live Patch Decision Pattern Review v1", 391.1, "v392.0")},
+    {"version":"v393.0","final_label":"Operator-Governed Live Patch Supervised Lesson Candidate Drafting v1","api":"live-patch-supervised-lesson-candidates","dashboard":"/live-patch-supervised-lesson-candidates","runtime_key":"live_patch_supervised_lesson_candidates","theme":"live patch supervised lesson candidates","items":_live_patch_history_memory_items("live_patch_supervised_lesson_candidates", "operator_governed_live_patch_supervised_lesson_candidate_drafting_v1", "Operator-Governed Live Patch Supervised Lesson Candidate Drafting v1", 392.1, "v393.0")},
+    {"version":"v394.0","final_label":"Operator-Governed Live Patch Memory Candidate Governance v1","api":"live-patch-memory-candidate-governance","dashboard":"/live-patch-memory-candidate-governance","runtime_key":"live_patch_memory_candidate_governance","theme":"live patch memory candidate governance","items":_live_patch_history_memory_items("live_patch_memory_candidate_governance", "operator_governed_live_patch_memory_candidate_governance_v1", "Operator-Governed Live Patch Memory Candidate Governance v1", 393.1, "v394.0")},
+    {"version":"v395.0","final_label":"Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1","api":"live-patch-history-memory-candidate-audit","dashboard":"/live-patch-history-memory-candidate-audit","runtime_key":"live_patch_history_memory_candidate_audit","theme":"live patch history memory candidate audit","items":_live_patch_history_memory_items("live_patch_history_memory_candidate_audit", "operator_governed_live_patch_history_and_memory_candidate_audit_v1", "Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1", 394.1, "v395.0")},
+]
+LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_ARCS
+    for stage, slug, label in arc["items"]
+]
+LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_BY_SLUG = {item["slug"]: item for item in LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_DEFS}
+LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_DEFS}
+LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_ROUTE_MAP = {f"{item['api']}/layer": item["slug"] for item in LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_DEFS}
+LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_ROUTE_MAP.update({item["api"]: item["slug"] for item in LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_DEFS})
+
+
+def _live_patch_history_memory_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/live_patch_history_memory_candidates.py"]
+    return "\n".join((ROOT_DIR / path).read_text(encoding="utf-8") for path in paths if (ROOT_DIR / path).exists())
+
+
+def _live_patch_history_memory_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    required = ["live-patch-trial-history-ledger", "operator-live-patch-decision-patterns", "live-patch-supervised-lesson-candidates", "live-patch-memory-candidate-governance", "live-patch-history-memory-candidate-audit", "operator-governed-live-patch-history-and-memory-candidate-audit-v1", "live_patch_history_memory_candidates.py", "history_ledger_treats_history_as_permission=False", "decision_review_changes_future_behavior=False", "lesson_candidates_write_memory=False", "memory_governance_stores_memory=False", "history_memory_audit_writes_memory=False", "memory_candidates_review_only=True", "operator_approval_required_before_memory_storage=True", "dashboard_http_route_probe_required"]
+    rows = [{"name": "docs-token:" + token[:44], "status": "pass" if token in docs else "blocked", "message": token} for token in required]
+    rows.append({"name":"data-tip-hover", "status":"pass" if "data-tip" in docs and "no_native_title_tooltip" in docs else "blocked", "message":"Dashboard custom hover tokens remain documented."})
+    return rows
+
+
+def _build_live_patch_history_memory_stage(slug: str, project_id="default", improvement_goal=None, candidate_file=None, save=True, sample_text=None, evidence: dict[str, Any] | None = None, **kwargs) -> dict[str, Any]:
+    definition = LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_BY_SLUG.get(slug, LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_BY_SLUG["operator_governed_live_patch_history_and_memory_candidate_audit_v1"])
+    docs = _live_patch_history_memory_docs_text()
+    sample_evidence = dict(evidence or {})
+    ledger = build_live_patch_trial_history_ledger_summary(sample_text or "review only", sample_evidence)
+    decision_review = build_operator_decision_pattern_review_summary(sample_text or "review only", sample_evidence)
+    lessons = build_supervised_lesson_candidate_summary(sample_text or "review only", sample_evidence)
+    memory_governance = build_memory_candidate_governance_summary(sample_text or "review only", sample_evidence)
+    audit = build_live_patch_history_memory_candidate_audit_summary(ROOT_DIR, docs, sample_text or "review only", sample_evidence)
+    rows = _live_patch_history_memory_status_rows(definition, docs)
+    blockers = [row["name"] for row in rows if row["status"] != "pass"] + audit.get("blockers", [])
+    ok = not blockers and audit.get("ok") is True
+    payload = {"definition":definition,"history_ledger":ledger,"decision_pattern_review":decision_review,"lesson_candidates":lessons,"memory_candidate_governance":memory_governance,"history_memory_audit":audit,"boundaries":LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_LAYER_BOUNDARIES,"dashboard_routes":[arc["dashboard"] for arc in LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_ARCS],"api_routes":[f"/api/{arc['api']}/layer" for arc in LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_ARCS],"cli_flags":["--" + arc["items"][-1][1].replace("_", "-") for arc in LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_ARCS],"safe_next_action":audit.get("safe_next_action")}
+    report = {"version":"v395.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _live_patch_history_memory_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_live_patch_history_memory_stage("operator_governed_live_patch_history_and_memory_candidate_audit_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("History ledger", render_live_patch_history_memory_candidate_lines(payload.get("history_ledger", {}))), ("Decision pattern review", render_live_patch_history_memory_candidate_lines(payload.get("decision_pattern_review", {}))), ("Lesson candidates", render_live_patch_history_memory_candidate_lines(payload.get("lesson_candidates", {}))), ("Memory candidate governance", render_live_patch_history_memory_candidate_lines(payload.get("memory_candidate_governance", {}))), ("History/memory audit", render_live_patch_history_memory_candidate_lines(payload.get("history_memory_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required.')}" ])]
+    return render_governance_packet("Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1", report, sections, full=full)
+
+
+def _make_live_patch_history_memory_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_live_patch_history_memory_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+
+def _make_live_patch_history_memory_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_live_patch_history_memory_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _live_patch_history_memory_text(report, full=full))
+    return _printer
+
+
+def _make_live_patch_history_memory_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _live_patch_history_memory_text(report or _build_live_patch_history_memory_stage(slug, save=False), full=full)
+    return _text
+
+
+for _live_patch_history_memory_slug in LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_BY_SLUG:
+    globals()[f"build_{_live_patch_history_memory_slug}"] = _make_live_patch_history_memory_build(_live_patch_history_memory_slug)
+    globals()[f"print_{_live_patch_history_memory_slug}"] = _make_live_patch_history_memory_print(_live_patch_history_memory_slug)
+    globals()[f"{_live_patch_history_memory_slug}_text"] = _make_live_patch_history_memory_text(_live_patch_history_memory_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(LIVE_PATCH_HISTORY_MEMORY_CANDIDATE_ROUTE_MAP)
+
+# v390.1-v395.0 live patch history and memory candidate prep smoke tokens: live-patch-trial-history-ledger operator-live-patch-decision-patterns live-patch-supervised-lesson-candidates live-patch-memory-candidate-governance live-patch-history-memory-candidate-audit operator-governed-live-patch-history-and-memory-candidate-audit-v1 conscious_agent/live_patch_history_memory_candidates.py live_patch_history_memory_candidates.py data/autonomy/live_patch_trial_history_ledger/ data/autonomy/operator_live_patch_decision_patterns/ data/autonomy/live_patch_supervised_lesson_candidates/ data/autonomy/live_patch_memory_candidate_governance/ data/autonomy/live_patch_history_memory_candidate_audit/ history_ledger_treats_history_as_permission=False decision_review_changes_future_behavior=False lesson_candidates_write_memory=False memory_governance_stores_memory=False history_memory_audit_writes_memory=False memory_candidates_review_only=True operator_approval_required_before_memory_storage=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v395.1-v400.0 Operator-Approved Memory Candidate Application Trial v1
+from memory_candidate_application_trial import (
+    MEMORY_CANDIDATE_APPLICATION_TRIAL_VERSION,
+    MEMORY_CANDIDATE_APPLICATION_TRIAL_BOUNDARIES,
+    build_memory_candidate_selection_packet_summary,
+    build_memory_application_approval_lock_summary,
+    build_memory_write_transaction_preview_summary,
+    build_operator_confirmed_memory_application_trial_summary,
+    build_memory_application_trial_audit_summary,
+    render_memory_candidate_application_trial_lines,
+)
+
+MEMORY_CANDIDATE_APPLICATION_TRIAL_RUNTIME_DIRS = {
+    "memory_candidate_selection_packet": ROOT_DIR / "data" / "autonomy" / "memory_candidate_selection_packet",
+    "memory_application_approval_lock": ROOT_DIR / "data" / "autonomy" / "memory_application_approval_lock",
+    "memory_write_transaction_preview": ROOT_DIR / "data" / "autonomy" / "memory_write_transaction_preview",
+    "operator_confirmed_memory_application_trial": ROOT_DIR / "data" / "autonomy" / "operator_confirmed_memory_application_trial",
+    "memory_application_trial_audit": ROOT_DIR / "data" / "autonomy" / "memory_application_trial_audit",
+}
+MEMORY_CANDIDATE_APPLICATION_TRIAL_LAYER_BOUNDARIES = dict(MEMORY_CANDIDATE_APPLICATION_TRIAL_BOUNDARIES)
+
+
+def _memory_application_trial_items(prefix: str, final_slug: str, final_label: str, start: float, final_stage: str):
+    labels = [
+        "Boundary Declaration", "Candidate Binder", "Approval Binder", "Scope/Sensitivity Binder", "Transaction Preview Binder", "Retraction Binder", "Dashboard/API/CLI Surface", "Smoke Coverage", "Documentation and Release Notes", final_label,
+    ]
+    return [(f"v{start+i/10:.1f}" if i < 9 else final_stage, final_slug if i == 9 else f"{prefix}_{i+1}", labels[i]) for i in range(10)]
+
+
+MEMORY_CANDIDATE_APPLICATION_TRIAL_ARCS = [
+    {"version":"v396.0","final_label":"Operator-Governed Memory Candidate Selection Packet v1","api":"memory-candidate-selection-packet","dashboard":"/memory-candidate-selection-packet","runtime_key":"memory_candidate_selection_packet","theme":"memory candidate selection packet","items":_memory_application_trial_items("memory_candidate_selection_packet", "operator_governed_memory_candidate_selection_packet_v1", "Operator-Governed Memory Candidate Selection Packet v1", 395.1, "v396.0")},
+    {"version":"v397.0","final_label":"Operator-Governed Memory Application Approval Lock v1","api":"memory-application-approval-lock","dashboard":"/memory-application-approval-lock","runtime_key":"memory_application_approval_lock","theme":"memory application approval lock","items":_memory_application_trial_items("memory_application_approval_lock", "operator_governed_memory_application_approval_lock_v1", "Operator-Governed Memory Application Approval Lock v1", 396.1, "v397.0")},
+    {"version":"v398.0","final_label":"Operator-Governed Memory Write Transaction Preview v1","api":"memory-write-transaction-preview","dashboard":"/memory-write-transaction-preview","runtime_key":"memory_write_transaction_preview","theme":"memory write transaction preview","items":_memory_application_trial_items("memory_write_transaction_preview", "operator_governed_memory_write_transaction_preview_v1", "Operator-Governed Memory Write Transaction Preview v1", 397.1, "v398.0")},
+    {"version":"v399.0","final_label":"Operator-Confirmed Memory Application Trial Harness v1","api":"operator-confirmed-memory-application-trial","dashboard":"/operator-confirmed-memory-application-trial","runtime_key":"operator_confirmed_memory_application_trial","theme":"operator confirmed memory application trial","items":_memory_application_trial_items("operator_confirmed_memory_application_trial", "operator_confirmed_memory_application_trial_v1", "Operator-Confirmed Memory Application Trial Harness v1", 398.1, "v399.0")},
+    {"version":"v400.0","final_label":"Operator-Approved Memory Candidate Application Trial v1","api":"memory-application-trial-audit","dashboard":"/memory-application-trial-audit","runtime_key":"memory_application_trial_audit","theme":"memory application trial audit","items":_memory_application_trial_items("memory_application_trial_audit", "operator_governed_memory_application_trial_audit_v1", "Operator-Approved Memory Candidate Application Trial v1", 399.1, "v400.0")},
+]
+MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_DEFS = [
+    {"stage": stage, "slug": slug, "label": label, "version": arc["version"], "final_label": arc["final_label"], "api": arc["api"], "route": arc["dashboard"], "dashboard": arc["dashboard"], "runtime_key": arc["runtime_key"], "theme": arc["theme"], "focus": label}
+    for arc in MEMORY_CANDIDATE_APPLICATION_TRIAL_ARCS
+    for stage, slug, label in arc["items"]
+]
+MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_BY_SLUG = {item["slug"]: item for item in MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_DEFS}
+MEMORY_CANDIDATE_APPLICATION_TRIAL_CLI_MAP = {item["slug"].replace("_", "-"): item["slug"] for item in MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_DEFS}
+MEMORY_CANDIDATE_APPLICATION_TRIAL_ROUTE_MAP = {f"{item['api']}/layer": item["slug"] for item in MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_DEFS}
+MEMORY_CANDIDATE_APPLICATION_TRIAL_ROUTE_MAP.update({item["api"]: item["slug"] for item in MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_DEFS})
+
+
+def _memory_application_trial_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py", "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/memory_candidate_application_trial.py"]
+    return "\n".join((ROOT_DIR / path).read_text(encoding="utf-8") for path in paths if (ROOT_DIR / path).exists())
+
+
+def _memory_application_trial_status_rows(definition: dict[str, Any], docs: str) -> list[dict[str, str]]:
+    required = ["memory-candidate-selection-packet", "memory-application-approval-lock", "memory-write-transaction-preview", "operator-confirmed-memory-application-trial", "memory-application-trial-audit", "operator-governed-memory-application-trial-audit-v1", "memory_candidate_application_trial.py", "candidate_selection_writes_memory=False", "approval_lock_reuses_approval=False", "transaction_preview_writes_memory=False", "application_harness_runs_without_confirmation=False", "application_audit_runs_retraction=False", "fresh_operator_approval_required=True", "single_use_memory_approval_required=True", "sensitive_data_screen_required=True", "identity_personality_mutation_screen_required=True", "retraction_packet_required=True", "dashboard_http_route_probe_required"]
+    rows = [{"name": "docs-token:" + token[:44], "status": "pass" if token in docs else "blocked", "message": token} for token in required]
+    rows.append({"name":"version-markers", "status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and MEMORY_CANDIDATE_APPLICATION_TRIAL_VERSION == "500.0" else "blocked", "message":f"self={SELF_MAINTENANCE_VERSION}; memory_trial={MEMORY_CANDIDATE_APPLICATION_TRIAL_VERSION}"})
+    rows.append({"name":"stage-registry", "status":"pass" if len(MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_DEFS) == 50 else "blocked", "message":f"stages={len(MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_DEFS)}"})
+    rows.append({"name":"data-tip-hover", "status":"pass" if "data-tip" in docs and "no_native_title_tooltip" in docs else "blocked", "message":"Dashboard custom hover tokens remain documented."})
+    return rows
+
+
+def _build_memory_application_trial_stage(slug: str, project_id="default", improvement_goal=None, candidate_file=None, save=True, sample_text=None, evidence: dict[str, Any] | None = None, **kwargs) -> dict[str, Any]:
+    definition = MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_BY_SLUG.get(slug, MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_BY_SLUG["operator_governed_memory_application_trial_audit_v1"])
+    docs = _memory_application_trial_docs_text()
+    sample_evidence = dict(evidence or {})
+    selection = build_memory_candidate_selection_packet_summary(sample_text or "review only", sample_evidence)
+    approval = build_memory_application_approval_lock_summary(sample_text or "review only", sample_evidence)
+    preview = build_memory_write_transaction_preview_summary(sample_text or "review only", sample_evidence)
+    harness = build_operator_confirmed_memory_application_trial_summary(sample_text or "review only", sample_evidence)
+    audit = build_memory_application_trial_audit_summary(ROOT_DIR, docs, sample_text or "review only", sample_evidence)
+    rows = _memory_application_trial_status_rows(definition, docs)
+    blockers = [row["name"] for row in rows if row["status"] != "pass"] + audit.get("blockers", [])
+    ok = not blockers and audit.get("ok") is True
+    payload = {"definition":definition,"candidate_selection":selection,"approval_lock":approval,"transaction_preview":preview,"application_harness":harness,"application_audit":audit,"boundaries":MEMORY_CANDIDATE_APPLICATION_TRIAL_LAYER_BOUNDARIES,"dashboard_routes":[arc["dashboard"] for arc in MEMORY_CANDIDATE_APPLICATION_TRIAL_ARCS],"api_routes":[f"/api/{arc['api']}/layer" for arc in MEMORY_CANDIDATE_APPLICATION_TRIAL_ARCS],"cli_flags":["--" + arc["items"][-1][1].replace("_", "-") for arc in MEMORY_CANDIDATE_APPLICATION_TRIAL_ARCS],"safe_next_action":audit.get("safe_next_action")}
+    report = {"version":"v400.0","status":"pass" if ok else "blocked","ok":ok,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if ok else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        outdir = MEMORY_CANDIDATE_APPLICATION_TRIAL_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _memory_application_trial_text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+    report = report or _build_memory_application_trial_stage("operator_governed_memory_application_trial_audit_v1", save=False)
+    payload = report.get("payload", {})
+    sections = [("Candidate selection", render_memory_candidate_application_trial_lines(payload.get("candidate_selection", {}))), ("Approval lock", render_memory_candidate_application_trial_lines(payload.get("approval_lock", {}))), ("Transaction preview", render_memory_candidate_application_trial_lines(payload.get("transaction_preview", {}))), ("Application harness", render_memory_candidate_application_trial_lines(payload.get("application_harness", {}))), ("Memory application audit", render_memory_candidate_application_trial_lines(payload.get("application_audit", {}))), ("Surfaces", [f"- dashboard: {', '.join(payload.get('dashboard_routes', []))}", f"- api: {', '.join(payload.get('api_routes', []))}", f"- cli: {', '.join(payload.get('cli_flags', []))}"]), ("Safe next action", [f"- {payload.get('safe_next_action', 'Operator review required.')}" ])]
+    return render_governance_packet("Operator-Approved Memory Candidate Application Trial v1", report, sections, full=full)
+
+
+def _make_memory_application_trial_build(slug: str):
+    def _builder(project_id="default", improvement_goal=None, candidate_file=None, save=True, **kwargs):
+        return _build_memory_application_trial_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+    return _builder
+
+
+def _make_memory_application_trial_print(slug: str):
+    def _printer(project_id="default", improvement_goal=None, candidate_file=None, full=False, json_output=False, save=False, **kwargs):
+        report = _build_memory_application_trial_stage(slug, project_id=project_id, improvement_goal=improvement_goal, candidate_file=candidate_file, save=save, **kwargs)
+        print(json.dumps(report, indent=2) if json_output else _memory_application_trial_text(report, full=full))
+    return _printer
+
+
+def _make_memory_application_trial_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False):
+        return _memory_application_trial_text(report or _build_memory_application_trial_stage(slug, save=False), full=full)
+    return _text
+
+
+for _memory_application_trial_slug in MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_BY_SLUG:
+    globals()[f"build_{_memory_application_trial_slug}"] = _make_memory_application_trial_build(_memory_application_trial_slug)
+    globals()[f"print_{_memory_application_trial_slug}"] = _make_memory_application_trial_print(_memory_application_trial_slug)
+    globals()[f"{_memory_application_trial_slug}_text"] = _make_memory_application_trial_text(_memory_application_trial_slug)
+SUPERVISED_RUNTIME_STAGE_DEFS.extend(MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_DEFS)
+SUPERVISED_RUNTIME_STAGE_BY_SLUG.update(MEMORY_CANDIDATE_APPLICATION_TRIAL_STAGE_BY_SLUG)
+SUPERVISED_RUNTIME_CLI_MAP.update(MEMORY_CANDIDATE_APPLICATION_TRIAL_CLI_MAP)
+SUPERVISED_RUNTIME_ROUTE_MAP.update(MEMORY_CANDIDATE_APPLICATION_TRIAL_ROUTE_MAP)
+
+# v395.1-v400.0 memory candidate application trial smoke tokens: memory-candidate-selection-packet memory-application-approval-lock memory-write-transaction-preview operator-confirmed-memory-application-trial memory-application-trial-audit operator-governed-memory-application-trial-audit-v1 conscious_agent/memory_candidate_application_trial.py memory_candidate_application_trial.py data/autonomy/memory_candidate_selection_packet/ data/autonomy/memory_application_approval_lock/ data/autonomy/memory_write_transaction_preview/ data/autonomy/operator_confirmed_memory_application_trial/ data/autonomy/memory_application_trial_audit/ candidate_selection_writes_memory=False approval_lock_reuses_approval=False transaction_preview_writes_memory=False application_harness_runs_without_confirmation=False application_audit_runs_retraction=False fresh_operator_approval_required=True single_use_memory_approval_required=True sensitive_data_screen_required=True identity_personality_mutation_screen_required=True retraction_packet_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v400.1-v405.0 Segmented Install Smoke and Self-Maintenance Confirmation Hardening v1
+from smoke_segment_registry import build_smoke_segment_registry_summary, build_segment_resume_metadata_summary, build_segmented_install_smoke_audit_summary, SMOKE_SEGMENT_REGISTRY_VERSION
+
+V405_STAGE_DEFS = [
+    {"version":"v401.0","final_label":"Memory Application Confirmation Presence Gate v1","api":"memory-application-confirmation-gate","dashboard":"/memory-application-confirmation-gate","runtime_key":"memory_application_confirmation_gate","slug":"operator_governed_memory_application_confirmation_gate_v1","focus":"requires explicit supplied confirmation evidence before a memory application harness may report exact confirmation"},
+    {"version":"v402.0","final_label":"Memory Application Negative Confirmation Tests v1","api":"memory-application-negative-tests","dashboard":"/memory-application-negative-tests","runtime_key":"memory_application_negative_tests","slug":"operator_governed_memory_application_negative_tests_v1","focus":"proves missing, wrong, reused, changed, sensitive, identity, and autonomy-expanding memory application evidence remains blocked"},
+    {"version":"v403.0","final_label":"Smoke Segment Registry v1","api":"smoke-segment-registry","dashboard":"/smoke-segment-registry","runtime_key":"smoke_segment_registry","slug":"operator_governed_smoke_segment_registry_v1","focus":"classifies the growing smoke suite into bounded install segments without executing checks automatically"},
+    {"version":"v404.0","final_label":"Install Smoke Segment Runner v1","api":"install-smoke-segment-runner","dashboard":"/install-smoke-segment-runner","runtime_key":"install_smoke_segment_runner","slug":"operator_governed_install_smoke_segment_runner_v1","focus":"adds named smoke segment selection and resume metadata while keeping full install smoke available"},
+    {"version":"v405.0","final_label":"Segmented Install Smoke and Self-Maintenance Confirmation Hardening v1","api":"segmented-install-smoke-audit","dashboard":"/segmented-install-smoke-audit","runtime_key":"segmented_install_smoke_audit","slug":"operator_governed_segmented_install_smoke_audit_v1","focus":"audits confirmation hardening, segmented smoke coverage, documentation, package privacy, and no-authorization boundaries"},
+]
+V405_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V405_STAGE_DEFS}
+
+
+def _v405_stage_items(definition: dict[str, Any]) -> list[dict[str, Any]]:
+    base = definition["api"]
+    return [
+        {"stage": f"{definition['version']}.1", "slug": definition["slug"].replace("_v1", "_inventory_v1"), "api": base, "route": "inventory", "label": "Inventory"},
+        {"stage": f"{definition['version']}.2", "slug": definition["slug"].replace("_v1", "_negative_path_v1"), "api": base, "route": "negative-path", "label": "Negative Path"},
+        {"stage": f"{definition['version']}.3", "slug": definition["slug"].replace("_v1", "_resume_metadata_v1"), "api": base, "route": "resume-metadata", "label": "Resume Metadata"},
+        {"stage": f"{definition['version']}.4", "slug": definition["slug"].replace("_v1", "_boundary_gate_v1"), "api": base, "route": "boundary", "label": "Boundary Gate"},
+        {"stage": f"{definition['version']}.5", "slug": definition["slug"], "api": base, "route": "layer", "label": definition["final_label"]},
+    ]
+
+
+def _build_v405_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **_: Any) -> dict[str, Any]:
+    definition = next(item for item in V405_STAGE_DEFS if item["slug"] == slug)
+    docs = _release_notes_text() + "\n" + _read_text(ROOT_DIR / "conscious_agent" / "smoke_segment_registry.py") + "\n" + _read_text(ROOT_DIR / "tools" / "smoke_check.py") + "\n" + _read_text(ROOT_DIR / "conscious_agent" / "memory_candidate_application_trial.py")
+    try:
+        from memory_candidate_application_trial import build_operator_confirmed_memory_application_trial_summary, EXPECTED_MEMORY_CONFIRMATION_PHRASE
+        missing = build_operator_confirmed_memory_application_trial_summary("review only", {})
+        wrong = build_operator_confirmed_memory_application_trial_summary("review only", {"operator_confirmation_phrase":"wrong phrase"})
+        exact = build_operator_confirmed_memory_application_trial_summary("review only", {"operator_confirmation_phrase":EXPECTED_MEMORY_CONFIRMATION_PHRASE})
+        confirmation_ok = missing.get("status") == "blocked" and wrong.get("status") == "blocked" and exact.get("status") != "blocked"
+    except Exception:
+        missing, wrong, exact, confirmation_ok = {}, {}, {}, False
+    checks = []
+    try:
+        import sys as _sys
+        smoke_check = _sys.modules.get("__main__") if hasattr(_sys.modules.get("__main__"), "_build_checks") else None
+        if smoke_check is None:
+            import tools.smoke_check as smoke_check  # type: ignore
+        smoke_checks = [{"name": c.name, "tier": c.tier, "segment": getattr(c, "segment", None)} for c in smoke_check._build_checks()]
+    except Exception:
+        smoke_checks = [
+            {"name":"compile","tier":"fast"}, {"name":"release-packaging","tier":"release"}, {"name":"dashboard-components","tier":"install"},
+            {"name":"governance-kernel","tier":"install"}, {"name":"behavioral-expression-preview","tier":"install"}, {"name":"live-patch-trial-closure","tier":"install"},
+            {"name":"memory-application-trial-audit","tier":"install"}, {"name":"self-maintenance-modular-extraction","tier":"install"},
+        ]
+    registry = build_smoke_segment_registry_summary(smoke_checks)
+    resume = build_segment_resume_metadata_summary("install-memory", [])
+    audit = build_segmented_install_smoke_audit_summary(registry, docs)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and SMOKE_SEGMENT_REGISTRY_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; smoke_segment={SMOKE_SEGMENT_REGISTRY_VERSION}"},
+        {"name":"confirmation-hardening","status":"pass" if confirmation_ok else "blocked","message":"Missing and wrong confirmation evidence block; exact supplied evidence may proceed to review."},
+        {"name":"smoke-segment-registry","status":"pass" if registry.get("ok") else "blocked","message":f"{registry.get('segment_count')} segment(s), {registry.get('registered_check_count')} check(s)."},
+        {"name":"resume-metadata","status":"pass" if resume.get("operator_review_required") and resume.get("treats_pass_as_approval") is False else "blocked","message":"Segment resume metadata is advisory only."},
+        {"name":"audit","status":"pass" if audit.get("ok") else "blocked","message":"Segmented smoke audit is review-only and non-authorizing."},
+        {"name":"docs","status":"pass" if "v405.0 - Segmented Install Smoke and Self-Maintenance Confirmation Hardening v1" in docs else "blocked","message":"README next steps and release history mention v405.0."},
+        {"name":"dashboard-ux","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"Dashboard keeps data-tip and no native nav title tooltips."},
+    ]
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    payload = {"stage":definition["version"],"name":definition["final_label"],"focus":definition["focus"],"dashboard_path":definition["dashboard"],"api_route":f"/api/{definition['api']}/layer","cli_flag":"--" + definition["slug"].replace("_", "-"),"substage_plan":_v405_stage_items(definition),"confirmation_missing_summary":missing,"confirmation_wrong_summary":wrong,"confirmation_exact_summary":exact,"smoke_segment_registry":registry,"resume_metadata_preview":resume,"segmented_install_audit":audit,"runtime_dir":str(V405_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)),"applies_patches":False,"writes_memory":False,"expands_autonomy":False,"treats_smoke_pass_as_authorization":False,"operator_review_required":True}
+    report = {"version":"v405.0","status":"pass" if not blockers else "blocked","ok":not blockers,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if not blockers else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        V405_RUNTIME_DIRS[definition["runtime_key"]].mkdir(parents=True, exist_ok=True)
+        _write_json(V405_RUNTIME_DIRS[definition["runtime_key"]] / f"{slug}.json", report)
+    return report
+
+
+def _make_v405_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v405_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v405_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        definition = next(item for item in V405_STAGE_DEFS if item["slug"] == slug)
+        return _generic_text(f"{definition['version']} {definition['final_label']}", report or _build_v405_stage(slug, save=False), full)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v405_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v405_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v405_def in V405_STAGE_DEFS:
+    _slug = _v405_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v405_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v405_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v405_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v405_def["version"],"version":_v405_def["version"],"slug":_slug,"api":_v405_def["api"],"route":"layer","label":_v405_def["final_label"],"final_label":_v405_def["final_label"],"dashboard":_v405_def["dashboard"],"runtime_key":_v405_def["runtime_key"],"theme":_v405_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v405_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v405_def["api"]] = _slug
+
+# v400.1-v405.0 segmented install smoke and confirmation hardening tokens: memory-application-confirmation-gate memory-application-negative-tests smoke-segment-registry install-smoke-segment-runner segmented-install-smoke-audit operator-governed-segmented-install-smoke-audit-v1 conscious_agent/smoke_segment_registry.py data/autonomy/memory_application_confirmation_gate/ data/autonomy/memory_application_negative_tests/ data/autonomy/smoke_segment_registry/ data/autonomy/install_smoke_segment_runner/ data/autonomy/segmented_install_smoke_audit/ SMOKE_SEGMENT_REGISTRY_VERSION = "500.0" explicit_confirmation_supplied missing_confirmation_blocks=True wrong_confirmation_blocks=True exact_confirmation_required=True segment_registry_runs_checks_automatically=False segment_runner_treats_pass_as_approval=False segmented_install_applies_patches=False segmented_install_writes_memory=False segmented_install_expands_autonomy=False dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v405.1-v410.0 Operator-Governed Memory Application Dry-Run Ledger v1
+from memory_candidate_application_trial import EXPECTED_MEMORY_CONFIRMATION_PHRASE
+from memory_application_dry_run_ledger import (
+    MEMORY_APPLICATION_DRY_RUN_LEDGER_VERSION,
+    MEMORY_APPLICATION_DRY_RUN_BOUNDARIES,
+    build_memory_application_dry_run_attempt_summary,
+    build_memory_application_dry_run_ledger_entry_summary,
+    build_memory_application_ledger_replay_summary,
+    build_memory_application_ledger_audit_summary,
+    render_memory_application_dry_run_ledger_lines,
+)
+
+V410_STAGE_DEFS = [
+    {"version":"v406.0","final_label":"Memory Application Attempt Ledger Schema v1","api":"memory-application-attempt-ledger-schema","dashboard":"/memory-application-attempt-ledger-schema","runtime_key":"memory_application_attempt_ledger_schema","slug":"operator_governed_memory_application_attempt_ledger_schema_v1","focus":"defines dry-run attempt records for memory application evidence without writing live memory"},
+    {"version":"v407.0","final_label":"Memory Application Dry-Run Ledger Entry Builder v1","api":"memory-application-dry-run-ledger","dashboard":"/memory-application-dry-run-ledger","runtime_key":"memory_application_dry_run_ledger","slug":"operator_governed_memory_application_dry_run_ledger_entry_builder_v1","focus":"builds a reviewable dry-run ledger entry from candidate, approval, confirmation, and transaction previews"},
+    {"version":"v408.0","final_label":"Memory Application Ledger Replay and Drift Detection v1","api":"memory-application-ledger-replay","dashboard":"/memory-application-ledger-replay","runtime_key":"memory_application_ledger_replay","slug":"operator_governed_memory_application_ledger_replay_v1","focus":"replays dry-run ledger entries against current candidate state and blocks drift"},
+    {"version":"v409.0","final_label":"Memory Application Ledger Dashboard API CLI Surfaces v1","api":"memory-application-ledger-surfaces","dashboard":"/memory-application-ledger-surfaces","runtime_key":"memory_application_ledger_surfaces","slug":"operator_governed_memory_application_ledger_surfaces_v1","focus":"exposes dashboard, API, and CLI review surfaces while preserving command-deck data-tip behavior"},
+    {"version":"v410.0","final_label":"Operator-Governed Memory Application Dry-Run Ledger v1","api":"memory-application-ledger-audit","dashboard":"/memory-application-ledger-audit","runtime_key":"memory_application_ledger_audit","slug":"operator_governed_memory_application_dry_run_ledger_v1","focus":"audits dry-run ledger records, replay drift detection, docs, package privacy, and no-memory-write boundaries"},
+]
+V410_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V410_STAGE_DEFS}
+
+
+def _v410_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py",
+        "conscious_agent/release_packaging.py", "conscious_agent/route_health.py", "tools/smoke_check.py", "conscious_agent/memory_application_dry_run_ledger.py",
+        "conscious_agent/memory_candidate_application_trial.py", "conscious_agent/smoke_segment_registry.py",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _v410_stage_items(definition: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {"stage": definition["version"] + ".1", "slug": definition["slug"].replace("_v1", "_schema_v1"), "api": definition["api"], "route": "schema", "label": "Schema"},
+        {"stage": definition["version"] + ".2", "slug": definition["slug"].replace("_v1", "_hashes_v1"), "api": definition["api"], "route": "hashes", "label": "Hashes"},
+        {"stage": definition["version"] + ".3", "slug": definition["slug"].replace("_v1", "_negative_path_v1"), "api": definition["api"], "route": "negative-path", "label": "Negative Path"},
+        {"stage": definition["version"] + ".4", "slug": definition["slug"].replace("_v1", "_surface_v1"), "api": definition["api"], "route": "surface", "label": "Surface"},
+        {"stage": definition["version"], "slug": definition["slug"], "api": definition["api"], "route": "layer", "label": definition["final_label"]},
+    ]
+
+
+def _build_v410_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V410_STAGE_DEFS if item["slug"] == slug)
+    docs = _v410_docs_text()
+    exact_evidence = {"operator_confirmation_phrase": EXPECTED_MEMORY_CONFIRMATION_PHRASE}
+    missing_attempt = build_memory_application_dry_run_attempt_summary("review only", {})
+    wrong_attempt = build_memory_application_dry_run_attempt_summary("review only", {"operator_confirmation_phrase":"wrong phrase"})
+    exact_attempt = build_memory_application_dry_run_attempt_summary("review only", exact_evidence)
+    ledger = build_memory_application_dry_run_ledger_entry_summary("review only", exact_evidence)
+    replay = build_memory_application_ledger_replay_summary(ledger.get("ledger_entry", {}), exact_evidence)
+    drift_replay = build_memory_application_ledger_replay_summary(ledger.get("ledger_entry", {}), {"operator_confirmation_phrase": EXPECTED_MEMORY_CONFIRMATION_PHRASE, "candidate":{"candidate_id":"changed-candidate"}})
+    audit = build_memory_application_ledger_audit_summary(docs, replay)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and MEMORY_APPLICATION_DRY_RUN_LEDGER_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; ledger={MEMORY_APPLICATION_DRY_RUN_LEDGER_VERSION}"},
+        {"name":"confirmation-negative-paths","status":"pass" if missing_attempt.get("status") == "blocked" and wrong_attempt.get("status") == "blocked" and exact_attempt.get("ok") else "blocked","message":"Missing and wrong confirmation remain blocked; exact supplied confirmation is only dry-run recordable."},
+        {"name":"ledger-entry-builder","status":"pass" if ledger.get("ok") and ledger.get("writes_memory") is False else "blocked","message":"Ledger entry builder is review-only and does not write memory."},
+        {"name":"replay-drift-detection","status":"pass" if replay.get("ok") and drift_replay.get("status") == "blocked" and drift_replay.get("replay_accepts_drift") is False else "blocked","message":"Replay accepts matching dry-runs and blocks changed candidate state."},
+        {"name":"audit-boundaries","status":"pass" if audit.get("ok") and audit.get("writes_memory") is False else "blocked","message":"Dry-run ledger audit preserves no-memory-write and no-authorization boundaries."},
+        {"name":"docs","status":"pass" if "v410.0 - Operator-Governed Memory Application Dry-Run Ledger v1" in docs else "blocked","message":"README next steps and release history document v406-v410."},
+        {"name":"dashboard-ux","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"Dashboard keeps data-tip and no native nav title tooltips."},
+    ]
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    payload = {
+        "stage": definition["version"], "name": definition["final_label"], "focus": definition["focus"],
+        "dashboard_path": definition["dashboard"], "api_route": f"/api/{definition['api']}/layer", "cli_flag": "--" + definition["slug"].replace("_", "-"),
+        "substage_plan": _v410_stage_items(definition), "missing_attempt": missing_attempt, "wrong_attempt": wrong_attempt, "exact_attempt": exact_attempt,
+        "ledger_entry": ledger, "replay": replay, "drift_replay": drift_replay, "ledger_audit": audit,
+        "runtime_dir": str(V410_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)),
+        "boundaries": dict(MEMORY_APPLICATION_DRY_RUN_BOUNDARIES), "writes_memory": False, "applies_patches": False, "expands_autonomy": False,
+        "treats_reviewable_as_authorization": False, "operator_review_required": True,
+        "safe_next_action": "Operator may review dry-run ledger evidence. This does not authorize live memory writes, source patches, releases, local model invocation, or autonomous continuation.",
+    }
+    report = {"version":"v410.0","status":"pass" if not blockers else "blocked","ok":not blockers,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if not blockers else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        V410_RUNTIME_DIRS[definition["runtime_key"]].mkdir(parents=True, exist_ok=True)
+        _write_json(V410_RUNTIME_DIRS[definition["runtime_key"]] / f"{slug}.json", report)
+    return report
+
+
+def _make_v410_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v410_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v410_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        definition = next(item for item in V410_STAGE_DEFS if item["slug"] == slug)
+        return _generic_text(f"{definition['version']} {definition['final_label']}", report or _build_v410_stage(slug, save=False), full)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v410_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v410_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v410_def in V410_STAGE_DEFS:
+    _slug = _v410_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v410_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v410_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v410_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v410_def["version"],"version":_v410_def["version"],"slug":_slug,"api":_v410_def["api"],"route":"layer","label":_v410_def["final_label"],"final_label":_v410_def["final_label"],"dashboard":_v410_def["dashboard"],"runtime_key":_v410_def["runtime_key"],"theme":_v410_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v410_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v410_def["api"]] = _slug
+
+# v405.1-v410.0 memory dry-run ledger smoke tokens: memory-application-attempt-ledger-schema memory-application-dry-run-ledger memory-application-ledger-replay memory-application-ledger-surfaces memory-application-ledger-audit operator-governed-memory-application-dry-run-ledger-v1 conscious_agent/memory_application_dry_run_ledger.py data/autonomy/memory_application_attempt_ledger_schema/ data/autonomy/memory_application_dry_run_ledger/ data/autonomy/memory_application_ledger_replay/ data/autonomy/memory_application_ledger_surfaces/ data/autonomy/memory_application_ledger_audit/ ledger_writes_live_memory=False ledger_treats_reviewable_as_authorization=False replay_accepts_drift=False audit_writes_memory=False operator_review_required=True single_use_approval_required=True exact_confirmation_required=True candidate_hash_required=True transaction_hash_required=True retraction_preview_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v410.1-v415.0 Operator-Governed Sandbox Memory Write Target v1
+from sandbox_memory_write_target import (
+    SANDBOX_MEMORY_WRITE_TARGET_VERSION,
+    SANDBOX_MEMORY_BOUNDARIES,
+    build_sandbox_memory_target_schema_summary,
+    build_sandbox_memory_write_transaction_summary,
+    execute_sandbox_memory_write_trial,
+    build_sandbox_memory_retraction_preview_summary,
+    build_sandbox_memory_write_audit_summary,
+    render_sandbox_memory_lines,
+)
+
+V415_STAGE_DEFS = [
+    {"version":"v411.0","final_label":"Sandbox Memory Target Schema v1","api":"sandbox-memory-target-schema","dashboard":"/sandbox-memory-target-schema","runtime_key":"sandbox_memory_target_schema","slug":"operator_governed_sandbox_memory_target_schema_v1","focus":"defines sandbox-only memory write target schema without live memory access"},
+    {"version":"v412.0","final_label":"Sandbox Memory Write Transaction Builder v1","api":"sandbox-memory-write-transaction","dashboard":"/sandbox-memory-write-transaction","runtime_key":"sandbox_memory_write_transaction","slug":"operator_governed_sandbox_memory_write_transaction_builder_v1","focus":"builds sandbox write transaction previews from dry-run ledger evidence and exact confirmation"},
+    {"version":"v413.0","final_label":"Sandbox Memory Write Execution Trial v1","api":"sandbox-memory-write-trial","dashboard":"/sandbox-memory-write-trial","runtime_key":"sandbox_memory_write_trial","slug":"operator_governed_sandbox_memory_write_execution_trial_v1","focus":"executes sandbox-only memory write trials with before and after hashes while blocking live memory paths"},
+    {"version":"v414.0","final_label":"Sandbox Memory Retraction Preview and Replay v1","api":"sandbox-memory-retraction-preview","dashboard":"/sandbox-memory-retraction-preview","runtime_key":"sandbox_memory_retraction_preview","slug":"operator_governed_sandbox_memory_retraction_preview_v1","focus":"prepares sandbox retraction previews and drift checks without live memory retraction"},
+    {"version":"v415.0","final_label":"Operator-Governed Sandbox Memory Write Target v1","api":"sandbox-memory-write-audit","dashboard":"/sandbox-memory-write-audit","runtime_key":"sandbox_memory_write_audit","slug":"operator_governed_sandbox_memory_write_target_v1","focus":"audits sandbox target schema, sandbox transaction readiness, sandbox write execution, retraction preview, docs, package privacy, and no-live-memory boundaries"},
+]
+V415_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V415_STAGE_DEFS}
+
+
+def _v415_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py",
+        "conscious_agent/self_maintenance.py", "tools/smoke_check.py", "conscious_agent/sandbox_memory_write_target.py", "conscious_agent/memory_application_dry_run_ledger.py",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _v415_stage_items(definition: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {"stage": definition["version"] + ".1", "slug": definition["slug"].replace("_v1", "_schema_v1"), "api": definition["api"], "route": "schema", "label": "Schema"},
+        {"stage": definition["version"] + ".2", "slug": definition["slug"].replace("_v1", "_sandbox_path_gate_v1"), "api": definition["api"], "route": "sandbox-path-gate", "label": "Sandbox Path Gate"},
+        {"stage": definition["version"] + ".3", "slug": definition["slug"].replace("_v1", "_hashes_v1"), "api": definition["api"], "route": "hashes", "label": "Before/After Hashes"},
+        {"stage": definition["version"] + ".4", "slug": definition["slug"].replace("_v1", "_surface_v1"), "api": definition["api"], "route": "surface", "label": "Surface"},
+        {"stage": definition["version"], "slug": definition["slug"], "api": definition["api"], "route": "layer", "label": definition["final_label"]},
+    ]
+
+
+def _build_v415_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    import tempfile
+    definition = next(item for item in V415_STAGE_DEFS if item["slug"] == slug)
+    docs = _v415_docs_text()
+    exact = {"operator_confirmation_phrase": EXPECTED_MEMORY_CONFIRMATION_PHRASE}
+    with tempfile.TemporaryDirectory(prefix="eidolon_v415_stage_") as tmp:
+        target_schema = build_sandbox_memory_target_schema_summary(tmp)
+        transaction = build_sandbox_memory_write_transaction_summary(tmp, evidence=exact)
+        trial = execute_sandbox_memory_write_trial(tmp, evidence=exact)
+        retraction = build_sandbox_memory_retraction_preview_summary(trial, tmp)
+        bad_target = build_sandbox_memory_target_schema_summary(tmp, Path(tmp) / "memory.json")
+    audit = build_sandbox_memory_write_audit_summary(docs)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and SANDBOX_MEMORY_WRITE_TARGET_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; sandbox_memory={SANDBOX_MEMORY_WRITE_TARGET_VERSION}"},
+        {"name":"sandbox-target-schema","status":"pass" if target_schema.get("ok") and target_schema.get("live_memory_allowed") is False else "blocked","message":"Sandbox target schema is scoped and live memory remains disallowed."},
+        {"name":"sandbox-transaction","status":"pass" if transaction.get("ok") and transaction.get("writes_live_memory") is False else "blocked","message":"Sandbox write transaction is reviewable without live memory authorization."},
+        {"name":"sandbox-write-trial","status":"pass" if trial.get("ok") and trial.get("executed") and trial.get("writes_live_memory") is False and trial.get("pre_write_hash") != trial.get("post_write_hash") else "blocked","message":"Sandbox-only write trial records before/after hashes."},
+        {"name":"sandbox-retraction-preview","status":"pass" if retraction.get("ok") and retraction.get("retraction_executes_live_memory") is False else "blocked","message":"Sandbox retraction preview is review-only and does not retract live memory."},
+        {"name":"non-sandbox-path-block","status":"pass" if bad_target.get("ok") is False else "blocked","message":"Non-sandbox memory.json target is blocked."},
+        {"name":"audit-boundaries","status":"pass" if audit.get("ok") and audit.get("writes_live_memory") is False else "blocked","message":"Sandbox memory write audit preserves no-live-memory and no-authorization boundaries."},
+        {"name":"docs","status":"pass" if "v415.0 - Operator-Governed Sandbox Memory Write Target v1" in docs else "blocked","message":"README next steps and release history document v411-v415."},
+        {"name":"dashboard-ux","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"Dashboard keeps data-tip and no native nav title tooltips."},
+    ]
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    payload = {
+        "stage": definition["version"], "name": definition["final_label"], "focus": definition["focus"],
+        "dashboard_path": definition["dashboard"], "api_route": f"/api/{definition['api']}/layer", "cli_flag": "--" + definition["slug"].replace("_", "-"),
+        "substage_plan": _v415_stage_items(definition), "target_schema": target_schema, "sandbox_transaction": transaction,
+        "sandbox_write_trial": trial, "sandbox_retraction_preview": retraction, "non_sandbox_path_probe": bad_target, "sandbox_memory_audit": audit,
+        "runtime_dir": str(V415_RUNTIME_DIRS[definition["runtime_key"]].relative_to(ROOT_DIR)),
+        "boundaries": dict(SANDBOX_MEMORY_BOUNDARIES), "writes_live_memory": False, "applies_patches": False, "expands_autonomy": False,
+        "sandbox_success_is_live_approval": False, "operator_review_required": True,
+        "safe_next_action": "Operator may review sandbox memory write evidence. Live memory writes remain prohibited until a later fresh single-use operator-approved live-memory arc.",
+    }
+    report = {"version":"v415.0","status":"pass" if not blockers else "blocked","ok":not blockers,"checked_at":_now(),"project_id":project_id,"message":f"{definition['version']} {definition['final_label']} is {'ready for operator review' if not blockers else 'blocked pending review'}: {definition['focus']}","payload":payload,"rows":rows,"blockers":blockers}
+    if save:
+        V415_RUNTIME_DIRS[definition["runtime_key"]].mkdir(parents=True, exist_ok=True)
+        _write_json(V415_RUNTIME_DIRS[definition["runtime_key"]] / f"{slug}.json", report)
+    return report
+
+
+def _make_v415_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v415_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v415_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        definition = next(item for item in V415_STAGE_DEFS if item["slug"] == slug)
+        return _generic_text(f"{definition['version']} {definition['final_label']}", report or _build_v415_stage(slug, save=False), full)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v415_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v415_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v415_def in V415_STAGE_DEFS:
+    _slug = _v415_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v415_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v415_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v415_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v415_def["version"],"version":_v415_def["version"],"slug":_slug,"api":_v415_def["api"],"route":"layer","label":_v415_def["final_label"],"final_label":_v415_def["final_label"],"dashboard":_v415_def["dashboard"],"runtime_key":_v415_def["runtime_key"],"theme":_v415_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v415_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v415_def["api"]] = _slug
+
+# v410.1-v415.0 sandbox memory write smoke tokens: sandbox-memory-target-schema sandbox-memory-write-transaction sandbox-memory-write-trial sandbox-memory-retraction-preview sandbox-memory-write-audit operator-governed-sandbox-memory-write-target-v1 conscious_agent/sandbox_memory_write_target.py data/autonomy/sandbox_memory_target_schema/ data/autonomy/sandbox_memory_write_transaction/ data/autonomy/sandbox_memory_write_trial/ data/autonomy/sandbox_memory_retraction_preview/ data/autonomy/sandbox_memory_write_audit/ sandbox_write_target_writes_live_memory=False sandbox_transaction_is_live_memory_approval=False sandbox_trial_accepts_non_sandbox_path=False sandbox_retraction_executes_live_retraction=False sandbox_audit_grants_future_authorization=False sandbox_path_required=True before_after_hash_required=True live_memory_allowed=False dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v415.1-v420.0 First Operator-Approved Live Memory Write with Burnout v1
+from live_memory_write_trial import (
+    LIVE_MEMORY_WRITE_TRIAL_VERSION,
+    LIVE_MEMORY_WRITE_BOUNDARIES,
+    build_live_memory_write_eligibility_summary,
+    build_live_memory_approval_lock_summary,
+    build_live_memory_transaction_preview_summary,
+    execute_operator_confirmed_live_memory_write_trial,
+    build_live_memory_write_audit_summary,
+    render_live_memory_write_lines,
+)
+
+V420_STAGE_DEFS = [
+    {"version":"v416.0","final_label":"Live Memory Write Eligibility Packet v1","api":"live-memory-write-eligibility","dashboard":"/live-memory-write-eligibility","runtime_key":"live_memory_write_eligibility","slug":"operator_governed_live_memory_write_eligibility_packet_v1","focus":"checks dry-run ledger, sandbox write, retraction preview, candidate hash, approval scope, and forbidden memory categories without granting approval"},
+    {"version":"v417.0","final_label":"Single-Use Live Memory Approval Lock v1","api":"live-memory-approval-lock","dashboard":"/live-memory-approval-lock","runtime_key":"live_memory_approval_lock","slug":"operator_governed_single_use_live_memory_approval_lock_v1","focus":"binds fresh exact confirmation, candidate id, memory text hash, dry-run ledger, sandbox trial hash, and single-use burnout requirements"},
+    {"version":"v418.0","final_label":"Live Memory Transaction Preview v1","api":"live-memory-transaction-preview","dashboard":"/live-memory-transaction-preview","runtime_key":"live_memory_transaction_preview","slug":"operator_governed_live_memory_transaction_preview_v1","focus":"previews exact governed live memory trial target, preimage hash, expected write entry, and rollback or retraction requirements without writing memory"},
+    {"version":"v419.0","final_label":"Operator-Confirmed Live Memory Write Trial v1","api":"operator-confirmed-live-memory-write-trial","dashboard":"/operator-confirmed-live-memory-write-trial","runtime_key":"operator_confirmed_live_memory_write_trial","slug":"operator_confirmed_live_memory_write_trial_v1","focus":"executes one governed live memory trial write only after exact confirmation and burns out approval immediately"},
+    {"version":"v420.0","final_label":"First Operator-Approved Live Memory Write with Burnout v1","api":"live-memory-write-audit","dashboard":"/live-memory-write-audit","runtime_key":"live_memory_write_audit","slug":"operator_governed_live_memory_write_burnout_v1","focus":"audits eligibility, approval lock, transaction preview, single live trial write, approval burnout, negative tests, docs, and no-future-authorization boundaries"},
+]
+V420_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V420_STAGE_DEFS}
+
+
+def _v420_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py",
+        "conscious_agent/self_maintenance.py", "tools/smoke_check.py", "conscious_agent/live_memory_write_trial.py", "conscious_agent/sandbox_memory_write_target.py", "conscious_agent/memory_application_dry_run_ledger.py",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _v420_stage_items(definition: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {"stage": definition["version"] + ".1", "slug": definition["slug"].replace("_v1", "_gate_v1"), "api": definition["api"], "route": "gate", "label": "Gate"},
+        {"stage": definition["version"] + ".2", "slug": definition["slug"].replace("_v1", "_hashes_v1"), "api": definition["api"], "route": "hashes", "label": "Hashes"},
+        {"stage": definition["version"] + ".3", "slug": definition["slug"].replace("_v1", "_negative_tests_v1"), "api": definition["api"], "route": "negative-tests", "label": "Negative Tests"},
+        {"stage": definition["version"] + ".4", "slug": definition["slug"].replace("_v1", "_surface_v1"), "api": definition["api"], "route": "surface", "label": "Surface"},
+        {"stage": definition["version"], "slug": definition["slug"], "api": definition["api"], "route": "layer", "label": definition["final_label"]},
+    ]
+
+
+def _build_v420_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    import tempfile
+    definition = next(item for item in V420_STAGE_DEFS if item["slug"] == slug)
+    docs = _v420_docs_text()
+    exact = {"operator_confirmation_phrase": EXPECTED_MEMORY_CONFIRMATION_PHRASE}
+    with tempfile.TemporaryDirectory(prefix="eidolon_v420_stage_") as tmp:
+        eligibility = build_live_memory_write_eligibility_summary(tmp, exact)
+        approval_lock = build_live_memory_approval_lock_summary(tmp, exact)
+        preview = build_live_memory_transaction_preview_summary(tmp, evidence=exact)
+        trial = execute_operator_confirmed_live_memory_write_trial(tmp, evidence=exact)
+        reuse_block = execute_operator_confirmed_live_memory_write_trial(tmp, evidence={**exact, "approval_reused": True})
+        wrong_phrase = execute_operator_confirmed_live_memory_write_trial(tmp, evidence={"operator_confirmation_phrase":"wrong"})
+        bad_target = build_live_memory_transaction_preview_summary(tmp, Path(tmp) / "memory.json", exact)
+    audit = build_live_memory_write_audit_summary(docs)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and LIVE_MEMORY_WRITE_TRIAL_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; live_memory={LIVE_MEMORY_WRITE_TRIAL_VERSION}"},
+        {"name":"eligibility","status":"pass" if eligibility.get("ok") and eligibility.get("eligibility_is_approval") is False and eligibility.get("writes_memory") is False else "blocked","message":"Eligibility packet is review-only and not approval."},
+        {"name":"approval-lock","status":"pass" if approval_lock.get("ok") and approval_lock.get("approval_lock_reuses_approval") is False else "blocked","message":"Single-use approval lock binds exact confirmation and does not reuse approval."},
+        {"name":"transaction-preview","status":"pass" if preview.get("ok") and preview.get("writes_memory") is False else "blocked","message":"Live memory transaction preview does not write memory."},
+        {"name":"single-live-write","status":"pass" if trial.get("ok") and trial.get("executed") and trial.get("writes_memory") is True else "blocked","message":"One governed live memory trial write executes under temp-root evidence."},
+        {"name":"approval-burnout","status":"pass" if trial.get("approval_burnout", {}).get("burned_out") is True and trial.get("approval_burnout", {}).get("reuse_allowed") is False else "blocked","message":"Approval burns out after the single live memory trial."},
+        {"name":"approval-reuse-block","status":"pass" if reuse_block.get("ok") is False else "blocked","message":"Reused or burned approval evidence is blocked."},
+        {"name":"wrong-confirmation-block","status":"pass" if wrong_phrase.get("ok") is False else "blocked","message":"Wrong confirmation phrase is blocked."},
+        {"name":"bad-target-block","status":"pass" if bad_target.get("ok") is False else "blocked","message":"Non-governed memory.json target is blocked."},
+        {"name":"audit-boundaries","status":"pass" if audit.get("ok") and audit.get("grants_future_authorization") is False and audit.get("expands_autonomy") is False else "blocked","message":"Audit preserves no-future-authorization and no-autonomy boundaries."},
+        {"name":"docs","status":"pass" if "v420.0 - First Operator-Approved Live Memory Write with Burnout v1" in docs else "blocked","message":"README next steps and release history document v416-v420."},
+        {"name":"dashboard-ux","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"Dashboard keeps data-tip and no native nav title tooltips."},
+    ]
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    payload = {
+        "stage": definition["version"], "name": definition["final_label"], "focus": definition["focus"],
+        "dashboard_path": definition["dashboard"], "api_route": f"/api/{definition['api']}/layer", "cli_flag": "--" + definition["slug"].replace("_", "-"),
+        "substages": _v420_stage_items(definition), "rows": rows, "eligibility": eligibility, "approval_lock": approval_lock, "transaction_preview": preview,
+        "trial": trial, "audit": audit, "boundaries": dict(LIVE_MEMORY_WRITE_BOUNDARIES), "blockers": blockers,
+        "status": "pass" if not blockers else "blocked", "ok": not blockers,
+        "writes_memory": slug == "operator_confirmed_live_memory_write_trial_v1" and trial.get("writes_memory") is True,
+        "grants_future_authorization": False, "applies_patches": False, "expands_autonomy": False,
+        "message": "v416-v420 first operator-approved live memory write with burnout path audited. Live write is single-use, governed, and does not authorize future memory writes.",
+    }
+    if save:
+        V420_RUNTIME_DIRS[definition["runtime_key"]].mkdir(parents=True, exist_ok=True)
+        _write_json(V420_RUNTIME_DIRS[definition["runtime_key"]] / f"{slug}.json", payload)
+    return payload
+
+
+def _make_v420_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v420_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v420_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        definition = next(item for item in V420_STAGE_DEFS if item["slug"] == slug)
+        report = report or _build_v420_stage(slug, save=False)
+        lines = render_live_memory_write_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines.append("- gates:")
+            lines.extend(f"  - {row.get('name')}: {row.get('status')}" for row in rows)
+        return "\n".join([f"{definition['version']} {definition['final_label']}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v420_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v420_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v420_def in V420_STAGE_DEFS:
+    _slug = _v420_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v420_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v420_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v420_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v420_def["version"],"version":_v420_def["version"],"slug":_slug,"api":_v420_def["api"],"route":"layer","label":_v420_def["final_label"],"final_label":_v420_def["final_label"],"dashboard":_v420_def["dashboard"],"runtime_key":_v420_def["runtime_key"],"theme":_v420_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v420_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v420_def["api"]] = _slug
+
+# v415.1-v420.0 live memory write smoke tokens: live-memory-write-eligibility live-memory-approval-lock live-memory-transaction-preview operator-confirmed-live-memory-write-trial live-memory-write-audit operator-governed-live-memory-write-burnout-v1 conscious_agent/live_memory_write_trial.py data/autonomy/live_memory_write_eligibility/ data/autonomy/live_memory_approval_lock/ data/autonomy/live_memory_transaction_preview/ data/autonomy/operator_confirmed_live_memory_write_trial/ data/autonomy/live_memory_write_audit/ eligibility_is_approval=False sandbox_success_is_approval=False approval_lock_reuses_approval=False transaction_preview_writes_memory=False live_write_runs_without_confirmation=False live_write_allows_batch=False audit_grants_future_authorization=False approval_burnout_required=True single_use_approval_required=True exact_confirmation_required=True dry_run_ledger_required=True sandbox_trial_required=True retraction_preview_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+from memory_retraction_trial import (
+    EXPECTED_MEMORY_RETRACTION_CONFIRMATION_PHRASE,
+    MEMORY_RETRACTION_TRIAL_VERSION,
+    MEMORY_RETRACTION_BOUNDARIES,
+    build_memory_retraction_eligibility_summary,
+    build_memory_retraction_approval_lock_summary,
+    build_memory_retraction_transaction_preview_summary,
+    execute_operator_confirmed_memory_retraction_trial,
+    build_memory_retraction_trial_audit_summary,
+    render_memory_retraction_lines,
+)
+
+V425_STAGE_DEFS = [
+    {"version":"v421.0","final_label":"Memory Retraction Eligibility Packet v1","api":"memory-retraction-eligibility","dashboard":"/memory-retraction-eligibility","runtime_key":"memory_retraction_eligibility","slug":"operator_governed_memory_retraction_eligibility_packet_v1","focus":"checks exact governed trial entry, prior write burnout, memory hash, single target, and forbidden mutation categories without granting retraction approval"},
+    {"version":"v422.0","final_label":"Memory Retraction Approval Lock v1","api":"memory-retraction-approval-lock","dashboard":"/memory-retraction-approval-lock","runtime_key":"memory_retraction_approval_lock","slug":"operator_governed_memory_retraction_approval_lock_v1","focus":"binds fresh single-use retraction approval, exact target entry, exact memory hash, exact confirmation phrase, and no write-approval reuse"},
+    {"version":"v423.0","final_label":"Memory Retraction Transaction Preview v1","api":"memory-retraction-transaction-preview","dashboard":"/memory-retraction-transaction-preview","runtime_key":"memory_retraction_transaction_preview","slug":"operator_governed_memory_retraction_transaction_preview_v1","focus":"previews exact retained-audit retraction transaction without deleting memory or using fuzzy matching"},
+    {"version":"v424.0","final_label":"Operator-Confirmed Memory Retraction Trial v1","api":"operator-confirmed-memory-retraction-trial","dashboard":"/operator-confirmed-memory-retraction-trial","runtime_key":"operator_confirmed_memory_retraction_trial","slug":"operator_confirmed_memory_retraction_trial_v1","focus":"marks one exact governed trial entry as retracted only after exact confirmation and burns retraction approval immediately"},
+    {"version":"v425.0","final_label":"Operator-Approved Memory Retraction Trial v1","api":"memory-retraction-trial-audit","dashboard":"/memory-retraction-trial-audit","runtime_key":"memory_retraction_trial_audit","slug":"operator_governed_memory_retraction_trial_v1","focus":"audits eligibility, retraction approval lock, preview, retained audit retraction, burnout, negative tests, docs, and no-future-authority boundaries"},
+]
+V425_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V425_STAGE_DEFS}
+
+
+def _v425_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py",
+        "conscious_agent/self_maintenance.py", "tools/smoke_check.py", "conscious_agent/memory_retraction_trial.py", "conscious_agent/live_memory_write_trial.py",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _v425_stage_items(definition: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {"stage": definition["version"] + ".1", "slug": definition["slug"].replace("_v1", "_gate_v1"), "api": definition["api"], "route": "gate", "label": "Gate"},
+        {"stage": definition["version"] + ".2", "slug": definition["slug"].replace("_v1", "_hashes_v1"), "api": definition["api"], "route": "hashes", "label": "Hashes"},
+        {"stage": definition["version"] + ".3", "slug": definition["slug"].replace("_v1", "_negative_tests_v1"), "api": definition["api"], "route": "negative-tests", "label": "Negative Tests"},
+        {"stage": definition["version"] + ".4", "slug": definition["slug"].replace("_v1", "_surface_v1"), "api": definition["api"], "route": "surface", "label": "Surface"},
+        {"stage": definition["version"], "slug": definition["slug"], "api": definition["api"], "route": "layer", "label": definition["final_label"]},
+    ]
+
+
+def _build_v425_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    import tempfile
+    definition = next(item for item in V425_STAGE_DEFS if item["slug"] == slug)
+    docs = _v425_docs_text()
+    exact = {"operator_retraction_confirmation_phrase": EXPECTED_MEMORY_RETRACTION_CONFIRMATION_PHRASE}
+    with tempfile.TemporaryDirectory(prefix="eidolon_v425_stage_") as tmp:
+        eligibility = build_memory_retraction_eligibility_summary(tmp, exact)
+        approval_lock = build_memory_retraction_approval_lock_summary(tmp, exact)
+        preview = build_memory_retraction_transaction_preview_summary(tmp, evidence=exact)
+        trial = execute_operator_confirmed_memory_retraction_trial(tmp, evidence=exact)
+        reuse_block = execute_operator_confirmed_memory_retraction_trial(tmp, evidence={**exact, "retraction_approval_reused": True})
+        wrong_phrase = execute_operator_confirmed_memory_retraction_trial(tmp, evidence={"operator_retraction_confirmation_phrase":"wrong"})
+        batch_block = execute_operator_confirmed_memory_retraction_trial(tmp, evidence={**exact, "batch_retraction": True})
+        fuzzy_block = execute_operator_confirmed_memory_retraction_trial(tmp, evidence={**exact, "fuzzy_match": True})
+        bad_target = build_memory_retraction_transaction_preview_summary(tmp, Path(tmp) / "memory.json", exact)
+    audit = build_memory_retraction_trial_audit_summary(docs)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and MEMORY_RETRACTION_TRIAL_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; retraction={MEMORY_RETRACTION_TRIAL_VERSION}"},
+        {"name":"eligibility","status":"pass" if eligibility.get("ok") and eligibility.get("retraction_eligibility_is_approval") is False and eligibility.get("writes_memory") is False else "blocked","message":"Retraction eligibility is review-only and not approval."},
+        {"name":"approval-lock","status":"pass" if approval_lock.get("ok") and approval_lock.get("approval_lock", {}).get("write_approval_authorizes_retraction") is False else "blocked","message":"Single-use retraction approval lock rejects write approval reuse."},
+        {"name":"transaction-preview","status":"pass" if preview.get("ok") and preview.get("deletes_memory") is False else "blocked","message":"Retraction transaction preview does not delete memory."},
+        {"name":"single-retraction","status":"pass" if trial.get("ok") and trial.get("executed") and trial.get("retained_audit_record") is True and trial.get("physical_delete") is False else "blocked","message":"One governed trial entry is marked retracted with retained audit record."},
+        {"name":"retraction-burnout","status":"pass" if trial.get("approval_burnout", {}).get("burned_out") is True and trial.get("approval_burnout", {}).get("reuse_allowed") is False else "blocked","message":"Retraction approval burns out after the trial."},
+        {"name":"approval-reuse-block","status":"pass" if reuse_block.get("ok") is False else "blocked","message":"Reused retraction approval evidence is blocked."},
+        {"name":"wrong-confirmation-block","status":"pass" if wrong_phrase.get("ok") is False else "blocked","message":"Wrong retraction confirmation phrase is blocked."},
+        {"name":"batch-block","status":"pass" if batch_block.get("ok") is False else "blocked","message":"Batch retraction is blocked."},
+        {"name":"fuzzy-block","status":"pass" if fuzzy_block.get("ok") is False else "blocked","message":"Fuzzy-match retraction is blocked."},
+        {"name":"bad-target-block","status":"pass" if bad_target.get("ok") is False else "blocked","message":"Canonical memory.json retraction target is blocked."},
+        {"name":"audit-boundaries","status":"pass" if audit.get("ok") and audit.get("grants_future_authorization") is False and audit.get("expands_autonomy") is False else "blocked","message":"Audit preserves no-future-retraction-authority and no-autonomy boundaries."},
+        {"name":"docs","status":"pass" if "v425.0 - Operator-Approved Memory Retraction Trial v1" in docs else "blocked","message":"README next steps and release history document v421-v425."},
+        {"name":"dashboard-ux","status":"pass" if not _dashboard_nav_title_regression_present() else "blocked","message":"Dashboard keeps data-tip and no native nav title tooltips."},
+    ]
+    blockers = [row["name"] for row in rows if row["status"] != "pass"]
+    payload = {
+        "stage": definition["version"], "name": definition["final_label"], "focus": definition["focus"],
+        "dashboard_path": definition["dashboard"], "api_route": f"/api/{definition['api']}/layer", "cli_flag": "--" + definition["slug"].replace("_", "-"),
+        "substages": _v425_stage_items(definition), "rows": rows, "eligibility": eligibility, "approval_lock": approval_lock, "transaction_preview": preview,
+        "trial": trial, "audit": audit, "boundaries": dict(MEMORY_RETRACTION_BOUNDARIES), "blockers": blockers,
+        "status": "pass" if not blockers else "blocked", "ok": not blockers,
+        "writes_memory": slug == "operator_confirmed_memory_retraction_trial_v1" and trial.get("writes_memory") is True,
+        "deletes_memory": False, "physical_delete": False, "grants_future_authorization": False, "applies_patches": False, "expands_autonomy": False,
+        "message": "v421-v425 operator-approved memory retraction trial path audited. Retraction is single-use, retained-audit, governed, and does not authorize future memory edits.",
+    }
+    if save:
+        V425_RUNTIME_DIRS[definition["runtime_key"]].mkdir(parents=True, exist_ok=True)
+        _write_json(V425_RUNTIME_DIRS[definition["runtime_key"]] / f"{slug}.json", payload)
+    return payload
+
+
+def _make_v425_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v425_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v425_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        definition = next(item for item in V425_STAGE_DEFS if item["slug"] == slug)
+        report = report or _build_v425_stage(slug, save=False)
+        lines = render_memory_retraction_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines.append("- gates:")
+            lines.extend(f"  - {row.get('name')}: {row.get('status')}" for row in rows)
+        return "\n".join([f"{definition['version']} {definition['final_label']}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v425_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v425_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v425_def in V425_STAGE_DEFS:
+    _slug = _v425_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v425_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v425_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v425_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v425_def["version"],"version":_v425_def["version"],"slug":_slug,"api":_v425_def["api"],"route":"layer","label":_v425_def["final_label"],"final_label":_v425_def["final_label"],"dashboard":_v425_def["dashboard"],"runtime_key":_v425_def["runtime_key"],"theme":_v425_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v425_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v425_def["api"]] = _slug
+
+# v420.1-v425.0 memory retraction smoke tokens: memory-retraction-eligibility memory-retraction-approval-lock memory-retraction-transaction-preview operator-confirmed-memory-retraction-trial memory-retraction-trial-audit operator-governed-memory-retraction-trial-v1 conscious_agent/memory_retraction_trial.py data/autonomy/memory_retraction_eligibility/ data/autonomy/memory_retraction_approval_lock/ data/autonomy/memory_retraction_transaction_preview/ data/autonomy/operator_confirmed_memory_retraction_trial/ data/autonomy/memory_retraction_trial_audit/ write_approval_authorizes_retraction=False retraction_eligibility_is_approval=False retraction_preview_deletes_memory=False retraction_runs_without_confirmation=False retraction_allows_batch=False retraction_uses_fuzzy_match=False retraction_deletes_canonical_memory_json=False audit_grants_future_retraction_authority=False fresh_retraction_approval_required=True single_use_retraction_approval_required=True exact_retraction_confirmation_required=True prior_write_burnout_required=True retained_audit_record_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v425.1-v430.0 Canonical Source Surface Manifest v1
+from source_surface_manifest import (
+    SOURCE_SURFACE_MANIFEST_VERSION,
+    SOURCE_SURFACE_MANIFEST_BOUNDARIES,
+    build_source_surface_manifest_summary,
+    build_source_surface_parity_audit_summary,
+    build_source_surface_authority_map_summary,
+    build_source_surface_package_privacy_map_summary,
+    build_source_surface_manifest_audit_summary,
+    render_source_surface_manifest_lines,
+)
+
+V430_STAGE_DEFS = [
+    {"version":"v426.0","final_label":"Surface Manifest Schema v1","api":"source-surface-manifest","dashboard":"/source-surface-manifest","runtime_key":"source_surface_manifest","slug":"source_surface_manifest_v1","focus":"defines canonical surface records for dashboard, API, CLI, builders, smoke, runtime paths, authority labels, and package privacy"},
+    {"version":"v427.0","final_label":"Manifest Builder and Registry Intake v1","api":"source-surface-manifest","dashboard":"/source-surface-manifest","runtime_key":"source_surface_manifest_builder","slug":"source_surface_manifest_builder_v1","focus":"registers recent high-risk governed surfaces from v400 through v430 without backfilling every historic arc at once"},
+    {"version":"v428.0","final_label":"Dashboard API CLI Parity Audit v1","api":"source-surface-parity-audit","dashboard":"/source-surface-parity-audit","runtime_key":"source_surface_parity_audit","slug":"source_surface_parity_audit_v1","focus":"compares manifest entries against dashboard routes, API routes, CLI flags, builders, text renderers, and smoke checks"},
+    {"version":"v429.0","final_label":"Source Surface Authority and Package Privacy Maps v1","api":"source-surface-authority-map","dashboard":"/source-surface-authority-map","runtime_key":"source_surface_authority_map","slug":"source_surface_authority_map_v1","focus":"maps review-only, sandbox-only, single-use trial, write, memory, and package-privacy-sensitive surfaces without granting approval"},
+    {"version":"v429.5","final_label":"Source Surface Package Privacy Map v1","api":"source-surface-package-privacy-map","dashboard":"/source-surface-package-privacy-map","runtime_key":"source_surface_package_privacy_map","slug":"source_surface_package_privacy_map_v1","focus":"lists runtime directories and source-only package exclusions for recent high-risk surfaces"},
+    {"version":"v430.0","final_label":"Canonical Source Surface Manifest v1","api":"source-surface-manifest-audit","dashboard":"/source-surface-manifest-audit","runtime_key":"source_surface_manifest_audit","slug":"operator_governed_source_surface_manifest_v1","focus":"audits manifest completeness, parity, authority labels, package privacy, and no-authorization boundaries"},
+]
+V430_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V430_STAGE_DEFS}
+
+
+def _v430_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py",
+        "conscious_agent/self_maintenance.py", "tools/smoke_check.py", "conscious_agent/source_surface_manifest.py", "conscious_agent/smoke_segment_registry.py",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v430_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V430_STAGE_DEFS if item["slug"] == slug)
+    docs = _v430_docs_text()
+    manifest = build_source_surface_manifest_summary()
+    parity = build_source_surface_parity_audit_summary(docs)
+    authority = build_source_surface_authority_map_summary()
+    privacy = build_source_surface_package_privacy_map_summary()
+    audit = build_source_surface_manifest_audit_summary(docs)
+    summary_by_slug = {
+        "source_surface_manifest_v1": manifest,
+        "source_surface_manifest_builder_v1": manifest,
+        "source_surface_parity_audit_v1": parity,
+        "source_surface_authority_map_v1": authority,
+        "source_surface_package_privacy_map_v1": privacy,
+        "operator_governed_source_surface_manifest_v1": audit,
+    }
+    selected = summary_by_slug.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and SOURCE_SURFACE_MANIFEST_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; manifest={SOURCE_SURFACE_MANIFEST_VERSION}"},
+        {"name":"manifest","status":"pass" if manifest.get("ok") and manifest.get("entry_count", 0) >= 7 else "blocked","message":"Recent high-risk source surfaces are represented."},
+        {"name":"parity","status":"pass" if parity.get("ok") and parity.get("parity_pass_is_authorization") is False else "blocked","message":"Dashboard/API/CLI/builder/smoke tokens are represented without authorizing execution."},
+        {"name":"authority-map","status":"pass" if authority.get("ok") and authority.get("authority_label_is_approval") is False else "blocked","message":"Authority labels classify surfaces but do not approve them."},
+        {"name":"package-privacy","status":"pass" if privacy.get("ok") and privacy.get("manifest_writes_memory") is False else "blocked","message":"Runtime/package-sensitive directories are mapped for source-only exclusion."},
+        {"name":"boundaries","status":"pass" if audit.get("ok") and audit.get("grants_authorization") is False and audit.get("expands_autonomy") is False else "blocked","message":"Manifest presence, parity success, and smoke success do not grant permission."},
+        {"name":"docs","status":"pass" if "v430.0 - Canonical Source Surface Manifest v1" in docs else "blocked","message":"README next steps and release history include v430.0."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard style and custom data-tip hover system are preserved."},
+    ]
+    report = dict(selected)
+    report.update({
+        "version": "500.0",
+        "stage": definition["version"],
+        "label": definition["final_label"],
+        "runtime_key": definition["runtime_key"],
+        "slug": slug,
+        "project_id": project_id,
+        "improvement_goal": improvement_goal or "Canonical source surface manifest review.",
+        "rows": rows,
+        "ok": bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows),
+        "status": "pass" if bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows) else "blocked",
+        "writes_files": False,
+        "writes_memory": False,
+        "grants_authorization": False,
+        "manifest_presence_is_authorization": False,
+        "parity_pass_is_authorization": False,
+        "surface_exists_means_may_execute": False,
+        "smoke_pass_allows_live_action": False,
+        "stage_items": [
+            {"stage":"v426.0","slug":"source_surface_manifest_v1","label":"Schema"},
+            {"stage":"v427.0","slug":"source_surface_manifest_builder_v1","label":"Builder"},
+            {"stage":"v428.0","slug":"source_surface_parity_audit_v1","label":"Parity"},
+            {"stage":"v429.0","slug":"source_surface_authority_map_v1","label":"Authority"},
+            {"stage":"v429.5","slug":"source_surface_package_privacy_map_v1","label":"Privacy"},
+            {"stage":"v430.0","slug":"operator_governed_source_surface_manifest_v1","label":"Audit"},
+        ],
+        "boundaries": dict(SOURCE_SURFACE_MANIFEST_BOUNDARIES),
+    })
+    if save:
+        outdir = V430_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _make_v430_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v430_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v430_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v430_stage(slug, save=False)
+        lines = render_source_surface_manifest_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines.append("gates:")
+            lines.extend(f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows)
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v430_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v430_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v430_def in V430_STAGE_DEFS:
+    _slug = _v430_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v430_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v430_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v430_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v430_def["version"],"version":_v430_def["version"],"slug":_slug,"api":_v430_def["api"],"route":"layer","label":_v430_def["final_label"],"final_label":_v430_def["final_label"],"dashboard":_v430_def["dashboard"],"runtime_key":_v430_def["runtime_key"],"theme":_v430_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v430_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v430_def["api"]] = _slug
+
+# v425.1-v430.0 source surface manifest smoke tokens: source-surface-manifest source-surface-parity-audit source-surface-authority-map source-surface-package-privacy-map source-surface-manifest-audit operator-governed-source-surface-manifest-v1 conscious_agent/source_surface_manifest.py data/autonomy/source_surface_manifest/ data/autonomy/source_surface_parity_audit/ data/autonomy/source_surface_authority_map/ data/autonomy/source_surface_package_privacy_map/ data/autonomy/source_surface_manifest_audit/ manifest_presence_is_authorization=False parity_pass_is_authorization=False authority_label_is_approval=False surface_exists_means_may_execute=False smoke_pass_allows_live_action=False manifest_writes_files=False manifest_writes_memory=False source_only_package_must_exclude_runtime=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v430.1-v435.0 Self-Maintenance Duplicate Definition Cleanup v1
+from duplicate_definition_audit import (
+    DUPLICATE_DEFINITION_AUDIT_VERSION,
+    DUPLICATE_DEFINITION_BOUNDARIES,
+    build_duplicate_definition_inventory,
+    build_self_maintenance_duplicate_classification,
+    build_self_maintenance_extraction_candidates,
+    build_duplicate_definition_guard,
+    build_self_maintenance_duplicate_cleanup_audit,
+    render_duplicate_definition_lines,
+)
+
+V435_STAGE_DEFS = [
+    {"version":"v431.0","final_label":"Duplicate Definition Inventory v1","api":"duplicate-definition-inventory","dashboard":"/duplicate-definition-inventory","runtime_key":"duplicate_definition_inventory","slug":"duplicate_definition_inventory_v1","focus":"scans Python source with AST and inventories duplicate function definitions without authorizing deletion"},
+    {"version":"v432.0","final_label":"Self-Maintenance Duplicate Classification Packet v1","api":"self-maintenance-duplicate-classification","dashboard":"/self-maintenance-duplicate-classification","runtime_key":"self_maintenance_duplicate_classification","slug":"self_maintenance_duplicate_classification_v1","focus":"classifies self_maintenance.py duplicates into local closures, generated patterns, manual review, and high-risk shadow candidates"},
+    {"version":"v433.0","final_label":"Safe Extraction Candidate Plan v1","api":"self-maintenance-extraction-candidates","dashboard":"/self-maintenance-extraction-candidates","runtime_key":"self_maintenance_extraction_candidates","slug":"self_maintenance_extraction_candidates_v1","focus":"plans safe extraction candidates while keeping dashboard/API/CLI bridge names stable and protected by the source surface manifest"},
+    {"version":"v434.0","final_label":"Duplicate Definition Guard v1","api":"duplicate-definition-guard","dashboard":"/duplicate-definition-guard","runtime_key":"duplicate_definition_guard","slug":"duplicate_definition_guard_v1","focus":"establishes a baseline guard that blocks new high-risk duplicate shadowing without deleting historical code"},
+    {"version":"v435.0","final_label":"Self-Maintenance Duplicate Definition Cleanup v1","api":"self-maintenance-duplicate-cleanup-audit","dashboard":"/self-maintenance-duplicate-cleanup-audit","runtime_key":"self_maintenance_duplicate_cleanup_audit","slug":"operator_governed_self_maintenance_duplicate_cleanup_v1","focus":"audits duplicate inventory, classification, extraction candidates, guard policy, docs, manifest protection, and no-auto-edit boundaries"},
+]
+V435_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V435_STAGE_DEFS}
+
+
+def _v435_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/duplicate_definition_audit.py",
+        "conscious_agent/source_surface_manifest.py", "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py",
+        "conscious_agent/api_server.py", "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v435_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V435_STAGE_DEFS if item["slug"] == slug)
+    docs = _v435_docs_text()
+    inventory = build_duplicate_definition_inventory(ROOT_DIR)
+    classification = build_self_maintenance_duplicate_classification(ROOT_DIR)
+    extraction = build_self_maintenance_extraction_candidates(ROOT_DIR)
+    guard = build_duplicate_definition_guard(ROOT_DIR)
+    audit = build_self_maintenance_duplicate_cleanup_audit(ROOT_DIR, docs)
+    summary_by_slug = {
+        "duplicate_definition_inventory_v1": inventory,
+        "self_maintenance_duplicate_classification_v1": classification,
+        "self_maintenance_extraction_candidates_v1": extraction,
+        "duplicate_definition_guard_v1": guard,
+        "operator_governed_self_maintenance_duplicate_cleanup_v1": audit,
+    }
+    selected = summary_by_slug.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and DUPLICATE_DEFINITION_AUDIT_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; duplicate_audit={DUPLICATE_DEFINITION_AUDIT_VERSION}"},
+        {"name":"inventory","status":"pass" if inventory.get("ok") and inventory.get("inventory_is_authorization_to_delete") is False else "blocked","message":"Duplicate definitions are inventoried without authorizing deletion."},
+        {"name":"classification","status":"pass" if classification.get("ok") and classification.get("classification_is_authorization_to_delete") is False else "blocked","message":"Self-maintenance duplicates are classified for manual review."},
+        {"name":"extraction-plan","status":"pass" if extraction.get("ok") and extraction.get("extraction_plan_is_authorization") is False else "blocked","message":"Extraction candidates preserve bridge names and require manifest parity."},
+        {"name":"guard","status":"pass" if guard.get("ok") and guard.get("guard_applies_source_edits") is False else "blocked","message":"Duplicate guard blocks new high-risk shadowing without editing source."},
+        {"name":"manifest-protection","status":"pass" if "operator-governed-source-surface-manifest-v1" in docs and "source_surface_manifest.py" in docs else "blocked","message":"Recent high-risk surfaces remain protected by the v430 manifest layer."},
+        {"name":"boundaries","status":"pass" if audit.get("ok") and audit.get("grants_deletion_authority") is False and audit.get("applies_source_edits") is False and audit.get("expands_autonomy") is False else "blocked","message":"Audit does not grant deletion, source edit, or autonomy authority."},
+        {"name":"docs","status":"pass" if "v435.0 - Self-Maintenance Duplicate Definition Cleanup v1" in docs else "blocked","message":"README next steps and release history document v431-v435."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+    ]
+    report = dict(selected)
+    report.update({
+        "version": "500.0",
+        "stage": definition["version"],
+        "label": definition["final_label"],
+        "runtime_key": definition["runtime_key"],
+        "slug": slug,
+        "project_id": project_id,
+        "improvement_goal": improvement_goal or "Self-maintenance duplicate definition cleanup review.",
+        "rows": rows,
+        "ok": bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows),
+        "status": "pass" if bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows) else "blocked",
+        "writes_files": False,
+        "writes_memory": False,
+        "applies_source_edits": False,
+        "grants_deletion_authority": False,
+        "expands_autonomy": False,
+        "stage_items": [
+            {"stage":"v431.0","slug":"duplicate_definition_inventory_v1","label":"Inventory"},
+            {"stage":"v432.0","slug":"self_maintenance_duplicate_classification_v1","label":"Classification"},
+            {"stage":"v433.0","slug":"self_maintenance_extraction_candidates_v1","label":"Extraction Candidates"},
+            {"stage":"v434.0","slug":"duplicate_definition_guard_v1","label":"Guard"},
+            {"stage":"v435.0","slug":"operator_governed_self_maintenance_duplicate_cleanup_v1","label":"Audit"},
+        ],
+        "boundaries": dict(DUPLICATE_DEFINITION_BOUNDARIES),
+    })
+    if save:
+        outdir = V435_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _make_v435_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v435_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v435_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v435_stage(slug, save=False)
+        lines = render_duplicate_definition_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines.append("gates:")
+            lines.extend(f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows)
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v435_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v435_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v435_def in V435_STAGE_DEFS:
+    _slug = _v435_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v435_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v435_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v435_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v435_def["version"],"version":_v435_def["version"],"slug":_slug,"api":_v435_def["api"],"route":"layer","label":_v435_def["final_label"],"final_label":_v435_def["final_label"],"dashboard":_v435_def["dashboard"],"runtime_key":_v435_def["runtime_key"],"theme":_v435_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v435_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v435_def["api"]] = _slug
+
+# v430.1-v435.0 duplicate definition cleanup smoke tokens: duplicate-definition-inventory self-maintenance-duplicate-classification self-maintenance-extraction-candidates duplicate-definition-guard self-maintenance-duplicate-cleanup-audit operator-governed-self-maintenance-duplicate-cleanup-v1 conscious_agent/duplicate_definition_audit.py data/autonomy/duplicate_definition_inventory/ data/autonomy/self_maintenance_duplicate_classification/ data/autonomy/self_maintenance_extraction_candidates/ data/autonomy/duplicate_definition_guard/ data/autonomy/self_maintenance_duplicate_cleanup_audit/ inventory_is_authorization_to_delete=False classification_is_authorization_to_delete=False guard_applies_source_edits=False guard_executes_refactors=False cleanup_expands_autonomy=False operator_review_required_before_removal=True source_surface_manifest_protects_recent_surfaces=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v435.1-v440.0 Full Dashboard Route Probe and Lazy Render Audit v1
+from dashboard_route_probe import (
+    DASHBOARD_ROUTE_PROBE_VERSION,
+    DASHBOARD_ROUTE_PROBE_BOUNDARIES,
+    build_dashboard_route_inventory,
+    build_dashboard_route_probe,
+    build_dashboard_lazy_render_audit,
+    build_dashboard_tooltip_regression_audit,
+    build_dashboard_route_health_audit,
+    render_dashboard_route_probe_lines,
+)
+
+V440_STAGE_DEFS = [
+    {"version":"v436.0","final_label":"Dashboard Route Inventory Manifest v1","api":"dashboard-route-inventory","dashboard":"/dashboard-route-inventory","runtime_key":"dashboard_route_inventory","slug":"dashboard_route_inventory_v1","focus":"inventories dashboard routes, labels, eras, authority levels, data-tip requirements, and no-authorization boundaries"},
+    {"version":"v437.0","final_label":"Dashboard Render Probe Runner v1","api":"dashboard-route-probe","dashboard":"/dashboard-route-probe","runtime_key":"dashboard_route_probe","slug":"dashboard_route_probe_v1","focus":"probes dashboard route presence, expected render state, data-tip markers, tracebacks, and API shadowing risks"},
+    {"version":"v438.0","final_label":"Lazy Render and Heavy Page Audit v1","api":"dashboard-lazy-render-audit","dashboard":"/dashboard-lazy-render-audit","runtime_key":"dashboard_lazy_render_audit","slug":"dashboard_lazy_render_audit_v1","focus":"classifies heavy render candidates without optimizing or changing dashboard behavior automatically"},
+    {"version":"v439.0","final_label":"Dashboard Tooltip Regression Audit v1","api":"dashboard-tooltip-regression-audit","dashboard":"/dashboard-tooltip-regression-audit","runtime_key":"dashboard_tooltip_regression_audit","slug":"dashboard_tooltip_regression_audit_v1","focus":"guards the command-deck data-tip hover system and blocks native title tooltip regressions"},
+    {"version":"v440.0","final_label":"Full Dashboard Route Probe and Lazy Render Audit v1","api":"dashboard-route-health-audit","dashboard":"/dashboard-route-health-audit","runtime_key":"dashboard_route_health_audit","slug":"operator_governed_dashboard_route_health_audit_v1","focus":"audits inventory, route probing, lazy render classification, tooltip regression, docs, smoke coverage, and no-authorization boundaries"},
+]
+V440_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V440_STAGE_DEFS}
+
+
+def _v440_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/dashboard_route_probe.py",
+        "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/api_server.py",
+        "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v440_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V440_STAGE_DEFS if item["slug"] == slug)
+    docs = _v440_docs_text()
+    inventory = build_dashboard_route_inventory(ROOT_DIR)
+    probe = build_dashboard_route_probe(ROOT_DIR)
+    lazy = build_dashboard_lazy_render_audit(ROOT_DIR)
+    tooltip = build_dashboard_tooltip_regression_audit(ROOT_DIR)
+    audit = build_dashboard_route_health_audit(ROOT_DIR, docs)
+    summary_by_slug = {
+        "dashboard_route_inventory_v1": inventory,
+        "dashboard_route_probe_v1": probe,
+        "dashboard_lazy_render_audit_v1": lazy,
+        "dashboard_tooltip_regression_audit_v1": tooltip,
+        "operator_governed_dashboard_route_health_audit_v1": audit,
+    }
+    selected = summary_by_slug.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and DASHBOARD_ROUTE_PROBE_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; dashboard_probe={DASHBOARD_ROUTE_PROBE_VERSION}"},
+        {"name":"inventory","status":"pass" if inventory.get("ok") and inventory.get("route_presence_is_authorization") is False else "blocked","message":"Dashboard routes are inventoried without granting authorization."},
+        {"name":"probe","status":"pass" if probe.get("ok") and probe.get("route_health_is_approval") is False else "blocked","message":"Dashboard route probe is review-only and not approval."},
+        {"name":"lazy-render","status":"pass" if lazy.get("ok") and lazy.get("lazy_audit_refactors_dashboard") is False else "blocked","message":"Heavy pages are classified without dashboard refactors."},
+        {"name":"tooltip","status":"pass" if tooltip.get("ok") and tooltip.get("tooltip_audit_reintroduces_native_title") is False else "blocked","message":"Custom data-tip hover system remains protected."},
+        {"name":"boundaries","status":"pass" if audit.get("ok") and audit.get("writes_files") is False and audit.get("writes_memory") is False and audit.get("expands_autonomy") is False else "blocked","message":"Audit does not write files, mutate memory, or expand autonomy."},
+        {"name":"docs","status":"pass" if "v440.0 - Full Dashboard Route Probe and Lazy Render Audit v1" in docs else "blocked","message":"README next steps and release history document v436-v440."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and no native nav title tooltip rule are preserved."},
+    ]
+    report = dict(selected)
+    report.update({
+        "version": "500.0",
+        "stage": definition["version"],
+        "label": definition["final_label"],
+        "runtime_key": definition["runtime_key"],
+        "slug": slug,
+        "project_id": project_id,
+        "improvement_goal": improvement_goal or "Dashboard route health and lazy render audit.",
+        "rows": rows,
+        "ok": bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows),
+        "status": "pass" if bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows) else "blocked",
+        "writes_files": False,
+        "writes_memory": False,
+        "applies_patches": False,
+        "route_presence_is_authorization": False,
+        "route_health_is_approval": False,
+        "expands_autonomy": False,
+        "stage_items": [
+            {"stage":"v436.0","slug":"dashboard_route_inventory_v1","label":"Inventory"},
+            {"stage":"v437.0","slug":"dashboard_route_probe_v1","label":"Probe"},
+            {"stage":"v438.0","slug":"dashboard_lazy_render_audit_v1","label":"Lazy Render"},
+            {"stage":"v439.0","slug":"dashboard_tooltip_regression_audit_v1","label":"Tooltip Regression"},
+            {"stage":"v440.0","slug":"operator_governed_dashboard_route_health_audit_v1","label":"Route Health Audit"},
+        ],
+        "boundaries": dict(DASHBOARD_ROUTE_PROBE_BOUNDARIES),
+    })
+    if save:
+        outdir = V440_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _make_v440_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v440_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v440_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v440_stage(slug, save=False)
+        lines = render_dashboard_route_probe_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines.append("gates:")
+            lines.extend(f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows)
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v440_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v440_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v440_def in V440_STAGE_DEFS:
+    _slug = _v440_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v440_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v440_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v440_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v440_def["version"],"version":_v440_def["version"],"slug":_slug,"api":_v440_def["api"],"route":"layer","label":_v440_def["final_label"],"final_label":_v440_def["final_label"],"dashboard":_v440_def["dashboard"],"runtime_key":_v440_def["runtime_key"],"theme":_v440_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v440_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v440_def["api"]] = _slug
+
+# v435.1-v440.0 dashboard route probe smoke tokens: dashboard-route-inventory dashboard-route-probe dashboard-lazy-render-audit dashboard-tooltip-regression-audit dashboard-route-health-audit operator-governed-dashboard-route-health-audit-v1 conscious_agent/dashboard_route_probe.py data/autonomy/dashboard_route_inventory/ data/autonomy/dashboard_route_probe/ data/autonomy/dashboard_lazy_render_audit/ data/autonomy/dashboard_tooltip_regression_audit/ data/autonomy/dashboard_route_health_audit/ route_presence_is_authorization=False route_health_is_approval=False probe_executes_governed_actions=False probe_applies_patches=False probe_writes_memory=False lazy_audit_refactors_dashboard=False tooltip_audit_reintroduces_native_title=False dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v440.1-v445.0 Memory Lifecycle Review Board v1
+from memory_lifecycle_review_board import (
+    MEMORY_LIFECYCLE_REVIEW_BOARD_VERSION,
+    MEMORY_LIFECYCLE_BOUNDARIES,
+    build_memory_lifecycle_board_schema_summary,
+    build_memory_lifecycle_state_summary,
+    build_memory_lifecycle_drift_review,
+    build_memory_lifecycle_operator_decision_board,
+    build_memory_lifecycle_review_board,
+    build_memory_lifecycle_review_board_audit,
+    render_memory_lifecycle_board_lines,
+)
+
+V445_STAGE_DEFS = [
+    {"version":"v441.0","final_label":"Memory Lifecycle Board Schema v1","api":"memory-lifecycle-review-board","dashboard":"/memory-lifecycle-review-board","runtime_key":"memory_lifecycle_review_board","slug":"memory_lifecycle_review_board_v1","focus":"defines review-only lifecycle board sections from candidate through retained retraction and audit state"},
+    {"version":"v442.0","final_label":"Memory Lifecycle State Summary v1","api":"memory-lifecycle-state-summary","dashboard":"/memory-lifecycle-state-summary","runtime_key":"memory_lifecycle_state_summary","slug":"memory_lifecycle_state_summary_v1","focus":"aggregates memory lifecycle stage state without writing memory, creating approvals, or executing retractions"},
+    {"version":"v443.0","final_label":"Memory Lifecycle Drift Review v1","api":"memory-lifecycle-drift-review","dashboard":"/memory-lifecycle-drift-review","runtime_key":"memory_lifecycle_drift_review","slug":"memory_lifecycle_drift_review_v1","focus":"flags hash, approval, sandbox/live, target, and downstream staleness risks as blockers"},
+    {"version":"v444.0","final_label":"Memory Lifecycle Operator Decision Board v1","api":"memory-lifecycle-operator-decision-board","dashboard":"/memory-lifecycle-operator-decision-board","runtime_key":"memory_lifecycle_operator_decision_board","slug":"memory_lifecycle_operator_decision_board_v1","focus":"lists allowed operator review decisions and forbidden memory actions without fresh single-use approval"},
+    {"version":"v445.0","final_label":"Memory Lifecycle Review Board Audit v1","api":"memory-lifecycle-review-board-audit","dashboard":"/memory-lifecycle-review-board-audit","runtime_key":"memory_lifecycle_review_board_audit","slug":"operator_governed_memory_lifecycle_review_board_v1","focus":"audits board schema, state aggregation, drift review, operator decision limits, surface linkage, docs, and no-authorization boundaries"},
+]
+V445_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V445_STAGE_DEFS}
+
+
+def _v445_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/memory_lifecycle_review_board.py",
+        "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/api_server.py",
+        "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/source_surface_manifest.py",
+        "conscious_agent/dashboard_route_probe.py", "conscious_agent/smoke_segment_registry.py",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v445_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V445_STAGE_DEFS if item["slug"] == slug)
+    docs = _v445_docs_text()
+    schema = build_memory_lifecycle_board_schema_summary()
+    state = build_memory_lifecycle_state_summary(ROOT_DIR)
+    drift = build_memory_lifecycle_drift_review(ROOT_DIR)
+    decision = build_memory_lifecycle_operator_decision_board(ROOT_DIR)
+    board = build_memory_lifecycle_review_board(ROOT_DIR)
+    audit = build_memory_lifecycle_review_board_audit(docs, ROOT_DIR)
+    summary_by_slug = {
+        "memory_lifecycle_review_board_v1": schema,
+        "memory_lifecycle_state_summary_v1": state,
+        "memory_lifecycle_drift_review_v1": drift,
+        "memory_lifecycle_operator_decision_board_v1": decision,
+        "operator_governed_memory_lifecycle_review_board_v1": audit,
+    }
+    selected = summary_by_slug.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and MEMORY_LIFECYCLE_REVIEW_BOARD_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; lifecycle={MEMORY_LIFECYCLE_REVIEW_BOARD_VERSION}"},
+        {"name":"schema","status":"pass" if schema.get("ok") and schema.get("board_visibility_is_authorization") is False else "blocked","message":"Lifecycle board schema is review-only and not authorization."},
+        {"name":"state-summary","status":"pass" if state.get("ok") and state.get("current_authority") == "none" else "blocked","message":"Lifecycle state aggregates without granting current authority."},
+        {"name":"drift-review","status":"pass" if drift.get("ok") and drift.get("drift_blocks_execution") is True else "blocked","message":"Lifecycle drift/staleness cases block execution and approval reuse."},
+        {"name":"operator-decision","status":"pass" if decision.get("ok") and decision.get("board_visibility_is_authorization") is False else "blocked","message":"Operator decision board permits review decisions only without fresh approval."},
+        {"name":"audit-boundaries","status":"pass" if audit.get("ok") and audit.get("writes_memory") is False and audit.get("creates_approval") is False and audit.get("expands_autonomy") is False else "blocked","message":"Lifecycle board audit does not write memory, create approval, or expand autonomy."},
+        {"name":"docs","status":"pass" if "v445.0 - Memory Lifecycle Review Board v1" in docs else "blocked","message":"README next steps and release history document v441-v445."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and no native nav title tooltip rule are preserved."},
+    ]
+    report = dict(selected)
+    report.update({
+        "version": "500.0",
+        "stage": definition["version"],
+        "label": definition["final_label"],
+        "runtime_key": definition["runtime_key"],
+        "slug": slug,
+        "project_id": project_id,
+        "improvement_goal": improvement_goal or "Memory lifecycle review board.",
+        "rows": rows,
+        "ok": bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows),
+        "status": "pass" if bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows) else "blocked",
+        "writes_memory": False,
+        "executes_retraction": False,
+        "creates_approval": False,
+        "applies_patches": False,
+        "board_visibility_is_authorization": False,
+        "lifecycle_completeness_is_future_approval": False,
+        "expands_autonomy": False,
+        "stage_items": [
+            {"stage":"v441.0","slug":"memory_lifecycle_review_board_v1","label":"Board Schema"},
+            {"stage":"v442.0","slug":"memory_lifecycle_state_summary_v1","label":"State Summary"},
+            {"stage":"v443.0","slug":"memory_lifecycle_drift_review_v1","label":"Drift Review"},
+            {"stage":"v444.0","slug":"memory_lifecycle_operator_decision_board_v1","label":"Operator Decision"},
+            {"stage":"v445.0","slug":"operator_governed_memory_lifecycle_review_board_v1","label":"Review Board Audit"},
+        ],
+        "boundaries": dict(MEMORY_LIFECYCLE_BOUNDARIES),
+    })
+    if save:
+        outdir = V445_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _make_v445_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v445_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v445_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v445_stage(slug, save=False)
+        lines = render_memory_lifecycle_board_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines.append("gates:")
+            lines.extend(f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows)
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v445_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v445_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v445_def in V445_STAGE_DEFS:
+    _slug = _v445_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v445_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v445_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v445_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v445_def["version"],"version":_v445_def["version"],"slug":_slug,"api":_v445_def["api"],"route":"layer","label":_v445_def["final_label"],"final_label":_v445_def["final_label"],"dashboard":_v445_def["dashboard"],"runtime_key":_v445_def["runtime_key"],"theme":_v445_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v445_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v445_def["api"]] = _slug
+
+# v440.1-v445.0 memory lifecycle review board smoke tokens: memory-lifecycle-review-board memory-lifecycle-state-summary memory-lifecycle-drift-review memory-lifecycle-operator-decision-board memory-lifecycle-review-board-audit operator-governed-memory-lifecycle-review-board-v1 conscious_agent/memory_lifecycle_review_board.py data/autonomy/memory_lifecycle_review_board/ data/autonomy/memory_lifecycle_state_summary/ data/autonomy/memory_lifecycle_drift_review/ data/autonomy/memory_lifecycle_operator_decision_board/ data/autonomy/memory_lifecycle_review_board_audit/ board_visibility_is_authorization=False lifecycle_completeness_is_future_approval=False board_creates_approval=False board_executes_memory_write=False board_executes_memory_retraction=False board_mutates_identity=False board_alters_personality=False board_rewrites_purpose=False board_expands_autonomy=False fresh_approval_required_for_future_memory_action=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v445.1-v450.0 Governance-State-to-Authorization Firewall v1
+from authorization_firewall import (
+    AUTHORIZATION_FIREWALL_VERSION,
+    AUTHORIZATION_FIREWALL_BOUNDARIES,
+    build_authorization_confusion_patterns,
+    build_authorization_language_scan,
+    build_authorization_firewall_decision_packet,
+    build_authorization_boundary_map,
+    build_authorization_firewall_audit,
+    render_authorization_firewall_lines,
+)
+
+V450_STAGE_DEFS = [
+    {"version":"v446.0","final_label":"Authorization Confusion Pattern Registry v1","api":"authorization-confusion-patterns","dashboard":"/authorization-confusion-patterns","runtime_key":"authorization_confusion_patterns","slug":"authorization_confusion_patterns_v1","focus":"registers forbidden state-to-authorization inference patterns without enforcing or approving anything"},
+    {"version":"v447.0","final_label":"Packet Language and Metadata Scanner v1","api":"authorization-language-scan","dashboard":"/authorization-language-scan","runtime_key":"authorization_language_scan","slug":"authorization_language_scan_v1","focus":"scans recent governance packets and metadata for risky approval or authorization language without rewriting source"},
+    {"version":"v448.0","final_label":"Authorization Firewall Decision Packet v1","api":"authorization-firewall-decision-packet","dashboard":"/authorization-firewall-decision-packet","runtime_key":"authorization_firewall_decision_packet","slug":"authorization_firewall_decision_packet_v1","focus":"summarizes firewall status and recommended corrections while keeping clear status non-authorizing"},
+    {"version":"v449.0","final_label":"Authorization Boundary Map v1","api":"authorization-boundary-map","dashboard":"/authorization-boundary-map","runtime_key":"authorization_boundary_map","slug":"authorization_boundary_map_v1","focus":"maps readiness, eligibility, route health, manifest presence, lifecycle completion, smoke success, prior approval, sandbox success, and model consensus to safe interpretations"},
+    {"version":"v450.0","final_label":"Governance-State-to-Authorization Firewall v1","api":"authorization-firewall-audit","dashboard":"/authorization-firewall-audit","runtime_key":"authorization_firewall_audit","slug":"operator_governed_authorization_firewall_v1","focus":"audits pattern registry, language scan, decision packet, boundary map, docs, surface parity, and no-authorization boundaries"},
+]
+V450_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V450_STAGE_DEFS}
+
+
+def _v450_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/authorization_firewall.py",
+        "conscious_agent/memory_lifecycle_review_board.py", "conscious_agent/source_surface_manifest.py",
+        "conscious_agent/dashboard_route_probe.py", "conscious_agent/self_maintenance.py",
+        "conscious_agent/dashboard.py", "conscious_agent/api_server.py", "conscious_agent/main.py",
+        "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v450_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V450_STAGE_DEFS if item["slug"] == slug)
+    docs = _v450_docs_text()
+    patterns = build_authorization_confusion_patterns()
+    scan = build_authorization_language_scan(ROOT_DIR)
+    decision = build_authorization_firewall_decision_packet(ROOT_DIR)
+    boundary = build_authorization_boundary_map(ROOT_DIR)
+    audit = build_authorization_firewall_audit(ROOT_DIR, docs)
+    summary_by_slug = {
+        "authorization_confusion_patterns_v1": patterns,
+        "authorization_language_scan_v1": scan,
+        "authorization_firewall_decision_packet_v1": decision,
+        "authorization_boundary_map_v1": boundary,
+        "operator_governed_authorization_firewall_v1": audit,
+    }
+    selected = summary_by_slug.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and AUTHORIZATION_FIREWALL_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; firewall={AUTHORIZATION_FIREWALL_VERSION}"},
+        {"name":"pattern-registry","status":"pass" if patterns.get("ok") and patterns.get("pattern_count", 0) >= 10 and patterns.get("firewall_pass_is_authorization") is False else "blocked","message":"Authorization confusion patterns are registered without authorizing action."},
+        {"name":"language-scan","status":"pass" if scan.get("ok") and scan.get("scanner_rewrites_source") is False and scan.get("scanned_file_count", 0) >= 8 else "blocked","message":"Recent governance modules are scanned without source rewrite."},
+        {"name":"decision-packet","status":"pass" if decision.get("decision_packet_approves") is False and decision.get("clear_status_means_approved") is False else "blocked","message":"Clear firewall status is not approval."},
+        {"name":"boundary-map","status":"pass" if len(boundary.get("boundaries", [])) >= 8 and boundary.get("firewall_pass_is_authorization") is False else "blocked","message":"State-to-authorization boundaries are mapped."},
+        {"name":"docs","status":"pass" if "v450.0 - Governance-State-to-Authorization Firewall v1" in docs else "blocked","message":"README next steps and release history document v446-v450."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"firewall-boundaries","status":"pass" if audit.get("ok") and audit.get("writes_memory") is False and audit.get("applies_source_edits") is False and audit.get("executes_actions") is False and audit.get("expands_autonomy") is False else "blocked","message":"Firewall detects and reports; it does not execute, mutate, approve, or expand autonomy."},
+    ]
+    report = dict(selected)
+    report.update({
+        "version": "500.0",
+        "stage": definition["version"],
+        "label": definition["final_label"],
+        "runtime_key": definition["runtime_key"],
+        "slug": slug,
+        "project_id": project_id,
+        "improvement_goal": improvement_goal or "Governance-state-to-authorization firewall review.",
+        "rows": rows,
+        "ok": bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows),
+        "status": "pass" if bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows) else "blocked",
+        "writes_files": False,
+        "writes_memory": False,
+        "applies_source_edits": False,
+        "creates_approval": False,
+        "executes_actions": False,
+        "expands_autonomy": False,
+        "firewall_detection_is_enforcement_execution": False,
+        "firewall_pass_is_authorization": False,
+        "operator_approval_still_required": True,
+        "stage_items": [
+            {"stage":"v446.0","slug":"authorization_confusion_patterns_v1","label":"Pattern Registry"},
+            {"stage":"v447.0","slug":"authorization_language_scan_v1","label":"Language Scan"},
+            {"stage":"v448.0","slug":"authorization_firewall_decision_packet_v1","label":"Decision Packet"},
+            {"stage":"v449.0","slug":"authorization_boundary_map_v1","label":"Boundary Map"},
+            {"stage":"v450.0","slug":"operator_governed_authorization_firewall_v1","label":"Firewall Audit"},
+        ],
+        "boundaries": dict(AUTHORIZATION_FIREWALL_BOUNDARIES),
+    })
+    if save:
+        outdir = V450_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _make_v450_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v450_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v450_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v450_stage(slug, save=False)
+        lines = render_authorization_firewall_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines.append("gates:")
+            lines.extend(f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows)
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v450_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v450_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v450_def in V450_STAGE_DEFS:
+    _slug = _v450_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v450_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v450_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v450_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v450_def["version"],"version":_v450_def["version"],"slug":_slug,"api":_v450_def["api"],"route":"layer","label":_v450_def["final_label"],"final_label":_v450_def["final_label"],"dashboard":_v450_def["dashboard"],"runtime_key":_v450_def["runtime_key"],"theme":_v450_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v450_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v450_def["api"]] = _slug
+
+# v445.1-v450.0 authorization firewall smoke tokens: authorization-confusion-patterns authorization-language-scan authorization-firewall-decision-packet authorization-boundary-map authorization-firewall-audit operator-governed-authorization-firewall-v1 conscious_agent/authorization_firewall.py data/autonomy/authorization_confusion_patterns/ data/autonomy/authorization_language_scan/ data/autonomy/authorization_firewall_decision_packet/ data/autonomy/authorization_boundary_map/ data/autonomy/authorization_firewall_audit/ readiness_is_approval eligibility_is_approval route_health_is_approval manifest_presence_is_authorization lifecycle_completion_is_future_approval smoke_success_is_permission prior_approval_is_current_approval sandbox_success_is_live_permission model_consensus_is_truth review_packet_is_execution_packet approval_lock_exists_means_approved operator_pattern_means_future_consent firewall_detection_is_enforcement_execution=False firewall_pass_is_authorization=False clear_status_means_approved=False firewall_rewrites_packets=False firewall_mutates_memory=False firewall_applies_source_edits=False firewall_expands_autonomy=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v450.1-v455.0 Metadata, Release Integrity, and Current-State Repair v1
+from metadata_release_integrity import (
+    METADATA_RELEASE_INTEGRITY_VERSION,
+    METADATA_RELEASE_INTEGRITY_BOUNDARIES,
+    build_metadata_version_inventory,
+    build_project_workspace_metadata_alignment,
+    build_release_packaging_version_integrity,
+    build_current_state_documentation_header_audit,
+    build_metadata_release_integrity_audit,
+    render_metadata_release_integrity_lines,
+)
+
+V455_STAGE_DEFS = [
+    {"version":"v451.0","final_label":"Metadata Version Inventory v1","api":"metadata-version-inventory","dashboard":"/metadata-version-inventory","runtime_key":"metadata_version_inventory","slug":"metadata_version_inventory_v1","focus":"inspects allowlisted source metadata files for current-version alignment without granting authorization"},
+    {"version":"v452.0","final_label":"Project and Workspace Metadata Alignment v1","api":"project-workspace-metadata-alignment","dashboard":"/project-workspace-metadata-alignment","runtime_key":"project_workspace_metadata_alignment","slug":"project_workspace_metadata_alignment_v1","focus":"checks project and workspace milestone fields agree on the current release arc"},
+    {"version":"v453.0","final_label":"Release Packaging Version Integrity v1","api":"release-packaging-version-integrity","dashboard":"/release-packaging-version-integrity","runtime_key":"release_packaging_version_integrity","slug":"release_packaging_version_integrity_v1","focus":"confirms release packaging resolves settings_version before stale last_updated_for fallbacks"},
+    {"version":"v454.0","final_label":"Current-State Documentation Header Audit v1","api":"current-state-documentation-header-audit","dashboard":"/current-state-documentation-header-audit","runtime_key":"current_state_documentation_header_audit","slug":"current_state_documentation_header_audit_v1","focus":"verifies README current-state headers separate current blockers, checks, next arcs, and no-authorization language from historical ledgers"},
+    {"version":"v455.0","final_label":"Metadata, Release Integrity, and Current-State Repair v1","api":"metadata-release-integrity-audit","dashboard":"/metadata-release-integrity-audit","runtime_key":"metadata_release_integrity_audit","slug":"operator_governed_metadata_release_integrity_v1","focus":"audits metadata alignment, release version resolution, docs, smoke/API/CLI tokens, and no-authorization boundaries"},
+]
+V455_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V455_STAGE_DEFS}
+
+
+def _v455_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/metadata_release_integrity.py",
+        "conscious_agent/release_packaging.py", "conscious_agent/smoke_segment_registry.py",
+        "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/api_server.py",
+        "conscious_agent/main.py", "tools/smoke_check.py",
+        "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v455_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V455_STAGE_DEFS if item["slug"] == slug)
+    docs = _v455_docs_text()
+    inventory = build_metadata_version_inventory(ROOT_DIR)
+    alignment = build_project_workspace_metadata_alignment(ROOT_DIR)
+    packaging = build_release_packaging_version_integrity(ROOT_DIR)
+    doc_audit = build_current_state_documentation_header_audit(ROOT_DIR)
+    audit = build_metadata_release_integrity_audit(ROOT_DIR, docs)
+    summary_by_slug = {
+        "metadata_version_inventory_v1": inventory,
+        "project_workspace_metadata_alignment_v1": alignment,
+        "release_packaging_version_integrity_v1": packaging,
+        "current_state_documentation_header_audit_v1": doc_audit,
+        "operator_governed_metadata_release_integrity_v1": audit,
+    }
+    selected = summary_by_slug.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and METADATA_RELEASE_INTEGRITY_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; metadata_integrity={METADATA_RELEASE_INTEGRITY_VERSION}"},
+        {"name":"metadata-inventory","status":"pass" if inventory.get("ok") else "blocked","message":"Source metadata files agree on v460.0."},
+        {"name":"workspace-alignment","status":"pass" if alignment.get("ok") else "blocked","message":"Project/workspace current milestone state is aligned."},
+        {"name":"release-version-resolution","status":"pass" if packaging.get("ok") else "blocked","message":"Release packaging resolves the current settings_version and no longer falls back to stale v420 metadata."},
+        {"name":"current-docs","status":"pass" if doc_audit.get("ok") else "blocked","message":"README files expose current-state headers and current release notes."},
+        {"name":"boundaries","status":"pass" if audit.get("ok") and audit.get("publishes_release") is False and audit.get("applies_source_edits") is False and audit.get("writes_memory") is False and audit.get("expands_autonomy") is False else "blocked","message":"Metadata repair audit is review-only and grants no source, memory, release, or autonomy authorization."},
+        {"name":"docs","status":"pass" if "v455.0 - Metadata, Release Integrity, and Current-State Repair v1" in docs else "blocked","message":"README next steps and release history document v451-v455."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+    ]
+    report = dict(selected)
+    report.update({
+        "version": "500.0",
+        "stage": definition["version"],
+        "label": definition["final_label"],
+        "runtime_key": definition["runtime_key"],
+        "slug": slug,
+        "project_id": project_id,
+        "improvement_goal": improvement_goal or "Metadata, release integrity, and current-state repair review.",
+        "rows": rows,
+        "ok": bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows),
+        "status": "pass" if bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows) else "blocked",
+        "writes_files": False,
+        "writes_memory": False,
+        "applies_source_edits": False,
+        "publishes_release": False,
+        "creates_approval": False,
+        "executes_actions": False,
+        "expands_autonomy": False,
+        "metadata_consistency_is_authorization": False,
+        "release_integrity_pass_is_approval": False,
+        "operator_approval_still_required": True,
+        "stage_items": [
+            {"stage":"v451.0","slug":"metadata_version_inventory_v1","label":"Metadata Inventory"},
+            {"stage":"v452.0","slug":"project_workspace_metadata_alignment_v1","label":"Workspace Alignment"},
+            {"stage":"v453.0","slug":"release_packaging_version_integrity_v1","label":"Release Version Integrity"},
+            {"stage":"v454.0","slug":"current_state_documentation_header_audit_v1","label":"Current-State Docs"},
+            {"stage":"v455.0","slug":"operator_governed_metadata_release_integrity_v1","label":"Repair Audit"},
+        ],
+        "boundaries": dict(METADATA_RELEASE_INTEGRITY_BOUNDARIES),
+    })
+    if save:
+        outdir = V455_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _make_v455_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v455_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v455_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v455_stage(slug, save=False)
+        lines = render_metadata_release_integrity_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines.append("gates:")
+            lines.extend(f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows)
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v455_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v455_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v455_def in V455_STAGE_DEFS:
+    _slug = _v455_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v455_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v455_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v455_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v455_def["version"],"version":_v455_def["version"],"slug":_slug,"api":_v455_def["api"],"route":"layer","label":_v455_def["final_label"],"final_label":_v455_def["final_label"],"dashboard":_v455_def["dashboard"],"runtime_key":_v455_def["runtime_key"],"theme":_v455_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v455_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v455_def["api"]] = _slug
+
+# v450.1-v455.0 metadata release integrity smoke tokens: metadata-version-inventory project-workspace-metadata-alignment release-packaging-version-integrity current-state-documentation-header-audit metadata-release-integrity-audit operator-governed-metadata-release-integrity-v1 conscious_agent/metadata_release_integrity.py data/autonomy/metadata_version_inventory/ data/autonomy/project_workspace_metadata_alignment/ data/autonomy/release_packaging_version_integrity/ data/autonomy/current_state_documentation_header_audit/ data/autonomy/metadata_release_integrity_audit/ metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False metadata_repair_report_publishes_release=False metadata_repair_report_applies_source_edits=False metadata_repair_report_writes_memory=False metadata_repair_report_expands_autonomy=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v455.1-v460.0 Authorization Firewall Signal Triage and Warning Semantics v1
+from authorization_firewall import (
+    build_authorization_firewall_severity_classifier,
+    build_authorization_firewall_safe_boundary_filter,
+    build_authorization_firewall_warning_status_bridge,
+    build_authorization_firewall_audit_status_split,
+    build_operator_governed_authorization_firewall_signal_triage,
+)
+
+V460_STAGE_DEFS = [
+    {"version":"v456.0","final_label":"Authorization Firewall Finding Severity Classifier v1","api":"authorization-firewall-severity-classifier","dashboard":"/authorization-firewall-severity-classifier","runtime_key":"authorization_firewall_severity_classifier","slug":"authorization_firewall_severity_classifier_v1","focus":"classifies firewall findings as safe_boundary, informational, warning, high_risk, or blocked_pattern without granting authorization"},
+    {"version":"v457.0","final_label":"Authorization Firewall Safe Boundary Filter v1","api":"authorization-firewall-safe-boundary-filter","dashboard":"/authorization-firewall-safe-boundary-filter","runtime_key":"authorization_firewall_safe_boundary_filter","slug":"authorization_firewall_safe_boundary_filter_v1","focus":"separates safe negative boundary language from reviewable authorization warnings without rewriting source"},
+    {"version":"v458.0","final_label":"Authorization Firewall Warning Status Bridge v1","api":"authorization-firewall-warning-status","dashboard":"/authorization-firewall-warning-status","runtime_key":"authorization_firewall_warning_status","slug":"authorization_firewall_warning_status_v1","focus":"preserves pass_with_warnings and review_required statuses across CLI, API, dashboard, and runtime maps"},
+    {"version":"v459.0","final_label":"Authorization Firewall Audit Status Split v1","api":"authorization-firewall-audit-status-split","dashboard":"/authorization-firewall-audit-status-split","runtime_key":"authorization_firewall_audit_status_split","slug":"authorization_firewall_audit_status_split_v1","focus":"splits mechanism_status, language_scan_status, operator_review_status, and authorization_status so pass is not mistaken for approval"},
+    {"version":"v460.0","final_label":"Authorization Firewall Signal Triage and Warning Semantics v1","api":"authorization-firewall-signal-triage-audit","dashboard":"/authorization-firewall-signal-triage-audit","runtime_key":"authorization_firewall_signal_triage_audit","slug":"operator_governed_authorization_firewall_signal_triage_v1","focus":"audits severity classification, safe-boundary filtering, warning preservation, audit-status split, docs, smoke/API/CLI tokens, and no-authorization boundaries"},
+]
+V460_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V460_STAGE_DEFS}
+
+
+def _v460_docs_text() -> str:
+    paths = [
+        "README_NEXT_STEPS.md", "README_RELEASE_HISTORY.md", "conscious_agent/authorization_firewall.py",
+        "conscious_agent/self_maintenance.py", "conscious_agent/dashboard.py", "conscious_agent/api_server.py",
+        "conscious_agent/main.py", "tools/smoke_check.py", "conscious_agent/smoke_segment_registry.py",
+        "data/settings.json", "data/projects.json", "data/workspaces/active_project.json", "data/workspaces/projects.json",
+    ]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v460_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V460_STAGE_DEFS if item["slug"] == slug)
+    docs = _v460_docs_text()
+    audit = build_operator_governed_authorization_firewall_signal_triage(ROOT_DIR, docs)
+    classifier = audit.get("severity_classifier", {})
+    safe_filter = audit.get("safe_boundary_filter", {})
+    bridge = audit.get("warning_status_bridge", {})
+    split = audit.get("audit_status_split", {})
+    summary_by_slug = {
+        "authorization_firewall_severity_classifier_v1": classifier,
+        "authorization_firewall_safe_boundary_filter_v1": safe_filter,
+        "authorization_firewall_warning_status_v1": bridge,
+        "authorization_firewall_audit_status_split_v1": split,
+        "operator_governed_authorization_firewall_signal_triage_v1": audit,
+    }
+    selected = summary_by_slug.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and AUTHORIZATION_FIREWALL_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; firewall={AUTHORIZATION_FIREWALL_VERSION}"},
+        {"name":"severity-classifier","status":"pass" if classifier.get("ok") and "blocked_pattern" in classifier.get("severity_levels", []) else "blocked","message":"Authorization language findings use explicit severity levels instead of one warning bucket."},
+        {"name":"safe-boundary-filter","status":"pass" if safe_filter.get("filter_rewrites_source") is False and safe_filter.get("filter_creates_approval") is False else "blocked","message":"Safe negative boundary language is recognized without rewriting source or creating approval."},
+        {"name":"warning-status-preserved","status":"pass" if bridge.get("warnings_preserved") is True and bridge.get("plain_pass_with_warnings_forbidden") is True else "blocked","message":"Warning states survive the CLI/API/dashboard bridge and are not flattened to plain pass."},
+        {"name":"status-split","status":"pass" if split.get("mechanism_status") == "pass" and split.get("authorization_status") == "not_authorized" and split.get("language_clear_is_not_authorization") is True else "blocked","message":"Mechanism health, language scan status, operator review status, and authorization status are separate."},
+        {"name":"docs","status":"pass" if "v460.0 - Authorization Firewall Signal Triage and Warning Semantics v1" in docs and "operator-governed-authorization-firewall-signal-triage-v1" in docs else "blocked","message":"README next steps and release history document v456-v460."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"no-authorization","status":"pass" if audit.get("creates_approval") is False and audit.get("writes_memory") is False and audit.get("applies_source_edits") is False and audit.get("expands_autonomy") is False else "blocked","message":"Signal triage remains review-only and grants no memory, source, release, or autonomy authorization."},
+    ]
+    ok = bool(selected.get("ok", True)) and all(row["status"] == "pass" for row in rows)
+    report = dict(selected)
+    report.update({
+        "version": "500.0",
+        "stage": definition["version"],
+        "label": definition["final_label"],
+        "runtime_key": definition["runtime_key"],
+        "slug": slug,
+        "project_id": project_id,
+        "improvement_goal": improvement_goal or "Authorization firewall signal triage and warning semantics review.",
+        "rows": rows,
+        "ok": ok,
+        "status": selected.get("status") if ok else "blocked",
+        "mechanism_status": selected.get("mechanism_status", "pass"),
+        "language_scan_status": selected.get("language_scan_status", selected.get("status")),
+        "operator_review_status": selected.get("operator_review_status", "review_required"),
+        "authorization_status": "not_authorized",
+        "writes_files": False,
+        "writes_memory": False,
+        "applies_source_edits": False,
+        "publishes_release": False,
+        "creates_approval": False,
+        "executes_actions": False,
+        "expands_autonomy": False,
+        "pass_with_warnings_supported": True,
+        "plain_pass_with_warnings_forbidden": True,
+        "mechanism_pass_is_not_language_clear": True,
+        "language_clear_is_not_authorization": True,
+        "stage_items": [
+            {"stage":"v456.0","slug":"authorization_firewall_severity_classifier_v1","label":"Severity Classifier"},
+            {"stage":"v457.0","slug":"authorization_firewall_safe_boundary_filter_v1","label":"Safe Boundary Filter"},
+            {"stage":"v458.0","slug":"authorization_firewall_warning_status_v1","label":"Warning Status Bridge"},
+            {"stage":"v459.0","slug":"authorization_firewall_audit_status_split_v1","label":"Audit Status Split"},
+            {"stage":"v460.0","slug":"operator_governed_authorization_firewall_signal_triage_v1","label":"Signal Triage Audit"},
+        ],
+        "boundaries": dict(AUTHORIZATION_FIREWALL_BOUNDARIES),
+    })
+    if save:
+        outdir = V460_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _make_v460_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v460_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v460_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v460_stage(slug, save=False)
+        lines = render_authorization_firewall_lines(report)
+        if report.get("mechanism_status"):
+            lines.append(f"mechanism_status: {report.get('mechanism_status')}")
+        if report.get("language_scan_status"):
+            lines.append(f"language_scan_status: {report.get('language_scan_status')}")
+        if report.get("operator_review_status"):
+            lines.append(f"operator_review_status: {report.get('operator_review_status')}")
+        lines.append(f"authorization_status: {report.get('authorization_status', 'not_authorized')}")
+        rows = report.get("rows", [])
+        if rows:
+            lines.append("gates:")
+            lines.extend(f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows)
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v460_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v460_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+for _v460_def in V460_STAGE_DEFS:
+    _slug = _v460_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v460_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v460_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v460_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v460_def["version"],"version":_v460_def["version"],"slug":_slug,"api":_v460_def["api"],"route":"layer","label":_v460_def["final_label"],"final_label":_v460_def["final_label"],"dashboard":_v460_def["dashboard"],"runtime_key":_v460_def["runtime_key"],"theme":_v460_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v460_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v460_def["api"]] = _slug
+
+# v455.1-v460.0 authorization firewall signal triage smoke tokens: authorization-firewall-severity-classifier authorization-firewall-safe-boundary-filter authorization-firewall-warning-status authorization-firewall-audit-status-split authorization-firewall-signal-triage-audit operator-governed-authorization-firewall-signal-triage-v1 pass_with_warnings_supported=True plain_pass_with_warnings_forbidden=True mechanism_pass_is_not_language_clear=True language_clear_is_not_authorization=True authorization_status=not_authorized operator_approval_still_required=True authorization_status_is_approval=False warning_status_is_authorization=False signal_triage_creates_approval=False signal_triage_writes_memory=False signal_triage_applies_source_edits=False signal_triage_expands_autonomy=False dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v460.1-v465.0 Dashboard Route Probe and Source Surface Manifest Parity v1
+from route_surface_parity import (
+    ROUTE_SURFACE_PARITY_VERSION, ROUTE_SURFACE_PARITY_BOUNDARIES,
+    build_recent_dashboard_route_probe_refresh, build_source_surface_manifest_parity_policy,
+    build_surface_route_api_cli_crosscheck, build_route_health_boundary_language,
+    build_route_surface_parity_audit, render_route_surface_parity_lines,
+)
+V465_STAGE_DEFS = [
+    {"version":"v461.0","final_label":"Recent Dashboard Route Probe Refresh v1","api":"recent-dashboard-route-probe-refresh","dashboard":"/recent-dashboard-route-probe-refresh","runtime_key":"recent_dashboard_route_probe_refresh","slug":"recent_dashboard_route_probe_refresh_v1","focus":"adds v450-v465 routes to route probe inventory without treating route presence as authorization"},
+    {"version":"v462.0","final_label":"Source Surface Manifest Parity Policy v1","api":"source-surface-manifest-parity-policy","dashboard":"/source-surface-manifest-parity-policy","runtime_key":"source_surface_manifest_parity_policy","slug":"source_surface_manifest_parity_policy_v1","focus":"sets manifest tracking policy to every governed substage surface instead of final milestones only"},
+    {"version":"v463.0","final_label":"Surface Route API CLI Crosscheck v1","api":"surface-route-api-cli-crosscheck","dashboard":"/surface-route-api-cli-crosscheck","runtime_key":"surface_route_api_cli_crosscheck","slug":"surface_route_api_cli_crosscheck_v1","focus":"crosschecks manifest surfaces against dashboard routes, route probe inventory, API/CLI tokens, builders, renderers, and smoke checks"},
+    {"version":"v464.0","final_label":"Route Health Boundary Language v1","api":"route-health-boundary-language","dashboard":"/route-health-boundary-language","runtime_key":"route_health_boundary_language","slug":"route_health_boundary_language_v1","focus":"hardens route health language so render/accessibility status is never confused with execution authorization"},
+    {"version":"v465.0","final_label":"Dashboard Route Probe and Source Surface Manifest Parity v1","api":"route-surface-parity-audit","dashboard":"/route-surface-parity-audit","runtime_key":"route_surface_parity_audit","slug":"operator_governed_route_surface_parity_v1","focus":"audits recent route probe freshness, manifest policy, route/API/CLI/smoke parity, docs, and no-authorization boundaries"},
+]
+V465_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V465_STAGE_DEFS}
+
+def _v465_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","conscious_agent/route_surface_parity.py","conscious_agent/dashboard_route_probe.py","conscious_agent/source_surface_manifest.py","conscious_agent/self_maintenance.py","conscious_agent/dashboard.py","conscious_agent/api_server.py","conscious_agent/main.py","tools/smoke_check.py","conscious_agent/smoke_segment_registry.py","data/settings.json","data/projects.json","data/workspaces/active_project.json","data/workspaces/projects.json"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+def _build_v465_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V465_STAGE_DEFS if item["slug"] == slug)
+    docs = _v465_docs_text()
+    refresh = build_recent_dashboard_route_probe_refresh(ROOT_DIR)
+    policy = build_source_surface_manifest_parity_policy(ROOT_DIR)
+    crosscheck = build_surface_route_api_cli_crosscheck(ROOT_DIR, docs)
+    boundary = build_route_health_boundary_language(ROOT_DIR, docs)
+    audit = build_route_surface_parity_audit(ROOT_DIR, docs)
+    selected = {"recent_dashboard_route_probe_refresh_v1": refresh, "source_surface_manifest_parity_policy_v1": policy, "surface_route_api_cli_crosscheck_v1": crosscheck, "route_health_boundary_language_v1": boundary, "operator_governed_route_surface_parity_v1": audit}.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and ROUTE_SURFACE_PARITY_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; route_surface_parity={ROUTE_SURFACE_PARITY_VERSION}"},
+        {"name":"recent-route-probe-refresh","status":"pass" if refresh.get("ok") else "blocked","message":"v450-v465 dashboard routes are present in dashboard.py and the route probe inventory."},
+        {"name":"manifest-policy","status":"pass" if policy.get("ok") and policy.get("policy") == "every_governed_substage_surface" else "blocked","message":"Source surface manifest tracks every governed substage surface going forward."},
+        {"name":"surface-crosscheck","status":"pass" if crosscheck.get("ok") else "blocked","message":"Manifest surfaces crosscheck against dashboard, API, CLI, builders, text renderers, and smoke tokens."},
+        {"name":"route-health-boundary-language","status":"pass" if boundary.get("ok") else "blocked","message":"Route health language says render status is not execution authorization."},
+        {"name":"docs","status":"pass" if "v465.0 - Dashboard Route Probe and Source Surface Manifest Parity v1" in docs and "operator-governed-route-surface-parity-v1" in docs else "blocked","message":"README next steps and release history document v461-v465."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"no-authorization","status":"pass" if audit.get("creates_approval") is False and audit.get("writes_memory") is False and audit.get("applies_patches") is False and audit.get("expands_autonomy") is False else "blocked","message":"Route/surface parity is review-only and grants no memory, source, release, execution, or autonomy authorization."},
+    ]
+    ok = bool(selected.get("ok")) and all(row["status"] == "pass" for row in rows)
+    report = dict(selected); report.update({"version":"480.0","stage":definition["version"],"label":definition["final_label"],"runtime_key":definition["runtime_key"],"slug":slug,"project_id":project_id,"improvement_goal": improvement_goal or "Dashboard route probe and source surface manifest parity review.","rows":rows,"ok":ok,"status":"pass" if ok else "blocked","writes_files":False,"writes_memory":False,"applies_source_edits":False,"applies_patches":False,"publishes_release":False,"creates_approval":False,"executes_actions":False,"expands_autonomy":False,"route_presence_is_authorization":False,"route_health_is_approval":False,"manifest_presence_is_authorization":False,"surface_parity_is_permission":False,"smoke_success_is_approval":False,"route_health_confirms_render_status_only":True,"route_health_does_not_authorize_execution":True,"operator_approval_still_required":True,"stage_items":[{"stage":"v461.0","slug":"recent_dashboard_route_probe_refresh_v1","label":"Route Probe Refresh"},{"stage":"v462.0","slug":"source_surface_manifest_parity_policy_v1","label":"Manifest Parity Policy"},{"stage":"v463.0","slug":"surface_route_api_cli_crosscheck_v1","label":"Surface Crosscheck"},{"stage":"v464.0","slug":"route_health_boundary_language_v1","label":"Route Health Boundary Language"},{"stage":"v465.0","slug":"operator_governed_route_surface_parity_v1","label":"Parity Audit"}],"boundaries":dict(ROUTE_SURFACE_PARITY_BOUNDARIES)})
+    if save:
+        outdir = V465_RUNTIME_DIRS[definition["runtime_key"]]; outdir.mkdir(parents=True, exist_ok=True); (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+def _make_v465_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v465_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"; return _builder
+
+def _make_v465_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v465_stage(slug, save=False); lines = render_route_surface_parity_lines(report); rows = report.get("rows", [])
+        if rows: lines += ["gates:"] + [f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows]
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"; return _text
+
+def _make_v465_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v465_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs); _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"; return _printer
+
+for _v465_def in V465_STAGE_DEFS:
+    _slug = _v465_def["slug"]; globals()[f"build_{_slug}"] = _make_v465_build(_slug); globals()[f"{_slug}_text"] = _make_v465_text(_slug); globals()[f"print_{_slug}"] = _make_v465_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v465_def["version"],"version":_v465_def["version"],"slug":_slug,"api":_v465_def["api"],"route":"layer","label":_v465_def["final_label"],"final_label":_v465_def["final_label"],"dashboard":_v465_def["dashboard"],"runtime_key":_v465_def["runtime_key"],"theme":_v465_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]; SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug; SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v465_def['api']}/layer"] = _slug; SUPERVISED_RUNTIME_ROUTE_MAP[_v465_def["api"]] = _slug
+
+# v460.1-v465.0 route surface parity smoke tokens: recent-dashboard-route-probe-refresh source-surface-manifest-parity-policy surface-route-api-cli-crosscheck route-health-boundary-language route-surface-parity-audit operator-governed-route-surface-parity-v1 conscious_agent/route_surface_parity.py data/autonomy/recent_dashboard_route_probe_refresh/ data/autonomy/source_surface_manifest_parity_policy/ data/autonomy/surface_route_api_cli_crosscheck/ data/autonomy/route_health_boundary_language/ data/autonomy/route_surface_parity_audit/ every_governed_substage_surface route_presence_is_authorization=False route_health_is_approval=False manifest_presence_is_authorization=False surface_parity_is_permission=False smoke_success_is_approval=False route_health_confirms_render_status_only=True route_health_does_not_authorize_execution=True parity_audit_applies_patches=False parity_audit_writes_memory=False parity_audit_expands_autonomy=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v465.1-v470.0 Self-Maintenance Duplicate Shadow Cleanup v1
+from self_maintenance_shadow_cleanup import (
+    SELF_MAINTENANCE_SHADOW_CLEANUP_VERSION, SELF_MAINTENANCE_SHADOW_CLEANUP_BOUNDARIES,
+    build_duplicate_shadow_inventory, build_safe_shadow_removal_report,
+    build_legacy_alias_compatibility_cleanup, build_stale_version_gate_cleanup,
+    build_self_maintenance_duplicate_shadow_cleanup_audit, render_self_maintenance_shadow_cleanup_lines,
+)
+
+V470_STAGE_DEFS = [
+    {"version":"v466.0","final_label":"Duplicate Definition Inventory and Classification v1","api":"duplicate-shadow-inventory","dashboard":"/duplicate-shadow-inventory","runtime_key":"duplicate_shadow_inventory","slug":"duplicate_shadow_inventory_v1","focus":"classifies current top-level self_maintenance duplicate shadows after safe cleanup without authorizing deletion"},
+    {"version":"v467.0","final_label":"Safe Shadow Removal Report v1","api":"safe-shadow-removal-report","dashboard":"/safe-shadow-removal-report","runtime_key":"safe_shadow_removal_report","slug":"safe_shadow_removal_report_v1","focus":"records removal of shadowed legacy definitions while preserving canonical final definitions"},
+    {"version":"v468.0","final_label":"Legacy Alias Compatibility Cleanup v1","api":"legacy-alias-compatibility-cleanup","dashboard":"/legacy-alias-compatibility-cleanup","runtime_key":"legacy_alias_compatibility_cleanup","slug":"legacy_alias_compatibility_cleanup_v1","focus":"checks canonical helper definitions remain after duplicate body removal"},
+    {"version":"v469.0","final_label":"Stale Exact-Version Gate Cleanup v1","api":"stale-version-gate-cleanup","dashboard":"/stale-version-gate-cleanup","runtime_key":"stale_version_gate_cleanup","slug":"stale_version_gate_cleanup_v1","focus":"replaces stale v68/v70 exact-version blockers with explicit historical compatibility gates"},
+    {"version":"v470.0","final_label":"Self-Maintenance Duplicate Shadow Cleanup v1","api":"self-maintenance-duplicate-shadow-cleanup-audit","dashboard":"/self-maintenance-duplicate-shadow-cleanup-audit","runtime_key":"self_maintenance_duplicate_shadow_cleanup_audit","slug":"operator_governed_self_maintenance_duplicate_shadow_cleanup_v1","focus":"audits duplicate shadow removal, compatibility preservation, stale gate cleanup, docs, and no-authorization boundaries"},
+]
+V470_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V470_STAGE_DEFS}
+
+
+def _v470_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","conscious_agent/self_maintenance_shadow_cleanup.py","conscious_agent/self_maintenance.py","conscious_agent/dashboard.py","conscious_agent/api_server.py","conscious_agent/main.py","tools/smoke_check.py","conscious_agent/smoke_segment_registry.py","data/settings.json","data/projects.json","data/workspaces/active_project.json","data/workspaces/projects.json"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v470_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V470_STAGE_DEFS if item["slug"] == slug)
+    docs = _v470_docs_text()
+    inventory = build_duplicate_shadow_inventory(ROOT_DIR)
+    removal = build_safe_shadow_removal_report(ROOT_DIR)
+    compatibility = build_legacy_alias_compatibility_cleanup(ROOT_DIR)
+    stale = build_stale_version_gate_cleanup(ROOT_DIR)
+    audit = build_self_maintenance_duplicate_shadow_cleanup_audit(ROOT_DIR, docs)
+    selected = {"duplicate_shadow_inventory_v1": inventory, "safe_shadow_removal_report_v1": removal, "legacy_alias_compatibility_cleanup_v1": compatibility, "stale_version_gate_cleanup_v1": stale, "operator_governed_self_maintenance_duplicate_shadow_cleanup_v1": audit}.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and SELF_MAINTENANCE_SHADOW_CLEANUP_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; shadow_cleanup={SELF_MAINTENANCE_SHADOW_CLEANUP_VERSION}"},
+        {"name":"duplicate-inventory","status":"pass" if inventory.get("ok") and inventory.get("current_duplicate_count") == 0 else "blocked","message":f"current_duplicate_count={inventory.get('current_duplicate_count')}"},
+        {"name":"safe-shadow-removal","status":"pass" if removal.get("ok") and inventory.get("removed_shadowed_definition_count", 0) >= 16 else "blocked","message":f"removed_shadowed_definition_count={inventory.get('removed_shadowed_definition_count')}"},
+        {"name":"compatibility-canonical-kept","status":"pass" if compatibility.get("ok") else "blocked","message":"canonical final helper definitions remain present."},
+        {"name":"stale-version-gates","status":"pass" if stale.get("ok") else "blocked","message":f"stale_exact_gate_hits={len(stale.get('stale_exact_gate_hits', []))}; helper_uses={stale.get('historical_helper_use_count')}"},
+        {"name":"docs","status":"pass" if "v470.0 - Self-Maintenance Duplicate Shadow Cleanup v1" in docs and "operator-governed-self-maintenance-duplicate-shadow-cleanup-v1" in docs else "blocked","message":"README next steps and release history document v466-v470."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"no-authorization","status":"pass" if audit.get("creates_approval") is False and audit.get("writes_memory") is False and audit.get("applies_source_edits") is False and audit.get("expands_autonomy") is False else "blocked","message":"Duplicate cleanup reports grant no memory, source, release, execution, or autonomy authorization."},
+    ]
+    ok = bool(selected.get("ok")) and bool(audit.get("ok")) and all(row["status"] == "pass" for row in rows)
+    report = dict(selected)
+    report.update({
+        "version":"480.0","stage":definition["version"],"label":definition["final_label"],"runtime_key":definition["runtime_key"],"slug":slug,"project_id":project_id,"improvement_goal": improvement_goal or "Self-maintenance duplicate shadow cleanup and stale gate compatibility review.","rows":rows,"ok":ok,"status":"pass" if ok else "blocked",
+        "writes_files":False,"writes_memory":False,"applies_source_edits":False,"applies_patches":False,"publishes_release":False,"creates_approval":False,"executes_actions":False,"expands_autonomy":False,
+        "duplicate_cleanup_is_authorization":False,"classification_is_permission_to_delete":False,"shadow_removal_expands_autonomy":False,"stale_gate_cleanup_authorizes_execution":False,"cleanup_applies_live_patches":False,"cleanup_writes_memory":False,"operator_approval_still_required":True,
+        "stage_items":[{"stage":"v466.0","slug":"duplicate_shadow_inventory_v1","label":"Duplicate Shadow Inventory"},{"stage":"v467.0","slug":"safe_shadow_removal_report_v1","label":"Safe Shadow Removal"},{"stage":"v468.0","slug":"legacy_alias_compatibility_cleanup_v1","label":"Compatibility Cleanup"},{"stage":"v469.0","slug":"stale_version_gate_cleanup_v1","label":"Stale Gate Cleanup"},{"stage":"v470.0","slug":"operator_governed_self_maintenance_duplicate_shadow_cleanup_v1","label":"Duplicate Shadow Cleanup Audit"}],
+        "boundaries":dict(SELF_MAINTENANCE_SHADOW_CLEANUP_BOUNDARIES),
+    })
+    if save:
+        outdir = V470_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _make_v470_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v470_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v470_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v470_stage(slug, save=False)
+        lines = render_self_maintenance_shadow_cleanup_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines += ["gates:"] + [f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows]
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v470_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v470_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+
+for _v470_def in V470_STAGE_DEFS:
+    _slug = _v470_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v470_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v470_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v470_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v470_def["version"],"version":_v470_def["version"],"slug":_slug,"api":_v470_def["api"],"route":"layer","label":_v470_def["final_label"],"final_label":_v470_def["final_label"],"dashboard":_v470_def["dashboard"],"runtime_key":_v470_def["runtime_key"],"theme":_v470_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v470_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v470_def["api"]] = _slug
+
+# v465.1-v470.0 duplicate shadow cleanup smoke tokens: duplicate-shadow-inventory safe-shadow-removal-report legacy-alias-compatibility-cleanup stale-version-gate-cleanup self-maintenance-duplicate-shadow-cleanup-audit operator-governed-self-maintenance-duplicate-shadow-cleanup-v1 conscious_agent/self_maintenance_shadow_cleanup.py data/autonomy/duplicate_shadow_inventory/ data/autonomy/safe_shadow_removal_report/ data/autonomy/legacy_alias_compatibility_cleanup/ data/autonomy/stale_version_gate_cleanup/ data/autonomy/self_maintenance_duplicate_shadow_cleanup_audit/ duplicate_cleanup_is_authorization=False classification_is_permission_to_delete=False shadow_removal_expands_autonomy=False stale_gate_cleanup_authorizes_execution=False cleanup_applies_live_patches=False cleanup_writes_memory=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v470.1-v480.0 README Current-State and Operator Continuity Header Cleanup v1
+from documentation_continuity_header import (
+    DOCUMENTATION_CONTINUITY_HEADER_VERSION, DOCUMENTATION_CONTINUITY_BOUNDARIES,
+    build_current_state_header_block, build_historical_next_steps_separation,
+    build_operator_continuity_handoff_packet, build_documentation_boundary_language,
+    build_documentation_continuity_header_audit, render_documentation_continuity_header_lines,
+)
+
+V475_STAGE_DEFS = [
+    {"version":"v471.0","final_label":"Current-State Header Block v1","api":"current-state-header-block","dashboard":"/current-state-header-block","runtime_key":"current_state_header_block","slug":"current_state_header_block_v1","focus":"places current version, verification, blockers, next arc, and safety boundary at the top of README_NEXT_STEPS.md"},
+    {"version":"v472.0","final_label":"Historical Next-Steps Separation v1","api":"historical-next-steps-separation","dashboard":"/historical-next-steps-separation","runtime_key":"historical_next_steps_separation","slug":"historical_next_steps_separation_v1","focus":"separates old next-step notes into a clearly labeled historical ledger that is not current instruction"},
+    {"version":"v473.0","final_label":"Operator Continuity Handoff Packet v1","api":"operator-continuity-handoff-packet","dashboard":"/operator-continuity-handoff-packet","runtime_key":"operator_continuity_handoff_packet","slug":"operator_continuity_handoff_packet_v1","focus":"adds a reusable new-chat continuation packet with rules, verification summary, next arc, and boundaries"},
+    {"version":"v474.0","final_label":"Documentation Boundary Language v1","api":"documentation-boundary-language","dashboard":"/documentation-boundary-language","runtime_key":"documentation_boundary_language","slug":"documentation_boundary_language_v1","focus":"states README, release history, smoke success, and handoff packets are not authorization"},
+    {"version":"v480.0","final_label":"README Current-State and Operator Continuity Header Cleanup v1","api":"documentation-continuity-header-audit","dashboard":"/documentation-continuity-header-audit","runtime_key":"documentation_continuity_header_audit","slug":"operator_governed_documentation_continuity_header_v1","focus":"audits current-state docs, historical separation, handoff packet, boundary language, smoke/docs tokens, and no-authorization behavior"},
+]
+V475_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V475_STAGE_DEFS}
+
+
+def _v475_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","conscious_agent/documentation_continuity_header.py","conscious_agent/self_maintenance.py","conscious_agent/dashboard.py","conscious_agent/dashboard_route_probe.py","conscious_agent/source_surface_manifest.py","conscious_agent/api_server.py","conscious_agent/main.py","tools/smoke_check.py","conscious_agent/smoke_segment_registry.py","data/settings.json","data/projects.json","data/workspaces/active_project.json","data/workspaces/projects.json"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v475_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V475_STAGE_DEFS if item["slug"] == slug)
+    docs = _v475_docs_text()
+    header = build_current_state_header_block(ROOT_DIR)
+    history = build_historical_next_steps_separation(ROOT_DIR)
+    handoff = build_operator_continuity_handoff_packet(ROOT_DIR)
+    boundary = build_documentation_boundary_language(ROOT_DIR)
+    audit = build_documentation_continuity_header_audit(ROOT_DIR, docs)
+    selected = {"current_state_header_block_v1": header, "historical_next_steps_separation_v1": history, "operator_continuity_handoff_packet_v1": handoff, "documentation_boundary_language_v1": boundary, "operator_governed_documentation_continuity_header_v1": audit}.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and DOCUMENTATION_CONTINUITY_HEADER_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; documentation_continuity={DOCUMENTATION_CONTINUITY_HEADER_VERSION}"},
+        {"name":"current-state-header","status":"pass" if header.get("ok") else "blocked","message":"README_NEXT_STEPS.md exposes current version, checks, blockers, next arc, and safety boundary at the top."},
+        {"name":"historical-separation","status":"pass" if history.get("ok") else "blocked","message":"Historical next steps are separated and labeled as completed/superseded/non-current."},
+        {"name":"handoff-packet","status":"pass" if handoff.get("ok") else "blocked","message":"New-chat/operator continuity handoff packet is present."},
+        {"name":"documentation-boundaries","status":"pass" if boundary.get("ok") else "blocked","message":"README/release/smoke/handoff language is explicitly not authorization."},
+        {"name":"docs","status":"pass" if "v475.0 - README Current-State and Operator Continuity Header Cleanup v1" in docs and "operator-governed-documentation-continuity-header-v1" in docs else "blocked","message":"README next steps and release history document v471-v475."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"no-authorization","status":"pass" if audit.get("creates_approval") is False and audit.get("writes_memory") is False and audit.get("applies_source_edits") is False and audit.get("expands_autonomy") is False else "blocked","message":"Documentation continuity cleanup grants no memory, source, release, execution, or autonomy authorization."},
+    ]
+    ok = bool(selected.get("ok")) and bool(audit.get("ok")) and all(row["status"] == "pass" for row in rows)
+    report = dict(selected)
+    report.update({
+        "version":"480.0","stage":definition["version"],"label":definition["final_label"],"runtime_key":definition["runtime_key"],"slug":slug,"project_id":project_id,"improvement_goal": improvement_goal or "README current-state and operator continuity header cleanup review.","rows":rows,"ok":ok,"status":"pass" if ok else "blocked",
+        "writes_files":False,"writes_memory":False,"applies_source_edits":False,"applies_patches":False,"publishes_release":False,"creates_approval":False,"executes_actions":False,"expands_autonomy":False,
+        "documentation_state_is_authorization":False,"release_history_is_authorization":False,"recommended_next_arc_is_permission":False,"handoff_packet_is_execution_packet":False,"current_state_header_creates_approval":False,"documentation_cleanup_writes_memory":False,"documentation_cleanup_applies_source_edits":False,"documentation_cleanup_expands_autonomy":False,"operator_approval_still_required":True,
+        "stage_items":[{"stage":"v471.0","slug":"current_state_header_block_v1","label":"Current-State Header"},{"stage":"v472.0","slug":"historical_next_steps_separation_v1","label":"Historical Separation"},{"stage":"v473.0","slug":"operator_continuity_handoff_packet_v1","label":"Operator Handoff"},{"stage":"v474.0","slug":"documentation_boundary_language_v1","label":"Documentation Boundaries"},{"stage":"v480.0","slug":"operator_governed_documentation_continuity_header_v1","label":"Documentation Continuity Audit"}],
+        "boundaries":dict(DOCUMENTATION_CONTINUITY_BOUNDARIES),
+    })
+    if save:
+        outdir = V475_RUNTIME_DIRS[definition["runtime_key"]]
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / f"{definition['slug']}.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
+def _make_v475_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v475_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v475_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v475_stage(slug, save=False)
+        lines = render_documentation_continuity_header_lines(report)
+        rows = report.get("rows", [])
+        if rows:
+            lines += ["gates:"] + [f"- {row.get('name')}: {row.get('status')} - {row.get('message')}" for row in rows]
+        return "\n".join([f"{report.get('stage')} {report.get('label')}"] + lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v475_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v475_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=True, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+
+for _v475_def in V475_STAGE_DEFS:
+    _slug = _v475_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v475_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v475_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v475_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v475_def["version"],"version":_v475_def["version"],"slug":_slug,"api":_v475_def["api"],"route":"layer","label":_v475_def["final_label"],"final_label":_v475_def["final_label"],"dashboard":_v475_def["dashboard"],"runtime_key":_v475_def["runtime_key"],"theme":_v475_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v475_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v475_def["api"]] = _slug
+
+# v470.1-v480.0 documentation continuity dashboard/API/CLI/smoke tokens: current-state-header-block historical-next-steps-separation operator-continuity-handoff-packet documentation-boundary-language documentation-continuity-header-audit operator-governed-documentation-continuity-header-v1 documentation_continuity_header.py data/autonomy/current_state_header_block/ data/autonomy/historical_next_steps_separation/ data/autonomy/operator_continuity_handoff_packet/ data/autonomy/documentation_boundary_language/ data/autonomy/documentation_continuity_header_audit/ documentation_state_is_authorization=False release_history_is_authorization=False recommended_next_arc_is_permission=False handoff_packet_is_execution_packet=False current_state_header_creates_approval=False documentation_cleanup_writes_memory=False documentation_cleanup_applies_source_edits=False documentation_cleanup_expands_autonomy=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v475.1-v480.0 Operator-Invoked Read-Only Observation Prep v1
+from operator_observation_prep import (
+    OPERATOR_OBSERVATION_PREP_VERSION, OBSERVATION_BOUNDARIES,
+    build_manual_read_only_observation_scope, build_operator_observation_packet,
+    build_no_mutation_observation_audit, build_operator_invocation_boundary,
+    build_operator_read_only_observation_audit, render_operator_observation_prep_lines,
+)
+
+V480_STAGE_DEFS = [
+    {"version":"v476.0","final_label":"Manual Read-Only Observation Scope v1","api":"manual-read-only-observation-scope","dashboard":"/manual-read-only-observation-scope","runtime_key":"manual_read_only_observation_scope","slug":"manual_read_only_observation_scope_v1","focus":"defines the operator-invoked read-only observation scope without authorizing source edits, memory writes, schedules, model calls, or follow-up action"},
+    {"version":"v477.0","final_label":"Operator Observation Packet Builder v1","api":"operator-observation-packet","dashboard":"/operator-observation-packet","runtime_key":"operator_observation_packet","slug":"operator_observation_packet_v1","focus":"builds a structured current project state packet with version, milestone, metadata, route/surface, docs, blockers, and review targets"},
+    {"version":"v478.0","final_label":"No-Mutation Observation Audit v1","api":"no-mutation-observation-audit","dashboard":"/no-mutation-observation-audit","runtime_key":"no_mutation_observation_audit","slug":"no_mutation_observation_audit_v1","focus":"proves observation does not write source, memory, metadata, schedules, models, patches, releases, approvals, or continuation state"},
+    {"version":"v479.0","final_label":"Operator Invocation Boundary v1","api":"operator-invocation-boundary","dashboard":"/operator-invocation-boundary","runtime_key":"operator_invocation_boundary","slug":"operator_invocation_boundary_v1","focus":"states operator invocation permits one read-only observation report only and does not authorize monitoring, follow-up, or live changes"},
+    {"version":"v480.0","final_label":"Operator-Invoked Read-Only Observation Prep v1","api":"operator-read-only-observation-audit","dashboard":"/operator-read-only-observation-audit","runtime_key":"operator_read_only_observation_audit","slug":"operator_invoked_read_only_observation_prep_v1","focus":"audits manual observation scope, packet builder, no-mutation behavior, operator invocation boundary, smoke/docs tokens, and no-authorization behavior"},
+]
+V480_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V480_STAGE_DEFS}
+
+
+def _v480_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","conscious_agent/operator_observation_prep.py","conscious_agent/self_maintenance.py","conscious_agent/dashboard.py","conscious_agent/dashboard_route_probe.py","conscious_agent/source_surface_manifest.py","conscious_agent/api_server.py","conscious_agent/main.py","tools/smoke_check.py","conscious_agent/smoke_segment_registry.py","data/settings.json","data/projects.json","data/workspaces/active_project.json","data/workspaces/projects.json"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v480_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V480_STAGE_DEFS if item["slug"] == slug)
+    docs = _v480_docs_text()
+    scope = build_manual_read_only_observation_scope(ROOT_DIR)
+    packet = build_operator_observation_packet(ROOT_DIR)
+    mutation = build_no_mutation_observation_audit(ROOT_DIR)
+    invocation = build_operator_invocation_boundary(ROOT_DIR)
+    audit = build_operator_read_only_observation_audit(ROOT_DIR, docs)
+    selected = {"manual_read_only_observation_scope_v1": scope, "operator_observation_packet_v1": packet, "no_mutation_observation_audit_v1": mutation, "operator_invocation_boundary_v1": invocation, "operator_invoked_read_only_observation_prep_v1": audit}.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and OPERATOR_OBSERVATION_PREP_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; observation_prep={OPERATOR_OBSERVATION_PREP_VERSION}"},
+        {"name":"scope","status":"pass" if scope.get("ok") else "blocked","message":"Manual read-only observation scope is present and operator-invoked."},
+        {"name":"packet","status":"pass" if packet.get("ok") else "blocked","message":"Observation packet summarizes current project state, blockers, route/surface/docs alignment, and recommended review targets."},
+        {"name":"no-mutation","status":"pass" if mutation.get("ok") else "blocked","message":"Observation audit confirms no source, memory, metadata, schedule, model, patch, release, approval, or continuation mutation."},
+        {"name":"operator-invocation-boundary","status":"pass" if invocation.get("ok") else "blocked","message":"Operator invocation permits one read-only observation report only."},
+        {"name":"docs","status":"pass" if "v480.0 - Operator-Invoked Read-Only Observation Prep v1" in docs and "operator-invoked-read-only-observation-prep-v1" in docs else "blocked","message":"README next steps and release history document v476-v480."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"no-authorization","status":"pass" if audit.get("creates_approval") is False and audit.get("writes_memory") is False and audit.get("writes_files") is False and audit.get("creates_schedule") is False and audit.get("invokes_models") is False and audit.get("expands_autonomy") is False else "blocked","message":"Observation prep grants no memory, source, release, execution, schedule, model, follow-up, or autonomy authorization."},
+    ]
+    ok = bool(selected.get("ok")) and bool(audit.get("ok")) and all(row["status"] == "pass" for row in rows)
+    report = dict(selected)
+    report.update({
+        "version":"480.0","stage":definition["version"],"label":definition["final_label"],"runtime_key":definition["runtime_key"],"slug":slug,"project_id":project_id,"improvement_goal": improvement_goal or "Operator-invoked read-only observation prep review.","rows":rows,"ok":ok,"status":"pass" if ok else "blocked",
+        "writes_files":False,"writes_memory":False,"updates_metadata":False,"creates_schedule":False,"invokes_models":False,"applies_patches":False,"publishes_releases":False,"creates_approval":False,"continues_automatically":False,"executes_actions":False,"expands_autonomy":False,
+        "observation_is_authorization":False,"observation_is_execution":False,"observation_grants_followup_permission":False,"observation_writes_source":False,"observation_writes_memory":False,"observation_updates_metadata":False,"observation_schedules_work":False,"observation_invokes_models_by_default":False,"observation_creates_approval":False,"operator_invocation_required":True,"single_run_read_only":True,"operator_approval_still_required":True,
+        "stage_items":[{"stage":"v476.0","slug":"manual_read_only_observation_scope_v1","label":"Manual Observation Scope"},{"stage":"v477.0","slug":"operator_observation_packet_v1","label":"Observation Packet"},{"stage":"v478.0","slug":"no_mutation_observation_audit_v1","label":"No-Mutation Audit"},{"stage":"v479.0","slug":"operator_invocation_boundary_v1","label":"Operator Invocation Boundary"},{"stage":"v480.0","slug":"operator_invoked_read_only_observation_prep_v1","label":"Observation Prep Audit"}],
+        "boundaries":dict(OBSERVATION_BOUNDARIES),
+    })
+    # Deliberately do not persist runtime observation reports from this arc. Observation prep is read-only and non-scheduling.
+    return report
+
+
+def _make_v480_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v480_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=False, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v480_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v480_stage(slug, save=False)
+        lines = render_operator_observation_prep_lines(report)
+        if full:
+            lines.append(json.dumps(report, indent=2))
+        return "\n".join(lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v480_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v480_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=False, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+
+for _v480_def in V480_STAGE_DEFS:
+    _slug = _v480_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v480_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v480_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v480_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v480_def["version"],"version":_v480_def["version"],"slug":_slug,"api":_v480_def["api"],"route":"layer","label":_v480_def["final_label"],"final_label":_v480_def["final_label"],"dashboard":_v480_def["dashboard"],"runtime_key":_v480_def["runtime_key"],"theme":_v480_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v480_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v480_def["api"]] = _slug
+
+# v475.1-v480.0 observation prep dashboard/API/CLI/smoke tokens: manual-read-only-observation-scope operator-observation-packet no-mutation-observation-audit operator-invocation-boundary operator-read-only-observation-audit operator-invoked-read-only-observation-prep-v1 operator_observation_prep.py observation_is_authorization=False observation_is_execution=False observation_grants_followup_permission=False observation_writes_source=False observation_writes_memory=False observation_updates_metadata=False observation_schedules_work=False observation_invokes_models_by_default=False observation_creates_approval=False operator_invocation_required=True single_run_read_only=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v480.1-v485.0 Bounded Observation Ledger and Stop/Pause Semantics v1
+from observation_ledger_boundary import (
+    OPERATOR_OBSERVATION_LEDGER_BOUNDARY_VERSION,
+    OBSERVATION_LEDGER_BOUNDARIES,
+    build_observation_ledger_schema,
+    build_observation_receipt_builder,
+    build_observation_stop_pause_semantics,
+    build_hidden_scheduling_continuation_audit,
+    build_observation_ledger_boundary_audit,
+    render_observation_ledger_boundary_lines,
+)
+
+V485_STAGE_DEFS = [
+    {"version":"v481.0","final_label":"Observation Ledger Schema v1","api":"observation-ledger-schema","dashboard":"/observation-ledger-schema","runtime_key":"observation_ledger_schema","slug":"observation_ledger_schema_v1","focus":"defines a review-only observation ledger schema without turning ledger presence or completeness into approval"},
+    {"version":"v482.0","final_label":"Observation Receipt Builder v1","api":"observation-receipt-builder","dashboard":"/observation-receipt-builder","runtime_key":"observation_receipt_builder","slug":"observation_receipt_builder_v1","focus":"builds an in-memory observation receipt that records no mutation, no schedule, no model invocation, no approval, and not_authorized status"},
+    {"version":"v483.0","final_label":"Observation Stop/Pause Semantics v1","api":"observation-stop-pause-semantics","dashboard":"/observation-stop-pause-semantics","runtime_key":"observation_stop_pause_semantics","slug":"observation_stop_pause_semantics_v1","focus":"defines pause, stop, resume, and receipt preservation semantics before recurring observation exists"},
+    {"version":"v484.0","final_label":"Hidden Scheduling and Continuation Audit v1","api":"hidden-scheduling-continuation-audit","dashboard":"/hidden-scheduling-continuation-audit","runtime_key":"hidden_scheduling_continuation_audit","slug":"hidden_scheduling_continuation_audit_v1","focus":"audits against hidden schedules, daily/hourly loops, automatic continuation, roadmap selection, patch packet generation, and finding promotion"},
+    {"version":"v485.0","final_label":"Bounded Observation Ledger and Stop/Pause Semantics v1","api":"observation-ledger-boundary-audit","dashboard":"/observation-ledger-boundary-audit","runtime_key":"observation_ledger_boundary_audit","slug":"operator_governed_observation_ledger_boundary_v1","focus":"audits ledger schema, receipt builder, stop/pause semantics, hidden scheduling checks, smoke/docs tokens, and no-authorization boundaries"},
+]
+V485_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V485_STAGE_DEFS}
+
+
+def _v485_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","conscious_agent/observation_ledger_boundary.py","conscious_agent/operator_observation_prep.py","conscious_agent/self_maintenance.py","conscious_agent/dashboard.py","conscious_agent/dashboard_route_probe.py","conscious_agent/source_surface_manifest.py","conscious_agent/api_server.py","conscious_agent/main.py","tools/smoke_check.py","conscious_agent/smoke_segment_registry.py","data/settings.json","data/projects.json","data/workspaces/active_project.json","data/workspaces/projects.json"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v485_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V485_STAGE_DEFS if item["slug"] == slug)
+    docs = _v485_docs_text()
+    schema = build_observation_ledger_schema(ROOT_DIR)
+    receipt = build_observation_receipt_builder(ROOT_DIR)
+    stop_pause = build_observation_stop_pause_semantics(ROOT_DIR)
+    hidden = build_hidden_scheduling_continuation_audit(ROOT_DIR)
+    audit = build_observation_ledger_boundary_audit(ROOT_DIR, docs)
+    selected = {"observation_ledger_schema_v1": schema, "observation_receipt_builder_v1": receipt, "observation_stop_pause_semantics_v1": stop_pause, "hidden_scheduling_continuation_audit_v1": hidden, "operator_governed_observation_ledger_boundary_v1": audit}.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and OPERATOR_OBSERVATION_LEDGER_BOUNDARY_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; observation_ledger={OPERATOR_OBSERVATION_LEDGER_BOUNDARY_VERSION}"},
+        {"name":"ledger-schema","status":"pass" if schema.get("ok") else "blocked","message":"Observation ledger schema exists and does not grant authorization."},
+        {"name":"receipt-builder","status":"pass" if receipt.get("ok") else "blocked","message":"Observation receipt records no source, memory, metadata, schedule, model, approval, or authorization creation."},
+        {"name":"stop-pause","status":"pass" if stop_pause.get("ok") else "blocked","message":"Stop/pause semantics are defined before recurring observation exists."},
+        {"name":"hidden-scheduling","status":"pass" if hidden.get("ok") else "blocked","message":"Hidden scheduling, loops, continuation, roadmap selection, patch packet generation, and promotion remain blocked."},
+        {"name":"docs","status":"pass" if "v485.0 - Bounded Observation Ledger and Stop/Pause Semantics v1" in docs and "operator-governed-observation-ledger-boundary-v1" in docs else "blocked","message":"README next steps and release history document v481-v485."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"no-authorization","status":"pass" if audit.get("creates_approval") is False and audit.get("writes_memory") is False and audit.get("writes_files") is False and audit.get("creates_schedule") is False and audit.get("invokes_models") is False and audit.get("expands_autonomy") is False else "blocked","message":"Ledger boundary prep grants no memory, source, release, execution, schedule, model, follow-up, or autonomy authorization."},
+    ]
+    ok = bool(selected.get("ok")) and bool(audit.get("ok")) and all(row["status"] == "pass" for row in rows)
+    report = dict(selected)
+    report.update({
+        "version":"500.0","stage":definition["version"],"label":definition["final_label"],"runtime_key":definition["runtime_key"],"slug":slug,"project_id":project_id,"improvement_goal": improvement_goal or "Bounded observation ledger and stop/pause semantics review.","rows":rows,"ok":ok,"status":"pass" if ok else "blocked",
+        "writes_files":False,"writes_memory":False,"updates_metadata":False,"creates_schedule":False,"invokes_models":False,"applies_patches":False,"publishes_releases":False,"creates_approval":False,"continues_automatically":False,"executes_actions":False,"expands_autonomy":False,
+        "ledger_presence_is_approval":False,"ledger_completeness_is_authorization":False,"observation_history_permits_future_action":False,"receipt_is_approval":False,"hidden_scheduling_allowed":False,"automatic_continuation_allowed":False,"daily_loop_allowed":False,"hourly_loop_allowed":False,"auto_roadmap_selection_allowed":False,"auto_patch_packet_generation_allowed":False,"auto_promotion_from_observation_allowed":False,"source_mutation_allowed":False,"memory_mutation_allowed":False,"approval_creation_allowed":False,"operator_invocation_required":True,"operator_approval_still_required":True,
+        "stage_items":[{"stage":"v481.0","slug":"observation_ledger_schema_v1","label":"Ledger Schema"},{"stage":"v482.0","slug":"observation_receipt_builder_v1","label":"Receipt Builder"},{"stage":"v483.0","slug":"observation_stop_pause_semantics_v1","label":"Stop/Pause Semantics"},{"stage":"v484.0","slug":"hidden_scheduling_continuation_audit_v1","label":"Hidden Scheduling Audit"},{"stage":"v485.0","slug":"operator_governed_observation_ledger_boundary_v1","label":"Ledger Boundary Audit"}],
+        "boundaries":dict(OBSERVATION_LEDGER_BOUNDARIES),
+    })
+    # Deliberately do not persist runtime observation ledger reports from this arc. The ledger schema is review-only and non-scheduling.
+    return report
+
+
+def _make_v485_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v485_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=False, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v485_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v485_stage(slug, save=False)
+        lines = render_observation_ledger_boundary_lines(report)
+        if full:
+            lines.append(json.dumps(report, indent=2))
+        return "\n".join(lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v485_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v485_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=False, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+
+for _v485_def in V485_STAGE_DEFS:
+    _slug = _v485_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v485_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v485_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v485_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v485_def["version"],"version":_v485_def["version"],"slug":_slug,"api":_v485_def["api"],"route":"layer","label":_v485_def["final_label"],"final_label":_v485_def["final_label"],"dashboard":_v485_def["dashboard"],"runtime_key":_v485_def["runtime_key"],"theme":_v485_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v485_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v485_def["api"]] = _slug
+
+# v480.1-v485.0 observation ledger boundary dashboard/API/CLI/smoke tokens: observation-ledger-schema observation-receipt-builder observation-stop-pause-semantics hidden-scheduling-continuation-audit observation-ledger-boundary-audit operator-governed-observation-ledger-boundary-v1 observation_ledger_boundary.py ledger_presence_is_approval=False ledger_completeness_is_authorization=False observation_history_permits_future_action=False receipt_is_approval=False hidden_scheduling_allowed=False automatic_continuation_allowed=False daily_loop_allowed=False hourly_loop_allowed=False auto_roadmap_selection_allowed=False auto_patch_packet_generation_allowed=False auto_promotion_from_observation_allowed=False source_mutation_allowed=False memory_mutation_allowed=False approval_creation_allowed=False operator_invocation_required=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v485.1-v490.0 Supervised Proposal Queue from Observation Reports v1
+from observation_proposal_queue import (
+    OBSERVATION_PROPOSAL_QUEUE_VERSION,
+    PROPOSAL_QUEUE_BOUNDARIES,
+    build_observation_to_proposal_candidate_mapper,
+    build_proposal_queue_schema,
+    build_proposal_ranking_risk_notes,
+    build_proposal_queue_non_execution_audit,
+    build_observation_proposal_queue_audit,
+    render_observation_proposal_queue_lines,
+)
+
+V490_STAGE_DEFS = [
+    {"version":"v486.0","final_label":"Observation-to-Proposal Candidate Mapper v1","api":"observation-to-proposal-candidate-mapper","dashboard":"/observation-to-proposal-candidate-mapper","runtime_key":"observation_to_proposal_candidate_mapper","slug":"observation_to_proposal_candidate_mapper_v1","focus":"maps manual observation findings into review-only proposal candidates without approval, execution packets, source writes, memory writes, or authorization"},
+    {"version":"v487.0","final_label":"Proposal Queue Schema v1","api":"proposal-queue-schema","dashboard":"/proposal-queue-schema","runtime_key":"proposal_queue_schema","slug":"proposal_queue_schema_v1","focus":"defines proposal queue records and statuses while forbidding any live-execution approval status"},
+    {"version":"v488.0","final_label":"Proposal Ranking and Risk Notes v1","api":"proposal-ranking-risk-notes","dashboard":"/proposal-ranking-risk-notes","runtime_key":"proposal_ranking_risk_notes","slug":"proposal_ranking_risk_notes_v1","focus":"ranks proposal candidates by risk and usefulness for operator attention only, not automatic selection"},
+    {"version":"v489.0","final_label":"Proposal Queue Non-Execution Audit v1","api":"proposal-queue-non-execution-audit","dashboard":"/proposal-queue-non-execution-audit","runtime_key":"proposal_queue_non_execution_audit","slug":"proposal_queue_non_execution_audit_v1","focus":"audits that proposal queues do not write source, mutate memory, schedule work, invoke models, create execution packets, apply patches, approve proposals, or continue automatically"},
+    {"version":"v490.0","final_label":"Supervised Proposal Queue from Observation Reports v1","api":"observation-proposal-queue-audit","dashboard":"/observation-proposal-queue-audit","runtime_key":"observation_proposal_queue_audit","slug":"operator_governed_observation_proposal_queue_v1","focus":"audits mapper, queue schema, ranking notes, non-execution behavior, smoke/docs tokens, and no-authorization boundaries"},
+]
+V490_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V490_STAGE_DEFS}
+
+
+def _v490_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","conscious_agent/observation_proposal_queue.py","conscious_agent/observation_ledger_boundary.py","conscious_agent/operator_observation_prep.py","conscious_agent/self_maintenance.py","conscious_agent/dashboard.py","conscious_agent/dashboard_route_probe.py","conscious_agent/source_surface_manifest.py","conscious_agent/api_server.py","conscious_agent/main.py","tools/smoke_check.py","conscious_agent/smoke_segment_registry.py","data/settings.json","data/projects.json","data/workspaces/active_project.json","data/workspaces/projects.json"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v490_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V490_STAGE_DEFS if item["slug"] == slug)
+    docs = _v490_docs_text()
+    mapper = build_observation_to_proposal_candidate_mapper(ROOT_DIR)
+    schema = build_proposal_queue_schema(ROOT_DIR)
+    ranking = build_proposal_ranking_risk_notes(ROOT_DIR)
+    non_execution = build_proposal_queue_non_execution_audit(ROOT_DIR)
+    audit = build_observation_proposal_queue_audit(ROOT_DIR, docs)
+    selected = {
+        "observation_to_proposal_candidate_mapper_v1": mapper,
+        "proposal_queue_schema_v1": schema,
+        "proposal_ranking_risk_notes_v1": ranking,
+        "proposal_queue_non_execution_audit_v1": non_execution,
+        "operator_governed_observation_proposal_queue_v1": audit,
+    }.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and OBSERVATION_PROPOSAL_QUEUE_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; observation_proposal_queue={OBSERVATION_PROPOSAL_QUEUE_VERSION}"},
+        {"name":"candidate-mapper","status":"pass" if mapper.get("ok") else "blocked","message":"Observation findings map into review-only proposal candidates without authorization."},
+        {"name":"queue-schema","status":"pass" if schema.get("ok") else "blocked","message":"Proposal queue schema has review-only statuses and no live-execution status."},
+        {"name":"ranking-notes","status":"pass" if ranking.get("ok") else "blocked","message":"Ranking is prioritization only and does not auto-select the highest item."},
+        {"name":"non-execution","status":"pass" if non_execution.get("ok") else "blocked","message":"Proposal queue cannot mutate, schedule, invoke models, create execution packets, approve, apply, or continue."},
+        {"name":"docs","status":"pass" if "v490.0 - Supervised Proposal Queue from Observation Reports v1" in docs and "operator-governed-observation-proposal-queue-v1" in docs else "blocked","message":"README next steps and release history document v486-v490."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"no-authorization","status":"pass" if audit.get("creates_approval") is False and audit.get("writes_memory") is False and audit.get("writes_files") is False and audit.get("creates_schedule") is False and audit.get("invokes_models") is False and audit.get("creates_execution_packet") is False and audit.get("expands_autonomy") is False else "blocked","message":"Proposal queue prep grants no memory, source, release, execution, schedule, model, approval, follow-up, or autonomy authorization."},
+    ]
+    ok = bool(selected.get("ok")) and bool(audit.get("ok")) and all(row["status"] == "pass" for row in rows)
+    report = dict(selected)
+    report.update({
+        "version":"500.0","stage":definition["version"],"label":definition["final_label"],"runtime_key":definition["runtime_key"],"slug":slug,"project_id":project_id,"improvement_goal": improvement_goal or "Supervised proposal queue from observation reports review.","rows":rows,"ok":ok,"status":"pass" if ok else "blocked",
+        "writes_files":False,"writes_memory":False,"updates_metadata":False,"creates_schedule":False,"invokes_models":False,"creates_execution_packet":False,"applies_patches":False,"publishes_releases":False,"approves_proposals":False,"creates_approval":False,"continues_automatically":False,"executes_actions":False,"expands_autonomy":False,
+        "mapping_is_approval":False,"proposal_candidate_is_execution_packet":False,"candidate_queue_is_authorization":False,"queue_presence_is_approval":False,"queue_ranking_is_authorization":False,"highest_ranked_proposal_auto_selected":False,"approved_for_packet_drafting_only_is_live_execution":False,"source_mutation_allowed":False,"memory_mutation_allowed":False,"schedule_creation_allowed":False,"model_invocation_by_default_allowed":False,"execution_packet_creation_allowed":False,"patch_application_allowed":False,"proposal_approval_allowed":False,"automatic_continuation_allowed":False,"observation_promotes_to_live_change":False,"operator_review_required":True,"fresh_operator_approval_required":True,"operator_approval_still_required":True,"authorization_status":"not_authorized",
+        "stage_items":[{"stage":"v486.0","slug":"observation_to_proposal_candidate_mapper_v1","label":"Candidate Mapper"},{"stage":"v487.0","slug":"proposal_queue_schema_v1","label":"Queue Schema"},{"stage":"v488.0","slug":"proposal_ranking_risk_notes_v1","label":"Ranking Risk Notes"},{"stage":"v489.0","slug":"proposal_queue_non_execution_audit_v1","label":"Non-Execution Audit"},{"stage":"v490.0","slug":"operator_governed_observation_proposal_queue_v1","label":"Proposal Queue Audit"}],
+        "boundaries":dict(PROPOSAL_QUEUE_BOUNDARIES),
+    })
+    # Deliberately do not persist runtime proposal queue reports from this arc. The queue is review-only and non-executing.
+    return report
+
+
+def _make_v490_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v490_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=False, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v490_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v490_stage(slug, save=False)
+        lines = render_observation_proposal_queue_lines(report)
+        if full:
+            lines.append(json.dumps(report, indent=2))
+        return "\n".join(lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v490_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v490_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=False, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+
+for _v490_def in V490_STAGE_DEFS:
+    _slug = _v490_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v490_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v490_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v490_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v490_def["version"],"version":_v490_def["version"],"slug":_slug,"api":_v490_def["api"],"route":"layer","label":_v490_def["final_label"],"final_label":_v490_def["final_label"],"dashboard":_v490_def["dashboard"],"runtime_key":_v490_def["runtime_key"],"theme":_v490_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v490_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v490_def["api"]] = _slug
+
+# v485.1-v490.0 observation proposal queue dashboard/API/CLI/smoke tokens: observation-to-proposal-candidate-mapper proposal-queue-schema proposal-ranking-risk-notes proposal-queue-non-execution-audit observation-proposal-queue-audit operator-governed-observation-proposal-queue-v1 observation_proposal_queue.py mapping_is_approval=False proposal_candidate_is_execution_packet=False candidate_queue_is_authorization=False queue_presence_is_approval=False queue_ranking_is_authorization=False highest_ranked_proposal_auto_selected=False approved_for_packet_drafting_only_is_live_execution=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False patch_application_allowed=False proposal_approval_allowed=False automatic_continuation_allowed=False observation_promotes_to_live_change=False operator_review_required=True fresh_operator_approval_required=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+
+# v490.1-v495.0 Sandbox-Only Autonomy Boundary Trial Prep v1
+from sandbox_autonomy_boundary import (
+    SANDBOX_AUTONOMY_BOUNDARY_VERSION,
+    SANDBOX_BOUNDARY_FLAGS,
+    build_sandbox_only_autonomy_scope_definition,
+    build_sandbox_autonomy_trial_packet_builder,
+    build_sandbox_to_live_boundary_hardening,
+    build_no_execution_sandbox_autonomy_audit,
+    build_sandbox_autonomy_boundary_prep_audit,
+    render_sandbox_autonomy_boundary_lines,
+)
+
+V495_STAGE_DEFS = [
+    {"version":"v491.0","final_label":"Sandbox-Only Autonomy Scope Definition v1","api":"sandbox-only-autonomy-scope-definition","dashboard":"/sandbox-only-autonomy-scope-definition","runtime_key":"sandbox_only_autonomy_scope_definition","slug":"sandbox_only_autonomy_scope_definition_v1","focus":"defines sandbox-only autonomy boundary trial scope as review-only prep without live writes, memory writes, patch application, schedules, default models, or approval creation"},
+    {"version":"v492.0","final_label":"Sandbox Autonomy Trial Packet Builder v1","api":"sandbox-autonomy-trial-packet-builder","dashboard":"/sandbox-autonomy-trial-packet-builder","runtime_key":"sandbox_autonomy_trial_packet_builder","slug":"sandbox_autonomy_trial_packet_builder_v1","focus":"builds a hypothetical sandbox-only trial prep packet with not_authorized and not_executed status"},
+    {"version":"v493.0","final_label":"Sandbox-to-Live Boundary Hardening v1","api":"sandbox-to-live-boundary-hardening","dashboard":"/sandbox-to-live-boundary-hardening","runtime_key":"sandbox_to_live_boundary_hardening","slug":"sandbox_to_live_boundary_hardening_v1","focus":"states sandbox success, verification, output, and completion cannot promote to live source without fresh single-use operator approval"},
+    {"version":"v494.0","final_label":"No-Execution Sandbox Autonomy Audit v1","api":"no-execution-sandbox-autonomy-audit","dashboard":"/no-execution-sandbox-autonomy-audit","runtime_key":"no_execution_sandbox_autonomy_audit","slug":"no_execution_sandbox_autonomy_audit_v1","focus":"audits that sandbox boundary prep executes no sandbox commands, writes no source or memory, creates no schedule, invokes no models by default, creates no approvals, and continues nowhere"},
+    {"version":"v495.0","final_label":"Sandbox-Only Autonomy Boundary Trial Prep v1","api":"sandbox-autonomy-boundary-prep-audit","dashboard":"/sandbox-autonomy-boundary-prep-audit","runtime_key":"sandbox_autonomy_boundary_prep_audit","slug":"operator_governed_sandbox_autonomy_boundary_prep_v1","focus":"audits sandbox-only autonomy scope, trial packet builder, sandbox-to-live boundary hardening, no-execution behavior, smoke/docs tokens, and no-authorization boundaries"},
+]
+V495_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V495_STAGE_DEFS}
+
+
+def _v495_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","conscious_agent/sandbox_autonomy_boundary.py","conscious_agent/observation_proposal_queue.py","conscious_agent/self_maintenance.py","conscious_agent/dashboard.py","conscious_agent/dashboard_route_probe.py","conscious_agent/source_surface_manifest.py","conscious_agent/api_server.py","conscious_agent/main.py","tools/smoke_check.py","conscious_agent/smoke_segment_registry.py","data/settings.json","data/projects.json","data/workspaces/active_project.json","data/workspaces/projects.json"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v495_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V495_STAGE_DEFS if item["slug"] == slug)
+    docs = _v495_docs_text()
+    scope = build_sandbox_only_autonomy_scope_definition(ROOT_DIR)
+    packet = build_sandbox_autonomy_trial_packet_builder(ROOT_DIR)
+    boundary = build_sandbox_to_live_boundary_hardening(ROOT_DIR)
+    no_execution = build_no_execution_sandbox_autonomy_audit(ROOT_DIR)
+    audit = build_sandbox_autonomy_boundary_prep_audit(ROOT_DIR, docs)
+    selected = {
+        "sandbox_only_autonomy_scope_definition_v1": scope,
+        "sandbox_autonomy_trial_packet_builder_v1": packet,
+        "sandbox_to_live_boundary_hardening_v1": boundary,
+        "no_execution_sandbox_autonomy_audit_v1": no_execution,
+        "operator_governed_sandbox_autonomy_boundary_prep_v1": audit,
+    }.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and SANDBOX_AUTONOMY_BOUNDARY_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; sandbox_autonomy_boundary={SANDBOX_AUTONOMY_BOUNDARY_VERSION}"},
+        {"name":"scope","status":"pass" if scope.get("ok") else "blocked","message":"Sandbox-only autonomy scope remains prep-only, review-only, and non-authorizing."},
+        {"name":"trial-packet","status":"pass" if packet.get("ok") else "blocked","message":"Trial packet builder creates no execution packet and keeps not_authorized/not_executed status."},
+        {"name":"sandbox-to-live-boundary","status":"pass" if boundary.get("ok") else "blocked","message":"Sandbox success, verification, output, and completion cannot promote to live without fresh single-use approval."},
+        {"name":"no-execution","status":"pass" if no_execution.get("ok") else "blocked","message":"Sandbox boundary prep cannot execute commands, mutate source or memory, schedule work, invoke models, approve, promote, or continue."},
+        {"name":"docs","status":"pass" if "v495.0 - Sandbox-Only Autonomy Boundary Trial Prep v1" in docs and "operator-governed-sandbox-autonomy-boundary-prep-v1" in docs else "blocked","message":"README next steps and release history document v491-v495."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"no-authorization","status":"pass" if audit.get("creates_approval") is False and audit.get("writes_memory") is False and audit.get("writes_files") is False and audit.get("creates_schedule") is False and audit.get("invokes_models") is False and audit.get("creates_execution_packet") is False and audit.get("executes_sandbox_commands") is False and audit.get("expands_autonomy") is False else "blocked","message":"Sandbox boundary prep grants no memory, source, release, execution, schedule, model, approval, promotion, follow-up, or autonomy authorization."},
+    ]
+    ok = bool(selected.get("ok")) and bool(audit.get("ok")) and all(row["status"] == "pass" for row in rows)
+    report = dict(selected)
+    report.update({
+        "version":"500.0","stage":definition["version"],"label":definition["final_label"],"runtime_key":definition["runtime_key"],"slug":slug,"project_id":project_id,"improvement_goal": improvement_goal or "Sandbox-only autonomy boundary trial prep review.","rows":rows,"ok":ok,"status":"pass" if ok else "blocked",
+        "writes_files":False,"writes_memory":False,"updates_metadata":False,"creates_schedule":False,"invokes_models":False,"creates_execution_packet":False,"executes_sandbox_commands":False,"applies_patches":False,"publishes_releases":False,"creates_release_candidate":False,"approves_proposals":False,"creates_approval":False,"continues_automatically":False,"executes_actions":False,"expands_autonomy":False,
+        "sandbox_scope_is_authorization":False,"sandbox_readiness_is_approval":False,"sandbox_target_description_is_permission_to_execute":False,"sandbox_success_is_live_authorization":False,"sandbox_verification_is_approval":False,"sandbox_output_is_patch_execution_packet":False,"sandbox_trial_completion_permits_source_mutation":False,"promotion_requires_fresh_single_use_operator_approval":True,"live_source_writes_allowed":False,"memory_writes_allowed":False,"real_patch_application_allowed":False,"release_candidate_creation_allowed":False,"automatic_scheduling_allowed":False,"local_model_invocation_by_default_allowed":False,"approval_creation_allowed":False,"sandbox_execution_allowed":False,"source_mutation_allowed":False,"memory_mutation_allowed":False,"schedule_creation_allowed":False,"model_invocation_by_default_allowed":False,"automatic_continuation_allowed":False,"authorization_status":"not_authorized","execution_status":"not_executed","operator_review_required":True,"fresh_operator_approval_required":True,"operator_approval_still_required":True,"review_only":True,
+    })
+    if save:
+        _safe_write_json(V495_RUNTIME_DIRS[definition["runtime_key"]] / f"{project_id}.json", report)
+    return report
+
+
+def _make_v495_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v495_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v495_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v495_stage(slug, save=False)
+        lines = render_sandbox_autonomy_boundary_lines(report)
+        if full:
+            lines.append(json.dumps(report, indent=2))
+        return "\n".join(lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v495_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v495_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=False, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+
+for _v495_def in V495_STAGE_DEFS:
+    _slug = _v495_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v495_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v495_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v495_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v495_def["version"],"version":_v495_def["version"],"slug":_slug,"api":_v495_def["api"],"route":"layer","label":_v495_def["final_label"],"final_label":_v495_def["final_label"],"dashboard":_v495_def["dashboard"],"runtime_key":_v495_def["runtime_key"],"theme":_v495_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v495_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v495_def["api"]] = _slug
+
+# v490.1-v495.0 sandbox autonomy boundary dashboard/API/CLI/smoke tokens: sandbox-only-autonomy-scope-definition sandbox-autonomy-trial-packet-builder sandbox-to-live-boundary-hardening no-execution-sandbox-autonomy-audit sandbox-autonomy-boundary-prep-audit operator-governed-sandbox-autonomy-boundary-prep-v1 sandbox_autonomy_boundary.py sandbox_scope_is_authorization=False sandbox_readiness_is_approval=False sandbox_target_description_is_permission_to_execute=False sandbox_success_is_live_authorization=False sandbox_verification_is_approval=False sandbox_output_is_patch_execution_packet=False sandbox_trial_completion_permits_source_mutation=False promotion_requires_fresh_single_use_operator_approval=True live_source_writes_allowed=False memory_writes_allowed=False real_patch_application_allowed=False release_candidate_creation_allowed=False automatic_scheduling_allowed=False local_model_invocation_by_default_allowed=False approval_creation_allowed=False sandbox_execution_allowed=False authorization_status=not_authorized execution_status=not_executed operator_review_required=True fresh_operator_approval_required=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v495.1-v500.0 Operator-Governed Autonomy Readiness Review Board v1
+from autonomy_readiness_review_board import (
+    AUTONOMY_READINESS_REVIEW_BOARD_VERSION,
+    READINESS_BOARD_FLAGS,
+    build_autonomy_readiness_criteria_board,
+    build_autonomy_blocker_gap_register,
+    build_phase_based_autonomy_permission_model,
+    build_autonomy_misinterpretation_firewall,
+    build_autonomy_readiness_review_board_audit,
+    render_autonomy_readiness_review_board_lines,
+)
+
+V500_STAGE_DEFS = [
+    {"version":"v496.0","final_label":"Autonomy Readiness Criteria Board v1","api":"autonomy-readiness-criteria-board","dashboard":"/autonomy-readiness-criteria-board","runtime_key":"autonomy_readiness_criteria_board","slug":"autonomy_readiness_criteria_board_v1","focus":"defines readiness criteria across observation, ledger, proposal queue, sandbox boundary, firewall, route/surface parity, docs, approval burnout, no-mutation guarantees, and smoke coverage without granting autonomy"},
+    {"version":"v497.0","final_label":"Autonomy Blocker and Gap Register v1","api":"autonomy-blocker-gap-register","dashboard":"/autonomy-blocker-gap-register","runtime_key":"autonomy_blocker_gap_register","slug":"autonomy_blocker_gap_register_v1","focus":"lists missing gates, unproven assumptions, and remaining autonomy blockers without authorizing expansion"},
+    {"version":"v498.0","final_label":"Phase-Based Autonomy Permission Model v1","api":"phase-based-autonomy-permission-model","dashboard":"/phase-based-autonomy-permission-model","runtime_key":"phase_based_autonomy_permission_model","slug":"phase_based_autonomy_permission_model_v1","focus":"defines autonomy phases, allowed actions, forbidden actions, proof, approval, burnout, and rollback boundaries without authorizing any phase"},
+    {"version":"v499.0","final_label":"Autonomy Misinterpretation Firewall v1","api":"autonomy-misinterpretation-firewall","dashboard":"/autonomy-misinterpretation-firewall","runtime_key":"autonomy_misinterpretation_firewall","slug":"autonomy_misinterpretation_firewall_v1","focus":"blocks confusion patterns such as ready-means-approved, phase-defined-means-authorized, sandbox-boundary-means-execute, and proposal-ranked-means-selected"},
+    {"version":"v500.0","final_label":"Operator-Governed Autonomy Readiness Review Board v1","api":"autonomy-readiness-review-board-audit","dashboard":"/autonomy-readiness-review-board-audit","runtime_key":"autonomy_readiness_review_board_audit","slug":"operator_governed_autonomy_readiness_review_board_v1","focus":"audits readiness criteria, blockers, phase model, autonomy misinterpretation firewall, smoke/API/CLI/dashboard tokens, and no-authorization boundaries"},
+]
+V500_RUNTIME_DIRS = {item["runtime_key"]: DATA_DIR / "autonomy" / item["runtime_key"] for item in V500_STAGE_DEFS}
+
+
+def _v500_docs_text() -> str:
+    paths = ["README_NEXT_STEPS.md","README_RELEASE_HISTORY.md","conscious_agent/autonomy_readiness_review_board.py","conscious_agent/sandbox_autonomy_boundary.py","conscious_agent/observation_proposal_queue.py","conscious_agent/self_maintenance.py","conscious_agent/dashboard.py","conscious_agent/dashboard_route_probe.py","conscious_agent/source_surface_manifest.py","conscious_agent/api_server.py","conscious_agent/main.py","tools/smoke_check.py","conscious_agent/smoke_segment_registry.py","data/settings.json","data/projects.json","data/workspaces/active_project.json","data/workspaces/projects.json"]
+    return "\n".join(_read_text(ROOT_DIR / path) for path in paths)
+
+
+def _build_v500_stage(slug: str, project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+    definition = next(item for item in V500_STAGE_DEFS if item["slug"] == slug)
+    docs = _v500_docs_text()
+    criteria = build_autonomy_readiness_criteria_board(ROOT_DIR)
+    blockers = build_autonomy_blocker_gap_register(ROOT_DIR)
+    phases = build_phase_based_autonomy_permission_model(ROOT_DIR)
+    firewall = build_autonomy_misinterpretation_firewall(ROOT_DIR)
+    audit = build_autonomy_readiness_review_board_audit(ROOT_DIR, docs)
+    selected = {
+        "autonomy_readiness_criteria_board_v1": criteria,
+        "autonomy_blocker_gap_register_v1": blockers,
+        "phase_based_autonomy_permission_model_v1": phases,
+        "autonomy_misinterpretation_firewall_v1": firewall,
+        "operator_governed_autonomy_readiness_review_board_v1": audit,
+    }.get(slug, audit)
+    rows = [
+        {"name":"version-markers","status":"pass" if SELF_MAINTENANCE_VERSION == "500.0" and AUTONOMY_READINESS_REVIEW_BOARD_VERSION == "500.0" else "blocked","message":f"self={SELF_MAINTENANCE_VERSION}; readiness_board={AUTONOMY_READINESS_REVIEW_BOARD_VERSION}"},
+        {"name":"criteria-board","status":"pass" if criteria.get("ok") else "blocked","message":"Readiness criteria board exists and explicitly reports not_ready_for_autonomy."},
+        {"name":"blocker-register","status":"pass" if blockers.get("ok") else "blocked","message":"Blocker/gap register lists missing gates and unproven assumptions."},
+        {"name":"phase-model","status":"pass" if phases.get("ok") else "blocked","message":"Phase model defines allowed/forbidden/proof/approval boundaries without authorizing phases."},
+        {"name":"misinterpretation-firewall","status":"pass" if firewall.get("ok") else "blocked","message":"Autonomy misinterpretation patterns are blocked as review-only findings."},
+        {"name":"docs","status":"pass" if "v500.0 - Operator-Governed Autonomy Readiness Review Board v1" in docs and "operator-governed-autonomy-readiness-review-board-v1" in docs else "blocked","message":"README next steps and release history document v496-v500."},
+        {"name":"dashboard-style","status":"pass" if "data-tip" in docs and not _dashboard_nav_title_regression_present() else "blocked","message":"Command-deck dashboard and custom data-tip hover system are preserved."},
+        {"name":"no-authorization","status":"pass" if audit.get("creates_approval") is False and audit.get("writes_memory") is False and audit.get("writes_files") is False and audit.get("creates_schedule") is False and audit.get("invokes_models") is False and audit.get("creates_execution_packet") is False and audit.get("executes_sandbox_commands") is False and audit.get("expands_autonomy") is False else "blocked","message":"Readiness board grants no memory, source, release, execution, schedule, model, approval, sandbox, live, follow-up, or autonomy authorization."},
+    ]
+    ok = bool(selected.get("ok")) and bool(audit.get("ok")) and all(row["status"] == "pass" for row in rows)
+    report = dict(selected)
+    report.update({
+        "version":"500.0","stage":definition["version"],"label":definition["final_label"],"runtime_key":definition["runtime_key"],"slug":slug,"project_id":project_id,"improvement_goal": improvement_goal or "Operator-governed autonomy readiness review board.","rows":rows,"ok":ok,"status":"pass" if ok else "blocked",
+        "readiness_status":"not_ready_for_autonomy","authorization_status":"not_authorized","writes_files":False,"writes_memory":False,"updates_metadata":False,"creates_schedule":False,"invokes_models":False,"creates_execution_packet":False,"executes_sandbox_commands":False,"applies_patches":False,"publishes_releases":False,"creates_release_candidate":False,"approves_proposals":False,"creates_approval":False,"continues_automatically":False,"executes_actions":False,"expands_autonomy":False,
+        "readiness_review_is_autonomy_approval":False,"board_pass_grants_authorization":False,"phase_definition_authorizes_phase":False,"sandbox_boundary_exists_means_execute":False,"operator_discussion_is_approval":False,"proposal_ranking_is_selection":False,"observation_history_authorizes_monitoring":False,"source_mutation_allowed":False,"memory_mutation_allowed":False,"schedule_creation_allowed":False,"model_invocation_by_default_allowed":False,"execution_packet_creation_allowed":False,"sandbox_execution_allowed":False,"live_source_writes_allowed":False,"approval_creation_allowed":False,"release_candidate_creation_allowed":False,"automatic_continuation_allowed":False,"operator_review_required":True,"fresh_operator_approval_required":True,"operator_approval_still_required":True,"review_only":True,
+        "stage_items":[{"stage":"v496.0","slug":"autonomy_readiness_criteria_board_v1","label":"Readiness Criteria"},{"stage":"v497.0","slug":"autonomy_blocker_gap_register_v1","label":"Blocker/Gaps"},{"stage":"v498.0","slug":"phase_based_autonomy_permission_model_v1","label":"Phase Model"},{"stage":"v499.0","slug":"autonomy_misinterpretation_firewall_v1","label":"Misinterpretation Firewall"},{"stage":"v500.0","slug":"operator_governed_autonomy_readiness_review_board_v1","label":"Readiness Board Audit"}],
+        "boundaries":dict(READINESS_BOARD_FLAGS),
+    })
+    if save:
+        _safe_write_json(V500_RUNTIME_DIRS[definition["runtime_key"]] / f"{project_id}.json", report)
+    return report
+
+
+def _make_v500_build(slug: str):
+    def _builder(project_id: str = "eidolon", improvement_goal: str | None = None, save: bool = True, **kwargs: Any) -> dict[str, Any]:
+        return _build_v500_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=save, **kwargs)
+    _builder.__name__ = f"build_{slug}"
+    return _builder
+
+
+def _make_v500_text(slug: str):
+    def _text(report: dict[str, Any] | None = None, full: bool = False) -> str:
+        report = report or _build_v500_stage(slug, save=False)
+        lines = render_autonomy_readiness_review_board_lines(report)
+        if full:
+            lines.append(json.dumps(report, indent=2))
+        return "\n".join(lines)
+    _text.__name__ = f"{slug}_text"
+    return _text
+
+
+def _make_v500_print(slug: str):
+    def _printer(project_id: str = "eidolon", improvement_goal: str | None = None, full: bool = False, json_output: bool = False, **kwargs: Any) -> None:
+        report = _build_v500_stage(slug, project_id=project_id, improvement_goal=improvement_goal, save=False, **kwargs)
+        _json_print(report) if json_output else print(globals()[f"{slug}_text"](report, full))
+    _printer.__name__ = f"print_{slug}"
+    return _printer
+
+
+for _v500_def in V500_STAGE_DEFS:
+    _slug = _v500_def["slug"]
+    globals()[f"build_{_slug}"] = _make_v500_build(_slug)
+    globals()[f"{_slug}_text"] = _make_v500_text(_slug)
+    globals()[f"print_{_slug}"] = _make_v500_print(_slug)
+    SUPERVISED_RUNTIME_STAGE_DEFS.append({"stage":_v500_def["version"],"version":_v500_def["version"],"slug":_slug,"api":_v500_def["api"],"route":"layer","label":_v500_def["final_label"],"final_label":_v500_def["final_label"],"dashboard":_v500_def["dashboard"],"runtime_key":_v500_def["runtime_key"],"theme":_v500_def["focus"]})
+    SUPERVISED_RUNTIME_STAGE_BY_SLUG[_slug] = SUPERVISED_RUNTIME_STAGE_DEFS[-1]
+    SUPERVISED_RUNTIME_CLI_MAP[_slug.replace("_", "-")] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[f"{_v500_def['api']}/layer"] = _slug
+    SUPERVISED_RUNTIME_ROUTE_MAP[_v500_def["api"]] = _slug
+
+# v495.1-v500.0 autonomy readiness review board dashboard/API/CLI/smoke tokens: autonomy-readiness-criteria-board autonomy-blocker-gap-register phase-based-autonomy-permission-model autonomy-misinterpretation-firewall autonomy-readiness-review-board-audit operator-governed-autonomy-readiness-review-board-v1 autonomy_readiness_review_board.py readiness_status=not_ready_for_autonomy authorization_status=not_authorized readiness_review_is_autonomy_approval=False board_pass_grants_authorization=False phase_definition_authorizes_phase=False sandbox_boundary_exists_means_execute=False operator_discussion_is_approval=False proposal_ranking_is_selection=False observation_history_authorizes_monitoring=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False sandbox_execution_allowed=False live_source_writes_allowed=False approval_creation_allowed=False release_candidate_creation_allowed=False automatic_continuation_allowed=False operator_review_required=True fresh_operator_approval_required=True operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console

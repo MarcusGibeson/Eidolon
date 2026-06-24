@@ -942,7 +942,7 @@ from dev_loop_runner import get_dev_loop, list_dev_loops, run_dev_loop, dev_loop
 
 
 DASHBOARD_TITLE = "Eidolon Dashboard"
-DASHBOARD_VERSION = "350.0"
+DASHBOARD_VERSION = "500.0"
 
 
 class DashboardState:
@@ -1452,6 +1452,151 @@ def _layout(path: str, content: str) -> str:
         ("/expression-live-patch-instruction-packet", "Live Patch", "v348.0 Operator-Governed Live Diff and Patch Instruction Packet Draft v1: drafts future patch instructions without applying them.", "Development"),
         ("/expression-live-verification-rollback-packet", "Live Verify", "v349.0 Operator-Governed Live Application Verification and Rollback Packet v1: defines checks and rollback expectations without executing commands.", "Development"),
         ("/expression-live-application-packet-audit", "Live App Audit", "v350.0 Operator-Governed Expression Live Application Packet Drafting Layer v1: audits draft-only live application packets without live source authority.", "Development"),
+        ("/expression-live-execution-approval-intake", "Exec Prep Approval", "v351.0 Operator-Governed Live Expression Execution Approval Intake Gate v1: binds fresh scoped approval for execution prep only without applying live expression.", "Development"),
+        ("/expression-live-source-transaction-preimage", "Exec Prep Tx", "v352.0 Operator-Governed Live Source Transaction and Preimage Manifest Prep v1: plans read/write/preimage manifests without source mutation.", "Development"),
+        ("/expression-live-manual-execution-checklist", "Exec Checklist", "v353.0 Operator-Governed Manual Execution Checklist and Command Packet v1: drafts manual commands as text only without running them.", "Development"),
+        ("/expression-live-rollback-reversion-packet", "Exec Rollback", "v354.0 Operator-Governed Rollback Snapshot and Reversion Packet Prep v1: prepares rollback material without restoring files.", "Development"),
+        ("/expression-live-execution-prep-audit", "Exec Prep Audit", "v355.0 Operator-Governed Expression Live Application Execution Prep Layer v1: audits execution-prep packets without continuing into execution.", "Development"),
+        ("/minimal-live-expression-change-candidate", "Min Expr Candidate", "v356.0 Minimal Approved Live Change Candidate Selection v1: identifies tiny expression-adjacent docs/dashboard/test wording changes without applying them.", "Development"),
+        ("/minimal-live-expression-approval-lock", "Min Expr Approval", "v357.0 Operator Approval Token and Execution Scope Lock v1: locks one fresh single-use approval scope without self-approval or scope expansion.", "Development"),
+        ("/minimal-live-expression-patch-transaction", "Min Expr Patch", "v358.0 Tiny Patch Transaction Builder v1: previews exact files, preimage, diff, rollback, and verification plan without writing files.", "Development"),
+        ("/minimal-live-expression-application-harness", "Min Expr Harness", "v359.0 Operator-Confirmed Patch Application Harness v1: requires exact confirmation, matching preimage, rollback, and verification evidence before any later application.", "Development"),
+        ("/minimal-live-expression-application-audit", "Min Expr Audit", "v360.0 Operator-Approved Minimal Live Expression Application Execution Path v1: audits one tiny governed live-expression change path without autonomous continuation.", "Development"),
+        ("/self-maintenance-gate-registry", "Gate Registry", "v361.0 Self-Maintenance Gate Inventory and Registry Seed v1: inventories gate families and seeds review-only registry metadata without behavior changes.", "Development"),
+        ("/self-maintenance-version-expectations", "Version Registry", "v362.0 Centralized Self-Maintenance Version Expectation Layer v1: centralizes current-version expectations and stale literal detection without applying changes.", "Development"),
+        ("/governed-surface-metadata-registry", "Surface Registry", "v363.0 Governed Surface Metadata Registry v1: maps dashboard/API/CLI metadata for parity review without changing routes.", "Development"),
+        ("/smoke-check-legacy-gate-registry", "Smoke Registry", "v364.0 Smoke Check Registry and Legacy Gate Cleanup v1: registers smoke coverage and legacy gate cleanup helpers without executing checks automatically.", "Development"),
+        ("/self-maintenance-refactor-audit", "v365 Refactor", "v365.0 Self-Maintenance Surface Reduction and Gate Registry Refactor v1: audits registry-driven self-maintenance cleanup, version expectations, route/API/CLI parity, smoke registry coverage, package privacy, and no-autonomy boundaries.", "Development"),
+        ("/self-maintenance-module-extraction-plan", "Extract Plan", "v371.0 Self-Maintenance Module Extraction Plan v1: maps safe self-maintenance module extraction families before moving logic.", "Development"),
+        ("/self-maintenance-version-package-gates", "Version Gates", "v372.0 Version and Package Gate Extraction v1: extracts version/package/privacy helpers into a focused review-only module.", "Development"),
+        ("/self-maintenance-surface-gates", "Surface Gates", "v373.0 Route/API/CLI Gate Extraction v1: extracts route/API/CLI parity helpers into a focused review-only module.", "Development"),
+        ("/self-maintenance-governance-gates", "Gov Gates", "v374.0 Governance Boundary Gate Extraction v1: extracts forbidden-action boundary helpers into a focused review-only module.", "Development"),
+        ("/self-maintenance-modular-extraction-audit", "v375 Modular", "v375.0 Self-Maintenance Modular Extraction v1: audits extracted modules, version/package gates, surface gates, governance gates, smoke coverage, package privacy, and no-autonomy boundaries.", "Development"),
+        ("/live-change-transaction-narrowing", "Tx Narrow", "v376.0 Live Change Transaction Narrowing v1: narrows one approved live-change transaction to a tiny allowed file surface without applying it.", "Development"),
+        ("/live-change-approval-execution-lock", "Exec Lock", "v377.0 Live Change Approval Execution Lock v1: binds fresh single-use approval, exact scope, expiration, and confirmation phrase without self-approval.", "Development"),
+        ("/live-change-real-patch-trial-plan", "Patch Trial Plan", "v378.0 Live Change Real Patch Trial Plan v1: prepares preimage, diff, README/release updates, rollback, and verification plan without writing files.", "Development"),
+        ("/live-change-operator-confirmed-application-trial", "Apply Trial", "v379.0 Operator-Confirmed Live Change Application Trial v1: requires explicit operator confirmation, preimage match, allowed-file match, rollback, and verification evidence.", "Development"),
+        ("/live-change-application-trial-audit", "v380 Trial", "v380.0 Approved Live Change Transaction Narrowing and Real Patch Application Trial v1: audits the narrow confirmed application trial without automatic continuation.", "Development"),
+        ("/live-patch-trial-result-intake", "Trial Result", "v381.0 Operator-Governed Live Patch Trial Result Intake v1: ingests reported trial outcome evidence without rerunning commands, applying fixes, executing rollback, or inferring future approval.", "Development"),
+        ("/live-patch-applied-diff-evidence", "Diff Evidence", "v382.0 Operator-Governed Applied Diff and Source-State Evidence Packet v1: records expected/actual diff and source-state evidence without generating patches or editing source.", "Development"),
+        ("/live-patch-approval-burnout", "Approval Burnout", "v383.0 Operator-Governed One-Time Approval Burnout and Reuse Block v1: consumes the single-use approval token and rejects reuse/scope expansion/stale approval.", "Development"),
+        ("/live-patch-post-trial-regression-review", "Post Trial", "v384.0 Operator-Governed Post-Trial Regression and Rollback Readiness Review v1: reviews reported regression and rollback readiness without rerunning smoke or rollback.", "Development"),
+        ("/live-patch-trial-closure-audit", "v385 Closure", "v385.0 Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1: audits closure, approval burnout, rollback readiness, docs, privacy, and no-autonomy boundaries.", "Development"),
+        ("/second-minimal-live-patch-candidate", "v386 Candidate", "v386.0 Operator-Governed Second Minimal Patch Candidate Registry Selection v1: selects a second tiny registry-safe candidate without autonomous selection or runtime personality change.", "Development"),
+        ("/registry-driven-live-patch-approval-validation", "v387 Approval", "v387.0 Operator-Governed Registry-Driven Approval and Scope Validation v1: validates fresh single-use approval, scope, registry metadata, rollback, and verification requirements.", "Development"),
+        ("/registry-driven-live-patch-transaction-lock", "v388 Lock", "v388.0 Operator-Governed Registry-Driven Patch Transaction and Preimage Lock v1: locks expected files, preimage, docs, version, smoke, package, and dashboard obligations without writing files.", "Development"),
+        ("/second-live-patch-application-harness", "v389 Harness", "v389.0 Operator-Confirmed Second Minimal Live Patch Application Harness v1: requires fresh approval, matching transaction, preimage match, rollback, verification, burnout, closure, and the exact confirmation phrase.", "Development"),
+        ("/second-live-patch-trial-registry-audit", "v390 Audit", "v390.0 Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1: audits the second registry-driven patch path, approval burnout, post-trial closure, docs, package privacy, and no-autonomy boundaries.", "Development"),
+        ("/live-patch-trial-history-ledger", "v391 Ledger", "v391.0 Operator-Governed Live Patch Trial History Ledger v1: records trial, candidate, approval, transaction, closure, burnout, rollback, and operator decision evidence without treating history as permission.", "Development"),
+        ("/operator-live-patch-decision-patterns", "v392 Decisions", "v392.0 Operator-Governed Live Patch Decision Pattern Review v1: reviews approved, blocked, revised, deferred, rollback, reapproval, and burnout decisions without changing future behavior.", "Development"),
+        ("/live-patch-supervised-lesson-candidates", "v393 Lessons", "v393.0 Operator-Governed Live Patch Supervised Lesson Candidate Drafting v1: drafts supervised lesson candidates from patch trials without storing memory or altering behavior.", "Development"),
+        ("/live-patch-memory-candidate-governance", "v394 Memory Gov", "v394.0 Operator-Governed Live Patch Memory Candidate Governance v1: classifies lesson candidates for possible later memory storage without writing memory.", "Development"),
+        ("/live-patch-history-memory-candidate-audit", "v395 Audit", "v395.0 Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1: audits ledger, decision review, lesson candidates, memory governance, docs, package privacy, and no-memory-write boundaries.", "Development"),
+        ("/memory-candidate-selection-packet", "v396 Mem Pick", "v396.0 Operator-Governed Memory Candidate Selection Packet v1: selects one reviewable memory candidate without writing memory or treating eligibility as approval.", "Development"),
+        ("/memory-application-approval-lock", "v397 Mem Lock", "v397.0 Operator-Governed Memory Application Approval Lock v1: binds fresh single-use approval, scope, confirmation, forbidden categories, and audit requirements.", "Development"),
+        ("/memory-write-transaction-preview", "v398 Mem Preview", "v398.0 Operator-Governed Memory Write Transaction Preview v1: previews exact memory text, destination, sensitivity screen, scope limits, and retraction plan without writing memory.", "Development"),
+        ("/operator-confirmed-memory-application-trial", "v399 Mem Trial", "v399.0 Operator-Confirmed Memory Application Trial Harness v1: requires exact operator confirmation, matching candidate/transaction, screens, single-use approval, retraction packet, and post-application audit.", "Development"),
+        ("/memory-application-trial-audit", "v400 Mem Audit", "v400.0 Operator-Approved Memory Candidate Application Trial v1: audits one scoped memory candidate application trial without self-approval, identity/personality mutation, autonomy expansion, or automatic continuation.", "Development"),
+        ("/memory-application-confirmation-gate", "v401 Confirm", "v401.0 Memory Application Confirmation Presence Gate v1: requires explicit supplied operator confirmation evidence before any memory application harness may report exact confirmation.", "Development"),
+        ("/memory-application-negative-tests", "v402 Neg Tests", "v402.0 Memory Application Negative Confirmation Tests v1: proves missing, wrong, reused, changed, sensitive, identity/personality, and autonomy-expanding evidence remains blocked.", "Development"),
+        ("/smoke-segment-registry", "v403 Segments", "v403.0 Smoke Segment Registry v1: classifies the growing smoke suite into bounded install segments without executing checks automatically.", "Development"),
+        ("/install-smoke-segment-runner", "v404 Runner", "v404.0 Install Smoke Segment Runner v1: exposes named smoke segment selection and resume metadata while preserving full install smoke.", "Development"),
+        ("/segmented-install-smoke-audit", "v405 Smoke Audit", "v405.0 Segmented Install Smoke and Self-Maintenance Confirmation Hardening v1: audits confirmation hardening, segmented smoke coverage, docs, package privacy, and no-authorization boundaries.", "Development"),
+        ("/memory-application-attempt-ledger-schema", "v406 Attempt", "v406.0 Memory Application Attempt Ledger Schema v1: defines review-only dry-run attempt records with candidate, approval, confirmation, hashes, blockers, and operator decision placeholders.", "Development"),
+        ("/memory-application-dry-run-ledger", "v407 Ledger", "v407.0 Memory Application Dry-Run Ledger Entry Builder v1: builds dry-run ledger entries without writing memory or treating reviewable state as authorization.", "Development"),
+        ("/memory-application-ledger-replay", "v408 Replay", "v408.0 Memory Application Ledger Replay and Drift Detection v1: replays dry-run entries and blocks candidate, approval, transaction, confirmation, or memory text drift.", "Development"),
+        ("/memory-application-ledger-surfaces", "v409 Surfaces", "v409.0 Memory Application Ledger Dashboard API CLI Surfaces v1: exposes operator review surfaces while preserving command-deck data-tip behavior.", "Development"),
+        ("/memory-application-ledger-audit", "v410 Ledger Audit", "v410.0 Operator-Governed Memory Application Dry-Run Ledger v1: audits dry-run ledger records, replay drift detection, docs, package privacy, and no-memory-write boundaries.", "Development"),
+        ("/sandbox-memory-target-schema", "v411 Sandbox Target", "v411.0 Sandbox Memory Target Schema v1: defines sandbox-only memory write targets while blocking live memory paths.", "Development"),
+        ("/sandbox-memory-write-transaction", "v412 Sandbox Tx", "v412.0 Sandbox Memory Write Transaction Builder v1: prepares sandbox write transactions from dry-run ledger evidence and exact confirmation.", "Development"),
+        ("/sandbox-memory-write-trial", "v413 Sandbox Write", "v413.0 Sandbox Memory Write Execution Trial v1: writes only to sandbox targets with before/after hashes.", "Development"),
+        ("/sandbox-memory-retraction-preview", "v414 Sandbox Retract", "v414.0 Sandbox Memory Retraction Preview and Replay v1: previews sandbox retraction and drift checks without live memory retraction.", "Development"),
+        ("/sandbox-memory-write-audit", "v415 Sandbox Audit", "v415.0 Operator-Governed Sandbox Memory Write Target v1: audits sandbox target, write, retraction, package, and no-live-memory boundaries.", "Development"),
+        ("/live-memory-write-eligibility", "v416 Live Elig", "v416.0 Live Memory Write Eligibility Packet v1: checks dry-run, sandbox write, retraction preview, and forbidden memory categories without approval.", "Development"),
+        ("/live-memory-approval-lock", "v417 Live Lock", "v417.0 Single-Use Live Memory Approval Lock v1: binds exact confirmation, candidate hash, sandbox trial, and approval burnout.", "Development"),
+        ("/live-memory-transaction-preview", "v418 Live Tx", "v418.0 Live Memory Transaction Preview v1: previews exact governed live-memory trial transaction without writing memory.", "Development"),
+        ("/operator-confirmed-live-memory-write-trial", "v419 Live Write", "v419.0 Operator-Confirmed Live Memory Write Trial v1: executes one governed trial write only with exact confirmation and burns approval.", "Development"),
+        ("/live-memory-write-audit", "v420 Live Audit", "v420.0 First Operator-Approved Live Memory Write with Burnout v1: audits one live memory trial, negative cases, and no-future-authorization boundaries.", "Development"),
+        ("/memory-retraction-eligibility", "v421 Retract Elig", "v421.0 Memory Retraction Eligibility Packet v1: checks exact governed trial entry and prior write burnout without approving retraction.", "Development"),
+        ("/memory-retraction-approval-lock", "v422 Retract Lock", "v422.0 Memory Retraction Approval Lock v1: binds fresh single-use retraction approval and blocks write-approval reuse.", "Development"),
+        ("/memory-retraction-transaction-preview", "v423 Retract Tx", "v423.0 Memory Retraction Transaction Preview v1: previews exact retained-audit retraction without deleting memory.", "Development"),
+        ("/operator-confirmed-memory-retraction-trial", "v424 Retract Trial", "v424.0 Operator-Confirmed Memory Retraction Trial v1: marks one exact governed entry retracted after exact confirmation and burns approval.", "Development"),
+        ("/memory-retraction-trial-audit", "v425 Retract Audit", "v425.0 Operator-Approved Memory Retraction Trial v1: audits retained retraction, burnout, negative cases, docs, and no-future-authority boundaries.", "Development"),
+        ("/source-surface-manifest", "v426 Surface Map", "v426.0 Surface Manifest Schema v1: defines dashboard/API/CLI/builder/smoke/runtime/authority records without authorizing execution.", "Development"),
+        ("/source-surface-parity-audit", "v428 Surface Parity", "v428.0 Dashboard API CLI Parity Audit v1: checks manifest surface coverage against registered routes and flags.", "Development"),
+        ("/source-surface-authority-map", "v429 Authority Map", "v429.0 Source Surface Authority Map v1: classifies review-only, sandbox-only, and single-use trial surfaces without approval inference.", "Development"),
+        ("/source-surface-package-privacy-map", "v429 Privacy Map", "v429.5 Source Surface Package Privacy Map v1: lists runtime paths and source-only exclusions.", "Development"),
+        ("/source-surface-manifest-audit", "v430 Surface Audit", "v430.0 Canonical Source Surface Manifest v1: audits parity, authority labels, package privacy, and no-authorization boundaries.", "Development"),
+        ("/duplicate-definition-inventory", "v431 Duplicate Inventory", "v431.0 Duplicate Definition Inventory v1: scans source with AST and inventories duplicate definitions without authorizing deletion.", "Development"),
+        ("/self-maintenance-duplicate-classification", "v432 Duplicate Classify", "v432.0 Self-Maintenance Duplicate Classification Packet v1: classifies self_maintenance.py duplicate definitions for manual review.", "Development"),
+        ("/self-maintenance-extraction-candidates", "v433 Extraction Plan", "v433.0 Safe Extraction Candidate Plan v1: recommends bridge-preserving extraction candidates protected by source surface parity.", "Development"),
+        ("/duplicate-definition-guard", "v434 Duplicate Guard", "v434.0 Duplicate Definition Guard v1: blocks new high-risk duplicate shadowing without editing source.", "Development"),
+        ("/self-maintenance-duplicate-cleanup-audit", "v435 Duplicate Audit", "v435.0 Self-Maintenance Duplicate Definition Cleanup v1: audits inventory, classification, guard, docs, and no-auto-edit boundaries.", "Development"),
+        ("/dashboard-route-inventory", "v436 Route Inv", "v436.0 Dashboard Route Inventory Manifest v1: inventories dashboard routes, labels, eras, authority levels, and tooltip expectations without authorizing execution.", "Development"),
+        ("/dashboard-route-probe", "v437 Route Probe", "v437.0 Dashboard Render Probe Runner v1: probes route health, status, content type, error markers, and API shadowing risks.", "Development"),
+        ("/dashboard-lazy-render-audit", "v438 Lazy Audit", "v438.0 Lazy Render and Heavy Page Audit v1: classifies heavy dashboard pages without refactoring them automatically.", "Development"),
+        ("/dashboard-tooltip-regression-audit", "v439 Tooltip Audit", "v439.0 Dashboard Tooltip Regression Audit v1: protects custom data-tip hover behavior and blocks native title tooltip regression.", "Development"),
+        ("/dashboard-route-health-audit", "v440 Route Health", "v440.0 Full Dashboard Route Probe and Lazy Render Audit v1: audits inventory, route probe, lazy render, tooltip regression, docs, and no-authorization boundaries.", "Development"),
+        ("/memory-lifecycle-review-board", "v441 Memory Board", "v441.0 Memory Lifecycle Board Schema v1: defines candidate, dry-run, sandbox, live-trial, burnout, retraction, and audit sections without authorizing action.", "Development"),
+        ("/memory-lifecycle-state-summary", "v442 Lifecycle State", "v442.0 Memory Lifecycle State Summary v1: aggregates lifecycle state while preserving no-current-authority boundaries.", "Development"),
+        ("/memory-lifecycle-drift-review", "v443 Lifecycle Drift", "v443.0 Memory Lifecycle Drift Review v1: flags hash, approval, target, and downstream staleness risks as blockers.", "Development"),
+        ("/memory-lifecycle-operator-decision-board", "v444 Decision Board", "v444.0 Memory Lifecycle Operator Decision Board v1: lists review decisions and forbids memory actions without fresh single-use approval.", "Development"),
+        ("/memory-lifecycle-review-board-audit", "v445 Board Audit", "v445.0 Memory Lifecycle Review Board v1: audits board schema, state, drift, decisions, docs, and no-authorization boundaries.", "Development"),
+        ("/authorization-confusion-patterns", "v446 Auth Patterns", "v446.0 Authorization Confusion Pattern Registry v1: registers forbidden readiness/approval confusion patterns without approving or enforcing anything.", "Development"),
+        ("/authorization-language-scan", "v447 Auth Scan", "v447.0 Packet Language and Metadata Scanner v1: scans recent governance outputs for risky authorization language without rewriting source.", "Development"),
+        ("/authorization-firewall-decision-packet", "v448 Auth Decision", "v448.0 Authorization Firewall Decision Packet v1: reports clear/warning/blocked status while clear is still not approval.", "Development"),
+        ("/authorization-boundary-map", "v449 Auth Map", "v449.0 Authorization Boundary Map v1: maps readiness, eligibility, route health, manifest presence, smoke success, prior approval, and sandbox success to safe interpretations.", "Development"),
+        ("/authorization-firewall-audit", "v450 Auth Firewall", "v450.0 Governance-State-to-Authorization Firewall v1: audits authorization confusion detection and no-authorization boundaries.", "Development"),
+        ("/metadata-version-inventory", "v451 Meta Inv", "v451.0 Metadata Version Inventory v1: checks allowlisted source metadata version alignment without authorizing release or edits.", "Development"),
+        ("/project-workspace-metadata-alignment", "v452 Meta Align", "v452.0 Project and Workspace Metadata Alignment v1: aligns current milestone metadata across project and workspace records.", "Development"),
+        ("/release-packaging-version-integrity", "v453 Release Ver", "v453.0 Release Packaging Version Integrity v1: verifies release packaging resolves settings_version before stale fallback values.", "Development"),
+        ("/current-state-documentation-header-audit", "v454 Docs Header", "v454.0 Current-State Documentation Header Audit v1: verifies current-state README headers and no-authorization language.", "Development"),
+        ("/metadata-release-integrity-audit", "v455 Meta Repair", "v455.0 Metadata, Release Integrity, and Current-State Repair v1: audits metadata, release version resolution, docs, smoke/API/CLI tokens, and no-authorization boundaries.", "Development"),
+        ("/authorization-firewall-severity-classifier", "v456 Auth Severity", "v456.0 Authorization Firewall Finding Severity Classifier v1: classifies safe, informational, warning, high-risk, and blocked-pattern findings without granting authorization.", "Development"),
+        ("/authorization-firewall-safe-boundary-filter", "v457 Auth Filter", "v457.0 Authorization Firewall Safe Boundary Filter v1: separates safe negative boundary language from reviewable warnings without rewriting source.", "Development"),
+        ("/authorization-firewall-warning-status", "v458 Warning Status", "v458.0 Authorization Firewall Warning Status Bridge v1: preserves pass_with_warnings and review_required semantics across surfaces.", "Development"),
+        ("/authorization-firewall-audit-status-split", "v459 Status Split", "v459.0 Authorization Firewall Audit Status Split v1: separates mechanism, language, operator review, and authorization statuses.", "Development"),
+        ("/authorization-firewall-signal-triage-audit", "v460 Auth Triage", "v460.0 Authorization Firewall Signal Triage and Warning Semantics v1: audits warning semantics while preserving no-authorization boundaries.", "Development"),
+        ("/recent-dashboard-route-probe-refresh", "v461 Route Refresh", "v461.0 Recent Dashboard Route Probe Refresh v1: adds v450-v465 routes to route probe inventory while preserving route-health-is-not-approval boundaries.", "Development"),
+        ("/source-surface-manifest-parity-policy", "v462 Manifest Policy", "v462.0 Source Surface Manifest Parity Policy v1: tracks every governed substage surface instead of milestone finals only, without granting permission.", "Development"),
+        ("/surface-route-api-cli-crosscheck", "v463 Surface Crosscheck", "v463.0 Surface Route API CLI Crosscheck v1: compares manifest, dashboard, API, CLI, builders, text renderers, and smoke tokens in review-only mode.", "Development"),
+        ("/route-health-boundary-language", "v464 Route Boundary", "v464.0 Route Health Boundary Language v1: clarifies route health confirms render status only and does not authorize execution.", "Development"),
+        ("/route-surface-parity-audit", "v465 Surface Parity", "v465.0 Dashboard Route Probe and Source Surface Manifest Parity v1: audits route/surface/API/CLI/smoke parity with no-authorization boundaries.", "Development"),
+        ("/duplicate-shadow-inventory", "v466 Shadow Inv", "v466.0 Duplicate Definition Inventory and Classification v1: inventories current top-level self_maintenance duplicate shadows after cleanup without authorizing deletion.", "Development"),
+        ("/safe-shadow-removal-report", "v467 Shadow Remove", "v467.0 Safe Shadow Removal Report v1: records removal of shadowed legacy definitions while preserving canonical final definitions.", "Development"),
+        ("/legacy-alias-compatibility-cleanup", "v468 Compat", "v468.0 Legacy Alias Compatibility Cleanup v1: checks canonical helper definitions remain after duplicate body removal.", "Development"),
+        ("/stale-version-gate-cleanup", "v469 Gate Cleanup", "v469.0 Stale Exact-Version Gate Cleanup v1: replaces stale v68/v70 exact-version blockers with explicit historical compatibility gates.", "Development"),
+        ("/self-maintenance-duplicate-shadow-cleanup-audit", "v470 Shadow Audit", "v470.0 Self-Maintenance Duplicate Shadow Cleanup v1: audits duplicate shadow removal, compatibility preservation, stale gate cleanup, docs, and no-authorization boundaries.", "Development"),
+        ("/current-state-header-block", "v471 Docs Head", "v471.0 Current-State Header Block v1: keeps current version, verification, blockers, next arc, and safety boundary at the top of README_NEXT_STEPS.md.", "Development"),
+        ("/historical-next-steps-separation", "v472 History Split", "v472.0 Historical Next-Steps Separation v1: separates completed and superseded next-step notes from the active plan.", "Development"),
+        ("/operator-continuity-handoff-packet", "v473 Handoff", "v473.0 Operator Continuity Handoff Packet v1: provides a reusable new-chat continuation packet without becoming an execution packet.", "Development"),
+        ("/documentation-boundary-language", "v474 Doc Boundary", "v474.0 Documentation Boundary Language v1: states README, release history, smoke, and handoff packets are not authorization.", "Development"),
+        ("/documentation-continuity-header-audit", "v475 Doc Audit", "v475.0 README Current-State and Operator Continuity Header Cleanup v1: audits docs, handoff, history separation, and no-authorization boundaries.", "Development"),
+        ("/manual-read-only-observation-scope", "v476 Observe Scope", "v476.0 Manual Read-Only Observation Scope v1: defines operator-invoked observation scope without source, memory, schedule, model, or follow-up authority.", "Development"),
+        ("/operator-observation-packet", "v477 Observe Packet", "v477.0 Operator Observation Packet Builder v1: summarizes current version, milestone, metadata, routes, surfaces, docs, blockers, and review targets in review-only mode.", "Development"),
+        ("/no-mutation-observation-audit", "v478 No Mutation", "v478.0 No-Mutation Observation Audit v1: confirms observation does not write source, memory, metadata, schedules, models, patches, releases, approvals, or continuation state.", "Development"),
+        ("/operator-invocation-boundary", "v479 Invoke Boundary", "v479.0 Operator Invocation Boundary v1: states operator invocation permits one read-only observation report only and does not authorize monitoring, follow-up action, or live changes.", "Development"),
+        ("/operator-read-only-observation-audit", "v480 Observe Audit", "v480.0 Operator-Invoked Read-Only Observation Prep v1: audits manual observation scope, packet builder, no-mutation behavior, invocation boundaries, and no-authorization status.", "Development"),
+        ("/observation-ledger-schema", "v481 Ledger Schema", "v481.0 Observation Ledger Schema v1: defines review-only observation ledger fields without treating ledger presence or completeness as approval.", "Development"),
+        ("/observation-receipt-builder", "v482 Receipt", "v482.0 Observation Receipt Builder v1: records observed scope, no mutation, no scheduling, no model invocation, and authorization_status=not_authorized.", "Development"),
+        ("/observation-stop-pause-semantics", "v483 Stop/Pause", "v483.0 Observation Stop/Pause Semantics v1: defines pause, stop, resume, and receipt preservation before recurring observation exists.", "Development"),
+        ("/hidden-scheduling-continuation-audit", "v484 Hidden Sched", "v484.0 Hidden Scheduling and Continuation Audit v1: blocks self-scheduling, loops, automatic continuation, roadmap selection, and finding promotion.", "Development"),
+        ("/observation-ledger-boundary-audit", "v485 Ledger Audit", "v485.0 Bounded Observation Ledger and Stop/Pause Semantics v1: audits ledger schema, receipts, stop/pause semantics, hidden scheduling boundaries, and no-authorization status.", "Development"),
+        ("/observation-to-proposal-candidate-mapper", "v486 Proposal Map", "v486.0 Observation-to-Proposal Candidate Mapper v1: maps manual observation findings into review-only proposal candidates without approval or execution packets.", "Development"),
+        ("/proposal-queue-schema", "v487 Queue Schema", "v487.0 Proposal Queue Schema v1: defines supervised proposal queue records and statuses with no live-execution approval status.", "Development"),
+        ("/proposal-ranking-risk-notes", "v488 Queue Rank", "v488.0 Proposal Ranking and Risk Notes v1: ranks proposal candidates for operator attention only, not automatic selection.", "Development"),
+        ("/proposal-queue-non-execution-audit", "v489 Queue No-Exec", "v489.0 Proposal Queue Non-Execution Audit v1: proves no source writes, memory writes, schedules, models, execution packets, patch application, approval, or continuation.", "Development"),
+        ("/observation-proposal-queue-audit", "v490 Queue Audit", "v490.0 Supervised Proposal Queue from Observation Reports v1: audits mapper, queue schema, ranking notes, non-execution behavior, and no-authorization boundaries.", "Development"),
+        ("/sandbox-only-autonomy-scope-definition", "v491 Sandbox Scope", "v491.0 Sandbox-Only Autonomy Scope Definition v1: defines prep-only sandbox scope without authorizing execution.", "Development"),
+        ("/sandbox-autonomy-trial-packet-builder", "v492 Sandbox Packet", "v492.0 Sandbox Autonomy Trial Packet Builder v1: builds a hypothetical review-only sandbox packet with not_authorized/not_executed status.", "Development"),
+        ("/sandbox-to-live-boundary-hardening", "v493 Live Boundary", "v493.0 Sandbox-to-Live Boundary Hardening v1: blocks sandbox success, verification, output, or completion from becoming live authorization.", "Development"),
+        ("/no-execution-sandbox-autonomy-audit", "v494 Sandbox No-Exec", "v494.0 No-Execution Sandbox Autonomy Audit v1: proves sandbox boundary prep executes nothing and mutates nothing.", "Development"),
+        ("/sandbox-autonomy-boundary-prep-audit", "v495 Sandbox Boundary", "v495.0 Sandbox-Only Autonomy Boundary Trial Prep v1: audits sandbox boundary prep and no-authorization boundaries.", "Development"),
+        ("/autonomy-readiness-criteria-board", "v496 Ready Criteria", "v496.0 Autonomy Readiness Criteria Board v1: defines readiness criteria while reporting not_ready_for_autonomy and not_authorized status.", "Development"),
+        ("/autonomy-blocker-gap-register", "v497 Ready Gaps", "v497.0 Autonomy Blocker and Gap Register v1: lists missing gates and unproven assumptions without authorizing expansion.", "Development"),
+        ("/phase-based-autonomy-permission-model", "v498 Phase Model", "v498.0 Phase-Based Autonomy Permission Model v1: defines autonomy phases without authorizing any phase.", "Development"),
+        ("/autonomy-misinterpretation-firewall", "v499 Auto Firewall", "v499.0 Autonomy Misinterpretation Firewall v1: blocks ready-means-approved and phase-defined-means-authorized confusion.", "Development"),
+        ("/autonomy-readiness-review-board-audit", "v500 Ready Board", "v500.0 Operator-Governed Autonomy Readiness Review Board v1: audits readiness criteria, blockers, phase model, misinterpretation firewall, and no-authorization boundaries.", "Development"),
         ("/intelligence", "Intelligence", "Project indexing and codebase intelligence summaries.", "Development"),
         ("/workspace", "Workspace", "Workspace registry, project context, command profiles, and dependency maps.", "Development"),
         ("/patch-drafts", "Patch Drafts", "v73 supervised patch draft composer: intent normalization, scope contracts, prompt composition, output schema, safety review, evidence binding, and local-model handoff stubs. Draft only; no apply or model invocation.", "Development"),
@@ -5506,6 +5651,989 @@ def render_expression_live_application_packet_audit() -> str:
         [("eligibility", "Eligibility", "Audit."), ("manifest", "Manifest", "Audit."), ("patch", "Patch", "Audit."), ("verify", "Verify", "Audit."), ("govern", "Govern", "Audit."), ("approval", "Approval", "Boundary."), ("smoke", "Smoke", "Coverage."), ("layer", "Layer", "Final v350 audit.")],
     )
 
+
+def render_expression_live_execution_approval_intake() -> str:
+    return _render_supervised_runtime_arc(
+        "/expression-live-execution-approval-intake", "v351.0 Operator-Governed Live Expression Execution Approval Intake Gate v1", "operator_governed_live_expression_execution_approval_intake_v1", "v351.0", "expression-live-execution-approval-intake",
+        "Binds a fresh scope-bound operator approval id, approval purpose, expiration, v345 promotion packet, v350 live application packet, and approved surfaces for execution prep only; it does not authorize live expression application.",
+        [("boundary", "Boundary", "Prep only."), ("schema", "Approval", "Schema."), ("binder", "Packets", "Bind."), ("scope", "Scope", "Classify."), ("staleness", "Fresh", "Reject stale."), ("surface", "Surfaces", "Map."), ("route", "Route", "Register."), ("layer", "Layer", "Final v351 intake.")],
+    )
+
+
+def render_expression_live_source_transaction_preimage() -> str:
+    return _render_supervised_runtime_arc(
+        "/expression-live-source-transaction-preimage", "v352.0 Operator-Governed Live Source Transaction and Preimage Manifest Prep v1", "operator_governed_live_source_transaction_preimage_v1", "v352.0", "expression-live-source-transaction-preimage",
+        "Drafts read sets, candidate write sets, protected path exclusions, preimage snapshot requirements, version marker impacts, documentation obligations, and rollback anchors without writing files.",
+        [("boundary", "Boundary", "No writes."), ("read", "Read Set", "Plan."), ("write", "Write Set", "Draft."), ("protect", "Protected", "Exclude."), ("preimage", "Preimage", "Require."), ("version", "Version", "Impact."), ("route", "Route", "Register."), ("layer", "Layer", "Final v352 manifest.")],
+    )
+
+
+def render_expression_live_manual_execution_checklist() -> str:
+    return _render_supervised_runtime_arc(
+        "/expression-live-manual-execution-checklist", "v353.0 Operator-Governed Manual Execution Checklist and Command Packet v1", "operator_governed_live_expression_manual_execution_checklist_v1", "v353.0", "expression-live-manual-execution-checklist",
+        "Prepares human-readable application and verification commands as text only, including compile, smoke, route, API/CLI, package privacy, source-only zip, extracted zip, and full install smoke accountability notes without executing anything.",
+        [("boundary", "Boundary", "Text only."), ("review", "Review", "Human."), ("patch", "Patch", "Manual."), ("verify", "Verify", "Commands."), ("smoke", "Smoke", "Matrix."), ("routes", "Routes", "Probe."), ("parity", "API/CLI", "Check."), ("layer", "Layer", "Final v353 checklist.")],
+    )
+
+
+def render_expression_live_rollback_reversion_packet() -> str:
+    return _render_supervised_runtime_arc(
+        "/expression-live-rollback-reversion-packet", "v354.0 Operator-Governed Rollback Snapshot and Reversion Packet Prep v1", "operator_governed_live_expression_rollback_reversion_packet_v1", "v354.0", "expression-live-rollback-reversion-packet",
+        "Prepares source snapshot expectations, reverse-diff expectations, rollback verification commands as text, failure thresholds, post-rollback review packets, and operator decision states without restoring files or running rollback.",
+        [("boundary", "Boundary", "No restore."), ("snapshot", "Snapshot", "Plan."), ("reverse", "Reverse", "Diff."), ("verify", "Verify", "Text."), ("failure", "Failure", "Threshold."), ("review", "Review", "Packet."), ("decision", "Decision", "States."), ("layer", "Layer", "Final v354 rollback.")],
+    )
+
+
+def render_expression_live_execution_prep_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/expression-live-execution-prep-audit", "v355.0 Operator-Governed Expression Live Application Execution Prep Layer v1", "operator_governed_expression_live_application_execution_prep_v1", "v355.0", "expression-live-execution-prep-audit",
+        "Audits approval intake, source transaction/preimage manifests, manual execution checklists, rollback/reversion packets, docs/version obligations, route health, smoke coverage, API/CLI parity, package privacy, and no-execution boundaries.",
+        [("approval", "Approval", "Audit."), ("source", "Source", "Audit."), ("manual", "Manual", "Audit."), ("rollback", "Rollback", "Audit."), ("docs", "Docs", "Audit."), ("routes", "Routes", "Audit."), ("governance", "Govern", "Audit."), ("layer", "Layer", "Final v355 prep.")],
+    )
+
+
+def render_minimal_live_expression_change_candidate() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-expression-change-candidate", "v356.0 Minimal Approved Live Change Candidate Selection v1", "operator_approved_minimal_live_expression_change_candidate_v1", "v356.0", "minimal-live-expression-change-candidate",
+        "Identifies intentionally tiny expression-adjacent docs/dashboard/test wording candidates, recommends the governed expression status line, and blocks runtime prompt, identity, personality, memory, autonomy, model, governance, and publishing surfaces.",
+        [("boundary", "Boundary", "Tiny only."), ("candidate", "Candidate", "Select."), ("safe", "Safe Types", "List."), ("forbid", "Forbidden", "Block."), ("files", "Files", "Scope."), ("route", "Route", "Register."), ("smoke", "Smoke", "Cover."), ("layer", "Layer", "Final v356 candidate.")],
+    )
+
+def render_minimal_live_expression_approval_lock() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-expression-approval-lock", "v357.0 Operator Approval Token and Execution Scope Lock v1", "operator_approved_minimal_live_expression_approval_lock_v1", "v357.0", "minimal-live-expression-approval-lock",
+        "Locks one fresh single-use operator approval to exact files, exact change summary, expiration, forbidden files, rollback requirements, and verification requirements without self-approval or scope expansion.",
+        [("approval", "Approval", "Fresh."), ("scope", "Scope", "Exact."), ("files", "Files", "Allowed."), ("forbid", "Forbidden", "Deny."), ("single", "Single Use", "Required."), ("rollback", "Rollback", "Required."), ("verify", "Verify", "Required."), ("layer", "Layer", "Final v357 lock.")],
+    )
+
+def render_minimal_live_expression_patch_transaction() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-expression-patch-transaction", "v358.0 Tiny Patch Transaction Builder v1", "operator_approved_minimal_live_expression_patch_transaction_v1", "v358.0", "minimal-live-expression-patch-transaction",
+        "Builds a review-only transaction preview with preimage requirements, exact file list, diff preview, README/release/version obligations, rollback diff, and post-apply verification commands as text only.",
+        [("preimage", "Preimage", "Hash."), ("files", "Files", "Exact."), ("diff", "Diff", "Preview."), ("docs", "Docs", "Update."), ("rollback", "Rollback", "Diff."), ("verify", "Verify", "Text."), ("no-write", "No Write", "Boundary."), ("layer", "Layer", "Final v358 transaction.")],
+    )
+
+def render_minimal_live_expression_application_harness() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-expression-application-harness", "v359.0 Operator-Confirmed Patch Application Harness v1", "operator_confirmed_minimal_live_expression_application_harness_v1", "v359.0", "minimal-live-expression-application-harness",
+        "Defines the confirmation gate requiring fresh approval id, transaction id, preimage match, allowed-file match, exact operator phrase, rollback packet, and verification checklist before any later tiny application.",
+        [("approval", "Approval", "Fresh."), ("transaction", "Transaction", "Match."), ("preimage", "Preimage", "Match."), ("phrase", "Phrase", "Exact."), ("rollback", "Rollback", "Present."), ("verify", "Verify", "Present."), ("block", "Blocks", "Hard."), ("layer", "Layer", "Final v359 harness.")],
+    )
+
+def render_minimal_live_expression_application_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-expression-application-audit", "v360.0 Operator-Approved Minimal Live Expression Application Execution Path v1", "operator_approved_minimal_live_expression_application_audit_v1", "v360.0", "minimal-live-expression-application-audit",
+        "Audits candidate size, scoped approval, transaction/preimage match, README/release/version obligations, smoke/package/privacy checks, rollback presence, no forbidden paths, no core mutation, and no autonomous continuation. Expression application remains operator-approved, scoped, reversible, and non-autonomous.",
+        [("candidate", "Candidate", "Tiny."), ("approval", "Approval", "Scoped."), ("transaction", "Transaction", "Bound."), ("harness", "Harness", "Gated."), ("docs", "Docs", "Updated."), ("smoke", "Smoke", "Covered."), ("boundary", "Boundary", "No autonomy."), ("layer", "Layer", "Final v360 path.")],
+    )
+
+
+def render_self_maintenance_gate_registry() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-gate-registry", "v361.0 Self-Maintenance Gate Inventory and Registry Seed v1", "operator_governed_self_maintenance_gate_inventory_registry_seed_v1", "v361.0", "self-maintenance-gate-registry",
+        "Inventories self-maintenance gates by family and seeds review-only registry metadata without changing gate behavior.",
+        [("boundary", "Boundary", "No behavior change."), ("inventory", "Inventory", "Gate list."), ("classify", "Classify", "Families."), ("stale", "Stale", "Detect."), ("schema", "Schema", "Registry."), ("surface", "Surface", "API/CLI."), ("smoke", "Smoke", "Cover."), ("layer", "Layer", "Final v361 registry.")],
+    )
+
+def render_self_maintenance_version_expectations() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-version-expectations", "v362.0 Centralized Self-Maintenance Version Expectation Layer v1", "operator_governed_self_maintenance_version_expectation_layer_v1", "v362.0", "self-maintenance-version-expectations",
+        "Centralizes current-version marker expectations and stale literal detection so old gates stop fossilizing version strings.",
+        [("helper", "Helper", "Version state."), ("current", "Current", "Expected."), ("legacy", "Legacy", "Notes."), ("stale", "Stale", "Detector."), ("surface", "Surface", "API/CLI."), ("smoke", "Smoke", "Check."), ("docs", "Docs", "Rules."), ("layer", "Layer", "Final v362 version registry.")],
+    )
+
+def render_governed_surface_metadata_registry() -> str:
+    return _render_supervised_runtime_arc(
+        "/governed-surface-metadata-registry", "v363.0 Governed Surface Metadata Registry v1", "operator_governed_surface_metadata_registry_v1", "v363.0", "governed-surface-metadata-registry",
+        "Maps dashboard, API, CLI, title, route, and boundary metadata for governed layers without changing route handlers.",
+        [("schema", "Schema", "Surface."), ("routes", "Routes", "Metadata."), ("api", "API", "Parity."), ("cli", "CLI", "Parity."), ("health", "Health", "Registry."), ("data-tip", "data-tip", "Preserve."), ("smoke", "Smoke", "Cover."), ("layer", "Layer", "Final v363 surface registry.")],
+    )
+
+def render_smoke_check_legacy_gate_registry() -> str:
+    return _render_supervised_runtime_arc(
+        "/smoke-check-legacy-gate-registry", "v364.0 Smoke Check Registry and Legacy Gate Cleanup v1", "operator_governed_smoke_check_registry_and_legacy_gate_cleanup_v1", "v364.0", "smoke-check-legacy-gate-registry",
+        "Registers targeted smoke checks and legacy gate compatibility helpers without executing smoke or applying cleanup automatically.",
+        [("inventory", "Inventory", "Smoke."), ("group", "Group", "By arc."), ("helpers", "Helpers", "Assert."), ("legacy", "Legacy", "Wrapper."), ("stale", "Stale", "Output."), ("privacy", "Privacy", "Hook."), ("install", "Install", "Verify."), ("layer", "Layer", "Final v364 smoke registry.")],
+    )
+
+def render_self_maintenance_refactor_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-refactor-audit", "v365.0 Self-Maintenance Surface Reduction and Gate Registry Refactor v1", "operator_governed_self_maintenance_surface_reduction_and_gate_registry_refactor_v1", "v365.0", "self-maintenance-refactor-audit",
+        "Audits gate inventory, centralized version expectations, governed surface metadata, smoke registry coverage, package privacy, data-tip dashboard behavior, and no-autonomy/no-behavior-change boundaries.",
+        [("boundary", "Boundary", "No expansion."), ("gates", "Gates", "Registry."), ("versions", "Versions", "Central."), ("surfaces", "Surfaces", "Parity."), ("smoke", "Smoke", "Registry."), ("privacy", "Privacy", "Package."), ("hover", "Hover", "data-tip."), ("layer", "Layer", "Final v365 refactor.")],
+    )
+
+
+def render_minimal_live_change_replay_packet() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-change-replay-packet", "v366.0 Minimal Live Change Replay Packet v1", "operator_governed_minimal_live_change_replay_packet_v1", "v366.0", "minimal-live-change-replay-packet",
+        "Captures original candidate, approval lock, transaction, harness, audit, expected files, smoke checks, and rollback references without replaying or applying changes.",
+        [("boundary", "Boundary", "Review-only."), ("candidate", "Candidate", "Original id."), ("approval", "Approval", "Lock id."), ("transaction", "Transaction", "Transaction id."), ("harness", "Harness", "Harness/audit ids."), ("files", "Files", "Expected touched and untouched files."), ("surface", "Surface", "Dashboard/API/CLI."), ("layer", "Layer", "Final v366 replay packet.")],
+    )
+
+def render_minimal_live_change_expected_actual_comparison() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-change-expected-actual-comparison", "v367.0 Expected-vs-Actual Live Change Comparison v1", "operator_governed_minimal_live_change_expected_actual_comparison_v1", "v367.0", "minimal-live-change-expected-actual-comparison",
+        "Compares expected and actual changed files, docs updates, version markers, smoke status, dashboard/API/CLI health, and package privacy without writing files or treating matches as approval.",
+        [("boundary", "Boundary", "Read-only."), ("expected", "Expected", "Expected files."), ("actual", "Actual", "Actual files."), ("unexpected", "Unexpected", "Drift."), ("missing", "Missing", "Missing expected."), ("docs", "Docs", "Docs/version/smoke."), ("surface", "Surface", "Dashboard/API/CLI."), ("layer", "Layer", "Final v367 comparison.")],
+    )
+
+def render_minimal_live_change_regression_drift_detector() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-change-regression-drift-detector", "v368.0 Regression Drift Detector v1", "operator_governed_minimal_live_change_regression_drift_detector_v1", "v368.0", "minimal-live-change-regression-drift-detector",
+        "Detects governance, route/API/CLI, registry, package privacy, data-tip dashboard hover, stable JSON write, and legacy gate drift without behavior changes or auto-fixes.",
+        [("boundary", "Boundary", "Review-only."), ("approval", "Approval", "Boundary drift."), ("routes", "Routes", "Parity drift."), ("registry", "Registry", "Registry drift."), ("privacy", "Privacy", "Package drift."), ("hover", "Hover", "data-tip."), ("surface", "Surface", "Dashboard/API/CLI."), ("layer", "Layer", "Final v368 drift detector.")],
+    )
+
+def render_minimal_live_change_recovery_recommendation() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-change-recovery-recommendation", "v369.0 Recovery Recommendation Packet v1", "operator_governed_minimal_live_change_recovery_recommendation_v1", "v369.0", "minimal-live-change-recovery-recommendation",
+        "Recommends manual rollback, manual correction, return to sandbox, operator review, blocking further attempts, or narrower candidates without executing rollback, editing files, or rerunning commands.",
+        [("boundary", "Boundary", "Recommendation only."), ("issues", "Issues", "Detected issues."), ("rollback", "Rollback", "Manual only."), ("correction", "Correction", "Manual only."), ("sandbox", "Sandbox", "Return path."), ("block", "Block", "Further attempts."), ("surface", "Surface", "Dashboard/API/CLI."), ("layer", "Layer", "Final v369 recovery packet.")],
+    )
+
+def render_minimal_live_change_replay_regression_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/minimal-live-change-replay-regression-audit", "v370.0 Minimal Approved Live Change Replay and Regression Hardening v1", "operator_governed_minimal_live_change_replay_and_regression_hardening_v1", "v370.0", "minimal-live-change-replay-regression-audit",
+        "Audits the replay packet, expected-vs-actual comparison, drift detector, recovery recommendations, governance boundaries, route/API/CLI parity, package privacy, and no-autonomy/no-mutation guarantees.",
+        [("boundary", "Boundary", "No automatic replay."), ("replay", "Replay", "Packet present."), ("comparison", "Comparison", "Expected vs actual."), ("drift", "Drift", "Regression detector."), ("recovery", "Recovery", "Recommendations only."), ("governance", "Governance", "No autonomy expansion."), ("privacy", "Privacy", "Source-only."), ("layer", "Layer", "Final v370 audit.")],
+    )
+
+
+def render_self_maintenance_module_extraction_plan() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-module-extraction-plan", "v371.0 Self-Maintenance Module Extraction Plan v1", "operator_governed_self_maintenance_module_extraction_plan_v1", "v371.0", "self-maintenance-module-extraction-plan",
+        "Maps safe extraction families for version expectations, route/API/CLI checks, package privacy, dashboard hover checks, governance boundaries, legacy gates, expression audits, and minimal live-change replay checks without moving behavior automatically.",
+        [("boundary", "Boundary", "No behavior change."), ("families", "Families", "Inventory."), ("modules", "Modules", "Candidates."), ("risk", "Risk", "Dependency map."), ("version", "Version", "Binder."), ("surface", "Surface", "Binder."), ("governance", "Governance", "Binder."), ("layer", "Layer", "Final v371 plan.")],
+    )
+
+def render_self_maintenance_version_package_gates() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-version-package-gates", "v372.0 Version and Package Gate Extraction v1", "operator_governed_self_maintenance_version_package_gate_extraction_v1", "v372.0", "self-maintenance-version-package-gates",
+        "Extracts version marker summary checks, current-version expectations, source-only package privacy expectations, forbidden path scans, and release metadata consistency checks into self_maintenance_version_package_gates.py without writing files or building packages.",
+        [("version", "Version", "Summary."), ("current", "Current", "Expected."), ("privacy", "Privacy", "Source-only."), ("forbidden", "Forbidden", "Path scan."), ("release", "Release", "Metadata."), ("module", "Module", "Extracted."), ("boundary", "Boundary", "Review-only."), ("layer", "Layer", "Final v372 gates.")],
+    )
+
+def render_self_maintenance_surface_gates() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-surface-gates", "v373.0 Route/API/CLI Gate Extraction v1", "operator_governed_self_maintenance_surface_gate_extraction_v1", "v373.0", "self-maintenance-surface-gates",
+        "Extracts dashboard route presence, API parity, CLI parity, route health, registry-driven surface checks, data-tip preservation, and native-title-tooltip regression guards into self_maintenance_surface_gates.py without changing routes.",
+        [("dashboard", "Dashboard", "Routes."), ("api", "API", "Parity."), ("cli", "CLI", "Parity."), ("health", "Health", "Route."), ("registry", "Registry", "Driven."), ("hover", "Hover", "data-tip."), ("boundary", "Boundary", "No route writes."), ("layer", "Layer", "Final v373 gates.")],
+    )
+
+def render_self_maintenance_governance_gates() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-governance-gates", "v374.0 Governance Boundary Gate Extraction v1", "operator_governed_self_maintenance_governance_gate_extraction_v1", "v374.0", "self-maintenance-governance-gates",
+        "Extracts no self-approval, no automatic continuation, no memory mutation, no identity/personality mutation, no model default invocation, no automatic rollback, no release publishing, and no hidden scheduling checks into self_maintenance_governance_gates.py.",
+        [("approval", "Approval", "No self."), ("continue", "Continue", "No auto."), ("memory", "Memory", "No mutation."), ("identity", "Identity", "No mutation."), ("models", "Models", "No default."), ("rollback", "Rollback", "No auto."), ("release", "Release", "No publish."), ("layer", "Layer", "Final v374 gates.")],
+    )
+
+def render_self_maintenance_modular_extraction_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-modular-extraction-audit", "v375.0 Self-Maintenance Modular Extraction v1", "operator_governed_self_maintenance_modular_extraction_v1", "v375.0", "self-maintenance-modular-extraction-audit",
+        "Audits the extraction plan, version/package gate module, surface gate module, governance gate module, legacy compatibility, package privacy, smoke coverage, dashboard data-tip behavior, and no-autonomy/no-behavior-expansion boundaries.",
+        [("boundary", "Boundary", "No expansion."), ("plan", "Plan", "Extraction."), ("version", "Version", "Package gates."), ("surface", "Surface", "Route/API/CLI gates."), ("governance", "Governance", "Boundary gates."), ("smoke", "Smoke", "Regression."), ("privacy", "Privacy", "Source-only."), ("layer", "Layer", "Final v375 extraction.")],
+    )
+
+
+def render_live_patch_trial_result_intake() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-patch-trial-result-intake", "v381.0 Operator-Governed Live Patch Trial Result Intake v1", "operator_governed_live_patch_trial_result_intake_v1", "v381.0", "live-patch-trial-result-intake",
+        "Ingests an operator-reported live patch trial result, expected files, actual changed files, verification results, rollback readiness, and manual notes without rerunning commands, applying fixes, executing rollback, or inferring future approval.",
+        [("boundary", "Boundary", "No command execution."), ("approval", "Approval", "Id bound."), ("transaction", "Transaction", "Id bound."), ("files", "Files", "Expected vs actual."), ("verify", "Verify", "Reported only."), ("rollback", "Rollback", "Readiness report."), ("surface", "Surface", "Dashboard/API/CLI."), ("layer", "Layer", "Final v381 intake.")],
+    )
+
+
+def render_live_patch_applied_diff_evidence() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-patch-applied-diff-evidence", "v382.0 Operator-Governed Applied Diff and Source-State Evidence Packet v1", "operator_governed_live_patch_applied_diff_evidence_v1", "v382.0", "live-patch-applied-diff-evidence",
+        "Records expected diff, actual diff, preimage/postimage references, README/release/version evidence, forbidden-path absence, and source-only package expectations without generating patches or editing source.",
+        [("expected", "Expected", "Diff."), ("actual", "Actual", "Diff."), ("preimage", "Preimage", "Reference."), ("postimage", "Postimage", "Reference."), ("docs", "Docs", "Evidence."), ("privacy", "Privacy", "Forbidden paths."), ("boundary", "Boundary", "No writes."), ("layer", "Layer", "Final v382 evidence.")],
+    )
+
+
+def render_live_patch_approval_burnout() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-patch-approval-burnout", "v383.0 Operator-Governed One-Time Approval Burnout and Reuse Block v1", "operator_governed_live_patch_approval_burnout_v1", "v383.0", "live-patch-approval-burnout",
+        "Confirms that the single-use approval token is consumed, reuse is rejected, scope expansion is blocked, stale approval is rejected, results remain separate from authorization, and operator reapproval is required.",
+        [("burnout", "Burnout", "Consumed."), ("single", "Single", "Use."), ("reuse", "Reuse", "Rejected."), ("scope", "Scope", "No expansion."), ("stale", "Stale", "Rejected."), ("result", "Result", "Not approval."), ("reapprove", "Reapprove", "Required."), ("layer", "Layer", "Final v383 burnout.")],
+    )
+
+
+def render_live_patch_post_trial_regression_review() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-patch-post-trial-regression-review", "v384.0 Operator-Governed Post-Trial Regression and Rollback Readiness Review v1", "operator_governed_live_patch_post_trial_regression_review_v1", "v384.0", "live-patch-post-trial-regression-review",
+        "Reviews reported compile/smoke outcomes, dashboard route health, API/CLI parity, package privacy, data-tip hover behavior, rollback packet presence, rollback feasibility, and unexpected-file absence without rerunning smoke or executing rollback.",
+        [("compile", "Compile", "Reported."), ("smoke", "Smoke", "Reported."), ("routes", "Routes", "Health."), ("api", "API/CLI", "Parity."), ("privacy", "Privacy", "Package."), ("hover", "Hover", "data-tip."), ("rollback", "Rollback", "Feasibility."), ("layer", "Layer", "Final v384 review.")],
+    )
+
+
+def render_live_patch_trial_closure_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-patch-trial-closure-audit", "v385.0 Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1", "operator_governed_live_patch_trial_closure_audit_v1", "v385.0", "live-patch-trial-closure-audit",
+        "Audits trial-result intake, applied diff evidence, one-time approval burnout, post-trial regression/rollback readiness review, docs, version markers, package privacy, and no-autonomy/no-reuse/no-mutation boundaries.",
+        [("boundary", "Boundary", "No next patch."), ("intake", "Intake", "Trial result."), ("diff", "Diff", "Evidence."), ("burnout", "Burnout", "Approval."), ("regression", "Regression", "Review."), ("rollback", "Rollback", "Readiness."), ("privacy", "Privacy", "Source-only."), ("layer", "Layer", "Final v385 closure.")],
+    )
+
+
+def render_second_minimal_live_patch_candidate() -> str:
+    return _render_supervised_runtime_arc(
+        "/second-minimal-live-patch-candidate", "v386.0 Operator-Governed Second Minimal Patch Candidate Registry Selection v1", "operator_governed_second_minimal_live_patch_candidate_v1", "v386.0", "second-minimal-live-patch-candidate",
+        "Selects a second tiny registry-safe live patch candidate from approved classes without autonomous selection, runtime personality change, identity change, memory mutation, approval weakening, model-default change, or scheduling expansion.",
+        [("boundary", "Boundary", "No auto-select."), ("candidate", "Candidate", "Registry-safe."), ("forbidden", "Forbidden", "No mind mutation."), ("operator", "Operator", "Supplied."), ("scope", "Scope", "Tiny."), ("rollback", "Rollback", "Required later."), ("surface", "Surface", "Dashboard/API/CLI."), ("layer", "Layer", "Final v386 candidate.")],
+    )
+
+
+def render_registry_driven_live_patch_approval_validation() -> str:
+    return _render_supervised_runtime_arc(
+        "/registry-driven-live-patch-approval-validation", "v387.0 Operator-Governed Registry-Driven Approval and Scope Validation v1", "operator_governed_registry_driven_live_patch_approval_validation_v1", "v387.0", "registry-driven-live-patch-approval-validation",
+        "Validates fresh approval id, single-use token, allowed/forbidden files, target version, registry-known surfaces, rollback requirement, verification requirement, expiration, and scope without reusing approval or self-approving.",
+        [("approval", "Approval", "Fresh."), ("single", "Single", "Use."), ("files", "Files", "Allowed/forbidden."), ("registry", "Registry", "Surface metadata."), ("rollback", "Rollback", "Required."), ("verify", "Verify", "Required."), ("boundary", "Boundary", "No reuse."), ("layer", "Layer", "Final v387 validation.")],
+    )
+
+
+def render_registry_driven_live_patch_transaction_lock() -> str:
+    return _render_supervised_runtime_arc(
+        "/registry-driven-live-patch-transaction-lock", "v388.0 Operator-Governed Registry-Driven Patch Transaction and Preimage Lock v1", "operator_governed_registry_driven_live_patch_transaction_lock_v1", "v388.0", "registry-driven-live-patch-transaction-lock",
+        "Locks candidate id, approval id, expected changed/unchanged files, preimage check placeholders, README/release/version obligations, targeted smoke, package privacy, and dashboard data-tip requirements without writing files.",
+        [("transaction", "Transaction", "Id."), ("preimage", "Preimage", "Lock."), ("files", "Files", "Expected."), ("docs", "Docs", "Obligation."), ("smoke", "Smoke", "Obligation."), ("privacy", "Privacy", "Source-only."), ("hover", "Hover", "data-tip."), ("layer", "Layer", "Final v388 lock.")],
+    )
+
+
+def render_second_live_patch_application_harness() -> str:
+    return _render_supervised_runtime_arc(
+        "/second-live-patch-application-harness", "v389.0 Operator-Confirmed Second Minimal Live Patch Application Harness v1", "operator_confirmed_second_live_patch_application_harness_v1", "v389.0", "second-live-patch-application-harness",
+        "Prepares the second operator-confirmed harness requiring fresh approval, matching transaction, preimage match, allowed-file match, exact confirmation phrase, rollback packet, verification packet, approval burnout, and post-trial closure.",
+        [("approval", "Approval", "Fresh."), ("transaction", "Transaction", "Matches."), ("preimage", "Preimage", "Matches."), ("confirm", "Confirm", "Exact phrase."), ("rollback", "Rollback", "Packet."), ("verify", "Verify", "Packet."), ("burnout", "Burnout", "Required."), ("layer", "Layer", "Final v389 harness.")],
+    )
+
+
+def render_second_live_patch_trial_registry_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/second-live-patch-trial-registry-audit", "v390.0 Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1", "operator_governed_second_live_patch_trial_registry_audit_v1", "v390.0", "second-live-patch-trial-registry-audit",
+        "Audits registry-safe candidate selection, fresh single-use approval validation, transaction/preimage lock, operator-confirmed harness, approval burnout, post-trial closure requirements, docs, version markers, package privacy, and no-autonomy/no-mutation boundaries.",
+        [("candidate", "Candidate", "Registry-safe."), ("approval", "Approval", "Single-use."), ("transaction", "Transaction", "Preimage lock."), ("harness", "Harness", "Confirmed."), ("burnout", "Burnout", "Required."), ("closure", "Closure", "Required."), ("privacy", "Privacy", "Source-only."), ("layer", "Layer", "Final v390 audit.")],
+    )
+
+def render_live_patch_trial_history_ledger() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-patch-trial-history-ledger", "v391.0 Operator-Governed Live Patch Trial History Ledger v1", "operator_governed_live_patch_trial_history_ledger_v1", "v391.0", "live-patch-trial-history-ledger",
+        "Records completed minimal live patch trials, approval ids, candidate ids, transactions, closure audits, changed files, expected/actual results, decisions, approval burnout, and rollback readiness without treating history as permission.",
+        [("trial", "Trial", "Ledger."), ("approval", "Approval", "Burned."), ("files", "Files", "Changed."), ("expected", "Expected", "Results."), ("actual", "Actual", "Results."), ("decision", "Decision", "Operator."), ("rollback", "Rollback", "Readiness."), ("layer", "Layer", "Final v391 ledger.")],
+    )
+
+
+def render_operator_live_patch_decision_patterns() -> str:
+    return _render_supervised_runtime_arc(
+        "/operator-live-patch-decision-patterns", "v392.0 Operator-Governed Live Patch Decision Pattern Review v1", "operator_governed_live_patch_decision_pattern_review_v1", "v392.0", "operator-live-patch-decision-patterns",
+        "Reviews operator decisions such as approved, blocked, revised, deferred, returned-to-sandbox, rolled back, reapproved, and burned-after-use without changing future behavior or self-approving.",
+        [("approved", "Approved", "Count."), ("blocked", "Blocked", "Count."), ("revised", "Revised", "Count."), ("deferred", "Deferred", "Count."), ("sandbox", "Sandbox", "Return."), ("burnout", "Burnout", "Observed."), ("boundary", "Boundary", "No behavior change."), ("layer", "Layer", "Final v392 review.")],
+    )
+
+
+def render_live_patch_supervised_lesson_candidates() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-patch-supervised-lesson-candidates", "v393.0 Operator-Governed Live Patch Supervised Lesson Candidate Drafting v1", "operator_governed_live_patch_supervised_lesson_candidate_drafting_v1", "v393.0", "live-patch-supervised-lesson-candidates",
+        "Drafts supervised lesson candidates from live patch trial history without writing memory, altering identity, altering personality, updating behavior, or treating candidates as authority.",
+        [("lesson", "Lesson", "Candidate."), ("factual", "Factual", "Claim."), ("scope", "Scope", "Narrow."), ("memory", "Memory", "Not written."), ("identity", "Identity", "Unchanged."), ("personality", "Personality", "Unchanged."), ("review", "Review", "Operator."), ("layer", "Layer", "Final v393 lessons.")],
+    )
+
+
+def render_live_patch_memory_candidate_governance() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-patch-memory-candidate-governance", "v394.0 Operator-Governed Live Patch Memory Candidate Governance v1", "operator_governed_live_patch_memory_candidate_governance_v1", "v394.0", "live-patch-memory-candidate-governance",
+        "Classifies lesson candidates for factuality, scope, sensitivity, non-autonomy, operator approval before storage, no identity/personality mutation, and no authority expansion without storing memory.",
+        [("factual", "Factual", "Check."), ("scoped", "Scoped", "Check."), ("privacy", "Sensitive", "Blocked."), ("approval", "Approval", "Required later."), ("identity", "Identity", "No mutation."), ("personality", "Personality", "No mutation."), ("authority", "Authority", "No expansion."), ("layer", "Layer", "Final v394 governance.")],
+    )
+
+
+def render_live_patch_history_memory_candidate_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-patch-history-memory-candidate-audit", "v395.0 Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1", "operator_governed_live_patch_history_and_memory_candidate_audit_v1", "v395.0", "live-patch-history-memory-candidate-audit",
+        "Audits patch trial history, operator decision patterns, supervised lesson candidates, memory candidate governance, docs, version markers, package privacy, dashboard hover behavior, and no-memory-write/no-autonomy boundaries.",
+        [("ledger", "Ledger", "Present."), ("decisions", "Decisions", "Reviewed."), ("lessons", "Lessons", "Drafted."), ("memory", "Memory", "Not written."), ("approval", "Approval", "No reuse."), ("privacy", "Privacy", "Source-only."), ("hover", "Hover", "data-tip."), ("layer", "Layer", "Final v395 audit.")],
+    )
+
+
+def render_memory_candidate_selection_packet() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-candidate-selection-packet", "v396.0 Operator-Governed Memory Candidate Selection Packet v1", "operator_governed_memory_candidate_selection_packet_v1", "v396.0", "memory-candidate-selection-packet",
+        "Selects one reviewable memory candidate from supervised lesson candidates without writing memory, mutating identity/personality, or treating eligibility as approval.",
+        [("candidate", "Candidate", "Selected."), ("source", "Source", "Trial."), ("lesson", "Lesson", "Text."), ("risk", "Risk", "Classified."), ("review", "Review", "Required."), ("storage", "Storage", "Not authorized."), ("boundary", "Boundary", "No memory write."), ("layer", "Layer", "Final v396 selection.")],
+    )
+
+
+def render_memory_application_approval_lock() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-application-approval-lock", "v397.0 Operator-Governed Memory Application Approval Lock v1", "operator_governed_memory_application_approval_lock_v1", "v397.0", "memory-application-approval-lock",
+        "Locks one selected memory candidate to fresh single-use operator approval, allowed scope, forbidden memory categories, expiration, retraction note, and post-application audit.",
+        [("approval", "Approval", "Fresh."), ("candidate", "Candidate", "Matched."), ("scope", "Scope", "Locked."), ("single", "Single-use", "Required."), ("forbid", "Forbidden", "Categories."), ("confirm", "Confirm", "Exact phrase."), ("audit", "Audit", "Required."), ("layer", "Layer", "Final v397 lock.")],
+    )
+
+
+def render_memory_write_transaction_preview() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-write-transaction-preview", "v398.0 Operator-Governed Memory Write Transaction Preview v1", "operator_governed_memory_write_transaction_preview_v1", "v398.0", "memory-write-transaction-preview",
+        "Previews the exact memory text, destination, reason, future use, sensitive-data screen, identity/personality screen, scope limits, and retraction plan without writing memory.",
+        [("text", "Text", "Exact."), ("dest", "Destination", "Preview."), ("reason", "Reason", "Stated."), ("privacy", "Sensitive", "Screen."), ("identity", "Identity", "Blocked."), ("personality", "Personality", "Blocked."), ("retract", "Retract", "Planned."), ("layer", "Layer", "Final v398 preview.")],
+    )
+
+
+def render_operator_confirmed_memory_application_trial() -> str:
+    return _render_supervised_runtime_arc(
+        "/operator-confirmed-memory-application-trial", "v399.0 Operator-Confirmed Memory Application Trial Harness v1", "operator_confirmed_memory_application_trial_v1", "v399.0", "operator-confirmed-memory-application-trial",
+        "Requires fresh approval, matching candidate, matching transaction preview, exact operator confirmation, sensitivity and identity/personality screens, unused single-use approval, retraction packet, and post-application audit.",
+        [("approval", "Approval", "Fresh."), ("match", "Match", "Candidate/tx."), ("confirm", "Confirm", "Exact."), ("screen", "Screens", "Passed."), ("single", "Single-use", "Unused."), ("retract", "Retract", "Present."), ("audit", "Audit", "Present."), ("layer", "Layer", "Final v399 harness.")],
+    )
+
+
+def render_memory_application_trial_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-application-trial-audit", "v400.0 Operator-Approved Memory Candidate Application Trial v1", "operator_governed_memory_application_trial_audit_v1", "v400.0", "memory-application-trial-audit",
+        "Audits memory candidate selection, approval lock, write transaction preview, operator-confirmed harness, sensitive-data and identity/personality screens, single-use approval, retraction packet, docs, smoke, package privacy, and no-autonomy boundaries.",
+        [("select", "Selection", "Present."), ("approval", "Approval", "Single-use."), ("preview", "Preview", "Exact."), ("harness", "Harness", "Confirmed."), ("screens", "Screens", "Passed."), ("retract", "Retract", "Packet."), ("privacy", "Privacy", "Source-only."), ("layer", "Layer", "Final v400 audit.")],
+    )
+
+
+def render_memory_application_confirmation_gate() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-application-confirmation-gate", "v401.0 Memory Application Confirmation Presence Gate v1", "operator_governed_memory_application_confirmation_gate_v1", "v401.0", "memory-application-confirmation-gate",
+        "Hardens the v400 memory application harness so missing operator confirmation evidence remains blocked instead of defaulting to the approval phrase.",
+        [("missing", "Missing", "Blocked."), ("wrong", "Wrong", "Blocked."), ("exact", "Exact", "Supplied."), ("approval", "Approval", "Single-use."), ("memory", "Memory", "No write."), ("identity", "Identity", "Blocked."), ("audit", "Audit", "Required."), ("layer", "Layer", "Final v401 gate.")],
+    )
+
+
+def render_memory_application_negative_tests() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-application-negative-tests", "v402.0 Memory Application Negative Confirmation Tests v1", "operator_governed_memory_application_negative_tests_v1", "v402.0", "memory-application-negative-tests",
+        "Adds behavioral negative checks for missing confirmation, wrong phrase, reused approval, candidate drift, memory text drift, sensitive storage, identity/personality mutation, and autonomy expansion.",
+        [("missing", "Missing", "Blocked."), ("wrong", "Wrong", "Blocked."), ("reuse", "Reuse", "Blocked."), ("drift", "Drift", "Blocked."), ("sensitive", "Sensitive", "Blocked."), ("identity", "Identity", "Blocked."), ("autonomy", "Autonomy", "Blocked."), ("layer", "Layer", "Final v402 tests.")],
+    )
+
+
+def render_smoke_segment_registry() -> str:
+    return _render_supervised_runtime_arc(
+        "/smoke-segment-registry", "v403.0 Smoke Segment Registry v1", "operator_governed_smoke_segment_registry_v1", "v403.0", "smoke-segment-registry",
+        "Classifies install smoke into bounded segments: core, release, dashboard, governance, expression, live-trial, memory, and recent regression without executing checks automatically.",
+        [("core", "Core", "Segment."), ("release", "Release", "Segment."), ("dashboard", "Dashboard", "Segment."), ("governance", "Governance", "Segment."), ("expression", "Expression", "Segment."), ("live", "Live Trial", "Segment."), ("memory", "Memory", "Segment."), ("recent", "Recent", "Regression.")],
+    )
+
+
+def render_install_smoke_segment_runner() -> str:
+    return _render_supervised_runtime_arc(
+        "/install-smoke-segment-runner", "v404.0 Install Smoke Segment Runner v1", "operator_governed_install_smoke_segment_runner_v1", "v404.0", "install-smoke-segment-runner",
+        "Adds --segment and --list-segments support so install smoke can be run in bounded groups with advisory resume metadata. Segment success is not authorization.",
+        [("segment", "Segment", "Selectable."), ("resume", "Resume", "Metadata."), ("full", "Full", "Preserved."), ("json", "JSON", "Reports."), ("pass", "Pass", "Not approval."), ("memory", "Memory", "No write."), ("patch", "Patch", "No apply."), ("layer", "Layer", "Final v404 runner.")],
+    )
+
+
+def render_segmented_install_smoke_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/segmented-install-smoke-audit", "v405.0 Segmented Install Smoke and Self-Maintenance Confirmation Hardening v1", "operator_governed_segmented_install_smoke_audit_v1", "v405.0", "segmented-install-smoke-audit",
+        "Audits explicit memory confirmation hardening, segmented install smoke registry coverage, segment runner metadata, README/release history updates, package privacy, and no-authorization boundaries.",
+        [("confirm", "Confirm", "Explicit."), ("negative", "Negative", "Tests."), ("segments", "Segments", "Bounded."), ("runner", "Runner", "Advisory."), ("docs", "Docs", "Updated."), ("privacy", "Privacy", "Source-only."), ("approval", "Approval", "Not inferred."), ("layer", "Layer", "Final v405 audit.")],
+    )
+
+def render_memory_application_attempt_ledger_schema() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-application-attempt-ledger-schema", "v406.0 Memory Application Attempt Ledger Schema v1", "operator_governed_memory_application_attempt_ledger_schema_v1", "v406.0", "memory-application-attempt-ledger-schema",
+        "Defines review-only memory application dry-run attempt records with candidate, approval, confirmation, transaction hashes, blockers, and operator decision placeholders. It writes no live memory.",
+        [("schema", "Schema", "Defined."), ("candidate", "Candidate", "Hashed."), ("approval", "Approval", "Single-use."), ("confirm", "Confirm", "Exact."), ("blockers", "Blockers", "Tracked."), ("decision", "Decision", "Placeholder."), ("memory", "Memory", "No write."), ("layer", "Layer", "Final v406 schema.")],
+    )
+
+
+def render_memory_application_dry_run_ledger() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-application-dry-run-ledger", "v407.0 Memory Application Dry-Run Ledger Entry Builder v1", "operator_governed_memory_application_dry_run_ledger_entry_builder_v1", "v407.0", "memory-application-dry-run-ledger",
+        "Builds reviewable dry-run ledger entries from memory candidate, approval lock, transaction preview, and exact confirmation evidence without writing memory or granting authorization.",
+        [("entry", "Entry", "Built."), ("hash", "Hashes", "Bound."), ("confirm", "Confirm", "Supplied."), ("review", "Review", "Only."), ("reuse", "Reuse", "Blocked."), ("identity", "Identity", "Protected."), ("autonomy", "Autonomy", "No expansion."), ("layer", "Layer", "Final v407 builder.")],
+    )
+
+
+def render_memory_application_ledger_replay() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-application-ledger-replay", "v408.0 Memory Application Ledger Replay and Drift Detection v1", "operator_governed_memory_application_ledger_replay_v1", "v408.0", "memory-application-ledger-replay",
+        "Replays a dry-run ledger entry against current evidence and blocks candidate, approval, transaction, memory text, confirmation, sensitivity, identity/personality, or autonomy drift.",
+        [("replay", "Replay", "Review."), ("candidate", "Candidate", "Drift."), ("approval", "Approval", "Drift."), ("transaction", "Transaction", "Drift."), ("memory", "Memory", "Drift."), ("confirm", "Confirm", "Checked."), ("block", "Drift", "Blocked."), ("layer", "Layer", "Final v408 replay.")],
+    )
+
+
+def render_memory_application_ledger_surfaces() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-application-ledger-surfaces", "v409.0 Memory Application Ledger Dashboard API CLI Surfaces v1", "operator_governed_memory_application_ledger_surfaces_v1", "v409.0", "memory-application-ledger-surfaces",
+        "Registers dashboard, API, and CLI surfaces for memory dry-run ledger review while preserving command-deck styling, custom data-tip hover, and no native title tooltip regression.",
+        [("dashboard", "Dashboard", "Route."), ("api", "API", "Route."), ("cli", "CLI", "Flag."), ("data-tip", "Hover", "Custom."), ("title", "Native", "Forbidden."), ("parity", "Parity", "Checked."), ("privacy", "Privacy", "Source-only."), ("layer", "Layer", "Final v409 surfaces.")],
+    )
+
+
+def render_memory_application_ledger_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-application-ledger-audit", "v410.0 Operator-Governed Memory Application Dry-Run Ledger v1", "operator_governed_memory_application_dry_run_ledger_v1", "v410.0", "memory-application-ledger-audit",
+        "Audits dry-run ledger records, replay drift detection, dashboard/API/CLI parity, documentation, package privacy, segmented smoke coverage, and no-memory-write authorization boundaries.",
+        [("attempt", "Attempt", "Recorded."), ("ledger", "Ledger", "Dry-run."), ("replay", "Replay", "Blocks drift."), ("surfaces", "Surfaces", "Registered."), ("docs", "Docs", "Updated."), ("privacy", "Privacy", "Source-only."), ("memory", "Memory", "No write."), ("layer", "Layer", "Final v410 audit.")],
+    )
+
+
+def render_sandbox_memory_target_schema() -> str:
+    return _render_supervised_runtime_arc(
+        "/sandbox-memory-target-schema", "v411.0 Sandbox Memory Target Schema v1", "operator_governed_sandbox_memory_target_schema_v1", "v411.0", "sandbox-memory-target-schema",
+        "Defines sandbox-only memory write targets with live memory disallowed, exact confirmation required, and sandbox path gates documented for operator review.",
+        [("target", "Target", "Sandbox."), ("path", "Path", "Scoped."), ("live", "Live", "Blocked."), ("schema", "Schema", "Defined."), ("confirm", "Confirm", "Required."), ("memory", "Memory", "No live write."), ("review", "Review", "Only."), ("layer", "Layer", "Final v411 schema.")],
+    )
+
+
+def render_sandbox_memory_write_transaction() -> str:
+    return _render_supervised_runtime_arc(
+        "/sandbox-memory-write-transaction", "v412.0 Sandbox Memory Write Transaction Builder v1", "operator_governed_sandbox_memory_write_transaction_builder_v1", "v412.0", "sandbox-memory-write-transaction",
+        "Builds sandbox write transaction previews from v410 dry-run ledger evidence, exact confirmation, and sandbox-only target checks without granting live memory approval.",
+        [("ledger", "Ledger", "Required."), ("confirm", "Confirm", "Exact."), ("target", "Target", "Sandbox."), ("hash", "Hashes", "Bound."), ("preview", "Preview", "Review."), ("live", "Live", "Disallowed."), ("approval", "Approval", "Not inferred."), ("layer", "Layer", "Final v412 transaction.")],
+    )
+
+
+def render_sandbox_memory_write_trial() -> str:
+    return _render_supervised_runtime_arc(
+        "/sandbox-memory-write-trial", "v413.0 Sandbox Memory Write Execution Trial v1", "operator_governed_sandbox_memory_write_execution_trial_v1", "v413.0", "sandbox-memory-write-trial",
+        "Executes sandbox-only memory write trials into excluded runtime targets, records before/after hashes, and blocks non-sandbox or live memory paths.",
+        [("execute", "Execute", "Sandbox only."), ("before", "Before", "Hash."), ("after", "After", "Hash."), ("path", "Path", "Gated."), ("runtime", "Runtime", "Excluded."), ("live", "Live", "Blocked."), ("success", "Success", "Not approval."), ("layer", "Layer", "Final v413 trial.")],
+    )
+
+
+def render_sandbox_memory_retraction_preview() -> str:
+    return _render_supervised_runtime_arc(
+        "/sandbox-memory-retraction-preview", "v414.0 Sandbox Memory Retraction Preview and Replay v1", "operator_governed_sandbox_memory_retraction_preview_v1", "v414.0", "sandbox-memory-retraction-preview",
+        "Prepares sandbox retraction previews and replay drift checks without executing live memory retraction or treating sandbox removability as future authorization.",
+        [("preview", "Preview", "Retraction."), ("match", "Match", "Exact."), ("drift", "Drift", "Blocked."), ("hash", "Hashes", "Tracked."), ("sandbox", "Sandbox", "Only."), ("live", "Live", "No retraction."), ("review", "Review", "Only."), ("layer", "Layer", "Final v414 retraction.")],
+    )
+
+
+def render_sandbox_memory_write_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/sandbox-memory-write-audit", "v415.0 Operator-Governed Sandbox Memory Write Target v1", "operator_governed_sandbox_memory_write_target_v1", "v415.0", "sandbox-memory-write-audit",
+        "Audits sandbox target schema, sandbox transaction readiness, sandbox-only write execution, retraction preview, docs, package privacy, and no-live-memory boundaries.",
+        [("schema", "Schema", "Pass."), ("tx", "Tx", "Review."), ("write", "Write", "Sandbox."), ("retract", "Retract", "Preview."), ("privacy", "Privacy", "Source-only."), ("live", "Live", "Blocked."), ("approval", "Approval", "Not inferred."), ("layer", "Layer", "Final v415 audit.")],
+    )
+
+
+
+def render_live_memory_write_eligibility() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-memory-write-eligibility", "v416.0 Live Memory Write Eligibility Packet v1", "operator_governed_live_memory_write_eligibility_packet_v1", "v416.0", "live-memory-write-eligibility",
+        "Checks dry-run ledger, sandbox write trial, sandbox retraction preview, candidate hash, approval scope, sensitive data, identity/personality/purpose boundaries, and autonomy expansion before any live memory trial can be reviewed.",
+        [("dry-run", "Dry Run", "Required."), ("sandbox", "Sandbox", "Passed."), ("retract", "Retract", "Preview."), ("scope", "Scope", "Bound."), ("sensitive", "Sensitive", "Blocked."), ("identity", "Identity", "No mutation."), ("approval", "Approval", "Not inferred."), ("layer", "Layer", "Final v416 eligibility.")],
+    )
+
+
+def render_live_memory_approval_lock() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-memory-approval-lock", "v417.0 Single-Use Live Memory Approval Lock v1", "operator_governed_single_use_live_memory_approval_lock_v1", "v417.0", "live-memory-approval-lock",
+        "Binds a fresh exact confirmation phrase, candidate id, memory text hash, dry-run ledger hash, sandbox trial hash, and single-use burnout status without writing memory or allowing reuse.",
+        [("confirm", "Confirm", "Exact."), ("candidate", "Candidate", "Bound."), ("hash", "Hash", "Bound."), ("sandbox", "Sandbox", "Bound."), ("single", "Single Use", "Required."), ("burnout", "Burnout", "Required."), ("reuse", "Reuse", "Blocked."), ("layer", "Layer", "Final v417 lock.")],
+    )
+
+
+def render_live_memory_transaction_preview() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-memory-transaction-preview", "v418.0 Live Memory Transaction Preview v1", "operator_governed_live_memory_transaction_preview_v1", "v418.0", "live-memory-transaction-preview",
+        "Previews the exact governed live-memory trial target, memory text, pre-write hash, expected write entry, approval lock id, rollback/retraction requirement, and blocker list without writing memory.",
+        [("target", "Target", "Governed."), ("text", "Text", "Exact."), ("preimage", "Preimage", "Hash."), ("rollback", "Rollback", "Required."), ("blockers", "Blockers", "Shown."), ("write", "Write", "No."), ("future", "Future", "No authority."), ("layer", "Layer", "Final v418 preview.")],
+    )
+
+
+def render_operator_confirmed_live_memory_write_trial() -> str:
+    return _render_supervised_runtime_arc(
+        "/operator-confirmed-live-memory-write-trial", "v419.0 Operator-Confirmed Live Memory Write Trial v1", "operator_confirmed_live_memory_write_trial_v1", "v419.0", "operator-confirmed-live-memory-write-trial",
+        "Executes one governed live memory trial write only after exact confirmation, then burns out the approval and blocks reuse, batch writes, identity/personality/purpose changes, and autonomy expansion.",
+        [("execute", "Execute", "One write."), ("confirm", "Confirm", "Exact."), ("batch", "Batch", "Blocked."), ("burnout", "Burnout", "Immediate."), ("reuse", "Reuse", "Blocked."), ("identity", "Identity", "Blocked."), ("future", "Future", "No authority."), ("layer", "Layer", "Final v419 trial.")],
+    )
+
+
+def render_live_memory_write_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-memory-write-audit", "v420.0 First Operator-Approved Live Memory Write with Burnout v1", "operator_governed_live_memory_write_burnout_v1", "v420.0", "live-memory-write-audit",
+        "Audits eligibility, single-use approval lock, transaction preview, one governed live memory trial write, approval burnout, negative tests, docs, package privacy, and no-future-authorization boundaries.",
+        [("eligibility", "Eligibility", "Not approval."), ("lock", "Lock", "Single-use."), ("preview", "Preview", "No write."), ("write", "Write", "One trial."), ("burnout", "Burnout", "Proven."), ("negative", "Negative", "Blocked."), ("future", "Future", "No authority."), ("layer", "Layer", "Final v420 audit.")],
+    )
+
+
+def render_memory_retraction_eligibility() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-retraction-eligibility", "v421.0 Memory Retraction Eligibility Packet v1", "operator_governed_memory_retraction_eligibility_packet_v1", "v421.0", "memory-retraction-eligibility",
+        "Checks one exact governed live memory trial entry, prior write burnout, target hash, and forbidden identity/personality/purpose/autonomy boundaries without approving retraction.",
+        [("entry", "Entry", "Exact."), ("hash", "Hash", "Bound."), ("burnout", "Burnout", "Prior."), ("batch", "Batch", "Blocked."), ("fuzzy", "Fuzzy", "Blocked."), ("approval", "Approval", "Not inferred."), ("live", "Live", "Trial store."), ("layer", "Layer", "Final v421 eligibility.")],
+    )
+
+
+def render_memory_retraction_approval_lock() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-retraction-approval-lock", "v422.0 Memory Retraction Approval Lock v1", "operator_governed_memory_retraction_approval_lock_v1", "v422.0", "memory-retraction-approval-lock",
+        "Binds fresh single-use retraction approval, exact target entry id, exact memory text hash, exact retraction confirmation phrase, and blocks reuse of write approval.",
+        [("confirm", "Confirm", "Exact."), ("target", "Target", "Bound."), ("single", "Single Use", "Required."), ("write", "Write Approval", "Not enough."), ("reuse", "Reuse", "Blocked."), ("burnout", "Burnout", "Required."), ("delete", "Delete", "No."), ("layer", "Layer", "Final v422 lock.")],
+    )
+
+
+def render_memory_retraction_transaction_preview() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-retraction-transaction-preview", "v423.0 Memory Retraction Transaction Preview v1", "operator_governed_memory_retraction_transaction_preview_v1", "v423.0", "memory-retraction-transaction-preview",
+        "Previews the exact retained-audit retraction transaction, target store hash, entry id, expected post-retraction hash, and blockers without deleting memory.",
+        [("preview", "Preview", "No delete."), ("entry", "Entry", "Exact."), ("hash", "Hash", "Before."), ("audit", "Audit", "Retained."), ("physical", "Physical", "No delete."), ("batch", "Batch", "Blocked."), ("future", "Future", "No authority."), ("layer", "Layer", "Final v423 preview.")],
+    )
+
+
+def render_operator_confirmed_memory_retraction_trial() -> str:
+    return _render_supervised_runtime_arc(
+        "/operator-confirmed-memory-retraction-trial", "v424.0 Operator-Confirmed Memory Retraction Trial v1", "operator_confirmed_memory_retraction_trial_v1", "v424.0", "operator-confirmed-memory-retraction-trial",
+        "Marks one exact governed trial entry as retracted only after exact confirmation, retains the audit record, and burns out the retraction approval immediately.",
+        [("execute", "Execute", "One mark."), ("confirm", "Confirm", "Exact."), ("retain", "Retain", "Audit."), ("physical", "Physical", "No delete."), ("burnout", "Burnout", "Immediate."), ("reuse", "Reuse", "Blocked."), ("future", "Future", "No authority."), ("layer", "Layer", "Final v424 trial.")],
+    )
+
+
+def render_memory_retraction_trial_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-retraction-trial-audit", "v425.0 Operator-Approved Memory Retraction Trial v1", "operator_governed_memory_retraction_trial_v1", "v425.0", "memory-retraction-trial-audit",
+        "Audits eligibility, retraction approval lock, transaction preview, retained-audit retraction, approval burnout, negative tests, docs, package privacy, and no-future-authority boundaries.",
+        [("eligibility", "Eligibility", "Not approval."), ("lock", "Lock", "Single-use."), ("preview", "Preview", "No delete."), ("trial", "Trial", "Retracted mark."), ("burnout", "Burnout", "Proven."), ("negative", "Negative", "Blocked."), ("future", "Future", "No authority."), ("layer", "Layer", "Final v425 audit.")],
+    )
+
+def render_source_surface_manifest() -> str:
+    return _render_supervised_runtime_arc(
+        "/source-surface-manifest", "v426.0 Surface Manifest Schema v1", "source_surface_manifest_v1", "v426.0", "source-surface-manifest",
+        "Defines canonical source surface records for dashboard routes, API routes, CLI flags, builder/text functions, smoke checks, runtime directories, authority labels, and package privacy. Manifest presence is not authorization.",
+        [("schema", "Schema", "Canonical."), ("routes", "Routes", "Mapped."), ("cli", "CLI", "Mapped."), ("smoke", "Smoke", "Segmented."), ("authority", "Authority", "Label only."), ("privacy", "Privacy", "Runtime paths."), ("approval", "Approval", "Not inferred."), ("layer", "Layer", "Final v426 schema.")],
+    )
+
+
+def render_source_surface_parity_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/source-surface-parity-audit", "v428.0 Dashboard API CLI Parity Audit v1", "source_surface_parity_audit_v1", "v428.0", "source-surface-parity-audit",
+        "Audits manifest entries against dashboard route tokens, API route tokens, CLI flags, builder functions, text renderers, and smoke checks without treating parity success as permission.",
+        [("dashboard", "Dashboard", "Route."), ("api", "API", "Route."), ("cli", "CLI", "Flag."), ("builder", "Builder", "Function."), ("text", "Text", "Renderer."), ("smoke", "Smoke", "Check."), ("approval", "Approval", "No."), ("layer", "Layer", "Final v428 parity.")],
+    )
+
+
+def render_source_surface_authority_map() -> str:
+    return _render_supervised_runtime_arc(
+        "/source-surface-authority-map", "v429.0 Source Surface Authority Map v1", "source_surface_authority_map_v1", "v429.0", "source-surface-authority-map",
+        "Maps review-only, sandbox-only, execution-prep, post-audit, and operator-approved single-use trial authority labels. Authority labels classify surfaces; they do not approve execution.",
+        [("review", "Review", "Only."), ("sandbox", "Sandbox", "Only."), ("trial", "Single Use", "Trial."), ("writes", "Writes", "Flagged."), ("memory", "Memory", "Flagged."), ("burnout", "Burnout", "Required."), ("approval", "Approval", "Not inferred."), ("layer", "Layer", "Final v429 map.")],
+    )
+
+
+def render_source_surface_package_privacy_map() -> str:
+    return _render_supervised_runtime_arc(
+        "/source-surface-package-privacy-map", "v429.5 Source Surface Package Privacy Map v1", "source_surface_package_privacy_map_v1", "v429.5", "source-surface-package-privacy-map",
+        "Maps package-privacy-sensitive runtime directories and source-only exclusions for recent high-risk surfaces. The manifest does not write files or memory.",
+        [("runtime", "Runtime", "Listed."), ("exclude", "Exclude", "Source-only."), ("memory", "Memory", "Excluded."), ("logs", "Logs", "Excluded."), ("cache", "Cache", "Excluded."), ("privacy", "Privacy", "Mapped."), ("write", "Write", "No."), ("layer", "Layer", "Final v429.5 map.")],
+    )
+
+
+def render_source_surface_manifest_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/source-surface-manifest-audit", "v430.0 Canonical Source Surface Manifest v1", "operator_governed_source_surface_manifest_v1", "v430.0", "source-surface-manifest-audit",
+        "Audits manifest completeness, recent high-risk surface coverage, dashboard/API/CLI parity, authority labels, package privacy, and no-authorization boundaries. Smoke success is not live action approval.",
+        [("manifest", "Manifest", "Complete."), ("parity", "Parity", "Checked."), ("authority", "Authority", "Labels."), ("privacy", "Privacy", "Mapped."), ("writes", "Writes", "No."), ("memory", "Memory", "No."), ("approval", "Approval", "Not inferred."), ("layer", "Layer", "Final v430 audit.")],
+    )
+
+def render_duplicate_definition_inventory() -> str:
+    return _render_supervised_runtime_arc(
+        "/duplicate-definition-inventory", "v431.0 Duplicate Definition Inventory v1", "duplicate_definition_inventory_v1", "v431.0", "duplicate-definition-inventory",
+        "Scans Python source with AST and inventories duplicate function definitions. Inventory is review-only and is not authorization to delete code.",
+        [("ast", "AST", "Scan."), ("files", "Files", "Mapped."), ("lines", "Lines", "Captured."), ("risk", "Risk", "Classified."), ("delete", "Delete", "No."), ("writes", "Writes", "No."), ("review", "Review", "Required."), ("layer", "Layer", "Final v431 inventory.")],
+    )
+
+
+def render_self_maintenance_duplicate_classification() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-duplicate-classification", "v432.0 Self-Maintenance Duplicate Classification Packet v1", "self_maintenance_duplicate_classification_v1", "v432.0", "self-maintenance-duplicate-classification",
+        "Classifies self_maintenance.py duplicate definitions as local closures, generated patterns, manual-review items, or high-risk shadow candidates without deleting anything.",
+        [("classify", "Classify", "Review."), ("manual", "Manual", "Required."), ("shadow", "Shadow", "Flagged."), ("aliases", "Aliases", "Separated."), ("delete", "Delete", "No."), ("bridge", "Bridge", "Protected."), ("review", "Review", "Required."), ("layer", "Layer", "Final v432 packet.")],
+    )
+
+
+def render_self_maintenance_extraction_candidates() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-extraction-candidates", "v433.0 Safe Extraction Candidate Plan v1", "self_maintenance_extraction_candidates_v1", "v433.0", "self-maintenance-extraction-candidates",
+        "Plans safe extraction candidates for self-maintenance helpers while preserving dashboard/API/CLI bridge names and requiring source surface manifest parity.",
+        [("plan", "Plan", "Review."), ("bridge", "Bridge", "Stable."), ("manifest", "Manifest", "Protect."), ("recent", "Recent", "High risk."), ("delete", "Delete", "No."), ("move", "Move", "Not now."), ("review", "Review", "Required."), ("layer", "Layer", "Final v433 plan.")],
+    )
+
+
+def render_duplicate_definition_guard() -> str:
+    return _render_supervised_runtime_arc(
+        "/duplicate-definition-guard", "v434.0 Duplicate Definition Guard v1", "duplicate_definition_guard_v1", "v434.0", "duplicate-definition-guard",
+        "Establishes a baseline guard that blocks new high-risk duplicate top-level shadowing without applying source edits or refactors.",
+        [("baseline", "Baseline", "Known."), ("new", "New", "Blocked."), ("risk", "Risk", "High."), ("shadow", "Shadow", "Flagged."), ("edits", "Edits", "No."), ("autonomy", "Autonomy", "No."), ("review", "Review", "Required."), ("layer", "Layer", "Final v434 guard.")],
+    )
+
+
+def render_self_maintenance_duplicate_cleanup_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/self-maintenance-duplicate-cleanup-audit", "v435.0 Self-Maintenance Duplicate Definition Cleanup v1", "operator_governed_self_maintenance_duplicate_cleanup_v1", "v435.0", "self-maintenance-duplicate-cleanup-audit",
+        "Audits duplicate inventory, self-maintenance classification, extraction candidates, guard policy, docs, manifest protection, and no-auto-edit/no-autonomy boundaries.",
+        [("inventory", "Inventory", "Pass."), ("classify", "Classify", "Pass."), ("extract", "Extract", "Planned."), ("guard", "Guard", "Pass."), ("delete", "Delete", "No."), ("edits", "Edits", "No."), ("autonomy", "Autonomy", "No."), ("layer", "Layer", "Final v435 audit.")],
+    )
+
+
+
+def render_dashboard_route_inventory() -> str:
+    return _render_supervised_runtime_arc(
+        "/dashboard-route-inventory", "v436.0 Dashboard Route Inventory Manifest v1", "dashboard_route_inventory_v1", "v436.0", "dashboard-route-inventory",
+        "Inventories dashboard routes, labels, eras, expected status, authority labels, data-tip expectations, and no-authorization boundaries.",
+        [("routes", "Routes", "Mapped."), ("labels", "Labels", "Mapped."), ("era", "Era", "Grouped."), ("auth", "Authority", "Review."), ("tip", "data-tip", "Required."), ("title", "Title", "Blocked."), ("approval", "Approval", "No."), ("layer", "Layer", "Final v436 inventory.")],
+    )
+
+
+def render_dashboard_route_probe() -> str:
+    return _render_supervised_runtime_arc(
+        "/dashboard-route-probe", "v437.0 Dashboard Render Probe Runner v1", "dashboard_route_probe_v1", "v437.0", "dashboard-route-probe",
+        "Probes dashboard route health, expected status, content type, error markers, 500/404 risk, API shadowing, and data-tip presence without executing governed actions.",
+        [("status", "Status", "Checked."), ("content", "Content", "Typed."), ("trace", "Error Trace", "Blocked."), ("api", "API", "Shadow."), ("tip", "data-tip", "Present."), ("title", "Title", "Blocked."), ("exec", "Exec", "No."), ("layer", "Layer", "Final v437 probe.")],
+    )
+
+
+def render_dashboard_lazy_render_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/dashboard-lazy-render-audit", "v438.0 Lazy Render and Heavy Page Audit v1", "dashboard_lazy_render_audit_v1", "v438.0", "dashboard-lazy-render-audit",
+        "Classifies fast, acceptable, heavy, eager-runtime-builder, and operator-warning dashboard pages. It recommends lazy loading but does not refactor pages automatically.",
+        [("fast", "Fast", "Bucket."), ("heavy", "Heavy", "Flagged."), ("eager", "Eager", "Candidate."), ("cache", "Cache", "Recommend."), ("refactor", "Refactor", "No."), ("review", "Review", "Required."), ("auth", "Auth", "No."), ("layer", "Layer", "Final v438 audit.")],
+    )
+
+
+def render_dashboard_tooltip_regression_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/dashboard-tooltip-regression-audit", "v439.0 Dashboard Tooltip Regression Audit v1", "dashboard_tooltip_regression_audit_v1", "v439.0", "dashboard-tooltip-regression-audit",
+        "Audits custom data-tip hover behavior and blocks native title tooltip regressions on nav tabs. It does not redesign the dashboard.",
+        [("data-tip", "data-tip", "Required."), ("title", "Native title", "Blocked."), ("nav", "Nav", "Checked."), ("style", "Command", "Preserved."), ("redesign", "Redesign", "No."), ("review", "Review", "Required."), ("auth", "Auth", "No."), ("layer", "Layer", "Final v439 audit.")],
+    )
+
+
+def render_dashboard_route_health_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/dashboard-route-health-audit", "v440.0 Full Dashboard Route Probe and Lazy Render Audit v1", "operator_governed_dashboard_route_health_audit_v1", "v440.0", "dashboard-route-health-audit",
+        "Audits route inventory, route probing, lazy render classification, tooltip regression, docs, smoke coverage, and no-authorization boundaries. Route health is not approval.",
+        [("inventory", "Inventory", "Pass."), ("probe", "Probe", "Pass."), ("lazy", "Lazy", "Classified."), ("tooltip", "Tooltip", "Guarded."), ("api-info", "API Info", "Guarded."), ("title", "Title", "Blocked."), ("auth", "Auth", "No."), ("layer", "Layer", "Final v440 audit.")],
+    )
+
+
+
+def render_memory_lifecycle_review_board() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-lifecycle-review-board", "v441.0 Memory Lifecycle Board Schema v1", "memory_lifecycle_review_board_v1", "v441.0", "memory-lifecycle-review-board",
+        "Defines review-only memory lifecycle sections from candidate through retained retraction and audit state. Board visibility is not authorization.",
+        [("candidate", "Candidate", "Mapped."), ("ledger", "Dry-run", "Mapped."), ("sandbox", "Sandbox", "Mapped."), ("live", "Live Trial", "Mapped."), ("burnout", "Burnout", "Required."), ("retract", "Retraction", "Retained."), ("auth", "Authority", "None."), ("layer", "Layer", "Final v441 schema.")],
+    )
+
+
+def render_memory_lifecycle_state_summary() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-lifecycle-state-summary", "v442.0 Memory Lifecycle State Summary v1", "memory_lifecycle_state_summary_v1", "v442.0", "memory-lifecycle-state-summary",
+        "Aggregates memory lifecycle state without writing memory, creating approvals, executing retractions, or expanding autonomy.",
+        [("state", "State", "Aggregated."), ("write", "Write", "Burned."), ("retract", "Retract", "Burned."), ("authority", "Authority", "None."), ("next", "Next", "Review."), ("approval", "Approval", "Fresh."), ("memory", "Memory", "No write."), ("layer", "Layer", "Final v442 summary.")],
+    )
+
+
+def render_memory_lifecycle_drift_review() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-lifecycle-drift-review", "v443.0 Memory Lifecycle Drift Review v1", "memory_lifecycle_drift_review_v1", "v443.0", "memory-lifecycle-drift-review",
+        "Flags lifecycle drift and staleness cases as blockers, including hash mismatch, approval mismatch, target mismatch, burnout reuse, and downstream blocked stages.",
+        [("candidate", "Candidate Hash", "Blocked."), ("text", "Text Hash", "Blocked."), ("approval", "Approval", "Blocked."), ("ledger", "Ledger", "Blocked."), ("target", "Target", "Blocked."), ("burnout", "Burnout", "Blocked."), ("repair", "Repair", "No."), ("layer", "Layer", "Final v443 drift.")],
+    )
+
+
+def render_memory_lifecycle_operator_decision_board() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-lifecycle-operator-decision-board", "v444.0 Memory Lifecycle Operator Decision Board v1", "memory_lifecycle_operator_decision_board_v1", "v444.0", "memory-lifecycle-operator-decision-board",
+        "Lists allowed review decisions and forbidden memory actions. Fresh single-use approval remains required for any future memory write or retraction.",
+        [("review", "Review", "Allowed."), ("reject", "Reject", "Allowed."), ("fresh", "Fresh Packet", "Allowed."), ("write", "Write", "Forbidden."), ("retract", "Retract", "Forbidden."), ("identity", "Identity", "Forbidden."), ("auth", "Authority", "None."), ("layer", "Layer", "Final v444 board.")],
+    )
+
+
+def render_memory_lifecycle_review_board_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/memory-lifecycle-review-board-audit", "v445.0 Memory Lifecycle Review Board v1", "operator_governed_memory_lifecycle_review_board_v1", "v445.0", "memory-lifecycle-review-board-audit",
+        "Audits memory lifecycle board schema, state aggregation, drift review, operator decisions, docs, surface linkage, and no-authorization boundaries.",
+        [("schema", "Schema", "Pass."), ("state", "State", "Pass."), ("drift", "Drift", "Blocked."), ("decision", "Decision", "Review."), ("write", "Write", "No."), ("approval", "Approval", "No create."), ("autonomy", "Autonomy", "No."), ("layer", "Layer", "Final v445 audit.")],
+    )
+
+
+def render_authorization_confusion_patterns() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-confusion-patterns", "v446.0 Authorization Confusion Pattern Registry v1", "authorization_confusion_patterns_v1", "v446.0", "authorization-confusion-patterns",
+        "Registers forbidden governance-state-to-authorization inference patterns. Detection is not enforcement execution, and firewall pass is not authorization.",
+        [("readiness", "Readiness", "Not approval."), ("eligibility", "Eligibility", "Not approval."), ("route", "Route Health", "Not approval."), ("manifest", "Manifest", "Not authorization."), ("smoke", "Smoke", "Not permission."), ("sandbox", "Sandbox", "Not live permission."), ("prior", "Prior Approval", "Not current."), ("layer", "Layer", "Final v446 registry.")],
+    )
+
+
+def render_authorization_language_scan() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-language-scan", "v447.0 Packet Language and Metadata Scanner v1", "authorization_language_scan_v1", "v447.0", "authorization-language-scan",
+        "Scans recent governance packets and metadata for risky approval or authorization language without rewriting source, executing actions, or approving anything.",
+        [("scan", "Scan", "Review-only."), ("phrases", "Phrases", "Flagged."), ("safe", "Safe Boundaries", "Recognized."), ("rewrite", "Rewrite", "No."), ("execute", "Execute", "No."), ("memory", "Memory", "No write."), ("auth", "Approval", "No."), ("layer", "Layer", "Final v447 scan.")],
+    )
+
+
+def render_authorization_firewall_decision_packet() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-firewall-decision-packet", "v448.0 Authorization Firewall Decision Packet v1", "authorization_firewall_decision_packet_v1", "v448.0", "authorization-firewall-decision-packet",
+        "Summarizes firewall clear, warning, blocked, or manual-review status. Clear status is not approval and does not authorize execution.",
+        [("status", "Status", "Review."), ("clear", "Clear", "Not approval."), ("warning", "Warning", "Review."), ("blocked", "Blocked", "Review."), ("approval", "Approval", "Fresh only."), ("burnout", "Burnout", "Required."), ("execute", "Execute", "No."), ("layer", "Layer", "Final v448 packet.")],
+    )
+
+
+def render_authorization_boundary_map() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-boundary-map", "v449.0 Authorization Boundary Map v1", "authorization_boundary_map_v1", "v449.0", "authorization-boundary-map",
+        "Maps readiness, eligibility, route health, manifest presence, lifecycle completeness, smoke success, prior approval, sandbox success, and model consensus to safe non-authorizing interpretations.",
+        [("ready", "Ready", "Review only."), ("eligible", "Eligible", "Review only."), ("health", "Healthy", "Visibility only."), ("complete", "Complete", "Evidence only."), ("smoke", "Smoke", "Evidence only."), ("prior", "Prior", "Expired."), ("model", "Model", "Not truth."), ("layer", "Layer", "Final v449 map.")],
+    )
+
+
+def render_authorization_firewall_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-firewall-audit", "v450.0 Governance-State-to-Authorization Firewall v1", "operator_governed_authorization_firewall_v1", "v450.0", "authorization-firewall-audit",
+        "Audits pattern registry, language scan, decision packet, boundary map, docs, surface parity, and no-authorization boundaries. Firewall pass is not authorization.",
+        [("patterns", "Patterns", "Pass."), ("scan", "Scan", "Pass."), ("decision", "Decision", "Review."), ("boundary", "Boundary", "Mapped."), ("approval", "Approval", "No create."), ("execute", "Execute", "No."), ("autonomy", "Autonomy", "No."), ("layer", "Layer", "Final v450 audit.")],
+    )
+
+
+def render_metadata_version_inventory() -> str:
+    return _render_supervised_runtime_arc(
+        "/metadata-version-inventory", "v451.0 Metadata Version Inventory v1", "metadata_version_inventory_v1", "v451.0", "metadata-version-inventory",
+        "Inspects allowlisted source metadata files for current-version alignment without approving releases, applying source edits, mutating memory, or expanding autonomy.",
+        [("settings", "Settings", "v455."), ("projects", "Projects", "v455."), ("active", "Active", "Aligned."), ("workspace", "Workspace", "Aligned."), ("stale", "Stale", "Blocked."), ("auth", "Approval", "No."), ("release", "Release", "No publish."), ("layer", "Final v451 inventory", "Review-only.")],
+    )
+
+
+def render_project_workspace_metadata_alignment() -> str:
+    return _render_supervised_runtime_arc(
+        "/project-workspace-metadata-alignment", "v452.0 Project and Workspace Metadata Alignment v1", "project_workspace_metadata_alignment_v1", "v452.0", "project-workspace-metadata-alignment",
+        "Checks that current project and workspace milestone fields describe the same v455 repair arc and no longer mislabel v445 or v450 as current future work.",
+        [("current", "Current", "v455."), ("workspace", "Workspace", "Aligned."), ("project", "Project", "Aligned."), ("next", "Next Arc", "v456."), ("stale", "Stale", "Removed."), ("auth", "Approval", "No."), ("memory", "Memory", "No write."), ("layer", "Final v452 alignment", "Review-only.")],
+    )
+
+
+def render_release_packaging_version_integrity() -> str:
+    return _render_supervised_runtime_arc(
+        "/release-packaging-version-integrity", "v453.0 Release Packaging Version Integrity v1", "release_packaging_version_integrity_v1", "v453.0", "release-packaging-version-integrity",
+        "Verifies release packaging resolves settings_version before stale last_updated_for fallback values and reports that package integrity is still not approval.",
+        [("version", "Version", "v455."), ("package", "Package", "Name."), ("fallback", "Fallback", "Repaired."), ("v420", "v420 Drift", "Blocked."), ("approval", "Approval", "No."), ("publish", "Publish", "No."), ("source", "Source", "No edit."), ("layer", "Final v453 integrity", "Review-only.")],
+    )
+
+
+def render_current_state_documentation_header_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/current-state-documentation-header-audit", "v454.0 Current-State Documentation Header Audit v1", "current_state_documentation_header_audit_v1", "v454.0", "current-state-documentation-header-audit",
+        "Verifies README current-state headers separate current blockers, checks, recommended next arc, and no-authorization language from the historical ledger.",
+        [("current", "Current", "Visible."), ("checks", "Checks", "Listed."), ("blockers", "Blockers", "Listed."), ("next", "Next", "v456."), ("history", "History", "Separated."), ("tip", "data-tip", "Preserved."), ("auth", "Approval", "No."), ("layer", "Final v454 docs", "Review-only.")],
+    )
+
+
+def render_metadata_release_integrity_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/metadata-release-integrity-audit", "v455.0 Metadata, Release Integrity, and Current-State Repair v1", "operator_governed_metadata_release_integrity_v1", "v455.0", "metadata-release-integrity-audit",
+        "Audits metadata alignment, release version resolution, current-state docs, smoke/API/CLI tokens, and no-authorization boundaries. Metadata consistency is not authorization.",
+        [("metadata", "Metadata", "Pass."), ("workspace", "Workspace", "Pass."), ("release", "Release", "Pass."), ("docs", "Docs", "Pass."), ("approval", "Approval", "No create."), ("publish", "Publish", "No."), ("autonomy", "Autonomy", "No."), ("layer", "Final v455 audit", "Review-only.")],
+    )
+
+
+
+def render_authorization_firewall_severity_classifier() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-firewall-severity-classifier", "v456.0 Authorization Firewall Finding Severity Classifier v1", "authorization_firewall_severity_classifier_v1", "v456.0", "authorization-firewall-severity-classifier",
+        "Classifies authorization firewall findings as safe_boundary, informational, warning, high_risk, or blocked_pattern. Classification is review-only and not authorization.",
+        [("safe", "Safe Boundary", "Separated."), ("info", "Informational", "Separated."), ("warning", "Warning", "Preserved."), ("risk", "High Risk", "Review."), ("blocked", "Blocked Pattern", "Flagged."), ("approval", "Approval", "No."), ("source", "Source", "No edit."), ("layer", "Final v456 classifier", "Review-only.")],
+    )
+
+
+def render_authorization_firewall_safe_boundary_filter() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-firewall-safe-boundary-filter", "v457.0 Authorization Firewall Safe Boundary Filter v1", "authorization_firewall_safe_boundary_filter_v1", "v457.0", "authorization-firewall-safe-boundary-filter",
+        "Filters safe negative boundary language such as not authorized, not approved, does not grant permission, and fresh approval required without rewriting source.",
+        [("negative", "Negative Boundary", "Recognized."), ("review", "Review-only", "Recognized."), ("fresh", "Fresh Approval", "Required."), ("noise", "Noise", "Reduced."), ("rewrite", "Rewrite", "No."), ("approval", "Approval", "No create."), ("memory", "Memory", "No write."), ("layer", "Final v457 filter", "Review-only.")],
+    )
+
+
+def render_authorization_firewall_warning_status() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-firewall-warning-status", "v458.0 Authorization Firewall Warning Status Bridge v1", "authorization_firewall_warning_status_v1", "v458.0", "authorization-firewall-warning-status",
+        "Preserves pass_with_warnings, review_required, and blocked-pattern status semantics across CLI, API, dashboard, and runtime maps. Plain pass with warnings is forbidden.",
+        [("warning", "Warnings", "Preserved."), ("pass", "Plain Pass", "Blocked."), ("review", "Review", "Required."), ("cli", "CLI", "Mapped."), ("api", "API", "Mapped."), ("dash", "Dashboard", "Mapped."), ("auth", "Authorization", "No."), ("layer", "Final v458 bridge", "Review-only.")],
+    )
+
+
+def render_authorization_firewall_audit_status_split() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-firewall-audit-status-split", "v459.0 Authorization Firewall Audit Status Split v1", "authorization_firewall_audit_status_split_v1", "v459.0", "authorization-firewall-audit-status-split",
+        "Separates mechanism_status, language_scan_status, operator_review_status, and authorization_status so mechanism pass is not confused with language clear or approval.",
+        [("mechanism", "Mechanism", "Pass."), ("language", "Language", "Separate."), ("review", "Review", "Separate."), ("auth", "Authorization", "Not authorized."), ("approval", "Approval", "Not approved."), ("execute", "Execute", "No."), ("memory", "Memory", "No write."), ("layer", "Final v459 split", "Review-only.")],
+    )
+
+
+def render_authorization_firewall_signal_triage_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/authorization-firewall-signal-triage-audit", "v460.0 Authorization Firewall Signal Triage and Warning Semantics v1", "operator_governed_authorization_firewall_signal_triage_v1", "v460.0", "authorization-firewall-signal-triage-audit",
+        "Audits severity classification, safe-boundary filtering, warning preservation, audit-status split, docs, smoke/API/CLI tokens, and no-authorization boundaries.",
+        [("severity", "Severity", "Classified."), ("filter", "Safe Filter", "Applied."), ("warning", "Warnings", "Preserved."), ("split", "Status Split", "Separate."), ("approval", "Approval", "No create."), ("source", "Source", "No edit."), ("autonomy", "Autonomy", "No."), ("layer", "Final v460 audit", "Review-only.")],
+    )
+
+
+
+def render_recent_dashboard_route_probe_refresh() -> str:
+    return _render_supervised_runtime_arc("/recent-dashboard-route-probe-refresh", "v461.0 Recent Dashboard Route Probe Refresh v1", "recent_dashboard_route_probe_refresh_v1", "v461.0", "recent-dashboard-route-probe-refresh", "Adds v450-v465 dashboard routes to the route probe inventory. Route presence and route health remain review-only signals, not authorization.", [("routes", "Routes", "Refreshed."), ("probe", "Probe", "Inventory."), ("recent", "Recent", "v450-v465."), ("health", "Health", "Render only."), ("approval", "Approval", "No."), ("source", "Source", "No edit."), ("memory", "Memory", "No write."), ("layer", "Final v461 refresh", "Review-only.")])
+
+def render_source_surface_manifest_parity_policy() -> str:
+    return _render_supervised_runtime_arc("/source-surface-manifest-parity-policy", "v462.0 Source Surface Manifest Parity Policy v1", "source_surface_manifest_parity_policy_v1", "v462.0", "source-surface-manifest-parity-policy", "Sets manifest policy to every_governed_substage_surface so dashboard/API/CLI/smoke surfaces are tracked without treating manifest presence as permission.", [("policy", "Policy", "Substage."), ("manifest", "Manifest", "Tracked."), ("surface", "Surface", "Mapped."), ("permission", "Permission", "No."), ("approval", "Approval", "No."), ("source", "Source", "No edit."), ("memory", "Memory", "No write."), ("layer", "Final v462 policy", "Review-only.")])
+
+def render_surface_route_api_cli_crosscheck() -> str:
+    return _render_supervised_runtime_arc("/surface-route-api-cli-crosscheck", "v463.0 Surface Route API CLI Crosscheck v1", "surface_route_api_cli_crosscheck_v1", "v463.0", "surface-route-api-cli-crosscheck", "Crosschecks manifest surfaces against dashboard routes, route probe inventory, API/CLI tokens, builders, text renderers, and smoke checks without repairing anything automatically.", [("dashboard", "Dashboard", "Checked."), ("probe", "Probe", "Checked."), ("api", "API", "Checked."), ("cli", "CLI", "Checked."), ("smoke", "Smoke", "Checked."), ("repair", "Repair", "No."), ("approval", "Approval", "No."), ("layer", "Final v463 crosscheck", "Review-only.")])
+
+def render_route_health_boundary_language() -> str:
+    return _render_supervised_runtime_arc("/route-health-boundary-language", "v464.0 Route Health Boundary Language v1", "route_health_boundary_language_v1", "v464.0", "route-health-boundary-language", "Hardens boundary language: route health confirms render/accessibility status only and does not authorize execution, memory writes, source edits, releases, or autonomy.", [("render", "Render", "Only."), ("execute", "Execute", "No."), ("memory", "Memory", "No write."), ("source", "Source", "No edit."), ("release", "Release", "No."), ("autonomy", "Autonomy", "No."), ("approval", "Approval", "Required."), ("layer", "Final v464 boundary", "Review-only.")])
+
+def render_route_surface_parity_audit() -> str:
+    return _render_supervised_runtime_arc("/route-surface-parity-audit", "v465.0 Dashboard Route Probe and Source Surface Manifest Parity v1", "operator_governed_route_surface_parity_v1", "v465.0", "route-surface-parity-audit", "Audits recent route probe freshness, every-substage manifest policy, dashboard/API/CLI/smoke parity, docs, and no-authorization boundaries.", [("routes", "Routes", "Covered."), ("manifest", "Manifest", "Policy."), ("crosscheck", "Crosscheck", "Mapped."), ("boundary", "Boundary", "Hardened."), ("approval", "Approval", "No create."), ("source", "Source", "No edit."), ("autonomy", "Autonomy", "No."), ("layer", "Final v465 audit", "Review-only.")])
+
+
+
+def render_duplicate_shadow_inventory() -> str:
+    return _render_supervised_runtime_arc("/duplicate-shadow-inventory", "v466.0 Duplicate Definition Inventory and Classification v1", "duplicate_shadow_inventory_v1", "v466.0", "duplicate-shadow-inventory", "Inventories current top-level self_maintenance duplicate shadows after safe cleanup. Classification is review-only and does not authorize deletion.", [("inventory", "Inventory", "Current."), ("duplicate", "Duplicates", "Zero target."), ("classify", "Classify", "Review-only."), ("delete", "Delete", "No approval."), ("source", "Source", "No edit."), ("memory", "Memory", "No write."), ("autonomy", "Autonomy", "No."), ("layer", "Final v466 inventory", "Review-only.")])
+
+
+def render_safe_shadow_removal_report() -> str:
+    return _render_supervised_runtime_arc("/safe-shadow-removal-report", "v467.0 Safe Shadow Removal Report v1", "safe_shadow_removal_report_v1", "v467.0", "safe-shadow-removal-report", "Reports removed shadowed legacy definitions while preserving canonical final definitions. Removal evidence is not permission for future cleanup.", [("removed", "Shadowed", "Removed."), ("canonical", "Canonical", "Kept."), ("behavior", "Behavior", "Preserved."), ("approval", "Approval", "No create."), ("source", "Source", "No live edit."), ("memory", "Memory", "No write."), ("autonomy", "Autonomy", "No."), ("layer", "Final v467 report", "Review-only.")])
+
+
+def render_legacy_alias_compatibility_cleanup() -> str:
+    return _render_supervised_runtime_arc("/legacy-alias-compatibility-cleanup", "v468.0 Legacy Alias Compatibility Cleanup v1", "legacy_alias_compatibility_cleanup_v1", "v468.0", "legacy-alias-compatibility-cleanup", "Checks that canonical final helper definitions remain after legacy shadow removal. Compatibility presence is not execution authorization.", [("canonical", "Canonical", "Present."), ("legacy", "Legacy", "Shadow removed."), ("compat", "Compat", "Checked."), ("approval", "Approval", "Required."), ("execute", "Execute", "No."), ("memory", "Memory", "No write."), ("autonomy", "Autonomy", "No."), ("layer", "Final v468 cleanup", "Review-only.")])
+
+
+def render_stale_version_gate_cleanup() -> str:
+    return _render_supervised_runtime_arc("/stale-version-gate-cleanup", "v469.0 Stale Exact-Version Gate Cleanup v1", "stale_version_gate_cleanup_v1", "v469.0", "stale-version-gate-cleanup", "Replaces stale v68/v70 exact-version blockers with explicit historical compatibility gates. Historical gate clearance authorizes no execution.", [("stale", "Stale Gates", "Retired."), ("helper", "Helper", "Explicit."), ("history", "Historical", "Compat only."), ("execute", "Execute", "No."), ("approval", "Approval", "Required."), ("source", "Source", "No live edit."), ("autonomy", "Autonomy", "No."), ("layer", "Final v469 gate", "Review-only.")])
+
+
+def render_self_maintenance_duplicate_shadow_cleanup_audit() -> str:
+    return _render_supervised_runtime_arc("/self-maintenance-duplicate-shadow-cleanup-audit", "v470.0 Self-Maintenance Duplicate Shadow Cleanup v1", "operator_governed_self_maintenance_duplicate_shadow_cleanup_v1", "v470.0", "self-maintenance-duplicate-shadow-cleanup-audit", "Audits duplicate shadow removal, canonical compatibility, stale version gate cleanup, docs, dashboard/API/CLI/smoke parity, and no-authorization boundaries.", [("duplicates", "Duplicates", "Cleaned."), ("canonical", "Canonical", "Kept."), ("gates", "Stale Gates", "Retired."), ("docs", "Docs", "Updated."), ("approval", "Approval", "No create."), ("source", "Source", "No live edit."), ("autonomy", "Autonomy", "No."), ("layer", "Final v470 audit", "Review-only.")])
+
+
+
+def render_current_state_header_block() -> str:
+    return _render_supervised_runtime_arc("/current-state-header-block", "v471.0 Current-State Header Block v1", "current_state_header_block_v1", "v471.0", "current-state-header-block", "Audits that README_NEXT_STEPS.md exposes current version, verified checks, blockers, next arc, and safety boundary at the top.", [("version", "Version", "Current."), ("checks", "Checks", "Visible."), ("blockers", "Blockers", "Visible."), ("next", "Next Arc", "Visible."), ("safety", "Safety", "Near top."), ("approval", "Approval", "No create."), ("autonomy", "Autonomy", "No."), ("layer", "Final v471 header", "Review-only.")])
+
+
+def render_historical_next_steps_separation() -> str:
+    return _render_supervised_runtime_arc("/historical-next-steps-separation", "v472.0 Historical Next-Steps Separation v1", "historical_next_steps_separation_v1", "v472.0", "historical-next-steps-separation", "Audits that historical next-step notes are clearly marked completed, superseded, and not current instruction.", [("ledger", "Ledger", "Separated."), ("history", "History", "Marked."), ("current", "Current", "Above."), ("superseded", "Old Plans", "Labeled."), ("approval", "Approval", "No create."), ("source", "Source", "No edit."), ("autonomy", "Autonomy", "No."), ("layer", "Final v472 separation", "Review-only.")])
+
+
+def render_operator_continuity_handoff_packet() -> str:
+    return _render_supervised_runtime_arc("/operator-continuity-handoff-packet", "v473.0 Operator Continuity Handoff Packet v1", "operator_continuity_handoff_packet_v1", "v473.0", "operator-continuity-handoff-packet", "Audits the reusable new-chat/operator handoff packet with latest version, standing rules, verification summary, next arc, and boundaries.", [("handoff", "Handoff", "Present."), ("rules", "Rules", "Included."), ("checks", "Checks", "Summarized."), ("next", "Next Arc", "Included."), ("execution", "Execution", "No."), ("memory", "Memory", "No write."), ("autonomy", "Autonomy", "No."), ("layer", "Final v473 handoff", "Review-only.")])
+
+
+def render_documentation_boundary_language() -> str:
+    return _render_supervised_runtime_arc("/documentation-boundary-language", "v474.0 Documentation Boundary Language v1", "documentation_boundary_language_v1", "v474.0", "documentation-boundary-language", "Audits documentation language that README state, release history, next-arc recommendations, smoke success, and handoff packets are not authorization.", [("readme", "README", "Not approval."), ("history", "History", "Not authorization."), ("next", "Next Arc", "Not permission."), ("smoke", "Smoke", "Not consent."), ("handoff", "Handoff", "Not execution."), ("source", "Source", "No edit."), ("autonomy", "Autonomy", "No."), ("layer", "Final v474 boundary", "Review-only.")])
+
+
+def render_documentation_continuity_header_audit() -> str:
+    return _render_supervised_runtime_arc("/documentation-continuity-header-audit", "v475.0 README Current-State and Operator Continuity Header Cleanup v1", "operator_governed_documentation_continuity_header_v1", "v475.0", "documentation-continuity-header-audit", "Audits current-state docs, historical separation, handoff packet, boundary language, smoke/API/CLI/dashboard tokens, and no-authorization behavior.", [("header", "Header", "Current."), ("history", "History", "Separated."), ("handoff", "Handoff", "Present."), ("boundary", "Boundary", "Hardened."), ("approval", "Approval", "No create."), ("memory", "Memory", "No write."), ("autonomy", "Autonomy", "No."), ("layer", "Final v475 audit", "Review-only.")])
+
+
+def render_manual_read_only_observation_scope() -> str:
+    return _render_supervised_runtime_arc("/manual-read-only-observation-scope", "v476.0 Manual Read-Only Observation Scope v1", "manual_read_only_observation_scope_v1", "v476.0", "manual-read-only-observation-scope", "Defines operator-invoked read-only observation scope while blocking source writes, memory writes, schedules, default model invocation, and follow-up authority.", [("scope", "Scope", "Defined."), ("operator", "Invocation", "Required."), ("read", "Read-only", "Yes."), ("source", "Source", "No write."), ("memory", "Memory", "No write."), ("schedule", "Schedule", "No."), ("models", "Models", "No default."), ("approval", "Approval", "No create.")])
+
+
+def render_operator_observation_packet() -> str:
+    return _render_supervised_runtime_arc("/operator-observation-packet", "v477.0 Operator Observation Packet Builder v1", "operator_observation_packet_v1", "v477.0", "operator-observation-packet", "Builds a structured current-state observation packet with version, milestone, metadata alignment, route/surface alignment, documentation alignment, blockers, and review targets.", [("version", "Version", "Current."), ("metadata", "Metadata", "Aligned."), ("routes", "Routes", "Checked."), ("docs", "Docs", "Checked."), ("blockers", "Blockers", "Listed."), ("targets", "Review", "Suggested."), ("approval", "Approval", "No create."), ("action", "Action", "No.")])
+
+
+def render_no_mutation_observation_audit() -> str:
+    return _render_supervised_runtime_arc("/no-mutation-observation-audit", "v478.0 No-Mutation Observation Audit v1", "no_mutation_observation_audit_v1", "v478.0", "no-mutation-observation-audit", "Audits that observation does not write source, memory, metadata, schedules, model outputs, patches, releases, approval records, or automatic continuation state.", [("source", "Source", "No write."), ("memory", "Memory", "No write."), ("metadata", "Metadata", "No update."), ("schedule", "Schedule", "No."), ("models", "Models", "No default."), ("patches", "Patches", "No apply."), ("release", "Release", "No publish."), ("approval", "Approval", "No create.")])
+
+
+def render_operator_invocation_boundary() -> str:
+    return _render_supervised_runtime_arc("/operator-invocation-boundary", "v479.0 Operator Invocation Boundary v1", "operator_invocation_boundary_v1", "v479.0", "operator-invocation-boundary", "States operator invocation permits one read-only observation report only and does not authorize monitoring, follow-up work, live changes, memory writes, scheduling, or autonomy expansion.", [("invoke", "Invocation", "Required."), ("single", "Single run", "Only."), ("monitor", "Monitoring", "No."), ("follow", "Follow-up", "No."), ("live", "Live", "No changes."), ("memory", "Memory", "No write."), ("schedule", "Schedule", "No."), ("approval", "Approval", "No create.")])
+
+
+def render_operator_read_only_observation_audit() -> str:
+    return _render_supervised_runtime_arc("/operator-read-only-observation-audit", "v480.0 Operator-Invoked Read-Only Observation Prep v1", "operator_invoked_read_only_observation_prep_v1", "v480.0", "operator-read-only-observation-audit", "Audits manual read-only observation scope, packet builder, no-mutation behavior, operator invocation boundary, smoke/API/CLI/dashboard tokens, and no-authorization behavior.", [("scope", "Scope", "Read-only."), ("packet", "Packet", "Built."), ("mutation", "Mutation", "None."), ("invoke", "Invocation", "Single-run."), ("schedule", "Schedule", "No."), ("models", "Models", "No default."), ("autonomy", "Autonomy", "No expansion."), ("layer", "Final v480 audit", "Review-only.")])
+
+
+def render_observation_ledger_schema() -> str:
+    return _render_supervised_runtime_arc("/observation-ledger-schema", "v481.0 Observation Ledger Schema v1", "observation_ledger_schema_v1", "v481.0", "observation-ledger-schema", "Defines a review-only observation ledger schema while making ledger presence and completeness non-authorizing.", [("schema", "Schema", "Defined."), ("ledger", "Ledger", "No approval."), ("history", "History", "No future action."), ("writes", "Writes", "None."), ("approval", "Approval", "No create."), ("review", "Review", "Only.")])
+
+
+def render_observation_receipt_builder() -> str:
+    return _render_supervised_runtime_arc("/observation-receipt-builder", "v482.0 Observation Receipt Builder v1", "observation_receipt_builder_v1", "v482.0", "observation-receipt-builder", "Builds an in-memory observation receipt that records observed scope, no mutation, no schedule, no model invocation, no approval, and not_authorized status.", [("receipt", "Receipt", "Template."), ("source", "Source", "No write."), ("memory", "Memory", "No write."), ("schedule", "Schedule", "No."), ("models", "Models", "No."), ("auth", "Authorization", "Not authorized.")])
+
+
+def render_observation_stop_pause_semantics() -> str:
+    return _render_supervised_runtime_arc("/observation-stop-pause-semantics", "v483.0 Observation Stop/Pause Semantics v1", "observation_stop_pause_semantics_v1", "v483.0", "observation-stop-pause-semantics", "Defines pause, stop, resume, and receipt preservation semantics before recurring observation exists.", [("pause", "Pause", "No auto prep."), ("stop", "Stop", "Fresh invocation."), ("resume", "Resume", "Explicit."), ("history", "History", "Preserved."), ("cleanup", "Cleanup", "Not authorized."), ("schedule", "Schedule", "None.")])
+
+
+def render_hidden_scheduling_continuation_audit() -> str:
+    return _render_supervised_runtime_arc("/hidden-scheduling-continuation-audit", "v484.0 Hidden Scheduling and Continuation Audit v1", "hidden_scheduling_continuation_audit_v1", "v484.0", "hidden-scheduling-continuation-audit", "Audits that observation does not schedule itself, create loops, continue automatically, select roadmaps, generate execution packets, or promote findings.", [("hidden", "Hidden", "No monitoring."), ("daily", "Daily loop", "No."), ("hourly", "Hourly loop", "No."), ("continue", "Continuation", "No."), ("roadmap", "Roadmap", "No auto."), ("promotion", "Promotion", "No.")])
+
+
+def render_observation_ledger_boundary_audit() -> str:
+    return _render_supervised_runtime_arc("/observation-ledger-boundary-audit", "v485.0 Bounded Observation Ledger and Stop/Pause Semantics v1", "operator_governed_observation_ledger_boundary_v1", "v485.0", "observation-ledger-boundary-audit", "Audits ledger schema, receipt builder, stop/pause semantics, hidden scheduling checks, smoke/API/CLI/dashboard tokens, and no-authorization behavior.", [("schema", "Schema", "Review-only."), ("receipt", "Receipt", "Not approval."), ("pause", "Pause", "Defined."), ("hidden", "Hidden schedule", "No."), ("continue", "Continuation", "No."), ("autonomy", "Autonomy", "No expansion."), ("layer", "Final v485 audit", "Review-only.")])
+
+
+def render_observation_to_proposal_candidate_mapper() -> str:
+    return _render_supervised_runtime_arc("/observation-to-proposal-candidate-mapper", "v486.0 Observation-to-Proposal Candidate Mapper v1", "observation_to_proposal_candidate_mapper_v1", "v486.0", "observation-to-proposal-candidate-mapper", "Maps manual observation findings into review-only proposal candidates without approval, execution packets, source writes, memory writes, or authorization.", [("mapping", "Mapping", "Review-only."), ("candidate", "Candidate", "Not execution."), ("queue", "Queue", "Not auth."), ("source", "Source", "No write."), ("memory", "Memory", "No write."), ("approval", "Approval", "No create.")])
+
+
+def render_proposal_queue_schema() -> str:
+    return _render_supervised_runtime_arc("/proposal-queue-schema", "v487.0 Proposal Queue Schema v1", "proposal_queue_schema_v1", "v487.0", "proposal-queue-schema", "Defines proposal queue records and review-only statuses while forbidding any status that approves live execution.", [("schema", "Schema", "Defined."), ("status", "Statuses", "Review-only."), ("fresh", "Fresh Approval", "Required."), ("live", "Live execution", "No status."), ("operator", "Review", "Required."), ("auth", "Authorization", "No.")])
+
+
+def render_proposal_ranking_risk_notes() -> str:
+    return _render_supervised_runtime_arc("/proposal-ranking-risk-notes", "v488.0 Proposal Ranking and Risk Notes v1", "proposal_ranking_risk_notes_v1", "v488.0", "proposal-ranking-risk-notes", "Ranks proposal candidates by risk and operator usefulness only, without automatic selection or authorization.", [("ranking", "Ranking", "Prioritization."), ("safety", "Safety", "Weighted."), ("metadata", "Metadata", "Risk noted."), ("smoke", "Smoke", "Risk noted."), ("auto", "Auto-select", "No."), ("auth", "Authorization", "No.")])
+
+
+def render_proposal_queue_non_execution_audit() -> str:
+    return _render_supervised_runtime_arc("/proposal-queue-non-execution-audit", "v489.0 Proposal Queue Non-Execution Audit v1", "proposal_queue_non_execution_audit_v1", "v489.0", "proposal-queue-non-execution-audit", "Audits that the proposal queue does not write source, mutate memory, schedule work, invoke models, create execution packets, apply patches, approve proposals, or continue automatically.", [("source", "Source", "No write."), ("memory", "Memory", "No write."), ("schedule", "Schedule", "No."), ("models", "Models", "No default."), ("packet", "Execution packet", "No."), ("approval", "Approval", "No create."), ("continue", "Continuation", "No.")])
+
+
+def render_observation_proposal_queue_audit() -> str:
+    return _render_supervised_runtime_arc("/observation-proposal-queue-audit", "v490.0 Supervised Proposal Queue from Observation Reports v1", "operator_governed_observation_proposal_queue_v1", "v490.0", "observation-proposal-queue-audit", "Audits mapper, queue schema, ranking notes, non-execution behavior, smoke/API/CLI/dashboard tokens, and no-authorization boundaries.", [("mapper", "Mapper", "Review-only."), ("schema", "Queue", "Defined."), ("ranking", "Ranking", "Not auth."), ("execution", "Execution", "No."), ("approval", "Approval", "No create."), ("autonomy", "Autonomy", "No expansion."), ("layer", "Final v490 audit", "Review-only.")])
+
+
+def render_sandbox_only_autonomy_scope_definition() -> str:
+    return _render_supervised_runtime_arc("/sandbox-only-autonomy-scope-definition", "v491.0 Sandbox-Only Autonomy Scope Definition v1", "sandbox_only_autonomy_scope_definition_v1", "v491.0", "sandbox-only-autonomy-scope-definition", "Defines sandbox-only autonomy boundary trial scope as review-only prep while forbidding live writes, memory writes, real patch application, release candidates, schedules, default models, and approval creation.", [("scope", "Scope", "Prep-only."), ("live", "Live writes", "No."), ("memory", "Memory", "No write."), ("patch", "Patch", "No apply."), ("schedule", "Schedule", "No."), ("models", "Models", "No default."), ("approval", "Approval", "No create.")])
+
+
+def render_sandbox_autonomy_trial_packet_builder() -> str:
+    return _render_supervised_runtime_arc("/sandbox-autonomy-trial-packet-builder", "v492.0 Sandbox Autonomy Trial Packet Builder v1", "sandbox_autonomy_trial_packet_builder_v1", "v492.0", "sandbox-autonomy-trial-packet-builder", "Builds a hypothetical sandbox-only autonomy trial prep packet with allowed/forbidden operations, rollback requirements, verification plan, not_authorized status, and not_executed status.", [("packet", "Packet", "Review-only."), ("trial", "Trial", "Hypothetical."), ("allowed", "Allowed", "Listed."), ("forbidden", "Forbidden", "Listed."), ("auth", "Authorization", "Not authorized."), ("exec", "Execution", "Not executed.")])
+
+
+def render_sandbox_to_live_boundary_hardening() -> str:
+    return _render_supervised_runtime_arc("/sandbox-to-live-boundary-hardening", "v493.0 Sandbox-to-Live Boundary Hardening v1", "sandbox_to_live_boundary_hardening_v1", "v493.0", "sandbox-to-live-boundary-hardening", "Hardens the rule that sandbox success, verification, output, and trial completion cannot promote to live source without fresh single-use operator approval.", [("success", "Sandbox success", "Not live auth."), ("verify", "Verification", "Not approval."), ("output", "Output", "Not execution."), ("completion", "Completion", "No mutation."), ("promotion", "Promotion", "Fresh approval.")])
+
+
+def render_no_execution_sandbox_autonomy_audit() -> str:
+    return _render_supervised_runtime_arc("/no-execution-sandbox-autonomy-audit", "v494.0 No-Execution Sandbox Autonomy Audit v1", "no_execution_sandbox_autonomy_audit_v1", "v494.0", "no-execution-sandbox-autonomy-audit", "Audits that sandbox boundary prep executes no sandbox commands, writes no live source or memory, creates no schedules, invokes no models by default, creates no approvals, promotes nothing, and continues nowhere.", [("sandbox", "Sandbox commands", "No."), ("source", "Live source", "No write."), ("memory", "Memory", "No write."), ("schedule", "Schedule", "No."), ("models", "Models", "No default."), ("approval", "Approval", "No create."), ("continue", "Continuation", "No.")])
+
+
+def render_sandbox_autonomy_boundary_prep_audit() -> str:
+    return _render_supervised_runtime_arc("/sandbox-autonomy-boundary-prep-audit", "v495.0 Sandbox-Only Autonomy Boundary Trial Prep v1", "operator_governed_sandbox_autonomy_boundary_prep_v1", "v495.0", "sandbox-autonomy-boundary-prep-audit", "Audits sandbox-only autonomy scope, trial packet builder, sandbox-to-live boundary hardening, no-execution behavior, smoke/API/CLI/dashboard tokens, and no-authorization boundaries.", [("scope", "Scope", "Prep-only."), ("packet", "Packet", "Review-only."), ("live", "Live boundary", "Hardened."), ("execution", "Execution", "None."), ("approval", "Approval", "No create."), ("autonomy", "Autonomy", "No expansion."), ("layer", "Final v495 audit", "Review-only.")])
+
+
+def render_autonomy_readiness_criteria_board() -> str:
+    return _render_supervised_runtime_arc("/autonomy-readiness-criteria-board", "v496.0 Autonomy Readiness Criteria Board v1", "autonomy_readiness_criteria_board_v1", "v496.0", "autonomy-readiness-criteria-board", "Defines readiness criteria across observation, ledger, proposal queue, sandbox boundary, firewall, route/surface parity, docs, burnout, no-mutation guarantees, and smoke coverage while reporting not_ready_for_autonomy.", [("criteria", "Criteria", "Review-only."), ("status", "Readiness", "Not ready."), ("auth", "Authorization", "Not authorized."), ("operator", "Review", "Required."), ("mutation", "Mutation", "No.")])
+
+
+def render_autonomy_blocker_gap_register() -> str:
+    return _render_supervised_runtime_arc("/autonomy-blocker-gap-register", "v497.0 Autonomy Blocker and Gap Register v1", "autonomy_blocker_gap_register_v1", "v497.0", "autonomy-blocker-gap-register", "Lists missing gates, fragile assumptions, large-module risk, sandbox/live boundary risk, model invocation risk, memory mutation risk, and scheduling risk without authorizing expansion.", [("blockers", "Blockers", "Listed."), ("gaps", "Gaps", "Visible."), ("ready", "Autonomy", "Not ready."), ("auth", "Authorization", "No."), ("action", "Action", "No.")])
+
+
+def render_phase_based_autonomy_permission_model() -> str:
+    return _render_supervised_runtime_arc("/phase-based-autonomy-permission-model", "v498.0 Phase-Based Autonomy Permission Model v1", "phase_based_autonomy_permission_model_v1", "v498.0", "phase-based-autonomy-permission-model", "Defines autonomy phases, allowed actions, forbidden actions, proof requirements, approval requirements, burnout rules, and rollback requirements without authorizing any phase.", [("phase", "Phases", "Defined."), ("allowed", "Allowed", "Scoped."), ("forbidden", "Forbidden", "Listed."), ("proof", "Proof", "Required."), ("next", "Next phase", "Not implied.")])
+
+
+def render_autonomy_misinterpretation_firewall() -> str:
+    return _render_supervised_runtime_arc("/autonomy-misinterpretation-firewall", "v499.0 Autonomy Misinterpretation Firewall v1", "autonomy_misinterpretation_firewall_v1", "v499.0", "autonomy-misinterpretation-firewall", "Blocks autonomy confusion patterns including ready-means-approved, board-passed-means-autonomy-allowed, phase-defined-means-authorized, sandbox-boundary-means-execute, and proposal-ranked-means-selected.", [("ready", "Ready", "Not approved."), ("board", "Board pass", "Not auth."), ("phase", "Phase", "Not authorized."), ("sandbox", "Sandbox", "No execute."), ("proposal", "Ranking", "Not selection.")])
+
+
+def render_autonomy_readiness_review_board_audit() -> str:
+    return _render_supervised_runtime_arc("/autonomy-readiness-review-board-audit", "v500.0 Operator-Governed Autonomy Readiness Review Board v1", "operator_governed_autonomy_readiness_review_board_v1", "v500.0", "autonomy-readiness-review-board-audit", "Audits readiness criteria, blocker/gap register, phase permission model, autonomy misinterpretation firewall, smoke/API/CLI/dashboard tokens, and no-authorization boundaries.", [("criteria", "Criteria", "Review-only."), ("blockers", "Blockers", "Listed."), ("phase", "Phase model", "Non-auth."), ("firewall", "Misread", "Blocked."), ("status", "Readiness", "Not ready."), ("auth", "Authorization", "Not authorized."), ("layer", "Final v500 audit", "Review-only.")])
+
 def render_patch_queue() -> str:
     from self_maintenance import multi_patch_queue_planning_layer_text
     final_report = {"stage": "v79.0", "status": "preview", "ok": True, "message": "Multi-Patch Queue Planning preview. Plans schema, order, conflicts, evidence freshness, and operator review only; no batch apply."}
@@ -5533,6 +6661,42 @@ python conscious_agent/main.py --multi-patch-queue-planning-layer --readiness-js
 """
     summary = _card("v79.0 Multi-Patch Queue Planning", _text_block(multi_patch_queue_planning_layer_text(final_report, full=False)))
     return _layout("/patch-queue", _card("Patch Queue", body) + summary)
+
+
+def render_live_change_transaction_narrowing() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-change-transaction-narrowing", "v376.0 Live Change Transaction Narrowing v1", "operator_governed_live_change_transaction_narrowing_v1", "v376.0", "live-change-transaction-narrowing",
+        "Narrows one approved live-change transaction to a tiny docs/dashboard/smoke surface without applying a patch, expanding scope, or selecting candidates autonomously.",
+        [("boundary", "Boundary", "No patch application."), ("candidate", "Candidate", "Tiny surface."), ("allowed", "Allowed", "File set."), ("protected", "Protected", "Mind surfaces."), ("scope", "Scope", "No expansion."), ("surface", "Surface", "Dashboard/API/CLI."), ("smoke", "Smoke", "Coverage."), ("layer", "Layer", "Final v376 narrowing.")],
+    )
+
+def render_live_change_approval_execution_lock() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-change-approval-execution-lock", "v377.0 Live Change Approval Execution Lock v1", "operator_governed_live_change_approval_execution_lock_v1", "v377.0", "live-change-approval-execution-lock",
+        "Binds a fresh single-use operator approval id, exact allowed files, target version, expiration, and confirmation phrase without self-approval or readiness-as-authorization.",
+        [("approval", "Approval", "Fresh id."), ("scope", "Scope", "Exact files."), ("single", "Single", "Use only."), ("phrase", "Phrase", "Required."), ("stale", "Stale", "Rejected."), ("surface", "Surface", "Dashboard/API/CLI."), ("boundary", "Boundary", "No self approval."), ("layer", "Layer", "Final v377 lock.")],
+    )
+
+def render_live_change_real_patch_trial_plan() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-change-real-patch-trial-plan", "v378.0 Live Change Real Patch Trial Plan v1", "operator_governed_live_change_real_patch_trial_plan_v1", "v378.0", "live-change-real-patch-trial-plan",
+        "Prepares preimage hashes, diff preview, README/release-history obligations, rollback packet, and verification checklist for a real patch trial without writing files or running commands.",
+        [("preimage", "Preimage", "Required."), ("diff", "Diff", "Preview."), ("docs", "Docs", "README/release."), ("rollback", "Rollback", "Packet."), ("verify", "Verify", "Checklist."), ("commands", "Commands", "Text only."), ("boundary", "Boundary", "No writes."), ("layer", "Layer", "Final v378 plan.")],
+    )
+
+def render_live_change_operator_confirmed_application_trial() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-change-operator-confirmed-application-trial", "v379.0 Operator-Confirmed Live Change Application Trial v1", "operator_confirmed_live_change_application_trial_v1", "v379.0", "live-change-operator-confirmed-application-trial",
+        "Defines the confirmation-gated application trial contract requiring fresh approval, matching transaction id, preimage match, allowed-file match, rollback packet, verification checklist, and exact operator phrase.",
+        [("confirm", "Confirm", "Exact phrase."), ("preimage", "Preimage", "Match."), ("files", "Files", "Allowed only."), ("rollback", "Rollback", "Present."), ("verify", "Verify", "Checklist."), ("memory", "Memory", "No mutation."), ("release", "Release", "No publish."), ("layer", "Layer", "Final v379 trial.")],
+    )
+
+def render_live_change_application_trial_audit() -> str:
+    return _render_supervised_runtime_arc(
+        "/live-change-application-trial-audit", "v380.0 Approved Live Change Transaction Narrowing and Real Patch Application Trial v1", "operator_governed_live_change_application_trial_audit_v1", "v380.0", "live-change-application-trial-audit",
+        "Audits transaction narrowing, approval execution lock, patch trial plan, operator-confirmed application trial, route/API/CLI parity, package privacy, docs, smoke coverage, and no-autonomy/no-mutation boundaries.",
+        [("boundary", "Boundary", "No auto continuation."), ("narrow", "Narrow", "Transaction."), ("lock", "Lock", "Approval."), ("plan", "Plan", "Patch trial."), ("trial", "Trial", "Operator confirmed."), ("privacy", "Privacy", "Source-only."), ("smoke", "Smoke", "Coverage."), ("layer", "Layer", "Final v380 audit.")],
+    )
 
 def render_intelligence() -> str:
     codebase = build_codebase_map(project_id="eidolon")
@@ -8697,6 +9861,306 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
                 html = render_expression_live_verification_rollback_packet()
             elif path == "/expression-live-application-packet-audit":
                 html = render_expression_live_application_packet_audit()
+            elif path == "/expression-live-execution-approval-intake":
+                html = render_expression_live_execution_approval_intake()
+            elif path == "/expression-live-source-transaction-preimage":
+                html = render_expression_live_source_transaction_preimage()
+            elif path == "/expression-live-manual-execution-checklist":
+                html = render_expression_live_manual_execution_checklist()
+            elif path == "/expression-live-rollback-reversion-packet":
+                html = render_expression_live_rollback_reversion_packet()
+            elif path == "/expression-live-execution-prep-audit":
+                html = render_expression_live_execution_prep_audit()
+            elif path == "/minimal-live-expression-change-candidate":
+                html = render_minimal_live_expression_change_candidate()
+            elif path == "/minimal-live-expression-approval-lock":
+                html = render_minimal_live_expression_approval_lock()
+            elif path == "/minimal-live-expression-patch-transaction":
+                html = render_minimal_live_expression_patch_transaction()
+            elif path == "/minimal-live-expression-application-harness":
+                html = render_minimal_live_expression_application_harness()
+            elif path == "/minimal-live-expression-application-audit":
+                html = render_minimal_live_expression_application_audit()
+            elif path == "/self-maintenance-gate-registry":
+                html = render_self_maintenance_gate_registry()
+            elif path == "/self-maintenance-version-expectations":
+                html = render_self_maintenance_version_expectations()
+            elif path == "/governed-surface-metadata-registry":
+                html = render_governed_surface_metadata_registry()
+            elif path == "/smoke-check-legacy-gate-registry":
+                html = render_smoke_check_legacy_gate_registry()
+            elif path == "/self-maintenance-refactor-audit":
+                html = render_self_maintenance_refactor_audit()
+            elif path == "/minimal-live-change-replay-packet":
+                html = render_minimal_live_change_replay_packet()
+            elif path == "/minimal-live-change-expected-actual-comparison":
+                html = render_minimal_live_change_expected_actual_comparison()
+            elif path == "/minimal-live-change-regression-drift-detector":
+                html = render_minimal_live_change_regression_drift_detector()
+            elif path == "/minimal-live-change-recovery-recommendation":
+                html = render_minimal_live_change_recovery_recommendation()
+            elif path == "/minimal-live-change-replay-regression-audit":
+                html = render_minimal_live_change_replay_regression_audit()
+            elif path == "/self-maintenance-module-extraction-plan":
+                html = render_self_maintenance_module_extraction_plan()
+            elif path == "/self-maintenance-version-package-gates":
+                html = render_self_maintenance_version_package_gates()
+            elif path == "/self-maintenance-surface-gates":
+                html = render_self_maintenance_surface_gates()
+            elif path == "/self-maintenance-governance-gates":
+                html = render_self_maintenance_governance_gates()
+            elif path == "/self-maintenance-modular-extraction-audit":
+                html = render_self_maintenance_modular_extraction_audit()
+            elif path == "/live-change-transaction-narrowing":
+                html = render_live_change_transaction_narrowing()
+            elif path == "/live-change-approval-execution-lock":
+                html = render_live_change_approval_execution_lock()
+            elif path == "/live-change-real-patch-trial-plan":
+                html = render_live_change_real_patch_trial_plan()
+            elif path == "/live-change-operator-confirmed-application-trial":
+                html = render_live_change_operator_confirmed_application_trial()
+            elif path == "/live-change-application-trial-audit":
+                html = render_live_change_application_trial_audit()
+            elif path == "/live-patch-trial-result-intake":
+                html = render_live_patch_trial_result_intake()
+            elif path == "/live-patch-applied-diff-evidence":
+                html = render_live_patch_applied_diff_evidence()
+            elif path == "/live-patch-approval-burnout":
+                html = render_live_patch_approval_burnout()
+            elif path == "/live-patch-post-trial-regression-review":
+                html = render_live_patch_post_trial_regression_review()
+            elif path == "/live-patch-trial-closure-audit":
+                html = render_live_patch_trial_closure_audit()
+            elif path == "/second-minimal-live-patch-candidate":
+                html = render_second_minimal_live_patch_candidate()
+            elif path == "/registry-driven-live-patch-approval-validation":
+                html = render_registry_driven_live_patch_approval_validation()
+            elif path == "/registry-driven-live-patch-transaction-lock":
+                html = render_registry_driven_live_patch_transaction_lock()
+            elif path == "/second-live-patch-application-harness":
+                html = render_second_live_patch_application_harness()
+            elif path == "/second-live-patch-trial-registry-audit":
+                html = render_second_live_patch_trial_registry_audit()
+            elif path == "/live-patch-trial-history-ledger":
+                html = render_live_patch_trial_history_ledger()
+            elif path == "/operator-live-patch-decision-patterns":
+                html = render_operator_live_patch_decision_patterns()
+            elif path == "/live-patch-supervised-lesson-candidates":
+                html = render_live_patch_supervised_lesson_candidates()
+            elif path == "/live-patch-memory-candidate-governance":
+                html = render_live_patch_memory_candidate_governance()
+            elif path == "/live-patch-history-memory-candidate-audit":
+                html = render_live_patch_history_memory_candidate_audit()
+            elif path == "/memory-candidate-selection-packet":
+                html = render_memory_candidate_selection_packet()
+            elif path == "/memory-application-approval-lock":
+                html = render_memory_application_approval_lock()
+            elif path == "/memory-write-transaction-preview":
+                html = render_memory_write_transaction_preview()
+            elif path == "/operator-confirmed-memory-application-trial":
+                html = render_operator_confirmed_memory_application_trial()
+            elif path == "/memory-application-trial-audit":
+                html = render_memory_application_trial_audit()
+            elif path == "/memory-application-confirmation-gate":
+                html = render_memory_application_confirmation_gate()
+            elif path == "/memory-application-negative-tests":
+                html = render_memory_application_negative_tests()
+            elif path == "/smoke-segment-registry":
+                html = render_smoke_segment_registry()
+            elif path == "/install-smoke-segment-runner":
+                html = render_install_smoke_segment_runner()
+            elif path == "/segmented-install-smoke-audit":
+                html = render_segmented_install_smoke_audit()
+            elif path == "/memory-application-attempt-ledger-schema":
+                html = render_memory_application_attempt_ledger_schema()
+            elif path == "/memory-application-dry-run-ledger":
+                html = render_memory_application_dry_run_ledger()
+            elif path == "/memory-application-ledger-replay":
+                html = render_memory_application_ledger_replay()
+            elif path == "/memory-application-ledger-surfaces":
+                html = render_memory_application_ledger_surfaces()
+            elif path == "/memory-application-ledger-audit":
+                html = render_memory_application_ledger_audit()
+            elif path == "/sandbox-memory-target-schema":
+                html = render_sandbox_memory_target_schema()
+            elif path == "/sandbox-memory-write-transaction":
+                html = render_sandbox_memory_write_transaction()
+            elif path == "/sandbox-memory-write-trial":
+                html = render_sandbox_memory_write_trial()
+            elif path == "/sandbox-memory-retraction-preview":
+                html = render_sandbox_memory_retraction_preview()
+            elif path == "/sandbox-memory-write-audit":
+                html = render_sandbox_memory_write_audit()
+            elif path == "/live-memory-write-eligibility":
+                html = render_live_memory_write_eligibility()
+            elif path == "/live-memory-approval-lock":
+                html = render_live_memory_approval_lock()
+            elif path == "/live-memory-transaction-preview":
+                html = render_live_memory_transaction_preview()
+            elif path == "/operator-confirmed-live-memory-write-trial":
+                html = render_operator_confirmed_live_memory_write_trial()
+            elif path == "/live-memory-write-audit":
+                html = render_live_memory_write_audit()
+            elif path == "/memory-retraction-eligibility":
+                html = render_memory_retraction_eligibility()
+            elif path == "/memory-retraction-approval-lock":
+                html = render_memory_retraction_approval_lock()
+            elif path == "/memory-retraction-transaction-preview":
+                html = render_memory_retraction_transaction_preview()
+            elif path == "/operator-confirmed-memory-retraction-trial":
+                html = render_operator_confirmed_memory_retraction_trial()
+            elif path == "/memory-retraction-trial-audit":
+                html = render_memory_retraction_trial_audit()
+            elif path == "/source-surface-manifest":
+                html = render_source_surface_manifest()
+            elif path == "/source-surface-parity-audit":
+                html = render_source_surface_parity_audit()
+            elif path == "/source-surface-authority-map":
+                html = render_source_surface_authority_map()
+            elif path == "/source-surface-package-privacy-map":
+                html = render_source_surface_package_privacy_map()
+            elif path == "/source-surface-manifest-audit":
+                html = render_source_surface_manifest_audit()
+            elif path == "/duplicate-definition-inventory":
+                html = render_duplicate_definition_inventory()
+            elif path == "/self-maintenance-duplicate-classification":
+                html = render_self_maintenance_duplicate_classification()
+            elif path == "/self-maintenance-extraction-candidates":
+                html = render_self_maintenance_extraction_candidates()
+            elif path == "/duplicate-definition-guard":
+                html = render_duplicate_definition_guard()
+            elif path == "/self-maintenance-duplicate-cleanup-audit":
+                html = render_self_maintenance_duplicate_cleanup_audit()
+            elif path == "/dashboard-route-inventory":
+                html = render_dashboard_route_inventory()
+            elif path == "/dashboard-route-probe":
+                html = render_dashboard_route_probe()
+            elif path == "/dashboard-lazy-render-audit":
+                html = render_dashboard_lazy_render_audit()
+            elif path == "/dashboard-tooltip-regression-audit":
+                html = render_dashboard_tooltip_regression_audit()
+            elif path == "/dashboard-route-health-audit":
+                html = render_dashboard_route_health_audit()
+            elif path == "/memory-lifecycle-review-board":
+                html = render_memory_lifecycle_review_board()
+            elif path == "/memory-lifecycle-state-summary":
+                html = render_memory_lifecycle_state_summary()
+            elif path == "/memory-lifecycle-drift-review":
+                html = render_memory_lifecycle_drift_review()
+            elif path == "/memory-lifecycle-operator-decision-board":
+                html = render_memory_lifecycle_operator_decision_board()
+            elif path == "/memory-lifecycle-review-board-audit":
+                html = render_memory_lifecycle_review_board_audit()
+            elif path == "/authorization-confusion-patterns":
+                html = render_authorization_confusion_patterns()
+            elif path == "/authorization-language-scan":
+                html = render_authorization_language_scan()
+            elif path == "/authorization-firewall-decision-packet":
+                html = render_authorization_firewall_decision_packet()
+            elif path == "/authorization-boundary-map":
+                html = render_authorization_boundary_map()
+            elif path == "/authorization-firewall-audit":
+                html = render_authorization_firewall_audit()
+            elif path == "/metadata-version-inventory":
+                html = render_metadata_version_inventory()
+            elif path == "/project-workspace-metadata-alignment":
+                html = render_project_workspace_metadata_alignment()
+            elif path == "/release-packaging-version-integrity":
+                html = render_release_packaging_version_integrity()
+            elif path == "/current-state-documentation-header-audit":
+                html = render_current_state_documentation_header_audit()
+            elif path == "/metadata-release-integrity-audit":
+                html = render_metadata_release_integrity_audit()
+            elif path == "/authorization-firewall-severity-classifier":
+                html = render_authorization_firewall_severity_classifier()
+            elif path == "/authorization-firewall-safe-boundary-filter":
+                html = render_authorization_firewall_safe_boundary_filter()
+            elif path == "/authorization-firewall-warning-status":
+                html = render_authorization_firewall_warning_status()
+            elif path == "/authorization-firewall-audit-status-split":
+                html = render_authorization_firewall_audit_status_split()
+            elif path == "/authorization-firewall-signal-triage-audit":
+                html = render_authorization_firewall_signal_triage_audit()
+            elif path == "/recent-dashboard-route-probe-refresh":
+                html = render_recent_dashboard_route_probe_refresh()
+            elif path == "/source-surface-manifest-parity-policy":
+                html = render_source_surface_manifest_parity_policy()
+            elif path == "/surface-route-api-cli-crosscheck":
+                html = render_surface_route_api_cli_crosscheck()
+            elif path == "/route-health-boundary-language":
+                html = render_route_health_boundary_language()
+            elif path == "/route-surface-parity-audit":
+                html = render_route_surface_parity_audit()
+            elif path == "/duplicate-shadow-inventory":
+                html = render_duplicate_shadow_inventory()
+            elif path == "/safe-shadow-removal-report":
+                html = render_safe_shadow_removal_report()
+            elif path == "/legacy-alias-compatibility-cleanup":
+                html = render_legacy_alias_compatibility_cleanup()
+            elif path == "/stale-version-gate-cleanup":
+                html = render_stale_version_gate_cleanup()
+            elif path == "/self-maintenance-duplicate-shadow-cleanup-audit":
+                html = render_self_maintenance_duplicate_shadow_cleanup_audit()
+            elif path == "/current-state-header-block":
+                html = render_current_state_header_block()
+            elif path == "/historical-next-steps-separation":
+                html = render_historical_next_steps_separation()
+            elif path == "/operator-continuity-handoff-packet":
+                html = render_operator_continuity_handoff_packet()
+            elif path == "/documentation-boundary-language":
+                html = render_documentation_boundary_language()
+            elif path == "/documentation-continuity-header-audit":
+                html = render_documentation_continuity_header_audit()
+            elif path == "/manual-read-only-observation-scope":
+                html = render_manual_read_only_observation_scope()
+            elif path == "/operator-observation-packet":
+                html = render_operator_observation_packet()
+            elif path == "/no-mutation-observation-audit":
+                html = render_no_mutation_observation_audit()
+            elif path == "/operator-invocation-boundary":
+                html = render_operator_invocation_boundary()
+            elif path == "/operator-read-only-observation-audit":
+                html = render_operator_read_only_observation_audit()
+            elif path == "/observation-ledger-schema":
+                html = render_observation_ledger_schema()
+            elif path == "/observation-receipt-builder":
+                html = render_observation_receipt_builder()
+            elif path == "/observation-stop-pause-semantics":
+                html = render_observation_stop_pause_semantics()
+            elif path == "/hidden-scheduling-continuation-audit":
+                html = render_hidden_scheduling_continuation_audit()
+            elif path == "/observation-ledger-boundary-audit":
+                html = render_observation_ledger_boundary_audit()
+            elif path == "/observation-to-proposal-candidate-mapper":
+                html = render_observation_to_proposal_candidate_mapper()
+            elif path == "/proposal-queue-schema":
+                html = render_proposal_queue_schema()
+            elif path == "/proposal-ranking-risk-notes":
+                html = render_proposal_ranking_risk_notes()
+            elif path == "/proposal-queue-non-execution-audit":
+                html = render_proposal_queue_non_execution_audit()
+            elif path == "/observation-proposal-queue-audit":
+                html = render_observation_proposal_queue_audit()
+            elif path == "/sandbox-only-autonomy-scope-definition":
+                html = render_sandbox_only_autonomy_scope_definition()
+            elif path == "/sandbox-autonomy-trial-packet-builder":
+                html = render_sandbox_autonomy_trial_packet_builder()
+            elif path == "/sandbox-to-live-boundary-hardening":
+                html = render_sandbox_to_live_boundary_hardening()
+            elif path == "/no-execution-sandbox-autonomy-audit":
+                html = render_no_execution_sandbox_autonomy_audit()
+            elif path == "/sandbox-autonomy-boundary-prep-audit":
+                html = render_sandbox_autonomy_boundary_prep_audit()
+            elif path == "/autonomy-readiness-criteria-board":
+                html = render_autonomy_readiness_criteria_board()
+            elif path == "/autonomy-blocker-gap-register":
+                html = render_autonomy_blocker_gap_register()
+            elif path == "/phase-based-autonomy-permission-model":
+                html = render_phase_based_autonomy_permission_model()
+            elif path == "/autonomy-misinterpretation-firewall":
+                html = render_autonomy_misinterpretation_firewall()
+            elif path == "/autonomy-readiness-review-board-audit":
+                html = render_autonomy_readiness_review_board_audit()
             elif path == "/intelligence":
                 html = render_intelligence()
             elif path == "/workspace":
@@ -8913,3 +10377,63 @@ def run_dashboard(host: str | None = None, port: int | None = None) -> None:
 # v340.1-v345.0 expression promotion packet assembly dashboard tokens: expression-promotion-evidence-binder expression-live-promotion-scope-risk expression-promotion-verification-rollback expression-promotion-decision-packet expression-promotion-packet-assembly-audit operator-governed-expression-promotion-packet-assembly-layer-v1 expression_promotion_packet.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required
 
 # v345.1-v350.0 expression live application packet dashboard tokens: expression-live-application-eligibility-gate expression-live-source-change-manifest expression-live-patch-instruction-packet expression-live-verification-rollback-packet expression-live-application-packet-audit operator-governed-expression-live-application-packet-drafting-layer-v1 expression_live_application_packet.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required
+
+# v350.1-v355.0 expression live application execution prep dashboard tokens: expression-live-execution-approval-intake expression-live-source-transaction-preimage expression-live-manual-execution-checklist expression-live-rollback-reversion-packet expression-live-execution-prep-audit operator-governed-expression-live-application-execution-prep-v1 expression_live_execution_prep.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required
+
+# v355.1-v360.0 minimal live expression application dashboard tokens: minimal-live-expression-change-candidate minimal-live-expression-approval-lock minimal-live-expression-patch-transaction minimal-live-expression-application-harness minimal-live-expression-application-audit operator-approved-minimal-live-expression-application-audit-v1 minimal_live_expression_application.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required expression_status_line
+
+# v360.1-v365.0 self-maintenance refactor dashboard tokens: self-maintenance-gate-registry self-maintenance-version-expectations governed-surface-metadata-registry smoke-check-legacy-gate-registry self-maintenance-refactor-audit operator-governed-self-maintenance-surface-reduction-and-gate-registry-refactor-v1 self_maintenance_refactor_registry.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required centralized_version_expectations_required=True refactor_registry_writes_files=False refactor_registry_executes_smoke=False
+
+# v365.1-v370.0 minimal live change replay dashboard tokens: minimal-live-change-replay-packet minimal-live-change-expected-actual-comparison minimal-live-change-regression-drift-detector minimal-live-change-recovery-recommendation minimal-live-change-replay-regression-audit operator-governed-minimal-live-change-replay-and-regression-hardening-v1 minimal_live_change_replay.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required replay_packet_applies_change=False expected_actual_writes_files=False regression_detector_auto_fixes=False recovery_recommendation_executes_rollback=False
+
+# v370.1-v375.0 modular extraction dashboard tokens: self-maintenance-module-extraction-plan self-maintenance-version-package-gates self-maintenance-surface-gates self-maintenance-governance-gates self-maintenance-modular-extraction-audit operator-governed-self-maintenance-modular-extraction-v1 self_maintenance_modular_extraction.py self_maintenance_version_package_gates.py self_maintenance_surface_gates.py self_maintenance_governance_gates.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required modular_extraction_applies_live_patches=False version_package_gate_extraction_present=True surface_gate_extraction_present=True governance_gate_extraction_present=True
+
+# v375.1-v380.0 live change application trial dashboard tokens: live-change-transaction-narrowing live-change-approval-execution-lock live-change-real-patch-trial-plan live-change-operator-confirmed-application-trial live-change-application-trial-audit operator-governed-live-change-application-trial-audit-v1 live_change_application_trial.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required transaction_narrowing_applies_patch=False approval_execution_lock_self_approves=False trial_plan_writes_files=False application_trial_runs_without_confirmation=False application_trial_continues_automatically=False
+
+# v380.1-v385.0 live patch trial closure dashboard tokens: live-patch-trial-result-intake live-patch-applied-diff-evidence live-patch-approval-burnout live-patch-post-trial-regression-review live-patch-trial-closure-audit operator-governed-live-patch-trial-closure-audit-v1 live_patch_trial_closure.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required result_intake_reruns_commands=False diff_evidence_edits_source=False approval_burnout_reuses_approval=False post_trial_review_executes_rollback=False closure_audit_applies_another_patch=False
+
+# v385.1-v390.0 second live patch trial dashboard tokens: second-minimal-live-patch-candidate registry-driven-live-patch-approval-validation registry-driven-live-patch-transaction-lock second-live-patch-application-harness second-live-patch-trial-registry-audit operator-governed-second-live-patch-trial-registry-audit-v1 second_live_patch_trial.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required candidate_selection_applies_patch=False approval_validation_reuses_approval=False transaction_lock_writes_files=False application_harness_runs_without_confirmation=False registry_audit_applies_patch=False fresh_approval_required=True registry_driven_checks_required=True approval_burnout_required=True
+
+# v390.1-v395.0 live patch history memory candidate dashboard tokens: live-patch-trial-history-ledger operator-live-patch-decision-patterns live-patch-supervised-lesson-candidates live-patch-memory-candidate-governance live-patch-history-memory-candidate-audit operator-governed-live-patch-history-and-memory-candidate-audit-v1 live_patch_history_memory_candidates.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required history_ledger_treats_history_as_permission=False decision_review_changes_future_behavior=False lesson_candidates_write_memory=False memory_governance_stores_memory=False history_memory_audit_writes_memory=False memory_candidates_review_only=True operator_approval_required_before_memory_storage=True
+
+# v395.1-v400.0 memory candidate application trial dashboard tokens: memory-candidate-selection-packet memory-application-approval-lock memory-write-transaction-preview operator-confirmed-memory-application-trial memory-application-trial-audit operator-governed-memory-application-trial-audit-v1 memory_candidate_application_trial.py data-tip no_native_title_tooltip command-deck operator-console dashboard_http_route_probe_required candidate_selection_writes_memory=False approval_lock_reuses_approval=False transaction_preview_writes_memory=False application_harness_runs_without_confirmation=False application_audit_runs_retraction=False fresh_operator_approval_required=True single_use_memory_approval_required=True sensitive_data_screen_required=True identity_personality_mutation_screen_required=True retraction_packet_required=True
+
+# v400.1-v405.0 segmented install smoke dashboard tokens: memory-application-confirmation-gate memory-application-negative-tests smoke-segment-registry install-smoke-segment-runner segmented-install-smoke-audit operator-governed-segmented-install-smoke-audit-v1 smoke_segment_registry.py data-tip no_native_title_tooltip command-deck operator-console explicit_confirmation_supplied segment_registry_runs_checks_automatically=False segment_runner_treats_pass_as_approval=False segmented_install_writes_memory=False
+
+# v405.1-v410.0 memory dry-run ledger dashboard tokens: memory-application-attempt-ledger-schema memory-application-dry-run-ledger memory-application-ledger-replay memory-application-ledger-surfaces memory-application-ledger-audit operator-governed-memory-application-dry-run-ledger-v1 memory_application_dry_run_ledger.py data-tip no_native_title_tooltip command-deck operator-console ledger_writes_live_memory=False replay_accepts_drift=False audit_writes_memory=False
+
+# v410.1-v415.0 sandbox memory write dashboard tokens: sandbox-memory-target-schema sandbox-memory-write-transaction sandbox-memory-write-trial sandbox-memory-retraction-preview sandbox-memory-write-audit operator-governed-sandbox-memory-write-target-v1 sandbox_memory_write_target.py data-tip no_native_title_tooltip command-deck operator-console sandbox_write_target_writes_live_memory=False sandbox_trial_accepts_non_sandbox_path=False sandbox_retraction_executes_live_retraction=False
+
+# v415.1-v420.0 live memory write dashboard tokens: live-memory-write-eligibility live-memory-approval-lock live-memory-transaction-preview operator-confirmed-live-memory-write-trial live-memory-write-audit operator-governed-live-memory-write-burnout-v1 live_memory_write_trial.py data-tip no_native_title_tooltip command-deck operator-console eligibility_is_approval=False sandbox_success_is_approval=False approval_burnout_required=True audit_grants_future_authorization=False
+
+# v420.1-v425.0 memory retraction dashboard tokens: memory-retraction-eligibility memory-retraction-approval-lock memory-retraction-transaction-preview operator-confirmed-memory-retraction-trial memory-retraction-trial-audit operator-governed-memory-retraction-trial-v1 memory_retraction_trial.py data-tip no_native_title_tooltip command-deck operator-console write_approval_authorizes_retraction=False retraction_eligibility_is_approval=False retained_audit_record_required=True audit_grants_future_retraction_authority=False
+
+# v425.1-v430.0 source surface manifest dashboard tokens: source-surface-manifest source-surface-parity-audit source-surface-authority-map source-surface-package-privacy-map source-surface-manifest-audit operator-governed-source-surface-manifest-v1 source_surface_manifest.py data-tip no_native_title_tooltip command-deck operator-console manifest_presence_is_authorization=False parity_pass_is_authorization=False surface_exists_means_may_execute=False smoke_pass_allows_live_action=False
+
+# v430.1-v435.0 duplicate definition dashboard tokens: duplicate-definition-inventory self-maintenance-duplicate-classification self-maintenance-extraction-candidates duplicate-definition-guard self-maintenance-duplicate-cleanup-audit operator-governed-self-maintenance-duplicate-cleanup-v1 duplicate_definition_audit.py data-tip no_native_title_tooltip command-deck operator-console inventory_is_authorization_to_delete=False classification_is_authorization_to_delete=False guard_applies_source_edits=False
+
+# v435.1-v440.0 dashboard route probe dashboard tokens: dashboard-route-inventory dashboard-route-probe dashboard-lazy-render-audit dashboard-tooltip-regression-audit dashboard-route-health-audit operator-governed-dashboard-route-health-audit-v1 dashboard_route_probe.py route_presence_is_authorization=False route_health_is_approval=False data-tip no_native_title_tooltip command-deck operator-console
+
+# v440.1-v445.0 memory lifecycle review board dashboard tokens: memory-lifecycle-review-board memory-lifecycle-state-summary memory-lifecycle-drift-review memory-lifecycle-operator-decision-board memory-lifecycle-review-board-audit operator-governed-memory-lifecycle-review-board-v1 memory_lifecycle_review_board.py board_visibility_is_authorization=False lifecycle_completeness_is_future_approval=False board_creates_approval=False board_executes_memory_write=False board_executes_memory_retraction=False fresh_approval_required_for_future_memory_action=True data-tip no_native_title_tooltip command-deck operator-console
+
+# v445.1-v450.0 authorization firewall dashboard tokens: authorization-confusion-patterns authorization-language-scan authorization-firewall-decision-packet authorization-boundary-map authorization-firewall-audit operator-governed-authorization-firewall-v1 authorization_firewall.py firewall_detection_is_enforcement_execution=False firewall_pass_is_authorization=False clear_status_means_approved=False operator_approval_still_required=True data-tip no_native_title_tooltip command-deck operator-console
+
+# v450.1-v455.0 metadata release integrity dashboard tokens: metadata-version-inventory project-workspace-metadata-alignment release-packaging-version-integrity current-state-documentation-header-audit metadata-release-integrity-audit operator-governed-metadata-release-integrity-v1 metadata_release_integrity.py metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False operator_approval_still_required=True data-tip no_native_title_tooltip command-deck operator-console
+
+# v455.1-v460.0 authorization firewall signal triage dashboard tokens: authorization-firewall-severity-classifier authorization-firewall-safe-boundary-filter authorization-firewall-warning-status authorization-firewall-audit-status-split authorization-firewall-signal-triage-audit operator-governed-authorization-firewall-signal-triage-v1 pass_with_warnings_supported=True plain_pass_with_warnings_forbidden=True mechanism_pass_is_not_language_clear=True language_clear_is_not_authorization=True authorization_status=not_authorized operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v460.1-v465.0 route surface parity dashboard tokens: recent-dashboard-route-probe-refresh source-surface-manifest-parity-policy surface-route-api-cli-crosscheck route-health-boundary-language route-surface-parity-audit operator-governed-route-surface-parity-v1 every_governed_substage_surface route_presence_is_authorization=False route_health_is_approval=False manifest_presence_is_authorization=False surface_parity_is_permission=False smoke_success_is_approval=False route_health_confirms_render_status_only=True route_health_does_not_authorize_execution=True parity_audit_applies_patches=False parity_audit_writes_memory=False parity_audit_expands_autonomy=False operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v465.1-v470.0 duplicate shadow cleanup dashboard tokens: duplicate-shadow-inventory safe-shadow-removal-report legacy-alias-compatibility-cleanup stale-version-gate-cleanup self-maintenance-duplicate-shadow-cleanup-audit operator-governed-self-maintenance-duplicate-shadow-cleanup-v1 duplicate_cleanup_is_authorization=False classification_is_permission_to_delete=False shadow_removal_expands_autonomy=False stale_gate_cleanup_authorizes_execution=False cleanup_applies_live_patches=False cleanup_writes_memory=False operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v470.1-v480.0 documentation continuity dashboard tokens: current-state-header-block historical-next-steps-separation operator-continuity-handoff-packet documentation-boundary-language documentation-continuity-header-audit operator-governed-documentation-continuity-header-v1 documentation_state_is_authorization=False release_history_is_authorization=False recommended_next_arc_is_permission=False handoff_packet_is_execution_packet=False current_state_header_creates_approval=False documentation_cleanup_writes_memory=False documentation_cleanup_applies_source_edits=False documentation_cleanup_expands_autonomy=False operator_approval_still_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v475.1-v480.0 observation prep dashboard tokens: manual-read-only-observation-scope operator-observation-packet no-mutation-observation-audit operator-invocation-boundary operator-read-only-observation-audit operator-invoked-read-only-observation-prep-v1 observation_is_authorization=False observation_is_execution=False observation_grants_followup_permission=False observation_writes_source=False observation_writes_memory=False observation_updates_metadata=False observation_schedules_work=False observation_invokes_models_by_default=False observation_creates_approval=False operator_invocation_required=True single_run_read_only=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v480.1-v485.0 observation ledger boundary dashboard tokens: observation-ledger-schema observation-receipt-builder observation-stop-pause-semantics hidden-scheduling-continuation-audit observation-ledger-boundary-audit operator-governed-observation-ledger-boundary-v1 observation_ledger_boundary.py ledger_presence_is_approval=False ledger_completeness_is_authorization=False observation_history_permits_future_action=False receipt_is_approval=False hidden_scheduling_allowed=False automatic_continuation_allowed=False daily_loop_allowed=False hourly_loop_allowed=False auto_roadmap_selection_allowed=False auto_patch_packet_generation_allowed=False auto_promotion_from_observation_allowed=False source_mutation_allowed=False memory_mutation_allowed=False approval_creation_allowed=False operator_invocation_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v485.1-v490.0 observation proposal queue dashboard tokens: observation-to-proposal-candidate-mapper proposal-queue-schema proposal-ranking-risk-notes proposal-queue-non-execution-audit observation-proposal-queue-audit operator-governed-observation-proposal-queue-v1 observation_proposal_queue.py mapping_is_approval=False proposal_candidate_is_execution_packet=False candidate_queue_is_authorization=False queue_presence_is_approval=False queue_ranking_is_authorization=False highest_ranked_proposal_auto_selected=False approved_for_packet_drafting_only_is_live_execution=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False patch_application_allowed=False proposal_approval_allowed=False automatic_continuation_allowed=False observation_promotes_to_live_change=False operator_review_required=True fresh_operator_approval_required=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v490.1-v495.0 sandbox autonomy boundary dashboard tokens: sandbox-only-autonomy-scope-definition sandbox-autonomy-trial-packet-builder sandbox-to-live-boundary-hardening no-execution-sandbox-autonomy-audit sandbox-autonomy-boundary-prep-audit operator-governed-sandbox-autonomy-boundary-prep-v1 sandbox_autonomy_boundary.py sandbox_scope_is_authorization=False sandbox_readiness_is_approval=False sandbox_target_description_is_permission_to_execute=False sandbox_success_is_live_authorization=False sandbox_verification_is_approval=False sandbox_output_is_patch_execution_packet=False sandbox_trial_completion_permits_source_mutation=False promotion_requires_fresh_single_use_operator_approval=True live_source_writes_allowed=False memory_writes_allowed=False real_patch_application_allowed=False release_candidate_creation_allowed=False automatic_scheduling_allowed=False local_model_invocation_by_default_allowed=False approval_creation_allowed=False sandbox_execution_allowed=False authorization_status=not_authorized execution_status=not_executed no_native_title_tooltip data-tip command-deck operator-console
+
+# v495.1-v500.0 autonomy readiness review board dashboard tokens: autonomy-readiness-criteria-board autonomy-blocker-gap-register phase-based-autonomy-permission-model autonomy-misinterpretation-firewall autonomy-readiness-review-board-audit operator-governed-autonomy-readiness-review-board-v1 autonomy_readiness_review_board.py readiness_status=not_ready_for_autonomy authorization_status=not_authorized readiness_review_is_autonomy_approval=False board_pass_grants_authorization=False phase_definition_authorizes_phase=False sandbox_boundary_exists_means_execute=False operator_discussion_is_approval=False proposal_ranking_is_selection=False observation_history_authorizes_monitoring=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False sandbox_execution_allowed=False live_source_writes_allowed=False approval_creation_allowed=False release_candidate_creation_allowed=False automatic_continuation_allowed=False no_native_title_tooltip data-tip command-deck operator-console

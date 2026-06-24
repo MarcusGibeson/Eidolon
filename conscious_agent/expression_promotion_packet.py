@@ -8,7 +8,7 @@ from expression_patch_dry_run import build_expression_dry_run_verification_plan_
 from expression_application_bridge import build_expression_live_surface_impact_map_summary, build_expression_rollback_reversion_plan_summary
 from identity_expression import classify_identity_expression_request
 
-EXPRESSION_PROMOTION_PACKET_VERSION = "350.0"
+EXPRESSION_PROMOTION_PACKET_VERSION = "500.0"
 
 EXPRESSION_PROMOTION_PACKET_BOUNDARIES = {
     "promotion_evidence_binder_treats_evidence_as_approval": False,

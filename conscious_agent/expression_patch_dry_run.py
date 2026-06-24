@@ -10,7 +10,7 @@ from expression_application_bridge import (
 )
 from identity_expression import classify_identity_expression_request
 
-EXPRESSION_PATCH_DRY_RUN_VERSION = "350.0"
+EXPRESSION_PATCH_DRY_RUN_VERSION = "500.0"
 
 EXPRESSION_PATCH_DRY_RUN_BOUNDARIES = {
     "patch_candidate_applies_patch": False,

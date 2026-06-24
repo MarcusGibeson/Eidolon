@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from typing import Any
 
-RUNTIME_REGISTRY_VERSION = "350.0"
+RUNTIME_REGISTRY_VERSION = "500.0"
 
 MODULE_EXTRACTION_BOUNDARIES: dict[str, bool] = {
     "module_extraction_writes_files_automatically": False,

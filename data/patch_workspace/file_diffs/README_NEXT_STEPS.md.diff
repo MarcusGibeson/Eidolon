@@ -1,9 +1,8 @@
 --- a/README_NEXT_STEPS.md
 +++ b/README_NEXT_STEPS.md
-@@ -3028,3 +3028,6 @@
+@@ -6260,3 +6260,5 @@
  
- ### v300.0 closure boundary
- v300.0 may summarize current continuity state, build review-only self-model snapshots, detect stale capability claims, review purpose drift, classify coherence risks, synthesize supervised growth priorities, connect memory candidates to future review needs, connect rollback/recovery lessons to risk planning, and prepare a v300 continuity audit packet. It does not mutate memory automatically, alter identity, alter personality, rewrite purpose, self-approve capabilities, auto-select future roadmaps, start new patches automatically, infer approval from continuity audits, invoke local models by default, execute commands automatically, publish release candidates, or treat self-model snapshots as authority.
-+
+ Recommended next arc after v450.0: v451.0-v455.0 Operator-Governed Recurring Read-Only Observation Trial v1. Build a strictly read-only recurring observation plan, activity ledger, command whitelist, and stop/pause controls without scheduling hidden work or mutating source/memory.
+ 
 +<!-- EIDOLON_CONTROLLED_BUILD_STAGE_MARKER -->
-+Staged controlled-build probe for plan_20260623_095753_synthetic-v9-safe-readme-task. This line is only written if the operator explicitly applies the staged patch.
++Staged controlled-build probe for plan_20260624_102750_synthetic-v9-safe-readme-task. This line is only written if the operator explicitly applies the staged patch.

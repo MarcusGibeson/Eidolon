@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-ROLLBACK_RECOVERY_VERSION = "350.0"
+ROLLBACK_RECOVERY_VERSION = "500.0"
 
 ROLLBACK_RECOVERY_BOUNDARY_SUMMARY = {
     "runs_rollback": False,

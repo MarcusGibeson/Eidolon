@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Iterable
 
-SURFACE_PARITY_VERSION = "350.0"
+SURFACE_PARITY_VERSION = "500.0"
 
 def missing_tokens(text: str, tokens: Iterable[str]) -> list[str]:
     return [token for token in tokens if token not in text]
