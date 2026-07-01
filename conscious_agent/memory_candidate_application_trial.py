@@ -3,8 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-MEMORY_CANDIDATE_APPLICATION_TRIAL_VERSION = "500.0"
-
+MEMORY_CANDIDATE_APPLICATION_TRIAL_VERSION = "1032.0"
 MEMORY_CANDIDATE_APPLICATION_TRIAL_BOUNDARIES: dict[str, bool] = {
     "candidate_selection_writes_memory": False,
     "candidate_selection_mutates_identity": False,
@@ -299,7 +298,7 @@ def build_memory_application_trial_audit_summary(root: Path | None = None, dashb
     doc_checks = {
         "readme_updated": "v400.0 - Operator-Approved Memory Candidate Application Trial v1" in docs,
         "release_history_updated": "v400.0 - Operator-Approved Memory Candidate Application Trial v1" in docs,
-        "version_markers_current": 'MEMORY_CANDIDATE_APPLICATION_TRIAL_VERSION = "500.0"' in docs,
+        "version_markers_current": 'MEMORY_CANDIDATE_APPLICATION_TRIAL_VERSION = "555.0"' in docs,
         "dashboard_data_tip_present": "data-tip" in docs,
         "command_deck_present": "command-deck" in docs,
         "operator_console_present": "operator-console" in docs,

@@ -6,8 +6,7 @@ from typing import Any
 from minimal_live_expression_application import build_minimal_live_expression_application_audit_summary
 from self_maintenance_refactor_registry import build_self_maintenance_refactor_audit_summary
 
-MINIMAL_LIVE_CHANGE_REPLAY_VERSION = "500.0"
-
+MINIMAL_LIVE_CHANGE_REPLAY_VERSION = "1032.0"
 MINIMAL_LIVE_CHANGE_REPLAY_BOUNDARIES: dict[str, bool] = {
     "replay_packet_applies_change": False,
     "replay_packet_replays_automatically": False,

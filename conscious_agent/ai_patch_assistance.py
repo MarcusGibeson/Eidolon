@@ -46,7 +46,7 @@ from release_pipeline import (
 )
 from workspace_orchestration import _timeline_event
 
-AI_PATCH_ASSIST_VERSION = "17.0"
+AI_PATCH_ASSIST_VERSION = "1032.0"
 AI_PATCH_DIR = CODE_PATCH_DIR / "ai_assisted"
 TASK_TO_CODE_PATCH = AI_PATCH_DIR / "task_to_code_patch.json"
 CODE_CONTEXT = AI_PATCH_DIR / "code_context.json"

@@ -10,7 +10,7 @@ from paths import DATA_DIR
 from settings_manager import load_settings
 
 
-ONBOARDING_VERSION = "4.5"
+ONBOARDING_VERSION = "1032.0"
 ONBOARDING_RUNS_DIR = DATA_DIR / "onboarding_runs"
 
 

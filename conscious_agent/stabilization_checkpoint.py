@@ -20,7 +20,7 @@ from typing import Any, Callable
 
 from paths import ROOT_DIR, DATA_DIR
 
-STABILIZATION_CHECKPOINT_VERSION = "15.0"
+STABILIZATION_CHECKPOINT_VERSION = "1032.0"
 DEFAULT_PROJECT_ID = "eidolon"
 
 PASS = "pass"

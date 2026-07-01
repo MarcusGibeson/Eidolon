@@ -5,8 +5,7 @@ from typing import Any
 from expression_live_execution_prep import build_expression_live_execution_prep_audit_summary
 from identity_expression import classify_identity_expression_request
 
-MINIMAL_LIVE_EXPRESSION_APPLICATION_VERSION = "500.0"
-
+MINIMAL_LIVE_EXPRESSION_APPLICATION_VERSION = "1032.0"
 MINIMAL_LIVE_EXPRESSION_APPLICATION_BOUNDARIES = {
     "candidate_selection_applies_change": False,
     "candidate_selection_rewrites_personality": False,
@@ -76,7 +75,7 @@ SAFE_MINIMAL_ALLOWED_FILES = [
 MINIMAL_VERIFICATION_TEXT_COMMANDS = [
     "python -m compileall conscious_agent tools",
     "python tools/smoke_check.py --tier fast --json",
-    "python tools/smoke_check.py --single-check operator-approved-minimal-live-expression-application-audit-v1",
+    "python tools/smoke_check.py --check operator-approved-minimal-live-expression-application-audit-v1",
     "manual dashboard route probes for v356-v360 routes",
     "manual dynamic API/CLI parity checks for v356-v360 routes and flags",
     "manual package privacy scan and extracted zip verification",

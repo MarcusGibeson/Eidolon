@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-APPLICATION_EXECUTION_REFINEMENT_VERSION = "500.0"
-
+APPLICATION_EXECUTION_REFINEMENT_VERSION = "1032.0"
 APPLICATION_EXECUTION_REFINEMENT_BOUNDARY_SUMMARY = {
     "authorizes_patch_application": False,
     "runs_shell_commands": False,

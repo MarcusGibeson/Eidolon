@@ -1,16 +1,119 @@
 {
-  "version": "500.0",
-  "updated_at": "2026-06-24T10:28:10",
+  "current_milestone": "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1",
+  "last_updated_for": "v1032.0",
+  "name": "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1",
+  "next_recommended_arc": "v1033.0 Smoke Registry Sidecar Parity Expansion v1",
   "projects": [
     {
+      "current_milestone": "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1",
+      "description": "Eidolon local artificial mind project with governed continuity, identity/personality/coherence expression review, and strict operator approval boundaries.",
+      "framework_type": "local_cli_dashboard_api",
       "id": "eidolon",
-      "name": "v500.0 - Operator-Governed Autonomy Readiness Review Board v1",
+      "language": "Python",
+      "last_health_status": "unknown",
+      "last_updated_for": "v1032.0",
+      "name": "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1",
+      "next_recommended_arc": "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1",
+      "next_steps": [
+        "v931.0-v935.0 Generated Scaffold Sandbox Output Prep v1"
+      ],
+      "notes": [
+        "v926.0 selected five low-risk review-only generator surfaces for batch parity.",
+        "v927.0-v929.0 proved dashboard, CLI/API, and smoke preview parity across the selected batch.",
+        "v930.0 closes multi-surface generated parity while keeping generated wiring inactive and review_only=True."
+      ],
+      "priority": "high",
+      "readme_path": "README_NEXT_STEPS.md",
+      "recommended_next_actions": [
+        "Use the v930 multi-surface parity closure as the template for sandbox generated scaffold output prep.",
+        "Keep generated wiring inactive until sandbox artifacts, rollback evidence, and operator review gates are proven.",
+        "Preserve operator control over source edits, releases, approvals, memory writes, and autonomy changes."
+      ],
+      "registered_at": "2026-06-20T04:13:25",
+      "release_notes": [
+        {
+          "describes_version": "825.0",
+          "recorded_at_version": "825.0",
+          "safety": "Stabilization-only patch; no generated surfaces, source self-application, memory/release/approval mutation, execution-permission expansion, scheduler/network mutation, or autonomy expansion.",
+          "summary": "v825.0 repairs the dashboard chat SSE parser, greeting action routing, active release smoke expectations, smoke debt classification, self-development prompt preservation, .gitignore packaging, and Windows console Unicode output without expanding autonomy.",
+          "title": "Operator-Approved Manifest Smoke Segment Repair Application v1",
+          "version": "1032.0"
+        },
+        {
+          "describes_version": "760.0",
+          "recorded_at_version": "760.0",
+          "summary": "v760.0 implements the missing read-only /api/self-development-cycle/layer route, adds live-dispatch API route repair smoke coverage, and makes manifest-claimed self-development API routes release-gated without expanding autonomy.",
+          "title": "Duplicate Self Development Cycle Definition Cleanup and Legacy Smoke Debt Reduction v1",
+          "version": "1032.0"
+        },
+        {
+          "describes_version": "751.0",
+          "recorded_at_version": "751.0",
+          "safety": "Review-only audit wording cleanup and manifest generation prep; no generated surfaces, source self-application, memory/release/approval mutation, execution-permission expansion, or autonomy expansion.",
+          "summary": "v751.0 adds a review-only Self Development API surface truth review packet that live-probes claimed self-development API routes and reports unsupported claims without implementing routes, modifying the manifest, applying source edits, or expanding autonomy.",
+          "title": "Self Development API Surface Truth Review Packet v1",
+          "version": "1032.0"
+        },
+        {
+          "date": "2026-06-26T04:20:00",
+          "describes_version": "720.0",
+          "recorded_at_version": "720.0",
+          "safety": "Review-only audit wording cleanup and manifest generation prep; no generated surfaces, source self-application, memory/release/approval mutation, execution-permission expansion, or autonomy expansion.",
+          "summary": "v720.0 completes the Self Development Cycle v1 arc with a cleaner operator overview, real dashboard status counts, current-version repair, source-only package privacy hardening, and manifest/smoke alignment repairs.",
+          "title": "Self Development Cycle v1",
+          "version": "1032.0"
+        },
+        {
+          "date": "2026-06-25T18:20:00",
+          "describes_version": "690.0",
+          "recorded_at_version": "690.0",
+          "safety": "Review-only audit wording cleanup and manifest generation prep; no generated surfaces, source self-application, memory/release/approval mutation, execution-permission expansion, or autonomy expansion.",
+          "summary": "v690.0 completes the Neural Command Deck Dashboard Redesign v1 arc.",
+          "title": "Neural Command Deck Dashboard Redesign v1",
+          "version": "1032.0"
+        },
+        {
+          "date": "2026-06-25T17:45:00",
+          "describes_version": "685.0",
+          "recorded_at_version": "685.0",
+          "safety": "Review-only audit wording cleanup and manifest generation prep; no generated surfaces, source self-application, memory/release/approval mutation, execution-permission expansion, or autonomy expansion.",
+          "summary": "v685.0 completes the Dashboard Renderer Component Extraction v1 arc.",
+          "title": "Dashboard Renderer Component Extraction v1",
+          "version": "1032.0"
+        },
+        {
+          "date": "2026-06-25T16:55:00",
+          "describes_version": "655.0",
+          "recorded_at_version": "655.0",
+          "safety": "Review-only audit wording cleanup and manifest generation prep; no generated surfaces, source self-application, memory/release/approval mutation, execution-permission expansion, or autonomy expansion.",
+          "summary": "v655.0 completes the Operator Guided Review Wizard UX v1 arc with guided entry model, evidence/warning cards, decision/approval step UX, verification/resume step summary, and a final operator guided review wizard board.",
+          "title": "Operator Guided Review Wizard UX v1",
+          "version": "1032.0"
+        },
+        {
+          "date": "2026-06-25T00:25:00",
+          "describes_version": "645.0",
+          "recorded_at_version": "645.0",
+          "safety": "Review-only audit wording cleanup and manifest generation prep; no generated surfaces, source self-application, memory/release/approval mutation, execution-permission expansion, or autonomy expansion.",
+          "summary": "v645.0 completes the Operator Receipt Timeline and Decision Audit Trail UX v1 arc with decision timeline model, approval consumption cards, blocked action/safety cards, verification receipt cards, and a final decision audit trail board.",
+          "title": "Operator Receipt Timeline and Decision Audit Trail UX v1",
+          "version": "1032.0"
+        },
+        {
+          "date": "2026-06-25T23:55:00",
+          "describes_version": "640.0",
+          "recorded_at_version": "640.0",
+          "safety": "Review-only audit wording cleanup and manifest generation prep; no generated surfaces, source self-application, memory/release/approval mutation, execution-permission expansion, or autonomy expansion.",
+          "summary": "v640.0 completes the Operator Decision Capture and Approval Form UX v1 arc with decision capture schema, approval scope/target binding, approval expiration and burnout UX, denial/deferral/revision capture, and a final operator decision approval UX board.",
+          "title": "Operator Decision Capture and Approval Form UX v1",
+          "version": "1032.0"
+        }
+      ],
       "root": ".",
       "root_resolves_from": "ROOT_DIR",
-      "version": "500.0",
-      "language": "Python",
-      "framework_type": "local_cli_dashboard_api",
-      "readme_path": "README_NEXT_STEPS.md",
+      "root_version": "1032.0",
+      "safe_command_profile": "eidolon",
+      "safe_to_modify": true,
       "test_commands": [
         "python -m py_compile conscious_agent/*.py tools/smoke_check.py",
         "python conscious_agent/main.py --doctor",
@@ -20,66 +123,11 @@
         "python conscious_agent/main.py --assisted-self-improvement-release --readiness-json",
         "python conscious_agent/main.py --semi-autonomous-maintenance-review --readiness-json"
       ],
-      "safe_command_profile": "eidolon",
-      "last_health_status": "unknown",
-      "priority": "high",
-      "safe_to_modify": true,
-      "last_updated_for": "v500.0",
-      "current_milestone": "v500.0 Operator-Governed Autonomy Readiness Review Board v1",
-      "registered_at": "2026-06-20T04:13:25",
-      "updated_at": "2026-06-24T10:28:10",
-      "description": "Eidolon local artificial mind project with governed continuity, identity/personality/coherence expression review, and strict operator approval boundaries.",
-      "next_steps": [
-        "Review v500 autonomy readiness board, then proceed to v501-v505 manual observation-to-sandbox packet bridge only after confirming readiness_status remains not_ready_for_autonomy and authorization_status remains not_authorized."
-      ],
-      "notes": "v500.0 adds a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and smoke/API/CLI/dashboard coverage without sandbox execution, source writes, memory writes, schedules, default model invocation, approval creation, release candidates, live promotion, automatic continuation, or autonomy expansion.",
-      "release_notes": [
-        {
-          "version": "500.0",
-          "notes": "v440.0 adds dashboard route inventory, route probe, lazy render audit, tooltip regression audit, and route health audit without redesigning the dashboard or authorizing execution."
-        },
-        {
-          "version": "500.0",
-          "notes": "v445.0 adds a review-only memory lifecycle board summarizing candidate, dry-run, sandbox write, live trial write, burnout, retained retraction, and audit status without authorizing future memory edits."
-        },
-        {
-          "version": "500.0",
-          "notes": "v450.0 adds a review-only governance-state-to-authorization firewall detecting readiness/approval, route-health/approval, manifest/authorization, smoke/permission, prior-approval/current-approval, sandbox/live-permission, model-consensus/truth, and review-packet/execution confusion without enforcing, approving, mutating memory, applying source edits, or expanding autonomy."
-        },
-        {
-          "version": "500.0",
-          "notes": "v455.0 repairs source-of-truth drift across settings, project metadata, workspace metadata, release package version resolution, and current-state documentation without granting authorization, publishing releases, mutating memory, or expanding autonomy."
-        },
-        {
-          "version": "500.0",
-          "notes": "v460.0 adds review-only authorization firewall signal triage without approving, enforcing, writing memory, applying source edits, or expanding autonomy."
-        },
-        {
-          "version": "500.0",
-          "notes": "v470.0 removes shadowed duplicate top-level self_maintenance definitions, preserves canonical final helpers, replaces stale v68/v70 exact-version blockers with explicit historical compatibility gates, and audits the cleanup without granting authorization or expanding autonomy."
-        },
-        {
-          "version": "500.0",
-          "notes": "v475.0 adds a current-state README header, separates historical next-step records, adds a reusable operator/new-chat handoff packet, hardens documentation no-authorization language, and audits documentation continuity without granting approval or expanding autonomy."
-        },
-        {
-          "version": "500.0",
-          "notes": "v480.0 adds a manual, operator-invoked, read-only observation scope, structured observation packet builder, no-mutation observation audit, and operator invocation boundary without scheduling, source writes, memory writes, model invocation, approval creation, automatic continuation, or autonomy expansion."
-        },
-        {
-          "version": "500.0",
-          "notes": "v490.0 adds a review-only observation-to-proposal candidate mapper, proposal queue schema, ranking and risk notes, non-execution audit, and smoke/API/CLI/dashboard coverage without source writes, memory writes, schedules, model invocation, execution packet creation, proposal approval, automatic continuation, or autonomy expansion."
-        },
-        {
-          "version": "500.0",
-          "notes": "v500.0 adds a review-only autonomy readiness criteria board, blocker/gap register, phase-based autonomy permission model, autonomy misinterpretation firewall, and smoke/API/CLI/dashboard coverage without sandbox execution, source writes, memory writes, schedules, default model invocation, approval creation, release candidates, live promotion, automatic continuation, or autonomy expansion."
-        }
-      ],
-      "root_version": "500.0",
-      "next_recommended_arc": "v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1",
-      "recommended_next_actions": [
-        "Review v495 sandbox-only boundary prep before v496-v500 autonomy readiness review board."
-      ]
+      "updated_at": "2026-06-29T21:35:00",
+      "version": "1032.0"
     }
-  ]
+  ],
+  "root_version": "1032.0",
+  "updated_at": "2026-06-30T00:55:00",
+  "version": "1032.0"
 }

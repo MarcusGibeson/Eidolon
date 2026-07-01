@@ -71,6 +71,58 @@ def local_generate(
     return data.get("response", "").strip()
 
 
+
+def local_generate_stream(
+    prompt: str,
+    model: str | None = None,
+    temperature: float = 0.4,
+    max_tokens: int = 300,
+):
+    """
+    Streams response chunks from a local Ollama model.
+
+    This is intentionally a generator so dashboard/API callers can forward chunks to
+    the browser as they arrive instead of waiting for the full model response.
+    """
+    selected_model = model or str(get_setting("local_model", DEFAULT_LOCAL_MODEL))
+    payload = {
+        "model": selected_model,
+        "prompt": prompt,
+        "stream": True,
+        "options": {
+            "temperature": temperature,
+            "num_predict": max_tokens,
+        },
+    }
+
+    try:
+        with requests.post(_generate_url(), json=payload, timeout=_ollama_timeout(), stream=True) as response:
+            response.raise_for_status()
+            for line in response.iter_lines(decode_unicode=True):
+                if not line:
+                    continue
+                try:
+                    data = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                chunk = str(data.get("response") or "")
+                if chunk:
+                    yield chunk
+                if data.get("done") is True:
+                    break
+    except requests.exceptions.ConnectionError:
+        yield (
+            "I tried to use my local brain, but Ollama is not running. "
+            "Start Ollama first, then try again."
+        )
+    except requests.exceptions.Timeout:
+        yield (
+            "My local brain took too long to answer. "
+            "The model may be too large or the computer may be busy."
+        )
+    except requests.exceptions.RequestException as error:
+        yield f"My local brain hit an error: {error}"
+
 def local_generate_json(
     prompt: str,
     model: str | None = None,

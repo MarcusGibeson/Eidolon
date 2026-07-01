@@ -12,7 +12,7 @@ from paths import DATA_DIR, ROOT_DIR
 from settings_manager import load_settings
 from task_queue import list_tasks
 
-PROJECT_INTELLIGENCE_VERSION = "15.0"
+PROJECT_INTELLIGENCE_VERSION = "1032.0"
 WORKSPACES_DIR = DATA_DIR / "workspaces"
 WORKSPACE_PROJECTS_FILE = WORKSPACES_DIR / "projects.json"
 ACTIVE_PROJECT_FILE = WORKSPACES_DIR / "active_project.json"

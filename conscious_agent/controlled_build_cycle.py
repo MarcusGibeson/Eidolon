@@ -24,7 +24,7 @@ from settings_manager import load_settings
 from stable_loop_guardrails import stable_loop_guardrail_summary
 from task_queue import list_tasks
 
-CONTROLLED_BUILD_VERSION = "15.0"
+CONTROLLED_BUILD_VERSION = "1032.0"
 WORKSPACE_DIR = DATA_DIR / "patch_workspace"
 REPORTS_DIR = DATA_DIR / "controlled_build_reports"
 BACKUPS_DIR = DATA_DIR / "controlled_build_backups"

@@ -7,8 +7,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-SELF_MAINTENANCE_SHADOW_CLEANUP_VERSION = "500.0"
-
+SELF_MAINTENANCE_SHADOW_CLEANUP_VERSION = "1032.0"
 REMOVED_SHADOWED_DEFINITIONS: list[dict[str, Any]] = [
     {"function_name": "build_post_apply_verification_runner", "removed_stage": "v61.6", "classification": "shadowed_legacy_helper"},
     {"function_name": "post_apply_verification_runner_text", "removed_stage": "v61.6", "classification": "shadowed_legacy_helper"},

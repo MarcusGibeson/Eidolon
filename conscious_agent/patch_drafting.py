@@ -14,7 +14,7 @@ from task_queue import list_tasks
 from workspace_orchestration import build_project_context, _timeline_event
 from workspace_execution import build_project_boundary_check
 
-PATCH_DRAFTING_VERSION = "15.0"
+PATCH_DRAFTING_VERSION = "1032.0"
 DRAFTS_DIR = DATA_DIR / "patch_drafts"
 PROPOSED_FILES_DIR = DRAFTS_DIR / "proposed_files"
 BACKUPS_DIR = DRAFTS_DIR / "backups"

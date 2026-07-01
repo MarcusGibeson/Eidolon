@@ -6,8 +6,7 @@ from behavioral_expression_preview import build_behavioral_expression_preview_su
 from identity_expression import classify_identity_expression_request
 from route_health import build_route_health_registry_summary
 
-CONVERSATIONAL_EXPRESSION_SANDBOX_VERSION = "500.0"
-
+CONVERSATIONAL_EXPRESSION_SANDBOX_VERSION = "1032.0"
 CONVERSATIONAL_EXPRESSION_SANDBOX_BOUNDARIES = {
     "conversational_expression_applies_profiles": False,
     "conversational_expression_changes_live_chat": False,

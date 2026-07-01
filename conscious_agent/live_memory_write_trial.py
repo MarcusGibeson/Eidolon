@@ -17,7 +17,7 @@ from sandbox_memory_write_target import (
     build_sandbox_memory_retraction_preview_summary,
 )
 
-LIVE_MEMORY_WRITE_TRIAL_VERSION = "500.0"
+LIVE_MEMORY_WRITE_TRIAL_VERSION = "1032.0"
 LIVE_MEMORY_TRIAL_ROOT_NAME = "memory_application_trials"
 LIVE_MEMORY_TRIAL_FILE = "operator_approved_live_memory_write_trial.json"
 SAFE_FIRST_LIVE_MEMORY_TEXT = "Eidolon must not treat sandbox success, eligibility, readiness, or prior approval as authorization for future memory writes."

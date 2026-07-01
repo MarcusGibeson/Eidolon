@@ -3,8 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-SECOND_LIVE_PATCH_TRIAL_VERSION = "500.0"
-
+SECOND_LIVE_PATCH_TRIAL_VERSION = "1032.0"
 SECOND_LIVE_PATCH_TRIAL_BOUNDARIES: dict[str, bool] = {
     "candidate_selection_applies_patch": False,
     "candidate_selection_selects_autonomously": False,
@@ -263,7 +262,7 @@ def build_second_live_patch_trial_registry_audit_summary(root: Path | None = Non
     doc_checks = {
         "readme_updated": "v390.0 - Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1" in docs,
         "release_history_updated": "v390.0 - Second Minimal Approved Live Patch Trial with Registry-Driven Execution Checks v1" in docs,
-        "version_markers_current": 'SECOND_LIVE_PATCH_TRIAL_VERSION = "500.0"' in docs,
+        "version_markers_current": 'SECOND_LIVE_PATCH_TRIAL_VERSION = "555.0"' in docs,
         "dashboard_data_tip_present": "data-tip" in docs,
         "command_deck_present": "command-deck" in docs,
         "operator_console_present": "operator-console" in docs,

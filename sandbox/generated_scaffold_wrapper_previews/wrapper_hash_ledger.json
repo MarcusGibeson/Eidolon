@@ -1,0 +1,36 @@
+{
+  "applies_source_edits": false,
+  "artifact_type": "generated_scaffold_wrapper_hash_ledger_review_only",
+  "artifacts": [
+    {
+      "path": "sandbox/generated_scaffold_wrapper_previews/v916-manifest-review-packet-schema.wrapper.json",
+      "sha256": "3bc5296344200d7f0b05f3a434d841ba620bc8dc9370b8ea8c7f2df6b2c891c1",
+      "surface_id": "v916-manifest-review-packet-schema"
+    },
+    {
+      "path": "sandbox/generated_scaffold_wrapper_previews/v917-dashboard-surface-preview-generator.wrapper.json",
+      "sha256": "ddb4ba8fe339c60c189e5721d88942ed1a645dfb80205f0af15885a8f07728f1",
+      "surface_id": "v917-dashboard-surface-preview-generator"
+    },
+    {
+      "path": "sandbox/generated_scaffold_wrapper_previews/v918-cli-api-surface-preview-generator.wrapper.json",
+      "sha256": "8fbf16e0485543a9de33568e9fa95fabbc9483a1ca115a3f946a23f173fd2ba3",
+      "surface_id": "v918-cli-api-surface-preview-generator"
+    },
+    {
+      "path": "sandbox/generated_scaffold_wrapper_previews/v919-smoke-surface-preview-generator.wrapper.json",
+      "sha256": "372c2c7ef18e7f9cd388327358bf3753ec646dcca001bbe88c2571dab2952b0d",
+      "surface_id": "v919-smoke-surface-preview-generator"
+    },
+    {
+      "path": "sandbox/generated_scaffold_wrapper_previews/v920-generated-preview-parity-report.wrapper.json",
+      "sha256": "2e3fea1113686841f5ba09c5efd260e18ac61a086b9fe428ec507e94475074af",
+      "surface_id": "v920-generated-preview-parity-report"
+    }
+  ],
+  "autonomy_expanded": false,
+  "generated_wiring_activated": false,
+  "release_authorized": false,
+  "review_only": true,
+  "schema_version": "1032.0"
+}

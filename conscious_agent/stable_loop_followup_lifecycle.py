@@ -21,7 +21,7 @@ from stable_supervised_loop import load_stable_loop, save_stable_loop
 from task_lifecycle import derive_task_lifecycle
 from task_queue import get_task, list_tasks, update_task_fields
 
-FOLLOWUP_LIFECYCLE_VERSION = "6.9"
+FOLLOWUP_LIFECYCLE_VERSION = "1032.0"
 FOLLOWUP_SOURCE = "stable_loop_decision"
 FOLLOWUP_CATEGORY = "stable_loop_followup"
 TERMINAL_TASK_STATUSES = {"done", "cancelled"}

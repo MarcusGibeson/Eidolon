@@ -3,8 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-LIVE_PATCH_TRIAL_CLOSURE_VERSION = "500.0"
-
+LIVE_PATCH_TRIAL_CLOSURE_VERSION = "1032.0"
 LIVE_PATCH_TRIAL_CLOSURE_BOUNDARIES: dict[str, bool] = {
     "result_intake_reruns_commands": False,
     "result_intake_applies_fixes": False,
@@ -236,7 +235,7 @@ def build_live_patch_trial_closure_audit_summary(root: Path | None = None, dashb
     doc_checks = {
         "readme_updated": "v385.0 - Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1" in docs,
         "release_history_updated": "v385.0 - Operator-Confirmed Live Patch Trial Result Intake and One-Time Authorization Burnout v1" in docs,
-        "version_markers_current": 'LIVE_PATCH_TRIAL_CLOSURE_VERSION = "500.0"' in docs,
+        "version_markers_current": 'LIVE_PATCH_TRIAL_CLOSURE_VERSION = "555.0"' in docs,
         "dashboard_data_tip_present": "data-tip" in docs,
         "command_deck_present": "command-deck" in docs,
         "operator_console_present": "operator-console" in docs,

@@ -32,7 +32,7 @@ from release_pipeline import (
 from workspace_execution import build_project_boundary_check
 from workspace_orchestration import _timeline_event
 
-CODE_PATCH_RELEASE_VERSION = "16.0"
+CODE_PATCH_RELEASE_VERSION = "1032.0"
 CURRENT_PATCH = CODE_PATCH_DIR / "current_patch.json"
 PROPOSED_EDITS = CODE_PATCH_DIR / "proposed_edits.json"
 REWRITE_PREVIEWS = CODE_PATCH_DIR / "rewrite_previews.json"

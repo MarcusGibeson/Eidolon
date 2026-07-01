@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from typing import Any
 
-RUNTIME_REGISTRY_VERSION = "500.0"
-
+RUNTIME_REGISTRY_VERSION = "1032.0"
 MODULE_EXTRACTION_BOUNDARIES: dict[str, bool] = {
     "module_extraction_writes_files_automatically": False,
     "module_extraction_removes_routes": False,
@@ -177,7 +176,9 @@ def build_module_extraction_stage_defs() -> list[dict[str, Any]]:
     return rows
 
 def build_runtime_registry_entries() -> list[dict[str, Any]]:
-    return [RuntimeRegistryEntry(**row).to_dict() for row in build_module_extraction_stage_defs()]
+    """Build runtime registry rows while adapting richer stage-definition metadata."""
+    allowed = set(RuntimeRegistryEntry.__dataclass_fields__)
+    return [RuntimeRegistryEntry(**{key: value for key, value in row.items() if key in allowed}).to_dict() for row in build_module_extraction_stage_defs()]
 
 def cli_map() -> dict[str, str]:
     return {row["slug"].replace("_", "-"): row["slug"] for row in build_module_extraction_stage_defs()}

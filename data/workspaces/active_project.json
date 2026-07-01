@@ -1,8 +1,24 @@
 {
-  "version": "500.0",
+  "active_project": "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1",
   "active_project_id": "eidolon",
-  "updated_at": "2026-06-24T07:00:00",
-  "last_updated_for": "v500.0",
-  "current_milestone": "v500.0 Operator-Governed Autonomy Readiness Review Board v1",
-  "name": "v500.0 - Operator-Governed Autonomy Readiness Review Board v1"
+  "current_milestone": "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1",
+  "last_updated_for": "v1032.0",
+  "name": "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1",
+  "next_recommended_arc": "v1033.0 Smoke Registry Sidecar Parity Expansion v1",
+  "next_steps": [
+    "v931.0-v935.0 Generated Scaffold Sandbox Output Prep v1"
+  ],
+  "notes": [
+    "v926.0 selected five low-risk review-only generator surfaces for batch parity.",
+    "v927.0-v929.0 proved dashboard, CLI/API, and smoke preview parity across the selected batch.",
+    "v930.0 closes multi-surface generated parity while keeping generated wiring inactive and review_only=True."
+  ],
+  "recommended_next_actions": [
+    "Use the v930 multi-surface parity closure as the template for sandbox generated scaffold output prep.",
+    "Keep generated wiring inactive until sandbox artifacts, rollback evidence, and operator review gates are proven.",
+    "Preserve operator control over source edits, releases, approvals, memory writes, and autonomy changes."
+  ],
+  "root_version": "1032.0",
+  "updated_at": "2026-06-30T00:55:00",
+  "version": "1032.0"
 }

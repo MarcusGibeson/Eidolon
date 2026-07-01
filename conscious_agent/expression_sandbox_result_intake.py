@@ -11,8 +11,7 @@ from expression_sandbox_trial_harness import build_expression_sandbox_result_rev
 from expression_patch_dry_run import build_expression_sandbox_diff_preview_summary
 from identity_expression import classify_identity_expression_request
 
-EXPRESSION_SANDBOX_RESULT_INTAKE_VERSION = "500.0"
-
+EXPRESSION_SANDBOX_RESULT_INTAKE_VERSION = "1032.0"
 EXPRESSION_SANDBOX_RESULT_INTAKE_BOUNDARIES = {
     "evidence_intake_treats_evidence_as_approval": False,
     "evidence_intake_promotes_output": False,

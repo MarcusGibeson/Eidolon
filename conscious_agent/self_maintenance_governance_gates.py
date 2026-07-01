@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-SELF_MAINTENANCE_GOVERNANCE_GATES_VERSION = "500.0"
-
+SELF_MAINTENANCE_GOVERNANCE_GATES_VERSION = "1032.0"
 GOVERNANCE_GATE_BOUNDARIES: dict[str, bool] = {
     "governance_gates_self_approve": False,
     "governance_gates_continue_automatically": False,

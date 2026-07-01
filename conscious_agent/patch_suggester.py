@@ -4,6 +4,7 @@ import difflib
 import hashlib
 import json
 import re
+import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -32,6 +33,16 @@ class PatchSuggestionResult:
     target_file: str = ""
     text: str = ""
     error: str = ""
+
+
+def _safe_console_print(value: str = "") -> None:
+    text = str(value)
+    encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        sys.stdout.buffer.write((text + "\n").encode(encoding, errors="replace"))
+        sys.stdout.flush()
 
 
 def _ensure_patches_dir() -> None:
@@ -373,7 +384,7 @@ def print_patch_suggestion(relative_path: str, request: str, use_ai: bool = True
     if not result.ok:
         print(f"Could not create patch suggestion for {result.target_file or relative_path}: {result.error}")
         return
-    print(result.text)
+    _safe_console_print(result.text)
     print()
     print(f"Saved patch proposal: {result.patch_id}")
     print("This did not edit any files. Review only. The goblin still has no hands.")
@@ -403,4 +414,4 @@ def print_patch_proposal(patch_id: str, include_full_content: bool = False) -> N
     if not proposal:
         print(f"Patch proposal not found: {patch_id}")
         return
-    print(patch_proposal_text(proposal, include_full_content=include_full_content))
+    _safe_console_print(patch_proposal_text(proposal, include_full_content=include_full_content))

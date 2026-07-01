@@ -35,7 +35,7 @@ from code_patch_release import build_release_artifact, build_release_audit_trail
 from patch_drafting import APPROVAL_STATE
 from workspace_orchestration import _timeline_event
 
-RELEASE_PACKAGING_VERSION = "500.0"
+RELEASE_PACKAGING_VERSION = "1032.0"
 RELEASE_PACKAGE_DIR = DATA_DIR / "release_package"
 RELEASES_DIR = DATA_DIR / "releases"
 RELEASE_MANIFEST_INTEGRITY = RELEASE_PACKAGE_DIR / "release_manifest_integrity.json"
@@ -332,6 +332,7 @@ def build_package_inventory(project_id: str = "eidolon", save: bool = True) -> d
     rows = [
         {"name": "included-files", "status": "pass" if included else "blocked", "message": f"{len(included)} file(s) included."},
         {"name": "readme-included", "status": "pass" if any(row["path"] == "README_NEXT_STEPS.md" for row in included) else "blocked", "message": "README_NEXT_STEPS.md must be packaged."},
+        {"name": "gitignore-included", "status": "pass" if any(row["path"] == ".gitignore" for row in included) else "blocked", "message": ".gitignore must be packaged so fresh extractions keep runtime/private files untracked."},
         {"name": "approval-state-excluded", "status": "pass" if not any(row["path"].endswith("approval_state.json") for row in included) else "blocked", "message": "Live approval state is absent from included package files."},
         {"name": "source-only-data-profile", "status": "pass" if not any(row["path"].startswith("data/") and not _is_source_data_file(row["path"]) for row in included) else "blocked", "message": "Only allowlisted source-safe data files may be packaged."},
         {"name": "data-runtime-excluded", "status": "pass" if any(row["path"].startswith("data/") and row["path"] not in SOURCE_ONLY_DATA_FILES for row in excluded) else "warn", "message": "Runtime/private data folders are excluded by default."},

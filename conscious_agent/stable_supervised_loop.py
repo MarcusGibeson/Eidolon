@@ -30,7 +30,7 @@ from work_queue import summarize_queue
 from stable_loop_audit import build_stable_loop_audit, stable_loop_audit_text
 
 
-STABLE_LOOP_VERSION = "6.9"
+STABLE_LOOP_VERSION = "1032.0"
 STABLE_LOOPS_DIR = DATA_DIR / "stable_loops"
 DEFAULT_PROJECT_ID = "eidolon"
 MAX_STABLE_LOOP_STEPS = 5

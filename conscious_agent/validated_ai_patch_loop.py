@@ -37,7 +37,7 @@ from code_patch_release import (
 from release_pipeline import build_release_readiness, build_test_suggestions
 from workspace_orchestration import _timeline_event
 
-VALIDATED_AI_PATCH_VERSION = "18.0"
+VALIDATED_AI_PATCH_VERSION = "1032.0"
 VALIDATED_AI_DIR = AI_PATCH_DIR / "validated"
 PATCH_OBJECTIVE_REFINEMENT = VALIDATED_AI_DIR / "patch_objective_refinement.json"
 CODE_CONTEXT_RANKING = VALIDATED_AI_DIR / "code_context_ranking.json"

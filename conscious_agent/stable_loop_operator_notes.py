@@ -17,8 +17,7 @@ from typing import Any
 from stable_supervised_loop import load_stable_loop, save_stable_loop
 from stable_loop_audit import build_stable_loop_audit
 
-OPERATOR_NOTES_VERSION = "6.9"
-
+OPERATOR_NOTES_VERSION = "1032.0"
 VALID_FINAL_DECISIONS = {
     "undecided",
     "keep",

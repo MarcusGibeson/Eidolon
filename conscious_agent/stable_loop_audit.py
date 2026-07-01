@@ -21,9 +21,7 @@ from patch_suggester import load_patch_proposal
 from task_queue import get_task
 from work_cycle import load_work_cycle
 
-AUDIT_VERSION = "6.9"
-
-
+AUDIT_VERSION = "1032.0"
 @dataclass
 class StableLoopAuditResult:
     ok: bool

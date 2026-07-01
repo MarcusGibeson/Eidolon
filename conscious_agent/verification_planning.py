@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-VERIFICATION_PLANNING_VERSION = "500.0"
-
+VERIFICATION_PLANNING_VERSION = "1032.0"
 DEFAULT_VERIFICATION_STEPS = [
     {"name": "compile", "command": "python -m compileall conscious_agent tools", "runs_automatically": False},
     {"name": "fast-smoke", "command": "python tools/smoke_check.py --tier fast --json", "runs_automatically": False},

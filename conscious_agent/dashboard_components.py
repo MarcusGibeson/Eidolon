@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-DASHBOARD_COMPONENTS_VERSION = "500.0"
-
+DASHBOARD_COMPONENTS_VERSION = "1032.0"
 DEFAULT_DASHBOARD_COMPONENTS = [
     {"name": "console_card", "purpose": "render command-deck cards with existing classes", "changes_visual_contract": False},
     {"name": "status_row", "purpose": "render compact status rows for dashboard audits", "changes_visual_contract": False},

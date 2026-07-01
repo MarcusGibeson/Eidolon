@@ -26,7 +26,7 @@ from patch_drafting import (
 from workspace_execution import build_project_boundary_check
 from workspace_orchestration import _timeline_event
 
-RELEASE_PIPELINE_VERSION = "15.0"
+RELEASE_PIPELINE_VERSION = "1032.0"
 CODE_PATCH_DIR = DATA_DIR / "code_patches"
 BACKUPS_DIR = CODE_PATCH_DIR / "backups"
 CODE_EDIT_PROPOSAL = CODE_PATCH_DIR / "code_edit_proposal.json"

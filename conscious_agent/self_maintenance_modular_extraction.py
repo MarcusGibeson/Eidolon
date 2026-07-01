@@ -22,8 +22,7 @@ from self_maintenance_version_package_gates import (
     version_package_gate_tokens,
 )
 
-SELF_MAINTENANCE_MODULAR_EXTRACTION_VERSION = "500.0"
-
+SELF_MAINTENANCE_MODULAR_EXTRACTION_VERSION = "1032.0"
 SELF_MAINTENANCE_MODULAR_EXTRACTION_BOUNDARIES: dict[str, bool] = {
     "modular_extraction_applies_live_patches": False,
     "modular_extraction_changes_expression_behavior": False,

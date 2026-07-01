@@ -27,8 +27,7 @@ from stable_loop_operator_notes import (
     normalize_final_decision,
 )
 
-DECISION_REPORT_VERSION = "6.9"
-
+DECISION_REPORT_VERSION = "1032.0"
 DECISION_FILTER_LABELS = {
     "all": "All decisions",
     "open": "Open decisions",

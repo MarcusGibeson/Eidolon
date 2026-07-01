@@ -11,7 +11,7 @@ from memory_application_dry_run_ledger import (
     build_memory_application_ledger_replay_summary,
 )
 
-SANDBOX_MEMORY_WRITE_TARGET_VERSION = "500.0"
+SANDBOX_MEMORY_WRITE_TARGET_VERSION = "1032.0"
 SANDBOX_MEMORY_ROOT_NAME = "sandbox_memory_trials"
 SANDBOX_MEMORY_DEFAULT_FILE = "memory_write_trial.json"
 

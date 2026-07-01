@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import Any
 import json
 
-GOVERNANCE_REPORTS_VERSION = "500.0"
-
+GOVERNANCE_REPORTS_VERSION = "1032.0"
 def render_status_rows(rows: list[dict[str, Any]]) -> list[str]:
     return [f"- {row.get('status', 'unknown').upper()} {row.get('name', 'check')}: {row.get('message', '')}" for row in rows]
 

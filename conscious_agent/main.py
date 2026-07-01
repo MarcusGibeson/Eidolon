@@ -1076,6 +1076,167 @@ from chat_action_router import (
     list_chat_actions,
     resolve_chat_action_id,
 )
+from self_development_cycle import (
+    print_self_development_cycle,
+    print_self_development_cycles,
+    print_saved_self_development_cycle,
+    print_self_development_trial_review,
+    print_broad_smoke_triage,
+    print_self_development_dashboard_hardening_review,
+    print_self_development_implementation_proposal,
+    print_operator_approved_self_development_patch_draft,
+    print_operator_approved_self_development_patch_application_trial,
+    print_self_development_application_receipt_review,
+    print_current_smoke_debt_ledger,
+    print_low_risk_smoke_debt_cleanup_candidates,
+    print_self_development_smoke_debt_dashboard,
+    print_self_development_api_surface_truth_review,
+    print_self_development_cycle_duplicate_cleanup_review,
+    print_legacy_self_maintenance_smoke_blocker_review,
+    print_current_smoke_debt_ledger_reconciliation_review,
+    print_current_audit_wording_cleanup_review,
+    print_manifest_generation_prep_review,
+    print_manifest_gated_surface_validation_review,
+    print_manifest_driven_surface_registry_pilot_review,
+    print_manifest_surface_generation_readiness_review,
+    print_manifest_registry_expanded_review_surfaces_review,
+    print_manifest_registry_generation_readiness_scoring_review,
+    print_manifest_registry_drift_detection_review,
+    print_manifest_guided_validation_probe_dry_run_review,
+    print_manifest_guided_generated_validation_probe_review,
+    print_manifest_smoke_segment_parity_drift_review,
+    print_manifest_smoke_segment_parity_repair_packet_review,
+    print_manifest_smoke_segment_repair_application_review,
+    print_manifest_segment_parity_enforcement_gate_review,
+    print_manifest_guided_validation_probe_expansion_readiness_review,
+    print_manifest_guided_multi_surface_validation_probe_dry_run_review,
+    print_manifest_guided_multi_surface_generated_validation_probe_packet_review,
+    print_manifest_guided_multi_surface_probe_packet_consistency_gate_review,
+    print_manifest_guided_sandbox_probe_file_generation_readiness_review,
+    print_manifest_guided_sandbox_probe_file_generation_dry_run,
+    print_operator_approved_sandbox_probe_file_generation_trial,
+    print_sandbox_probe_file_verification_and_cleanup_review,
+    print_sandbox_probe_execution_harness_readiness_review,
+    print_operator_approved_sandbox_probe_execution_trial,
+    print_sandbox_probe_execution_result_review_and_promotion_readiness,
+    print_live_probe_promotion_plan_review,
+    print_operator_approved_live_probe_registration_trial,
+    print_live_registered_probe_verification_and_structural_hardening_review,
+    print_v905_baseline_verification_and_manifest_version_semantics_prep,
+    print_manifest_version_semantics_split_review,
+    print_manifest_validation_normalization_review,
+    print_source_package_privacy_deep_scan_review,
+    print_metadata_and_current_marker_gate_reconciliation_review,
+    print_release_gate_stale_assertion_truth_repair_review,
+    print_install_release_segment_blocker_classification_review,
+    print_release_archive_and_recovery_gate_boundedness_repair_review,
+    print_install_release_segment_evidence_summary_gate_review,
+    print_manifest_driven_surface_generation_prep_review,
+    print_manifest_review_packet_schema_review,
+    print_dashboard_surface_preview_generator_review,
+    print_cli_api_surface_preview_generator_review,
+    print_smoke_surface_preview_generator_review,
+    print_generated_preview_parity_report_review,
+    print_low_risk_surface_selection_gate_review,
+    print_generated_dashboard_preview_exact_match_gate_review,
+    print_generated_cli_api_preview_exact_match_gate_review,
+    print_generated_smoke_preview_exact_match_gate_review,
+    print_single_surface_generated_parity_closure_review,
+    print_multi_surface_selection_gate_review,
+    print_multi_surface_dashboard_preview_parity_review,
+    print_multi_surface_cli_api_preview_parity_review,
+    print_multi_surface_smoke_preview_parity_review,
+    print_multi_surface_generated_parity_batch_closure_review,
+    print_generated_scaffold_sandbox_output_schema_review,
+    print_generated_scaffold_sandbox_artifact_preview_review,
+    print_generated_scaffold_hash_ledger_review,
+    print_generated_scaffold_sandbox_parity_comparison_review,
+    print_generated_scaffold_sandbox_output_closure_review,
+    print_generated_scaffold_wrapper_mapping_schema_review,
+    print_dashboard_compatibility_wrapper_preview_review,
+    print_cli_api_compatibility_wrapper_preview_review,
+    print_smoke_compatibility_wrapper_preview_review,
+    print_generated_scaffold_wrapper_prep_closure_review,
+    print_giant_file_extraction_inventory_review,
+    print_self_development_cycle_extraction_map_review,
+    print_self_maintenance_builder_text_renderer_extraction_map_review,
+    print_dashboard_route_renderer_extraction_map_review,
+    print_cli_api_dispatch_extraction_map_review,
+    print_smoke_registry_extraction_map_review,
+    print_compatibility_wrapper_risk_ledger_review,
+    print_extraction_order_proposal_review,
+    print_extraction_rollback_evidence_plan_review,
+    print_giant_file_compatibility_extraction_prep_closure_review,
+    print_extraction_candidate_lock_gate_review,
+    print_pre_extraction_function_inventory_review,
+    print_generated_preview_review_module_extraction_review,
+    print_compatibility_import_wrapper_gate_review,
+    print_dashboard_cli_api_parity_after_extraction_review,
+    print_smoke_registry_parity_after_extraction_review,
+    print_stale_version_and_metadata_post_extraction_gate_review,
+    print_rollback_path_verification_review,
+    print_extraction_release_evidence_packet_review,
+    print_first_compatibility_extraction_closure_review,
+    print_second_extraction_candidate_selection_gate_review,
+    print_second_pre_extraction_function_inventory_review,
+    print_generated_scaffold_review_packet_extraction_review,
+    print_second_compatibility_wrapper_gate_review,
+    print_second_extraction_surface_parity_gate_review,
+    print_smoke_registry_data_model_prep_review,
+    print_smoke_registry_static_inventory_review,
+    print_smoke_registry_migration_risk_ledger_review,
+    print_smoke_registry_rollback_plan_review,
+    print_second_extraction_and_smoke_registry_prep_closure_review,
+    print_smoke_registry_pilot_selection_gate_review,
+    print_smoke_registry_pilot_schema_review,
+    print_smoke_registry_pilot_data_table_review,
+    print_smoke_registry_pilot_resolver_review,
+    print_manual_vs_pilot_smoke_parity_gate_review,
+    print_pilot_json_shape_compatibility_gate_review,
+    print_pilot_rollback_evidence_gate_review,
+    print_smoke_registry_pilot_risk_review,
+    print_pilot_expansion_readiness_review,
+    print_smoke_registry_data_driven_pilot_closure_review,
+    print_smoke_registry_execution_trial_readiness_gate_review,
+    print_data_driven_smoke_callable_execution_harness_review,
+    print_pilot_smoke_execution_result_packet_review,
+    print_manual_vs_data_driven_execution_parity_gate_review,
+    print_data_driven_smoke_json_output_preview_review,
+    print_data_driven_smoke_timeout_failure_semantics_review,
+    print_data_driven_smoke_manual_fallback_proof_review,
+    print_data_driven_smoke_execution_risk_review,
+    print_data_driven_smoke_expansion_readiness_review,
+    print_smoke_registry_data_driven_execution_trial_closure_review,
+    print_fallback_migration_readiness_gate_review,
+    print_data_driven_first_pilot_dispatch_preview_review,
+    print_pilot_fallback_dispatch_trial_review,
+    print_pilot_fallback_result_ledger_review,
+    print_json_output_stability_gate_review,
+    print_fast_install_release_isolation_gate_review,
+    print_manual_fallback_removal_resistance_gate_review,
+    print_pilot_migration_risk_review,
+    print_v1000_milestone_readiness_review,
+    print_smoke_registry_fallback_migration_pilot_closure_review,
+)
+from install_release_blocker_ledger import print_install_release_blocker_ledger_refresh_review
+from install_release_timeout_harness import print_install_release_timeout_harness_repair_review
+from install_release_timeout_retest import print_install_release_timeout_row_bounded_retest_review
+from install_release_fixture_decomposition import print_install_release_fixture_decomposition_plan_review
+from install_release_fixture_smoke_split import print_install_release_fixture_smoke_split_pilot_review
+from release_archive_fixture_split_expansion import print_release_archive_fixture_split_expansion_review
+from supervised_blocker_semantics_repair import print_supervised_blocker_semantics_repair_review
+from install_release_segment_cleanliness_gate import print_install_release_segment_cleanliness_gate_review
+from post_v1000_defect_closure_phase_zero_boundary import print_post_v1000_defect_closure_phase_zero_boundary_review
+from install_release_timeout_parent_replacement import print_install_release_timeout_parent_replacement_pilot_review
+from install_release_parent_replacement_expansion import print_install_release_parent_replacement_expansion_review
+from remaining_timeout_parent_fixture_selection import print_remaining_timeout_parent_fixture_selection_review
+from recovery_closure_fixture_split_smoke import print_recovery_closure_fixture_split_smoke_review
+from recovery_closure_parent_replacement_overlay import print_recovery_closure_parent_replacement_overlay_review
+from remaining_timeout_parent_fixture_split_expansion import print_remaining_timeout_parent_fixture_split_expansion_review
+from decision_archive_ledger_parent_replacement_overlay import print_decision_archive_ledger_parent_replacement_overlay_review
+from candidate_handoff_fixture_split_smoke import print_candidate_handoff_fixture_split_smoke_review
+from candidate_handoff_parent_replacement_overlay import print_candidate_handoff_parent_replacement_overlay_review
+from final_timeout_parent_overlay_closure import print_final_timeout_parent_overlay_closure_review
 from dashboard_chat_console import list_dashboard_chat_turns, resolve_dashboard_chat_turn_id
 from dashboard import run_dashboard
 from api_server import run_api_server
@@ -2707,6 +2868,176 @@ def main() -> None:
     parser.add_argument("--dev-loop-full", action="store_true", help="Include raw loop details when showing dev-loop output")
     parser.add_argument("--list-dev-loops", action="store_true", help="List saved bounded autonomous dev-loop records")
     parser.add_argument("--show-dev-loop", nargs="?", const="latest", help="Show a saved bounded dev loop by id or alias")
+    parser.add_argument("--self-development-cycle", action="store_true", help="Run the controlled Self Development Cycle planner; proposal-only unless --self-development-create-task is supplied")
+    parser.add_argument("--self-development-create-task", action="store_true", help="Allow the Self Development Cycle to create or reuse one low-risk task record, then stop before source edits")
+    parser.add_argument("--self-development-prompt", type=str, default="", help="Original operator prompt to bind into the Self Development Cycle receipt")
+    parser.add_argument("--no-ai-self-development", action="store_true", help="Reserved safety flag: the v1 Self Development Cycle is deterministic and does not invoke local AI")
+    parser.add_argument("--self-development-full", action="store_true", help="Include full candidates and inspection data when showing Self Development Cycle output")
+    parser.add_argument("--list-self-development-cycles", action="store_true", help="List saved Self Development Cycle records")
+    parser.add_argument("--show-self-development-cycle", nargs="?", const="latest", help="Show a saved Self Development Cycle by id or alias")
+    parser.add_argument("--self-development-trial-review", action="store_true", help="Show the v730 Self Development Cycle trial review and protected-system gate report")
+    parser.add_argument("--self-development-smoke-triage", action="store_true", help="Show the v730 broad smoke triage classification report without running broad smoke")
+    parser.add_argument("--self-development-dashboard-hardening", action="store_true", help="Show the v730 dashboard hardening review packet for Self Development Cycle")
+    parser.add_argument("--self-development-implementation-proposal", nargs="?", const="latest", help="Prepare a reviewable implementation proposal packet for a Self Development Cycle id or latest")
+    parser.add_argument("--self-development-save-proposal", action="store_true", help="Save the implementation proposal receipt; still applies no source edits")
+    parser.add_argument("--self-development-patch-draft", nargs="?", const="", help="Prepare an operator-approved patch draft packet using the exact approval phrase for the selected Self Development task")
+    parser.add_argument("--self-development-patch-draft-cycle", default="latest", help="Self Development Cycle id or alias used by --self-development-patch-draft")
+    parser.add_argument("--self-development-save-patch-draft", action="store_true", help="Save the patch draft receipt; still applies no source edits")
+    parser.add_argument("--self-development-patch-application", nargs="?", const="", help="Prepare an operator-approved patch application trial receipt using the exact approval phrase for a patch draft")
+    parser.add_argument("--self-development-patch-application-draft", default="latest", help="Patch draft id or alias used by --self-development-patch-application")
+    parser.add_argument("--self-development-save-patch-application", action="store_true", help="Save the patch application trial receipt; still applies no source edits when no concrete diff exists")
+    parser.add_argument("--self-development-application-receipt-review", action="store_true", help="Show the v750 Self Development application receipt review packet")
+    parser.add_argument("--current-smoke-debt-ledger", action="store_true", help="Show the v750 current smoke debt ledger without running broad smoke")
+    parser.add_argument("--save-current-smoke-debt-ledger", action="store_true", help="Save the current smoke debt ledger as a private runtime receipt; never packaged")
+    parser.add_argument("--low-risk-smoke-debt-cleanup-candidates", action="store_true", help="Show proposal-only low-risk smoke debt cleanup candidates")
+    parser.add_argument("--self-development-smoke-debt-dashboard", action="store_true", help="Show the v751 Self Development smoke debt dashboard packet")
+    parser.add_argument("--self-development-api-surface-truth-review", action="store_true", help="Show the v751 Self Development API surface truth review packet")
+    parser.add_argument("--self-development-cycle-duplicate-cleanup", action="store_true", help="Show the v760 Self Development Cycle duplicate cleanup review packet")
+    parser.add_argument("--legacy-self-maintenance-smoke-blocker-review", action="store_true", help="Show the v765 Legacy Self Maintenance smoke blocker review packet")
+    parser.add_argument("--current-smoke-debt-ledger-reconciliation", action="store_true", help="Show the v780 current smoke debt ledger reconciliation review packet")
+    parser.add_argument("--current-audit-wording-cleanup", action="store_true", help="Show the v780 current audit wording cleanup review packet")
+    parser.add_argument("--manifest-generation-prep-review", action="store_true", help="Show the v780 manifest generation prep review packet")
+    parser.add_argument("--manifest-gated-surface-validation", action="store_true", help="Show the v780 manifest-gated surface validation review packet")
+    parser.add_argument("--manifest-driven-surface-registry-pilot", action="store_true", help="Show the v790 manifest-driven surface registry pilot review packet")
+    parser.add_argument("--manifest-surface-generation-readiness", action="store_true", help="Show the v790 manifest surface generation readiness review packet")
+    parser.add_argument("--manifest-registry-expanded-review-surfaces", action="store_true", help="Show the v790 manifest registry expanded review surfaces packet")
+    parser.add_argument("--manifest-registry-generation-readiness-scoring", action="store_true", help="Show the v790 manifest registry generation readiness scoring packet")
+    parser.add_argument("--manifest-registry-drift-detection", action="store_true", help="Show the v795 manifest registry drift detection packet")
+    parser.add_argument("--manifest-guided-validation-probe-dry-run", action="store_true", help="Show the v800 manifest-guided validation probe dry-run packet")
+    parser.add_argument("--manifest-guided-generated-validation-probe", action="store_true", help="Show the v815 manifest-guided generated validation probe review-only packet")
+    parser.add_argument("--manifest-smoke-segment-parity-drift", action="store_true", help="Show the v815 manifest smoke segment parity repair packet-only packet")
+    parser.add_argument("--manifest-smoke-segment-parity-repair-packet", action="store_true", help="Show the v825 manifest smoke segment parity repair packet review-only packet")
+    parser.add_argument("--manifest-smoke-segment-repair-application", action="store_true", help="Show the v825 operator-approved manifest smoke segment repair application review")
+    parser.add_argument("--manifest-segment-parity-enforcement-gate", action="store_true", help="Show the v835 release-blocking manifest segment parity enforcement gate review")
+    parser.add_argument("--manifest-guided-validation-probe-expansion-readiness", action="store_true", help="Show the v835 manifest-guided validation probe expansion readiness review")
+    parser.add_argument("--manifest-guided-multi-surface-validation-probe-dry-run", action="store_true", help="Show the v840 manifest-guided multi-surface validation probe dry-run review")
+    parser.add_argument("--manifest-guided-multi-surface-generated-validation-probe-packet", action="store_true", help="Show the v845 manifest-guided multi-surface generated validation probe packet review")
+    parser.add_argument("--manifest-guided-multi-surface-probe-packet-consistency-gate", action="store_true", help="Show the v850 manifest-guided multi-surface probe packet consistency gate review")
+    parser.add_argument("--manifest-guided-sandbox-probe-file-generation-readiness", action="store_true", help="Show the v855 manifest-guided sandbox probe file generation readiness review")
+    parser.add_argument("--manifest-guided-sandbox-probe-file-generation-dry-run", action="store_true", help="Show the v860 manifest-guided sandbox probe file generation dry-run review")
+    parser.add_argument("--operator-approved-sandbox-probe-file-generation-trial", action="store_true", help="Show the v865 operator-approved sandbox probe file generation trial review")
+    parser.add_argument("--sandbox-probe-file-verification-and-cleanup-review", action="store_true", help="Show the v870 sandbox probe file verification and cleanup review")
+    parser.add_argument("--sandbox-probe-execution-harness-readiness-review", action="store_true", help="Show the v875 sandbox probe execution harness readiness review")
+    parser.add_argument("--operator-approved-sandbox-probe-execution-trial", action="store_true", help="Show the v880 operator-approved sandbox probe execution trial")
+    parser.add_argument("--sandbox-probe-execution-result-review-and-promotion-readiness", action="store_true", help="Show the v885 sandbox probe execution result review and promotion readiness report")
+    parser.add_argument("--live-probe-promotion-plan-review", action="store_true", help="Show the v890 live probe promotion plan review")
+    parser.add_argument("--operator-approved-live-probe-registration-trial", action="store_true", help="Show the v895 operator-approved live probe registration trial")
+    parser.add_argument("--live-registered-probe-verification-and-structural-hardening-review", action="store_true", help="Show the v900 live registered probe verification and structural hardening review")
+    parser.add_argument("--v905-baseline-verification-and-manifest-version-semantics-prep", action="store_true", help="Show the v906 v905 baseline verification and manifest version semantics prep review")
+    parser.add_argument("--manifest-version-semantics-split", action="store_true", help="Show the v907 manifest version semantics split review")
+    parser.add_argument("--manifest-validation-normalization", action="store_true", help="Show the v908 manifest validation normalization review")
+    parser.add_argument("--source-package-privacy-deep-scan", action="store_true", help="Show the v909 source package privacy deep scan review")
+    parser.add_argument("--metadata-and-current-marker-gate-reconciliation", action="store_true", help="Show the v910 metadata and current marker gate reconciliation review")
+    parser.add_argument("--release-gate-stale-assertion-truth-repair", action="store_true", help="Show the v911 release gate stale assertion truth repair review")
+    parser.add_argument("--install-release-segment-blocker-classification", action="store_true", help="Show the v912 install-release segment blocker classification review")
+    parser.add_argument("--release-archive-and-recovery-gate-boundedness-repair", action="store_true", help="Show the v913 release archive and recovery gate boundedness repair review")
+    parser.add_argument("--install-release-segment-evidence-summary-gate", action="store_true", help="Show the v914 install-release segment evidence summary gate review")
+    parser.add_argument("--manifest-driven-surface-generation-prep", action="store_true", help="Show the v915 manifest-driven surface generation prep review")
+    parser.add_argument("--manifest-review-packet-schema", action="store_true", help="Show the v916 manifest review packet schema review")
+    parser.add_argument("--dashboard-surface-preview-generator", action="store_true", help="Show the v917 dashboard surface preview generator review")
+    parser.add_argument("--cli-api-surface-preview-generator", action="store_true", help="Show the v918 CLI/API surface preview generator review")
+    parser.add_argument("--smoke-surface-preview-generator", action="store_true", help="Show the v919 smoke surface preview generator review")
+    parser.add_argument("--generated-preview-parity-report", action="store_true", help="Show the v920 generated preview parity report review")
+    parser.add_argument("--low-risk-surface-selection-gate", action="store_true", help="Show the v921 low-risk surface selection gate review")
+    parser.add_argument("--generated-dashboard-preview-exact-match-gate", action="store_true", help="Show the v922 generated dashboard preview exact-match gate review")
+    parser.add_argument("--generated-cli-api-preview-exact-match-gate", action="store_true", help="Show the v923 generated CLI/API preview exact-match gate review")
+    parser.add_argument("--generated-smoke-preview-exact-match-gate", action="store_true", help="Show the v924 generated smoke preview exact-match gate review")
+    parser.add_argument("--single-surface-generated-parity-closure", action="store_true", help="Show the v925 single-surface generated parity closure review")
+    parser.add_argument("--multi-surface-selection-gate", action="store_true", help="Show the v926 multi-surface selection gate review")
+    parser.add_argument("--multi-surface-dashboard-preview-parity", action="store_true", help="Show the v927 multi-surface dashboard preview parity review")
+    parser.add_argument("--multi-surface-cli-api-preview-parity", action="store_true", help="Show the v928 multi-surface CLI/API preview parity review")
+    parser.add_argument("--multi-surface-smoke-preview-parity", action="store_true", help="Show the v929 multi-surface smoke preview parity review")
+    parser.add_argument("--multi-surface-generated-parity-batch-closure", action="store_true", help="Show the v930 multi-surface generated parity batch closure review")
+    parser.add_argument("--generated-scaffold-sandbox-output-schema", action="store_true", help="Show the v931 generated scaffold sandbox output schema review")
+    parser.add_argument("--generated-scaffold-sandbox-artifact-preview", action="store_true", help="Show the v932 generated scaffold sandbox artifact preview review")
+    parser.add_argument("--generated-scaffold-hash-ledger", action="store_true", help="Show the v933 generated scaffold hash ledger review")
+    parser.add_argument("--generated-scaffold-sandbox-parity-comparison", action="store_true", help="Show the v934 generated scaffold sandbox parity comparison review")
+    parser.add_argument("--generated-scaffold-sandbox-output-closure", action="store_true", help="Show the v935 generated scaffold sandbox output closure review")
+    parser.add_argument("--generated-scaffold-wrapper-mapping-schema", action="store_true", help="Show the v936 generated scaffold wrapper mapping schema review")
+    parser.add_argument("--dashboard-compatibility-wrapper-preview", action="store_true", help="Show the v937 dashboard compatibility wrapper preview review")
+    parser.add_argument("--cli-api-compatibility-wrapper-preview", action="store_true", help="Show the v938 CLI/API compatibility wrapper preview review")
+    parser.add_argument("--smoke-compatibility-wrapper-preview", action="store_true", help="Show the v939 smoke compatibility wrapper preview review")
+    parser.add_argument("--generated-scaffold-wrapper-prep-closure", action="store_true", help="Show the v940 generated scaffold wrapper prep closure review")
+    parser.add_argument("--giant-file-extraction-inventory", action="store_true", help="Show the v941 giant file extraction inventory review")
+    parser.add_argument("--self-development-cycle-extraction-map", action="store_true", help="Show the v942 self-development cycle extraction map review")
+    parser.add_argument("--self-maintenance-builder-text-renderer-extraction-map", action="store_true", help="Show the v943 self-maintenance builder/text renderer extraction map review")
+    parser.add_argument("--dashboard-route-renderer-extraction-map", action="store_true", help="Show the v944 dashboard route/renderer extraction map review")
+    parser.add_argument("--cli-api-dispatch-extraction-map", action="store_true", help="Show the v945 CLI/API dispatch extraction map review")
+    parser.add_argument("--smoke-registry-extraction-map", action="store_true", help="Show the v946 smoke registry extraction map review")
+    parser.add_argument("--compatibility-wrapper-risk-ledger", action="store_true", help="Show the v947 compatibility wrapper risk ledger review")
+    parser.add_argument("--extraction-order-proposal", action="store_true", help="Show the v948 extraction order proposal review")
+    parser.add_argument("--extraction-rollback-evidence-plan", action="store_true", help="Show the v949 extraction rollback evidence plan review")
+    parser.add_argument("--giant-file-compatibility-extraction-prep-closure", action="store_true", help="Show the v950 giant file compatibility extraction prep closure review")
+    parser.add_argument("--extraction-candidate-lock-gate", action="store_true", help="Show the v951 extraction candidate lock gate review")
+    parser.add_argument("--pre-extraction-function-inventory", action="store_true", help="Show the v952 pre-extraction function inventory review")
+    parser.add_argument("--generated-preview-review-module-extraction", action="store_true", help="Show the v953 generated preview review module extraction review")
+    parser.add_argument("--compatibility-import-wrapper-gate", action="store_true", help="Show the v954 compatibility import wrapper gate review")
+    parser.add_argument("--dashboard-cli-api-parity-after-extraction", action="store_true", help="Show the v955 dashboard/CLI/API parity after extraction review")
+    parser.add_argument("--smoke-registry-parity-after-extraction", action="store_true", help="Show the v956 smoke registry parity after extraction review")
+    parser.add_argument("--stale-version-and-metadata-post-extraction-gate", action="store_true", help="Show the v957 stale-version and metadata post-extraction gate review")
+    parser.add_argument("--rollback-path-verification", action="store_true", help="Show the v958 rollback path verification review")
+    parser.add_argument("--extraction-release-evidence-packet", action="store_true", help="Show the v959 extraction release evidence packet review")
+    parser.add_argument("--first-compatibility-extraction-closure", action="store_true", help="Show the v960 first compatibility extraction closure review")
+
+    parser.add_argument("--second-extraction-candidate-selection-gate", action="store_true", help="Show the v961 second extraction candidate selection gate review")
+    parser.add_argument("--second-pre-extraction-function-inventory", action="store_true", help="Show the v962 second pre-extraction function inventory review")
+    parser.add_argument("--generated-scaffold-review-packet-extraction", action="store_true", help="Show the v963 generated scaffold review packet extraction review")
+    parser.add_argument("--second-compatibility-wrapper-gate", action="store_true", help="Show the v964 second compatibility wrapper gate review")
+    parser.add_argument("--second-extraction-surface-parity-gate", action="store_true", help="Show the v965 second extraction surface parity gate review")
+    parser.add_argument("--smoke-registry-data-model-prep", action="store_true", help="Show the v966 smoke registry data model prep review")
+    parser.add_argument("--smoke-registry-static-inventory", action="store_true", help="Show the v967 smoke registry static inventory review")
+    parser.add_argument("--smoke-registry-migration-risk-ledger", action="store_true", help="Show the v968 smoke registry migration risk ledger review")
+    parser.add_argument("--smoke-registry-rollback-plan", action="store_true", help="Show the v969 smoke registry rollback plan review")
+    parser.add_argument("--second-extraction-and-smoke-registry-prep-closure", action="store_true", help="Show the v970 second extraction and smoke registry prep closure review")
+    parser.add_argument("--smoke-registry-pilot-selection-gate", action="store_true", help="Show the v971 smoke registry pilot selection gate review")
+    parser.add_argument("--smoke-registry-pilot-schema", action="store_true", help="Show the v972 smoke registry pilot schema review")
+    parser.add_argument("--smoke-registry-pilot-data-table", action="store_true", help="Show the v973 smoke registry pilot data table review")
+    parser.add_argument("--smoke-registry-pilot-resolver", action="store_true", help="Show the v974 smoke registry pilot resolver review")
+    parser.add_argument("--manual-vs-pilot-smoke-parity-gate", action="store_true", help="Show the v975 manual-vs-pilot smoke parity gate review")
+    parser.add_argument("--pilot-json-shape-compatibility-gate", action="store_true", help="Show the v976 pilot JSON shape compatibility gate review")
+    parser.add_argument("--pilot-rollback-evidence-gate", action="store_true", help="Show the v977 pilot rollback evidence gate review")
+    parser.add_argument("--smoke-registry-pilot-risk-review", action="store_true", help="Show the v978 smoke registry pilot risk review")
+    parser.add_argument("--pilot-expansion-readiness-review", action="store_true", help="Show the v979 pilot expansion readiness review")
+    parser.add_argument("--smoke-registry-data-driven-pilot-closure", action="store_true", help="Show the v980 smoke registry data-driven pilot closure review")
+    parser.add_argument("--smoke-registry-execution-trial-readiness-gate", action="store_true", help="Show the v981 smoke registry execution trial readiness gate review")
+    parser.add_argument("--data-driven-smoke-callable-execution-harness", action="store_true", help="Show the v982 data-driven smoke callable execution harness review")
+    parser.add_argument("--pilot-smoke-execution-result-packet", action="store_true", help="Show the v983 pilot smoke execution result packet review")
+    parser.add_argument("--manual-vs-data-driven-execution-parity-gate", action="store_true", help="Show the v984 manual-vs-data-driven execution parity gate review")
+    parser.add_argument("--data-driven-smoke-json-output-preview", action="store_true", help="Show the v985 data-driven smoke JSON output preview review")
+    parser.add_argument("--data-driven-smoke-timeout-failure-semantics", action="store_true", help="Show the v986 data-driven smoke timeout/failure semantics review")
+    parser.add_argument("--data-driven-smoke-manual-fallback-proof", action="store_true", help="Show the v987 data-driven smoke manual fallback proof review")
+    parser.add_argument("--data-driven-smoke-execution-risk-review", action="store_true", help="Show the v988 data-driven smoke execution risk review")
+    parser.add_argument("--data-driven-smoke-expansion-readiness", action="store_true", help="Show the v989 data-driven smoke expansion readiness review")
+    parser.add_argument("--smoke-registry-data-driven-execution-trial-closure", action="store_true", help="Show the v990 smoke registry data-driven execution trial closure review")
+    parser.add_argument("--fallback-migration-readiness-gate", action="store_true", help="Show the v991 fallback migration readiness gate review")
+    parser.add_argument("--data-driven-first-pilot-dispatch-preview", action="store_true", help="Show the v992 data-driven first pilot dispatch preview review")
+    parser.add_argument("--pilot-fallback-dispatch-trial", action="store_true", help="Show the v993 pilot fallback dispatch trial review")
+    parser.add_argument("--pilot-fallback-result-ledger", action="store_true", help="Show the v994 pilot fallback result ledger review")
+    parser.add_argument("--json-output-stability-gate", action="store_true", help="Show the v995 JSON output stability gate review")
+    parser.add_argument("--fast-install-release-isolation-gate", action="store_true", help="Show the v996 fast/install/release isolation gate review")
+    parser.add_argument("--manual-fallback-removal-resistance-gate", action="store_true", help="Show the v997 manual fallback removal resistance gate review")
+    parser.add_argument("--pilot-migration-risk-review", action="store_true", help="Show the v998 pilot migration risk review")
+    parser.add_argument("--v1000-milestone-readiness-review", action="store_true", help="Show the v999 v1000 milestone readiness review")
+    parser.add_argument("--smoke-registry-fallback-migration-pilot-closure", action="store_true", help="Show the v1000 smoke registry fallback migration pilot closure review")
+    parser.add_argument("--install-release-blocker-ledger-refresh", action="store_true", help="Show the v1002 install-release blocker ledger refresh review")
+    parser.add_argument("--install-release-timeout-harness-repair", action="store_true", help="Show the v1003 install-release timeout harness repair review")
+    parser.add_argument("--install-release-timeout-row-bounded-retest", action="store_true", help="Show the v1004 install-release timeout row bounded retest review")
+    parser.add_argument("--install-release-fixture-decomposition-plan", action="store_true", help="Show the v1005 install-release fixture decomposition plan review")
+    parser.add_argument("--install-release-fixture-smoke-split-pilot", action="store_true", help="Show the v1006 install-release fixture smoke split pilot review")
+    parser.add_argument("--release-archive-fixture-split-expansion", action="store_true", help="Show the v1007 release archive fixture split expansion review")
+    parser.add_argument("--supervised-blocker-semantics-repair", action="store_true", help="Show the v1008 supervised blocker semantics repair review")
+    parser.add_argument("--install-release-segment-cleanliness-gate", action="store_true", help="Show the v1009 install-release segment cleanliness gate review")
+    parser.add_argument("--post-v1000-defect-closure-audit-and-phase-zero-boundary", action="store_true", help="Show the v1010 post-v1000 defect closure audit and Phase 0 boundary review")
+    parser.add_argument("--install-release-timeout-parent-row-replacement-pilot", action="store_true", help="Show the v1011 install-release timeout parent row replacement pilot review")
+    parser.add_argument("--install-release-parent-replacement-expansion", action="store_true", help="Show the v1012 install-release parent replacement expansion review")
+    parser.add_argument("--remaining-timeout-parent-fixture-selection", action="store_true", help="Show the v1013 remaining timeout parent fixture split selection review")
+    parser.add_argument("--recovery-closure-fixture-split-smoke", action="store_true", help="Show the v1014 recovery closure fixture split smoke review")
+    parser.add_argument("--recovery-closure-parent-replacement-overlay", action="store_true", help="Show the v1015 recovery closure parent replacement overlay review")
+    parser.add_argument("--remaining-timeout-parent-fixture-split-expansion", action="store_true", help="Show the v1016 remaining timeout parent fixture split expansion review")
+    parser.add_argument("--decision-archive-ledger-parent-replacement-overlay", action="store_true", help="Show the v1017 decision archive ledger parent replacement overlay review")
+    parser.add_argument("--candidate-handoff-fixture-split-smoke", action="store_true", help="Show the v1018 candidate handoff fixture split smoke review")
+    parser.add_argument("--candidate-handoff-parent-replacement-overlay", action="store_true", help="Show the v1019 candidate handoff parent replacement overlay review")
+    parser.add_argument("--final-timeout-parent-overlay-closure", action="store_true", help="Show the v1020 final timeout parent overlay closure review")
     parser.add_argument("--approval-inbox", action="store_true", help="Show pending approval requests")
     parser.add_argument("--list-approvals", action="store_true", help="List approval requests, including closed ones")
     parser.add_argument("--approval-filter-status", type=str, default="", help="Optional status filter for --list-approvals")
@@ -6455,6 +6786,575 @@ def main() -> None:
         print_saved_dev_loop(args.show_dev_loop, full=args.dev_loop_full)
         return
 
+    if args.self_development_cycle:
+        print_self_development_cycle(
+            prompt=args.self_development_prompt,
+            create_task=args.self_development_create_task,
+            full=args.self_development_full,
+        )
+        return
+
+    if args.list_self_development_cycles:
+        print_self_development_cycles()
+        return
+
+    if args.show_self_development_cycle is not None:
+        print_saved_self_development_cycle(args.show_self_development_cycle, full=args.self_development_full)
+        return
+
+    if args.self_development_trial_review:
+        print_self_development_trial_review(full=args.self_development_full)
+        return
+
+    if args.self_development_smoke_triage:
+        print_broad_smoke_triage(full=args.self_development_full)
+        return
+
+    if args.self_development_dashboard_hardening:
+        print_self_development_dashboard_hardening_review(full=args.self_development_full)
+        return
+
+    if args.self_development_implementation_proposal is not None:
+        print_self_development_implementation_proposal(
+            cycle_id=args.self_development_implementation_proposal,
+            full=args.self_development_full,
+            save=args.self_development_save_proposal,
+        )
+        return
+
+    if args.self_development_patch_draft is not None:
+        print_operator_approved_self_development_patch_draft(
+            approval_phrase=args.self_development_patch_draft,
+            cycle_id=args.self_development_patch_draft_cycle,
+            full=args.self_development_full,
+            save=args.self_development_save_patch_draft,
+        )
+        return
+
+    if args.self_development_patch_application is not None:
+        print_operator_approved_self_development_patch_application_trial(
+            approval_phrase=args.self_development_patch_application,
+            draft_id=args.self_development_patch_application_draft,
+            full=args.self_development_full,
+            save=args.self_development_save_patch_application,
+        )
+        return
+
+    if args.self_development_application_receipt_review:
+        print_self_development_application_receipt_review(full=args.self_development_full)
+        return
+
+    if args.current_smoke_debt_ledger:
+        print_current_smoke_debt_ledger(full=args.self_development_full, save=args.save_current_smoke_debt_ledger)
+        return
+
+    if args.low_risk_smoke_debt_cleanup_candidates:
+        print_low_risk_smoke_debt_cleanup_candidates(full=args.self_development_full)
+        return
+
+    if args.self_development_smoke_debt_dashboard:
+        print_self_development_smoke_debt_dashboard(full=args.self_development_full)
+        return
+
+    if args.self_development_api_surface_truth_review:
+        print_self_development_api_surface_truth_review(full=args.self_development_full)
+        return
+
+    if args.self_development_cycle_duplicate_cleanup:
+        print_self_development_cycle_duplicate_cleanup_review(full=args.self_development_full)
+        return
+
+    if args.legacy_self_maintenance_smoke_blocker_review:
+        print_legacy_self_maintenance_smoke_blocker_review(full=args.self_development_full)
+        return
+
+    if args.current_smoke_debt_ledger_reconciliation:
+        print_current_smoke_debt_ledger_reconciliation_review(full=args.self_development_full)
+        return
+
+    if args.current_audit_wording_cleanup:
+        print_current_audit_wording_cleanup_review(full=args.self_development_full)
+        return
+
+    if args.manifest_generation_prep_review:
+        print_manifest_generation_prep_review(full=args.self_development_full)
+        return
+
+    if args.manifest_gated_surface_validation:
+        print_manifest_gated_surface_validation_review(full=args.self_development_full)
+        return
+
+    if args.manifest_driven_surface_registry_pilot:
+        print_manifest_driven_surface_registry_pilot_review(full=args.self_development_full)
+        return
+
+    if args.manifest_surface_generation_readiness:
+        print_manifest_surface_generation_readiness_review(full=args.self_development_full)
+        return
+
+    if args.manifest_registry_expanded_review_surfaces:
+        print_manifest_registry_expanded_review_surfaces_review(full=args.self_development_full)
+        return
+
+    if args.manifest_registry_generation_readiness_scoring:
+        print_manifest_registry_generation_readiness_scoring_review(full=args.self_development_full)
+        return
+
+    if args.manifest_registry_drift_detection:
+        print_manifest_registry_drift_detection_review(full=args.self_development_full)
+        return
+
+    if args.manifest_guided_validation_probe_dry_run:
+        print_manifest_guided_validation_probe_dry_run_review(full=args.self_development_full)
+        return
+
+    if args.manifest_guided_generated_validation_probe:
+        print_manifest_guided_generated_validation_probe_review(full=args.self_development_full)
+        return
+
+    if args.manifest_smoke_segment_parity_drift:
+        print_manifest_smoke_segment_parity_drift_review(full=args.self_development_full)
+        return
+
+    if args.manifest_smoke_segment_parity_repair_packet:
+        print_manifest_smoke_segment_parity_repair_packet_review(full=args.self_development_full)
+        return
+
+    if args.manifest_smoke_segment_repair_application:
+        print_manifest_smoke_segment_repair_application_review(full=args.self_development_full)
+        return
+
+    if args.manifest_segment_parity_enforcement_gate:
+        print_manifest_segment_parity_enforcement_gate_review(full=args.self_development_full)
+        return
+
+    if args.manifest_guided_validation_probe_expansion_readiness:
+        print_manifest_guided_validation_probe_expansion_readiness_review(full=args.self_development_full)
+        return
+
+    if args.manifest_guided_multi_surface_validation_probe_dry_run:
+        print_manifest_guided_multi_surface_validation_probe_dry_run_review(full=args.self_development_full)
+        return
+
+    if args.manifest_guided_multi_surface_generated_validation_probe_packet:
+        print_manifest_guided_multi_surface_generated_validation_probe_packet_review(full=args.self_development_full)
+        return
+
+    if args.manifest_guided_multi_surface_probe_packet_consistency_gate:
+        print_manifest_guided_multi_surface_probe_packet_consistency_gate_review(full=args.self_development_full)
+        return
+
+    if args.manifest_guided_sandbox_probe_file_generation_readiness:
+        print_manifest_guided_sandbox_probe_file_generation_readiness_review(full=args.self_development_full)
+        return
+
+    if args.manifest_guided_sandbox_probe_file_generation_dry_run:
+        print_manifest_guided_sandbox_probe_file_generation_dry_run(full=args.self_development_full)
+        return
+
+    if args.operator_approved_sandbox_probe_file_generation_trial:
+        print_operator_approved_sandbox_probe_file_generation_trial(full=args.self_development_full)
+        return
+
+    if args.sandbox_probe_file_verification_and_cleanup_review:
+        print_sandbox_probe_file_verification_and_cleanup_review(full=args.self_development_full)
+        return
+
+    if args.sandbox_probe_execution_harness_readiness_review:
+        print_sandbox_probe_execution_harness_readiness_review(full=args.self_development_full)
+        return
+
+    if args.operator_approved_sandbox_probe_execution_trial:
+        print_operator_approved_sandbox_probe_execution_trial(full=args.self_development_full)
+        return
+
+    if args.sandbox_probe_execution_result_review_and_promotion_readiness:
+        print_sandbox_probe_execution_result_review_and_promotion_readiness(full=args.self_development_full)
+        return
+
+    if args.live_probe_promotion_plan_review:
+        print_live_probe_promotion_plan_review(full=args.self_development_full)
+        return
+
+    if args.operator_approved_live_probe_registration_trial:
+        print_operator_approved_live_probe_registration_trial(full=args.self_development_full)
+        return
+
+    if args.live_registered_probe_verification_and_structural_hardening_review:
+        print_live_registered_probe_verification_and_structural_hardening_review(full=args.self_development_full)
+        return
+
+    if args.v905_baseline_verification_and_manifest_version_semantics_prep:
+        print_v905_baseline_verification_and_manifest_version_semantics_prep(full=args.self_development_full)
+        return
+
+    if args.manifest_version_semantics_split:
+        print_manifest_version_semantics_split_review(full=args.self_development_full)
+        return
+
+    if args.manifest_validation_normalization:
+        print_manifest_validation_normalization_review(full=args.self_development_full)
+        return
+
+    if args.source_package_privacy_deep_scan:
+        print_source_package_privacy_deep_scan_review(full=args.self_development_full)
+        return
+
+    if args.metadata_and_current_marker_gate_reconciliation:
+        print_metadata_and_current_marker_gate_reconciliation_review(full=args.self_development_full)
+        return
+
+    if args.release_gate_stale_assertion_truth_repair:
+        print_release_gate_stale_assertion_truth_repair_review(full=args.self_development_full)
+        return
+
+    if args.install_release_segment_blocker_classification:
+        print_install_release_segment_blocker_classification_review(full=args.self_development_full)
+    if args.release_archive_and_recovery_gate_boundedness_repair:
+        print_release_archive_and_recovery_gate_boundedness_repair_review(full=args.self_development_full)
+    if args.install_release_segment_evidence_summary_gate:
+        print_install_release_segment_evidence_summary_gate_review(full=args.self_development_full)
+    if args.manifest_driven_surface_generation_prep:
+        print_manifest_driven_surface_generation_prep_review(full=args.self_development_full)
+        return
+
+    if args.manifest_review_packet_schema:
+        print_manifest_review_packet_schema_review(full=args.self_development_full)
+        return
+
+    if args.dashboard_surface_preview_generator:
+        print_dashboard_surface_preview_generator_review(full=args.self_development_full)
+        return
+
+    if args.cli_api_surface_preview_generator:
+        print_cli_api_surface_preview_generator_review(full=args.self_development_full)
+        return
+
+    if args.smoke_surface_preview_generator:
+        print_smoke_surface_preview_generator_review(full=args.self_development_full)
+        return
+
+    if args.generated_preview_parity_report:
+        print_generated_preview_parity_report_review(full=args.self_development_full)
+        return
+
+    if args.low_risk_surface_selection_gate:
+        print_low_risk_surface_selection_gate_review(full=args.self_development_full)
+        return
+
+    if args.generated_dashboard_preview_exact_match_gate:
+        print_generated_dashboard_preview_exact_match_gate_review(full=args.self_development_full)
+        return
+
+    if args.generated_cli_api_preview_exact_match_gate:
+        print_generated_cli_api_preview_exact_match_gate_review(full=args.self_development_full)
+        return
+
+    if args.generated_smoke_preview_exact_match_gate:
+        print_generated_smoke_preview_exact_match_gate_review(full=args.self_development_full)
+        return
+
+    if args.single_surface_generated_parity_closure:
+        print_single_surface_generated_parity_closure_review(full=args.self_development_full)
+        return
+
+    if args.multi_surface_selection_gate:
+        print_multi_surface_selection_gate_review(full=args.self_development_full)
+        return
+
+    if args.multi_surface_dashboard_preview_parity:
+        print_multi_surface_dashboard_preview_parity_review(full=args.self_development_full)
+        return
+
+    if args.multi_surface_cli_api_preview_parity:
+        print_multi_surface_cli_api_preview_parity_review(full=args.self_development_full)
+        return
+
+    if args.multi_surface_smoke_preview_parity:
+        print_multi_surface_smoke_preview_parity_review(full=args.self_development_full)
+        return
+
+    if args.multi_surface_generated_parity_batch_closure:
+        print_multi_surface_generated_parity_batch_closure_review(full=args.self_development_full)
+        return
+
+    if args.generated_scaffold_sandbox_output_schema:
+        print_generated_scaffold_sandbox_output_schema_review(full=args.self_development_full)
+        return
+
+    if args.generated_scaffold_sandbox_artifact_preview:
+        print_generated_scaffold_sandbox_artifact_preview_review(full=args.self_development_full)
+        return
+
+    if args.generated_scaffold_hash_ledger:
+        print_generated_scaffold_hash_ledger_review(full=args.self_development_full)
+        return
+
+    if args.generated_scaffold_sandbox_parity_comparison:
+        print_generated_scaffold_sandbox_parity_comparison_review(full=args.self_development_full)
+        return
+
+    if args.generated_scaffold_sandbox_output_closure:
+        print_generated_scaffold_sandbox_output_closure_review(full=args.self_development_full)
+        return
+
+    if args.generated_scaffold_wrapper_mapping_schema:
+        print_generated_scaffold_wrapper_mapping_schema_review(full=args.self_development_full)
+        return
+
+    if args.dashboard_compatibility_wrapper_preview:
+        print_dashboard_compatibility_wrapper_preview_review(full=args.self_development_full)
+        return
+
+    if args.cli_api_compatibility_wrapper_preview:
+        print_cli_api_compatibility_wrapper_preview_review(full=args.self_development_full)
+        return
+
+    if args.smoke_compatibility_wrapper_preview:
+        print_smoke_compatibility_wrapper_preview_review(full=args.self_development_full)
+        return
+
+    if args.generated_scaffold_wrapper_prep_closure:
+        print_generated_scaffold_wrapper_prep_closure_review(full=args.self_development_full)
+        return
+
+    if args.giant_file_extraction_inventory:
+        print_giant_file_extraction_inventory_review(full=args.self_development_full)
+        return
+
+    if args.self_development_cycle_extraction_map:
+        print_self_development_cycle_extraction_map_review(full=args.self_development_full)
+        return
+
+    if args.self_maintenance_builder_text_renderer_extraction_map:
+        print_self_maintenance_builder_text_renderer_extraction_map_review(full=args.self_development_full)
+        return
+
+    if args.dashboard_route_renderer_extraction_map:
+        print_dashboard_route_renderer_extraction_map_review(full=args.self_development_full)
+        return
+
+    if args.cli_api_dispatch_extraction_map:
+        print_cli_api_dispatch_extraction_map_review(full=args.self_development_full)
+        return
+
+    if args.smoke_registry_extraction_map:
+        print_smoke_registry_extraction_map_review(full=args.self_development_full)
+        return
+
+    if args.compatibility_wrapper_risk_ledger:
+        print_compatibility_wrapper_risk_ledger_review(full=args.self_development_full)
+        return
+
+    if args.extraction_order_proposal:
+        print_extraction_order_proposal_review(full=args.self_development_full)
+        return
+
+    if args.extraction_rollback_evidence_plan:
+        print_extraction_rollback_evidence_plan_review(full=args.self_development_full)
+        return
+
+    if args.giant_file_compatibility_extraction_prep_closure:
+        print_giant_file_compatibility_extraction_prep_closure_review(full=args.self_development_full)
+        return
+    if args.extraction_candidate_lock_gate:
+        print_extraction_candidate_lock_gate_review(full=args.self_development_full)
+        return
+    if args.pre_extraction_function_inventory:
+        print_pre_extraction_function_inventory_review(full=args.self_development_full)
+        return
+    if args.generated_preview_review_module_extraction:
+        print_generated_preview_review_module_extraction_review(full=args.self_development_full)
+        return
+    if args.compatibility_import_wrapper_gate:
+        print_compatibility_import_wrapper_gate_review(full=args.self_development_full)
+        return
+    if args.dashboard_cli_api_parity_after_extraction:
+        print_dashboard_cli_api_parity_after_extraction_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_parity_after_extraction:
+        print_smoke_registry_parity_after_extraction_review(full=args.self_development_full)
+        return
+    if args.stale_version_and_metadata_post_extraction_gate:
+        print_stale_version_and_metadata_post_extraction_gate_review(full=args.self_development_full)
+        return
+    if args.rollback_path_verification:
+        print_rollback_path_verification_review(full=args.self_development_full)
+        return
+    if args.extraction_release_evidence_packet:
+        print_extraction_release_evidence_packet_review(full=args.self_development_full)
+        return
+    if args.first_compatibility_extraction_closure:
+        print_first_compatibility_extraction_closure_review(full=args.self_development_full)
+        return
+
+    if args.second_extraction_candidate_selection_gate:
+        print_second_extraction_candidate_selection_gate_review(full=args.self_development_full)
+        return
+    if args.second_pre_extraction_function_inventory:
+        print_second_pre_extraction_function_inventory_review(full=args.self_development_full)
+        return
+    if args.generated_scaffold_review_packet_extraction:
+        print_generated_scaffold_review_packet_extraction_review(full=args.self_development_full)
+        return
+    if args.second_compatibility_wrapper_gate:
+        print_second_compatibility_wrapper_gate_review(full=args.self_development_full)
+        return
+    if args.second_extraction_surface_parity_gate:
+        print_second_extraction_surface_parity_gate_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_data_model_prep:
+        print_smoke_registry_data_model_prep_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_static_inventory:
+        print_smoke_registry_static_inventory_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_migration_risk_ledger:
+        print_smoke_registry_migration_risk_ledger_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_rollback_plan:
+        print_smoke_registry_rollback_plan_review(full=args.self_development_full)
+        return
+    if args.second_extraction_and_smoke_registry_prep_closure:
+        print_second_extraction_and_smoke_registry_prep_closure_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_pilot_selection_gate:
+        print_smoke_registry_pilot_selection_gate_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_pilot_schema:
+        print_smoke_registry_pilot_schema_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_pilot_data_table:
+        print_smoke_registry_pilot_data_table_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_pilot_resolver:
+        print_smoke_registry_pilot_resolver_review(full=args.self_development_full)
+        return
+    if args.manual_vs_pilot_smoke_parity_gate:
+        print_manual_vs_pilot_smoke_parity_gate_review(full=args.self_development_full)
+        return
+    if args.pilot_json_shape_compatibility_gate:
+        print_pilot_json_shape_compatibility_gate_review(full=args.self_development_full)
+        return
+    if args.pilot_rollback_evidence_gate:
+        print_pilot_rollback_evidence_gate_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_pilot_risk_review:
+        print_smoke_registry_pilot_risk_review(full=args.self_development_full)
+        return
+    if args.pilot_expansion_readiness_review:
+        print_pilot_expansion_readiness_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_data_driven_pilot_closure:
+        print_smoke_registry_data_driven_pilot_closure_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_execution_trial_readiness_gate:
+        print_smoke_registry_execution_trial_readiness_gate_review(full=args.self_development_full)
+        return
+    if args.data_driven_smoke_callable_execution_harness:
+        print_data_driven_smoke_callable_execution_harness_review(full=args.self_development_full)
+        return
+    if args.pilot_smoke_execution_result_packet:
+        print_pilot_smoke_execution_result_packet_review(full=args.self_development_full)
+        return
+    if args.manual_vs_data_driven_execution_parity_gate:
+        print_manual_vs_data_driven_execution_parity_gate_review(full=args.self_development_full)
+        return
+    if args.data_driven_smoke_json_output_preview:
+        print_data_driven_smoke_json_output_preview_review(full=args.self_development_full)
+        return
+    if args.data_driven_smoke_timeout_failure_semantics:
+        print_data_driven_smoke_timeout_failure_semantics_review(full=args.self_development_full)
+        return
+    if args.data_driven_smoke_manual_fallback_proof:
+        print_data_driven_smoke_manual_fallback_proof_review(full=args.self_development_full)
+        return
+    if args.data_driven_smoke_execution_risk_review:
+        print_data_driven_smoke_execution_risk_review(full=args.self_development_full)
+        return
+    if args.data_driven_smoke_expansion_readiness:
+        print_data_driven_smoke_expansion_readiness_review(full=args.self_development_full)
+        return
+    if args.smoke_registry_data_driven_execution_trial_closure:
+        print_smoke_registry_data_driven_execution_trial_closure_review(full=args.self_development_full)
+    if args.fallback_migration_readiness_gate:
+        print_fallback_migration_readiness_gate_review(full=args.self_development_full)
+    if args.data_driven_first_pilot_dispatch_preview:
+        print_data_driven_first_pilot_dispatch_preview_review(full=args.self_development_full)
+    if args.pilot_fallback_dispatch_trial:
+        print_pilot_fallback_dispatch_trial_review(full=args.self_development_full)
+    if args.pilot_fallback_result_ledger:
+        print_pilot_fallback_result_ledger_review(full=args.self_development_full)
+    if args.json_output_stability_gate:
+        print_json_output_stability_gate_review(full=args.self_development_full)
+    if args.fast_install_release_isolation_gate:
+        print_fast_install_release_isolation_gate_review(full=args.self_development_full)
+    if args.manual_fallback_removal_resistance_gate:
+        print_manual_fallback_removal_resistance_gate_review(full=args.self_development_full)
+    if args.pilot_migration_risk_review:
+        print_pilot_migration_risk_review(full=args.self_development_full)
+    if args.v1000_milestone_readiness_review:
+        print_v1000_milestone_readiness_review(full=args.self_development_full)
+    if args.smoke_registry_fallback_migration_pilot_closure:
+        print_smoke_registry_fallback_migration_pilot_closure_review(full=args.self_development_full)
+        return
+    if args.install_release_blocker_ledger_refresh:
+        print_install_release_blocker_ledger_refresh_review(full=args.self_development_full)
+        return
+    if args.install_release_timeout_harness_repair:
+        print_install_release_timeout_harness_repair_review(full=args.self_development_full)
+        return
+    if args.install_release_timeout_row_bounded_retest:
+        print_install_release_timeout_row_bounded_retest_review(full=args.self_development_full)
+        return
+    if args.install_release_fixture_decomposition_plan:
+        print_install_release_fixture_decomposition_plan_review(full=args.self_development_full)
+        return
+    if args.install_release_fixture_smoke_split_pilot:
+        print_install_release_fixture_smoke_split_pilot_review(full=args.self_development_full)
+        return
+    if args.release_archive_fixture_split_expansion:
+        print_release_archive_fixture_split_expansion_review(full=args.self_development_full)
+        return
+    if args.supervised_blocker_semantics_repair:
+        print_supervised_blocker_semantics_repair_review(full=args.self_development_full)
+        return
+    if args.install_release_segment_cleanliness_gate:
+        print_install_release_segment_cleanliness_gate_review(full=args.self_development_full)
+        return
+    if args.post_v1000_defect_closure_audit_and_phase_zero_boundary:
+        print_post_v1000_defect_closure_phase_zero_boundary_review(full=args.self_development_full)
+        return
+    if args.install_release_timeout_parent_row_replacement_pilot:
+        print_install_release_timeout_parent_replacement_pilot_review(full=args.self_development_full)
+        return
+    if args.install_release_parent_replacement_expansion:
+        print_install_release_parent_replacement_expansion_review(full=args.self_development_full)
+    if args.remaining_timeout_parent_fixture_selection:
+        print_remaining_timeout_parent_fixture_selection_review(full=args.self_development_full)
+        return
+    if args.recovery_closure_fixture_split_smoke:
+        print_recovery_closure_fixture_split_smoke_review(full=args.self_development_full)
+        return
+    if args.recovery_closure_parent_replacement_overlay:
+        print_recovery_closure_parent_replacement_overlay_review(full=args.self_development_full)
+        return
+    if args.remaining_timeout_parent_fixture_split_expansion:
+        print_remaining_timeout_parent_fixture_split_expansion_review(full=args.self_development_full)
+        return
+    if args.decision_archive_ledger_parent_replacement_overlay:
+        print_decision_archive_ledger_parent_replacement_overlay_review(full=args.self_development_full)
+        return
+    if args.candidate_handoff_fixture_split_smoke:
+        print_candidate_handoff_fixture_split_smoke_review(full=args.self_development_full)
+        return
+    if args.candidate_handoff_parent_replacement_overlay:
+        print_candidate_handoff_parent_replacement_overlay_review(full=args.self_development_full)
+        return
+    if args.final_timeout_parent_overlay_closure:
+        print_final_timeout_parent_overlay_closure_review(full=args.self_development_full)
+        return
+
     if args.approval_inbox:
         print_approval_inbox(status="pending", include_closed=False)
         return
@@ -6791,3 +7691,168 @@ if __name__ == "__main__":
 # v390.1-v395.0 live patch history memory candidate CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-live-patch-trial-history-ledger-v1 --operator-governed-live-patch-decision-pattern-review-v1 --operator-governed-live-patch-supervised-lesson-candidate-drafting-v1 --operator-governed-live-patch-memory-candidate-governance-v1 --operator-governed-live-patch-history-and-memory-candidate-audit-v1 live_patch_history_memory_candidates.py history_ledger_treats_history_as_permission=False decision_review_changes_future_behavior=False lesson_candidates_write_memory=False memory_governance_stores_memory=False history_memory_audit_writes_memory=False memory_candidates_review_only=True operator_approval_required_before_memory_storage=True
 
 # v395.1-v400.0 memory candidate application trial CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-governed-memory-candidate-selection-packet-v1 --operator-governed-memory-application-approval-lock-v1 --operator-governed-memory-write-transaction-preview-v1 --operator-confirmed-memory-application-trial-v1 --operator-governed-memory-application-trial-audit-v1 memory_candidate_application_trial.py candidate_selection_writes_memory=False approval_lock_reuses_approval=False transaction_preview_writes_memory=False application_harness_runs_without_confirmation=False application_audit_runs_retraction=False fresh_operator_approval_required=True single_use_memory_approval_required=True sensitive_data_screen_required=True identity_personality_mutation_screen_required=True retraction_packet_required=True
+
+# v510.1-v515.0 sandbox execution approval gate routes/CLI flags are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP/SUPERVISED_RUNTIME_CLI_MAP: /api/sandbox-approval-scope-contract/layer /api/exact-confirmation-phrase-builder/layer /api/approval-burnout-expiry-ledger/layer /api/sandbox-command-allowlist-preview/layer /api/sandbox-execution-approval-gate-audit/layer --sandbox-execution-approval-gate-v1 sandbox_execution_approval_gate.py approval_contract_exists_is_approval_granted=False confirmation_phrase_generated_is_confirmation_entered=False command_preview_executes_commands=False approval_status=not_granted execution_status=not_executed sandbox_status=not_started autonomy_status=not_autonomous
+# v515.1-v520.0 sandbox execution dry-run receipt routes/CLI flags are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP/SUPERVISED_RUNTIME_CLI_MAP: /api/sandbox-dry-run-execution-model/layer /api/command-transcript-preview/layer /api/sandbox-diff-receipt-preview/layer /api/dry-run-misinterpretation-firewall/layer /api/sandbox-execution-dry-run-receipt-audit/layer --sandbox-execution-dry-run-receipt-v1 sandbox_execution_dry_run_receipt.py dry_run_model_exists_is_sandbox_execution=False transcript_preview_is_command_output=False diff_receipt_preview_is_actual_file_change=False dry_run_success_is_authorization=False dry_run_receipt_status=prepared actual_execution_status=not_executed approval_status=not_granted sandbox_status=not_started autonomy_status=not_autonomous
+
+# v520.1-v525.0 first sandbox execution trial routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP/SUPERVISED_RUNTIME_CLI_MAP: /api/sandbox-workspace-isolation-contract/layer /api/approved-sandbox-command-plan/layer /api/single-use-sandbox-execution-receipt/layer /api/sandbox-execution-misinterpretation-firewall/layer /api/first-sandbox-execution-trial-audit/layer --first-operator-approved-sandbox-execution-trial-v1 first_sandbox_execution_trial.py sandbox_workspace_exists_is_execution_permission=False command_plan_exists_is_command_run=False receipt_written_is_future_approval=False successful_sandbox_trial_is_autonomy=False trial_layer_status=prepared sandbox_execution_status=not_run_by_default approval_status=required live_source_status=untouched memory_status=untouched autonomy_status=not_autonomous
+
+# v525.1-v530.0 sandbox execution runner routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP/SUPERVISED_RUNTIME_CLI_MAP: /api/sandbox-execution-runner-contract/layer /api/approval-phrase-validator/layer /api/sandbox-command-execution-harness/layer /api/execution-receipt-intake-cleanup-audit/layer /api/sandbox-execution-trial-review-board/layer --operator-approved-sandbox-execution-runner-v1 sandbox_execution_runner.py runner_contract_exists_is_execution_permission=False phrase_validated_is_command_executed=False sandbox_command_success_is_live_patch_approval=False receipt_success_is_future_authorization=False runner_status=available_under_approval_only execution_status=not_executed_by_default approval_status=required live_source_status=untouched memory_status=untouched release_status=not_created autonomy_status=not_autonomous
+
+# v530.1-v540.0 sandbox-to-source promotion packet routes are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP/SUPERVISED_RUNTIME_CLI_MAP: /api/sandbox-evidence-intake-packet/layer /api/promotion-candidate-diff-preview/layer /api/rollback-recovery-packet-builder/layer /api/promotion-misinterpretation-firewall/layer /api/sandbox-to-source-promotion-review-board/layer --sandbox-to-source-promotion-packet-v1 sandbox_to_source_promotion_packet.py sandbox_evidence_exists_is_live_source_approval=False promotion_diff_preview_is_live_source_mutation=False rollback_packet_exists_is_rollback_executed=False promotion_packet_status=prepared live_source_status=untouched approval_status=required authorization_status=not_authorized rollback_status=planned_not_executed release_status=not_created autonomy_status=not_autonomous
+# v601.0-v605.0 current-state integrity hardening CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --smoke-summary-version-alignment-contract-v1 --nested-metadata-root-version-guard-v1 --readme-current-handoff-staleness-guard-v1 --setup-smoke-scope-guard-v1 --current-state-integrity-staleness-hardening-board-v1 current-state-integrity-staleness-hardening-v1 current_state_integrity_staleness_hardening.py hardening_report_writes_source=False hardening_report_writes_metadata=False hardening_report_executes_smoke=False audit_pass_is_release_approval=False audit_pass_is_live_patch_permission=False
+# v606.0-v610.0 archive reconciliation application prep CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --archive-reconciliation-application-scope-packet-v1 --reconciliation-application-candidate-map-v1 --operator-reconciliation-application-approval-checklist-v1 --dry-run-application-receipt-prep-v1 --archive-reconciliation-application-prep-board-v1 archive-reconciliation-application-prep-v1 archive_reconciliation_application_prep.py application_prep_board_is_operator_approval=False application_prep_board_writes_archive_records=False application_prep_board_mutates_current_state=False
+
+# v611.0-v615.0 operator command center UI consolidation CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --command-center-landing-screen-v1 --operator-queue-panel-v1 --safety-state-panel-v1 --workflow-navigation-groups-v1 --system-health-summary-board-v1 --operator-command-center-ui-consolidation-board-v1 operator-command-center-ui-consolidation-v1 operator_command_center_ui_consolidation.py command_center_executes_actions=False operator_queue_grants_approval=False safety_panel_changes_authorization=False system_health_summary_runs_smoke=False ui_consolidation_expands_autonomy=False
+
+# v616.0-v620.0 dashboard workflow simplification CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --workflow-group-route-index-v1 --legacy-route-drawer-v1 --archive-workflow-pipeline-view-v1 --patch-safety-memory-group-views-v1 --dashboard-simplification-board-v1 dashboard-workflow-simplification-legacy-drawer-v1 dashboard_workflow_simplification.py workflow_index_executes_actions=False legacy_drawer_deletes_routes=False archive_pipeline_writes_archive_records=False group_views_write_memory=False simplification_board_expands_autonomy=False
+
+# v621.0-v625.0 operator action semantics UX CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --universal-action-label-standard-v1 --blocked-action-explanation-cards-v1 --one-time-approval-burnout-ux-v1 --safe-preview-before-action-summary-v1 --operator-action-semantics-board-v1 operator-action-semantics-approval-ux-v1 operator_action_semantics_ux.py action_labels_execute_actions=False blocked_cards_unblock_actions=False approval_card_reuses_approval=False safe_preview_executes_action=False semantics_board_expands_autonomy=False
+# v626.0-v630.0 review packet evidence UX CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --review-packet-summary-header-v1 --evidence-grouping-priority-layout-v1 --receipt-ledger-readability-cards-v1 --system-health-evidence-ux-v1 --review-packet-evidence-ux-board-v1 review-packet-readability-evidence-ux-v1 review_packet_evidence_ux.py summary_header_grants_approval=False evidence_grouping_hides_raw_evidence=False receipt_cards_treat_receipt_as_approval=False system_health_panels_run_smoke=False evidence_board_expands_autonomy=False
+# v631.0-v635.0 dashboard search and surface discovery CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --surface-search-index-v1 --route-module-smoke-discovery-cards-v1 --workflow-aware-search-filters-v1 --current-historical-surface-guard-v1 --dashboard-search-discovery-board-v1 operator-dashboard-search-surface-discovery-v1 dashboard_search_surface_discovery.py search_index_grants_approval=False search_index_treats_presence_as_authorization=False discovery_cards_execute_commands=False workflow_filters_hide_safety=False current_historical_guard_treats_current_as_approval=False discovery_board_expands_autonomy=False
+# v636.0-v640.0 operator decision capture/approval form UX CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --decision-capture-form-schema-v1 --approval-scope-target-binding-panel-v1 --approval-expiration-burnout-form-ux-v1 --denial-deferral-revision-decision-capture-v1 --operator-decision-approval-ux-board-v1 operator-decision-capture-approval-form-ux-v1 operator_decision_approval_ux.py decision_form_creates_approval=False scope_binding_grants_authorization=False approval_burnout_reuse_allowed=False denial_deferral_is_approval=False ux_board_expands_autonomy=False
+# v641.0-v645.0 operator receipt timeline/audit UX CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --operator-decision-timeline-model-v1 --approval-burnout-consumption-timeline-cards-v1 --blocked-action-safety-event-timeline-cards-v1 --verification-receipt-timeline-cards-v1 --decision-audit-trail-board-v1 operator-receipt-timeline-decision-audit-trail-ux-v1 operator_receipt_timeline_audit_ux.py timeline_model_grants_approval=False approval_consumption_cards_allow_reuse=False blocked_action_cards_unblock_actions=False verification_cards_treat_pass_as_authorization=False audit_trail_expands_autonomy=False
+
+# v646.0-v650.0 operator session continuity/resume UX CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --session-resume-state-summary-v1 --unresolved-warning-blocker-carryover-v1 --pending-decisions-prepared-work-resume-queue-v1 --verification-state-resume-card-v1 --operator-session-continuity-board-v1 operator-session-continuity-resume-console-ux-v1 operator_session_continuity_resume_ux.py resume_summary_starts_work=False pending_queue_starts_work=False verification_card_treats_pass_as_authorization=False handoff_packet_is_approval=False continuity_board_expands_autonomy=False
+
+# v651.0-v655.0 operator guided review wizard UX CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --guided-review-wizard-entry-model-v1 --guided-evidence-warning-step-cards-v1 --guided-decision-approval-step-ux-v1 --guided-verification-resume-step-summary-v1 --operator-guided-review-wizard-board-v1 operator-guided-review-wizard-ux-v1 operator_guided_review_wizard_ux.py wizard_entry_starts_work=False evidence_cards_run_checks=False decision_step_creates_approval=False verification_step_treats_pass_as_authorization=False wizard_board_expands_autonomy=False
+
+# v656.0-v660.0 project metadata schema and active context repair CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --metadata-schema-contract-v1 --active-project-resolution-audit-v1 --project-status-rendering-hardening-v1 --release-note-version-semantics-audit-v1 --metadata-integrity-board-smoke-gate-v1 project-metadata-schema-active-context-repair-v1 project_metadata_active_context_repair.py schema_contract_writes_metadata=False active_project_resolution_changes_project=False status_rendering_executes_actions=False release_note_semantics_rewrites_history=False metadata_integrity_board_executes_smoke=False metadata_integrity_board_expands_autonomy=False
+
+# v661.0-v665.0 legacy smoke segmentation repair CLI flags are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP/SUPERVISED_RUNTIME_CLI_MAP: smoke-gate-classification-model current-release-gate-segment legacy-advisory-segment-separation stale-expectation-repair-audit smoke-segmentation-integrity-board legacy-smoke-segmentation-stale-expectation-repair-v1 legacy_smoke_segmentation_repair.py current_gate_executes_smoke=False legacy_advisory_blocks_current_release=False segmentation_board_expands_autonomy=False smoke_success_is_approval=False segment_report_is_authorization=False
+# v666.0-v675.0 manifest-driven surface registry CLI flags are handled dynamically by SUPERVISED_RUNTIME_ROUTE_MAP/SUPERVISED_RUNTIME_CLI_MAP: surface-registry-manifest-contract dashboard-surface-manifest-adapter api-cli-surface-manifest-adapter smoke-surface-manifest-adapter source-surface-manifest-reconciliation documentation-token-manifest-validation manifest-drift-detection-board registry-generation-prep-layer manifest-driven-current-release-gate manifest-driven-surface-registry-board manifest-driven-surface-registry-v1 manifest_driven_surface_registry.py api_cli_manifest_adapter_status=validated_or_blocked api_cli_manifest_adapter_executes_commands=False manifest_presence_is_authorization=False registry_health_is_approval=False manifest_board_expands_autonomy=False
+
+# v676.0-v685.0 dashboard renderer component extraction CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --dashboard-component-contract-v1 --shared-review-packet-renderer-v1 --shared-boundary-matrix-renderer-v1 --shared-evidence-warning-renderer-v1 --shared-decision-approval-renderer-v1 --shared-resume-continuity-renderer-v1 --dashboard-route-renderer-adapter-v1 --dashboard-style-regression-guard-v1 --legacy-renderer-duplication-audit-v1 --dashboard-renderer-component-extraction-board-v1 dashboard-renderer-component-extraction-v1 dashboard_renderer_component_extraction.py renderer_presence_is_authorization=False style_guard_pass_is_approval=False component_board_expands_autonomy=False
+
+# v686.0-v690.0 neural command deck dashboard redesign CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --neural-deck-layout-shell-v1 --eidolon-thinking-core-panel-v1 --operator-conversation-console-v1 --side-intelligence-panels-v1 --neural-command-deck-dashboard-board-v1 neural-command-deck-dashboard-redesign-v1 neural_command_deck_dashboard_redesign.py visual_health_is_authorization=False thinking_animation_is_model_execution=False
+
+# v691.0-v695.0 neural command deck interaction refinement CLI flags are registered dynamically through SUPERVISED_RUNTIME_CLI_MAP: --interaction-focus-rail-v1 --interaction-safe-input-deck-v1 --panel-density-priority-tuning-v1 --context-telemetry-affordance-v1 --neural-command-deck-interaction-board-v1 neural-command-deck-interaction-refinement-v1 neural_command_deck_interaction_refinement.py visual_priority_is_authorization=False hover_detail_is_approval=False chat_input_is_command_execution=False
+
+# v696.0-v700.0 autonomy phase zero readiness integrity tokens: v700.0 Autonomy Phase 0 Readiness Harness v1 autonomy-phase-zero-readiness-harness-v1 autonomy_phase_zero_readiness_harness.py autonomy-phase-zero-definition-contract observation-only-cycle-simulator no-mutation-autonomy-boundary-guard autonomy-phase-zero-handoff-packet autonomy-phase-zero-readiness-board autonomy_phase_zero_readiness_harness_status=prepared_only phase_zero_definition_contract_status=defined observation_only_cycle_simulator_status=simulated_review_only no_mutation_boundary_guard_status=guarded_or_blocked phase_zero_handoff_packet_status=prepared_not_permission autonomy_phase_zero_readiness_board_status=review_only approval_semantics_changed=False phase_zero_is_autonomy_approval=False phase_zero_observation_executes_commands=False phase_zero_observation_writes_source=False phase_zero_observation_writes_memory=False phase_zero_observation_writes_archives=False phase_zero_observation_mutates_current_state=False phase_zero_observation_creates_release=False phase_zero_observation_publishes_release=False phase_zero_observation_schedules_hidden_work=False phase_zero_observation_continues_automatically=False phase_zero_observation_selects_roadmap=False phase_zero_observation_invokes_models=False phase_zero_cycle_starts_work=False observation_receipt_is_approval=False readiness_score_is_authorization=False handoff_packet_is_permission=False phase_zero_board_expands_autonomy=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v760.0 duplicate cleanup CLI tokens: --self-development-cycle-duplicate-cleanup build_self_development_cycle_duplicate_cleanup_review self_development_cycle_duplicate_cleanup_review_text self-development-cycle-duplicate-cleanup-v1 expands_autonomy=False
+# v845.0 smoke debt ledger reconciliation CLI tokens: --current-smoke-debt-ledger-reconciliation build_current_smoke_debt_ledger_reconciliation_review current_smoke_debt_ledger_reconciliation_review_text current-smoke-debt-ledger-reconciliation-v1 resolved_legacy_smoke_debt_not_active=True install_regression_recent_expected_status=pass marks_blockers_as_pass=False runs_broad_smoke=False expands_autonomy=False
+# v845.0 legacy self-maintenance smoke blocker review CLI tokens: --legacy-self-maintenance-smoke-blocker-review build_legacy_self_maintenance_smoke_blocker_review legacy_self_maintenance_smoke_blocker_review_text legacy-self-maintenance-smoke-blocker-review-v1 install_regression_recent_expected_status=pass marks_blockers_as_pass=False runs_broad_smoke=False expands_autonomy=False
+
+# v845.0 current audit wording cleanup CLI tokens: --current-audit-wording-cleanup --manifest-generation-prep-review build_current_audit_wording_cleanup_review current_audit_wording_cleanup_review_text build_manifest_generation_prep_review manifest_generation_prep_review_text current-audit-wording-cleanup-v1 manifest-generation-prep-review-v1 stale_current_audit_wording_clean=True historical_release_references_allowed=True manifest_generation_prep_is_review_only=True generates_surfaces=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False modifies_approval_system=False modifies_release_system=False expands_autonomy=False
+
+# v845.0 manifest-gated surface validation CLI tokens: manifest-gated-surface-validation-v1 --manifest-gated-surface-validation build_manifest_gated_surface_validation_review manifest_gated_surface_validation_review_text validation_is_review_only=True generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False
+
+# v845.0 manifest-driven surface registry pilot CLI tokens: manifest-driven-surface-registry-pilot-v1 --manifest-driven-surface-registry-pilot --manifest-surface-generation-readiness build_manifest_driven_surface_registry_pilot_review manifest_driven_surface_registry_pilot_review_text build_manifest_surface_generation_readiness_review manifest_surface_generation_readiness_review_text registry_pilot_is_review_only=True pilot_registers_one_surface=True generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False safe_for_manifest_registration safe_for_generated_validation_only manual_until_further_review protected_operator_controlled never_autonomous applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False
+
+# v845.0 manifest registry expansion CLI tokens: manifest-registry-expanded-review-surfaces-v1 --manifest-registry-expanded-review-surfaces --manifest-registry-generation-readiness-scoring build_manifest_registry_expanded_review_surfaces_review manifest_registry_expanded_review_surfaces_review_text build_manifest_registry_generation_readiness_scoring_review manifest_registry_generation_readiness_scoring_review_text registry_expansion_is_review_only=True selected_surface_count=8 additional_surface_count=7 generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False
+
+# v845.0 manifest registry drift detection CLI tokens: manifest-registry-drift-detection-v1 --manifest-registry-drift-detection build_manifest_registry_drift_detection_review manifest_registry_drift_detection_review_text registry_drift_detection_is_review_only=True registered_surface_count=8 drift_count=0 in_sync_count=8 generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False
+
+# v845.0 manifest-guided validation probe dry-run CLI tokens: manifest-guided-validation-probe-dry-run-v1 --manifest-guided-validation-probe-dry-run build_manifest_guided_validation_probe_dry_run_review manifest_guided_validation_probe_dry_run_review_text validation_probe_dry_run_is_review_only=True dry_run_selected_surface_count=1 planned_probe_check_count=8 selected_surface_id=v780-manifest-gated-surface-validation generates_validation_probe=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False
+
+# v845.0 manifest-guided generated validation probe CLI tokens: manifest-guided-generated-validation-probe-v1 --manifest-guided-generated-validation-probe build_manifest_guided_generated_validation_probe_review manifest_guided_generated_validation_probe_review_text generated_validation_probe_is_review_only=True generated_probe_selected_surface_count=1 generated_probe_check_count=8 selected_surface_id=v780-manifest-gated-surface-validation smoke_segment_parity_status=deferred generates_validation_probe=True generates_live_validation_probe=False generated_wiring_activated=False writes_probe_file=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False
+
+# v845.0 manifest smoke segment parity drift CLI tokens: manifest-smoke-segment-parity-drift-v1 --manifest-smoke-segment-parity-drift build_manifest_smoke_segment_parity_drift_review manifest_smoke_segment_parity_drift_review_text manifest_smoke_segment_parity_drift_is_review_only=True manifest_surface_count surfaces_with_smoke_checks matching_segment_count mismatching_segment_count missing_live_segment_count known_mismatch_detected=True auto_repair_enabled=False repairs_segment_drift=False writes_manifest=False writes_smoke_segment_registry=False modifies_smoke_segment_registry=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v845.0 manifest smoke segment parity repair packet CLI tokens: manifest-smoke-segment-parity-repair-packet-v1 --manifest-smoke-segment-parity-repair-packet build_manifest_smoke_segment_parity_repair_packet_review manifest_smoke_segment_parity_repair_packet_review_text manifest_smoke_segment_parity_repair_packet_is_review_only=True proposed_repair_count auto_apply_enabled=False applies_repair=False repairs_segment_drift=False writes_manifest=False writes_smoke_segment_registry=False modifies_smoke_segment_registry=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v845.0 manifest smoke segment repair application CLI tokens: manifest-smoke-segment-repair-application-v1 --manifest-smoke-segment-repair-application build_manifest_smoke_segment_repair_application_review manifest_smoke_segment_repair_application_review_text manifest_smoke_segment_repair_application_is_review_only=True operator_approved_application=True corrected_segment_count=35 mismatching_segment_count_after_application=0 proposed_repair_count_after_application=0 known_v780_segment_corrected=True auto_apply_enabled=False runtime_writes_manifest=False writes_manifest=True writes_smoke_segment_registry=False modifies_smoke_segment_registry=False applies_source_edits=True creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v845.0 manifest segment parity enforcement gate CLI tokens: manifest-segment-parity-enforcement-gate-v1 --manifest-segment-parity-enforcement-gate build_manifest_segment_parity_enforcement_gate_review manifest_segment_parity_enforcement_gate_review_text manifest_segment_parity_enforcement_gate_is_review_only=True release_blocking=True enforcement_gate_passed=True mismatching_segment_count=0 missing_live_segment_count=0 auto_repair_enabled=False writes_manifest=False writes_smoke_segment_registry=False modifies_smoke_segment_registry=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v845.0 manifest-guided validation probe expansion readiness CLI tokens: manifest-guided-validation-probe-expansion-readiness-v1 --manifest-guided-validation-probe-expansion-readiness build_manifest_guided_validation_probe_expansion_readiness_review manifest_guided_validation_probe_expansion_readiness_review_text expansion_readiness_is_review_only=True currently_supported_probe_surface_count=1 recommended_expansion_surface_count=3 blocked_surface_count=0 readiness_passed=True expansion_mode=review_only generated_wiring_enabled=False generated_wiring_activated=False generates_multi_surface_probe=False generates_validation_probe=False generates_live_validation_probe=False writes_probe_file=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v845.0 manifest-guided multi-surface validation probe dry-run CLI tokens: manifest-guided-multi-surface-validation-probe-dry-run-v1 --manifest-guided-multi-surface-validation-probe-dry-run build_manifest_guided_multi_surface_validation_probe_dry_run_review manifest_guided_multi_surface_validation_probe_dry_run_review_text multi_surface_validation_probe_dry_run_is_review_only=True selected_surface_count=3 planned_probe_check_count_per_surface=8 total_planned_probe_check_count=24 segment_parity_gate_passed=True generated_wiring_enabled=False generated_wiring_activated=False writes_probe_files=False generates_live_validation_probe=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v845.0 manifest-guided multi-surface generated validation probe packet CLI tokens: manifest-guided-multi-surface-generated-validation-probe-packet-v1 --manifest-guided-multi-surface-generated-validation-probe-packet build_manifest_guided_multi_surface_generated_validation_probe_packet_review manifest_guided_multi_surface_generated_validation_probe_packet_review_text multi_surface_generated_validation_probe_packet_is_review_only=True selected_surface_count=3 generated_probe_packet_count=3 generated_probe_check_count_per_surface=8 total_generated_probe_check_count=24 segment_parity_gate_passed=True expansion_readiness_passed=True dry_run_prerequisite_passed=True writes_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v850.0 manifest-guided multi-surface probe packet consistency gate CLI tokens: manifest-guided-multi-surface-probe-packet-consistency-gate-v1 --manifest-guided-multi-surface-probe-packet-consistency-gate build_manifest_guided_multi_surface_probe_packet_consistency_gate_review manifest_guided_multi_surface_probe_packet_consistency_gate_review_text multi_surface_probe_packet_consistency_gate_is_review_only=True selected_surface_count=3 dry_run_surface_count=3 generated_packet_surface_count=3 expected_surface_ids_match=True check_count_per_surface=8 total_check_count=24 segment_parity_gate_passed=True expansion_readiness_passed=True dry_run_prerequisite_passed=True generated_packet_prerequisite_passed=True consistency_gate_passed=True release_blocking=True writes_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v865.0 manifest-guided sandbox probe file generation readiness CLI tokens: manifest-guided-sandbox-probe-file-generation-readiness-v1 --manifest-guided-sandbox-probe-file-generation-readiness build_manifest_guided_sandbox_probe_file_generation_readiness_review manifest_guided_sandbox_probe_file_generation_readiness_review_text sandbox_probe_file_generation_readiness_is_review_only=True selected_surface_count=3 eligible_surface_count=3 planned_sandbox_probe_file_count=3 generated_probe_file_count=0 consistency_gate_passed=True consistency_gate_prerequisite_passed=True policy_count=8 policies_passed=True readiness_passed=True release_blocking=True writes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v865.0 manifest-guided sandbox probe file generation dry-run CLI tokens: manifest-guided-sandbox-probe-file-generation-dry-run-v1 --manifest-guided-sandbox-probe-file-generation-dry-run build_manifest_guided_sandbox_probe_file_generation_dry_run manifest_guided_sandbox_probe_file_generation_dry_run_text sandbox_probe_file_generation_dry_run_is_review_only=True selected_surface_count=3 readiness_prerequisite_passed=True planned_probe_file_count=3 preview_probe_file_count=3 written_probe_file_count=0 generated_probe_file_count=0 policy_count=12 policies_passed=True dry_run_passed=True release_blocking=True writes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v865.0 operator-approved sandbox probe file generation trial CLI tokens: operator-approved-sandbox-probe-file-generation-trial-v1 --operator-approved-sandbox-probe-file-generation-trial build_operator_approved_sandbox_probe_file_generation_trial operator_approved_sandbox_probe_file_generation_trial_text selected_surface_count=3 readiness_prerequisite_passed=True dry_run_prerequisite_passed=True operator_approval_required=True operator_approval_present=True planned_probe_file_count=3 preview_probe_file_count=3 written_probe_file_count=3 sandbox_generated_probe_file_count=3 generated_live_probe_file_count=0 file_content_matches_preview=True policy_count=14 policies_passed=True generation_trial_passed=True release_blocking=True review_only=False operator_approved_sandbox_write=True writes_probe_files=True generates_sandbox_probe_files=True generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v870.0 sandbox probe file verification and cleanup review CLI tokens: sandbox-probe-file-verification-and-cleanup-review-v1 --sandbox-probe-file-verification-and-cleanup-review build_sandbox_probe_file_verification_and_cleanup_review sandbox_probe_file_verification_and_cleanup_review_text sandbox_probe_file_verification_and_cleanup_review_is_review_only=True sandbox_probe_file_count=3 expected_probe_file_count=3 unexpected_probe_file_count=0 missing_probe_file_count=0 files_match_dry_run_preview=True all_paths_inside_sandbox_root=True unsafe_import_count=0 command_execution_detected=False memory_write_detected=False approval_write_detected=False release_write_detected=False scheduler_write_detected=False network_access_detected=False live_wiring_detected=False cleanup_plan_available=True cleanup_review_only=True verification_passed=True release_blocking=True review_only=True writes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v885.0 sandbox probe execution harness readiness CLI tokens: sandbox-probe-execution-harness-readiness-review-v1 --sandbox-probe-execution-harness-readiness-review build_sandbox_probe_execution_harness_readiness_review sandbox_probe_execution_harness_readiness_review_text sandbox_probe_execution_harness_readiness_review_is_review_only=True sandbox_probe_file_count=3 verification_prerequisite_passed=True execution_harness_defined=True execution_performed=False probe_execution_count=0 command_allowlist_defined=True timeout_policy_defined=True network_access_allowed=False scheduler_access_allowed=False memory_write_allowed=False approval_write_allowed=False release_write_allowed=False source_write_allowed=False live_wiring_allowed=False stdout_capture_defined=True stderr_capture_defined=True result_schema_defined=True cleanup_plan_available=True operator_approval_required=True single_use_approval_required=True approval_burnout_required=True policy_count=36 policies_passed=True readiness_passed=True release_blocking=True review_only=True writes_probe_files=False deletes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False executes_probe_files=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v885.0 operator-approved sandbox probe execution trial CLI tokens: operator-approved-sandbox-probe-execution-trial-v1 --operator-approved-sandbox-probe-execution-trial build_operator_approved_sandbox_probe_execution_trial operator_approved_sandbox_probe_execution_trial_text operator_approved_sandbox_probe_execution_trial=True selected_surface_count=3 execution_harness_prerequisite_passed=True verification_prerequisite_passed=True sandbox_probe_file_count=3 operator_approval_required=True operator_approval_present=True single_use_approval_required=True approval_burnout_required=True execution_performed=True probe_execution_count=3 probe_execution_pass_count=3 probe_execution_fail_count=0 stdout_capture_count=3 stderr_capture_count=3 timeout_count=0 network_access_detected=False scheduler_access_detected=False memory_write_detected=False approval_write_detected=False release_write_detected=False source_write_detected=False live_wiring_detected=False policy_count=41 policies_passed=True execution_trial_passed=True release_blocking=True review_only=False operator_approved_sandbox_execution=True writes_probe_files=False deletes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=True executes_probe_files=True writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v885.0 sandbox probe execution result review and promotion readiness CLI tokens: sandbox-probe-execution-result-review-and-promotion-readiness-v1 --sandbox-probe-execution-result-review-and-promotion-readiness build_sandbox_probe_execution_result_review_and_promotion_readiness sandbox_probe_execution_result_review_and_promotion_readiness_text sandbox_probe_execution_result_review_and_promotion_readiness=True execution_trial_prerequisite_passed=True sandbox_probe_file_count=3 probe_execution_count=3 probe_execution_pass_count=3 probe_execution_fail_count=0 stdout_capture_count=3 stderr_capture_count=3 timeout_count=0 execution_results_reviewed=True execution_results_clean=True promotion_candidate_count=3 promotion_blocker_count=0 promotion_readiness_passed=True live_integration_planned=False live_wiring_activated=False source_edits_applied=False memory_mutated=False approval_system_mutated=False release_system_mutated=False scheduler_mutated=False network_accessed=False autonomy_expanded=False release_blocking=True review_only=True protected_systems_require_operator_approval=True
+
+# v890.0 live probe promotion plan review CLI tokens: live-probe-promotion-plan-review-v1 --live-probe-promotion-plan-review build_live_probe_promotion_plan_review live_probe_promotion_plan_review_text live_probe_promotion_plan_review=True promotion_readiness_prerequisite_passed=True sandbox_probe_file_count=3 promotion_candidate_count=3 promotion_blocker_count=0 promotion_plan_created=True planned_live_probe_count=3 planned_smoke_registration_count=3 planned_dashboard_wiring_count=0 planned_api_wiring_count=0 planned_cli_wiring_count=0 source_files_to_modify_count=6 operator_approval_required=True single_use_approval_required=True approval_burnout_required=True rollback_plan_available=True live_integration_applied=False live_wiring_activated=False source_edits_applied=False memory_mutated=False approval_system_mutated=False release_system_mutated=False scheduler_mutated=False network_accessed=False autonomy_expanded=False policy_count=44 policies_passed=True release_blocking=True review_only=True protected_systems_require_operator_approval=True
+
+# v895.0 operator-approved live probe registration trial CLI tokens: operator-approved-live-probe-registration-trial-v1 --operator-approved-live-probe-registration-trial build_operator_approved_live_probe_registration_trial operator_approved_live_probe_registration_trial_text operator_approved_live_probe_registration_trial=True registered_live_probe_count=3 live_smoke_registration_applied=True dashboard_wiring_activated=False api_wiring_activated=False cli_wiring_activated=False probe_execution_during_registration=False registration_trial_passed=True review_only=False operator_approved_live_registration=True expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v900.0 live registered probe verification and structural hardening review CLI tokens: live-registered-probe-verification-and-structural-hardening-review-v1 --live-registered-probe-verification-and-structural-hardening-review build_live_registered_probe_verification_and_structural_hardening_review live_registered_probe_verification_and_structural_hardening_review_text live_probe_registration_prerequisite_passed=True registered_live_probe_count=3 live_probe_execution_count=3 live_probe_pass_count=3 live_probe_fail_count=0 rollback_plan_available=True runtime_registry_issue_detected=True structural_hardening_plan_created=True live_registered_probe_verification_passed=True review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v906.0 v905 baseline verification and manifest version semantics prep CLI tokens: v905-baseline-verification-and-manifest-version-semantics-prep-v1 --v905-baseline-verification-and-manifest-version-semantics-prep build_v905_baseline_verification_and_manifest_version_semantics_prep v905_baseline_verification_and_manifest_version_semantics_prep_text v905_containment_baseline_passed=True generated_probe_harness_present=True manifest_semantic_mismatch_count manifest_schema_migration_applied=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v907.0 manifest version semantics split CLI tokens: manifest-version-semantics-split-v1 --manifest-version-semantics-split build_manifest_version_semantics_split_review manifest_version_semantics_split_review_text surface_origin_version manifest_representation_version last_verified_for_version legacy_version_field_retained_for_compatibility=True manifest_version_schema_split_applied=True historical_origin_mismatch_allowed=True review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v908.0 manifest validation normalization CLI tokens: manifest-validation-normalization-v1 --manifest-validation-normalization build_manifest_validation_normalization_review manifest_validation_normalization_review_text build_manifest_validation_normalization_summary legacy_version_field_validation_mode=compatibility_only_not_current_state historical_origin_versions_allowed=True current_state_version_source=manifest_representation_version_and_last_verified_for_version legacy_version_is_current_state_source=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v909.0 source package privacy deep scan CLI tokens: source-package-privacy-deep-scan-v1 --source-package-privacy-deep-scan build_source_package_privacy_deep_scan_review source_package_privacy_deep_scan_review_text privacy_deep_scan_summary private_content_findings_for_items content_scans_allowlisted_data=True blocks_private_self_state_content=True data/self_model.json source_metadata_allowed=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v910.0 metadata/current marker gate reconciliation CLI tokens: metadata-and-current-marker-gate-reconciliation-v1 --metadata-and-current-marker-gate-reconciliation build_metadata_and_current_marker_gate_reconciliation_review metadata_and_current_marker_gate_reconciliation_review_text current_marker_source_count current_marker_checked_count stale_current_marker_count historical_reference_allowed=True metadata_current_state_aligned=True release_history_current_entry_aligned=True smoke_expectation_current_aligned=True review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v911.0 release gate stale assertion truth repair CLI tokens: release-gate-stale-assertion-truth-repair-v1 --release-gate-stale-assertion-truth-repair build_release_gate_stale_assertion_truth_repair_review release_gate_stale_assertion_truth_repair_review_text executable_smoke_assertion_audit EXPECTED_CURRENT_VERSION metadata_docs_audit_dynamic_current=True network_access_not_measured=True external_filesystem_writes_not_measured=True review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v912.0 install-release segment blocker classification CLI tokens: install-release-segment-blocker-classification-v1 --install-release-segment-blocker-classification build_install_release_segment_blocker_classification_review install_release_segment_blocker_classification_review_text currently_passing valid_historical_blocked_state slow_or_hanging_check superseded_check marks_install_release_clean=False executes_full_install_release_segment=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v913.0-v915.0 CLI tokens: release-archive-and-recovery-gate-boundedness-repair-v1 --release-archive-and-recovery-gate-boundedness-repair build_release_archive_and_recovery_gate_boundedness_repair_review release_archive_and_recovery_gate_boundedness_repair_review_text install-release-segment-evidence-summary-gate-v1 --install-release-segment-evidence-summary-gate build_install_release_segment_evidence_summary_gate_review install_release_segment_evidence_summary_gate_review_text manifest-driven-surface-generation-prep-v1 --manifest-driven-surface-generation-prep build_manifest_driven_surface_generation_prep_review manifest_driven_surface_generation_prep_review_text generates_surfaces=False generated_wiring_activated=False applies_source_edits=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v916.0-v920.0 CLI tokens: manifest-review-packet-schema-v1 --manifest-review-packet-schema build_manifest_review_packet_schema_review manifest_review_packet_schema_review_text dashboard-surface-preview-generator-v1 --dashboard-surface-preview-generator build_dashboard_surface_preview_generator_review dashboard_surface_preview_generator_review_text cli-api-surface-preview-generator-v1 --cli-api-surface-preview-generator build_cli_api_surface_preview_generator_review cli_api_surface_preview_generator_review_text smoke-surface-preview-generator-v1 --smoke-surface-preview-generator build_smoke_surface_preview_generator_review smoke_surface_preview_generator_review_text generated-preview-parity-report-v1 --generated-preview-parity-report build_generated_preview_parity_report_review generated_preview_parity_report_review_text generates_surfaces=False generated_wiring_activated=False generated_preview_authoritative=False applies_source_edits=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v921.0-v925.0 CLI tokens: low-risk-surface-selection-gate-v1 --low-risk-surface-selection-gate build_low_risk_surface_selection_gate_review low_risk_surface_selection_gate_review_text generated-dashboard-preview-exact-match-gate-v1 --generated-dashboard-preview-exact-match-gate build_generated_dashboard_preview_exact_match_gate_review generated_dashboard_preview_exact_match_gate_review_text generated-cli-api-preview-exact-match-gate-v1 --generated-cli-api-preview-exact-match-gate build_generated_cli_api_preview_exact_match_gate_review generated_cli_api_preview_exact_match_gate_review_text generated-smoke-preview-exact-match-gate-v1 --generated-smoke-preview-exact-match-gate build_generated_smoke_preview_exact_match_gate_review generated_smoke_preview_exact_match_gate_review_text single-surface-generated-parity-closure-v1 --single-surface-generated-parity-closure build_single_surface_generated_parity_closure_review single_surface_generated_parity_closure_review_text selected_surface_id=v916-manifest-review-packet-schema dashboard_parity=exact cli_parity=exact api_parity=exact_not_exposed_review_only smoke_parity=exact generated_preview_authoritative=False generates_surfaces=False generated_wiring_activated=False applies_source_edits=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v926.0-v930.0 CLI tokens: multi-surface-selection-gate-v1 --multi-surface-selection-gate build_multi_surface_selection_gate_review multi_surface_selection_gate_review_text multi-surface-dashboard-preview-parity-v1 --multi-surface-dashboard-preview-parity build_multi_surface_dashboard_preview_parity_review multi_surface_dashboard_preview_parity_review_text multi-surface-cli-api-preview-parity-v1 --multi-surface-cli-api-preview-parity build_multi_surface_cli_api_preview_parity_review multi_surface_cli_api_preview_parity_review_text multi-surface-smoke-preview-parity-v1 --multi-surface-smoke-preview-parity build_multi_surface_smoke_preview_parity_review multi_surface_smoke_preview_parity_review_text multi-surface-generated-parity-batch-closure-v1 --multi-surface-generated-parity-batch-closure build_multi_surface_generated_parity_batch_closure_review multi_surface_generated_parity_batch_closure_review_text selected_surface_count=5 dashboard_parity=exact_for_all_selected cli_parity=exact_for_all_selected api_parity=exact_not_exposed_review_only_for_all_selected smoke_parity=exact_for_all_selected stale_marker_parity=exact_current_version_source_for_all_selected generated_preview_authoritative=False generates_surfaces=False generated_wiring_activated=False applies_source_edits=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v931.0-v935.0 CLI tokens: generated-scaffold-sandbox-output-schema-v1 --generated-scaffold-sandbox-output-schema build_generated_scaffold_sandbox_output_schema_review generated_scaffold_sandbox_output_schema_review_text generated-scaffold-sandbox-artifact-preview-v1 --generated-scaffold-sandbox-artifact-preview build_generated_scaffold_sandbox_artifact_preview_review generated_scaffold_sandbox_artifact_preview_review_text generated-scaffold-hash-ledger-v1 --generated-scaffold-hash-ledger build_generated_scaffold_hash_ledger_review generated_scaffold_hash_ledger_review_text generated-scaffold-sandbox-parity-comparison-v1 --generated-scaffold-sandbox-parity-comparison build_generated_scaffold_sandbox_parity_comparison_review generated_scaffold_sandbox_parity_comparison_review_text generated-scaffold-sandbox-output-closure-v1 --generated-scaffold-sandbox-output-closure build_generated_scaffold_sandbox_output_closure_review generated_scaffold_sandbox_output_closure_review_text sandbox_artifact_count=5 hash_count=5 comparison_count=5 runtime_writes_sandbox_files=False generated_wiring_activated=False applies_source_edits=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v936.0-v940.0 CLI tokens: generated-scaffold-wrapper-mapping-schema-v1 --generated-scaffold-wrapper-mapping-schema build_generated_scaffold_wrapper_mapping_schema_review generated_scaffold_wrapper_mapping_schema_review_text dashboard-compatibility-wrapper-preview-v1 --dashboard-compatibility-wrapper-preview build_dashboard_compatibility_wrapper_preview_review dashboard_compatibility_wrapper_preview_review_text cli-api-compatibility-wrapper-preview-v1 --cli-api-compatibility-wrapper-preview build_cli_api_compatibility_wrapper_preview_review cli_api_compatibility_wrapper_preview_review_text smoke-compatibility-wrapper-preview-v1 --smoke-compatibility-wrapper-preview build_smoke_compatibility_wrapper_preview_review smoke_compatibility_wrapper_preview_review_text generated-scaffold-wrapper-prep-closure-v1 --generated-scaffold-wrapper-prep-closure build_generated_scaffold_wrapper_prep_closure_review generated_scaffold_wrapper_prep_closure_review_text wrapper_artifact_count=5 wrapper_hash_count=5 wrapper_schema_field_count=16 runtime_writes_wrapper_files=False manual_code_replaced=False generated_wiring_activated=False applies_source_edits=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v941.0-v950.0 CLI tokens: giant-file-extraction-inventory-v1 --giant-file-extraction-inventory build_giant_file_extraction_inventory_review giant_file_extraction_inventory_review_text self-development-cycle-extraction-map-v1 --self-development-cycle-extraction-map build_self_development_cycle_extraction_map_review self_development_cycle_extraction_map_review_text self-maintenance-builder-text-renderer-extraction-map-v1 --self-maintenance-builder-text-renderer-extraction-map build_self_maintenance_builder_text_renderer_extraction_map_review self_maintenance_builder_text_renderer_extraction_map_review_text dashboard-route-renderer-extraction-map-v1 --dashboard-route-renderer-extraction-map build_dashboard_route_renderer_extraction_map_review dashboard_route_renderer_extraction_map_review_text cli-api-dispatch-extraction-map-v1 --cli-api-dispatch-extraction-map build_cli_api_dispatch_extraction_map_review cli_api_dispatch_extraction_map_review_text smoke-registry-extraction-map-v1 --smoke-registry-extraction-map build_smoke_registry_extraction_map_review smoke_registry_extraction_map_review_text compatibility-wrapper-risk-ledger-v1 --compatibility-wrapper-risk-ledger build_compatibility_wrapper_risk_ledger_review compatibility_wrapper_risk_ledger_review_text extraction-order-proposal-v1 --extraction-order-proposal build_extraction_order_proposal_review extraction_order_proposal_review_text extraction-rollback-evidence-plan-v1 --extraction-rollback-evidence-plan build_extraction_rollback_evidence_plan_review extraction_rollback_evidence_plan_review_text giant-file-compatibility-extraction-prep-closure-v1 --giant-file-compatibility-extraction-prep-closure build_giant_file_compatibility_extraction_prep_closure_review giant_file_compatibility_extraction_prep_closure_review_text candidate_count low_risk_extraction_count protected_manual_count recommended_first_extraction_module rollback_plan_status moves_live_code=False splits_files=False generated_wiring_activated=False manual_code_replaced=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v951.0-v960.0 CLI tokens: extraction-candidate-lock-gate-v1 --extraction-candidate-lock-gate build_extraction_candidate_lock_gate_review extraction_candidate_lock_gate_review_text pre-extraction-function-inventory-v1 --pre-extraction-function-inventory build_pre_extraction_function_inventory_review pre_extraction_function_inventory_review_text generated-preview-review-module-extraction-v1 --generated-preview-review-module-extraction build_generated_preview_review_module_extraction_review generated_preview_review_module_extraction_review_text compatibility-import-wrapper-gate-v1 --compatibility-import-wrapper-gate build_compatibility_import_wrapper_gate_review compatibility_import_wrapper_gate_review_text dashboard-cli-api-parity-after-extraction-v1 --dashboard-cli-api-parity-after-extraction build_dashboard_cli_api_parity_after_extraction_review dashboard_cli_api_parity_after_extraction_review_text smoke-registry-parity-after-extraction-v1 --smoke-registry-parity-after-extraction build_smoke_registry_parity_after_extraction_review smoke_registry_parity_after_extraction_review_text stale-version-and-metadata-post-extraction-gate-v1 --stale-version-and-metadata-post-extraction-gate build_stale_version_and_metadata_post_extraction_gate_review stale_version_and_metadata_post_extraction_gate_review_text rollback-path-verification-v1 --rollback-path-verification build_rollback_path_verification_review rollback_path_verification_review_text extraction-release-evidence-packet-v1 --extraction-release-evidence-packet build_extraction_release_evidence_packet_review extraction_release_evidence_packet_review_text first-compatibility-extraction-closure-v1 --first-compatibility-extraction-closure build_first_compatibility_extraction_closure_review first_compatibility_extraction_closure_review_text extracted_module=conscious_agent/generated_surface_preview_reviews.py extracted_cluster=v916-v920 wrappers_preserved=True dashboard_parity=pass cli_api_parity=pass smoke_parity=pass rollback_path=documented generated_wiring_activated=False manual_code_replaced=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v961.0-v970.0 CLI tokens: second-extraction-candidate-selection-gate-v1 --second-extraction-candidate-selection-gate build_second_extraction_candidate_selection_gate_review second_extraction_candidate_selection_gate_review_text second-pre-extraction-function-inventory-v1 --second-pre-extraction-function-inventory build_second_pre_extraction_function_inventory_review second_pre_extraction_function_inventory_review_text generated-scaffold-review-packet-extraction-v1 --generated-scaffold-review-packet-extraction build_generated_scaffold_review_packet_extraction_review generated_scaffold_review_packet_extraction_review_text second-compatibility-wrapper-gate-v1 --second-compatibility-wrapper-gate build_second_compatibility_wrapper_gate_review second_compatibility_wrapper_gate_review_text second-extraction-surface-parity-gate-v1 --second-extraction-surface-parity-gate build_second_extraction_surface_parity_gate_review second_extraction_surface_parity_gate_review_text smoke-registry-data-model-prep-v1 --smoke-registry-data-model-prep build_smoke_registry_data_model_prep_review smoke_registry_data_model_prep_review_text smoke-registry-static-inventory-v1 --smoke-registry-static-inventory build_smoke_registry_static_inventory_review smoke_registry_static_inventory_review_text smoke-registry-migration-risk-ledger-v1 --smoke-registry-migration-risk-ledger build_smoke_registry_migration_risk_ledger_review smoke_registry_migration_risk_ledger_review_text smoke-registry-rollback-plan-v1 --smoke-registry-rollback-plan build_smoke_registry_rollback_plan_review smoke_registry_rollback_plan_review_text second-extraction-and-smoke-registry-prep-closure-v1 --second-extraction-and-smoke-registry-prep-closure build_second_extraction_and_smoke_registry_prep_closure_review second_extraction_and_smoke_registry_prep_closure_review_text second_extracted_module=conscious_agent/generated_scaffold_review_packets.py extracted_cluster=v931-v935 wrappers_preserved=True smoke_registry_model=prepared_only smoke_registry_behavior_changed=False generated_wiring_activated=False manual_code_replaced=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v971.0-v980.0 CLI tokens: smoke-registry-pilot-selection-gate-v1 --smoke-registry-pilot-selection-gate build_smoke_registry_pilot_selection_gate_review smoke_registry_pilot_selection_gate_review_text smoke-registry-pilot-schema-v1 --smoke-registry-pilot-schema build_smoke_registry_pilot_schema_review smoke_registry_pilot_schema_review_text smoke-registry-pilot-data-table-v1 --smoke-registry-pilot-data-table build_smoke_registry_pilot_data_table_review smoke_registry_pilot_data_table_review_text smoke-registry-pilot-resolver-v1 --smoke-registry-pilot-resolver build_smoke_registry_pilot_resolver_review smoke_registry_pilot_resolver_review_text manual-vs-pilot-smoke-parity-gate-v1 --manual-vs-pilot-smoke-parity-gate build_manual_vs_pilot_smoke_parity_gate_review manual_vs_pilot_smoke_parity_gate_review_text pilot-json-shape-compatibility-gate-v1 --pilot-json-shape-compatibility-gate build_pilot_json_shape_compatibility_gate_review pilot_json_shape_compatibility_gate_review_text pilot-rollback-evidence-gate-v1 --pilot-rollback-evidence-gate build_pilot_rollback_evidence_gate_review pilot_rollback_evidence_gate_review_text smoke-registry-pilot-risk-review-v1 --smoke-registry-pilot-risk-review build_smoke_registry_pilot_risk_review smoke_registry_pilot_risk_review_text pilot-expansion-readiness-review-v1 --pilot-expansion-readiness-review build_pilot_expansion_readiness_review pilot_expansion_readiness_review_text smoke-registry-data-driven-pilot-closure-v1 --smoke-registry-data-driven-pilot-closure build_smoke_registry_data_driven_pilot_closure_review smoke_registry_data_driven_pilot_closure_review_text pilot_checks=5 pilot_table_exists=True manual_registry_replaced=False smoke_registry_behavior_changed=False json_output_changed=False fast_smoke_changed=False install_smoke_changed=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v981.0-v990.0 CLI tokens: smoke-registry-execution-trial-readiness-gate-v1 --smoke-registry-execution-trial-readiness-gate build_smoke_registry_execution_trial_readiness_gate_review smoke_registry_execution_trial_readiness_gate_review_text data-driven-smoke-callable-execution-harness-v1 --data-driven-smoke-callable-execution-harness build_data_driven_smoke_callable_execution_harness_review data_driven_smoke_callable_execution_harness_review_text pilot-smoke-execution-result-packet-v1 --pilot-smoke-execution-result-packet build_pilot_smoke_execution_result_packet_review pilot_smoke_execution_result_packet_review_text manual-vs-data-driven-execution-parity-gate-v1 --manual-vs-data-driven-execution-parity-gate build_manual_vs_data_driven_execution_parity_gate_review manual_vs_data_driven_execution_parity_gate_review_text data-driven-smoke-json-output-preview-v1 --data-driven-smoke-json-output-preview build_data_driven_smoke_json_output_preview_review data_driven_smoke_json_output_preview_review_text data-driven-smoke-timeout-failure-semantics-v1 --data-driven-smoke-timeout-failure-semantics build_data_driven_smoke_timeout_failure_semantics_review data_driven_smoke_timeout_failure_semantics_review_text data-driven-smoke-manual-fallback-proof-v1 --data-driven-smoke-manual-fallback-proof build_data_driven_smoke_manual_fallback_proof_review data_driven_smoke_manual_fallback_proof_review_text data-driven-smoke-execution-risk-review-v1 --data-driven-smoke-execution-risk-review build_data_driven_smoke_execution_risk_review data_driven_smoke_execution_risk_review_text data-driven-smoke-expansion-readiness-v1 --data-driven-smoke-expansion-readiness build_data_driven_smoke_expansion_readiness_review data_driven_smoke_expansion_readiness_review_text smoke-registry-data-driven-execution-trial-closure-v1 --smoke-registry-data-driven-execution-trial-closure build_smoke_registry_data_driven_execution_trial_closure_review smoke_registry_data_driven_execution_trial_closure_review_text pilot_checks_executed=5 data_driven_execution=pass manual_parity=exact_for_all_selected manual_registry_replaced=False json_output_changed=False fast_smoke_changed=False install_smoke_changed=False release_smoke_changed=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v991.0-v1000.0 CLI tokens: fallback-migration-readiness-gate-v1 --fallback-migration-readiness-gate build_fallback_migration_readiness_gate_review fallback_migration_readiness_gate_review_text data-driven-first-pilot-dispatch-preview-v1 --data-driven-first-pilot-dispatch-preview build_data_driven_first_pilot_dispatch_preview_review data_driven_first_pilot_dispatch_preview_review_text pilot-fallback-dispatch-trial-v1 --pilot-fallback-dispatch-trial build_pilot_fallback_dispatch_trial_review pilot_fallback_dispatch_trial_review_text pilot-fallback-result-ledger-v1 --pilot-fallback-result-ledger build_pilot_fallback_result_ledger_review pilot_fallback_result_ledger_review_text json-output-stability-gate-v1 --json-output-stability-gate build_json_output_stability_gate_review json_output_stability_gate_review_text fast-install-release-isolation-gate-v1 --fast-install-release-isolation-gate build_fast_install_release_isolation_gate_review fast_install_release_isolation_gate_review_text manual-fallback-removal-resistance-gate-v1 --manual-fallback-removal-resistance-gate build_manual_fallback_removal_resistance_gate_review manual_fallback_removal_resistance_gate_review_text pilot-migration-risk-review-v1 --pilot-migration-risk-review build_pilot_migration_risk_review pilot_migration_risk_review_text v1000-milestone-readiness-review-v1 --v1000-milestone-readiness-review build_v1000_milestone_readiness_review v1000_milestone_readiness_review_text smoke-registry-fallback-migration-pilot-closure-v1 --smoke-registry-fallback-migration-pilot-closure build_smoke_registry_fallback_migration_pilot_closure_review smoke_registry_fallback_migration_pilot_closure_review_text pilot_checks=5 data_driven_first_dispatch=active_for_pilot_trial_path_only manual_fallback=preserved registry_globally_replaced=False manual_registry_replaced=False smoke_registry_behavior_changed=False json_output_changed=False fast_smoke_changed=False install_smoke_changed=False release_smoke_changed=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v1002.0 CLI tokens: install-release-blocker-ledger-refresh-v1 --install-release-blocker-ledger-refresh build_install_release_blocker_ledger_refresh_review install_release_blocker_ledger_refresh_review_text full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+# v1010.0 CLI tokens: install-release-timeout-harness-repair-v1 --install-release-timeout-harness-repair build_install_release_timeout_harness_repair_review install_release_timeout_harness_repair_review_text timeout_rows_reviewed=7 timeout_rows_protected=7 timeout_harness_repaired=True full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v1010.0 CLI tokens: install-release-timeout-row-bounded-retest-v1 --install-release-timeout-row-bounded-retest build_install_release_timeout_row_bounded_retest_review install_release_timeout_row_bounded_retest_review_text timeout_rows_total=7 timeout_rows_retested=7 timeout_rows_reclassified=7 still_timeout full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v1010.0 CLI tokens: install-release-fixture-smoke-split-pilot-v1 --install-release-fixture-smoke-split-pilot build_install_release_fixture_smoke_split_pilot_review install_release_fixture_smoke_split_pilot_review_text timeout_rows_total=7 timeout_rows_planned=7 fixture_targets_total=35 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v1010.0 CLI tokens: install-release-fixture-smoke-split-pilot-v1 --install-release-fixture-smoke-split-pilot build_install_release_fixture_smoke_split_pilot_review install_release_fixture_smoke_split_pilot_review_text fixture_family_selected=archive_continuity_index parent_timeout_row=release-archive-retrieval-and-continuity-index-v1 fixture_targets_in_family=5 split_smoke_created=True split_smoke_passed=True parent_row_still_timeout=True full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True
+
+# v1010.0 CLI tokens: release-archive-fixture-split-expansion-v1 --release-archive-fixture-split-expansion build_release_archive_fixture_split_expansion_review release_archive_fixture_split_expansion_review_text expanded_fixture_families=archive_search_handoff,archive_export_closure expanded_family_count=2 split_fixture_targets_total=10 split_fixture_pass_count=10 parent_rows_still_timeout=True total_split_families_including_v1006=3 total_split_fixture_targets_including_v1006=15 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1010.0 CLI tokens: supervised-blocker-semantics-repair-v1 --supervised-blocker-semantics-repair build_supervised_blocker_semantics_repair_review supervised_blocker_semantics_repair_review_text supervised_blocker_rows_reviewed=6 supervised_blocker_semantics_repaired=6 operator_gated_rows=6 fixture_required_rows=1 release_authorizing_blockers_remaining=0 timeout_rows_remaining=7 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1010.0 CLI tokens: install-release-segment-cleanliness-gate-v1 --install-release-segment-cleanliness-gate build_install_release_segment_cleanliness_gate_review install_release_segment_cleanliness_gate_review_text install_release_total_checks=30 install_release_passing_rows=17 operator_gated_semantics_rows=6 timeout_rows_still_blocking=7 split_fixture_families_passing=3 split_fixture_targets_passing=15 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1010.0 CLI tokens: post-v1000-defect-closure-audit-and-phase-zero-boundary-v1 --post-v1000-defect-closure-audit-and-phase-zero-boundary build_post_v1000_defect_closure_phase_zero_boundary_review post_v1000_defect_closure_phase_zero_boundary_review_text original_v1000_findings_total=8 fixed_findings=5 repaired_and_monitored=1 partially_mitigated=2 timeout_rows_still_blocking=7 full_install_release_clean=False phase_zero_enabled=False observation_only_autonomy_enabled=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1011.0 CLI tokens: install-release-timeout-parent-row-replacement-pilot-v1 --install-release-timeout-parent-row-replacement-pilot build_install_release_timeout_parent_replacement_pilot_review install_release_timeout_parent_replacement_pilot_review_text replacement_parent_row=release-archive-retrieval-and-continuity-index-v1 replacement_fixture_family=archive_continuity_index replacement_fixture_targets=5 parent_row_original_timeout_preserved=True parent_row_marked_pass=False parent_row_replaced_for_release_cleanliness_accounting=True timeout_rows_before_replacement=7 replaced_parent_rows=1 timeout_rows_remaining_after_replacement=6 active_cleanliness_blockers_after_replacement=6 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1013.0 CLI tokens: install-release-parent-replacement-expansion-v1 --install-release-parent-replacement-expansion build_install_release_parent_replacement_expansion_review install_release_parent_replacement_expansion_review_text expansion_replacement_families=archive_search_handoff,archive_export_closure expansion_replaced_parent_rows=2 total_replaced_parent_rows_after_expansion=3 replacement_fixture_targets_after_expansion=15 parent_rows_original_timeout_preserved=True parent_rows_marked_pass=False timeout_rows_before_replacement=7 timeout_rows_remaining_after_expansion=4 active_cleanliness_blockers_after_expansion=4 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1013.0 CLI tokens: remaining-timeout-parent-fixture-selection-v1 --remaining-timeout-parent-fixture-selection build_remaining_timeout_parent_fixture_selection_review remaining_timeout_parent_fixture_selection_review_text selected_parent_row=recovery-drill-and-release-closure-v1 selected_fixture_family=recovery_closure selected_fixture_targets=5 remaining_timeout_parent_rows_before_selection=4 selected_parent_original_timeout_preserved=True selected_parent_marked_pass=False projected_timeout_blockers_after_future_replacement=3 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1015.0 CLI tokens: recovery-closure-fixture-split-smoke-v1 --recovery-closure-fixture-split-smoke build_recovery_closure_fixture_split_smoke_review recovery_closure_fixture_split_smoke_review_text fixture_family_selected=recovery_closure parent_timeout_row=recovery-drill-and-release-closure-v1 fixture_targets_in_family=5 split_smoke_created=True split_smoke_passed=True parent_row_still_timeout=True parent_row_marked_pass=False parent_row_replaced_for_release_cleanliness_accounting=False projected_timeout_blockers_after_future_replacement=3 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1015.0 CLI tokens: recovery-closure-parent-replacement-overlay-v1 --recovery-closure-parent-replacement-overlay build_recovery_closure_parent_replacement_overlay_review recovery_closure_parent_replacement_overlay_review_text replacement_parent_row=recovery-drill-and-release-closure-v1 replacement_fixture_family=recovery_closure replacement_fixture_targets=5 parent_row_original_timeout_preserved=True parent_row_marked_pass=False parent_row_replaced_for_release_cleanliness_accounting=True replaced_parent_rows_before_overlay=3 overlay_replaced_parent_rows=1 total_replaced_parent_rows_after_overlay=4 replacement_fixture_targets_after_overlay=20 timeout_rows_before_replacement=7 timeout_rows_remaining_after_overlay=3 active_cleanliness_blockers_after_overlay=3 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1016.0 CLI tokens: remaining-timeout-parent-fixture-split-expansion-v1 --remaining-timeout-parent-fixture-split-expansion build_remaining_timeout_parent_fixture_split_expansion_review remaining_timeout_parent_fixture_split_expansion_review_text selected_parent_row=release-decision-and-archive-ledger-v1 selected_fixture_family=decision_archive_ledger selected_fixture_targets=5 split_smoke_created=True split_smoke_passed=True parent_row_still_timeout=True parent_row_marked_pass=False parent_row_replaced_for_release_cleanliness_accounting=False already_replaced_parent_rows=4 remaining_timeout_parent_rows_before_split=3 projected_timeout_blockers_after_future_replacement=2 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1017.0 CLI tokens: decision-archive-ledger-parent-replacement-overlay-v1 --decision-archive-ledger-parent-replacement-overlay build_decision_archive_ledger_parent_replacement_overlay_review decision_archive_ledger_parent_replacement_overlay_review_text replacement_parent_row=release-decision-and-archive-ledger-v1 replacement_fixture_family=decision_archive_ledger replacement_fixture_targets=5 parent_row_original_timeout_preserved=True parent_row_marked_pass=False parent_row_replaced_for_release_cleanliness_accounting=True replaced_parent_rows_before_overlay=4 overlay_replaced_parent_rows=1 total_replaced_parent_rows_after_overlay=5 replacement_fixture_targets_after_overlay=25 timeout_rows_before_replacement=7 timeout_rows_remaining_after_overlay=2 active_cleanliness_blockers_after_overlay=2 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+
+# v1018.0 CLI tokens: candidate-handoff-fixture-split-smoke-v1 --candidate-handoff-fixture-split-smoke build_candidate_handoff_fixture_split_smoke_review candidate_handoff_fixture_split_smoke_review_text selected_parent_row=release-candidate-integrity-and-operator-handoff-v1 selected_fixture_family=candidate_handoff selected_fixture_targets=5 split_smoke_created=True split_smoke_passed=True parent_row_still_timeout=True parent_row_marked_pass=False parent_row_replaced_for_release_cleanliness_accounting=False already_replaced_parent_rows=5 remaining_timeout_parent_rows_before_split=2 projected_timeout_blockers_after_future_replacement=1 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+# v1019.0 CLI tokens: candidate-handoff-parent-replacement-overlay-v1 --candidate-handoff-parent-replacement-overlay build_candidate_handoff_parent_replacement_overlay_review candidate_handoff_parent_replacement_overlay_review_text replacement_parent_row=release-candidate-integrity-and-operator-handoff-v1 replacement_fixture_family=candidate_handoff replacement_fixture_targets=5 parent_row_original_timeout_preserved=True parent_row_marked_pass=False parent_row_replaced_for_release_cleanliness_accounting=True replaced_parent_rows_before_overlay=5 overlay_replaced_parent_rows=1 total_replaced_parent_rows_after_overlay=6 replacement_fixture_targets_after_overlay=30 timeout_rows_before_replacement=7 timeout_rows_remaining_after_overlay=1 active_cleanliness_blockers_after_overlay=1 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console
+# v1024.0 CLI tokens: final-timeout-parent-overlay-closure-v1 --final-timeout-parent-overlay-closure build_final_timeout_parent_overlay_closure_review final_timeout_parent_overlay_closure_review_text replacement_parent_row=fast-install-release-isolation-gate-v1 replacement_fixture_family=fast_install_release_isolation replacement_fixture_targets=5 parent_row_original_timeout_preserved=True parent_row_marked_pass=False parent_row_replaced_for_release_cleanliness_accounting=True replaced_parent_rows_before_overlay=6 overlay_replaced_parent_rows=1 total_replaced_parent_rows_after_overlay=7 replacement_fixture_targets_after_overlay=35 timeout_rows_before_replacement=7 timeout_rows_remaining_after_overlay=0 active_timeout_parent_blockers_after_overlay=0 timeout_parent_overlay_clean=True intentional_supervised_blockers_remaining=6 full_install_release_clean=False release_authorized=False review_only=True autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True data-tip command-deck operator-console

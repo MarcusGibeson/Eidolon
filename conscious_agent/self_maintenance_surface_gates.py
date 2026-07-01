@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-SELF_MAINTENANCE_SURFACE_GATES_VERSION = "500.0"
-
+SELF_MAINTENANCE_SURFACE_GATES_VERSION = "1032.0"
 SURFACE_GATE_BOUNDARIES: dict[str, bool] = {
     "surface_gates_write_routes": False,
     "surface_gates_change_dashboard": False,

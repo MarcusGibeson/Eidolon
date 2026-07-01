@@ -6,9 +6,7 @@ from typing import Any
 from settings_manager import get_setting, load_settings
 
 
-DESKTOP_NOTIFIER_VERSION = "4.5"
-
-
+DESKTOP_NOTIFIER_VERSION = "1032.0"
 @dataclass
 class DesktopAlert:
     title: str

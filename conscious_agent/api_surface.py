@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-API_SURFACE_VERSION = "500.0"
-
+API_SURFACE_VERSION = "1032.0"
 DEFAULT_API_SURFACE_HELPERS = [
     {"name": "api_route_metadata_binder", "purpose": "summarize API route metadata", "changes_behavior": False},
     {"name": "runtime_json_response_helper", "purpose": "normalize runtime JSON response shapes", "changes_behavior": False},

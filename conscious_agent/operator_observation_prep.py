@@ -4,12 +4,11 @@ from pathlib import Path
 from typing import Any
 import json
 
-OPERATOR_OBSERVATION_PREP_VERSION = "500.0"
-CURRENT_VERSION = "500.0"
-CURRENT_VERSION_TAG = "v500.0"
-CURRENT_MILESTONE = "v500.0 Operator-Governed Autonomy Readiness Review Board v1"
-NEXT_RECOMMENDED_ARC = "v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1"
-
+OPERATOR_OBSERVATION_PREP_VERSION = "1032.0"
+CURRENT_VERSION = "1032.0"
+CURRENT_VERSION_TAG = "v1032.0"
+CURRENT_MILESTONE = "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1"
+NEXT_RECOMMENDED_ARC = "v1033.0 Smoke Registry Sidecar Parity Expansion v1"
 OBSERVATION_SCOPE_ITEMS = [
     "source version markers",
     "README current-state header",
@@ -133,8 +132,8 @@ def build_operator_observation_packet(root: str | Path | None = None) -> dict[st
         "ok": all(value in {expected_version, expected_tag} for value in version_sources.values() if value is not None),
     }
     documentation_alignment = {
-        "readme_current_version": f"CURRENT VERSION: {expected_tag}" in readme,
-        "release_history_current_entry": f"## {expected_tag} - Operator-Governed Autonomy Readiness Review Board v1" in history,
+        "readme_current_version": (f"CURRENT VERSION: {expected_tag}" in readme or f"# Current State — {expected_tag}" in readme),
+        "release_history_current_entry": (f"# {expected_tag} - {CURRENT_MILESTONE.split(' ', 1)[1]}" in history or f"## {expected_tag} - {CURRENT_MILESTONE.split(' ', 1)[1]}" in history),
         "readme_next_arc": NEXT_RECOMMENDED_ARC in readme,
         "observation_boundary_language": "Observation is not authorization" in readme and "Operator invocation permits one read-only observation report only" in readme,
     }
@@ -150,13 +149,13 @@ def build_operator_observation_packet(root: str | Path | None = None) -> dict[st
     ]
     recommended_review_targets = [
         "Review read-only observation scope before adding any ledger behavior.",
-        "Prepare v501-v505 manual observation-to-sandbox packet bridge only after v500 readiness review board smoke passes.",
+        "Prepare v556-v560 recovery drill and release closure packets only after v555 verification/rollback trial smoke passes.",
         "Keep observation packet findings separate from patch proposal queues until supervised proposal gates exist.",
     ]
     rows = [
-        _row("metadata-alignment", metadata_alignment["ok"], "Settings/project/workspace metadata align to v500.0."),
-        _row("readme-current-version", documentation_alignment["readme_current_version"], "README_NEXT_STEPS.md exposes current v500.0 header."),
-        _row("release-history-current-entry", documentation_alignment["release_history_current_entry"], "README_RELEASE_HISTORY.md documents v500.0."),
+        _row("metadata-alignment", metadata_alignment["ok"], "Settings/project/workspace metadata align to current version."),
+        _row("readme-current-version", documentation_alignment["readme_current_version"], "README_NEXT_STEPS.md exposes current header."),
+        _row("release-history-current-entry", documentation_alignment["release_history_current_entry"], "README_RELEASE_HISTORY.md documents current release."),
         _row("readme-next-arc", documentation_alignment["readme_next_arc"], "README points to the current next recommended arc."),
         _row("boundary-language", documentation_alignment["observation_boundary_language"], "README states observation is not authorization and operator invocation is single-run/read-only."),
         _row("route-probe-token", route_surface_alignment["route_probe_token"], "Dashboard route probe includes v476-v480 observation routes."),

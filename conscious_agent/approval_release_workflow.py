@@ -36,7 +36,7 @@ from code_patch_release import (
 from release_pipeline import RELEASE_READINESS, build_release_readiness
 from ai_patch_assistance import build_patch_learning_notes
 
-APPROVAL_RELEASE_VERSION = "20.0"
+APPROVAL_RELEASE_VERSION = "1032.0"
 APPROVAL_RELEASE_DIR = VALIDATED_AI_DIR / "approval_release"
 AI_PATCH_REVIEW_BUNDLE = APPROVAL_RELEASE_DIR / "ai_patch_review_bundle.json"
 VALIDATED_PATCH_APPROVAL_MANIFEST = APPROVAL_RELEASE_DIR / "validated_patch_approval_manifest.json"

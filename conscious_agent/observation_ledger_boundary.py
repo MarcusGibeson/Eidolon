@@ -4,12 +4,11 @@ from pathlib import Path
 from typing import Any
 import json
 
-OPERATOR_OBSERVATION_LEDGER_BOUNDARY_VERSION = "500.0"
-CURRENT_VERSION = "500.0"
-CURRENT_VERSION_TAG = "v490.0"
-CURRENT_MILESTONE = "v490.0 Supervised Proposal Queue from Observation Reports v1"
-NEXT_RECOMMENDED_ARC = "v491.0-v495.0 Sandbox-Only Autonomy Boundary Trial Prep v1"
-
+OPERATOR_OBSERVATION_LEDGER_BOUNDARY_VERSION = "1032.0"
+CURRENT_VERSION = "1032.0"
+CURRENT_VERSION_TAG = "v1032.0"
+CURRENT_MILESTONE = "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1"
+NEXT_RECOMMENDED_ARC = "v1033.0 Smoke Registry Sidecar Parity Expansion v1"
 LEDGER_SCHEMA_FIELDS = [
     "observation_id",
     "created_at",

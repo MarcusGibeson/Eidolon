@@ -12,8 +12,7 @@ from expression_live_application_packet import (
 from expression_promotion_packet import build_expression_promotion_decision_packet_summary
 from identity_expression import classify_identity_expression_request
 
-EXPRESSION_LIVE_EXECUTION_PREP_VERSION = "500.0"
-
+EXPRESSION_LIVE_EXECUTION_PREP_VERSION = "1032.0"
 EXPRESSION_LIVE_EXECUTION_PREP_BOUNDARIES = {
     "approval_intake_applies_live_expression": False,
     "approval_intake_treats_packet_as_authorization": False,

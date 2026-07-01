@@ -6,9 +6,7 @@ from typing import Any, Callable
 from settings_manager import get_setting, load_settings
 
 
-DESKTOP_TRAY_VERSION = "4.5"
-
-
+DESKTOP_TRAY_VERSION = "1032.0"
 @dataclass
 class TrayAvailability:
     available: bool

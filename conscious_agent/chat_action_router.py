@@ -23,6 +23,71 @@ APPROVAL = "approval"
 BLOCKED = "blocked"
 INFO = "info"
 
+SMALL_TALK_ONLY_PATTERNS = (
+    r"^(hi|hello|hey|yo|howdy)[!. ]*$",
+    r"^(good morning|good afternoon|good evening|good night)[!. ]*$",
+    r"^(thanks|thank you|cool|nice|awesome|sweet)[!. ]*$",
+)
+
+
+def _is_small_talk_only(request: str) -> bool:
+    lowered = request.strip().lower()
+    if not lowered:
+        return False
+    return any(re.fullmatch(pattern, lowered) for pattern in SMALL_TALK_ONLY_PATTERNS)
+
+
+def _quote_cli_value(value: str) -> str:
+    return '"' + value.replace('\\', '\\\\').replace('"', '\\"') + '"'
+
+SELF_DEVELOPMENT_REQUEST_MARKERS = (
+    "self development cycle",
+    "self-development cycle",
+    "begin self development",
+    "begin work on a self development cycle",
+    "begin work on a self-development cycle",
+    "controlled self-development loop",
+    "what should you improve next",
+    "plan your own next development step",
+    "identify what needs to be improved next",
+    "improve yourself next",
+    "own next development step",
+    "start improving yourself",
+    "figure out what you should work on next",
+    "begin your own development loop",
+    "review your project and make a task",
+    "look at your failed actions and plan the next fix",
+    "failed actions and plan",
+)
+
+
+
+
+
+def _is_self_development_patch_application_approval_request(request: str) -> bool:
+    return bool(re.fullmatch(r"Approve applying self-development patch draft [A-Za-z0-9_.:-]+", request.strip()))
+
+def _self_development_patch_application_command(request: str) -> str:
+    safe_phrase = request.strip().replace('"', '\"')
+    return f'python conscious_agent/main.py --self-development-patch-application "{safe_phrase}" --self-development-full'
+
+def _is_self_development_patch_draft_approval_request(request: str) -> bool:
+    return bool(re.fullmatch(r"Approve drafting a patch proposal for self-development task [A-Za-z0-9_.:-]+", request.strip()))
+
+def _self_development_patch_draft_command(request: str) -> str:
+    safe_phrase = request.strip().replace('"', '\"')
+    return f'python conscious_agent/main.py --self-development-patch-draft "{safe_phrase}" --self-development-full'
+
+def _is_self_development_cycle_request(lowered: str) -> bool:
+    compact = lowered.replace("-", " ")
+    if any(marker in lowered or marker.replace("-", " ") in compact for marker in SELF_DEVELOPMENT_REQUEST_MARKERS):
+        return True
+    if "self" in compact and "development" in compact and any(term in compact for term in ["cycle", "loop", "next", "plan", "improve"]):
+        return True
+    if "own project" in compact and any(term in compact for term in ["inspect", "improve", "next development", "development step"]):
+        return True
+    return False
+
 
 @dataclass
 class ChatActionExecutionResult:
@@ -268,8 +333,38 @@ def propose_chat_action(user_request: str, save: bool = True) -> dict[str, Any]:
             save_chat_action(action)
         return action
 
+    if _is_small_talk_only(request):
+        action = _make_action(
+            user_request=request,
+            intent="small_talk",
+            title="Conversation only",
+            summary="This message is conversational and does not request a project action.",
+            execution_mode=INFO,
+            risk_level="low",
+            explanation="No command, approval, patch, release, memory mutation, or autonomy action is needed for this greeting.",
+        )
+    # Narrow self-development patch application approval. This prepares a preimage/application receipt only; it does not publish, release, or expand autonomy.
+    elif _is_self_development_patch_application_approval_request(request):
+        action = _direct_command(
+            request,
+            "operator_approved_self_development_patch_application_trial",
+            "Prepare Self Development patch application trial receipt",
+            "Validate the exact patch application approval phrase, capture preimage hashes, enforce the low-risk file allowlist, and stop when no concrete diff exists.",
+            _self_development_patch_application_command(request),
+            risk="low",
+        )
+    # Narrow self-development patch draft approval. This prepares a review packet only; it does not apply a patch.
+    elif _is_self_development_patch_draft_approval_request(request):
+        action = _direct_command(
+            request,
+            "operator_approved_self_development_patch_draft",
+            "Prepare Self Development patch draft packet",
+            "Prepare a review-only patch draft packet for the explicitly named low-risk Self Development task; no source edits are applied.",
+            _self_development_patch_draft_command(request),
+            risk="low",
+        )
     # Approval-gated writes.
-    if re.search(r"\b(apply|approve|install)\b.*\bpatch\b", lowered) or re.search(r"\bapply\b.*\blatest\b", lowered):
+    elif re.search(r"\b(apply|approve|install)\b.*\bpatch\b", lowered) or re.search(r"\bapply\b.*\blatest\b", lowered):
         action = _make_action(
             user_request=request,
             intent="request_apply_patch",
@@ -307,6 +402,15 @@ def propose_chat_action(user_request: str, save: bool = True) -> dict[str, Any]:
             approval_object_id="latest",
             approval_command="python conscious_agent/main.py --apply-task-evaluation latest",
             explanation="Task status changes are routed through the approval system from chat actions.",
+        )
+    elif _is_self_development_cycle_request(lowered):
+        action = _direct_command(
+            request,
+            "self_development_cycle",
+            "Begin Self Development Cycle",
+            "Run a dedicated proposal-only self-development cycle that inspects, ranks at least three candidates, creates one safe work item, defines verification, and stops before source edits.",
+            "python conscious_agent/main.py --self-development-cycle --self-development-create-task --no-ai-self-development --self-development-prompt " + _quote_cli_value(request),
+            risk="low",
         )
     elif "compact memory" in lowered or "compress memory" in lowered:
         action = _make_action(

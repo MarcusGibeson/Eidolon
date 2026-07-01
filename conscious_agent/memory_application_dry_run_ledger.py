@@ -13,8 +13,7 @@ from memory_candidate_application_trial import (
     build_operator_confirmed_memory_application_trial_summary,
 )
 
-MEMORY_APPLICATION_DRY_RUN_LEDGER_VERSION = "500.0"
-
+MEMORY_APPLICATION_DRY_RUN_LEDGER_VERSION = "1032.0"
 MEMORY_APPLICATION_DRY_RUN_BOUNDARIES: dict[str, bool] = {
     "ledger_writes_live_memory": False,
     "ledger_mutates_identity": False,

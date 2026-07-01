@@ -31,7 +31,7 @@ from test_report_reviewer import list_test_reviews
 from work_cycle import list_work_cycles
 from stable_supervised_loop import list_stable_loops
 
-OPERATIONAL_READINESS_VERSION = "15.0"
+OPERATIONAL_READINESS_VERSION = "1032.0"
 DEFAULT_PROJECT_ID = "eidolon"
 
 

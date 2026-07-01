@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-IDENTITY_EXPRESSION_VERSION = "500.0"
-
+IDENTITY_EXPRESSION_VERSION = "1032.0"
 IDENTITY_EXPRESSION_BOUNDARY_SUMMARY = {
     "mutates_memory": False,
     "alters_identity": False,

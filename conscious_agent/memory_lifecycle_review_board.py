@@ -5,8 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-MEMORY_LIFECYCLE_REVIEW_BOARD_VERSION = "500.0"
-
+MEMORY_LIFECYCLE_REVIEW_BOARD_VERSION = "1032.0"
 MEMORY_LIFECYCLE_BOUNDARIES: dict[str, bool] = {
     "board_visibility_is_authorization": False,
     "lifecycle_completeness_is_future_approval": False,

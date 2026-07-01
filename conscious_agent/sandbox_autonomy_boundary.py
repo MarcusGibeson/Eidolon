@@ -4,12 +4,11 @@ from pathlib import Path
 from typing import Any
 import json
 
-SANDBOX_AUTONOMY_BOUNDARY_VERSION = "500.0"
-CURRENT_VERSION = "500.0"
-CURRENT_VERSION_TAG = "v500.0"
-CURRENT_MILESTONE = "v500.0 Operator-Governed Autonomy Readiness Review Board v1"
-NEXT_RECOMMENDED_ARC = "v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1"
-
+SANDBOX_AUTONOMY_BOUNDARY_VERSION = "1032.0"
+CURRENT_VERSION = "1032.0"
+CURRENT_VERSION_TAG = "v1032.0"
+CURRENT_MILESTONE = "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1"
+NEXT_RECOMMENDED_ARC = "v1033.0 Smoke Registry Sidecar Parity Expansion v1"
 SANDBOX_BOUNDARY_FLAGS: dict[str, bool] = {
     "sandbox_scope_is_authorization": False,
     "sandbox_readiness_is_approval": False,

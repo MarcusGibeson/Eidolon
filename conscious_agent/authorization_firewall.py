@@ -12,8 +12,7 @@ from pathlib import Path
 import re
 from typing import Any, Iterable
 
-AUTHORIZATION_FIREWALL_VERSION = "500.0"
-
+AUTHORIZATION_FIREWALL_VERSION = "1032.0"
 AUTHORIZATION_FIREWALL_BOUNDARIES = {
     "firewall_detection_is_enforcement_execution": False,
     "firewall_pass_is_authorization": False,

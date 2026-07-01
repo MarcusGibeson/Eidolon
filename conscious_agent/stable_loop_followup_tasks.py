@@ -27,7 +27,7 @@ from stable_loop_decision_report import (
 from stable_loop_operator_notes import ensure_operator_notes
 from task_queue import add_task, list_tasks, update_task_fields
 
-FOLLOWUP_TASK_VERSION = "6.9"
+FOLLOWUP_TASK_VERSION = "1032.0"
 FOLLOWUP_SOURCE = "stable_loop_decision"
 FOLLOWUP_CATEGORY = "stable_loop_followup"
 FOLLOWUP_ACTION_DECISIONS = set(ACTION_REQUIRED_DECISIONS)

@@ -10,8 +10,7 @@ from expression_sandbox_trial_harness import (
 from expression_patch_dry_run import build_expression_sandbox_diff_preview_summary
 from identity_expression import classify_identity_expression_request
 
-EXPRESSION_SANDBOX_EXECUTION_BRIDGE_VERSION = "500.0"
-
+EXPRESSION_SANDBOX_EXECUTION_BRIDGE_VERSION = "1032.0"
 EXPRESSION_SANDBOX_EXECUTION_BRIDGE_BOUNDARIES = {
     "approval_gate_grants_approval": False,
     "approval_gate_infers_approval_from_readiness": False,

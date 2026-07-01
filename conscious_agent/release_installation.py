@@ -30,7 +30,7 @@ from release_packaging import (
     _package_name,
 )
 
-RELEASE_INSTALLATION_VERSION = "500.0"
+RELEASE_INSTALLATION_VERSION = "1032.0"
 RELEASE_INSTALLATION_DIR = DATA_DIR / "release_installation"
 RELEASE_PROFILES = RELEASE_INSTALLATION_DIR / "release_profiles.json"
 PACKAGE_PRIVACY_SCAN = RELEASE_INSTALLATION_DIR / "package_privacy_scan.json"
@@ -532,7 +532,7 @@ def build_smoke_runtime_hardening(project_id: str = "eidolon", tier: str = "full
     text = smoke_path.read_text(encoding="utf-8", errors="replace") if smoke_path.exists() else ""
     rows = [
         {"name": "smoke-script", "status": "pass" if smoke_path.exists() else "blocked", "message": "tools/smoke_check.py exists."},
-        {"name": "single-check-mode", "status": "pass" if "--single-check" in text else "blocked", "message": "Each check can run in an isolated subprocess."},
+        {"name": "single-check-mode", "status": "pass" if "--check" in text else "blocked", "message": "Each check can run in an isolated subprocess."},
         {"name": "tiered-mode", "status": "pass" if "--tier" in text and "_TIER_ORDER" in text else "blocked", "message": "Smoke tiers are declared."},
         {"name": "json-summary", "status": "pass" if "--json" in text else "blocked", "message": "Machine-readable smoke summaries are available."},
         {"name": "timeout-wrapper", "status": "pass" if "TimeoutExpired" in text else "blocked", "message": "Per-check timeout handling is present."},

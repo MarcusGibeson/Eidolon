@@ -1,0 +1,36 @@
+{
+  "applies_source_edits": false,
+  "artifact_type": "generated_scaffold_hash_ledger_review_only",
+  "artifacts": [
+    {
+      "path": "sandbox/generated_surface_scaffold_previews/v916-manifest-review-packet-schema.json",
+      "sha256": "02148cf728a79f18d8d00f4df6429cf5c3dae73835f81cab3e1d65737c880951",
+      "surface_id": "v916-manifest-review-packet-schema"
+    },
+    {
+      "path": "sandbox/generated_surface_scaffold_previews/v917-dashboard-surface-preview-generator.json",
+      "sha256": "23f5b22c927d8ea7e1ab03898d46de6eed8ecf942f7a773f0614343f72313744",
+      "surface_id": "v917-dashboard-surface-preview-generator"
+    },
+    {
+      "path": "sandbox/generated_surface_scaffold_previews/v918-cli-api-surface-preview-generator.json",
+      "sha256": "3ef0b02f25d973a227660a1482e15f3bc41e6674f53f2e68a86819c7b98e7e34",
+      "surface_id": "v918-cli-api-surface-preview-generator"
+    },
+    {
+      "path": "sandbox/generated_surface_scaffold_previews/v919-smoke-surface-preview-generator.json",
+      "sha256": "9516710853eae6c8ef90c3f9f86d197c7bb65869838d6207aa101977cb047beb",
+      "surface_id": "v919-smoke-surface-preview-generator"
+    },
+    {
+      "path": "sandbox/generated_surface_scaffold_previews/v920-generated-preview-parity-report.json",
+      "sha256": "f925c3ca48ca7e2580e7b6def86f977661b664bfad52cae32b3f66149c4cb9f4",
+      "surface_id": "v920-generated-preview-parity-report"
+    }
+  ],
+  "autonomy_expanded": false,
+  "generated_wiring_activated": false,
+  "release_authorized": false,
+  "review_only": true,
+  "schema_version": "1032.0"
+}

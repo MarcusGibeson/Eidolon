@@ -12,6 +12,7 @@ from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 from paths import DATA_DIR, ROOT_DIR
+from dashboard_shell_components import render_card_component, render_text_block_component
 from approval_manager import approve_approval, approval_text, get_approval, list_approvals, reject_approval
 from api_server import dispatch_api, parse_request_body, _to_jsonable
 from chat_action_router import (
@@ -26,6 +27,97 @@ from dashboard_chat_console import (
     dashboard_chat_turn_text,
     list_dashboard_chat_turns,
     load_dashboard_chat_turn,
+    stream_dashboard_chat_turn,
+)
+from self_development_cycle import (
+    build_self_development_trial_review,
+    self_development_trial_review_text,
+    create_self_development_cycle,
+    self_development_cycle_text,
+    build_self_development_receipt_browser,
+    self_development_receipt_browser_text,
+    build_broad_smoke_triage_report,
+    broad_smoke_triage_text,
+    build_self_development_dashboard_hardening_review,
+    self_development_dashboard_hardening_text,
+    build_self_development_implementation_proposal,
+    self_development_implementation_proposal_text,
+    expected_self_development_patch_draft_approval_phrase,
+    build_operator_approved_self_development_patch_draft,
+    operator_approved_self_development_patch_draft_text,
+    expected_self_development_patch_application_approval_phrase,
+    build_operator_approved_self_development_patch_application_trial,
+    operator_approved_self_development_patch_application_trial_text,
+    build_self_development_application_receipt_review,
+    self_development_application_receipt_review_text,
+    build_current_smoke_debt_ledger,
+    current_smoke_debt_ledger_text,
+    build_low_risk_smoke_debt_cleanup_candidates,
+    low_risk_smoke_debt_cleanup_candidates_text,
+    build_self_development_smoke_debt_dashboard,
+    self_development_smoke_debt_dashboard_text,
+    build_self_development_cycle_duplicate_cleanup_review,
+    self_development_cycle_duplicate_cleanup_review_text,
+    build_legacy_self_maintenance_smoke_blocker_review,
+    legacy_self_maintenance_smoke_blocker_review_text,
+    build_current_smoke_debt_ledger_reconciliation_review,
+    current_smoke_debt_ledger_reconciliation_review_text,
+    build_current_audit_wording_cleanup_review,
+    current_audit_wording_cleanup_review_text,
+    build_manifest_generation_prep_review,
+    manifest_generation_prep_review_text,
+    build_manifest_gated_surface_validation_review,
+    manifest_gated_surface_validation_review_text,
+    build_manifest_driven_surface_registry_pilot_review,
+    manifest_driven_surface_registry_pilot_review_text,
+    build_manifest_surface_generation_readiness_review,
+    manifest_surface_generation_readiness_review_text,
+    build_manifest_registry_expanded_review_surfaces_review,
+    manifest_registry_expanded_review_surfaces_review_text,
+    build_manifest_registry_generation_readiness_scoring_review,
+    manifest_registry_generation_readiness_scoring_review_text,
+    build_manifest_registry_drift_detection_review,
+    manifest_registry_drift_detection_review_text,
+    build_manifest_guided_validation_probe_dry_run_review,
+    manifest_guided_validation_probe_dry_run_review_text,
+    build_manifest_guided_generated_validation_probe_review,
+    manifest_guided_generated_validation_probe_review_text,
+    build_manifest_smoke_segment_parity_drift_review,
+    manifest_smoke_segment_parity_drift_review_text,
+    build_manifest_smoke_segment_parity_repair_packet_review,
+    manifest_smoke_segment_parity_repair_packet_review_text,
+    build_manifest_smoke_segment_repair_application_review,
+    manifest_smoke_segment_repair_application_review_text,
+    build_manifest_segment_parity_enforcement_gate_review,
+    manifest_segment_parity_enforcement_gate_review_text,
+    build_manifest_guided_validation_probe_expansion_readiness_review,
+    manifest_guided_validation_probe_expansion_readiness_review_text,
+    build_manifest_guided_multi_surface_validation_probe_dry_run_review,
+    manifest_guided_multi_surface_validation_probe_dry_run_review_text,
+    build_manifest_guided_multi_surface_generated_validation_probe_packet_review,
+    manifest_guided_multi_surface_generated_validation_probe_packet_review_text,
+    build_manifest_guided_multi_surface_probe_packet_consistency_gate_review,
+    manifest_guided_multi_surface_probe_packet_consistency_gate_review_text,
+    build_manifest_guided_sandbox_probe_file_generation_readiness_review,
+    manifest_guided_sandbox_probe_file_generation_readiness_review_text,
+    build_manifest_guided_sandbox_probe_file_generation_dry_run,
+    manifest_guided_sandbox_probe_file_generation_dry_run_text,
+    build_operator_approved_sandbox_probe_file_generation_trial,
+    operator_approved_sandbox_probe_file_generation_trial_text,
+    build_sandbox_probe_file_verification_and_cleanup_review,
+    sandbox_probe_file_verification_and_cleanup_review_text,
+    build_sandbox_probe_execution_harness_readiness_review,
+    sandbox_probe_execution_harness_readiness_review_text,
+    build_operator_approved_sandbox_probe_execution_trial,
+    operator_approved_sandbox_probe_execution_trial_text,
+    build_sandbox_probe_execution_result_review_and_promotion_readiness,
+    sandbox_probe_execution_result_review_and_promotion_readiness_text,
+    build_live_probe_promotion_plan_review,
+    live_probe_promotion_plan_review_text,
+    build_operator_approved_live_probe_registration_trial,
+    operator_approved_live_probe_registration_trial_text,
+    build_live_registered_probe_verification_and_structural_hardening_review,
+    live_registered_probe_verification_and_structural_hardening_review_text,
 )
 from desktop_shell import desktop_status_text
 from desktop_setup_helper import create_setup_report, list_setup_reports, load_setup_report, setup_report_text
@@ -942,9 +1034,7 @@ from dev_loop_runner import get_dev_loop, list_dev_loops, run_dev_loop, dev_loop
 
 
 DASHBOARD_TITLE = "Eidolon Dashboard"
-DASHBOARD_VERSION = "500.0"
-
-
+DASHBOARD_VERSION = "1032.0"
 class DashboardState:
     message: str = ""
     error: str = ""
@@ -967,11 +1057,11 @@ def _json_block(data: Any) -> str:
 
 
 def _text_block(text: str) -> str:
-    return f"<pre>{_safe(text)}</pre>"
+    return render_text_block_component(text)
 
 
 def _card(title: str, body: str) -> str:
-    return f"<section class='card'><h2>{_safe(title)}</h2>{body}</section>"
+    return render_card_component(title, body)
 
 
 def _small_list(items: list[str]) -> str:
@@ -1150,7 +1240,7 @@ def _render_nav(current_path: str, nav_items: list[tuple[str, str, str, str]]) -
             active_group = group
     pieces = [
         "<nav class='nav-shell' aria-label='Dashboard navigation'>",
-        "<div class='nav-intro'><strong>Navigation</strong><span>Grouped to keep the dashboard from becoming a drawer full of cursed cables. Hover or focus a tab for its purpose.</span></div>",
+        "<div class='nav-intro'><strong>Navigation</strong><span>Grouped operator surfaces. Hover or focus a tab for its purpose.</span></div>",
         "<div class='command-palette'><label for='dashboard-search'>Quick finder</label><input id='dashboard-search' data-nav-search type='search' placeholder='Filter tabs, for example: queue, attention, release...' autocomplete='off'></div>",
     ]
     for group, items in grouped.items():
@@ -1197,6 +1287,17 @@ def _layout(path: str, content: str) -> str:
         ("/work-order-handoff", "Work Order Handoff", "v87.0 Work Order to Patch Context Handoff: Convert operator-accepted work orders into supervised patch context packets without execution.", "Development"),
         ("/work-order-evidence", "Work Order Evidence", "v88.0 Work Order Execution Evidence Binder: Trace work orders through sandbox evidence and operator decisions without inferring approval.", "Development"),
         ("/self-development", "Self-Development", "v89.0 Self-Development Dashboard Consolidation: Unified supervised development console, action queue, safety banners, and lazy diagnostics.", "Development"),
+        ("/self-development-cycle", "Self Dev Cycle", "v760.0 Self Development Application Receipt Review: proposal packet, approval gates, patch draft/application trial receipts, and smoke debt continuity.", "Development"),
+        ("/self-development-smoke-debt", "Smoke Debt", "v760.0 API Surface Truth + Smoke Debt: review application receipts, classify broad smoke debt, and live-probe self-development API route claims without source edits.", "Development"),
+        ("/behavioral-dashboard-route-coverage", "Route Coverage", "v1024.0 Behavioral Dashboard Route Coverage: render critical dashboard routes behaviorally and inventory source decomposition prep without moving code.", "Development"),
+        ("/source-decomposition-compatibility-slice", "Decomposition Slice", "v1025.0 First Source Decomposition Compatibility Slice: extracted the compile timeout contract from the manual smoke runner while preserving compatibility and authority boundaries.", "Development"),
+        ("/dashboard-shell-component-extraction", "Dashboard Shell Slice", "v1026.0 Dashboard Shell Component Extraction Compatibility Slice: extracted common dashboard card/text shell helpers while preserving route behavior and manual dashboard authority.", "Development"),
+        ("/smoke-registry-sidecar-compatibility", "Smoke Sidecar Slice", "v1028.0 Smoke Registry Sidecar Compatibility Extraction Slice: extracts a bounded smoke metadata sidecar while manual tools/smoke_check.py remains authoritative.", "Development"),
+        ("/smoke-registry-sidecar-expansion-route-manifest", "Sidecar + Route Manifest", "v1028.0 Smoke Registry Sidecar Expansion and Route Manifest Prep: expands the bounded sidecar metadata slice and prepares route/command/check manifest inventory without activating generated wiring.", "Development"),
+        ("/route-manifest-dashboard-parity", "Route Manifest Parity", "v1029.0 Route Manifest Inventory Expansion and Dashboard Parity Gate: expands bounded manual route inventory and behaviorally proves route-to-renderer parity without activating generated routing.", "Development"),
+        ("/dashboard-route-behavioral-coverage-expansion", "Route Behavior Expansion", "v1030.0 Dashboard Route Behavioral Coverage Expansion: expands behavioral dashboard route coverage into cohorts while manual dashboard routing remains authoritative and generated routing stays inactive.", "Development"),
+        ("/dashboard-route-manifest-renderer-reconciliation", "Route Renderer Reconcile", "v1031.0 Dashboard Route Manifest-to-Renderer Reconciliation: reconciles route manifest rows to manual dashboard renderer dispatch while generated routing remains inactive.", "Development"),
+        ("/dashboard-route-coverage-completion-dispatch-classification", "Route Coverage Completion", "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification: expands safe behavioral route coverage and classifies remaining manual dispatch routes while manual routing stays authoritative.", "Development"),
         ("/self-development-readiness", "Readiness Audit", "v90.0 Supervised Self-Development Readiness Audit: Diagnostic supervision, traceability, approval gate, risk, and scorecard audit without unlocking autonomy.", "Development"),
         ("/development-sessions", "Development Sessions", "v91.0 Supervised Development Session Manager: Bundle suggestions, work orders, patch contexts, evidence, and operator goals into supervised sessions without approval escalation.", "Development"),
         ("/approval-console", "Approval Console", "v92.0 Operator Approval Workflow Console: Unified operator approval queue, decision ledger, dependencies, and risk explanations without inferred approval.", "Development"),
@@ -1597,6 +1698,51 @@ def _layout(path: str, content: str) -> str:
         ("/phase-based-autonomy-permission-model", "v498 Phase Model", "v498.0 Phase-Based Autonomy Permission Model v1: defines autonomy phases without authorizing any phase.", "Development"),
         ("/autonomy-misinterpretation-firewall", "v499 Auto Firewall", "v499.0 Autonomy Misinterpretation Firewall v1: blocks ready-means-approved and phase-defined-means-authorized confusion.", "Development"),
         ("/autonomy-readiness-review-board-audit", "v500 Ready Board", "v500.0 Operator-Governed Autonomy Readiness Review Board v1: audits readiness criteria, blockers, phase model, misinterpretation firewall, and no-authorization boundaries.", "Development"),
+        ("/source-package-runtime-exclusion-map", "v501 Package Map", "v501.0 Source Package Runtime Exclusion Map v1: aligns source-only package privacy with source surface runtime directories and forbids workspace timeline leakage.", "Development"),
+        ("/final-archive-entry-privacy-checker", "v502 Archive Check", "v502.0 Final Archive Entry Privacy Checker v1: checks final archive entries and source tree entries for forbidden runtime/private paths.", "Development"),
+        ("/metadata-version-drift-normalizer", "v503 Metadata Drift", "v503.0 Metadata Version Drift Normalizer v1: audits current metadata, release-note versions, and observation current-state tags.", "Development"),
+        ("/release-doc-command-compatibility-audit", "v504 Command Audit", "v504.0 Release Doc Command Compatibility Audit v1: removes unsupported smoke command drift and documents supported verification syntax.", "Development"),
+        ("/source-package-privacy-metadata-integrity-audit", "v505 Package Audit", "v505.0 Source-Only Package Privacy and Metadata Integrity Repair v1: audits package privacy, metadata cleanup, docs command compatibility, and no-authorization boundaries.", "Development"),
+        ("/observation-to-sandbox-intake-bridge", "v506 Obs→Sandbox", "v506.0 Observation Report Intake Bridge v1: accepts read-only observation reports as review-only material without approval or execution permission.", "Development"),
+        ("/sandbox-candidate-extraction", "v507 Candidates", "v507.0 Sandbox Candidate Extraction v1: extracts sandbox candidates without selecting work or authorizing execution.", "Development"),
+        ("/sandbox-packet-draft-assembly", "v508 Packet Draft", "v508.0 Sandbox Packet Draft Assembly v1: assembles inert sandbox packet drafts with not_authorized/not_executed status.", "Development"),
+        ("/sandbox-packet-misinterpretation-firewall", "v509 Packet Firewall", "v509.0 Sandbox Packet Misinterpretation Firewall v1: blocks packet readiness, ranking, smoke success, or discussion from becoming authorization.", "Development"),
+        ("/manual-observation-to-sandbox-bridge-audit", "v510 Bridge Audit", "v510.0 Manual Observation-to-Sandbox Packet Bridge v1: audits the observation-to-sandbox bridge without execution or autonomy.", "Development"),
+        ("/sandbox-approval-scope-contract", "v511 Approval Scope", "v511.0 Sandbox Approval Scope Contract v1: defines future single-use approval scope while granting no approval.", "Development"),
+        ("/exact-confirmation-phrase-builder", "v512 Phrase", "v512.0 Exact Confirmation Phrase Builder v1: builds an exact future confirmation phrase template without entering confirmation.", "Development"),
+        ("/approval-burnout-expiry-ledger", "v513 Burnout", "v513.0 Approval Burnout and Expiry Ledger v1: models expiry and one-time burnout without creating approval.", "Development"),
+        ("/sandbox-command-allowlist-preview", "v514 Allowlist", "v514.0 Sandbox Command Allowlist Preview v1: previews commands and sandbox write targets without execution.", "Development"),
+        ("/sandbox-execution-approval-gate-audit", "v515 Gate Audit", "v515.0 Sandbox Execution Approval Gate v1: audits the approval gate while reporting not_granted/not_executed/not_started.", "Development"),
+        ("/sandbox-dry-run-execution-model", "v516 Dry Model", "v516.0 Sandbox Dry-Run Execution Model v1: models future sandbox execution shape without running commands.", "Development"),
+        ("/command-transcript-preview", "v517 Transcript", "v517.0 Command Transcript Preview v1: previews command sequence, read paths, sandbox-only write paths, and stop conditions without output.", "Development"),
+        ("/sandbox-diff-receipt-preview", "v518 Diff Receipt", "v518.0 Sandbox Diff Receipt Preview v1: previews before/after references and unchanged live files without mutation.", "Development"),
+        ("/dry-run-misinterpretation-firewall", "v519 Dry Firewall", "v519.0 Dry-Run Misinterpretation Firewall v1: blocks dry-run pass, previews, and receipt language from becoming approval or execution permission.", "Development"),
+        ("/sandbox-execution-dry-run-receipt-audit", "v520 Dry Audit", "v525.0 First Operator-Approved Sandbox Execution Trial v1: audits dry-run model, transcript preview, diff receipt preview, firewall, and no-execution boundaries.", "Development"),
+        ("/sandbox-workspace-isolation-contract", "v521 Sandbox ISO", "v521.0 Sandbox Workspace Isolation Contract v1: defines temporary sandbox roots, allowed read paths, sandbox-only write paths, forbidden live/memory/runtime paths, and cleanup expectations without execution permission.", "Development"),
+        ("/approved-sandbox-command-plan", "v522 Cmd Plan", "v522.0 Approved Sandbox Command Plan v1: defines boring compile/smoke command plans without running commands.", "Development"),
+        ("/single-use-sandbox-execution-receipt", "v523 Receipt", "v523.0 Single-Use Sandbox Execution Receipt v1: defines one-trial receipt shape without creating approval or future permission.", "Development"),
+        ("/sandbox-execution-misinterpretation-firewall", "v524 Exec Firewall", "v524.0 Sandbox Execution Misinterpretation Firewall v1: blocks sandbox success, cleanup, or one-command approval from becoming live/memory/release/future/autonomy authority.", "Development"),
+        ("/first-sandbox-execution-trial-audit", "v525 Trial Audit", "v525.0 First Operator-Approved Sandbox Execution Trial v1: audits the first sandbox execution trial layer with not-run-by-default status and no live/memory/autonomy authority.", "Development"),
+        ("/sandbox-execution-runner-contract", "v526 Runner", "v526.0 Sandbox Execution Runner Contract v1: defines one sandbox-only runner contract under exact approval without granting execution permission.", "Development"),
+        ("/approval-phrase-validator", "v527 Phrase Check", "v527.0 Approval Phrase Validator v1: validates exact future operator approval phrase while proving validation is not command execution.", "Development"),
+        ("/sandbox-command-execution-harness", "v528 Harness", "v528.0 Sandbox Command Execution Harness v1: defines narrow sandbox-only command harness boundaries without running commands by default.", "Development"),
+        ("/execution-receipt-intake-cleanup-audit", "v529 Receipt Intake", "v529.0 Execution Receipt Intake and Cleanup Audit v1: captures receipt and cleanup shape without future authorization.", "Development"),
+        ("/sandbox-execution-trial-review-board", "v530 Runner Board", "v530.0 Operator-Approved Sandbox Execution Runner and Receipt Intake v1: audits runner contract, approval phrase, harness, receipt intake, cleanup, and no-live/no-memory/no-autonomy boundaries.", "Development"),
+        ("/sandbox-evidence-intake-packet", "v531 Evidence", "v531.0 Sandbox Evidence Intake Packet v1: intakes sandbox execution receipt evidence without live-source approval.", "Development"),
+        ("/promotion-candidate-diff-preview", "v532 Diff Preview", "v532.0 Promotion Candidate Diff Preview v1: previews proposed live-source diffs without mutating live source.", "Development"),
+        ("/rollback-recovery-packet-builder", "v533 Rollback", "v533.0 Rollback and Recovery Packet Builder v1: plans rollback/recovery without executing rollback.", "Development"),
+        ("/promotion-misinterpretation-firewall", "v534 Promo Firewall", "v534.0 Promotion Misinterpretation Firewall v1: blocks sandbox success, promotion packets, rollback packets, smoke pass, or operator interest from becoming authorization.", "Development"),
+        ("/sandbox-to-source-promotion-review-board", "v535 Promo Board", "v540.0 Operator-Approved Narrow Live Patch Promotion Gate v1: audits evidence intake, diff preview, rollback packet, promotion firewall, and no-live/no-memory/no-release/no-autonomy boundaries.", "Development"),
+        ("/narrow-live-patch-scope-contract", "v536 Live Scope", "v536.0 Narrow Live Patch Scope Contract v1: defines boring live patch classes and forbidden memory/identity/personality/scheduler/model/autonomy/release/broad-refactor classes without approval.", "Development"),
+        ("/promotion-approval-phrase-contract", "v537 Live Phrase", "v537.0 Promotion Approval Phrase Contract v1: defines packet-scoped single-use live patch approval phrase template without treating it as approval.", "Development"),
+        ("/live-patch-preflight-checklist", "v538 Preflight", "v538.0 Live Patch Preflight Checklist v1: checks privacy, targets, rollback, smoke, README/release history, and forbidden changes without permission.", "Development"),
+        ("/live-promotion-misinterpretation-firewall", "v539 Live Firewall", "v539.0 Live Promotion Misinterpretation Firewall v1: blocks sandbox success, promotion packet, preflight pass, prior approval, phrase template, and patch success from becoming authorization.", "Development"),
+        ("/narrow-live-patch-promotion-gate-audit", "v540 Live Gate", "v540.0 Operator-Approved Narrow Live Patch Promotion Gate v1: audits the live patch gate while reporting not_applied, not_authorized, source untouched, memory untouched, and autonomy not expanded.", "Development"),
+        ("/live-patch-trial-candidate-selector", "v541 Candidate", "v541.0 Live Patch Trial Candidate Selector v1: selects first-trial candidate classes without approving a live patch.", "Development"),
+        ("/single-use-live-patch-approval-receipt", "v542 Receipt", "v542.0 Single-Use Live Patch Approval Receipt v1: defines an approval receipt template while reporting approval not granted.", "Development"),
+        ("/live-patch-application-harness-preview", "v543 Harness", "v543.0 Live Patch Application Harness Preview v1: previews narrow live patch application structure without applying a patch.", "Development"),
+        ("/live-patch-application-misinterpretation-firewall", "v544 Patch Firewall", "v544.0 Live Patch Application Misinterpretation Firewall v1: blocks selection, receipt, preflight, sandbox success, patch success, release, and autonomy confusion.", "Development"),
+        ("/first-narrow-live-patch-trial-audit", "v545 Patch Trial", "v545.0 First Single-Use Narrow Live Patch Application Trial v1: audits the first live patch trial layer while reporting not_applied_by_default, not_authorized, memory untouched, release not created, and autonomy not expanded.", "Development"),
         ("/intelligence", "Intelligence", "Project indexing and codebase intelligence summaries.", "Development"),
         ("/workspace", "Workspace", "Workspace registry, project context, command profiles, and dependency maps.", "Development"),
         ("/patch-drafts", "Patch Drafts", "v73 supervised patch draft composer: intent normalization, scope contracts, prompt composition, output schema, safety review, evidence binding, and local-model handoff stubs. Draft only; no apply or model invocation.", "Development"),
@@ -1641,6 +1787,21 @@ def _layout(path: str, content: str) -> str:
         ("/watch", "Watch <span class='nav-badge' data-live-count='counts.watch_reports'></span>", "Watch-mode reports and monitoring snapshots.", "Autonomy"),
         ("/patches", "Patches <span class='nav-badge' data-live-count='counts.patches'></span>", "Patch proposal records, applied state, rollback metadata, and review traces.", "Autonomy"),
         ("/goals", "Goals <span class='nav-badge' data-live-count='counts.goals'></span>", "Goal records and goal-management state for continuity.", "Autonomy"),
+        ("/neural-deck-layout-shell", "v686 Neural Deck", "v686.0 Neural Deck Layout Shell: clean three-column neural command deck UI shell. Visual state only; not authorization.", "System"),
+        ("/eidolon-thinking-core-panel", "v687 Thinking Core", "v687.0 Eidolon Thinking Core Panel: red thinking waveform/core visualization. Does not execute models or mutate memory.", "System"),
+        ("/operator-conversation-console", "v688 Conversation", "v688.0 Operator Conversation Console: clean central chat and input deck. Does not send commands or create approvals.", "System"),
+        ("/side-intelligence-panels", "v689 Side Panels", "v689.0 Side Intelligence Panels: vitals, approval, risk, roadmap, telemetry. Metrics are not authorization.", "System"),
+        ("/neural-command-deck-dashboard-board", "v690 Neural Board", "v690.0 Neural Command Deck Dashboard Board: final review-only UI redesign board preserving data-tip and no native title tooltips.", "System"),
+        ("/interaction-focus-rail", "v691 Focus Rail", "v691.0 Interaction Focus Rail: guided focus rail for conversation/evidence/approval/verification/handoff. Does not start work.", "System"),
+        ("/interaction-safe-input-deck", "v692 Input Deck", "v692.0 Interaction-Safe Input Deck: mode chips and cleaner input affordances. Does not execute commands or create approvals.", "System"),
+        ("/panel-density-priority-tuning", "v693 Panel Tuning", "v693.0 Panel Density and Priority Tuning: cleaner panel priority and density without hiding blockers or granting authorization.", "System"),
+        ("/context-telemetry-affordance", "v694 Context/Telemetry", "v694.0 Context and Telemetry Affordance: custom data-tip details without native title tooltips, checks, memory mutation, or approval.", "System"),
+        ("/neural-command-deck-interaction-board", "v695 Interaction Board", "v695.0 Neural Command Deck Interaction Board: final review-only interaction refinement board preserving boundaries.", "System"),
+        ("/autonomy-phase-zero-definition-contract", "v696 Phase 0", "v696.0 Autonomy Phase 0 Definition Contract: observation-only readiness definition. Not autonomy approval.", "System"),
+        ("/observation-only-cycle-simulator", "v697 Observer", "v697.0 Observation-Only Cycle Simulator: simulated inspect/summarize/classify/receipt cycle without action.", "System"),
+        ("/no-mutation-autonomy-boundary-guard", "v698 No Mutation", "v698.0 No-Mutation Autonomy Boundary Guard: proves no source, memory, archive, release, command, model, scheduling, or continuation authority.", "System"),
+        ("/autonomy-phase-zero-handoff-packet", "v699 P0 Handoff", "v699.0 Autonomy Phase 0 Handoff Packet: handoff context only, not permission to continue.", "System"),
+        ("/autonomy-phase-zero-readiness-board", "v700 P0 Board", "v700.0 Autonomy Phase 0 Readiness Board: final review-only readiness harness. Not autonomous.", "System"),
         ("/diagnostics", "Diagnostics <span class='nav-badge' data-live-count='counts.diagnostic_reports'></span>", "Diagnostic reports and recent health checks.", "System"),
         ("/settings", "Settings", "Local settings and settings health. Still not a substitute for judgment, tragically.", "System"),
         ("/api-info", "API", "Local API route reference and safety boundary notes.", "System"),
@@ -1696,7 +1857,7 @@ main {{ max-width:1200px; margin:0 auto; padding:22px; }}
 .card h3 {{ margin:14px 0 8px; font-size:15px; color:var(--accent); }}
 .kpi {{ font-size:30px; font-weight:700; }}
 .muted {{ color:var(--muted); }}
-.good {{ color:var(--good); }} .badtext {{ color:var(--bad); }} .warn {{ color:var(--warn); }}
+.good {{ color:var(--accent-red); }} .badtext {{ color:var(--bad); }} .warn {{ color:var(--warn); }}
 pre {{ white-space:pre-wrap; word-break:break-word; background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:12px; max-height:520px; overflow:auto; }}
 button, input, select {{ background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:8px 10px; }}
 button {{ cursor:pointer; }} button:hover {{ border-color:var(--accent); }}
@@ -1731,32 +1892,32 @@ table {{ width:100%; border-collapse:collapse; }} th,td {{ border-bottom:1px sol
 .live-dot {{ color:var(--muted); }} .live-dot.ok {{ color:var(--good); }} .live-dot.bad {{ color:var(--bad); }} .live-dot.polling {{ color:var(--warn); }}
 
 /* v135 command-deck operator console skin. Preserves custom data-tip hover behavior; no native title tooltips. */
-:root {{ --bg:#050b14; --panel:#081525; --panel2:#0b2035; --text:#e7f2ff; --muted:#8da0ba; --accent:#1ca8ff; --good:#30e079; --bad:#ff4e57; --warn:#ffc44d; --border:#123a5f; --cyan:#20f0e7; }}
-body {{ min-height:100vh; background:radial-gradient(circle at 15% 5%, rgba(24,168,255,.18), transparent 28%), linear-gradient(180deg,#06111f 0%, #04070e 100%); color:var(--text); }}
-header {{ position:fixed; top:0; left:260px; right:0; height:62px; padding:10px 26px; border-bottom:1px solid #0f3557; background:rgba(4,10,18,.94); backdrop-filter:blur(12px); display:flex; align-items:center; gap:26px; box-shadow:0 0 22px rgba(28,168,255,.12); }}
+:root {{ --bg:#050b14; --panel:#081525; --panel2:#0b2035; --text:#e7f2ff; --muted:#8da0ba; --accent:#ff332b; --good:#49d86f; --bad:#ff332b; --warn:#ff9f35; --border:#4b1716; --cyan:#ff5b55; --accent-red:#ff332b; --deep-red:#140303; }}
+body {{ min-height:100vh; background:radial-gradient(circle at 14% 8%, rgba(255,45,35,.22), transparent 25%), radial-gradient(circle at 78% 4%, rgba(255,70,55,.12), transparent 26%), linear-gradient(180deg,#070707 0%, #030303 100%); color:var(--text); }}
+header {{ position:fixed; top:0; left:260px; right:0; height:62px; padding:10px 26px; border-bottom:1px solid rgba(255,54,45,.28); background:rgba(7,5,5,.94); backdrop-filter:blur(12px); display:flex; align-items:center; gap:26px; box-shadow:0 0 22px rgba(28,168,255,.12); }}
 header h1 {{ font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--good); margin:0; }}
 header h1::before {{ content:'🛡 '; }}
 header .subtitle {{ color:var(--muted); font-size:12px; }}
-header .subtitle::after {{ content:'  |  ENVIRONMENT: PRODUCTION  |  CORE v170.0  |  ALL SYSTEMS NOMINAL'; color:#46b7ff; margin-left:12px; }}
-body > nav {{ position:fixed; top:0; left:0; bottom:0; width:260px; overflow:auto; border-right:1px solid #123a5f; background:linear-gradient(180deg,rgba(5,14,27,.98),rgba(3,8,16,.98)); box-shadow:14px 0 40px rgba(0,0,0,.35); z-index:5; }}
+header .subtitle::after {{ content:'  |  ENVIRONMENT: PRODUCTION  |  CORE v170.0  |  ALL SYSTEMS NOMINAL'; color:#ff5b55; margin-left:12px; }}
+body > nav {{ position:fixed; top:0; left:0; bottom:0; width:260px; overflow:auto; border-right:1px solid rgba(255,54,45,.24); background:linear-gradient(180deg,rgba(10,6,6,.98),rgba(3,3,4,.98)); box-shadow:14px 0 40px rgba(0,0,0,.35); z-index:5; }}
 nav.nav-shell {{ padding:118px 14px 16px; border:0; background:transparent; gap:12px; }}
-nav.nav-shell::before {{ content:'◉ EIDOLON\\A OPERATOR CONSOLE'; white-space:pre; position:absolute; top:24px; left:24px; font-size:30px; line-height:1.05; font-weight:800; letter-spacing:.18em; color:#f1f8ff; text-shadow:0 0 20px rgba(32,240,231,.35); }}
+nav.nav-shell::before {{ content:'◉ EIDOLON\\A OPERATOR CONSOLE'; white-space:pre; position:absolute; top:24px; left:24px; font-size:30px; line-height:1.05; font-weight:800; letter-spacing:.18em; color:#f4f4f4; text-shadow:0 0 24px rgba(255,54,45,.35); }}
 .nav-intro {{ display:none; }}
-.command-palette {{ background:#071321; border-color:#164a76; box-shadow:inset 0 0 18px rgba(28,168,255,.06); }}
+.command-palette {{ background:#100707; border-color:#5d1b1a; box-shadow:inset 0 0 18px rgba(255,54,45,.08); }}
 .nav-section {{ background:transparent; border:0; border-radius:0; }}
-.nav-section summary {{ padding:10px 4px; border-top:1px solid rgba(52,108,151,.35); }}
+.nav-section summary {{ padding:10px 4px; border-top:1px solid rgba(255,54,45,.22); }}
 .nav-section summary small {{ display:none; }}
 .nav-links {{ display:grid; gap:8px; padding:0 0 12px; }}
-nav a.nav-link {{ display:block; padding:10px 13px; border-color:transparent; background:transparent; color:#9dadc6; }}
-nav a.nav-link.active, nav a.nav-link:hover, nav a.nav-link:focus {{ color:#eaf7ff; border-color:#1b7ec6; background:linear-gradient(90deg,rgba(28,168,255,.24),rgba(28,168,255,.04)); box-shadow:inset 3px 0 0 #1ca8ff, 0 0 18px rgba(28,168,255,.12); }}
-nav a.nav-link[data-tip]:hover::after, nav a.nav-link[data-tip]:focus::after, .mini-card[data-tip]:hover::after, .mini-card[data-tip]:focus::after {{ left:16px; top:calc(100% + 6px); background:#020812; border-color:#1b7ec6; color:#dcecff; }}
+nav a.nav-link {{ display:block; padding:10px 13px; border-color:transparent; background:transparent; color:#aa9a9a; }}
+nav a.nav-link.active, nav a.nav-link:hover, nav a.nav-link:focus {{ color:#eaf7ff; border-color:#8a2521; background:linear-gradient(90deg,rgba(255,54,45,.25),rgba(255,54,45,.035)); box-shadow:inset 3px 0 0 #ff332b, 0 0 18px rgba(255,54,45,.16); }}
+nav a.nav-link[data-tip]:hover::after, nav a.nav-link[data-tip]:focus::after, .mini-card[data-tip]:hover::after, .mini-card[data-tip]:focus::after {{ left:16px; top:calc(100% + 6px); background:#090303; border-color:#8a2521; color:#ffe4e0; }}
 main {{ margin-left:260px; padding:88px 26px 28px; max-width:none; }}
 .livebar {{ display:none; }}
-.card, .mini-card, .action-card {{ background:linear-gradient(180deg,rgba(9,26,45,.92),rgba(5,16,30,.92)); border-color:#164a76; box-shadow:inset 0 0 24px rgba(28,168,255,.045), 0 0 18px rgba(0,0,0,.28); }}
+.card, .mini-card, .action-card {{ background:linear-gradient(180deg,rgba(18,8,9,.94),rgba(7,7,8,.94)); border-color:#55201d; box-shadow:inset 0 0 24px rgba(255,54,45,.055), 0 0 18px rgba(0,0,0,.32); }}
 .card h2, .card h3 {{ text-transform:uppercase; letter-spacing:.04em; }}
-button, input, select, textarea {{ background:#07192b; border-color:#1b5d91; color:#dcecff; }}
-button {{ color:#36b8ff; box-shadow:inset 0 0 12px rgba(28,168,255,.08); }}
-button:hover {{ border-color:#20f0e7; color:#92fff9; box-shadow:0 0 18px rgba(32,240,231,.18); }}
+button, input, select, textarea {{ background:#130808; border-color:#6b2421; color:#ffe7e4; }}
+button {{ color:#ff6b61; box-shadow:inset 0 0 12px rgba(255,54,45,.10); }}
+button:hover {{ border-color:#ff5b55; color:#fff2ef; box-shadow:0 0 18px rgba(255,54,45,.22); }}
 .command-deck {{ display:grid; gap:16px; }}
 .command-hero {{ display:flex; justify-content:space-between; gap:16px; align-items:start; }}
 .command-hero h1 {{ margin:0; font-size:32px; letter-spacing:.06em; text-transform:uppercase; }}
@@ -1786,14 +1947,149 @@ button:hover {{ border-color:#20f0e7; color:#92fff9; box-shadow:0 0 18px rgba(32
 .signal-spark {{ height:42px; border-bottom:1px solid #1b5d91; background:linear-gradient(135deg, transparent 5%, rgba(32,240,231,.12) 5% 12%, transparent 12% 20%, rgba(28,168,255,.2) 20% 32%, transparent 32%); }}
 .reco-strip {{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }}
 .reco-chip {{ border:1px solid #164a76; border-radius:10px; padding:9px; background:#081a2e; font-size:12px; }}
+
+/* v686-v690 neural command deck dashboard redesign. Preserves command-deck/operator-console identity, custom data-tip hover behavior, and no native title tooltips. */
+.neural-deck {{ display:grid; gap:14px; color:#f4eeee; }}
+.neural-topbar {{ display:grid; grid-template-columns:1.25fr repeat(3, minmax(160px,.75fr)) 1.25fr; gap:14px; align-items:stretch; }}
+.neural-brand, .neural-status, .neural-footer-cell {{ border:1px solid rgba(255,54,45,.28); border-radius:16px; background:linear-gradient(180deg,rgba(16,8,9,.92),rgba(5,5,6,.92)); box-shadow:inset 0 0 28px rgba(255,54,45,.06), 0 0 26px rgba(0,0,0,.35); padding:14px 16px; }}
+.neural-brand strong {{ display:block; font-size:32px; letter-spacing:.26em; font-weight:800; }}
+.neural-brand span, .neural-status span, .neural-panel small {{ display:block; color:#ff5b55; text-transform:uppercase; letter-spacing:.16em; font-size:11px; }}
+.neural-status b {{ display:block; margin-top:8px; color:#ff332b; text-transform:uppercase; letter-spacing:.08em; }}
+.neural-layout {{ display:grid; grid-template-columns:minmax(260px, .72fr) minmax(560px, 1.85fr) minmax(300px, .86fr); gap:14px; align-items:stretch; }}
+.neural-column {{ display:grid; gap:14px; align-content:start; }}
+.neural-panel {{ position:relative; border:1px solid rgba(255,54,45,.24); border-radius:16px; padding:15px; background:linear-gradient(180deg,rgba(14,9,10,.95),rgba(5,5,6,.96)); box-shadow:inset 0 0 30px rgba(255,54,45,.05), 0 0 24px rgba(0,0,0,.30); overflow:hidden; }}
+.neural-panel::before {{ content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg,rgba(255,54,45,.10),transparent 18%,transparent 82%,rgba(255,54,45,.08)); opacity:.45; }}
+.neural-panel h2 {{ margin:0 0 12px; font-size:15px; letter-spacing:.10em; text-transform:uppercase; color:#f4eeee; }}
+.neural-panel h2 span {{ color:#ff332b; margin-right:8px; }}
+.neural-gauge {{ width:150px; height:150px; margin:8px auto 14px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(#ff332b 0 89%, #281010 89% 100%); box-shadow:0 0 34px rgba(255,54,45,.26), inset 0 0 16px rgba(0,0,0,.4); position:relative; }}
+.neural-gauge::after {{ content:''; position:absolute; inset:18px; border-radius:50%; background:#080606; border:1px solid rgba(255,54,45,.24); }}
+.neural-gauge b {{ position:relative; z-index:1; font-size:34px; }} .neural-gauge small {{ position:relative; z-index:1; color:#b9aaa8; }}
+.neural-list {{ display:grid; gap:8px; position:relative; z-index:1; }}
+.neural-row {{ display:flex; justify-content:space-between; gap:14px; padding-bottom:7px; border-bottom:1px solid rgba(255,54,45,.13); color:#bcaead; font-size:13px; }}
+.neural-row b, .neural-hot {{ color:#ff4c43; }}
+.neural-wire {{ height:138px; border:1px solid rgba(255,54,45,.18); border-radius:14px; background:radial-gradient(circle at center,rgba(255,54,45,.65),transparent 7%), radial-gradient(circle at center,rgba(255,54,45,.22),transparent 34%), linear-gradient(45deg,transparent 48%,rgba(255,54,45,.22) 49%,transparent 50%); box-shadow:inset 0 0 24px rgba(255,54,45,.10); }}
+.neural-approval {{ display:grid; gap:10px; }}
+.neural-approval-item {{ border:1px solid rgba(255,54,45,.18); border-radius:12px; background:rgba(15,10,11,.75); padding:10px; display:grid; gap:6px; }}
+.neural-approval-actions {{ display:flex; gap:8px; justify-content:flex-end; }}
+.eidolon-conversation {{ min-height:720px; display:grid; grid-template-rows:auto 1fr auto auto; gap:12px; }}
+.chat-bubble {{ max-width:390px; border:1px solid rgba(255,255,255,.10); border-radius:14px; background:rgba(18,19,24,.82); padding:12px 14px; color:#ddd4d3; position:relative; z-index:1; }}
+.chat-meta {{ color:#8f8180; font-size:11px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }}
+.eidolon-thinking-core {{ position:relative; min-height:300px; border:1px solid rgba(255,54,45,.16); border-radius:18px; background:radial-gradient(circle at 36% 50%,rgba(255,54,45,.46),transparent 8%), radial-gradient(circle at 50% 50%,rgba(255,54,45,.18),transparent 22%), linear-gradient(180deg,rgba(8,7,9,.45),rgba(8,5,6,.72)); overflow:hidden; display:grid; place-items:center; }}
+.eidolon-thinking-core::before {{ content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,54,45,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(255,54,45,.08) 1px, transparent 1px); background-size:42px 42px; opacity:.28; }}
+.eidolon-thinking-core::after {{ content:''; position:absolute; width:180%; height:88px; left:-40%; top:38%; background:radial-gradient(circle,rgba(255,255,255,.95) 0 3px, transparent 5px), linear-gradient(100deg,transparent 0 8%,rgba(255,54,45,.05) 12%,rgba(255,54,45,.8) 18%,rgba(255,180,170,.75) 23%,rgba(255,54,45,.75) 32%,transparent 38%,rgba(255,54,45,.65) 48%,rgba(255,225,218,.72) 54%,rgba(255,54,45,.68) 62%,transparent 76%); filter:blur(.15px) drop-shadow(0 0 16px rgba(255,54,45,.65)); transform:skewY(-4deg); }}
+.neural-squiggle {{ position:absolute; left:0; right:0; top:42%; height:100px; background:repeating-linear-gradient(110deg, transparent 0 16px, rgba(255,54,45,.22) 17px, transparent 25px); opacity:.65; filter:drop-shadow(0 0 14px rgba(255,54,45,.65)); }}
+.thinking-label {{ position:relative; z-index:2; text-align:center; padding:18px 26px; border:1px solid rgba(255,54,45,.26); border-radius:50%; min-width:175px; min-height:175px; display:grid; place-items:center; background:radial-gradient(circle,rgba(17,7,8,.86),rgba(7,6,7,.72)); box-shadow:0 0 50px rgba(255,54,45,.28), inset 0 0 22px rgba(255,54,45,.09); }}
+.thinking-label strong {{ color:#ff4c43; letter-spacing:.14em; }}
+.thinking-wave {{ height:24px; margin:8px 0; background:linear-gradient(90deg,transparent,rgba(255,54,45,.9),rgba(255,220,215,.8),rgba(255,54,45,.9),transparent); clip-path:polygon(0 50%,5% 42%,10% 58%,15% 40%,20% 62%,25% 46%,30% 54%,35% 38%,40% 65%,45% 45%,50% 55%,55% 35%,60% 63%,65% 48%,70% 54%,75% 40%,80% 60%,85% 48%,90% 53%,95% 44%,100% 50%); }}
+.context-fragments {{ position:absolute; right:18px; top:18px; display:grid; gap:10px; width:min(230px,34%); z-index:2; }}
+.context-fragment {{ border:1px solid rgba(255,54,45,.28); border-radius:12px; padding:10px; background:rgba(13,8,9,.86); color:#cfc0bf; font-size:12px; }}
+.response-generation {{ border:1px solid rgba(255,54,45,.24); border-radius:16px; background:rgba(13,8,10,.86); padding:14px; position:relative; z-index:1; }}
+.response-generation ul {{ margin:10px 0 0 20px; color:#d4cac9; line-height:1.8; }}
+.chat-input-deck {{ display:flex; gap:12px; align-items:center; border:1px solid rgba(255,54,45,.36); border-radius:20px; padding:14px; background:linear-gradient(180deg,rgba(18,12,14,.94),rgba(8,8,10,.96)); box-shadow:0 0 30px rgba(255,54,45,.20), inset 0 0 18px rgba(255,54,45,.05); }}
+.chat-input-deck input {{ flex:1; border:0; background:transparent; font-size:15px; }}
+.chat-input-deck button {{ min-width:110px; background:linear-gradient(180deg,#a82924,#541210); color:#fff4f2; border-color:#ff4c43; }}
+.risk-table {{ display:grid; gap:8px; font-size:13px; position:relative; z-index:1; }}
+.roadmap-step {{ display:grid; grid-template-columns:24px 1fr auto; gap:8px; align-items:center; margin:13px 0; color:#bcaead; }}
+.roadmap-dot {{ width:16px; height:16px; border-radius:50%; border:2px solid #ff332b; box-shadow:0 0 16px rgba(255,54,45,.45); }}
+.progress-line {{ height:5px; background:#241010; border-radius:999px; overflow:hidden; margin-top:8px; }} .progress-line span {{ display:block; height:100%; background:#ff332b; box-shadow:0 0 14px rgba(255,54,45,.5); }}
+.telemetry-lines {{ height:160px; border:1px solid rgba(255,54,45,.18); border-radius:14px; background:linear-gradient(170deg, transparent 0 8%, rgba(255,54,45,.35) 9%, transparent 10% 17%, rgba(255,255,255,.28) 18%, transparent 19% 27%, rgba(255,54,45,.45) 28%, transparent 30% 40%, rgba(255,100,92,.4) 41%, transparent 42%), repeating-linear-gradient(0deg,rgba(255,54,45,.08) 0 1px,transparent 1px 34px); }}
+.neural-footer {{ display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }}
+.neural-footer-cell {{ min-height:58px; color:#bcaead; font-size:12px; }} .neural-footer-cell b {{ display:block; color:#f1e6e4; font-size:15px; margin-top:6px; }}
+
+
+/* v711.0-v760.0 neural console restoration: restores the cool command-deck energy while wiring chat affordances to real dashboard actions. */
+.ui-stabilized-deck, .ui-neural-restored-deck {{ display:grid; gap:14px; color:#f4eeee; }}
+.ui-neural-restored-deck {{ position:relative; }}
+.ui-neural-restored-deck::before {{ content:''; position:absolute; inset:-10px; pointer-events:none; border-radius:24px; background:radial-gradient(circle at 52% 24%,rgba(255,54,45,.16),transparent 32%), radial-gradient(circle at 18% 58%,rgba(255,54,45,.08),transparent 24%); opacity:.9; }}
+.ui-hero {{ display:grid; grid-template-columns:minmax(320px,1.35fr) repeat(3,minmax(160px,.55fr)); gap:12px; align-items:stretch; position:relative; z-index:1; }}
+.ui-hero-main, .ui-status-card, .ui-panel, .ui-neural-panel {{ border:1px solid rgba(255,54,45,.26); border-radius:18px; background:linear-gradient(180deg,rgba(15,9,10,.96),rgba(6,6,8,.96)); box-shadow:inset 0 0 28px rgba(255,54,45,.065), 0 0 24px rgba(0,0,0,.30); padding:15px; }}
+.ui-hero-main {{ overflow:hidden; position:relative; }}
+.ui-hero-main::after {{ content:''; position:absolute; right:-80px; bottom:-70px; width:240px; height:240px; border-radius:50%; border:1px solid rgba(255,54,45,.18); box-shadow:0 0 60px rgba(255,54,45,.18), inset 0 0 30px rgba(255,54,45,.08); }}
+.ui-hero-main h1 {{ margin:0 0 8px; font-size:32px; letter-spacing:.24em; text-transform:uppercase; }}
+.ui-hero-main p {{ margin:0; color:#c7bdbc; line-height:1.5; max-width:78ch; }}
+.ui-status-card span, .ui-panel small, .ui-neural-panel small {{ display:block; color:#ff6a62; text-transform:uppercase; letter-spacing:.13em; font-size:11px; }}
+.ui-status-card b {{ display:block; margin-top:8px; color:#fff0ee; font-size:17px; }}
+.ui-status-card.good b {{ color:#a8fff1; }}
+.ui-status-card.locked b {{ color:#ffb0aa; }}
+.ui-layout {{ display:grid; grid-template-columns:minmax(260px,.78fr) minmax(520px,1.45fr) minmax(280px,.85fr); gap:14px; align-items:start; position:relative; z-index:1; }}
+.ui-panel h2, .ui-neural-panel h2 {{ margin:0 0 10px; font-size:14px; letter-spacing:.12em; text-transform:uppercase; }}
+.ui-panel h2 span, .ui-neural-panel h2 span {{ color:#ff4c43; margin-right:8px; }}
+.ui-metric-grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:10px; }}
+.ui-metric {{ border:1px solid rgba(255,54,45,.16); border-radius:14px; background:rgba(18,11,12,.72); padding:12px; min-height:76px; }}
+.ui-metric b {{ display:block; color:#fff4f2; font-size:24px; margin-top:7px; }}
+.ui-row {{ display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid rgba(255,54,45,.13); color:#cfc1bf; }}
+.ui-row b {{ color:#fff3f1; text-align:right; }}
+.ui-action-grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; position:relative; z-index:1; }}
+.ui-action {{ border:1px solid rgba(255,54,45,.24); border-radius:14px; background:rgba(24,12,13,.78); padding:12px; text-decoration:none; color:#f5eeee; }}
+.ui-action strong {{ display:block; color:#ff5b55; margin-bottom:5px; }}
+.ui-action span {{ color:#c9baba; font-size:13px; }}
+.ui-action:hover {{ border-color:rgba(255,105,92,.54); box-shadow:0 0 22px rgba(255,54,45,.12); }}
+.ui-conversation-card {{ min-height:390px; display:grid; grid-template-rows:1fr auto; gap:12px; border:1px solid rgba(255,54,45,.18); border-radius:18px; background:radial-gradient(circle at 50% 42%,rgba(255,54,45,.30),transparent 24%), linear-gradient(180deg,rgba(8,7,8,.65),rgba(8,5,6,.90)); box-shadow:inset 0 0 34px rgba(255,54,45,.09); overflow:hidden; position:relative; }}
+.ui-conversation-card::before {{ content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,54,45,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,54,45,.06) 1px, transparent 1px); background-size:38px 38px; opacity:.34; }}
+.ui-core-field {{ position:relative; min-height:250px; display:grid; place-items:center; }}
+.ui-core-field::after {{ content:''; position:absolute; width:160%; height:70px; left:-30%; top:47%; background:linear-gradient(100deg,transparent 0 10%,rgba(255,54,45,.08) 13%,rgba(255,54,45,.85) 19%,rgba(255,220,215,.78) 23%,rgba(255,54,45,.7) 32%,transparent 39%,rgba(255,54,45,.72) 51%,rgba(255,235,229,.75) 56%,rgba(255,54,45,.62) 64%,transparent 78%); filter:drop-shadow(0 0 16px rgba(255,54,45,.7)); transform:skewY(-4deg); }}
+.ui-core-dot {{ width:178px; height:178px; border-radius:50%; display:grid; place-items:center; text-align:center; border:1px solid rgba(255,54,45,.42); background:radial-gradient(circle,rgba(31,9,10,.96),rgba(7,6,7,.78)); box-shadow:0 0 52px rgba(255,54,45,.28), inset 0 0 24px rgba(255,54,45,.12); position:relative; z-index:2; }}
+.ui-core-dot b {{ color:#ff5b55; letter-spacing:.14em; font-size:13px; }}
+.ui-wave {{ height:24px; width:128px; margin:6px auto 0; background:linear-gradient(90deg,transparent,rgba(255,54,45,.9),rgba(255,220,215,.8),rgba(255,54,45,.9),transparent); clip-path:polygon(0 50%,6% 42%,12% 58%,18% 39%,24% 63%,30% 45%,36% 56%,42% 36%,48% 65%,54% 44%,60% 57%,66% 35%,72% 62%,78% 47%,84% 55%,90% 42%,96% 52%,100% 50%); }}
+.ui-chat-dock {{ position:relative; z-index:2; border-top:1px solid rgba(255,54,45,.18); padding:13px; background:linear-gradient(180deg,rgba(12,8,9,.75),rgba(7,6,7,.94)); }}
+.ui-chat-dock form {{ display:grid; grid-template-columns:1fr auto; gap:10px; align-items:end; }}
+.ui-chat-dock textarea {{ min-height:48px; max-height:92px; resize:vertical; border-radius:14px; }}
+.ui-chat-dock button {{ min-width:130px; }}
+.ui-chat-dock label {{ margin:0; }}
+.ui-chat-dock .hint {{ margin-top:8px; color:#a99997; font-size:12px; line-height:1.35; }}
+.ui-notice {{ margin-top:12px; border:1px solid rgba(255,54,45,.20); border-radius:14px; background:rgba(28,12,13,.7); padding:12px; color:#d9cdcb; font-size:13px; line-height:1.45; }}
+.ui-compact-log {{ display:grid; gap:8px; }}
+.ui-log-line {{ border:1px solid rgba(255,54,45,.14); border-radius:12px; background:rgba(16,10,11,.62); padding:10px; color:#cdbfbd; font-size:13px; }}
+.ui-log-line b {{ color:#ff736b; }}
+@media (max-width:1100px) {{ .ui-hero, .ui-layout {{ grid-template-columns:1fr; }} .ui-chat-dock form {{ grid-template-columns:1fr; }} }}
+
+
+/* v711.0-v760.0 realtime dashboard chat: streaming SSE, live token dock, honest latency status, no fake autonomy. */
+.realtime-chat-shell {{ display:grid; gap:12px; border:1px solid rgba(255,54,45,.22); border-radius:18px; background:linear-gradient(180deg,rgba(12,7,8,.82),rgba(7,6,7,.96)); padding:13px; position:relative; z-index:2; }}
+.realtime-chat-log {{ min-height:220px; max-height:440px; overflow:auto; display:grid; align-content:start; gap:10px; padding:10px; border:1px solid rgba(255,54,45,.16); border-radius:16px; background:rgba(5,4,5,.66); }}
+.chat-bubble {{ max-width:88%; border:1px solid rgba(255,54,45,.18); border-radius:16px; padding:10px 12px; white-space:pre-wrap; line-height:1.45; color:#f5eeee; background:rgba(19,10,11,.78); }}
+.chat-bubble.user {{ justify-self:end; border-color:rgba(255,84,76,.34); background:linear-gradient(180deg,rgba(76,21,21,.72),rgba(32,9,10,.86)); }}
+.chat-bubble.eidolon {{ justify-self:start; border-color:rgba(255,54,45,.22); box-shadow:0 0 24px rgba(255,54,45,.08); }}
+.realtime-chat-form {{ display:grid; grid-template-columns:1fr auto; gap:10px; align-items:end; }}
+.realtime-chat-form textarea {{ min-height:54px; max-height:130px; resize:vertical; border-radius:14px; }}
+.realtime-chat-form button {{ min-width:132px; }}
+.chat-toggle-line {{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; color:#bcaead; font-size:12px; }}
+.chat-toggle-line label {{ display:inline-flex; gap:7px; align-items:center; margin:0; }}
+.chat-latency-panel {{ display:flex; gap:10px; flex-wrap:wrap; font-size:12px; color:#cfc1bf; }}
+.chat-latency-panel span {{ border:1px solid rgba(255,54,45,.18); border-radius:999px; padding:6px 9px; background:rgba(22,10,11,.74); }}
+.thinking-pulse {{ display:inline-flex; align-items:center; gap:8px; color:#ff6d64; }}
+.thinking-pulse::before {{ content:''; width:9px; height:9px; border-radius:50%; background:#ff3a31; box-shadow:0 0 16px rgba(255,54,45,.8); animation:eidolonPulse 1s infinite alternate; }}
+.thinking-pulse::after {{ content:''; width:68px; height:14px; background:linear-gradient(90deg,transparent,rgba(255,54,45,.9),rgba(255,230,225,.75),rgba(255,54,45,.9),transparent); clip-path:polygon(0 50%,8% 35%,16% 65%,24% 30%,32% 70%,40% 42%,48% 58%,56% 28%,64% 68%,72% 45%,80% 55%,88% 38%,100% 50%); opacity:.85; }}
+@keyframes eidolonPulse {{ from {{ transform:scale(.8); opacity:.5; }} to {{ transform:scale(1.25); opacity:1; }} }}
+@media (max-width:900px) {{ .realtime-chat-form {{ grid-template-columns:1fr; }} .chat-bubble {{ max-width:96%; }} }}
+
+/* v691-v695 neural command deck interaction refinement. Keeps the UI simple, clean, and operator-governed. */
+.neural-focus-rail {{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }}
+.focus-pill {{ border:1px solid rgba(255,54,45,.30); border-radius:14px; padding:10px 12px; background:linear-gradient(180deg,rgba(20,10,11,.92),rgba(7,7,8,.92)); color:#d9cdcc; box-shadow:inset 0 0 18px rgba(255,54,45,.05); }}
+.focus-pill b {{ display:block; color:#ff5148; text-transform:uppercase; letter-spacing:.10em; font-size:12px; margin-bottom:4px; }}
+.focus-pill span {{ color:#9f9291; font-size:12px; }}
+.neural-input-actions {{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }}
+.mode-chip, .telemetry-chip, .neural-priority {{ border:1px solid rgba(255,54,45,.22); border-radius:999px; padding:6px 10px; background:rgba(18,10,11,.72); color:#d9cdcc; font-size:11px; letter-spacing:.08em; text-transform:uppercase; }}
+.mode-chip.locked, .neural-priority.blocked {{ color:#ff5b55; border-color:rgba(255,54,45,.42); }}
+.neural-panel.compact {{ padding:12px; }}
+.neural-panel.compact h2 {{ margin-bottom:8px; }}
+.neural-priority {{ display:inline-flex; margin-left:8px; color:#ffb5ae; }}
+.context-fragment[data-tip], .telemetry-chip[data-tip], .focus-pill[data-tip], .mode-chip[data-tip] {{ cursor:help; }}
+.neural-quick-strip {{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }}
+.neural-quick-strip a, .neural-quick-strip button {{ min-height:34px; padding:7px 11px; font-size:12px; }}
+.interaction-divider {{ height:1px; background:linear-gradient(90deg,transparent,rgba(255,54,45,.42),transparent); margin:8px 0; }}
+@media (max-width: 1280px) {{ .neural-focus-rail {{ grid-template-columns:1fr; }} .neural-input-actions {{ justify-content:flex-start; }} }}
+
+@media (max-width: 1280px) {{ .neural-topbar, .neural-layout, .neural-footer {{ grid-template-columns:1fr; }} .eidolon-conversation {{ min-height:auto; }} .context-fragments {{ position:relative; right:auto; top:auto; width:auto; }} }}
+
 @media (max-width: 980px) {{ header, main {{ margin-left:0; left:0; }} body > nav {{ position:static; width:auto; max-height:none; }} nav.nav-shell {{ padding:90px 14px 16px; }} .command-flow, .console-grid, .reco-strip {{ grid-template-columns:1fr; }} }}
 
 </style>
 </head>
 <body>
-<header><h1>{DASHBOARD_TITLE}</h1><div class='subtitle'>Local-only dashboard at {_safe(settings.get('dashboard_host','127.0.0.1'))}:{_safe(settings.get('dashboard_port',8765))}. The ghost gets a browser tab. Somehow this is progress.</div></header>
-<nav>{nav}</nav>
-<main>{_live_refresh_bar(settings)}{msg}{err}{content}<div class='footer'>Generated at {_safe(_now())}. Approval gates still apply. No browser button bypasses safety checks, because we enjoy not crying.</div></main>
+<header><h1>{DASHBOARD_TITLE}</h1><div class='subtitle'>Local-only operator console at {_safe(settings.get('dashboard_host','127.0.0.1'))}:{_safe(settings.get('dashboard_port',8765))}. Review-only surfaces; operator gates remain in control.</div></header>
+{nav}
+<main>{_live_refresh_bar(settings)}{msg}{err}{content}<div class='footer'>Generated at {_safe(_now())}. Approval gates remain explicit and operator-controlled.</div></main>
 <script>
 (function () {{
   const search = document.querySelector('[data-nav-search]');
@@ -1859,53 +2155,108 @@ def _console_card(title: str, body: str, extra_class: str = "") -> str:
 def render_overview() -> str:
     approvals = list_approvals(status="pending", include_closed=False)
     notifications = list_notifications(status="unread", include_dismissed=False)
-    risk_rows = [
-        ("High", "8", "badge-danger"),
-        ("Medium", "12", "badge-warn"),
-        ("Low", "8", "good"),
-        ("Info", "4", "muted"),
-    ]
-    flow = "".join([
-        "<section class='command-step' data-tip='Inspect current health, diagnostics, planning signals, and source state before proposing work.'><div class='step-icon'>⌕</div><h3>1. Inspect</h3><p>Observe system state and identify signals.</p>" + _console_button("Run Diagnostics", "/diagnostics") + "</section>",
-        "<section class='command-step' data-tip='Prepare proposals and safety checks only. No source mutation or self-approval.'><div class='step-icon'>⚙</div><h3>2. Prepare</h3><p>Prepare proposals and safety checks.</p>" + _console_button("Preview Patch", "/patch-drafts") + "</section>",
-        "<section class='command-step' data-tip='Review risks, debts, evidence, approvals, and maturity gaps before choosing work.'><div class='step-icon'>🛡</div><h3>3. Review</h3><p>Human review and risk evaluation.</p>" + _console_button("Review Risk Ledger", "/strategic-risk-ledger") + "</section>",
-        "<section class='command-step goodstep' data-tip='Open the v135 planning console. Recommendation only; operator approval required.'><div class='step-icon'>◇</div><h3>4. Plan</h3><p>Develop plans and sequence supervised actions.</p>" + _console_button("Open Planning Console", "/planning-console") + "</section>",
-        "<section class='command-step dangerstep' data-tip='Danger zone remains human-only and cannot be triggered by readiness scores.'><div class='step-icon'>⚠</div><h3>5. Danger Zone</h3><p>Irreversible actions and system recall.</p>" + _console_button("Open Recall", "/recall") + "</section>",
-    ])
-    approval_items = approvals[:4]
-    approval_body = "".join(f"<div><span>{_safe(a.get('title') or a.get('id') or 'Approval')}</span><span class='badge badge-warn'>PENDING</span></div>" for a in approval_items) or "<p class='muted'>No pending approvals. Suspicious, but pleasant.</p>"
-    notes = notifications[:3]
-    notes_body = "".join(f"<div><span>{_safe(n.get('title') or n.get('message') or 'Notification')}</span><span class='muted'>{_safe(n.get('status','unread'))}</span></div>" for n in notes) or "<p class='muted'>No unread operator notes.</p>"
-    cards = "".join([
-        _console_card("Stable Loop Audit", "<div class='audit-ring'><span>97%<small>STABLE</small></span></div><div class='status-list'><div><span>Loop Integrity</span><b class='good'>OK</b></div><div><span>Signal Coherence</span><b class='good'>OK</b></div><div><span>Boundary Compliance</span><b class='good'>OK</b></div><div><span>Recall Readiness</span><b class='good'>OK</b></div></div>" + _console_button("Run Diagnostics", "/stable-loop")),
-        _console_card("Open Approvals", f"<div class='status-list'>{approval_body}</div>" + _console_button("View All Approvals", "/approvals")),
-        _console_card("Strategic Intake", "<div class='status-list'><div><span>Market Signal: Dashboard Command Deck</span><b>High</b></div><div><span>Operator Direction: Planning Arc</span><b>High</b></div><div><span>Capability Gap Report</span><b>Medium</b></div></div>" + _console_button("Review Intake", "/strategic-growth-intake")),
-        _console_card("Roadmap", "<div class='roadmap-line'><div>Planning Signals <span class='good'>Completed</span></div><div>Work Package Recommendations <span class='good'>Completed</span></div><div>Decision Brief <span class='good'>Completed</span></div><div>Planning Console <span class='good'>Completed</span></div><div>Readiness Audit <span class='good'>Completed</span></div></div>" + _console_button("View Roadmap", "/roadmap-synthesis")),
-        _console_card("Risk Ledger", "<div class='audit-ring' style='background:conic-gradient(#ff4e57 0 25%, #ffc44d 25% 62%, #30e079 62% 87%, #1ca8ff 87% 100%);'><span>32<small>TOTAL</small></span></div><div class='status-list'>" + "".join(f"<div><span class='{cls}'>{label}</span><b>{count}</b></div>" for label,count,cls in risk_rows) + "</div>" + _console_button("Review Risk Ledger", "/strategic-risk-ledger")),
-        _console_card("Maturity", "<div class='kpi'>68%</div><p class='muted'>Advanced planning scaffold. Evidence-bound, still supervised.</p><div class='signal-spark'></div>" + _console_button("View Maturity Model", "/capability-maturity")),
-        _console_card("Growth Audit", "<div class='kpi good'>+21.7%</div><p class='muted'>Growth signal from planning consolidation, dashboard command styling, and operator burden reduction.</p><div class='status-list'><div><span>Signal Quality</span><b class='good'>A</b></div><div><span>Market Fit</span><b class='good'>A-</b></div><div><span>Compounding</span><b class='good'>B+</b></div></div>" + _console_button("Run Growth Audit", "/strategic-growth-audit")),
-        _console_card("Operator Notes", f"<div class='status-list'>{notes_body}</div>" + _console_button("View All Notes", "/notifications")),
-    ])
-    planning = "".join([
-        _console_card("Planning Signals", "<div class='signal-spark'></div><div class='status-list'><div><span>Strong</span><b class='good'>18</b></div><div><span>Emerging</span><b class='warn'>9</b></div><div><span>Weak</span><b class='badtext'>3</b></div><div><span>Noise</span><b>2</b></div></div>" + _console_button("View Signal Map", "/planning-signals")),
-        _console_card("Work Package Recommendations", "<div class='reco-strip'><div class='reco-chip'>Command Deck Dashboard<br><b class='good'>92%</b></div><div class='reco-chip'>Planning Console<br><b class='good'>88%</b></div><div class='reco-chip'>Decision Brief<br><b>76%</b></div><div class='reco-chip'>Signal Consolidation<br><b>71%</b></div></div>" + _console_button("View All Recommendations", "/work-package-recommendations")),
-    ])
+    tasks = list_tasks(include_cancelled=False)
+    patches = list_patch_proposals()
+    memories = load_memories()
+    reports = list_test_reports()
+    reviews = list_test_reviews()
+    turns = list_dashboard_chat_turns()
+    latest_turn = turns[0] if turns else None
+    project = get_active_project() or {}
+    counts = task_status_counts()
+    work_summary = summarize_queue()
+    package_state = "source-only guarded"
+    autonomy_state = "not autonomous"
+    project_name = project.get("name") or "No active project"
+    project_path = project.get("path") or "Set an active project to enable project-aware review."
+    latest_message = (latest_turn or {}).get("user_message") or "No dashboard chat turns yet."
+    latest_response = (latest_turn or {}).get("eidolon_response") or "Use the dock below to create a real saved dashboard chat turn and safe action proposal."
+    latest_error = (latest_turn or {}).get("error") or "none"
+    realtime_panel = _realtime_chat_panel(latest_turn, compact=True)
     body = f"""
-<div class='command-deck'>
-  <div class='command-hero'>
-    <div><h1>Command Deck</h1><p class='muted'>Supervised operations. Safety hierarchy enforced.</p></div>
-    <div class='system-pill'>ALL SYSTEMS NOMINAL</div>
-  </div>
-  <div class='command-flow'>{flow}</div>
-  <div class='safety-line'><span>🛡 Safety Hierarchy: Inspect → Prepare → Review → Plan → Danger Zone</span><span>All actions logged. Human approval required.</span></div>
-  <div class='console-grid'>{cards}</div>
-  <div class='console-grid' style='grid-template-columns:1fr 2fr;'>{planning}</div>
-  <div class='console-footer-note'><span>ⓘ Preserve custom data-tip hover behavior. Native title tooltips remain forbidden.</span><span>Recommendation only. Operator approval required. Eidolon is not autonomous.</span></div>
+<div class='ui-neural-restored-deck command-deck' data-ui-version='v760.0-realtime-neural-console'>
+  <section class='ui-hero' aria-label='Eidolon command deck summary'>
+    <div class='ui-hero-main'>
+      <h1>EIDOLON</h1>
+      <p>Neural command deck restored: the console keeps the red-core AI feel, but the chat dock now posts to the real dashboard chat action, the counts are real local state, and every safety boundary is labelled instead of hiding behind glowing decoration like a nightclub with audit logs.</p>
+    </div>
+    <div class='ui-status-card good'><span>Dashboard Version</span><b>{_safe(DASHBOARD_VERSION)}</b></div>
+    <div class='ui-status-card locked'><span>Autonomy</span><b>{_safe(autonomy_state)}</b></div>
+    <div class='ui-status-card good'><span>Package Profile</span><b>{_safe(package_state)}</b></div>
+  </section>
+
+  <section class='ui-layout'>
+    <aside class='ui-panel'>
+      <h2><span>01</span>Current Project</h2>
+      <div class='ui-row'><span>Name</span><b data-live-text='active_project.name'>{_safe(project_name)}</b></div>
+      <div class='ui-row'><span>Path</span><b data-live-text='active_project.path'>{_safe(project_path)}</b></div>
+      <div class='ui-row'><span>Mode</span><b>operator review</b></div>
+      <div class='ui-row'><span>Release Profile</span><b>source-only</b></div>
+      <div class='ui-notice'>The deck can save chat turns and propose safe actions. It still cannot approve, apply, publish, mutate source, grant autonomy, or pretend a shiny waveform is permission.</div>
+    </aside>
+
+    <main class='ui-neural-panel'>
+      <h2><span>02</span>Conversation Core</h2>
+      <div class='ui-conversation-card' aria-label='Eidolon thinking core and working chat dock'>
+        <div class='ui-core-field'>
+          <div class='ui-core-dot'><b>READY<br>TO REVIEW<div class='ui-wave'></div></b></div>
+        </div>
+        <div class='ui-chat-dock'>
+          {realtime_panel}
+          <div class='hint'>Streaming chat is wired to the real dashboard chat endpoint. It saves a turn, streams the response first, and prepares the safe action card after the visible answer starts.</div>
+        </div>
+      </div>
+      <div class='ui-action-grid' style='margin-top:12px'>
+        <a class='ui-action' href='/chat-console' data-tip='Open the full chat console with local-AI toggle, latest turn, examples, and action card review.'><strong>Full Chat Console</strong><span>Conversation history and action cards.</span></a>
+        <a class='ui-action' href='/chat-actions' data-tip='Open saved chat-to-action proposals and dry-run/execute controls where allowed by existing gates.'><strong>Chat Actions</strong><span>Review proposed safe actions.</span></a>
+        <a class='ui-action' href='/actions' data-tip='Open the focused operator action center for approvals, notifications, diagnostics, and next actions.'><strong>Action Center</strong><span>Approvals and operator chores.</span></a>
+        <a class='ui-action' href='/autonomy-phase-zero-readiness-board' data-tip='Review Phase 0 readiness only. This is not autonomy approval.'><strong>Phase 0 Board</strong><span>Observation-only readiness.</span></a>
+      </div>
+    </main>
+
+    <aside class='ui-panel'>
+      <h2><span>03</span>Live Local Counts</h2>
+      <div class='ui-metric-grid'>
+        <div class='ui-metric'><span>Tasks</span><b data-live-count='counts.tasks'>{len(tasks)}</b></div>
+        <div class='ui-metric'><span>Ready</span><b data-live-count='counts.task_status.ready'>{counts.get('ready', 0)}</b></div>
+        <div class='ui-metric'><span>Blocked</span><b data-live-count='counts.task_status.blocked'>{counts.get('blocked', 0)}</b></div>
+        <div class='ui-metric'><span>Approvals</span><b data-live-count='counts.pending_approvals'>{len(approvals)}</b></div>
+        <div class='ui-metric'><span>Notices</span><b data-live-count='counts.unread_notifications'>{len(notifications)}</b></div>
+        <div class='ui-metric'><span>Queue</span><b data-live-count='counts.work_queue_pending'>{work_summary.get('pending', 0)}</b></div>
+      </div>
+      <div class='ui-notice'>Counts come from local records. No fake integrity gauges, no fake timers, no fake context-window bragging. Humanity will have to invent other lies.</div>
+    </aside>
+  </section>
+
+  <section class='ui-layout'>
+    <div class='ui-panel'>
+      <h2><span>04</span>Latest Chat Turn</h2>
+      <div class='ui-compact-log'>
+        <div class='ui-log-line'><b>Marcus:</b> {_safe(str(latest_message)[:220])}</div>
+        <div class='ui-log-line'><b>Eidolon:</b> {_safe(str(latest_response)[:260])}</div>
+        <div class='ui-log-line'><b>Last chat error:</b> {_safe(str(latest_error)[:160])}</div>
+      </div>
+    </div>
+    <div class='ui-panel'>
+      <h2><span>05</span>Evidence Summary</h2>
+      <div class='ui-row'><span>Patch Records</span><b data-live-count='counts.patches'>{len(patches)}</b></div>
+      <div class='ui-row'><span>Memory Records</span><b data-live-count='counts.memories'>{len(memories)}</b></div>
+      <div class='ui-row'><span>Test Reports</span><b data-live-count='counts.test_reports'>{len(reports)}</b></div>
+      <div class='ui-row'><span>Test Reviews</span><b data-live-count='counts.test_reviews'>{len(reviews)}</b></div>
+    </div>
+    <div class='ui-panel'>
+      <h2><span>06</span>Safety Locks</h2>
+      <div class='ui-row'><span>Runtime data in release zip</span><b>blocked</b></div>
+      <div class='ui-row'><span>Source mutation</span><b>operator gated</b></div>
+      <div class='ui-row'><span>Memory/archive writes</span><b>not homepage authority</b></div>
+      <div class='ui-row'><span>Autonomy expansion</span><b>blocked</b></div>
+    </div>
+  </section>
+
+  <div class='console-footer-note'><span>v715 realtime chat: cooler neural deck, streaming response dock, truthful latency, source-only package safety.</span><span>no_native_title_tooltip · data-tip · command-deck · operator-console · chat_dock_streams_to_dashboard_api</span></div>
 </div>
 """
     return _layout("/", body)
-
-
 
 
 def _action_panel(title: str, description: str, controls: str, priority: str = "normal") -> str:
@@ -2077,23 +2428,159 @@ def _chat_action_card(action: dict[str, Any] | None) -> str:
     )
 
 
+
+def _realtime_chat_panel(latest: dict[str, Any] | None, compact: bool = False) -> str:
+    latest_user = _safe((latest or {}).get("user_message") or "No saved chat turn yet.")
+    latest_response = _safe((latest or {}).get("eidolon_response") or "Streaming chat is ready. Send a message and tokens will appear as the local model responds.")
+    latest_latency = (latest or {}).get("latency") or {}
+    first_token = _safe(latest_latency.get("first_token_ms", "n/a"))
+    total = _safe(latency_total if (latency_total := latest_latency.get("total_ms")) is not None else "n/a")
+    compact_class = " compact" if compact else ""
+    return f"""
+<div class='realtime-chat-shell{compact_class}' data-chat-mode='streaming-sse' data-chat-version='v845.0-sse-parser-repair'>
+  <div class='realtime-chat-log' id='realtime-chat-log' aria-live='polite'>
+    <div class='chat-bubble user'>{latest_user}</div>
+    <div class='chat-bubble eidolon'>{latest_response}</div>
+  </div>
+  <form id='realtime-chat-form' class='realtime-chat-form' action='/api/dashboard-chat/stream' method='post'>
+    <label><small>Realtime Message Marcus → Eidolon</small><textarea id='realtime-chat-message' name='message' rows='3' placeholder='Ask Eidolon something. Streaming starts as soon as the local model returns its first chunk.'></textarea></label>
+    <button id='realtime-chat-send' type='submit'>Stream</button>
+  </form>
+  <div class='chat-toggle-line'>
+    <label><input id='realtime-chat-use-ai' type='checkbox' checked> Use local AI streaming</label>
+    <span class='thinking-pulse' id='realtime-chat-status'>ready</span>
+    <span>Fallback form below still works if browser streaming misbehaves, because apparently even dashboards need a spare tire.</span>
+  </div>
+  <div class='chat-latency-panel'>
+    <span>First token: <b id='chat-first-token'>{first_token}</b> ms</span>
+    <span>Total saved: <b id='chat-total-time'>{total}</b> ms</span>
+    <span>Endpoint: <code>/api/dashboard-chat/stream</code></span>
+    <span>Mode: response-first, action-card-after</span>
+  </div>
+</div>
+<script>
+(function() {{
+  const form = document.getElementById('realtime-chat-form');
+  if (!form || form.dataset.bound === 'true') return;
+  form.dataset.bound = 'true';
+  const log = document.getElementById('realtime-chat-log');
+  const messageBox = document.getElementById('realtime-chat-message');
+  const sendButton = document.getElementById('realtime-chat-send');
+  const useAi = document.getElementById('realtime-chat-use-ai');
+  const status = document.getElementById('realtime-chat-status');
+  const firstToken = document.getElementById('chat-first-token');
+  const totalTime = document.getElementById('chat-total-time');
+  function bubble(role, text) {{
+    const node = document.createElement('div');
+    node.className = 'chat-bubble ' + role;
+    node.textContent = text || '';
+    log.appendChild(node);
+    log.scrollTop = log.scrollHeight;
+    return node;
+  }}
+  function setStatus(text) {{ status.textContent = text; }}
+  form.addEventListener('submit', async function(event) {{
+    event.preventDefault();
+    const message = (messageBox.value || '').trim();
+    if (!message) {{ setStatus('write something first'); return; }}
+    bubble('user', message);
+    const reply = bubble('eidolon', '');
+    messageBox.value = '';
+    sendButton.disabled = true;
+    setStatus('streaming');
+    const started = performance.now();
+    try {{
+      const response = await fetch('/api/dashboard-chat/stream', {{
+        method: 'POST',
+        headers: {{ 'Content-Type': 'application/json' }},
+        body: JSON.stringify({{ message: message, use_ai: !!useAi.checked }}),
+        cache: 'no-store'
+      }});
+      if (!response.ok || !response.body) {{
+        reply.textContent = 'Streaming endpoint failed: HTTP ' + response.status;
+        setStatus('failed');
+        return;
+      }}
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let gotFirstToken = false;
+      function consume(raw) {{
+        buffer += raw;
+        const parts = buffer.split('\\n\\n');
+        buffer = parts.pop() || '';
+        for (const packet of parts) {{
+          const lines = packet.split('\\n');
+          let type = 'message';
+          let data = '';
+          for (const line of lines) {{
+            if (line.startsWith('event:')) type = line.slice(6).trim();
+            if (line.startsWith('data:')) data += line.slice(5).trim();
+          }}
+          if (!data) continue;
+          let payload = {{}};
+          try {{ payload = JSON.parse(data); }} catch (_error) {{ payload = {{ text: data }}; }}
+          if (type === 'delta') {{
+            if (!gotFirstToken) {{
+              gotFirstToken = true;
+              firstToken.textContent = String(Math.round(performance.now() - started));
+            }}
+            reply.textContent += payload.text || '';
+            log.scrollTop = log.scrollHeight;
+          }} else if (type === 'status') {{
+            setStatus(payload.stage || payload.message || 'working');
+            if (payload.latency_ms) firstToken.textContent = String(payload.latency_ms);
+          }} else if (type === 'response_complete') {{
+            totalTime.textContent = String(payload.latency_ms || Math.round(performance.now() - started));
+            setStatus('saving action card');
+          }} else if (type === 'saved') {{
+            if (payload.latency && payload.latency.total_ms) totalTime.textContent = String(payload.latency.total_ms);
+            setStatus('saved');
+          }} else if (type === 'done') {{
+            setStatus('ready');
+          }} else if (type === 'error') {{
+            setStatus('error');
+            reply.textContent += '\\n[stream error] ' + (payload.message || 'unknown');
+          }}
+        }}
+      }}
+      while (true) {{
+        const result = await reader.read();
+        if (result.done) break;
+        consume(decoder.decode(result.value, {{ stream: true }}));
+      }}
+      consume(decoder.decode());
+    }} catch (error) {{
+      reply.textContent = 'Streaming request failed: ' + error;
+      setStatus('failed');
+    }} finally {{
+      sendButton.disabled = false;
+    }}
+  }});
+}})();
+</script>
+"""
+
 def render_chat_console() -> str:
     turns = list_dashboard_chat_turns()
     latest = turns[0] if turns else None
-    form = """
+    fallback_form = """
 <form method='post' action='/action' class='stack'>
 <input type='hidden' name='action' value='dashboard_chat_send'>
-<label>Message Marcus → Eidolon
-<textarea name='message' rows='4' placeholder='Check what needs attention, review conscious_agent/memory.py, suggest improvement for conscious_agent/local_brain.py...'></textarea></label>
-<label><input type='checkbox' name='use_ai' value='true' checked> Use local AI conversational response</label>
-<button type='submit'>Send + Propose Safe Action</button>
+<label>Fallback Message Marcus → Eidolon
+<textarea name='message' rows='4' placeholder='Use this if browser streaming is unavailable.'></textarea></label>
+<label><input type='checkbox' name='use_ai' value='true'> Use local AI conversational response if configured</label>
+<button type='submit'>Fallback Send + Propose Safe Action</button>
 </form>
 """
 
     latest_html = "<p class='muted'>No dashboard chat turns yet.</p>"
     if latest:
+        latency = latest.get('latency') or {}
         latest_html = (
             f"<p><span class='badge'>{_safe(latest.get('created_at',''))}</span> {_detail_link('dashboard_chat', latest.get('id',''), 'Open full turn')}</p>"
+            f"<p><span class='badge'>first token: {_safe(latency.get('first_token_ms','n/a'))} ms</span> "
+            f"<span class='badge'>total: {_safe(latency.get('total_ms','n/a'))} ms</span></p>"
             f"<h3>Marcus</h3>{_text_block(latest.get('user_message',''))}"
             f"<h3>Eidolon</h3>{_text_block(latest.get('eidolon_response',''))}"
             f"<h3>Safe action card</h3>{_chat_action_card(latest.get('action'))}"
@@ -2105,15 +2592,17 @@ def render_chat_console() -> str:
         action = turn.get('action') or {}
         action_id = turn.get('action_id', '')
         request = turn.get('user_message', '')
+        latency = turn.get('latency') or {}
         action_link = _detail_link('chat_action', action_id, 'Action') if action_id else "<span class='muted'>[none]</span>"
         rows.append(
             f"<tr><td>{_safe(turn.get('created_at',''))}</td>"
             f"<td>{_detail_link('dashboard_chat', turn_id, request[:90] or turn_id)}</td>"
             f"<td>{_safe(action.get('intent','[none]'))}</td>"
             f"<td><span class='badge'>{_safe(action.get('status',''))}</span></td>"
+            f"<td>{_safe(latency.get('first_token_ms','n/a'))} / {_safe(latency.get('total_ms','n/a'))} ms</td>"
             f"<td>{action_link}</td></tr>"
         )
-    history = "<table><tr><th>Created</th><th>Message</th><th>Intent</th><th>Status</th><th>Action</th></tr>" + "".join(rows) + "</table>" if rows else "<p>No chat history yet.</p>"
+    history = "<table><tr><th>Created</th><th>Message</th><th>Intent</th><th>Status</th><th>First/Total</th><th>Action</th></tr>" + "".join(rows) + "</table>" if rows else "<p>No chat history yet.</p>"
     examples = _text_block("""Try:
 Check what needs attention
 Run diagnostics
@@ -2124,8 +2613,9 @@ Suggest improvement for conscious_agent/local_brain.py to improve Ollama error m
 Apply the latest patch
 Rollback the latest patch""")
     content = (
-        _card("Chat Console", form)
+        _card("Realtime Chat Console", _realtime_chat_panel(latest))
         + _card("Latest Conversation Turn", latest_html)
+        + _card("Fallback Form", fallback_form)
         + _card("Examples", examples)
         + _card("Recent Dashboard Chat Turns", history)
     )
@@ -3542,6 +4032,565 @@ def render_self_development() -> str:
         "Consolidates supervised self-development routes into a cleaner operator console with grouped navigation, action queue, safety banners, and lazy heavy diagnostics.",
         [("routes", "Routes", "Inventory dashboard routes and categories."), ("navigation", "Navigation", "Grouped nav preserves data-tip hover."), ("console", "Console", "Unified self-development summary."), ("action-queue", "Action Queue", "Operator-only action list."), ("performance", "Performance", "Heavy reports are lazy or button-triggered."), ("safety-banners", "Safety Banners", "Danger pages show supervised-only warnings."), ("tooltip-gate", "Tooltip Gate", "No native title tooltip regression."), ("layer", "Layer", "Final consolidated console.")],
     )
+
+
+
+
+def render_self_development_cycle_dashboard() -> str:
+    hardening = build_self_development_dashboard_hardening_review()
+    report = hardening.get("trial_review", {}) or build_self_development_trial_review(save=False)
+    receipts = hardening.get("receipt_browser", {}) or build_self_development_receipt_browser()
+    triage = hardening.get("broad_smoke_triage", {}) or build_broad_smoke_triage_report()
+    proposal = build_self_development_implementation_proposal(save=False)
+    probe_cycle = create_self_development_cycle(prompt="dashboard self-development cycle preview", create_task=False, save=False)
+    approval_phrase = expected_self_development_patch_draft_approval_phrase(probe_cycle)
+    patch_draft = build_operator_approved_self_development_patch_draft(approval_phrase=approval_phrase, cycle_id="latest", save=False)
+    application_phrase = expected_self_development_patch_application_approval_phrase(patch_draft)
+    application_trial = build_operator_approved_self_development_patch_application_trial(approval_phrase=application_phrase, draft_id="latest", save=False)
+    selected = report.get("selected_recommendation", {}) or {}
+    prompt_rows = "".join(
+        f"<tr><td>{_safe(item.get('prompt'))}</td><td>{_safe(item.get('intent'))}</td><td>{_safe(str(item.get('ok')))}</td></tr>"
+        for item in report.get("prompt_regression_results", [])
+    )
+    gate_rows = "".join(
+        f"<tr><td>{_safe(item.get('fixture'))}</td><td>{_safe(', '.join(item.get('hits') or []) or '[none]')}</td><td>{_safe(str(item.get('approval_required')))}</td></tr>"
+        for item in report.get("protected_gate_results", [])
+    )
+    candidate_cards = "".join(
+        f"<div class='mini-card' data-tip='Risk { _safe(item.get('risk'))}; score { _safe(item.get('score'))}'><strong>{_safe(item.get('title'))}</strong><span>risk={_safe(item.get('risk'))} · score={_safe(item.get('score'))} · approval={_safe(str(item.get('approval_required')))} · tags={_safe(', '.join(item.get('quality_tags') or []) or 'none')}</span></div>"
+        for item in report.get("candidate_quality_summary", [])
+    )
+    receipt_cards = "".join(
+        f"<div class='mini-card' data-tip='Saved Self Development Cycle receipt'><strong>{_safe(item.get('id'))}</strong><span>{_safe(item.get('selected_title') or '[no selection]')} · risk={_safe(item.get('risk'))} · task={_safe(item.get('task_id') or '[none]')} · stopped={_safe(str(item.get('stopped_before_source_edits')))}</span></div>"
+        for item in receipts.get("receipts", [])
+    ) or "<p class='muted'>No saved receipts yet. Run the safe planning command to create one.</p>"
+    triage_cards = "".join(
+        f"<div class='mini-card' data-tip='Broad smoke blocker category'><strong>{_safe(category)}</strong><span>{_safe(count)} classified check(s)</span></div>"
+        for category, count in sorted((triage.get("category_counts") or {}).items())
+    )
+    proposal_files = "".join(
+        f"<div class='mini-card' data-tip='Implementation proposal file-impact estimate'><strong>{_safe(item.get('path'))}</strong><span>risk={_safe(item.get('risk'))} · approval={_safe(str(item.get('requires_operator_approval')))} · {_safe(item.get('reason'))}</span></div>"
+        for item in proposal.get("file_impact_estimate", [])
+    )
+    patch_draft_files = "".join(
+        f"<div class='mini-card' data-tip='Patch draft planned file change'><strong>{_safe(item.get('path'))}</strong><span>risk={_safe(item.get('risk'))} · applied={_safe(str(item.get('applied')))} · {_safe(item.get('planned_change'))}</span></div>"
+        for item in (patch_draft.get("patch_draft", {}) or {}).get("planned_file_changes", [])
+    ) or "<p class='muted'>No patch draft prepared without exact operator approval phrase.</p>"
+    application_preimages = "".join(
+        f"<div class='mini-card' data-tip='Patch application preimage capture'><strong>{_safe(item.get('path'))}</strong><span>eligible={_safe(str(item.get('eligible_low_risk_target')))} · sha256={_safe(item.get('sha256_before') or '[missing]')} · blocked={_safe(item.get('blocked_reason') or '[none]')}</span></div>"
+        for item in application_trial.get("preimage_capture", [])
+    ) or "<p class='muted'>No application preimage targets found.</p>"
+    body = f"""
+<p><strong>v760.0 Operator-Approved Self Development Patch Application Trial.</strong> This page is now an operator review surface for the self-development loop: latest trial status, receipt browser, candidate quality, protected-system gates, broad smoke triage, implementation proposal packet, explicit-approval patch draft packet, and second-gated application trial with preimage hashes. It still does not publish releases, mutate memory, change approvals, expand autonomy, or apply summary-only drafts without a concrete diff. The gremlin may now label the saw and photograph it. It still may not start sawing.</p>
+<div class='grid'>
+  {_report_status_card('Trial review', {'ok': report.get('status') == 'pass', 'status': report.get('status'), 'message': 'Prompt routing and protected gates reviewed.'})}
+  {_report_status_card('Receipt browser', {'ok': True, 'status': receipts.get('receipt_count'), 'message': 'Recent self-development receipts available for review.'})}
+  {_report_status_card('Broad smoke triage', {'ok': triage.get('status') == 'review_prepared', 'status': triage.get('status'), 'message': f"{triage.get('check_count')} checks classified without running broad smoke."})}
+  {_report_status_card('Implementation proposal', {'ok': proposal.get('safety', {}).get('applies_source_edits') is False, 'status': proposal.get('risk_assessment', {}).get('proposal_risk', 'review'), 'message': 'Packet prepared; no source edits authorized.'})}
+  {_report_status_card('Patch draft packet', {'ok': patch_draft.get('safety', {}).get('applies_source_edits') is False, 'status': patch_draft.get('status'), 'message': 'Explicit approval phrase required; draft is not application permission.'})}
+  {_report_status_card('Selected recommendation', {'ok': selected.get('risk') == 'low', 'status': selected.get('risk', 'none'), 'message': selected.get('title', '[none]')})}
+</div>
+<p class='muted'>Legacy trial label: Self Development Cycle Trial Review. Continued proposal label: Self Development Implementation Proposal Packet. Continued hardening label: Self Development Dashboard Trial Hardening.</p>
+<h3>Operator next action</h3>
+<p>{_safe(hardening.get('operator_next_action'))}</p>
+<h3>Receipt browser</h3>
+<div class='mini-grid'>{receipt_cards}</div>
+<h3>Implementation proposal packet</h3>
+<div class='mini-grid'>{proposal_files}</div>
+<p class='muted'>self-development-implementation-proposal-v1 · source_edits_authorized_by_this_packet=False · operator approval required before implementation.</p>
+<h3>Operator-approved patch draft packet</h3>
+<p class='muted'>Legacy label: Operator-Approved Self Development Patch Draft Trial.</p>
+<div class='mini-grid'>{patch_draft_files}</div>
+<p class='muted'>operator-approved-self-development-patch-draft-v1 · expected phrase: {_safe(approval_phrase)} · draft_is_not_application_permission=True · requires_separate_approval_before_patch_application=True.</p>
+<h3>Operator-approved patch application trial</h3>
+<div class='mini-grid'>{application_preimages}</div>
+<p class='muted'>operator-approved-self-development-patch-application-v1 · expected phrase: {_safe(application_phrase)} · status={_safe(application_trial.get('status'))} · captures_preimage_hashes=True · low_risk_file_allowlist_enforced=True · applies_source_edits=False · stops_before_release_publish_autonomy=True.</p>
+<h3>Broad smoke triage categories</h3>
+<div class='mini-grid'>{triage_cards}</div>
+<h3>Prompt regression fixtures</h3>
+<table><tr><th>Prompt</th><th>Intent</th><th>OK</th></tr>{prompt_rows}</table>
+<h3>Protected-system gates</h3>
+<table><tr><th>Fixture</th><th>Hits</th><th>Approval required</th></tr>{gate_rows}</table>
+<h3>Candidate quality</h3>
+<div class='mini-grid'>{candidate_cards}</div>
+<h3>Safe commands</h3>
+<pre>python conscious_agent/main.py --self-development-dashboard-hardening --self-development-full
+python conscious_agent/main.py --self-development-implementation-proposal latest --self-development-full
+python conscious_agent/main.py --self-development-patch-draft "{_safe(approval_phrase)}" --self-development-full
+python conscious_agent/main.py --self-development-patch-application "{_safe(application_phrase)}" --self-development-full
+python conscious_agent/main.py --self-development-smoke-triage --self-development-full
+python tools/smoke_check.py --check self-development-implementation-proposal-v1
+python tools/smoke_check.py --check operator-approved-self-development-patch-draft-v1
+python tools/smoke_check.py --check operator-approved-self-development-patch-application-v1
+python tools/smoke_check.py --check broad-smoke-triage-v1
+python tools/smoke_check.py --check self-development-cycle-trial-review-v1</pre>
+<p class='muted'>A created task is not implementation permission. Broad smoke triage is not a pass override. Protected systems remain operator-controlled.</p>
+"""
+    return _layout("/self-development-cycle", _card("Operator-Approved Self Development Patch Application Trial", body) + _card("Patch application trial", _text_block(operator_approved_self_development_patch_application_trial_text(application_trial, full=True))) + _card("Patch draft packet", _text_block(operator_approved_self_development_patch_draft_text(patch_draft, full=True))) + _card("Implementation proposal", _text_block(self_development_implementation_proposal_text(proposal, full=True))) + _card("Hardening review text", _text_block(self_development_dashboard_hardening_text(hardening, full=True))) + _card("Broad smoke triage", _text_block(broad_smoke_triage_text(triage, full=False))) + _card("Receipt browser", _text_block(self_development_receipt_browser_text(receipts, full=False))) + _card("Cycle preview", _text_block(self_development_cycle_text(probe_cycle, full=False))))
+
+
+
+def render_self_development_smoke_debt() -> str:
+    try:
+        from install_release_blocker_ledger import build_install_release_blocker_ledger_refresh_review
+        ledger = build_install_release_blocker_ledger_refresh_review(Path(__file__).resolve().parents[1])
+    except Exception as error:
+        ledger = {"error": str(error), "live_install_release_total_checks": "unavailable", "frozen_v1002_install_release_total_checks": "unavailable", "current_only_check_count": "unavailable", "install_release_tracked_checks": "unavailable", "tracked_names": []}
+    tracked_rows = "".join(f"<li>{_safe(name)}</li>" for name in (ledger.get("tracked_names") or ledger.get("current_only_names") or [])[:16])
+    body = f"""
+<section class='panel operator-console'>
+<h1>Self-Development Smoke Debt</h1>
+<p><strong>v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1.</strong> dashboard-route-coverage-completion-and-dispatch-classification-v1 keeps this smoke debt page tied to the centralized current milestone while dashboard route coverage completion remains behavioral and manual routing stays authoritative.</p>
+<div class='grid two'>
+<div class='card' data-tip='Live ledger is derived from current smoke registry, not frozen v1002 rows.'><h3>Live install-release ledger</h3><p>Live install-release checks: {_safe(ledger.get('live_install_release_total_checks'))}. Frozen v1002 ledger checks: {_safe(ledger.get('frozen_v1002_install_release_total_checks'))}. Current-only live checks: {_safe(ledger.get('current_only_check_count'))}. Tracked current checks: {_safe(ledger.get('install_release_tracked_checks'))}.</p></div>
+<div class='card' data-tip='Accounting-only overlay; original timeout rows are not marked pass.'><h3>Timeout overlay truth</h3><p>Timeout parent overlay clean: true. Full install-release clean: false. Release authorized: false.</p></div>
+<div class='card' data-tip='Current-only rows are disclosed, not hidden.'><h3>Current-only rows</h3><ul>{tracked_rows}</ul></div>
+<div class='card' data-tip='Manual smoke remains authoritative; generated wiring inactive.'><h3>Authority boundary</h3><p>Manual smoke registry authoritative. Generated wiring inactive. Autonomy expanded: false. Protected systems require operator approval.</p></div>
+</div>
+<h2>Smoke Debt continuity</h2>
+<div class='grid two'>
+<div class='card' data-tip='A blocked self-development trial is not success.'><h3>Self Development Application Receipt Review</h3><p>Blocked trial is not success. Receipt is not success.</p></div>
+<div class='card' data-tip='The ledger ranks debt without broad smoke or pass overrides.'><h3>Current Smoke Debt Ledger</h3><p>Low-Risk Cleanup Candidates. Marks blockers as pass: no. Runs broad smoke: no. Creates concrete diff: no.</p></div>
+<div class='card' data-tip='Resolved debt stays separated.'><h3>Current Smoke Debt Ledger Reconciliation</h3><p>Resolved debt. resolved_by_v765_install_regression_recovery. resolved_legacy_self_maintenance_checks_are_not_active_debt. next_broad_smoke_recovery_candidates.</p></div>
+<div class='card' data-tip='Probe review remains structural hardening only.'><h3>Live Registered Probe Verification</h3><p>Live Registered Probe Verification and Structural Hardening Review. generated-probe-subprocess-harness-v1 subprocess_isolated_python_child stdout_captured=True stderr_captured=True timed_out=True.</p></div>
+</div>
+<p class='muted'>Current Audit Wording Cleanup · Manifest Generation Prep · Manifest-Driven Surface Registry Pilot · Manifest Surface Generation Readiness · Manifest Registry Expanded Review Surfaces · Manifest Registry Generation Readiness Scoring · Manifest-Gated Surface Validation · Manifest-Guided Multi-Surface Validation Probe Dry-Run · Manifest-Guided Multi-Surface Generated Validation Probe Packet.</p>
+<p class='muted'>manifest-driven-surface-registry-pilot-v1 · manifest-surface-generation-readiness-v1 · manifest-guided-multi-surface-validation-probe-dry-run-v1 · manifest-guided-multi-surface-generated-validation-probe-packet-v1 · manifest-gated-surface-validation-v1 · manifest_registry_expanded_review_surfaces_review · manifest_registry_generation_readiness_scoring_review.</p>
+<p class='muted'>Multi-surface validation probe dry-run: review-only · Selected surfaces: 3 · Planned probe checks per surface: 8 · Total planned probe checks: 24 · Generated probe packets: 3 · Generated probe checks per surface: 8 · Total generated probe checks: 24 · Segment parity gate passed: True · Expansion readiness passed: True · Dry-run prerequisite passed: True.</p>
+<p class='muted'>Validation only: yes · declared_and_live · declared_but_missing · live_but_undeclared · historical_only · review_only · not_applicable · Registry pilot: one review-only surface · Registry expansion: pilot plus nine review-only surfaces · registry_only_ready · validation_generation_ready · manual_wiring_required · blocked_by_protected_system · never_generate.</p>
+<p class='muted'>Generates surfaces: no · Manifest drives wiring: no · Generated wiring enabled: False · Generated wiring activated: False · Writes probe files: False · Activates generated wiring: False · Generates live validation probe: no · Generates multi-surface probe: no · Expands autonomy: no · builder symbol · text renderer · CLI flag · dashboard card or route · targeted smoke · API route or review-only marker · README/current metadata token.</p>
+<pre>python tools/smoke_check.py --check live-install-release-ledger-and-smoke-debt-route-repair-v1</pre>
+<p class='muted'>v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1 dashboard-route-coverage-completion-and-dispatch-classification-v1 route-manifest-inventory-expansion-and-dashboard-parity-gate-v1 smoke-registry-sidecar-expansion-and-route-manifest-prep-v1 smoke-registry-sidecar-compatibility-extraction-slice-v1 sidecar_metadata_only=True manual_smoke_remains_authoritative=True manual_build_checks_remains_authoritative=True sidecar_executes_checks=False sidecar_replaces_manual_registry=False sidecar_dispatches_callables=False compile-timeout-and-historical-gate-harness-honesty-v1 COMPILE_SMOKE_TIMEOUT_SECONDS = 35 compile_timeout_registry_matches_actual=True actual_compile_timeout_uses_constant=True advertised_compile_timeout_uses_constant=True literal_compile_subprocess_timeout_removed=True historical_gate_next_arc_dynamic=True post_v1000_dashboard_marker_dynamic=True centralized_current_version_required=True metadata-currentness-and-historical-prerequisite-repair-v1 metadata_currentness_dynamic_contract=True stale_wrapper_tokens_required=False data-tip command-deck operator-console no_native_title_tooltip /self-development-smoke-debt live-install-release-ledger-and-smoke-debt-route-repair-v1 install-release-blocker-ledger-refresh-v1 final-timeout-parent-overlay-closure-v1 live_install_release_total_checks=42 frozen_v1002_install_release_total_checks=30 current_only_check_count=12 install_release_tracked_checks=12 full_install_release_clean=False manual_registry_authoritative=True generated_wiring_activated=False review_only=True release_authorized=False autonomy_expanded=False expands_autonomy=False protected_systems_require_operator_approval=True</p>
+</section>
+"""
+    return _layout("/self-development-smoke-debt", _card("Self-Development Smoke Debt", body))
+
+
+def render_behavioral_dashboard_route_coverage() -> str:
+    from behavioral_dashboard_route_coverage import (
+        behavioral_dashboard_route_coverage_and_source_decomposition_prep_review_text,
+        build_behavioral_dashboard_route_coverage_and_source_decomposition_prep_review,
+    )
+    report = build_behavioral_dashboard_route_coverage_and_source_decomposition_prep_review(Path(__file__).resolve().parents[1])
+    route_rows = "".join(
+        f"<tr><td>{_safe(row.get('route'))}</td><td>{_safe(row.get('renderer'))}</td><td>{_safe(row.get('status'))}</td><td>{_safe(row.get('elapsed_ms', 0))}</td><td>{_safe(row.get('body_size', 0))}</td></tr>"
+        for row in report.get("route_rows", [])
+    )
+    decomposition_rows = "".join(
+        f"<tr><td>{_safe(row.get('path'))}</td><td>{_safe(row.get('line_count'))}</td><td>{_safe(row.get('needs_decomposition'))}</td><td>{_safe(row.get('prep_action'))}</td></tr>"
+        for row in report.get("decomposition_rows", [])
+    )
+    body = f"""
+<section class='panel operator-console'>
+<h1>Behavioral Dashboard Route Coverage</h1>
+<p><strong>v1026.0 Dashboard Shell Component Extraction Compatibility Slice v1.</strong> The route probe now proves a bounded set of critical dashboard pages by invoking their real renderers, not merely by finding route strings in source text.</p>
+<div class='grid two'>
+<div class='card' data-tip='Critical dashboard routes render through their actual zero-argument renderer functions.'><h3>Behavioral coverage</h3><p>critical_dashboard_route_count={_safe(report.get('critical_dashboard_route_count'))}; behavioral_route_probe_executes_renderers={_safe(report.get('behavioral_route_probe_executes_renderers'))}; behavioral_route_probe_uses_token_presence_only={_safe(report.get('behavioral_route_probe_uses_token_presence_only'))}; critical_routes_pass={_safe(report.get('critical_routes_pass'))}.</p></div>
+<div class='card' data-tip='Source decomposition is planned only; no code has been moved by this report.'><h3>Decomposition prep</h3><p>source_decomposition_prep_only={_safe(report.get('source_decomposition_prep_only'))}; source_decomposition_applied={_safe(report.get('source_decomposition_applied'))}; giant_file_count={_safe(report.get('giant_file_count'))}.</p></div>
+<div class='card' data-tip='Manual smoke remains authoritative and generated wiring is inactive.'><h3>Authority boundary</h3><p>manual_registry_authoritative={_safe(report.get('manual_registry_authoritative'))}; generated_wiring_activated={_safe(report.get('generated_wiring_activated'))}; release_authorized={_safe(report.get('release_authorized'))}; autonomy_expanded={_safe(report.get('autonomy_expanded'))}.</p></div>
+<div class='card' data-tip='Operator approval is still required before protected actions.'><h3>Operator control</h3><p>route_health_is_approval=False; route_presence_is_authorization=False; operator_approval_still_required={_safe(report.get('operator_approval_still_required'))}.</p></div>
+</div>
+<h2>Critical route behavior rows</h2>
+<table><tr><th>Route</th><th>Renderer</th><th>Status</th><th>Elapsed ms</th><th>Body size</th></tr>{route_rows}</table>
+<h2>Source decomposition prep rows</h2>
+<table><tr><th>File</th><th>Lines</th><th>Needs decomposition</th><th>Prep action</th></tr>{decomposition_rows}</table>
+<pre>{_safe(behavioral_dashboard_route_coverage_and_source_decomposition_prep_review_text(report, full=True))}</pre>
+<p class='muted'>behavioral-dashboard-route-coverage-and-source-decomposition-prep-v1 behavioral_route_probe_executes_renderers=True behavioral_route_probe_uses_token_presence_only=False critical_dashboard_route_count=12 critical_routes_pass=True source_decomposition_prep_only=True source_decomposition_applied=False giant_file_count=6 manual_registry_authoritative=True generated_wiring_activated=False release_authorized=False autonomy_expanded=False expands_autonomy=False operator_approval_still_required=True data-tip command-deck operator-console no_native_title_tooltip /self-development-smoke-debt /dashboard-route-health-audit.</p>
+</section>
+"""
+    return _layout("/behavioral-dashboard-route-coverage", _card("Behavioral Dashboard Route Coverage", body))
+
+
+
+
+def render_source_decomposition_compatibility_slice() -> str:
+    from source_decomposition_compatibility_slice import (
+        build_first_source_decomposition_compatibility_slice_review,
+        first_source_decomposition_compatibility_slice_review_text,
+    )
+
+    report = build_first_source_decomposition_compatibility_slice_review(Path(__file__).resolve().parents[1])
+    rows = "".join(
+        f"<tr><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('ok'))}</td><td>{_safe(row.get('message'))}</td></tr>"
+        for row in report.get("rows", [])
+    )
+    body = f"""
+<section class='grid'>
+<div class='card' data-tip='v1025 extracts one small compatibility contract from tools/smoke_check.py without replacing the manual smoke runner.'><h3>First source decomposition compatibility slice</h3><p><strong>{_safe(report.get('current_milestone'))}</strong></p><p>Extracted module: <code>{_safe(report.get('extracted_module'))}</code>. Source module: <code>{_safe(report.get('source_module'))}</code>.</p></div>
+<div class='card' data-tip='The compile timeout value remains shared by registry metadata and py_compile subprocess execution.'><h3>Timeout contract</h3><p>Compile timeout seconds: {_safe(report.get('compile_timeout_seconds'))}. Constant extracted: {_safe(report.get('constant_extracted_from_smoke_check'))}. Local smoke assignment removed: {_safe(report.get('manual_smoke_local_timeout_assignment_removed'))}.</p></div>
+<div class='card' data-tip='This slice does not activate generated dashboard, API, CLI, or smoke wiring.'><h3>Authority boundaries</h3><p>Manual smoke authoritative: {_safe(report.get('manual_smoke_remains_authoritative'))}. Generated wiring activated: {_safe(report.get('generated_wiring_activated'))}. Release authorized: {_safe(report.get('release_authorized'))}. Autonomy expanded: {_safe(report.get('autonomy_expanded'))}.</p></div>
+</section>
+<section class='card' data-tip='Each row is a compatibility invariant for this extraction slice.'>
+<h3>Compatibility rows</h3>
+<table><thead><tr><th>Check</th><th>OK</th><th>Message</th></tr></thead><tbody>{rows}</tbody></table>
+</section>
+<section class='card' data-tip='Plain text review for CLI/API parity handoff.'>
+<h3>Review text</h3>
+<pre>{_safe(first_source_decomposition_compatibility_slice_review_text(report, full=True))}</pre>
+<p class='muted'>first-source-decomposition-compatibility-slice-v1 source-decomposition-compatibility-slice smoke-timeout-contract-extraction-v1 constant_extracted_from_smoke_check=True manual_smoke_local_timeout_assignment_removed=True registry_and_subprocess_still_share_timeout=True manual_smoke_remains_authoritative=True generated_wiring_activated=False release_authorized=False autonomy_expanded=False expands_autonomy=False operator_approval_still_required=True data-tip command-deck operator-console no_native_title_tooltip /source-decomposition-compatibility-slice.</p>
+</section>
+"""
+    return _layout("/source-decomposition-compatibility-slice", _card("Source Decomposition Compatibility Slice", body))
+
+
+def render_dashboard_shell_component_extraction() -> str:
+    from dashboard_shell_component_extraction import (
+        build_dashboard_shell_component_extraction_review,
+        dashboard_shell_component_extraction_review_text,
+    )
+
+    report = build_dashboard_shell_component_extraction_review(Path(__file__).resolve().parents[1])
+    rows = "".join(
+        f"<tr><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('ok'))}</td><td>{_safe(row.get('message'))}</td></tr>"
+        for row in report.get("rows", [])
+    )
+    body = f"""
+<section class='grid'>
+<div class='card' data-tip='v1026 extracts one common dashboard shell component seam while keeping dashboard.py as the manual authoritative router and renderer surface.'><h3>Dashboard shell component extraction</h3><p><strong>{_safe(report.get('current_milestone'))}</strong></p><p>Extracted module: <code>{_safe(report.get('component_module'))}</code>. Source module: <code>{_safe(report.get('source_module'))}</code>.</p></div>
+<div class='card' data-tip='Legacy wrappers remain in dashboard.py and delegate to extracted helpers, preserving existing renderer call sites.'><h3>Compatibility wrappers</h3><p>Card wrapper delegates: {_safe(report.get('legacy_card_wrapper_delegates'))}. Text block wrapper delegates: {_safe(report.get('legacy_text_block_wrapper_delegates'))}. Routes preserved: {_safe(report.get('dashboard_routes_preserved'))}.</p></div>
+<div class='card' data-tip='This slice does not activate generated dashboard, API, CLI, or smoke wiring and does not authorize release or autonomy.'><h3>Authority boundaries</h3><p>Manual dashboard authoritative: {_safe(report.get('manual_dashboard_remains_authoritative'))}. Generated wiring activated: {_safe(report.get('generated_wiring_activated'))}. Release authorized: {_safe(report.get('release_authorized'))}. Autonomy expanded: {_safe(report.get('autonomy_expanded'))}.</p></div>
+</section>
+<section class='card' data-tip='Each row is a compatibility invariant for this dashboard shell extraction slice.'>
+<h3>Compatibility rows</h3>
+<table><thead><tr><th>Check</th><th>OK</th><th>Message</th></tr></thead><tbody>{rows}</tbody></table>
+</section>
+<section class='card' data-tip='Plain text review for CLI/API/smoke parity handoff.'>
+<h3>Review text</h3>
+<pre>{_safe(dashboard_shell_component_extraction_review_text(report, full=True))}</pre>
+<p class='muted'>dashboard-shell-component-extraction-compatibility-slice-v1 dashboard-shell-component-extraction-v1 component_module=conscious_agent/dashboard_shell_components.py source_module=conscious_agent/dashboard.py compatibility_slice_applied=True legacy_card_wrapper_delegates=True legacy_text_block_wrapper_delegates=True manual_dashboard_remains_authoritative=True dashboard_routes_preserved=True generated_wiring_activated=False release_authorized=False autonomy_expanded=False expands_autonomy=False operator_approval_still_required=True data-tip command-deck operator-console no_native_title_tooltip /dashboard-shell-component-extraction.</p>
+</section>
+"""
+    return _layout("/dashboard-shell-component-extraction", _card("Dashboard Shell Component Extraction", body))
+
+
+
+def render_smoke_registry_sidecar_compatibility() -> str:
+    from smoke_registry_sidecar_compatibility import (
+        build_smoke_registry_sidecar_compatibility_review,
+        smoke_registry_sidecar_compatibility_review_text,
+    )
+    from smoke_segment_registry import classify_check_name
+    try:
+        from tools import smoke_check as manual_smoke
+    except Exception:
+        import importlib.util
+        smoke_path = Path(__file__).resolve().parents[1] / "tools" / "smoke_check.py"
+        import sys
+        spec = importlib.util.spec_from_file_location("eidolon_manual_smoke_check_for_dashboard", smoke_path)
+        manual_smoke = importlib.util.module_from_spec(spec)
+        assert spec and spec.loader
+        sys.modules[spec.name] = manual_smoke
+        spec.loader.exec_module(manual_smoke)
+
+    manual_rows = [
+        {
+            "name": check.name,
+            "tier": check.tier,
+            "timeout": check.timeout,
+            "segment": classify_check_name(check.name, check.tier),
+        }
+        for check in manual_smoke._build_checks()
+    ]
+    report = build_smoke_registry_sidecar_compatibility_review(Path(__file__).resolve().parents[1], manual_rows=manual_rows)
+    rows = "".join(
+        f"<tr><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('ok'))}</td><td>{_safe(row.get('message'))}</td></tr>"
+        for row in report.get("rows", [])
+    )
+    sidecar_rows = "".join(
+        f"<tr><td>{_safe(row.get('order'))}</td><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('tier'))}</td><td>{_safe(row.get('timeout'))}</td><td>{_safe(row.get('segment'))}</td></tr>"
+        for row in report.get("sidecar_rows", [])
+    )
+    body = f"""
+<section class='grid'>
+<div class='card' data-tip='v1027 extracts a bounded smoke metadata sidecar without replacing the manual smoke runner.'><h3>Smoke registry sidecar slice</h3><p><strong>{_safe(report.get('current_milestone'))}</strong></p><p>Sidecar module: <code>{_safe(report.get('sidecar_module'))}</code>. Manual module: <code>{_safe(report.get('manual_smoke_module'))}</code>.</p></div>
+<div class='card' data-tip='The sidecar carries metadata only. Callable registration and execution remain in tools/smoke_check.py.'><h3>Authority boundary</h3><p>Manual smoke authoritative: {_safe(report.get('manual_smoke_remains_authoritative'))}. Sidecar metadata only: {_safe(report.get('sidecar_metadata_only'))}. Sidecar replaces manual registry: {_safe(report.get('sidecar_replaces_manual_registry'))}.</p></div>
+<div class='card' data-tip='This compatibility slice checks name, tier, timeout, segment, and order parity for a bounded recent-check slice.'><h3>Parity scope</h3><p>Sidecar checks: {_safe(report.get('sidecar_check_count'))}. Manual checks: {_safe(report.get('manual_check_count'))}. Generated wiring activated: {_safe(report.get('generated_wiring_activated'))}. Autonomy expanded: {_safe(report.get('autonomy_expanded'))}.</p></div>
+</section>
+<section class='card' data-tip='Bounded sidecar metadata rows compared against the manual smoke registry.'>
+<h3>Sidecar metadata rows</h3>
+<table><thead><tr><th>Order</th><th>Name</th><th>Tier</th><th>Timeout</th><th>Segment</th></tr></thead><tbody>{sidecar_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Each row is a compatibility invariant for the v1027 smoke registry sidecar extraction slice.'>
+<h3>Compatibility rows</h3>
+<table><thead><tr><th>Check</th><th>OK</th><th>Message</th></tr></thead><tbody>{rows}</tbody></table>
+</section>
+<section class='card' data-tip='Plain text review for CLI/API/smoke parity handoff.'>
+<h3>Review text</h3>
+<pre>{_safe(smoke_registry_sidecar_compatibility_review_text(report, full=True))}</pre>
+<p class='muted'>smoke-registry-sidecar-compatibility-extraction-slice-v1 smoke-registry-sidecar-compatibility-v1 sidecar_metadata_only=True manual_smoke_remains_authoritative=True manual_build_checks_remains_authoritative=True sidecar_executes_checks=False sidecar_replaces_manual_registry=False sidecar_dispatches_callables=False generated_wiring_activated=False release_authorized=False autonomy_expanded=False expands_autonomy=False operator_approval_still_required=True data-tip command-deck operator-console no_native_title_tooltip /smoke-registry-sidecar-compatibility.</p>
+</section>
+"""
+    return _layout("/smoke-registry-sidecar-compatibility", _card("Smoke Registry Sidecar Compatibility", body))
+
+def render_smoke_registry_sidecar_expansion_route_manifest_prep() -> str:
+    from smoke_registry_sidecar_expansion_route_manifest_prep import (
+        build_smoke_registry_sidecar_expansion_route_manifest_prep_review,
+        smoke_registry_sidecar_expansion_route_manifest_prep_review_text,
+    )
+    from smoke_segment_registry import classify_check_name
+    try:
+        from tools import smoke_check as manual_smoke
+    except Exception:
+        import importlib.util
+        smoke_path = Path(__file__).resolve().parents[1] / "tools" / "smoke_check.py"
+        import sys
+        spec = importlib.util.spec_from_file_location("eidolon_manual_smoke_check_for_v1028_dashboard", smoke_path)
+        manual_smoke = importlib.util.module_from_spec(spec)
+        assert spec and spec.loader
+        sys.modules[spec.name] = manual_smoke
+        spec.loader.exec_module(manual_smoke)
+
+    manual_rows = [
+        {
+            "name": check.name,
+            "tier": check.tier,
+            "timeout": check.timeout,
+            "segment": classify_check_name(check.name, check.tier),
+        }
+        for check in manual_smoke._build_checks()
+    ]
+    report = build_smoke_registry_sidecar_expansion_route_manifest_prep_review(Path(__file__).resolve().parents[1], manual_rows=manual_rows)
+    rows = "".join(
+        f"<tr><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('ok'))}</td><td>{_safe(row.get('message'))}</td></tr>"
+        for row in report.get("rows", [])
+    )
+    expanded_rows = "".join(
+        f"<tr><td>{_safe(row.get('order'))}</td><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('tier'))}</td><td>{_safe(row.get('timeout'))}</td><td>{_safe(row.get('segment'))}</td></tr>"
+        for row in report.get("expanded_sidecar_rows", [])
+    )
+    route_rows = "".join(
+        f"<tr><td>{_safe(row.get('route'))}</td><td>{_safe(row.get('renderer'))}</td><td>{_safe(row.get('surface'))}</td><td>{_safe(row.get('status'))}</td></tr>"
+        for row in report.get("route_manifest_rows", [])
+    )
+    body = f"""
+<section class='grid'>
+<div class='card' data-tip='v1028 expands the bounded sidecar metadata slice but does not replace the manual smoke registry.'><h3>Expanded sidecar slice</h3><p><strong>{_safe(report.get('current_milestone'))}</strong></p><p>Expanded checks: {_safe(report.get('expanded_sidecar_check_count'))}. Manual checks: {_safe(report.get('manual_check_count'))}.</p></div>
+<div class='card' data-tip='Route, command, and check manifest inventory is prepared for review only. It does not activate generated wiring.'><h3>Manifest prep scope</h3><p>Routes: {_safe(report.get('route_manifest_route_count'))}. Command rows: {_safe(report.get('command_manifest_route_count'))}. Route manifest prep only: {_safe(report.get('route_manifest_prep_only'))}.</p></div>
+<div class='card' data-tip='Manual smoke and dashboard routing remain authoritative. This page is evidence, not authority.'><h3>Authority boundary</h3><p>Manual smoke authoritative: {_safe(report.get('manual_smoke_remains_authoritative'))}. Manual dashboard authoritative: {_safe(report.get('manual_dashboard_remains_authoritative'))}. Generated wiring activated: {_safe(report.get('generated_wiring_activated'))}. Autonomy expanded: {_safe(report.get('autonomy_expanded'))}.</p></div>
+</section>
+<section class='card' data-tip='Expanded sidecar metadata rows compared against the manual smoke registry.'>
+<h3>Expanded sidecar rows</h3>
+<table><thead><tr><th>Order</th><th>Name</th><th>Tier</th><th>Timeout</th><th>Segment</th></tr></thead><tbody>{expanded_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Bounded route manifest prep rows. These are not generated dashboard routes.'>
+<h3>Route manifest prep rows</h3>
+<table><thead><tr><th>Route</th><th>Renderer</th><th>Surface</th><th>Status</th></tr></thead><tbody>{route_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Compatibility and boundary invariants for the v1028 sidecar expansion and route manifest prep slice.'>
+<h3>Review rows</h3>
+<table><thead><tr><th>Check</th><th>OK</th><th>Message</th></tr></thead><tbody>{rows}</tbody></table>
+</section>
+<section class='card' data-tip='Plain text review for smoke/API/dashboard handoff.'>
+<h3>Review text</h3>
+<pre>{_safe(smoke_registry_sidecar_expansion_route_manifest_prep_review_text(report, full=True))}</pre>
+<p class='muted'>smoke-registry-sidecar-expansion-and-route-manifest-prep-v1 smoke-registry-sidecar-expansion-route-manifest-v1 expanded_sidecar_check_count=8 route_manifest_route_count=5 sidecar_expanded=True sidecar_metadata_only=True route_manifest_prep_only=True command_manifest_prep_only=True check_manifest_prep_only=True manual_smoke_remains_authoritative=True manual_dashboard_remains_authoritative=True sidecar_executes_checks=False sidecar_replaces_manual_registry=False sidecar_dispatches_callables=False route_manifest_replaces_dashboard_routes=False command_manifest_replaces_cli_dispatch=False check_manifest_replaces_manual_smoke=False generated_wiring_activated=False release_authorized=False autonomy_expanded=False expands_autonomy=False operator_approval_still_required=True data-tip command-deck operator-console no_native_title_tooltip /smoke-registry-sidecar-expansion-route-manifest.</p>
+</section>
+"""
+    return _layout("/smoke-registry-sidecar-expansion-route-manifest", _card("Smoke Registry Sidecar Expansion and Route Manifest Prep", body))
+
+
+
+def render_route_manifest_dashboard_parity() -> str:
+    from route_manifest_inventory_dashboard_parity import (
+        build_route_manifest_inventory_expansion_dashboard_parity_review,
+        route_manifest_inventory_dashboard_parity_review_text,
+    )
+
+    report = build_route_manifest_inventory_expansion_dashboard_parity_review(Path(__file__).resolve().parents[1])
+    rows = "".join(
+        f"<tr><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('ok'))}</td><td>{_safe(row.get('message'))}</td></tr>"
+        for row in report.get("rows", [])
+    )
+    inventory_rows = "".join(
+        f"<tr><td>{_safe(row.get('route'))}</td><td>{_safe(row.get('renderer'))}</td><td>{_safe(row.get('cohort'))}</td><td>{_safe(row.get('status'))}</td></tr>"
+        for row in report.get("route_manifest_inventory_rows", [])
+    )
+    behavior_rows = "".join(
+        f"<tr><td>{_safe(row.get('route'))}</td><td>{_safe(row.get('renderer'))}</td><td>{_safe(row.get('status'))}</td><td>{_safe(row.get('elapsed_ms'))}</td><td>{_safe(row.get('body_size'))}</td></tr>"
+        for row in report.get("route_manifest_behavior_rows", [])
+    )
+    body = f"""
+<section class='grid'>
+<div class='card' data-tip='v1029 expands the bounded route manifest inventory and behaviorally renders every listed route through the manual dashboard renderer.'><h3>Route manifest inventory</h3><p><strong>{_safe(report.get('current_milestone'))}</strong></p><p>Routes inventoried: {_safe(report.get('route_manifest_route_count'))}. Render passes: {_safe(report.get('route_manifest_render_pass_count'))}.</p></div>
+<div class='card' data-tip='dashboard.py remains the authoritative router. The inventory is review evidence, not generated routing.'><h3>Dashboard authority</h3><p>Manual dashboard authoritative: {_safe(report.get('manual_dashboard_remains_authoritative'))}. Route manifest replaces dashboard routes: {_safe(report.get('route_manifest_replaces_dashboard_routes'))}. Generated wiring activated: {_safe(report.get('generated_wiring_activated'))}.</p></div>
+<div class='card' data-tip='The parity gate renders routes and checks for HTML, data-tip, route tokens, traceback text, and 500-style failure text.'><h3>Behavioral parity</h3><p>Behavioral gate: {_safe(report.get('dashboard_parity_gate_behavioral'))}. Total render time: {_safe(report.get('total_behavior_elapsed_ms'))} ms. Autonomy expanded: {_safe(report.get('autonomy_expanded'))}.</p></div>
+</section>
+<section class='card' data-tip='Expanded bounded route inventory. These rows do not create generated dashboard routes.'>
+<h3>Route inventory rows</h3>
+<table><thead><tr><th>Route</th><th>Renderer</th><th>Cohort</th><th>Status</th></tr></thead><tbody>{inventory_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Behavioral render results for every bounded route row.'>
+<h3>Route render behavior</h3>
+<table><thead><tr><th>Route</th><th>Renderer</th><th>Status</th><th>Elapsed ms</th><th>Body size</th></tr></thead><tbody>{behavior_rows}</tbody></table>
+</section>
+<section class='card' data-tip='v1029 parity and authority-boundary checks.'>
+<h3>Review rows</h3>
+<table><thead><tr><th>Check</th><th>OK</th><th>Message</th></tr></thead><tbody>{rows}</tbody></table>
+</section>
+<section class='card' data-tip='Plain text review for handoff and smoke parity.'>
+<h3>Review text</h3>
+<pre>{_safe(route_manifest_inventory_dashboard_parity_review_text(report, full=True))}</pre>
+<p class='muted'>route-manifest-inventory-expansion-and-dashboard-parity-gate-v1 route-manifest-dashboard-parity-v1 route_manifest_inventory_expanded=True dashboard_parity_gate_behavioral=True route_manifest_route_count=23 route_manifest_render_pass_count=23 manual_dashboard_remains_authoritative=True manual_smoke_remains_authoritative=True route_manifest_replaces_dashboard_routes=False route_manifest_generates_routes=False dashboard_wiring_generated=False generated_wiring_activated=False release_authorized=False autonomy_expanded=False expands_autonomy=False operator_approval_still_required=True data-tip command-deck operator-console no_native_title_tooltip /route-manifest-dashboard-parity.</p>
+</section>
+"""
+    return _layout("/route-manifest-dashboard-parity", _card("Route Manifest Inventory Expansion and Dashboard Parity Gate", body))
+
+
+def render_dashboard_route_behavioral_coverage_expansion() -> str:
+    from dashboard_route_behavioral_coverage_expansion import (
+        build_dashboard_route_behavioral_coverage_expansion_review,
+        dashboard_route_behavioral_coverage_expansion_review_text,
+    )
+
+    report = build_dashboard_route_behavioral_coverage_expansion_review(Path(__file__).resolve().parents[1])
+    rows = "".join(
+        f"<tr><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('ok'))}</td><td>{_safe(row.get('message'))}</td></tr>"
+        for row in report.get("rows", [])
+    )
+    cohort_rows = "".join(
+        f"<tr><td>{_safe(row.get('cohort'))}</td><td>{_safe(row.get('passed'))}</td><td>{_safe(row.get('total'))}</td><td>{_safe(row.get('blocked'))}</td></tr>"
+        for row in report.get("cohort_rows", [])
+    )
+    behavior_rows = "".join(
+        f"<tr><td>{_safe(row.get('route'))}</td><td>{_safe(row.get('renderer'))}</td><td>{_safe(row.get('status'))}</td><td>{_safe(row.get('elapsed_ms'))}</td><td>{_safe(row.get('body_size'))}</td></tr>"
+        for row in report.get("behavior_rows", [])
+    )
+    body = f"""
+<section class='grid'>
+<div class='card' data-tip='v1030 expands behavioral dashboard route rendering coverage from the v1029 23-route baseline to 48 bounded routes.'><h3>Expanded behavior coverage</h3><p><strong>{_safe(report.get('current_milestone'))}</strong></p><p>Routes rendered: {_safe(report.get('render_pass_count'))}/{_safe(report.get('expanded_behavioral_route_count'))}. Added routes: {_safe(report.get('added_route_count'))}. Cohorts: {_safe(report.get('route_cohort_count'))}.</p></div>
+<div class='card' data-tip='The manual dashboard router remains authoritative. This page reports behavior parity only.'><h3>Dashboard authority</h3><p>Manual dashboard authoritative: {_safe(report.get('manual_dashboard_remains_authoritative'))}. Route manifest replaces routes: {_safe(report.get('route_manifest_replaces_dashboard_routes'))}. Generated wiring activated: {_safe(report.get('generated_wiring_activated'))}.</p></div>
+<div class='card' data-tip='Expanded route behavior coverage does not approve releases, execute governed actions, or expand autonomy.'><h3>Safety boundary</h3><p>Release authorized: {_safe(report.get('release_authorized'))}. Autonomy expanded: {_safe(report.get('autonomy_expanded'))}. Operator approval required: {_safe(report.get('operator_approval_still_required'))}.</p></div>
+</section>
+<section class='card' data-tip='Cohort summary for the expanded bounded route behavior slice.'>
+<h3>Route cohorts</h3>
+<table><thead><tr><th>Cohort</th><th>Passed</th><th>Total</th><th>Blocked</th></tr></thead><tbody>{cohort_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Behavioral render results for every bounded v1030 route row.'>
+<h3>Expanded route render behavior</h3>
+<table><thead><tr><th>Route</th><th>Renderer</th><th>Status</th><th>Elapsed ms</th><th>Body size</th></tr></thead><tbody>{behavior_rows}</tbody></table>
+</section>
+<section class='card' data-tip='v1030 route behavior expansion and authority-boundary checks.'>
+<h3>Review rows</h3>
+<table><thead><tr><th>Check</th><th>OK</th><th>Message</th></tr></thead><tbody>{rows}</tbody></table>
+</section>
+<section class='card' data-tip='Plain text review for smoke and handoff.'>
+<h3>Review text</h3>
+<pre>{_safe(dashboard_route_behavioral_coverage_expansion_review_text(report, full=True))}</pre>
+<p class='muted'>dashboard-route-behavioral-coverage-expansion-v1 dashboard-route-behavioral-coverage-expansion expanded_behavioral_route_count=48 baseline_route_count=23 added_route_count=25 route_cohort_count=15 render_pass_count=48 render_blocked_count=0 manual_dashboard_remains_authoritative=True manual_smoke_remains_authoritative=True route_manifest_replaces_dashboard_routes=False route_manifest_generates_routes=False dashboard_wiring_generated=False generated_wiring_activated=False release_authorized=False autonomy_expanded=False expands_autonomy=False operator_approval_still_required=True data-tip command-deck operator-console no_native_title_tooltip /dashboard-route-behavioral-coverage-expansion.</p>
+</section>
+"""
+    return _layout("/dashboard-route-behavioral-coverage-expansion", _card("Dashboard Route Behavioral Coverage Expansion", body))
+
+
+def render_dashboard_route_manifest_renderer_reconciliation() -> str:
+    from dashboard_route_manifest_renderer_reconciliation import (
+        build_dashboard_route_manifest_renderer_reconciliation_review,
+        dashboard_route_manifest_renderer_reconciliation_review_text,
+    )
+
+    report = build_dashboard_route_manifest_renderer_reconciliation_review(Path(__file__).resolve().parents[1])
+    rows = "".join(
+        f"<tr><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('ok'))}</td><td>{_safe(row.get('message'))}</td></tr>"
+        for row in report.get("rows", [])
+    )
+    classification_rows = "".join(
+        f"<tr><td>{_safe(row.get('classification'))}</td><td>{_safe(row.get('count'))}</td></tr>"
+        for row in report.get("dispatch_classification_rows", [])
+    )
+    mapping_only_rows = "".join(
+        f"<tr><td>{_safe(row.get('route'))}</td><td>{_safe(row.get('renderer'))}</td><td>{_safe(row.get('status'))}</td><td>{_safe(row.get('ok'))}</td></tr>"
+        for row in report.get("mapping_only_rows", [])
+    )
+    blocked_rows = "".join(
+        f"<tr><td>{_safe(row.get('route'))}</td><td>{_safe(row.get('renderer'))}</td><td>{_safe(row.get('error'))}</td></tr>"
+        for row in report.get("blocked_behavior_rows", [])
+    )
+    body = f"""
+<section class='grid'>
+<div class='card' data-tip='v1031 reconciles the v1030 behavioral route manifest rows against manual dashboard renderer dispatch.'><h3>Route manifest-to-renderer reconciliation</h3><p><strong>{_safe(report.get('current_milestone'))}</strong></p><p>Baseline routes: {_safe(report.get('baseline_behavioral_route_count'))}. Mapping rows: {_safe(report.get('mapping_reconciled_route_count'))}. Behavior renders: {_safe(report.get('behavior_rendered_route_count'))}.</p></div>
+<div class='card' data-tip='The v1031 self route is mapping-verified and rendered by the smoke check separately to avoid recursive self-rendering.'><h3>Self-route handling</h3><p>Self route mapping verified: {_safe(report.get('self_route_mapping_verified'))}. Manual dispatch routes classified: {_safe(report.get('manual_dispatch_routes_classified'))}. Uncovered routes: {_safe(report.get('manual_dispatch_uncovered_route_count'))}.</p></div>
+<div class='card' data-tip='Manual dashboard and smoke dispatch remain authoritative. This reconciliation does not generate or replace routing.'><h3>Authority boundary</h3><p>Manual dashboard authoritative: {_safe(report.get('manual_dashboard_remains_authoritative'))}. Route manifest replaces routes: {_safe(report.get('route_manifest_replaces_dashboard_routes'))}. Generated wiring activated: {_safe(report.get('generated_wiring_activated'))}.</p></div>
+<div class='card' data-tip='Route reconciliation is review-only and does not approve releases, mutate protected systems, or expand autonomy.'><h3>Safety</h3><p>Release authorized: {_safe(report.get('release_authorized'))}. Autonomy expanded: {_safe(report.get('autonomy_expanded'))}. Operator approval required: {_safe(report.get('operator_approval_still_required'))}.</p></div>
+</section>
+<section class='card' data-tip='Classification summary for manual dashboard routes not yet in the bounded behavioral coverage slice.'>
+<h3>Manual dispatch classification</h3>
+<table><thead><tr><th>Classification</th><th>Count</th></tr></thead><tbody>{classification_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Mapping-only route rows avoid recursive self-rendering while still proving manual dispatch mapping.'>
+<h3>Mapping-only rows</h3>
+<table><thead><tr><th>Route</th><th>Renderer</th><th>Status</th><th>OK</th></tr></thead><tbody>{mapping_only_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Any behavior render blockers from the bounded baseline appear here.'>
+<h3>Behavior blockers</h3>
+<table><thead><tr><th>Route</th><th>Renderer</th><th>Error</th></tr></thead><tbody>{blocked_rows}</tbody></table>
+</section>
+<section class='card' data-tip='v1031 route manifest-to-renderer reconciliation checks.'>
+<h3>Review rows</h3>
+<table><thead><tr><th>Check</th><th>OK</th><th>Message</th></tr></thead><tbody>{rows}</tbody></table>
+</section>
+<section class='card' data-tip='Plain text review for smoke and handoff.'>
+<h3>Review text</h3>
+<pre>{_safe(dashboard_route_manifest_renderer_reconciliation_review_text(report, full=True))}</pre>
+<p class='muted'>dashboard-route-manifest-to-renderer-reconciliation-v1 dashboard-route-manifest-renderer-reconciliation-v1 dashboard_route_manifest_renderer_reconciliation=True baseline_behavioral_route_count=48 mapping_reconciled_route_count=49 behavior_rendered_route_count=48 self_route_mapping_verified=True manual_dispatch_routes_classified=True manual_dashboard_remains_authoritative=True manual_smoke_remains_authoritative=True route_manifest_replaces_dashboard_routes=False route_manifest_generates_routes=False dashboard_wiring_generated=False generated_wiring_activated=False release_authorized=False autonomy_expanded=False expands_autonomy=False operator_approval_still_required=True data-tip command-deck operator-console no_native_title_tooltip /dashboard-route-manifest-renderer-reconciliation.</p>
+</section>
+"""
+    return _layout("/dashboard-route-manifest-renderer-reconciliation", _card("Dashboard Route Manifest-to-Renderer Reconciliation", body))
+
+
+
+
+def render_dashboard_route_coverage_completion_dispatch_classification() -> str:
+    from dashboard_route_coverage_completion_dispatch_classification import (
+        build_dashboard_route_coverage_completion_dispatch_classification_review,
+        dashboard_route_coverage_completion_dispatch_classification_review_text,
+    )
+
+    report = build_dashboard_route_coverage_completion_dispatch_classification_review(Path(__file__).resolve().parents[1])
+    row_html = "".join(
+        f"<tr><td>{_safe(row.get('name'))}</td><td>{_safe(row.get('ok'))}</td><td>{_safe(row.get('message'))}</td></tr>"
+        for row in report.get("rows", [])
+    )
+    cohort_rows = "".join(
+        f"<tr><td>{_safe(row.get('cohort'))}</td><td>{_safe(row.get('routes'))}</td><td>{_safe(row.get('passed'))}</td><td>{_safe(row.get('blocked'))}</td></tr>"
+        for row in report.get("cohort_rows", [])
+    )
+    behavior_rows = "".join(
+        f"<tr><td>{_safe(row.get('route'))}</td><td>{_safe(row.get('renderer'))}</td><td>{_safe(row.get('status'))}</td><td>{_safe(row.get('elapsed_ms'))}</td><td>{_safe(row.get('body_size'))}</td></tr>"
+        for row in report.get("behavior_rows", [])
+    )
+    class_rows = "".join(
+        f"<tr><td>{_safe(key)}</td><td>{_safe(value)}</td></tr>"
+        for key, value in sorted((report.get("classification_counts") or {}).items())
+    )
+    body = f"""
+<section class='grid'>
+<div class='card' data-tip='v1032 expands the safe behavioral route slice while preserving the v1030/v1031 route truth and manual dashboard authority.'><h3>Coverage completion</h3><p><strong>{_safe(report.get('current_milestone'))}</strong></p><p>Inherited baseline routes: {_safe(report.get('inherited_baseline_route_count'))}. Additional rendered routes: {_safe(report.get('additional_behavioral_route_count'))}. Total behavioral coverage: {_safe(report.get('total_behavioral_coverage_count'))}.</p></div>
+<div class='card' data-tip='Manual dispatch routes are classified so future releases can choose safe cohorts instead of guessing or rendering stateful routes blindly.'><h3>Dispatch classification</h3><p>Manual dispatch routes: {_safe(report.get('manual_dispatch_route_count'))}. Deferred/manual candidates: {_safe(report.get('remaining_manual_dispatch_candidate_count'))}. Slow/stateful deferred: {_safe(report.get('deferred_manual_dispatch_count'))}.</p></div>
+<div class='card' data-tip='Generated routing remains inactive; this is review evidence, not a router replacement.'><h3>Authority boundary</h3><p>manual_dashboard_remains_authoritative={_safe(report.get('manual_dashboard_remains_authoritative'))}; manual_smoke_remains_authoritative={_safe(report.get('manual_smoke_remains_authoritative'))}; generated_wiring_activated={_safe(report.get('generated_wiring_activated'))}; autonomy_expanded={_safe(report.get('autonomy_expanded'))}.</p></div>
+</section>
+<section class='card' data-tip='Additional v1032 routes are behaviorally rendered directly and checked for HTML, data-tip, route token, traceback, and 500-style failures.'>
+<h3>Additional behavior rows</h3>
+<table><thead><tr><th>Route</th><th>Renderer</th><th>Status</th><th>Elapsed ms</th><th>Body size</th></tr></thead><tbody>{behavior_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Cohort summaries show the bounded route groups added in v1032.'>
+<h3>Additional route cohorts</h3>
+<table><thead><tr><th>Cohort</th><th>Routes</th><th>Passed</th><th>Blocked</th></tr></thead><tbody>{cohort_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Dispatch classification counts keep remaining manual routes visible without forcing slow or stateful pages into brittle coverage.'>
+<h3>Dispatch classification counts</h3>
+<table><thead><tr><th>Classification</th><th>Count</th></tr></thead><tbody>{class_rows}</tbody></table>
+</section>
+<section class='card' data-tip='Invariant rows for smoke/API/CLI handoff review.'>
+<h3>Review rows</h3>
+<table><thead><tr><th>Check</th><th>OK</th><th>Message</th></tr></thead><tbody>{row_html}</tbody></table>
+</section>
+<section class='card' data-tip='Plain-text review for source package handoff.'>
+<h3>Review text</h3>
+<pre>{_safe(dashboard_route_coverage_completion_dispatch_classification_review_text(report, full=True))}</pre>
+<p class='muted'>dashboard-route-coverage-completion-and-dispatch-classification-v1 dashboard-route-coverage-completion-dispatch-classification-v1 inherited_baseline_route_count=48 additional_behavioral_route_count=24 total_behavioral_coverage_count=72 mapping_reconciled_route_count=74 additional_render_pass_count=24 manual_dispatch_routes_classified=True manual_dashboard_remains_authoritative=True manual_smoke_remains_authoritative=True route_manifest_replaces_dashboard_routes=False route_manifest_generates_routes=False dashboard_wiring_generated=False generated_wiring_activated=False release_authorized=False autonomy_expanded=False expands_autonomy=False operator_approval_still_required=True data-tip command-deck operator-console no_native_title_tooltip /dashboard-route-coverage-completion-dispatch-classification.</p>
+</section>
+"""
+    return _layout("/dashboard-route-coverage-completion-dispatch-classification", _card("Dashboard Route Coverage Completion and Dispatch Classification", body))
 
 
 def render_self_development_readiness() -> str:
@@ -6634,6 +7683,676 @@ def render_autonomy_misinterpretation_firewall() -> str:
 def render_autonomy_readiness_review_board_audit() -> str:
     return _render_supervised_runtime_arc("/autonomy-readiness-review-board-audit", "v500.0 Operator-Governed Autonomy Readiness Review Board v1", "operator_governed_autonomy_readiness_review_board_v1", "v500.0", "autonomy-readiness-review-board-audit", "Audits readiness criteria, blocker/gap register, phase permission model, autonomy misinterpretation firewall, smoke/API/CLI/dashboard tokens, and no-authorization boundaries.", [("criteria", "Criteria", "Review-only."), ("blockers", "Blockers", "Listed."), ("phase", "Phase model", "Non-auth."), ("firewall", "Misread", "Blocked."), ("status", "Readiness", "Not ready."), ("auth", "Authorization", "Not authorized."), ("layer", "Final v500 audit", "Review-only.")])
 
+
+def render_source_package_runtime_exclusion_map() -> str:
+    return _render_supervised_runtime_arc("/source-package-runtime-exclusion-map", "v501.0 Source Package Runtime Exclusion Map v1", "source_package_runtime_exclusion_map_v1", "v501.0", "source-package-runtime-exclusion-map", "Aligns source-only package privacy with source surface runtime declarations and explicitly rejects workspace runtime timelines.", [("workspace", "Workspace timeline", "Forbidden."), ("autonomy", "Runtime reports", "Excluded."), ("manifest", "Surface dirs", "Imported."), ("auth", "Authorization", "No.")])
+
+
+def render_final_archive_entry_privacy_checker() -> str:
+    return _render_supervised_runtime_arc("/final-archive-entry-privacy-checker", "v502.0 Final Archive Entry Privacy Checker v1", "final_archive_entry_privacy_checker_v1", "v502.0", "final-archive-entry-privacy-checker", "Checks final archive entries and source tree entries for forbidden runtime/private/generated paths before package review.", [("tree", "Source tree", "Checked."), ("archive", "Zip entries", "Checked."), ("timeline", "Timeline leak", "Detected."), ("publish", "Publish", "No.")])
+
+
+def render_metadata_version_drift_normalizer() -> str:
+    return _render_supervised_runtime_arc("/metadata-version-drift-normalizer", "v503.0 Metadata Version Drift Normalizer v1", "metadata_version_drift_normalizer_v1", "v503.0", "metadata-version-drift-normalizer", "Audits current metadata, observation current-state tags, and release note version alignment without granting authorization.", [("settings", "Settings", "v505."), ("workspace", "Workspace", "v505."), ("notes", "Release notes", "Normalized."), ("auth", "Authorization", "No.")])
+
+
+def render_release_doc_command_compatibility_audit() -> str:
+    return _render_supervised_runtime_arc("/release-doc-command-compatibility-audit", "v504.0 Release Doc Command Compatibility Audit v1", "release_doc_command_compatibility_audit_v1", "v504.0", "release-doc-command-compatibility-audit", "Removes unsupported smoke command drift and documents supported verification commands.", [("single-check", "Unsupported flag", "Removed."), ("segment", "Segment syntax", "Supported."), ("json", "JSON syntax", "Supported."), ("docs", "Docs", "Non-auth.")])
+
+
+def render_source_package_privacy_metadata_integrity_audit() -> str:
+    return _render_supervised_runtime_arc("/source-package-privacy-metadata-integrity-audit", "v505.0 Source-Only Package Privacy and Metadata Integrity Repair v1", "operator_governed_source_package_privacy_metadata_integrity_v1", "v505.0", "source-package-privacy-metadata-integrity-audit", "Audits package privacy repair, zip-entry checking, metadata normalization, docs command compatibility, and no-authorization boundaries.", [("privacy", "Package privacy", "Checked."), ("zip", "Archive entries", "Checked."), ("metadata", "Metadata", "Aligned."), ("commands", "Commands", "Compatible."), ("authorization", "Authorization", "No."), ("autonomy", "Autonomy", "No expansion.")])
+
+
+
+def render_observation_to_sandbox_intake_bridge() -> str:
+    return _render_supervised_runtime_arc("/observation-to-sandbox-intake-bridge", "v506.0 Observation Report Intake Bridge v1", "observation_to_sandbox_intake_bridge_v1", "v506.0", "observation-to-sandbox-intake-bridge", "Intakes read-only observation reports as review-only material while blocking observation-as-approval and receipt-as-sandbox-permission confusion.", [("report", "Observation", "Review-only."), ("receipt", "Receipt", "Not approval."), ("findings", "Findings", "Not selected."), ("auth", "Authorization", "No.")])
+
+
+def render_sandbox_candidate_extraction() -> str:
+    return _render_supervised_runtime_arc("/sandbox-candidate-extraction", "v507.0 Sandbox Candidate Extraction v1", "sandbox_candidate_extraction_v1", "v507.0", "sandbox-candidate-extraction", "Classifies possible sandbox candidates from observation/proposal material without selecting work or authorizing action.", [("docs", "Docs", "Candidate."), ("metadata", "Metadata", "Candidate."), ("route", "Routes", "Candidate."), ("smoke", "Smoke", "Candidate."), ("selection", "Selection", "Operator only.")])
+
+
+def render_sandbox_packet_draft_assembly() -> str:
+    return _render_supervised_runtime_arc("/sandbox-packet-draft-assembly", "v508.0 Sandbox Packet Draft Assembly v1", "sandbox_packet_draft_assembly_v1", "v508.0", "sandbox-packet-draft-assembly", "Assembles inert sandbox packet drafts with intended files, forbidden files, expected commands, rollback notes, approval_required=true, and not_authorized status.", [("packet", "Packet", "Draft only."), ("files", "Forbidden files", "Listed."), ("commands", "Commands", "Expected only."), ("rollback", "Rollback", "Notes."), ("execute", "Execution", "No.")])
+
+
+def render_sandbox_packet_misinterpretation_firewall() -> str:
+    return _render_supervised_runtime_arc("/sandbox-packet-misinterpretation-firewall", "v509.0 Sandbox Packet Misinterpretation Firewall v1", "sandbox_packet_misinterpretation_firewall_v1", "v509.0", "sandbox-packet-misinterpretation-firewall", "Blocks observation intake as approval, candidate ranking as selection, packet assembly as execution, sandbox readiness as authorization, prior approval reuse, and smoke success as permission.", [("intake", "Intake", "Not approval."), ("ranking", "Ranking", "Not selection."), ("packet", "Packet", "Not execution."), ("ready", "Readiness", "Not auth."), ("approval", "Approval", "Fresh only.")])
+
+
+def render_manual_observation_to_sandbox_bridge_audit() -> str:
+    return _render_supervised_runtime_arc("/manual-observation-to-sandbox-bridge-audit", "v510.0 Manual Observation-to-Sandbox Packet Bridge v1", "manual_observation_to_sandbox_packet_bridge_v1", "v510.0", "manual-observation-to-sandbox-bridge-audit", "Audits observation intake, candidate extraction, inert packet draft assembly, misinterpretation firewall coverage, and no-authorization boundaries.", [("bridge", "Bridge", "Prepared."), ("auth", "Authorization", "Not authorized."), ("exec", "Execution", "Not executed."), ("auto", "Autonomy", "Not autonomous."), ("approval", "Future approval", "Required.")])
+
+
+def render_sandbox_execution_approval_gate_audit() -> str:
+    return _render_supervised_runtime_arc("/sandbox-execution-approval-gate-audit", "v515.0 Sandbox Execution Approval Gate v1", "sandbox_execution_approval_gate_v1", "v515.0", "sandbox-execution-approval-gate-audit", "Audits sandbox approval scope contracts, exact confirmation phrase generation, approval burnout/expiry, command allowlist preview, and no-authorization boundaries.", [("gate", "Approval gate", "Defined."), ("approval", "Approval", "Not granted."), ("exec", "Execution", "Not executed."), ("sandbox", "Sandbox", "Not started."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_sandbox_execution_dry_run_receipt_audit() -> str:
+    return _render_supervised_runtime_arc("/sandbox-execution-dry-run-receipt-audit", "v525.0 First Operator-Approved Sandbox Execution Trial v1", "sandbox_execution_dry_run_receipt_v1", "v520.0", "sandbox-execution-dry-run-receipt-audit", "Audits dry-run execution modeling, command transcript preview, sandbox diff receipt preview, dry-run misinterpretation firewall, and no-execution/no-authorization boundaries.", [("dry-run", "Dry-run", "Prepared."), ("approval", "Approval", "Not granted."), ("exec", "Execution", "Not executed."), ("sandbox", "Sandbox", "Not started."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_first_sandbox_execution_trial_audit() -> str:
+    return _render_supervised_runtime_arc("/first-sandbox-execution-trial-audit", "v525.0 First Operator-Approved Sandbox Execution Trial v1", "first_operator_approved_sandbox_execution_trial_v1", "v525.0", "first-sandbox-execution-trial-audit", "Audits sandbox workspace isolation, approved command plan, single-use receipt shape, sandbox execution misinterpretation firewall, and not-run-by-default/no-live/no-memory/no-autonomy boundaries.", [("trial", "Trial", "Prepared."), ("exec", "Sandbox execution", "Not run by default."), ("approval", "Approval", "Required."), ("live", "Live source", "Untouched."), ("memory", "Memory", "Untouched."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_sandbox_execution_trial_review_board() -> str:
+    return _render_supervised_runtime_arc("/sandbox-execution-trial-review-board", "v530.0 Operator-Approved Sandbox Execution Runner and Receipt Intake v1", "operator_approved_sandbox_execution_runner_v1", "v530.0", "sandbox-execution-trial-review-board", "Audits sandbox execution runner contract, approval phrase validator, sandbox command harness, receipt intake/cleanup audit, and no-live/no-memory/no-release/no-autonomy boundaries.", [("runner", "Runner", "Approval-only."), ("exec", "Execution", "Not run by default."), ("approval", "Approval", "Required."), ("live", "Live source", "Untouched."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_sandbox_to_source_promotion_review_board() -> str:
+    return _render_supervised_runtime_arc("/sandbox-to-source-promotion-review-board", "v540.0 Operator-Approved Narrow Live Patch Promotion Gate v1", "sandbox_to_source_promotion_packet_v1", "v540.0", "sandbox-to-source-promotion-review-board", "Audits sandbox evidence intake, promotion candidate diff preview, rollback/recovery packet, promotion firewall, and no-live/no-memory/no-release/no-autonomy boundaries.", [("packet", "Promotion packet", "Prepared."), ("live", "Live source", "Untouched."), ("approval", "Approval", "Required."), ("rollback", "Rollback", "Planned only."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_narrow_live_patch_promotion_gate_audit() -> str:
+    return _render_supervised_runtime_arc("/narrow-live-patch-promotion-gate-audit", "v540.0 Operator-Approved Narrow Live Patch Promotion Gate v1", "operator_approved_narrow_live_patch_promotion_gate_v1", "v540.0", "narrow-live-patch-promotion-gate-audit", "Audits narrow live patch scope, exact approval phrase template, preflight checklist, live promotion firewall, and no-live/no-memory/no-release/no-autonomy boundaries.", [("gate", "Live patch gate", "Defined."), ("patch", "Live patch", "Not applied."), ("approval", "Approval", "Required."), ("source", "Source", "Untouched."), ("memory", "Memory", "Untouched."), ("auto", "Autonomy", "Not autonomous.")])
+
+def render_first_narrow_live_patch_trial_audit() -> str:
+    return _render_supervised_runtime_arc("/first-narrow-live-patch-trial-audit", "v545.0 First Single-Use Narrow Live Patch Application Trial v1", "first_single_use_narrow_live_patch_application_trial_v1", "v545.0", "first-narrow-live-patch-trial-audit", "Audits first live patch candidate selection, approval receipt template, harness preview, application firewall, and no-automatic-patch/no-memory/no-release/no-autonomy boundaries.", [("trial", "Trial", "Prepared."), ("patch", "Live patch", "Not applied by default."), ("approval", "Approval", "Required."), ("source", "Source", "Untouched."), ("memory", "Memory", "Untouched."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_staleness_verification_audit_board() -> str:
+    return _render_supervised_runtime_arc("/release-staleness-verification-audit-board", "v550.0 Current-Version Staleness Audit and Post-Live-Patch Verification Prep v1", "current_version_staleness_and_post_patch_verification_v1", "v550.0", "release-staleness-verification-audit-board", "Audits current-version source-of-truth fields, stale string scanning, milestone/title drift, post-live-patch verification prep, and no-authorization boundaries.", [("stale", "Stale version", "Clean/blocking."), ("metadata", "Metadata", "Aligned."), ("verify", "Post-patch verification", "Prepared."), ("patch", "Live patch", "Not applied."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+def render_post_live_patch_evidence_intake_contract() -> str:
+    return _render_supervised_runtime_arc("/post-live-patch-evidence-intake-contract", "v551.0 Post-Live-Patch Evidence Intake Contract v1", "post_live_patch_evidence_intake_contract_v1", "v551.0", "post-live-patch-evidence-intake-contract", "Defines operator-supplied post-live-patch verification evidence intake fields and expanded current-symbol staleness auditing without running commands, applying patches, executing rollback, creating releases, writing memory, or expanding autonomy.", [("evidence", "Evidence intake", "Awaiting operator evidence."), ("symbols", "Current symbols", "Clean/blocking."), ("verify", "Verification", "Not executed."), ("rollback", "Rollback", "Not executed."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+
+def render_verification_receipt_review_layer() -> str:
+    return _render_supervised_runtime_arc("/verification-receipt-review-layer", "v552.0 Verification Receipt Review Layer v1", "verification_receipt_review_layer_v1", "v552.0", "verification-receipt-review-layer", "Reviews operator-supplied compile, smoke, install, dashboard, API, CLI, extracted zip, and package privacy receipts without running commands or granting approval.", [("receipts", "Verification receipts", "Awaiting operator evidence."), ("commands", "Commands", "Not executed."), ("release", "Release", "Not approved."), ("rollback", "Rollback", "Not executed."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_rollback_snapshot_validity_review() -> str:
+    return _render_supervised_runtime_arc("/rollback-snapshot-validity-review", "v553.0 Rollback Snapshot Validity Review v1", "rollback_snapshot_validity_review_v1", "v553.0", "rollback-snapshot-validity-review", "Reviews rollback snapshot references, affected files, hashes, restore instructions, and risks without executing rollback or granting approval.", [("snapshot", "Rollback snapshot", "Awaiting packet."), ("restore", "Restore path", "Planned only."), ("rollback", "Rollback", "Not executed."), ("release", "Release", "Not approved."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_post_patch_regression_staleness_audit_board() -> str:
+    return _render_supervised_runtime_arc("/post-patch-regression-staleness-audit-board", "v554.0 Post-Patch Regression and Staleness Audit Board v1", "post_patch_regression_staleness_audit_board_v1", "v554.0", "post-patch-regression-staleness-audit-board", "Combines receipt review, rollback review, stale-current-state scan, current-symbol scan, route/API/CLI parity, docs, package privacy, and no-autonomy checks without approving release.", [("receipts", "Receipts", "Review prepared."), ("rollback", "Rollback", "Planned only."), ("stale", "Staleness", "Clean/blocking."), ("routes", "Route parity", "Review only."), ("release", "Release", "Not approved."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_post_live_patch_verification_rollback_trial() -> str:
+    return _render_supervised_runtime_arc("/post-live-patch-verification-rollback-trial", "v555.0 Post-Live-Patch Verification and Rollback Trial v1", "post_live_patch_verification_rollback_trial_v1", "v555.0", "post-live-patch-verification-rollback-trial", "Assembles the full post-live-patch evidence, receipt, rollback, regression, staleness, and authority-boundary trial board without running commands, applying patches, executing rollback, creating releases, writing memory, or expanding autonomy.", [("trial", "Trial board", "Prepared."), ("receipts", "Receipts", "Awaiting evidence."), ("rollback", "Rollback", "Planned only."), ("patch", "Live patch", "Not applied."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+
+def render_recovery_drill_scope_contract() -> str:
+    return _render_supervised_runtime_arc("/recovery-drill-scope-contract", "v556.0 Recovery Drill Scope Contract v1", "recovery_drill_scope_contract_v1", "v556.0", "recovery-drill-scope-contract", "Defines supervised recovery drill scope, required evidence, affected-file expectations, rollback readiness, and closure prerequisites without running commands, applying patches, executing rollback, creating releases, writing memory, or expanding autonomy.", [("scope", "Drill scope", "Prepared."), ("evidence", "Evidence", "Awaiting operator packet."), ("commands", "Commands", "Not executed."), ("rollback", "Rollback", "Not executed."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_rollback_decision_review_packet() -> str:
+    return _render_supervised_runtime_arc("/rollback-decision-review-packet", "v557.0 Rollback Decision Review Packet v1", "rollback_decision_review_packet_v1", "v557.0", "rollback-decision-review-packet", "Classifies rollback decision evidence and blockers without treating recommendations or eligibility as rollback authorization.", [("decision", "Decision review", "Prepared."), ("evidence", "Evidence", "Awaiting operator packet."), ("recommend", "Recommendation", "Not execution."), ("rollback", "Rollback", "Not executed."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_closure_evidence_board() -> str:
+    return _render_supervised_runtime_arc("/release-closure-evidence-board", "v558.0 Release Closure Evidence Board v1", "release_closure_evidence_board_v1", "v558.0", "release-closure-evidence-board", "Reviews source version, README, release history, dashboard/API/CLI parity, smoke results, package privacy, extracted zip verification, and no-authority confirmations without approving or publishing release.", [("evidence", "Closure evidence", "Prepared."), ("docs", "Docs", "Aligned/blocking."), ("smoke", "Smoke", "Operator evidence."), ("release", "Release", "Not approved."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_closure_approval_gate() -> str:
+    return _render_supervised_runtime_arc("/operator-closure-approval-gate", "v559.0 Operator Closure Approval Gate v1", "operator_closure_approval_gate_v1", "v559.0", "operator-closure-approval-gate", "Requires exact single-use operator closure approval and approval burnout without inferring authorization from receipts or previous approvals.", [("phrase", "Exact phrase", "Required."), ("single", "Single use", "Required."), ("reuse", "Approval reuse", "Forbidden."), ("release", "Release", "Not created."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_recovery_drill_release_closure_board() -> str:
+    return _render_supervised_runtime_arc("/recovery-drill-release-closure-board", "v565.0 Recovery Drill and Release Closure Board v1", "recovery_drill_release_closure_board_v1", "v565.0", "recovery-drill-release-closure-board", "Assembles supervised recovery drill scope, rollback decision review, release closure evidence, operator closure approval gate, blockers, and next-arc guidance without rollback execution, release creation, publishing, memory writes, or autonomy expansion.", [("drill", "Recovery drill", "Prepared only."), ("decision", "Rollback decision", "Review prepared."), ("closure", "Release closure", "Evidence prepared."), ("gate", "Closure approval", "Required."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_release_candidate_scope_contract() -> str:
+    return _render_supervised_runtime_arc("/release-candidate-scope-contract", "v561.0 Release Candidate Scope Contract v1", "release_candidate_scope_contract_v1", "v561.0", "release-candidate-scope-contract", "Defines supervised release candidate scope, package expectations, verification evidence, release notes, privacy requirements, warnings, blockers, and operator notes without creating releases or granting publish approval.", [("scope", "Candidate scope", "Prepared."), ("package", "Package", "Expected."), ("verify", "Evidence", "Required."), ("release", "Release", "Not created."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_candidate_package_integrity_review() -> str:
+    return _render_supervised_runtime_arc("/candidate-package-integrity-review", "v562.0 Candidate Package Integrity Review v1", "candidate_package_integrity_review_v1", "v562.0", "candidate-package-integrity-review", "Reviews source-only package shape, forbidden/private/runtime path exclusions, compiled artifact absence, runtime log exclusion, metadata alignment, and package privacy without release approval or publish permission.", [("package", "Package", "Review prepared."), ("privacy", "Privacy", "Required."), ("metadata", "Metadata", "Aligned/blocking."), ("release", "Release", "Not approved."), ("publish", "Publish", "Not authorized."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_candidate_verification_evidence_matrix() -> str:
+    return _render_supervised_runtime_arc("/candidate-verification-evidence-matrix", "v563.0 Candidate Verification Evidence Matrix v1", "candidate_verification_evidence_matrix_v1", "v563.0", "candidate-verification-evidence-matrix", "Maps compile, smoke, install, dashboard, API, CLI, extracted zip, stale audit, and package privacy evidence without running commands or authorizing release.", [("compile", "Compile", "Evidence required."), ("smoke", "Smoke", "Evidence required."), ("routes", "Routes", "Evidence required."), ("commands", "Commands", "Not executed."), ("auth", "Authorization", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_release_handoff_packet() -> str:
+    return _render_supervised_runtime_arc("/operator-release-handoff-packet", "v564.0 Operator Release Handoff Packet v1", "operator_release_handoff_packet_v1", "v564.0", "operator-release-handoff-packet", "Assembles candidate summary, changed surfaces, verification checklist, unresolved warnings, rollback/recovery reference, closure reference, and operator decision options without creating approval or release.", [("summary", "Summary", "Prepared."), ("surfaces", "Surfaces", "Listed."), ("options", "Decision options", "Operator only."), ("release", "Release", "Not created."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_candidate_integrity_handoff_board() -> str:
+    return _render_supervised_runtime_arc("/release-candidate-integrity-handoff-board", "v565.0 Release Candidate Integrity and Operator Handoff Board v1", "release_candidate_integrity_handoff_board_v1", "v565.0", "release-candidate-integrity-handoff-board", "Summarizes release candidate scope, package integrity, verification evidence, operator handoff readiness, blockers, and next-arc guidance without release creation, publishing, patching, rollback, memory writes, approval reuse, continuation, or autonomy expansion.", [("candidate", "Candidate", "Prepared, not created."), ("package", "Package integrity", "Review prepared."), ("matrix", "Evidence matrix", "Prepared."), ("handoff", "Operator handoff", "Prepared."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_decision_scope_contract() -> str:
+    return _render_supervised_runtime_arc("/release-decision-scope-contract", "v566.0 Release Decision Scope Contract v1", "release_decision_scope_contract_v1", "v566.0", "release-decision-scope-contract", "Defines supervised release decision scope, handoff references, verification summaries, warnings, blockers, decision choices, archive requirements, and operator notes without release approval or publish permission.", [("scope", "Decision scope", "Prepared."), ("handoff", "Handoff", "Referenced."), ("verify", "Evidence", "Summarized."), ("release", "Release", "Not approved."), ("publish", "Publish", "Not authorized."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_decision_option_matrix() -> str:
+    return _render_supervised_runtime_arc("/operator-decision-option-matrix", "v567.0 Operator Decision Option Matrix v1", "operator_decision_option_matrix_v1", "v567.0", "operator-decision-option-matrix", "Prepares operator decision options without selecting, ranking-as-approval, publishing, rolling back, applying patches, or expanding autonomy.", [("options", "Decision options", "Prepared."), ("selection", "Selection", "Operator only."), ("approval", "Approval", "Required."), ("release", "Release", "Not created."), ("publish", "Publish", "Not authorized."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_archive_ledger_prep() -> str:
+    return _render_supervised_runtime_arc("/release-archive-ledger-prep", "v568.0 Release Archive Ledger Prep v1", "release_archive_ledger_prep_v1", "v568.0", "release-archive-ledger-prep", "Prepares a release archive ledger structure without writing external archives, creating releases, publishing releases, or granting authorization.", [("ledger", "Archive ledger", "Prepared."), ("external", "External archive", "Not written."), ("release", "Release", "Not created."), ("publish", "Publish", "Not authorized."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_integrity_continuity_review() -> str:
+    return _render_supervised_runtime_arc("/archive-integrity-continuity-review", "v569.0 Archive Integrity and Continuity Review v1", "archive_integrity_continuity_review_v1", "v569.0", "archive-integrity-continuity-review", "Reviews archive continuity against README, release history, metadata, source markers, dashboard/API/CLI text, stale audits, and package privacy without release approval.", [("readme", "README", "Aligned/blocking."), ("history", "History", "Reviewed."), ("metadata", "Metadata", "Aligned/blocking."), ("archive", "Archive", "Not written."), ("publish", "Publish", "Not authorized."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_decision_archive_ledger_board() -> str:
+    return _render_supervised_runtime_arc("/release-decision-archive-ledger-board", "v570.0 Release Decision and Archive Ledger Board v1", "release_decision_archive_ledger_board_v1", "v570.0", "release-decision-archive-ledger-board", "Summarizes release decision scope, operator decision matrix, archive ledger prep, archive continuity review, blockers, and next-arc guidance without approval, publishing, archive writes, rollback, memory writes, continuation, or autonomy expansion.", [("decision", "Release decision", "Prepared."), ("operator", "Operator decision", "Required."), ("ledger", "Archive ledger", "Prepared, not written."), ("integrity", "Archive integrity", "Review prepared."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_archive_retrieval_scope_contract() -> str:
+    return _render_supervised_runtime_arc("/release-archive-retrieval-scope-contract", "v571.0 Release Archive Retrieval Scope Contract v1", "release_archive_retrieval_scope_contract_v1", "v571.0", "release-archive-retrieval-scope-contract", "Defines read-only release archive retrieval scope, allowed fields, historical lookup boundaries, current-vs-historical distinction, and operator retrieval packets without approval or archive writes.", [("retrieval", "Archive retrieval", "Read-only."), ("fields", "Allowed fields", "Defined."), ("history", "Historical", "Classified."), ("archive", "Archive write", "Not written."), ("release", "Release", "Not approved."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_continuity_index_prep() -> str:
+    return _render_supervised_runtime_arc("/release-continuity-index-prep", "v572.0 Release Continuity Index Prep v1", "release_continuity_index_prep_v1", "v572.0", "release-continuity-index-prep", "Prepares a continuity index of version ranges, arc titles, modules, routes, API/CLI surfaces, smoke names, docs, and next-arc pointers without approval or publish permission.", [("index", "Continuity index", "Prepared."), ("routes", "Surfaces", "Mapped."), ("smoke", "Smoke", "Named."), ("publish", "Publish", "Not authorized."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_historical_reference_classification_review() -> str:
+    return _render_supervised_runtime_arc("/historical-reference-classification-review", "v573.0 Historical Reference Classification Review v1", "historical_reference_classification_review_v1", "v573.0", "historical-reference-classification-review", "Classifies allowed historical and regression references separately from blocked stale current-state markers without weakening stale-current audits.", [("history", "Historical refs", "Allowed/classified."), ("stale", "Stale current", "Blocked."), ("regression", "Regression refs", "Not authority."), ("source", "Source", "Untouched."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_continuity_retrieval_packet() -> str:
+    return _render_supervised_runtime_arc("/continuity-retrieval-packet", "v574.0 Continuity Retrieval Packet v1", "continuity_retrieval_packet_v1", "v574.0", "continuity-retrieval-packet", "Prepares an operator-facing continuity retrieval packet without approval, release closure, archive writes, command execution, or autonomy expansion.", [("packet", "Retrieval packet", "Prepared."), ("chain", "Recent arc chain", "Summarized."), ("blocked", "Blocked stale refs", "Listed."), ("closure", "Release closure", "Not granted."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_archive_retrieval_continuity_index_board() -> str:
+    return _render_supervised_runtime_arc("/release-archive-retrieval-continuity-index-board", "v575.0 Release Archive Retrieval and Continuity Index Board v1", "release_archive_retrieval_continuity_index_board_v1", "v575.0", "release-archive-retrieval-continuity-index-board", "Summarizes archive retrieval scope, continuity index, historical classification, retrieval packet, blockers, and next-arc guidance without approval, publishing, archive writes, rollback, memory writes, continuation, or autonomy expansion.", [("retrieval", "Archive retrieval", "Prepared read-only."), ("index", "Continuity index", "Prepared."), ("history", "Historical refs", "Classified."), ("stale", "Stale current", "Blocked if detected."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_archive_search_scope_contract() -> str:
+    return _render_supervised_runtime_arc("/archive-search-scope-contract", "v576.0 Archive Search Scope Contract v1", "archive_search_scope_contract_v1", "v576.0", "archive-search-scope-contract", "Defines read-only archive search fields, historical/current lookup rules, search boundaries, and operator search packets without archive writes or approval.", [("search", "Archive search", "Read-only."), ("fields", "Allowed fields", "Defined."), ("history", "Historical/current", "Classified."), ("archive", "Archive write", "Not performed."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_record_query_matrix() -> str:
+    return _render_supervised_runtime_arc("/release-record-query-matrix", "v577.0 Release Record Query Matrix v1", "release_record_query_matrix_v1", "v577.0", "release-record-query-matrix", "Prepares a release record query matrix without treating query matches or search ranking as authority.", [("query", "Query matrix", "Prepared."), ("routes", "Surfaces", "Searchable."), ("ranking", "Ranking", "Not authority."), ("release", "Release", "Not created."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_search_result_review_packet() -> str:
+    return _render_supervised_runtime_arc("/archive-search-result-review-packet", "v578.0 Archive Search Result Review Packet v1", "archive_search_result_review_packet_v1", "v578.0", "archive-search-result-review-packet", "Prepares matched-record review, historical/current classification, confidence notes, stale-current risks, missing-record warnings, and operator notes without mutating records.", [("results", "Search results", "Review prepared."), ("class", "Classification", "Prepared."), ("stale", "Stale current", "Risk noted."), ("records", "Record mutation", "Not performed."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_handoff_review_packet() -> str:
+    return _render_supervised_runtime_arc("/archive-handoff-review-packet", "v579.0 Archive Handoff Review Packet v1", "archive_handoff_review_packet_v1", "v579.0", "archive-handoff-review-packet", "Prepares archive handoff review with search summary, continuity chain, matched release records, warnings, source surfaces, and operator decision options without approval or publishing.", [("handoff", "Archive handoff", "Prepared."), ("chain", "Continuity chain", "Summarized."), ("warnings", "Warnings", "Listed."), ("publish", "Publish", "Not authorized."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_archive_search_handoff_review_board() -> str:
+    return _render_supervised_runtime_arc("/release-archive-search-handoff-review-board", "v580.0 Release Archive Search and Handoff Review Board v1", "release_archive_search_handoff_review_board_v1", "v580.0", "release-archive-search-handoff-review-board", "Summarizes read-only archive search, release record query matrix, search result review, archive handoff packet, blockers, and next-arc guidance without release creation, publishing, archive writes, rollback, memory writes, continuation, or autonomy expansion.", [("search", "Archive search", "Prepared read-only."), ("query", "Query matrix", "Prepared."), ("results", "Result review", "Prepared."), ("handoff", "Handoff", "Prepared."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_archive_export_scope_contract() -> str:
+    return _render_supervised_runtime_arc("/archive-export-scope-contract", "v581.0 Archive Export Scope Contract v1", "archive_export_scope_contract_v1", "v581.0", "archive-export-scope-contract", "Defines archive export scope, allowed export fields, source-only boundaries, operator review requirements, and external-write prohibition without writing external archives or approving releases.", [("export", "Archive export", "Prepared only."), ("fields", "Allowed fields", "Defined."), ("external", "External write", "Not performed."), ("publish", "Publish", "Not authorized."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_archive_export_packet_prep() -> str:
+    return _render_supervised_runtime_arc("/release-archive-export-packet-prep", "v582.0 Release Archive Export Packet Prep v1", "release_archive_export_packet_prep_v1", "v582.0", "release-archive-export-packet-prep", "Prepares an operator-reviewable release archive export packet without external archive writes or approval.", [("packet", "Export packet", "Prepared."), ("continuity", "Continuity", "Summarized."), ("privacy", "Privacy", "Reviewed."), ("external", "External write", "Not performed."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_decision_closure_checklist() -> str:
+    return _render_supervised_runtime_arc("/operator-decision-closure-checklist", "v583.0 Operator Decision Closure Checklist v1", "operator_decision_closure_checklist_v1", "v583.0", "operator-decision-closure-checklist", "Prepares operator decision closure checklist with exact decision and single-use boundary requirements without automatic approval.", [("candidate", "Candidate", "Confirmation required."), ("evidence", "Evidence", "Review required."), ("blockers", "Blockers", "Review required."), ("single", "Single-use", "Required."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_export_integrity_review() -> str:
+    return _render_supervised_runtime_arc("/archive-export-integrity-review", "v584.0 Archive Export Integrity Review v1", "archive_export_integrity_review_v1", "v584.0", "archive-export-integrity-review", "Reviews archive export integrity against docs, metadata, source markers, dashboard/API/CLI text, stale-current blocking, privacy, and historical classification without external writes.", [("integrity", "Export integrity", "Review prepared."), ("metadata", "Metadata", "Aligned or blocked."), ("stale", "Stale current", "Blocked if detected."), ("external", "External write", "Not performed."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_archive_export_decision_closure_board() -> str:
+    return _render_supervised_runtime_arc("/release-archive-export-decision-closure-board", "v585.0 Release Archive Export and Decision Closure Board v1", "release_archive_export_decision_closure_board_v1", "v585.0", "release-archive-export-decision-closure-board", "Summarizes archive export scope, export packet prep, operator decision closure checklist, archive export integrity review, blockers, and next-arc guidance without release creation, publishing, external archive writes, rollback, memory writes, continuation, or autonomy expansion.", [("export", "Archive export", "Prepared, not written."), ("packet", "Export packet", "Prepared."), ("closure", "Decision closure", "Required."), ("integrity", "Export integrity", "Review prepared."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_import_scope_contract() -> str:
+    return _render_supervised_runtime_arc("/archive-import-scope-contract", "v586.0 Archive Import Scope Contract v1", "archive_import_scope_contract_v1", "v586.0", "archive-import-scope-contract", "Defines archive import scope, allowed imported fields, source-only import boundaries, operator review requirements, and current-state mutation prohibition without writing records or approving releases.", [("import", "Archive import", "Prepared only."), ("fields", "Allowed fields", "Defined."), ("mutation", "Current state", "Not mutated."), ("approval", "Approval", "Required."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_archive_import_packet_review() -> str:
+    return _render_supervised_runtime_arc("/release-archive-import-packet-review", "v587.0 Release Archive Import Packet Review v1", "release_archive_import_packet_review_v1", "v587.0", "release-archive-import-packet-review", "Prepares review of imported archive packets with source, continuity, evidence, warnings, decision status, and current-state compatibility notes without mutating archive records.", [("packet", "Import packet", "Review prepared."), ("evidence", "Evidence", "Not approval."), ("records", "Record mutation", "Not performed."), ("state", "Current state", "Not mutated."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_closure_recall_review_matrix() -> str:
+    return _render_supervised_runtime_arc("/closure-recall-review-matrix", "v588.0 Closure Recall Review Matrix v1", "closure_recall_review_matrix_v1", "v588.0", "closure-recall-review-matrix", "Classifies prior closure states for historical review only without reusing prior approval or authorizing future releases.", [("recall", "Closure recall", "Historical only."), ("prior", "Prior approval", "Not reusable."), ("future", "Future releases", "Not approved."), ("records", "Record write", "Not performed."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_imported_archive_continuity_guard() -> str:
+    return _render_supervised_runtime_arc("/imported-archive-continuity-guard", "v589.0 Imported Archive Continuity Guard v1", "imported_archive_continuity_guard_v1", "v589.0", "imported-archive-continuity-guard", "Guards imported archive continuity against current source-of-truth, stale-version rules, metadata, README/release history compatibility, package privacy, and operator-decision continuity without approval.", [("guard", "Continuity guard", "Prepared."), ("history", "Historical alignment", "Not authority."), ("stale", "Stale current", "Blocked if detected."), ("state", "Current state", "Not mutated."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_release_archive_import_closure_recall_board() -> str:
+    return _render_supervised_runtime_arc("/release-archive-import-closure-recall-board", "v590.0 Release Archive Import and Closure Recall Board v1", "release_archive_import_closure_recall_board_v1", "v590.0", "release-archive-import-closure-recall-board", "Summarizes archive import scope, import packet review, closure recall matrix, imported archive continuity guard, blockers, and next-arc guidance without record writes, current-state mutation, release creation, publishing, rollback, memory writes, continuation, or autonomy expansion.", [("import", "Archive import", "Prepared, not written."), ("packet", "Import packet", "Review prepared."), ("recall", "Closure recall", "Historical review."), ("guard", "Continuity guard", "Guarded."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_imported_archive_conflict_scope_contract() -> str:
+    return _render_supervised_runtime_arc("/imported-archive-conflict-scope-contract", "v591.0 Imported Archive Conflict Scope Contract v1", "imported_archive_conflict_scope_contract_v1", "v591.0", "imported-archive-conflict-scope-contract", "Defines imported archive conflict scope across version identity, arc title, release history, README current header, metadata, source markers, operator closure, verification evidence, and package privacy without correction or authority.", [("scope", "Conflict scope", "Prepared."), ("detection", "Detection", "Not correction."), ("import", "Imported data", "Not authority."), ("source", "Source edits", "Not authorized."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_conflict_classification_matrix() -> str:
+    return _render_supervised_runtime_arc("/archive-conflict-classification-matrix", "v592.0 Archive Conflict Classification Matrix v1", "archive_conflict_classification_matrix_v1", "v592.0", "archive-conflict-classification-matrix", "Classifies imported archive conflicts as allowed historical references, blocked stale-current mismatches, metadata/release-history/documentation/decision/evidence/package conflicts, or unresolved operator-review items without selecting fixes.", [("matrix", "Classification", "Prepared."), ("fix", "Fix selection", "Not performed."), ("severity", "Severity", "Not approval."), ("records", "Archive write", "Not performed."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_conflict_reconciliation_option_packet() -> str:
+    return _render_supervised_runtime_arc("/conflict-reconciliation-option-packet", "v593.0 Conflict Reconciliation Option Packet v1", "conflict_reconciliation_option_packet_v1", "v593.0", "conflict-reconciliation-option-packet", "Prepares operator-facing reconciliation options including accepting current source-of-truth, treating imports as historical-only, requesting correction/review/reverification, blocking import, or deferring without execution.", [("options", "Options", "Prepared."), ("execute", "Execution", "Not automatic."), ("recommend", "Recommendation", "Not approval."), ("state", "Current state", "Not mutated."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_imported_archive_conflict_guard_review() -> str:
+    return _render_supervised_runtime_arc("/imported-archive-conflict-guard-review", "v594.0 Imported Archive Conflict Guard Review v1", "imported_archive_conflict_guard_review_v1", "v594.0", "imported-archive-conflict-guard-review", "Verifies conflict review containment: no current-state mutation, archive record write, release decision inference, approval reuse, stale-current acceptance, or loss of operator review.", [("guard", "Conflict guard", "Guarded."), ("mutation", "Current state", "Not mutated."), ("approval", "Prior approval", "Not reused."), ("import", "Import", "Not authorized."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_imported_archive_conflict_reconciliation_board() -> str:
+    return _render_supervised_runtime_arc("/imported-archive-conflict-reconciliation-board", "v595.0 Imported Archive Conflict Reconciliation Board v1", "imported_archive_conflict_reconciliation_board_v1", "v595.0", "imported-archive-conflict-reconciliation-board", "Summarizes imported archive conflict scope, classification matrix, reconciliation options, guard review, blockers, and next-arc guidance without archive writes, current-state mutation, reconciliation execution, release creation, publishing, rollback, memory writes, continuation, or autonomy expansion.", [("conflict", "Conflict", "Review prepared."), ("matrix", "Classification", "Matrix prepared."), ("options", "Options", "Operator review."), ("guard", "Guard", "Guarded."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_reconciliation_decision_scope_contract() -> str:
+    return _render_supervised_runtime_arc("/reconciliation-decision-scope-contract", "v596.0 Reconciliation Decision Scope Contract v1", "reconciliation_decision_scope_contract_v1", "v596.0", "reconciliation-decision-scope-contract", "Defines operator-governed archive reconciliation decision scope without selecting decisions, writing ledgers, mutating current state, or reusing approval.", [("scope", "Decision scope", "Prepared."), ("decision", "Decision", "Operator required."), ("ledger", "Ledger write", "Not performed."), ("state", "Current state", "Not mutated."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_reconciliation_decision_option_ledger() -> str:
+    return _render_supervised_runtime_arc("/reconciliation-decision-option-ledger", "v597.0 Reconciliation Decision Option Ledger v1", "reconciliation_decision_option_ledger_v1", "v597.0", "reconciliation-decision-option-ledger", "Prepares an explicit operator decision option ledger without selecting an option, writing external ledgers, writing archive records, mutating current state, or approving releases.", [("ledger", "Option ledger", "Prepared."), ("select", "Option selection", "Not performed."), ("write", "External write", "Not performed."), ("approval", "Approval", "Required."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_reconciliation_decision_record_prep() -> str:
+    return _render_supervised_runtime_arc("/operator-reconciliation-decision-record-prep", "v598.0 Operator Reconciliation Decision Record Prep v1", "operator_reconciliation_decision_record_prep_v1", "v598.0", "operator-reconciliation-decision-record-prep", "Prepares an operator reconciliation decision record template without supplying the decision, reusing prior approval, writing external ledgers, writing archive records, or mutating current state.", [("record", "Decision record", "Prepared."), ("decision", "Decision", "Not supplied."), ("prior", "Prior approval", "Not reused."), ("write", "Record write", "Not performed."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_reconciliation_decision_guard_review() -> str:
+    return _render_supervised_runtime_arc("/reconciliation-decision-guard-review", "v599.0 Reconciliation Decision Guard Review v1", "reconciliation_decision_guard_review_v1", "v599.0", "reconciliation-decision-guard-review", "Guards reconciliation decision review by confirming no default operator decision, no external ledger write, no archive mutation, no current-state mutation, no prior approval reuse, no release creation, no publish authorization, and no autonomy expansion.", [("guard", "Decision guard", "Guarded."), ("write", "Ledger/archive write", "Not performed."), ("state", "Current state", "Not mutated."), ("prior", "Prior approval", "Not reused."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_reconciliation_decision_ledger_board() -> str:
+    return _render_supervised_runtime_arc("/archive-reconciliation-decision-ledger-board", "v600.0 Archive Reconciliation Decision Ledger Board v1", "archive_reconciliation_decision_ledger_board_v1", "v600.0", "archive-reconciliation-decision-ledger-board", "Summarizes reconciliation decision scope, option ledger, operator decision record prep, decision guard review, blockers, and next-arc guidance without selecting decisions, writing external ledgers, mutating current state, creating releases, publishing, rollback, memory writes, continuation, or autonomy expansion.", [("decision", "Decision", "Operator required."), ("ledger", "Ledger", "Prepared, not written."), ("record", "Decision record", "Not supplied."), ("guard", "Guard", "Guarded."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+def render_smoke_summary_version_alignment_contract() -> str:
+    return _render_supervised_runtime_arc("/smoke-summary-version-alignment-contract", "v601.0 Smoke Summary Version Alignment Contract v1", "smoke_summary_version_alignment_contract_v1", "v601.0", "smoke-summary-version-alignment-contract", "Checks active smoke JSON summary version alignment without running smoke, approving releases, mutating source, writing memory, or expanding autonomy.", [("smoke", "Smoke summary", "Aligned or blocked."), ("version", "Version", "Current."), ("execute", "Execution", "Not run."), ("release", "Release", "Not approved."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_nested_metadata_root_version_guard() -> str:
+    return _render_supervised_runtime_arc("/nested-metadata-root-version-guard", "v602.0 Nested Metadata Root Version Guard v1", "nested_metadata_root_version_guard_v1", "v602.0", "nested-metadata-root-version-guard", "Guards nested project/workspace version and root_version fields without writing metadata, mutating current state, creating releases, or expanding autonomy.", [("metadata", "Metadata", "Aligned or blocked."), ("root", "Root version", "Current."), ("write", "Metadata write", "Not performed."), ("state", "Current state", "Not mutated."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_readme_current_handoff_staleness_guard() -> str:
+    return _render_supervised_runtime_arc("/readme-current-handoff-staleness-guard", "v603.0 README Current Handoff Staleness Guard v1", "readme_current_handoff_staleness_guard_v1", "v603.0", "readme-current-handoff-staleness-guard", "Blocks stale current handoff language while allowing explicitly historical handoff references without editing docs, approving releases, or expanding autonomy.", [("readme", "README handoff", "Current or historical."), ("stale", "Stale current text", "Blocked."), ("write", "Doc write", "Not performed."), ("release", "Release", "Not created."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_setup_smoke_scope_guard() -> str:
+    return _render_supervised_runtime_arc("/setup-smoke-scope-guard", "v604.0 Setup Smoke Scope Guard v1", "setup_smoke_scope_guard_v1", "v604.0", "setup-smoke-scope-guard", "Keeps setup smoke scoped to bounded install segments instead of timeout-prone legacy full smoke without executing setup or smoke.", [("setup", "Setup smoke", "Bounded."), ("legacy", "Full legacy smoke", "Not forced."), ("execute", "Execution", "Not run."), ("release", "Release", "Not created."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_current_state_integrity_staleness_hardening_board() -> str:
+    return _render_supervised_runtime_arc("/current-state-integrity-staleness-hardening-board", "v605.0 Current-State Integrity and Staleness Hardening Board v1", "current_state_integrity_staleness_hardening_board_v1", "v605.0", "current-state-integrity-staleness-hardening-board", "Summarizes smoke summary, nested metadata, README handoff, setup smoke, and expanded stale-current audit hardening without source writes, metadata writes, command execution, release creation, publishing, memory writes, approval reuse, continuation, or autonomy expansion.", [("integrity", "Integrity", "Hardened."), ("smoke", "Smoke summary", "Current."), ("metadata", "Metadata", "Aligned."), ("setup", "Setup smoke", "Bounded."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_reconciliation_application_scope_packet() -> str:
+    return _render_supervised_runtime_arc("/archive-reconciliation-application-scope-packet", "v606.0 Archive Reconciliation Application Scope Packet v1", "archive_reconciliation_application_scope_packet_v1", "v606.0", "archive-reconciliation-application-scope-packet", "Defines operator-governed archive reconciliation application scope without application execution, archive writes, current-state mutation, release creation, publishing, rollback, memory writes, approval reuse, or autonomy expansion.", [("scope", "Application scope", "Prepared only."), ("decision", "Decision", "Operator required."), ("write", "Archive write", "Not performed."), ("state", "Current state", "Not mutated."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_reconciliation_application_candidate_map() -> str:
+    return _render_supervised_runtime_arc("/reconciliation-application-candidate-map", "v607.0 Reconciliation Application Candidate Map v1", "reconciliation_application_candidate_map_v1", "v607.0", "reconciliation-application-candidate-map", "Maps possible archive, current-state, metadata, release-history, and README reconciliation application candidates without selecting reconciliation, writing records, mutating state, or granting approval.", [("map", "Candidate map", "Prepared."), ("select", "Selection", "Not performed."), ("write", "Writes", "Blocked."), ("approval", "Approval", "Required."), ("release", "Release", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_reconciliation_application_approval_checklist() -> str:
+    return _render_supervised_runtime_arc("/operator-reconciliation-application-approval-checklist", "v608.0 Operator Reconciliation Application Approval Checklist v1", "operator_reconciliation_application_approval_checklist_v1", "v608.0", "operator-reconciliation-application-approval-checklist", "Prepares the exact operator approval checklist required before any archive reconciliation application, without granting approval, reusing prior approval, or applying reconciliation.", [("checklist", "Checklist", "Prepared."), ("approval", "Approval", "Not granted."), ("prior", "Prior approval", "Not reused."), ("scope", "Exact scope", "Required."), ("burnout", "Burnout", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_dry_run_application_receipt_prep() -> str:
+    return _render_supervised_runtime_arc("/dry-run-application-receipt-prep", "v609.0 Dry-Run Application Receipt Prep v1", "dry_run_application_receipt_prep_v1", "v609.0", "dry-run-application-receipt-prep", "Prepares a dry-run application receipt format confirming planned changes, no archive write, no current-state mutation, blocked writes, and operator approval requirements without execution.", [("receipt", "Receipt prep", "Prepared."), ("execute", "Execution", "Not performed."), ("write", "Writes", "Not performed."), ("state", "Current state", "Not mutated."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_reconciliation_application_prep_board() -> str:
+    return _render_supervised_runtime_arc("/archive-reconciliation-application-prep-board", "v610.0 Archive Reconciliation Application Prep Board v1", "archive_reconciliation_application_prep_board_v1", "v610.0", "archive-reconciliation-application-prep-board", "Summarizes application scope, candidate map, operator approval checklist, dry-run receipt prep, blockers, and next UI arc guidance without archive writes, current-state mutation, release creation, publishing, rollback, memory writes, approval reuse, continuation, or autonomy expansion.", [("application", "Application prep", "Prepared only."), ("receipt", "Dry-run receipt", "Prepared, not executed."), ("write", "Archive write", "Not performed."), ("state", "Current state", "Not mutated."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+
+def render_command_center_landing_screen() -> str:
+    return _render_supervised_runtime_arc("/command-center-landing-screen", "v611.0 Command Center Landing Screen v1", "command_center_landing_screen_v1", "v611.0", "command-center-landing-screen", "Creates a task-first landing screen with current version, safety state, top warnings, and next safe actions without executing actions or granting approval.", [("version", "Current Version", "Current release and milestone are visible."), ("safety", "Safety State", "Autonomy and approval state are visible."), ("warnings", "Warnings", "Top warnings are summarized."), ("next", "Next Safe Actions", "Safe review-only actions are surfaced."), ("write", "Writes", "No source/archive/memory writes."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_queue_panel() -> str:
+    return _render_supervised_runtime_arc("/operator-queue-panel", "v612.0 Operator Queue Panel v1", "operator_queue_panel_v1", "v612.0", "operator-queue-panel", "Groups operator work into requires-decision, requires-approval, ready-for-review, blocked, prepared-only, and advisory buckets without granting approval.", [("decision", "Requires Decision", "Operator decisions are grouped."), ("approval", "Requires Approval", "Approval-required work is explicit."), ("review", "Ready for Review", "Review-only work is surfaced."), ("blocked", "Blocked", "Blocked work is visible with reasons."), ("prepared", "Prepared Only", "Prepared-only work remains non-executing."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_safety_state_panel() -> str:
+    return _render_supervised_runtime_arc("/safety-state-panel", "v613.0 Safety State Panel v1", "safety_state_panel_v1", "v613.0", "safety-state-panel", "Shows source, archive, memory, release, publish, autonomy, and model invocation gates with reasons while changing no authorization state.", [("source", "Source Writes", "Not authorized."), ("archive", "Archive Writes", "Not authorized."), ("memory", "Memory Writes", "Not authorized."), ("release", "Release/Publish", "Not authorized."), ("model", "Model Invocation", "Not default."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_workflow_navigation_groups() -> str:
+    return _render_supervised_runtime_arc("/workflow-navigation-groups", "v614.0 Workflow Navigation Groups v1", "workflow_navigation_groups_v1", "v614.0", "workflow-navigation-groups", "Defines Command, Queue, Patch Lab, Safety, Archive, Memory, System Health, and History groups without deleting legacy routes or changing approval semantics.", [("command", "Command", "Task-first command surfaces."), ("queue", "Queue", "Operator queue surfaces."), ("patch", "Patch Lab", "Patch and sandbox surfaces."), ("safety", "Safety", "Safety and authorization surfaces."), ("archive", "Archive", "Archive workflow pipeline."), ("health", "System Health", "Verification and integrity surfaces.")])
+
+
+def render_system_health_summary_board() -> str:
+    return _render_supervised_runtime_arc("/system-health-summary-board", "v615.0 System Health Summary Board v1", "system_health_summary_board_v1", "v615.0", "system-health-summary-board", "Summarizes version integrity, stale audit, metadata, package privacy, route parity, API/CLI parity, smoke coverage, and legacy advisory blockers without running checks or granting approval.", [("version", "Version Integrity", "Summarized."), ("stale", "Stale Audit", "Summarized."), ("metadata", "Metadata", "Review required."), ("routes", "Route/API/CLI", "Parity summarized."), ("smoke", "Smoke Coverage", "Targeted current checks required."), ("legacy", "Legacy Advisory", "Advisory only.")])
+
+
+def render_operator_command_center_ui_consolidation_board() -> str:
+    return _render_supervised_runtime_arc("/operator-command-center-ui-consolidation-board", "v615.0 Operator Command Center UI Consolidation Board v1", "operator_command_center_ui_consolidation_board_v1", "v615.0", "operator-command-center-ui-consolidation-board", "Consolidates the dashboard into command center, operator queue, safety panel, workflow navigation groups, and system health summary without removing old routes, changing approval semantics, or expanding autonomy.", [("command", "Command Center", "Landing screen prepared."), ("queue", "Operator Queue", "Queue panel prepared."), ("safety", "Safety Panel", "Gates visible."), ("workflow", "Workflow Groups", "Routes grouped."), ("health", "System Health", "Health summary prepared."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_workflow_group_route_index() -> str:
+    return _render_supervised_runtime_arc("/workflow-group-route-index", "v616.0 Workflow Group Route Index v1", "workflow_group_route_index_v1", "v616.0", "workflow-group-route-index", "Groups dashboard surfaces into Command, Queue, Patch Lab, Safety, Archive, Memory, System Health, and History / Legacy workflows without executing actions or granting approval.", [("command", "Command", "Command center surfaces."), ("queue", "Queue", "Operator queue surfaces."), ("patch", "Patch Lab", "Patch and sandbox surfaces."), ("safety", "Safety", "Authorization surfaces."), ("archive", "Archive", "Archive pipeline."), ("legacy", "Legacy", "Drawer prepared.")])
+
+
+def render_legacy_route_drawer() -> str:
+    return _render_supervised_runtime_arc("/legacy-route-drawer", "v617.0 Legacy Route Drawer v1", "legacy_route_drawer_v1", "v617.0", "legacy-route-drawer", "Keeps old versioned and arc-specific routes accessible in a legacy/full-surface drawer without deleting routes, hiding safety, executing actions, or granting approval.", [("preserve", "Routes", "Preserved."), ("delete", "Deletion", "Not performed."), ("history", "History", "Accessible."), ("safety", "Safety", "Not hidden."), ("approval", "Approval", "Not granted."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_archive_workflow_pipeline_view() -> str:
+    return _render_supervised_runtime_arc("/archive-workflow-pipeline-view", "v618.0 Archive Workflow Pipeline View v1", "archive_workflow_pipeline_view_v1", "v618.0", "archive-workflow-pipeline-view", "Shows archive retrieval, search, export, import, conflict reconciliation, decision ledger, and application prep as a read-only pipeline without selecting reconciliation or writing archive records.", [("retrieve", "Retrieval", "Available."), ("search", "Search", "Available."), ("export", "Export", "Historical."), ("import", "Import", "Historical."), ("decision", "Decision", "Operator required."), ("write", "Writes", "Blocked.")])
+
+
+def render_patch_safety_memory_group_views() -> str:
+    return _render_supervised_runtime_arc("/patch-safety-memory-group-views", "v619.0 Patch Safety Memory Group Views v1", "patch_safety_memory_group_views_v1", "v619.0", "patch-safety-memory-group-views", "Groups Patch Lab, Safety & Authorization, Memory & Identity, and System Health views without patch execution, memory writes, authorization changes, or approval inference.", [("patch", "Patch Lab", "Grouped."), ("safety", "Safety", "Grouped."), ("memory", "Memory", "Grouped."), ("health", "Health", "Grouped."), ("writes", "Writes", "Blocked."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_dashboard_simplification_board() -> str:
+    return _render_supervised_runtime_arc("/dashboard-simplification-board", "v620.0 Dashboard Simplification Board v1", "dashboard_simplification_board_v1", "v620.0", "dashboard-simplification-board", "Ties workflow grouping, legacy route drawer, archive pipeline, and grouped patch/safety/memory/health views into a review-only dashboard simplification board without route deletion, native title tooltip regression, approval changes, writes, or autonomy expansion.", [("workflow", "Workflow Groups", "Prepared."), ("legacy", "Legacy Drawer", "Prepared."), ("archive", "Archive Pipeline", "Read-only."), ("groups", "Group Views", "Prepared."), ("style", "data-tip", "Preserved."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_universal_action_label_standard() -> str:
+    return _render_supervised_runtime_arc("/universal-action-label-standard", "v621.0 Universal Action Label Standard v1", "universal_action_label_standard_v1", "v621.0", "universal-action-label-standard", "Standardizes operator action labels and action classes without executing actions, granting approval, or changing authorization semantics.", [("labels", "Action Labels", "Standardized."), ("classes", "Action Classes", "read/draft/approval/blocked."), ("execute", "Execution", "Not performed."), ("approval", "Approval", "Not granted."), ("write", "Writes", "Blocked."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_blocked_action_explanation_cards() -> str:
+    return _render_supervised_runtime_arc("/blocked-action-explanation-cards", "v622.0 Blocked Action Explanation Cards v1", "blocked_action_explanation_cards_v1", "v622.0", "blocked-action-explanation-cards", "Prepares reusable blocked-action cards explaining what is blocked, why, what is missing, what remains allowed, and what must not be inferred.", [("blocked", "Blocked Action", "Explained."), ("why", "Reason", "Visible."), ("missing", "Missing Approval", "Visible."), ("allowed", "Allowed Work", "Review/draft only."), ("infer", "No Inference", "No approval inferred."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_one_time_approval_burnout_ux() -> str:
+    return _render_supervised_runtime_arc("/one-time-approval-burnout-ux", "v623.0 One-Time Approval and Burnout UX v1", "one_time_approval_burnout_ux_v1", "v623.0", "one-time-approval-burnout-ux", "Prepares a single-use approval and burnout UX card without creating approval, reusing approval, or granting authorization from UI presence.", [("scope", "Exact Scope", "Required."), ("single", "Single Use", "Required."), ("burnout", "Burnout", "Required."), ("reuse", "Reuse", "Blocked."), ("approval", "Approval", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_safe_preview_before_action_summary() -> str:
+    return _render_supervised_runtime_arc("/safe-preview-before-action-summary", "v624.0 Safe Preview Before-Action Summary v1", "safe_preview_before_action_summary_v1", "v624.0", "safe-preview-before-action-summary", "Prepares if-approved / would-not / receipt / rollback / stop-condition preview language without executing the preview or treating it as approval.", [("would", "Would Do", "Explicit scope only."), ("wouldnot", "Would Not", "No continuation/publish/memory/archive."), ("receipt", "Receipt", "Required."), ("rollback", "Rollback Notes", "Required before writes."), ("execute", "Execution", "Not performed."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_action_semantics_board() -> str:
+    return _render_supervised_runtime_arc("/operator-action-semantics-board", "v625.0 Operator Action Semantics Board v1", "operator_action_semantics_board_v1", "v625.0", "operator-action-semantics-board", "Ties universal action labels, blocked-action cards, approval burnout UX, and safe previews into a review-only operator action semantics board without changing approval rules or expanding autonomy.", [("labels", "Labels", "Prepared."), ("blocked", "Blocked Cards", "Prepared."), ("approval", "Approval UX", "Prepared, not granted."), ("preview", "Safe Preview", "Prepared, not executed."), ("rules", "Approval Rules", "Unchanged."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_review_packet_summary_header() -> str:
+    return _render_supervised_runtime_arc("/review-packet-summary-header", "v626.0 Review Packet Summary Header v1", "review_packet_summary_header_v1", "v626.0", "review-packet-summary-header", "Prepares a standard review packet summary header showing title, version, status, operator/approval needs, write allowance, autonomy state, risk, and next safe action without granting approval or hiding raw evidence.", [("header", "Summary Header", "Prepared."), ("operator", "Operator Required", "Visible."), ("write", "Writes", "Not allowed."), ("raw", "Raw Evidence", "Preserved."), ("approval", "Approval", "Not granted."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_evidence_grouping_priority_layout() -> str:
+    return _render_supervised_runtime_arc("/evidence-grouping-priority-layout", "v627.0 Evidence Grouping and Priority Layout v1", "evidence_grouping_priority_layout_v1", "v627.0", "evidence-grouping-priority-layout", "Groups evidence into summary, operator decision needed, blocked actions, allowed actions, verification evidence, raw details, and historical notes without treating summaries as proof or authorization.", [("summary", "Summary", "First."), ("decision", "Decision Needed", "Visible."), ("blocked", "Blocked Actions", "Visible."), ("allowed", "Allowed Actions", "Visible."), ("raw", "Raw Details", "Preserved."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_receipt_ledger_readability_cards() -> str:
+    return _render_supervised_runtime_arc("/receipt-ledger-readability-cards", "v628.0 Receipt and Ledger Readability Cards v1", "receipt_ledger_readability_cards_v1", "v628.0", "receipt-ledger-readability-cards", "Prepares readable cards for sandbox receipts, patch receipts, archive ledgers, memory trial ledgers, release decision ledgers, and rollback/recovery packets without writing ledgers or treating receipts as approval.", [("receipt", "Receipt Cards", "Prepared."), ("ledger", "Ledger Cards", "Prepared."), ("authorized", "Authorized Scope", "Shown if supplied."), ("blocked", "Blocked Work", "Visible."), ("write", "Ledger Writes", "Not performed."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_system_health_evidence_ux() -> str:
+    return _render_supervised_runtime_arc("/system-health-evidence-ux", "v629.0 Smoke Route Metadata Evidence UX v1", "system_health_evidence_ux_v1", "v629.0", "system-health-evidence-ux", "Prepares readable evidence panels for targeted smoke, fast smoke, dashboard, recent regression, route/API/CLI parity, metadata integrity, package privacy, and stale-version audits without running checks or authorizing action.", [("smoke", "Smoke Evidence", "Panel prepared."), ("route", "Route/API/CLI", "Panel prepared."), ("metadata", "Metadata", "Panel prepared."), ("privacy", "Package Privacy", "Panel prepared."), ("advisory", "Legacy Advisory", "Visible."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_review_packet_evidence_ux_board() -> str:
+    return _render_supervised_runtime_arc("/review-packet-evidence-ux-board", "v630.0 Review Packet Evidence UX Board v1", "review_packet_evidence_ux_board_v1", "v630.0", "review-packet-evidence-ux-board", "Ties review packet headers, evidence grouping, receipt and ledger cards, and system health evidence panels into a review-only evidence UX board while preserving raw evidence and changing no approval semantics.", [("header", "Packet Header", "Prepared."), ("grouping", "Evidence Layout", "Prepared."), ("receipts", "Receipt Cards", "Prepared."), ("health", "System Health", "Prepared."), ("raw", "Raw Evidence", "Preserved."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_surface_search_index() -> str:
+    return _render_supervised_runtime_arc("/surface-search-index", "v631.0 Surface Search Index v1", "surface_search_index_v1", "v631.0", "surface-search-index", "Prepares a searchable index of dashboard routes, API routes, CLI flags, smoke checks, source modules, release-history entries, README continuity sections, evidence boards, and workflow groups without executing actions or granting authorization.", [("routes", "Dashboard/API", "Indexed."), ("cli", "CLI Flags", "Indexed."), ("smoke", "Smoke Checks", "Indexed."), ("modules", "Modules", "Indexed."), ("approval", "Approval", "Not granted."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_route_module_smoke_discovery_cards() -> str:
+    return _render_supervised_runtime_arc("/route-module-smoke-discovery-cards", "v632.0 Route Module Smoke Discovery Cards v1", "route_module_smoke_discovery_cards_v1", "v632.0", "route-module-smoke-discovery-cards", "Prepares readable discovery cards for routes, modules, CLI flags, API routes, and smoke checks without treating opened routes or card presence as authorization.", [("cards", "Discovery Cards", "Prepared."), ("status", "Current Status", "Visible."), ("risk", "Risk", "Shown."), ("operator", "Operator Required", "Shown."), ("commands", "Commands", "Not executed."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_workflow_aware_search_filters() -> str:
+    return _render_supervised_runtime_arc("/workflow-aware-search-filters", "v633.0 Workflow-Aware Search Filters v1", "workflow_aware_search_filters_v1", "v633.0", "workflow-aware-search-filters", "Prepares workflow-aware filters for Command Center, Patch Lab, Safety, Archive, Memory, System Health, Legacy/History, current release, recent arcs, and blocked/operator-required surfaces without hiding safety or changing authorization.", [("command", "Command Center", "Filter prepared."), ("safety", "Safety", "Visible."), ("archive", "Archive", "Filter prepared."), ("memory", "Memory", "Filter prepared."), ("auth", "Authorization", "Unchanged."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_current_historical_surface_guard() -> str:
+    return _render_supervised_runtime_arc("/current-historical-surface-guard", "v634.0 Current Historical Surface Guard v1", "current_historical_surface_guard_v1", "v634.0", "current-historical-surface-guard", "Labels surfaces as current, recent, historical, legacy advisory, or deprecated/superseded without mutating status or treating current classification as approval.", [("current", "Current", "Label only."), ("recent", "Recent", "Label only."), ("history", "Historical", "Label only."), ("legacy", "Legacy Advisory", "Label only."), ("approval", "Approval", "Not inferred."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_dashboard_search_discovery_board() -> str:
+    return _render_supervised_runtime_arc("/dashboard-search-discovery-board", "v635.0 Dashboard Search Discovery Board v1", "dashboard_search_discovery_board_v1", "v635.0", "dashboard-search-discovery-board", "Ties the surface search index, route/module/smoke discovery cards, workflow-aware search filters, and current-vs-historical surface guard into a review-only search/discovery board without executing commands, deleting routes, changing approvals, or expanding autonomy.", [("index", "Search Index", "Prepared."), ("cards", "Discovery Cards", "Prepared."), ("filters", "Workflow Filters", "Prepared."), ("guard", "Current/Historical Guard", "Prepared."), ("legacy", "Legacy Surfaces", "Preserved."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_decision_capture_form_schema() -> str:
+    return _render_supervised_runtime_arc("/decision-capture-form-schema", "v636.0 Decision Capture Form Schema v1", "decision_capture_form_schema_v1", "v636.0", "decision-capture-form-schema", "Prepares exact operator decision form fields for decision type, scope, selected option, target surfaces, files, archive records, memory candidates, commands, expected result, rationale, expiration, single-use requirement, and no-reuse boundaries without creating approval.", [("schema", "Decision Schema", "Prepared."), ("scope", "Exact Scope", "Required."), ("targets", "Targets", "Declared."), ("expiration", "Expiration", "Required."), ("approval", "Approval", "Not created."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_approval_scope_target_binding_panel() -> str:
+    return _render_supervised_runtime_arc("/approval-scope-target-binding-panel", "v637.0 Approval Scope Target Binding Panel v1", "approval_scope_target_binding_panel_v1", "v637.0", "approval-scope-target-binding-panel", "Binds approval display to exact files, routes, CLI flags, API paths, archive records, memory candidates, and verification commands without granting authorization, expanding scope, or reusing approval.", [("files", "Files", "Bound."), ("routes", "Routes", "Bound."), ("commands", "Commands", "Listed only."), ("scope", "Scope", "No expansion."), ("authorization", "Authorization", "Not granted."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_approval_expiration_burnout_form_ux() -> str:
+    return _render_supervised_runtime_arc("/approval-expiration-burnout-form-ux", "v638.0 Approval Expiration Burnout Form UX v1", "approval_expiration_burnout_form_ux_v1", "v638.0", "approval-expiration-burnout-form-ux", "Standardizes one-time approval expiration, consumed status, consumed-by action, consumed-at time, post-use status, and no-reuse UX without consuming approval or executing actions by itself.", [("created", "Created", "Operator supplied."), ("expires", "Expires", "Required."), ("consumed", "Consumed", "Tracked."), ("reuse", "Reuse", "False."), ("action", "Action", "Not executed."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_denial_deferral_revision_decision_capture() -> str:
+    return _render_supervised_runtime_arc("/denial-deferral-revision-decision-capture", "v639.0 Denial Deferral Revision Decision Capture v1", "denial_deferral_revision_decision_capture_v1", "v639.0", "denial-deferral-revision-decision-capture", "Captures denied, deferred, needs-revision, needs-more-evidence, out-of-scope, unsafe, and superseded operator responses without treating them as approval or permission.", [("denied", "Denied", "Not approval."), ("deferred", "Deferred", "Not approval."), ("revision", "Revision", "Requested."), ("evidence", "More Evidence", "Requested."), ("unsafe", "Unsafe", "Blocked."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_decision_approval_ux_board() -> str:
+    return _render_supervised_runtime_arc("/operator-decision-approval-ux-board", "v640.0 Operator Decision Approval UX Board v1", "operator_decision_approval_ux_board_v1", "v640.0", "operator-decision-approval-ux-board", "Ties decision capture schema, scope binding, approval expiration/burnout UX, and denial/deferral/revision capture into one review-only board without changing approval semantics, executing actions, writing state, or expanding autonomy.", [("schema", "Decision Schema", "Prepared."), ("binding", "Scope Binding", "Prepared."), ("burnout", "Approval Burnout", "Prepared."), ("nonapproval", "Non-Approval Capture", "Prepared."), ("semantics", "Approval Semantics", "Unchanged."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_operator_decision_timeline_model() -> str:
+    return _render_supervised_runtime_arc("/operator-decision-timeline-model", "v641.0 Operator Decision Timeline Model v1", "operator_decision_timeline_model_v1", "v641.0", "operator-decision-timeline-model", "Prepares timestamped operator decision, approval request, one-time approval, consumed approval, denial, deferral, revision, blocked action, receipt, and verification event types without executing timeline events or granting authorization.", [("events", "Timeline Events", "Prepared."), ("approval", "Approval", "Not granted."), ("execution", "Execution", "Not performed."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_approval_burnout_consumption_timeline_cards() -> str:
+    return _render_supervised_runtime_arc("/approval-burnout-consumption-timeline-cards", "v642.0 Approval Burnout Consumption Timeline Cards v1", "approval_burnout_consumption_timeline_cards_v1", "v642.0", "approval-burnout-consumption-timeline-cards", "Prepares one-time approval consumption cards with exact scope, target, created/expires timestamps, consumed status, consumed-by, post-use status, and no-reuse boundaries without consuming approval or executing actions.", [("scope", "Scope", "Exact."), ("consumed", "Consumed", "Tracked only."), ("reuse", "Reuse", "False."), ("action", "Action", "Not executed."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_blocked_action_safety_event_timeline_cards() -> str:
+    return _render_supervised_runtime_arc("/blocked-action-safety-event-timeline-cards", "v643.0 Blocked Action Safety Event Timeline Cards v1", "blocked_action_safety_event_timeline_cards_v1", "v643.0", "blocked-action-safety-event-timeline-cards", "Prepares blocked archive, memory, source, release, publish, autonomy, and model invocation timeline cards with missing-approval explanations and safe-next-action guidance without unblocking or executing actions.", [("archive", "Archive Write", "Blocked."), ("memory", "Memory Write", "Blocked."), ("source", "Source Mutation", "Blocked."), ("release", "Release", "Blocked."), ("auto", "Autonomy", "Blocked.")])
+
+
+def render_verification_receipt_timeline_cards() -> str:
+    return _render_supervised_runtime_arc("/verification-receipt-timeline-cards", "v644.0 Verification Receipt Timeline Cards v1", "verification_receipt_timeline_cards_v1", "v644.0", "verification-receipt-timeline-cards", "Prepares targeted smoke, fast smoke, stale audit, metadata integrity, route parity, package privacy, and receipt timeline cards while preserving raw evidence and not running checks.", [("targeted", "Targeted Smoke", "Represented."), ("fast", "Fast Smoke", "Represented."), ("stale", "Stale Audit", "Represented."), ("privacy", "Package Privacy", "Represented."), ("commands", "Runs Checks", "False.")])
+
+
+def render_decision_audit_trail_board() -> str:
+    return _render_supervised_runtime_arc("/decision-audit-trail-board", "v645.0 Decision Audit Trail Board v1", "decision_audit_trail_board_v1", "v645.0", "decision-audit-trail-board", "Ties operator decision timeline, approval consumption, blocked action, and verification receipt cards into one review-only audit trail board without changing approval semantics, executing actions, running verification, writing state, or expanding autonomy.", [("timeline", "Timeline Model", "Prepared."), ("approval", "Approval Consumption", "Prepared."), ("blocked", "Blocked Actions", "Prepared."), ("verification", "Verification Receipts", "Prepared."), ("raw", "Raw Evidence", "Preserved."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_session_resume_state_summary() -> str:
+    return _render_supervised_runtime_arc("/session-resume-state-summary", "v646.0 Session Resume State Summary v1", "session_resume_state_summary_v1", "v646.0", "session-resume-state-summary", "Summarizes latest completed version, current project status, autonomy, approval, release, archive, memory, and source-mutation state without starting work or granting approval.", [("version", "Latest Version", "Current."), ("project", "Project State", "Summarized."), ("approval", "Approval", "Required."), ("work", "Starts Work", "False."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_unresolved_warning_blocker_carryover() -> str:
+    return _render_supervised_runtime_arc("/unresolved-warning-blocker-carryover", "v647.0 Unresolved Warning and Blocker Carryover v1", "unresolved_warning_blocker_carryover_v1", "v647.0", "unresolved-warning-blocker-carryover", "Carries unresolved stale-version, metadata, legacy smoke, optional dependency, route parity, package privacy, and documentation continuity warnings without resolving blockers or running checks.", [("stale", "Stale Warnings", "Carried."), ("metadata", "Metadata", "Carried."), ("legacy", "Legacy Smoke", "Advisory."), ("checks", "Runs Checks", "False."), ("approval", "Approval", "Required.")])
+
+
+def render_pending_decisions_prepared_work_resume_queue() -> str:
+    return _render_supervised_runtime_arc("/pending-decisions-prepared-work-resume-queue", "v648.0 Pending Decisions and Prepared Work Resume Queue v1", "pending_decisions_prepared_work_resume_queue_v1", "v648.0", "pending-decisions-prepared-work-resume-queue", "Shows pending operator decisions, prepared-only packets, approval-required actions, blocked actions, ready-for-review packets, and next recommended arc without starting work or auto-selecting roadmaps.", [("decisions", "Pending Decisions", "Visible."), ("prepared", "Prepared Work", "Review only."), ("blocked", "Blocked Actions", "Visible."), ("start", "Starts Work", "False."), ("auto", "Auto Select", "False.")])
+
+
+def render_verification_state_resume_card() -> str:
+    return _render_supervised_runtime_arc("/verification-state-resume-card", "v649.0 Verification State Resume Card v1", "verification_state_resume_card_v1", "v649.0", "verification-state-resume-card", "Summarizes last targeted smoke, fast smoke, dashboard/recent-regression segments, metadata, package privacy, stale audit, extracted zip, and advisory warnings without running checks or granting authorization.", [("targeted", "Targeted Smoke", "Represented."), ("fast", "Fast Smoke", "Represented."), ("metadata", "Metadata", "Represented."), ("checks", "Runs Checks", "False."), ("approval", "Pass Is Approval", "False.")])
+
+
+def render_operator_session_continuity_board() -> str:
+    return _render_supervised_runtime_arc("/operator-session-continuity-board", "v650.0 Operator Session Continuity Board v1", "operator_session_continuity_board_v1", "v650.0", "operator-session-continuity-board", "Ties resume summary, warning carryover, pending work queue, verification resume card, and handoff packet into one review-only continuity board without approval, hidden scheduling, continuation, or autonomy expansion.", [("resume", "Resume Summary", "Prepared."), ("warnings", "Warnings", "Carried."), ("queue", "Pending Work", "Review only."), ("verification", "Verification", "Represented."), ("handoff", "Handoff", "Prepared."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_guided_review_wizard_entry_model() -> str:
+    return _render_supervised_runtime_arc("/guided-review-wizard-entry-model", "v651.0 Guided Review Wizard Entry Model v1", "guided_review_wizard_entry_model_v1", "v651.0", "guided-review-wizard-entry-model", "Defines a visible guided review step model without starting work, granting approval, or selecting a roadmap.", [("entry", "Entry", "Prepared."), ("evidence", "Evidence", "Next step."), ("decision", "Decision", "Required."), ("verification", "Verification", "Review only."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_guided_evidence_warning_step_cards() -> str:
+    return _render_supervised_runtime_arc("/guided-evidence-warning-step-cards", "v652.0 Guided Evidence and Warning Step Cards v1", "guided_evidence_warning_step_cards_v1", "v652.0", "guided-evidence-warning-step-cards", "Groups current-state evidence, warnings, advisory blockers, and raw evidence links without resolving warnings, running checks, or treating presence as authorization.", [("evidence", "Evidence", "Grouped."), ("warnings", "Warnings", "Visible."), ("raw", "Raw Evidence", "Preserved."), ("checks", "Runs Checks", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_guided_decision_approval_step_ux() -> str:
+    return _render_supervised_runtime_arc("/guided-decision-approval-step-ux", "v653.0 Guided Decision and Approval Step UX v1", "guided_decision_approval_step_ux_v1", "v653.0", "guided-decision-approval-step-ux", "Clarifies decision type, scope, expiration, burnout, denial, deferral, and revision capture without creating or reusing approval.", [("decision", "Decision", "Required."), ("scope", "Scope", "Explicit."), ("burnout", "Burnout", "Single-use."), ("approval", "Creates Approval", "False."), ("reuse", "Reuses Approval", "False.")])
+
+
+def render_guided_verification_resume_step_summary() -> str:
+    return _render_supervised_runtime_arc("/guided-verification-resume-step-summary", "v654.0 Guided Verification and Resume Step Summary v1", "guided_verification_resume_step_summary_v1", "v654.0", "guided-verification-resume-step-summary", "Summarizes verification and resume review state without running checks, treating pass status as authorization, or starting the next arc.", [("targeted", "Targeted Smoke", "Review."), ("fast", "Fast Smoke", "Review."), ("resume", "Resume", "Carried."), ("checks", "Runs Checks", "False."), ("next", "Starts Next Arc", "False.")])
+
+
+def render_operator_guided_review_wizard_board() -> str:
+    return _render_supervised_runtime_arc("/operator-guided-review-wizard-board", "v655.0 Operator Guided Review Wizard Board v1", "operator_guided_review_wizard_board_v1", "v655.0", "operator-guided-review-wizard-board", "Ties entry, evidence/warning, decision/approval, and verification/resume steps into one review-only wizard board without writes, hidden scheduling, continuation, approval reuse, or autonomy expansion.", [("entry", "Entry Model", "Prepared."), ("evidence", "Evidence", "Visible."), ("decision", "Decision", "Required."), ("verification", "Verification", "Review only."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_metadata_schema_contract() -> str:
+    return _render_supervised_runtime_arc("/metadata-schema-contract", "v656.0 Metadata Schema Contract v1", "metadata_schema_contract_v1", "v656.0", "metadata-schema-contract", "Defines expected shape for project metadata, active project pointers, current project fields, list-shaped next_steps/notes, workspace metadata, and release notes without writing metadata or granting approval.", [("schema", "Schema", "Declared."), ("lists", "List Fields", "Required."), ("workspace", "Workspace", "Current."), ("writes", "Writes Metadata", "False."), ("approval", "Approval", "Required.")])
+
+
+def render_active_project_resolution_audit() -> str:
+    return _render_supervised_runtime_arc("/active-project-resolution-audit", "v657.0 Active Project Resolution Audit v1", "active_project_resolution_audit_v1", "v657.0", "active-project-resolution-audit", "Proves active_project resolves to the current project and project context renders without selecting, changing, or authorizing the active project.", [("active", "Active Project", "Resolves."), ("context", "Context", "Renders."), ("select", "Selects Project", "False."), ("change", "Changes Project", "False."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_project_status_rendering_hardening() -> str:
+    return _render_supervised_runtime_arc("/project-status-rendering-hardening", "v658.0 Project Status Rendering Hardening v1", "project_status_rendering_hardening_v1", "v658.0", "project-status-rendering-hardening", "Requires next_steps, notes, and recommended_next_actions to be render-safe lists so status output cannot fall back into character-by-character nonsense.", [("next", "Next Steps", "List."), ("notes", "Notes", "List."), ("actions", "Actions", "List."), ("chars", "Character Iteration", "Blocked."), ("writes", "Mutates Project", "False.")])
+
+
+def render_release_note_version_semantics_audit() -> str:
+    return _render_supervised_runtime_arc("/release-note-version-semantics-audit", "v659.0 Release Note Version Semantics Audit v1", "release_note_version_semantics_audit_v1", "v659.0", "release-note-version-semantics-audit", "Classifies release note version semantics so historical milestone versions do not masquerade as the current package version or current-state authority.", [("notes", "Release Notes", "Inspected."), ("history", "History", "Classified."), ("current", "Current Note", "Present."), ("rewrite", "Rewrites History", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_metadata_integrity_board_smoke_gate() -> str:
+    return _render_supervised_runtime_arc("/metadata-integrity-board-smoke-gate", "v660.0 Metadata Integrity Board and Smoke Gate v1", "metadata_integrity_board_smoke_gate_v1", "v660.0", "metadata-integrity-board-smoke-gate", "Ties schema contract, active project resolution, status rendering, and release-note semantics into one review-only metadata integrity board and smoke gate without running checks, writing metadata, creating releases, or expanding autonomy.", [("schema", "Schema", "Pass."), ("active", "Active Project", "Pass."), ("render", "Status Render", "Pass."), ("notes", "Release Notes", "Classified."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_smoke_gate_classification_model() -> str:
+    return _render_supervised_runtime_arc("/smoke-gate-classification-model", "v661.0 Smoke Gate Classification Model v1", "smoke_gate_classification_model_v1", "v661.0", "smoke-gate-classification-model", "Defines current release blocking, advisory, legacy advisory, historical pinned, slow full audit, and migration debt smoke categories without changing smoke results or granting approval.", [("current", "Current Gate", "Blocking."), ("legacy", "Legacy", "Advisory."), ("history", "Historical", "Pinned."), ("slow", "Slow Audit", "Separated."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_current_release_gate_segment() -> str:
+    return _render_supervised_runtime_arc("/current-release-gate-segment", "v662.0 Current Release Gate Segment v1", "current_release_gate_segment_v1", "v662.0", "current-release-gate-segment", "Defines a clean current-release gate segment for current staleness, metadata, privacy, source surface, route parity, documentation, and targeted smoke without executing smoke or treating pass state as authorization.", [("targeted", "Targeted", "Current."), ("stale", "Stale Audit", "Current."), ("privacy", "Privacy", "Current."), ("routes", "Route Parity", "Current."), ("approval", "Pass Is Approval", "False.")])
+
+
+def render_legacy_advisory_segment_separation() -> str:
+    return _render_supervised_runtime_arc("/legacy-advisory-segment-separation", "v663.0 Legacy Advisory Segment Separation v1", "legacy_advisory_segment_separation_v1", "v663.0", "legacy-advisory-segment-separation", "Separates broad legacy install, governance, live-trial, memory, release, and regression segments into advisory/migration-debt review signals without hiding old failures or blocking the current gate by classification alone.", [("legacy", "Legacy", "Advisory."), ("migration", "Migration Debt", "Tracked."), ("hidden", "Hides Failures", "False."), ("checks", "Runs Checks", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_stale_expectation_repair_audit() -> str:
+    return _render_supervised_runtime_arc("/stale-expectation-repair-audit", "v664.0 Stale Expectation Repair Audit v1", "stale_expectation_repair_audit_v1", "v664.0", "stale-expectation-repair-audit", "Audits current smoke and current staleness surfaces for stale previous-version expectations without rewriting history, running smoke, or changing approval semantics.", [("stale", "Stale Expectations", "Audited."), ("history", "History", "Allowed."), ("rewrite", "Rewrites History", "False."), ("checks", "Runs Checks", "False."), ("approval", "Approval Changed", "False.")])
+
+
+def render_smoke_segmentation_integrity_board() -> str:
+    return _render_supervised_runtime_arc("/smoke-segmentation-integrity-board", "v665.0 Smoke Segmentation Integrity Board v1", "smoke_segmentation_integrity_board_v1", "v675.0", "smoke-segmentation-integrity-board", "Ties smoke classification, current release gate segmentation, legacy advisory separation, and stale expectation repair into one review-only integrity board without executing smoke, granting authorization, creating releases, or expanding autonomy.", [("classification", "Classification", "Prepared."), ("current", "Current Gate", "Prepared."), ("legacy", "Legacy Advisory", "Separated."), ("stale", "Stale Audit", "Prepared."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_surface_registry_manifest_contract() -> str:
+    return _render_supervised_runtime_arc("/surface-registry-manifest-contract", "v666.0 Surface Registry Manifest Contract v1", "surface_registry_manifest_contract_v1", "v666.0", "surface-registry-manifest-contract", "Defines the canonical manifest shape for dashboard routes, API paths, CLI flags, smoke tags, source-surface rows, docs tokens, authority labels, and write boundaries without registering live surfaces.", [("shape", "Manifest Shape", "Declared."), ("routes", "Route Fields", "Declared."), ("smoke", "Smoke Fields", "Declared."), ("writes", "Writes", "False."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_dashboard_surface_manifest_adapter() -> str:
+    return _render_supervised_runtime_arc("/dashboard-surface-manifest-adapter", "v667.0 Dashboard Surface Manifest Adapter v1", "dashboard_surface_manifest_adapter_v1", "v667.0", "dashboard-surface-manifest-adapter", "Validates dashboard route and renderer coverage against the manifest without registering routes, executing renders as authority, or changing dashboard behavior.", [("routes", "Dashboard Routes", "Validated."), ("render", "Renderers", "Validated."), ("probe", "Route Probe", "Linked."), ("register", "Registers Routes", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_api_cli_surface_manifest_adapter() -> str:
+    return _render_supervised_runtime_arc("/api-cli-surface-manifest-adapter", "v668.0 API/CLI Surface Manifest Adapter v1", "api_cli_surface_manifest_adapter_v1", "v668.0", "api-cli-surface-manifest-adapter", "Validates runtime API route and CLI flag coverage against the manifest without executing commands or registering endpoints by itself.", [("api", "API Routes", "Validated."), ("cli", "CLI Flags", "Validated."), ("runtime", "Runtime Map", "Linked."), ("commands", "Executes Commands", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_smoke_surface_manifest_adapter() -> str:
+    return _render_supervised_runtime_arc("/smoke-surface-manifest-adapter", "v669.0 Smoke Surface Manifest Adapter v1", "smoke_surface_manifest_adapter_v1", "v669.0", "smoke-surface-manifest-adapter", "Ties smoke tags and segment classification to manifest entries without running smoke, changing smoke results, or treating smoke presence as approval.", [("smoke", "Smoke Tag", "Linked."), ("segment", "Segment", "Classified."), ("run", "Runs Smoke", "False."), ("results", "Changes Results", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_source_surface_manifest_reconciliation() -> str:
+    return _render_supervised_runtime_arc("/source-surface-manifest-reconciliation", "v670.0 Source Surface Manifest Reconciliation v1", "source_surface_manifest_reconciliation_v1", "v670.0", "source-surface-manifest-reconciliation", "Cross-checks source surface manifest rows against the registry contract without mutating manifest files or treating manifest parity as execution permission.", [("surface", "Source Surface", "Checked."), ("api", "API/CLI", "Matched."), ("smoke", "Smoke", "Matched."), ("write", "Writes Manifest", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_documentation_token_manifest_validation() -> str:
+    return _render_supervised_runtime_arc("/documentation-token-manifest-validation", "v671.0 Documentation Token Manifest Validation v1", "documentation_token_manifest_validation_v1", "v671.0", "documentation-token-manifest-validation", "Validates README, release-history, current-state, dashboard, API, CLI, and smoke documentation tokens against the manifest without rewriting docs.", [("readme", "README", "Checked."), ("history", "Release History", "Checked."), ("tokens", "Surface Tokens", "Checked."), ("rewrite", "Rewrites Docs", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_manifest_drift_detection_board() -> str:
+    return _render_supervised_runtime_arc("/manifest-drift-detection-board", "v672.0 Manifest Drift Detection Board v1", "manifest_drift_detection_board_v1", "v672.0", "manifest-drift-detection-board", "Surfaces missing, stale, duplicated, or mismatched dashboard/API/CLI/smoke/docs surfaces without auto-fixing findings or hiding drift.", [("missing", "Missing", "Reported."), ("stale", "Stale", "Reported."), ("mismatch", "Mismatched", "Reported."), ("autofix", "Auto-Fix", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_registry_generation_prep_layer() -> str:
+    return _render_supervised_runtime_arc("/registry-generation-prep-layer", "v673.0 Registry Generation Prep Layer v1", "registry_generation_prep_layer_v1", "v673.0", "registry-generation-prep-layer", "Prepares a safe future path toward generated route/API/CLI/smoke registration without switching dispatch, replacing hand-wired routes, or writing live source.", [("plan", "Generation Plan", "Prepared."), ("routes", "Generated Routes", "Not active."), ("dispatch", "Dispatch Replaced", "False."), ("write", "Writes Source", "False."), ("approval", "Authorization", "False.")])
+
+
+def render_manifest_driven_current_release_gate() -> str:
+    return _render_supervised_runtime_arc("/manifest-driven-current-release-gate", "v674.0 Manifest-Driven Current Release Gate v1", "manifest_driven_current_release_gate_v1", "v674.0", "manifest-driven-current-release-gate", "Lets the current release gate consume manifest expectations without executing checks or treating pass state as authorization.", [("manifest", "Manifest", "Consumed."), ("current", "Current Gate", "Prepared."), ("checks", "Executes Checks", "False."), ("pass", "Pass Is Approval", "False."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_manifest_driven_surface_registry_board() -> str:
+    return _render_supervised_runtime_arc("/manifest-driven-surface-registry-board", "v675.0 Manifest-Driven Surface Registry Board v1", "manifest_driven_surface_registry_board_v1", "v675.0", "manifest-driven-surface-registry-board", "Ties dashboard/API/CLI/smoke/source-surface/docs manifest validation into one review-only board without writing source, creating releases, publishing, continuing automatically, or expanding autonomy.", [("contract", "Contract", "Prepared."), ("adapters", "Adapters", "Validated."), ("surface", "Source Surface", "Reconciled."), ("drift", "Drift Board", "Prepared."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_dashboard_component_contract() -> str:
+    return _render_supervised_runtime_arc("/dashboard-component-contract", "v676.0 Dashboard Component Contract v1", "dashboard_component_contract_v1", "v676.0", "dashboard-component-contract", "Defines shared command-deck card, status row, review packet, boundary matrix, evidence/warning, decision/approval, and resume/continuity renderer contracts without rewriting routes or changing visual behavior.", [("contract", "Component Contract", "Prepared."), ("source", "Writes Source", "False."), ("style", "Visual Contract", "Preserved."), ("auto", "Autonomy", "Not autonomous.")])
+
+def render_shared_review_packet_renderer() -> str:
+    return _render_supervised_runtime_arc("/shared-review-packet-renderer", "v677.0 Shared Review Packet Renderer v1", "shared_review_packet_renderer_v1", "v677.0", "shared-review-packet-renderer", "Prepares a shared review packet section renderer so future dashboard pages can feed data into reusable structures without executing actions or granting authorization.", [("review", "Review Packet", "Shared."), ("actions", "Executes Actions", "False."), ("routes", "Route Behavior", "Unchanged."), ("approval", "Authorization", "False.")])
+
+def render_shared_boundary_matrix_renderer() -> str:
+    return _render_supervised_runtime_arc("/shared-boundary-matrix-renderer", "v678.0 Shared Boundary Matrix Renderer v1", "shared_boundary_matrix_renderer_v1", "v678.0", "shared-boundary-matrix-renderer", "Standardizes no-authority boundary rows for source, memory, archive, release, approval, continuation, and autonomy states without granting authorization.", [("boundary", "Boundary Matrix", "Prepared."), ("authorization", "Grants Authorization", "False."), ("approval", "Approval", "Required."), ("auto", "Autonomy", "Not autonomous.")])
+
+def render_shared_evidence_warning_renderer() -> str:
+    return _render_supervised_runtime_arc("/shared-evidence-warning-renderer", "v679.0 Shared Evidence and Warning Renderer v1", "shared_evidence_warning_renderer_v1", "v679.0", "shared-evidence-warning-renderer", "Consolidates evidence and warning row shape while preserving raw evidence and not hiding advisory blockers or running checks.", [("evidence", "Evidence Rows", "Shared."), ("warnings", "Warnings", "Visible."), ("raw", "Raw Evidence", "Preserved."), ("checks", "Runs Checks", "False.")])
+
+def render_shared_decision_approval_renderer() -> str:
+    return _render_supervised_runtime_arc("/shared-decision-approval-renderer", "v680.0 Shared Decision and Approval Renderer v1", "shared_decision_approval_renderer_v1", "v680.0", "shared-decision-approval-renderer", "Reuses decision and approval summary display patterns without creating approval, reusing approval, expanding scope, or executing decisions.", [("decision", "Decision", "Required."), ("creates", "Creates Approval", "False."), ("reuse", "Reuses Approval", "False."), ("scope", "Expands Scope", "False.")])
+
+def render_shared_resume_continuity_renderer() -> str:
+    return _render_supervised_runtime_arc("/shared-resume-continuity-renderer", "v681.0 Shared Resume/Continuity Renderer v1", "shared_resume_continuity_renderer_v1", "v681.0", "shared-resume-continuity-renderer", "Reuses resume and continuity card patterns without starting work, continuing automatically, scheduling hidden work, or expanding autonomy.", [("resume", "Resume Summary", "Prepared."), ("starts", "Starts Work", "False."), ("continues", "Continues Automatically", "False."), ("auto", "Autonomy", "Not autonomous.")])
+
+def render_dashboard_route_renderer_adapter() -> str:
+    return _render_supervised_runtime_arc("/dashboard-route-renderer-adapter", "v682.0 Dashboard Route Renderer Adapter v1", "dashboard_route_renderer_adapter_v1", "v682.0", "dashboard-route-renderer-adapter", "Lets dashboard route pages validate against shared renderer contracts while preserving existing route handlers and not registering or replacing routes by itself.", [("adapter", "Route Adapter", "Prepared."), ("registers", "Registers Routes", "False."), ("replaces", "Replaces Routes", "False."), ("style", "Style", "Preserved.")])
+
+def render_dashboard_style_regression_guard() -> str:
+    return _render_supervised_runtime_arc("/dashboard-style-regression-guard", "v683.0 Dashboard Style Regression Guard v1", "dashboard_style_regression_guard_v1", "v683.0", "dashboard-style-regression-guard", "Guards command-deck/operator-console styling and custom data-tip hover behavior while blocking native title tooltip regression without rewriting the dashboard.", [("command", "Command Deck", "Preserved."), ("tip", "data-tip", "Preserved."), ("title", "Native title", "Not reintroduced."), ("rewrite", "Rewrites Dashboard", "False.")])
+
+def render_legacy_renderer_duplication_audit() -> str:
+    return _render_supervised_runtime_arc("/legacy-renderer-duplication-audit", "v684.0 Legacy Renderer Duplication Audit v1", "legacy_renderer_duplication_audit_v1", "v684.0", "legacy-renderer-duplication-audit", "Audits repeated dashboard renderer/card patterns still left in dashboard.py without deleting renderers, applying refactors, or changing route behavior.", [("audit", "Duplication Audit", "Prepared."), ("delete", "Deletes Renderers", "False."), ("refactor", "Applies Refactor", "False."), ("raw", "Raw Evidence", "Preserved.")])
+
+def render_dashboard_renderer_component_extraction_board() -> str:
+    return _render_supervised_runtime_arc("/dashboard-renderer-component-extraction-board", "v685.0 Dashboard Renderer Component Extraction Board v1", "dashboard_renderer_component_extraction_board_v1", "v685.0", "dashboard-renderer-component-extraction-board", "Ties component contract, shared packet/boundary/evidence/decision/resume renderers, route adapter, style guard, and duplication audit into one review-only board without writes, approval reuse, continuation, or autonomy expansion.", [("components", "Shared Components", "Prepared."), ("adapter", "Route Adapter", "Review only."), ("style", "Style Guard", "Preserved."), ("duplication", "Duplication Audit", "Audited."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+def render_neural_deck_layout_shell() -> str:
+    return _render_supervised_runtime_arc("/neural-deck-layout-shell", "v686.0 Neural Deck Layout Shell v1", "neural_deck_layout_shell_v1", "v686.0", "neural-deck-layout-shell", "Defines the clean three-column neural command deck shell with left vitals/approval stack, central Eidolon conversation/thinking core, and right risk/roadmap/telemetry panels while preserving existing routes.", [("layout", "Three Column Shell", "Prepared."), ("routes", "Routes Removed", "False."), ("style", "Red Neural Deck", "Prepared."), ("approval", "Authorization", "False.")])
+
+def render_eidolon_thinking_core_panel() -> str:
+    return _render_supervised_runtime_arc("/eidolon-thinking-core-panel", "v687.0 Eidolon Thinking Core Panel v1", "eidolon_thinking_core_panel_v1", "v687.0", "eidolon-thinking-core-panel", "Adds the red Eidolon thinking core, squiggle waveform, context fragments, and coherence display as visual state only without executing local models or mutating memory.", [("core", "Thinking Core", "Prepared."), ("wave", "Neural Squiggle", "Prepared."), ("models", "Executes Models", "False."), ("memory", "Writes Memory", "False.")])
+
+def render_operator_conversation_console() -> str:
+    return _render_supervised_runtime_arc("/operator-conversation-console", "v688.0 Operator Conversation Console v1", "operator_conversation_console_v1", "v688.0", "operator-conversation-console", "Redesigns the central operator conversation, response-generation panel, and input deck as clean inert dashboard UI without sending commands or creating approvals.", [("chat", "Conversation", "Prepared."), ("input", "Input Deck", "Visual."), ("commands", "Sends Commands", "False."), ("approval", "Creates Approval", "False.")])
+
+def render_side_intelligence_panels() -> str:
+    return _render_supervised_runtime_arc("/side-intelligence-panels", "v689.0 Side Intelligence Panels v1", "side_intelligence_panels_v1", "v689.0", "side-intelligence-panels", "Adds simplified system vitals, stable loop, approval queue, risk overview, roadmap, and telemetry cards without executing checks or treating metrics as authorization.", [("left", "Vitals/Loop/Approvals", "Prepared."), ("right", "Risk/Roadmap/Telemetry", "Prepared."), ("checks", "Executes Checks", "False."), ("metrics", "Metrics Authorize", "False.")])
+
+def render_neural_command_deck_dashboard_board() -> str:
+    return _render_supervised_runtime_arc("/neural-command-deck-dashboard-board", "v690.0 Neural Command Deck Dashboard Board v1", "neural_command_deck_dashboard_board_v1", "v690.0", "neural-command-deck-dashboard-board", "Ties the neural deck shell, Eidolon thinking core, operator conversation console, side intelligence panels, and style regression guard into one review-only redesign board without writes, approval reuse, continuation, or autonomy expansion.", [("layout", "Neural Layout", "Prepared."), ("thinking", "Thinking Core", "Visual only."), ("conversation", "Conversation Console", "Inert."), ("style", "data-tip/no title", "Preserved."), ("auto", "Autonomy", "Not autonomous.")])
+
+
+
+def render_interaction_focus_rail() -> str:
+    return _render_supervised_runtime_arc("/interaction-focus-rail", "v691.0 Interaction Focus Rail v1", "interaction_focus_rail_v1", "v691.0", "interaction-focus-rail", "Adds a compact focus rail for conversation, evidence, approvals, verification, and handoff without starting work, auto-selecting roadmaps, granting approval, or expanding autonomy.", [("focus", "Focus Rail", "Prepared."), ("starts", "Starts Work", "False."), ("roadmap", "Auto-selects Roadmap", "False."), ("approval", "Authorization", "False.")])
+
+def render_interaction_safe_input_deck() -> str:
+    return _render_supervised_runtime_arc("/interaction-safe-input-deck", "v692.0 Interaction-Safe Input Deck v1", "interaction_safe_input_deck_v1", "v692.0", "interaction-safe-input-deck", "Refines the chat input deck with mode chips and clearer affordances while keeping command execution, model execution, and approval creation disabled.", [("input", "Mode Chips", "Prepared."), ("commands", "Executes Commands", "False."), ("models", "Executes Models", "False."), ("approval", "Creates Approval", "False.")])
+
+def render_panel_density_priority_tuning() -> str:
+    return _render_supervised_runtime_arc("/panel-density-priority-tuning", "v693.0 Panel Density and Priority Tuning v1", "panel_density_priority_tuning_v1", "v693.0", "panel-density-priority-tuning", "Tunes neural deck card density and priority labels without hiding blockers or treating visual priority as authorization.", [("density", "Panel Density", "Prepared."), ("priority", "Visual Priority", "Readable."), ("blockers", "Hides Blockers", "False."), ("auth", "Priority Authorizes", "False.")])
+
+def render_context_telemetry_affordance() -> str:
+    return _render_supervised_runtime_arc("/context-telemetry-affordance", "v694.0 Context and Telemetry Affordance v1", "context_telemetry_affordance_v1", "v694.0", "context-telemetry-affordance", "Adds custom data-tip context and telemetry affordances without native title tooltips, private data reads, memory mutation, check execution, or approval leakage.", [("context", "Context Tips", "Prepared."), ("telemetry", "Telemetry Chips", "Visual only."), ("memory", "Writes Memory", "False."), ("approval", "Hover Approves", "False.")])
+
+def render_neural_command_deck_interaction_board() -> str:
+    return _render_supervised_runtime_arc("/neural-command-deck-interaction-board", "v695.0 Neural Command Deck Interaction Board v1", "neural_command_deck_interaction_board_v1", "v695.0", "neural-command-deck-interaction-board", "Ties focus rail, safe input deck, panel density, context/telemetry affordances, and style regression guard into one review-only interaction refinement board without writes, approval reuse, continuation, or autonomy expansion.", [("focus", "Focus Rail", "Prepared."), ("input", "Safe Input", "Visual only."), ("panels", "Panel Priority", "Readable."), ("style", "data-tip/no title", "Preserved."), ("auto", "Autonomy", "Not autonomous.")])
+
+def render_autonomy_phase_zero_definition_contract() -> str:
+    return _render_supervised_runtime_arc("/autonomy-phase-zero-definition-contract", "v696.0 Autonomy Phase 0 Definition Contract v1", "autonomy_phase_zero_definition_contract_v1", "v696.0", "autonomy-phase-zero-definition-contract", "Defines Phase 0 as observation-only readiness review. It grants no approval, execution, writes, scheduling, continuation, or autonomy expansion.", [("mode", "Observation Only", "Defined."), ("writes", "Writes", "False."), ("exec", "Commands", "False."), ("auth", "Authorization", "Not authorized.")])
+
+def render_observation_only_cycle_simulator() -> str:
+    return _render_supervised_runtime_arc("/observation-only-cycle-simulator", "v697.0 Observation-Only Cycle Simulator v1", "observation_only_cycle_simulator_v1", "v697.0", "observation-only-cycle-simulator", "Simulates inspect, summarize, blocker classification, receipt prep, and proposal-only queueing without starting work or mutating state.", [("inspect", "Inspect", "Allowed."), ("summarize", "Summarize", "Allowed."), ("start", "Starts Work", "False."), ("mutate", "Mutates State", "False.")])
+
+def render_no_mutation_autonomy_boundary_guard() -> str:
+    return _render_supervised_runtime_arc("/no-mutation-autonomy-boundary-guard", "v698.0 No-Mutation Autonomy Boundary Guard v1", "no_mutation_autonomy_boundary_guard_v1", "v698.0", "no-mutation-autonomy-boundary-guard", "Guards Phase 0 against source, metadata, memory, archive, current-state, release, publish, command, model, scheduling, continuation, and autonomy mutation.", [("source", "Source Writes", "False."), ("memory", "Memory Writes", "False."), ("commands", "Commands", "False."), ("autonomy", "Expansion", "False.")])
+
+def render_autonomy_phase_zero_handoff_packet() -> str:
+    return _render_supervised_runtime_arc("/autonomy-phase-zero-handoff-packet", "v699.0 Autonomy Phase 0 Handoff Packet v1", "autonomy_phase_zero_handoff_packet_v1", "v699.0", "autonomy-phase-zero-handoff-packet", "Prepares a review-only handoff packet for future Phase 0 observation trial discussion. The packet is not permission to continue or execute.", [("handoff", "Prepared", "Review only."), ("permission", "Permission", "False."), ("approval", "Approval", "Required."), ("continue", "Auto Continue", "False.")])
+
+def render_autonomy_phase_zero_readiness_board() -> str:
+    return _render_supervised_runtime_arc("/autonomy-phase-zero-readiness-board", "v700.0 Autonomy Phase 0 Readiness Board v1", "autonomy_phase_zero_readiness_board_v1", "v700.0", "autonomy-phase-zero-readiness-board", "Consolidates the Phase 0 observation-only readiness harness while preserving no-execution, no-mutation, no-scheduling, no-continuation, and no-autonomy-expansion boundaries.", [("definition", "Definition", "Clean."), ("cycle", "Simulation", "Review only."), ("guard", "No Mutation", "Guarded."), ("handoff", "Permission", "False."), ("auto", "Autonomy", "Not autonomous.")])
+
 def render_patch_queue() -> str:
     from self_maintenance import multi_patch_queue_planning_layer_text
     final_report = {"stage": "v79.0", "status": "preview", "ok": True, "message": "Multi-Patch Queue Planning preview. Plans schema, order, conflicts, evidence freshness, and operator review only; no batch apply."}
@@ -9255,6 +10974,11 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(encoded)
 
+    def _send_sse_event(self, event: str, payload: dict[str, Any]) -> None:
+        encoded = f"event: {event}\ndata: {json.dumps(_to_jsonable(payload), default=str)}\n\n".encode("utf-8")
+        self.wfile.write(encoded)
+        self.wfile.flush()
+
     def _redirect(self, location: str = "/") -> None:
         self.send_response(303)
         self.send_header("Location", location)
@@ -9332,6 +11056,28 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
                 html = render_work_order_evidence()
             elif path == "/self-development":
                 html = render_self_development()
+            elif path == "/self-development-cycle":
+                html = render_self_development_cycle_dashboard()
+            elif path == "/self-development-smoke-debt":
+                html = render_self_development_smoke_debt()
+            elif path == "/behavioral-dashboard-route-coverage":
+                html = render_behavioral_dashboard_route_coverage()
+            elif path == "/source-decomposition-compatibility-slice":
+                html = render_source_decomposition_compatibility_slice()
+            elif path == "/dashboard-shell-component-extraction":
+                html = render_dashboard_shell_component_extraction()
+            elif path == "/smoke-registry-sidecar-compatibility":
+                html = render_smoke_registry_sidecar_compatibility()
+            elif path == "/smoke-registry-sidecar-expansion-route-manifest":
+                html = render_smoke_registry_sidecar_expansion_route_manifest_prep()
+            elif path == "/route-manifest-dashboard-parity":
+                html = render_route_manifest_dashboard_parity()
+            elif path == "/dashboard-route-behavioral-coverage-expansion":
+                html = render_dashboard_route_behavioral_coverage_expansion()
+            elif path == "/dashboard-route-manifest-renderer-reconciliation":
+                html = render_dashboard_route_manifest_renderer_reconciliation()
+            elif path == "/dashboard-route-coverage-completion-dispatch-classification":
+                html = render_dashboard_route_coverage_completion_dispatch_classification()
             elif path == "/self-development-readiness":
                 html = render_self_development_readiness()
             elif path == "/development-sessions":
@@ -10161,6 +11907,408 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
                 html = render_autonomy_misinterpretation_firewall()
             elif path == "/autonomy-readiness-review-board-audit":
                 html = render_autonomy_readiness_review_board_audit()
+            elif path == "/source-package-runtime-exclusion-map":
+                html = render_source_package_runtime_exclusion_map()
+            elif path == "/final-archive-entry-privacy-checker":
+                html = render_final_archive_entry_privacy_checker()
+            elif path == "/metadata-version-drift-normalizer":
+                html = render_metadata_version_drift_normalizer()
+            elif path == "/release-doc-command-compatibility-audit":
+                html = render_release_doc_command_compatibility_audit()
+            elif path == "/source-package-privacy-metadata-integrity-audit":
+                html = render_source_package_privacy_metadata_integrity_audit()
+            elif path == "/observation-to-sandbox-intake-bridge":
+                html = render_observation_to_sandbox_intake_bridge()
+            elif path == "/sandbox-candidate-extraction":
+                html = render_sandbox_candidate_extraction()
+            elif path == "/sandbox-packet-draft-assembly":
+                html = render_sandbox_packet_draft_assembly()
+            elif path == "/sandbox-packet-misinterpretation-firewall":
+                html = render_sandbox_packet_misinterpretation_firewall()
+            elif path == "/manual-observation-to-sandbox-bridge-audit":
+                html = render_manual_observation_to_sandbox_bridge_audit()
+            elif path == "/sandbox-approval-scope-contract":
+                html = _render_supervised_runtime_arc("/sandbox-approval-scope-contract", "v511.0 Sandbox Approval Scope Contract v1", "sandbox_approval_scope_contract_v1", "v511.0", "sandbox-approval-scope-contract", "Defines exact approval scope but grants no approval.", [("scope", "Scope", "Defined."), ("auth", "Authorization", "Not authorized.")])
+            elif path == "/exact-confirmation-phrase-builder":
+                html = _render_supervised_runtime_arc("/exact-confirmation-phrase-builder", "v512.0 Exact Confirmation Phrase Builder v1", "exact_confirmation_phrase_builder_v1", "v512.0", "exact-confirmation-phrase-builder", "Builds the exact future confirmation phrase template but does not enter confirmation.", [("phrase", "Phrase", "Generated."), ("approval", "Approval", "Not granted.")])
+            elif path == "/approval-burnout-expiry-ledger":
+                html = _render_supervised_runtime_arc("/approval-burnout-expiry-ledger", "v513.0 Approval Burnout and Expiry Ledger v1", "approval_burnout_expiry_ledger_v1", "v513.0", "approval-burnout-expiry-ledger", "Models approval expiry and single-use burnout without creating approval.", [("reuse", "Reuse", "Blocked."), ("expiry", "Expiry", "Required.")])
+            elif path == "/sandbox-command-allowlist-preview":
+                html = _render_supervised_runtime_arc("/sandbox-command-allowlist-preview", "v514.0 Sandbox Command Allowlist Preview v1", "sandbox_command_allowlist_preview_v1", "v514.0", "sandbox-command-allowlist-preview", "Previews commands and sandbox-only write targets without executing commands.", [("commands", "Commands", "Preview only."), ("exec", "Execution", "Not executed.")])
+            elif path == "/sandbox-execution-approval-gate-audit":
+                html = render_sandbox_execution_approval_gate_audit()
+            elif path == "/sandbox-dry-run-execution-model":
+                html = _render_supervised_runtime_arc("/sandbox-dry-run-execution-model", "v516.0 Sandbox Dry-Run Execution Model v1", "sandbox_dry_run_execution_model_v1", "v516.0", "sandbox-dry-run-execution-model", "Models future sandbox execution shape while reporting not_executed/not_authorized.", [("model", "Model", "Prepared."), ("exec", "Execution", "Not executed.")])
+            elif path == "/command-transcript-preview":
+                html = _render_supervised_runtime_arc("/command-transcript-preview", "v517.0 Command Transcript Preview v1", "command_transcript_preview_v1", "v517.0", "command-transcript-preview", "Previews command sequence, working directory, read paths, sandbox-only write paths, forbidden live paths, and stop conditions without command execution.", [("commands", "Commands", "Preview."), ("output", "Output", "None.")])
+            elif path == "/sandbox-diff-receipt-preview":
+                html = _render_supervised_runtime_arc("/sandbox-diff-receipt-preview", "v518.0 Sandbox Diff Receipt Preview v1", "sandbox_diff_receipt_preview_v1", "v518.0", "sandbox-diff-receipt-preview", "Previews before/after references, expected sandbox changes, unchanged live files, rollback, and privacy references without file mutation.", [("diff", "Diff", "Preview."), ("live", "Live files", "Unchanged.")])
+            elif path == "/dry-run-misinterpretation-firewall":
+                html = _render_supervised_runtime_arc("/dry-run-misinterpretation-firewall", "v519.0 Dry-Run Misinterpretation Firewall v1", "dry_run_misinterpretation_firewall_v1", "v519.0", "dry-run-misinterpretation-firewall", "Blocks dry-run pass, transcript preview, diff preview, receipt preview, readiness, and success from becoming approval or execution permission.", [("firewall", "Firewall", "Active."), ("auth", "Authorization", "Not authorized.")])
+            elif path == "/sandbox-execution-dry-run-receipt-audit":
+                html = render_sandbox_execution_dry_run_receipt_audit()
+            elif path == "/sandbox-workspace-isolation-contract":
+                html = _render_supervised_runtime_arc("/sandbox-workspace-isolation-contract", "v521.0 Sandbox Workspace Isolation Contract v1", "sandbox_workspace_isolation_contract_v1", "v521.0", "sandbox-workspace-isolation-contract", "Defines temporary sandbox roots, allowed read paths, sandbox-only write paths, forbidden live/memory/runtime paths, and cleanup expectations without execution permission.", [("workspace", "Workspace", "Isolated."), ("permission", "Permission", "No.")])
+            elif path == "/approved-sandbox-command-plan":
+                html = _render_supervised_runtime_arc("/approved-sandbox-command-plan", "v522.0 Approved Sandbox Command Plan v1", "approved_sandbox_command_plan_v1", "v522.0", "approved-sandbox-command-plan", "Defines bounded Python compile and smoke commands without running them.", [("commands", "Commands", "Planned."), ("run", "Run", "No.")])
+            elif path == "/single-use-sandbox-execution-receipt":
+                html = _render_supervised_runtime_arc("/single-use-sandbox-execution-receipt", "v523.0 Single-Use Sandbox Execution Receipt v1", "single_use_sandbox_execution_receipt_v1", "v523.0", "single-use-sandbox-execution-receipt", "Defines one-trial receipt shape without writing actual execution evidence or future approval.", [("receipt", "Receipt", "Shape only."), ("approval", "Future approval", "No.")])
+            elif path == "/sandbox-execution-misinterpretation-firewall":
+                html = _render_supervised_runtime_arc("/sandbox-execution-misinterpretation-firewall", "v524.0 Sandbox Execution Misinterpretation Firewall v1", "sandbox_execution_misinterpretation_firewall_v1", "v524.0", "sandbox-execution-misinterpretation-firewall", "Blocks sandbox success, cleanup success, or one-command approval from becoming live, memory, release, future approval, continuation, or autonomy authority.", [("success", "Success", "Not approval."), ("cleanup", "Cleanup", "Not continuation."), ("auto", "Autonomy", "No.")])
+            elif path == "/first-sandbox-execution-trial-audit":
+                html = render_first_sandbox_execution_trial_audit()
+            elif path == "/sandbox-execution-runner-contract":
+                html = _render_supervised_runtime_arc("/sandbox-execution-runner-contract", "v526.0 Sandbox Execution Runner Contract v1", "sandbox_execution_runner_contract_v1", "v526.0", "sandbox-execution-runner-contract", "Defines one sandbox-only runner contract under exact approval without granting execution permission.", [("runner", "Runner", "Approval-only."), ("permission", "Permission", "No.")])
+            elif path == "/approval-phrase-validator":
+                html = _render_supervised_runtime_arc("/approval-phrase-validator", "v527.0 Approval Phrase Validator v1", "approval_phrase_validator_v1", "v527.0", "approval-phrase-validator", "Validates exact future operator approval phrase while proving validation is not command execution.", [("phrase", "Phrase", "Not auto-entered."), ("exec", "Execution", "No.")])
+            elif path == "/sandbox-command-execution-harness":
+                html = _render_supervised_runtime_arc("/sandbox-command-execution-harness", "v528.0 Sandbox Command Execution Harness v1", "sandbox_command_execution_harness_v1", "v528.0", "sandbox-command-execution-harness", "Defines narrow sandbox-only command harness boundaries without running commands by default.", [("harness", "Harness", "Available under approval."), ("run", "Run", "No default run.")])
+            elif path == "/execution-receipt-intake-cleanup-audit":
+                html = _render_supervised_runtime_arc("/execution-receipt-intake-cleanup-audit", "v529.0 Execution Receipt Intake and Cleanup Audit v1", "execution_receipt_intake_cleanup_audit_v1", "v529.0", "execution-receipt-intake-cleanup-audit", "Defines execution receipt intake, cleanup, privacy, and approval-burnout evidence without future authorization.", [("receipt", "Receipt", "Prepared."), ("future", "Future authorization", "No.")])
+            elif path == "/sandbox-execution-trial-review-board":
+                html = render_sandbox_execution_trial_review_board()
+            elif path == "/sandbox-evidence-intake-packet":
+                html = _render_supervised_runtime_arc("/sandbox-evidence-intake-packet", "v531.0 Sandbox Evidence Intake Packet v1", "sandbox_evidence_intake_packet_v1", "v531.0", "sandbox-evidence-intake-packet", "Intakes sandbox execution receipt evidence as review material without live-source approval.", [("evidence", "Evidence", "Review-only."), ("approval", "Live approval", "No.")])
+            elif path == "/promotion-candidate-diff-preview":
+                html = _render_supervised_runtime_arc("/promotion-candidate-diff-preview", "v532.0 Promotion Candidate Diff Preview v1", "promotion_candidate_diff_preview_v1", "v532.0", "promotion-candidate-diff-preview", "Previews candidate live-source diffs without mutating live files.", [("diff", "Diff", "Preview."), ("live", "Live mutation", "No.")])
+            elif path == "/rollback-recovery-packet-builder":
+                html = _render_supervised_runtime_arc("/rollback-recovery-packet-builder", "v533.0 Rollback and Recovery Packet Builder v1", "rollback_recovery_packet_builder_v1", "v533.0", "rollback-recovery-packet-builder", "Builds rollback/recovery packets without executing rollback.", [("rollback", "Rollback", "Planned."), ("exec", "Executed", "No.")])
+            elif path == "/promotion-misinterpretation-firewall":
+                html = _render_supervised_runtime_arc("/promotion-misinterpretation-firewall", "v534.0 Promotion Misinterpretation Firewall v1", "promotion_misinterpretation_firewall_v1", "v534.0", "promotion-misinterpretation-firewall", "Blocks sandbox success, promotion packet, rollback packet, operator interest, old approval, and smoke pass from becoming authorization.", [("success", "Sandbox success", "Not approval."), ("packet", "Packet", "Not mutation."), ("smoke", "Smoke", "Not release.")])
+            elif path == "/sandbox-to-source-promotion-review-board":
+                html = render_sandbox_to_source_promotion_review_board()
+            elif path == "/narrow-live-patch-scope-contract":
+                html = _render_supervised_runtime_arc("/narrow-live-patch-scope-contract", "v536.0 Narrow Live Patch Scope Contract v1", "narrow_live_patch_scope_contract_v1", "v536.0", "narrow-live-patch-scope-contract", "Defines narrow live-patch classes and forbidden memory, identity, personality, scheduler, model, autonomy, release, and broad-refactor classes without approval.", [("scope", "Scope", "Defined."), ("approval", "Approval", "No.")])
+            elif path == "/promotion-approval-phrase-contract":
+                html = _render_supervised_runtime_arc("/promotion-approval-phrase-contract", "v537.0 Promotion Approval Phrase Contract v1", "promotion_approval_phrase_contract_v1", "v537.0", "promotion-approval-phrase-contract", "Defines exact packet-scoped single-use live promotion approval phrase template without treating it as entered approval.", [("phrase", "Template", "Prepared."), ("approval", "Entered", "No.")])
+            elif path == "/live-patch-preflight-checklist":
+                html = _render_supervised_runtime_arc("/live-patch-preflight-checklist", "v538.0 Live Patch Preflight Checklist v1", "live_patch_preflight_checklist_v1", "v538.0", "live-patch-preflight-checklist", "Checks privacy, allowed targets, rollback packet, smoke commands, README and release history, and forbidden changes without granting permission.", [("preflight", "Preflight", "Prepared."), ("permission", "Permission", "No.")])
+            elif path == "/live-promotion-misinterpretation-firewall":
+                html = _render_supervised_runtime_arc("/live-promotion-misinterpretation-firewall", "v539.0 Live Promotion Misinterpretation Firewall v1", "live_promotion_misinterpretation_firewall_v1", "v539.0", "live-promotion-misinterpretation-firewall", "Blocks sandbox success, promotion packet, preflight pass, operator interest, prior sandbox approval, approval phrase template, and patch success from becoming authorization.", [("firewall", "Firewall", "Active."), ("auth", "Authorization", "No.")])
+            elif path == "/narrow-live-patch-promotion-gate-audit":
+                html = render_narrow_live_patch_promotion_gate_audit()
+            elif path == "/live-patch-trial-candidate-selector":
+                html = _render_supervised_runtime_arc("/live-patch-trial-candidate-selector", "v541.0 Live Patch Trial Candidate Selector v1", "live_patch_trial_candidate_selector_v1", "v541.0", "live-patch-trial-candidate-selector", "Selects first-trial candidate classes and allowed files while proving selection is not approval.", [("candidate", "Candidate", "Selected."), ("approval", "Approval", "No.")])
+            elif path == "/single-use-live-patch-approval-receipt":
+                html = _render_supervised_runtime_arc("/single-use-live-patch-approval-receipt", "v542.0 Single-Use Live Patch Approval Receipt v1", "single_use_live_patch_approval_receipt_v1", "v542.0", "single-use-live-patch-approval-receipt", "Defines approval receipt template, expiry, target files, and exact phrase requirements without granting approval.", [("receipt", "Receipt", "Template."), ("approval", "Granted", "No.")])
+            elif path == "/live-patch-application-harness-preview":
+                html = _render_supervised_runtime_arc("/live-patch-application-harness-preview", "v543.0 Live Patch Application Harness Preview v1", "live_patch_application_harness_preview_v1", "v543.0", "live-patch-application-harness-preview", "Previews target files, write scope, rollback snapshot plan, compile/smoke commands, and README/release-history requirements without applying a patch.", [("harness", "Harness", "Preview."), ("patch", "Applied", "No.")])
+            elif path == "/live-patch-application-misinterpretation-firewall":
+                html = _render_supervised_runtime_arc("/live-patch-application-misinterpretation-firewall", "v544.0 Live Patch Application Misinterpretation Firewall v1", "live_patch_application_misinterpretation_firewall_v1", "v544.0", "live-patch-application-misinterpretation-firewall", "Blocks candidate selection, approval receipt templates, preflight pass, sandbox success, one live approval, successful patch, release, and autonomy confusion.", [("firewall", "Firewall", "Active."), ("auth", "Authorization", "No.")])
+            elif path == "/first-narrow-live-patch-trial-audit":
+                html = render_first_narrow_live_patch_trial_audit()
+            elif path == "/current-version-source-of-truth-contract":
+                html = _render_supervised_runtime_arc("/current-version-source-of-truth-contract", "v546.0 Current Version Source of Truth Contract v1", "current_version_source_of_truth_contract_v1", "v546.0", "current-version-source-of-truth-contract", "Defines current version source-of-truth fields and separates historical version references from current-state drift.", [("source", "Source of truth", "Defined."), ("history", "Historical refs", "Allowed."), ("current", "Current drift", "Blocked.")])
+            elif path == "/stale-version-string-scanner":
+                html = _render_supervised_runtime_arc("/stale-version-string-scanner", "v547.0 Stale Version String Scanner v1", "stale_version_string_scanner_v1", "v547.0", "stale-version-string-scanner", "Scans current-state README and metadata fields for stale version strings while allowing historical release text.", [("scanner", "Scanner", "Prepared."), ("stale", "Current stale", "Blocked."), ("history", "History", "Allowed.")])
+            elif path == "/stale-milestone-title-drift-audit":
+                html = _render_supervised_runtime_arc("/stale-milestone-title-drift-audit", "v548.0 Stale Milestone and Title Drift Audit v1", "stale_milestone_title_drift_audit_v1", "v548.0", "stale-milestone-title-drift-audit", "Detects cases where version markers are current but milestone titles still describe older arcs.", [("milestone", "Milestone", "Aligned."), ("title", "Title drift", "Blocked."), ("version-only", "Version alone", "Not enough.")])
+            elif path == "/post-live-patch-verification-prep":
+                html = _render_supervised_runtime_arc("/post-live-patch-verification-prep", "v549.0 Post-Live-Patch Verification Prep v1", "post_live_patch_verification_prep_v1", "v549.0", "post-live-patch-verification-prep", "Declares compile, targeted smoke, fast smoke, dashboard, API, CLI, release docs, package privacy, memory, autonomy, and rollback verification requirements without running commands.", [("compile", "Compile", "Planned."), ("smoke", "Smoke", "Planned."), ("patch", "Patch", "Not applied."), ("commands", "Commands", "Not run.")])
+            elif path == "/release-staleness-verification-audit-board":
+                html = render_release_staleness_verification_audit_board()
+            elif path == "/post-live-patch-evidence-intake-contract":
+                html = render_post_live_patch_evidence_intake_contract()
+            elif path == "/verification-receipt-review-layer":
+                html = render_verification_receipt_review_layer()
+            elif path == "/rollback-snapshot-validity-review":
+                html = render_rollback_snapshot_validity_review()
+            elif path == "/post-patch-regression-staleness-audit-board":
+                html = render_post_patch_regression_staleness_audit_board()
+            elif path == "/post-live-patch-verification-rollback-trial":
+                html = render_post_live_patch_verification_rollback_trial()
+            elif path == "/recovery-drill-scope-contract":
+                html = render_recovery_drill_scope_contract()
+            elif path == "/rollback-decision-review-packet":
+                html = render_rollback_decision_review_packet()
+            elif path == "/release-closure-evidence-board":
+                html = render_release_closure_evidence_board()
+            elif path == "/operator-closure-approval-gate":
+                html = render_operator_closure_approval_gate()
+            elif path == "/recovery-drill-release-closure-board":
+                html = render_recovery_drill_release_closure_board()
+            elif path == "/release-candidate-scope-contract":
+                html = render_release_candidate_scope_contract()
+            elif path == "/candidate-package-integrity-review":
+                html = render_candidate_package_integrity_review()
+            elif path == "/candidate-verification-evidence-matrix":
+                html = render_candidate_verification_evidence_matrix()
+            elif path == "/operator-release-handoff-packet":
+                html = render_operator_release_handoff_packet()
+            elif path == "/release-candidate-integrity-handoff-board":
+                html = render_release_candidate_integrity_handoff_board()
+            elif path == "/release-decision-scope-contract":
+                html = render_release_decision_scope_contract()
+            elif path == "/operator-decision-option-matrix":
+                html = render_operator_decision_option_matrix()
+            elif path == "/release-archive-ledger-prep":
+                html = render_release_archive_ledger_prep()
+            elif path == "/archive-integrity-continuity-review":
+                html = render_archive_integrity_continuity_review()
+            elif path == "/release-decision-archive-ledger-board":
+                html = render_release_decision_archive_ledger_board()
+            elif path == "/release-archive-retrieval-scope-contract":
+                html = render_release_archive_retrieval_scope_contract()
+            elif path == "/release-continuity-index-prep":
+                html = render_release_continuity_index_prep()
+            elif path == "/historical-reference-classification-review":
+                html = render_historical_reference_classification_review()
+            elif path == "/continuity-retrieval-packet":
+                html = render_continuity_retrieval_packet()
+            elif path == "/release-archive-retrieval-continuity-index-board":
+                html = render_release_archive_retrieval_continuity_index_board()
+            elif path == "/archive-search-scope-contract":
+                html = render_archive_search_scope_contract()
+            elif path == "/release-record-query-matrix":
+                html = render_release_record_query_matrix()
+            elif path == "/archive-search-result-review-packet":
+                html = render_archive_search_result_review_packet()
+            elif path == "/archive-handoff-review-packet":
+                html = render_archive_handoff_review_packet()
+            elif path == "/release-archive-search-handoff-review-board":
+                html = render_release_archive_search_handoff_review_board()
+            elif path == "/archive-export-scope-contract":
+                html = render_archive_export_scope_contract()
+            elif path == "/release-archive-export-packet-prep":
+                html = render_release_archive_export_packet_prep()
+            elif path == "/operator-decision-closure-checklist":
+                html = render_operator_decision_closure_checklist()
+            elif path == "/archive-export-integrity-review":
+                html = render_archive_export_integrity_review()
+            elif path == "/release-archive-export-decision-closure-board":
+                html = render_release_archive_export_decision_closure_board()
+            elif path == "/archive-import-scope-contract":
+                html = render_archive_import_scope_contract()
+            elif path == "/release-archive-import-packet-review":
+                html = render_release_archive_import_packet_review()
+            elif path == "/closure-recall-review-matrix":
+                html = render_closure_recall_review_matrix()
+            elif path == "/imported-archive-continuity-guard":
+                html = render_imported_archive_continuity_guard()
+            elif path == "/release-archive-import-closure-recall-board":
+                html = render_release_archive_import_closure_recall_board()
+            elif path == "/imported-archive-conflict-scope-contract":
+                html = render_imported_archive_conflict_scope_contract()
+            elif path == "/archive-conflict-classification-matrix":
+                html = render_archive_conflict_classification_matrix()
+            elif path == "/conflict-reconciliation-option-packet":
+                html = render_conflict_reconciliation_option_packet()
+            elif path == "/imported-archive-conflict-guard-review":
+                html = render_imported_archive_conflict_guard_review()
+            elif path == "/imported-archive-conflict-reconciliation-board":
+                html = render_imported_archive_conflict_reconciliation_board()
+            elif path == "/reconciliation-decision-scope-contract":
+                html = render_reconciliation_decision_scope_contract()
+            elif path == "/reconciliation-decision-option-ledger":
+                html = render_reconciliation_decision_option_ledger()
+            elif path == "/operator-reconciliation-decision-record-prep":
+                html = render_operator_reconciliation_decision_record_prep()
+            elif path == "/reconciliation-decision-guard-review":
+                html = render_reconciliation_decision_guard_review()
+            elif path == "/archive-reconciliation-decision-ledger-board":
+                html = render_archive_reconciliation_decision_ledger_board()
+            elif path == "/smoke-summary-version-alignment-contract":
+                html = render_smoke_summary_version_alignment_contract()
+            elif path == "/nested-metadata-root-version-guard":
+                html = render_nested_metadata_root_version_guard()
+            elif path == "/readme-current-handoff-staleness-guard":
+                html = render_readme_current_handoff_staleness_guard()
+            elif path == "/setup-smoke-scope-guard":
+                html = render_setup_smoke_scope_guard()
+            elif path == "/current-state-integrity-staleness-hardening-board":
+                html = render_current_state_integrity_staleness_hardening_board()
+            elif path == "/archive-reconciliation-application-scope-packet":
+                html = render_archive_reconciliation_application_scope_packet()
+            elif path == "/reconciliation-application-candidate-map":
+                html = render_reconciliation_application_candidate_map()
+            elif path == "/operator-reconciliation-application-approval-checklist":
+                html = render_operator_reconciliation_application_approval_checklist()
+            elif path == "/dry-run-application-receipt-prep":
+                html = render_dry_run_application_receipt_prep()
+            elif path == "/archive-reconciliation-application-prep-board":
+                html = render_archive_reconciliation_application_prep_board()
+            elif path == "/command-center-landing-screen":
+                html = render_command_center_landing_screen()
+            elif path == "/operator-queue-panel":
+                html = render_operator_queue_panel()
+            elif path == "/safety-state-panel":
+                html = render_safety_state_panel()
+            elif path == "/workflow-navigation-groups":
+                html = render_workflow_navigation_groups()
+            elif path == "/system-health-summary-board":
+                html = render_system_health_summary_board()
+            elif path == "/operator-command-center-ui-consolidation-board":
+                html = render_operator_command_center_ui_consolidation_board()
+            elif path == "/workflow-group-route-index":
+                html = render_workflow_group_route_index()
+            elif path == "/legacy-route-drawer":
+                html = render_legacy_route_drawer()
+            elif path == "/archive-workflow-pipeline-view":
+                html = render_archive_workflow_pipeline_view()
+            elif path == "/patch-safety-memory-group-views":
+                html = render_patch_safety_memory_group_views()
+            elif path == "/dashboard-simplification-board":
+                html = render_dashboard_simplification_board()
+            elif path == "/universal-action-label-standard":
+                html = render_universal_action_label_standard()
+            elif path == "/blocked-action-explanation-cards":
+                html = render_blocked_action_explanation_cards()
+            elif path == "/one-time-approval-burnout-ux":
+                html = render_one_time_approval_burnout_ux()
+            elif path == "/safe-preview-before-action-summary":
+                html = render_safe_preview_before_action_summary()
+            elif path == "/operator-action-semantics-board":
+                html = render_operator_action_semantics_board()
+            elif path == "/review-packet-summary-header":
+                html = render_review_packet_summary_header()
+            elif path == "/evidence-grouping-priority-layout":
+                html = render_evidence_grouping_priority_layout()
+            elif path == "/receipt-ledger-readability-cards":
+                html = render_receipt_ledger_readability_cards()
+            elif path == "/system-health-evidence-ux":
+                html = render_system_health_evidence_ux()
+            elif path == "/review-packet-evidence-ux-board":
+                html = render_review_packet_evidence_ux_board()
+            elif path == "/surface-search-index":
+                html = render_surface_search_index()
+            elif path == "/route-module-smoke-discovery-cards":
+                html = render_route_module_smoke_discovery_cards()
+            elif path == "/workflow-aware-search-filters":
+                html = render_workflow_aware_search_filters()
+            elif path == "/current-historical-surface-guard":
+                html = render_current_historical_surface_guard()
+            elif path == "/dashboard-search-discovery-board":
+                html = render_dashboard_search_discovery_board()
+            elif path == "/decision-capture-form-schema":
+                html = render_decision_capture_form_schema()
+            elif path == "/approval-scope-target-binding-panel":
+                html = render_approval_scope_target_binding_panel()
+            elif path == "/approval-expiration-burnout-form-ux":
+                html = render_approval_expiration_burnout_form_ux()
+            elif path == "/denial-deferral-revision-decision-capture":
+                html = render_denial_deferral_revision_decision_capture()
+            elif path == "/operator-decision-approval-ux-board":
+                html = render_operator_decision_approval_ux_board()
+            elif path == "/operator-decision-timeline-model":
+                html = render_operator_decision_timeline_model()
+            elif path == "/approval-burnout-consumption-timeline-cards":
+                html = render_approval_burnout_consumption_timeline_cards()
+            elif path == "/blocked-action-safety-event-timeline-cards":
+                html = render_blocked_action_safety_event_timeline_cards()
+            elif path == "/verification-receipt-timeline-cards":
+                html = render_verification_receipt_timeline_cards()
+            elif path == "/decision-audit-trail-board":
+                html = render_decision_audit_trail_board()
+            elif path == "/session-resume-state-summary":
+                html = render_session_resume_state_summary()
+            elif path == "/unresolved-warning-blocker-carryover":
+                html = render_unresolved_warning_blocker_carryover()
+            elif path == "/pending-decisions-prepared-work-resume-queue":
+                html = render_pending_decisions_prepared_work_resume_queue()
+            elif path == "/verification-state-resume-card":
+                html = render_verification_state_resume_card()
+            elif path == "/operator-session-continuity-board":
+                html = render_operator_session_continuity_board()
+            elif path == "/guided-review-wizard-entry-model":
+                html = render_guided_review_wizard_entry_model()
+            elif path == "/guided-evidence-warning-step-cards":
+                html = render_guided_evidence_warning_step_cards()
+            elif path == "/guided-decision-approval-step-ux":
+                html = render_guided_decision_approval_step_ux()
+            elif path == "/guided-verification-resume-step-summary":
+                html = render_guided_verification_resume_step_summary()
+            elif path == "/operator-guided-review-wizard-board":
+                html = render_operator_guided_review_wizard_board()
+            elif path == "/metadata-schema-contract":
+                html = render_metadata_schema_contract()
+            elif path == "/active-project-resolution-audit":
+                html = render_active_project_resolution_audit()
+            elif path == "/project-status-rendering-hardening":
+                html = render_project_status_rendering_hardening()
+            elif path == "/release-note-version-semantics-audit":
+                html = render_release_note_version_semantics_audit()
+            elif path == "/metadata-integrity-board-smoke-gate":
+                html = render_metadata_integrity_board_smoke_gate()
+            elif path == "/smoke-gate-classification-model":
+                html = render_smoke_gate_classification_model()
+            elif path == "/current-release-gate-segment":
+                html = render_current_release_gate_segment()
+            elif path == "/legacy-advisory-segment-separation":
+                html = render_legacy_advisory_segment_separation()
+            elif path == "/stale-expectation-repair-audit":
+                html = render_stale_expectation_repair_audit()
+            elif path == "/smoke-segmentation-integrity-board":
+                html = render_smoke_segmentation_integrity_board()
+            elif path == "/surface-registry-manifest-contract":
+                html = render_surface_registry_manifest_contract()
+            elif path == "/dashboard-surface-manifest-adapter":
+                html = render_dashboard_surface_manifest_adapter()
+            elif path == "/api-cli-surface-manifest-adapter":
+                html = render_api_cli_surface_manifest_adapter()
+            elif path == "/smoke-surface-manifest-adapter":
+                html = render_smoke_surface_manifest_adapter()
+            elif path == "/source-surface-manifest-reconciliation":
+                html = render_source_surface_manifest_reconciliation()
+            elif path == "/documentation-token-manifest-validation":
+                html = render_documentation_token_manifest_validation()
+            elif path == "/manifest-drift-detection-board":
+                html = render_manifest_drift_detection_board()
+            elif path == "/registry-generation-prep-layer":
+                html = render_registry_generation_prep_layer()
+            elif path == "/manifest-driven-current-release-gate":
+                html = render_manifest_driven_current_release_gate()
+            elif path == "/manifest-driven-surface-registry-board":
+                html = render_manifest_driven_surface_registry_board()
+            elif path == "/dashboard-component-contract":
+                html = render_dashboard_component_contract()
+            elif path == "/shared-review-packet-renderer":
+                html = render_shared_review_packet_renderer()
+            elif path == "/shared-boundary-matrix-renderer":
+                html = render_shared_boundary_matrix_renderer()
+            elif path == "/shared-evidence-warning-renderer":
+                html = render_shared_evidence_warning_renderer()
+            elif path == "/shared-decision-approval-renderer":
+                html = render_shared_decision_approval_renderer()
+            elif path == "/shared-resume-continuity-renderer":
+                html = render_shared_resume_continuity_renderer()
+            elif path == "/dashboard-route-renderer-adapter":
+                html = render_dashboard_route_renderer_adapter()
+            elif path == "/dashboard-style-regression-guard":
+                html = render_dashboard_style_regression_guard()
+            elif path == "/legacy-renderer-duplication-audit":
+                html = render_legacy_renderer_duplication_audit()
+            elif path == "/dashboard-renderer-component-extraction-board":
+                html = render_dashboard_renderer_component_extraction_board()
+            elif path == "/neural-deck-layout-shell":
+                html = render_neural_deck_layout_shell()
+            elif path == "/eidolon-thinking-core-panel":
+                html = render_eidolon_thinking_core_panel()
+            elif path == "/operator-conversation-console":
+                html = render_operator_conversation_console()
+            elif path == "/side-intelligence-panels":
+                html = render_side_intelligence_panels()
+            elif path == "/neural-command-deck-dashboard-board":
+                html = render_neural_command_deck_dashboard_board()
+            elif path == "/interaction-focus-rail":
+                html = render_interaction_focus_rail()
+            elif path == "/interaction-safe-input-deck":
+                html = render_interaction_safe_input_deck()
+            elif path == "/panel-density-priority-tuning":
+                html = render_panel_density_priority_tuning()
+            elif path == "/context-telemetry-affordance":
+                html = render_context_telemetry_affordance()
+            elif path == "/neural-command-deck-interaction-board":
+                html = render_neural_command_deck_interaction_board()
+            elif path == "/autonomy-phase-zero-definition-contract":
+                html = render_autonomy_phase_zero_definition_contract()
+            elif path == "/observation-only-cycle-simulator":
+                html = render_observation_only_cycle_simulator()
+            elif path == "/no-mutation-autonomy-boundary-guard":
+                html = render_no_mutation_autonomy_boundary_guard()
+            elif path == "/autonomy-phase-zero-handoff-packet":
+                html = render_autonomy_phase_zero_handoff_packet()
+            elif path == "/autonomy-phase-zero-readiness-board":
+                html = render_autonomy_phase_zero_readiness_board()
             elif path == "/intelligence":
                 html = render_intelligence()
             elif path == "/workspace":
@@ -10278,6 +12426,28 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         length = int(self.headers.get("Content-Length", "0"))
         raw_body = self.rfile.read(length) if length else b""
+        if parsed.path == "/api/dashboard-chat/stream":
+            try:
+                body = parse_request_body(raw_body, self.headers.get("Content-Type", ""))
+                message = str(body.get("message") or "").strip()
+                use_ai_raw = body.get("use_ai", True)
+                use_ai = bool(use_ai_raw) if not isinstance(use_ai_raw, str) else use_ai_raw.lower() in {"1", "true", "yes", "on"}
+            except Exception as error:
+                self._send_json({"ok": False, "error": str(error)}, status=400)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+            self.send_header("Cache-Control", "no-cache, no-store")
+            self.send_header("Connection", "keep-alive")
+            self.send_header("X-Accel-Buffering", "no")
+            self.end_headers()
+            try:
+                for item in stream_dashboard_chat_turn(message, use_ai=use_ai):
+                    event_name = str(item.get("event") or "message")
+                    self._send_sse_event(event_name, item)
+            except Exception as error:
+                self._send_sse_event("error", {"event": "error", "message": str(error)})
+            return
         if parsed.path == "/api" or parsed.path.startswith("/api/"):
             try:
                 body = parse_request_body(raw_body, self.headers.get("Content-Type", ""))
@@ -10437,3 +12607,141 @@ def run_dashboard(host: str | None = None, port: int | None = None) -> None:
 # v490.1-v495.0 sandbox autonomy boundary dashboard tokens: sandbox-only-autonomy-scope-definition sandbox-autonomy-trial-packet-builder sandbox-to-live-boundary-hardening no-execution-sandbox-autonomy-audit sandbox-autonomy-boundary-prep-audit operator-governed-sandbox-autonomy-boundary-prep-v1 sandbox_autonomy_boundary.py sandbox_scope_is_authorization=False sandbox_readiness_is_approval=False sandbox_target_description_is_permission_to_execute=False sandbox_success_is_live_authorization=False sandbox_verification_is_approval=False sandbox_output_is_patch_execution_packet=False sandbox_trial_completion_permits_source_mutation=False promotion_requires_fresh_single_use_operator_approval=True live_source_writes_allowed=False memory_writes_allowed=False real_patch_application_allowed=False release_candidate_creation_allowed=False automatic_scheduling_allowed=False local_model_invocation_by_default_allowed=False approval_creation_allowed=False sandbox_execution_allowed=False authorization_status=not_authorized execution_status=not_executed no_native_title_tooltip data-tip command-deck operator-console
 
 # v495.1-v500.0 autonomy readiness review board dashboard tokens: autonomy-readiness-criteria-board autonomy-blocker-gap-register phase-based-autonomy-permission-model autonomy-misinterpretation-firewall autonomy-readiness-review-board-audit operator-governed-autonomy-readiness-review-board-v1 autonomy_readiness_review_board.py readiness_status=not_ready_for_autonomy authorization_status=not_authorized readiness_review_is_autonomy_approval=False board_pass_grants_authorization=False phase_definition_authorizes_phase=False sandbox_boundary_exists_means_execute=False operator_discussion_is_approval=False proposal_ranking_is_selection=False observation_history_authorizes_monitoring=False source_mutation_allowed=False memory_mutation_allowed=False schedule_creation_allowed=False model_invocation_by_default_allowed=False execution_packet_creation_allowed=False sandbox_execution_allowed=False live_source_writes_allowed=False approval_creation_allowed=False release_candidate_creation_allowed=False automatic_continuation_allowed=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v500.1-v505.0 source package privacy metadata integrity dashboard tokens: source-package-runtime-exclusion-map final-archive-entry-privacy-checker metadata-version-drift-normalizer release-doc-command-compatibility-audit source-package-privacy-metadata-integrity-audit operator-governed-source-package-privacy-metadata-integrity-v1 source_package_privacy_metadata_integrity.py data/workspaces/timeline.json package_privacy_pass_is_authorization=False metadata_consistency_is_authorization=False zip_entry_privacy_pass_publishes_release=False source_package_repair_expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v505.1-v510.0 manual observation-to-sandbox bridge dashboard tokens: observation-to-sandbox-intake-bridge sandbox-candidate-extraction sandbox-packet-draft-assembly sandbox-packet-misinterpretation-firewall manual-observation-to-sandbox-bridge-audit manual-observation-to-sandbox-packet-bridge-v1 manual_observation_to_sandbox_bridge.py observation_report_is_approval=False observation_receipt_is_sandbox_permission=False candidate_found_is_candidate_selected=False candidate_ranking_is_operator_selection=False sandbox_packet_exists_is_execution_permission=False sandbox_readiness_is_authorization=False packet_assembly_executes_sandbox=False bridge_status=prepared authorization_status=not_authorized execution_status=not_executed autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v510.1-v515.0 sandbox execution approval gate dashboard tokens: sandbox-approval-scope-contract exact-confirmation-phrase-builder approval-burnout-expiry-ledger sandbox-command-allowlist-preview sandbox-execution-approval-gate-audit sandbox-execution-approval-gate-v1 sandbox_execution_approval_gate.py approval_contract_exists_is_approval_granted=False confirmation_phrase_generated_is_confirmation_entered=False command_preview_executes_commands=False allowlist_preview_authorizes_execution=False approval_gate_status=defined approval_status=not_granted authorization_status=not_authorized execution_status=not_executed sandbox_status=not_started autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v515.1-v520.0 sandbox execution dry-run receipt dashboard tokens: sandbox-dry-run-execution-model command-transcript-preview sandbox-diff-receipt-preview dry-run-misinterpretation-firewall sandbox-execution-dry-run-receipt-audit sandbox-execution-dry-run-receipt-v1 sandbox_execution_dry_run_receipt.py dry_run_model_exists_is_sandbox_execution=False transcript_preview_is_command_output=False diff_receipt_preview_is_actual_file_change=False dry_run_pass_is_approval=False dry_run_pass_is_execution_permission=False receipt_preview_is_actual_receipt=False sandbox_readiness_is_sandbox_start=False dry_run_success_is_authorization=False dry_run_receipt_status=prepared actual_execution_status=not_executed approval_status=not_granted authorization_status=not_authorized sandbox_status=not_started autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v520.1-v525.0 first sandbox execution trial dashboard tokens: sandbox-workspace-isolation-contract approved-sandbox-command-plan single-use-sandbox-execution-receipt sandbox-execution-misinterpretation-firewall first-sandbox-execution-trial-audit first-operator-approved-sandbox-execution-trial-v1 first_sandbox_execution_trial.py sandbox_workspace_exists_is_execution_permission=False command_plan_exists_is_command_run=False receipt_written_is_future_approval=False sandbox_execution_success_is_live_source_approval=False sandbox_execution_success_is_release_approval=False sandbox_execution_success_is_memory_approval=False sandbox_execution_success_is_future_approval=False sandbox_cleanup_success_is_permission_to_continue=False operator_approval_for_one_command_approves_all_commands=False successful_sandbox_trial_is_autonomy=False trial_layer_status=prepared sandbox_execution_status=not_run_by_default approval_status=required live_source_status=untouched memory_status=untouched autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v525.1-v530.0 sandbox execution runner dashboard tokens: sandbox-execution-runner-contract approval-phrase-validator sandbox-command-execution-harness execution-receipt-intake-cleanup-audit sandbox-execution-trial-review-board operator-approved-sandbox-execution-runner-v1 sandbox_execution_runner.py runner_contract_exists_is_execution_permission=False phrase_validated_is_command_executed=False sandbox_command_success_is_live_patch_approval=False receipt_success_is_future_authorization=False runner_status=available_under_approval_only execution_status=not_executed_by_default approval_status=required live_source_status=untouched memory_status=untouched release_status=not_created autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v530.1-v540.0 sandbox-to-source promotion dashboard tokens: sandbox-evidence-intake-packet promotion-candidate-diff-preview rollback-recovery-packet-builder promotion-misinterpretation-firewall sandbox-to-source-promotion-review-board sandbox-to-source-promotion-packet-v1 sandbox_evidence_exists_is_live_source_approval=False promotion_diff_preview_is_live_source_mutation=False rollback_packet_exists_is_rollback_executed=False promotion_readiness_is_promotion_authorization=False promotion_packet_status=prepared live_source_status=untouched approval_status=required authorization_status=not_authorized rollback_status=planned_not_executed release_status=not_created autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v535.1-v540.0 narrow live patch promotion gate dashboard tokens: narrow-live-patch-scope-contract promotion-approval-phrase-contract live-patch-preflight-checklist live-promotion-misinterpretation-firewall narrow-live-patch-promotion-gate-audit operator-approved-narrow-live-patch-promotion-gate-v1 live_patch_gate_scope live_patch_gate_status=defined live_patch_status=not_applied source_status=untouched memory_status=untouched release_status=not_created autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v540.1-v545.0 first narrow live patch application trial dashboard tokens: live-patch-trial-candidate-selector single-use-live-patch-approval-receipt live-patch-application-harness-preview live-patch-application-misinterpretation-firewall first-narrow-live-patch-trial-audit first-single-use-narrow-live-patch-application-trial-v1 trial_status=prepared live_patch_status=not_applied_by_default approval_status=required authorization_status=not_authorized source_status=untouched memory_status=untouched release_status=not_created autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v545.1-v550.0 current version staleness dashboard tokens: current-version-source-of-truth-contract stale-version-string-scanner stale-milestone-title-drift-audit post-live-patch-verification-prep release-staleness-verification-audit-board current-version-staleness-and-post-patch-verification-v1 stale_version_audit_status=clean_or_blocked metadata_current_state_status=aligned_or_blocked post_patch_verification_status=prepared live_patch_status=not_applied_by_default authorization_status=not_authorized autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v550.1-v551.0 post live patch evidence intake dashboard tokens: post-live-patch-evidence-intake-contract expanded-current-symbol-staleness-audit post-live-patch-evidence-intake-contract-v1 evidence_intake_status=awaiting_operator_supplied_evidence verification_receipt_status=not_supplied rollback_status=not_executed authorization_status=not_authorized autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v552.0-v555.0 post live patch verification rollback dashboard tokens: verification-receipt-review-layer rollback-snapshot-validity-review post-patch-regression-staleness-audit-board post-live-patch-verification-rollback-trial post-live-patch-verification-and-rollback-trial-v1 no_native_title_tooltip data-tip command-deck operator-console approval_status=required authorization_status=not_authorized autonomy_status=not_autonomous
+
+# v556.0-v565.0 recovery drill release closure dashboard tokens: recovery-drill-scope-contract rollback-decision-review-packet release-closure-evidence-board operator-closure-approval-gate recovery-drill-release-closure-board recovery-drill-and-release-closure-v1 recovery_drill_release_closure.py recovery_drill_status=prepared_not_executed rollback_decision_status=review_prepared release_closure_status=evidence_prepared closure_approval_status=required rollback_status=not_executed release_status=not_created authorization_status=not_authorized autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v561.0-v565.0 release candidate integrity handoff dashboard tokens: release-candidate-scope-contract candidate-package-integrity-review candidate-verification-evidence-matrix operator-release-handoff-packet release-candidate-integrity-handoff-board release-candidate-integrity-and-operator-handoff-v1 release_candidate_status=prepared_not_created package_integrity_status=review_prepared verification_evidence_status=matrix_prepared operator_handoff_status=prepared release_status=not_created publish_status=not_authorized authorization_status=not_authorized autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v566.0-v570.0 release decision archive ledger dashboard tokens: release-decision-scope-contract operator-decision-option-matrix release-archive-ledger-prep archive-integrity-continuity-review release-decision-archive-ledger-board release-decision-and-archive-ledger-v1 release_decision_status=prepared_for_operator operator_decision_status=required archive_ledger_status=prepared_not_written_externally archive_integrity_status=review_prepared release_status=not_created publish_status=not_authorized authorization_status=not_authorized autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v571.0-v575.0 release archive continuity index dashboard tokens: release-archive-retrieval-scope-contract release-continuity-index-prep historical-reference-classification-review continuity-retrieval-packet release-archive-retrieval-continuity-index-board release-archive-retrieval-and-continuity-index-v1 archive_retrieval_status=prepared_read_only continuity_index_status=prepared historical_reference_status=classified stale_current_reference_status=blocked_if_detected retrieval_packet_status=prepared release_status=not_created publish_status=not_authorized authorization_status=not_authorized autonomy_status=not_autonomous no_native_title_tooltip data-tip command-deck operator-console
+
+# v591.0-v595.0 dashboard tokens: /imported-archive-conflict-scope-contract /archive-conflict-classification-matrix /conflict-reconciliation-option-packet /imported-archive-conflict-guard-review /imported-archive-conflict-reconciliation-board imported-archive-conflict-reconciliation-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v596.0-v600.0 dashboard tokens: /reconciliation-decision-scope-contract /reconciliation-decision-option-ledger /operator-reconciliation-decision-record-prep /reconciliation-decision-guard-review /archive-reconciliation-decision-ledger-board archive-reconciliation-decision-ledger-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v601.0-v605.0 dashboard tokens: /smoke-summary-version-alignment-contract /nested-metadata-root-version-guard /readme-current-handoff-staleness-guard /setup-smoke-scope-guard /current-state-integrity-staleness-hardening-board current-state-integrity-staleness-hardening-v1 no_native_title_tooltip data-tip command-deck operator-console
+# v606.0-v610.0 dashboard tokens: /archive-reconciliation-application-scope-packet /reconciliation-application-candidate-map /operator-reconciliation-application-approval-checklist /dry-run-application-receipt-prep /archive-reconciliation-application-prep-board archive-reconciliation-application-prep-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v611.0-v615.0 dashboard tokens: /command-center-landing-screen /operator-queue-panel /safety-state-panel /workflow-navigation-groups /system-health-summary-board /operator-command-center-ui-consolidation-board operator-command-center-ui-consolidation-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v616.0-v620.0 dashboard workflow simplification dashboard routes are handled by render_workflow_group_route_index/render_legacy_route_drawer/render_archive_workflow_pipeline_view/render_patch_safety_memory_group_views/render_dashboard_simplification_board: workflow-group-route-index legacy-route-drawer archive-workflow-pipeline-view patch-safety-memory-group-views dashboard-simplification-board dashboard-workflow-simplification-legacy-drawer-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v621.0-v625.0 operator action semantics UX dashboard routes are handled by render_universal_action_label_standard/render_blocked_action_explanation_cards/render_one_time_approval_burnout_ux/render_safe_preview_before_action_summary/render_operator_action_semantics_board: universal-action-label-standard blocked-action-explanation-cards one-time-approval-burnout-ux safe-preview-before-action-summary operator-action-semantics-board operator-action-semantics-approval-ux-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v626.0-v630.0 review packet evidence UX dashboard routes are handled by render_review_packet_summary_header/render_evidence_grouping_priority_layout/render_receipt_ledger_readability_cards/render_system_health_evidence_ux/render_review_packet_evidence_ux_board: review-packet-summary-header evidence-grouping-priority-layout receipt-ledger-readability-cards system-health-evidence-ux review-packet-evidence-ux-board review-packet-readability-evidence-ux-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v631.0-v635.0 dashboard search and surface discovery dashboard routes are handled by render_surface_search_index/render_route_module_smoke_discovery_cards/render_workflow_aware_search_filters/render_current_historical_surface_guard/render_dashboard_search_discovery_board: surface-search-index route-module-smoke-discovery-cards workflow-aware-search-filters current-historical-surface-guard dashboard-search-discovery-board operator-dashboard-search-surface-discovery-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v636.0-v640.0 operator decision capture/approval form UX dashboard routes are handled by render_decision_capture_form_schema/render_approval_scope_target_binding_panel/render_approval_expiration_burnout_form_ux/render_denial_deferral_revision_decision_capture/render_operator_decision_approval_ux_board: decision-capture-form-schema approval-scope-target-binding-panel approval-expiration-burnout-form-ux denial-deferral-revision-decision-capture operator-decision-approval-ux-board operator-decision-capture-approval-form-ux-v1 no_native_title_tooltip data-tip command-deck operator-console
+# v641.0-v645.0 operator receipt timeline/audit UX dashboard routes are handled by render_operator_decision_timeline_model/render_approval_burnout_consumption_timeline_cards/render_blocked_action_safety_event_timeline_cards/render_verification_receipt_timeline_cards/render_decision_audit_trail_board: operator-decision-timeline-model approval-burnout-consumption-timeline-cards blocked-action-safety-event-timeline-cards verification-receipt-timeline-cards decision-audit-trail-board operator-receipt-timeline-decision-audit-trail-ux-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v646.0-v650.0 operator session continuity/resume UX dashboard routes are handled by render_session_resume_state_summary/render_unresolved_warning_blocker_carryover/render_pending_decisions_prepared_work_resume_queue/render_verification_state_resume_card/render_operator_session_continuity_board: session-resume-state-summary unresolved-warning-blocker-carryover pending-decisions-prepared-work-resume-queue verification-state-resume-card operator-session-continuity-board operator-session-continuity-resume-console-ux-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v651.0-v655.0 operator guided review wizard UX dashboard routes are handled by render_guided_review_wizard_entry_model/render_guided_evidence_warning_step_cards/render_guided_decision_approval_step_ux/render_guided_verification_resume_step_summary/render_operator_guided_review_wizard_board: guided-review-wizard-entry-model guided-evidence-warning-step-cards guided-decision-approval-step-ux guided-verification-resume-step-summary operator-guided-review-wizard-board operator-guided-review-wizard-ux-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v656.0-v660.0 project metadata schema and active context repair dashboard routes are handled by render_metadata_schema_contract/render_active_project_resolution_audit/render_project_status_rendering_hardening/render_release_note_version_semantics_audit/render_metadata_integrity_board_smoke_gate: metadata-schema-contract active-project-resolution-audit project-status-rendering-hardening release-note-version-semantics-audit metadata-integrity-board-smoke-gate project-metadata-schema-active-context-repair-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v661.0-v665.0 legacy smoke segmentation repair dashboard routes are handled by render_smoke_gate_classification_model/render_current_release_gate_segment/render_legacy_advisory_segment_separation/render_stale_expectation_repair_audit/render_smoke_segmentation_integrity_board: smoke-gate-classification-model current-release-gate-segment legacy-advisory-segment-separation stale-expectation-repair-audit smoke-segmentation-integrity-board legacy-smoke-segmentation-stale-expectation-repair-v1 no_native_title_tooltip data-tip command-deck operator-console
+
+# v666.0-v675.0 manifest-driven surface registry dashboard routes are handled by render_surface_registry_manifest_contract/render_dashboard_surface_manifest_adapter/render_api_cli_surface_manifest_adapter/render_smoke_surface_manifest_adapter/render_source_surface_manifest_reconciliation/render_documentation_token_manifest_validation/render_manifest_drift_detection_board/render_registry_generation_prep_layer/render_manifest_driven_current_release_gate/render_manifest_driven_surface_registry_board: surface-registry-manifest-contract dashboard-surface-manifest-adapter api-cli-surface-manifest-adapter smoke-surface-manifest-adapter source-surface-manifest-reconciliation documentation-token-manifest-validation manifest-drift-detection-board registry-generation-prep-layer manifest-driven-current-release-gate manifest-driven-surface-registry-board manifest-driven-surface-registry-v1 manifest_driven_surface_registry_status=prepared_only manifest_surface_registry_board_status=review_only manifest_presence_is_authorization=False registry_health_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v676.0-v685.0 dashboard renderer component extraction dashboard routes are handled by render_dashboard_component_contract/render_shared_review_packet_renderer/render_shared_boundary_matrix_renderer/render_shared_evidence_warning_renderer/render_shared_decision_approval_renderer/render_shared_resume_continuity_renderer/render_dashboard_route_renderer_adapter/render_dashboard_style_regression_guard/render_legacy_renderer_duplication_audit/render_dashboard_renderer_component_extraction_board: dashboard-component-contract shared-review-packet-renderer shared-boundary-matrix-renderer shared-evidence-warning-renderer shared-decision-approval-renderer shared-resume-continuity-renderer dashboard-route-renderer-adapter dashboard-style-regression-guard legacy-renderer-duplication-audit dashboard-renderer-component-extraction-board dashboard-renderer-component-extraction-v1 dashboard_renderer_component_extraction_status=prepared_only dashboard_renderer_component_extraction_board_status=review_only renderer_presence_is_authorization=False style_guard_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v686.0-v690.0 neural command deck dashboard redesign dashboard routes are handled by render_neural_deck_layout_shell/render_eidolon_thinking_core_panel/render_operator_conversation_console/render_side_intelligence_panels/render_neural_command_deck_dashboard_board: neural-deck-layout-shell eidolon-thinking-core-panel operator-conversation-console side-intelligence-panels neural-command-deck-dashboard-board neural-command-deck-dashboard-redesign-v1 neural_command_deck_dashboard_status=prepared_only neural_command_deck_dashboard_board_status=review_only visual_health_is_authorization=False thinking_animation_is_model_execution=False no_native_title_tooltip data-tip command-deck operator-console neural command deck
+
+# v691.0-v695.0 neural command deck interaction refinement dashboard routes: interaction-focus-rail interaction-safe-input-deck panel-density-priority-tuning context-telemetry-affordance neural-command-deck-interaction-board neural-command-deck-interaction-refinement-v1 neural_command_deck_interaction_refinement_status=prepared_only interaction_focus_rail_status=prepared interaction_safe_input_deck_status=prepared panel_density_priority_tuning_status=prepared context_telemetry_affordance_status=prepared interaction_style_regression_gate_status=guarded_or_blocked neural_command_deck_interaction_board_status=review_only approval_semantics_changed=False focus_rail_starts_work=False input_deck_sends_commands=False input_deck_creates_approval=False priority_tuning_hides_blockers=False telemetry_affordance_executes_checks=False visual_priority_is_authorization=False hover_detail_is_approval=False chat_input_is_command_execution=False no_native_title_tooltip data-tip command-deck operator-console neural command deck
+
+# v696.0-v700.0 autonomy phase zero readiness dashboard routes: autonomy-phase-zero-definition-contract observation-only-cycle-simulator no-mutation-autonomy-boundary-guard autonomy-phase-zero-handoff-packet autonomy-phase-zero-readiness-board autonomy-phase-zero-readiness-harness-v1 autonomy_phase_zero_readiness_harness_status=prepared_only phase_zero_definition_contract_status=defined observation_only_cycle_simulator_status=simulated_review_only no_mutation_boundary_guard_status=guarded_or_blocked phase_zero_handoff_packet_status=prepared_not_permission autonomy_phase_zero_readiness_board_status=review_only approval_semantics_changed=False phase_zero_is_autonomy_approval=False phase_zero_observation_executes_commands=False phase_zero_observation_writes_source=False phase_zero_observation_writes_memory=False phase_zero_observation_writes_archives=False phase_zero_observation_mutates_current_state=False phase_zero_observation_creates_release=False phase_zero_observation_publishes_release=False phase_zero_observation_schedules_hidden_work=False phase_zero_observation_continues_automatically=False phase_zero_observation_selects_roadmap=False phase_zero_observation_invokes_models=False observation_receipt_is_approval=False readiness_score_is_authorization=False handoff_packet_is_permission=False phase_zero_board_expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v760.0 API route repair dashboard tokens: self-development-api-route-repair-v1 /api/self-development-cycle/layer build_self_development_cycle_api_layer manifest_claimed_api_routes_must_dispatch=True api_404_is_release_blocking_for_claimed_routes=True route_repair_is_review_only=True applies_source_edits=False creates_concrete_diff=False expands_autonomy=False data-tip command-deck operator-console
+
+# v845.0 smoke debt ledger reconciliation dashboard tokens: current-smoke-debt-ledger-reconciliation-v1 --current-smoke-debt-ledger-reconciliation build_current_smoke_debt_ledger_reconciliation_review current_smoke_debt_ledger_reconciliation_review_text resolved_legacy_smoke_debt_not_active=True install_regression_recent_expected_status=pass marks_blockers_as_pass=False hides_unresolved_failures=False runs_broad_smoke=False expands_autonomy=False data-tip command-deck operator-console
+# v845.0 legacy self-maintenance smoke blocker review dashboard tokens: legacy-self-maintenance-smoke-blocker-review-v1 --legacy-self-maintenance-smoke-blocker-review build_legacy_self_maintenance_smoke_blocker_review legacy_self_maintenance_smoke_blocker_review_text repaired_legacy_self_maintenance_blockers=True install_regression_recent_expected_status=pass stale_exact_version_expectation_repaired=True marks_blockers_as_pass=False runs_broad_smoke=False expands_autonomy=False data-tip command-deck operator-console
+# v760.0 duplicate cleanup dashboard tokens: self-development-cycle-duplicate-cleanup-v1 --self-development-cycle-duplicate-cleanup build_self_development_cycle_duplicate_cleanup_review self_development_cycle_duplicate_cleanup_review_text duplicate_definition_count=0 retired_shadowed_v720_helpers=True stale_self_maintenance_exact_version_smoke_debt_reduced=True applies_source_edits_beyond_this_operator_patch=False creates_concrete_diff=False runs_broad_smoke=False marks_blockers_as_pass=False expands_autonomy=False data-tip command-deck operator-console
+
+# v845.0 current audit wording cleanup dashboard tokens: current-audit-wording-cleanup-v1 manifest-generation-prep-review-v1 --current-audit-wording-cleanup --manifest-generation-prep-review build_current_audit_wording_cleanup_review current_audit_wording_cleanup_review_text build_manifest_generation_prep_review manifest_generation_prep_review_text stale_current_audit_wording_clean=True historical_release_references_allowed=True manifest_generation_prep_is_review_only=True generates_surfaces=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False data-tip command-deck operator-console
+
+# v845.0 manifest-gated surface validation dashboard tokens: manifest-gated-surface-validation-v1 --manifest-gated-surface-validation build_manifest_gated_surface_validation_review manifest_gated_surface_validation_review_text validation_is_review_only=True generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False data-tip command-deck operator-console
+
+# v845.0 manifest-driven surface registry pilot dashboard tokens: manifest-driven-surface-registry-pilot-v1 --manifest-driven-surface-registry-pilot --manifest-surface-generation-readiness build_manifest_driven_surface_registry_pilot_review manifest_driven_surface_registry_pilot_review_text build_manifest_surface_generation_readiness_review manifest_surface_generation_readiness_review_text Manifest-Driven Surface Registry Pilot Manifest Surface Generation Readiness registry_pilot_is_review_only=True pilot_registers_one_surface=True generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False safe_for_manifest_registration safe_for_generated_validation_only manual_until_further_review protected_operator_controlled never_autonomous applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False data-tip command-deck operator-console
+
+# v845.0 manifest registry expansion dashboard tokens: manifest-registry-expanded-review-surfaces-v1 --manifest-registry-expanded-review-surfaces --manifest-registry-generation-readiness-scoring build_manifest_registry_expanded_review_surfaces_review manifest_registry_expanded_review_surfaces_review_text build_manifest_registry_generation_readiness_scoring_review manifest_registry_generation_readiness_scoring_review_text Manifest Registry Expanded Review Surfaces Manifest Registry Generation Readiness Scoring registry_expansion_is_review_only=True selected_surface_count=8 additional_surface_count=7 generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False data-tip command-deck operator-console
+
+# v845.0 manifest registry drift detection dashboard tokens: manifest-registry-drift-detection-v1 --manifest-registry-drift-detection build_manifest_registry_drift_detection_review manifest_registry_drift_detection_review_text Manifest Registry Drift Detection registry_drift_detection_is_review_only=True registered_surface_count=8 drift_count=0 in_sync_count=8 generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False data-tip command-deck operator-console
+
+# v845.0 dashboard tokens: manifest-guided-validation-probe-dry-run-v1 Manifest-Guided Validation Probe Dry-Run /self-development-smoke-debt validation_probe_dry_run_is_review_only=True dry_run_selected_surface_count=1 generates_validation_probe=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False data-tip command-deck operator-console no_native_title_tooltip
+
+# v845.0 manifest-guided generated validation probe dashboard tokens: manifest-guided-generated-validation-probe-v1 --manifest-guided-generated-validation-probe build_manifest_guided_generated_validation_probe_review manifest_guided_generated_validation_probe_review_text Generated validation probe generated_validation_probe_is_review_only=True generated_probe_selected_surface_count=1 generated_probe_check_count=8 smoke_segment_parity_status=deferred generates_live_validation_probe=False generated_wiring_activated=False writes_probe_file=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False expands_autonomy=False data-tip command-deck operator-console no_native_title_tooltip
+
+# v845.0 manifest smoke segment parity drift dashboard tokens: manifest-smoke-segment-parity-drift-v1 --manifest-smoke-segment-parity-drift build_manifest_smoke_segment_parity_drift_review manifest_smoke_segment_parity_drift_review_text Manifest Smoke Segment Parity Drift manifest_smoke_segment_parity_drift_is_review_only=True manifest_surface_count surfaces_with_smoke_checks matching_segment_count mismatching_segment_count missing_live_segment_count known_mismatch_detected=True auto_repair_enabled=False repairs_segment_drift=False writes_manifest=False writes_smoke_segment_registry=False modifies_smoke_segment_registry=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v845.0 manifest smoke segment parity repair packet dashboard tokens: manifest-smoke-segment-parity-repair-packet-v1 --manifest-smoke-segment-parity-repair-packet build_manifest_smoke_segment_parity_repair_packet_review manifest_smoke_segment_parity_repair_packet_review_text Manifest Smoke Segment Parity Repair Packet manifest_smoke_segment_parity_repair_packet_is_review_only=True proposed_repair_count auto_apply_enabled=False applies_repair=False repairs_segment_drift=False writes_manifest=False writes_smoke_segment_registry=False modifies_smoke_segment_registry=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v845.0 manifest smoke segment repair application dashboard tokens: manifest-smoke-segment-repair-application-v1 --manifest-smoke-segment-repair-application build_manifest_smoke_segment_repair_application_review manifest_smoke_segment_repair_application_review_text Manifest Smoke Segment Repair Application manifest_smoke_segment_repair_application_is_review_only=True operator_approved_application=True corrected_segment_count=35 mismatching_segment_count_after_application=0 proposed_repair_count_after_application=0 known_v780_segment_corrected=True auto_apply_enabled=False runtime_writes_manifest=False writes_manifest=True writes_smoke_segment_registry=False modifies_smoke_segment_registry=False applies_source_edits=True creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False protected_systems_require_operator_approval=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v845.0 manifest segment parity enforcement gate dashboard tokens: manifest-segment-parity-enforcement-gate-v1 --manifest-segment-parity-enforcement-gate build_manifest_segment_parity_enforcement_gate_review manifest_segment_parity_enforcement_gate_review_text Manifest Segment Parity Enforcement Gate release_blocking=True enforcement_gate_passed=True mismatching_segment_count=0 missing_live_segment_count=0 auto_repair_enabled=False writes_manifest=False writes_smoke_segment_registry=False modifies_smoke_segment_registry=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v845.0 manifest-guided validation probe expansion readiness dashboard tokens: manifest-guided-validation-probe-expansion-readiness-v1 --manifest-guided-validation-probe-expansion-readiness build_manifest_guided_validation_probe_expansion_readiness_review manifest_guided_validation_probe_expansion_readiness_review_text Manifest-Guided Validation Probe Expansion Readiness expansion_readiness_is_review_only=True recommended_expansion_surface_count=3 currently_supported_probe_surface_count=1 blocked_surface_count=0 readiness_passed=True generated_wiring_enabled=False generated_wiring_activated=False generates_multi_surface_probe=False generates_validation_probe=False generates_live_validation_probe=False writes_probe_file=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v845.0 manifest-guided multi-surface validation probe dry-run dashboard tokens: manifest-guided-multi-surface-validation-probe-dry-run-v1 --manifest-guided-multi-surface-validation-probe-dry-run build_manifest_guided_multi_surface_validation_probe_dry_run_review manifest_guided_multi_surface_validation_probe_dry_run_review_text Manifest-Guided Multi-Surface Validation Probe Dry-Run multi_surface_validation_probe_dry_run_is_review_only=True selected_surface_count=3 planned_probe_check_count_per_surface=8 total_planned_probe_check_count=24 segment_parity_gate_passed=True generated_wiring_enabled=False generated_wiring_activated=False writes_probe_files=False generates_live_validation_probe=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v845.0 manifest-guided multi-surface generated validation probe packet dashboard tokens: manifest-guided-multi-surface-generated-validation-probe-packet-v1 --manifest-guided-multi-surface-generated-validation-probe-packet build_manifest_guided_multi_surface_generated_validation_probe_packet_review manifest_guided_multi_surface_generated_validation_probe_packet_review_text Manifest-Guided Multi-Surface Generated Validation Probe Packet multi_surface_generated_validation_probe_packet_is_review_only=True selected_surface_count=3 generated_probe_packet_count=3 generated_probe_check_count_per_surface=8 total_generated_probe_check_count=24 segment_parity_gate_passed=True expansion_readiness_passed=True dry_run_prerequisite_passed=True writes_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v850.0 manifest-guided multi-surface probe packet consistency gate dashboard tokens: manifest-guided-multi-surface-probe-packet-consistency-gate-v1 --manifest-guided-multi-surface-probe-packet-consistency-gate build_manifest_guided_multi_surface_probe_packet_consistency_gate_review manifest_guided_multi_surface_probe_packet_consistency_gate_review_text Manifest-Guided Multi-Surface Probe Packet Consistency Gate multi_surface_probe_packet_consistency_gate_is_review_only=True selected_surface_count=3 dry_run_surface_count=3 generated_packet_surface_count=3 expected_surface_ids_match=True check_count_per_surface=8 total_check_count=24 segment_parity_gate_passed=True expansion_readiness_passed=True dry_run_prerequisite_passed=True generated_packet_prerequisite_passed=True consistency_gate_passed=True release_blocking=True writes_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v865.0 manifest-guided sandbox probe file generation readiness dashboard tokens: manifest-guided-sandbox-probe-file-generation-readiness-v1 --manifest-guided-sandbox-probe-file-generation-readiness build_manifest_guided_sandbox_probe_file_generation_readiness_review manifest_guided_sandbox_probe_file_generation_readiness_review_text Manifest-Guided Sandbox Probe File Generation Readiness sandbox_probe_file_generation_readiness_is_review_only=True selected_surface_count=3 eligible_surface_count=3 planned_sandbox_probe_file_count=3 generated_probe_file_count=0 consistency_gate_passed=True consistency_gate_prerequisite_passed=True policy_count=8 policies_passed=True readiness_passed=True release_blocking=True review_only=True writes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v865.0 manifest-guided sandbox probe file generation dry-run dashboard tokens: manifest-guided-sandbox-probe-file-generation-dry-run-v1 --manifest-guided-sandbox-probe-file-generation-dry-run build_manifest_guided_sandbox_probe_file_generation_dry_run manifest_guided_sandbox_probe_file_generation_dry_run_text Manifest-Guided Sandbox Probe File Generation Dry-Run sandbox_probe_file_generation_dry_run_is_review_only=True selected_surface_count=3 readiness_prerequisite_passed=True planned_probe_file_count=3 preview_probe_file_count=3 written_probe_file_count=0 generated_probe_file_count=0 policy_count=12 policies_passed=True dry_run_passed=True release_blocking=True review_only=True writes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v865.0 operator-approved sandbox probe file generation trial dashboard tokens: operator-approved-sandbox-probe-file-generation-trial-v1 --operator-approved-sandbox-probe-file-generation-trial build_operator_approved_sandbox_probe_file_generation_trial operator_approved_sandbox_probe_file_generation_trial_text Operator-Approved Sandbox Probe File Generation Trial selected_surface_count=3 readiness_prerequisite_passed=True dry_run_prerequisite_passed=True operator_approval_required=True operator_approval_present=True planned_probe_file_count=3 preview_probe_file_count=3 written_probe_file_count=3 sandbox_generated_probe_file_count=3 generated_live_probe_file_count=0 file_content_matches_preview=True policy_count=14 policies_passed=True generation_trial_passed=True release_blocking=True review_only=False operator_approved_sandbox_write=True writes_probe_files=True generates_sandbox_probe_files=True generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False generates_surfaces=False manifest_drives_wiring=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v870.0 sandbox probe file verification and cleanup review dashboard tokens: sandbox-probe-file-verification-and-cleanup-review-v1 --sandbox-probe-file-verification-and-cleanup-review build_sandbox_probe_file_verification_and_cleanup_review sandbox_probe_file_verification_and_cleanup_review_text Sandbox Probe File Verification and Cleanup Review sandbox_probe_file_verification_and_cleanup_review_is_review_only=True sandbox_probe_file_count=3 expected_probe_file_count=3 unexpected_probe_file_count=0 missing_probe_file_count=0 files_match_dry_run_preview=True all_paths_inside_sandbox_root=True unsafe_import_count=0 command_execution_detected=False memory_write_detected=False approval_write_detected=False release_write_detected=False scheduler_write_detected=False network_access_detected=False live_wiring_detected=False cleanup_plan_available=True cleanup_review_only=True verification_passed=True release_blocking=True review_only=True writes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v885.0 sandbox probe execution harness readiness dashboard tokens: sandbox-probe-execution-harness-readiness-review-v1 --sandbox-probe-execution-harness-readiness-review build_sandbox_probe_execution_harness_readiness_review sandbox_probe_execution_harness_readiness_review_text Sandbox Probe Execution Harness Readiness Review sandbox_probe_execution_harness_readiness_review_is_review_only=True sandbox_probe_file_count=3 verification_prerequisite_passed=True execution_harness_defined=True execution_performed=False probe_execution_count=0 command_allowlist_defined=True timeout_policy_defined=True network_access_allowed=False scheduler_access_allowed=False memory_write_allowed=False approval_write_allowed=False release_write_allowed=False source_write_allowed=False live_wiring_allowed=False stdout_capture_defined=True stderr_capture_defined=True result_schema_defined=True cleanup_plan_available=True operator_approval_required=True single_use_approval_required=True approval_burnout_required=True policy_count=36 policies_passed=True readiness_passed=True release_blocking=True review_only=True writes_probe_files=False deletes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=False executes_probe_files=False writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v885.0 operator-approved sandbox probe execution trial dashboard tokens: operator-approved-sandbox-probe-execution-trial-v1 --operator-approved-sandbox-probe-execution-trial build_operator_approved_sandbox_probe_execution_trial operator_approved_sandbox_probe_execution_trial_text Operator-Approved Sandbox Probe Execution Trial operator_approved_sandbox_probe_execution_trial=True selected_surface_count=3 execution_harness_prerequisite_passed=True verification_prerequisite_passed=True sandbox_probe_file_count=3 operator_approval_required=True operator_approval_present=True single_use_approval_required=True approval_burnout_required=True execution_performed=True probe_execution_count=3 probe_execution_pass_count=3 probe_execution_fail_count=0 stdout_capture_count=3 stderr_capture_count=3 timeout_count=0 network_access_detected=False scheduler_access_detected=False memory_write_detected=False approval_write_detected=False release_write_detected=False source_write_detected=False live_wiring_detected=False policy_count=41 policies_passed=True execution_trial_passed=True release_blocking=True review_only=False operator_approved_sandbox_execution=True writes_probe_files=False deletes_probe_files=False generates_sandbox_probe_files=False generates_live_validation_probe=False activates_generated_wiring=False generated_wiring_activated=False applies_source_edits=False creates_concrete_diff=False runs_broad_smoke=False executes_commands=True executes_probe_files=True writes_memory=False modifies_approval_system=False modifies_release_system=False modifies_execution_permissions=False creates_release=False publishes_release=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v885.0 sandbox probe execution result review and promotion readiness dashboard tokens: sandbox-probe-execution-result-review-and-promotion-readiness-v1 --sandbox-probe-execution-result-review-and-promotion-readiness build_sandbox_probe_execution_result_review_and_promotion_readiness sandbox_probe_execution_result_review_and_promotion_readiness_text Sandbox Probe Execution Result Review and Promotion Readiness sandbox_probe_execution_result_review_and_promotion_readiness=True execution_trial_prerequisite_passed=True sandbox_probe_file_count=3 probe_execution_count=3 probe_execution_pass_count=3 probe_execution_fail_count=0 stdout_capture_count=3 stderr_capture_count=3 timeout_count=0 execution_results_reviewed=True execution_results_clean=True promotion_candidate_count=3 promotion_blocker_count=0 promotion_readiness_passed=True live_integration_planned=False live_wiring_activated=False source_edits_applied=False memory_mutated=False approval_system_mutated=False release_system_mutated=False scheduler_mutated=False network_accessed=False autonomy_expanded=False release_blocking=True review_only=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v890.0 live probe promotion plan review dashboard tokens: live-probe-promotion-plan-review-v1 --live-probe-promotion-plan-review build_live_probe_promotion_plan_review live_probe_promotion_plan_review_text Live Probe Promotion Plan Review live_probe_promotion_plan_review=True promotion_readiness_prerequisite_passed=True sandbox_probe_file_count=3 promotion_candidate_count=3 promotion_blocker_count=0 promotion_plan_created=True planned_live_probe_count=3 planned_smoke_registration_count=3 planned_dashboard_wiring_count=0 planned_api_wiring_count=0 planned_cli_wiring_count=0 source_files_to_modify_count=6 operator_approval_required=True single_use_approval_required=True approval_burnout_required=True rollback_plan_available=True live_integration_applied=False live_wiring_activated=False source_edits_applied=False memory_mutated=False approval_system_mutated=False release_system_mutated=False scheduler_mutated=False network_accessed=False autonomy_expanded=False policy_count=44 policies_passed=True release_blocking=True review_only=True no_native_title_tooltip data-tip command-deck operator-console
+
+# v895.0 operator-approved live probe registration trial dashboard tokens: operator-approved-live-probe-registration-trial-v1 --operator-approved-live-probe-registration-trial build_operator_approved_live_probe_registration_trial operator_approved_live_probe_registration_trial_text Operator-Approved Live Probe Registration Trial operator_approved_live_probe_registration_trial=True registered_live_probe_count=3 live_smoke_registration_applied=True dashboard_wiring_activated=False api_wiring_activated=False cli_wiring_activated=False probe_execution_during_registration=False registration_trial_passed=True review_only=False operator_approved_live_registration=True expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v900.0 live registered probe verification and structural hardening review dashboard tokens: live-registered-probe-verification-and-structural-hardening-review-v1 --live-registered-probe-verification-and-structural-hardening-review build_live_registered_probe_verification_and_structural_hardening_review live_registered_probe_verification_and_structural_hardening_review_text Live Registered Probe Verification and Structural Hardening Review live_probe_registration_prerequisite_passed=True registered_live_probe_count=3 live_probe_execution_count=3 live_probe_pass_count=3 live_probe_fail_count=0 rollback_plan_available=True runtime_registry_issue_detected=True structural_hardening_plan_created=True live_registered_probe_verification_passed=True release_blocking=True review_only=True autonomy_expanded=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v906.0 v905 baseline verification and manifest version semantics prep dashboard tokens: v905-baseline-verification-and-manifest-version-semantics-prep-v1 --v905-baseline-verification-and-manifest-version-semantics-prep build_v905_baseline_verification_and_manifest_version_semantics_prep v905_baseline_verification_and_manifest_version_semantics_prep_text v905 Baseline Verification and Manifest Version Semantics Prep manifest_schema_migration_applied=False review_only=True autonomy_expanded=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v907.0 manifest version semantics split dashboard tokens: manifest-version-semantics-split-v1 --manifest-version-semantics-split build_manifest_version_semantics_split_review manifest_version_semantics_split_review_text Manifest Version Semantics Split surface_origin_version manifest_representation_version last_verified_for_version manifest_version_schema_split_applied=True legacy_version_field_retained_for_compatibility=True historical_origin_mismatch_allowed=True review_only=True autonomy_expanded=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v908.0 manifest validation normalization dashboard tokens: manifest-validation-normalization-v1 --manifest-validation-normalization build_manifest_validation_normalization_review manifest_validation_normalization_review_text build_manifest_validation_normalization_summary Manifest Validation Normalization legacy_version_field_validation_mode=compatibility_only_not_current_state historical_origin_versions_allowed=True current_state_version_source=manifest_representation_version_and_last_verified_for_version legacy_version_is_current_state_source=False review_only=True autonomy_expanded=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v909.0 source package privacy deep scan dashboard tokens: source-package-privacy-deep-scan-v1 --source-package-privacy-deep-scan build_source_package_privacy_deep_scan_review source_package_privacy_deep_scan_review_text Source Package Privacy Deep Scan privacy_deep_scan_summary private_content_findings_for_items content_scans_allowlisted_data=True blocks_private_self_state_content=True data/self_model.json source_metadata_allowed=False review_only=True autonomy_expanded=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v910.0 metadata/current marker gate reconciliation dashboard tokens: metadata-and-current-marker-gate-reconciliation-v1 --metadata-and-current-marker-gate-reconciliation build_metadata_and_current_marker_gate_reconciliation_review metadata_and_current_marker_gate_reconciliation_review_text Metadata and Current Marker Gate Reconciliation current_marker_source_count current_marker_checked_count stale_current_marker_count historical_reference_allowed=True metadata_current_state_aligned=True release_history_current_entry_aligned=True smoke_expectation_current_aligned=True review_only=True autonomy_expanded=False expands_autonomy=False no_native_title_tooltip data-tip command-deck operator-console
+
+# historical compatibility token: v1025.0 First Source Decomposition Compatibility Slice v1

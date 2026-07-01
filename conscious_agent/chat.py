@@ -41,15 +41,13 @@ def get_related_memories(user_message: str, limit: int = 5) -> list[dict[str, An
     return search_memories(user_message, limit=limit)
 
 
-def create_chat_response(
+def build_chat_prompt(
     user_message: str,
     self_model: dict[str, Any],
     desires: dict[str, float],
     memories: list[dict[str, Any]],
 ) -> str:
-    """
-    Uses the local Ollama brain to generate a real chat response.
-    """
+    """Builds the shared local-model prompt for terminal, dashboard, and streaming chat."""
     name = self_model.get("name", "Eidolon")
     goals = self_model.get("active_goals", [])
     related_memories = get_related_memories(user_message, limit=5)
@@ -65,7 +63,7 @@ def create_chat_response(
     if not memory_text:
         memory_text = "No strongly related memories found."
 
-    prompt = f"""
+    return f"""
 You are {name}, a local autonomous AI agent prototype.
 
 You are not proven conscious. Do not claim to be truly sentient.
@@ -110,6 +108,18 @@ Rules:
 - Keep the response under 250 words.
 """
 
+
+def create_chat_response(
+    user_message: str,
+    self_model: dict[str, Any],
+    desires: dict[str, float],
+    memories: list[dict[str, Any]],
+) -> str:
+    """
+    Uses the local Ollama brain to generate a real chat response.
+    """
+    name = self_model.get("name", "Eidolon")
+
     if not bool(get_setting("ai_chat_enabled", True)):
         return (
             f"{name}: Local AI chat is disabled in settings. "
@@ -117,7 +127,7 @@ Rules:
         )
 
     response = local_generate(
-        prompt=prompt,
+        prompt=build_chat_prompt(user_message, self_model, desires, memories),
         temperature=0.45,
         max_tokens=350,
     )
@@ -129,7 +139,6 @@ Rules:
         )
 
     return f"{name}: {response}"
-
 
 def run_chat() -> None:
     """

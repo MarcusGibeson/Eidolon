@@ -1,8 +1,9 @@
 --- a/README_NEXT_STEPS.md
 +++ b/README_NEXT_STEPS.md
-@@ -6260,3 +6260,5 @@
+@@ -101,3 +101,6 @@
  
- Recommended next arc after v450.0: v451.0-v455.0 Operator-Governed Recurring Read-Only Observation Trial v1. Build a strictly read-only recurring observation plan, activity ledger, command whitelist, and stop/pause controls without scheduling hidden work or mutating source/memory.
- 
+ # v575.0 - Release Archive Retrieval and Continuity Index v1
+ Historical completed arc record. v575.0 added archive retrieval and continuity index surfaces. This is historical reference only and not current-state authority.
++
 +<!-- EIDOLON_CONTROLLED_BUILD_STAGE_MARKER -->
-+Staged controlled-build probe for plan_20260624_102750_synthetic-v9-safe-readme-task. This line is only written if the operator explicitly applies the staged patch.
++Staged controlled-build probe for plan_20260625_161747_synthetic-v9-safe-readme-task. This line is only written if the operator explicitly applies the staged patch.

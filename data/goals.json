@@ -1,93 +1,41 @@
 {
-  "version": 1,
-  "active_goal": "goal_seed_build-eidolon",
+  "active_goal": "",
   "goals": [
     {
+      "blockers": [],
+      "completed_at": "",
+      "created_at": "2026-06-30T16:04:12",
+      "description": "Continue developing Eidolon with memory, tools, review, approved edits, rollback, testing, and supervised self-improvement.",
       "id": "goal_seed_build-eidolon",
-      "title": "Build Eidolon into a safe local AI assistant",
-      "description": "Continue developing Eidolon with memory, tools, review, approved edits, rollback, testing, supervised self-improvement, maintenance suggestions, memory compaction, structured goals, and session planning.",
-      "project": "Eidolon",
-      "status": "active",
-      "priority": "critical",
       "next_actions": [
-        "Test the session planner commands.",
+        "Test the newest workflow after each version.",
         "Keep powerful actions permission-gated and logged."
       ],
-      "blockers": [],
       "notes": [
         "Seed goal created by v1.8 Goal Manager."
       ],
-      "created_at": "2026-06-18T14:40:00",
-      "updated_at": "2026-06-18T14:55:00",
-      "completed_at": ""
+      "priority": "critical",
+      "project": "Eidolon",
+      "status": "active",
+      "title": "Build Eidolon into a safe local AI assistant",
+      "updated_at": "2026-06-30T16:04:12"
     },
     {
-      "id": "goal_seed_keep-memory-usable",
-      "title": "Keep Eidolon memory useful and compact",
+      "blockers": [],
+      "completed_at": "",
+      "created_at": "2026-06-30T16:04:12",
       "description": "Use memory status, compaction, summaries, and semantic rebuilds to keep long-term continuity manageable.",
-      "project": "Eidolon",
-      "status": "planned",
-      "priority": "high",
+      "id": "goal_seed_keep-memory-usable",
       "next_actions": [
         "Run --memory-status after active development sessions."
       ],
-      "blockers": [],
       "notes": [],
-      "created_at": "2026-06-18T14:40:00",
-      "updated_at": "2026-06-18T14:40:00",
-      "completed_at": ""
-    },
-    {
-      "id": "goal_seed-build-session-planner",
-      "title": "Build a session planner from goals and project state",
-      "description": "Create a future workflow that combines goals, maintenance scans, memory summaries, and test reports into a recommended next safe task.",
-      "project": "Eidolon",
-      "status": "completed",
       "priority": "high",
-      "next_actions": [
-        "Test --plan-session --no-ai-session and --show-session-plan latest."
-      ],
-      "blockers": [],
-      "notes": [
-        "Completed by v1.9 Session Planner."
-      ],
-      "created_at": "2026-06-18T14:40:00",
-      "updated_at": "2026-06-18T14:55:00",
-      "completed_at": "2026-06-18T14:55:00"
-    },
-    {
-      "id": "goal_seed-build-task-queue",
-      "title": "Build task queue from session plans",
-      "description": "Create a future workflow that turns advisory session plan recommendations into an ordered, approval-based task queue without executing tasks automatically.",
       "project": "Eidolon",
       "status": "planned",
-      "priority": "high",
-      "next_actions": [
-        "Design task_queue.py after session planner is tested."
-      ],
-      "blockers": [],
-      "notes": [],
-      "created_at": "2026-06-18T14:55:00",
-      "updated_at": "2026-06-18T14:55:00",
-      "completed_at": ""
-    },
-    {
-      "id": "goal_seed-background-watch-mode",
-      "title": "Build background watch mode",
-      "description": "Add a bounded periodic scanner that creates diagnostics, maintenance/session suggestions, and watch reports without applying changes automatically.",
-      "project": "Eidolon",
-      "status": "completed",
-      "priority": "high",
-      "next_actions": [
-        "Test --watch-once --no-ai-watch and --show-watch-report latest --watch-full."
-      ],
-      "blockers": [],
-      "notes": [
-        "Completed by v3.0 Background Watch Mode."
-      ],
-      "created_at": "2026-06-18T17:05:00",
-      "updated_at": "2026-06-18T17:05:00",
-      "completed_at": "2026-06-18T17:05:00"
+      "title": "Keep Eidolon memory useful and compact",
+      "updated_at": "2026-06-30T16:04:12"
     }
-  ]
+  ],
+  "version": 1
 }

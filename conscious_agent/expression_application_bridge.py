@@ -11,8 +11,7 @@ from conversational_expression_sandbox import (
 )
 from identity_expression import classify_identity_expression_request
 
-EXPRESSION_APPLICATION_BRIDGE_VERSION = "500.0"
-
+EXPRESSION_APPLICATION_BRIDGE_VERSION = "1032.0"
 EXPRESSION_APPLICATION_BRIDGE_BOUNDARIES = {
     "expression_bridge_grants_approval": False,
     "expression_bridge_applies_live_expression": False,

@@ -5,8 +5,7 @@ from typing import Any
 
 from version_state import VERSION_STATE_VERSION, version_marker_summary
 
-SELF_MAINTENANCE_REFACTOR_REGISTRY_VERSION = "500.0"
-
+SELF_MAINTENANCE_REFACTOR_REGISTRY_VERSION = "1032.0"
 SELF_MAINTENANCE_REFACTOR_BOUNDARIES: dict[str, bool] = {
     "refactor_registry_writes_files": False,
     "refactor_registry_removes_routes": False,

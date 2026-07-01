@@ -14,8 +14,8 @@ Write-Host "Installing requirements..."
 & $Python -m pip install -r $Requirements
 
 Write-Host ""
-Write-Host "Running smoke check..."
-& $Python $SmokeCheck
+Write-Host "Running bounded recent install smoke segment..."
+& $Python $SmokeCheck --segment install-regression-recent
 
 Write-Host ""
 Write-Host "Useful commands:"

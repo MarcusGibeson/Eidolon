@@ -4646,8 +4646,8 @@
     "notes": []
   },
   "audit": {
-    "version": "6.9",
-    "generated_at": "2026-06-23T17:05:18.662570+00:00",
+    "version": "650.0",
+    "generated_at": "2026-06-26T03:50:19.488364+00:00",
     "loop_id": "stableloop_20260623_130511_114775",
     "project_id": "eidolon",
     "live": false,
@@ -4692,14 +4692,7 @@
     "tasks": [
       {
         "id": "task_20260619_233618_review-patch-patch-20260619-154553-conscious-age",
-        "found": true,
-        "title": "Review patch patch_20260619_154553_conscious_agent-dashboard-py",
-        "status": "blocked",
-        "risk": "low",
-        "requires_approval": false,
-        "patch_id": "patch_20260619_154553_conscious_agent-dashboard-py",
-        "approval_id": "",
-        "action_type": "manual"
+        "found": false
       }
     ],
     "approvals": [],
@@ -4718,7 +4711,7 @@
     "summary": "Preview stable-loop audit: 1 changed task id(s), 0 approval id(s), 0 patch id(s), 1 warning(s)."
   },
   "operator_notes": {
-    "version": "6.9",
+    "version": "650.0",
     "created_at": "2026-06-23T17:05:18.662570+00:00",
     "updated_at": "",
     "final_decision": "undecided",

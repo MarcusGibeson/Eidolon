@@ -16,7 +16,7 @@ from paths import DATA_DIR
 from settings_manager import get_setting, load_settings
 
 
-SETUP_VERSION = "4.5"
+SETUP_VERSION = "1032.0"
 SETUP_REPORTS_DIR = DATA_DIR / "setup_reports"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAIN_FILE = PROJECT_ROOT / "conscious_agent" / "main.py"

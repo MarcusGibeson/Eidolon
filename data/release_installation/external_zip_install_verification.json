@@ -1,16 +1,16 @@
 {
-  "version": "500.0",
-  "checked_at": "2026-06-24T10:35:25",
+  "version": "805.0",
+  "checked_at": "2026-06-27T23:47:29",
   "project_id": "eidolon",
   "status": "blocked",
   "ok": false,
-  "package_name": "Eidolon_v500_0.zip",
-  "zip_path": "C:\\Users\\marcu\\Downloads\\Eidolon_v500_0_source_only.zip",
+  "package_name": "Eidolon_v805_0.zip",
+  "zip_path": "C:\\Users\\marcu\\Downloads\\Eidolon_v805_0_source_only.zip",
   "common_root": "Eidolon",
-  "file_count": 156,
+  "file_count": 195,
   "violations": [
     {
-      "path": "data/tasks.json",
+      "path": "data/self_model.json",
       "reason": "private/runtime data path included"
     },
     {
@@ -22,12 +22,12 @@
     {
       "name": "zip-present",
       "status": "pass",
-      "message": "C:\\Users\\marcu\\Downloads\\Eidolon_v500_0_source_only.zip"
+      "message": "C:\\Users\\marcu\\Downloads\\Eidolon_v805_0_source_only.zip"
     },
     {
       "name": "zip-member-count",
       "status": "pass",
-      "message": "156 file member(s) found."
+      "message": "195 file member(s) found."
     },
     {
       "name": "zip-root",
@@ -37,7 +37,7 @@
     {
       "name": "source-files",
       "status": "pass",
-      "message": "140 Python source file(s) found."
+      "message": "179 Python source file(s) found."
     },
     {
       "name": "privacy-and-paths",

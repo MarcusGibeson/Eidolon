@@ -3,8 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-LIVE_PATCH_HISTORY_MEMORY_CANDIDATES_VERSION = "500.0"
-
+LIVE_PATCH_HISTORY_MEMORY_CANDIDATES_VERSION = "1032.0"
 LIVE_PATCH_HISTORY_MEMORY_CANDIDATES_BOUNDARIES: dict[str, bool] = {
     "history_ledger_treats_history_as_permission": False,
     "history_ledger_applies_patches": False,
@@ -223,7 +222,7 @@ def build_live_patch_history_memory_candidate_audit_summary(root: Path | None = 
     doc_checks = {
         "readme_updated": "v395.0 - Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1" in docs,
         "release_history_updated": "v395.0 - Live Patch Trial History Ledger and Operator Decision Memory Candidate Prep v1" in docs,
-        "version_markers_current": 'LIVE_PATCH_HISTORY_MEMORY_CANDIDATES_VERSION = "500.0"' in docs,
+        "version_markers_current": 'LIVE_PATCH_HISTORY_MEMORY_CANDIDATES_VERSION = "555.0"' in docs,
         "dashboard_data_tip_present": "data-tip" in docs,
         "command_deck_present": "command-deck" in docs,
         "operator_console_present": "operator-console" in docs,

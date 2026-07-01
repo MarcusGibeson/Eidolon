@@ -18,7 +18,7 @@ from live_memory_write_trial import (
     execute_operator_confirmed_live_memory_write_trial,
 )
 
-MEMORY_RETRACTION_TRIAL_VERSION = "500.0"
+MEMORY_RETRACTION_TRIAL_VERSION = "1032.0"
 EXPECTED_MEMORY_RETRACTION_CONFIRMATION_PHRASE = "I APPROVE THIS SINGLE MEMORY RETRACTION TRIAL"
 
 MEMORY_RETRACTION_BOUNDARIES: dict[str, bool] = {

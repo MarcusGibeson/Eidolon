@@ -8,8 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-DUPLICATE_DEFINITION_AUDIT_VERSION = "500.0"
-
+DUPLICATE_DEFINITION_AUDIT_VERSION = "1032.0"
 DUPLICATE_DEFINITION_BOUNDARIES: dict[str, bool] = {
     "inventory_is_authorization_to_delete": False,
     "classification_is_authorization_to_delete": False,

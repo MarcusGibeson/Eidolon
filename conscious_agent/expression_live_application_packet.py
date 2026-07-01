@@ -12,8 +12,7 @@ from expression_patch_dry_run import build_expression_sandbox_diff_preview_summa
 from expression_application_bridge import build_expression_implementation_packet_draft_summary
 from identity_expression import classify_identity_expression_request
 
-EXPRESSION_LIVE_APPLICATION_PACKET_VERSION = "500.0"
-
+EXPRESSION_LIVE_APPLICATION_PACKET_VERSION = "1032.0"
 EXPRESSION_LIVE_APPLICATION_PACKET_BOUNDARIES = {
     "eligibility_gate_authorizes_live_writes": False,
     "eligibility_gate_treats_eligibility_as_approval": False,

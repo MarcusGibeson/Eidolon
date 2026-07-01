@@ -34,7 +34,7 @@ from workspace_orchestration import (
     _timeline_event,
 )
 
-WORKSPACE_EXECUTION_VERSION = "15.0"
+WORKSPACE_EXECUTION_VERSION = "1032.0"
 PATCH_WORKSPACE_DIR = DATA_DIR / "patch_workspace"
 CURRENT_PLAN = PATCH_WORKSPACE_DIR / "current_plan.json"
 PROPOSED_CHANGES = PATCH_WORKSPACE_DIR / "proposed_changes.json"

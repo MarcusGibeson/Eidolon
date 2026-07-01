@@ -3,12 +3,11 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-AUTONOMY_READINESS_REVIEW_BOARD_VERSION = "500.0"
-CURRENT_VERSION = "500.0"
-CURRENT_VERSION_TAG = "v500.0"
-CURRENT_MILESTONE = "v500.0 Operator-Governed Autonomy Readiness Review Board v1"
-NEXT_RECOMMENDED_ARC = "v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1"
-
+AUTONOMY_READINESS_REVIEW_BOARD_VERSION = "1032.0"
+CURRENT_VERSION = "1032.0"
+CURRENT_VERSION_TAG = "v1032.0"
+CURRENT_MILESTONE = "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1"
+NEXT_RECOMMENDED_ARC = "v1033.0 Smoke Registry Sidecar Parity Expansion v1"
 READINESS_BOARD_FLAGS: dict[str, bool] = {
     "readiness_review_is_autonomy_approval": False,
     "board_pass_grants_authorization": False,

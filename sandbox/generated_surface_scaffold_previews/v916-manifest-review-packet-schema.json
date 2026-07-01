@@ -1,0 +1,52 @@
+{
+  "activation": {
+    "api_wiring_activated": false,
+    "applies_source_edits": false,
+    "autonomy_expanded": false,
+    "cli_wiring_activated": false,
+    "dashboard_wiring_activated": false,
+    "generated_preview_authoritative": false,
+    "generated_wiring_activated": false,
+    "protected_systems_require_operator_approval": true,
+    "release_authorized": false,
+    "smoke_wiring_activated": false
+  },
+  "api_preview": {
+    "exposure": "not_exposed_review_only",
+    "route": "not_exposed_review_only",
+    "wiring_activated": false
+  },
+  "applies_source_edits": false,
+  "artifact_type": "generated_surface_scaffold_preview_review_only",
+  "authority_level": "review_only",
+  "autonomy_expanded": false,
+  "cli_preview": {
+    "builder": "build_manifest_review_packet_schema_review",
+    "flag": "--manifest-review-packet-schema",
+    "text_renderer": "manifest_review_packet_schema_review_text",
+    "wiring_activated": false
+  },
+  "dashboard_preview": {
+    "hover_contract": "data-tip",
+    "native_title_tooltips_allowed": false,
+    "renderer": "manifest_review_packet_schema_review_text",
+    "route": "/self-development-smoke-debt",
+    "style_contract": "command-deck/operator-console",
+    "wiring_activated": false
+  },
+  "generated_wiring_activated": false,
+  "manual_builder": "build_manifest_review_packet_schema_review",
+  "manual_text_renderer": "manifest_review_packet_schema_review_text",
+  "parity_anchor": "v930-multi-surface-generated-parity-batch-closure",
+  "release_authorized": false,
+  "review_only": true,
+  "schema_version": "1032.0",
+  "smoke_preview": {
+    "check": "manifest-review-packet-schema-v1",
+    "expected_version_source": "EXPECTED_CURRENT_VERSION",
+    "segment": "install-release",
+    "wiring_activated": false
+  },
+  "source_surface_manifest_id": "v916-manifest-review-packet-schema",
+  "surface_id": "v916-manifest-review-packet-schema"
+}

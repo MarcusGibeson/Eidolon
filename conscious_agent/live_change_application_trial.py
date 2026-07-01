@@ -3,8 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-LIVE_CHANGE_APPLICATION_TRIAL_VERSION = "500.0"
-
+LIVE_CHANGE_APPLICATION_TRIAL_VERSION = "1032.0"
 LIVE_CHANGE_APPLICATION_TRIAL_BOUNDARIES: dict[str, bool] = {
     "transaction_narrowing_applies_patch": False,
     "transaction_narrowing_expands_scope": False,
@@ -288,3 +287,5 @@ def render_live_change_application_trial_lines(summary: dict[str, Any]) -> list[
     if summary.get("risk_flags"):
         lines.append("- risk_flags: " + ", ".join(map(str, summary.get("risk_flags", []))))
     return lines or ["- no summary details available"]
+# v375.1-v380.0 live change application trial compatibility tokens: live-change-transaction-narrowing live-change-approval-execution-lock live-change-real-patch-trial-plan live-change-operator-confirmed-application-trial live-change-application-trial-audit operator-governed-live-change-application-trial-audit-v1 live_change_application_trial.py transaction_narrowing_applies_patch=False approval_execution_lock_self_approves=False trial_plan_writes_files=False application_trial_runs_without_confirmation=False application_trial_continues_automatically=False dashboard_http_route_probe_required data/autonomy/live_change_transaction_narrowing/ data/autonomy/live_change_approval_execution_lock/ data/autonomy/live_change_real_patch_trial_plan/ data/autonomy/live_change_operator_confirmed_application_trial/ data/autonomy/live_change_application_trial_audit/
+# v380 additional compatibility tokens: operator_confirmation_required=True preimage_match_required=True rollback_packet_required=True

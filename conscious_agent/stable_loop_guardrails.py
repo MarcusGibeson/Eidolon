@@ -21,7 +21,7 @@ from stable_loop_followup_completion import (
     stable_loop_followup_completion_summary,
 )
 
-STABLE_LOOP_GUARDRAIL_VERSION = "6.9"
+STABLE_LOOP_GUARDRAIL_VERSION = "1032.0"
 DEFAULT_LIVE_BLOCK_FILTER = "unresolved"
 
 

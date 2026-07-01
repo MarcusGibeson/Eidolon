@@ -1,0 +1,51 @@
+{
+  "api_wrapper": {
+    "exposure": "not_exposed_review_only",
+    "manual_route": "not_exposed_review_only",
+    "wiring_activated": false,
+    "wrapper_target": "not_exposed_review_only"
+  },
+  "applies_source_edits": false,
+  "artifact_type": "generated_scaffold_compatibility_wrapper_preview_review_only",
+  "autonomy_expanded": false,
+  "cli_wrapper": {
+    "builder_target": "build_cli_api_surface_preview_generator_review",
+    "manual_flag": "--cli-api-surface-preview-generator",
+    "text_renderer": "cli_api_surface_preview_generator_review_text",
+    "wiring_activated": false,
+    "wrapper_target": "print_cli_api_surface_preview_generator_review"
+  },
+  "dashboard_wrapper": {
+    "hover_contract": "data-tip",
+    "manual_route": "/self-development-smoke-debt",
+    "native_title_tooltips_allowed": false,
+    "style_contract": "command-deck/operator-console",
+    "wiring_activated": false,
+    "wrapper_target": "cli_api_surface_preview_generator_review_text"
+  },
+  "generated_wiring_activated": false,
+  "manual_builder": "build_cli_api_surface_preview_generator_review",
+  "manual_text_renderer": "cli_api_surface_preview_generator_review_text",
+  "protected_manual_status": {
+    "generated_wrapper_authoritative": false,
+    "manual_code_replaced": false,
+    "protected_systems_require_operator_approval": true
+  },
+  "release_authorized": false,
+  "review_only": true,
+  "rollback_expectation": {
+    "generated_wrapper_can_be_removed_by_deleting_sandbox_artifact": true,
+    "live_wiring_rollback_required": false,
+    "manual_code_unchanged": true
+  },
+  "schema_version": "1032.0",
+  "smoke_wrapper": {
+    "expected_version_source": "EXPECTED_CURRENT_VERSION",
+    "manual_check": "cli-api-surface-preview-generator-v1",
+    "segment": "install-release",
+    "wiring_activated": false,
+    "wrapper_target": "check_cli_api_surface_preview_generator_v1"
+  },
+  "source_artifact_path": "sandbox/generated_surface_scaffold_previews/v918-cli-api-surface-preview-generator.json",
+  "surface_id": "v918-cli-api-surface-preview-generator"
+}

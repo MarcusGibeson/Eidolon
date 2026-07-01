@@ -10,8 +10,7 @@ from expression_patch_dry_run import (
 )
 from identity_expression import classify_identity_expression_request
 
-EXPRESSION_SANDBOX_TRIAL_HARNESS_VERSION = "500.0"
-
+EXPRESSION_SANDBOX_TRIAL_HARNESS_VERSION = "1032.0"
 EXPRESSION_SANDBOX_TRIAL_HARNESS_BOUNDARIES = {
     "trial_packet_creates_sandbox": False,
     "trial_packet_executes_sandbox": False,

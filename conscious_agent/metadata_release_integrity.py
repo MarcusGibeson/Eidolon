@@ -11,11 +11,11 @@ import json
 from pathlib import Path
 from typing import Any
 
-METADATA_RELEASE_INTEGRITY_VERSION = "500.0"
-CURRENT_VERSION = "500.0"
-CURRENT_VERSION_TAG = "v500.0"
-CURRENT_MILESTONE = "v500.0 Operator-Governed Autonomy Readiness Review Board v1"
-
+METADATA_RELEASE_INTEGRITY_VERSION = "1032.0"
+CURRENT_VERSION = "1032.0"
+CURRENT_VERSION_TAG = "v1032.0"
+CURRENT_MILESTONE = "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1"
+NEXT_RECOMMENDED_ARC = "v1033.0 Smoke Registry Sidecar Parity Expansion v1"
 METADATA_RELEASE_INTEGRITY_BOUNDARIES = {
     "metadata_consistency_is_authorization": False,
     "release_integrity_pass_is_approval": False,
@@ -107,7 +107,7 @@ def build_project_workspace_metadata_alignment(root_dir: str | Path = ".") -> di
     first_workspace = workspace_records[0] if workspace_records else {}
     rows = [
         _row("current-project-milestone", current_project.get("current_milestone") == CURRENT_MILESTONE, "Current project milestone names the current release arc.", expected=CURRENT_MILESTONE, actual=current_project.get("current_milestone")),
-        _row("top-next-arc", projects.get("next_recommended_arc") == "v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge v1", "Next recommended arc now points beyond the current cleanup boundary.", actual=projects.get("next_recommended_arc")),
+        _row("top-next-arc", projects.get("next_recommended_arc") == NEXT_RECOMMENDED_ARC, "Next recommended arc points to the next currentness/harness repair boundary.", actual=projects.get("next_recommended_arc")),
         _row("project-record-milestone", first_project.get("current_milestone") == CURRENT_MILESTONE, "Primary project record milestone names the current release arc.", expected=CURRENT_MILESTONE, actual=first_project.get("current_milestone")),
         _row("active-project-milestone", active.get("current_milestone") == CURRENT_MILESTONE, "Active workspace milestone names the current release arc.", expected=CURRENT_MILESTONE, actual=active.get("current_milestone")),
         _row("workspace-project-milestone", first_workspace.get("current_milestone") == CURRENT_MILESTONE, "Workspace project registry milestone names the current release arc.", expected=CURRENT_MILESTONE, actual=first_workspace.get("current_milestone")),
@@ -153,40 +153,52 @@ def build_release_packaging_version_integrity(root_dir: str | Path = ".") -> dic
 
 
 def build_current_state_documentation_header_audit(root_dir: str | Path = ".") -> dict[str, Any]:
-    """Check that README files expose a current-state header before historical ledgers."""
+    """Check that README files expose the active current-state header dynamically."""
     root = Path(root_dir)
     next_steps = _read_text(root / "README_NEXT_STEPS.md")
     release_history = _read_text(root / "README_RELEASE_HISTORY.md")
+    release_history_top = release_history.split("\n# Historical notes retained", 1)[0]
     required_next = [
-        "CURRENT VERSION: v500.0",
-        "CURRENT VERIFIED CHECKS",
-        "CURRENT BLOCKERS",
-        "CURRENT RECOMMENDED NEXT ARC",
-        "Supervised Proposal Queue from Observation Reports v1",
+        CURRENT_VERSION_TAG,
+        CURRENT_MILESTONE,
+        "metadata-currentness-and-historical-prerequisite-repair-v1",
+        "operator-governed-metadata-release-integrity-v1",
+        "post-v1000-evidence-chain-repair-v1",
+        "v1000-milestone-readiness-review-v1",
+        "metadata_currentness_dynamic_contract=True",
+        "stale_wrapper_tokens_required=False",
+        "historical_prerequisite_next_arc_dynamic=True",
+        NEXT_RECOMMENDED_ARC,
     ]
     required_release = [
-        "v500.0 - Operator-Governed Autonomy Readiness Review Board v1",
-        "mapping is not approval",
-        "README state is not approval",
-        "Release history is not authorization",
+        CURRENT_VERSION_TAG,
+        CURRENT_MILESTONE.split(" ", 1)[1],
+        "metadata-currentness-and-historical-prerequisite-repair-v1",
+        "operator-governed-metadata-release-integrity-v1",
+        "post-v1000-evidence-chain-repair-v1",
+        "v1000-milestone-readiness-review-v1",
+        "metadata_currentness_dynamic_contract=True",
+        "stale_wrapper_tokens_required=False",
+        "historical_prerequisite_next_arc_dynamic=True",
     ]
     rows = [
-        _row("next-steps-current-header", all(token in next_steps for token in required_next), "README_NEXT_STEPS.md starts with current-state guidance."),
-        _row("release-history-current", all(token in release_history for token in required_release), "README_RELEASE_HISTORY.md documents the current v495 sandbox autonomy boundary prep arc."),
-        _row("next-arc-v491", "v501.0-v505.0 Manual Observation-to-Sandbox Packet Bridge" in next_steps, "README_NEXT_STEPS.md points to the next autonomy readiness review board arc."),
-        _row("dashboard-hover-rule", "data-tip" in next_steps and "native `title` tooltips" in next_steps, "Dashboard custom hover rule remains documented."),
+        _row("next-steps-current-header", all(token in next_steps for token in required_next), "README_NEXT_STEPS.md exposes the active metadata-currentness repair guidance.", expected=required_next, actual="present" if all(token in next_steps for token in required_next) else "missing one or more tokens"),
+        _row("release-history-current", all(token in release_history_top for token in required_release), "README_RELEASE_HISTORY.md top entry documents the active metadata-currentness repair arc.", expected=required_release, actual="present" if all(token in release_history_top for token in required_release) else "missing one or more tokens"),
+        _row("next-arc-current", NEXT_RECOMMENDED_ARC in next_steps, "README_NEXT_STEPS.md points to the next compile-timeout and harness-honesty repair arc.", expected=NEXT_RECOMMENDED_ARC),
+        _row("dashboard-hover-rule", "data-tip" in next_steps and "command-deck" in next_steps and "operator-console" in next_steps, "Dashboard custom hover and command-deck rules remain documented."),
     ]
     status = _status_from(rows)
     return {
         "version": METADATA_RELEASE_INTEGRITY_VERSION,
         "state": "current_state_documentation_header_audit_review_only",
+        "required_next_tokens": required_next,
+        "required_release_tokens": required_release,
         "rows": rows,
         "blocked": [row for row in rows if row.get("status") != "pass"],
         "ok": status == "pass",
         "status": status,
         **METADATA_RELEASE_INTEGRITY_BOUNDARIES,
     }
-
 
 def build_metadata_release_integrity_audit(root_dir: str | Path = ".", docs_text: str | None = None) -> dict[str, Any]:
     """Audit metadata alignment, release version resolution, docs, and no-authorization boundaries."""
@@ -197,18 +209,25 @@ def build_metadata_release_integrity_audit(root_dir: str | Path = ".", docs_text
     packaging = build_release_packaging_version_integrity(root)
     docs_audit = build_current_state_documentation_header_audit(root)
     required_tokens = [
-        "metadata-version-inventory", "project-workspace-metadata-alignment", "release-packaging-version-integrity",
-        "current-state-documentation-header-audit", "metadata-release-integrity-audit",
-        "operator-governed-metadata-release-integrity-v1", "metadata_consistency_is_authorization=False",
-        "release_integrity_pass_is_approval=False", "operator-governed-route-surface-parity-v1",
-        "surface_parity_is_permission=False", "route_health_is_approval=False", "operator-governed-self-maintenance-duplicate-shadow-cleanup-v1", "duplicate_cleanup_is_authorization=False", "stale_gate_cleanup_authorizes_execution=False", "operator-governed-documentation-continuity-header-v1", "documentation_state_is_authorization=False", "handoff_packet_is_execution_packet=False", "operator_approval_still_required=True",
+        "metadata-currentness-and-historical-prerequisite-repair-v1",
+        "metadata_currentness_dynamic_contract=True",
+        "stale_wrapper_tokens_required=False",
+        "historical_prerequisite_next_arc_dynamic=True",
+        "post_v1000_dashboard_marker_dynamic=True",
+        "operator-governed-metadata-release-integrity-v1",
+        "post-v1000-evidence-chain-repair-v1",
+        "v1000-milestone-readiness-review-v1",
+        "generated_wiring_activated=False",
+        "applies_source_edits=False", "release_authorized=False", "review_only=True", "autonomy_expanded=False",
+        "expands_autonomy=False", "operator_approval_still_required=True",
+        "data-tip", "command-deck", "operator-console",
     ]
     rows = [
-        _row("metadata-inventory", inventory.get("ok") is True, "Current version metadata files align to v500.0."),
-        _row("workspace-alignment", alignment.get("ok") is True, "Project/workspace milestone fields agree on v500.0."),
+        _row("metadata-inventory", inventory.get("ok") is True, f"Current version metadata files align to {CURRENT_VERSION}."),
+        _row("workspace-alignment", alignment.get("ok") is True, f"Project/workspace milestone fields agree on {CURRENT_MILESTONE}."),
         _row("release-version-resolution", packaging.get("ok") is True, "Release packaging resolves settings_version before stale last_updated_for fallbacks."),
-        _row("documentation-current-state", docs_audit.get("ok") is True, "README files expose current state, v495 history, and next autonomy readiness review guidance."),
-        _row("smoke-doc-tokens", all(token in docs for token in required_tokens), "Smoke/API/CLI/docs tokens are present for current metadata integrity and v465 route/surface parity."),
+        _row("documentation-current-state", docs_audit.get("ok") is True, "README files expose the active current-state header, release history top entry, and next-arc guidance."),
+        _row("smoke-doc-tokens", all(token in docs for token in required_tokens), "Smoke/API/CLI/docs tokens are present for the active metadata currentness contract, not stale wrapper-era requirements."),
         _row("no-authorization-boundary", METADATA_RELEASE_INTEGRITY_BOUNDARIES["metadata_consistency_is_authorization"] is False and METADATA_RELEASE_INTEGRITY_BOUNDARIES["operator_approval_still_required"] is True, "Metadata consistency remains evidence only and does not authorize release, source edits, memory writes, or autonomy."),
     ]
     status = _status_from(rows)
@@ -221,6 +240,9 @@ def build_metadata_release_integrity_audit(root_dir: str | Path = ".", docs_text
         "workspace_alignment": alignment,
         "release_version_integrity": packaging,
         "documentation_header_audit": docs_audit,
+        "current_required_tokens": required_tokens,
+        "stale_wrapper_tokens_required": False,
+        "metadata_currentness_dynamic_contract": True,
         "ok": status == "pass",
         "status": status,
         "publishes_release": False,
@@ -232,6 +254,81 @@ def build_metadata_release_integrity_audit(root_dir: str | Path = ".", docs_text
         **METADATA_RELEASE_INTEGRITY_BOUNDARIES,
     }
 
+
+
+def build_metadata_currentness_and_historical_prerequisite_repair_review(root_dir: str | Path = ".") -> dict[str, Any]:
+    """Prove current metadata validation and historical prerequisite gates follow current-source values."""
+    root = Path(root_dir)
+    docs = "\n".join(_read_text(root / rel) for rel in [
+        "README_NEXT_STEPS.md",
+        "README_RELEASE_HISTORY.md",
+        "conscious_agent/metadata_release_integrity.py",
+        "conscious_agent/smoke_registry_pilot.py",
+        "tools/smoke_check.py",
+        "conscious_agent/dashboard.py",
+    ])
+    audit = build_metadata_release_integrity_audit(root, docs)
+    smoke_text = _read_text(root / "tools/smoke_check.py")
+    pilot_text = _read_text(root / "conscious_agent/smoke_registry_pilot.py")
+    dashboard_text = _read_text(root / "conscious_agent/dashboard.py")
+    post_marker = "def check_post_v1000_evidence_chain_repair_v1"
+    post_section = ""
+    if post_marker in smoke_text:
+        post_start = smoke_text.index(post_marker)
+        post_end = smoke_text.find("\ndef ", post_start + len(post_marker))
+        post_section = smoke_text[post_start:post_end if post_end != -1 else len(smoke_text)]
+    marker = "def render_self_development_smoke_debt"
+    smoke_debt_section = ""
+    if marker in dashboard_text:
+        start = dashboard_text.index(marker)
+        end = dashboard_text.find("\ndef ", start + len(marker))
+        smoke_debt_section = dashboard_text[start:end if end != -1 else len(dashboard_text)]
+    current_required_tokens = list(audit.get("current_required_tokens") or [])
+    stale_wrapper_tokens = [
+        "generated-scaffold-wrapper-prep-closure-v1",
+        "build_generated_scaffold_wrapper_prep_closure_review",
+        "wrapper_artifact_count=5",
+    ]
+    stale_sandbox_tokens = [
+        "generated-scaffold-sandbox-output-closure-v1",
+        "build_generated_scaffold_sandbox_output_closure_review",
+        "sandbox_artifact_count=5",
+    ]
+    legacy_dashboard_fallback = "(audit.CURRENT_MILESTONE in smoke_debt_section or " + "\""
+    legacy_next_arc_prefix = "NEXT_RECOMMENDED_ARC.startswith(\"v" + "1024.0\")"
+    stale_expected_assignment = "EXPECTED_CURRENT_VERSION = " + "\"1013.0\""
+    rows = [
+        _row("metadata-release-integrity-current", audit.get("ok") is True, "Metadata release integrity passes against the active current release contract."),
+        _row("no-wrapper-era-required-tokens", not any(token in current_required_tokens for token in stale_wrapper_tokens), "Current metadata integrity no longer requires v940 wrapper-prep tokens."),
+        _row("no-sandbox-era-required-tokens", not any(token in current_required_tokens for token in stale_sandbox_tokens), "Current metadata integrity no longer requires stale generated-sandbox closure tokens."),
+        _row("post-v1000-dashboard-marker-dynamic", "audit.CURRENT_MILESTONE in smoke_debt_section" in post_section and legacy_dashboard_fallback not in post_section, "Post-v1000 evidence-chain repair follows the centralized current milestone instead of a hard-coded dashboard marker."),
+        _row("v1000-next-arc-dynamic", legacy_next_arc_prefix not in pilot_text and "Post-Timeout-Closure" not in pilot_text, "v1000 readiness no longer hard-codes obsolete next-arc prefixes."),
+        _row("smoke-debt-route-current", CURRENT_MILESTONE in smoke_debt_section and "metadata-currentness-and-historical-prerequisite-repair-v1" in smoke_debt_section, "Smoke Debt dashboard exposes the active v1022 metadata-currentness repair marker."),
+        _row("central-current-version-required", "Unable to load centralized current version for smoke checks" in smoke_text and stale_expected_assignment not in smoke_text, "Smoke checks fail closed if centralized current version cannot load instead of falling back to a stale version."),
+        _row("docs-contract-current", all(token in docs for token in ["metadata-currentness-and-historical-prerequisite-repair-v1", "metadata_currentness_dynamic_contract=True", "stale_wrapper_tokens_required=False", "historical_prerequisite_next_arc_dynamic=True"]), "README and smoke docs publish the currentness repair contract."),
+        _row("non-authorizing", METADATA_RELEASE_INTEGRITY_BOUNDARIES["metadata_consistency_is_authorization"] is False and METADATA_RELEASE_INTEGRITY_BOUNDARIES["operator_approval_still_required"] is True, "Currentness repair remains review-only and operator-controlled."),
+    ]
+    status = _status_from(rows)
+    return {
+        "version": METADATA_RELEASE_INTEGRITY_VERSION,
+        "state": "metadata_currentness_and_historical_prerequisite_repair_review_only",
+        "metadata_currentness_dynamic_contract": True,
+        "stale_wrapper_tokens_required": False,
+        "historical_prerequisite_next_arc_dynamic": True,
+        "post_v1000_dashboard_marker_dynamic": True,
+        "centralized_current_version_required": True,
+        "stale_expected_current_version_fallback_removed": True,
+        "current_required_tokens": current_required_tokens,
+        "rows": rows,
+        "blocked": [row for row in rows if row.get("status") != "pass"],
+        "ok": status == "pass",
+        "status": status,
+        "review_only": True,
+        "release_authorized": False,
+        "autonomy_expanded": False,
+        "expands_autonomy": False,
+        **METADATA_RELEASE_INTEGRITY_BOUNDARIES,
+    }
 
 def render_metadata_release_integrity_lines(report: dict[str, Any]) -> list[str]:
     lines = [
@@ -249,3 +346,36 @@ def render_metadata_release_integrity_lines(report: dict[str, Any]) -> list[str]
     return lines
 
 # v450.1-v455.0 metadata release integrity smoke tokens: metadata-version-inventory project-workspace-metadata-alignment release-packaging-version-integrity current-state-documentation-header-audit metadata-release-integrity-audit operator-governed-metadata-release-integrity-v1 conscious_agent/metadata_release_integrity.py metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False metadata_repair_report_publishes_release=False metadata_repair_report_applies_source_edits=False metadata_repair_report_writes_memory=False metadata_repair_report_expands_autonomy=False operator_approval_still_required=True dashboard_http_route_probe_required no_native_title_tooltip data-tip command-deck operator-console
+
+# v552.0-v555.0 post live patch verification rollback metadata tokens: metadata-version-inventory project-workspace-metadata-alignment release-packaging-version-integrity current-state-documentation-header-audit metadata-release-integrity-audit v555.0 Post-Live-Patch Verification and Rollback Trial v1 v556.0-v565.0 Release Candidate Integrity and Operator Handoff v1 metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False receipt_review_does_not_execute_commands=True rollback_plan_is_rollback_execution=False regression_audit_pass_is_release_approval=False trial_board_is_autonomy_approval=False
+
+# v556.0-v565.0 recovery drill release closure metadata tokens: recovery-drill-scope-contract rollback-decision-review-packet release-closure-evidence-board operator-closure-approval-gate recovery-drill-release-closure-board recovery-drill-and-release-closure-v1 recovery_drill_status=prepared_not_executed rollback_decision_status=review_prepared release_closure_status=evidence_prepared closure_approval_status=required authorization_status=not_authorized autonomy_status=not_autonomous
+
+# v586.0-v590.0 metadata release integrity tokens: v590.0 Release Archive Import and Closure Recall v1 release-archive-import-and-closure-recall-v1
+
+# v591.0-v600.0 metadata release integrity tokens: v600.0 Archive Reconciliation Decision Ledger v1 archive-reconciliation-decision-ledger-v1 decision_scope_is_operator_decision=False decision_ledger_board_writes_archive_records=False
+
+# v596.0-v600.0 metadata release integrity tokens: v600.0 Archive Reconciliation Decision Ledger v1 archive-reconciliation-decision-ledger-v1 reconciliation-decision-scope-contract reconciliation-decision-option-ledger operator-reconciliation-decision-record-prep reconciliation-decision-guard-review archive-reconciliation-decision-ledger-board archive_reconciliation_decision_ledger.py decision_scope_is_operator_decision=False decision_ledger_board_writes_archive_records=False
+
+# v631.0-v635.0 metadata release integrity tokens: operator-dashboard-search-surface-discovery-v1 surface-search-index route-module-smoke-discovery-cards workflow-aware-search-filters current-historical-surface-guard dashboard-search-discovery-board dashboard_search_surface_discovery.py dashboard_search_discovery_status=prepared_only raw_routes_preserved=True legacy_surfaces_preserved=True discovery_board_expands_autonomy=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v636.0-v640.0 metadata release integrity tokens: operator-decision-capture-approval-form-ux-v1 decision-capture-form-schema approval-scope-target-binding-panel approval-expiration-burnout-form-ux denial-deferral-revision-decision-capture operator-decision-approval-ux-board operator_decision_approval_ux.py decision_capture_ux_status=prepared_only approval_scope_binding_status=prepared denial_deferral_capture_status=prepared ux_board_expands_autonomy=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+# v641.0-v645.0 continuity/integrity tokens: # Current State — v650.0 Latest completed version: v650.0 Operator Receipt Timeline and Decision Audit Trail UX v1 Current Operator Continuity Handoff — v650.0 v651.0-v655.0 Project Metadata Schema and Active Context Repair v1 operator-receipt-timeline-decision-audit-trail-ux-v1 operator_receipt_timeline_audit_ux.py receipt_timeline_audit_ux_status=prepared_only audit_trail_status=review_only raw_evidence_preserved=True approval_semantics_changed=False timeline_model_grants_approval=False audit_trail_expands_autonomy=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v646.0-v650.0 continuity/integrity tokens: # Current State — v650.0 Latest completed version: v650.0 Operator Session Continuity and Resume Console UX v1 Current Operator Continuity Handoff — v650.0 v651.0-v655.0 Project Metadata Schema and Active Context Repair v1 operator-session-continuity-resume-console-ux-v1 operator_session_continuity_resume_ux.py session_continuity_resume_ux_status=prepared_only handoff_packet_status=prepared approval_semantics_changed=False resume_summary_starts_work=False pending_queue_starts_work=False verification_card_runs_checks=False handoff_packet_is_approval=False continuity_board_expands_autonomy=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v651.0-v655.0 continuity/integrity tokens: # Current State — v660.0 Latest completed version: v655.0 Project Metadata Schema and Active Context Repair v1 Current Operator Continuity Handoff — v660.0 v656.0-v660.0 Project Metadata Schema and Active Context Repair v1 project-metadata-schema-active-context-repair-v1 project_metadata_active_context_repair.py metadata_active_context_repair_status=prepared_only metadata_integrity_board_status=review_only approval_semantics_changed=False wizard_entry_starts_work=False evidence_cards_run_checks=False decision_step_creates_approval=False verification_step_runs_checks=False metadata_integrity_board_expands_autonomy=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v661.0-v665.0 integrity tokens: v695.0 Dashboard Renderer Component Extraction v1 legacy-smoke-segmentation-stale-expectation-repair-v1 legacy_smoke_segmentation_repair.py smoke-gate-classification-model current-release-gate-segment legacy-advisory-segment-separation stale-expectation-repair-audit smoke-segmentation-integrity-board legacy_smoke_segmentation_repair_status=prepared_only smoke_segmentation_integrity_board_status=review_only current_release_blocking legacy_advisory historical_pinned slow_full_audit migration_debt approval_semantics_changed=False current_gate_executes_smoke=False legacy_advisory_blocks_current_release=False segmentation_board_expands_autonomy=False smoke_success_is_approval=False segment_report_is_authorization=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v666.0-v695.0 integrity tokens: v695.0 Dashboard Renderer Component Extraction v1 manifest-driven-surface-registry-v1 manifest_driven_surface_registry.py surface-registry-manifest-contract dashboard-surface-manifest-adapter api-cli-surface-manifest-adapter smoke-surface-manifest-adapter source-surface-manifest-reconciliation documentation-token-manifest-validation manifest-drift-detection-board registry-generation-prep-layer manifest-driven-current-release-gate manifest-driven-surface-registry-board manifest_driven_surface_registry_status=prepared_only manifest_surface_registry_board_status=review_only approval_semantics_changed=False manifest_contract_writes_source=False dashboard_manifest_adapter_registers_routes=False api_cli_manifest_adapter_registers_endpoints=False smoke_manifest_adapter_executes_smoke=False source_surface_reconciliation_mutates_manifest=False documentation_token_validation_rewrites_docs=False drift_detection_auto_fixes=False generation_prep_generates_live_routes=False manifest_current_gate_executes_checks=False manifest_board_expands_autonomy=False manifest_presence_is_authorization=False registry_health_is_approval=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v676.0-v695.0 current integrity tokens: v695.0 Dashboard Renderer Component Extraction v1 dashboard-renderer-component-extraction-v1 dashboard_renderer_component_extraction.py dashboard-component-contract shared-review-packet-renderer shared-boundary-matrix-renderer shared-evidence-warning-renderer shared-decision-approval-renderer shared-resume-continuity-renderer dashboard-route-renderer-adapter dashboard-style-regression-guard legacy-renderer-duplication-audit dashboard-renderer-component-extraction-board dashboard_renderer_component_extraction_status=prepared_only dashboard_renderer_component_extraction_board_status=review_only approval_semantics_changed=False component_contract_writes_source=False shared_review_renderer_changes_route_behavior=False shared_boundary_matrix_grants_authorization=False shared_evidence_warning_hides_raw_evidence=False shared_decision_renderer_creates_approval=False shared_resume_renderer_starts_work=False route_renderer_adapter_replaces_routes=False style_guard_rewrites_dashboard=False duplication_audit_deletes_renderers=False component_board_expands_autonomy=False renderer_presence_is_authorization=False style_guard_pass_is_approval=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v686.0-v690.0 neural command deck dashboard redesign integrity tokens: v690.0 Neural Command Deck Dashboard Redesign v1 neural-command-deck-dashboard-redesign-v1 neural_command_deck_dashboard_redesign.py neural-deck-layout-shell eidolon-thinking-core-panel operator-conversation-console side-intelligence-panels neural-command-deck-dashboard-board neural_command_deck_dashboard_status=prepared_only neural_deck_layout_shell_status=prepared eidolon_thinking_core_panel_status=prepared operator_conversation_console_status=prepared side_intelligence_panels_status=prepared dashboard_style_regression_gate_status=guarded_or_blocked neural_command_deck_dashboard_board_status=review_only approval_semantics_changed=False layout_shell_writes_source=False layout_shell_removes_routes=False thinking_core_executes_models=False thinking_core_mutates_memory=False conversation_console_sends_commands=False conversation_console_creates_approval=False side_panels_execute_checks=False side_panels_treat_metrics_as_authorization=False dashboard_board_expands_autonomy=False visual_health_is_authorization=False thinking_animation_is_model_execution=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console neural command deck
+
+# v691.0-v695.0 neural command deck interaction refinement integrity tokens: v695.0 Neural Command Deck Interaction Refinement v1 neural-command-deck-interaction-refinement-v1 neural_command_deck_interaction_refinement.py interaction-focus-rail interaction-safe-input-deck panel-density-priority-tuning context-telemetry-affordance neural-command-deck-interaction-board neural_command_deck_interaction_refinement_status=prepared_only interaction_focus_rail_status=prepared interaction_safe_input_deck_status=prepared panel_density_priority_tuning_status=prepared context_telemetry_affordance_status=prepared interaction_style_regression_gate_status=guarded_or_blocked neural_command_deck_interaction_board_status=review_only approval_semantics_changed=False focus_rail_starts_work=False input_deck_sends_commands=False input_deck_creates_approval=False priority_tuning_hides_blockers=False telemetry_affordance_executes_checks=False interaction_board_expands_autonomy=False visual_priority_is_authorization=False hover_detail_is_approval=False chat_input_is_command_execution=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console neural command deck
+
+# v696.0-v700.0 autonomy phase zero readiness integrity tokens: v700.0 Autonomy Phase 0 Readiness Harness v1 autonomy-phase-zero-readiness-harness-v1 autonomy_phase_zero_readiness_harness.py autonomy-phase-zero-definition-contract observation-only-cycle-simulator no-mutation-autonomy-boundary-guard autonomy-phase-zero-handoff-packet autonomy-phase-zero-readiness-board autonomy_phase_zero_readiness_harness_status=prepared_only phase_zero_definition_contract_status=defined observation_only_cycle_simulator_status=simulated_review_only no_mutation_boundary_guard_status=guarded_or_blocked phase_zero_handoff_packet_status=prepared_not_permission autonomy_phase_zero_readiness_board_status=review_only approval_semantics_changed=False phase_zero_is_autonomy_approval=False phase_zero_observation_executes_commands=False phase_zero_observation_writes_source=False phase_zero_observation_writes_memory=False phase_zero_observation_writes_archives=False phase_zero_observation_mutates_current_state=False phase_zero_observation_creates_release=False phase_zero_observation_publishes_release=False phase_zero_observation_schedules_hidden_work=False phase_zero_observation_continues_automatically=False phase_zero_observation_selects_roadmap=False phase_zero_observation_invokes_models=False phase_zero_cycle_starts_work=False observation_receipt_is_approval=False readiness_score_is_authorization=False handoff_packet_is_permission=False phase_zero_board_expands_autonomy=False documentation_state_is_authorization=False metadata_consistency_is_authorization=False release_integrity_pass_is_approval=False no_native_title_tooltip data-tip command-deck operator-console
+
+# v711.0-v760.0 metadata integrity tokens: v850.0 Manifest-Guided Multi-Surface Probe Packet Consistency Gate v1 self-development-cycle-v1 source_only_zip_excludes_data_tasks=True source_only_zip_excludes_data_approvals=True

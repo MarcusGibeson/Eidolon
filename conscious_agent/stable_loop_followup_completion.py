@@ -25,7 +25,7 @@ from stable_loop_review import loop_is_archived, set_stable_loop_archived
 from stable_supervised_loop import list_stable_loops, load_stable_loop, save_stable_loop
 from task_queue import update_task_fields
 
-FOLLOWUP_COMPLETION_VERSION = "6.9"
+FOLLOWUP_COMPLETION_VERSION = "1032.0"
 ACTION_REQUIRED_DECISIONS = {"fix_forward", "rollback", "needs_review"}
 TERMINAL_TASK_STATUSES = {"done", "cancelled"}
 

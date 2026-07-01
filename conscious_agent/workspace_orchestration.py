@@ -10,8 +10,8 @@ from paths import DATA_DIR, ROOT_DIR
 from settings_manager import load_settings
 from task_queue import list_tasks
 
-WORKSPACE_ORCHESTRATION_VERSION = "500.0"
-WORKSPACE_CURRENT_MILESTONE = "v500.0 Operator-Governed Autonomy Readiness Review Board v1"
+WORKSPACE_ORCHESTRATION_VERSION = "1032.0"
+WORKSPACE_CURRENT_MILESTONE = "v1032.0 Dashboard Route Coverage Completion and Dispatch Classification v1"
 WORKSPACES_DIR = DATA_DIR / "workspaces"
 PROJECTS_FILE = WORKSPACES_DIR / "projects.json"
 ACTIVE_PROJECT_FILE = WORKSPACES_DIR / "active_project.json"

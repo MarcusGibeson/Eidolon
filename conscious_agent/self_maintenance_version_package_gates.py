@@ -5,8 +5,7 @@ from typing import Any
 
 from version_state import VERSION_STATE_VERSION, version_marker_summary
 
-SELF_MAINTENANCE_VERSION_PACKAGE_GATES_VERSION = "500.0"
-
+SELF_MAINTENANCE_VERSION_PACKAGE_GATES_VERSION = "1032.0"
 VERSION_PACKAGE_GATE_BOUNDARIES: dict[str, bool] = {
     "version_package_gates_write_files": False,
     "version_package_gates_mutate_source": False,

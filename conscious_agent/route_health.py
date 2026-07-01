@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-ROUTE_HEALTH_VERSION = "500.0"
-
+ROUTE_HEALTH_VERSION = "1032.0"
 CRITICAL_DASHBOARD_ROUTES: tuple[dict[str, str], ...] = (
     {"route": "/approved-application-binding", "arc": "v285", "label": "Approved Application Binding", "expected_status": "200", "governance": "review_only"},
     {"route": "/operator-execution-checklist", "arc": "v285", "label": "Operator Execution Checklist", "expected_status": "200", "governance": "review_only"},

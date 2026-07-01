@@ -25,7 +25,7 @@ from desktop_onboarding_wizard import build_onboarding_run, onboarding_run_text
 from settings_manager import get_setting, load_settings
 
 
-DESKTOP_VERSION = "4.5"
+DESKTOP_VERSION = "1032.0"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAIN_FILE = PROJECT_ROOT / "conscious_agent" / "main.py"
 
