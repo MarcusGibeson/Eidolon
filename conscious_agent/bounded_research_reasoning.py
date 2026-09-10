@@ -284,20 +284,55 @@ _CURRENCY_WORDING = re.compile(
 # "Stripe payment processing fee structure" means the 2019 fee structure, and a
 # reference standard admitted an aggregator's figure with no recency requirement
 # at all. Currency is a property of the subject as well as of the phrasing.
-_CURRENCY_TOPIC = re.compile(
-    r"\b(?:pric(?:e|es|ing)|cost|costs|fee|fees|rate|rates|tariff|billing|plan|plans|"
-    r"free\s+tier|subscription|discount|"
-    r"law|laws|legal|legislation|regulation|regulations|regulatory|compliance|policy|policies|"
-    r"enforce(?:d|s|ment)|fine|fines|penalt(?:y|ies)|sanction|sanctions|ruling|lawsuit|"
-    r"availab(?:le|ility)|supported|support\s+status|end[\s-]of[\s-](?:life|support)|"
-    r"version|versions|release|releases|roadmap|"
-    r"spec|specs|specification|specifications|requirements|limits|quota|quotas|"
-    r"ceo|cto|president|prime\s+minister|chair(?:man|person)?|director|officeholder|"
-    r"who\s+(?:is|leads|runs|owns)|"
-    r"market\s+(?:share|size|leader)|valuation|funding|acquisition|merger|"
-    r"population|unemployment|inflation|interest\s+rate)\b",
-    re.IGNORECASE,
+#
+# Each family names *why* currency is required, because the reason decides how far
+# back to look. Collapsing them all onto "current" made a pricing question demand
+# evidence from the last thirty days and reject seventeen sources out of
+# seventeen; nothing about published pricing is reissued monthly.
+CURRENCY_REASON_REFERENCE = "reference"
+CURRENCY_REASON_CURRENT_EVENTS = "current_events"
+CURRENCY_REASON_PRICING_OR_LIMITS = "pricing_or_limits"
+CURRENCY_REASON_REGULATORY_STATUS = "regulatory_status"
+CURRENCY_REASON_SUPPORT_STATUS = "support_status"
+CURRENCY_REASON_OFFICEHOLDER = "officeholder"
+CURRENCY_REASON_MARKET_FIGURE = "market_figure"
+CURRENCY_REASON_DEMAND = "demand"
+
+# Ordered: the first family a question matches names its currency reason.
+_CURRENCY_TOPIC_FAMILIES: tuple[tuple[str, "re.Pattern[str]"], ...] = (
+    (CURRENCY_REASON_SUPPORT_STATUS, re.compile(
+        r"\b(?:supported|unsupported|support\s+status|end[\s-]of[\s-](?:life|support)|"
+        r"deprecat\w*|discontinued|sunset(?:ting)?|still\s+maintained|"
+        r"version|versions|release|releases|roadmap)\b", re.IGNORECASE)),
+    (CURRENCY_REASON_PRICING_OR_LIMITS, re.compile(
+        r"\b(?:pric(?:e|es|ing)|cost|costs|fee|fees|tariff|billing|"
+        r"free\s+tier|subscription|discount|plan|plans|"
+        r"limits|quota|quotas|rate\s+limits?|spec|specs|specification|specifications)\b",
+        re.IGNORECASE)),
+    (CURRENCY_REASON_REGULATORY_STATUS, re.compile(
+        r"\b(?:law|laws|legal|legislation|regulation|regulations|regulatory|compliance|"
+        r"enforce(?:d|s|ment)|fine|fines|penalt(?:y|ies)|sanction|sanctions|ruling|lawsuit|"
+        r"statutory|directive|mandate)\b", re.IGNORECASE)),
+    (CURRENCY_REASON_OFFICEHOLDER, re.compile(
+        r"\b(?:ceo|cto|cfo|president|prime\s+minister|chair(?:man|person)?|"
+        r"officeholder|incumbent)\b|\bwho\s+(?:is|leads|runs|owns)\b", re.IGNORECASE)),
+    (CURRENCY_REASON_MARKET_FIGURE, re.compile(
+        r"\b(?:market\s+(?:share|size|leader)|valuation|funding|acquisition|merger|"
+        r"population|unemployment|inflation|interest\s+rate)\b", re.IGNORECASE)),
 )
+
+# How far back to look, per reason. Cause, then effect - and the effect is now
+# calibrated to how fast each kind of subject actually moves.
+WINDOW_FOR_CURRENCY_REASON = {
+    CURRENCY_REASON_REFERENCE: "slow_changing",
+    CURRENCY_REASON_CURRENT_EVENTS: "current",
+    CURRENCY_REASON_PRICING_OR_LIMITS: "annual",
+    CURRENCY_REASON_REGULATORY_STATUS: "annual",
+    CURRENCY_REASON_SUPPORT_STATUS: "versioned",
+    CURRENCY_REASON_OFFICEHOLDER: "annual",
+    CURRENCY_REASON_MARKET_FIGURE: "annual",
+    CURRENCY_REASON_DEMAND: "slow_changing",
+}
 
 # Framing that anchors the objective in the past, where a time-sensitive subject
 # is no longer time-sensitive. "The causes of the 1929 stock market crash" names
@@ -318,39 +353,55 @@ _DIMENSION_CURRENCY = {
     "free_tier_feasibility": "current",
 }
 
-# How far back to look, once currency is known. Cause, then effect.
-_DEFAULT_WINDOW_FOR_CURRENCY = {
-    "reference": "slow_changing",
-    "current": "current",
-    "demand_current": "slow_changing",
+# Which reason each objective class carries, when a dimension names it outright.
+_DIMENSION_CURRENCY_REASON = {
+    "demand": CURRENCY_REASON_DEMAND,
+    "competition": CURRENCY_REASON_PRICING_OR_LIMITS,
+    "free_tier_feasibility": CURRENCY_REASON_PRICING_OR_LIMITS,
 }
 
 
-def _evidence_currency_requirement(text: str, blueprint: list[dict[str, str]] | None) -> str:
-    """Decide what currency the objective's meaning requires.
-
-    Reference material answers a question about how something works, and stays
-    correct until the thing changes. A demand claim is about the present state of
-    a market. Only the objective can say which is being asked.
+def _evidence_currency_reason(text: str, blueprint: list[dict[str, str]] | None) -> str:
+    """Decide *why* the objective needs current evidence, if it does.
 
     Meaning is read from both the phrasing and the subject. Asking about prices,
     regulations, support status or who holds an office is asking about now, and
     requiring the word "current" made a pricing lookup a reference question that
     accepted evidence of any age. Historical framing overrides the subject: a
     question about a crash in 1929 names a market and asks for no fresh evidence.
+
+    The reason is kept rather than collapsed into a yes/no, because how fast a
+    subject moves is what decides how far back retrieval should look.
     """
     for row in blueprint or []:
         dimension = str(row.get("evidence_dimension") or "").strip().lower()
-        if dimension in _DIMENSION_CURRENCY:
-            return _DIMENSION_CURRENCY[dimension]
-    if blueprint:
-        return "current"
+        if dimension in _DIMENSION_CURRENCY_REASON:
+            return _DIMENSION_CURRENCY_REASON[dimension]
     objective = str(text or "")
+    if blueprint:
+        return CURRENCY_REASON_CURRENT_EVENTS
+    if _HISTORICAL_FRAMING.search(objective):
+        return CURRENCY_REASON_REFERENCE
+    for reason, pattern in _CURRENCY_TOPIC_FAMILIES:
+        if pattern.search(objective):
+            return reason
     if _CURRENCY_WORDING.search(objective):
-        return "current"
-    if _CURRENCY_TOPIC.search(objective) and not _HISTORICAL_FRAMING.search(objective):
-        return "current"
-    return "reference"
+        return CURRENCY_REASON_CURRENT_EVENTS
+    return CURRENCY_REASON_REFERENCE
+
+
+# What each reason demands of the evidence. Several distinct reasons share the
+# plain "current" requirement and differ only in how far back to look.
+_REQUIREMENT_FOR_CURRENCY_REASON = {
+    CURRENCY_REASON_REFERENCE: "reference",
+    CURRENCY_REASON_DEMAND: "demand_current",
+}
+
+
+def _evidence_currency_requirement(text: str, blueprint: list[dict[str, str]] | None) -> str:
+    """What currency the objective's meaning requires, derived from its reason."""
+    reason = _evidence_currency_reason(text, blueprint)
+    return _REQUIREMENT_FOR_CURRENCY_REASON.get(reason, "current")
 
 
 def _single_candidate_dimension_blueprint(text: str) -> tuple[list[dict[str, str]], int]:
@@ -416,14 +467,17 @@ def decompose_research_objective(
     # objective itself. This must come first: deriving it from whatever freshness
     # window happened to be in force reversed cause and effect, and silently gave
     # a documentation lookup a thirty-day recency requirement nobody asked for.
-    currency_requirement = _evidence_currency_requirement(text, blueprint)
+    currency_reason = _evidence_currency_reason(text, blueprint)
+    currency_requirement = _REQUIREMENT_FOR_CURRENCY_REASON.get(currency_reason, "current")
     # An empty freshness means "let the objective's shape choose". A caller that
     # states a policy keeps it. The window is how far back to look; it never
-    # decides whether currency is required at all.
+    # decides whether currency is required at all. It follows the reason rather
+    # than the requirement, because a price and a breaking development both
+    # require current evidence and move at completely different speeds.
     effective_freshness = (
         str(freshness or "").strip().lower()
         or _clean((blueprint[0] if blueprint else {}).get("freshness_policy"), 24)
-        or _DEFAULT_WINDOW_FOR_CURRENCY.get(currency_requirement, "current")
+        or WINDOW_FOR_CURRENCY_REASON.get(currency_reason, "current")
     )
     chunks = [str(row["question"]) for row in blueprint] if blueprint else _split_objective(text)
     bounded = dict(budget or {})
@@ -498,6 +552,7 @@ def decompose_research_objective(
         "objective_shape": objective_shape,
         "recommended_freshness_policy": effective_freshness,
         "evidence_currency_requirement": currency_requirement,
+        "evidence_currency_reason": currency_reason,
     }
     result = {
         "ok": True,
@@ -510,6 +565,7 @@ def decompose_research_objective(
         "objective_shape": objective_shape,
         "recommended_freshness_policy": effective_freshness,
         "evidence_currency_requirement": currency_requirement,
+        "evidence_currency_reason": currency_reason,
         "public_subquestions": public_rows,
         "required_facts": required_facts,
         "comparative_criteria": comparative_criteria,

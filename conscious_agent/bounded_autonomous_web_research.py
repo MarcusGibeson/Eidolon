@@ -210,7 +210,8 @@ def _inferred_source_kind(url: str, supplied: str) -> str:
     return classify_source_kind(url, "unknown")
 
 
-def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currency_requirement, objective="") -> dict[str, Any]:
+def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currency_requirement,
+                              objective="", currency_reason="", freshness_window="") -> dict[str, Any]:
     """Measure the shared evidence policy without letting it refuse anything."""
     try:
         from research_evidence_policy import evaluate_policy, policy_for_objective
@@ -227,6 +228,8 @@ def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currenc
             citations=[row for row in (citations or []) if isinstance(row, Mapping)],
             assessments_by_citation=assessments,
             objective=str(objective or ""),
+            currency_reason=str(currency_reason or ""),
+            freshness_window=str(freshness_window or ""),
         )
     except Exception:
         # An observation-only measurement must never affect the run it observes.
@@ -1535,6 +1538,8 @@ class BoundedResearchSessionStore:
                             # asked. The measurement returns condition codes and
                             # counts, so the objective text never reaches a receipt.
                             objective=objective,
+                            currency_reason=str(decomposition.get("evidence_currency_reason") or ""),
+                            freshness_window=str(decomposition.get("recommended_freshness_policy") or ""),
                         )
                         synthesis_result["validation_status"] = str(validated_synthesis.get("status") or "")
                         if capture_training_evidence:

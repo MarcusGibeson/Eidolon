@@ -35,7 +35,11 @@ SOURCE_QUALITY = {
     "community_experience": 0.55,
     "unknown": 0.30,
 }
-FRESHNESS_DAYS = {"breaking": 1, "current": 30, "versioned": 180, "slow_changing": 730, "stable": 3650}
+# "current" is a news window. Published prices, statutory limits and enforcement
+# registers are current subjects that no publisher reissues monthly, so demanding
+# evidence from the last thirty days rejected every honest source for them. The
+# annual band sits between news and the two-year slow-changing band.
+FRESHNESS_DAYS = {"breaking": 1, "current": 30, "versioned": 180, "annual": 365, "slow_changing": 730, "stable": 3650}
 
 _DENIED = {
     "browser_contacted": False,

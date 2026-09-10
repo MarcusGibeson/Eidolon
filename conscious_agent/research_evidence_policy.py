@@ -94,6 +94,45 @@ def version_signal_present(citation: Mapping[str, Any]) -> bool:
     return bool(url) and bool(_VERSION_SIGNAL.search(url))
 
 
+# A URL pinned to a specific minor version documents that version and nothing
+# later. The rolling forms - a bare major version, /stable/, /latest/, or no
+# version at all - are the page the publisher keeps current.
+_PINNED_MINOR_VERSION = re.compile(r"/v?\d+\.\d+(?:\.\d+)?(?:/|$)")
+_ROLLING_VERSION = re.compile(r"/(?:stable|latest|current)(?:/|$)", re.IGNORECASE)
+
+
+def _citation_url(citation: Mapping[str, Any]) -> str:
+    return str(citation.get("canonical_url") or citation.get("public_url") or "")
+
+
+def authoritative_living_documentation(citation: Mapping[str, Any]) -> bool:
+    """Reference material its own publisher maintains, which is a currency signal.
+
+    MDN and Microsoft Learn carry neither a version in the URL nor a publication
+    date, and asking them for either rejected the most authoritative answer
+    available while a mirror of the same documentation carried the finding. What
+    makes a living document current is that the publisher maintains it - so this
+    requires primary authority, not merely a documentation-shaped path. A mirror
+    is documentation-shaped and maintains nothing.
+
+    Widening the version pattern instead would have been the wrong repair: it
+    would admit any URL with a number in it and still miss the undated living
+    documentation that prompted the problem.
+    """
+    if source_authority_tier(citation) != TIER_PRIMARY:
+        return False
+    url = _citation_url(citation)
+    if not url:
+        return False
+    try:
+        from research_source_classification import REFERENCE_DOCUMENTATION_FORM, document_form
+    except ImportError:  # measurement must never break the run it observes
+        return False
+    if document_form(url) != REFERENCE_DOCUMENTATION_FORM:
+        return False
+    return bool(_ROLLING_VERSION.search(url)) or not _PINNED_MINOR_VERSION.search(url)
+
+
 # How far a single source can carry a claim on its own. Ordered weakest first so
 # the strongest supporting source decides what the finding still needs.
 TIER_NONE = "none"
@@ -292,11 +331,19 @@ def _claim_source_fit(citation: Mapping[str, Any], assessment: Mapping[str, Any]
 def _currency_signal_present(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
     """Something establishes when or for what this source applies."""
     dated = bool(citation.get("freshness_known")) or str(citation.get("freshness") or "unknown") != "unknown"
-    return dated or version_signal_present(citation)
+    return dated or version_signal_present(citation) or authoritative_living_documentation(citation)
 
 
 def _freshness_current(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
-    return bool(citation.get("fresh_enough")) or str(citation.get("freshness") or "") == "fresh"
+    """Recent enough for a claim that depends on when it was true.
+
+    Maintained first-party documentation qualifies without a timestamp: its
+    currency comes from the publisher keeping it correct, which is a stronger
+    guarantee than a date on an article that will never be revised.
+    """
+    if bool(citation.get("fresh_enough")) or str(citation.get("freshness") or "") == "fresh":
+        return True
+    return authoritative_living_documentation(citation)
 
 
 def _stance_supports(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
@@ -466,6 +513,8 @@ def evaluate_policy(
     citations: list[Mapping[str, Any]] | None,
     assessments_by_citation: Mapping[str, Mapping[str, Any]] | None = None,
     objective: str = "",
+    currency_reason: str = "",
+    freshness_window: str = "",
 ) -> dict[str, Any]:
     """Report which named conditions a finding and its citations fail.
 
@@ -487,6 +536,7 @@ def evaluate_policy(
     url_classification_reasons: dict[str, int] = {}
     document_forms: dict[str, int] = {}
     version_signals = 0
+    living_documentation = 0
     admissible: list[Mapping[str, Any]] = []
     for citation in rows:
         state = source_authority_state(citation)
@@ -504,6 +554,8 @@ def evaluate_policy(
             document_forms[form] = document_forms.get(form, 0) + 1
         if version_signal_present(citation):
             version_signals += 1
+        if authoritative_living_documentation(citation):
+            living_documentation += 1
         assessment = assessments.get(str(citation.get("citation_id") or ""))
         failed = [
             name for name in policy.citation_conditions
@@ -530,6 +582,11 @@ def evaluate_policy(
     return {
         "contract_version": CONTRACT_VERSION,
         "policy_code": policy.policy_code,
+        # Why currency was required and how far back retrieval looked. Both are
+        # fixed vocabularies, and without them a freshness rejection cannot be
+        # read as "the source was old" or as "the window was wrong".
+        "currency_reason": str(currency_reason or ""),
+        "freshness_window": str(freshness_window or ""),
         "evaluated_citation_count": len(rows),
         "admissible_citation_count": len(admissible),
         "citation_condition_failures": dict(sorted(citation_failures.items())),
@@ -539,6 +596,7 @@ def evaluate_policy(
         "url_classification_reasons": dict(sorted(url_classification_reasons.items())),
         "document_forms": dict(sorted(document_forms.items())),
         "version_signal_count": version_signals,
+        "living_documentation_count": living_documentation,
         "claim_risk_flags": list(risk_flags),
         "supporting_authority_tier": supporting_tier,
         "independent_publisher_count": _publisher_count(admissible),
@@ -558,7 +616,7 @@ __all__ = [
     "CURRENCY_LAYER", "POLICIES", "EvidencePolicy",
     "CITATION_CONDITIONS", "FINDING_CONDITIONS",
     "evaluate_policy", "policy_for_objective", "POLICY_FOR_CURRENCY_REQUIREMENT",
-    "source_authority_state", "version_signal_present",
+    "source_authority_state", "version_signal_present", "authoritative_living_documentation",
     "AUTHORITY_TIER_ORDER", "SELF_SUFFICIENT_TIERS", "HIGHER_RISK_POLICY_CODES",
     "TIER_NONE", "TIER_NON_AUTHORITATIVE", "TIER_UNCLASSIFIED",
     "TIER_COMMUNITY", "TIER_SPECIALIST", "TIER_PRIMARY",

@@ -90,6 +90,8 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         return {}
     return {
         "policy_code": _clean(value.get("policy_code"), 40),
+        "currency_reason": _clean(value.get("currency_reason"), 40),
+        "freshness_window": _clean(value.get("freshness_window"), 40),
         "evaluated_citation_count": _bounded_count(value.get("evaluated_citation_count")),
         "admissible_citation_count": _bounded_count(value.get("admissible_citation_count")),
         "citation_condition_failures": _count_map(value.get("citation_condition_failures")),
@@ -98,6 +100,7 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "url_classification_reasons": _count_map(value.get("url_classification_reasons")),
         "document_forms": _count_map(value.get("document_forms")),
         "version_signal_count": _bounded_count(value.get("version_signal_count")),
+        "living_documentation_count": _bounded_count(value.get("living_documentation_count")),
         "claim_risk_flags": [
             code for code in (
                 _clean(item, 40) for item in list(value.get("claim_risk_flags") or [])[:12]
