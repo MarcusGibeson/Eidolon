@@ -191,27 +191,23 @@ def _empty_state() -> dict[str, Any]:
 
 
 def _inferred_source_kind(url: str, supplied: str) -> str:
+    """Classify a candidate from structural URL signals.
+
+    A handful of enumerated hostnames left almost every source unclassified, and
+    an unclassified source can support no evidence dimension - so the gap read as
+    poor quality rather than as missing metadata.
+    """
     kind = _clean(supplied, 60).lower()
     if kind and kind != "unknown":
         return kind
+    from research_source_classification import classify_source_kind
     parsed = urlsplit(str(url or ""))
-    host = (parsed.hostname or "").lower()
     path = (parsed.path or "").lower()
-    if host.endswith(".gov") or ".gov." in host or host.startswith("official."):
-        return "primary_official"
-    if host.endswith(".edu") or "/dataset" in path or "/data/" in path:
+    if "/dataset" in path or "/data/" in path:
         return "primary_data"
-    if host.startswith(("docs.", "developer.", "support.")) or "/docs/" in path:
-        return "primary_official"
-    if host == "github.com" or host.endswith(".github.com"):
-        return "community_experience" if "/issues" in path or "/discussions" in path else "primary_data"
-    if host in {"reddit.com", "www.reddit.com", "news.ycombinator.com", "indiehackers.com", "www.indiehackers.com", "producthunt.com", "www.producthunt.com"}:
-        return "community_experience"
-    if host in {"stackoverflow.com", "www.g2.com", "g2.com", "www.capterra.com", "capterra.com", "arxiv.org"}:
+    if (parsed.hostname or "").lower() in {"g2.com", "www.g2.com", "capterra.com", "www.capterra.com"}:
         return "specialist_secondary"
-    if host in {"stripe.com", "www.stripe.com", "shopify.com", "www.shopify.com", "cloudflare.com", "www.cloudflare.com"}:
-        return "primary_official"
-    return "unknown"
+    return classify_source_kind(url, "unknown")
 
 
 def _evaluate_evidence_policy(
