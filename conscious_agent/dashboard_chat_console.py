@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import hmac
 import json
@@ -878,7 +878,7 @@ def _render_provider_recovery_resume_cue(cue: dict[str, Any]) -> str:
         f"<section class='provider-recovery-resume-cue' id='provider-recovery-resume-cue' data-state='{_safe(state)}'{hidden}>"
         f"<strong id='provider-recovery-resume-label'>{_safe(cue.get('label') or 'Provider readiness')}</strong>"
         f"<span id='provider-recovery-resume-detail'>{_safe(cue.get('detail') or '')}</span>"
-        f"<small id='provider-recovery-resume-time'>Last persisted check: {_safe(checked_at)} · {_safe(resume_text)} No accepted request is replayed.</small>"
+        f"<small id='provider-recovery-resume-time'>Last persisted check: {_safe(checked_at)} Â· {_safe(resume_text)} No accepted request is replayed.</small>"
         "<div class='provider-recovery-actions'>"
         "<a class='chat-check-provider' href='/local-model?return_to=chat&run_readiness=1#local-model-availability'>Check configured provider</a>"
         f"<a class='chat-open-provider-settings' href='{_provider_settings_href()}'>Open provider settings</a>"
@@ -1134,14 +1134,14 @@ def _render_relationship_memory_curation_panel() -> str:
             provenance_bits.append(f"eligibility {_safe(provenance.get('eligibility_decision'))}")
         if record.get("retention_confirmed"):
             provenance_bits.append("retention confirmed")
-        provenance_html = " · ".join(provenance_bits)
+        provenance_html = " Â· ".join(provenance_bits)
         moment_provenance = record.get("important_moment_provenance") if isinstance(record.get("important_moment_provenance"), dict) else {}
         moment_rationale_html = ""
         if moment_provenance:
             moment_rationale_html = (
                 "<small class='continuity-memory-moment-rationale'>Why retained: "
                 + _safe(moment_provenance.get("rationale", "Review rationale unavailable."))
-                + " · eligibility " + _safe(str(moment_provenance.get("eligibility_state") or "unknown").replace("_", " "))
+                + " Â· eligibility " + _safe(str(moment_provenance.get("eligibility_state") or "unknown").replace("_", " "))
                 + ". This rationale is content-free and never rewrites raw conversation history.</small>"
             )
         record_rows.append(
@@ -1149,11 +1149,11 @@ def _render_relationship_memory_curation_panel() -> str:
             f"<div><b>{_safe(record.get('label','Continuity'))}</b> "
             f"<span class='badge'>{_safe(state)}</span></div>"
             f"<div>{_safe(record.get('content',''))}</div>"
-            f"<small>importance {_safe(record.get('importance','medium'))} · "
+            f"<small>importance {_safe(record.get('importance','medium'))} Â· "
             f"history {_safe(record.get('history_count',0))}"
-            + (f" · temporal state {_safe(record.get('temporal_state',''))}" if record.get('temporal_state') else "")
-            + (" · superseded by a newer explicit nickname" if record.get("superseded_by") else "")
-            + (" · replaced by a newer current mood" if record.get("replaced_by") else "")
+            + (f" Â· temporal state {_safe(record.get('temporal_state',''))}" if record.get('temporal_state') else "")
+            + (" Â· superseded by a newer explicit nickname" if record.get("superseded_by") else "")
+            + (" Â· replaced by a newer current mood" if record.get("replaced_by") else "")
             + "</small>"
             f"<small class='continuity-memory-provenance'>Provenance: {provenance_html}. Content-free evidence only; prompts, responses, provider payloads, and receipts are not shown.</small>"
             f"{moment_rationale_html}"
@@ -1255,8 +1255,8 @@ def _render_entity_association_curation_panel() -> str:
             "<li class='continuity-memory-row entity-association-row'>"
             f"<div><b>{_safe(record.get('subject',''))}</b> {_safe(predicate_labels.get(predicate, predicate.replace('_',' ')))} "
             f"<b>{_safe(record.get('object',''))}</b> <span class='badge'>{_safe(state)}</span></div>"
-            f"<small>revision {_safe(association_id[-12:])} · history {_safe(record.get('history_count',0))} · "
-            "operator-private view · provider not contacted</small>"
+            f"<small>revision {_safe(association_id[-12:])} Â· history {_safe(record.get('history_count',0))} Â· "
+            "operator-private view Â· provider not contacted</small>"
             f"<div class='inline'>{''.join(controls)}</div>"
             "</li>"
         )
@@ -1264,13 +1264,31 @@ def _render_entity_association_curation_panel() -> str:
     body = "".join(rows) or "<li>No durable entity associations are stored yet. Use an explicit remember request in chat to create one.</li>"
     return (
         "<details class='chat-continuity-curation' id='chat-entity-association-curation' open>"
-        f"<summary>Manage entity associations · {_safe(counts.get('active',0))} active · "
+        f"<summary>Manage entity associations Â· {_safe(counts.get('active',0))} active Â· "
         f"{_safe(counts.get('retracted',0))} retracted</summary>"
         "<p><small>Each control is bound to the displayed record revision. Stale forms fail closed. Correction preserves lineage; retraction is reversible; permanent deletion requires retraction and exact DELETE confirmation.</small></p>"
         f"<ul class='continuity-memory-list'>{body}</ul>"
         "</details>"
     )
-def _current_action_portal_for_turn(turn: dict[str, Any]) -> dict[str, Any] | None:
+def _actions_by_deduplication_key() -> dict[str, dict[str, Any]]:
+    """Index the action catalogue once, for a whole transcript render.
+
+    Resolving each turn separately re-read and re-parsed every action file, so a
+    120-turn window did that work 120 times over. Each call also took the index
+    lock and deep-copied the projection, which is what left request threads
+    stacked up behind one another.
+    """
+    index: dict[str, dict[str, Any]] = {}
+    for item in list_chat_actions(include_closed=True):
+        key = str(item.get("deduplication_key") or "").strip()
+        if key and key not in index:
+            index[key] = item
+    return index
+
+
+def _current_action_portal_for_turn(
+    turn: dict[str, Any], *, actions_by_key: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any] | None:
     """Resolve current governed action state without mutating history during GET rendering."""
     stored = sanitize_action_portal_state(turn.get("operator_action"))
     action_id = str((stored or {}).get("action_id") or "").strip()
@@ -1279,10 +1297,9 @@ def _current_action_portal_for_turn(turn: dict[str, Any]) -> dict[str, Any] | No
         return _live_action_portal(action)
     turn_id = str(turn.get("id") or "").strip()
     if turn_id:
-        action = next(
-            (item for item in list_chat_actions(include_closed=True) if str(item.get("deduplication_key") or "") == turn_id),
-            None,
-        )
+        if actions_by_key is None:
+            actions_by_key = _actions_by_deduplication_key()
+        action = actions_by_key.get(turn_id)
         if action:
             return _live_action_portal(action)
     return stored
@@ -1295,9 +1312,9 @@ def _render_action_timeline(portal: dict[str, Any], *, restored: bool = False) -
         status = str(event.get("status") or "event")
         attempt = max(0, int(event.get("attempt_number") or 0))
         owner = str(event.get("owner_scope") or "")
-        suffix = f" · attempt {attempt}" if attempt else ""
+        suffix = f" Â· attempt {attempt}" if attempt else ""
         if owner:
-            suffix += f" · {owner}"
+            suffix += f" Â· {owner}"
         rows.append(
             f"<li data-action-event-sequence='{_safe(event.get('sequence') or 0)}'>"
             f"<b>{_safe(status)}</b>{_safe(suffix)}: {_safe(event.get('summary') or '')}</li>"
@@ -1323,9 +1340,9 @@ def _render_research_progress(portal: dict[str, Any]) -> str:
     percent = max(0, min(100, int(progress.get("progress_percent") or 0)))
     stage = str(progress.get("progress_stage") or "starting").replace("_", " ")
     counts = (
-        f"{int(progress.get('query_count') or 0)} searches · "
-        f"{int(progress.get('observed_page_count') or 0)} pages · "
-        f"{int(progress.get('evidence_count') or 0)} evidence items · "
+        f"{int(progress.get('query_count') or 0)} searches Â· "
+        f"{int(progress.get('observed_page_count') or 0)} pages Â· "
+        f"{int(progress.get('evidence_count') or 0)} evidence items Â· "
         f"{int(progress.get('source_failure_count') or 0)} source failures"
     )
     return (
@@ -1347,9 +1364,9 @@ def _render_research_review(portal: dict[str, Any]) -> str:
     if not review:
         return ""
     counts = (
-        f"{int(review.get('verified_count') or 0)} verified · "
-        f"{int(review.get('inference_count') or 0)} inferred · "
-        f"{int(review.get('disagreement_count') or 0)} disputed · "
+        f"{int(review.get('verified_count') or 0)} verified Â· "
+        f"{int(review.get('inference_count') or 0)} inferred Â· "
+        f"{int(review.get('disagreement_count') or 0)} disputed Â· "
         f"{int(review.get('missing_evidence_count') or 0)} gaps"
     )
     quality = dict(review.get("quality_counts") or {})
@@ -1367,7 +1384,7 @@ def _render_research_review(portal: dict[str, Any]) -> str:
         if not isinstance(row, dict) or not row.get("public_url"):
             continue
         label = str(row.get("citation_id") or row.get("host") or "Source")
-        metadata = " · ".join(
+        metadata = " Â· ".join(
             part for part in (
                 str(row.get("host") or ""),
                 str(row.get("source_kind") or "unknown").replace("_", " "),
@@ -1397,7 +1414,7 @@ def _render_research_review(portal: dict[str, Any]) -> str:
         )
     confidence_html = (
         "<section class='chat-research-confidence' data-research-confidence='true' aria-label='Recommendation confidence'>"
-        f"<strong>Recommendation confidence · threshold {_safe(threshold)}</strong>"
+        f"<strong>Recommendation confidence Â· threshold {_safe(threshold)}</strong>"
         f"<ul>{''.join(confidence_items)}</ul>"
         "</section>"
         if confidence_items else ""
@@ -1412,7 +1429,7 @@ def _render_research_review(portal: dict[str, Any]) -> str:
             continue
         candidate_digest = str(row.get("candidate_digest") or "")
         assessment = confidence_by_digest.get(candidate_digest, {})
-        title = str(assessment.get("title") or (candidate_digest[:12] + "…" if candidate_digest else "Candidate"))
+        title = str(assessment.get("title") or (candidate_digest[:12] + "â€¦" if candidate_digest else "Candidate"))
         cells = row.get("cells") if isinstance(row.get("cells"), dict) else {}
         rendered_cells = []
         for key, _label in dimensions:
@@ -1437,10 +1454,10 @@ def _render_research_review(portal: dict[str, Any]) -> str:
         f"<div class='chat-research-review-counts' data-research-review-counts='true'>{_safe(counts)}</div>"
         f"<small data-research-review-quality='true'>{_safe(quality_text)}</small>"
         f"<small data-research-review-freshness='true'>{_safe(freshness_text)}</small>"
-        f"<small data-research-review-cues='true'>Contradictions: {_safe(review.get('disagreement_count') or 0)} · Missing evidence: {_safe(review.get('missing_evidence_count') or 0)} · Source failures: {_safe(review.get('source_failure_count') or 0)} · Independent lineages: {_safe(review.get('independent_lineage_count') or 0)} · Repeated/derivative citations: {_safe(review.get('repeated_or_derivative_citation_count') or review.get('repeated_source_citation_count') or 0)}</small>"
+        f"<small data-research-review-cues='true'>Contradictions: {_safe(review.get('disagreement_count') or 0)} Â· Missing evidence: {_safe(review.get('missing_evidence_count') or 0)} Â· Source failures: {_safe(review.get('source_failure_count') or 0)} Â· Independent lineages: {_safe(review.get('independent_lineage_count') or 0)} Â· Repeated/derivative citations: {_safe(review.get('repeated_or_derivative_citation_count') or review.get('repeated_source_citation_count') or 0)}</small>"
         f"{confidence_html}{matrix_html}"
         f"<ol class='chat-research-citations' data-research-citations='true'>{citation_list}</ol>"
-        f"<small data-research-review-boundary='true'>Report {_safe(digest)}… is digest-bound. Generated prose is synthesis, not evidence; raw pages, private objectives, and queries remain private. Opening a citation is your explicit browser action.</small>"
+        f"<small data-research-review-boundary='true'>Report {_safe(digest)}â€¦ is digest-bound. Generated prose is synthesis, not evidence; raw pages, private objectives, and queries remain private. Opening a citation is your explicit browser action.</small>"
         "</div></details>"
     )
 def _render_research_history(portal: dict[str, Any]) -> str:
@@ -1458,17 +1475,17 @@ def _render_research_history(portal: dict[str, Any]) -> str:
         citations = int(row.get("citation_count") or 0)
         completed = str(row.get("completed_at") or "")
         report_digest = str(row.get("report_digest") or "")[:12]
-        metadata = f"{status} · {evidence} evidence · {citations} citations · integrity {integrity}"
+        metadata = f"{status} Â· {evidence} evidence Â· {citations} citations Â· integrity {integrity}"
         confidence_labels = [str(item.get("confidence_label") or "") for item in list(row.get("recommendation_confidence_labels") or [])[:8] if isinstance(item, dict)]
         if confidence_labels:
-            metadata += " · confidence " + ", ".join(confidence_labels)
+            metadata += " Â· confidence " + ", ".join(confidence_labels)
         if completed:
-            metadata += f" · {completed}"
+            metadata += f" Â· {completed}"
         rows.append(
             "<li class='chat-research-history-item'>"
             f"<code>{_safe(sid)}</code>"
             f"<small>{_safe(metadata)}</small>"
-            f"<small>Report digest: {_safe(report_digest or 'none')}…</small>"
+            f"<small>Report digest: {_safe(report_digest or 'none')}â€¦</small>"
             "</li>"
         )
     missing = len(list(history.get("missing_records") or []))
@@ -1504,9 +1521,9 @@ def _render_research_comparison(portal: dict[str, Any]) -> str:
     right = str(comparison.get("right_session_id") or "")
     return (
         "<details class='chat-research-comparison' data-research-comparison='true'>"
-        f"<summary>Compare research evidence: {_safe(left)} ↔ {_safe(right)}</summary>"
-        f"<div class='chat-research-comparison-counts'>Changed {_safe(changed)} · Added {_safe(added)} · Removed {_safe(removed)} · Stale {_safe(stale)} · Contradictory {_safe(conflicts)} · Duplicate {_safe(duplicates)} · Unsupported {_safe(unsupported)} · Confidence changes {_safe(confidence_changes)}</div>"
-        f"<small>Left report {_safe(str(comparison.get('left_report_digest') or '')[:12])}… · Right report {_safe(str(comparison.get('right_report_digest') or '')[:12])}…</small>"
+        f"<summary>Compare research evidence: {_safe(left)} â†” {_safe(right)}</summary>"
+        f"<div class='chat-research-comparison-counts'>Changed {_safe(changed)} Â· Added {_safe(added)} Â· Removed {_safe(removed)} Â· Stale {_safe(stale)} Â· Contradictory {_safe(conflicts)} Â· Duplicate {_safe(duplicates)} Â· Unsupported {_safe(unsupported)} Â· Confidence changes {_safe(confidence_changes)}</div>"
+        f"<small>Left report {_safe(str(comparison.get('left_report_digest') or '')[:12])}â€¦ Â· Right report {_safe(str(comparison.get('right_report_digest') or '')[:12])}â€¦</small>"
         "<small data-research-comparison-boundary='true'>This is a content-free evidence-structure comparison. It performs no web request, reveals no private objective or raw page, preserves source independence, and declares no automatic winner.</small>"
         "</details>"
     )
@@ -1519,14 +1536,16 @@ def _render_research_export(portal: dict[str, Any]) -> str:
     return (
         "<section class='chat-research-export' data-research-export='true' aria-label='Research report export'>"
         f"<strong>Local Markdown export ready</strong><code>{_safe(export.get('file_name') or '')}</code>"
-        f"<small>Report {_safe(str(export.get('report_digest') or '')[:12])}… · Export {_safe(str(export.get('export_digest') or '')[:12])}… · {_safe(export.get('export_byte_count') or 0)} bytes</small>"
+        f"<small>Report {_safe(str(export.get('report_digest') or '')[:12])}â€¦ Â· Export {_safe(str(export.get('export_digest') or '')[:12])}â€¦ Â· {_safe(export.get('export_byte_count') or 0)} bytes</small>"
         "<small data-research-export-boundary='true'>Explicit local export only. Nothing was uploaded or transmitted; private objectives, raw pages, queries, credentials, provider payloads, stack traces, and private filesystem paths are excluded.</small>"
         "</section>"
     )
 
 
-def _render_action_portal_card(session_id: str, turn: dict[str, Any]) -> str:
-    portal = _current_action_portal_for_turn(turn)
+def _render_action_portal_card(
+    session_id: str, turn: dict[str, Any], *, actions_by_key: dict[str, dict[str, Any]] | None = None,
+) -> str:
+    portal = _current_action_portal_for_turn(turn, actions_by_key=actions_by_key)
     if not portal:
         return ""
     action_id = str(portal.get("action_id") or "")
@@ -1623,6 +1642,7 @@ def _turn_timestamp(turn: dict[str, Any]) -> str:
 def _render_session_transcript(session_id: str, turns: list[dict[str, Any]], *, include_empty: bool = True) -> str:
     transcript_parts: list[str] = []
     last_date = None
+    actions_by_key = _actions_by_deduplication_key() if turns else {}
     for turn in turns:
         try:
             local_time = datetime.fromisoformat(str(turn.get("created_at") or "").replace("Z", "+00:00")).astimezone()
@@ -1653,7 +1673,7 @@ def _render_session_transcript(session_id: str, turns: list[dict[str, Any]], *, 
                 )
                 + "</article>"
             )
-            action_card = _render_action_portal_card(session_id, turn)
+            action_card = _render_action_portal_card(session_id, turn, actions_by_key=actions_by_key)
             if action_card:
                 transcript_parts.append(action_card)
             completed_controls = _render_completed_turn_controls(session_id, turn)
@@ -1669,14 +1689,14 @@ def _render_session_transcript(session_id: str, turns: list[dict[str, Any]], *, 
                 "</article>"
             )
             transcript_parts.append(_render_turn_recovery_controls(session_id, turn))
-            action_card = _render_action_portal_card(session_id, turn)
+            action_card = _render_action_portal_card(session_id, turn, actions_by_key=actions_by_key)
             if action_card:
                 transcript_parts.append(action_card)
     if not transcript_parts and include_empty:
         transcript_parts.append(
             "<article class='chat-turn eidolon-turn welcome-turn'>"
             "<small class='chat-speaker'>Eidolon</small>"
-            "<div class='chat-bubble eidolon'>I’m here. Start wherever you left off, or open a new conversation when you want a clean thread.</div>"
+            "<div class='chat-bubble eidolon'>Iâ€™m here. Start wherever you left off, or open a new conversation when you want a clean thread.</div>"
             "</article>"
         )
     return "".join(transcript_parts)
@@ -1777,7 +1797,7 @@ def _render_attention_center(report: dict[str, Any]) -> str:
     list_html = "".join(rows) or "<li class='attention-center-empty'>Nothing currently needs attention.</li>"
     return (
         "<details class='chat-attention-center' id='chat-attention-center'>"
-        f"<summary>Attention center · <span id='attention-center-total'>{_safe(counts.get('total_attention', 0))}</span> requiring you</summary>"
+        f"<summary>Attention center Â· <span id='attention-center-total'>{_safe(counts.get('total_attention', 0))}</span> requiring you</summary>"
         "<div class='attention-center-counts' id='attention-center-counts'>"
         f"<span class='badge'>approvals {_safe(counts.get('pending_approvals', 0))}</span>"
         f"<span class='badge'>notifications {_safe(counts.get('unread_notifications', 0))}</span>"
@@ -1980,7 +2000,7 @@ def render_realtime_chat_panel(
     ) if active_session_id else {"revision": 0, "pinned_context": [], "queued_operator_intent": {"state": "none"}}
     pinned_items = [item for item in active_controls.get("pinned_context", []) if isinstance(item, dict)]
     pinned_rows = "".join(
-        "<li class='chat-pinned-context-item' data-pin-id='{}'><span><b>{}</b> · {} · {}</span>"
+        "<li class='chat-pinned-context-item' data-pin-id='{}'><span><b>{}</b> Â· {} Â· {}</span>"
         "<small>{}</small><button type='button' data-conversation-control-mutation data-remove-pin='{}'>Remove</button></li>".format(
             _safe(item.get("id", "")),
             _safe(str(item.get("kind") or "note").replace("_", " ").title()),
@@ -1993,12 +2013,12 @@ def render_realtime_chat_panel(
     ) or "<li class='chat-pinned-context-empty'>No pinned working context for this conversation.</li>"
     queued_intent = active_controls.get("queued_operator_intent") if isinstance(active_controls.get("queued_operator_intent"), dict) else {"state": "none"}
     queued_label = (
-        f"{str(queued_intent.get('kind') or 'none').replace('_', ' ')} · {str(queued_intent.get('state') or 'none')}"
+        f"{str(queued_intent.get('kind') or 'none').replace('_', ' ')} Â· {str(queued_intent.get('state') or 'none')}"
         if str(queued_intent.get("state") or "none") != "none" else "No queued operator intent"
     )
     working_context_panel = (
         "<details class='chat-working-context-control' id='chat-working-context-control'>"
-        f"<summary>Pinned working context · <span id='chat-pinned-count'>{len(pinned_items)}</span></summary>"
+        f"<summary>Pinned working context Â· <span id='chat-pinned-count'>{len(pinned_items)}</span></summary>"
         f"<ul class='chat-pinned-context-list' id='chat-pinned-context-list'>{pinned_rows}</ul>"
         "<div class='chat-working-context-editor'>"
         "<label><small>Kind</small><select id='chat-pin-kind'><option value='note'>Note</option><option value='goal'>Goal</option><option value='project_constraint'>Project constraint</option><option value='reference_fact'>Reference fact</option></select></label>"
@@ -2010,7 +2030,7 @@ def render_realtime_chat_panel(
     )
     offline_intent_panel = (
         "<details class='chat-offline-intent-control' id='chat-offline-intent-control'>"
-        f"<summary>Offline intent queue · <span id='chat-offline-intent-label'>{_safe(queued_label)}</span></summary>"
+        f"<summary>Offline intent queue Â· <span id='chat-offline-intent-label'>{_safe(queued_label)}</span></summary>"
         "<div class='chat-offline-intent-editor'><label><small>Intent</small><select id='chat-offline-intent-kind'><option value='send_current_draft'>Send current draft</option><option value='retry_failed_turn'>Retry failed turn</option><option value='regenerate_completed_turn'>Regenerate completed turn</option><option value='resend_user_turn'>Resend user turn</option><option value='open_branch_draft'>Open branch draft</option></select></label>"
         "<label><small>Optional turn id</small><input id='chat-offline-intent-turn' maxlength='160' placeholder='Required for retry, regenerate, or resend'></label>"
         "<div class='inline'><button id='chat-offline-intent-queue' type='button' data-conversation-control-mutation>Queue for review</button><button id='chat-offline-intent-clear' type='button' data-conversation-control-mutation>Clear queued intent</button></div></div>"
@@ -2027,7 +2047,7 @@ def render_realtime_chat_panel(
     compact_class = " compact" if compact else ""
     session_options = "".join(
         f"<option value='{_safe(session.get('id',''))}' {'selected' if session.get('id') == active_session_id else ''}>"
-        f"{_safe(session.get('display_title') or session.get('title') or 'New conversation')} · {_safe(session.get('turn_count', 0))} turns</option>"
+        f"{_safe(session.get('display_title') or session.get('title') or 'New conversation')} Â· {_safe(session.get('turn_count', 0))} turns</option>"
         for session in sessions
     )
     transcript_html = _render_session_transcript(active_session_id, session_turns)
@@ -2043,22 +2063,22 @@ def render_realtime_chat_panel(
     open_moments = list(temporal_summary.get("important_moments") or [])
     current_mood_text = str(current_user_mood.get("text") or "").strip()
     temporal_status = (
-        (f"Current user mood recorded · {_safe(current_user_mood.get('freshness','current'))}" if current_mood_text else "No current user mood recorded")
-        + f" · {_safe(len(open_moments))} open important moment{'s' if len(open_moments) != 1 else ''}"
+        (f"Current user mood recorded Â· {_safe(current_user_mood.get('freshness','current'))}" if current_mood_text else "No current user mood recorded")
+        + f" Â· {_safe(len(open_moments))} open important moment{'s' if len(open_moments) != 1 else ''}"
     )
     emotional_guard = continuity_summary.get("emotional_guard") or {}
     emotional_status = (
-        "Old moods do not accumulate · affection escalation blocked · new relationship-progress claims blocked"
+        "Old moods do not accumulate Â· affection escalation blocked Â· new relationship-progress claims blocked"
         if emotional_guard else "Emotional continuity guard unavailable"
     )
     continuity_panel = (
         "<details class='chat-continuity-panel' id='chat-continuity-panel'>"
-        f"<summary>Continuity: {_safe(continuity_summary.get('cue_count', 0))} cues · "
+        f"<summary>Continuity: {_safe(continuity_summary.get('cue_count', 0))} cues Â· "
         f"Eidolon mood {_safe(continuity_summary.get('mood_label', 'neutral'))}</summary>"
         f"<p><small>{temporal_status}</small></p>"
         f"<p><small>{emotional_status}</small></p>"
         f"<ul>{cue_items}</ul>"
-        f"<small>Stable personality guard active · singleton conflicts defensively omitted {_safe(continuity_summary.get('singleton_conflicts_omitted', 0))}. Uses explicit durable memories only. Operator-only turns suppress personal cue content. Old moods are not assumed current and resolved moments are omitted. Raw transcripts and runtime receipts are not mined for relationship facts.</small>"
+        f"<small>Stable personality guard active Â· singleton conflicts defensively omitted {_safe(continuity_summary.get('singleton_conflicts_omitted', 0))}. Uses explicit durable memories only. Operator-only turns suppress personal cue content. Old moods are not assumed current and resolved moments are omitted. Raw transcripts and runtime receipts are not mined for relationship facts.</small>"
         "</details>"
     )
     curation_panel = _render_entity_association_curation_panel() + _render_relationship_memory_curation_panel()
@@ -2140,7 +2160,7 @@ def render_realtime_chat_panel(
       <small>Live activity</small><div id='chat-live-activity-lines' class='chat-live-activity-lines'></div>
     </div>
     <div class='chat-tab-coordination' id='chat-tab-coordination' data-owner='false' data-conflict='false' role='status' aria-live='polite'>
-      <span id='chat-tab-coordination-text'>Coordinating conversation control across tabs…</span>
+      <span id='chat-tab-coordination-text'>Coordinating conversation control across tabsâ€¦</span>
       <button type='button' id='chat-tab-take-control' hidden>Take control</button>
     </div>
   </header>
@@ -2168,7 +2188,7 @@ def render_realtime_chat_panel(
     {working_context_panel}
     {offline_intent_panel}
     <details class='chat-session-organizer' id='chat-session-organizer' {'open' if session_query else ''}>
-      <summary>Find and organize conversations · <span id='conversation-catalog-summary'>{_safe(catalog_summary)}</span></summary>
+      <summary>Find and organize conversations Â· <span id='conversation-catalog-summary'>{_safe(catalog_summary)}</span></summary>
       <form method='get' action='/chat-console' class='inline' id='conversation-catalog-search-form'>
         <input id='conversation-catalog-query' name='q' value='{_safe(session_query)}' placeholder='Search titles and completed conversation text'>
         <label><input id='conversation-catalog-archived' type='checkbox' name='archived' value='true'{checked}> Include archived</label>
@@ -2199,7 +2219,7 @@ def render_realtime_chat_panel(
       <small id='chat-draft-conflict-detail'>Both versions were preserved. Choose which text should become the saved draft.</small>
       <div class='chat-draft-conflict-actions'>
         <button type='button' id='chat-draft-conflict-current' disabled>Keep saved draft</button>
-        <button type='button' id='chat-draft-conflict-incoming' disabled>Use this tab’s draft</button>
+        <button type='button' id='chat-draft-conflict-incoming' disabled>Use this tabâ€™s draft</button>
       </div>
     </section>
     <div class='chat-composer-actions'>
@@ -2493,7 +2513,7 @@ def render_realtime_chat_panel(
     const request = (async function() {{
       if (attentionRefresh) attentionRefresh.disabled = true;
       attentionList.setAttribute('aria-busy', 'true');
-      if (attentionStatus) attentionStatus.textContent = 'Refreshing read-only attention snapshot…';
+      if (attentionStatus) attentionStatus.textContent = 'Refreshing read-only attention snapshotâ€¦';
       try {{
         const response = await fetch('/api/dashboard-chat/attention-center', {{ method:'GET', cache:'no-store' }});
         const payload = await response.json();
@@ -3318,7 +3338,7 @@ def render_realtime_chat_panel(
       const item = document.createElement('li'); item.dataset.actionEventSequence = String(event.sequence || '');
       const label = document.createElement('b'); label.textContent = actionStatusLabel(event.status || event.type || 'event'); item.appendChild(label);
       const attempt = Number(event.attempt_number || 0); const owner = String(event.owner_scope || '');
-      const suffix = (attempt ? ' · attempt ' + String(attempt) : '') + (owner ? ' · ' + owner : '');
+      const suffix = (attempt ? ' Â· attempt ' + String(attempt) : '') + (owner ? ' Â· ' + owner : '');
       item.appendChild(document.createTextNode(suffix + ': ' + String(event.summary || 'Persisted action event.'))); list.appendChild(item);
     }});
     if (restored) {{
@@ -3461,7 +3481,7 @@ def render_realtime_chat_panel(
       String(Number(progress.observed_page_count || 0)) + ' pages',
       String(Number(progress.evidence_count || 0)) + ' evidence items',
       String(Number(progress.source_failure_count || 0)) + ' source failures'
-    ].join(' · ');
+    ].join(' Â· ');
   }}
   function renderResearchReview(card, review) {{
     if (!card) return;
@@ -3495,7 +3515,7 @@ def render_realtime_chat_panel(
       String(Number(review.inference_count || 0)) + ' inferred',
       String(Number(review.disagreement_count || 0)) + ' disputed',
       String(Number(review.missing_evidence_count || 0)) + ' gaps'
-    ].join(' · ');
+    ].join(' Â· ');
     body.appendChild(counts);
     const quality = review.quality_counts || {{}};
     const qualityLine = document.createElement('small');
@@ -3516,17 +3536,17 @@ def render_realtime_chat_panel(
     const cues = document.createElement('small');
     cues.dataset.researchReviewCues = 'true';
     cues.textContent = 'Contradictions: ' + String(Number(review.disagreement_count || 0))
-      + ' · Missing evidence: ' + String(Number(review.missing_evidence_count || 0))
-      + ' · Source failures: ' + String(Number(review.source_failure_count || 0))
-      + ' · Independent lineages: ' + String(Number(review.independent_lineage_count || 0))
-      + ' · Repeated/derivative citations: ' + String(Number(review.repeated_or_derivative_citation_count || review.repeated_source_citation_count || 0));
+      + ' Â· Missing evidence: ' + String(Number(review.missing_evidence_count || 0))
+      + ' Â· Source failures: ' + String(Number(review.source_failure_count || 0))
+      + ' Â· Independent lineages: ' + String(Number(review.independent_lineage_count || 0))
+      + ' Â· Repeated/derivative citations: ' + String(Number(review.repeated_or_derivative_citation_count || review.repeated_source_citation_count || 0));
     body.appendChild(cues);
     const confidenceRows = Array.isArray(review.recommendation_confidence_assessments) ? review.recommendation_confidence_assessments.slice(0, 8) : [];
     const confidenceByDigest = new Map();
     confidenceRows.forEach(function(row) {{ confidenceByDigest.set(String(row.candidate_digest || ''), row); }});
     if (confidenceRows.length) {{
       const confidence = document.createElement('section'); confidence.className = 'chat-research-confidence'; confidence.dataset.researchConfidence = 'true'; confidence.setAttribute('aria-label','Recommendation confidence');
-      const heading = document.createElement('strong'); heading.textContent = 'Recommendation confidence · threshold ' + String(review.recommendation_confidence_threshold || 'moderate-confidence'); confidence.appendChild(heading);
+      const heading = document.createElement('strong'); heading.textContent = 'Recommendation confidence Â· threshold ' + String(review.recommendation_confidence_threshold || 'moderate-confidence'); confidence.appendChild(heading);
       const items = document.createElement('ul');
       confidenceRows.forEach(function(row) {{
         const item = document.createElement('li'); const label = document.createElement('b'); label.textContent = String(row.title || row.candidate_digest || 'Candidate') + ': '; item.appendChild(label); item.appendChild(document.createTextNode(String(row.confidence_label || 'unsupported')));
@@ -3541,7 +3561,7 @@ def render_realtime_chat_panel(
       const wrap = document.createElement('div'); wrap.className='chat-research-matrix-wrap'; wrap.dataset.researchMatrix='true'; wrap.tabIndex=0; wrap.setAttribute('aria-label','Candidate evidence matrix');
       const table = document.createElement('table'); table.className='chat-research-matrix'; const caption=document.createElement('caption'); caption.textContent='Candidate evidence matrix'; table.appendChild(caption);
       const head=document.createElement('thead'); const hr=document.createElement('tr'); ['Candidate'].concat(dimensions.map(function(d){{return d[1];}})).forEach(function(text){{const th=document.createElement('th'); th.scope='col'; th.textContent=text; hr.appendChild(th);}}); head.appendChild(hr); table.appendChild(head);
-      const tbody=document.createElement('tbody'); matrixRows.forEach(function(row){{ const tr=document.createElement('tr'); const th=document.createElement('th'); th.scope='row'; const assessment=confidenceByDigest.get(String(row.candidate_digest||''))||{{}}; th.textContent=String(assessment.title || (String(row.candidate_digest||'Candidate').slice(0,12)+'…')); tr.appendChild(th); const cells=row.cells||{{}}; dimensions.forEach(function(d){{const cell=cells[d[0]]||{{}}; const td=document.createElement('td'); const state=document.createElement('span'); state.textContent=String(cell.matrix_state||cell.state||'not_researched').replaceAll('_',' '); td.appendChild(state); const count=document.createElement('small'); count.textContent=String(Number(cell.independent_lineage_count||0))+' independent'; td.appendChild(count); tr.appendChild(td);}}); tbody.appendChild(tr); }}); table.appendChild(tbody); wrap.appendChild(table); body.appendChild(wrap);
+      const tbody=document.createElement('tbody'); matrixRows.forEach(function(row){{ const tr=document.createElement('tr'); const th=document.createElement('th'); th.scope='row'; const assessment=confidenceByDigest.get(String(row.candidate_digest||''))||{{}}; th.textContent=String(assessment.title || (String(row.candidate_digest||'Candidate').slice(0,12)+'â€¦')); tr.appendChild(th); const cells=row.cells||{{}}; dimensions.forEach(function(d){{const cell=cells[d[0]]||{{}}; const td=document.createElement('td'); const state=document.createElement('span'); state.textContent=String(cell.matrix_state||cell.state||'not_researched').replaceAll('_',' '); td.appendChild(state); const count=document.createElement('small'); count.textContent=String(Number(cell.independent_lineage_count||0))+' independent'; td.appendChild(count); tr.appendChild(td);}}); tbody.appendChild(tr); }}); table.appendChild(tbody); wrap.appendChild(table); body.appendChild(wrap);
     }}
     const list = document.createElement('ol');
     list.className = 'chat-research-citations';
@@ -3559,7 +3579,7 @@ def render_realtime_chat_panel(
       metadata.textContent = [
         String(citation.host || parsed.hostname), String(citation.source_kind || 'unknown').replaceAll('_', ' '),
         String(citation.quality || 'unknown') + ' quality', String(citation.freshness || 'unknown') + ' freshness'
-      ].join(' · ');
+      ].join(' Â· ');
       item.appendChild(metadata);
       list.appendChild(item);
     }});
@@ -3571,7 +3591,7 @@ def render_realtime_chat_panel(
     const boundary = document.createElement('small');
     boundary.dataset.researchReviewBoundary = 'true';
     boundary.textContent = 'Report ' + String(review.report_digest).slice(0, 12)
-      + '… is digest-bound. Generated prose is synthesis, not evidence; raw pages, private objectives, and queries remain private. Opening a citation is your explicit browser action.';
+      + 'â€¦ is digest-bound. Generated prose is synthesis, not evidence; raw pages, private objectives, and queries remain private. Opening a citation is your explicit browser action.';
     body.appendChild(boundary);
   }}
   function renderResearchHistory(card, history) {{
@@ -3610,9 +3630,9 @@ def render_realtime_chat_panel(
           String(Number(row.citation_count || 0)) + ' citations',
           'integrity ' + String(row.integrity_status || 'unknown'),
           historyConfidence ? 'confidence ' + historyConfidence : ''
-        ].filter(Boolean).join(' · ');
+        ].filter(Boolean).join(' Â· ');
         item.appendChild(meta);
-        const digest = document.createElement('small'); digest.textContent = 'Report digest: ' + String(row.report_digest || 'none').slice(0, 12) + '…'; item.appendChild(digest);
+        const digest = document.createElement('small'); digest.textContent = 'Report digest: ' + String(row.report_digest || 'none').slice(0, 12) + 'â€¦'; item.appendChild(digest);
         list.appendChild(item);
       }});
       if (!list.children.length) {{ const item = document.createElement('li'); const note = document.createElement('small'); note.textContent = 'No terminal research sessions are recorded yet.'; item.appendChild(note); list.appendChild(item); }}
@@ -3635,11 +3655,11 @@ def render_realtime_chat_panel(
       card.insertBefore(details, ensureActionCardActions(card));
     }}
     const summary = details.querySelector('summary');
-    if (summary) summary.textContent = 'Compare research evidence: ' + String(comparison.left_session_id) + ' ↔ ' + String(comparison.right_session_id);
+    if (summary) summary.textContent = 'Compare research evidence: ' + String(comparison.left_session_id) + ' â†” ' + String(comparison.right_session_id);
     const body = details.querySelector('[data-research-comparison-body]'); if (!body) return; body.replaceChildren();
     const counts = document.createElement('div'); counts.className = 'chat-research-comparison-counts';
-    counts.textContent = ['Changed ' + String((comparison.changed_claims || []).length), 'Added ' + String((comparison.added_claim_codes || []).length), 'Removed ' + String((comparison.removed_claim_codes || []).length), 'Stale ' + String((comparison.stale_claim_codes || []).length), 'Contradictory ' + String((comparison.contradictory_claim_codes || []).length), 'Duplicate ' + String((comparison.duplicated_claim_codes || []).length), 'Unsupported ' + String((comparison.unsupported_claim_codes || []).length), 'Confidence changes ' + String((comparison.changed_recommendation_confidence || []).length)].join(' · '); body.appendChild(counts);
-    const digests = document.createElement('small'); digests.textContent = 'Left report ' + String(comparison.left_report_digest || '').slice(0, 12) + '… · Right report ' + String(comparison.right_report_digest || '').slice(0, 12) + '…'; body.appendChild(digests);
+    counts.textContent = ['Changed ' + String((comparison.changed_claims || []).length), 'Added ' + String((comparison.added_claim_codes || []).length), 'Removed ' + String((comparison.removed_claim_codes || []).length), 'Stale ' + String((comparison.stale_claim_codes || []).length), 'Contradictory ' + String((comparison.contradictory_claim_codes || []).length), 'Duplicate ' + String((comparison.duplicated_claim_codes || []).length), 'Unsupported ' + String((comparison.unsupported_claim_codes || []).length), 'Confidence changes ' + String((comparison.changed_recommendation_confidence || []).length)].join(' Â· '); body.appendChild(counts);
+    const digests = document.createElement('small'); digests.textContent = 'Left report ' + String(comparison.left_report_digest || '').slice(0, 12) + 'â€¦ Â· Right report ' + String(comparison.right_report_digest || '').slice(0, 12) + 'â€¦'; body.appendChild(digests);
     const boundary = document.createElement('small'); boundary.dataset.researchComparisonBoundary = 'true'; boundary.textContent = 'Content-free comparison only: no web request, no private objective or raw page, source independence preserved, no automatic winner.'; body.appendChild(boundary);
   }}
   function renderResearchExport(card, receipt) {{
@@ -3650,7 +3670,7 @@ def render_realtime_chat_panel(
     panel.replaceChildren();
     const title=document.createElement('strong'); title.textContent='Local Markdown export ready'; panel.appendChild(title);
     const name=document.createElement('code'); name.textContent=String(receipt.file_name||''); panel.appendChild(name);
-    const meta=document.createElement('small'); meta.textContent='Report '+String(receipt.report_digest||'').slice(0,12)+'… · Export '+String(receipt.export_digest||'').slice(0,12)+'… · '+String(Number(receipt.export_byte_count||0))+' bytes'; panel.appendChild(meta);
+    const meta=document.createElement('small'); meta.textContent='Report '+String(receipt.report_digest||'').slice(0,12)+'â€¦ Â· Export '+String(receipt.export_digest||'').slice(0,12)+'â€¦ Â· '+String(Number(receipt.export_byte_count||0))+' bytes'; panel.appendChild(meta);
     const boundary=document.createElement('small'); boundary.dataset.researchExportBoundary='true'; boundary.textContent='Explicit local export only. Nothing was uploaded or transmitted; private objectives, raw pages, queries, credentials, provider payloads, stack traces, and private filesystem paths are excluded.'; panel.appendChild(boundary);
   }}
   function applyChatActionResult(payload, replyNode) {{
@@ -4218,7 +4238,7 @@ def render_realtime_chat_panel(
       messageBox.dataset.serverDraftDigest = String(payload.content_digest || '');
       writeLocalDraft(draftKey(targetSessionId), messageBox.value || '', String(payload.updated_at || new Date().toISOString()), Number(payload.revision || 0), String(payload.content_digest || ''));
       clearDraftConflictState();
-      setDraftStatus('saved', payload.resolution === 'incoming' ? 'This tab’s draft saved' : 'Saved draft kept');
+      setDraftStatus('saved', payload.resolution === 'incoming' ? 'This tabâ€™s draft saved' : 'Saved draft kept');
       setStatus('ready', 'The draft conflict was resolved explicitly. No provider request was sent.');
       announceCoordination('draft_changed', {{ session_id:targetSessionId }});
       return true;
@@ -4420,7 +4440,7 @@ def render_realtime_chat_panel(
     const local = readLocalDraft(key);
     const clientUpdatedAt = options && options.clientUpdatedAt ? String(options.clientUpdatedAt) : (local && local.updated_at ? local.updated_at : new Date().toISOString());
     const baseRevision = options && Object.prototype.hasOwnProperty.call(options, 'baseRevision') ? Number(options.baseRevision || 0) : (local ? Number(local.base_revision || 0) : serverDraftRevision());
-    if (isCurrentSelection(targetSessionId)) setDraftStatus('saving', 'Saving draft…');
+    if (isCurrentSelection(targetSessionId)) setDraftStatus('saving', 'Saving draftâ€¦');
     try {{
       const response = await fetch('/api/dashboard-chat/draft', {{
         method: 'POST',
@@ -4469,7 +4489,7 @@ def render_realtime_chat_panel(
     const clientUpdatedAt = new Date().toISOString();
     const baseRevision = serverDraftRevision();
     writeLocalDraft(currentDraftKey, messageBox.value || '', clientUpdatedAt, baseRevision, String(messageBox.dataset.serverDraftDigest || ''));
-    setDraftStatus('saving', 'Saving draft…');
+    setDraftStatus('saving', 'Saving draftâ€¦');
     if (draftSaveTimer) window.clearTimeout(draftSaveTimer);
     draftSaveTimer = window.setTimeout(function() {{ persistDraft({{ sessionId: targetSessionId, key: currentDraftKey, baseRevision:baseRevision }}); }}, 250);
     schedulePresentationSave();
@@ -4491,7 +4511,7 @@ def render_realtime_chat_panel(
     const local = readLocalDraft(currentDraftKey);
     if (local && parseDraftTime(local.updated_at) > serverStamp) {{
       messageBox.value = local.text;
-      setDraftStatus('saving', local.base_revision < serverRevision && local.text !== serverText ? 'Restored divergent browser draft; preserving both…' : 'Restored browser draft; syncing…');
+      setDraftStatus('saving', local.base_revision < serverRevision && local.text !== serverText ? 'Restored divergent browser draft; preserving bothâ€¦' : 'Restored browser draft; syncingâ€¦');
       return {{ sessionId: targetSessionId, key: currentDraftKey, text: local.text, clientUpdatedAt: local.updated_at, baseRevision:local.base_revision }};
     }}
     clearDraftConflictState();
@@ -4555,7 +4575,7 @@ def render_realtime_chat_panel(
     if (providerRecoveryDetail) providerRecoveryDetail.textContent = String(cue.detail || '');
     if (providerRecoveryTime) {{
       const resumeText = cue.can_resume_composition ? 'Composition may resume explicitly.' : 'Configured-provider recovery is not yet proven.';
-      providerRecoveryTime.textContent = 'Last persisted check: ' + String(cue.checked_at || 'Not checked') + ' · ' + resumeText + ' No accepted request is replayed.';
+      providerRecoveryTime.textContent = 'Last persisted check: ' + String(cue.checked_at || 'Not checked') + ' Â· ' + resumeText + ' No accepted request is replayed.';
     }}
   }}
   function applyRecoveryContract(contract) {{
@@ -4751,7 +4771,7 @@ def render_realtime_chat_panel(
       activeRows.forEach(function(item) {{
         const option = document.createElement('option');
         option.value = String(item.id || '');
-        option.textContent = String(item.display_title || item.title || 'New conversation') + ' · ' + String(item.turn_count || 0) + ' turns';
+        option.textContent = String(item.display_title || item.title || 'New conversation') + ' Â· ' + String(item.turn_count || 0) + ' turns';
         option.selected = option.value === selected;
         sessionSelector.appendChild(option);
         sessionTitles[option.value] = String(item.title || 'New conversation');

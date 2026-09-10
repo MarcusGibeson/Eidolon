@@ -545,10 +545,6 @@ def lookup_chat_actions(*, action_ids: tuple[str, ...] = (), deduplication_keys:
 def resolve_chat_action_id(chat_action_id: str) -> str:
     token = (chat_action_id or "").strip()
     lowered = token.lower()
-    actions = list_chat_actions(include_closed=True)
-
-    if lowered in {"latest", "last"}:
-        return actions[0].get("id", "") if actions else ""
 
     alias_status = {
         "latest-proposed": "proposed",
@@ -564,6 +560,17 @@ def resolve_chat_action_id(chat_action_id: str) -> str:
         "latest-failed": "failed",
         "last-failed": "failed",
     }
+
+    # Only an alias needs the catalogue. A concrete identifier resolves to itself,
+    # and loading every action first made a single lookup read the whole
+    # directory - once per transcript turn, for a value it already had.
+    if not (lowered in {"latest", "last"} or lowered in alias_status or lowered.startswith("latest-")):
+        return token
+
+    actions = list_chat_actions(include_closed=True)
+
+    if lowered in {"latest", "last"}:
+        return actions[0].get("id", "") if actions else ""
 
     if lowered in alias_status:
         matches = [item for item in actions if item.get("status") == alias_status[lowered]]
