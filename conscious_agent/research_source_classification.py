@@ -44,6 +44,9 @@ _COMMUNITY_HOSTS = frozenset({
 })
 _COMMUNITY_PATHS = re.compile(r"/(?:issues|discussions|questions|threads|t)(?:/|$)", re.IGNORECASE)
 
+# A personal page on an institutional host: the institution is the landlord.
+_PERSONAL_PAGE_PATH = re.compile(r"/~|/(?:people|users|home|student|students)/", re.IGNORECASE)
+
 # Canonical package registries: the authoritative record for a package.
 _PACKAGE_REGISTRIES = frozenset({
     "pypi.org", "npmjs.com", "crates.io", "rubygems.org", "nuget.org",
@@ -107,7 +110,9 @@ def classify_source_kind(url: str, supplied: str = "unknown") -> str:
     if host.endswith(".gov") or ".gov." in host or host.endswith(".mil") or host.endswith(".int"):
         return "primary_official"
     if host.endswith(".edu") or host.endswith(".ac.uk"):
-        return "primary_data"
+        # A personal page hosted by a university does not inherit the institution's
+        # authority; the university is the landlord, not the publisher.
+        return "unknown" if _PERSONAL_PAGE_PATH.search(path) else "primary_data"
 
     # Community surfaces first: a project forum is experience, not reference.
     if domain in _COMMUNITY_HOSTS or any(label in _COMMUNITY_LABELS for label in labels[:-2] or labels[:1]):
@@ -150,7 +155,7 @@ def classification_reason(url: str) -> str:
     if host.endswith((".gov", ".mil", ".int")) or ".gov." in host:
         return "reserved_tld"
     if host.endswith(".edu") or host.endswith(".ac.uk"):
-        return "academic_tld"
+        return "institution_hosted_personal_page" if _PERSONAL_PAGE_PATH.search(path) else "academic_tld"
     if domain in _COMMUNITY_HOSTS or any(label in _COMMUNITY_LABELS for label in labels[:-2] or labels[:1]):
         return "community_surface"
     if labels and labels[0] in _DOCUMENTATION_LABELS:

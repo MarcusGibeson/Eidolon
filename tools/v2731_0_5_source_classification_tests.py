@@ -119,6 +119,61 @@ structural_only = [url for url, _, reason in STRUCTURAL if reason != "primary_so
 require(len(structural_only) == len(STRUCTURAL),
         "every_documented_example_is_classified_structurally_not_by_name")
 
+# --- precedence: overlapping rules must resolve the same way every time ------
+# Rule order is the part of a structural classifier that rots silently. A
+# documentation subdomain on a code host was already classified as a code host
+# once; these pin every overlap that has a defensible answer.
+
+PRECEDENCE = [
+    # docs on a code host: reference material outranks the host it sits on.
+    ("https://docs.github.com/en/actions/writing-workflows", "primary_official",
+     "documentation_subdomain_outranks_code_host"),
+    ("https://gitlab.com/group/project/-/issues/7", "community_experience",
+     "discussion_path_outranks_code_host_default"),
+    # a community subdomain on a project domain stays community.
+    ("https://discuss.python.org/t/asyncio/1", "community_experience",
+     "community_subdomain_outranks_primary_source_family"),
+    ("https://forum.postgresql.example/t/pooling", "community_experience",
+     "community_subdomain_outranks_documentation_path"),
+    # scholarly and academic hosting.
+    ("https://arxiv.org/abs/2401.00001", "primary_data", "scholarly_host_is_primary_data"),
+    ("https://cs.example.edu/research/dataset", "primary_data", "university_research_page_is_primary_data"),
+    ("https://cs.example.edu/~jsmith/notes.html", "unknown",
+     "a_personal_page_does_not_inherit_institutional_authority"),
+    ("https://example.edu/people/jsmith/blog", "unknown",
+     "an_institutional_people_directory_page_is_not_primary_data"),
+    # registries and standards.
+    ("https://pypi.org/project/requests/", "primary_official", "package_registry_is_official"),
+    ("https://www.w3.org/TR/webrtc/", "primary_official", "standards_body_is_official"),
+    # reserved TLDs outrank everything structural beneath them.
+    ("https://forum.agency.gov/threads/1", "primary_official",
+     "a_reserved_tld_outranks_a_community_subdomain"),
+]
+for url, expected, name in PRECEDENCE:
+    got = kind(url)
+    require(got == expected, f"{name} (got {got})")
+
+# Precedence must be deterministic, not dependent on evaluation happening to
+# reach a rule first.
+for url, expected, _ in PRECEDENCE:
+    require(kind(url) == expected and kind(url) == expected, "precedence_is_stable_across_calls")
+    CHECKS.pop()
+CHECKS.append("precedence_is_stable_across_calls")
+
+# --- vendor documentation: classified, but not laundered ---------------------
+# A vendor's own docs really are its official documentation. Classification says
+# what it is; whether it may establish a claim about the vendor's market is a
+# different question, decided by evidence role.
+
+vendor_docs_url = "https://docs.vendor.example/product/getting-started"
+require(kind(vendor_docs_url) == "primary_official", "vendor_documentation_is_still_official_documentation")
+for role in ("first_party_product_claim", "promotional_summary"):
+    require(source_authority_state({"public_url": vendor_docs_url, "source_kind": kind(vendor_docs_url),
+                                    "evidence_role": role}) != AUTHORITY_KNOWN_AUTHORITATIVE,
+            "a_first_party_role_still_withholds_authority")
+    CHECKS.pop()
+CHECKS.append("a_first_party_or_promotional_role_still_withholds_authority")
+
 # --- the point of all this: authority stops reading as absent ----------------
 
 docs = {"public_url": "https://docs.python.org/3.14/library/asyncio-task.html",
