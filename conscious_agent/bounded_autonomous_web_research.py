@@ -214,10 +214,12 @@ def _inferred_source_kind(url: str, supplied: str) -> str:
     return "unknown"
 
 
-def _evaluate_evidence_policy(*, payload, citations, assessment_summary, dimension) -> dict[str, Any]:
+def _evaluate_evidence_policy(
+    *, payload, citations, assessment_summary, dimension, requires_current_evidence=False,
+) -> dict[str, Any]:
     """Measure the shared evidence policy without letting it refuse anything."""
     try:
-        from research_evidence_policy import evaluate_policy, policy_for_dimension
+        from research_evidence_policy import evaluate_policy, policy_for_objective
         findings = (payload or {}).get("findings") if isinstance(payload, Mapping) else None
         finding = findings[0] if isinstance(findings, list) and findings and isinstance(findings[0], Mapping) else {}
         assessments = {
@@ -226,7 +228,7 @@ def _evaluate_evidence_policy(*, payload, citations, assessment_summary, dimensi
             if isinstance(row, Mapping)
         }
         return evaluate_policy(
-            policy_for_dimension(dimension),
+            policy_for_objective(dimension, requires_current_evidence=bool(requires_current_evidence)),
             finding=finding,
             citations=[row for row in (citations or []) if isinstance(row, Mapping)],
             assessments_by_citation=assessments,
@@ -1534,6 +1536,9 @@ class BoundedResearchSessionStore:
                             citations=citation_rows,
                             assessment_summary=synthesis_result.get("source_assessment_summary"),
                             dimension=str((decomposition.get("subquestions") or [{}])[0].get("evidence_dimension") or ""),
+                            requires_current_evidence=bool(
+                                (decomposition.get("subquestions") or [{}])[0].get("requires_current_evidence")
+                            ),
                         )
                         synthesis_result["validation_status"] = str(validated_synthesis.get("status") or "")
                         if capture_training_evidence:

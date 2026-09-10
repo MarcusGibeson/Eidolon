@@ -2,17 +2,19 @@ from __future__ import annotations
 
 """One evidence policy underneath every objective shape, measured before enforced.
 
-Admission rules existed only for demand-shaped objectives. A general research
-objective was admitted on a title, a summary and one observed citation, so a
-single undated forum post could carry a finding, while a demand claim required two
-fresh independent non-promotional survey sources. That is one gate that exists and
-one that does not.
+Admission rules existed only for demand-shaped objectives. General research was
+admitted on a title, a summary and one observed citation, so a single undated
+forum post could carry a finding, while a demand claim required two fresh
+independent non-promotional survey sources.
 
-The policy is data so a stricter objective composes on top of the baseline rather
-than restating it. It is measured in report-only mode first: requiring source
-authority at the baseline could take general research from over-permissive to
-producing nothing, because most sources are still classified unknown, and that
-regression would be invisible until it had already happened.
+Two design corrections came out of measuring the first draft on real corpora.
+Requiring a declared publication date universally refused genuine official Python
+documentation, which does not become suspect for lacking a timestamp - so currency
+is a conditional layer, satisfied for reference material by a documented version.
+And a single "unknown" authority conflated "we have not classified this host" with
+"this source carries no authority"; the baseline now refuses only the latter.
+
+Nothing is enforced. These checks pin the policy shape and the measurement.
 """
 
 import json
@@ -33,11 +35,17 @@ os.environ["EIDOLON_DATA_DIR"] = str(RUNTIME)
 
 from bounded_research_history import sanitize_report
 from research_evidence_policy import (
+    AUTHORITY_KNOWN_AUTHORITATIVE,
+    AUTHORITY_KNOWN_NON_AUTHORITATIVE,
+    AUTHORITY_UNCLASSIFIED,
     BASELINE_EVIDENCE_POLICY,
+    CURRENT_EVIDENCE_POLICY,
     DEMAND_EVIDENCE_POLICY,
-    EvidencePolicy,
+    REFERENCE_EVIDENCE_POLICY,
     evaluate_policy,
-    policy_for_dimension,
+    policy_for_objective,
+    source_authority_state,
+    version_signal_present,
 )
 
 
@@ -50,9 +58,9 @@ def require(condition: object, name: str) -> None:
     CHECKS.append(name)
 
 
-def source(cid: str, *, host: str, kind="reputable_secondary", role="independent_analysis",
+def source(cid: str, *, host: str, url=None, kind="reputable_secondary", role="independent_analysis",
            freshness="fresh", relevance=1.0) -> dict:
-    return {"citation_id": cid, "host": host, "public_url": f"https://{host}/a",
+    return {"citation_id": cid, "host": host, "public_url": url or f"https://{host}/a",
             "source_kind": kind, "evidence_role": role, "freshness": freshness,
             "freshness_known": freshness != "unknown", "fresh_enough": freshness == "fresh",
             "relevance_score": relevance, "publisher_digest": f"pub-{host}"}
@@ -65,103 +73,137 @@ def assessed(cid: str, *, stance="supports", kind="survey_result") -> dict:
 FINDING = {"title": "T", "summary": "S", "citation_ids": ["web-1", "web-2"],
            "uncertainties": ["Bounded evidence."]}
 
-# --- the policies compose, they do not restate --------------------------------
+# --- authority is three-valued -----------------------------------------------
 
-require(set(BASELINE_EVIDENCE_POLICY.citation_conditions) <= set(DEMAND_EVIDENCE_POLICY.citation_conditions),
-        "demand_inherits_every_baseline_citation_condition")
-require(set(BASELINE_EVIDENCE_POLICY.finding_conditions) <= set(DEMAND_EVIDENCE_POLICY.finding_conditions),
-        "demand_inherits_every_baseline_finding_condition")
-require(len(DEMAND_EVIDENCE_POLICY.citation_conditions) > len(BASELINE_EVIDENCE_POLICY.citation_conditions),
-        "demand_is_strictly_tighter_than_the_baseline")
+require(source_authority_state(source("a", host="x.org", kind="primary_official")) == AUTHORITY_KNOWN_AUTHORITATIVE,
+        "a_classified_source_is_known_authoritative")
+require(source_authority_state(source("a", host="x.org", kind="unknown")) == AUTHORITY_UNCLASSIFIED,
+        "an_unclassified_host_is_unclassified_not_disqualified")
+require(source_authority_state(source("a", host="x.org", kind="reputable_secondary",
+                                      role="promotional_summary")) == AUTHORITY_KNOWN_NON_AUTHORITATIVE,
+        "a_promotional_source_is_known_non_authoritative")
+
+unclassified = [source("web-1", host="forum.example.org", kind="unknown")]
+require(evaluate_policy(BASELINE_EVIDENCE_POLICY,
+                        finding={**FINDING, "citation_ids": ["web-1"]},
+                        citations=unclassified)["would_admit"],
+        "an_unclassified_source_is_not_refused_by_the_baseline")
+promotional = [source("web-1", host="vendor.example.com", role="promotional_summary")]
+promo = evaluate_policy(BASELINE_EVIDENCE_POLICY, finding={**FINDING, "citation_ids": ["web-1"]},
+                        citations=promotional)
+require(not promo["would_admit"], "a_promotional_source_is_refused_by_the_baseline")
+require("source_authority_assessed" in promo["citation_condition_failures"],
+        "a_promotional_source_fails_on_assessed_authority")
+require(promo["authority_states"].get(AUTHORITY_KNOWN_NON_AUTHORITATIVE) == 1,
+        "authority_states_are_reported_for_measurement")
+
+# --- currency is a layer, not a universal requirement ------------------------
+
+require("currency_signal_present" not in BASELINE_EVIDENCE_POLICY.citation_conditions,
+        "the_baseline_does_not_demand_a_publication_date")
+for policy in (REFERENCE_EVIDENCE_POLICY, CURRENT_EVIDENCE_POLICY, DEMAND_EVIDENCE_POLICY):
+    require("currency_signal_present" in policy.citation_conditions,
+            f"the_{policy.policy_code}_policy_applies_the_currency_layer")
+
+# Official documentation, no date, pinned to a version.
+docs = [source("web-1", host="docs.python.org", url="https://docs.python.org/3.14/library/asyncio-task.html",
+               kind="primary_official", freshness="unknown")]
+require(version_signal_present(docs[0]), "a_versioned_documentation_url_is_a_currency_signal")
+require(evaluate_policy(BASELINE_EVIDENCE_POLICY, finding={**FINDING, "citation_ids": ["web-1"]},
+                        citations=docs)["would_admit"],
+        "undated_official_documentation_passes_the_baseline")
+require(evaluate_policy(REFERENCE_EVIDENCE_POLICY, finding={**FINDING, "citation_ids": ["web-1"]},
+                        citations=docs)["would_admit"],
+        "undated_official_documentation_passes_the_reference_policy")
+undated_blog = [source("web-1", host="blog.example.org", url="https://blog.example.org/post",
+                       kind="reputable_secondary", freshness="unknown")]
+require(not evaluate_policy(REFERENCE_EVIDENCE_POLICY, finding={**FINDING, "citation_ids": ["web-1"]},
+                            citations=undated_blog)["would_admit"],
+        "an_undated_unversioned_page_fails_the_currency_layer")
+require(not version_signal_present(undated_blog[0]), "an_ordinary_url_is_not_a_version_signal")
+
+# --- the layers compose ------------------------------------------------------
+
+for policy in (REFERENCE_EVIDENCE_POLICY, CURRENT_EVIDENCE_POLICY, DEMAND_EVIDENCE_POLICY):
+    require(set(BASELINE_EVIDENCE_POLICY.citation_conditions) <= set(policy.citation_conditions),
+            f"{policy.policy_code}_inherits_every_baseline_citation_condition")
+    require(set(BASELINE_EVIDENCE_POLICY.finding_conditions) <= set(policy.finding_conditions),
+            f"{policy.policy_code}_inherits_every_baseline_finding_condition")
+require(set(CURRENT_EVIDENCE_POLICY.citation_conditions) <= set(DEMAND_EVIDENCE_POLICY.citation_conditions),
+        "demand_is_at_least_as_strict_as_current")
 require(len(set(DEMAND_EVIDENCE_POLICY.citation_conditions)) == len(DEMAND_EVIDENCE_POLICY.citation_conditions),
         "composition_does_not_duplicate_a_condition")
-require(policy_for_dimension("demand").policy_code == "demand", "a_demand_objective_selects_the_demand_policy")
-require(policy_for_dimension("").policy_code == "baseline", "an_unshaped_objective_selects_the_baseline")
-require(policy_for_dimension("competition").policy_code == "baseline",
-        "an_undecided_dimension_falls_back_to_the_baseline")
 
-# --- the general-research case that prompted this -----------------------------
+require(policy_for_objective("demand").policy_code == "demand", "a_demand_objective_selects_demand")
+require(policy_for_objective("").policy_code == "baseline", "an_unshaped_objective_selects_the_baseline")
+require(policy_for_objective("", requires_current_evidence=True).policy_code == "current",
+        "a_current_evidence_claim_selects_the_currency_layer")
+require(policy_for_objective("", reference_material=True).policy_code == "reference",
+        "reference_material_selects_the_reference_policy")
+require(policy_for_objective("demand", requires_current_evidence=True).policy_code == "demand",
+        "demand_outranks_the_currency_layer")
 
-forum = [source("web-1", host="discuss.example.org", kind="unknown", freshness="stale")]
-forum_finding = {"title": "T", "summary": "S", "citation_ids": ["web-1"], "uncertainties": []}
-result = evaluate_policy(BASELINE_EVIDENCE_POLICY, finding=forum_finding, citations=forum)
-require(not result["would_admit"], "one_undated_unclassified_forum_post_fails_the_baseline")
-require("source_authority_known" in result["citation_condition_failures"],
-        "an_unclassified_source_fails_on_authority")
-require("uncertainty_declared" in result["finding_condition_failures"],
-        "a_finding_declaring_no_uncertainty_fails_the_baseline")
-require(result["admissible_citation_count"] == 0, "no_citation_survives_that_baseline_evaluation")
-
-# A classified, dated, relevant source with a stated uncertainty passes the baseline.
-good = [source("web-1", host="docs.example.org", kind="primary_official")]
-solid = evaluate_policy(BASELINE_EVIDENCE_POLICY, finding={**FINDING, "citation_ids": ["web-1"]}, citations=good)
-require(solid["would_admit"], "a_classified_dated_relevant_source_passes_the_baseline")
-require(not solid["citation_condition_failures"], "a_solid_source_fails_no_baseline_condition")
-
-# --- the baseline alone must not silently satisfy a demand claim --------------
+# --- demand keeps its stricter bar -------------------------------------------
 
 two_fresh = [source("web-1", host="alphapress.org"), source("web-2", host="betajournal.net")]
 supporting = {"web-1": assessed("web-1"), "web-2": assessed("web-2")}
-demand = evaluate_policy(DEMAND_EVIDENCE_POLICY, finding=FINDING, citations=two_fresh,
-                         assessments_by_citation=supporting)
-require(demand["would_admit"], "two_fresh_independent_supporting_surveys_pass_the_demand_policy")
-
-single_publisher = [source("web-1", host="alphapress.org"), source("web-2", host="alphapress.org")]
-one_pub = evaluate_policy(DEMAND_EVIDENCE_POLICY, finding=FINDING, citations=single_publisher,
+require(evaluate_policy(DEMAND_EVIDENCE_POLICY, finding=FINDING, citations=two_fresh,
+                        assessments_by_citation=supporting)["would_admit"],
+        "two_fresh_independent_supporting_surveys_pass_demand")
+one_pub = evaluate_policy(DEMAND_EVIDENCE_POLICY, finding=FINDING,
+                          citations=[source("web-1", host="alphapress.org"), source("web-2", host="alphapress.org")],
                           assessments_by_citation=supporting)
 require("independent_publishers" in one_pub["finding_condition_failures"],
-        "a_single_publisher_still_fails_the_demand_policy")
-
-vendor = {"web-1": assessed("web-1"), "web-2": assessed("web-2", kind="vendor_offering")}
-vendor_result = evaluate_policy(DEMAND_EVIDENCE_POLICY, finding=FINDING, citations=two_fresh,
-                                assessments_by_citation=vendor)
-require("evidence_type_admissible" in vendor_result["citation_condition_failures"],
-        "a_vendor_offering_still_fails_the_demand_evidence_type")
-require(evaluate_policy(BASELINE_EVIDENCE_POLICY, finding=FINDING, citations=two_fresh,
-                        assessments_by_citation=vendor)["would_admit"],
-        "the_baseline_alone_does_not_impose_demand_evidence_types")
-
-stale_pair = [source("web-1", host="alphapress.org"),
-              source("web-2", host="betajournal.net", freshness="stale")]
-stale_demand = evaluate_policy(DEMAND_EVIDENCE_POLICY, finding=FINDING, citations=stale_pair,
-                               assessments_by_citation=supporting)
-require("freshness_current" in stale_demand["citation_condition_failures"],
-        "a_stale_source_fails_demand_freshness")
-require(evaluate_policy(BASELINE_EVIDENCE_POLICY, finding=FINDING, citations=stale_pair)["would_admit"],
+        "a_single_publisher_still_fails_demand")
+vendor = evaluate_policy(DEMAND_EVIDENCE_POLICY, finding=FINDING, citations=two_fresh,
+                         assessments_by_citation={"web-1": assessed("web-1"),
+                                                  "web-2": assessed("web-2", kind="vendor_offering")})
+require("evidence_type_admissible" in vendor["citation_condition_failures"],
+        "a_vendor_offering_still_fails_demand_evidence_type")
+stale = evaluate_policy(DEMAND_EVIDENCE_POLICY, finding=FINDING,
+                        citations=[source("web-1", host="alphapress.org"),
+                                   source("web-2", host="betajournal.net", freshness="stale")],
+                        assessments_by_citation=supporting)
+require("freshness_current" in stale["citation_condition_failures"], "a_stale_source_fails_demand_freshness")
+require(evaluate_policy(BASELINE_EVIDENCE_POLICY, finding=FINDING,
+                        citations=[source("web-1", host="alphapress.org"),
+                                   source("web-2", host="betajournal.net", freshness="stale")])["would_admit"],
         "a_dated_but_old_source_still_satisfies_the_baseline")
 
-# --- measurement only: this must not refuse anything yet ----------------------
+# --- uncertainty is required where warranted ---------------------------------
 
-require(result["enforced"] is False and demand["enforced"] is False,
-        "every_evaluation_reports_itself_as_unenforced")
+thin = evaluate_policy(BASELINE_EVIDENCE_POLICY,
+                       finding={"title": "T", "summary": "S", "citation_ids": ["web-1"], "uncertainties": []},
+                       citations=[source("web-1", host="alphapress.org")])
+require("uncertainty_declared_where_warranted" in thin["finding_condition_failures"],
+        "a_single_source_finding_must_declare_uncertainty")
+require(evaluate_policy(BASELINE_EVIDENCE_POLICY,
+                        finding={"title": "T", "summary": "S", "citation_ids": ["web-1", "web-2"],
+                                 "uncertainties": []},
+                        citations=two_fresh)["would_admit"],
+        "a_well_supported_finding_need_not_hedge")
+
+# --- measurement only --------------------------------------------------------
+
+require(thin["enforced"] is False, "every_evaluation_reports_itself_as_unenforced")
 require(evaluate_policy(BASELINE_EVIDENCE_POLICY, finding=None, citations=None)["evaluated_citation_count"] == 0,
         "an_empty_evaluation_is_safe")
 
-# The projection keeps the receipt content-free.
 projected = sanitize_report({"evidence_policy_evaluation": {
     "policy_code": "demand", "evaluated_citation_count": 7, "admissible_citation_count": 1,
-    "citation_condition_failures": {"source_authority_known": 6},
+    "citation_condition_failures": {"source_authority_assessed": 6},
+    "authority_states": {"unclassified": 5, "known_authoritative": 2},
+    "version_signal_count": 3,
     "finding_condition_failures": ["independent_publishers"],
     "would_admit": False, "enforced": False,
     "secret_claim": "private text that must not be persisted",
 }})["evidence_policy_evaluation"]
-require(projected["policy_code"] == "demand", "the_policy_code_is_persisted")
-require(projected["citation_condition_failures"] == {"source_authority_known": 6},
-        "condition_failure_counts_are_persisted")
-require(projected["finding_condition_failures"] == ["independent_publishers"],
-        "finding_condition_failures_are_persisted")
+require(projected["authority_states"] == {"unclassified": 5, "known_authoritative": 2},
+        "authority_states_are_persisted")
+require(projected["version_signal_count"] == 3, "version_signal_count_is_persisted")
 require("secret_claim" not in projected, "unlisted_fields_are_not_persisted")
 require("private text" not in json.dumps(projected), "no_claim_text_reaches_the_receipt")
 require(sanitize_report({})["evidence_policy_evaluation"] == {},
         "a_run_without_a_measurement_persists_an_empty_projection")
-
-# A custom tightening composes the same way, so new dimensions need no new plumbing.
-custom = BASELINE_EVIDENCE_POLICY.tightened("competition", citation=("freshness_current",))
-require(custom.policy_code == "competition", "a_new_policy_keeps_its_own_code")
-require("freshness_current" in custom.citation_conditions, "a_new_policy_adds_its_own_condition")
-require(set(BASELINE_EVIDENCE_POLICY.citation_conditions) <= set(custom.citation_conditions),
-        "a_new_policy_still_inherits_the_baseline")
-require("independent_publishers" not in custom.finding_conditions,
-        "a_new_policy_does_not_inherit_unrelated_demand_rules")
 
 print(json.dumps({"suite": "v2731.0.4-evidence-policy", "passed": len(CHECKS), "total": len(CHECKS), "ok": True, "checks": CHECKS}))
