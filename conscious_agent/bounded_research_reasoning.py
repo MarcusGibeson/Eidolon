@@ -268,6 +268,49 @@ _DIMENSION_FRESHNESS = {
 }
 
 
+EVIDENCE_CURRENCY_REQUIREMENTS = ("reference", "current", "demand_current")
+
+# Wording that makes a claim depend on how recent its evidence is. Naming a
+# version does not: "asyncio behaviour in 3.14" is a reference question, and the
+# version is the compatibility answer a reader wants.
+_CURRENCY_WORDING = re.compile(
+    r"\b(?:current(?:ly)?|recent(?:ly)?|latest|newest|nowadays|today|this\s+(?:year|month|week)|"
+    r"as\s+of|up[\s-]to[\s-]date|state\s+of|status\s+of|trend(?:s|ing)?|"
+    r"deprecat\w*|release\s+notes|what'?s\s+new|new\s+in|changed?\s+(?:in|since)|since\s+20\d{2})\b",
+    re.IGNORECASE,
+)
+
+# A dimension's currency need is inherent to the objective class, not to a window.
+_DIMENSION_CURRENCY = {
+    "demand": "demand_current",
+    "competition": "current",
+    "free_tier_feasibility": "current",
+}
+
+# How far back to look, once currency is known. Cause, then effect.
+_DEFAULT_WINDOW_FOR_CURRENCY = {
+    "reference": "slow_changing",
+    "current": "current",
+    "demand_current": "slow_changing",
+}
+
+
+def _evidence_currency_requirement(text: str, blueprint: list[dict[str, str]] | None) -> str:
+    """Decide what currency the objective's meaning requires.
+
+    Reference material answers a question about how something works, and stays
+    correct until the thing changes. A demand claim is about the present state of
+    a market. Only the objective can say which is being asked.
+    """
+    for row in blueprint or []:
+        dimension = str(row.get("evidence_dimension") or "").strip().lower()
+        if dimension in _DIMENSION_CURRENCY:
+            return _DIMENSION_CURRENCY[dimension]
+    if blueprint:
+        return "current"
+    return "current" if _CURRENCY_WORDING.search(str(text or "")) else "reference"
+
+
 def _single_candidate_dimension_blueprint(text: str) -> tuple[list[dict[str, str]], int]:
     """Keep narrow follow-up objectives tied to their domain instead of a bare keyword."""
     normalized = _clean(text, 1400)
@@ -327,12 +370,18 @@ def decompose_research_objective(
     if not blueprint:
         blueprint, requested_result_count = _comparative_discovery_blueprint(text)
         objective_shape = "comparative_discovery" if blueprint else "general_research"
+    # What kind of currency the objective means to require, decided from the
+    # objective itself. This must come first: deriving it from whatever freshness
+    # window happened to be in force reversed cause and effect, and silently gave
+    # a documentation lookup a thirty-day recency requirement nobody asked for.
+    currency_requirement = _evidence_currency_requirement(text, blueprint)
     # An empty freshness means "let the objective's shape choose". A caller that
-    # states a policy keeps it.
+    # states a policy keeps it. The window is how far back to look; it never
+    # decides whether currency is required at all.
     effective_freshness = (
         str(freshness or "").strip().lower()
         or _clean((blueprint[0] if blueprint else {}).get("freshness_policy"), 24)
-        or "current"
+        or _DEFAULT_WINDOW_FOR_CURRENCY.get(currency_requirement, "current")
     )
     chunks = [str(row["question"]) for row in blueprint] if blueprint else _split_objective(text)
     bounded = dict(budget or {})
@@ -366,7 +415,9 @@ def decompose_research_objective(
             "question_kind": kind,
             "planning_role": role,
             "uncertainty": uncertainty,
-            "requires_current_evidence": kind == "current" or effective_freshness in {"breaking", "current", "versioned"},
+            # Follows the objective's meaning, never the window. A default window
+            # must not be able to invent a currency requirement.
+            "requires_current_evidence": currency_requirement != "reference",
             "assumption_codes": ["public_evidence_only", "literal_objective_interpretation"],
             "unknown_code": f"rq{index}_evidence_status_unknown",
             "query_focus": _clean(blueprint_row.get("query_focus") or chunk, 1600),
@@ -404,6 +455,7 @@ def decompose_research_objective(
         "requested_result_count": requested_result_count,
         "objective_shape": objective_shape,
         "recommended_freshness_policy": effective_freshness,
+        "evidence_currency_requirement": currency_requirement,
     }
     result = {
         "ok": True,
@@ -415,6 +467,7 @@ def decompose_research_objective(
         "requested_result_count": requested_result_count,
         "objective_shape": objective_shape,
         "recommended_freshness_policy": effective_freshness,
+        "evidence_currency_requirement": currency_requirement,
         "public_subquestions": public_rows,
         "required_facts": required_facts,
         "comparative_criteria": comparative_criteria,

@@ -134,14 +134,74 @@ require(set(CURRENT_EVIDENCE_POLICY.citation_conditions) <= set(DEMAND_EVIDENCE_
 require(len(set(DEMAND_EVIDENCE_POLICY.citation_conditions)) == len(DEMAND_EVIDENCE_POLICY.citation_conditions),
         "composition_does_not_duplicate_a_condition")
 
-require(policy_for_objective("demand").policy_code == "demand", "a_demand_objective_selects_demand")
-require(policy_for_objective("").policy_code == "baseline", "an_unshaped_objective_selects_the_baseline")
-require(policy_for_objective("", requires_current_evidence=True).policy_code == "current",
-        "a_current_evidence_claim_selects_the_currency_layer")
-require(policy_for_objective("", reference_material=True).policy_code == "reference",
-        "reference_material_selects_the_reference_policy")
-require(policy_for_objective("demand", requires_current_evidence=True).policy_code == "demand",
-        "demand_outranks_the_currency_layer")
+require(policy_for_objective("demand_current").policy_code == "demand", "a_demand_objective_selects_demand")
+require(policy_for_objective("current").policy_code == "current", "a_current_claim_selects_the_currency_layer")
+require(policy_for_objective("reference").policy_code == "reference", "reference_material_selects_reference")
+require(policy_for_objective("").policy_code == "baseline", "an_unstated_requirement_falls_back_to_the_baseline")
+require(policy_for_objective("nonsense").policy_code == "baseline",
+        "an_unrecognised_requirement_falls_back_rather_than_guessing")
+
+# --- the invariant the accidental CURRENT run discovered ----------------------
+# A default freshness window silently created a semantic currency requirement,
+# so a documentation lookup was asked for evidence from the last thirty days.
+# Currency must come from the objective's meaning; the window only says how far
+# back to look once that is settled.
+
+from bounded_research_reasoning import decompose_research_objective  # noqa: E402
+
+BUDGET = {"max_queries": 20}
+
+
+def decomposed(objective: str, freshness: str = ""):
+    row = decompose_research_objective(objective, freshness=freshness, budget=BUDGET)
+    require(row.get("ok"), "the_objective_decomposes")
+    CHECKS.pop()
+    return row
+
+
+reference_objective = decomposed("Research Python asyncio task cancellation behavior")
+require(reference_objective["evidence_currency_requirement"] == "reference",
+        "a_documentation_lookup_requires_reference_not_currency")
+require(reference_objective["subquestions"][0]["requires_current_evidence"] is False,
+        "a_documentation_lookup_does_not_require_current_evidence")
+require(policy_for_objective(reference_objective["evidence_currency_requirement"]).policy_code == "reference",
+        "a_documentation_lookup_selects_the_reference_policy")
+
+# The window may be anything; it must not change what the objective requires.
+for window in ("current", "breaking", "versioned", "slow_changing", "stable"):
+    forced = decomposed("Research Python asyncio task cancellation behavior", freshness=window)
+    require(forced["evidence_currency_requirement"] == "reference",
+            "a_freshness_window_never_creates_a_currency_requirement")
+    CHECKS.pop()
+    require(forced["subquestions"][0]["requires_current_evidence"] is False,
+            "a_freshness_window_never_sets_requires_current_evidence")
+    CHECKS.pop()
+CHECKS.append("a_freshness_window_never_creates_a_currency_requirement")
+CHECKS.append("a_freshness_window_never_sets_requires_current_evidence")
+
+# Wording that genuinely asks for currency still gets it.
+for objective in ("Research the current state of Python packaging tooling",
+                  "Research recent changes in TLS certificate policy",
+                  "Research the latest Kubernetes release notes"):
+    row = decomposed(objective)
+    require(row["evidence_currency_requirement"] == "current",
+            "currency_wording_requires_current_evidence")
+    CHECKS.pop()
+CHECKS.append("currency_wording_requires_current_evidence")
+
+# A demand objective's currency need is inherent to its class, not to a window.
+demand_objective = decomposed("Research Widget Payment Tracker demand.")
+require(demand_objective["evidence_currency_requirement"] == "demand_current",
+        "a_demand_objective_requires_demand_currency")
+require(policy_for_objective(demand_objective["evidence_currency_requirement"]).policy_code == "demand",
+        "a_demand_objective_still_selects_the_demand_policy")
+require(demand_objective["subquestions"][0]["requires_current_evidence"] is True,
+        "a_demand_objective_still_requires_current_evidence")
+
+# Naming a version is a compatibility answer, not a recency demand.
+versioned = decomposed("Research Python 3.14 asyncio TaskGroup behavior")
+require(versioned["evidence_currency_requirement"] == "reference",
+        "naming_a_version_does_not_make_a_question_time_sensitive")
 
 # --- demand keeps its stricter bar -------------------------------------------
 

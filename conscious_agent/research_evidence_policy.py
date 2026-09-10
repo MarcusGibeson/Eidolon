@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 """Declarative evidence policy shared by every research objective shape.
 
@@ -197,17 +197,23 @@ POLICIES = {
 }
 
 
-def policy_for_objective(
-    dimension: str = "", *, requires_current_evidence: bool = False, reference_material: bool = False,
-) -> EvidencePolicy:
-    """The baseline applies everywhere; currency and dimension tighten it."""
-    if str(dimension or "").strip().lower() == "demand":
-        return DEMAND_EVIDENCE_POLICY
-    if reference_material:
-        return REFERENCE_EVIDENCE_POLICY
-    if requires_current_evidence:
-        return CURRENT_EVIDENCE_POLICY
-    return BASELINE_EVIDENCE_POLICY
+POLICY_FOR_CURRENCY_REQUIREMENT = {
+    "reference": REFERENCE_EVIDENCE_POLICY,
+    "current": CURRENT_EVIDENCE_POLICY,
+    "demand_current": DEMAND_EVIDENCE_POLICY,
+}
+
+
+def policy_for_objective(currency_requirement: str = "") -> EvidencePolicy:
+    """Select a policy from what the objective means, not from a freshness window.
+
+    Deriving the policy from the window in force reversed cause and effect: a
+    default window silently created a currency requirement, and a documentation
+    lookup was asked for evidence from the last thirty days.
+    """
+    return POLICY_FOR_CURRENCY_REQUIREMENT.get(
+        str(currency_requirement or "").strip().lower(), BASELINE_EVIDENCE_POLICY
+    )
 
 
 def evaluate_policy(
@@ -270,5 +276,6 @@ __all__ = [
     "BASELINE_EVIDENCE_POLICY", "REFERENCE_EVIDENCE_POLICY", "CURRENT_EVIDENCE_POLICY", "DEMAND_EVIDENCE_POLICY",
     "CURRENCY_LAYER", "POLICIES", "EvidencePolicy",
     "CITATION_CONDITIONS", "FINDING_CONDITIONS",
-    "evaluate_policy", "policy_for_objective", "source_authority_state", "version_signal_present",
+    "evaluate_policy", "policy_for_objective", "POLICY_FOR_CURRENCY_REQUIREMENT",
+    "source_authority_state", "version_signal_present",
 ]

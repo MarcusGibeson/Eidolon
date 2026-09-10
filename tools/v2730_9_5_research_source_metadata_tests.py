@@ -135,7 +135,13 @@ demand = decompose_research_objective("Research Brand Deal Tracking for Content 
 require(demand["recommended_freshness_policy"] == "slow_changing", "demand_objective_uses_a_durable_window")
 require(recommended_policy("Research Foo Bar competition.") == "versioned", "competition_objective_uses_a_versioned_window")
 require(recommended_policy("Research Foo Bar free tier feasibility.") == "current", "free_tier_objective_stays_current")
-require(recommended_policy("Research whether creators track sponsorship payments manually") == "current", "unshaped_objective_keeps_the_current_default")
+# Superseded deliberately. This asserted that an unshaped objective inherits a
+# 30-day window, which turned out to be the defect itself: the default window went
+# on to create a semantic currency requirement, so a documentation lookup was asked
+# for evidence from the last month. An objective whose wording asks for nothing
+# current now gets a reference window. See v2731_0_4 for the invariant.
+require(recommended_policy("Research whether creators track sponsorship payments manually") == "slow_changing",
+        "an_objective_asking_for_nothing_current_gets_a_reference_window")
 require(recommended_policy("Research Foo Bar demand.", freshness="breaking") == "breaking", "explicit_caller_policy_is_preserved")
 
 # Widening the window must not drop the requirement that currency is evidenced.

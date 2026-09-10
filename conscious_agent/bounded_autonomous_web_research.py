@@ -210,9 +210,7 @@ def _inferred_source_kind(url: str, supplied: str) -> str:
     return classify_source_kind(url, "unknown")
 
 
-def _evaluate_evidence_policy(
-    *, payload, citations, assessment_summary, dimension, requires_current_evidence=False,
-) -> dict[str, Any]:
+def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currency_requirement) -> dict[str, Any]:
     """Measure the shared evidence policy without letting it refuse anything."""
     try:
         from research_evidence_policy import evaluate_policy, policy_for_objective
@@ -224,7 +222,7 @@ def _evaluate_evidence_policy(
             if isinstance(row, Mapping)
         }
         return evaluate_policy(
-            policy_for_objective(dimension, requires_current_evidence=bool(requires_current_evidence)),
+            policy_for_objective(currency_requirement),
             finding=finding,
             citations=[row for row in (citations or []) if isinstance(row, Mapping)],
             assessments_by_citation=assessments,
@@ -1531,10 +1529,7 @@ class BoundedResearchSessionStore:
                             payload=synthesis_result.get("payload"),
                             citations=citation_rows,
                             assessment_summary=synthesis_result.get("source_assessment_summary"),
-                            dimension=str((decomposition.get("subquestions") or [{}])[0].get("evidence_dimension") or ""),
-                            requires_current_evidence=bool(
-                                (decomposition.get("subquestions") or [{}])[0].get("requires_current_evidence")
-                            ),
+                            currency_requirement=str(decomposition.get("evidence_currency_requirement") or ""),
                         )
                         synthesis_result["validation_status"] = str(validated_synthesis.get("status") or "")
                         if capture_training_evidence:
