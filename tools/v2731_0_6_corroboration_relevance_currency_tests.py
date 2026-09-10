@@ -151,6 +151,8 @@ require(not same_publisher["would_admit"], "two_pages_from_one_publisher_are_not
 
 # --- higher-risk claims need corroboration whatever backs them ---------------
 
+HISTORY = "Research the causes of the 1929 stock market crash"
+
 RISKY = {
     "pricing_claim": "Stripe charges 2.9% plus 30 cents per transaction.",
     "enforcement_claim": "The regulator has issued fines under the new rules.",
@@ -169,6 +171,41 @@ for code, text in RISKY.items():
 
 require(claim_risk_flags({"finding": "Cancelling a task raises CancelledError inside it."}) == (),
         "an_ordinary_descriptive_claim_carries_no_risk_flag")
+
+# A finding reaches this module in two shapes and both must be read. The first
+# corpus rerun found every risk flag empty and every relevance check silently
+# passing, because the synthesis payload carries its claim as title plus summary
+# while only the report row uses "finding". Reading one shape is indistinguishable
+# from a finding that makes no risky claim at all.
+payload_shape = {"title": "Stripe standard online processing fee",
+                 "summary": "Stripe charges 2.9% plus 30 cents per US online card transaction.",
+                 "citation_ids": ["web-1"], "uncertainties": ["Bounded evidence."]}
+require("pricing_claim" in claim_risk_flags(payload_shape),
+        "a_payload_shaped_finding_is_read_for_risk")
+payload_risky = evaluate_policy(REFERENCE_EVIDENCE_POLICY, finding=payload_shape, citations=docs,
+                                objective="Research Stripe payment processing fee structure")
+require(payload_risky["required_publisher_count"] == 2,
+        "a_payload_shaped_pricing_claim_needs_corroboration")
+payload_non_answer = evaluate_policy(
+    REFERENCE_EVIDENCE_POLICY,
+    finding={"title": "1929 crash caused by rapid collapse",
+             "summary": "Excerpts describe the event as a rapid collapse but do not specify causes.",
+             "citation_ids": ["web-1", "web-2"], "uncertainties": ["Bounded evidence."]},
+    citations=[source("web-1", host="alphapress.org", kind="unknown"),
+               source("web-2", host="betajournal.net", kind="unknown")],
+    objective=HISTORY)
+require("answers_objective" in payload_non_answer["finding_condition_failures"],
+        "a_payload_shaped_non_answer_is_caught")
+
+# The keys this module reads are the keys the synthesis contract writes. If that
+# contract renames one, this fails here rather than silently passing everything.
+import research_claim_assessment as _claims  # noqa: E402
+
+_contract = Path(_claims.__file__).read_text(encoding="utf-8", errors="replace")
+for key in ('finding.get("title")', 'finding.get("summary")'):
+    require(key in _contract, "the_synthesis_contract_still_names_this_finding_key")
+    CHECKS.pop()
+CHECKS.append("the_finding_keys_read_here_match_the_synthesis_contract")
 require(claim_risk_flags({"finding": "It works this way because the loop yields."}) == (),
         "a_connective_because_is_not_a_causal_assertion")
 require(claim_risk_flags({}) == (), "a_finding_with_no_text_carries_no_risk_flag")
@@ -189,7 +226,6 @@ require("corroboration_satisfied" in current_one["finding_condition_failures"],
 
 # --- the finding has to answer the question ----------------------------------
 
-HISTORY = "Research the causes of the 1929 stock market crash"
 require("cause" in objective_terms(HISTORY), "objective_terms_are_stemmed")
 require("research" not in objective_terms(HISTORY), "objective_terms_drop_the_instruction_verb")
 

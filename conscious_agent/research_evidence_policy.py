@@ -182,9 +182,16 @@ _CLAIM_RISK_PATTERNS: dict[str, re.Pattern[str]] = {
 }
 
 
+# A finding reaches this module in two shapes. The synthesis payload carries the
+# claim as "title" plus "summary"; a report row carries it as "finding" or, for a
+# recommendation, "conclusion". Reading only one shape leaves the claim-risk and
+# relevance conditions evaluating an empty string, which they pass silently.
+_FINDING_TEXT_KEYS = ("title", "summary", "finding", "claim", "conclusion", "statement", "text")
+
+
 def _finding_text(finding: Mapping[str, Any]) -> str:
-    parts = [str(finding.get(key) or "") for key in ("finding", "claim", "statement", "text")]
-    return " ".join(part for part in parts if part)
+    parts = [str(finding.get(key) or "").strip() for key in _FINDING_TEXT_KEYS]
+    return " ".join(dict.fromkeys(part for part in parts if part))
 
 
 def claim_risk_flags(finding: Mapping[str, Any]) -> tuple[str, ...]:
