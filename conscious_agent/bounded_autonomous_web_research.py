@@ -768,6 +768,7 @@ class BoundedResearchSessionStore:
         observed_bytes = 0
         observed_pages = 0
         source_failure_count = 0
+        model_assessment_denial_reason = ""
         # Initialized here, not at the observation loop: the failure report reads it,
         # and a run that dies before collection must not raise a second error while
         # trying to describe the first.
@@ -1498,6 +1499,8 @@ class BoundedResearchSessionStore:
                             )
                             if assessed.get("ok"):
                                 validated_synthesis = assessed
+                            else:
+                                model_assessment_denial_reason = _clean(assessed.get("denial_reason"), 80)
                         synthesis_result["validation_status"] = str(validated_synthesis.get("status") or "")
                         if capture_training_evidence:
                             try:
@@ -1630,6 +1633,7 @@ class BoundedResearchSessionStore:
                 "source_independence_version": "v2503.3",
                 "requested_result_count": int(decomposition.get("requested_result_count") or 0),
                 "synthesis_status": str(synthesis_result.get("validation_status") or synthesis_result.get("status") or "research_synthesis_not_available"),
+                "model_assessment_denial_reason": model_assessment_denial_reason,
                 "source_assessment_summary": dict(synthesis_result.get("source_assessment_summary") or {}),
                 "candidate_discovery_synthesis_status": str(discovery_synthesis_result.get("validation_status") or discovery_synthesis_result.get("status") or "candidate_discovery_not_available"),
                 "candidate_follow_up_status": str(candidate_follow_up.get("status") or "candidate_evidence_follow_up_not_available"),

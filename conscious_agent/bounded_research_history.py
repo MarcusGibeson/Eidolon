@@ -318,6 +318,7 @@ def sanitize_report(report: Mapping[str, Any] | None) -> dict[str, Any]:
         "requested_result_count": _bounded_count(source.get("requested_result_count")),
         "synthesis_status": _clean(source.get("synthesis_status"), 100),
         "model_assessment_status": _clean(_assessment_summary.get("status"), 80),
+        "model_assessment_denial_reason": _clean(source.get("model_assessment_denial_reason"), 80),
         "grounded_assessment_count": _bounded_count(_assessment_summary.get("grounded_assessment_count")),
         "omitted_passage_source_count": _bounded_count(_assessment_summary.get("omitted_passage_source_count")),
         "assessment_stance_counts": _count_map(_assessment_summary.get("assessment_stance_counts")),

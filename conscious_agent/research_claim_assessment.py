@@ -187,41 +187,50 @@ def assess_source_claims(payload, *, documents, citations, required_dimension=""
     }
 
 
+def _not_admitted(reason):
+    """Refuse a model-assessed inference, naming which rule refused it.
+
+    A bare refusal made every denial look alike in the receipt, so a run blocked
+    by one stale citation was indistinguishable from one lacking evidence
+    entirely. The reason is a fixed code, carrying no claim text or URL.
+    """
+    return {"ok": False, "status": "model_assessment_not_admitted", "denial_reason": reason}
+
+
 def model_assessed_conclusion(payload, *, assessment_summary, citations, dimension):
     """Admit a tentative demand inference, never a verified observation or winner.
 
     The model evaluates meaning and evidence kind. Deterministic checks bind that
     judgment to the exact finding, observed passages, and distinct source lineages.
     """
-    denied = {"ok": False, "status": "model_assessment_not_admitted"}
     if dimension != "demand" or not isinstance(payload, Mapping) or not isinstance(assessment_summary, Mapping):
-        return denied
+        return _not_admitted("not_a_demand_dimension")
     findings = payload.get("findings")
     if not isinstance(findings, list) or len(findings) != 1 or not isinstance(findings[0], Mapping):
-        return denied
+        return _not_admitted("finding_not_singular")
     finding = findings[0]
     if not isinstance(finding.get("title"), str) or not finding["title"].strip():
-        return denied
+        return _not_admitted("finding_missing_title")
     claim = finding.get("summary")
     ids = finding.get("citation_ids")
     if not isinstance(claim, str) or not 1 <= len(claim) <= 700 or not isinstance(ids, list):
-        return denied
+        return _not_admitted("finding_claim_or_citations_invalid")
     if not all(isinstance(cid, str) for cid in ids):
-        return denied
+        return _not_admitted("citation_ids_not_strings")
     index = {row.get("citation_id"): row for row in citations if isinstance(row, Mapping)}
     if not ids or any(cid not in index for cid in ids):
-        return denied
+        return _not_admitted("cited_citation_not_observed")
     claim_digest = hashlib.sha256(claim.encode()).hexdigest()
     if assessment_summary.get("rejected_assessment_counts"):
-        return denied
+        return _not_admitted("grounding_rejected_some_assessments")
     if any(row.get("stance") in {"refutes", "mixed"} for row in index.values()):
-        return denied
+        return _not_admitted("observed_citation_stance_conflicts")
     all_assessments = assessment_summary.get("assessments", [])
     if not isinstance(all_assessments, list):
-        return denied
+        return _not_admitted("assessments_malformed")
     if any(not isinstance(row, Mapping) or row.get("claim_digest") != claim_digest
            or row.get("assessed_dimension") != dimension for row in all_assessments):
-        return denied
+        return _not_admitted("assessment_claim_or_dimension_mismatch")
     rows = [row for row in assessment_summary.get("assessments", [])
             if isinstance(row, Mapping) and row.get("claim_digest") == claim_digest
             and row.get("assessed_dimension") == dimension]
@@ -229,14 +238,14 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
     if any(row.get("model_assessment") == "refutes"
            or (row.get("citation_id") in ids and row.get("model_assessment") != "supports")
            for row in rows):
-        return denied
+        return _not_admitted("cited_source_not_assessed_as_supporting")
     eligible = {}
     for row in rows:
         cid = row.get("citation_id")
         if cid not in ids or not row.get("textual_provenance_verified"):
             continue
         if not re.fullmatch(r"[0-9a-f]{64}", str(row.get("passage_digest") or "")):
-            return denied
+            return _not_admitted("passage_digest_invalid")
         role = source_evidence_role(index[cid])
         if role["evidence_role"] in {
             "invalid_public_url", "generic_definition", "promotional_summary",
@@ -250,30 +259,30 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
         if not isinstance(relevance, (int, float)) or not 0.5 <= relevance <= 1.0:
             continue
         if index[cid].get("stance") in {"refutes", "mixed"} or index[cid].get("freshness") == "stale":
-            return denied
+            return _not_admitted("cited_source_stale_or_conflicting")
         # Identical selected passages remain one lineage even across different hosts.
         eligible[cid] = {**index[cid], "content_similarity_digest": row["passage_digest"],
                          "content_similarity_confidence": "exact"}
     if set(eligible) != set(ids):
-        return denied
+        return _not_admitted("cited_source_ineligible")
     publishers = {source_identity(index[cid])["publisher_digest"] for cid in eligible}
     if "" in publishers or len(publishers) < 2:
-        return denied
+        return _not_admitted("insufficient_distinct_publishers")
     original_lineage = independence_summary([index[cid] for cid in eligible])
     groups = {cid: {cid} for cid in index}
     for pair in assessment_summary.get("observed_attribution_relationships", []):
         if not isinstance(pair, list) or len(pair) != 2 or any(cid not in groups for cid in pair):
-            return denied
+            return _not_admitted("attribution_relationships_malformed")
         merged = groups[pair[0]] | groups[pair[1]]
         for cid in merged:
             groups[cid] = merged
     if len({tuple(sorted(groups[cid])) for cid in eligible}) < 2:
-        return denied
+        return _not_admitted("insufficient_independent_groups")
     if original_lineage["independent_lineage_count"] < 2 or original_lineage["uncertain_lineage_count"]:
-        return denied
+        return _not_admitted("insufficient_independent_lineage")
     lineage = independence_summary(eligible.values())
     if lineage["independent_lineage_count"] < 2 or lineage["uncertain_lineage_count"]:
-        return denied
+        return _not_admitted("insufficient_eligible_lineage")
     limitations = [
         "Claim support and evidence type were assessed by the model, not independently verified. "
         "Different source lineages do not prove the sources are factually correct.",
