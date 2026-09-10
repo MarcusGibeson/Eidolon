@@ -45,7 +45,7 @@ import re
 from typing import Any, Callable
 from urllib.parse import urlsplit
 
-CONTRACT_VERSION = "v2731.0.7"
+CONTRACT_VERSION = "v2731.1.0"
 
 MINIMUM_CLAIM_SOURCE_FIT = 0.5
 MINIMUM_INDEPENDENT_PUBLISHERS = 2
@@ -656,6 +656,58 @@ def policy_for_objective(currency_requirement: str = "") -> EvidencePolicy:
     )
 
 
+def _finding_citation_ids(finding: Mapping[str, Any]) -> tuple[list[str], bool]:
+    """The citations the finding itself rests on, and whether it declared any.
+
+    The synthesis payload names them "citation_ids"; a report row names them
+    "citations". Both are lists of citation id strings.
+    """
+    for key in ("citation_ids", "citations"):
+        value = finding.get(key)
+        if isinstance(value, list):
+            ids = [str(item).strip() for item in value if isinstance(item, str) and str(item).strip()]
+            return list(dict.fromkeys(ids)), True
+    return [], False
+
+
+def _verdict(
+    policy: EvidencePolicy,
+    finding: Mapping[str, Any],
+    evaluated: list[tuple[Mapping[str, Any], str, list[str]]],
+    base_context: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Apply the finding conditions to one set of already-evaluated citations."""
+    admissible = [citation for citation, _relationship, failed in evaluated if not failed]
+    relationships = [relationship for _citation, relationship, failed in evaluated if not failed]
+    failures: dict[str, int] = {}
+    for _citation, _relationship, failed in evaluated:
+        for name in failed:
+            failures[name] = failures.get(name, 0) + 1
+    tier = strongest_tier(admissible, relationships)
+    first_party_operational = CLAIM_SOURCE_FIRST_PARTY_OPERATIONAL in relationships
+    context = {
+        **base_context,
+        "first_party_operational": first_party_operational,
+        "admissible_relationships": relationships,
+    }
+    finding_failures = [
+        name for name in policy.finding_conditions
+        if name in FINDING_CONDITIONS and not FINDING_CONDITIONS[name](finding, admissible, context)
+    ]
+    return {
+        "evaluated_citation_count": len(evaluated),
+        "admissible_citation_count": len(admissible),
+        "citation_condition_failures": dict(sorted(failures.items())),
+        "finding_condition_failures": sorted(finding_failures),
+        "supporting_authority_tier": tier,
+        "independent_publisher_count": _publisher_count(admissible),
+        "required_publisher_count": required_publisher_count(
+            tier, tuple(base_context.get("claim_risk_flags") or ()), policy.policy_code, first_party_operational),
+        "would_admit": not finding_failures and bool(admissible),
+        "_admissible_ids": [str(citation.get("citation_id") or "") for citation in admissible],
+    }
+
+
 def evaluate_policy(
     policy: EvidencePolicy,
     *,
@@ -666,7 +718,15 @@ def evaluate_policy(
     currency_reason: str = "",
     freshness_window: str = "",
 ) -> dict[str, Any]:
-    """Report which named conditions a finding and its citations fail.
+    """Report which named conditions a finding and its own citations fail.
+
+    The verdict is about the finding, so it is taken over the citations the
+    finding names - not over everything the run observed. Judging the pool let a
+    finding that cited one unclassified blog borrow admission from seven other
+    publishers it never used, and let a finding citing an aggregator borrow the
+    vendor's own price list. The pool is still measured, separately, as the
+    admissible evidence that was available: the gap between the two is the signal
+    that good evidence existed and synthesis did not use it.
 
     Returns counts and fixed condition codes only. Nothing here refuses anything;
     a caller decides what to do with the result.
@@ -680,7 +740,8 @@ def evaluate_policy(
     except ImportError:  # measurement must never break the run it observes
         classification_reason = document_form = None
 
-    citation_failures: dict[str, int] = {}
+    # Coverage diagnostics describe every observed source: they measure the
+    # classifier, not the finding, and stay comparable with earlier receipts.
     authority_states: dict[str, int] = {}
     authority_tiers: dict[str, int] = {}
     url_classification_reasons: dict[str, int] = {}
@@ -688,8 +749,6 @@ def evaluate_policy(
     version_signals = 0
     living_documentation = 0
     relationships: dict[str, int] = {}
-    admissible: list[Mapping[str, Any]] = []
-    admissible_relationships: list[str] = []
     # Decided before the loop: every condition that asks about authority needs the
     # objective's own terms to know whether a source is the first party for it.
     terms = objective_terms(objective)
@@ -699,6 +758,7 @@ def evaluate_policy(
         "claim_risk_flags": risk_flags,
         "objective_terms": terms,
     }
+    evaluated: list[tuple[Mapping[str, Any], str, list[str]]] = []
     for citation in rows:
         # Standing is per claim, not per publisher, so it is decided here and
         # carried into every condition that asks about authority.
@@ -727,23 +787,16 @@ def evaluate_policy(
             name for name in policy.citation_conditions
             if name in CITATION_CONDITIONS and not CITATION_CONDITIONS[name](citation, assessment, citation_context)
         ]
-        for name in failed:
-            citation_failures[name] = citation_failures.get(name, 0) + 1
-        if not failed:
-            admissible.append(citation)
-            admissible_relationships.append(relationship)
+        evaluated.append((citation, relationship, failed))
 
-    supporting_tier = strongest_tier(admissible, admissible_relationships)
-    first_party_operational = CLAIM_SOURCE_FIRST_PARTY_OPERATIONAL in admissible_relationships
-    context = {
-        **base_context,
-        "first_party_operational": first_party_operational,
-        "admissible_relationships": admissible_relationships,
-    }
-    finding_failures = [
-        name for name in policy.finding_conditions
-        if name in FINDING_CONDITIONS and not FINDING_CONDITIONS[name](row, admissible, context)
-    ]
+    cited_ids, ids_declared = _finding_citation_ids(row)
+    by_id = {str(citation.get("citation_id") or ""): (citation, relationship, failed)
+             for citation, relationship, failed in evaluated}
+    cited = [by_id[cid] for cid in cited_ids if cid in by_id]
+    finding_verdict = _verdict(policy, row, cited, base_context)
+    available = _verdict(policy, row, evaluated, base_context)
+    cited_admissible = set(finding_verdict.pop("_admissible_ids"))
+    uncited_admissible = [cid for cid in available.pop("_admissible_ids") if cid not in cited_admissible]
 
     return {
         "contract_version": CONTRACT_VERSION,
@@ -753,10 +806,23 @@ def evaluate_policy(
         # read as "the source was old" or as "the window was wrong".
         "currency_reason": str(currency_reason or ""),
         "freshness_window": str(freshness_window or ""),
-        "evaluated_citation_count": len(rows),
-        "admissible_citation_count": len(admissible),
-        "citation_condition_failures": dict(sorted(citation_failures.items())),
-        "finding_condition_failures": sorted(finding_failures),
+        # The verdict: this finding, judged on the citations it names.
+        **finding_verdict,
+        "cited_citation_ids_supplied": ids_declared,
+        # Named but never observed, so they could not be judged at all.
+        "unobserved_cited_citation_count": len([cid for cid in cited_ids if cid not in by_id]),
+        # What the run had in hand. Admissible here and not cited above is the
+        # "good evidence existed, synthesis ignored it" case.
+        "available_admissible_evidence": {
+            "observed_citation_count": available["evaluated_citation_count"],
+            "admissible_citation_count": available["admissible_citation_count"],
+            "independent_publisher_count": available["independent_publisher_count"],
+            "supporting_authority_tier": available["supporting_authority_tier"],
+            "citation_condition_failures": available["citation_condition_failures"],
+            "would_admit": available["would_admit"],
+        },
+        "uncited_admissible_citation_count": len(uncited_admissible),
+        "admissible_evidence_not_cited": bool(available["would_admit"] and not finding_verdict["would_admit"]),
         "authority_states": dict(sorted(authority_states.items())),
         "authority_tiers": dict(sorted(authority_tiers.items())),
         "url_classification_reasons": dict(sorted(url_classification_reasons.items())),
@@ -764,15 +830,10 @@ def evaluate_policy(
         "version_signal_count": version_signals,
         "living_documentation_count": living_documentation,
         "claim_risk_flags": list(risk_flags),
-        "supporting_authority_tier": supporting_tier,
-        "independent_publisher_count": _publisher_count(admissible),
         "claim_source_relationships": dict(sorted(relationships.items())),
-        "required_publisher_count": required_publisher_count(
-            supporting_tier, risk_flags, policy.policy_code, first_party_operational),
         # Whether the relevance check had an objective to judge against, so a
         # clean answers_objective cannot be mistaken for a check that ran.
         "objective_terms_supplied": bool(terms),
-        "would_admit": not finding_failures and bool(admissible),
         "enforced": False,
     }
 

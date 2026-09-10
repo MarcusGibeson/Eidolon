@@ -111,6 +111,11 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "independent_publisher_count": _bounded_count(value.get("independent_publisher_count")),
         "required_publisher_count": _bounded_count(value.get("required_publisher_count")),
         "objective_terms_supplied": bool(value.get("objective_terms_supplied")),
+        "cited_citation_ids_supplied": bool(value.get("cited_citation_ids_supplied")),
+        "unobserved_cited_citation_count": _bounded_count(value.get("unobserved_cited_citation_count")),
+        "available_admissible_evidence": _available_evidence_projection(value.get("available_admissible_evidence")),
+        "uncited_admissible_citation_count": _bounded_count(value.get("uncited_admissible_citation_count")),
+        "admissible_evidence_not_cited": bool(value.get("admissible_evidence_not_cited")),
         "finding_condition_failures": [
             code for code in (
                 _clean(item, 60) for item in list(value.get("finding_condition_failures") or [])[:12]
@@ -118,6 +123,24 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         ],
         "would_admit": bool(value.get("would_admit")),
         "enforced": bool(value.get("enforced")),
+    }
+
+
+def _available_evidence_projection(value: object) -> dict[str, Any]:
+    """Project the admissible evidence a run had available, as counts only.
+
+    Kept beside the finding's own verdict so a receipt can say "good evidence
+    existed and was not cited" without ever naming the sources involved.
+    """
+    if not isinstance(value, Mapping) or not value:
+        return {}
+    return {
+        "observed_citation_count": _bounded_count(value.get("observed_citation_count")),
+        "admissible_citation_count": _bounded_count(value.get("admissible_citation_count")),
+        "independent_publisher_count": _bounded_count(value.get("independent_publisher_count")),
+        "supporting_authority_tier": _clean(value.get("supporting_authority_tier"), 40),
+        "citation_condition_failures": _count_map(value.get("citation_condition_failures")),
+        "would_admit": bool(value.get("would_admit")),
     }
 
 
