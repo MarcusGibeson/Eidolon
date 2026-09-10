@@ -167,6 +167,62 @@ def plan_research(
     return result
 
 
+# English month names, spelled out rather than read through strptime's %b, which
+# follows the process locale and would silently stop matching on a non-English
+# system.
+_MONTHS = {
+    name: number
+    for number, names in enumerate((
+        ("jan", "january"), ("feb", "february"), ("mar", "march"), ("apr", "april"),
+        ("may",), ("jun", "june"), ("jul", "july"), ("aug", "august"),
+        ("sep", "sept", "september"), ("oct", "october"), ("nov", "november"), ("dec", "december"),
+    ), 1)
+    for name in names
+}
+_MONTH = r"([A-Za-z]{3,9})\.?"
+
+# Non-ISO shapes scholarly publishers actually emit. Highwire dates look like
+# "2021 Aug 23" or "2021/08/23"; a partial date names only a month or a year.
+_SCHOLARLY_DATE_SHAPES: tuple[tuple[re.Pattern[str], tuple[str, ...]], ...] = (
+    (re.compile(r"^(\d{4})[/.\-](\d{1,2})[/.\-](\d{1,2})$"), ("year", "month", "day")),
+    (re.compile(r"^(\d{4})[/.\-](\d{1,2})$"), ("year", "month")),
+    (re.compile(r"^(\d{4})$"), ("year",)),
+    (re.compile(rf"^(\d{{4}})\s+{_MONTH}(?:\s+(\d{{1,2}}))?$"), ("year", "month_name", "day")),
+    (re.compile(rf"^(\d{{1,2}})\s+{_MONTH},?\s+(\d{{4}})$"), ("day", "month_name", "year")),
+    (re.compile(rf"^{_MONTH}\s+(\d{{1,2}}),?\s+(\d{{4}})$"), ("month_name", "day", "year")),
+    (re.compile(rf"^{_MONTH}\s+(\d{{4}})$"), ("month_name", "year")),
+)
+
+
+def _parse_scholarly_date(text: str) -> datetime | None:
+    """Read a non-ISO publication date, resolving a partial date to its start.
+
+    A date that names only a month or a year becomes the first day of that
+    period. That can only make a source look older than it is, never fresher, so
+    a freshness requirement is never satisfied by the imprecision of a date.
+    """
+    for pattern, fields in _SCHOLARLY_DATE_SHAPES:
+        match = pattern.match(text)
+        if not match:
+            continue
+        parts = dict(zip(fields, match.groups()))
+        try:
+            year = int(parts["year"])
+            if "month_name" in parts:
+                month = _MONTHS.get(str(parts["month_name"]).casefold())
+                if month is None:
+                    return None
+            else:
+                month = int(parts.get("month") or 1)
+            day = int(parts.get("day") or 1)
+            if not 1800 <= year <= 2200:
+                return None
+            return datetime(year, month, day, tzinfo=timezone.utc)
+        except ValueError:
+            return None
+    return None
+
+
 def _parse_timestamp(value: str) -> datetime | None:
     text = str(value or "").strip()
     if not text:
@@ -174,7 +230,9 @@ def _parse_timestamp(value: str) -> datetime | None:
     try:
         parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
     except ValueError:
-        return None
+        parsed = _parse_scholarly_date(text)
+        if parsed is None:
+            return None
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(timezone.utc)

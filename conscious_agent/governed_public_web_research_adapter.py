@@ -247,7 +247,20 @@ class _VisibleTextParser(HTMLParser):
             self._anchor = [values.get("href") or "", [], context]
         if tag.casefold() == "meta":
             declared = str(values.get("property") or values.get("name") or "").casefold()
-            if not self._ignored and declared in {"article:published_time", "datepublished", "date"}:
+            # Scholarly publishers declare dates in their own vocabularies:
+            # Highwire (citation_*), read by every scholarly index; Dublin Core
+            # (dc.* / dcterms.*); and PRISM (prism.*). Reading only the
+            # article:published_time family left peer-reviewed primary sources on
+            # PMC undated, and an undated source fails the currency layer - so the
+            # most authoritative evidence for a science question was refused for
+            # a metadata gap, not for anything about the evidence.
+            if not self._ignored and declared in {
+                "article:published_time", "datepublished", "date",
+                "citation_publication_date", "citation_online_date", "citation_date",
+                "dc.date", "dc.date.issued", "dc.date.created",
+                "dcterms.issued", "dcterms.date", "dcterms.created",
+                "prism.publicationdate", "prism.onlinedate",
+            }:
                 self._record_publication_date(values.get("content"))
             if declared == "og:type":
                 self._record_declared_type(values.get("content"))
