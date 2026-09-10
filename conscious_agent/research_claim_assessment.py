@@ -187,6 +187,31 @@ def assess_source_claims(payload, *, documents, citations, required_dimension=""
     }
 
 
+# A rejection disqualifies the whole inference when it means the response claimed
+# provenance it does not have: citing a source it was never shown, selecting a
+# passage that was not offered, or quoting text absent from the observed excerpt.
+# A duplicate is not that. It is the same grounded assessment stated twice, and
+# grounding has already dropped the repeat, so refusing the finding over it
+# discards good evidence because the model was repetitive. Any reason not listed
+# here is treated as disqualifying, so a new rejection code fails closed.
+BENIGN_ASSESSMENT_REJECTIONS = frozenset({"duplicate_assessment"})
+
+
+def disqualifying_rejections(rejected_counts):
+    """Rejection reasons serious enough to refuse a model-assessed inference."""
+    if not isinstance(rejected_counts, Mapping):
+        return {}
+    disqualifying = {}
+    for reason, count in rejected_counts.items():
+        try:
+            total = int(count)
+        except (TypeError, ValueError):
+            total = 1
+        if total > 0 and str(reason) not in BENIGN_ASSESSMENT_REJECTIONS:
+            disqualifying[str(reason)] = total
+    return disqualifying
+
+
 def _not_admitted(reason):
     """Refuse a model-assessed inference, naming which rule refused it.
 
@@ -221,7 +246,7 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
     if not ids or any(cid not in index for cid in ids):
         return _not_admitted("cited_citation_not_observed")
     claim_digest = hashlib.sha256(claim.encode()).hexdigest()
-    if assessment_summary.get("rejected_assessment_counts"):
+    if disqualifying_rejections(assessment_summary.get("rejected_assessment_counts")):
         return _not_admitted("grounding_rejected_some_assessments")
     if any(row.get("stance") in {"refutes", "mixed"} for row in index.values()):
         return _not_admitted("observed_citation_stance_conflicts")

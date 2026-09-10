@@ -74,7 +74,7 @@ def deny_reason(*, ids, citations, assessments, summary_extra=None, dimension="d
     return str(result.get("denial_reason") or "")
 
 
-TWO_GOOD = [citation("web-1", host="alpha.example.org"), citation("web-2", host="beta.example.org")]
+TWO_GOOD = [citation("web-1", host="alphapress.org"), citation("web-2", host="betajournal.net")]
 TWO_ASSESSED = [assessment("web-1"), assessment("web-2")]
 
 # Each rule must be distinguishable from the others.
@@ -87,6 +87,47 @@ require(deny_reason(ids=["web-1", "web-2"], citations=TWO_GOOD, assessments=TWO_
         == "grounding_rejected_some_assessments",
         "grounding_rejections_are_named")
 
+# --- which rejections are serious enough to refuse the whole inference --------
+
+from research_claim_assessment import BENIGN_ASSESSMENT_REJECTIONS, disqualifying_rejections
+
+require(not disqualifying_rejections({"duplicate_assessment": 3}),
+        "a_repeated_assessment_alone_does_not_disqualify")
+require(disqualifying_rejections({"passage_not_observed": 1}),
+        "a_quote_absent_from_the_excerpt_disqualifies")
+require(disqualifying_rejections({"unobserved_citation": 1}),
+        "citing_a_source_never_shown_disqualifies")
+require(disqualifying_rejections({"passage_quote_mismatch": 1}),
+        "a_quote_that_does_not_match_its_passage_disqualifies")
+require(disqualifying_rejections({"duplicate_assessment": 2, "passage_not_observed": 1}),
+        "a_benign_reason_does_not_mask_a_serious_one")
+require(not disqualifying_rejections({}), "no_rejections_disqualify_nothing")
+require(not disqualifying_rejections({"duplicate_assessment": 0}),
+        "a_zero_count_does_not_disqualify")
+require(disqualifying_rejections({"some_future_rejection_code": 1}),
+        "an_unrecognised_reason_fails_closed")
+require(BENIGN_ASSESSMENT_REJECTIONS == frozenset({"duplicate_assessment"}),
+        "only_duplication_is_treated_as_benign")
+
+# End to end: a duplicate no longer refuses an otherwise admissible inference.
+admitted = model_assessed_conclusion(
+    payload(["web-1", "web-2"]),
+    assessment_summary={"assessments": TWO_ASSESSED,
+                        "rejected_assessment_counts": {"duplicate_assessment": 1}},
+    citations=TWO_GOOD, dimension="demand")
+require(admitted.get("ok"), "a_duplicate_no_longer_refuses_an_admissible_inference")
+require(admitted.get("reasonable_inferences"), "the_inference_is_returned_as_a_labelled_inference")
+require(admitted["reasonable_inferences"][0].get("semantic_support_verified") is False,
+        "the_admitted_inference_is_still_not_verified_support")
+
+# ...but a genuine provenance failure still refuses it.
+refused = model_assessed_conclusion(
+    payload(["web-1", "web-2"]),
+    assessment_summary={"assessments": TWO_ASSESSED,
+                        "rejected_assessment_counts": {"passage_not_observed": 1}},
+    citations=TWO_GOOD, dimension="demand")
+require(not refused.get("ok"), "a_fabricated_quote_still_refuses_the_inference")
+
 require(deny_reason(ids=["web-1", "web-9"], citations=TWO_GOOD, assessments=TWO_ASSESSED)
         == "cited_citation_not_observed",
         "an_unobserved_citation_is_named")
@@ -97,22 +138,28 @@ require(deny_reason(ids=["web-1", "web-2"], citations=TWO_GOOD,
         "a_non_supporting_cited_source_is_named")
 
 # The two all-or-nothing rules, which is what this whole exercise is about.
-stale_pair = [citation("web-1", host="alpha.example.org"),
-              citation("web-2", host="beta.example.org", freshness="stale")]
+stale_pair = [citation("web-1", host="alphapress.org"),
+              citation("web-2", host="betajournal.net", freshness="stale")]
 require(deny_reason(ids=["web-1", "web-2"], citations=stale_pair, assessments=TWO_ASSESSED)
         == "cited_source_stale_or_conflicting",
         "one_stale_citation_denying_the_finding_is_named")
 
-vendor_pair = [citation("web-1", host="alpha.example.org"), citation("web-2", host="beta.example.org")]
+vendor_pair = [citation("web-1", host="alphapress.org"), citation("web-2", host="betajournal.net")]
 require(deny_reason(ids=["web-1", "web-2"], citations=vendor_pair,
                     assessments=[assessment("web-1"), assessment("web-2", kind="vendor_offering")])
         == "cited_source_ineligible",
         "an_ineligible_cited_source_is_named")
 
-same_host = [citation("web-1", host="alpha.example.org"), citation("web-2", host="alpha.example.org")]
+same_host = [citation("web-1", host="alphapress.org"), citation("web-2", host="alphapress.org")]
 require(deny_reason(ids=["web-1", "web-2"], citations=same_host, assessments=TWO_ASSESSED)
         == "insufficient_distinct_publishers",
         "a_single_publisher_is_named")
+
+# Two subdomains of one site are one publisher, not two independent ones.
+subdomains = [citation("web-1", host="news.alphapress.org"), citation("web-2", host="blog.alphapress.org")]
+require(deny_reason(ids=["web-1", "web-2"], citations=subdomains, assessments=TWO_ASSESSED)
+        == "insufficient_distinct_publishers",
+        "subdomains_of_one_site_are_not_two_publishers")
 
 # Reasons must be distinct, not one code reused for everything.
 seen = {
