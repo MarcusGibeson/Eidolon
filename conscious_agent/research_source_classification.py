@@ -134,11 +134,16 @@ def classify_source_kind(url: str, supplied: str = "unknown") -> str:
         return "primary_official"
     if domain in _STANDARDS_BODIES:
         return "primary_official"
-    if _DOCUMENTATION_PATHS.search(path):
-        return "primary_official"
 
     if domain in _PRIMARY_SOURCE_FAMILIES:
         return "primary_official"
+
+    # Document form is not publisher authority. A mirror, a fork, a syndicated
+    # copy or a tutorial site can host faithful reference material under /docs/
+    # without being the project that publishes it. The path says what the page
+    # is; only the host can say who stands behind it.
+    if _DOCUMENTATION_PATHS.search(path):
+        return "specialist_secondary"
 
     return "unknown"
 
@@ -177,4 +182,30 @@ def classification_reason(url: str) -> str:
     return "unclassified"
 
 
-__all__ = ["CONTRACT_VERSION", "classify_source_kind", "classification_reason"]
+REFERENCE_DOCUMENTATION_FORM = "reference_documentation"
+
+
+def document_form(url: str) -> str:
+    """What the page is, separately from who publishes it.
+
+    Kept apart from authority so a mirror can be recognised as documentation
+    without being mistaken for the project that wrote it.
+    """
+    parsed = urlsplit(str(url or ""))
+    host = (parsed.hostname or "").lower().strip(".")
+    if not host:
+        return ""
+    labels = host.split(".")
+    if labels and labels[0] in _DOCUMENTATION_LABELS:
+        return REFERENCE_DOCUMENTATION_FORM
+    if host.endswith(("readthedocs.io", "readthedocs.org")):
+        return REFERENCE_DOCUMENTATION_FORM
+    if _DOCUMENTATION_PATHS.search(parsed.path or "/"):
+        return REFERENCE_DOCUMENTATION_FORM
+    return ""
+
+
+__all__ = [
+    "CONTRACT_VERSION", "REFERENCE_DOCUMENTATION_FORM",
+    "classify_source_kind", "classification_reason", "document_form",
+]

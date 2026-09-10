@@ -232,13 +232,29 @@ def evaluate_policy(
     rows = [dict(item) for item in (citations or []) if isinstance(item, Mapping)]
     assessments = dict(assessments_by_citation or {})
 
+    try:
+        from research_source_classification import classification_reason, document_form
+    except ImportError:  # measurement must never break the run it observes
+        classification_reason = document_form = None
+
     citation_failures: dict[str, int] = {}
     authority_states: dict[str, int] = {}
+    classification_reasons: dict[str, int] = {}
+    document_forms: dict[str, int] = {}
     version_signals = 0
     admissible: list[Mapping[str, Any]] = []
     for citation in rows:
         state = source_authority_state(citation)
         authority_states[state] = authority_states.get(state, 0) + 1
+        if classification_reason is not None:
+            url = str(citation.get("canonical_url") or citation.get("public_url") or "")
+            # Which rule family decided this source, so "still unclassified" can be
+            # read as novel sources or as a classifier blind spot rather than a
+            # number with no explanation attached.
+            reason = classification_reason(url)
+            classification_reasons[reason] = classification_reasons.get(reason, 0) + 1
+            form = document_form(url) or "none"
+            document_forms[form] = document_forms.get(form, 0) + 1
         if version_signal_present(citation):
             version_signals += 1
         assessment = assessments.get(str(citation.get("citation_id") or ""))
@@ -264,6 +280,8 @@ def evaluate_policy(
         "citation_condition_failures": dict(sorted(citation_failures.items())),
         "finding_condition_failures": sorted(finding_failures),
         "authority_states": dict(sorted(authority_states.items())),
+        "classification_reasons": dict(sorted(classification_reasons.items())),
+        "document_forms": dict(sorted(document_forms.items())),
         "version_signal_count": version_signals,
         "would_admit": not finding_failures and bool(admissible),
         "enforced": False,

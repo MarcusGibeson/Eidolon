@@ -60,7 +60,8 @@ STRUCTURAL = [
     ("https://docs.oracle.com/en/java/javase/21/docs/api/", "primary_official", "documentation_subdomain"),
     ("https://www.postgresql.org/docs/16/runtime-config-connection.html", "primary_official", "standards_body"),
     ("https://requests.readthedocs.io/en/latest/", "primary_official", "documentation_host"),
-    ("https://example.org/documentation/getting-started", "primary_official", "documentation_path"),
+    # Documentation form on an unrecognised host: specialist material, not the publisher.
+    ("https://example.org/documentation/getting-started", "specialist_secondary", "documentation_path"),
     ("https://www.rfc-editor.org/rfc/rfc9110", "primary_official", "standards_body"),
     ("https://www.w3.org/TR/webrtc/", "primary_official", "standards_body"),
     ("https://pypi.org/project/requests/", "primary_official", "package_registry"),
@@ -159,6 +160,48 @@ for url, expected, _ in PRECEDENCE:
     require(kind(url) == expected and kind(url) == expected, "precedence_is_stable_across_calls")
     CHECKS.pop()
 CHECKS.append("precedence_is_stable_across_calls")
+
+# --- mirrors: documentation form is not publisher authority ------------------
+# A mirror, fork, syndicated copy or tutorial site can host faithful reference
+# material without being the project that publishes it. A live run classified
+# runebook.dev - a documentation mirror - as primary_official on the strength of
+# its path alone.
+
+from research_source_classification import REFERENCE_DOCUMENTATION_FORM, document_form  # noqa: E402
+
+MIRRORS = [
+    "https://runebook.dev/en/docs/python/library/asyncio-task",
+    "https://tutorialsite.example/docs/python/asyncio",
+    "https://someaggregator.example/documentation/postgres/pooling",
+]
+for url in MIRRORS:
+    require(kind(url) == "specialist_secondary", f"a_documentation_mirror_is_not_primary_official ({url.split('/')[2]})")
+    CHECKS.pop()
+    require(document_form(url) == REFERENCE_DOCUMENTATION_FORM,
+            f"a_documentation_mirror_is_still_recognised_as_documentation ({url.split('/')[2]})")
+    CHECKS.pop()
+CHECKS.append("a_documentation_mirror_is_not_primary_official")
+CHECKS.append("a_documentation_mirror_is_still_recognised_as_documentation")
+
+# The publisher's own surfaces keep their authority.
+for url, why in (("https://docs.python.org/3.14/library/asyncio-task.html", "documentation subdomain"),
+                 ("https://www.postgresql.org/docs/16/runtime-config-connection.html", "standards body"),
+                 ("https://requests.readthedocs.io/en/latest/", "the project's own docs host")):
+    require(kind(url) == "primary_official", f"an_authoritative_publisher_keeps_primary_official ({why})")
+    CHECKS.pop()
+CHECKS.append("authoritative_publishers_keep_primary_official")
+
+# Form is reported for pages that are documentation, and withheld from those that are not.
+require(document_form("https://docs.python.org/3.14/library/asyncio-task.html") == REFERENCE_DOCUMENTATION_FORM,
+        "official_documentation_reports_documentation_form")
+require(document_form("https://vendor.example.com/pricing") == "", "an_ordinary_page_reports_no_form")
+require(document_form("") == "", "an_empty_url_reports_no_form")
+
+# A mirror is still usable evidence, just not authoritative evidence.
+mirror_state = source_authority_state({"public_url": MIRRORS[0], "source_kind": kind(MIRRORS[0]),
+                                       "evidence_role": "independent_analysis"})
+require(mirror_state == AUTHORITY_KNOWN_AUTHORITATIVE,
+        "a_mirror_is_classified_rather_than_left_unknown")
 
 # --- vendor documentation: classified, but not laundered ---------------------
 # A vendor's own docs really are its official documentation. Classification says
