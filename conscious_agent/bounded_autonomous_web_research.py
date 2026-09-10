@@ -214,6 +214,28 @@ def _inferred_source_kind(url: str, supplied: str) -> str:
     return "unknown"
 
 
+def _evaluate_evidence_policy(*, payload, citations, assessment_summary, dimension) -> dict[str, Any]:
+    """Measure the shared evidence policy without letting it refuse anything."""
+    try:
+        from research_evidence_policy import evaluate_policy, policy_for_dimension
+        findings = (payload or {}).get("findings") if isinstance(payload, Mapping) else None
+        finding = findings[0] if isinstance(findings, list) and findings and isinstance(findings[0], Mapping) else {}
+        assessments = {
+            str(row.get("citation_id") or ""): row
+            for row in ((assessment_summary or {}).get("assessments") or [])
+            if isinstance(row, Mapping)
+        }
+        return evaluate_policy(
+            policy_for_dimension(dimension),
+            finding=finding,
+            citations=[row for row in (citations or []) if isinstance(row, Mapping)],
+            assessments_by_citation=assessments,
+        )
+    except Exception:
+        # An observation-only measurement must never affect the run it observes.
+        return {}
+
+
 def _replacement_search_query(candidate: Mapping[str, Any], dimension: str) -> str:
     """Build a public replacement query after a source could not be read.
 
@@ -769,6 +791,7 @@ class BoundedResearchSessionStore:
         observed_pages = 0
         source_failure_count = 0
         model_assessment_denial_reason = ""
+        evidence_policy_evaluation: dict[str, Any] = {}
         # Initialized here, not at the observation loop: the failure report reads it,
         # and a run that dies before collection must not raise a second error while
         # trying to describe the first.
@@ -1501,6 +1524,17 @@ class BoundedResearchSessionStore:
                                 validated_synthesis = assessed
                             else:
                                 model_assessment_denial_reason = _clean(assessed.get("denial_reason"), 80)
+                        # Report-only: measure the shared evidence policy against this
+                        # run without letting it refuse anything. General research is
+                        # currently admitted on far less than a demand claim, and the
+                        # gap has to be measured on real corpora before either side is
+                        # recalibrated.
+                        evidence_policy_evaluation = _evaluate_evidence_policy(
+                            payload=synthesis_result.get("payload"),
+                            citations=citation_rows,
+                            assessment_summary=synthesis_result.get("source_assessment_summary"),
+                            dimension=str((decomposition.get("subquestions") or [{}])[0].get("evidence_dimension") or ""),
+                        )
                         synthesis_result["validation_status"] = str(validated_synthesis.get("status") or "")
                         if capture_training_evidence:
                             try:
@@ -1634,6 +1668,7 @@ class BoundedResearchSessionStore:
                 "requested_result_count": int(decomposition.get("requested_result_count") or 0),
                 "synthesis_status": str(synthesis_result.get("validation_status") or synthesis_result.get("status") or "research_synthesis_not_available"),
                 "model_assessment_denial_reason": model_assessment_denial_reason,
+                "evidence_policy_evaluation": evidence_policy_evaluation,
                 "source_assessment_summary": dict(synthesis_result.get("source_assessment_summary") or {}),
                 "candidate_discovery_synthesis_status": str(discovery_synthesis_result.get("validation_status") or discovery_synthesis_result.get("status") or "candidate_discovery_not_available"),
                 "candidate_follow_up_status": str(candidate_follow_up.get("status") or "candidate_evidence_follow_up_not_available"),

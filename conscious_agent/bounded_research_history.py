@@ -84,6 +84,25 @@ def _bounded_count(value: object) -> int:
         return 0
 
 
+def _evidence_policy_projection(value: object) -> dict[str, Any]:
+    """Project a policy measurement as condition codes and counts only."""
+    if not isinstance(value, Mapping) or not value:
+        return {}
+    return {
+        "policy_code": _clean(value.get("policy_code"), 40),
+        "evaluated_citation_count": _bounded_count(value.get("evaluated_citation_count")),
+        "admissible_citation_count": _bounded_count(value.get("admissible_citation_count")),
+        "citation_condition_failures": _count_map(value.get("citation_condition_failures")),
+        "finding_condition_failures": [
+            code for code in (
+                _clean(item, 60) for item in list(value.get("finding_condition_failures") or [])[:12]
+            ) if code
+        ],
+        "would_admit": bool(value.get("would_admit")),
+        "enforced": bool(value.get("enforced")),
+    }
+
+
 def _count_map(value: object, limit: int = 24) -> dict[str, int]:
     """Project diagnostic counters as fixed reason codes and counts only.
 
@@ -319,6 +338,7 @@ def sanitize_report(report: Mapping[str, Any] | None) -> dict[str, Any]:
         "synthesis_status": _clean(source.get("synthesis_status"), 100),
         "model_assessment_status": _clean(_assessment_summary.get("status"), 80),
         "model_assessment_denial_reason": _clean(source.get("model_assessment_denial_reason"), 80),
+        "evidence_policy_evaluation": _evidence_policy_projection(source.get("evidence_policy_evaluation")),
         "grounded_assessment_count": _bounded_count(_assessment_summary.get("grounded_assessment_count")),
         "omitted_passage_source_count": _bounded_count(_assessment_summary.get("omitted_passage_source_count")),
         "assessment_stance_counts": _count_map(_assessment_summary.get("assessment_stance_counts")),
