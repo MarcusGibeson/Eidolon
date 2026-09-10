@@ -265,6 +265,7 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
            for row in rows):
         return _not_admitted("cited_source_not_assessed_as_supporting")
     eligible = {}
+    set_aside_stale: list[str] = []
     for row in rows:
         cid = row.get("citation_id")
         if cid not in ids or not row.get("textual_provenance_verified"):
@@ -283,13 +284,24 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
         relevance = index[cid].get("relevance_score")
         if not isinstance(relevance, (int, float)) or not 0.5 <= relevance <= 1.0:
             continue
-        if index[cid].get("stance") in {"refutes", "mixed"} or index[cid].get("freshness") == "stale":
-            return _not_admitted("cited_source_stale_or_conflicting")
+        if index[cid].get("stance") in {"refutes", "mixed"}:
+            # A cited source that argues against the claim is a contradiction, not
+            # a weak citation, and still refuses the finding outright.
+            return _not_admitted("cited_source_conflicting")
+        if index[cid].get("freshness") == "stale":
+            # An out-of-date source is not bad faith, it is evidence that must not
+            # count. Set it aside as ineligible rather than refusing a finding whose
+            # remaining citations do qualify; the two fresh independent publishers
+            # required below are unchanged, and the exclusion is recorded.
+            set_aside_stale.append(cid)
+            continue
         # Identical selected passages remain one lineage even across different hosts.
         eligible[cid] = {**index[cid], "content_similarity_digest": row["passage_digest"],
                          "content_similarity_confidence": "exact"}
-    if set(eligible) != set(ids):
+    if set(eligible) | set(set_aside_stale) != set(ids):
         return _not_admitted("cited_source_ineligible")
+    if not eligible:
+        return _not_admitted("no_eligible_cited_source")
     publishers = {source_identity(index[cid])["publisher_digest"] for cid in eligible}
     if "" in publishers or len(publishers) < 2:
         return _not_admitted("insufficient_distinct_publishers")
@@ -315,8 +327,14 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
     ]
     if any(row.get("model_assessment") == "unclear" for row in rows):
         limitations.append("Additional assessed sources did not establish this claim and were not counted as support.")
+    if set_aside_stale:
+        limitations.append(
+            f"{len(set_aside_stale)} cited source(s) were out of date and were set aside; "
+            "they did not count toward the independent support for this claim."
+        )
     inferred = {"finding": claim, "citations": list(eligible), "classification": "model_assessed_inference",
                 "confidence": "tentative", "semantic_support_verified": False,
+                "set_aside_stale_citations": sorted(set_aside_stale),
                 "independent_source_count": min(lineage["independent_lineage_count"],
                                                 original_lineage["independent_lineage_count"], len(publishers))}
     return {"ok": True, "status": "research_model_assessed_inference", "verified_findings": [],

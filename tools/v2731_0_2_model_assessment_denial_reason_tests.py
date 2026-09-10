@@ -137,12 +137,42 @@ require(deny_reason(ids=["web-1", "web-2"], citations=TWO_GOOD,
         == "cited_source_not_assessed_as_supporting",
         "a_non_supporting_cited_source_is_named")
 
-# The two all-or-nothing rules, which is what this whole exercise is about.
+# A cited source that argues against the claim is a contradiction, not a weak
+# citation, and still refuses the finding.
+conflicting_pair = [citation("web-1", host="alphapress.org"),
+                    citation("web-2", host="betajournal.net", stance="refutes")]
+require(deny_reason(ids=["web-1", "web-2"], citations=conflicting_pair, assessments=TWO_ASSESSED)
+        in {"observed_citation_stance_conflicts", "cited_source_conflicting"},
+        "a_contradicting_cited_source_still_refuses_the_finding")
+
+# An out-of-date source is set aside, not fatal - but it cannot be counted, so a
+# finding left with a single fresh publisher is still refused.
 stale_pair = [citation("web-1", host="alphapress.org"),
               citation("web-2", host="betajournal.net", freshness="stale")]
 require(deny_reason(ids=["web-1", "web-2"], citations=stale_pair, assessments=TWO_ASSESSED)
-        == "cited_source_stale_or_conflicting",
-        "one_stale_citation_denying_the_finding_is_named")
+        == "insufficient_distinct_publishers",
+        "a_stale_citation_is_set_aside_rather_than_fatal")
+
+# With two fresh independent publishers remaining, the stale one no longer sinks it.
+three = [citation("web-1", host="alphapress.org"),
+         citation("web-2", host="betajournal.net"),
+         citation("web-3", host="gammareview.com", freshness="stale")]
+three_assessed = [assessment("web-1"), assessment("web-2"), assessment("web-3")]
+admitted_with_stale = model_assessed_conclusion(
+    payload(["web-1", "web-2", "web-3"]),
+    assessment_summary={"assessments": three_assessed, "rejected_assessment_counts": {}},
+    citations=three, dimension="demand")
+require(admitted_with_stale.get("ok"),
+        "two_fresh_publishers_admit_the_finding_despite_a_stale_citation")
+inference = admitted_with_stale["reasonable_inferences"][0]
+require(inference.get("set_aside_stale_citations") == ["web-3"],
+        "the_set_aside_stale_citation_is_recorded_on_the_inference")
+require("web-3" not in inference.get("citations", []),
+        "a_stale_citation_is_not_counted_as_support")
+require(any("out of date" in text for text in admitted_with_stale.get("limitations", [])),
+        "the_reader_is_told_a_source_was_set_aside")
+require(inference.get("independent_source_count", 0) >= 2,
+        "the_admitted_inference_still_rests_on_two_independent_sources")
 
 vendor_pair = [citation("web-1", host="alphapress.org"), citation("web-2", host="betajournal.net")]
 require(deny_reason(ids=["web-1", "web-2"], citations=vendor_pair,
@@ -165,10 +195,12 @@ require(deny_reason(ids=["web-1", "web-2"], citations=subdomains, assessments=TW
 seen = {
     deny_reason(ids=["web-1", "web-2"], citations=TWO_GOOD, assessments=TWO_ASSESSED, dimension="competition"),
     deny_reason(ids=["web-1", "web-9"], citations=TWO_GOOD, assessments=TWO_ASSESSED),
-    deny_reason(ids=["web-1", "web-2"], citations=stale_pair, assessments=TWO_ASSESSED),
+    deny_reason(ids=["web-1", "web-2"], citations=conflicting_pair, assessments=TWO_ASSESSED),
     deny_reason(ids=["web-1", "web-2"], citations=same_host, assessments=TWO_ASSESSED),
+    deny_reason(ids=["web-1", "web-2"], citations=TWO_GOOD,
+                assessments=[assessment("web-1"), assessment("web-2", kind="vendor_offering")]),
 }
-require(len(seen) == 4, "distinct_rules_report_distinct_reasons")
+require(len(seen) == 5, "distinct_rules_report_distinct_reasons")
 require(all(reason and " " not in reason and reason.islower() for reason in seen),
         "reasons_are_fixed_lowercase_codes")
 
