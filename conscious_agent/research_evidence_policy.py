@@ -43,6 +43,7 @@ from dataclasses import dataclass
 from collections.abc import Mapping
 import re
 from typing import Any, Callable
+from urllib.parse import urlsplit
 
 CONTRACT_VERSION = "v2731.0.7"
 
@@ -58,11 +59,23 @@ OBJECTIVE_TERM_PROXIMITY = 72
 OBJECTIVE_TERM_LOOKBEHIND = 24
 UNCERTAINTY_WARRANTED_BELOW_CITATIONS = 2
 SUPPORTING_EVIDENCE_KINDS = frozenset({"customer_experience", "survey_result", "usage_measurement"})
-NON_AUTHORITATIVE_EVIDENCE_ROLES = frozenset({
-    "invalid_public_url", "generic_definition", "promotional_summary",
-    "first_party_product_claim", "implementation_precedent",
-    "implementation_documentation", "pricing_or_free_tier",
+
+# Roles that carry no authority whatever the claim: a broken URL, a dictionary
+# entry, a page whose own path says it is marketing.
+ALWAYS_NON_AUTHORITATIVE_ROLES = frozenset({
+    "invalid_public_url", "generic_definition", "promotional_summary", "implementation_precedent",
 })
+
+# Roles assigned from a URL path - /pricing, /docs, /plans - which say what a page
+# is about, not who stands behind it. Treating them as disqualifying refused a
+# vendor as a source for its own posted prices, which is the same document-form
+# versus publisher-authority confusion that the documentation rules already fixed.
+# Whether they carry authority depends on the claim being made.
+CLAIM_RELATIVE_EVIDENCE_ROLES = frozenset({
+    "first_party_product_claim", "implementation_documentation", "pricing_or_free_tier",
+})
+
+NON_AUTHORITATIVE_EVIDENCE_ROLES = ALWAYS_NON_AUTHORITATIVE_ROLES | CLAIM_RELATIVE_EVIDENCE_ROLES
 
 AUTHORITY_KNOWN_AUTHORITATIVE = "known_authoritative"
 AUTHORITY_KNOWN_NON_AUTHORITATIVE = "known_non_authoritative"
@@ -80,9 +93,104 @@ def _number(value: Any) -> float | None:
     return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
 
 
-def source_authority_state(citation: Mapping[str, Any]) -> str:
+# How a source stands in relation to the specific claim it is cited for.
+# Authority is not a property of a publisher alone: Stripe is the primary source
+# for Stripe's posted fees and no source at all for whether Stripe is the best
+# processor. Both statements can appear on the same page.
+CLAIM_SOURCE_FIRST_PARTY_OPERATIONAL = "first_party_operational_fact"
+CLAIM_SOURCE_FIRST_PARTY_PROMOTIONAL = "first_party_promotional_claim"
+# A first party making a claim that is neither a fact it sets nor a case for
+# itself - the Python documentation describing what cancelling a task does. There
+# is nothing special about the relationship, so it is evaluated normally. Naming
+# it rather than folding it into third-party keeps the counters honest about who
+# published what.
+CLAIM_SOURCE_FIRST_PARTY_OTHER = "first_party_other_claim"
+CLAIM_SOURCE_THIRD_PARTY = "third_party_evaluation"
+
+# Relationships that carry no special standing and are judged on source kind.
+EVALUATED_NORMALLY_RELATIONSHIPS = frozenset({CLAIM_SOURCE_FIRST_PARTY_OTHER, CLAIM_SOURCE_THIRD_PARTY})
+
+# Facts an organisation sets rather than argues for: what it charges, what a plan
+# contains, what a limit is, what it still supports.
+_OPERATIONAL_FACT_CLAIM = re.compile(
+    r"\$\s?\d|\b\d+(?:\.\d+)?\s*(?:%|percent|cents?|dollars?)\b|"
+    r"\b(?:charge[sd]?|charging|cost[s]?|pric(?:e|es|ed|ing)|fee|fees|rate|rates|"
+    r"per\s+transaction|plan|plans|tier|tiers|includ(?:e|es|ed)|"
+    r"limit|limits|quota|quotas|threshold|"
+    r"support(?:s|ed)?|unsupported|deprecat\w*|end[\s-]of[\s-](?:life|support)|"
+    r"availab(?:le|ility)|version|versions|release[sd]?|requires?|specification|specs?)\b",
+    re.IGNORECASE,
+)
+
+# Claims an organisation is not a source for, about itself.
+_EVALUATIVE_CLAIM = re.compile(
+    r"\b(?:best|leading|fastest|easiest|simplest|most\s+popular|preferred|top\s+choice|"
+    r"industry[\s-]leading|trusted\s+by|loved\s+by|outperform(?:s|ed)?|superior|"
+    r"ideal\s+for|recommend(?:ed|s)?|should\s+(?:use|choose|pick)|"
+    r"customers?\s+(?:prefer|love|choose|want)|market\s+demands?)\b",
+    re.IGNORECASE,
+)
+
+# Host labels that name a surface rather than the organisation publishing it.
+_HOST_SURFACE_LABELS = frozenset({
+    "www", "docs", "doc", "documentation", "developer", "developers", "devcenter",
+    "learn", "support", "help", "api", "blog", "news", "reference", "manual",
+    "com", "org", "net", "edu", "gov", "int", "mil", "co", "io", "dev", "app", "cloud",
+})
+
+
+def first_party_source(citation: Mapping[str, Any], terms: tuple[str, ...]) -> bool:
+    """The organisation the objective is asking about is the one publishing this.
+
+    Structural rather than enumerated: the objective already names its subject, and
+    a publisher whose own domain carries that name is the first party for it.
+    "Stripe payment processing fee structure" makes stripe.com first-party, and
+    leaves an aggregator writing about Stripe exactly as third-party as it is.
+    """
+    if not terms:
+        return False
+    host = (urlsplit(_citation_url(citation)).hostname or "").lower().strip(".")
+    if not host:
+        return False
+    labels = {
+        _stem(label) for label in host.split(".")
+        if len(label) >= 4 and label not in _HOST_SURFACE_LABELS
+    }
+    return bool(labels & set(terms))
+
+
+def claim_source_relationship(
+    citation: Mapping[str, Any],
+    finding: Mapping[str, Any] | None = None,
+    terms: tuple[str, ...] = (),
+) -> str:
+    """Classify this source's standing for this particular claim."""
+    if not first_party_source(citation, terms):
+        return CLAIM_SOURCE_THIRD_PARTY
+    text = _finding_text(finding or {})
+    if _EVALUATIVE_CLAIM.search(text):
+        return CLAIM_SOURCE_FIRST_PARTY_PROMOTIONAL
+    if _OPERATIONAL_FACT_CLAIM.search(text):
+        return CLAIM_SOURCE_FIRST_PARTY_OPERATIONAL
+    # Neither a fact it sets nor a case for itself. Downgrading here would have
+    # made python.org promotional for a claim about Python's own behaviour, so
+    # the ambiguous case changes nothing and is judged on source kind.
+    return CLAIM_SOURCE_FIRST_PARTY_OTHER
+
+
+def source_authority_state(citation: Mapping[str, Any], relationship: str = CLAIM_SOURCE_THIRD_PARTY) -> str:
     """Three-valued authority: assessed and sound, assessed and not, or unassessed."""
-    if str(citation.get("evidence_role") or "") in NON_AUTHORITATIVE_EVIDENCE_ROLES:
+    role = str(citation.get("evidence_role") or "")
+    if role in ALWAYS_NON_AUTHORITATIVE_ROLES:
+        return AUTHORITY_KNOWN_NON_AUTHORITATIVE
+    if relationship == CLAIM_SOURCE_FIRST_PARTY_PROMOTIONAL:
+        return AUTHORITY_KNOWN_NON_AUTHORITATIVE
+    if relationship == CLAIM_SOURCE_FIRST_PARTY_OPERATIONAL:
+        # The organisation is the record of the fact, whatever a host-shape
+        # classifier made of its domain: ubuntu.com is unclassified as a host and
+        # authoritative about which Ubuntu releases it still supports.
+        return AUTHORITY_KNOWN_AUTHORITATIVE
+    if role in CLAIM_RELATIVE_EVIDENCE_ROLES:
         return AUTHORITY_KNOWN_NON_AUTHORITATIVE
     kind = str(citation.get("source_kind") or "unknown").strip().lower()
     return AUTHORITY_UNCLASSIFIED if kind in {"", "unknown"} else AUTHORITY_KNOWN_AUTHORITATIVE
@@ -158,19 +266,26 @@ _TIER_FOR_SOURCE_KIND = {
 SELF_SUFFICIENT_TIERS = frozenset({TIER_PRIMARY, TIER_SPECIALIST})
 
 
-def source_authority_tier(citation: Mapping[str, Any]) -> str:
-    """How much weight one source can carry by itself."""
-    if str(citation.get("evidence_role") or "") in NON_AUTHORITATIVE_EVIDENCE_ROLES:
+def source_authority_tier(citation: Mapping[str, Any], relationship: str = CLAIM_SOURCE_THIRD_PARTY) -> str:
+    """How much weight one source can carry by itself, for this claim."""
+    state = source_authority_state(citation, relationship)
+    if state == AUTHORITY_KNOWN_NON_AUTHORITATIVE:
         return TIER_NON_AUTHORITATIVE
+    if relationship == CLAIM_SOURCE_FIRST_PARTY_OPERATIONAL:
+        # An organisation is the primary record of the facts it sets, whatever a
+        # host-shape classifier made of its domain.
+        return TIER_PRIMARY
     kind = str(citation.get("source_kind") or "unknown").strip().lower()
     return _TIER_FOR_SOURCE_KIND.get(kind, TIER_UNCLASSIFIED)
 
 
-def strongest_tier(citations: list[Mapping[str, Any]]) -> str:
+def strongest_tier(citations: list[Mapping[str, Any]], relationships: list[str] | None = None) -> str:
     """The best support the finding actually has, not the average."""
+    codes = list(relationships or [])
     best = TIER_NONE
-    for citation in citations:
-        tier = source_authority_tier(citation)
+    for index, citation in enumerate(citations):
+        relationship = codes[index] if index < len(codes) else CLAIM_SOURCE_THIRD_PARTY
+        tier = source_authority_tier(citation, relationship)
         if AUTHORITY_TIER_ORDER.index(tier) > AUTHORITY_TIER_ORDER.index(best):
             best = tier
     return best
@@ -246,8 +361,24 @@ def claim_risk_flags(finding: Mapping[str, Any]) -> tuple[str, ...]:
 HIGHER_RISK_POLICY_CODES = frozenset({"current", "demand"})
 
 
-def required_publisher_count(tier: str, risk_flags: tuple[str, ...], policy_code: str) -> int:
+# Risk shapes that a first party settles by definition, because it is the entity
+# that sets the fact. Corroborating a posted price against a blog does not make
+# the price more true. Every other shape - a negative claim, a causal claim, an
+# enforcement or market claim - still needs a second publisher even from a first
+# party, and especially then: a vendor reporting no enforcement action against
+# itself is exactly when corroboration matters.
+FIRST_PARTY_SETTLED_RISK_FLAGS = frozenset({"pricing_claim", "availability_claim"})
+
+
+def required_publisher_count(
+    tier: str,
+    risk_flags: tuple[str, ...],
+    policy_code: str,
+    first_party_operational: bool = False,
+) -> int:
     """How many independent publishers this finding needs, given its best source."""
+    if first_party_operational and set(risk_flags) <= FIRST_PARTY_SETTLED_RISK_FLAGS:
+        return 1
     if risk_flags or policy_code in HIGHER_RISK_POLICY_CODES:
         return MINIMUM_INDEPENDENT_PUBLISHERS
     return 1 if tier in SELF_SUFFICIENT_TIERS else MINIMUM_INDEPENDENT_PUBLISHERS
@@ -305,36 +436,50 @@ def objective_terms(text: str, limit: int = 24) -> tuple[str, ...]:
 
 # --- citation conditions -----------------------------------------------------
 
-def _source_authority_assessed(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
+def _relationship(context: Mapping[str, Any]) -> str:
+    """This citation's standing for the claim under evaluation."""
+    return str((context or {}).get("relationship") or CLAIM_SOURCE_THIRD_PARTY)
+
+
+def _source_authority_assessed(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
+                               context: Mapping[str, Any]) -> bool:
     """Nothing assessed this source as carrying no authority.
 
     An unclassified host passes: not having classified it is a gap in our
     metadata, not a finding about the source.
     """
-    return source_authority_state(citation) != AUTHORITY_KNOWN_NON_AUTHORITATIVE
+    return source_authority_state(citation, _relationship(context)) != AUTHORITY_KNOWN_NON_AUTHORITATIVE
 
 
-def _source_authority_known(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
+def _source_authority_known(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
+                            context: Mapping[str, Any]) -> bool:
     """The source was positively classified. Stricter than the baseline asks."""
-    return source_authority_state(citation) == AUTHORITY_KNOWN_AUTHORITATIVE
+    return source_authority_state(citation, _relationship(context)) == AUTHORITY_KNOWN_AUTHORITATIVE
 
 
-def _source_not_promotional(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
-    return str(citation.get("evidence_role") or "") not in NON_AUTHORITATIVE_EVIDENCE_ROLES
+def _source_not_promotional(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
+                            context: Mapping[str, Any]) -> bool:
+    """The source is not making a case for itself on this claim."""
+    if str(citation.get("evidence_role") or "") in ALWAYS_NON_AUTHORITATIVE_ROLES:
+        return False
+    return _relationship(context) != CLAIM_SOURCE_FIRST_PARTY_PROMOTIONAL
 
 
-def _claim_source_fit(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
+def _claim_source_fit(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
+                      context: Mapping[str, Any]) -> bool:
     relevance = _number(citation.get("relevance_score"))
     return relevance is not None and relevance >= MINIMUM_CLAIM_SOURCE_FIT
 
 
-def _currency_signal_present(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
+def _currency_signal_present(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
+                             context: Mapping[str, Any]) -> bool:
     """Something establishes when or for what this source applies."""
     dated = bool(citation.get("freshness_known")) or str(citation.get("freshness") or "unknown") != "unknown"
     return dated or version_signal_present(citation) or authoritative_living_documentation(citation)
 
 
-def _freshness_current(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
+def _freshness_current(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
+                       context: Mapping[str, Any]) -> bool:
     """Recent enough for a claim that depends on when it was true.
 
     Maintained first-party documentation qualifies without a timestamp: its
@@ -346,15 +491,19 @@ def _freshness_current(citation: Mapping[str, Any], assessment: Mapping[str, Any
     return authoritative_living_documentation(citation)
 
 
-def _stance_supports(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
+def _stance_supports(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
+                     context: Mapping[str, Any]) -> bool:
     return str((assessment or {}).get("model_assessment") or "") == "supports"
 
 
-def _evidence_type_admissible(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None) -> bool:
+def _evidence_type_admissible(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
+                              context: Mapping[str, Any]) -> bool:
     return str((assessment or {}).get("model_evidence_kind") or "") in SUPPORTING_EVIDENCE_KINDS
 
 
-CITATION_CONDITIONS: dict[str, Callable[[Mapping[str, Any], Mapping[str, Any] | None], bool]] = {
+CITATION_CONDITIONS: dict[
+    str, Callable[[Mapping[str, Any], Mapping[str, Any] | None, Mapping[str, Any]], bool]
+] = {
     "source_authority_assessed": _source_authority_assessed,
     "source_authority_known": _source_authority_known,
     "source_not_promotional": _source_not_promotional,
@@ -403,9 +552,10 @@ def _corroboration_satisfied(finding: Mapping[str, Any], admissible: list[Mappin
     if not admissible:
         return False
     required = required_publisher_count(
-        strongest_tier(admissible),
+        strongest_tier(admissible, list(context.get("admissible_relationships") or [])),
         tuple(context.get("claim_risk_flags") or ()),
         str(context.get("policy_code") or ""),
+        bool(context.get("first_party_operational")),
     )
     return _publisher_count(admissible) >= required
 
@@ -537,11 +687,27 @@ def evaluate_policy(
     document_forms: dict[str, int] = {}
     version_signals = 0
     living_documentation = 0
+    relationships: dict[str, int] = {}
     admissible: list[Mapping[str, Any]] = []
+    admissible_relationships: list[str] = []
+    # Decided before the loop: every condition that asks about authority needs the
+    # objective's own terms to know whether a source is the first party for it.
+    terms = objective_terms(objective)
+    risk_flags = claim_risk_flags(row)
+    base_context = {
+        "policy_code": policy.policy_code,
+        "claim_risk_flags": risk_flags,
+        "objective_terms": terms,
+    }
     for citation in rows:
-        state = source_authority_state(citation)
+        # Standing is per claim, not per publisher, so it is decided here and
+        # carried into every condition that asks about authority.
+        relationship = claim_source_relationship(citation, row, terms)
+        relationships[relationship] = relationships.get(relationship, 0) + 1
+        citation_context = {**base_context, "relationship": relationship}
+        state = source_authority_state(citation, relationship)
         authority_states[state] = authority_states.get(state, 0) + 1
-        tier = source_authority_tier(citation)
+        tier = source_authority_tier(citation, relationship)
         authority_tiers[tier] = authority_tiers.get(tier, 0) + 1
         if classification_reason is not None:
             url = str(citation.get("canonical_url") or citation.get("public_url") or "")
@@ -559,20 +725,20 @@ def evaluate_policy(
         assessment = assessments.get(str(citation.get("citation_id") or ""))
         failed = [
             name for name in policy.citation_conditions
-            if name in CITATION_CONDITIONS and not CITATION_CONDITIONS[name](citation, assessment)
+            if name in CITATION_CONDITIONS and not CITATION_CONDITIONS[name](citation, assessment, citation_context)
         ]
         for name in failed:
             citation_failures[name] = citation_failures.get(name, 0) + 1
         if not failed:
             admissible.append(citation)
+            admissible_relationships.append(relationship)
 
-    terms = objective_terms(objective)
-    risk_flags = claim_risk_flags(row)
-    supporting_tier = strongest_tier(admissible)
+    supporting_tier = strongest_tier(admissible, admissible_relationships)
+    first_party_operational = CLAIM_SOURCE_FIRST_PARTY_OPERATIONAL in admissible_relationships
     context = {
-        "policy_code": policy.policy_code,
-        "claim_risk_flags": risk_flags,
-        "objective_terms": terms,
+        **base_context,
+        "first_party_operational": first_party_operational,
+        "admissible_relationships": admissible_relationships,
     }
     finding_failures = [
         name for name in policy.finding_conditions
@@ -600,7 +766,9 @@ def evaluate_policy(
         "claim_risk_flags": list(risk_flags),
         "supporting_authority_tier": supporting_tier,
         "independent_publisher_count": _publisher_count(admissible),
-        "required_publisher_count": required_publisher_count(supporting_tier, risk_flags, policy.policy_code),
+        "claim_source_relationships": dict(sorted(relationships.items())),
+        "required_publisher_count": required_publisher_count(
+            supporting_tier, risk_flags, policy.policy_code, first_party_operational),
         # Whether the relevance check had an objective to judge against, so a
         # clean answers_objective cannot be mistaken for a check that ran.
         "objective_terms_supplied": bool(terms),
@@ -617,6 +785,11 @@ __all__ = [
     "CITATION_CONDITIONS", "FINDING_CONDITIONS",
     "evaluate_policy", "policy_for_objective", "POLICY_FOR_CURRENCY_REQUIREMENT",
     "source_authority_state", "version_signal_present", "authoritative_living_documentation",
+    "ALWAYS_NON_AUTHORITATIVE_ROLES", "CLAIM_RELATIVE_EVIDENCE_ROLES",
+    "CLAIM_SOURCE_FIRST_PARTY_OPERATIONAL", "CLAIM_SOURCE_FIRST_PARTY_PROMOTIONAL",
+    "CLAIM_SOURCE_FIRST_PARTY_OTHER", "CLAIM_SOURCE_THIRD_PARTY",
+    "EVALUATED_NORMALLY_RELATIONSHIPS", "FIRST_PARTY_SETTLED_RISK_FLAGS",
+    "claim_source_relationship", "first_party_source",
     "AUTHORITY_TIER_ORDER", "SELF_SUFFICIENT_TIERS", "HIGHER_RISK_POLICY_CODES",
     "TIER_NONE", "TIER_NON_AUTHORITATIVE", "TIER_UNCLASSIFIED",
     "TIER_COMMUNITY", "TIER_SPECIALIST", "TIER_PRIMARY",

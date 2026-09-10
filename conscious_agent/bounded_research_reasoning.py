@@ -280,6 +280,39 @@ _CURRENCY_WORDING = re.compile(
     re.IGNORECASE,
 )
 
+# The subject sets the default horizon; the asker's wording may narrow it, never
+# widen it. Otherwise "the current state of enforcement" quietly means "anything
+# published in the last year", which is not what the words say.
+_WORDING_IMMEDIATE = re.compile(
+    r"\b(?:latest|newest|right\s+now|today|this\s+week|breaking|just\s+(?:announced|released)|"
+    r"as\s+of\s+today|what'?s\s+new|release\s+notes)\b", re.IGNORECASE,
+)
+_WORDING_RECENT = re.compile(
+    r"\b(?:current(?:ly)?|recent(?:ly)?|nowadays|as\s+of|up[\s-]to[\s-]date|"
+    r"state\s+of|status\s+of|this\s+(?:month|year)|trend(?:s|ing)?)\b", re.IGNORECASE,
+)
+
+# The tightest window each wording strength will allow.
+_WORDING_WINDOW_CEILING = (
+    (_WORDING_IMMEDIATE, "current"),
+    (_WORDING_RECENT, "quarterly"),
+)
+
+
+def _tightened_window(window: str, text: str) -> str:
+    """Narrow a topical window to what the asker's own words ask for."""
+    try:
+        from research_web_intelligence_v2100 import FRESHNESS_DAYS
+    except ImportError:
+        return window
+    if window not in FRESHNESS_DAYS:
+        return window
+    objective = str(text or "")
+    for pattern, ceiling in _WORDING_WINDOW_CEILING:
+        if pattern.search(objective) and FRESHNESS_DAYS[ceiling] < FRESHNESS_DAYS[window]:
+            return ceiling
+    return window
+
 # Subjects that move whether or not the asker says "current". Nobody writing
 # "Stripe payment processing fee structure" means the 2019 fee structure, and a
 # reference standard admitted an aggregator's figure with no recency requirement
@@ -477,7 +510,7 @@ def decompose_research_objective(
     effective_freshness = (
         str(freshness or "").strip().lower()
         or _clean((blueprint[0] if blueprint else {}).get("freshness_policy"), 24)
-        or WINDOW_FOR_CURRENCY_REASON.get(currency_reason, "current")
+        or _tightened_window(WINDOW_FOR_CURRENCY_REASON.get(currency_reason, "current"), text)
     )
     chunks = [str(row["question"]) for row in blueprint] if blueprint else _split_objective(text)
     bounded = dict(budget or {})

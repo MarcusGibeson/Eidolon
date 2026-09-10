@@ -97,6 +97,7 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "citation_condition_failures": _count_map(value.get("citation_condition_failures")),
         "authority_states": _count_map(value.get("authority_states")),
         "authority_tiers": _count_map(value.get("authority_tiers")),
+        "claim_source_relationships": _count_map(value.get("claim_source_relationships")),
         "url_classification_reasons": _count_map(value.get("url_classification_reasons")),
         "document_forms": _count_map(value.get("document_forms")),
         "version_signal_count": _bounded_count(value.get("version_signal_count")),
