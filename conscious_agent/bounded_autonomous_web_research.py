@@ -212,6 +212,23 @@ def _inferred_source_kind(url: str, supplied: str) -> str:
     return classify_source_kind(url, "unknown")
 
 
+def _select_citable_evidence(*, citations, currency_requirement, objective="") -> dict[str, Any]:
+    """Ask the shared evidence policy which observed sources synthesis may cite.
+
+    Any failure falls back to offering every source, exactly as before: selection
+    may narrow what synthesis cites, never stop a run.
+    """
+    try:
+        from research_evidence_policy import policy_for_objective, select_citable_evidence
+        return select_citable_evidence(
+            policy_for_objective(currency_requirement),
+            citations=[row for row in (citations or []) if isinstance(row, Mapping)],
+            objective=str(objective or ""),
+        )
+    except Exception:
+        return {}
+
+
 def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currency_requirement,
                               objective="", currency_reason="", freshness_window="") -> dict[str, Any]:
     """Measure the shared evidence policy without letting it refuse anything."""
@@ -1490,7 +1507,22 @@ class BoundedResearchSessionStore:
                     set_time_budget = getattr(adapter, "set_synthesis_time_budget", None)
                     if callable(set_time_budget):
                         set_time_budget(budget["max_elapsed_seconds"] - (self.clock() - started))
-                    synthesis_result = dict(synthesize(decomposition=decomposition, citations=citation_rows) or {})
+                    # Offer synthesis the sources the shared policy already admits, so a
+                    # finding cites the evidence that makes it supportable rather than
+                    # whichever source happened to sort first. Candidate discovery has
+                    # its own contract and is left alone. With nothing admissible the
+                    # whole pool is offered, and the verdict refuses afterwards.
+                    source_selection = {} if requested_result_count else _select_citable_evidence(
+                        citations=citation_rows,
+                        currency_requirement=str(decomposition.get("evidence_currency_requirement") or ""),
+                        objective=objective,
+                    )
+                    citable_ids = set(source_selection.get("citable_ids") or [])
+                    synthesis_citations = (
+                        [row for row in citation_rows if row["citation_id"] in citable_ids]
+                        if citable_ids else citation_rows
+                    )
+                    synthesis_result = dict(synthesize(decomposition=decomposition, citations=synthesis_citations) or {})
                     if synthesis_result.get("ok"):
                         expected_dimensions = {
                             "demand", "competition", "implementation_dependencies", "free_tier_feasibility",
@@ -1543,6 +1575,11 @@ class BoundedResearchSessionStore:
                             currency_reason=str(decomposition.get("evidence_currency_reason") or ""),
                             freshness_window=str(decomposition.get("recommended_freshness_policy") or ""),
                         )
+                        if evidence_policy_evaluation and source_selection:
+                            # Counts and fixed codes only; the offered ids stay in memory.
+                            evidence_policy_evaluation["source_selection"] = {
+                                key: value for key, value in source_selection.items() if key != "citable_ids"
+                            }
                         synthesis_result["validation_status"] = str(validated_synthesis.get("status") or "")
                         if capture_training_evidence:
                             try:

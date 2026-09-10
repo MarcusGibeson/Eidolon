@@ -116,6 +116,7 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "available_admissible_evidence": _available_evidence_projection(value.get("available_admissible_evidence")),
         "uncited_admissible_citation_count": _bounded_count(value.get("uncited_admissible_citation_count")),
         "admissible_evidence_not_cited": bool(value.get("admissible_evidence_not_cited")),
+        "source_selection": _source_selection_projection(value.get("source_selection")),
         "finding_condition_failures": [
             code for code in (
                 _clean(item, 60) for item in list(value.get("finding_condition_failures") or [])[:12]
@@ -123,6 +124,26 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         ],
         "would_admit": bool(value.get("would_admit")),
         "enforced": bool(value.get("enforced")),
+    }
+
+
+def _source_selection_projection(value: object) -> dict[str, Any]:
+    """Project which sources synthesis was offered, as a mode and counts only."""
+    if not isinstance(value, Mapping) or not value:
+        return {}
+    mode = _clean(value.get("selection_mode"), 40)
+    return {
+        "policy_code": _clean(value.get("policy_code"), 40),
+        "selection_mode": mode if mode in {"admissible_only", "no_admissible_evidence"} else "",
+        "observed_citation_count": _bounded_count(value.get("observed_citation_count")),
+        "offered_citation_count": _bounded_count(value.get("offered_citation_count")),
+        "withheld_citation_count": _bounded_count(value.get("withheld_citation_count")),
+        "withheld_condition_counts": _count_map(value.get("withheld_condition_counts")),
+        "offered_authority_tiers": _count_map(value.get("offered_authority_tiers")),
+        "assessment_conditions_deferred": [
+            code for code in (_clean(item, 40) for item in list(value.get("assessment_conditions_deferred") or [])[:4])
+            if code
+        ],
     }
 
 

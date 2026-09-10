@@ -40,12 +40,13 @@ claim text, quotes or URLs.
 """
 
 from dataclasses import dataclass
+from functools import lru_cache
 from collections.abc import Mapping
 import re
 from typing import Any, Callable
 from urllib.parse import urlsplit
 
-CONTRACT_VERSION = "v2731.1.0"
+CONTRACT_VERSION = "v2732.0.0"
 
 MINIMUM_CLAIM_SOURCE_FIT = 0.5
 MINIMUM_INDEPENDENT_PUBLISHERS = 2
@@ -77,6 +78,14 @@ CLAIM_RELATIVE_EVIDENCE_ROLES = frozenset({
 
 NON_AUTHORITATIVE_EVIDENCE_ROLES = ALWAYS_NON_AUTHORITATIVE_ROLES | CLAIM_RELATIVE_EVIDENCE_ROLES
 
+# Roles the policy derives for itself when a citation arrives without one - which
+# every live citation does, because the rows handed to the policy carry no role.
+# Only the roles that describe what a page *is* are derived: a broken URL, a
+# dictionary entry, a page whose own path says it is marketing. The classifier's
+# other roles answer "which demand dimension could this support" and would demote
+# docs.python.org and MDN if read as authority, so they are not derived here.
+DERIVED_DISQUALIFYING_ROLES = frozenset({"invalid_public_url", "generic_definition", "promotional_summary"})
+
 AUTHORITY_KNOWN_AUTHORITATIVE = "known_authoritative"
 AUTHORITY_KNOWN_NON_AUTHORITATIVE = "known_non_authoritative"
 AUTHORITY_UNCLASSIFIED = "unclassified"
@@ -87,6 +96,32 @@ AUTHORITY_UNCLASSIFIED = "unclassified"
 _VERSION_SIGNAL = re.compile(
     r"/v?\d+(?:\.\d+){1,2}(?:/|$)|/(?:stable|latest|current)(?:/|$)|[?&](?:version|v)=", re.IGNORECASE
 )
+
+
+@lru_cache(maxsize=4096)
+def _derived_role(url: str, kind: str) -> str:
+    """A page-nature role from the shared classifier, or "" when it names none."""
+    try:
+        from research_source_independence import source_evidence_role
+    except ImportError:  # measurement must never break the run it observes
+        return ""
+    role = str(source_evidence_role({"public_url": url, "canonical_url": url, "source_kind": kind})
+               .get("evidence_role") or "")
+    return role if role in DERIVED_DISQUALIFYING_ROLES else ""
+
+
+def _citation_role(citation: Mapping[str, Any]) -> str:
+    """The role a citation declares, or the page-nature role derived for it.
+
+    The role checks previously read only a supplied field. Live citations never
+    supply one, so the promotional-page exclusion passed every unit test - which
+    supply roles - and never fired on a real run.
+    """
+    supplied = str(citation.get("evidence_role") or "")
+    if supplied:
+        return supplied
+    url = str(citation.get("canonical_url") or citation.get("public_url") or "")
+    return _derived_role(url, str(citation.get("source_kind") or "unknown").strip().lower())
 
 
 def _number(value: Any) -> float | None:
@@ -180,7 +215,7 @@ def claim_source_relationship(
 
 def source_authority_state(citation: Mapping[str, Any], relationship: str = CLAIM_SOURCE_THIRD_PARTY) -> str:
     """Three-valued authority: assessed and sound, assessed and not, or unassessed."""
-    role = str(citation.get("evidence_role") or "")
+    role = _citation_role(citation)
     if role in ALWAYS_NON_AUTHORITATIVE_ROLES:
         return AUTHORITY_KNOWN_NON_AUTHORITATIVE
     if relationship == CLAIM_SOURCE_FIRST_PARTY_PROMOTIONAL:
@@ -460,7 +495,7 @@ def _source_authority_known(citation: Mapping[str, Any], assessment: Mapping[str
 def _source_not_promotional(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
                             context: Mapping[str, Any]) -> bool:
     """The source is not making a case for itself on this claim."""
-    if str(citation.get("evidence_role") or "") in ALWAYS_NON_AUTHORITATIVE_ROLES:
+    if _citation_role(citation) in ALWAYS_NON_AUTHORITATIVE_ROLES:
         return False
     return _relationship(context) != CLAIM_SOURCE_FIRST_PARTY_PROMOTIONAL
 
@@ -513,6 +548,12 @@ CITATION_CONDITIONS: dict[
     "stance_supports": _stance_supports,
     "evidence_type_admissible": _evidence_type_admissible,
 }
+
+
+# Conditions that read the synthesis model's own assessment of a source. They
+# cannot be evaluated before synthesis runs, so selection leaves them to the
+# post-synthesis verdict, exactly as before.
+ASSESSMENT_DEPENDENT_CONDITIONS = frozenset({"stance_supports", "evidence_type_admissible"})
 
 
 # --- finding conditions ------------------------------------------------------
@@ -838,6 +879,82 @@ def evaluate_policy(
     }
 
 
+SELECTION_ADMISSIBLE_ONLY = "admissible_only"
+SELECTION_NO_ADMISSIBLE_EVIDENCE = "no_admissible_evidence"
+
+_TIER_RANK = {tier: index for index, tier in enumerate(AUTHORITY_TIER_ORDER)}
+
+
+def select_citable_evidence(
+    policy: EvidencePolicy,
+    *,
+    citations: list[Mapping[str, Any]] | None,
+    objective: str = "",
+) -> dict[str, Any]:
+    """Which observed sources synthesis may cite, decided by this policy.
+
+    Synthesis used to receive every observed source in hash order with nothing
+    to say which the policy would admit, so it cited a documentation mirror while
+    the official docs sat in the same pool, a fee aggregator beside the vendor's
+    own price list, and one blog beside five admissible publishers. Selection
+    does not define a second notion of a good source: it runs this policy's own
+    source conditions and offers synthesis the sources that pass.
+
+    Before synthesis there is no finding, so the objective stands in as the
+    provisional claim: it names the subject a first party is judged against and
+    the kind of fact being sought. Conditions that read the model's assessment of
+    a source cannot run yet and stay with the post-synthesis verdict.
+
+    When nothing is admissible, every observed source is offered as before and the
+    verdict refuses the finding afterwards. Selection never makes a source
+    admissible; it only stops synthesis citing one that is not while an
+    admissible one is in hand.
+    """
+    rows = [dict(item) for item in (citations or []) if isinstance(item, Mapping)]
+    terms = objective_terms(objective)
+    provisional = {"summary": str(objective or "")}
+    base_context = {"policy_code": policy.policy_code, "claim_risk_flags": (), "objective_terms": terms}
+    conditions = [name for name in policy.citation_conditions
+                  if name in CITATION_CONDITIONS and name not in ASSESSMENT_DEPENDENT_CONDITIONS]
+    admissible: list[tuple[int, float, str]] = []
+    withheld: dict[str, int] = {}
+    offered_tiers: dict[str, int] = {}
+    for row in rows:
+        cid = str(row.get("citation_id") or "")
+        if not cid:
+            continue
+        relationship = claim_source_relationship(row, provisional, terms)
+        context = {**base_context, "relationship": relationship}
+        failed = [name for name in conditions if not CITATION_CONDITIONS[name](row, None, context)]
+        if failed:
+            for name in failed:
+                withheld[name] = withheld.get(name, 0) + 1
+            continue
+        tier = source_authority_tier(row, relationship)
+        relevance = _number(row.get("relevance_score")) or 0.0
+        admissible.append((_TIER_RANK.get(tier, 0), relevance, cid))
+        offered_tiers[tier] = offered_tiers.get(tier, 0) + 1
+    # Strongest authority first, then the most relevant, so a source's share of a
+    # fixed excerpt budget is not spent on weaker evidence ahead of it.
+    admissible.sort(key=lambda item: (-item[0], -item[1], item[2]))
+    all_ids = [str(row.get("citation_id") or "") for row in rows if str(row.get("citation_id") or "")]
+    if admissible:
+        mode, citable = SELECTION_ADMISSIBLE_ONLY, [cid for _rank, _relevance, cid in admissible]
+    else:
+        mode, citable = SELECTION_NO_ADMISSIBLE_EVIDENCE, all_ids
+    return {
+        "policy_code": policy.policy_code,
+        "selection_mode": mode,
+        "citable_ids": citable,
+        "observed_citation_count": len(all_ids),
+        "offered_citation_count": len(citable),
+        "withheld_citation_count": len(all_ids) - len(citable),
+        "withheld_condition_counts": dict(sorted(withheld.items())) if admissible else {},
+        "offered_authority_tiers": dict(sorted(offered_tiers.items())),
+        "assessment_conditions_deferred": sorted(ASSESSMENT_DEPENDENT_CONDITIONS & set(policy.citation_conditions)),
+    }
+
+
 __all__ = [
     "CONTRACT_VERSION",
     "AUTHORITY_KNOWN_AUTHORITATIVE", "AUTHORITY_KNOWN_NON_AUTHORITATIVE", "AUTHORITY_UNCLASSIFIED",
@@ -851,6 +968,8 @@ __all__ = [
     "CLAIM_SOURCE_FIRST_PARTY_OTHER", "CLAIM_SOURCE_THIRD_PARTY",
     "EVALUATED_NORMALLY_RELATIONSHIPS", "FIRST_PARTY_SETTLED_RISK_FLAGS",
     "claim_source_relationship", "first_party_source",
+    "ASSESSMENT_DEPENDENT_CONDITIONS", "DERIVED_DISQUALIFYING_ROLES",
+    "SELECTION_ADMISSIBLE_ONLY", "SELECTION_NO_ADMISSIBLE_EVIDENCE", "select_citable_evidence",
     "AUTHORITY_TIER_ORDER", "SELF_SUFFICIENT_TIERS", "HIGHER_RISK_POLICY_CODES",
     "TIER_NONE", "TIER_NON_AUTHORITATIVE", "TIER_UNCLASSIFIED",
     "TIER_COMMUNITY", "TIER_SPECIALIST", "TIER_PRIMARY",
