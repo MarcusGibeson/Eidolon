@@ -94,9 +94,19 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "admissible_citation_count": _bounded_count(value.get("admissible_citation_count")),
         "citation_condition_failures": _count_map(value.get("citation_condition_failures")),
         "authority_states": _count_map(value.get("authority_states")),
+        "authority_tiers": _count_map(value.get("authority_tiers")),
         "url_classification_reasons": _count_map(value.get("url_classification_reasons")),
         "document_forms": _count_map(value.get("document_forms")),
         "version_signal_count": _bounded_count(value.get("version_signal_count")),
+        "claim_risk_flags": [
+            code for code in (
+                _clean(item, 40) for item in list(value.get("claim_risk_flags") or [])[:12]
+            ) if code
+        ],
+        "supporting_authority_tier": _clean(value.get("supporting_authority_tier"), 40),
+        "independent_publisher_count": _bounded_count(value.get("independent_publisher_count")),
+        "required_publisher_count": _bounded_count(value.get("required_publisher_count")),
+        "objective_terms_supplied": bool(value.get("objective_terms_supplied")),
         "finding_condition_failures": [
             code for code in (
                 _clean(item, 60) for item in list(value.get("finding_condition_failures") or [])[:12]

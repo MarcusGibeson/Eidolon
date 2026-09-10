@@ -280,6 +280,37 @@ _CURRENCY_WORDING = re.compile(
     re.IGNORECASE,
 )
 
+# Subjects that move whether or not the asker says "current". Nobody writing
+# "Stripe payment processing fee structure" means the 2019 fee structure, and a
+# reference standard admitted an aggregator's figure with no recency requirement
+# at all. Currency is a property of the subject as well as of the phrasing.
+_CURRENCY_TOPIC = re.compile(
+    r"\b(?:pric(?:e|es|ing)|cost|costs|fee|fees|rate|rates|tariff|billing|plan|plans|"
+    r"free\s+tier|subscription|discount|"
+    r"law|laws|legal|legislation|regulation|regulations|regulatory|compliance|policy|policies|"
+    r"enforce(?:d|s|ment)|fine|fines|penalt(?:y|ies)|sanction|sanctions|ruling|lawsuit|"
+    r"availab(?:le|ility)|supported|support\s+status|end[\s-]of[\s-](?:life|support)|"
+    r"version|versions|release|releases|roadmap|"
+    r"spec|specs|specification|specifications|requirements|limits|quota|quotas|"
+    r"ceo|cto|president|prime\s+minister|chair(?:man|person)?|director|officeholder|"
+    r"who\s+(?:is|leads|runs|owns)|"
+    r"market\s+(?:share|size|leader)|valuation|funding|acquisition|merger|"
+    r"population|unemployment|inflation|interest\s+rate)\b",
+    re.IGNORECASE,
+)
+
+# Framing that anchors the objective in the past, where a time-sensitive subject
+# is no longer time-sensitive. "The causes of the 1929 stock market crash" names
+# a market and a cause and needs no fresh evidence whatsoever.
+_HISTORICAL_FRAMING = re.compile(
+    r"\b(?:1[0-9]{3}|20[0-1][0-9])\b|"
+    r"\b(?:histor(?:y|ical|ically)|origins?\s+of|originally|formerly|"
+    r"ancient|medieval|century|centuries|era|dynasty|"
+    r"used\s+to|at\s+the\s+time|back\s+then)\b",
+    re.IGNORECASE,
+)
+
+
 # A dimension's currency need is inherent to the objective class, not to a window.
 _DIMENSION_CURRENCY = {
     "demand": "demand_current",
@@ -301,6 +332,12 @@ def _evidence_currency_requirement(text: str, blueprint: list[dict[str, str]] | 
     Reference material answers a question about how something works, and stays
     correct until the thing changes. A demand claim is about the present state of
     a market. Only the objective can say which is being asked.
+
+    Meaning is read from both the phrasing and the subject. Asking about prices,
+    regulations, support status or who holds an office is asking about now, and
+    requiring the word "current" made a pricing lookup a reference question that
+    accepted evidence of any age. Historical framing overrides the subject: a
+    question about a crash in 1929 names a market and asks for no fresh evidence.
     """
     for row in blueprint or []:
         dimension = str(row.get("evidence_dimension") or "").strip().lower()
@@ -308,7 +345,12 @@ def _evidence_currency_requirement(text: str, blueprint: list[dict[str, str]] | 
             return _DIMENSION_CURRENCY[dimension]
     if blueprint:
         return "current"
-    return "current" if _CURRENCY_WORDING.search(str(text or "")) else "reference"
+    objective = str(text or "")
+    if _CURRENCY_WORDING.search(objective):
+        return "current"
+    if _CURRENCY_TOPIC.search(objective) and not _HISTORICAL_FRAMING.search(objective):
+        return "current"
+    return "reference"
 
 
 def _single_candidate_dimension_blueprint(text: str) -> tuple[list[dict[str, str]], int]:

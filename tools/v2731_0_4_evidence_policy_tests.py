@@ -84,10 +84,19 @@ require(source_authority_state(source("a", host="x.org", kind="reputable_seconda
         "a_promotional_source_is_known_non_authoritative")
 
 unclassified = [source("web-1", host="forum.example.org", kind="unknown")]
-require(evaluate_policy(BASELINE_EVIDENCE_POLICY,
-                        finding={**FINDING, "citation_ids": ["web-1"]},
-                        citations=unclassified)["would_admit"],
-        "an_unclassified_source_is_not_refused_by_the_baseline")
+lone_unclassified = evaluate_policy(BASELINE_EVIDENCE_POLICY,
+                                    finding={**FINDING, "citation_ids": ["web-1"]},
+                                    citations=unclassified)
+# Not having classified a host is still not a finding about the host: the citation
+# itself is admissible. What it cannot do is carry a finding by itself.
+require(lone_unclassified["admissible_citation_count"] == 1,
+        "an_unclassified_source_is_not_refused_on_authority_grounds")
+require("source_authority_assessed" not in lone_unclassified["citation_condition_failures"],
+        "an_unclassified_source_does_not_fail_the_authority_condition")
+require(not lone_unclassified["would_admit"],
+        "a_lone_unclassified_source_cannot_carry_a_finding")
+require("corroboration_satisfied" in lone_unclassified["finding_condition_failures"],
+        "a_lone_unclassified_source_fails_on_corroboration_not_authority")
 promotional = [source("web-1", host="vendor.example.com", role="promotional_summary")]
 promo = evaluate_policy(BASELINE_EVIDENCE_POLICY, finding={**FINDING, "citation_ids": ["web-1"]},
                         citations=promotional)
