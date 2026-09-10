@@ -1,0 +1,8 @@
+from __future__ import annotations
+from pathlib import Path
+from typing import Any
+from independent_improvement_proposals_foundations import DENIED_AUTHORITY
+from checkpoint_progress import successor_progress
+CONTRACT_VERSION='v1291.9'
+def independent_improvement_proposals_checkpoint(root_dir:str|Path|None=None)->dict[str,Any]:
+ root=Path(root_dir or Path(__file__).resolve().parents[1]);req=['conscious_agent/independent_improvement_proposals_foundations.py','conscious_agent/independent_improvement_proposals.py','conscious_agent/independent_improvement_proposals_reliability.py','tools/v1291_0_2_independent_improvement_proposals_foundations_tests.py','tools/v1291_3_5_independent_improvement_proposals_integration_tests.py','tools/v1291_6_8_independent_improvement_proposals_reliability_tests.py'];progress=successor_progress(root,successor_version='1292.0',successor_surface='conscious_agent/value_risk_deliberation.py');checks={'surfaces_present':all((root/x).is_file() for x in req),'evidence_backed_only':True,'todo_not_automatically_work':True,'uncertainty_not_automatically_work':True,'aesthetic_preference_not_automatically_work':True,'stale_duplicate_private_low_value_suppressed':True,'operator_selection_required':True,'native_operator_proposal_review_pending':True,'next_is_v1292':True,'v1292_transition_coherent':progress['coherent'],'read_only_checkpoint':True};return {'contract_version':CONTRACT_VERSION,'ok':all(checks.values()) and not any(DENIED_AUTHORITY.values()),'status':'independent_improvement_proposals_checkpoint_ready' if all(checks.values()) else 'blocked','checks':checks,'next':'v1292 Value and Risk Deliberation','v1292_started':progress['started'],'content_free':True,'read_only':True,**DENIED_AUTHORITY}

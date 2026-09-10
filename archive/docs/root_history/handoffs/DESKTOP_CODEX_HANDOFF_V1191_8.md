@@ -1,0 +1,3 @@
+# Windows/Desktop Codex Handoff v1191.8
+
+Review the source-only v1191.8 candidate as a bounded reliability-hardening delta from v1191.5. Confirm the new responsive_work_queue_reliability contract and checkpoint are content-free, read-only, GET-only, deterministically ordered, latency bounded, stale-lineage rejecting, and authority-free. Confirm no provider/model contact, process/thread start, execution, retry, cancellation, runtime mutation, installation, promotion, certification, publication, or release occurs. The next Desktop Codex and native-provider milestone review remains v1200; the immediate next source unit is v1191.9.

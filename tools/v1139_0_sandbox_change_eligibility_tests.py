@@ -1,0 +1,10 @@
+from pathlib import Path
+import tempfile
+from conscious_agent.sandbox_change_eligibility import SandboxChangeEligibilityStore,CHANGE_CATEGORIES,OPERATION_CATEGORIES
+from conscious_agent.test_plan_arbitration import TestPlanArbitrationStore
+checks=[]
+def check(n,v): checks.append((n,bool(v))); print(("PASS" if v else "FAIL"),n)
+with tempfile.TemporaryDirectory() as td:
+ r=Path(td)/"cognition"; a=TestPlanArbitrationStore(r); s=a._load(); s["outcomes"].append({"arbitration_id":"arb-1","session_id":"sess-1","candidate_id":"tp-1","eligibility_ids":["te-1"],"specification_candidate_ids":["sp-1"],"proposal_candidate_ids":["pr-1"],"deficiency_candidate_ids":["df-1"],"test_plan_categories":["unit_test_plan"],"project_digests":["pd"],"scope_digests":["sd"],"evidence_ids":["ev"],"outcome":"test_plan_supported"}); from conscious_agent.json_storage import write_json_atomic; r.mkdir(parents=True,exist_ok=True); write_json_atomic(a.path,s,expected_type=dict,sort_keys=True)
+ st=SandboxChangeEligibilityStore(r); x=st.register("e1",arbitration_id="arb-1",change_category="source_repair",component_ids=["component:a"],path_digests=["d"*64],operation_categories=["modify_candidate_file"],isolation_profile_id="isolated-python",operator_review_required=False,reversibility=.9,containment_confidence=.9); check("eligible",x["state"]=="eligible"); check("idempotent",st.register("e1",arbitration_id="arb-1",change_category="source_repair",component_ids=["component:a"],path_digests=["d"*64],operation_categories=["modify_candidate_file"],isolation_profile_id="isolated-python")["idempotent"]); row=st.snapshot()["eligibility_records"][0]; check("exact lineage",row["test_plan_candidate_id"]=="tp-1" and row["specification_candidate_ids"]==["sp-1"]); check("structural scope",row["path_digests"] and not row["patch_text_digest"]); check("categories",len(CHANGE_CATEGORIES)>=8 and len(OPERATION_CATEGORIES)>=7); check("authority inert",not any(st.inspection_summary()["authority_boundary"].values()))
+assert all(v for _,v in checks); print(f"RESULT {sum(v for _,v in checks)}/{len(checks)}")

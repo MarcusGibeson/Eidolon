@@ -1,0 +1,20 @@
+from __future__ import annotations
+"""v1124.7 interruption, resumption, disengagement, fixation, and reliability review."""
+from copy import deepcopy
+from reflective_focus_outcome_lineage import ReflectiveFocusOutcomeLineageStore, CONTRACT_VERSION as LINEAGE_VERSION
+CONTRACT_VERSION="v1124.7"
+class ReflectiveFocusContinuityReviewer:
+ def __init__(self,runtime_root=None): self.lineage=ReflectiveFocusOutcomeLineageStore(runtime_root)
+ def review(self,*,attention_id:str,minimum_evidence:int=3,operator_review_required:bool=False):
+  rows=[x for x in self.lineage.snapshot().get("outcomes",[]) if x.get("attention_id")==attention_id]; outcomes=[x.get("outcome") for x in rows]; interruptions=sum(1 for x in rows if x.get("continuity_state") in {"interrupted","resumed"}); resumes=sum(1 for x in rows if x.get("continuity_state")=="resumed")
+  switches=sum(1 for a,b in zip(outcomes,outcomes[1:]) if a!=b); repeated_disengagement=outcomes.count("disengage_deliberately")>=3; repeated_suspension=outcomes.count("suspend_for_recovery")>=3; fixation=outcomes.count("continue_bounded_focus")>=4 and len(set(outcomes))==1
+  if len(rows)<minimum_evidence: status="insufficient_evidence"; instability=False; suppressed=True
+  else: instability=switches>=3 or interruptions>=3; status="fixation_detected" if fixation else ("repeated_focus_instability" if instability else ("repeated_disengagement_pattern" if repeated_disengagement else ("recovery_suspension_pattern" if repeated_suspension else "stable_or_indeterminate"))); suppressed=False
+  proposal=None
+  if (instability or fixation or repeated_disengagement or repeated_suspension) and operator_review_required: proposal={"proposal_id":f"focus-policy-{attention_id[:24]}-{len(rows)}","proposal_type":"operator_reviewed_focus_policy","state":"proposed","approved":False,"authorized":False,"applied":False,"can_create_reflection":False,"can_create_intention":False,"can_create_initiative":False,"can_send_message":False,"can_create_notification":False,"can_contact_provider":False,"can_browse":False,"can_change_policy":False}
+  reliability=0.0 if not rows else round(max(0.0,1.0-(switches/max(1,len(rows)-1))),4)
+  return {"ok":True,"contract_version":CONTRACT_VERSION,"lineage_contract_version":LINEAGE_VERSION,"attention_id":attention_id,"sample_size":len(rows),"outcomes":outcomes,"interruption_count":interruptions,"resumption_count":resumes,"switch_count":switches,"focus_instability_detected":instability,"fixation_detected":fixation,"repeated_disengagement_pattern":repeated_disengagement,"recovery_suspension_pattern":repeated_suspension,"false_pattern_suppressed":suppressed,"status":status,"focus_reliability":reliability,"operator_review_proposal":proposal,"reflection_created":False,"intention_created":False,"initiative_created":False,"message_sent":False,"notification_created":False,"provider_contacted":False,"browsing_performed":False,"policy_applied":False,"approval_granted":False,"authorization_granted":False,"external_action_executed":False,"hidden_reasoning_exposed":False,"runtime_mutated":False}
+ def inspection_summary(self):
+  base=self.lineage.inspection_summary(); ids=sorted({x.get("attention_id") for x in base.get("recent_outcomes",[]) if x.get("attention_id")}); reviews=[self.review(attention_id=x) for x in ids[-24:]]
+  return {"ok":True,"contract_version":CONTRACT_VERSION,"lineage_contract_version":LINEAGE_VERSION,"attention_count":len(ids),"reviews":reviews,"authority_boundary":deepcopy(base.get("authority_boundary",{})),"reflection_created":False,"intention_created":False,"initiative_created":False,"message_sent":False,"notification_created":False,"provider_contacted":False,"browsing_performed":False,"policy_applied":False,"approval_granted":False,"authorization_granted":False,"external_action_executed":False,"hidden_reasoning_exposed":False,"runtime_mutated":False}
+def build_reflective_focus_continuity_review(runtime_root=None): return ReflectiveFocusContinuityReviewer(runtime_root).inspection_summary()

@@ -1,0 +1,3 @@
+# v1397.9 Provider-Backed Task Final Validation
+
+v1397.9 demonstrates a bounded feature completed through an explicitly authorized configured local-provider interface without sending project content or filesystem paths. The provider response is constrained to two validated public tokens, the resulting external Python helper is executed and tested, and the same task remains completable through deterministic offline fallback when provider use is unavailable, unauthorized, malformed, or remote.\n\nFocused verification: foundations 5/5; integration 5/5; reliability/adversarial 7/7; checkpoint 5/5.

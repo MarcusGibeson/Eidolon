@@ -1,0 +1,3 @@
+from conscious_agent.cognitive_alpha_feature_freeze_intake_checkpoint import build_cognitive_alpha_feature_freeze_intake_checkpoint
+r=build_cognitive_alpha_feature_freeze_intake_checkpoint();checks=[r['contract_version']=='v1149.2',r['ok'],r['passed']==r['total']==18,r['read_only'],not r['post_available'],not r['source_modified'],not r['runtime_mutated'],not r['installation_performed'],not r['rollback_performed'],not r['promotion_performed'],not r['certification_performed'],not r['provider_contacted'],not r['command_executed'],not r['message_sent'],not r['hidden_reasoning_exposed'],r['desktop_verification_pending'],not r['consciousness_proven']]
+print(f"v1149.2: {sum(checks)}/{len(checks)}");raise SystemExit(0 if all(checks) else 1)

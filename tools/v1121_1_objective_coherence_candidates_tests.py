@@ -1,0 +1,9 @@
+from pathlib import Path
+import tempfile
+from conscious_agent.objective_coherence_signals import ObjectiveCoherenceSignalStore
+from conscious_agent.objective_coherence_candidates import ObjectiveCoherenceCandidateStore, build_objective_coherence_candidate_inspection
+checks=[]
+def req(x): checks.append(bool(x))
+with tempfile.TemporaryDirectory() as td:
+ root=Path(td); s=ObjectiveCoherenceSignalStore(root); a=s.register("s1",signal_type="priority_mismatch",source_type="objective",source_id="o1")["result"]["signal_id"]; b=s.register("s2",signal_type="milestone_infeasibility",source_type="milestone",source_id="m1")["result"]["signal_id"]; c=ObjectiveCoherenceCandidateStore(root,signals=s); r=c.register("c1",signal_ids=[a,b],coherence_risk=.8); req(r["status"]=="objective_coherence_candidate_registered"); req(c.register("c1",signal_ids=[a,b])["idempotent"]); req(c.register("c2",signal_ids=[a,b],structural_digest="")["status"]=="duplicate_candidate_ignored"); d=s.register("s3",signal_type="objective_drift",source_type="objective",source_id="o2")["result"]["signal_id"]; req(c.register("c3",signal_ids=[b,d])["status"]=="semantic_overlap_detected"); i=build_objective_coherence_candidate_inspection(root); req(i["contract_version"]=="v1121.1"); req(i["candidate_count"]==1); req(not any(i["authority_boundary"].values())); req(not i["objective_text_exposed"] and not i["hidden_reasoning_exposed"]); row=c.snapshot()["candidates"][0]; req(set(row["source_types"])=={"objective","milestone"}); req(all(not row[k] for k in ("priority_change_id","objective_revision_id","milestone_revision_id","proposal_id","approval_id","authorization_id","action_id")))
+print(f"v1121.1 objective coherence candidates: {sum(checks)}/{len(checks)} passed"); raise SystemExit(0 if all(checks) and len(checks)==10 else 1)

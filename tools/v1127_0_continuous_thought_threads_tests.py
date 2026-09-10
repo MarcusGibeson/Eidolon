@@ -1,0 +1,7 @@
+import json,tempfile
+from pathlib import Path
+from conscious_agent.reflective_subject_intake import ReflectiveSubjectIntakeStore
+from conscious_agent.model_backed_reflective_session import ModelBackedReflectiveSessionStore
+from conscious_agent.reflective_outcome_lineage import ReflectiveOutcomeLineageStore
+from conscious_agent.continuous_thought_threads import ContinuousThoughtThreadStore
+root=Path(tempfile.mkdtemp());sub=ReflectiveSubjectIntakeStore(root);sid=sub.register('s',subject_kind='concern',source_contract='test',source_id='x',importance=.8,uncertainty=.2)['subject_id'];ses=ModelBackedReflectiveSessionStore(root,model_generate=lambda p:'{"outcome":"conclusion","conclusion":"x","uncertainty":0.2,"evidence_refs":["r"],"communication_recommendation":"silence"}');sr=ses.run('m',subject_id=sid);out=ReflectiveOutcomeLineageStore(root);oid=out.record('o',session_id=sr['session_id'])['outcome_id'];st=ContinuousThoughtThreadStore(root);a=st.create('t',reflection_outcome_id=oid);b=st.create('t',reflection_outcome_id=oid);st.transition('p',thread_id=a['thread_id'],state='paused');ins=st.inspection_summary();checks=[a['status']=='thought_thread_created',b['idempotent'],ins['contract_version']=='v1127.0',ins['thread_count']==1,ins['state_counts']['paused']==1,bool(ins['recent_threads'][0]['resume_token_digest']),not ins['raw_content_exposed'],not ins['provider_contacted'],not ins['belief_updated'],not ins['external_action_executed']];print(json.dumps({'passed':sum(checks),'total':10,'suite':'v1127.0'}));raise SystemExit(0 if all(checks) else 1)

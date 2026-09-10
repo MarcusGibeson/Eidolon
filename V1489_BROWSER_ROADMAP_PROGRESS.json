@@ -1,0 +1,17 @@
+{
+  "authority_broadened": false,
+  "certified": false,
+  "completed_bundles": 20,
+  "completed_microversion_range": "v1489.0001-v1489.0200",
+  "installed": false,
+  "latest_checkpoint": "v1489.0200",
+  "native_windows_review_complete": true,
+  "next_microversion": "operator_review",
+  "operator_unscripted_trial_complete": false,
+  "promoted": false,
+  "schema_version": "1",
+  "source_manifest_digest": "8e9dc0c48d288cac55a28c5cda0d441cbb299edbb37f3b83381bd1f3d0e05728",
+  "source_manifest_digest_scope": "source-only files excluding V1489_BROWSER_ROADMAP_PROGRESS.json",
+  "source_manifest_file_count": 5108,
+  "status": "unpromoted_desktop_integrated_installation_review_candidate_operator_trial_pending"
+}

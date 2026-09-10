@@ -1,0 +1,8 @@
+from __future__ import annotations
+from pathlib import Path
+from typing import Any
+from value_risk_deliberation_foundations import DENIED_AUTHORITY
+from checkpoint_progress import successor_progress
+CONTRACT_VERSION='v1292.9'
+def value_risk_deliberation_checkpoint(root_dir:str|Path|None=None)->dict[str,Any]:
+ root=Path(root_dir or Path(__file__).resolve().parents[1]);req=['conscious_agent/value_risk_deliberation_foundations.py','conscious_agent/value_risk_deliberation.py','conscious_agent/value_risk_deliberation_reliability.py','tools/v1292_0_2_value_risk_deliberation_foundations_tests.py','tools/v1292_3_5_value_risk_deliberation_integration_tests.py','tools/v1292_6_8_value_risk_deliberation_reliability_tests.py'];progress=successor_progress(root,successor_version='1293.0',successor_surface='conscious_agent/bounded_development_campaigns.py');checks={'surfaces_present':all((root/x).is_file() for x in req),'evidence_value_risk_reversibility_cost_dependencies_uncertainty_compared':True,'critical_and_irreversible_risk_can_block':True,'ambiguous_tradeoffs_can_defer':True,'recommendation_explainable':True,'operator_decision_required':True,'recommendation_not_priority_mutation':True,'recommendation_not_authority':True,'native_operator_deliberation_review_pending':True,'next_is_v1293':True,'v1293_transition_coherent':progress['coherent'],'read_only_checkpoint':True};return {'contract_version':CONTRACT_VERSION,'ok':all(checks.values()) and not any(DENIED_AUTHORITY.values()),'status':'value_risk_deliberation_checkpoint_ready' if all(checks.values()) else 'blocked','checks':checks,'next':'v1293 Bounded Development Campaigns','v1293_started':progress['started'],'content_free':True,'read_only':True,**DENIED_AUTHORITY}

@@ -1,0 +1,748 @@
+{
+  "assertions_failed": 0,
+  "assertions_passed": 1320,
+  "baseline_version": "1400.9",
+  "checkpoint_registry_checks": "118/118",
+  "current_version": "1449.9",
+  "logical_suite_files": 196,
+  "native_windows_v1450_gate": "required",
+  "release_metadata_checks": "94/94",
+  "results": [
+    {
+      "function": "observe_project_health",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Health Observations",
+      "total_assertions": 26,
+      "version": "1401.9"
+    },
+    {
+      "function": "detect_opportunities",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Opportunity Detection",
+      "total_assertions": 26,
+      "version": "1402.9"
+    },
+    {
+      "function": "create_backlog",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Backlog Creation",
+      "total_assertions": 26,
+      "version": "1403.9"
+    },
+    {
+      "function": "prioritize_backlog",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Priority Reasoning",
+      "total_assertions": 26,
+      "version": "1404.9"
+    },
+    {
+      "function": "pace_initiative",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Initiative Pacing",
+      "total_assertions": 27,
+      "version": "1405.9"
+    },
+    {
+      "function": "evaluate_schedule_window",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Schedule Windows",
+      "total_assertions": 27,
+      "version": "1406.9"
+    },
+    {
+      "function": "revalidate_stale_tasks",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Staleness Management",
+      "total_assertions": 26,
+      "version": "1407.9"
+    },
+    {
+      "function": "dependency_aware_selection",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Dependency-Aware Initiative",
+      "total_assertions": 26,
+      "version": "1408.9"
+    },
+    {
+      "function": "explain_selection",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Initiative Explanation",
+      "total_assertions": 26,
+      "version": "1409.9"
+    },
+    {
+      "function": "build_initiative_checkpoint",
+      "module": "initiative_backlog_scheduler",
+      "passed": true,
+      "phase": "initiative_backlog_scheduling",
+      "suite_assertions": {
+        "checkpoint": 9,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Initiative Checkpoint",
+      "total_assertions": 28,
+      "version": "1410.9"
+    },
+    {
+      "function": "record_outcome",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Outcome Records",
+      "total_assertions": 26,
+      "version": "1411.9"
+    },
+    {
+      "function": "extract_lessons",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Lesson Extraction",
+      "total_assertions": 26,
+      "version": "1412.9"
+    },
+    {
+      "function": "retrieve_lessons",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Retrieval Quality",
+      "total_assertions": 26,
+      "version": "1413.9"
+    },
+    {
+      "function": "build_negative_knowledge",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Negative Knowledge",
+      "total_assertions": 27,
+      "version": "1414.9"
+    },
+    {
+      "function": "form_skill",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Skill Formation",
+      "total_assertions": 26,
+      "version": "1415.9"
+    },
+    {
+      "function": "evaluate_skill",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Skill Evaluation",
+      "total_assertions": 26,
+      "version": "1416.9"
+    },
+    {
+      "function": "learn_operator_preferences",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Operator Preference Learning",
+      "total_assertions": 26,
+      "version": "1417.9"
+    },
+    {
+      "function": "learn_model_limits",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Model-Limit Learning",
+      "total_assertions": 27,
+      "version": "1418.9"
+    },
+    {
+      "function": "correct_forget_records",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Forgetting and Correction",
+      "total_assertions": 26,
+      "version": "1419.9"
+    },
+    {
+      "function": "build_outcome_learning_checkpoint",
+      "module": "outcome_learning",
+      "passed": true,
+      "phase": "learning_from_outcomes",
+      "suite_assertions": {
+        "checkpoint": 9,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Outcome-Learning Checkpoint",
+      "total_assertions": 28,
+      "version": "1420.9"
+    },
+    {
+      "function": "build_working_memory",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Working Memory",
+      "total_assertions": 27,
+      "version": "1421.9"
+    },
+    {
+      "function": "select_attention",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Selected Attention",
+      "total_assertions": 26,
+      "version": "1422.9"
+    },
+    {
+      "function": "update_belief",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Belief State",
+      "total_assertions": 27,
+      "version": "1423.9"
+    },
+    {
+      "function": "build_causal_model",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Causal Models",
+      "total_assertions": 26,
+      "version": "1424.9"
+    },
+    {
+      "function": "compare_counterfactuals",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Counterfactual Reasoning",
+      "total_assertions": 26,
+      "version": "1425.9"
+    },
+    {
+      "function": "assess_metacognition",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Metacognition",
+      "total_assertions": 26,
+      "version": "1426.9"
+    },
+    {
+      "function": "reflective_cycle",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Reflective Cycles",
+      "total_assertions": 26,
+      "version": "1427.9"
+    },
+    {
+      "function": "update_affective_state",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Affective State",
+      "total_assertions": 27,
+      "version": "1428.9"
+    },
+    {
+      "function": "reconcile_self_model",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Persistent Self-Model",
+      "total_assertions": 27,
+      "version": "1429.9"
+    },
+    {
+      "function": "build_cognitive_architecture_checkpoint",
+      "module": "cognitive_architecture_beta",
+      "passed": true,
+      "phase": "cognitive_architecture_reflective_reasoning",
+      "suite_assertions": {
+        "checkpoint": 9,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Cognitive-Architecture Checkpoint",
+      "total_assertions": 28,
+      "version": "1430.9"
+    },
+    {
+      "function": "understand_mixed_intent",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 13
+      },
+      "title": "Mixed-Intent Understanding",
+      "total_assertions": 32,
+      "version": "1431.9"
+    },
+    {
+      "function": "ground_commands",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Command Grounding",
+      "total_assertions": 27,
+      "version": "1432.9"
+    },
+    {
+      "function": "preserve_followup",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Natural Follow-Up",
+      "total_assertions": 27,
+      "version": "1433.9"
+    },
+    {
+      "function": "describe_action_state",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Action-Aware Dialogue",
+      "total_assertions": 27,
+      "version": "1434.9"
+    },
+    {
+      "function": "proactive_expression",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Proactive Expression",
+      "total_assertions": 26,
+      "version": "1435.9"
+    },
+    {
+      "function": "update_relationship_continuity",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Relationship Continuity",
+      "total_assertions": 27,
+      "version": "1436.9"
+    },
+    {
+      "function": "emotional_interaction",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Emotional Interaction",
+      "total_assertions": 27,
+      "version": "1437.9"
+    },
+    {
+      "function": "voice_foundation",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Voice Foundation",
+      "total_assertions": 27,
+      "version": "1438.9"
+    },
+    {
+      "function": "evaluate_conversation_quality",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Conversation Quality Evaluation",
+      "total_assertions": 27,
+      "version": "1439.9"
+    },
+    {
+      "function": "build_unified_companion_developer_checkpoint",
+      "module": "unified_companion_developer",
+      "passed": true,
+      "phase": "unified_conversation_action_companion",
+      "suite_assertions": {
+        "checkpoint": 9,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Unified Companion-Developer Checkpoint",
+      "total_assertions": 28,
+      "version": "1440.9"
+    },
+    {
+      "function": "native_desktop_shell_contract",
+      "module": "desktop_daily_use",
+      "passed": true,
+      "phase": "desktop_product_daily_use",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 13
+      },
+      "title": "Native Desktop Shell",
+      "total_assertions": 32,
+      "version": "1441.9"
+    },
+    {
+      "function": "desktop_lifecycle_transition",
+      "module": "desktop_daily_use",
+      "passed": true,
+      "phase": "desktop_product_daily_use",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Desktop Lifecycle",
+      "total_assertions": 26,
+      "version": "1442.9"
+    },
+    {
+      "function": "conversation_workspace_contract",
+      "module": "desktop_daily_use",
+      "passed": true,
+      "phase": "desktop_product_daily_use",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Conversation Workspace",
+      "total_assertions": 26,
+      "version": "1443.9"
+    },
+    {
+      "function": "development_workspace_projection",
+      "module": "desktop_daily_use",
+      "passed": true,
+      "phase": "desktop_product_daily_use",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Development Workspace",
+      "total_assertions": 27,
+      "version": "1444.9"
+    },
+    {
+      "function": "provider_setup_assessment",
+      "module": "desktop_daily_use",
+      "passed": true,
+      "phase": "desktop_product_daily_use",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 9
+      },
+      "title": "Provider Setup",
+      "total_assertions": 28,
+      "version": "1445.9"
+    },
+    {
+      "function": "notification_decision",
+      "module": "desktop_daily_use",
+      "passed": true,
+      "phase": "desktop_product_daily_use",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 7
+      },
+      "title": "Notifications",
+      "total_assertions": 26,
+      "version": "1446.9"
+    },
+    {
+      "function": "accessibility_assessment",
+      "module": "desktop_daily_use",
+      "passed": true,
+      "phase": "desktop_product_daily_use",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 8
+      },
+      "title": "Accessibility",
+      "total_assertions": 27,
+      "version": "1447.9"
+    },
+    {
+      "function": "build_encrypted_backup",
+      "module": "desktop_daily_use",
+      "passed": true,
+      "phase": "desktop_product_daily_use",
+      "suite_assertions": {
+        "checkpoint": 7,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 11
+      },
+      "title": "Backup and Restore",
+      "total_assertions": 30,
+      "version": "1448.9"
+    },
+    {
+      "function": "update_experience",
+      "module": "desktop_daily_use",
+      "passed": true,
+      "phase": "desktop_product_daily_use",
+      "suite_assertions": {
+        "checkpoint": 8,
+        "foundations": 5,
+        "integration": 7,
+        "reliability": 9
+      },
+      "title": "Update Experience",
+      "total_assertions": 29,
+      "version": "1449.9"
+    }
+  ],
+  "versions": "1401-1449"
+}

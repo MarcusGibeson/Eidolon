@@ -1,0 +1,32 @@
+from __future__ import annotations
+"""v1350 content-minimized evidence gate for representative Phase 5 implementation skills."""
+import re
+from typing import Any,Mapping,Sequence
+from cognitive_coding_foundations import DENIED_AUTHORITY,digest
+from ordinary_chat_development_campaign import _atomic_json,_read_json,_store_root
+CONTRACT_VERSION='v1350.8';REQUIRED_SCENARIOS=('python','web','cli','mixed_stack','framework_adaptation','dependency_selection')
+IMPLEMENTATION_SKILL_DENIED_AUTHORITY={**DENIED_AUTHORITY,'source_mutation_authorized':False,'source_application_authorized':False,'dependency_installation_authorized':False,'network_authorized':False,'installation_authorized':False,'promotion_authorized':False,'release_authorized':False,'independent_authority_granted':False}
+def _root(runtime_root=None):return _store_root(runtime_root)/'phase5_implementation_skill_benchmark'
+def _path(op,runtime_root=None):
+ if not re.fullmatch(r'implskill_[a-f0-9]{24}',str(op or '')):raise ValueError('invalid_implementation_skill_benchmark_id')
+ return _root(runtime_root)/'records'/f'{op}.json'
+def _load(op,runtime_root=None):
+ row=_read_json(_path(op,runtime_root));return row if row and row.get('record_digest')==digest({k:v for k,v in row.items() if k!='record_digest'}) else {}
+def _save(row,runtime_root=None):row.pop('record_digest',None);row['record_digest']=digest(row);_atomic_json(_path(row['implementation_skill_benchmark_id'],runtime_root),row);return row
+def evaluate_implementation_skill_evidence(scenarios:Sequence[Mapping[str,Any]])->dict[str,Any]:
+ names=[str(s.get('scenario') or '') for s in scenarios];missing=[x for x in REQUIRED_SCENARIOS if x not in names];duplicates=sorted({x for x in names if names.count(x)>1});rows=[]
+ for s in scenarios:
+  name=str(s.get('scenario') or '');ed=str(s.get('evidence_digest') or '');verified=s.get('verification_passed') is True;clean=s.get('workspace_cleaned') is True;recover=s.get('host_recoverable') is True;unchanged=s.get('selected_source_content_modified') is False;authority_safe=s.get('authority_safe') is True;ok=s.get('ok') is True and verified and clean and recover and unchanged and authority_safe and bool(re.fullmatch(r'[a-fA-F0-9]{64}',ed));rows.append({'scenario':name,'ok':ok,'evidence_digest':ed,'verification_passed':verified,'workspace_cleaned':clean,'host_recoverable':recover,'selected_source_unchanged':unchanged,'authority_safe':authority_safe})
+ required_rows=[r for r in rows if r['scenario'] in REQUIRED_SCENARIOS];passed=sum(r['ok'] for r in required_rows);all_required=not missing and not duplicates and len(required_rows)==len(REQUIRED_SCENARIOS);ready=all_required and passed==len(REQUIRED_SCENARIOS)
+ out={'contract_version':CONTRACT_VERSION,'benchmark_status':'implementation_skill_ready' if ready else 'implementation_skill_blocked','required_scenario_count':len(REQUIRED_SCENARIOS),'observed_scenario_count':len(rows),'passed_scenario_count':passed,'missing_scenarios':missing,'duplicate_scenarios':duplicates,'scenario_evidence_digest':digest([(r['scenario'],r['ok'],r['evidence_digest']) for r in sorted(rows,key=lambda x:x['scenario'])]),'all_required_scenarios_passed':ready,'raw_project_content_exposed':False,'raw_commands_exposed':False,'inspection_only':True,**IMPLEMENTATION_SKILL_DENIED_AUTHORITY};out['benchmark_digest']=digest(out);return out
+def create_implementation_skill_benchmark(*,scenarios:Sequence[Mapping[str,Any]],source_workspace_digest:str,runtime_root=None)->dict[str,Any]:
+ evaluation=evaluate_implementation_skill_evidence(scenarios);op='implskill_'+digest({'contract':CONTRACT_VERSION,'source':source_workspace_digest,'benchmark':evaluation['benchmark_digest']})[:24];existing=_load(op,runtime_root)
+ if existing:return {'ok':existing.get('benchmark_status')=='implementation_skill_ready','status':'implementation_skill_benchmark_already_exists','implementation_skill_benchmark':public_implementation_skill_benchmark(existing),'action_executed':False,**IMPLEMENTATION_SKILL_DENIED_AUTHORITY}
+ row={'contract_version':CONTRACT_VERSION,'implementation_skill_benchmark_id':op,'source_workspace_digest':source_workspace_digest,'benchmark_status':evaluation['benchmark_status'],'required_scenario_count':evaluation['required_scenario_count'],'observed_scenario_count':evaluation['observed_scenario_count'],'passed_scenario_count':evaluation['passed_scenario_count'],'missing_scenarios':evaluation['missing_scenarios'],'duplicate_scenarios':evaluation['duplicate_scenarios'],'scenario_evidence_digest':evaluation['scenario_evidence_digest'],'benchmark_digest':evaluation['benchmark_digest'],'all_required_scenarios_passed':evaluation['all_required_scenarios_passed'],'action_executed':False,**IMPLEMENTATION_SKILL_DENIED_AUTHORITY};_save(row,runtime_root);ok=row['all_required_scenarios_passed'] is True;return {'ok':ok,'status':'implementation_skill_checkpoint_ready' if ok else 'implementation_skill_checkpoint_blocked','implementation_skill_benchmark':public_implementation_skill_benchmark(row),'action_executed':False,**IMPLEMENTATION_SKILL_DENIED_AUTHORITY}
+def public_implementation_skill_benchmark(row:Mapping[str,Any])->dict[str,Any]:
+ if not row:return {}
+ return {k:row.get(k) for k in ('contract_version','implementation_skill_benchmark_id','source_workspace_digest','benchmark_status','required_scenario_count','observed_scenario_count','passed_scenario_count','missing_scenarios','duplicate_scenarios','scenario_evidence_digest','benchmark_digest','all_required_scenarios_passed','action_executed')}|{'raw_project_content_exposed':False,'raw_commands_exposed':False,**IMPLEMENTATION_SKILL_DENIED_AUTHORITY}
+def load_implementation_skill_benchmark(op:str,*,runtime_root=None):return public_implementation_skill_benchmark(_load(op,runtime_root))
+def process_implementation_skill_benchmark_control(text:str,*,project_state=None,runtime_root=None,**_):
+ if str(text or '').strip().lower() not in {'show implementation skill checkpoint','inspect implementation skill checkpoint','show implementation benchmark'}:return {'active':False}
+ op=str((project_state or {}).get('implementation_skill_benchmark_id') or '');row=load_implementation_skill_benchmark(op,runtime_root=runtime_root) if op else {};return {'active':True,'ok':bool(row),'status':'implementation_skill_benchmark_found' if row else 'implementation_skill_benchmark_missing','implementation_skill_benchmark':row,'action_executed':False,**IMPLEMENTATION_SKILL_DENIED_AUTHORITY}

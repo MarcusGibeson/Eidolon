@@ -1,0 +1,141 @@
+{
+  "added": [
+    {
+      "path": "conscious_agent/broad_software_engineering.py",
+      "sha256": "3eb41a081c26a2f5ccce56573df494a22df7c3fc38ea92d8d487d8a2ad964e88",
+      "size_bytes": 4343
+    },
+    {
+      "path": "conscious_agent/deep_project_understanding.py",
+      "sha256": "5deea0ed81e2ecd185522910d567214eeac410f97017c7a26fe56bc2d68ba3f3",
+      "size_bytes": 29308
+    },
+    {
+      "path": "conscious_agent/portable_release_upgrade_engineering.py",
+      "sha256": "4fa41aa646de43c4211da9436d280caa779bc8d4856d3a90ae62e2a56d773535",
+      "size_bytes": 13984
+    },
+    {
+      "path": "conscious_agent/software_language_capabilities.py",
+      "sha256": "e7dd144ce9f58dd32637b72b4d365b9d5686122d05e27b5594241e32cfec414a",
+      "size_bytes": 19178
+    },
+    {
+      "path": "conscious_agent/test_debug_performance_intelligence.py",
+      "sha256": "cc9d05d6866faed3adc25404988efd7387037c5521b3d1925cbb077f6b0f97f6",
+      "size_bytes": 14189
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_BROWSER_VERIFICATION_LEDGER_V1699_9.md",
+      "sha256": "407c6119954bc290728f3d40beb542251ed748e0e4cd5fc94bbf0579ec5c6499",
+      "size_bytes": 2374
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_DEFERRED_LOCAL_LEDGER_V1699_9.md",
+      "sha256": "589f05407f43c30a01d5e8420937346079307485082da10168849fba04a83ee2",
+      "size_bytes": 2316
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_MOBILE_BROWSER_ERA2_WORK_LEDGER_V1699_9.md",
+      "sha256": "fcc784f645be89aaa2acca12d30408125a7476a95163ca7e80deeaa036c6dc88",
+      "size_bytes": 4569
+    },
+    {
+      "path": "tools/v1625_9_deep_project_understanding_checkpoint_tests.py",
+      "sha256": "39cd11c5cb6d082008a838b81cef0811a56b9f88f0ef054e06a7c1acd01b6b28",
+      "size_bytes": 8397
+    },
+    {
+      "path": "tools/v1650_9_multi_language_engineering_checkpoint_tests.py",
+      "sha256": "2c44994fed84260378e95e3a21a632aec27c7783bdd786454ac21c9f3e28b5c3",
+      "size_bytes": 6114
+    },
+    {
+      "path": "tools/v1675_9_testing_debugging_performance_checkpoint_tests.py",
+      "sha256": "1d4cfce42a439b6fad58d2c8208c1339223489b246fc69abff82d7d894c0ce57",
+      "size_bytes": 5536
+    },
+    {
+      "path": "tools/v1699_9_broad_software_engineering_integration_tests.py",
+      "sha256": "7b31d46da0ca948fdf0148ef2834c538ba707fea6565eab691af8d2f5bfef406",
+      "size_bytes": 2537
+    },
+    {
+      "path": "tools/v1699_9_release_upgrade_engineering_checkpoint_tests.py",
+      "sha256": "d92fdcd57fc3ceb427ddb99964ec5ba6a6e40e675df4857c862284886963a56d",
+      "size_bytes": 5004
+    }
+  ],
+  "added_count": 13,
+  "baseline_archive_sha256": "afed9bfcef90242b04abf877302c1260a28f11e353937d7df81972978e12db9b",
+  "baseline_version": "1600.9",
+  "candidate_version": "1699.9",
+  "deleted": [],
+  "deleted_count": 0,
+  "manifest_digest": "d9dec4e93ab5586815ecf56dff962674a3f362442cecb348b2f2c30176028558",
+  "modified": [
+    {
+      "baseline_sha256": "5f013a037b6148ba22acb0260d66e384d1e37688c0a5e9845f82b9f63c6293a7",
+      "candidate_sha256": "2033fffe3c1b9a34f197bf38d1889f97e53f94a87994bc1b1eb7a8296204fa29",
+      "candidate_size_bytes": 22270,
+      "path": "README.md"
+    },
+    {
+      "baseline_sha256": "e68a53e7f989ea9646c6c183fda99889770ee70876b32a82fb93388cd580c1bd",
+      "candidate_sha256": "a2635c033289b1783e22642ddb5f635efdc1d6b849ebef127ef801549f4e70cb",
+      "candidate_size_bytes": 94582,
+      "path": "README_NEXT_STEPS.md"
+    },
+    {
+      "baseline_sha256": "761e0d45e3de2ee72cf9f819239e18b37f44b43e503d51b41b8869cc6dc38a34",
+      "candidate_sha256": "04563820ae617ed44f7b61b94f5ec66a6dbb3527728f75dfce2f8037d0a6f406",
+      "candidate_size_bytes": 585743,
+      "path": "README_RELEASE_HISTORY.md"
+    },
+    {
+      "baseline_sha256": "ebe152f459abb64d2328cfe3217b4ff04d66cf21a68eeb1edd8e1339a292bbc0",
+      "candidate_sha256": "08cddfc310c341b07f81a0aff8f732e0f4b70bcaf25983cbc20a8e1319cf00a0",
+      "candidate_size_bytes": 11265,
+      "path": "archive/docs/legacy_dependencies/roadmaps/README_V1100_ROADMAP.md"
+    },
+    {
+      "baseline_sha256": "9eb3546ac57e47b0beffbe9c7208413444a17935e3fb1b2aaa354ba8f343d6ca",
+      "candidate_sha256": "9025d38cba7484ab918ceb048c7191c86dcccef524da3a922f467c8183ee5c80",
+      "candidate_size_bytes": 88561,
+      "path": "conscious_agent/checkpoint_registry.py"
+    },
+    {
+      "baseline_sha256": "1ca6b11431f98b16e9096b9fd270a699ac35544f80fb3e4787a31aba794431b4",
+      "candidate_sha256": "3f78b66b031671778f314f4b85e0c90f5f72ab6aa15961ac607fc7b083cdbcb6",
+      "candidate_size_bytes": 5098,
+      "path": "conscious_agent/project_understanding_checkpoint.py"
+    },
+    {
+      "baseline_sha256": "bcca28f25ec7f5f15c5f90e988aa3f766124ebd42a4b8ecf39b99abd7d5f19a3",
+      "candidate_sha256": "e18b7360ef57f1d4707633bf28ce548341563432f5bed512bdbf86812c31a756",
+      "candidate_size_bytes": 166699,
+      "path": "conscious_agent/release_authority.py"
+    },
+    {
+      "baseline_sha256": "d5d26fa46fc8aae2609dd6d7f3d3e1e67adc2bcb23bb5444f9d58f81ea54c34d",
+      "candidate_sha256": "c992f110fe6553fc0328e09898d9273900eae1de3cdf2b4c4d4d23d5486204fb",
+      "candidate_size_bytes": 44079,
+      "path": "conscious_agent/release_metadata.py"
+    },
+    {
+      "baseline_sha256": "40f211930d46df327c4ab3465a382a9131e956bc19754a7b20b129398533d3ce",
+      "candidate_sha256": "2f526d981a8aa9e68ee0b434c96cf44a5550f07a4dae63ca5aa2b0d5f5b1644e",
+      "candidate_size_bytes": 696,
+      "path": "docs/release/release_metadata_manifest.json"
+    },
+    {
+      "baseline_sha256": "1e5d2f57b009cf836eb97328338c578930724053fbd13e1714f890439cfebfa4",
+      "candidate_sha256": "23ed05c3b809ebf2c1afee08f9b5358799b6b48b4f5f7447261845838b3f9d64",
+      "candidate_size_bytes": 301,
+      "path": "release_metadata.py"
+    }
+  ],
+  "modified_count": 10,
+  "schema": "eidolon.changed-file-manifest.v1",
+  "self_path_excluded_from_manifest": "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V1600_9_TO_V1699_9.json"
+}

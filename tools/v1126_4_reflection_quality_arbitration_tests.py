@@ -1,0 +1,8 @@
+from pathlib import Path
+import json,tempfile
+from conscious_agent.reflection_quality_arbitration import ReflectionQualityArbitrationStore
+root=Path(tempfile.mkdtemp());
+(root/'reflection_quality_evaluation_sessions.json').write_text(json.dumps({'schema_version':'1','contract_version':'v1126.3','sessions':[{'session_id':'q1','candidate_id':'c1','signal_id':'s1','outcome_id':'o1','category':'unsupported_conclusion','state':'open','pause_reason':''},{'session_id':'q2','candidate_id':'c2','signal_id':'s2','outcome_id':'o2','category':'contradiction','state':'open','pause_reason':''},{'session_id':'q3','candidate_id':'c3','signal_id':'s3','outcome_id':'o3','category':'confidence_mismatch','state':'open','pause_reason':''},{'session_id':'q4','candidate_id':'c4','signal_id':'s4','outcome_id':'o4','category':'provider_failure','state':'paused','pause_reason':'provider_or_recovery_constraint'}],'processed_events':[],'revision':0,'updated_at':''}))
+s=ReflectionQualityArbitrationStore(root);a=s.arbitrate('e1',session_id='q1');b=s.arbitrate('e2',session_id='q2',contradiction_supported=True);c=s.arbitrate('e3',session_id='q3',confidence_calibration_supported=True);d=s.arbitrate('e4',session_id='q4');e=s.arbitrate('e5',session_id='q4',provider_recovered=True);i=s.inspection_summary()
+checks=[a['outcome']=='mark_unsupported',b['outcome']=='reconcile_contradiction',c['outcome']=='recalibrate_confidence',d['outcome']=='defer_for_provider_recovery',e['outcome']=='defer_for_provider_recovery',i['contract_version']=='v1126.4',i['outcome_count']==4,not i['belief_updated'],not i['provider_contacted'],not i['external_action_executed']]
+print(json.dumps({'passed':sum(checks),'total':10,'suite':'v1126.4'}));raise SystemExit(0 if all(checks) else 1)

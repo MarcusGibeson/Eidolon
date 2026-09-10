@@ -1,0 +1,165 @@
+{
+  "contract": "eidolon-cumulative-changed-file-manifest-v1",
+  "baseline_version": "2000.9",
+  "candidate_version": "2099.9",
+  "authoritative_input_zip": "Eidolon_v2000_9_era5_desktop_daily_companion_coherence_gate_source_only.zip",
+  "authoritative_input_zip_sha256": "5c34311d77b479fce094a163af70afa2f1d39aa115df62f8ac19e77d953251da",
+  "comparison": "fresh exact baseline ZIP extraction versus final working source tree; path-level additions/modifications/deletions by SHA-256",
+  "manifest_file": "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V2000_9_TO_V2099_9.json",
+  "added_count": 14,
+  "modified_count": 11,
+  "deleted_count": 0,
+  "entries": [
+    {
+      "path": "README.md",
+      "change": "modified",
+      "baseline_sha256": "c1ca4bd1ea51eaa7648c7c1faa8ea663aca5fe4015cd15b49ffc56711c729d61",
+      "candidate_sha256": "b720a201cbf6edcb0b222f57acfc2e5cba550dc234fe1f645ba3de3321912521"
+    },
+    {
+      "path": "README_NEXT_STEPS.md",
+      "change": "modified",
+      "baseline_sha256": "ab9fea666f0bf4cb5412945869220c6f149bc3fcdcedc71aef727a7c3d55dfee",
+      "candidate_sha256": "98230af364a26a478bd36c0620816dd27986c1fca3506ab00020dd4e2f401e29"
+    },
+    {
+      "path": "README_RELEASE_HISTORY.md",
+      "change": "modified",
+      "baseline_sha256": "99db8a3bc82083d05f2180d811c7a2fd64c6be738e910383ee956960b64c2a09",
+      "candidate_sha256": "af1d564a0a3c85949e7d7f60f796038997a5f4b05b9d6cece34cb9c1b1771e6a"
+    },
+    {
+      "path": "archive/docs/legacy_dependencies/roadmaps/README_V1100_ROADMAP.md",
+      "change": "modified",
+      "baseline_sha256": "1e2613dffd09fc22c166c7e203179c4c1f2f69a8c5d66fcd8dc0ddb9d81c2e1d",
+      "candidate_sha256": "62b4e0f63a49904fb1cc8f546a6559b7fff14134672037034cd05f940243efbd"
+    },
+    {
+      "path": "conscious_agent/attention_salience_focus_v2000.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "f25ee741d4beb29d0c01e2feffdeeff13b5812dd412b0b24c840c915886e8ba3"
+    },
+    {
+      "path": "conscious_agent/background_cognition_scheduler_v2000.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "f70e93b9ce0243a969e73a127d393aa8a5bf42e9b1ae7bfd0f251a1dbffccce6"
+    },
+    {
+      "path": "conscious_agent/checkpoint_registry.py",
+      "change": "modified",
+      "baseline_sha256": "fa71229ad0f850fbc2779aac8f9f0d07142305d8a56c9c152b4e9edc359cab97",
+      "candidate_sha256": "bc7d1dcc70fb9ed88ceafb2b841a771a545c406179d8b6c438ea0899bd6864db"
+    },
+    {
+      "path": "conscious_agent/era6_attention_initiative.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "8bcdf34b90c4d133855a7f7d72aa7cf8741afa42fcb1d3fe450f85a0c79c6fcd"
+    },
+    {
+      "path": "conscious_agent/ordinary_chat_development_campaign.py",
+      "change": "modified",
+      "baseline_sha256": "411eea0907b433611bff4fa18c4d447d722c46e5a41d73599ee2c005e771efb2",
+      "candidate_sha256": "c732805b69b31fd004f431cafeeb1e0b646acc56a79ce61a9d414d6b47cf61c6"
+    },
+    {
+      "path": "conscious_agent/proactive_communication_governance_v2000.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "1cf43c5d81299a6cf260b49fadaf533e3fb6439a28702bd2b3e9a0eca9ecc436"
+    },
+    {
+      "path": "conscious_agent/release_authority.py",
+      "change": "modified",
+      "baseline_sha256": "f392b05277f84896ba2b2e16beb7f5489f3f49db3cfef0e58c01de183ea5c28a",
+      "candidate_sha256": "a1a6a93db54f11eb76c174a3ce5045ecc3249e5679e363c3e75f4443e93d4175"
+    },
+    {
+      "path": "conscious_agent/release_metadata.py",
+      "change": "modified",
+      "baseline_sha256": "4550432fb7c718114bc8a5238f33048bc3a66983098185b03b1577fd72ed814e",
+      "candidate_sha256": "f9cf0a9305e0490a531d5082cf8a6bbd607f30680934d6f66906ff2d00739cf0"
+    },
+    {
+      "path": "conscious_agent/resource_cooperative_governance_v2000.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "ab315eefb327119e1dba975ce8c37467a3cc1ef5bca7fd8b552b1f8c16997602"
+    },
+    {
+      "path": "docs/release/release_metadata_manifest.json",
+      "change": "modified",
+      "baseline_sha256": "0f00dc15a7d921e23deaff86db3c906b2e3e2a506a2da334ec79442a8b638b4f",
+      "candidate_sha256": "d75e426c3f250c279ceb8a349f1c09b9b3d67c7c370f22a7945a8d663649d8ff"
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_BROWSER_VERIFICATION_LEDGER_V2099_9.md",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "2851ae4ef580c708df1bde9d3a1271fafde8454a44df24795ec263918538fa55"
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V2000_9_TO_V2099_9.json",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": null
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_DEFERRED_LOCAL_LEDGER_V2099_9.md",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "be165df4a012b38df34151c60bcda41baf9f77670e532c59fa713f7a8786174b"
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_MOBILE_BROWSER_ERA6_WORK_LEDGER_V2099_9.md",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "fa950480edbc39b4e0bb952b3cc692e026f40cdb8609f0ac05361abadca186f0"
+    },
+    {
+      "path": "release_metadata.py",
+      "change": "modified",
+      "baseline_sha256": "b8fa2748fa614dedee194817f677680cce84f71b0af4a14d366c34326f100f14",
+      "candidate_sha256": "ed4ef827a13cf3e3bd84ebabeae64d4f0f7663babfb3568bd472f05335324d94"
+    },
+    {
+      "path": "tools/release_verify.py",
+      "change": "modified",
+      "baseline_sha256": "f5dc5607f6f089c8792274f29426de9779c984d4d822104fd1e56dd70a51f85f",
+      "candidate_sha256": "c17e0a29ad0fd382368fe2d094a1068ab435eb751c7071dd3db526199a442fc6"
+    },
+    {
+      "path": "tools/v2025_9_attention_salience_checkpoint_tests.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "d51502f4dfe8451cce3821113f174687b20826611b6993e25b95795e03178c22"
+    },
+    {
+      "path": "tools/v2050_9_background_scheduler_checkpoint_tests.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "cdf05ba9872a3dc11a9c896c00c223868b77ae62ac6e645c3ed10879f17e94e9"
+    },
+    {
+      "path": "tools/v2075_9_proactive_communication_checkpoint_tests.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "a1eefa5cb853228005bdb4c9e32df836042fb2d8a45b0d3ab4e286b62fd3fdd9"
+    },
+    {
+      "path": "tools/v2099_9_era6_integrated_attention_initiative_tests.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "e0139df0b86f737e9610b7831747d7bc0912efd900cd3fa04e19a10a1ed75986"
+    },
+    {
+      "path": "tools/v2099_9_resource_concurrency_checkpoint_tests.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "candidate_sha256": "aa33c3bb7e5d6fe2d75bcf130292c6dd13e81e6d414bf81d2a3d9b1b958679d6"
+    }
+  ],
+  "note": "The manifest self-entry omits candidate_sha256 to avoid self-referential hashing. Per-file final hashes are supplied by the handoff source manifest."
+}

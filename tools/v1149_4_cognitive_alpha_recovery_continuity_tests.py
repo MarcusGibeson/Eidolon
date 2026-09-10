@@ -1,0 +1,3 @@
+from conscious_agent.cognitive_alpha_recovery_continuity import *
+r=build_cognitive_alpha_recovery_continuity();checks=[r['contract_version']=='v1149.4',r['execution_valid'],r['record_count']==5,not r['duplicate_continuity_ids'],r['stable_count']==5,all(x['restart_replay']=='verified' for x in r['records']),all(x['lineage_recovery']=='verified' for x in r['records']),all(not x['rollback_pointer_changed'] for x in r['records']),all(not x['runtime_state_packaged'] for x in r['records']),r['content_free'],r['read_only'],not any(r['authority_boundary'].values()),not r['consciousness_proven']]
+print(f"v1149.4: {sum(checks)}/{len(checks)}");raise SystemExit(0 if all(checks) else 1)

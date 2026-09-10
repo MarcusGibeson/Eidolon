@@ -1,0 +1,3 @@
+# Windows/Desktop Codex Handoff v1196.2
+
+Review the source-only candidate as a read-only v1196 Bundle A artifact. Verify explicit UTF-8 reads, neutral external runtime/bytecode paths, one `Eidolon/` root, and the absence of runtime/private/cache artifacts. Exercise private-field injection, prompt/memory/provider/raw-source exposure attempts, forged approval/execution/cancellation/release authority, replay, stale-state, and lineage tampering. Confirm every result remains content-free and authority-free. Do not install, promote, certify, publish, release, or grant autonomous authority. The next bounded unit is v1196.3-v1196.5.

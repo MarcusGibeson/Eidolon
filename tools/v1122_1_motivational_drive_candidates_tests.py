@@ -1,0 +1,9 @@
+from pathlib import Path
+import tempfile
+from conscious_agent.motivational_pressure_signals import MotivationalPressureSignalStore
+from conscious_agent.motivational_drive_candidates import MotivationalDriveCandidateStore, build_motivational_drive_candidate_inspection
+checks=[]
+def req(x): checks.append(bool(x))
+with tempfile.TemporaryDirectory() as td:
+ root=Path(td); s=MotivationalPressureSignalStore(root); a=s.register("s1",signal_type="objective_pull",source_type="objective",source_id="o1")["result"]["signal_id"]; b=s.register("s2",signal_type="curiosity_pull",source_type="curiosity",source_id="q1")["result"]["signal_id"]; c=MotivationalDriveCandidateStore(root,signals=s); r=c.register("c1",signal_ids=[a,b],durable_drive_score=.8); req(r["status"]=="motivational_drive_candidate_registered"); req(c.register("c1",signal_ids=[a,b])["idempotent"]); req(c.register("c2",signal_ids=[a,b])["status"]=="duplicate_candidate_ignored"); d=s.register("s3",signal_type="unfinished_work_pull",source_type="cognitive_work",source_id="w1")["result"]["signal_id"]; req(c.register("c3",signal_ids=[b,d])["status"]=="semantic_overlap_detected"); t=s.register("s4",signal_type="transient_urgency",source_type="operator_acknowledgement",source_id="a1",transient=True)["result"]["signal_id"]; req(c.register("c4",signal_ids=[t],false_urgency_risk=.9)["status"]=="false_urgency_suppressed"); i=build_motivational_drive_candidate_inspection(root); req(i["contract_version"]=="v1122.1"); req(i["candidate_count"]==2); req(i["state_counts"].get("suppressed")==1); req(not any(i["authority_boundary"].values())); row=c.snapshot()["candidates"][0]; req(all(not row[k] for k in ("attention_id","initiative_id","message_id","notification_id","proposal_id","approval_id","authorization_id","action_id")))
+print(f"v1122.1 motivational drive candidates: {sum(checks)}/{len(checks)} passed"); raise SystemExit(0 if all(checks) and len(checks)==10 else 1)

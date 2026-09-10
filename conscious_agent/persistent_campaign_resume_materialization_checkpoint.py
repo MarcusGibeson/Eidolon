@@ -1,0 +1,22 @@
+from __future__ import annotations
+"""Read-only v1186.8 durable resume materialization and handoff checkpoint."""
+import hashlib,tempfile
+from pathlib import Path
+from typing import Any
+from checkpoint_registry import inspect_checkpoint_registry
+from persistent_development_campaign import create_campaign_charter, create_campaign_review, create_campaign_ledger
+from persistent_development_campaign_continuation import create_campaign_session_snapshot
+from persistent_campaign_storage import create_campaign_storage_record, persist_campaign_storage_record, restore_campaign_storage_record, create_restoration_review
+from persistent_campaign_resume_reconciliation import create_resume_reconciliation, create_resume_eligibility_review
+from persistent_campaign_resume_materialization import *
+CONTRACT_VERSION="v1186.8"
+def _h(s:str)->str:return hashlib.sha256(s.encode()).hexdigest()
+def build_persistent_campaign_resume_materialization_checkpoint(*,source_root:str|Path|None=None,runtime_root:str|Path|None=None)->dict[str,Any]:
+ checks=[];req=lambda x:checks.append(bool(x));root=Path(runtime_root) if runtime_root else Path(tempfile.mkdtemp(prefix="eidolon-v1186-materialize-"))
+ c=create_campaign_charter(campaign_id="campaign-alpha",source_baseline_digest=_h("source"),scope_digest=_h("scope"),goal_digests=[_h("goal")],limits={"max_work_items":2,"max_sessions":3,"max_elapsed_seconds":100,"max_disk_bytes":1000,"max_token_budget":200});r=create_campaign_review(charter=c,decision="approve",operator_decision_digest=_h("approve"));l=create_campaign_ledger(charter=c,review=r);s=create_campaign_session_snapshot(charter=c,review=r,ledger=l,session_id="s1",session_index=1,state="paused")
+ sr=create_campaign_storage_record(charter=c,review=r,ledger=l,snapshot=s,operator_storage_digest=_h("store"));persist_campaign_storage_record(runtime_root=root,record=sr);rest=restore_campaign_storage_record(runtime_root=root,campaign_id="campaign-alpha",expected_record_digest=sr["storage_record_digest"],current_source_digest=_h("source"));rr=create_restoration_review(restoration=rest,decision="approve",operator_decision_digest=_h("restore"));recon=create_resume_reconciliation(restoration=rest,restoration_review=rr,current_charter_digest=c["charter_digest"],current_review_digest=r["review_digest"],current_ledger_digest=l["ledger_digest"],current_snapshot_digest=s["snapshot_digest"]);er=create_resume_eligibility_review(reconciliation=recon,decision="approve",operator_decision_digest=_h("resume"))
+ contract=create_resume_materialization_contract(reconciliation=recon,eligibility_review=er,session_id="restored-s2",session_generation=2,operator_materialization_digest=_h("materialize"));lease=acquire_resume_lease(runtime_root=root,contract=contract,lease_owner_digest=_h("owner"),now_epoch=1000);mat=materialize_resumed_session(runtime_root=root,contract=contract,lease_receipt=lease);restart=reconcile_materialized_session(runtime_root=root,campaign_id="campaign-alpha",expected_session_digest=mat["resumed_session_digest"],expected_lease_digest=lease["lease_digest"]);summary=resume_materialization_public_summary(contract,mat)
+ for x in [contract["status"]=="materialization_ready",lease["status"]=="lease_acquired",mat["status"]=="resumed_session_materialized_not_executing",restart["status"]=="restored_execution_eligible_not_executing",summary["work_execution_eligible"],not summary["work_executed"],not summary["automatic_execution"],not summary["authority_granted"]]:req(x)
+ req(acquire_resume_lease(runtime_root=root,contract=contract,lease_owner_digest=_h("other"),now_epoch=1001)["status"]=="blocked")
+ reg=inspect_checkpoint_registry(source_root=source_root);row=next((x for x in reg["checkpoints"] if x["checkpoint_id"]=="persistent-campaign-resume-materialization-checkpoint"),{});req(row.get("builder")=="build_persistent_campaign_resume_materialization_checkpoint");req(reg["duplicate_checkpoint_ids"]==[])
+ return {"ok":all(checks),"contract_version":CONTRACT_VERSION,"checkpoint_id":"persistent-campaign-resume-materialization:v1186.8","passed":sum(checks),"total":len(checks),"read_only_source":True,"external_runtime_only":True,"content_free":True,"summary":summary,"production_source_modified":False,"sandbox_modified":False,"work_executed":False,"automatic_execution":False,"provider_contacted":False,"model_contacted":False,"authority_granted":False,"release_authorized":False,"desktop_verification_deferred_until_v1200":True}

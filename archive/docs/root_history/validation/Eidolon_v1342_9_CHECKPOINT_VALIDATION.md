@@ -1,0 +1,3 @@
+# Eidolon v1342.9 JavaScript and TypeScript Checkpoint Validation
+
+Focused deterministic evidence: v1342.0-v1342.2 5/5; v1342.3-v1342.5 6/6; v1342.6-v1342.8 9/9; v1342.9 5/5. Real Node 22.16.0 and TypeScript 5.8.3 are used without package installation or network access. Fixtures verify module/export compatibility, async contract preservation, external-dependency and module-system drift blocking, browser/async/state inspection, syntax/type checking, focused tests, owned Git lineage, cleanup, duplicate suppression, content minimization, and selected-source immutability. Native Windows execution remains external evidence.

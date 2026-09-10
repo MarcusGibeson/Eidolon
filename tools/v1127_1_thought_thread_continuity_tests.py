@@ -1,0 +1,8 @@
+import json,tempfile
+from pathlib import Path
+from conscious_agent.reflective_subject_intake import ReflectiveSubjectIntakeStore
+from conscious_agent.model_backed_reflective_session import ModelBackedReflectiveSessionStore
+from conscious_agent.reflective_outcome_lineage import ReflectiveOutcomeLineageStore
+from conscious_agent.continuous_thought_threads import ContinuousThoughtThreadStore
+from conscious_agent.thought_thread_continuity import build_thought_thread_continuity_review
+root=Path(tempfile.mkdtemp());sid=ReflectiveSubjectIntakeStore(root).register('s',subject_kind='goal',source_contract='test',source_id='g',importance=.8,uncertainty=.3)['subject_id'];sr=ModelBackedReflectiveSessionStore(root,model_generate=lambda p:'{"outcome":"remain_uncertain","conclusion":"","uncertainty":0.7,"evidence_refs":[],"communication_recommendation":"silence"}').run('m',subject_id=sid);oid=ReflectiveOutcomeLineageStore(root).record('o',session_id=sr['session_id'])['outcome_id'];store=ContinuousThoughtThreadStore(root);tid=store.create('t',reflection_outcome_id=oid)['thread_id'];store.transition('u',thread_id=tid,state='unresolved');r=build_thought_thread_continuity_review(root);checks=[r['contract_version']=='v1127.1',r['thread_count']==1,r['reviews'][0]['status']=='unresolved_continuity',r['restart_continuity_supported'],r['day_scale_continuity_supported'],not r['raw_content_exposed'],not r['hidden_reasoning_exposed'],not r['provider_contacted'],not r['message_sent'],not r['external_action_executed']];print(json.dumps({'passed':sum(checks),'total':10,'suite':'v1127.1'}));raise SystemExit(0 if all(checks) else 1)

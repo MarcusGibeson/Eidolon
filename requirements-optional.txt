@@ -1,0 +1,2 @@
+# Optional semantic-memory backend. Core status, chat, dashboard, and supervised workflows run without it.
+chromadb>=0.5.0

@@ -1,0 +1,4 @@
+from pathlib import Path
+import json,tempfile
+from conscious_agent.reflection_quality_deliberation_checkpoint import build_reflection_quality_deliberation_checkpoint
+r=build_reflection_quality_deliberation_checkpoint(Path(tempfile.mkdtemp()),source_root=Path(__file__).resolve().parents[1]);checks=[r['contract_version']=='v1126.5',r['ok'],r['passed']==18,r['total']==18,not r['runtime_mutated'],not r['source_modified'],not r['conclusions_exposed'],not r['hidden_reasoning_exposed'],not r['belief_updated'],not r['goal_updated'],not r['self_model_updated'],not r['provider_contacted'],not r['message_sent'],not r['external_action_executed'],r['sessions']['contract_version']=='v1126.3',r['arbitration']['contract_version']=='v1126.4',len(r['checks'])==18,all(x['status']=='pass' for x in r['checks'])];print(json.dumps({'passed':sum(checks),'total':18,'suite':'v1126.5'}));raise SystemExit(0 if all(checks) else 1)

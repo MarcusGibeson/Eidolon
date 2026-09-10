@@ -1,0 +1,3 @@
+# Eidolon v1343.9 HTML and CSS Checkpoint Validation
+
+Focused deterministic evidence: v1343.0-v1343.2 5/5; v1343.3-v1343.5 6/6; v1343.6-v1343.8 8/8; v1343.9 5/5. Candidate fixtures verify accessibility and keyboard regression blocking, responsive-contract preservation, rigid-layout regression classification, candidate-only multi-file edits, synthesized HTML/CSS preview, real Chromium interaction and screenshot evidence, visual-baseline mismatch blocking, receipt-owned Git lineage, cleanup, duplicate suppression, content minimization, and selected-source immutability. Browser validation uses a self-contained offline candidate preview and grants no network authority. Native Windows execution remains external evidence.

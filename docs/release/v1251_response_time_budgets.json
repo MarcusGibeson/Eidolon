@@ -1,0 +1,25 @@
+{
+  "schema": "eidolon.response-time-budgets.v1",
+  "contract_version": "v1251.9",
+  "cold_terminal_chat_seconds_max": 3.0,
+  "ordinary_first_turn_estimated_prompt_tokens_max": 2600,
+  "social_first_turn_estimated_prompt_tokens_max": 2400,
+  "warm_pre_provider_ms_max": 100,
+  "trusted_action_feedback_ms_max": 300,
+  "dashboard_shell_reduction_percent_min": 15.0,
+  "provider_metrics_required": [
+    "load_duration_ns",
+    "prompt_eval_count",
+    "prompt_eval_duration_ns",
+    "eval_count",
+    "eval_duration_ns",
+    "total_duration_ns"
+  ],
+  "operator_authority_preserved": true,
+  "approval_granted": false,
+  "tool_execution_authorized": false,
+  "project_mutation_authorized": false,
+  "provider_contact_authorized": false,
+  "release_authorized": false,
+  "content_free": true
+}

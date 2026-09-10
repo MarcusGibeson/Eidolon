@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "checkpoint": "1252.9",
+  "scale": {"memories": 20000, "sessions": 1000, "actions": 20000},
+  "budgets_ms": {
+    "memory_recent_80_ms": 150.0,
+    "session_list_30_ms": 150.0,
+    "cross_session_select_ms": 150.0,
+    "action_recent_40_ms": 150.0,
+    "action_exact_lookup_ms": 150.0,
+    "memory_append_ms": 250.0
+  },
+  "authority_granted": false
+}

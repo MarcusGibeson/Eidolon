@@ -1,0 +1,3 @@
+# v1272.0-v1272.2 Bundle Review
+
+Implemented restart/crash-recovery foundations around the existing v1271 long-running session and v1270 self-development campaign. The bundle adds a bounded, content-minimized write-ahead operation journal, durable attempt/completion separation, restart generations, interruption/provider-state evidence, bounded recovery receipts/summaries, and atomic external-runtime record replacement. Candidate, verification, and governed-update operations are represented without granting execution authority. Journal target identifiers and durable-lineage digests are validated rather than accepted as arbitrary content. Ambiguous external effects fail closed, restart never creates or reuses authorization, and source/runtime separation remains intact.

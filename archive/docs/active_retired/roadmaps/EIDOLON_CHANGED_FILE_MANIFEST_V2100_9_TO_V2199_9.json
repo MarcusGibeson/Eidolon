@@ -1,0 +1,133 @@
+{
+  "added": [
+    {
+      "path": "conscious_agent/era7_interaction_intelligence.py",
+      "sha256": "9df11568ea15b5517c7913fef21b1168152dd3ea4ad1384b43a99e36a1325360"
+    },
+    {
+      "path": "conscious_agent/local_tool_interaction_v2100.py",
+      "sha256": "e7df0bbfff6ee1abdae4dc00d9bd3b4951a2b0976c3c691026bd3c65d77da885"
+    },
+    {
+      "path": "conscious_agent/multimodal_context_v2100.py",
+      "sha256": "10772560872b71576070b46ff3aef166a278cc47582bca685b891924b1202c72"
+    },
+    {
+      "path": "conscious_agent/research_web_intelligence_v2100.py",
+      "sha256": "2ec224623e44b7ddd50645c1c38c2853fda355ccc9aa55a0ff5632523670208f"
+    },
+    {
+      "path": "conscious_agent/voice_audio_interaction_v2100.py",
+      "sha256": "1ec165ae5a62500d0042d2cc1235212a8275f2e494b48a4d697fe5403b69c715"
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_BROWSER_VERIFICATION_LEDGER_V2199_9.md",
+      "sha256": "9294d3d52b99001fc9c5d8e950c05f9981a385f1495d17a72ff3546fdad47f08"
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V2100_9_TO_V2199_9.json",
+      "sha256": null
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_DEFERRED_LOCAL_LEDGER_V2199_9.md",
+      "sha256": "a0c1c012b488b4155ad308b2aab9eff56dd0407458e94d2476fd77dd5abcbbf3"
+    },
+    {
+      "path": "docs/roadmaps/EIDOLON_MOBILE_BROWSER_ERA7_WORK_LEDGER_V2199_9.md",
+      "sha256": "a45f16f818c4374f9923dccfe0b7c48c376e3d6b456f2f3e5081d170d6c49a9a"
+    },
+    {
+      "path": "tools/v2125_9_local_system_application_tools_tests.py",
+      "sha256": "896d99bf9425487abf2c822aac2076d332670bebd8d6397b5681adb7e0bf9e9c"
+    },
+    {
+      "path": "tools/v2150_9_research_web_intelligence_tests.py",
+      "sha256": "4aa89354299c0e41d6d5489c0d0d036c79455abd4105b24c9195504dea3b23eb"
+    },
+    {
+      "path": "tools/v2175_9_voice_audio_presence_tests.py",
+      "sha256": "738140ecea7c8e7c375400b43b778a14c384513f135b9c3fa2d4680066bb32e0"
+    },
+    {
+      "path": "tools/v2199_9_era7_integrated_interaction_tests.py",
+      "sha256": "5548ed27d987564d9ee8c312208128af8831fa62e2c268ab6a105ccfd4985acf"
+    },
+    {
+      "path": "tools/v2199_9_multimodal_context_tests.py",
+      "sha256": "b9951868f855222646a4ab6dc03a493e69fc0dabbaa381e14c7934d91e7be776"
+    }
+  ],
+  "baseline_archive_sha256": "0d2962924f81acbe53e093df9c9a9eed525450f40cf32251b9ce75c3439d8534",
+  "baseline_version": "2100.9",
+  "candidate_version": "2199.9",
+  "comparison_scope": "exact regular-file content beneath Eidolon/; manifest self-entry intentionally has no self hash",
+  "contract": "eidolon-browser-cumulative-changed-file-manifest-v1",
+  "counts": {
+    "added": 14,
+    "deleted": 0,
+    "modified": 11
+  },
+  "deleted": [],
+  "modified": [
+    {
+      "baseline_sha256": "25ceec54fc5ce2b9f023ff6e3a12e7d98326489ef2e9616e90be9e46a5f5a392",
+      "candidate_sha256": "fe91557c0df1624cfadb2734cd93a1cf4c90a3e3a1720664de790242d0993da6",
+      "path": "README.md"
+    },
+    {
+      "baseline_sha256": "e0a403b1993351773ca71aff2f59a2c2dc399d5a410075920e6bdb9df53d29ba",
+      "candidate_sha256": "53cad25a0b82f384776f234c71c09825cfc27c6ad8848be678ea03a721c74678",
+      "path": "README_NEXT_STEPS.md"
+    },
+    {
+      "baseline_sha256": "ea2c54247572e1bb5af3f9491f87cd5eb33d8c75736fc843e40c1919cce4e594",
+      "candidate_sha256": "46e3a5274c89c2e93835a7077eebaf57c72d836ccddaaa479a22ccb007f61f51",
+      "path": "README_RELEASE_HISTORY.md"
+    },
+    {
+      "baseline_sha256": "9ac3e68f3874eeac332b074aeac21b394d8b798c3298da7e52621a515ad6ae65",
+      "candidate_sha256": "b7f2c6f9bcf3ffdfdcc3a504afd1bafcaec92ca1fac4ab8166cc2b73f4b2335f",
+      "path": "archive/docs/legacy_dependencies/roadmaps/README_V1100_ROADMAP.md"
+    },
+    {
+      "baseline_sha256": "34033dfd264db4765db1655f74deb9ae6f9c2293daa33c735dcb7f1277740d01",
+      "candidate_sha256": "7b4a182dc529f0bb641a00152ae3322670dd51ed214e0f2537d617e8d110258c",
+      "path": "conscious_agent/checkpoint_registry.py"
+    },
+    {
+      "baseline_sha256": "c732805b69b31fd004f431cafeeb1e0b646acc56a79ce61a9d414d6b47cf61c6",
+      "candidate_sha256": "813424be496515effd0982fa9a1da65e00a66280b7593a0b54890aca24cc587a",
+      "path": "conscious_agent/ordinary_chat_development_campaign.py"
+    },
+    {
+      "baseline_sha256": "394a8f6837695b50b802c0c198bccfb084775eda35f3d0ba429a8440bd27a6e4",
+      "candidate_sha256": "707d8017435c4413344f25e5979a5928773fa51ad67652e218379a28f068d55c",
+      "path": "conscious_agent/release_authority.py"
+    },
+    {
+      "baseline_sha256": "38126e647b27351d0ca1785ed5d0bd25d20962ac4497953069bfec5a16d0edbd",
+      "candidate_sha256": "26be1a05821d3303c001eb7020714621cb012d96f905ee46637415b55d1b1638",
+      "path": "conscious_agent/release_metadata.py"
+    },
+    {
+      "baseline_sha256": "30a9667b0bff747986de1b2dbd13e6cf1b8960d008f41abd926c624fa19f2908",
+      "candidate_sha256": "2c3df67d4e74250794398ac43f91880987a097f5462e70567c5275dc14a42fd7",
+      "path": "docs/release/release_metadata_manifest.json"
+    },
+    {
+      "baseline_sha256": "af29ac8cc921e499fc4dd19322c682f158888af8f2ccaf6dbf843cc0bd792be2",
+      "candidate_sha256": "af006974c524afae3dca560eb17a6ab0429beecd632e19b3bf16a91e3676e3de",
+      "path": "release_metadata.py"
+    },
+    {
+      "baseline_sha256": "1d755a0b4b5b1c3e1677f6086f5019e895753de886095d2b70c99259967017d3",
+      "candidate_sha256": "fa33c1430b40afc18f70749ae9a63fa1e8a9d6d4e6710e396f75790613b42547",
+      "path": "tools/release_verify.py"
+    }
+  ],
+  "notes": [
+    "Generated from a pristine extraction of the exact authoritative v2100.9 ZIP.",
+    "No runtime/private/cache residue is included."
+  ],
+  "substantive_baseline_deletions": 0
+}

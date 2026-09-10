@@ -1,0 +1,9 @@
+from pathlib import Path
+import tempfile
+from conscious_agent.reflective_communication_eligibility_signals import ReflectiveCommunicationEligibilitySignalStore
+root=Path(tempfile.mkdtemp());s=ReflectiveCommunicationEligibilitySignalStore(root)
+r=s.register('e1',origin_ids=['reflection-outcome-1','quality-outcome-1'],source_categories=['supported_reflection','reflection_quality'],purpose='proactive_update',relevance=.8,importance=.7,urgency=.2,uncertainty=.2,sensitivity=.4,interruption_cost=.5,continuity_relevance=.7,confidence=.9,structural_digest='d')
+d=s.snapshot()['signals'][0];dup=s.register('e1',origin_ids=['reflection-outcome-1'],source_categories=['supported_reflection'],purpose='proactive_update',relevance=.8,importance=.7,urgency=.2,uncertainty=.2,sensitivity=.4,interruption_cost=.5,continuity_relevance=.7)
+false=s.register('e2',origin_ids=['thought-2'],source_categories=['continuous_thought'],purpose='curiosity_question',relevance=.7,importance=.2,urgency=.9,uncertainty=.5,sensitivity=.2,interruption_cost=.8,continuity_relevance=.3,false_urgency=True)
+delay=s.register('e3',origin_ids=['obligation-3'],source_categories=['prospective_obligation'],purpose='delayed_follow_up',relevance=.8,importance=.6,urgency=.1,uncertainty=.2,sensitivity=.3,interruption_cost=.6,continuity_relevance=.8,timing_eligible=False)
+i=s.inspection_summary();checks=[r['ok'],d['state']=='active',d['urgency']!=d['relevance'],dup['idempotent'],false['result']['state']=='suppressed',delay['result']['state']=='awaiting_timing_window',not d['notification_id'],i['contract_version']=='v1129.0',not i['raw_content_exposed'],not i['message_text_exposed'],not i['hidden_reasoning_exposed'],not any(i['authority_boundary'].values())];print(f"v1129.0 reflective communication eligibility signals tests: {sum(checks)}/{len(checks)} passed");raise SystemExit(0 if all(checks) else 1)

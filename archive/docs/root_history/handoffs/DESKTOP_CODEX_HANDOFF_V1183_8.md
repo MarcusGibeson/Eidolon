@@ -1,0 +1,3 @@
+# Desktop Codex Handoff v1183.8
+
+Review the source-only v1183.8 candidate as Bundle C only. Confirm exact draft/materialization/retest lineage, separate operator retest authorization, sandbox isolation, target-drift rejection, allowlisted single-use execution, before/after evidence, persistent-failure versus changed-failure regression classification, rollback availability, content-free public summaries, and absence of production-source or release authority. The scheduled full Desktop Codex and native-provider milestone remains v1200. Next development unit is v1183.9 read-only checkpoint consolidation.

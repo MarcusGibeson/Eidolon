@@ -1,0 +1,3 @@
+from pathlib import Path
+import json
+root=Path(__file__).resolve().parents[1];api=(root/'conscious_agent'/'api_server.py').read_text(encoding='utf-8');dash=(root/'conscious_agent'/'dashboard.py').read_text(encoding='utf-8');checks=['project-simulation' in api,'build_project_simulation_observability' in api,'mind-project-simulation-state' in dash,'mind-project-simulation' in dash,'Synthetic lifecycle rehearsal only' in dash,'real verification still required' in dash,'automatic project start is disabled' in dash];print(json.dumps({'ok':all(checks),'passed':sum(checks),'total':len(checks)}));raise SystemExit(0 if all(checks) else 1)

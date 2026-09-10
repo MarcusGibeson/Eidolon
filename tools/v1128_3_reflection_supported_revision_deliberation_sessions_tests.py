@@ -1,0 +1,6 @@
+from pathlib import Path
+import tempfile
+from conscious_agent.reflection_supported_revision_signals import ReflectionSupportedRevisionSignalStore
+from conscious_agent.reflection_supported_revision_candidates import ReflectionSupportedRevisionCandidateStore
+from conscious_agent.reflection_supported_revision_deliberation_sessions import ReflectionSupportedRevisionDeliberationSessionStore
+r=Path(tempfile.mkdtemp());s=ReflectionSupportedRevisionSignalStore(r);sid=s.register('s',reflection_outcome_id='ro',quality_outcome_id='qo',target_type='belief',target_id='b',evidence_refs=['e'],support=.9,uncertainty=.1)['result']['signal_id'];c=ReflectionSupportedRevisionCandidateStore(r);cid=c.register('c',signal_ids=[sid])['result']['candidate_id'];x=ReflectionSupportedRevisionDeliberationSessionStore(r);a=x.open('o',candidate_id=cid,deliberation_budget=9);dup=x.open('o',candidate_id=cid);i=x.inspection_summary();checks=[a['ok'],a['state']=='open',x.snapshot()['sessions'][0]['deliberation_budget']==6,dup['idempotent'],i['contract_version']=='v1128.3',not i['target_revised'],not i['revision_applied'],not i['raw_content_exposed'],not i['hidden_reasoning_exposed'],not i['authority_boundary']['can_execute']];print(f"v1128.3 revision deliberation sessions tests: {sum(checks)}/{len(checks)} passed");raise SystemExit(0 if all(checks) else 1)

@@ -1,0 +1,3 @@
+from pathlib import Path
+import json
+root=Path(__file__).resolve().parents[1];text=(root/'conscious_agent'/'conversation_runtime.py').read_text(encoding='utf-8');checks=[text.count('build_response_grounding_policy(')==2,text.count('build_response_assertion_calibration(')==2,text.count('response_grounding_prompt_section(response_grounding)')==2,text.count('result.cognitive_context["response_grounding"]')==2,text.count('result.cognitive_context["response_assertion_calibration"]')==2,'from response_grounding_policy_v2672 import' in text,'from response_assertion_calibration_v2673 import' in text];print(json.dumps({'ok':all(checks),'passed':sum(checks),'total':len(checks)}));raise SystemExit(0 if all(checks) else 1)

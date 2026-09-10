@@ -1,0 +1,5 @@
+Continue Eidolon development from the finalized v1289.9 Product Quality Judgment Checkpoint in Continuous Development Mode.
+
+Begin with v1290 Cognitive Coding Checkpoint: complete an unfamiliar multi-file project while revising mistaken assumptions, selecting diagnostics and verification intelligently, preserving continuity, and producing a polished result. Reuse existing isolated coding, diagnostic reasoning, test selection, persistent-session, quality-judgment, and exact-authorization architecture rather than creating parallel authority paths.
+
+Then continue automatically through v1291-v1300 only as fully finished and verified versions. Preserve all standing governance: planning/prioritization/quality evidence are not authorization; provider mutation, testing/repair, application, self-update, rollback, and release remain separately governed; generic approval is never exact authorization; source-only packaging and privacy remain mandatory; do not make Eidolon autonomous before the supervised v1300 milestone.

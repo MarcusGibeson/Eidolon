@@ -1,0 +1,21 @@
+from __future__ import annotations
+"""Strictly read-only v1143.5 Workload Coordination Execution checkpoint."""
+import hashlib, os
+from pathlib import Path
+from workload_coordination_intake_checkpoint import build_workload_coordination_intake_checkpoint
+from workload_live_arbitration import build_workload_live_arbitration_inspection, STATES as ARBITRATION_STATES
+from workload_coordination_continuity import build_workload_coordination_continuity_inspection, STATES as CONTINUITY_STATES
+CONTRACT_VERSION="v1143.5"
+def _root(): return Path(os.environ.get("EIDOLON_DATA_DIR") or Path(__file__).resolve().parents[1]/"data").expanduser().resolve()/"cognition"
+def _sig(root:Path):
+ d=hashlib.sha256()
+ if root.exists():
+  for p in sorted(x for x in root.rglob("*") if x.is_file() and x.suffix not in {".pyc",".pyo"} and "__pycache__" not in x.parts):
+   st=p.stat();d.update(p.relative_to(root).as_posix().encode());d.update(str(st.st_size).encode());d.update(str(st.st_mtime_ns).encode())
+ return d.hexdigest()
+def build_workload_coordination_execution_checkpoint(runtime_root=None,*,source_root=None):
+ runtime=Path(runtime_root).resolve() if runtime_root else _root();source=Path(source_root).resolve() if source_root else Path(__file__).resolve().parents[1];rb=_sig(runtime);sb=_sig(source)
+ intake=build_workload_coordination_intake_checkpoint(runtime,source_root=source);a=build_workload_live_arbitration_inspection(runtime);c=build_workload_coordination_continuity_inspection(runtime);ar=a.get("recent_records",[]);cr=c.get("recent_records",[])
+ checks=[("intake_contract",intake.get("contract_version")=="v1143.2"),("arbitration_contract",a.get("contract_version")=="v1143.3"),("continuity_contract",c.get("contract_version")=="v1143.4"),("exact_candidate_lineage",all(r.get("candidate_id") and r.get("eligibility_id") for r in ar)),("budget_binding",all(all(int(r.get(k) or 0)>=0 for k in ("cpu_budget_ms","memory_budget_mb","latency_budget_ms","token_budget")) for r in ar+cr)),("stale_revision_fail_closed",all(r.get("state")!="operator_review_required" or r.get("state_reason") in {"candidate_revision_changed","confirmation_required"} for r in ar)),("preemption_structural",all(r.get("state")!="preemption_requested" or not r.get("underlying_work_executed") for r in ar)),("restart_continuity",all(int(r.get("restart_epoch") or 0)>=0 for r in cr)),("stale_claim_release",all(not r.get("stale_claim_released") or not r.get("worker_claim_id") for r in cr)),("budget_enforcement",all(r.get("state")!="budget_exhausted" or any(int(r.get(u) or 0)>int(r.get(b) or 0) for u,b in (("cpu_used_ms","cpu_budget_ms"),("memory_peak_mb","memory_budget_mb"),("latency_used_ms","latency_budget_ms"),("tokens_used","token_budget"))) for r in cr)),("recognized_arbitration_states",{"admitted","reserved","deferred","preemption_requested","operator_review_required","cancelled","completed","suppressed","expired"}<=ARBITRATION_STATES),("recognized_continuity_states",{"pending","claimed","running","yielded","preempted","cancelled","timed_out","budget_exhausted","resumable","stale_released","completed","retired"}<=CONTINUITY_STATES),("privacy",not a.get("raw_content_exposed") and not c.get("raw_content_exposed") and not a.get("workload_payload_exposed") and not c.get("workload_payload_exposed")),("authority_separation",not any(a.get("authority_boundary",{}).values()) and not any(c.get("authority_boundary",{}).values())),("no_underlying_execution",not a.get("underlying_work_executed") and not c.get("underlying_work_executed")),("read_only",rb==_sig(runtime) and sb==_sig(source)),("desktop_verification_pending",True)]
+ passed=sum(bool(v) for _,v in checks)
+ return {"ok":passed==len(checks),"status":"ready_for_desktop_verification" if passed==len(checks) else "review_required","contract_version":CONTRACT_VERSION,"passed":passed,"total":len(checks),"checks":[{"id":k,"status":"pass" if v else "fail"} for k,v in checks],"intake":intake,"arbitration":a,"continuity":c,"runtime_mutated":rb!=_sig(runtime),"source_modified":sb!=_sig(source),"raw_content_exposed":False,"workload_payload_exposed":False,"underlying_work_executed":False,"approval_created":False,"authorization_created":False,"installation_performed":False,"promotion_performed":False,"certification_performed":False,"consciousness_proven":False,"desktop_verification":"pending"}

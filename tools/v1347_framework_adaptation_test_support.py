@@ -1,0 +1,13 @@
+from __future__ import annotations
+import hashlib,subprocess,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];sys.path[:0]=[str(ROOT/'conscious_agent'),str(ROOT/'tools')]
+from v1333_workspace_isolation_test_support import WS,active_grant,precondition
+MOD='''from __future__ import annotations\nfrom .util import double\n\ndef calculate(value: int) -> int:\n    return double(value) + 1\n''';UTIL='''def double(value: int) -> int:\n    return value * 2\n''';TEST='''import unittest\nfrom pkg.core import calculate\nclass T(unittest.TestCase):\n def test_calc(self): self.assertEqual(calculate(2),5)\nif __name__=='__main__': unittest.main()\n'''
+def init_repo(src):
+ subprocess.run(['git','init'],cwd=src,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE);subprocess.run(['git','config','user.email','fixture@example.invalid'],cwd=src,check=True);subprocess.run(['git','config','user.name','Fixture'],cwd=src,check=True);subprocess.run(['git','add','-A'],cwd=src,check=True);subprocess.run(['git','commit','-m','framework fixture'],cwd=src,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE);return 'git'
+def source_fixture(base:Path):
+ src=base/'source';(src/'src'/'pkg').mkdir(parents=True);(src/'tests').mkdir();(src/'src'/'pkg'/'__init__.py').write_text('');(src/'src'/'pkg'/'core.py').write_text(MOD);(src/'src'/'pkg'/'util.py').write_text(UTIL);(src/'tests'/'test_core.py').write_text(TEST);(src/'pyproject.toml').write_text('[project]\nname="fixture"\nversion="0"\n');git=init_repo(src);runtime=base/'runtime';grant=active_grant(commands=('git','git_worktree','shell'));pres={k:precondition(runtime,k) for k in ('git','file_read','file_patch','shell')};return src,runtime,grant,pres,git
+def args(src,runtime,grant,pres,git,**extra):
+ p=src/'src/pkg/core.py';out=dict(source_root=src,source_workspace_digest=WS,active_grant=grant,precondition_record_ids=pres,relative_path='src/pkg/core.py',expected_content_digest=hashlib.sha256(p.read_bytes()).hexdigest(),patches=[{'type':'replace_text','old':'    return double(value) + 1','new':'    result = double(value)\n    return result + 1','expected_occurrences':1}],test_argv=[sys.executable,'-c','import sys;sys.path.insert(0,"src");from pkg.core import calculate;assert calculate(2)==5'],commit_message='Follow repository conventions',runtime_root=runtime,now_unix=101,git_executable=git,python_executable=sys.executable,cleanup_on_complete=True);out.update(extra);return out
+def manifest(src):return sorted((p.relative_to(src).as_posix(),hashlib.sha256(p.read_bytes()).hexdigest()) for p in src.rglob('*') if p.is_file() and '.git' not in p.parts and '__pycache__' not in p.parts)

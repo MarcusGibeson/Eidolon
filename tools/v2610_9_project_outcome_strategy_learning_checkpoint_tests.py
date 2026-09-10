@@ -1,0 +1,5 @@
+from pathlib import Path
+
+def main():
+ names=['project_outcome_history_v2599.py','project_strategy_reliability_v2600.py','project_value_calibration_v2601.py','project_strategy_learning_v2602.py','project_strategy_developer_evidence_v2603.py','project_outcome_learning_observability_v2604.py','project_strategy_plan_confidence_v2606.py','adaptive_plan_strategy_ranking_v2607.py','project_strategy_plan_signal_v2608.py','project_outcome_mind_observability_v2609.py'];dash=Path('conscious_agent/dashboard.py').read_text();obs=Path('conscious_agent/cognitive_observability_v2533.py').read_text();checks=[all((Path('conscious_agent')/x).exists() for x in names),'Project learning' in dash,'project_outcome_learning' in obs,'automatic_plan_reprioritization_permitted' in Path('conscious_agent/project_outcome_mind_observability_v2609.py').read_text(),'operator_priority_overridden' in Path('conscious_agent/adaptive_plan_strategy_ranking_v2607.py').read_text()];print({'suite':'v2610.9-project-outcome-strategy-learning-checkpoint','passed':sum(map(bool,checks)),'total':len(checks),'ok':all(checks)});raise SystemExit(0 if all(checks) else 1)
+if __name__=='__main__':main()

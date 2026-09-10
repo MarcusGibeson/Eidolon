@@ -1,0 +1,294 @@
+"""Bind model source assessments to transient observed text without promoting them."""
+from __future__ import annotations
+
+import hashlib
+import re
+from collections import Counter
+from collections.abc import Mapping
+
+from research_source_independence import independence_summary, source_evidence_role, source_identity
+
+
+PASSAGE_MIN_CHARS = 30
+PASSAGE_MAX_CHARS = 600
+PASSAGE_OPTION_LIMIT = 3
+_SEGMENT_BREAK = re.compile(r"(?<=[.!?])\s+|\n+")
+
+
+def _segment_spans(text):
+    """Offsets of sentence-like segments, separators excluded."""
+    spans, cursor = [], 0
+    for match in _SEGMENT_BREAK.finditer(text):
+        if match.start() > cursor:
+            spans.append((cursor, match.start()))
+        cursor = match.end()
+    if len(text) > cursor:
+        spans.append((cursor, len(text)))
+    return spans
+
+
+def _bounded_chunks(text, start, end):
+    """Cut an overlong run into pieces at whitespace, never mid-word."""
+    spans, cursor = [], start
+    while end - cursor > PASSAGE_MAX_CHARS:
+        window = text.rfind(" ", cursor + PASSAGE_MIN_CHARS, cursor + PASSAGE_MAX_CHARS)
+        stop = window if window > cursor else cursor + PASSAGE_MAX_CHARS
+        spans.append((cursor, stop))
+        cursor = stop + 1 if text[stop:stop + 1] == " " else stop
+    if end - cursor >= PASSAGE_MIN_CHARS:
+        spans.append((cursor, end))
+    return spans
+
+
+def passage_options(citation_id, excerpt):
+    """Offer bounded exact spans; IDs remain bound to both text and source.
+
+    Every option is a slice of the excerpt by offset, so a passage is always
+    verbatim observed text. Text that does not fall into neat sentences is
+    still quotable: an overlong run is cut at whitespace and consecutive short
+    fragments are joined across their original separators. Requiring tidy
+    sentence boundaries silently discarded whole sources before the model could
+    assess them.
+    """
+    text = str(excerpt or "")
+    options, open_start = [], None
+    for start, end in _segment_spans(text):
+        if open_start is None:
+            open_start = start
+        if end - open_start > PASSAGE_MAX_CHARS:
+            chunks = _bounded_chunks(text, open_start, end)
+            open_start = None
+        elif end - open_start >= PASSAGE_MIN_CHARS:
+            chunks = [(open_start, end)]
+            open_start = None
+        else:
+            continue  # too short alone; keep accumulating across separators
+        for chunk_start, chunk_end in chunks:
+            span = text[chunk_start:chunk_end]
+            options.append({
+                "passage_id": hashlib.sha256((citation_id + "\0" + span).encode()).hexdigest()[:16],
+                "text": span,
+            })
+            if len(options) == PASSAGE_OPTION_LIMIT:
+                return options
+    return options
+
+
+def assess_source_claims(payload, *, documents, citations, required_dimension=""):
+    """Retain content-free assessments only when their exact passage was observed.
+
+    Matching a passage establishes textual provenance, not entailment. Model stance
+    remains advisory and cannot replace a native supporting-observation receipt.
+    """
+    source_index = {row.get("citation_id"): row for row in citations if isinstance(row, Mapping)}
+    document_index = {row.get("citation_id"): row for row in documents if isinstance(row, Mapping)}
+    supplied = payload.get("source_assessments", []) if isinstance(payload, Mapping) else []
+    if not isinstance(supplied, list):
+        supplied = []
+    accepted, rejected, seen = [], Counter(), set()
+    selector_diagnostics = Counter()
+    for row in supplied[:32]:
+        if not isinstance(row, Mapping):
+            rejected["invalid_row"] += 1
+            continue
+        cid = row.get("citation_id")
+        if not isinstance(cid, str) or cid not in source_index or cid not in document_index:
+            rejected["unobserved_citation"] += 1
+            continue
+        quote, claim = row.get("evidence_quote"), row.get("claim")
+        stance = row.get("assessment")
+        excerpt = str(document_index[cid].get("excerpt") or "")
+        if "passage_index" in row:
+            choices = passage_options(cid, excerpt)
+            position = row["passage_index"]
+            if type(position) is not int or not 1 <= position <= len(choices):
+                rejected["unobserved_passage_index"] += 1
+                reason = ("no_offered_passages" if not choices else
+                          "wrong_type" if type(position) is not int else
+                          "below_one" if position < 1 else "above_source_range")
+                selector_diagnostics[reason] += 1
+                continue
+            selected = choices[position - 1]
+            if "passage_id" in row and row["passage_id"] != selected["passage_id"]:
+                rejected["passage_selector_conflict"] += 1
+                continue
+            row = {**row, "passage_id": selected["passage_id"]}
+        if "passage_id" in row:
+            options = {item["passage_id"]: item["text"] for item in passage_options(cid, excerpt)}
+            pid = row["passage_id"]
+            if not isinstance(pid, str) or pid not in options:
+                rejected["unobserved_passage_id"] += 1
+                continue
+            if quote is not None and quote != options[pid]:
+                rejected["passage_quote_mismatch"] += 1
+                continue
+            quote = options[pid]
+        if not isinstance(quote, str) or not 30 <= len(quote) <= 600:
+            rejected["passage_missing_or_out_of_bounds"] += 1
+            continue
+        if not isinstance(claim, str) or not 1 <= len(claim) <= 700:
+            rejected["claim_missing_or_out_of_bounds"] += 1
+            continue
+        if stance not in ("supports", "refutes", "unclear"):
+            rejected["invalid_stance"] += 1
+            continue
+        if quote not in excerpt:
+            rejected["passage_not_observed"] += 1
+            continue
+        key = (cid, quote, claim, stance)
+        if key in seen:
+            rejected["duplicate_assessment"] += 1
+            continue
+        seen.add(key)
+        role = source_evidence_role(source_index[cid])
+        accepted.append({
+            "citation_id": cid,
+            "claim_digest": hashlib.sha256(claim.encode()).hexdigest(),
+            "passage_digest": hashlib.sha256(quote.encode()).hexdigest(),
+            "observed_excerpt_digest": hashlib.sha256(excerpt.encode()).hexdigest(),
+            "model_assessment": stance,
+            "model_evidence_kind": row.get("evidence_kind") if row.get("evidence_kind") in {
+                "customer_experience", "survey_result", "usage_measurement", "vendor_offering", "unknown"
+            } else "unknown",
+            "assessed_dimension": row.get("dimension", required_dimension) if row.get("dimension", required_dimension) in {
+                "demand", "competition", "implementation_dependencies", "free_tier_feasibility"
+            } else "",
+            "evidence_role": role["evidence_role"],
+            "supportable_dimensions": role["supportable_dimensions"],
+            "textual_provenance_verified": True,
+            "semantic_support_verified": False,
+        })
+    used = {row["citation_id"] for row in accepted}
+    blockers = Counter()
+    for cid in sorted(used):
+        source = source_index[cid]
+        if source.get("source_kind", "unknown") == "unknown":
+            blockers["source_type_unverified"] += 1
+        if source.get("freshness", "unknown") == "unknown":
+            blockers["source_freshness_unverified"] += 1
+    if accepted:
+        blockers["claim_support_not_verified"] = len(accepted)
+    return {
+        "status": "source_assessments_grounded" if accepted else "source_assessments_unavailable",
+        "assessments": accepted,
+        "grounded_assessment_count": len(accepted),
+        # Fixed-vocabulary tallies. Admission turns on stance and evidence kind, so
+        # without these a refusal is indistinguishable from a model that never ran.
+        "assessment_stance_counts": dict(Counter(row["model_assessment"] for row in accepted)),
+        "assessment_evidence_kind_counts": dict(Counter(row["model_evidence_kind"] for row in accepted)),
+        "rejected_assessment_counts": dict(rejected),
+        "selector_diagnostics": dict(selector_diagnostics),
+        "admission_blockers": dict(blockers),
+        "source_independence": independence_summary([source_index[cid] for cid in sorted(used)]),
+        "model_judgment_is_evidence": False,
+        "raw_quote_persisted": False,
+        "raw_page_content_persisted": False,
+        "authority_expanded": False,
+    }
+
+
+def model_assessed_conclusion(payload, *, assessment_summary, citations, dimension):
+    """Admit a tentative demand inference, never a verified observation or winner.
+
+    The model evaluates meaning and evidence kind. Deterministic checks bind that
+    judgment to the exact finding, observed passages, and distinct source lineages.
+    """
+    denied = {"ok": False, "status": "model_assessment_not_admitted"}
+    if dimension != "demand" or not isinstance(payload, Mapping) or not isinstance(assessment_summary, Mapping):
+        return denied
+    findings = payload.get("findings")
+    if not isinstance(findings, list) or len(findings) != 1 or not isinstance(findings[0], Mapping):
+        return denied
+    finding = findings[0]
+    if not isinstance(finding.get("title"), str) or not finding["title"].strip():
+        return denied
+    claim = finding.get("summary")
+    ids = finding.get("citation_ids")
+    if not isinstance(claim, str) or not 1 <= len(claim) <= 700 or not isinstance(ids, list):
+        return denied
+    if not all(isinstance(cid, str) for cid in ids):
+        return denied
+    index = {row.get("citation_id"): row for row in citations if isinstance(row, Mapping)}
+    if not ids or any(cid not in index for cid in ids):
+        return denied
+    claim_digest = hashlib.sha256(claim.encode()).hexdigest()
+    if assessment_summary.get("rejected_assessment_counts"):
+        return denied
+    if any(row.get("stance") in {"refutes", "mixed"} for row in index.values()):
+        return denied
+    all_assessments = assessment_summary.get("assessments", [])
+    if not isinstance(all_assessments, list):
+        return denied
+    if any(not isinstance(row, Mapping) or row.get("claim_digest") != claim_digest
+           or row.get("assessed_dimension") != dimension for row in all_assessments):
+        return denied
+    rows = [row for row in assessment_summary.get("assessments", [])
+            if isinstance(row, Mapping) and row.get("claim_digest") == claim_digest
+            and row.get("assessed_dimension") == dimension]
+    # Consider adverse assessments even when the model omitted them from its finding.
+    if any(row.get("model_assessment") == "refutes"
+           or (row.get("citation_id") in ids and row.get("model_assessment") != "supports")
+           for row in rows):
+        return denied
+    eligible = {}
+    for row in rows:
+        cid = row.get("citation_id")
+        if cid not in ids or not row.get("textual_provenance_verified"):
+            continue
+        if not re.fullmatch(r"[0-9a-f]{64}", str(row.get("passage_digest") or "")):
+            return denied
+        role = source_evidence_role(index[cid])
+        if role["evidence_role"] in {
+            "invalid_public_url", "generic_definition", "promotional_summary",
+            "first_party_product_claim", "implementation_precedent",
+            "implementation_documentation", "pricing_or_free_tier",
+        }:
+            continue
+        if row.get("model_evidence_kind") not in {"customer_experience", "survey_result", "usage_measurement"}:
+            continue
+        relevance = index[cid].get("relevance_score")
+        if not isinstance(relevance, (int, float)) or not 0.5 <= relevance <= 1.0:
+            continue
+        if index[cid].get("stance") in {"refutes", "mixed"} or index[cid].get("freshness") == "stale":
+            return denied
+        # Identical selected passages remain one lineage even across different hosts.
+        eligible[cid] = {**index[cid], "content_similarity_digest": row["passage_digest"],
+                         "content_similarity_confidence": "exact"}
+    if set(eligible) != set(ids):
+        return denied
+    publishers = {source_identity(index[cid])["publisher_digest"] for cid in eligible}
+    if "" in publishers or len(publishers) < 2:
+        return denied
+    original_lineage = independence_summary([index[cid] for cid in eligible])
+    groups = {cid: {cid} for cid in index}
+    for pair in assessment_summary.get("observed_attribution_relationships", []):
+        if not isinstance(pair, list) or len(pair) != 2 or any(cid not in groups for cid in pair):
+            return denied
+        merged = groups[pair[0]] | groups[pair[1]]
+        for cid in merged:
+            groups[cid] = merged
+    if len({tuple(sorted(groups[cid])) for cid in eligible}) < 2:
+        return denied
+    if original_lineage["independent_lineage_count"] < 2 or original_lineage["uncertain_lineage_count"]:
+        return denied
+    lineage = independence_summary(eligible.values())
+    if lineage["independent_lineage_count"] < 2 or lineage["uncertain_lineage_count"]:
+        return denied
+    limitations = [
+        "Claim support and evidence type were assessed by the model, not independently verified. "
+        "Different source lineages do not prove the sources are factually correct.",
+        "Freshness is not established by this assessment; it does not verify current demand or willingness to pay.",
+    ]
+    if any(row.get("model_assessment") == "unclear" for row in rows):
+        limitations.append("Additional assessed sources did not establish this claim and were not counted as support.")
+    inferred = {"finding": claim, "citations": list(eligible), "classification": "model_assessed_inference",
+                "confidence": "tentative", "semantic_support_verified": False,
+                "independent_source_count": min(lineage["independent_lineage_count"],
+                                                original_lineage["independent_lineage_count"], len(publishers))}
+    return {"ok": True, "status": "research_model_assessed_inference", "verified_findings": [],
+            "reasonable_inferences": [inferred], "unresolved_disagreements": [],
+            "missing_evidence": [{"finding": "Current demand and willingness to pay remain unverified"}],
+            "limitations": limitations, "citations": [dict(index[cid]) for cid in eligible], "citation_count": len(eligible),
+            "rendered_answer": "Model-assessed inference (tentative; not verified fact):\n\n" + claim
+                + " [" + ", ".join(eligible) + "]\n\n" + " ".join(limitations),
+            "strongest_opportunity_admitted": False, "generated_prose_is_evidence": False}

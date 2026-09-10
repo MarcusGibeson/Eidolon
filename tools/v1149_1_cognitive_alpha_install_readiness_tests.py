@@ -1,0 +1,3 @@
+from conscious_agent.cognitive_alpha_install_readiness import build_cognitive_alpha_install_readiness
+r=build_cognitive_alpha_install_readiness();checks=[r['contract_version']=='v1149.1',r['freeze_valid'],r['path_count']==5,not r['duplicate_readiness_ids'],all(not x['execution_eligible'] for x in r['paths']),all(x['operator_confirmation_required'] for x in r['paths']),all('deterministic_replay' in x['required_evidence'] for x in r['paths']),all('runtime_separation' in x['required_evidence'] for x in r['paths']),not any(r['authority_boundary'].values()),r['content_free']]
+print(f"v1149.1: {sum(checks)}/{len(checks)}");raise SystemExit(0 if all(checks) else 1)

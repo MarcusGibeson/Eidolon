@@ -1,0 +1,18 @@
+from __future__ import annotations
+"""Strictly read-only v1132.2 Revisable World Model intake checkpoint."""
+import hashlib, os
+from pathlib import Path
+from revisable_world_model_signals import build_revisable_world_model_signal_inspection, ENTITY_CATEGORIES, RELATION_CATEGORIES
+from revisable_world_model_candidates import build_revisable_world_model_candidate_inspection, STATES
+CONTRACT_VERSION="v1132.2"
+def _root(): return Path(os.environ.get("EIDOLON_DATA_DIR") or Path(__file__).resolve().parents[1]/"data").expanduser().resolve()/"cognition"
+def _sig(root:Path):
+ d=hashlib.sha256()
+ if not root.exists(): return d.hexdigest()
+ for p in sorted(x for x in root.rglob("*") if x.is_file() and "__pycache__" not in x.parts and x.suffix!=".pyc"):
+  s=p.stat(); d.update(p.relative_to(root).as_posix().encode()); d.update(str(s.st_size).encode()); d.update(str(s.st_mtime_ns).encode())
+ return d.hexdigest()
+def build_revisable_world_model_intake_checkpoint(runtime_root=None,*,source_root=None):
+ runtime=Path(runtime_root).resolve() if runtime_root else _root(); source=Path(source_root).resolve() if source_root else Path(__file__).resolve().parents[1]; rb=_sig(runtime); sb=_sig(source); signals=build_revisable_world_model_signal_inspection(runtime); candidates=build_revisable_world_model_candidate_inspection(runtime)
+ checks=[("signal_contract",signals.get("contract_version")=="v1132.0"),("candidate_contract",candidates.get("contract_version")=="v1132.1"),("entity_coverage",ENTITY_CATEGORIES=={"person","project","event","belief","cause","temporal_context"}),("relation_coverage",{"supports","contradicts","may_cause","corrects"}.issubset(RELATION_CATEGORIES)),("candidate_states",len(STATES)==11),("exact_origin_lineage",all(x.get("origin_ids") for x in signals.get("recent_signals",[]))),("evidence_lineage",all(x.get("evidence_ids") for x in signals.get("recent_signals",[]))),("predecessor_lineage",all(x.get("predecessor_signal_ids") is not None for x in signals.get("recent_signals",[]))),("temporal_context",all(x.get("temporal_context_id") is not None for x in signals.get("recent_signals",[]))),("uncertainty_visible",all(x.get("uncertainty") is not None for x in signals.get("recent_signals",[]))),("correction_history",all(x.get("correction") is not None for x in candidates.get("recent_candidates",[]))),("scope_bounded",all(x.get("scope_digest") is not None for x in candidates.get("recent_candidates",[]))),("overlap_visible",all(x.get("semantic_overlap_key") is not None for x in candidates.get("recent_candidates",[]))),("privacy_boundary",not signals.get("raw_content_exposed") and not candidates.get("evidence_text_exposed") and not signals.get("hidden_reasoning_exposed")),("no_provider",not signals.get("provider_contacted") and not candidates.get("provider_contacted")),("authority_separation",not any(signals.get("authority_boundary",{}).values()) and not any(candidates.get("authority_boundary",{}).values())),("read_only",rb==_sig(runtime) and sb==_sig(source))]
+ return {"ok":all(v for _,v in checks),"contract_version":CONTRACT_VERSION,"checks":[{"id":k,"status":"pass" if v else "fail"} for k,v in checks],"signals":signals,"candidates":candidates,"runtime_mutated":rb!=_sig(runtime),"source_modified":sb!=_sig(source),"raw_content_exposed":False,"evidence_text_exposed":False,"belief_text_exposed":False,"memory_text_exposed":False,"prompt_exposed":False,"provider_payload_exposed":False,"hidden_reasoning_exposed":False,"provider_contacted":False,"message_sent":False,"notification_created":False,"approval_created":False,"authorization_created":False,"external_action_executed":False,"promotion_performed":False,"certification_performed":False,"desktop_verification":"pending"}

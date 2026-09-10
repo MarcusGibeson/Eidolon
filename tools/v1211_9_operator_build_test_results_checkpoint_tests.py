@@ -1,0 +1,83 @@
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+sys.dont_write_bytecode = True
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+os.environ.setdefault("PYTHONDONTWRITEBYTECODE", "1")
+
+from conscious_agent.checkpoint_registry import inspect_checkpoint_registry
+from conscious_agent.dashboard_first_use import render_first_use_shell
+from conscious_agent.operator_build_test_results_checkpoint import build_operator_build_test_results_checkpoint
+
+checks: list[bool] = []
+
+
+def require(value, detail=None):
+    checks.append(bool(value))
+    if not value:
+        raise AssertionError(detail)
+
+
+with tempfile.TemporaryDirectory(prefix="eidolon-v1211-9-") as temp:
+    runtime = Path(temp) / "must-not-exist"
+    report = build_operator_build_test_results_checkpoint(source_root=ROOT, runtime_root=runtime)
+    require(not runtime.exists())
+
+for key, expected in (
+    ("ok", True), ("contract_version", "v1211.9"), ("retained_contract_version", "v1211.8"),
+    ("read_only", True), ("post_available", False), ("provider_contacted", False),
+    ("project_tests_executed", False), ("runtime_probed", False), ("runtime_data_read", False),
+    ("runtime_mutated", False), ("source_modified", False), ("project_modified", False),
+    ("dependencies_installed", False), ("automatic_continuation", False),
+    ("automatic_diagnosis", False), ("automatic_repair", False), ("apply_authorized", False),
+    ("release_authorized", False), ("authority_granted", False), ("global_profile_pass_claimed", False),
+):
+    require(report.get(key) == expected, (key, report.get(key)))
+require(report["passed"] == report["total"])
+require(report["source_signature_before"] == report["source_signature_after"])
+require(report["summary"]["outcome_count"] == 5)
+require(report["summary"]["decision_count"] == 4)
+require(report["summary"]["continuation_preparation_only"] is True)
+require(report["summary"]["automatic_continuation"] is False)
+require(len(report["limitations"]) == 4)
+
+registry = inspect_checkpoint_registry(source_root=ROOT)
+descriptor = next((row for row in registry["checkpoints"] if row["checkpoint_id"] == "operator-build-test-results-checkpoint"), None)
+require(descriptor is not None)
+require((descriptor or {}).get("contract_version") == "v1211.9")
+require((descriptor or {}).get("builder") == "build_operator_build_test_results_checkpoint")
+require((descriptor or {}).get("read_only") is True)
+require((descriptor or {}).get("post_available") is False)
+
+process = subprocess.run(
+    [sys.executable, str(ROOT / "eidolon.py"), "operator-build-test-results-checkpoint"],
+    cwd=ROOT, text=True, capture_output=True, timeout=120,
+    env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "EIDOLON_DATA_DIR": tempfile.mkdtemp(prefix="eidolon-v1211-9-cli-")},
+)
+require(process.returncode == 0, process.stderr)
+cli = json.loads(process.stdout.strip().splitlines()[-1])
+require(cli["contract_version"] == "v1211.9")
+require(cli["ok"] is True)
+
+api = (ROOT / "conscious_agent" / "api_server.py").read_text(encoding="utf-8")
+route = 'parts == ["cognition", "operator-build-test-results-checkpoint"]'
+require(api.count(route) == 1)
+require("POST /api/cognition/operator-build-test-results-checkpoint" not in api)
+html = render_first_use_shell()
+require("operator-build-test-results-checkpoint-panel" in html)
+require("/api/cognition/operator-build-test-results-checkpoint" in html)
+release = (ROOT / "tools" / "release_verify.py").read_text(encoding="utf-8")
+require(release.count('"v1211.9-operator-build-test-results-checkpoint"') == 2)
+require(release.count("tools/v1211_9_operator_build_test_results_checkpoint_tests.py") == 1)
+metadata = (ROOT / "conscious_agent" / "release_metadata.py").read_text(encoding="utf-8")
+require('WORKING_SOURCE_VERSION = "1211.9"' in metadata)
+require('PREVIOUS_WORKING_SOURCE_VERSION = "1210.9"' in metadata)
+
+print(json.dumps({"ok": True, "version": "1211.9", "checks": len(checks), "passed": sum(checks), "read_only": True, "provider_contacted": False, "project_tests_executed": False, "automatic_continuation": False, "repair_authorized": False, "release_authorized": False}, sort_keys=True))

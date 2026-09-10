@@ -1,0 +1,5 @@
+# Verification evidence policy
+
+Current product claims must be backed by executable behavioral, integration, or adversarial evidence. Source-text presence, documentation markers, version-string assertions, schema-shape checks, and self-generated digest consistency remain useful structural evidence, but **cannot independently certify runtime behavior**. Security claims require at least one negative/adversarial case. Synthetic fixtures are acceptable when the expected result is defined independently of the implementation; a function hashing or re-reading its own output proves determinism/integrity, not semantic correctness.
+
+The v2730 product-integrity gate is mandatory in quick and full release verification. Historical suites remain for compatibility and regression information while they are progressively classified and replaced. New version-specific `build/text/print` report factories and new checkpoint-only runtime modules are frozen unless an operator-reviewed exception demonstrates that a parameterized existing mechanism cannot express the requirement.

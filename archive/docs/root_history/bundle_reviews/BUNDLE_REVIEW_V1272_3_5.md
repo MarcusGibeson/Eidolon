@@ -1,0 +1,3 @@
+# v1272.3-v1272.5 Bundle Review
+
+Integrated recovery directly with the real v1270/v1271 supervised self-development pipeline. Candidate and verification/review entry points persist write-ahead intent before entering provider/test stages. If a crash occurs after v1265 seals a candidate or v1267 passes trusted verification but before v1270/v1272 records the higher-level transition, recovery derives only the missing campaign bookkeeping from durable lower lineage with a provider-forbidden path; provider and test work are not replayed. Provider outage/return evidence, explicit resume, current-phase reporting, and next-required-authorization reporting preserve exact v1265/v1267 authority boundaries. Generic approval remains non-authorizing.

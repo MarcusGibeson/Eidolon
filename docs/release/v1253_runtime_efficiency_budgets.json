@@ -1,0 +1,24 @@
+{
+  "schema_version": "eidolon.runtime_efficiency_budgets.v1",
+  "version": "1253.9",
+  "budgets": {
+    "warm_pre_provider_ms": {"median_max": 50.0, "p95_max": 125.0},
+    "social_prompt_tokens": {"value_max": 2400.0},
+    "ordinary_prompt_tokens": {"value_max": 2700.0},
+    "trusted_action_ack_build_ms": {"median_max": 5.0, "p95_max": 15.0},
+    "memory_index_read_ms": {"median_max": 50.0, "p95_max": 100.0},
+    "session_index_read_ms": {"median_max": 50.0, "p95_max": 100.0},
+    "action_index_read_ms": {"median_max": 50.0, "p95_max": 100.0},
+    "dashboard_fast_status_ms": {"median_max": 25.0, "p95_max": 75.0},
+    "terminal_cold_start_seconds": {"median_target": 3.0, "median_max": 5.5, "p95_max": 7.5, "hardware_sensitive": true},
+    "conversation_runtime_import_seconds": {"median_target": 3.0, "median_max": 5.0, "p95_max": 7.0, "hardware_sensitive": true}
+  },
+  "policy": {
+    "median_and_p95_required": true,
+    "single_outlier_is_not_a_release_decision": true,
+    "hardware_sensitive_metrics_support_relative_baselines": true,
+    "provider_contact_authorized": false,
+    "project_mutation_authorized": false,
+    "release_authorized": false
+  }
+}

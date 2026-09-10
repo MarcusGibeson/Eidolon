@@ -1,0 +1,3 @@
+# v1399.9 Gamma Scorecard Final Validation
+
+v1399.9 measures the full Gamma representative-task set with sealed content-free outcome records. The checkpoint covers eight distinct task classes and reports success, intervention, regression, rework, total/median/p95 time, evidence quality, and boundary adherence. The representative fixture reaches 100% success, 0% intervention/regression, 12.5% rework, 100% evidence quality, and zero boundary violations; tampered evidence and any boundary violation fail closed.\n\nFocused verification: foundations 5/5; integration 5/5; reliability/adversarial 7/7; checkpoint 5/5.

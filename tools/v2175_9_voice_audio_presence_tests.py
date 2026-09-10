@@ -1,0 +1,58 @@
+from __future__ import annotations
+import json, os, sys, tempfile
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT/'conscious_agent')); sys.dont_write_bytecode=True
+os.environ['EIDOLON_DATA_DIR']=tempfile.mkdtemp(prefix='eidolon-v2175-data-')
+from voice_audio_interaction_v2100 import *
+checks=[]
+def req(v,n): checks.append(n); assert v,n
+runtime=Path(tempfile.mkdtemp(prefix='eidolon-v2175-runtime-'))
+state=public_voice_state(read_voice_state(runtime_root=runtime))
+req(state['profile']['stt_adapter']=='unconfigured','voice_defaults_unconfigured')
+conf=configure_voice_profile(stt_adapter='local_stt',tts_adapter='local_tts',input_device_digest='a'*64,output_device_digest='b'*64,barge_in_enabled=True,silence_timeout_ms=1000,prosody={'warmth':.8},expected_state_digest=state['state_digest'],event_id='profile-1',runtime_root=runtime)
+req(conf['ok'] and conf['status']=='voice_profile_configured_no_device_contact','voice_profile_configured')
+req(conf['state']['profile']['stt_adapter']=='local_stt' and conf['state']['profile']['prosody']['warmth']==.8,'provider_neutral_voice_profile')
+req(conf['microphone_accessed'] is False and conf['speaker_accessed'] is False,'profile_does_not_touch_devices')
+stale=configure_voice_profile(stt_adapter='x',tts_adapter='y',expected_state_digest=state['state_digest'],event_id='profile-stale',runtime_root=runtime)
+req(stale['status']=='stale_voice_state_digest','stale_voice_profile_rejected')
+begin=begin_voice_turn(turn_id='turn-1',input_audio_digest='c'*64,event_id='begin-1',runtime_root=runtime)
+req(begin['ok'] and begin['turn']['state']=='listening','voice_turn_prepared')
+req(begin['audio_recorded'] is False and begin['microphone_accessed'] is False,'voice_turn_no_audio_capture')
+replay=begin_voice_turn(turn_id='turn-1',input_audio_digest='c'*64,event_id='begin-1',runtime_root=runtime)
+req(replay['idempotent'] is True,'voice_turn_begin_exactly_once')
+seg=record_transcript_segment(turn_id='turn-1',transcript_digest='d'*64,confidence=.91,start_ms=0,end_ms=800,event_id='seg-1',runtime_root=runtime)
+req(seg['turn']['segment_count']==1 and seg['turn']['state']=='transcribing','timestamped_transcript_segment')
+recon=reconcile_transcript(turn=seg['turn'])
+req(recon['ok'] and recon['source']=='stt_segments_composite','transcript_reconciliation_from_segments')
+corrected=reconcile_transcript(turn=seg['turn'],corrected_transcript_digest='e'*64,correction_authority='operator')
+req(corrected['final_transcript_digest']=='e'*64 and corrected['operator_correction_applied'],'operator_transcript_correction_precedence')
+speech=prepare_speech_request(turn_id='turn-1',response_text_digest='f'*64,event_id='speak-1',runtime_root=runtime)
+req(speech['turn']['state']=='speaking' and speech['audio_played'] is False,'tts_request_prepared_not_played')
+barge=handle_barge_in(turn_id='turn-1',event_id='barge-1',runtime_root=runtime)
+req(barge['turn']['state']=='interrupted' and barge['turn']['interrupted'],'barge_in_interrupts_speaking_state')
+req(silence_decision(silence_ms=400,speaking=False,runtime_root=runtime)['action']=='continue_listening','short_silence_continues_listening')
+req(silence_decision(silence_ms=2500,speaking=False,runtime_root=runtime)['action']=='close_or_wait_silently','long_silence_avoids_pressure')
+finish=finish_voice_turn(turn_id='turn-1',outcome='completed',event_id='finish-1',runtime_root=runtime)
+req(finish['turn']['state']=='completed','voice_turn_terminal_state')
+rewrite=finish_voice_turn(turn_id='turn-1',outcome='failed',event_id='finish-rewrite',runtime_root=runtime)
+req(not rewrite['ok'] and rewrite['turn']['state']=='completed','voice_terminal_state_is_immutable')
+req(not silence_decision(silence_ms='invalid',speaking=False,runtime_root=runtime)['ok'],'invalid_silence_duration_fails_closed')
+begin2=begin_voice_turn(turn_id='turn-2',input_audio_digest='1'*64,event_id='begin-2',runtime_root=runtime)
+req(begin2['ok'],'second_voice_turn_after_completion')
+def addseg(i):
+    return record_transcript_segment(turn_id='turn-2',transcript_digest=(format(i+2,'x')*64)[:64],confidence=.8,start_ms=i*100,end_ms=i*100+80,event_id=f'concurrent-seg-{i}',runtime_root=runtime)
+with ThreadPoolExecutor(max_workers=8) as pool:
+    rows=list(pool.map(addseg,range(8)))
+req(all(r['ok'] for r in rows),'concurrent_voice_segment_writes_succeed')
+voice2=public_voice_state(read_voice_state(runtime_root=runtime))
+req(voice2['active_turn']['segment_count']==8,'concurrent_voice_segments_no_lost_writes')
+finish_voice_turn(turn_id='turn-2',outcome='completed',event_id='finish-2',runtime_root=runtime)
+duplicate=begin_voice_turn(turn_id='turn-2',input_audio_digest='1'*64,event_id='begin-duplicate',runtime_root=runtime)
+req(not duplicate['ok'] and duplicate['status']=='voice_turn_id_already_used','voice_turn_identity_not_reused')
+ctrl=process_era7_voice_control('show voice and audio status',runtime_root=runtime)
+req(ctrl['active'] and ctrl['native_audio_deferred'],'voice_status_control')
+blocked=process_era7_voice_control('show voice and audio status and start microphone',runtime_root=runtime)
+req(blocked['status']=='era7_voice_read_only_scope_expansion_rejected','compound_voice_scope_rejected')
+req(ctrl['installation_authorized'] is False and ctrl['authority_expanded'] is False,'voice_never_expands_authority')
+print(json.dumps({'suite':'v2175.9-voice-audio-presence','ok':True,'passed':len(checks),'failed':0,'checks':checks},sort_keys=True))

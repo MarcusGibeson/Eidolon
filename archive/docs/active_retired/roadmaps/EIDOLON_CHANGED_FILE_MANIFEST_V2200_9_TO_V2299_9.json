@@ -1,0 +1,43 @@
+{
+  "added": [
+    "conscious_agent/audit_incident_governance_v2200.py",
+    "conscious_agent/era8_trustworthy_operation.py",
+    "conscious_agent/fine_grained_authority_v2200.py",
+    "conscious_agent/transactional_recovery_v2200.py",
+    "conscious_agent/trust_zone_defense_v2200.py",
+    "docs/roadmaps/EIDOLON_BROWSER_VERIFICATION_LEDGER_V2299_9.md",
+    "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V2200_9_TO_V2299_9.json",
+    "docs/roadmaps/EIDOLON_DEFERRED_LOCAL_LEDGER_V2299_9.md",
+    "docs/roadmaps/EIDOLON_MOBILE_BROWSER_ERA8_WORK_LEDGER_V2299_9.md",
+    "tools/v2225_9_fine_grained_authority_permissions_tests.py",
+    "tools/v2250_9_untrusted_content_defense_tests.py",
+    "tools/v2275_9_fault_tolerance_recovery_tests.py",
+    "tools/v2299_9_audit_incident_response_tests.py",
+    "tools/v2299_9_era8_integrated_trustworthy_operation_tests.py"
+  ],
+  "baseline_version": "2200.9",
+  "baseline_zip_sha256": "6e109802324400c9cea43ec0e9e4a8106e26cd7ad705e06b8beb17b9471ba979",
+  "candidate_version": "2299.9",
+  "counts": {
+    "added": 14,
+    "deleted": 0,
+    "modified": 12
+  },
+  "deleted": [],
+  "manifest_digest": "553fe731f8225af007649f06fea73261a788b553b2d2496ca6d8c2111513d241",
+  "modified": [
+    "README.md",
+    "README_NEXT_STEPS.md",
+    "README_RELEASE_HISTORY.md",
+    "archive/docs/legacy_dependencies/roadmaps/README_V1100_ROADMAP.md",
+    "conscious_agent/checkpoint_registry.py",
+    "conscious_agent/local_tool_interaction_v2100.py",
+    "conscious_agent/ordinary_chat_development_campaign.py",
+    "conscious_agent/release_authority.py",
+    "conscious_agent/release_metadata.py",
+    "docs/release/release_metadata_manifest.json",
+    "release_metadata.py",
+    "tools/release_verify.py"
+  ],
+  "schema": "eidolon.changed-files.v1"
+}

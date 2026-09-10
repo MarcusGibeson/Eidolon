@@ -1,0 +1,168 @@
+{
+  "added_count": 14,
+  "authoritative_input_zip_sha256": "1586a2059ddf72ce38ba0e268509d4dd55b85d2fa452915783ea80eb1a9d51ab",
+  "deleted_count": 0,
+  "entries": [
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "9b36cfeae4ca3ae52f32d3f3a8f2c677c17e7291b258c3e9ba4e64dc5e620f92",
+      "change": "added",
+      "path": "conscious_agent/affective_regulation_v1900.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "2128d226bd46b15f2d9d46cc09f8be470c862345060dea1112b5dcec64ba6735",
+      "change": "added",
+      "path": "conscious_agent/discourse_response_planning.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "7321f5f8056ee3d7bc5029bb89e3066d30278eb082e78eb58283d726102a9869",
+      "change": "added",
+      "path": "conscious_agent/era5_companion_coherence.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "bae08dcd67834d09c7ac2b2b89690c77db650eb6905b0b133729d546791b9467",
+      "change": "added",
+      "path": "conscious_agent/personality_identity_expression_v1900.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "84c59b33eef5d5908ac6645b69771a4dedd89d3d34fca8504540a316382832af",
+      "change": "added",
+      "path": "conscious_agent/relationship_companion_continuity_v1900.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "36fe54e4c3f17a54b23a6dd8fdf158a4bc227c68964b4e90fd2e98158ada50eb",
+      "change": "added",
+      "path": "docs/roadmaps/EIDOLON_BROWSER_VERIFICATION_LEDGER_V1999_9.md"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": null,
+      "change": "added",
+      "path": "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V1900_9_TO_V1999_9.json"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "170601cbde24d0a959644ee5318a2aece17631921b5f78e3275899ceaa8ee659",
+      "change": "added",
+      "path": "docs/roadmaps/EIDOLON_DEFERRED_LOCAL_LEDGER_V1999_9.md"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "323b1dc2100cf566d1f11479987ae14c8e5d67bfbac7907c812e2d354f7dafbf",
+      "change": "added",
+      "path": "docs/roadmaps/EIDOLON_MOBILE_BROWSER_ERA5_WORK_LEDGER_V1999_9.md"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "274781bb6564e8418f0fa508fb00a93456b67f0ac4b9f7d45fffd2acd3c205a4",
+      "change": "added",
+      "path": "tools/v1925_9_discourse_conversational_flow_tests.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "713570da8cea3c7465ccc353a98e37a63c322be14618fa1c020f850c28960d54",
+      "change": "added",
+      "path": "tools/v1950_9_personality_identity_expression_tests.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "6f91592516e94cee71957d06bf3df78ad45bb7e24cdb18a77b868542f9c53e7b",
+      "change": "added",
+      "path": "tools/v1975_9_emotional_architecture_regulation_tests.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "456991e68d1f6030f20e85717454bf89a1e2dd012d6f43f425c3b84f538be5bc",
+      "change": "added",
+      "path": "tools/v1999_9_era5_integrated_companion_tests.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "9d7e5d642c8cc9dd95364951a68a402c11a6ee74dc7b95b5d6fd7c9175577d23",
+      "change": "added",
+      "path": "tools/v1999_9_relationship_companion_continuity_tests.py"
+    },
+    {
+      "baseline_sha256": "73a97f0c97ce9c161f8588d6ecddeab9a73635cf4ba3c158d0cfc6778eea6f29",
+      "candidate_sha256": "37f496719eee209254d4fcaa79c88b62127ab419aec3564cfa170641f970bc86",
+      "change": "modified",
+      "path": "README.md"
+    },
+    {
+      "baseline_sha256": "a3a7458ce3026c15ae2ab7a0b2282bc640087916019b5d731dea6ad5b2f00fd7",
+      "candidate_sha256": "2441089f8946b53a3dc9f7d6bfba3e32d8ad09b2edeb038b4143034726132867",
+      "change": "modified",
+      "path": "README_NEXT_STEPS.md"
+    },
+    {
+      "baseline_sha256": "c99d58b8b9e433b23117118e5b5a2a36a73649645a8cc28835a6d2dac1a059c5",
+      "candidate_sha256": "5557505060439b9f67cea5fcdb1c19da6a56b2b55219438a58459fa55aa7e207",
+      "change": "modified",
+      "path": "README_RELEASE_HISTORY.md"
+    },
+    {
+      "baseline_sha256": "51f71b7486e00ebbbfc575cca8d97c7b7246ddefcf41bc9ff2bf385b38bdab3d",
+      "candidate_sha256": "b790f95f189b2462cc8d81a8d82f4588dc435a59d1e110eefaa00b9e20ba7c5a",
+      "change": "modified",
+      "path": "archive/docs/legacy_dependencies/roadmaps/README_V1100_ROADMAP.md"
+    },
+    {
+      "baseline_sha256": "52e68d7f5aa5ddb57f39e3163b3dae746ca928de635cded2c3c7a233831010bb",
+      "candidate_sha256": "7d5dbaaecca11a24ad87f78d5e1b3dcbd53e83bee7907f86b3b5770b1cdbe92a",
+      "change": "modified",
+      "path": "conscious_agent/checkpoint_registry.py"
+    },
+    {
+      "baseline_sha256": "a6f35aa6d2d0193de5154f28f27a0f8973f8a4be8ae95325287ce07b33f6f768",
+      "candidate_sha256": "4f7df52f527afded21853b9e19b1294dc9128ce6e3bbb84092f86d56a6a8eaa8",
+      "change": "modified",
+      "path": "conscious_agent/conversation_runtime.py"
+    },
+    {
+      "baseline_sha256": "98baed2146d4b8173587be0e6d329e453102e669d767958f914c87f665a03ae5",
+      "candidate_sha256": "411eea0907b433611bff4fa18c4d447d722c46e5a41d73599ee2c005e771efb2",
+      "change": "modified",
+      "path": "conscious_agent/ordinary_chat_development_campaign.py"
+    },
+    {
+      "baseline_sha256": "8c816e512dd3a1b519899cd4d660d01a395e9bd680ed2164d2f2d6b85dfa2d75",
+      "candidate_sha256": "08a08a9653adc22af708dbf0044907da731e33bf9ffbafe1bf9c711496dc0ba3",
+      "change": "modified",
+      "path": "conscious_agent/release_authority.py"
+    },
+    {
+      "baseline_sha256": "de460cceb6310040e3358b1129f8cb3c547b78038f64b6212de57df8b16fe410",
+      "candidate_sha256": "af6157635a077235a94bdb84ef0988c05f3b63293f99f05f1f470938ebfcc92c",
+      "change": "modified",
+      "path": "conscious_agent/release_metadata.py"
+    },
+    {
+      "baseline_sha256": "5fefbb54c4d0369cc67f64bfdad9f2d09605db51d15674bd0a706463042da1e0",
+      "candidate_sha256": "8810ca6f246272e32a63ef67cd9375397018f471ba461a555884f37a27dd2470",
+      "change": "modified",
+      "path": "docs/release/release_metadata_manifest.json"
+    },
+    {
+      "baseline_sha256": "760187f583786ee0badb82c8b597984c1d16148833ec8cc72bad577ddb9e70ef",
+      "candidate_sha256": "3ea1aca693da9550b8ebd17ca1e15ab157232084170cf4a352655c5cb8ac2994",
+      "change": "modified",
+      "path": "release_metadata.py"
+    },
+    {
+      "baseline_sha256": "a39dab8dab014fecdf5e19dd9d52ffec1bcd3ee101b25f4964414da04170dd21",
+      "candidate_sha256": "e56b8069951db43461ed0ab4c4bb4dc0b1a7806ffbb58dd31454278384de16e4",
+      "change": "modified",
+      "path": "tools/release_verify.py"
+    }
+  ],
+  "from_version": "1900.9",
+  "modified_count": 12,
+  "schema": "eidolon.changed-file-manifest.v1",
+  "self_entry_hash_omitted_to_avoid_recursive_manifest_hash": true,
+  "to_version": "1999.9"
+}

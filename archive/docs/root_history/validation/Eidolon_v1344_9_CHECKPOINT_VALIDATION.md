@@ -1,0 +1,3 @@
+# Eidolon v1344.9 Data and Schemas Checkpoint Validation
+
+Focused deterministic evidence: v1344.0-v1344.2 5/5; v1344.3-v1344.5 7/7; v1344.6-v1344.8 9/9; v1344.9 5/5. Fixtures verify JSON, YAML, TOML, and SQL candidate changes; structural key/type compatibility; table/column/index preservation; explicit migration declarations; filesystem-capable SQL rejection; in-memory SQLite schema validation; focused tests; ordinary-chat read-only inspection; receipt-owned Git lineage; cleanup; duplicate suppression; content minimization; and selected-source immutability. No database or migration is contacted/applied. Native Windows execution remains external evidence.

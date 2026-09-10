@@ -1,0 +1,170 @@
+{
+  "authoritative_baseline_version": "2400.9",
+  "baseline_zip_sha256": "d6e78f5c05d5df88f6018a45f7ffc1bbf51c73389098b6803fa936d565e66685",
+  "candidate_version": "2499.9",
+  "contract": "eidolon-cumulative-changed-file-manifest-v1",
+  "counts": {
+    "added": 14,
+    "deleted": 0,
+    "modified": 12
+  },
+  "records": [
+    {
+      "baseline_sha256": "9490096279c7493149ff61556d385ddcf709df38f0a335f485d34411fa8894a4",
+      "candidate_sha256": "935e42fc721637444ce4676bf6daf80e85faa3eda0c1f23c114068b686935041",
+      "change": "modified",
+      "path": "README.md"
+    },
+    {
+      "baseline_sha256": "6a2b1b5d7dba6767802d02fbe9fdc657d7cd85611da99d394e5288476692caaf",
+      "candidate_sha256": "35804a0a5145b31956f9a90aa22318e6b0bc8bf637c8844f9a6e4e5e0345565e",
+      "change": "modified",
+      "path": "README_NEXT_STEPS.md"
+    },
+    {
+      "baseline_sha256": "f1a3830298d0028e5ad3e8eebc72e06c2dd323d6ea5c98153ad746691ae50d1f",
+      "candidate_sha256": "60a8a109845b5bfac39ecf591dae8fdaeaf2fed85c4ddd2eebdfef52f06cca3c",
+      "change": "modified",
+      "path": "README_RELEASE_HISTORY.md"
+    },
+    {
+      "baseline_sha256": "e105654b82af77bca96663e75b2b6b8ce02ff1f1ec92e0dc294def9227d3292e",
+      "candidate_sha256": "014a264bdb6706af86e11ad5383e430a7de67ed9b51b8c4798290ac1bf9672e8",
+      "change": "modified",
+      "path": "archive/docs/legacy_dependencies/roadmaps/README_V1100_ROADMAP.md"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "e35382bf136640bbca9eeb3bbf0ed54cae27562956fe3fae785af3bfa1ed111f",
+      "change": "added",
+      "path": "conscious_agent/autonomous_developer_beta_v2400.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "5de75a20c76772a6f7383480fcc93147c0466423c5428324f961caaa31e96e7f",
+      "change": "added",
+      "path": "conscious_agent/autonomy_benchmark_v2400.py"
+    },
+    {
+      "baseline_sha256": "73c2d24266f49e8030f01e38a4f9978c57816c2738fa13208a78c7cd5bf419e2",
+      "candidate_sha256": "6a69210ebcb853ff25abe834bd3c7acdbac29007c3475bbb6bdf04d973485390",
+      "change": "modified",
+      "path": "conscious_agent/checkpoint_registry.py"
+    },
+    {
+      "baseline_sha256": "646810cf3cd2195dbf556e76f0c422db346515b552e67f8085abd8d9be6d52b3",
+      "candidate_sha256": "3fc3f0f10863ac8f54c417b2a3db45ad03db2ab56f53fd19c2e8d80de037f7fa",
+      "change": "modified",
+      "path": "conscious_agent/dashboard_layout.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "d0fe8e8a5ef71fd27660b30c19678abefa969a218a553309937d64a4b669f1ca",
+      "change": "added",
+      "path": "conscious_agent/era10_product_autonomy.py"
+    },
+    {
+      "baseline_sha256": "cdaf1c9cae92ab0a238fd656e175706213b97aea9c166f05ca36ca053a594196",
+      "candidate_sha256": "d2bfc3239e807ab071837312b5e516984ef4b64ba7a9cde16e5eb393e7b716c0",
+      "change": "modified",
+      "path": "conscious_agent/ordinary_chat_development_campaign.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "10702fa5ffa8929826c588c881574a2e62b0a983444ea02340a108bba74dd553",
+      "change": "added",
+      "path": "conscious_agent/product_maturity_v2400.py"
+    },
+    {
+      "baseline_sha256": "78bd551930e07df3309195e6a1eae67691c3de637b96f575f390426db2006b0b",
+      "candidate_sha256": "da33bb242c6099ff97b337feafef2a0668fcf78458d4cf286eadec4c01e07657",
+      "change": "modified",
+      "path": "conscious_agent/release_authority.py"
+    },
+    {
+      "baseline_sha256": "308a0dc23bf326ef46b048d34d7b36f36f955c4f9b08dfd2776fd2edbfc1720c",
+      "candidate_sha256": "c29ccd72f80cf96e5134cec96b0c74495c4bfb89f09fc83abe38bf2a0b5b6c5d",
+      "change": "modified",
+      "path": "conscious_agent/release_metadata.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "67d764fa010becf1b03e7356695ededb687eccaea9de4fc7f07dd97af99f3c24",
+      "change": "added",
+      "path": "conscious_agent/unattended_operation_v2400.py"
+    },
+    {
+      "baseline_sha256": "5e64cd7b9b8575178e6091e6a9ab1477a0d09a36fc7995fd64ca507f57ebcadb",
+      "candidate_sha256": "53b2545f34ade519158c3df94946670e1d19fd04bc484f0321f6f56ca0ef1a38",
+      "change": "modified",
+      "path": "docs/release/release_metadata_manifest.json"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "6e28577eb7867139a6bf4923863a12c6da5ca88232941de46c2baa6a447c13f7",
+      "change": "added",
+      "path": "docs/roadmaps/EIDOLON_BROWSER_VERIFICATION_LEDGER_V2499_9.md"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": null,
+      "change": "added",
+      "path": "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V2400_9_TO_V2499_9.json"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "d81e482261375abb1fea6efc419b4cc1b1fd128b748de6bf56649e5d7784ff76",
+      "change": "added",
+      "path": "docs/roadmaps/EIDOLON_DEFERRED_LOCAL_LEDGER_V2499_9.md"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "74e3aefdb6a8676b529c0ce5665bafcbacfdf694817d75255da4c48abb1de1df",
+      "change": "added",
+      "path": "docs/roadmaps/EIDOLON_MOBILE_BROWSER_ERA10_WORK_LEDGER_V2499_9.md"
+    },
+    {
+      "baseline_sha256": "58946dc474fda8d60d1422e13b60a5e6ddc047c12069b56cfbc143baed06eda9",
+      "candidate_sha256": "e00a38b4a04e882d6357e5f3ff18364c2a92422b5720a7c9a06d912359823481",
+      "change": "modified",
+      "path": "release_metadata.py"
+    },
+    {
+      "baseline_sha256": "578b34555cc1b955a85081dbf3d2474df745f2e4be2920e483ba0e7b4b065e4b",
+      "candidate_sha256": "00595d09271e3f7ba5bb6865587e095c2085a3e45f86dd2bb857ac5636316c91",
+      "change": "modified",
+      "path": "tools/release_verify.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "2f72a64b0514b7df2ce1178dc44e5e12e9dea75ca434b16ae8f80a9db8bf318a",
+      "change": "added",
+      "path": "tools/v2425_9_desktop_product_maturity_tests.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "7ad32c4006199f6eff58065530172e894c50d5f3ff597c4c11432598383e6314",
+      "change": "added",
+      "path": "tools/v2450_9_unattended_operation_soak_tests.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "04515f8160a9d0794995de90f3c4d633c488b0aa6cb618abf4c504192a91fe60",
+      "change": "added",
+      "path": "tools/v2475_9_autonomous_developer_beta_tests.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "8cf51447e6be167a6a626cf01a4c4bfd469a7d6d59a6340974019aef7f5b0dd0",
+      "change": "added",
+      "path": "tools/v2499_9_autonomy_benchmark_preparation_tests.py"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "9c4ea2186ff4ed158ac5a83897e6ad4d3c25626f6aba37b060ae22ba6fd808ae",
+      "change": "added",
+      "path": "tools/v2499_9_era10_integrated_product_autonomy_tests.py"
+    }
+  ],
+  "self_hash_excluded": true
+}

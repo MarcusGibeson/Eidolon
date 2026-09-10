@@ -1,0 +1,8 @@
+from pathlib import Path
+import tempfile
+from conscious_agent.reflective_communication_eligibility_signals import ReflectiveCommunicationEligibilitySignalStore
+from conscious_agent.reflective_communication_candidates import ReflectiveCommunicationCandidateStore
+root=Path(tempfile.mkdtemp());s=ReflectiveCommunicationEligibilitySignalStore(root)
+a=s.register('e1',origin_ids=['ro1','qo1'],source_categories=['supported_reflection'],purpose='acknowledgment',relevance=.8,importance=.6,urgency=.1,uncertainty=.1,sensitivity=.2,interruption_cost=.4,continuity_relevance=.8,confidence=.9)['result']['signal_id']
+b=s.register('e2',origin_ids=['t2'],source_categories=['continuous_thought'],purpose='curiosity_question',relevance=.8,importance=.5,urgency=.1,uncertainty=.4,sensitivity=.3,interruption_cost=.7,continuity_relevance=.5,timing_eligible=False,confidence=.8)['result']['signal_id']
+c=ReflectiveCommunicationCandidateStore(root);r=c.register('c1',signal_ids=[a],semantic_overlap_key='topic-1');d=c.snapshot()['candidates'][0];dup=c.register('c1',signal_ids=[a]);wait=c.register('c2',signal_ids=[b],timing_window='later',curiosity_classification='bounded_gap');i=c.inspection_summary();checks=[r['ok'],d['state']=='active',d['purpose_categories']==['acknowledgment'],dup['idempotent'],wait['result']['state']=='awaiting_timing_window',i['contract_version']=='v1129.1',not i['message_text_exposed'],not i['message_sent'],not i['notification_created'],not i['initiative_mutated'],not any(i['authority_boundary'].values())];print(f"v1129.1 reflective communication candidate tests: {sum(checks)}/{len(checks)} passed");raise SystemExit(0 if all(checks) else 1)

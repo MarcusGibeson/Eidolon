@@ -1,0 +1,43 @@
+{
+  "added": [
+    "conscious_agent/causal_counterfactual_intelligence.py",
+    "conscious_agent/epistemic_self_correction.py",
+    "conscious_agent/era3_reasoning_integration.py",
+    "conscious_agent/long_horizon_planning_intelligence.py",
+    "conscious_agent/problem_framing_intelligence.py",
+    "docs/roadmaps/EIDOLON_BROWSER_VERIFICATION_LEDGER_V1799_9.md",
+    "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V1700_9_TO_V1799_9.json",
+    "docs/roadmaps/EIDOLON_DEFERRED_LOCAL_LEDGER_V1799_9.md",
+    "docs/roadmaps/EIDOLON_MOBILE_BROWSER_ERA3_WORK_LEDGER_V1799_9.md",
+    "tools/v1725_9_requirements_problem_framing_checkpoint_tests.py",
+    "tools/v1750_9_causal_counterfactual_reasoning_checkpoint_tests.py",
+    "tools/v1775_9_long_horizon_planning_checkpoint_tests.py",
+    "tools/v1799_9_era3_integrated_reasoning_campaign_tests.py",
+    "tools/v1799_9_metacognition_epistemic_control_checkpoint_tests.py"
+  ],
+  "added_count": 14,
+  "baseline_archive": "Eidolon_v1700_9_era2_desktop_engineering_gate_source_only.zip",
+  "baseline_archive_sha256": "24e0815595e4070ee238fcfd5090c8b4b4b501c355caaf7c4a620cc1b7869532",
+  "baseline_version": "1700.9",
+  "candidate_version": "1799.9",
+  "comparison": "fresh exact baseline ZIP extraction versus final working source tree; path-level additions/modifications/deletions by SHA-256",
+  "contract": "eidolon-cumulative-changed-file-manifest-v1",
+  "deleted": [],
+  "deleted_count": 0,
+  "manifest_file": "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V1700_9_TO_V1799_9.json",
+  "modified": [
+    "README.md",
+    "README_NEXT_STEPS.md",
+    "README_RELEASE_HISTORY.md",
+    "archive/docs/legacy_dependencies/roadmaps/README_V1100_ROADMAP.md",
+    "conscious_agent/checkpoint_registry.py",
+    "conscious_agent/ordinary_chat_development_campaign.py",
+    "conscious_agent/release_authority.py",
+    "conscious_agent/release_metadata.py",
+    "docs/release/release_metadata_manifest.json",
+    "release_metadata.py",
+    "tools/release_verify.py"
+  ],
+  "modified_count": 11,
+  "note": "Per-file hashes are supplied by the final handoff source manifest to avoid self-referential hashing of this manifest."
+}

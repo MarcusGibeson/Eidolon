@@ -1,0 +1,5 @@
+from pathlib import Path
+
+def main():
+ names=['project_outcome_history_v2599.py','project_strategy_reliability_v2600.py','project_value_calibration_v2601.py','project_strategy_learning_v2602.py','project_strategy_developer_evidence_v2603.py','project_outcome_learning_observability_v2604.py'];checks=[all((Path('conscious_agent')/x).exists() for x in names),'automatic_strategy_selection_permitted' in Path('conscious_agent/project_strategy_reliability_v2600.py').read_text(),'automatic_priority_change_permitted' in Path('conscious_agent/project_value_calibration_v2601.py').read_text(),'candidate_selection_authorized' in Path('conscious_agent/project_strategy_developer_evidence_v2603.py').read_text(),'raw_project_content_stored' in Path('conscious_agent/project_outcome_history_v2599.py').read_text()];print({'suite':'v2605.9-project-outcome-comparative-learning-checkpoint','passed':sum(map(bool,checks)),'total':len(checks),'ok':all(checks)});raise SystemExit(0 if all(checks) else 1)
+if __name__=='__main__':main()

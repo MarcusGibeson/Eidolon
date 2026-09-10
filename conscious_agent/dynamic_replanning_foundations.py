@@ -1,0 +1,30 @@
+from __future__ import annotations
+"""v1286.0-v1286.2 bounded dynamic replanning foundations."""
+import hashlib,json,re
+from typing import Any,Mapping,Sequence
+from hierarchical_goal_management_foundations import validate_goal_hierarchy,AUTHORITY_FLAGS as GOAL_AUTHORITY
+CONTRACT_VERSION="v1286.2";EVENT_KINDS=("interruption","new_requirement","failed_assumption","new_evidence","priority_change");MAX_EVENTS=16;MAX_FAILED_STRATEGIES=12
+AUTHORITY_FLAGS={"replan_is_execution_authority":False,"replan_is_provider_authority":False,"replan_is_test_authority":False,"replan_is_update_authority":False,"replan_is_application_authority":False,"replan_is_release_authority":False,"replan_is_schedule_authority":False,"replan_activates_itself":False,"generic_approval_is_authorization":False,"independent_authority_granted":False}
+_SAFE=re.compile(r"^[a-z0-9][a-z0-9_.:-]{0,127}$")
+def _digest(v:Any)->str:return hashlib.sha256(json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=True,default=str).encode()).hexdigest()
+def _code(v:Any,fallback="unknown"):
+ t=re.sub(r"[^a-z0-9_.:-]+","_",str(v or "").strip().lower().replace(" ","_")).strip("_")[:128];return t if t and _SAFE.fullmatch(t) else fallback
+def build_replanning_event(*,event_kind:str,event_code:str,evidence_codes:Sequence[str]=(),operator_supplied:bool=False,requested_priority_codes:Sequence[str]=(),failed_strategy_codes:Sequence[str]=())->dict[str,Any]:
+ kind=_code(event_kind);ok=kind in EVENT_KINDS;row={"ok":ok,"contract_version":CONTRACT_VERSION,"event_kind":kind,"event_code":_code(event_code),"evidence_codes":[_code(x) for x in list(evidence_codes or [])[:16]],"operator_supplied":bool(operator_supplied),"requested_priority_codes":[_code(x) for x in list(requested_priority_codes or [])[:8]],"failed_strategy_codes":[_code(x) for x in list(failed_strategy_codes or [])[:MAX_FAILED_STRATEGIES]],"raw_event_content_stored":False,**AUTHORITY_FLAGS};row["event_digest"]=_digest(row);return row
+def validate_replanning_event(row:Mapping[str,Any])->bool:return bool(row.get("ok") is True and row.get("event_kind") in EVENT_KINDS and row.get("event_digest")==_digest({k:v for k,v in row.items() if k!="event_digest"}) and row.get("raw_event_content_stored") is False and all(row.get(k) is v for k,v in AUTHORITY_FLAGS.items()))
+def build_replan_candidate(*,hierarchy:Mapping[str,Any],completed_milestone_codes:Sequence[str],event:Mapping[str,Any],failed_strategy_codes:Sequence[str]=())->dict[str,Any]:
+ if not validate_goal_hierarchy(hierarchy).get("ok"):raise ValueError("valid_hierarchy_required")
+ if not validate_replanning_event(event):raise ValueError("valid_replanning_event_required")
+ completed=set(_code(x) for x in completed_milestone_codes or []);failed=set(_code(x) for x in failed_strategy_codes or [])|set(event.get("failed_strategy_codes") or []);original=[dict(x) for x in hierarchy.get("milestones") or []];done=[x for x in original if x.get("milestone_code") in completed];pending=[x for x in original if x.get("milestone_code") not in completed];kind=event.get("event_kind");actions=[]
+ if kind=="priority_change" and event.get("requested_priority_codes"):
+  order={c:i for i,c in enumerate(event["requested_priority_codes"])};pending.sort(key=lambda x:(order.get(x.get("milestone_code"),999),x.get("ordinal",999)));actions.append("reorder_incomplete_only")
+ elif kind=="failed_assumption":actions.extend(["invalidate_failed_assumption","insert_focused_diagnostic_before_pending_work"])
+ elif kind=="new_requirement":actions.append("append_operator_requirement_for_review" if event.get("operator_supplied") else "hold_unconfirmed_requirement")
+ elif kind=="new_evidence":actions.append("reassess_incomplete_work_only")
+ elif kind=="interruption":actions.append("resume_from_first_incomplete_after_reconciliation")
+ revised=[]
+ for i,x in enumerate(done+pending):y=dict(x);y["replanned_ordinal"]=i;y["preserved_completed_work"]=x in done;revised.append(y)
+ candidate={"ok":True,"contract_version":CONTRACT_VERSION,"status":"dynamic_replan_candidate_ready","event_kind":kind,"event_code":event.get("event_code"),"original_hierarchy_digest":hierarchy.get("hierarchy_digest"),"original_intent_digest":hierarchy.get("original_intent_digest"),"completed_milestone_codes":[x.get("milestone_code") for x in done],"revised_milestones":revised,"preserved_completed_milestone_count":len(done),"pending_milestone_count":len(pending),"replan_action_codes":actions,"failed_strategy_codes":sorted(failed)[:MAX_FAILED_STRATEGIES],"failed_strategies_may_not_repeat":True,"completed_work_may_not_repeat":True,"new_requirement_requires_operator_confirmation":kind=="new_requirement" and not event.get("operator_supplied"),"source_hierarchy_mutated":False,"work_executed":False,"tests_executed":False,"provider_contacted":False,**AUTHORITY_FLAGS};candidate["replan_digest"]=_digest(candidate);return candidate
+def validate_replan_candidate(row:Mapping[str,Any])->dict[str,Any]:
+ digest=row.get("replan_digest")==_digest({k:v for k,v in row.items() if k!="replan_digest"});intent=bool(row.get("original_intent_digest"));completed=list(row.get("completed_milestone_codes") or []);revised=list(row.get("revised_milestones") or []);prefix=[x.get("milestone_code") for x in revised[:len(completed)]];preserved=prefix==completed and all(x.get("preserved_completed_work") is True for x in revised[:len(completed)]);auth=all(row.get(k) is v for k,v in AUTHORITY_FLAGS.items());side=row.get("source_hierarchy_mutated") is False and row.get("work_executed") is False and row.get("tests_executed") is False and row.get("provider_contacted") is False;ok=digest and row.get("ok") is True and intent and preserved and auth and side;return {"ok":ok,"digest_valid":digest,"original_intent_preserved":intent,"completed_work_preserved":preserved,"authority_contained":auth,"no_side_effects":side}
+__all__=["CONTRACT_VERSION","EVENT_KINDS","AUTHORITY_FLAGS","build_replanning_event","validate_replanning_event","build_replan_candidate","validate_replan_candidate"]

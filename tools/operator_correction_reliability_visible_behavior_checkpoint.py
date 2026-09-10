@@ -1,0 +1,3 @@
+import json
+from conscious_agent.operator_correction_reliability_visible_behavior_checkpoint import build_operator_correction_reliability_visible_behavior_checkpoint
+if __name__=='__main__': print(json.dumps(build_operator_correction_reliability_visible_behavior_checkpoint(),indent=2,sort_keys=True))

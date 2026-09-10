@@ -1,0 +1,28 @@
+{
+  "contract_version": "v1250.0",
+  "documents": {
+    "docs/legacy/README_NEXT_STEPS_PRE_V1250.md": {
+      "sha256": "d87c1b725ec226d449a089a4e4264abf3060efed95b7bd9e6ab549f501c97cd8",
+      "size": 66560
+    },
+    "docs/legacy/README_PRE_V1250.md": {
+      "sha256": "b9d3fc2238c6da9added14e6ae5136d275cea0f76bd07ef8bafc73e658f41067",
+      "size": 10254
+    },
+    "docs/legacy/README_RELEASE_HISTORY_PRE_V1250.md": {
+      "sha256": "0ee96e98f9fe9ff3c41bc0191e7fa1b4dd358294018250e6acaaa1c7da9fd6b0",
+      "size": 424312
+    },
+    "docs/legacy/README_V1100_ROADMAP_PRE_V1250.md": {
+      "sha256": "eba4205191ad1dc29c10c328d031b94a5f0991b52dd7888557ee13d4921d8a7f",
+      "size": 9729
+    },
+    "docs/legacy/release_metadata_v1250_2_facade.py.txt": {
+      "purpose": "Exact Bundle A facade before structured compatibility-registry migration.",
+      "sha256": "85cd0ca95b9ce09d05a20bb1c1b4ae0319cae08fd2a63abe075ca8c1af3bba43",
+      "size": 42511
+    }
+  },
+  "previous_working_source_version": "1250.2",
+  "working_source_version": "1250.5"
+}

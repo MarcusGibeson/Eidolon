@@ -1,0 +1,4 @@
+from pathlib import Path
+import os, subprocess, sys, tempfile
+from conscious_agent.api_server import handle_api_get
+root=Path(__file__).resolve().parents[1]; code,payload=handle_api_get('/api/cognition/genuine-inquiry-deliberation-checkpoint',{}); cli=subprocess.run([sys.executable,str(root/'eidolon.py'),'genuine-inquiry-deliberation-checkpoint'],cwd=root,env={**os.environ,'EIDOLON_DATA_DIR':tempfile.mkdtemp()},capture_output=True,text=True); dash=(root/'conscious_agent'/'dashboard_first_use.py').read_text(); checks=[code==200,payload['ok'],payload['data']['contract_version']=='v1130.5',cli.returncode==0,'"contract_version": "v1130.5"' in cli.stdout,'genuine-inquiry-deliberation-checkpoint-panel' in dash,'/api/cognition/genuine-inquiry-deliberation-checkpoint' in dash]; print(f"v1130.5 genuine inquiry deliberation surfaces tests: {sum(checks)}/{len(checks)} passed"); raise SystemExit(0 if all(checks) else 1)

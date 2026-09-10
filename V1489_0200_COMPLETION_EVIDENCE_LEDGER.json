@@ -1,0 +1,18 @@
+{
+  "schema_version": "1",
+  "status": "unpromoted_browser_completion_candidate",
+  "completed_microversion_range": "v1489.0001-v1489.0200",
+  "completed_bundles": 20,
+  "focused_bundle_checks_passed": 375,
+  "focused_bundle_checks_failed": 0,
+  "trust_regression_checks_passed": 359,
+  "trust_regression_checks_failed": 0,
+  "native_windows_review_complete": false,
+  "operator_unscripted_trial_complete": false,
+  "promotion_allowed": false,
+  "installation_allowed": false,
+  "certification_allowed": false,
+  "model_management_authorized": false,
+  "authority_broadened": false,
+  "content_free": true
+}

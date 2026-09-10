@@ -1,0 +1,18 @@
+{
+  "agent_facade_sha256": "46e50e4ef27a422dc9b56410c0171a3ddf4bece0191bb497b08274ceb79587cd",
+  "authority_module": "conscious_agent.release_authority",
+  "codex_review_state": "v2730_9_3_native_review_repairs_checkpoint_candidate",
+  "compatibility_registry": "docs/compatibility/release_metadata_compatibility_registry.json",
+  "contract_version": "v1250.3",
+  "generated_agent_facade": "conscious_agent.release_metadata",
+  "manifest_digest": "5516da017ecfda833f23259f778f4e69f9e682c87e732f5b65636588b3377d0f",
+  "milestone": "v2730.9.3 Native Review Repairs and Operator Execution",
+  "next_bounded_unit": "Combined SaaS-development and supervised self-development live testing",
+  "previous_working_source_version": "2730.9.2",
+  "release_authorized": false,
+  "root_facade_sha256": "a220817cf0588290f538e27d0fb93e1481d403618b0dbfeeca2c9825bd6d759c",
+  "runtime_ui_contract": "persistent-development-sessions-v2730.9.3",
+  "runtime_version_tag": "v2730.9.3",
+  "schema": "eidolon.release-metadata-manifest.v1",
+  "working_source_version": "2730.9.3"
+}

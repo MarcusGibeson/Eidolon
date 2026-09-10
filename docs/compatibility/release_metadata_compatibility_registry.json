@@ -1,0 +1,3661 @@
+{
+  "active_authority": "conscious_agent.release_authority",
+  "categories": {
+    "completed_arc_marker": 63,
+    "historical_marker": 172,
+    "milestone_marker": 35,
+    "next_arc_marker": 23,
+    "previous_version_marker": 66,
+    "prior_active_assignment": 1,
+    "working_version_marker": 159
+  },
+  "content_free": true,
+  "contract_version": "v1250.5",
+  "entries": [
+    {
+      "category": "working_version_marker",
+      "ordinal": 1,
+      "sha256": "90160999560568a439933a287bc50cfe80ee44216c97deba8771d2479e0b7964",
+      "source_line": 3,
+      "text": "WORKING_SOURCE_VERSION = \"1250.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 2,
+      "sha256": "eb9e81c43732d881d7dee5fc7b0543097cf2586930352fec8a6809c917cbfa25",
+      "source_line": 4,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1249.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 3,
+      "sha256": "4763b4bdf6ab476e7b2bbcfbf770ce3797f5428a1c3013138f71d71972dbe3ce",
+      "source_line": 5,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1248.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 4,
+      "sha256": "e6ac2d02ec31188266ea7ad757c2c079301ba786bb322aa0dbb553d6a24b033e",
+      "source_line": 6,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1247.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 5,
+      "sha256": "26ee7f4a348da27d5bc385d818ae99cac409369d2f411ca4c099ec031daf9cbf",
+      "source_line": 7,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1246.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 6,
+      "sha256": "e2fd5187ef0c75b3422903636c9c781697137ede285aaf6c651b36e94abe0d75",
+      "source_line": 8,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1245.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 7,
+      "sha256": "886afdfbdd8425f5d2777c4593ee2d0d4a4ec4cb627574c200760de526071e99",
+      "source_line": 9,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1244.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 8,
+      "sha256": "e617145e972f32ab965ab1be321273d1826226f2c1dbe93b3f3ed988033c939b",
+      "source_line": 10,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1243.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 9,
+      "sha256": "e287f2fad4f47cd7517c3666fecc6092d861011263d7e2fb7d18ebe78d458f61",
+      "source_line": 11,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1242.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 10,
+      "sha256": "8fdd9a81cb64d2bc82e4d82de30edf1a176450d118ad1fc68a0c7218152a920c",
+      "source_line": 12,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1241.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 11,
+      "sha256": "9abf6861a47519fdf06beae13f502617f9152d28588e03945699175a582b62fc",
+      "source_line": 13,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1240.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 12,
+      "sha256": "cc0b983c2c378ee634c3f1203aac45367256d94ec26d41067d9f4056a8c98fc0",
+      "source_line": 14,
+      "text": "# Retained compatibility marker: WORKING_SOURCE_VERSION = \"1239.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 13,
+      "sha256": "c7677a136d97853562c174a371ad72578ae1e4531a4d58a10d3c3f62204ffe35",
+      "source_line": 15,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1238.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 14,
+      "sha256": "a5763e2558416a894898feb99ba5e4fae147f3b2baeeb30c09be2d5820990c91",
+      "source_line": 16,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1237.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 15,
+      "sha256": "aa483a332c4c60a875f6a610ea7f7554622f564eab4538b1d8564fcd3af9be0d",
+      "source_line": 17,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1236.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 16,
+      "sha256": "68b374c11bc60a1b35d6f9f51f9fb9c764e0797174620fe6f339bb0960b491a8",
+      "source_line": 18,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1235.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 17,
+      "sha256": "f86bfd3542b9ae2a5d5a1cb1f4e34c72459f5e47e7abf75a6a0c9d420d769993",
+      "source_line": 19,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1234.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 18,
+      "sha256": "78131118008bb7ed27d12fdd71a35943e7f7b8776aed39f5960c3b736a3aa69e",
+      "source_line": 20,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1233.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 19,
+      "sha256": "491bf45bdf6ef24ec55f046df14637bf1bdac5bd22dbf1a6e5b001be9fa878db",
+      "source_line": 21,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1232.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 20,
+      "sha256": "3f0086e0ccd9610a9edb2eb6232719f7959978650d5017a6edcb0a5be9d06ae3",
+      "source_line": 22,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1231.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 21,
+      "sha256": "0ca7e3f82c498fcaf0ed800b8104e0f65cc21066949930e6d807e7b8bb9f532f",
+      "source_line": 23,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1230.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 22,
+      "sha256": "7efe28c7fe0fe984da69b47a5c36152cc126920b29205bd5dab4c6ebc05ea5ae",
+      "source_line": 24,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1229.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 23,
+      "sha256": "9e09b83c5ab18256fb1626af3b6c878b197caa4385cd68d375ce42425cb4f810",
+      "source_line": 25,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1228.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 24,
+      "sha256": "9d791f4f549a133a1f258fc42920b6c56cd8d8e46401b68394f3c3d094f57feb",
+      "source_line": 26,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1227.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 25,
+      "sha256": "2315ef4ab053644bab6e85bc7a5d346ebb3aa41e1b818b4d63a941ed23a61949",
+      "source_line": 27,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1226.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 26,
+      "sha256": "cb47f01ff6f61421aac9aee6750a233786bd755e7974772050caef3af776afad",
+      "source_line": 28,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1225.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 27,
+      "sha256": "eeab440f7250fec1eab3294172b2baa720538792bde505ce7205701d92ecef46",
+      "source_line": 29,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1224.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 28,
+      "sha256": "3e780bda73ffdec0f94b251727c1f08723214df1a0a40ea2bdef26054bfc5c1a",
+      "source_line": 30,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1223.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 29,
+      "sha256": "4d58edf9d383ff105a3261e01e106031e6d17ee0de94027bd1526d7960243840",
+      "source_line": 31,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1222.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 30,
+      "sha256": "6a8c467c1183d83d44060ead9f122ddb65fe399e07e851edd0886ea6d3ce3516",
+      "source_line": 32,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1221.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 31,
+      "sha256": "1de9228a6f8cb91da694081649122886431cf489c7fb358fb289262485bd296f",
+      "source_line": 33,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1220.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 32,
+      "sha256": "11f67c90c68fcb1ef6f8053939408f6f48a731709a3f1770d962986a63e154fe",
+      "source_line": 34,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1219.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 33,
+      "sha256": "d07929a5dd52eb9409e9e648e89b2ab983a82bb002c6bc38633d589cae77ef8e",
+      "source_line": 35,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1219.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 34,
+      "sha256": "d0ed889c09baeef14be31658e69e72339e72ea6276c961ec637efd64d180610d",
+      "source_line": 36,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1219.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 35,
+      "sha256": "b6f9697e17ad59143c4ddf7441ec02eea4ca37b16c76e80d0e62c64b67ab50be",
+      "source_line": 37,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1219.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 36,
+      "sha256": "406933cc55df42a582ddc8ae562d8c1b9da35885aa576eca5e1d06944b638c58",
+      "source_line": 38,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1218.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 37,
+      "sha256": "169216be1dcc386dca8102a8c4fbc5b10431e2162ffce7f69a79fa81aa444c80",
+      "source_line": 39,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1218.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 38,
+      "sha256": "3aa6a867dfbacd951b5c99c5f6fdb37e8443e55cec40d058e34af1defcc18732",
+      "source_line": 40,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1218.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 39,
+      "sha256": "13ddfdffe3826241e82a28b814507af94fcde96f24bc4318c99a4a10111e8ccb",
+      "source_line": 41,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1218.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 40,
+      "sha256": "e60dd0ff06e73a2b913df71ed52e8b8c580b014a6d6a26deff70d8a2f9101c74",
+      "source_line": 42,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1217.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 41,
+      "sha256": "0778051b3ba97abf84095cfc8b95f07948e3af3ca7e9d3a784db6e16cfe8c7b6",
+      "source_line": 43,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1217.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 42,
+      "sha256": "aa2333fa9b9a349665b7bb63dca598d49986db3fd6ef3f05e5caaa4c8eb9d706",
+      "source_line": 44,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1217.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 43,
+      "sha256": "9f544ec41e520280ef5fa2eb79fcc0a3867e7ed077fc3e8984e8f97d1a796c4f",
+      "source_line": 45,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1217.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 44,
+      "sha256": "4a6f8a5767a5f0953404e9d1d9123e2b1fdd70973c0622c87c37a67b78fcf39d",
+      "source_line": 46,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1216.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 45,
+      "sha256": "db14384d1557d2353966994495c18feb30cac21c8a32a9fba46bcfc1545cc204",
+      "source_line": 47,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1216.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 46,
+      "sha256": "65f1368627c6bfb75e3191edc95666b3452100a788d709df95a18e65c83726ab",
+      "source_line": 48,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1216.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 47,
+      "sha256": "b9538ff75414c41145066a25c09a43ac2dc4854f21189cd2b70591bd8177cb25",
+      "source_line": 49,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1216.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 48,
+      "sha256": "64e912c9710fbb364a888448953ea424fd481c8e015194849b5a02d75589ad38",
+      "source_line": 50,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1215.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 49,
+      "sha256": "a7623ce403bf41aed8053ef5a7f919592bf26e0d96d0f4cfd8a44daaa8e24026",
+      "source_line": 51,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1215.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 50,
+      "sha256": "c116f1d27ba30d2cc2f28a691394631690b8d4af4140f0603adb17b5a5097968",
+      "source_line": 52,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1215.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 51,
+      "sha256": "6399618ff241ec9f088280b30b100822268ea2f8d81e6c24eb6c62c6fb15e2d4",
+      "source_line": 53,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1215.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 52,
+      "sha256": "899d23b40e77efbd5c5e1184f762d24a50965384c2d78051b1b355bf2fc9406e",
+      "source_line": 54,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1214.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 53,
+      "sha256": "d86285632b08201870d26e4cf312ed82b6616be18b38793e8ba10b1f21c33e09",
+      "source_line": 55,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1214.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 54,
+      "sha256": "0ac175dee13d463925f5fba542840cdc4e54050f84d67dcb09a5e39473cf129c",
+      "source_line": 56,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1214.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 55,
+      "sha256": "f2e5a48e1ac3e6d6a23376489b3f107710d8b12b027e1820292bdb3083cc095d",
+      "source_line": 57,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1214.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 56,
+      "sha256": "c07df6269f1585a21ad1bae9ff8894bf7447b831c162f15ec04cbf9aaaba7167",
+      "source_line": 58,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1213.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 57,
+      "sha256": "95085a4cde0bf9d2a61308cabe4c4d397b7f33679355ecc236ed4d41dbc69695",
+      "source_line": 59,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1213.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 58,
+      "sha256": "0f6fdee72eefbe8e23af2c8cf3afdf1d91a49c00c96e4366c8ad047e75cdf7f0",
+      "source_line": 60,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1213.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 59,
+      "sha256": "199797567c9a0555ea26d23dd123349bc158e10f99a8241d8f40698a15655203",
+      "source_line": 61,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1212.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 60,
+      "sha256": "f6bac9e7179c840601bd755be27fc1bd4c19578208e7f6245e24c4564a5c3678",
+      "source_line": 62,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1212.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 61,
+      "sha256": "9b0c9ec6310fc3347f7105a21abf378ea100054e42d972be866ade3c6ef9d876",
+      "source_line": 63,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1212.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 62,
+      "sha256": "7270f8d620ec7d97095992e0f7d5014f9783ade4362c3a476305bebc77c32c45",
+      "source_line": 64,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1212.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 63,
+      "sha256": "366676b929146db7969d03d7a7aa49b77a795f08349b501a8e6c3a46911993e8",
+      "source_line": 65,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1211.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 64,
+      "sha256": "5cc761eea4f36fe6e4c1ec57c1bcab50fc6036ae020eefdd76aaf76d3f8706be",
+      "source_line": 66,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1211.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 65,
+      "sha256": "8eb52665ba67f4d7219909354d9f9dba1fe8e04894f8d1d765ed8730214e7a97",
+      "source_line": 67,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1211.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 66,
+      "sha256": "756c129d25260441e54df09b7fd016bbd46554efa408ab6fa4b8c949da300809",
+      "source_line": 68,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1210.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 67,
+      "sha256": "400643d027e2116520a9b172e17cd764e5c6e15b53c1b982d7bf33c285634e77",
+      "source_line": 69,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1210.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 68,
+      "sha256": "e05aa94519df6dc5956a0df7f34357ab4caf915ec523f9778b0210ee171ba05f",
+      "source_line": 70,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1210.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 69,
+      "sha256": "fc6cea35dc9dc9a1d56628499472ef76b510f18659d7c41650c74da8cb0fa93c",
+      "source_line": 71,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1210.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 70,
+      "sha256": "9607dab83a67b635b77de56ec9fd9e9e1e20f044b927483fe9bfafffef19ed7c",
+      "source_line": 72,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1209.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 71,
+      "sha256": "41666ea35dcef83612228ba74a60db635a849b1b3ab784ef8b35d2e9c06d548f",
+      "source_line": 73,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1209.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 72,
+      "sha256": "2aea4e58dc8f96fbe3d8b881a4de46fade2d5219948c5b196e914be2d21b98a0",
+      "source_line": 74,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1209.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 73,
+      "sha256": "9d54eea5db434b3c4cf586af8dae8778069a6155d4836b75fb05939c5d1d7e84",
+      "source_line": 75,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1208.9.1\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 74,
+      "sha256": "e57aef45b3b5f29012d7ca4e2bd90a895f976d42f59c3b8c59901cc610d1e060",
+      "source_line": 76,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1208.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 75,
+      "sha256": "2d4691e0d12880f26abcce5a7fcee9db7084fd755fe8d2f25d3c205d7ee7294f",
+      "source_line": 77,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1208.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 76,
+      "sha256": "517f2a9a281c0f469d4def460537cdc5b4f171746cd9ca7051ee18e96055b455",
+      "source_line": 78,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1208.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 77,
+      "sha256": "d484ca38aafea39f924ea63043538f303f6aa4bef38220f2f6468548d07250e9",
+      "source_line": 79,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1208.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 78,
+      "sha256": "028f2e5677e0d2b6c0e2ac6acfc1ce73a29ecb1865055dd0d97099b17c685773",
+      "source_line": 80,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1207.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 79,
+      "sha256": "06914172ba28ee428a963645f8471238a604ddeeb5835fac8ff74b8411ebf6d3",
+      "source_line": 81,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1207.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 80,
+      "sha256": "86d9dc92843bdce7093d30aef67531a1bb4bbe30f5780dde02f78e1c5a9dc490",
+      "source_line": 82,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1207.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 81,
+      "sha256": "f6afaff764cfa80f7c0b67db69ce9c7b8fb79b6ef345035a0c13a96474bf2ace",
+      "source_line": 83,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1207.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 82,
+      "sha256": "8e2f737c7f2c6f5a5abc978710233abca57ad0773e1373d4775958fab95dd495",
+      "source_line": 84,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1206.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 83,
+      "sha256": "52ea4ed8ed2233b322dd8d5747d62c019e9f416b6219b93c6c737c210d6593a0",
+      "source_line": 85,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1206.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 84,
+      "sha256": "aa370c4d08cde34b0e554d326b04ce44e43f28676293f19e9436c62f641b59c9",
+      "source_line": 86,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1206.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 85,
+      "sha256": "746934fc3dcb5f475a64de06148227c2517693bb369b952a2c64c9f7f72062d5",
+      "source_line": 87,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1206.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 86,
+      "sha256": "f9c6e734b759505f9208d20acf065bbee2e1649146aa8b7b6c78144f24112f9c",
+      "source_line": 88,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1205.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 87,
+      "sha256": "ab642e1575c561ee73e1c256735f9458328287b33d8602917d5d86bf2d8e2fa1",
+      "source_line": 89,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1205.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 88,
+      "sha256": "e3190d5570f6235cd8a01d735dd9897f931cb986ff82e73e046074120d958eff",
+      "source_line": 90,
+      "text": "# Compatibility marker: WORKING_SOURCE_VERSION = \"1205.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 89,
+      "sha256": "061769d3c6c083814f0088090c78d8a9781ef3533105f66eee2e0ca2187989e3",
+      "source_line": 91,
+      "text": "# Historical compatibility marker: WORKING_SOURCE_VERSION = \"1204.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 90,
+      "sha256": "975cec949171cd9463716d26c3f51e207c1aace7e12035ff2633ff1fa4214afe",
+      "source_line": 92,
+      "text": "# Historical compatibility marker: WORKING_SOURCE_VERSION = \"1204.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 91,
+      "sha256": "6312d91135a37c23bba921cc083308f0903bd0f148b29278d3451d7bd6b7b777",
+      "source_line": 93,
+      "text": "# Historical compatibility marker: WORKING_SOURCE_VERSION = \"1204.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 92,
+      "sha256": "51a0d5768b78358d4ba126deb55bf63e50196f519422bb149bd72a8fcb861b7d",
+      "source_line": 94,
+      "text": "# Historical compatibility marker: WORKING_SOURCE_VERSION = \"1204.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 93,
+      "sha256": "3e39e035f8e77fb3b9017d30dfde3aa4ade6e3c2702f5114e7f79f95eebdbd63",
+      "source_line": 96,
+      "text": "# Active cleanup authority: conscious_agent.release_authority"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 94,
+      "sha256": "122811d23c2c9e57bf2a7a40ec867975aaaea9c7e47b7ca344dc5661448b33a6",
+      "source_line": 97,
+      "text": "# Completed bundle: v1250.0 Authoritative Cleanup Baseline"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 95,
+      "sha256": "2f14acf19ff2891c0b63ff5cf33809376b15fd338698d21a537c1a90bacdc520",
+      "source_line": 98,
+      "text": "# Completed bundle: v1250.1 Segmented Broad Verifier"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 96,
+      "sha256": "9428834211d763da9ccedf81ff95804a68ff0bcd2397a4dbe4e85b911e890395",
+      "source_line": 99,
+      "text": "# Completed bundle: v1250.2 Hermetic Verification Runtime"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 97,
+      "sha256": "64d28a7633c14b934cea2633957ed78ff5a43c5e7e7419e0b67f33384762b9d3",
+      "source_line": 100,
+      "text": "# Desktop Codex review postponed until cleanup and verification hardening are complete."
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 98,
+      "sha256": "ab69f97b99c4d4fefd44aadb6d6be928582d586733b914e3556aab5b166d7d5e",
+      "source_line": 103,
+      "text": "RUNTIME_MILESTONE = \"v1250.0-v1250.2 Verification Foundation Bundle A\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 99,
+      "sha256": "9d78e9bd0a382203168237c495e7ff7065673dbc450940b7771d569d51a7bebd",
+      "source_line": 104,
+      "text": "# Retained milestone marker: v1249.9 Feature Freeze and Final Hardening Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 100,
+      "sha256": "b5568411ec707deabbe4e754dcba1b93da67ca975367cb0afdb635004196a74b",
+      "source_line": 105,
+      "text": "# Retained milestone marker: v1248.9 Integrated Mind, Conversation, and Development Benchmark Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 101,
+      "sha256": "1bde6eb34f266ff1cbf2b3552b7eb726873c7ba350b1352e1e2f09bdc69d0b7b",
+      "source_line": 106,
+      "text": "# Retained milestone marker: v1247.9 Privacy, Security, and Secret-Management Audit Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 102,
+      "sha256": "623c72f128e268c3a1c48de2013a28e89dc94e422faaacf1264107ab55ad8a3b",
+      "source_line": 107,
+      "text": "# Retained milestone marker: v1246.9 Initiative and Proposal Pacing Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 103,
+      "sha256": "33604092ca7c2ab7d234b8ad2c7907d882ac046bf1b4624cea936d8763a17e62",
+      "source_line": 108,
+      "text": "# Retained milestone marker: v1245.9 Cross-Session Project Understanding Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 104,
+      "sha256": "b1931057f15996e9328ae37bc65ec9ab10724cb155996593085d00df587edd68",
+      "source_line": 109,
+      "text": "# Retained milestone marker: v1244.9 Long-Running and Multi-Day Session Continuity Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 105,
+      "sha256": "2cf9029a926d5cb36e803710137edacf417625ab86abfa653441fa487c937591",
+      "source_line": 110,
+      "text": "# Retained milestone marker: v1243.9 Provider Fallback and Model Governance Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 106,
+      "sha256": "2dcafa06da4c8ddb8ee74060365f31fb99e2f6dc01f9a2b43cbf33b3e73a4ea5",
+      "source_line": 111,
+      "text": "# Retained milestone marker: v1242.9 Installation, Upgrade, Backup, and Rollback Integration Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 107,
+      "sha256": "3bfdab902a0778381cbaaf7edb5ba661ba349df8ce1400a1345299e1a3ef8ebd",
+      "source_line": 112,
+      "text": "# Retained milestone marker: v1241.9 Unified Operator Dashboard Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 108,
+      "sha256": "8da77e4ff86213f4853af84d9787c7018a6ded2f13c2b6067724055b0c4f1cec",
+      "source_line": 113,
+      "text": "# Retained milestone marker: v1240.9 Integrated Developer Beta Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 109,
+      "sha256": "80cf96d2766390935b45bb29c67f1e37441a8389fd1db55a8d9a932e637f4e89",
+      "source_line": 114,
+      "text": "# Retained milestone marker: v1238.9 Broader Project and Language Adapters"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 110,
+      "sha256": "26ca64b3ace96cdd62dff69d48dde9bf573e7d3dbb5b4f49a7d80f0051bcc329",
+      "source_line": 115,
+      "text": "# Retained milestone marker: RUNTIME_MILESTONE = \"v1237.9 Multi-Tool Orchestration\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 111,
+      "sha256": "f917c71c324886fa0f7e648c18778088bdf8c2a8734c75253e4ec87a43798a3b",
+      "source_line": 116,
+      "text": "# Retained milestone marker: v1236.9 Goal, Motivation, and Work-Priority Integration"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 112,
+      "sha256": "77273c56ac7226530ee9dfbf35e9ba73224958cf4cfc94bce5fe39f7cb1bee0b",
+      "source_line": 117,
+      "text": "# Retained milestone marker: v1235.9 Evidence-Backed Lessons from Development Outcomes"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 113,
+      "sha256": "1753b593ee5467c12ed9f0b84e0504ac4370331c3dd6578bf1b0de0add55e203",
+      "source_line": 118,
+      "text": "# Retained milestone marker: v1234.9 Requirement and Quality Assessment"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 114,
+      "sha256": "bc4b64dc3458db2a8fe546e2a39836ead8ff901421232fb77a49ea3cd7c95972",
+      "source_line": 119,
+      "text": "# Retained milestone marker: v1233.9 Resource and Concurrency Governance"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 115,
+      "sha256": "ceab302dc81b2f23853154f717ffe9a518d4dccbbb3036a15c5341e25cc13e30",
+      "source_line": 120,
+      "text": "# Retained milestone marker: v1232.9 Dependency-Aware Execution"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 116,
+      "sha256": "c6ff9daeb913c2c2c0e15172a425d5cc25b60b8d930942e424614a0e3b9449b0",
+      "source_line": 121,
+      "text": "# Retained milestone marker: v1231.9 Dynamic Execution Plan Revision with Operator Review"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 117,
+      "sha256": "a60d753cc198d18b9ff8dcd32a150f32ce2ba34eb835a6817e0cef441e706a10",
+      "source_line": 122,
+      "text": "# Retained milestone marker: RUNTIME_MILESTONE = \"v1230.9 Mindful Execution Alpha Integration Benchmark\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 118,
+      "sha256": "09e3be08e0f1d9a8a6b5ae5d2f00af8b7f25587d2c96c57fd02e640aa5b3a714",
+      "source_line": 123,
+      "text": "# Retained milestone marker: v1218.9 Operator Repaired-Candidate Apply Result Review and Rollback Proposal Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 119,
+      "sha256": "bd8f020933f43b2aa07d71db878ff91a42a54962f593bf769ac718a6fad5caae",
+      "source_line": 124,
+      "text": "# Retained milestone marker: v1217.9 Conversational Supervised Repaired-Candidate Apply Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 120,
+      "sha256": "dca537915dfef3df5f25941f32cc4e72668826845dd5af932ee78611a810d262",
+      "source_line": 125,
+      "text": "# Retained milestone marker: v1216.9 Operator Repair Result Review and Apply Proposal Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 121,
+      "sha256": "fa89e0c916b1523f1b6e0fe39bc834c9c83a1d45d6fe8ec28a8897b9648ffa1e",
+      "source_line": 126,
+      "text": "# Retained milestone marker: v1215.9 Conversational Supervised Repair Execution Checkpoint"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 122,
+      "sha256": "5eaa051716aa3fe14db9b33ac7d4d955c149e362cae379af6e6ef893a9bd2e0d",
+      "source_line": 127,
+      "text": "# Retained milestone marker: v1214.9 Operator Diagnosis Review and Repair Proposal Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 123,
+      "sha256": "c144f68bf41c8420177e7f11f7551b8ce31b0c5061d148045681dcf617282e8a",
+      "source_line": 128,
+      "text": "# Historical marker: v1204.3-v1204.5 Selected-Project Rollback Execution and Apply Recovery"
+    },
+    {
+      "category": "prior_active_assignment",
+      "ordinal": 124,
+      "sha256": "75738e391f33851318c6d945413f0d6f6cfa5f5c6eff5fd0e04a52b2ca6b0f20",
+      "source_line": 129,
+      "text": "RUNTIME_UI_CONTRACT = \"verification-foundation-bundle-a-v1250.2\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 125,
+      "sha256": "cef7bf9ff768b0ebbc7aa9ab34a20498fdcbbc778454949b53fdf7dbfb2bf1e1",
+      "source_line": 130,
+      "text": "NEXT_RECOMMENDED_ARC = \"v1250.3-v1250.5 Release Metadata, Checkpoint, and Compatibility Consolidation\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 126,
+      "sha256": "e5837c451ecf5ab2f72746379729495708e1445b31121191a0700d38145780d6",
+      "source_line": 131,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1250.0-v1250.2 Desktop Codex Integrated Beta Milestone Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 127,
+      "sha256": "5479a024aa66b5f4658267aafe6106863812fe09c6c6df9cd79efe96ed31776d",
+      "source_line": 132,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1249.0-v1249.2 Feature Freeze and Final Hardening Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 128,
+      "sha256": "7e5df6ae1a33745e71f406fe3a35a1ce93505911dac1adbe113d7b3668d70451",
+      "source_line": 133,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1248.0-v1248.2 Integrated Mind, Conversation, and Development Benchmark Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 129,
+      "sha256": "641a1b60d2b54d579720d4f17cb715eced3a517116bf88ae6a63dd04f4fd4211",
+      "source_line": 134,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1247.0-v1247.2 Privacy, Security, and Secret-Management Audit Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 130,
+      "sha256": "a20c223397d109087e13a9a4cec4539167714d8199bfb72136af590bd34e9a6c",
+      "source_line": 135,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1245.0-v1245.2 Cross-Session Project Understanding Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 131,
+      "sha256": "0b8b5994070e646c523d8abd94fc51c366f2d75b51df28c48b4379c02e90c11e",
+      "source_line": 136,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1244.0-v1244.2 Long-Running and Multi-Day Session Continuity Foundations\""
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 132,
+      "sha256": "6e1889af52674affc8d028050d9750f1f4bf41833812272d9df5c3d17cc0275b",
+      "source_line": 137,
+      "text": "# Completed arc: v1249.0-v1249.2 Feature Freeze and Final Hardening Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 133,
+      "sha256": "ee64a62ca324ed9b939ea70e57932d503b9ac6601d9efb7e77f890df22858cf0",
+      "source_line": 138,
+      "text": "# Completed arc: v1249.3-v1249.5 Feature Freeze Review and Interface Stability"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 134,
+      "sha256": "9584383f61b6422c84a55b63ad3c719868b3ed45334e13bf6d4bb267eb2b99e5",
+      "source_line": 139,
+      "text": "# Completed arc: v1249.6-v1249.8 Feature Freeze Adversarial Reliability"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 135,
+      "sha256": "d30a26a6bcf3dc7f5a9915379aa9a644f2afd806894f050eb71ae2ad7201039d",
+      "source_line": 140,
+      "text": "# Completed arc: v1248.0-v1248.2 Integrated Mind, Conversation, and Development Benchmark Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 136,
+      "sha256": "73a23e0636cc98619022a4041e850fa4f552c117a9df3d0b5b886e5970726649",
+      "source_line": 141,
+      "text": "# Completed arc: v1248.3-v1248.5 Integrated Mind, Conversation, and Development Behavioral Scenarios"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 137,
+      "sha256": "c2cba80f2603ed4613a0e4c9f994839c0456ff18602f335f9277dffe9e8fbd2b",
+      "source_line": 142,
+      "text": "# Completed arc: v1248.6-v1248.8 Integrated Mind, Conversation, and Development Adversarial Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 138,
+      "sha256": "649cda0583bca6f0d93ef146295d4099fb279ba2187d92071b92355673cbf9de",
+      "source_line": 143,
+      "text": "# Completed arc: v1247.0-v1247.2 Privacy, Security, and Secret-Management Audit Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 139,
+      "sha256": "700008bb4039213e3012cc253bb984bcb907f1bf9182b07175b593449528bc67",
+      "source_line": 144,
+      "text": "# Completed arc: v1247.3-v1247.5 Secret-Management Operator Workflows"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 140,
+      "sha256": "9702f51b875146c7cd18bad660abd261d55719732d4cd8c897bffd703e488732",
+      "source_line": 145,
+      "text": "# Completed arc: v1247.6-v1247.8 Privacy and Security Adversarial Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 141,
+      "sha256": "4245740a17c8b92652467baef9afb7c953c2a4062a618b417a4b42956c7630fe",
+      "source_line": 146,
+      "text": "# Completed arc: v1246.0-v1246.2 Initiative and Proposal Pacing Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 142,
+      "sha256": "d154bc454669560bd41a0fd80bf013d7110afdf136971ec5e123a7721938d14e",
+      "source_line": 147,
+      "text": "# Completed arc: v1246.3-v1246.5 Initiative Pacing Operator Review and Conversation Integration"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 143,
+      "sha256": "23738618e45b1e66d2d2607aa4566ceef1522a4b9232b6592ae13b04d91a3731",
+      "source_line": 148,
+      "text": "# Completed arc: v1246.6-v1246.8 Initiative Pacing Reliability and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 144,
+      "sha256": "783e504fa0059e122888c5097d7717949cfdb4824d903920dadc5cd180f0582e",
+      "source_line": 149,
+      "text": "# Completed arc: v1245.0-v1245.2 Cross-Session Project Understanding Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 145,
+      "sha256": "a0a43018b8b83ad619fd535acc4a41fffb1686dc59694b429a6e7446299c1640",
+      "source_line": 150,
+      "text": "# Completed arc: v1245.3-v1245.5 Cross-Session Reconciliation and Operator Review"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 146,
+      "sha256": "7995000ab6ae182de661fbdfc967a5a57241bb2f22984c948700f6887901ad38",
+      "source_line": 151,
+      "text": "# Completed arc: v1245.6-v1245.8 Project Understanding Reliability and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 147,
+      "sha256": "4c9a79e094f815f6477747f384539bc121fd73c06852ffe30e6d851bccfa3290",
+      "source_line": 152,
+      "text": "# Completed arc: v1244.0-v1244.2 Long-Running and Multi-Day Session Continuity Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 148,
+      "sha256": "f5c9a6e5bb1c37864901c0da4908bab444ab3cc2aea2a8a09d3193ed7cd26412",
+      "source_line": 153,
+      "text": "# Completed arc: v1244.3-v1244.5 Multi-Day Operator Reconciliation and Resume Proposal Review"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 149,
+      "sha256": "0b7500e7173ea405e991b7d9d87f2b633bfaaee3e1932cb777c80df8f9073728",
+      "source_line": 154,
+      "text": "# Completed arc: v1244.6-v1244.8 Session Continuity Recovery and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 150,
+      "sha256": "2e5c35537e8016870b57a49590f0db246519d4e978bd9c7321e8cb1c06ccde58",
+      "source_line": 155,
+      "text": "# Completed arc: v1243.0-v1243.2 Provider Fallback and Model Governance Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 151,
+      "sha256": "038853f4dfc0a4313878dfc1d026115003d17885e24097b80364179211feaad1",
+      "source_line": 156,
+      "text": "# Completed arc: v1243.3-v1243.5 Operator-Reviewed Provider Selection and Fallback"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 152,
+      "sha256": "bf7145a3a57fc635b1fdde46f1857ea7e67ab7af2083cb4a28ae69f5ffdffe8f",
+      "source_line": 157,
+      "text": "# Completed arc: v1243.6-v1243.8 Provider Governance Reliability and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 153,
+      "sha256": "2d1457223253eda4eaf1c59ad672c5d25bec503554db50d80be502b2e5f283f5",
+      "source_line": 158,
+      "text": "# Completed arc: v1242.0-v1242.2 Installation, Upgrade, Backup, and Rollback Integration Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 154,
+      "sha256": "ee9b80387b071e8c9b5c6477fe4ae1902e13727ac319d8ac183fc49ffad5b85c",
+      "source_line": 159,
+      "text": "# Completed arc: v1242.3-v1242.5 Installation Lifecycle Operator Review and Staged Workflows"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 155,
+      "sha256": "d950426bb89da444fc2696d972d4288f5870e0896c0d4dbf1c843a1bb04050f3",
+      "source_line": 160,
+      "text": "# Completed arc: v1242.6-v1242.8 Installation Lifecycle Recovery and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 156,
+      "sha256": "481c89f43f8992c95eb5f5ec951c6ece547eea6167ca2bb2f7ac5f4a42c7a8a1",
+      "source_line": 161,
+      "text": "# Completed arc: v1241.0-v1241.2 Unified Operator Dashboard Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 157,
+      "sha256": "ec255739d01a0e259630308f84cc11b7fd6e60a0b3bc55fa74f0626893358711",
+      "source_line": 162,
+      "text": "# Completed arc: v1241.3-v1241.5 Unified Operator Dashboard Workflows"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 158,
+      "sha256": "37ffb4bf7c3630785c53f4b2d65e9437c133afbb57535bd57624d569fad879c2",
+      "source_line": 163,
+      "text": "# Completed arc: v1241.6-v1241.8 Unified Operator Dashboard Reliability and Authority Hardening"
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 159,
+      "sha256": "95a481c2a625bfc41b035af94b69c487fb113a00c1fe575db6dc3fd458c5eab1",
+      "source_line": 164,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1239.0-v1239.2 Adversarial Execution and Cognitive-Boundary Testing Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 160,
+      "sha256": "1b46d39483421fd2adc0ec58fbe1da2a985876e6c8b30fe4d2b0b97f6fd9330f",
+      "source_line": 165,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1237.0-v1237.2 Multi-Tool Orchestration Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 161,
+      "sha256": "6bca5cb6b9ab28cc22b4dce9b481d8802fda765f68f29a460e70f53a9182b43d",
+      "source_line": 166,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1236.0-v1236.2 Goal, Motivation, and Work-Priority Integration Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 162,
+      "sha256": "b5455c2e55f716d3575ae6d77884605d6ca73931af41cea846a016800113dfbd",
+      "source_line": 167,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1235.0-v1235.2 Evidence-Backed Lessons from Development Outcomes Foundations\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 163,
+      "sha256": "4e8e2755617595624496a7f348ba75d8c810c63f1f3e454e3d0adad15a9f545d",
+      "source_line": 168,
+      "text": "# Retained milestone marker: v1239.9 Adversarial Execution and Cognitive-Boundary Testing"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 164,
+      "sha256": "24a5ce5bcc6d910beaec3b9bfa67e274a6836c4990ac16a9b64784a0c15ed3e7",
+      "source_line": 169,
+      "text": "# Completed arc: v1240.0-v1240.2 Integrated Developer Beta Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 165,
+      "sha256": "f7015f5a0ea0f35dbc20e8fb41c67c0b02990474dc1c8119729b8a677ad122de",
+      "source_line": 170,
+      "text": "# Completed arc: v1240.3-v1240.5 Integrated Developer Beta End-to-End Scenarios"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 166,
+      "sha256": "70e8055840d9819a13b96554984c7ce4266a7fae40f85bb61d6c2921b00e9e03",
+      "source_line": 171,
+      "text": "# Completed arc: v1240.6-v1240.8 Integrated Developer Beta Reliability and Adversarial Integration"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 167,
+      "sha256": "8139b89faad817e7e6679ce5eaa8753ab0fd05f425b7c6811f02dca7b45ed365",
+      "source_line": 172,
+      "text": "# Completed arc: v1239.0-v1239.2 Adversarial Execution and Cognitive-Boundary Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 168,
+      "sha256": "67b3f68240a2af8015a9207b1a788162de0d3188da44b74af2bce3576be1b398",
+      "source_line": 173,
+      "text": "# Completed arc: v1239.3-v1239.5 Adversarial Execution-Boundary Attacks"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 169,
+      "sha256": "456eb1ed4a6526b3a8f5daac7421301d6fdbb8fd4794e709404ea58ca21e3c9a",
+      "source_line": 174,
+      "text": "# Completed arc: v1239.6-v1239.8 Cognitive and Compound Boundary Attacks"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 170,
+      "sha256": "aebeaf581ac96291bfa2e09df8cd5c14a56233013d96d189bd8422c88490b2a1",
+      "source_line": 175,
+      "text": "# Completed arc: v1238.0-v1238.2 Broader Project and Language Adapter Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 171,
+      "sha256": "e3ba432c538dbd977ba149c927c3106a88b184ee523b5f93505fc6e86da5c721",
+      "source_line": 176,
+      "text": "# Completed arc: v1238.3-v1238.5 Broader Project and Language Adapter Integration"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 172,
+      "sha256": "8e9f755b938bcfaeedfd23b0999891e394f6737a8562de89100344e1447509ff",
+      "source_line": 177,
+      "text": "# Completed arc: v1238.6-v1238.8 Broader Project and Language Adapter Reliability and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 173,
+      "sha256": "af4b214af3a9d35d73c10e9cc2c2a9fd06ad4d9f26eef5c1a227f7d775ee25ce",
+      "source_line": 178,
+      "text": "# Completed arc: v1237.0-v1237.2 Multi-Tool Orchestration Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 174,
+      "sha256": "b383d62661f2d94ab753a13710578897bfbde353b9e3f56dd5e92fc07aa4bf23",
+      "source_line": 179,
+      "text": "# Completed arc: v1237.3-v1237.5 Multi-Tool Orchestration Operator Review and Handoffs"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 175,
+      "sha256": "5608b509a5135b85c969fa8c3085e2e213004188e6f856c3009b808f2a83f7b5",
+      "source_line": 180,
+      "text": "# Completed arc: v1237.6-v1237.8 Multi-Tool Orchestration Reliability and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 176,
+      "sha256": "bb9104df1f593bf8a776c87b24b9d11ea76b5c7d68b71d5adc54a86e988ed452",
+      "source_line": 181,
+      "text": "# Completed arc: v1236.0-v1236.2 Goal, Motivation, and Work-Priority Integration Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 177,
+      "sha256": "398b4649444776b8e75ce1be61af3b7007bc3efac13591599cf6a3fc16a1bddb",
+      "source_line": 182,
+      "text": "# Completed arc: v1236.3-v1236.5 Goal, Motivation, and Work-Priority Operator Review"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 178,
+      "sha256": "115941b914e9bd39f16573861d44a81683781120b9763c70eb858c89c50b3249",
+      "source_line": 183,
+      "text": "# Completed arc: v1236.6-v1236.8 Goal, Motivation, and Work-Priority Reliability and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 179,
+      "sha256": "d58f670b6fa4c33c407713cecca8a72633387b9b46485feea8eff45c4e9460c7",
+      "source_line": 184,
+      "text": "# Completed arc: v1235.0-v1235.2 Evidence-Backed Development Outcome Lesson Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 180,
+      "sha256": "52e19d56e297214a24d96022a6e0e627ae96f6395b21f9c28a87984f01b75979",
+      "source_line": 185,
+      "text": "# Completed arc: v1235.3-v1235.5 Evidence-Backed Lesson Operator Review"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 181,
+      "sha256": "16299c779477d1daa7e7a34cb600fcfa1d52c74a32ef1565e45f9f63eb768e61",
+      "source_line": 186,
+      "text": "# Completed arc: v1235.6-v1235.8 Evidence-Backed Lesson Reliability and Reconsideration Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 182,
+      "sha256": "165bb195f05f4ee6b5a44c8f95037d54d07e4905d9b141583247d5c9bcb0c94d",
+      "source_line": 187,
+      "text": "# Completed arc: v1234.0-v1234.2 Requirement and Quality Assessment Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 183,
+      "sha256": "21ab56ee0bbe6c4f8a902ddec82f89720b5e4ae6ed69fe716b24d0e676aaba88",
+      "source_line": 188,
+      "text": "# Completed arc: v1234.3-v1234.5 Requirement and Quality Operator Review"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 184,
+      "sha256": "b75e708e0b01492882faf66107ed7d97b223cd7b09c03d5d3f52185d4959d78e",
+      "source_line": 189,
+      "text": "# Completed arc: v1234.6-v1234.8 Requirement and Quality Reliability and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 185,
+      "sha256": "8671b79ef605707705fd58a336fdb90fb30c6d74dc247fe4ce97953962101370",
+      "source_line": 190,
+      "text": "# Completed arc: v1233.0-v1233.2 Resource and Concurrency Governance Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 186,
+      "sha256": "aad1ac9930d32f9971fac54f6abd9943c7d4e4e0acfde1b003959ec61a3ef6c2",
+      "source_line": 191,
+      "text": "# Completed arc: v1233.3-v1233.5 Resource and Concurrency Operator Review"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 187,
+      "sha256": "b7489468313c73766b58183af81c8fbdb29fc792e3b3800484745d0131627d01",
+      "source_line": 192,
+      "text": "# Completed arc: v1233.6-v1233.8 Resource and Concurrency Reliability and Authority Hardening"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 188,
+      "sha256": "b5a428b20e9b91f385418a1b3364251fb8d12917945d4f9bffcebe296b493e7b",
+      "source_line": 193,
+      "text": "# Completed arc: v1232.0-v1232.2 Dependency-Aware Execution Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 189,
+      "sha256": "b455143ea7bd4c1e386f648693b0dd0da0e218e5f53803863c8fa0ecc8729b66",
+      "source_line": 194,
+      "text": "# Completed arc: v1232.3-v1232.5 Dependency-Aware Operator Review and Execution Integration"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 190,
+      "sha256": "67177d86b9fa1a7e3e816e2ae3d25eeec02999ff53cbfee6eca753667c9156ae",
+      "source_line": 195,
+      "text": "# Completed arc: v1232.6-v1232.8 Dependency Reliability and Authority Hardening"
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 191,
+      "sha256": "beab5eea42199ad691b9fc4ef9795117fac2b94609ef45e1b992808fa3e2b673",
+      "source_line": 196,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1232.0-v1232.2 Dependency-Aware Execution Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 192,
+      "sha256": "2b3c64cf0468c848b9c85947b6a1560ab1b7f8354a97ed871befaf4a70b58a88",
+      "source_line": 197,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1231.0-v1231.2 Dynamic Execution Plan Revision Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 193,
+      "sha256": "553d632fae7d962c90b85f407c776747c8b64c12767cfe0a161b4fcd082ad977",
+      "source_line": 198,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1230.0-v1230.9 Mindful Execution Alpha Integration Benchmark\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 194,
+      "sha256": "4c02df4b31891b2dc45c8800d29a2246171f8ed2da53cb2e1ed45d2c7cbd8b50",
+      "source_line": 199,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1229.0-v1229.2 Execution Outcome Reflection and Learning Integration Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 195,
+      "sha256": "37d40c2b50a93a8f990df588530501fcb2d8573375dbd570ef04f2a5aa9f4bd5",
+      "source_line": 200,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1228.0-v1228.2 Execution Pause, Resume, Cancel, and Recovery Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 196,
+      "sha256": "c157a7a7193f0d138b42b833d5b5e12788adf741306175b5d62e8215951542ee",
+      "source_line": 201,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1227.0-v1227.2 Live Execution Monitoring and Operator Intervention Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 197,
+      "sha256": "ee02fec7d0bcf218e30512a38812b2d9fa6dc5812764ba6eb62788353fe6bc79",
+      "source_line": 202,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1226.0-v1226.2 Execution-Session Authorization and Bounded Launch Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 198,
+      "sha256": "b3931c9b6f282fab7e588ef060a07ca2432a0911a1d03fe158681f703c80dad8",
+      "source_line": 203,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1225.0-v1225.2 Supervised Work Dispatch and Execution-Session Preparation Foundations\""
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 199,
+      "sha256": "3a8e244ad78ef5f9ca52ea8749afaf998ee137d0a48eb4e684a1975e7cf6fee2",
+      "source_line": 204,
+      "text": "# Retained next recommended arc: NEXT_RECOMMENDED_ARC = \"v1224.0-v1224.2 Operator-Governed Work Prioritization and Scheduling Foundations\""
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 200,
+      "sha256": "6b48280b2dd340750dd23398651b52c0132f7bd7ceae799b7aeb8cfbbec5549b",
+      "source_line": 205,
+      "text": "# Completed arc: v1219.0-v1219.2 Supervised Repaired-Candidate Rollback Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 201,
+      "sha256": "d94ada0fe1c462d30184a25251f034c1b895a7280893ed7de96050f4653c3d2d",
+      "source_line": 206,
+      "text": "# Completed arc: v1219.3-v1219.5 Conversational Repaired-Candidate Rollback Execution"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 202,
+      "sha256": "d764ef1dc613b8621f6d720bfd4dd94b9fbcf613d3d8a969ad35f18f23cd1aa5",
+      "source_line": 207,
+      "text": "# Completed arc: v1219.6-v1219.8 Repaired-Candidate Rollback Reliability and Recovery"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 203,
+      "sha256": "ccb7042c79c6705b573bbfa03e82fa52619e0d6f95f0671f8169d180b67cbe28",
+      "source_line": 208,
+      "text": "# Completed arc: v1218.0-v1218.2 Operator Repaired-Candidate Apply Result Review Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 204,
+      "sha256": "29188c0fde5dd26613c5a37902f74b6030232ecab8d1d72bdda4ad609f67f228",
+      "source_line": 209,
+      "text": "# Completed arc: v1218.3-v1218.5 Apply Result Decision and Rollback Proposal"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 205,
+      "sha256": "6b4a05baa4f5d69328040223b31bed6fabfb352c5b4bc0bffdd1724ecedcd993",
+      "source_line": 210,
+      "text": "# Completed arc: v1218.6-v1218.8 Apply Result Review Reliability and Recovery"
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 206,
+      "sha256": "97e770cf1a1fd1f708da099af782ace736df95fd9da19e2f28f73e89028f9e7e",
+      "source_line": 211,
+      "text": "# Retained next recommended arc: v1217.0-v1217.2 Supervised Repaired-Candidate Apply Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 207,
+      "sha256": "835a410d5e63eec3943618a99edfe3e117d42b02ce0fa2a1576d88209fd152f2",
+      "source_line": 212,
+      "text": "# Completed arc: v1217.0-v1217.2 Supervised Repaired-Candidate Apply Foundations"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 208,
+      "sha256": "67ebf126c4728756d55960f81587a69014326dcda3d19ce95b661f74df67dd84",
+      "source_line": 213,
+      "text": "# Completed arc: v1217.3-v1217.5 Conversational Repaired-Candidate Apply Execution"
+    },
+    {
+      "category": "completed_arc_marker",
+      "ordinal": 209,
+      "sha256": "b22ce3efb213e97138a3550d0c3208790391ceda120fa2c115baf491b382fa65",
+      "source_line": 214,
+      "text": "# Completed arc: v1217.6-v1217.8 Repaired-Candidate Apply Reliability and Recovery"
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 210,
+      "sha256": "41c7f91f1887832571ebc9e22f710eb0d57cde7889477db479642c633de13479",
+      "source_line": 215,
+      "text": "# Retained next recommended arc: v1216.0-v1216.2 Operator Repair Result Review Foundations"
+    },
+    {
+      "category": "next_arc_marker",
+      "ordinal": 211,
+      "sha256": "dfe010e1ba8202b61a27012188bb0d0b7b932d156810bf4f63e45d1e42506733",
+      "source_line": 216,
+      "text": "# Retained next recommended arc: v1215.0-v1215.2 Supervised Repair Execution Foundations"
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 212,
+      "sha256": "327ddbe7340a6b8fe6462d2792a58ba470ab4baa8ffd5e2c43d7ef86e5397146",
+      "source_line": 217,
+      "text": "PREVIOUS_WORKING_SOURCE_VERSION = \"1249.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 213,
+      "sha256": "baac6a6c4bc99acff40bbf0d453133bc92bb2a094a81bc63445d3336e95db75e",
+      "source_line": 218,
+      "text": "# Retained compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1247.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 214,
+      "sha256": "9da457907818bee396436b9dfd8e03baa9de364ba3f47d09216fdc56d1bb8960",
+      "source_line": 219,
+      "text": "# Retained compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1237.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 215,
+      "sha256": "2147dc01959e92dabf5566b4e2425ce616f3ea9fd49bd2caf0e1bfe4e5ad578a",
+      "source_line": 220,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1234.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 216,
+      "sha256": "0a0fa629543626bc00914eec49564ce33326d0b6738aa8881ded009ecb1016ec",
+      "source_line": 221,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1232.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 217,
+      "sha256": "1eb7e79f920515dcec8b05ded85bc6306713de977dca20d9d2bdd4d485603ad2",
+      "source_line": 222,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1228.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 218,
+      "sha256": "c58ce51e3ead4d2b4f9a76d2f9035c7cc46fe490bb08eb188bf06fa330d9dad3",
+      "source_line": 223,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1225.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 219,
+      "sha256": "762b5f7c8aec187dccea4fb36b3a7f2f0ad734e460f500221b8784de69400f75",
+      "source_line": 224,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1224.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 220,
+      "sha256": "3bcfb2fac78c0273ab8df4f6c8a34410939853d60869f3fd0ebe3de2201f6860",
+      "source_line": 225,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1223.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 221,
+      "sha256": "9ac816ad849f162a33d0af68c780d2ca2d32222a9523f8305306069bcdd799de",
+      "source_line": 226,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1217.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 222,
+      "sha256": "cb32faf7e0374a46ad61618015126c3bc20a5739c8900d4975cbaa88a4d729c4",
+      "source_line": 227,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1216.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 223,
+      "sha256": "157451b395cea826b3bb47fcc32b6967ac3d68a10c79c1b0c4315baa5b29ff79",
+      "source_line": 228,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1215.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 224,
+      "sha256": "b71d4cfb21c70da4a771419ec43cb5022bf123b0d059e44a95c8dfdc638fba61",
+      "source_line": 229,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1214.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 225,
+      "sha256": "d596f5c3544b712078972ec6c3df59a55f52d22e39aaf83e5c6890f8d2fd748e",
+      "source_line": 230,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1213.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 226,
+      "sha256": "b2ecc181732a1ae40c0b620532e6de216659f6602826a95c122ef57100b0b1de",
+      "source_line": 231,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1212.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 227,
+      "sha256": "c1c0afb503acff8d59b442604a936c1f20bcc6f72cdf3dd8a7393ebfa6356710",
+      "source_line": 232,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1211.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 228,
+      "sha256": "346810f87e78e049d6531b976f0c7fc2a15bd5f92d1870f897b2c41189a98db2",
+      "source_line": 233,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1210.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 229,
+      "sha256": "f3b7e599b807164b880f0da282540d6dfa8ab41bb1276cee41b5d7723176a563",
+      "source_line": 234,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1209.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 230,
+      "sha256": "978d04c826ca707931661d59cd9b04ef8c540ef7e19bb23b41be8fbe94c32881",
+      "source_line": 235,
+      "text": "# Compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1209.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 231,
+      "sha256": "acac37e662e82b1f45aa6694d03e4559433ab578826151089ce54274f19e6ea9",
+      "source_line": 241,
+      "text": "# Installed, candidate, packaged, promoted, and certified versions remain separate."
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 232,
+      "sha256": "80e8ebea94a84d91b394cf422a73b390b3cf61c0b8b53b0458b2598387cb4a5b",
+      "source_line": 242,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1199.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 233,
+      "sha256": "c86423e5bc4ef849bbc285cdd44a4b842cb82cf8c37ffbdc69617cae22964277",
+      "source_line": 243,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1199.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 234,
+      "sha256": "6488557b136d9cc64dbe25320484a2d152a9429283871605755dc1b54b10756f",
+      "source_line": 244,
+      "text": "# Retained verifier compatibility milestone: Final Source-Only Candidate Checkpoint"
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 235,
+      "sha256": "bdbcd28ec747e3bffc7ee745aa41c21b586d254aa6a6e8f887520a54a6ba52c3",
+      "source_line": 245,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1183.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 236,
+      "sha256": "3ce1aff1137541537dd277679c50343e35b96fc5ac96376638a08801b7abdf2f",
+      "source_line": 246,
+      "text": "# Retained verifier compatibility arc: v1183.3-v1183.5 Operator Repair Review and Sandbox Materialization"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 237,
+      "sha256": "56dd1086d0eddbb2a1e4f678219311cb9928c0cfb75938227ae9dfd2f3c8f433",
+      "source_line": 248,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1183.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 238,
+      "sha256": "a83e84cb6a2b2598c847192b8b62df60e67715eb352d43eeac16796ce0b545c1",
+      "source_line": 249,
+      "text": "# Retained verifier compatibility milestone: v1183.8 Governed Sandbox Retesting and Bounded Repair Results"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 239,
+      "sha256": "4ea4379b588129e932e2889aca44e9533a0802cf28f50b1cce87a3ff59afef68",
+      "source_line": 250,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1183.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 240,
+      "sha256": "425fc63c7987a414e42fa09ed504f07228a856d4460a3da5e2dc9896deffaf3d",
+      "source_line": 252,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1183.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 241,
+      "sha256": "09892e49c6ab92fbe05b12e3bd4ccb1f2454e659647e087a6e521a717669d032",
+      "source_line": 253,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1183.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 242,
+      "sha256": "6eeb58c7e2546528c979aeb06f78878ecd5c7cef7642f9581e1eea5745be7ce7",
+      "source_line": 254,
+      "text": "# Retained verifier compatibility milestone: v1183.9 Supervised Sandbox Repair and Retest Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 243,
+      "sha256": "552ff175b9f44ec2aed6bb2c74e48f7d15296bebe6aaf8b6ffb04966fde77cd6",
+      "source_line": 255,
+      "text": "# Retained roadmap marker: v1184.0-v1184.2 Complete Supervised Project-Development Loop Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 244,
+      "sha256": "70c8c99fdd5e6a6ecc5932b5edf48f78a6277fdc91ce259034b5a0e34ff38029",
+      "source_line": 257,
+      "text": "# Retained roadmap marker: v1184.3-v1184.5 Operator-Facing Results and Accountable Outcome Learning"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 245,
+      "sha256": "0d9b2f71aada594ac5c352bf638e46f64ec1fec854f40b9dcb00002e3ff353a8",
+      "source_line": 259,
+      "text": "# Retained roadmap marker: v1184.6-v1184.8 Adversarial Reliability and Recovery"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 246,
+      "sha256": "e861d75add133f8691ece51946bcda64a89f9d0091c852634b8c07dccc9d0780",
+      "source_line": 260,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1184.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 247,
+      "sha256": "b8573752bb6b2fec89dac12eacc5619df09eaa36956d8f744c3bbc239f2a08bc",
+      "source_line": 261,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1184.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 248,
+      "sha256": "0479c6fc62ad0d2477e34b9df644e3dddb907778e67f00cd2fbbe850ce92a619",
+      "source_line": 262,
+      "text": "# Retained roadmap marker: v1184.9 Supervised Project Development Alpha Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 249,
+      "sha256": "07aa8ab44c6c0790d92c110c87f16e44b1ad470e5c5dc686f1f5aafe800de42c",
+      "source_line": 263,
+      "text": "# Retained roadmap marker: v1185.0-v1185.2 Persistent Development Campaign Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 250,
+      "sha256": "9988abdce9faed455ac9af3755b7a4b4483c4a8fcad95023997d638a9064f022",
+      "source_line": 264,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1184.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 251,
+      "sha256": "e2a24769744b8dececbcdb1b5299a3996ba1665494f97a0b791ca70a26c6da96",
+      "source_line": 265,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1184.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 252,
+      "sha256": "29c120ea5706f6db84d7770a84d6720ff18daf2b903be853824c2f70b16416ab",
+      "source_line": 266,
+      "text": "# Retained verifier compatibility milestone: v1184.9 Supervised Project Development Alpha Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 253,
+      "sha256": "07aa8ab44c6c0790d92c110c87f16e44b1ad470e5c5dc686f1f5aafe800de42c",
+      "source_line": 267,
+      "text": "# Retained roadmap marker: v1185.0-v1185.2 Persistent Development Campaign Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 254,
+      "sha256": "502f4747b0e4c1e79ae3d6e15606b66a38781f61a1c8e6710a8379ae3549dc77",
+      "source_line": 269,
+      "text": "# Retained roadmap marker: v1185.3-v1185.5 Persistent Multi-Session Campaign Continuation"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 255,
+      "sha256": "6ebc991c35f02aa83e9297791b76725b5e37d358ed3afeed8b05c110fe3cf631",
+      "source_line": 271,
+      "text": "# Retained roadmap marker: v1185.6-v1185.8 Campaign Reliability, Limits, Stale Work, and Recovery"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 256,
+      "sha256": "11c0c5ea5813d7e0adc7769940f6b811d05688eacd8e584146d4044c4b24367f",
+      "source_line": 273,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1185.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 257,
+      "sha256": "2ad0900db9637a1dc5d4383474ba7aab59c3339ce7d338f61c31b2d60a7eff7e",
+      "source_line": 274,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1185.5\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 258,
+      "sha256": "00fd79b35a34f6196ac29ddebc069846fb8e0bec19205083bd6edaec05403a4d",
+      "source_line": 275,
+      "text": "# Retained milestone marker: v1185.9 Persistent Supervised Developer Alpha Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 259,
+      "sha256": "46c754bce40a2ace9cc0ceb4f9c1126a18b315e3c7671ca109d9e102852e6315",
+      "source_line": 276,
+      "text": "# Next bounded unit: v1186.0-v1186.5 Durable Campaign Resume Review and Reconciliation"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 260,
+      "sha256": "9d3a68e362f6f57cb6ec0b30b899f002851a030a5f59d750a36f65b27c7df580",
+      "source_line": 278,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1185.9\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 261,
+      "sha256": "00fd79b35a34f6196ac29ddebc069846fb8e0bec19205083bd6edaec05403a4d",
+      "source_line": 279,
+      "text": "# Retained milestone marker: v1185.9 Persistent Supervised Developer Alpha Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 262,
+      "sha256": "a8d9e402a448a3e06bae194c8d0dd092575c2d27054e917e297e576e6e3cc041",
+      "source_line": 280,
+      "text": "# Current bounded unit: v1186.0-v1186.5 Durable Campaign Resume Review and Reconciliation"
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 263,
+      "sha256": "821f159b4a5bfa1b724f630fa63d3a6f8ee641681f1a6e4627d0c015c40065dc",
+      "source_line": 281,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1185.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 264,
+      "sha256": "234f0e1c585be4f9f9f8e6c711f457377bdc294b3b99bee716a25ccdff965187",
+      "source_line": 283,
+      "text": "# Historical compatibility marker: v1186.0-v1186.2 Durable Campaign Storage"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 265,
+      "sha256": "0a5786656e103b6540f36cea7d294d5dd898ee2ef34f84d4a9b02877049dfdd8",
+      "source_line": 285,
+      "text": "# Retained roadmap marker: v1186.6-v1186.8 Durable Resume Materialization and Session Handoff"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 266,
+      "sha256": "6397903430db3058066de6c29f34171afbbcbfd9477e944879732b2aa6326ae4",
+      "source_line": 287,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1186.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 267,
+      "sha256": "9edc45cdccc8eef33d66389fec3aeee1bc0f76f5346591052cc64b33d0a45dba",
+      "source_line": 288,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1185.9\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 268,
+      "sha256": "dbb5284b5b4273d310de2c73ef596ccc2facaeb4a340ee8bac1a273741fde6f5",
+      "source_line": 289,
+      "text": "# Retained milestone marker: v1186.9 Durable Campaign Continuation Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 269,
+      "sha256": "e6414500d0946864d23b140893035fc95628cd84b7c758201174aaadf6851473",
+      "source_line": 290,
+      "text": "# Next bounded unit: v1187.0-v1187.2 Bounded Campaign Work Execution Foundations"
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 270,
+      "sha256": "dbb5284b5b4273d310de2c73ef596ccc2facaeb4a340ee8bac1a273741fde6f5",
+      "source_line": 292,
+      "text": "# Retained milestone marker: v1186.9 Durable Campaign Continuation Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 271,
+      "sha256": "2572a8c8b7cda4d5000a0fb5867e264b1eab11781e47a9efd2aac82335c4e60f",
+      "source_line": 293,
+      "text": "# Current bounded unit: v1187.0-v1187.2 Bounded Campaign Work Execution Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 272,
+      "sha256": "4a707836ebb61b8b70a7c2464c3c0769a73467a5cc2551778b8002ccb81949b7",
+      "source_line": 294,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1186.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 273,
+      "sha256": "a238525836046588808def059bebb8a8ca96867039a78711b42091733cb3ee44",
+      "source_line": 295,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1186.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 274,
+      "sha256": "fd0f673d65403a8f2d4db87ceaa0c54b82cd3ea8a951d9f3f689b0da89b6b7fd",
+      "source_line": 297,
+      "text": "# Retained roadmap marker: v1187.3-v1187.5 Governed Campaign Work Result and Ledger Integration"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 275,
+      "sha256": "068e85175c343a8384f21febb2cbfd57ad284d442a185cc6522b773a3324a5cd",
+      "source_line": 298,
+      "text": "# Next bounded unit: v1187.9 Persistent Campaign Work Execution checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 276,
+      "sha256": "8e4fa822307d9d1fd9e9e2631283def7d9da81be0f585a649e8546d0d07e3b3f",
+      "source_line": 300,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1187.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 277,
+      "sha256": "f8e499cb5979ad594a501729be0ecc05565a893ac4e58f24a935ae6bbe219970",
+      "source_line": 301,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1186.9\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 278,
+      "sha256": "86840db3aa2eeab097761f02a84ad2dd3a75cd501b620b9ed682541b36675f85",
+      "source_line": 302,
+      "text": "# Retained milestone marker: v1187.9 Persistent Campaign Work Execution Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 279,
+      "sha256": "d4bbbe398cbc8d0c5640f399bf1301e6243f21be4094e509215885063b38b7dc",
+      "source_line": 303,
+      "text": "# Next bounded unit: v1188.0-v1188.2 Complete Campaign Development Loop Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 280,
+      "sha256": "f992240ad0d78633de67e7fb2caba6595e89f2de5af49bf26401258ec0a6691b",
+      "source_line": 305,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1187.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 281,
+      "sha256": "2df3885a0b685887a75e4c8f81bf2b7fb859b179daf1d1194662082ec3b55668",
+      "source_line": 306,
+      "text": "# Current bounded unit: v1188.0-v1188.2 Complete Campaign Development Loop Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 282,
+      "sha256": "b3ed5be7b1a3109d258aab9c03a1ed90c262a4f128f7c6912a318da9f1cea669",
+      "source_line": 307,
+      "text": "# Next bounded unit: v1188.3-v1188.5 Governed Campaign Loop Execution and Result Integration"
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 283,
+      "sha256": "179c7e6d59e86200e82866a79711d97840e0defd7191808c70724d5ed23e9076",
+      "source_line": 308,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1187.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 284,
+      "sha256": "2efa58d7bd39dcdcc12f7e91e59c1f612ed4b71f188f390fa27ae579dfb8bf02",
+      "source_line": 310,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1188.5\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 285,
+      "sha256": "1484810a50c824ac1a75f5f157be33f5942537a89e6ae7c4c129c9ffc413729b",
+      "source_line": 311,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1188.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 286,
+      "sha256": "84bcb304c2328b1cfde88d7726a7f17e0506ed70d231361387d047c38b830d8e",
+      "source_line": 312,
+      "text": "# Next bounded unit: v1188.9 Complete Campaign Development Loop checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 287,
+      "sha256": "4567b432aea21368ff21e39a2f91dee8f7640bb74b6b8725cc977d7635313d06",
+      "source_line": 314,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1188.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 288,
+      "sha256": "e0bf8421cbfd00549253eb8b140b77b659ec5b1b81183016900c0fe8e7583a29",
+      "source_line": 315,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1188.5\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 289,
+      "sha256": "4101a3a6439ea14b9275da421c686a6382e1e6e82b845feb3a77e639de026c7e",
+      "source_line": 316,
+      "text": "# Retained milestone marker: v1188.9 Complete Campaign Development Loop Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 290,
+      "sha256": "a336a054188d97c849671dfed33f029301e5ffbd6d93332b9fc6b777d9f6f359",
+      "source_line": 317,
+      "text": "# Next bounded unit: v1189.0-v1189.2 Persistent Supervised Developer Alpha Hardening Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 291,
+      "sha256": "af675eb93afb2ebf3e6a2ed674f30155a8d9031b886777d69d497c9033ad1e0b",
+      "source_line": 319,
+      "text": "# v1189.0-v1189.2 Persistent Supervised Developer Alpha Hardening Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 292,
+      "sha256": "f783bd5d9e37e4dc74a618843bf1304b21930b84fa5fd1993ac53b0f97f79870",
+      "source_line": 320,
+      "text": "# Next bounded unit: v1189.3-v1189.5 adversarial campaign hardening and long-session evidence"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 293,
+      "sha256": "4d15a57632cd2ee799e6c75e47e60b1628268161012c0df04c6fb61af77015f0",
+      "source_line": 321,
+      "text": "# Retained deterministic marker: WORKING_SOURCE_VERSION = \"1188.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 294,
+      "sha256": "2bae822796c9550a69d0b6cd1be16d2cb6394c4fa50bb4aba937f3702ee2b338",
+      "source_line": 322,
+      "text": "# Retained deterministic marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1188.8\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 295,
+      "sha256": "4101a3a6439ea14b9275da421c686a6382e1e6e82b845feb3a77e639de026c7e",
+      "source_line": 323,
+      "text": "# Retained milestone marker: v1188.9 Complete Campaign Development Loop Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 296,
+      "sha256": "4ca914d6fa661f1a8560ddb21fe0483cb15893c414a3a19e38de1175a39560a5",
+      "source_line": 325,
+      "text": "# v1189.3-v1189.5 Adversarial Campaign Hardening and Long-Session Evidence"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 297,
+      "sha256": "e9b01b5fb485f9acdb31d28dfea9956771a7c3885c6aa0f398f4e5d63636f62a",
+      "source_line": 326,
+      "text": "# Next bounded unit: v1189.6-v1189.8 Persistent Developer Alpha Adversarial Reliability"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 298,
+      "sha256": "9c7ebeac415ba5d6a9205648198d0243948f77f1c9ee22ed553aa1624e33c865",
+      "source_line": 328,
+      "text": "# v1189.6-v1189.8 Persistent Developer Alpha Adversarial Reliability"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 299,
+      "sha256": "c28d9a4d178c9064e876d469b2b7d3919f758161785efe7faadd1cd030f91a73",
+      "source_line": 329,
+      "text": "# Next bounded unit: v1189.9 Persistent Supervised Developer Alpha checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 300,
+      "sha256": "53906458db530341c3128ec03585aa94e98896be70bd167b785d68b0d85ceed7",
+      "source_line": 331,
+      "text": "# v1189.9 Persistent Supervised Developer Alpha Hardening Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 301,
+      "sha256": "4b80f8925746aac34c30653a1c3ca118b835c2396489bb1910169a53e4940228",
+      "source_line": 332,
+      "text": "# Next bounded unit: v1190.0-v1190.2 Unified Experience Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 302,
+      "sha256": "a884c2302407a0729bcfb672472a5461b0c0423256f60dbd8929163610d7b2e6",
+      "source_line": 333,
+      "text": "# Retained deterministic marker: WORKING_SOURCE_VERSION = \"1189.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 303,
+      "sha256": "7da472096dff544b7ea0f7a347b13be52568335fc95cc7c23f73a93008666555",
+      "source_line": 334,
+      "text": "# Retained deterministic marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1189.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 304,
+      "sha256": "3a1f3d8a68f763fcde1624f5e5203a4c21ee5fc34c269d46bc7671d81e1295c1",
+      "source_line": 336,
+      "text": "# v1190.0-v1190.2 Unified Experience Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 305,
+      "sha256": "91994d569f801369d10e296f21d6d9ee2659a3153039717d117ea9a6daf2ab30",
+      "source_line": 337,
+      "text": "# Next bounded unit: v1190.3-v1190.5 Operator Navigation and Coordinated Experience Transitions"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 306,
+      "sha256": "6bcec873c8f11b22d5d3d5389062edc10c34086ece67de39bc2f585a668bb65d",
+      "source_line": 338,
+      "text": "# Retained deterministic marker: WORKING_SOURCE_VERSION = \"1189.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 307,
+      "sha256": "0f1171c76cb1df8051fb7ce0320073d3319c148ba408d00eb3a3078e4659e01b",
+      "source_line": 339,
+      "text": "# Retained deterministic marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1189.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 308,
+      "sha256": "4601f29f5a4f4edeb81f889fec06b95b4019ffa45ca35a6c86da5d785d577c2b",
+      "source_line": 341,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1190.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 309,
+      "sha256": "3f08db9ab33b12d275826ca69e7bd207632dc1dffbbbf08ac7a715a491f6d0a6",
+      "source_line": 342,
+      "text": "# Retained roadmap marker: v1190.3-v1190.5 Operator Navigation and Coordinated Experience Transitions"
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 310,
+      "sha256": "0559d4a84803df854d6b79b841e7c50a6941d1f8dca8964a623a26caf67f20e5",
+      "source_line": 344,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1189.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 311,
+      "sha256": "0c80ca390e6fff5e92982862888926020fae2851080d63aeaef0bffc80215fb1",
+      "source_line": 346,
+      "text": "# Retained roadmap marker: v1190.6-v1190.8 Unified Experience Reliability and Privacy Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 312,
+      "sha256": "d6af550226758a8b4772e490ca116a333defa62d06cf1456ad56045c8697cfaa",
+      "source_line": 347,
+      "text": "# Next bounded unit: v1190.9 Unified Experience checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 313,
+      "sha256": "1cf34dc2f8763e37dc07baa772e363dd2622295b58df9cf6557c5cc1041eac62",
+      "source_line": 348,
+      "text": "# Historical source marker: WORKING_SOURCE_VERSION = \"1190.5\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 314,
+      "sha256": "030d281b99df8f9d8875a6378a2f5779529946d8207bab48c54556ab24f88a51",
+      "source_line": 349,
+      "text": "# Historical marker retained for v1190.5 regression verification: PREVIOUS_WORKING_SOURCE_VERSION = \"1190.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 315,
+      "sha256": "f83f5415246904780db02ac2598e3b40cbf85266098d02d0ac94b6f3cd6b16ef",
+      "source_line": 351,
+      "text": "# v1190.9 Unified Experience Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 316,
+      "sha256": "0f0646a6ca7e764089abffb918a91672a9091fc2761128fbd3723151aa645be0",
+      "source_line": 352,
+      "text": "# Next bounded unit: v1191.0-v1191.2 Responsiveness and Background-Work Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 317,
+      "sha256": "0bbc2b8031d409923736c6f296bf445bc8f661f287820f16bd3b218fc2a11ef2",
+      "source_line": 353,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1190.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 318,
+      "sha256": "820e6178dab6ba62072fff67758effe43cdf6d3bbc309dc540cbb2f1ff82b2ff",
+      "source_line": 354,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1190.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 319,
+      "sha256": "fca7688002465e974216608246b972ffbe77f7dad9517e6e71bac4989e04b9ad",
+      "source_line": 356,
+      "text": "# v1191.0-v1191.2 Responsiveness and Background-Work Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 320,
+      "sha256": "aac4b5ec1e4858d9ff383e94594a9801f22c5d86896e7a880642ef5dba57fb7c",
+      "source_line": 357,
+      "text": "# Next bounded unit: v1191.6-v1191.8 Operator Queue Review, Cancellation, Pause, and Supersession"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 321,
+      "sha256": "531373b8592757f0af6cf5fd5991e648a8a500d2c19980e2386c4fad6c19ca3d",
+      "source_line": 358,
+      "text": "# Retained deterministic marker: WORKING_SOURCE_VERSION = \"1190.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 322,
+      "sha256": "378481d8eb8b929ce4c9ad3ae3d359fc4a6d47661828d1aae65b67d517f5a705",
+      "source_line": 359,
+      "text": "# Retained v1190.9 verifier marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1190.8\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 323,
+      "sha256": "db0456d1d606e31cea350df540ad76b0361a4852b4e5bdc5759f50369f58c142",
+      "source_line": 360,
+      "text": "# Retained milestone marker: v1190.9 Unified Experience Checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 324,
+      "sha256": "ddf735a2d78193d1a2d0900541774bac9219286a0ca015e3fd464c67109462ad",
+      "source_line": 361,
+      "text": "# Retained v1191.2 verifier compatibility marker: WORKING_SOURCE_VERSION = \"1191.2\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 325,
+      "sha256": "7b3f6cdfebe6605d5754b16181bbf8447f8cde71ab68f3336b897fc318b23e1b",
+      "source_line": 362,
+      "text": "# Retained v1191.2 verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1190.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 326,
+      "sha256": "3f818d7667774522cd77043df73cb9204c9c74da69010d4e5518961b1c7150ae",
+      "source_line": 363,
+      "text": "# Retained v1191.2 roadmap marker: v1191.3-v1191.5"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 327,
+      "sha256": "10ccc7ecf2f0dfd9aa0ccc5d9b344a163b9bafdf16fcd2a9a4c8d68e5b96cbd7",
+      "source_line": 364,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1191.5\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 328,
+      "sha256": "04b5cb3abb347c1025679ed7243aee03bc6facf4c87c4d4aca49887898f2c8a9",
+      "source_line": 365,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1191.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 329,
+      "sha256": "99b2bda91bef0745d0b953527b923ea4f55ac5a0cafa7ad774dbef18d09e76d3",
+      "source_line": 366,
+      "text": "# Retained roadmap marker: v1191.6-v1191.8"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 330,
+      "sha256": "5f3d132d3eda5a182b7e98b3b01b89ad77308766d039e2038ba925012b3fe524",
+      "source_line": 368,
+      "text": "# v1191.9 Responsiveness and Background Work Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 331,
+      "sha256": "c01b165b5dee9d04145ce50f82b63ef46f8c1489874b9e21b86b4f15de5a9e0e",
+      "source_line": 369,
+      "text": "# Next bounded unit: v1192.0-v1192.2 Bounded Evidence Compaction Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 332,
+      "sha256": "c7a8cde72b8c76c27a854471da08585b0a782e93e8c39a7dd26e5fa402cbefd0",
+      "source_line": 370,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1191.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 333,
+      "sha256": "4e493d4fccadae22406d46906a56851545219d054405782f50d8d0c6e146a884",
+      "source_line": 371,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1191.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 334,
+      "sha256": "95679343df744ab49518100ed6fbb48fd0af7abbedb8ab49deab8b15668b40be",
+      "source_line": 373,
+      "text": "# v1192.0-v1192.2 Bounded Evidence Compaction Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 335,
+      "sha256": "9ba4baefe27e21b7c8f8e9ad9bd05d7664de910f22a227bd60ae72db2471f7a9",
+      "source_line": 374,
+      "text": "# Next bounded unit: v1192.3-v1192.5 Operator Evidence Compaction Review"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 336,
+      "sha256": "5df7028f62e043054d1e02d21f3d9e573980cf3af643b442845c39b808aa1c49",
+      "source_line": 375,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1191.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 337,
+      "sha256": "d835776c8b11c14b29e8e682789bc0de59a9bf3a39bc8e0d6f1a578059f10f78",
+      "source_line": 376,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1191.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 338,
+      "sha256": "d8e8fbba98a8ce777896ab8520b9c5950c35c2120dc24c6b018b8c45966eb09e",
+      "source_line": 378,
+      "text": "# v1192.6-v1192.8 Evidence Compaction Reliability and Privacy Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 339,
+      "sha256": "2a1f4db8db109686c6058125e1ea1fb057a3824b93d480942b9c38c30cda07d5",
+      "source_line": 379,
+      "text": "# Next bounded unit: v1192.9 Bounded Evidence Compaction checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 340,
+      "sha256": "0612acef8bb0d92b60baf2d6f8a1536fc3ed049eec56a746e2cfb3888a7eaa1e",
+      "source_line": 380,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1192.5\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 341,
+      "sha256": "97fdca98589a55e1d0d1d87778fae2ff23aaafe74dcc8e773f9fcb45c2f82adc",
+      "source_line": 381,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1192.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 342,
+      "sha256": "cde1f37f56ad406c6f51925208b5121de786ca50e8d83a9e99495f66a9785465",
+      "source_line": 383,
+      "text": "# v1192.9 Bounded Evidence Compaction Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 343,
+      "sha256": "7b460ff5ef9cdaf4926eac5fbc14d7f82f766e3d07eb8782314ccc74bae0858b",
+      "source_line": 384,
+      "text": "# Next bounded unit: v1193.0-v1193.2 Verifier Ownership and Historical-Debt Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 344,
+      "sha256": "cf6e46b81a041be6d2b3902a9b985b065d0328fb1762edbaa4de727656ab79d8",
+      "source_line": 385,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1192.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 345,
+      "sha256": "534318595cacf6c5109e622cee8b2f9445deab8f8212578eb668c821a1ca0778",
+      "source_line": 386,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1192.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 346,
+      "sha256": "9db1a0ae946478264ff6940c16a751376dfa4b872cdb81f118307edc1a80de0e",
+      "source_line": 388,
+      "text": "# v1193.0-v1193.2 Verifier Ownership and Historical-Debt Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 347,
+      "sha256": "c778ab42a47d07f9c9d07d4d47dea2da2fd1ad8ac313ba5b926811ced150d612",
+      "source_line": 389,
+      "text": "# Next bounded unit: v1193.3-v1193.5 Deterministic Profile and Budget Reconciliation"
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 348,
+      "sha256": "36f90f5543b5cde3a2ffcd93c3e57799256ac4e715b7e370df8e8ec513a3f338",
+      "source_line": 391,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1192.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 349,
+      "sha256": "c42d74a3e6df0cde1fcf2d5dddecad913c50764ad9c7c2d40c43cd94e96e793e",
+      "source_line": 392,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1192.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 350,
+      "sha256": "9956cbcebf2dd4ad0579a0cb2a9f24bab3188cf7e71b54c2ea3472c8a6fd3ad3",
+      "source_line": 393,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1193.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 351,
+      "sha256": "eb01957ca25643d9c5cebdf74af009326dfa4a7ac4b36b17c720e268b1465e05",
+      "source_line": 395,
+      "text": "# v1193.6-v1193.8 Fixture and Historical-Debt Consolidation"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 352,
+      "sha256": "8897a1861ef59e097f24f448c357ff1e686bb9bf99be6bcefacbe53beda73a5e",
+      "source_line": 396,
+      "text": "# Next bounded unit: v1193.9 Verifier Ownership and Historical-Debt Consolidation checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 353,
+      "sha256": "368c68f9bbe6bfed138dae66be36a769fc3ef2611ba84224cda8e02e7cb4357c",
+      "source_line": 398,
+      "text": "# Retained v1193 verifier compatibility marker: WORKING_SOURCE_VERSION = \"1193.5\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 354,
+      "sha256": "d115086359ee29582e55919617e0dff1da84f14d7603b1e97d938edcbc9d4bd1",
+      "source_line": 399,
+      "text": "# Retained v1193 verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1193.2\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 355,
+      "sha256": "a5ee2b3422472da8334886c6abbd5d8e9ef95378ae94664ef64dc289a3c46314",
+      "source_line": 400,
+      "text": "# Retained v1193 verifier compatibility marker: WORKING_SOURCE_VERSION = \"1193.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 356,
+      "sha256": "a05e82c97991b7e314ccdd31ecf0f8324c3fa6a6a3d7b61661170215117f2ae9",
+      "source_line": 402,
+      "text": "# v1194.0-v1194.2 Unified Cognitive and Developer Experience Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 357,
+      "sha256": "6c558e67d7fb908afd7916b2cf9c23eadc850e15f239f92cc9d67e2a0a7ea8b9",
+      "source_line": 403,
+      "text": "# Next bounded unit: v1194.3-v1194.5 Operator Coordination and Accountable Navigation"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 358,
+      "sha256": "6d91d47473638738bc9d0fb377474807aa4e509b6da128649f9b81be8d9192d6",
+      "source_line": 404,
+      "text": "# Retained v1193.9 verifier compatibility marker: WORKING_SOURCE_VERSION = \"1193.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 359,
+      "sha256": "9441ef5d7472ff1f51223fb72e8c318112fb5702bf783005ee795b7dcc70b45c",
+      "source_line": 405,
+      "text": "# Retained milestone: v1193.9 Verifier Ownership and Historical-Debt Consolidation Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 360,
+      "sha256": "5a9c30dee8380ca82a04e5342e63660674d455ba16ef455b6b2acba523b7faca",
+      "source_line": 407,
+      "text": "# v1194.3-v1194.5 Operator Coordination and Accountable Navigation"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 361,
+      "sha256": "d532927d76a9b549f4c682561f19e8b889d78e89bcd1f0f206f7aee65eebc6d9",
+      "source_line": 408,
+      "text": "# Next bounded unit: v1194.6-v1194.8 Unified Experience Reliability and Integration Hardening"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 362,
+      "sha256": "0cdb16ea3e7030e15c6dede38a5312bab7f2a4f7561212d3709450bd2fab37fe",
+      "source_line": 409,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1194.2\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 363,
+      "sha256": "e8bfeac6bf62bf10fd68dacb0e938ab00842f30f1c22f665c3e04934a174cd35",
+      "source_line": 410,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1193.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 364,
+      "sha256": "67891459ba3cb87ba975d1082c08bce67d953880e9d93f2694939987314b7da8",
+      "source_line": 412,
+      "text": "# v1194.6-v1194.8 Unified Experience Reliability and Integration Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 365,
+      "sha256": "4324e59c3648235f4eadb4d24172ec3838485fe05baa95cffc40fbb57c29c118",
+      "source_line": 413,
+      "text": "# Next bounded unit: v1194.9 Unified Cognitive and Developer Experience checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 366,
+      "sha256": "12f96125748a748c62a114d3d94ccdbf7f9befb5ad7cd113f2a464f2a91512f9",
+      "source_line": 415,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1194.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 367,
+      "sha256": "8fe2a4793e475af75c515ebc43d96f49d47396c32fc82f382b7e158b2f777e05",
+      "source_line": 416,
+      "text": "# Retained verifier compatibility milestone: v1194.5 Operator Coordination and Accountable Navigation"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 368,
+      "sha256": "3157e01ec0802e25387ede78558860ca0147a1bc1515551dfa41b492d06cbc2c",
+      "source_line": 418,
+      "text": "# v1194.9 Unified Cognitive and Developer Experience Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 369,
+      "sha256": "b1d776f60ae49a23ac11ce932064f41a1c9754c281da7a8aca32b14497571568",
+      "source_line": 419,
+      "text": "# Next bounded unit: v1195.0-v1195.2 Long-Session and Multi-Day Soak Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 370,
+      "sha256": "906e42aff1cc24303fe7387168da56ad9a83647580bfc075c64a26f68efe1a6d",
+      "source_line": 420,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1194.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 371,
+      "sha256": "fb9cdbb274080ce5984e1c3f226f56187c50ca3dddc35f0d61f61fb2920355ec",
+      "source_line": 421,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1194.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 372,
+      "sha256": "22ac5a3bbdf23cfcc3ddefc9fefa5527d01d08ab141533333c2cbc678153f6cb",
+      "source_line": 422,
+      "text": "# Retained milestone: v1194.8 Unified Experience Reliability and Integration Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 373,
+      "sha256": "e693d3fe11ed208dfe6230f6d44d6cb4f32a1f79db76a574247ba2fc448b582c",
+      "source_line": 424,
+      "text": "# v1195.0-v1195.2 Long-Session and Multi-Day Soak Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 374,
+      "sha256": "19f3060fbd45fa45cd1d6a717fc45c1d961d9f90daaa614ac3549ff26a98d3ea",
+      "source_line": 425,
+      "text": "# Next bounded unit: v1195.3-v1195.5 Operator-Reviewed Soak Progression"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 375,
+      "sha256": "49fc4484d0f19a34c9c2b5e73e08af69ac0d17d3211119776eca0c25be1c3563",
+      "source_line": 426,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1194.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 376,
+      "sha256": "ad7ef5c1f6e66ee381bcd919bd60bdd2cce8486950b87e4d5a9b1ee1e39fcdc6",
+      "source_line": 427,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1194.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 377,
+      "sha256": "ac13f23d15d29942dd1588563673bbadc3250d9d0ddf2561745c2924764340b1",
+      "source_line": 428,
+      "text": "# Retained milestone: v1194.9 Unified Cognitive and Developer Experience Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 378,
+      "sha256": "b8bad5cbe2e19227e3f6ec5034d5dbef0dc215d08cc4d6076ea93c5ce6cc3fdb",
+      "source_line": 430,
+      "text": "# v1195.3-v1195.5 Operator-Reviewed Soak Progression"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 379,
+      "sha256": "b10739cdaa492bed6a6a061cc768309e33908f29ce3556543e3e7709709cd12d",
+      "source_line": 431,
+      "text": "# Next bounded unit: v1195.6-v1195.8 Soak Reliability and Adversarial Hardening"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 380,
+      "sha256": "de59f25af48b6873c269ae2e24a6c8b004aaf2f9d047d5fb82ec68f760f97dcd",
+      "source_line": 432,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1195.2\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 381,
+      "sha256": "ce4e7930e0669fb571593e4dcc0cff5e48a983f800ab1f7ef888c62326443325",
+      "source_line": 433,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1194.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 382,
+      "sha256": "f27c87bcce3683a17942f9def92a2fa4d1f1068f7fbf669b6ace52df2d3c73e6",
+      "source_line": 434,
+      "text": "# Retained milestone: v1195.2 Long-Session and Multi-Day Soak Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 383,
+      "sha256": "2c654f75ca4985c38a1916af27e28c171d0aed67dc8b130d41cbfb9fc58f4c1d",
+      "source_line": 436,
+      "text": "# v1195.6-v1195.8 Soak Reliability and Adversarial Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 384,
+      "sha256": "eeeba2df5982453983ec000026f4d70e060f0ec4fd271ebcc5d6855e8f453331",
+      "source_line": 437,
+      "text": "# Next bounded unit: v1195.9 Long-Session and Multi-Day Soak checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 385,
+      "sha256": "74eef1054362d14f05048fd2d5606dfe1e3496713606b66c1e3d0bcbdbd234b5",
+      "source_line": 438,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1195.5\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 386,
+      "sha256": "8d2a323fe2f974fa974b6e31b2acac03d6708b7bc185ad65fb98c58edce06658",
+      "source_line": 439,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1195.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 387,
+      "sha256": "62e7cc841515b776780bdcadd164d6741054a602804c4edc737abaa23d3ab8e4",
+      "source_line": 441,
+      "text": "# v1195.9 Long-Session and Multi-Day Soak Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 388,
+      "sha256": "8d826c07cdcdce0bf7f22ee7bbc2ad5e4a51b1229a85285cebaff16b1bea6ea7",
+      "source_line": 442,
+      "text": "# Next bounded unit: v1196.0-v1196.2 Adversarial Privacy and Authority Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 389,
+      "sha256": "a21a5b5b111de8e1681ebb443e3c904123d02bc6c367e14cba8d4b123ecc07f9",
+      "source_line": 443,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1195.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 390,
+      "sha256": "021373632564f8337bafaa1b68e59ac03d639760223ed858cda454b9814c8e7f",
+      "source_line": 444,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1195.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 391,
+      "sha256": "5099d1083d02a7b66649978e51c1f28c0321bc069640265c7d4b854085182ea1",
+      "source_line": 445,
+      "text": "# Retained milestone: v1195.8 Soak Reliability and Adversarial Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 392,
+      "sha256": "3d1061964f84d648caf72677feb180e4c477e0ded74a6653d31e4580462d9174",
+      "source_line": 447,
+      "text": "# v1196.2 Adversarial Privacy and Authority Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 393,
+      "sha256": "d569ea58a60c58b384ba284792ea829019506c04227721dc7eb6dd9542e6779d",
+      "source_line": 448,
+      "text": "# Content-free attack evidence only; no private-state fetch, execution, mutation, approval consumption, release, or authority grant."
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 394,
+      "sha256": "d40915e5dfc520771a8e55381bfee5235c28efea09564fee7fb8b4710b05b4d3",
+      "source_line": 450,
+      "text": "# Retained v1195.9 verifier marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1195.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 395,
+      "sha256": "98cd28526aedf2e156685e700c34e4d3b44d86173e2af8cf6e80f50f26d93fc4",
+      "source_line": 452,
+      "text": "# v1196.5 Adversarial Replay, Stale-State, Interruption, Cancellation, and Recovery Review"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 396,
+      "sha256": "10cfe16b206cef57152f820e5f4539ed059842cf8ff64e5e0d053a1259884343",
+      "source_line": 453,
+      "text": "# Review-only adversarial outcomes; no recovery, retry, cancellation, execution, mutation, or authority grant."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 397,
+      "sha256": "e067b4ba4278c94935750d66e55e61144424e9fd4b1a885a52abc862fa1ccdfd",
+      "source_line": 454,
+      "text": "# Next bounded unit: v1196.6-v1196.8 Adversarial Reliability and Integration Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 398,
+      "sha256": "90271cb545567c076c9e10841630448aa80317a2ea043d528f048bd19f3d199a",
+      "source_line": 456,
+      "text": "# v1196.8 Adversarial Reliability and Integration Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 399,
+      "sha256": "0116302c69c613092c7b43c799167aa41658112ea9fb41df0701b0965182bb73",
+      "source_line": 457,
+      "text": "# Evidence-only cross-surface hardening; no recovery, retry, cancellation, execution, provider/model contact, mutation, global pass claim, or authority grant."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 400,
+      "sha256": "317b56ca1d885aa79e2b2ea68f6b0bb7e53fdb12461a24693b51c27f2fc11271",
+      "source_line": 458,
+      "text": "# Next bounded unit: v1196.9 Adversarial Privacy, Authority, Replay, and Recovery Checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 401,
+      "sha256": "2f60f18f76e87d3138addf101a7ee15a9d75548692512a0d524e4a535d5c5239",
+      "source_line": 459,
+      "text": "# Retained v1195.9 verifier marker: WORKING_SOURCE_VERSION = \"1195.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 402,
+      "sha256": "c117ce964b9036c0553701c665853b7e64b607e8ee247433d0cc90e437bcb75d",
+      "source_line": 460,
+      "text": "# v1196.9 Adversarial Privacy, Authority, Replay, and Recovery Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 403,
+      "sha256": "da4a7a01a12711fc268a45df450d8db0dd2bc8703d4525db7369e91bbe4462bb",
+      "source_line": 461,
+      "text": "# Consolidated read-only privacy, authority, replay, stale-state, interruption, cancellation, recovery, and integration evidence."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 404,
+      "sha256": "1357972ad184f77e22f70e6d154b47f86ff1d6eb501e8ccbe67ecca44757a4a5",
+      "source_line": 462,
+      "text": "# No attacks, recovery, retry, cancellation, execution, provider/model contact, mutation, release, global pass claim, or authority grant."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 405,
+      "sha256": "c79967d5ede9b73e10139e8720ae072f43c17af17662df8374936b9fd18c0e34",
+      "source_line": 463,
+      "text": "# Next bounded unit: v1197.0-v1197.2 Runtime Migration, Backup, Upgrade, Rollback, and Fresh-Install Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 406,
+      "sha256": "098e546e883dc60e3ad82263d0abc9693c7bb69fe0d61f184367b2f1ca2e4d8b",
+      "source_line": 464,
+      "text": "# Retained v1196.8 verifier marker: WORKING_SOURCE_VERSION = \"1196.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 407,
+      "sha256": "24831c2c7a0319b792161b053717e99a985d53af0d38bcd189d19c91f7fa164d",
+      "source_line": 465,
+      "text": "# Retained v1196.8 verifier marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1196.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 408,
+      "sha256": "96c5c8c44979b303580006ead2a91c977c8592fd2b503ea5b2b96a6a67531181",
+      "source_line": 469,
+      "text": "# v1197.0-v1197.2 Runtime Migration, Backup, Upgrade, Rollback, and Fresh-Install Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 409,
+      "sha256": "9a0877f1497edd0d04bbfe400d60ca46b0829ffaea40378b2a68583f7c125578",
+      "source_line": 470,
+      "text": "# Content-free lifecycle evidence only; no runtime read, backup creation, migration, upgrade, rollback, installation, mutation, or authority grant."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 410,
+      "sha256": "248a05ccb08931b71b74c7fd900b272347cd53b871705ba819a32e585de4f53e",
+      "source_line": 471,
+      "text": "# Next bounded unit: v1197.3-v1197.5 Operator-Reviewed Runtime Lifecycle Application"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 411,
+      "sha256": "76f3ddfed363ca07117af2ee869b408d054322b0470f291c8aa8a262ca2604cc",
+      "source_line": 472,
+      "text": "# Retained v1196.9 verifier marker: WORKING_SOURCE_VERSION = \"1196.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 412,
+      "sha256": "297494e9e82a23d739a556ffb6b5b1b0a480c3df648c278872e22c3409be1b6b",
+      "source_line": 473,
+      "text": "# Retained v1196.9 verifier marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1196.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 413,
+      "sha256": "6d6bda5494b164cb458c9615d973a1e14ea6c6e1dd5c22b0505782af3641c1b4",
+      "source_line": 475,
+      "text": "# v1197.3-v1197.5 Operator-Reviewed Runtime Lifecycle Application"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 414,
+      "sha256": "a398b7dd15917e7e458bea2de6b5f29ec136f165b61f2bfc40088650105a09a4",
+      "source_line": 476,
+      "text": "# Approve/reject/defer presentation only; no runtime read, lifecycle application, approval consumption, mutation, or authority grant."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 415,
+      "sha256": "2d5620fd5d5af060b3e83742b31db540351febbdc1b9755d09839fe70fd11422",
+      "source_line": 477,
+      "text": "# Next bounded unit: v1197.6-v1197.8 Runtime Lifecycle Reliability and Adversarial Hardening"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 416,
+      "sha256": "9f937e330d846c39836bb7fcf133b383ca98585d237071d9f7e0a55e6f310bf8",
+      "source_line": 478,
+      "text": "# Retained v1197.2 verifier marker: WORKING_SOURCE_VERSION = \"1197.2\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 417,
+      "sha256": "deeeedf88128262ca8330b77407260872367a4c410ebc655e8bac774ad8d089b",
+      "source_line": 479,
+      "text": "# Retained v1197.2 verifier marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1196.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 418,
+      "sha256": "08b4906c55ba80f911cc5d0813b195a9fcbbc45c250a6f1275a74fa35f4c034e",
+      "source_line": 480,
+      "text": "# Retained milestone: v1197.2 Runtime Migration, Backup, Upgrade, Rollback, and Fresh-Install Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 419,
+      "sha256": "72b1181d1af5891dea96a708ac59c6696701564bb0c313b92cf1827b22994ea1",
+      "source_line": 482,
+      "text": "# v1197.6-v1197.8 Runtime Lifecycle Reliability and Adversarial Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 420,
+      "sha256": "4891db96362c47092b4ee6ffcffae7c8609c371289191c883684ed010a07d445",
+      "source_line": 483,
+      "text": "# Evidence-only stale-state, interruption, backup-integrity, rollback-failure, contamination, drift, and recovery-reentry hardening."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 421,
+      "sha256": "eb305a3c164c5523e7fa2ef16d488fe254e514775449063095fd20064da66c3b",
+      "source_line": 484,
+      "text": "# No runtime read, lifecycle application, recovery, retry, mutation, global pass claim, or authority grant."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 422,
+      "sha256": "080c504380331d58642103da0b1569fc03b1ef749c365dc09b37c987520ce05b",
+      "source_line": 485,
+      "text": "# Next bounded unit: v1197.9 Runtime Migration, Backup, Upgrade, Rollback, and Fresh-Install Checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 423,
+      "sha256": "34d80d3401578f2808bc9449db437562d6f109406ba022b8ac9132109cc1cd68",
+      "source_line": 486,
+      "text": "# Retained v1197.5 verifier marker: WORKING_SOURCE_VERSION = \"1197.5\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 424,
+      "sha256": "480109a40aa1a319704e4cf7fbf49f9d48a8e353ad044bf3db0e76e2710d2cec",
+      "source_line": 487,
+      "text": "# Retained v1197.5 verifier marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1197.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 425,
+      "sha256": "1e9a3687b3666a36d4bec8555c38a64897a37f6895179cfa6a7ec8f6d366db8e",
+      "source_line": 488,
+      "text": "# Retained milestone: v1197.5 Operator-Reviewed Runtime Lifecycle Application"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 426,
+      "sha256": "1436299552f4bc4e89c4f73e0fac0f083b9f7b3b5eb662c16e30f227e9d05eee",
+      "source_line": 489,
+      "text": "# v1197.9 Runtime Migration, Backup, Upgrade, Rollback, and Fresh-Install Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 427,
+      "sha256": "c9cc8ad41da581b3f1d75ee10a558c6dfbb6c98018233154f8f181dbf2c72f5d",
+      "source_line": 490,
+      "text": "# Consolidated read-only lifecycle planning, operator review, reliability, and adversarial evidence."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 428,
+      "sha256": "7ba2a4b874d4ecb991af9e44223f2196b1054fa1a6513025f1f5f47c0a2b9a08",
+      "source_line": 491,
+      "text": "# No runtime read, backup creation, migration, upgrade, rollback, fresh install, recovery, retry, mutation, release, global pass claim, or authority grant."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 429,
+      "sha256": "dbc73612d3370b09295c269eb0c6da09b6ed37b17208270c4211ba87d6c40819",
+      "source_line": 492,
+      "text": "# Next bounded unit: v1198.0-v1198.2 Feature Freeze and Architecture Consolidation Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 430,
+      "sha256": "ad98163e0bcb1e3e0a9b43bd182dbe02e8d66512b67c55317005e2fde678ac64",
+      "source_line": 493,
+      "text": "# Retained v1197.8 verifier marker: WORKING_SOURCE_VERSION = \"1197.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 431,
+      "sha256": "68864d8840665404e349b0f0c210ab5e4e09195c1a28ed8f674fcb31bb4197a2",
+      "source_line": 494,
+      "text": "# Retained v1197.8 verifier marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1197.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 432,
+      "sha256": "bcb57b7eb8f25d01f884fd41c5e60b03dabdcb4307778b58da86c25e1c8a8109",
+      "source_line": 495,
+      "text": "# Retained milestone: v1197.8 Runtime Lifecycle Reliability and Adversarial Hardening"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 433,
+      "sha256": "a9f598d8b4c5217031f7d28e6109372792b9560b351234afd6b8b51bfd2b4915",
+      "source_line": 498,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1197.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 434,
+      "sha256": "c60908cf2df113650ff3a09483c41920cf3a5aa12eb1f3743483bb3e19be51eb",
+      "source_line": 499,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1197.8\""
+    },
+    {
+      "category": "milestone_marker",
+      "ordinal": 435,
+      "sha256": "516155b6590c38c7e91e4b35e720b396d489b20eb5bc5105f021bd6e86b3982a",
+      "source_line": 500,
+      "text": "# Retained milestone marker: v1197.9 Runtime Migration, Backup, Upgrade, Rollback, and Fresh-Install Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 436,
+      "sha256": "ad5b38b764884acd066a5b3b7f3aacb4f6eec0855f5517fe51bcb6746c9f505e",
+      "source_line": 501,
+      "text": "# Current bounded unit: v1198.0-v1198.2 Feature Freeze and Architecture Consolidation Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 437,
+      "sha256": "d8271cf217205b3c15a01c3b81fb448a7bcf1c4e0c18c01d7186a113c6418681",
+      "source_line": 502,
+      "text": "# Next bounded unit: v1198.3-v1198.5 Operator Freeze Exceptions and Consolidation Review"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 438,
+      "sha256": "54932770f995bc0b4b4deae164acc22d7109f49558cb185552ed31f32021e5ad",
+      "source_line": 504,
+      "text": "# Current bounded unit: v1198.3-v1198.5 Operator Freeze Exceptions and Consolidation Review"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 439,
+      "sha256": "0bea89eb242f88bb98aa10021231162a9fe805d6b1072a9c65f0d0fe80f86d68",
+      "source_line": 505,
+      "text": "# Next bounded unit: v1198.6-v1198.8 Performance, Documentation, and Verifier Reconciliation Hardening"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 440,
+      "sha256": "d685eab62d2b270101257727bca5fb75b7f0099d48dc75102f1234855e542113",
+      "source_line": 506,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1198.2\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 441,
+      "sha256": "315a1a423241c1c9a076a2a08cd73d22f292ecf418270c10355fd8e82f5298a9",
+      "source_line": 507,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1197.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 442,
+      "sha256": "d685eab62d2b270101257727bca5fb75b7f0099d48dc75102f1234855e542113",
+      "source_line": 508,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1198.2\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 443,
+      "sha256": "315a1a423241c1c9a076a2a08cd73d22f292ecf418270c10355fd8e82f5298a9",
+      "source_line": 509,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1197.9\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 444,
+      "sha256": "8c64db471349ce329a362c48fb193cd0e1949e5463005bb4cc1eb58063c3664b",
+      "source_line": 510,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1198.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 445,
+      "sha256": "f02193059fdbedb9a1f5d4529f3093a1073ac9befa1b632fabef6ea32cde6201",
+      "source_line": 511,
+      "text": "# Retained roadmap marker: v1198.3-v1198.5 Operator Freeze Exceptions and Consolidation Review"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 446,
+      "sha256": "38383456cc7b90d689efa8c3691f1be47c11a6c3734c2e99261201c1e2b7260c",
+      "source_line": 512,
+      "text": "# Retained roadmap marker: v1198.6-v1198.8 Performance, Documentation, and Verifier Reconciliation Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 447,
+      "sha256": "eb89c3d3719b134c4888c50d17f5958cdfb25c02a5b7cea4914e4ab52fdcee71",
+      "source_line": 513,
+      "text": "# Retained checkpoint markers: v1197.9 v1196.9 v1195.9 v1194.9 v1193.9 v1192.9 v1191.9 v1190.9"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 448,
+      "sha256": "415a73fc843178a7f40daad0dfe90f0be0d62498c946c124ebf979c572177ca2",
+      "source_line": 515,
+      "text": "# Retained roadmap arcs: v1196.0-v1196.2 Adversarial Privacy and Authority Foundations; v1197.0-v1197.2 Runtime Migration Foundations; v1198.0-v1198.2 Feature Freeze and Architecture Consolidation Foundations."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 449,
+      "sha256": "44bf2fb631048b65022207ef79be510dbce51e4dcd4c451b27c09976046582f0",
+      "source_line": 516,
+      "text": "# Retained roadmap marker: v1195.0-v1195.2 Long-Session and Multi-Day Soak Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 450,
+      "sha256": "8b4e53e48540f0acef23a9e76c6c0fcc62bf5f293c6b83297629598838a044eb",
+      "source_line": 518,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1198.8\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 451,
+      "sha256": "6d7900482ca4a3f2cd2500bba4cc6e6c9a0be50b711458389f2b14476d061645",
+      "source_line": 519,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1198.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 452,
+      "sha256": "b6c5f3fd5643ce747181ab8c46a720efe796114baa76d3f5142d4981990c5a5a",
+      "source_line": 520,
+      "text": "# Retained milestone: v1198.8 Performance, Documentation, and Verifier Reconciliation Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 453,
+      "sha256": "4f5a8aa780b2b09dc66b09c2709687e3dfa169d3996d4f24b1fc86a6d0cf2b9e",
+      "source_line": 521,
+      "text": "# Current checkpoint: v1198.9 Feature Freeze and Architecture Consolidation Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 454,
+      "sha256": "fd91bd2443c1201ffe084855e45b61b969aae6e47161e3b3b5d3b0e25e0868eb",
+      "source_line": 522,
+      "text": "# Next bounded unit: v1199.0-v1199.2 Final Source-Only Candidate Preparation Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 455,
+      "sha256": "d2fa54d721643a0db17e2e4e12e66eafc18634775aabac0ca7f738287df92398",
+      "source_line": 524,
+      "text": "# Current bundle: v1199.2 Final Source-Only Candidate Preparation Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 456,
+      "sha256": "496e8d49b33e2ae8414d4fdb2f96ead4bf5bed906d4bded56f7635ba23a6ffb2",
+      "source_line": 525,
+      "text": "# Retained checkpoint: v1198.9 Feature Freeze and Architecture Consolidation Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 457,
+      "sha256": "df78d667a2b6fdf19ff841cd5e55e9c13ea3161c45c42441c52f6926155576fd",
+      "source_line": 526,
+      "text": "# Retained historical compatibility markers:"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 458,
+      "sha256": "29dc7886e9f43eb816d3d5526373ca464083c460360818336edf234faf60fe31",
+      "source_line": 527,
+      "text": "# WORKING_SOURCE_VERSION = \"1198.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 459,
+      "sha256": "d2ec86a4ffc3c332cb13b0af95534a7bb6c4b0398cabbed8f3938bf9ed3b97cf",
+      "source_line": 528,
+      "text": "# PREVIOUS_WORKING_SOURCE_VERSION = \"1198.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 460,
+      "sha256": "92854c16ff517304c8fd9370af350fe4c838fab036bb2d18dbbb4f09d3515a86",
+      "source_line": 529,
+      "text": "# Feature Freeze and Architecture Consolidation Checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 461,
+      "sha256": "56f99d5f11ec2dc27ed93bee55002044b80bed8dd6d5515d6e4e380ce17cf4e0",
+      "source_line": 531,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1199.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 462,
+      "sha256": "6cc4dc9892c1811263a32ab43aeffe4b009936050ed792a78a5f4ae779a542f4",
+      "source_line": 532,
+      "text": "# Retained milestone: v1199.2 Final Source-Only Candidate Preparation Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 463,
+      "sha256": "589bbe5e2e1c7b98af9a182d469525182096b9e9d2e2509cf609ce9fc3b0e84e",
+      "source_line": 533,
+      "text": "# Current bundle: v1199.5 Operator Final-Candidate Review and Handoff Acceptance"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 464,
+      "sha256": "e1cdb94053d0d5662bda5f5cae87b9ef17f25e6c0eb68eb84634af66e06965eb",
+      "source_line": 534,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1198.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 465,
+      "sha256": "b8231c9755182343f0ac247714d1f6c2fc75ee90f79addc157b8e455fa2b1bd1",
+      "source_line": 535,
+      "text": "# Retained verifier compatibility marker: PREVIOUS_WORKING_SOURCE_VERSION = \"1198.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 466,
+      "sha256": "c2481984851bfe53d162085a432c42585ba0c192e81dd93f0a480541958be30d",
+      "source_line": 536,
+      "text": "# Retained verifier compatibility milestone: Feature Freeze and Architecture Consolidation Checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 467,
+      "sha256": "3238af72cf503b5f2dd749063342e6f05cacbb3f318bf5d838725b1319c27cce",
+      "source_line": 538,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1199.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 468,
+      "sha256": "223e7882c30d96367cdeba7cbd7d5c162e6422c261131610290841073559fb40",
+      "source_line": 539,
+      "text": "# Retained roadmap marker: v1199.6-v1199.8 Final Candidate Reliability and Handoff Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 469,
+      "sha256": "595d3228c44679c6fc9e419bb05b7f72d5042fb57403fe4aa0d1eac34fc9c95b",
+      "source_line": 540,
+      "text": "# Next bounded unit: v1199.9 Final Source-Only Candidate checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 470,
+      "sha256": "90e0b90d5e3d4dfe00b69576f7e535d68090e9f8695525ac2de9020974c9c2fc",
+      "source_line": 542,
+      "text": "# Current checkpoint: v1199.9 Final Source-Only Candidate Checkpoint"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 471,
+      "sha256": "b0ee1d5e4b9a519ce3fbc9d1aef8aa046349bf1eadcfc5edaea8e1987f773023",
+      "source_line": 543,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1199.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 472,
+      "sha256": "4db029788de93892f3cfb554c296d97ebb2e4147221139f910b6f6c91a4b66de",
+      "source_line": 544,
+      "text": "# Retained milestone: v1199.8 Final Candidate Reliability and Handoff Hardening"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 473,
+      "sha256": "3238af72cf503b5f2dd749063342e6f05cacbb3f318bf5d838725b1319c27cce",
+      "source_line": 545,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1199.5\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 474,
+      "sha256": "56f99d5f11ec2dc27ed93bee55002044b80bed8dd6d5515d6e4e380ce17cf4e0",
+      "source_line": 546,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1199.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 475,
+      "sha256": "383dd447f9bf7e0421800484ed961b775ce16a53796dcf71f03a04f635e33219",
+      "source_line": 547,
+      "text": "# Next decision gate: v1200 Cognitive Beta and Autonomous Developer Alpha"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 476,
+      "sha256": "ec2bce5a8330f233904473c5273a1ee2cf2a7cadbacefcbb113dd65d57c78a02",
+      "source_line": 550,
+      "text": "# v1200.1-v1200.3 Ordinary-Chat Development Campaign Integration"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 477,
+      "sha256": "d40bc326f46a3897467813b4b7187f4cbee255579d4624b6666cf70dc13be5b8",
+      "source_line": 551,
+      "text": "# Persistent external-runtime proposals, deterministic duplicate suppression, exact revision-bound one-time approval,"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 478,
+      "sha256": "d94ee75ecb92e91b832cbac53bc9d437fe145dee72a4eb4f190ff80a89875218",
+      "source_line": 552,
+      "text": "# cancellation/rejection, stale-state rejection, restart recovery, content-free dashboard projection, and calculator regression preservation."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 479,
+      "sha256": "ce8795f0abac72f694eff5751e4a1e95030d4bcb77f4a31a2dc070247f003798",
+      "source_line": 553,
+      "text": "# No provider generation, implementation, workspace creation, command execution, source mutation, model management, release promotion, or authority grant occurs."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 480,
+      "sha256": "bcb0bfdd7d5f31005929530c0b992fdba3bd91e24492c704568763ffa86b5e46",
+      "source_line": 554,
+      "text": "# Next bounded unit: v1200.4-v1200.6 Grounded Project Inspection, Specification, File Planning, and Test Planning"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 481,
+      "sha256": "3b8b777b54f29c9cbd41688076cb3e088026ff5a5133ed0adae9be5202dc926b",
+      "source_line": 556,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1200.6\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 482,
+      "sha256": "b302abafcf7c9e1a58451c660ebe7e7f8dab740e53ca23efa51a7c46269c996a",
+      "source_line": 558,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1200.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 483,
+      "sha256": "ec6aa061b6e9ff96e69ded6b6679d0b7c0e34a25705ddc8a8a91c94e3891347d",
+      "source_line": 559,
+      "text": "# Completed bounded unit: v1201.0-v1201.2 isolated implementation workspace materialization"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 484,
+      "sha256": "237f6390c4893dae2cf4b9a6b2475a2b86029bd6548e36368870f884ad81e64c",
+      "source_line": 561,
+      "text": "# Completed bounded unit: v1201.3-v1201.5 isolated workspace browser preview and content-free evidence"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 485,
+      "sha256": "f0b83c97ab8b94cf21e169341d400e4ff86a6f8aacbf970c90959937a4605552",
+      "source_line": 563,
+      "text": "# Completed bounded unit: v1201.6-v1201.8 bounded browser and JavaScript validation adapters"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 486,
+      "sha256": "0f04d20ec172b83908f29928fc2c9e3897dba89e10549e1862d71e8d0480bd14",
+      "source_line": 564,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1201.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 487,
+      "sha256": "dcd7fe669e148d7a83d512cfb87d4b04069798c4cf899d416f4f46a1cb133df4",
+      "source_line": 566,
+      "text": "# v1201.9 Small Website Implementation Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 488,
+      "sha256": "b370e84b4d4ce978f22822333823e6fab2768f9f35f4dff7ce9152e3d6176f2d",
+      "source_line": 567,
+      "text": "# Consolidated one-operation supervised small-website loop with exact approval, grounded planning, structured provider generation, isolated materialization, preview, validation, and operator-review evidence."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 489,
+      "sha256": "b36cc6c1fedd8dd7c41cccab80acec6a4ecd288a1a8d086985d5bac03ebae6e8",
+      "source_line": 568,
+      "text": "# No selected-project apply, automatic repair, source mutation, model management, release promotion, or independent authority."
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 490,
+      "sha256": "9f8efb709c1c18667d5c0819919b484d1ebf3859946079d18dabb7df01e101bb",
+      "source_line": 569,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1201.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 491,
+      "sha256": "19bd8e985f1d8a0fa5f24a3be716d8b2094fbf5784069dc1bee67eb2e2e2ccbe",
+      "source_line": 570,
+      "text": "# Next bounded unit: v1202.0-v1202.2 General JavaScript Tool Implementation Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 492,
+      "sha256": "fe50eb7868a703d6742063ef67777901045c4ee4eed4d36fd28d70a515f87f14",
+      "source_line": 572,
+      "text": "# Retained v1201.9 verifier compatibility markers."
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 493,
+      "sha256": "f3985095c0c175e72a90c08441f0f99e5177ad696c38f02712e40f3ded9aad97",
+      "source_line": 573,
+      "text": "# WORKING_SOURCE_VERSION = \"1201.9\""
+    },
+    {
+      "category": "previous_version_marker",
+      "ordinal": 494,
+      "sha256": "3844bd629476874a4d6ab62929ed3e6d0405dbeb231f0530321e5780c4dfdcfa",
+      "source_line": 574,
+      "text": "# PREVIOUS_WORKING_SOURCE_VERSION = \"1201.8\""
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 495,
+      "sha256": "8a79291c1fa804c4b176c06ff44f074f151b03b2e78cbe02c9817b01c9bd7526",
+      "source_line": 576,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1202.5\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 496,
+      "sha256": "a9355524de436c124756c765be5191bc074593e4ff930c0d9e2cf086fcbe1fbf",
+      "source_line": 577,
+      "text": "# Retained roadmap marker: v1202.6-v1202.8 JavaScript tool result review and operator disposition"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 497,
+      "sha256": "69a753cf31be38c8240a03486684c967506a34372b20cb1a9a246ef7f0c5fa92",
+      "source_line": 579,
+      "text": "# v1202.9 JavaScript Tool Implementation Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 498,
+      "sha256": "3bc3b3e6ba0aea214596a9a5d57df343fc9fdcb31d867e05486a4d7e76d3bd2b",
+      "source_line": 580,
+      "text": "# Consolidates exact approval, planning, generation, isolated workspace, bounded validation, project-owned tests, operator review, exactly-once disposition, and restart recovery into one nine-stage digest-only checkpoint."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 499,
+      "sha256": "7ee4ad4559bcf17a985fe05a356860d625ffd40d18f1cb276f42b22fc26f95ec",
+      "source_line": 581,
+      "text": "# No selected-project apply, repair, source mutation, model management, promotion, certification, release authority, or independent authority."
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 500,
+      "sha256": "a340ba3368b26f1978d69a212f184618e910164cf2b924183e8f3f72e6ef6be5",
+      "source_line": 582,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1202.8\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 501,
+      "sha256": "5aca6493ce38f1576f85e3f3e2570bb84b0f0d7652eb6a735def91f8c78f4ee0",
+      "source_line": 583,
+      "text": "# Next bounded unit: v1203.0-v1203.2 Python Command-Line Utility Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 502,
+      "sha256": "6c279adfaada97fb5e78349c44bb98f3563f46cd16cbdd09bee1fe4c20968ecb",
+      "source_line": 585,
+      "text": "# v1203.3-v1203.5 Project-Owned Python Tests"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 503,
+      "sha256": "16c26ef65b29bb10e98d80fd712d0dbd744f19687b09587843b2ce46ab99bce8",
+      "source_line": 586,
+      "text": "# Bounded allowlisted Python test discovery and isolated execution with digest-only evidence."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 504,
+      "sha256": "79b41c06a45ce95fc9ddff3e034e4cd3767832eb4036c6c38313ea2f335bf86f",
+      "source_line": 587,
+      "text": "# No dependency installation, network/process capability, selected-project apply, automatic repair, or authority grant."
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 505,
+      "sha256": "89821e7de4a687eb392a2059d0f420dc731925cd32d678e42e852bdc24f0787c",
+      "source_line": 588,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1203.2\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 506,
+      "sha256": "dcea14554124a54c4fe4176df92df7a16fa80d51289038730b23173fb808dd05",
+      "source_line": 589,
+      "text": "# Next bounded unit: v1203.6-v1203.8 Python CLI Result Review and Disposition"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 507,
+      "sha256": "3fc1eb1c5d861672dfc6ea5ae631576ea608ff019288fb4b75de874b70d963e7",
+      "source_line": 591,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1202.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 508,
+      "sha256": "f207ee7d6b472bfd3ba22dca587ec87c7d5fa77367a4d2506671432cade66cf4",
+      "source_line": 593,
+      "text": "# v1203.9 Python CLI Implementation Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 509,
+      "sha256": "eb6574ee68d974ce72be55e03607afa38cecfe74e438fcacc670867a6ce17ab3",
+      "source_line": 594,
+      "text": "# Nine-stage exact lineage with interrupted disposition-to-checkpoint recovery and digest-only public evidence."
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 510,
+      "sha256": "1a705d2064ca1475c2c678d94cabaf28a47175044db75b83a39f858adaeafbb9",
+      "source_line": 595,
+      "text": "# Next bounded unit: v1204.0-v1204.2 Selected-Project Apply Foundations"
+    },
+    {
+      "category": "working_version_marker",
+      "ordinal": 511,
+      "sha256": "b17952168d9813b007263223d03636926cc96170c1cc0fb7b30d0bcce4166b82",
+      "source_line": 597,
+      "text": "# Retained verifier compatibility marker: WORKING_SOURCE_VERSION = \"1203.9\""
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 512,
+      "sha256": "5d5f64877e52fe72ac36f2911218563735c2f384fd810422d8c0fbd02c06ee45",
+      "source_line": 598,
+      "text": "# Retained roadmap marker: v1204.0-v1204.2 Selected-Project Apply Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 513,
+      "sha256": "b1b8bc4f1d03b41329c766eb9f4b0b20aca14f874e65fa7c1c79bc55b2ceb433",
+      "source_line": 600,
+      "text": "# Historical bounded unit: v1204.3-v1204.5 Selected-Project Rollback Execution and Apply Recovery"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 514,
+      "sha256": "82abbc8d51c8759d2b9fa158d148cc96e06244fc15bd46b3f05c1484ca276106",
+      "source_line": 601,
+      "text": "# Current bounded unit: v1204.6-v1204.8 Selected-Project Apply and Rollback Reliability Hardening"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 515,
+      "sha256": "746dc5c7eb0c349ae91500c34536d19cafb598e56d1f4ff42670598afed4d171",
+      "source_line": 602,
+      "text": "# Current checkpoint: v1204.9 Selected-Project Apply and Rollback Checkpoint"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 516,
+      "sha256": "a7b41c6dbc7aef96d0a53c40c3386cddbdc45cacc36a438e6cca16cc47b2edb6",
+      "source_line": 603,
+      "text": "# Next bounded unit: v1205.0-v1205.2 General Small-Project Implementation Consolidation Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 517,
+      "sha256": "5d5f64877e52fe72ac36f2911218563735c2f384fd810422d8c0fbd02c06ee45",
+      "source_line": 604,
+      "text": "# Retained roadmap marker: v1204.0-v1204.2 Selected-Project Apply Foundations"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 518,
+      "sha256": "e869cbe813e47b235544342a8ff1475b36cb8be23193c9ad6437f281eaf6cd17",
+      "source_line": 606,
+      "text": "# Retained compatibility marker: 1205.2 general small-project consolidation"
+    },
+    {
+      "category": "historical_marker",
+      "ordinal": 519,
+      "sha256": "05b4a5075c75b793969461da5be11c24968f9931b794d33d0c7ecdaf08e1e70a",
+      "source_line": 608,
+      "text": "# Historical milestone: Natural Conversation and Command Distinction"
+    }
+  ],
+  "entry_count": 519,
+  "generated_facade": "conscious_agent.release_metadata",
+  "migration_state": "structured_registry_primary_generated_facade_retained_for_historical_tests",
+  "read_only": true,
+  "registry_digest": "f86214f7a0502853273796206d70d2479c61ac910056682f83dbd48439c5f4fc",
+  "release_authorized": false,
+  "schema": "eidolon.release-metadata-compatibility-registry.v1",
+  "source_mutation_authorized": false,
+  "source_path": "conscious_agent/release_metadata.py",
+  "source_sha256": "85cd0ca95b9ce09d05a20bb1c1b4ae0319cae08fd2a63abe075ca8c1af3bba43",
+  "source_version": "1250.2",
+  "target_version": "1250.5"
+}

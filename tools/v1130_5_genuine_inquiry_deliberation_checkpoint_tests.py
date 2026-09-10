@@ -1,0 +1,4 @@
+from pathlib import Path
+import tempfile
+from conscious_agent.genuine_inquiry_deliberation_checkpoint import build_genuine_inquiry_deliberation_checkpoint
+root=Path(tempfile.mkdtemp()); source=Path(__file__).resolve().parents[1]; r=build_genuine_inquiry_deliberation_checkpoint(root,source_root=source); checks=[r['ok'],r['contract_version']=='v1130.5',len(r['checks'])==18,all(x['status']=='pass' for x in r['checks']),not r['runtime_mutated'],not r['source_modified'],not r['raw_content_exposed'],not r['question_text_exposed'],not r['hidden_reasoning_exposed'],not r['browser_contacted'],not r['provider_contacted'],not r['message_sent'],not r['notification_created'],not r['initiative_created'],not r['approval_created'],not r['authorization_created'],not r['external_action_executed'],r['desktop_verification']=='pending']; print(f"v1130.5 genuine inquiry deliberation checkpoint tests: {sum(checks)}/{len(checks)} passed"); raise SystemExit(0 if all(checks) else 1)

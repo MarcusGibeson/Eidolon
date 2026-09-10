@@ -1,0 +1,12 @@
+from __future__ import annotations
+from pathlib import Path
+from typing import Any,Mapping
+from causal_diagnostic_reasoning_foundations import AUTHORITY_FLAGS,validate_causal_diagnostic_model
+CONTRACT_VERSION="v1281.8"
+def inspect_causal_diagnostic_health(*,source_root:str|Path|None=None)->dict[str,Any]:
+ root=Path(source_root or Path(__file__).resolve().parents[1]).resolve();checks={"causal_foundations_present":(root/'conscious_agent/causal_diagnostic_reasoning_foundations.py').is_file(),"causal_integration_present":(root/'conscious_agent/causal_diagnostic_reasoning.py').is_file(),"v1257_diagnostic_lineage_present":(root/'conscious_agent/diagnostic_repair_reasoning_foundations.py').is_file(),"v1280_reliability_lineage_present":(root/'conscious_agent/reliability_checkpoint_foundations.py').is_file(),"v1279_operator_lineage_present":(root/'conscious_agent/operator_experience_foundations.py').is_file()};return {"ok":all(checks.values()),"status":"causal_diagnostic_health_ready" if all(checks.values()) else "causal_diagnostic_health_blocked","checks":checks,"read_only":True,**AUTHORITY_FLAGS}
+def compare_causal_models(before:Mapping[str,Any],after:Mapping[str,Any])->dict[str,Any]:
+ vb=validate_causal_diagnostic_model(before);va=validate_causal_diagnostic_model(after);b={str(x.get('hypothesis_code')):str(x.get('causal_status')) for x in before.get('hypotheses') or []};a={str(x.get('hypothesis_code')):str(x.get('causal_status')) for x in after.get('hypotheses') or []};changed=sorted(k for k in set(b)|set(a) if b.get(k)!=a.get(k));return {"ok":vb.get("ok") and va.get("ok"),"status":"causal_evidence_revision_ready","changed_hypothesis_codes":changed,"changed_count":len(changed),"root_cause_proven":False,"diagnostic_executed":False,**AUTHORITY_FLAGS}
+def build_causal_diagnostic_handoff(*,source_root:str|Path|None=None)->dict[str,Any]:
+ h=inspect_causal_diagnostic_health(source_root=source_root);return {"ok":h['ok'],"contract_version":CONTRACT_VERSION,"status":"causal_diagnostic_handoff_ready" if h['ok'] else "causal_diagnostic_handoff_blocked","next_bounded_unit":"v1282 Calibrated Uncertainty","v1282_started":False,"native_windows_review":["environment_vs_code_failure_discrimination","tooling_failure_disproof","path_permission_causal_probe","restart_stale_evidence_rejection","provider_outage_not_code_repair"],**AUTHORITY_FLAGS}
+__all__=["CONTRACT_VERSION","inspect_causal_diagnostic_health","compare_causal_models","build_causal_diagnostic_handoff"]

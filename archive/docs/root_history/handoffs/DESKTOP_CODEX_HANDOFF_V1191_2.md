@@ -1,0 +1,3 @@
+# Windows / Desktop Codex Handoff v1191.2
+
+Validate the source-only candidate on Windows with Python 3.11 and native-provider-disabled settings. Confirm focused v1191 queue tests, directly affected v1190 suites, v1189.9, source-only boundary, compilation, dashboard GET-only discovery, and archive privacy. Review that foreground evidence cannot be displaced by background queue items and that no execution, cancellation, thread/process start, provider/model contact, approval consumption, runtime mutation, or authority expansion occurs. Treat historical release-profile blockers and cleanup-prefix behavior as verifier debt. Do not continue beyond v1191.2 and do not install, promote, certify, publish, release, or grant autonomous authority.

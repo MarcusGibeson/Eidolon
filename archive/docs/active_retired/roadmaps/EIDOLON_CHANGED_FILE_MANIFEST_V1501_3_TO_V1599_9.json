@@ -1,0 +1,141 @@
+{
+  "added_files": [
+    {
+      "candidate_sha256": "fea33b55ce8cfe98489af218ffe49de4546e0a1e499130e72120b0bc0a25dc98",
+      "path": "conscious_agent/development_finding_intelligence.py"
+    },
+    {
+      "candidate_sha256": "403217cab71a22fb74ce8f07b5219f9293ec575f360ed811759cf163f58e8686",
+      "path": "conscious_agent/initiative_evidence_review.py"
+    },
+    {
+      "candidate_sha256": "b3688130a2c10c9569c37a1b9bc8389992a6ad6b7c27ebed2827a315e45ae030",
+      "path": "conscious_agent/initiative_value_model.py"
+    },
+    {
+      "candidate_sha256": "f90207d088a6e7785c5ffb8d3dec860d4a20c6cfcfa9fbafd984aab06bcd1c01",
+      "path": "conscious_agent/initiative_value_prioritization.py"
+    },
+    {
+      "candidate_sha256": "3883137732d693a66bb2de5f112dd9bae810372cc1b91718aed19afe7f042e6e",
+      "path": "conscious_agent/supervised_initiative_campaign.py"
+    },
+    {
+      "candidate_sha256": "1ebca0c7f4780d12662d37ece5b99130a98d8a8b1f24a61458968cd6db6cb782",
+      "path": "conscious_agent/supervised_repair_intelligence.py"
+    },
+    {
+      "candidate_sha256": "5f0f3f11234e2bf8d505cb71204b33e7914bf512fd587b1261f2c3cfd79853f9",
+      "path": "docs/roadmaps/EIDOLON_BROWSER_VERIFICATION_LEDGER_V1599_9.md"
+    },
+    {
+      "candidate_sha256": "7146a7a97bcdb7b716753cd64f66620b68ed522c383e427af9d328d16c8ff141",
+      "path": "docs/roadmaps/EIDOLON_DEFERRED_LOCAL_LEDGER_V1599_9.md"
+    },
+    {
+      "candidate_sha256": "a83dcbbb20ce04be513e625444f1bcc8ac1ac1fba35d1fef082e289218110de4",
+      "path": "docs/roadmaps/EIDOLON_MOBILE_BROWSER_ERA1_WORK_LEDGER_V1599_9.md"
+    },
+    {
+      "candidate_sha256": "086798bb8ab33cd8c795e485e25697d702270c525eedb6583003dc0a4e0e9035",
+      "path": "tools/v1508_9_initiative_evidence_review_checkpoint_tests.py"
+    },
+    {
+      "candidate_sha256": "05062df216b3c6e3be902727c3655164a835f810d30af3f68701b311a2bfa5e9",
+      "path": "tools/v1516_9_initiative_value_model_checkpoint_tests.py"
+    },
+    {
+      "candidate_sha256": "849992acbf0659631d72bc0a6cb88452e2b1281bf5dcd57d46e0161076ccd953",
+      "path": "tools/v1525_9_value_prioritized_selection_checkpoint_tests.py"
+    },
+    {
+      "candidate_sha256": "16c4e6c7db66d56b49a58448f032d44bdb02ede8a2bb883232be78e507b938ee",
+      "path": "tools/v1550_9_defect_feedback_intelligence_checkpoint_tests.py"
+    },
+    {
+      "candidate_sha256": "8d7aa5e9958b5fd63334b2081daed94b07624dd70e6f0bfdb91d745d0e1d6cda",
+      "path": "tools/v1575_9_repair_retry_intelligence_checkpoint_tests.py"
+    },
+    {
+      "candidate_sha256": "85b4c57f44e54b0bc523536fd932fb26a8a827f9f7f6e8e27033f8fc96d719aa",
+      "path": "tools/v1599_9_multi_cycle_supervised_campaign_checkpoint_tests.py"
+    }
+  ],
+  "authoritative_input_zip": "Eidolon_v1501_3_mobile_browser_campaign_handoff_source_only.zip",
+  "authoritative_input_zip_sha256": "440e3d5485896d6112289acab3a26d28b2ce3ad016bb309540639f40044dbf67",
+  "candidate_status": "unpromoted_source_only_mobile_browser_candidate",
+  "changed_files": [
+    {
+      "baseline_sha256": "f4511e05d843fb9d0f4ce0b6bbcb57654bd2325ee4570de390ef750cae93cc74",
+      "candidate_sha256": "26f22d5cc4ae62a41f1ecefec6f69a832b517cb900637f5e5e4aea7cc3273dda",
+      "path": "README.md"
+    },
+    {
+      "baseline_sha256": "0594389038fac70e37d4aa95e5acb96f61dca303c5bafefddd8d2df64cbd50e9",
+      "candidate_sha256": "16a3808a7584c8e2905f7e9ef15d84b816564c79c35a8ff01985c4ce6c1dec12",
+      "path": "README_NEXT_STEPS.md"
+    },
+    {
+      "baseline_sha256": "3e0d9359162587369aac8fd7c695c081317bb95abd9e7ea7cb2bfd8639c998b9",
+      "candidate_sha256": "782747f724953d3112425388693b0ffd70c41e24d5e4bf31489cc1b2b16dd0b4",
+      "path": "README_RELEASE_HISTORY.md"
+    },
+    {
+      "baseline_sha256": "076ac8ca5e803781ec46865a4fdb71c836acc6a63835b0b36a93e9844d6fd7a7",
+      "candidate_sha256": "60e69b9650414097a79d313f7e8b0e33b3bc4ed6dd7b1e3492042bc5fc43eef0",
+      "path": "archive/docs/legacy_dependencies/roadmaps/README_V1100_ROADMAP.md"
+    },
+    {
+      "baseline_sha256": "a0a0242a6c880af8291edc662277b9b003423c5bf2873bbd89633ec1a0868c92",
+      "candidate_sha256": "9eb3546ac57e47b0beffbe9c7208413444a17935e3fb1b2aaa354ba8f343d6ca",
+      "path": "conscious_agent/checkpoint_registry.py"
+    },
+    {
+      "baseline_sha256": "af0d71bfa20812ecbe4b4abc6e2ae1e5f84dec37770b2b323728257011aee8ac",
+      "candidate_sha256": "eac4b804825d4f58cfef8ae316d378e4256c8bca221ff77c73a8307d83a9833e",
+      "path": "conscious_agent/initiative_evidence_intake.py"
+    },
+    {
+      "baseline_sha256": "95cbdc8216cd75f1fa3f02582539ecbc2833d4c934cd8698b08168a7592f1631",
+      "candidate_sha256": "4280dc45572f7e205cbbfd1fef543afae017b4663202e6cbe53960e92874953f",
+      "path": "conscious_agent/release_authority.py"
+    },
+    {
+      "baseline_sha256": "14114057018071fee906397d33e68112f0a470b1e4cd2155a0d57d06110636c8",
+      "candidate_sha256": "b8ae4e1c89b557e3f2b7d838fc9d239b105dc9a4fa450808498b5a493ae08a5f",
+      "path": "conscious_agent/release_metadata.py"
+    },
+    {
+      "baseline_sha256": "d58487f0774e1e84a4bbf4d81c7e8ea024a032d2818fe68c5fc44a9777a4f489",
+      "candidate_sha256": "b0975f39ad6270572e5f2dfd86e3182aa9dbb6c52f028ea192f5492ec1d30bb3",
+      "path": "conscious_agent/supervised_initiative_queue.py"
+    },
+    {
+      "baseline_sha256": "d73c0e806145cd88c85bc6315442d7d3194b7c2063949e2812c0c914ca6dd63a",
+      "candidate_sha256": "66338ad68d92276e73c9422e04a116dbd86d3547be1da0e51736e2ea1602bd1f",
+      "path": "conscious_agent/v1489_product_capability_integration.py"
+    },
+    {
+      "baseline_sha256": "3b3f14841092bbaf66678db1c4f7b76c2a190d1a9d4ad14a4a37a0fbb869ab5a",
+      "candidate_sha256": "555f9a1449774e538af7bcbb89696a20a5f62bfaa6fcb7bfb5f3bc0cecf59d87",
+      "path": "docs/release/release_metadata_manifest.json"
+    },
+    {
+      "baseline_sha256": "5662163ffbf66ff5343042ac76747f2d7565ce7901ed5dd944e8e6720258fbfc",
+      "candidate_sha256": "90a40a73d16bfa6ce8a50b1756fcac2de8cdab4752c893b8fc250aa81cbbc2bd",
+      "path": "release_metadata.py"
+    }
+  ],
+  "contract": "eidolon-mobile-browser-cumulative-changed-files-v1",
+  "counts": {
+    "added_excluding_manifest_self": 15,
+    "changed": 12,
+    "deleted": 0
+  },
+  "deleted_files": [],
+  "from_version": "1501.3",
+  "manifest_self_hash_policy": "omitted_to_avoid_recursive_self_hash",
+  "manifest_self_path": "docs/roadmaps/EIDOLON_CHANGED_FILE_MANIFEST_V1501_3_TO_V1599_9.json",
+  "scope": "paths beneath the single Eidolon/ source root; runtime/cache/bytecode/temp artifacts excluded",
+  "to_version": "1599.9"
+}

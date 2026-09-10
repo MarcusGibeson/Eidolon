@@ -1,0 +1,6 @@
+from pathlib import Path
+import tempfile,json
+from conscious_agent.reflective_subject_intake import ReflectiveSubjectIntakeStore
+from conscious_agent.model_backed_reflective_session import ModelBackedReflectiveSessionStore
+from conscious_agent.reflective_communication_recommendation_governance import ReflectiveCommunicationRecommendationStore
+r=Path(tempfile.mkdtemp());sid=ReflectiveSubjectIntakeStore(r).register("s",subject_kind="concern",source_id="c1",source_contract="v1125.1")["subject_id"];ses=ModelBackedReflectiveSessionStore(r,model_generate=lambda p:'{"outcome":"deliberate_silence","conclusion":"","uncertainty":0.2,"evidence_refs":["c1"],"communication_recommendation":"silence"}');ss=ses.run("m",subject_id=sid)["session_id"];st=ReflectiveCommunicationRecommendationStore(r);a=st.record("r",session_id=ss);i=st.inspection_summary();checks=[a["decision"]=="remain_silent",a["message_sent"] is False,i["recommendation_count"]==1,not i["message_sent"],not i["notification_created"],not i["initiative_created"],not i["external_action_executed"],not i["conclusions_exposed"],not i["provider_payloads_exposed"],not i["hidden_reasoning_exposed"]];print(json.dumps({"passed":sum(checks),"total":10,"suite":"v1125.4"}));raise SystemExit(0 if all(checks) else 1)

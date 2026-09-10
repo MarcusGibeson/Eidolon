@@ -1,0 +1,4 @@
+import json,tempfile
+from pathlib import Path
+from conscious_agent.reflection_quality_intake_checkpoint import build_reflection_quality_intake_checkpoint
+r=build_reflection_quality_intake_checkpoint(Path(tempfile.mkdtemp()),source_root=Path(__file__).resolve().parents[1]);checks=[r['contract_version']=='v1126.2',r['ok'],r['passed']==18,r['total']==18,not r['runtime_mutated'],not r['source_modified'],not r['conclusions_exposed'],not r['hidden_reasoning_exposed'],not r['belief_updated'],not r['goal_updated'],not r['self_model_updated'],not r['message_sent'],not r['provider_contacted'],not r['external_action_executed'],r['signals']['contract_version']=='v1126.0',r['candidates']['contract_version']=='v1126.1',len(r['checks'])==18,all(x['status']=='pass' for x in r['checks'])];print(json.dumps({'passed':sum(checks),'total':18,'suite':'v1126.2'}));raise SystemExit(0 if all(checks) else 1)
