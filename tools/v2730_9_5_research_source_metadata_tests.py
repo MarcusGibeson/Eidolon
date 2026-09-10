@@ -32,7 +32,7 @@ RUNTIME = Path(tempfile.mkdtemp(prefix="eidolon-v2730-9-5-runtime-"))
 os.environ["EIDOLON_DATA_DIR"] = str(RUNTIME)
 
 from bounded_research_reasoning import decompose_research_objective
-from governed_public_web_research_adapter import _VisibleTextParser, _declared_source_kind
+from governed_public_web_research_adapter import _VisibleTextParser, _declared_document_form
 from research_source_independence import source_evidence_role
 from research_web_intelligence_v2100 import (
     assess_source_candidate,
@@ -150,28 +150,37 @@ require(demand_subquestion["requires_current_evidence"] is True, "durable_window
 require(plan_research("x demand", freshness="slow_changing")["max_source_age_days"] == 730, "durable_window_is_730_days")
 require(plan_research("x demand", freshness="current")["max_source_age_days"] == 30, "current_window_is_30_days")
 
-# --- a source kind is read from what the document declares about itself ----
+# --- a declared type names the page's form, never its authority -------------
+#
+# Superseded deliberately. These checks asserted that a declared type sets the
+# source kind: ScholarlyArticle and Dataset became primary data, NewsArticle a
+# reputable secondary source. In the seven-domain corpus that let a compliance
+# blog declaring "Dataset" count as a primary source, and made a self-declared
+# news article able to carry a science finding alone. A declared type is the
+# page's own claim about its form; it now names the form and grants nothing.
+# See v2731_1_2 for the authority invariant.
 
 for payload, expected in (
-    ('{"@type":"ScholarlyArticle"}', "primary_data"),
-    ('{"@type":"Dataset"}', "primary_data"),
-    ('{"@type":"NewsArticle"}', "reputable_secondary"),
-    ('{"@type":"DiscussionForumPosting"}', "community_experience"),
+    ('{"@type":"ScholarlyArticle"}', "scholarly_article"),
+    ('{"@type":"Dataset"}', "dataset"),
+    ('{"@type":"NewsArticle"}', "news_article"),
+    ('{"@type":"DiscussionForumPosting"}', "community_post"),
 ):
-    require(_declared_source_kind(parse(ld_page(payload)).declared_types) == expected, f"declared_type_maps_to_kind_{expected}")
+    require(_declared_document_form(parse(ld_page(payload)).declared_types) == expected,
+            f"declared_type_names_form_{expected}")
 
-# A vendor blog declaring itself an article is exactly the case this must not promote.
+# Bare article-like types cannot separate journalism from a vendor's own blog.
 WEAK_TYPES = ('{"@type":"Article"}', '{"@type":"BlogPosting"}', '{"@type":"WebPage"}', '{"@type":"Product"}')
 require(
-    all(_declared_source_kind(parse(ld_page(weak)).declared_types) == "" for weak in WEAK_TYPES),
-    "weak_declared_types_are_not_promoted",
+    all(_declared_document_form(parse(ld_page(weak)).declared_types) == "" for weak in WEAK_TYPES),
+    "weak_declared_types_name_no_form",
 )
 
 graph = parse(ld_page('{"@context":"https://schema.org","@graph":[{"@type":"WebSite"},{"@type":"NewsArticle","datePublished":"%s"}]}' % RECENT))
-require(_declared_source_kind(graph.declared_types) == "reputable_secondary", "json_ld_graph_nesting_is_traversed")
+require(_declared_document_form(graph.declared_types) == "news_article", "json_ld_graph_nesting_is_traversed")
 require(RECENT in graph.publication_dates, "json_ld_graph_date_published_is_extracted")
 og_page = parse('<html><head><meta property="og:type" content="DiscussionForumPosting"></head><body><p>x</p></body></html>')
-require(_declared_source_kind(og_page.declared_types) == "community_experience", "open_graph_type_is_read")
+require(_declared_document_form(og_page.declared_types) == "community_post", "open_graph_type_is_read")
 
 malformed = parse(ld_page("{not valid json"))
 require(malformed.declared_types == [], "malformed_json_ld_declares_no_type")

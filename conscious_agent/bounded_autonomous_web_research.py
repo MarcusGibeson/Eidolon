@@ -202,9 +202,11 @@ def _inferred_source_kind(url: str, supplied: str) -> str:
         return kind
     from research_source_classification import classify_source_kind
     parsed = urlsplit(str(url or ""))
-    path = (parsed.path or "").lower()
-    if "/dataset" in path or "/data/" in path:
-        return "primary_data"
+    # A "/dataset" or "/data/" path used to make any host primary data. A path
+    # says what a page is about, not who publishes it - the same confusion the
+    # documentation and pricing-path rules already corrected. A genuine data
+    # publisher is recognised by its host (a reserved or academic domain, a
+    # scholarly host) in classify_source_kind; a path alone grants nothing.
     if (parsed.hostname or "").lower() in {"g2.com", "www.g2.com", "capterra.com", "www.capterra.com"}:
         return "specialist_secondary"
     return classify_source_kind(url, "unknown")

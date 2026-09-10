@@ -21,9 +21,9 @@ from urllib.parse import parse_qs, quote_plus, unquote, urljoin, urlsplit, urlun
 import requests
 
 try:
-    from research_web_intelligence_v2100 import NATIVE_RECEIPT_CONTRACT_VERSION, SOURCE_QUALITY, derive_source_freshness
+    from research_web_intelligence_v2100 import NATIVE_RECEIPT_CONTRACT_VERSION, derive_source_freshness
 except ImportError:
-    from research_web_intelligence_v2100 import NATIVE_RECEIPT_CONTRACT_VERSION, SOURCE_QUALITY, derive_source_freshness
+    from research_web_intelligence_v2100 import NATIVE_RECEIPT_CONTRACT_VERSION, derive_source_freshness
 
 
 CONTRACT_VERSION = "v2501.1"
@@ -168,28 +168,38 @@ class _SearchLinkParser(HTMLParser):
             self.links.append(href)
 
 
-# What a document declares itself to be is a claim by the publisher, not a guess
-# about quality. Bare "article"/"blogposting" is deliberately absent: it cannot
-# separate journalism from a vendor's own blog, and an undeclared or unrecognised
-# type stays unknown, which remains inadmissible rather than promoted on suspicion.
-_DECLARED_TYPE_SOURCE_KINDS = {
-    "scholarlyarticle": "primary_data",
-    "dataset": "primary_data",
-    "report": "primary_data",
-    "newsarticle": "reputable_secondary",
-    "reportagenewsarticle": "reputable_secondary",
-    "analysisnewsarticle": "reputable_secondary",
-    "discussionforumposting": "community_experience",
-    "socialmediaposting": "community_experience",
-    "qapage": "community_experience",
+# What a document declares itself to be is its *form*, stated by the page itself.
+# It is not evidence of who stands behind it. Read as authority, a compliance blog
+# declaring "Dataset" in its JSON-LD became primary data at quality 0.95, and any
+# site declaring "NewsArticle" became a reputable secondary source able to carry a
+# finding alone - which is what carried the science finding in the seven-domain
+# corpus. That is the document-form versus publisher-authority confusion the
+# documentation and pricing-path rules already fixed, a third time.
+#
+# So a declared type names the form and nothing more. Authority comes from the URL
+# and host rules and from the claim-source relationship. Bare "article",
+# "blogposting" and "webpage" name no form at all: they cannot separate
+# journalism from a vendor's own blog.
+_DECLARED_TYPE_DOCUMENT_FORMS = {
+    "scholarlyarticle": "scholarly_article",
+    "medicalscholarlyarticle": "scholarly_article",
+    "dataset": "dataset",
+    "report": "report",
+    "newsarticle": "news_article",
+    "reportagenewsarticle": "news_article",
+    "analysisnewsarticle": "news_article",
+    "discussionforumposting": "community_post",
+    "socialmediaposting": "community_post",
+    "qapage": "community_post",
 }
 
 
-def _declared_source_kind(declared_types: Iterable[str]) -> str:
+def _declared_document_form(declared_types: Iterable[str]) -> str:
+    """The form a page declares for itself, or "" when it declares none we know."""
     for token in declared_types:
-        kind = _DECLARED_TYPE_SOURCE_KINDS.get(str(token or "").casefold())
-        if kind:
-            return kind
+        form = _DECLARED_TYPE_DOCUMENT_FORMS.get(str(token or "").casefold())
+        if form:
+            return form
     return ""
 
 
@@ -632,15 +642,12 @@ class GovernedPublicWebResearchAdapter:
             if derived["freshness_known"]:
                 observed_freshness = derived
                 break
-        # Search results carry no source kind either, and an unknown kind can
-        # support no evidence dimension at all. A type the document declares
-        # about itself is admissible metadata; anything else stays unknown.
+        # The source kind comes from the candidate's URL and host classification.
+        # What the page declares about itself is its form, not its publisher's
+        # standing, so it is deliberately not consulted here: a page cannot make
+        # itself primary by saying so.
         source_kind = str(source_candidate.get("source_kind") or "unknown")[:60]
         quality_score = float(source_candidate.get("quality_score") or 0.0)
-        declared_kind = _declared_source_kind(parser.declared_types)
-        if declared_kind and source_kind in {"", "unknown"}:
-            source_kind = declared_kind
-            quality_score = float(SOURCE_QUALITY[declared_kind])
         operation_digest = _digest({"plan_digest": plan_digest, "source_candidate_digest": candidate_digest})
         terminal_result_digest = _digest({
             "content_digest": fetched["content_digest"],
