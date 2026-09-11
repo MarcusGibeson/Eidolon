@@ -136,13 +136,30 @@ except PublicWebResearchError as error:
     credentialed_rejected = error.code == "public_search_endpoint_rejected"
 require(credentialed_rejected, "credentialed_search_endpoint_rejected")
 
-private, _ = adapter_for(FakeResponse(b"private"))
+private, private_factory = adapter_for(FakeResponse(b"private"))
 try:
     private._fetch("http://127.0.0.1/private", max_bytes=100, timeout_seconds=2)
     private_rejected = False
 except PublicWebResearchError as error:
-    private_rejected = error.code == "public_web_private_or_non_global_target_rejected"
-require(private_rejected, "literal_private_network_target_rejected_before_request")
+    private_rejected = error.code == "public_web_url_rejected"
+require(
+    private_rejected and not private_factory.sessions and not private_factory.calls,
+    "literal_private_network_target_rejected_before_request",
+)
+
+resolved_private, resolved_private_factory = adapter_for(
+    FakeResponse(b"private"),
+    custom_resolver=lambda host, port, **kwargs: [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("10.0.0.5", port))],
+)
+try:
+    resolved_private._fetch("https://example.com/", max_bytes=100, timeout_seconds=2)
+    resolved_private_rejected = False
+except PublicWebResearchError as error:
+    resolved_private_rejected = error.code == "public_web_private_or_non_global_target_rejected"
+require(
+    resolved_private_rejected and not resolved_private_factory.sessions and not resolved_private_factory.calls,
+    "resolved_private_network_target_rejected_before_request",
+)
 
 redirect, redirect_factory = adapter_for(
     FakeResponse(status=302, headers={"Location": "http://127.0.0.1/private", "Content-Type": "text/html"}),
@@ -151,7 +168,7 @@ try:
     redirect._fetch("https://example.com/start", max_bytes=100, timeout_seconds=2)
     redirect_rejected = False
 except PublicWebResearchError as error:
-    redirect_rejected = error.code == "public_web_private_or_non_global_target_rejected"
+    redirect_rejected = error.code == "public_web_url_rejected"
 require(redirect_rejected and len(redirect_factory.calls) == 1, "redirect_target_revalidated_before_follow")
 
 dns_calls = 0
