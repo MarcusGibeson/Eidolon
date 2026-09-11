@@ -9,6 +9,45 @@ from collections.abc import Mapping
 from research_source_independence import independence_summary, source_evidence_role, source_identity
 
 
+def digest_of_claim(claim: object) -> str:
+    """The digest that binds a source assessment to one exact claim.
+
+    Assessments are grounded per claim, and the model is told each assessed claim
+    must equal the finding summary. Everything that asks "did this source support
+    this finding" compares against this digest, so it has one definition.
+    """
+    return hashlib.sha256(str(claim if claim is not None else "").encode()).hexdigest()
+
+
+def grounded_supporting_citation_ids(
+    assessments: object,
+    claim: object,
+    offered_ids: object = None,
+) -> list[str]:
+    """Citations the model tied, through an observed passage, to supporting exactly this claim.
+
+    An assessment only reaches this list after grounding has verified that its
+    passage was offered and appears literally in the observed excerpt. The support
+    judgement itself remains the model's: grounding verifies provenance, not
+    meaning. An assessment made for a different claim never counts, however
+    favourable.
+    """
+    digest = digest_of_claim(claim)
+    allowed = None if offered_ids is None else {str(item) for item in offered_ids}  # type: ignore[union-attr]
+    ids: list[str] = []
+    for row in assessments if isinstance(assessments, list) else []:
+        if not isinstance(row, Mapping):
+            continue
+        if row.get("model_assessment") != "supports" or row.get("claim_digest") != digest:
+            continue
+        if row.get("textual_provenance_verified") is not True:
+            continue
+        cid = str(row.get("citation_id") or "")
+        if cid and (allowed is None or cid in allowed) and cid not in ids:
+            ids.append(cid)
+    return ids
+
+
 PASSAGE_MIN_CHARS = 30
 PASSAGE_MAX_CHARS = 600
 PASSAGE_OPTION_LIMIT = 3
@@ -143,7 +182,7 @@ def assess_source_claims(payload, *, documents, citations, required_dimension=""
         role = source_evidence_role(source_index[cid])
         accepted.append({
             "citation_id": cid,
-            "claim_digest": hashlib.sha256(claim.encode()).hexdigest(),
+            "claim_digest": digest_of_claim(claim),
             "passage_digest": hashlib.sha256(quote.encode()).hexdigest(),
             "observed_excerpt_digest": hashlib.sha256(excerpt.encode()).hexdigest(),
             "model_assessment": stance,

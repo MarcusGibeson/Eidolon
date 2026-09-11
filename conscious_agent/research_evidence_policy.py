@@ -46,7 +46,7 @@ import re
 from typing import Any, Callable
 from urllib.parse import urlsplit
 
-CONTRACT_VERSION = "v2732.0.0"
+CONTRACT_VERSION = "v2732.1.0"
 
 MINIMUM_CLAIM_SOURCE_FIT = 0.5
 MINIMUM_INDEPENDENT_PUBLISHERS = 2
@@ -547,13 +547,33 @@ CITATION_CONDITIONS: dict[
     "freshness_current": _freshness_current,
     "stance_supports": _stance_supports,
     "evidence_type_admissible": _evidence_type_admissible,
+    "grounded_support": lambda citation, assessment, context: _grounded_support(citation, context),
 }
 
 
 # Conditions that read the synthesis model's own assessment of a source. They
 # cannot be evaluated before synthesis runs, so selection leaves them to the
 # post-synthesis verdict, exactly as before.
-ASSESSMENT_DEPENDENT_CONDITIONS = frozenset({"stance_supports", "evidence_type_admissible"})
+ASSESSMENT_DEPENDENT_CONDITIONS = frozenset({"stance_supports", "evidence_type_admissible", "grounded_support"})
+
+
+def _grounded_support(citation: Mapping[str, Any], context: Mapping[str, Any]) -> bool:
+    """An observed passage from this source was judged to support exactly this claim.
+
+    A citation could count as supporting evidence merely by being authoritative,
+    current and relevant-looking. In the seven-domain corpus a history finding
+    cited a source the model had itself assessed as "unclear" - as it had all
+    eight of its sources - and nothing in the general policy noticed, because the
+    stance check existed only for demand.
+
+    When no assessment step ran at all there is nothing to judge against, and the
+    receipt says so. When it ran and grounded nothing, that is a result: no source
+    supports the claim.
+    """
+    supporting = context.get("grounded_supporting_ids")
+    if supporting is None:
+        return True  # not judged; see grounded_support_judged
+    return str(citation.get("citation_id") or "") in supporting
 
 
 # --- finding conditions ------------------------------------------------------
@@ -651,7 +671,8 @@ class EvidencePolicy:
 # it admit its limits.
 BASELINE_EVIDENCE_POLICY = EvidencePolicy(
     policy_code="baseline",
-    citation_conditions=("source_authority_assessed", "source_not_promotional", "claim_source_fit"),
+    citation_conditions=("source_authority_assessed", "source_not_promotional", "claim_source_fit",
+                         "grounded_support"),
     finding_conditions=(
         "citation_present", "answers_objective", "corroboration_satisfied",
         "uncertainty_declared_where_warranted",
@@ -758,6 +779,7 @@ def evaluate_policy(
     objective: str = "",
     currency_reason: str = "",
     freshness_window: str = "",
+    assessments: list[Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Report which named conditions a finding and its own citations fail.
 
@@ -774,7 +796,7 @@ def evaluate_policy(
     """
     row = dict(finding or {})
     rows = [dict(item) for item in (citations or []) if isinstance(item, Mapping)]
-    assessments = dict(assessments_by_citation or {})
+    assessments_by_id = dict(assessments_by_citation or {})
 
     try:
         from research_source_classification import classification_reason, document_form
@@ -794,10 +816,26 @@ def evaluate_policy(
     # objective's own terms to know whether a source is the first party for it.
     terms = objective_terms(objective)
     risk_flags = claim_risk_flags(row)
+    # Which citations the model grounded as supporting exactly this finding's
+    # claim. None means no assessment step ran; an empty set means it ran and
+    # grounded nothing, which is itself a result.
+    grounded_ids: set[str] | None = None
+    claim_matched = claim_mismatched = 0
+    if isinstance(assessments, list):
+        from research_claim_assessment import digest_of_claim, grounded_supporting_citation_ids
+        grounded_ids = set(grounded_supporting_citation_ids(assessments, row.get("summary")))
+        finding_digest = digest_of_claim(row.get("summary"))
+        for item in assessments:
+            if isinstance(item, Mapping):
+                if item.get("claim_digest") == finding_digest:
+                    claim_matched += 1
+                else:
+                    claim_mismatched += 1
     base_context = {
         "policy_code": policy.policy_code,
         "claim_risk_flags": risk_flags,
         "objective_terms": terms,
+        "grounded_supporting_ids": grounded_ids,
     }
     evaluated: list[tuple[Mapping[str, Any], str, list[str]]] = []
     for citation in rows:
@@ -823,7 +861,7 @@ def evaluate_policy(
             version_signals += 1
         if authoritative_living_documentation(citation):
             living_documentation += 1
-        assessment = assessments.get(str(citation.get("citation_id") or ""))
+        assessment = assessments_by_id.get(str(citation.get("citation_id") or ""))
         failed = [
             name for name in policy.citation_conditions
             if name in CITATION_CONDITIONS and not CITATION_CONDITIONS[name](citation, assessment, citation_context)
@@ -875,6 +913,12 @@ def evaluate_policy(
         # Whether the relevance check had an objective to judge against, so a
         # clean answers_objective cannot be mistaken for a check that ran.
         "objective_terms_supplied": bool(terms),
+        # Whether grounded support could be judged, and the counts that separate a
+        # model that paraphrased the claim from one that found nothing supportive.
+        "grounded_support_judged": grounded_ids is not None,
+        "grounded_supporting_citation_count": len(grounded_ids or ()),
+        "claim_matched_assessment_count": claim_matched,
+        "claim_mismatched_assessment_count": claim_mismatched,
         "enforced": False,
     }
 

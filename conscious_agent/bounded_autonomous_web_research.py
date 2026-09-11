@@ -212,6 +212,54 @@ def _inferred_source_kind(url: str, supplied: str) -> str:
     return classify_source_kind(url, "unknown")
 
 
+def _complete_finding_citations(synthesis_result: dict[str, Any], *, offered_ids) -> dict[str, Any]:
+    """Add every offered source the model grounded as supporting this exact finding.
+
+    In the seven-domain corpus the model grounded five supporting passages for a
+    pricing finding and three for a demand finding, then cited one source each.
+    This adds the rest - and only the rest. A source is added when the model
+    examined it, pointed at a passage that grounding verified was actually
+    observed, and judged that passage supportive of this finding's exact claim.
+    Being admissible, authoritative or relevant is not enough, and an assessment
+    made for a different claim never counts. That is completion, not laundering.
+
+    The model's own payload is kept as model_payload, so anything that learns
+    from what the model produced is not told it produced citations it did not.
+    Any failure leaves the payload untouched.
+    """
+    try:
+        from bounded_research_reasoning import MAX_FINDING_CITATION_IDS
+        from research_claim_assessment import grounded_supporting_citation_ids
+        payload = synthesis_result.get("payload")
+        if not isinstance(payload, Mapping):
+            return {}
+        findings = payload.get("findings")
+        if not isinstance(findings, list) or len(findings) != 1 or not isinstance(findings[0], Mapping):
+            return {}
+        finding = dict(findings[0])
+        original = [str(item) for item in list(finding.get("citation_ids") or []) if isinstance(item, str) and item]
+        summary = synthesis_result.get("source_assessment_summary")
+        grounded = grounded_supporting_citation_ids(
+            summary.get("assessments") if isinstance(summary, Mapping) else None,
+            finding.get("summary"),
+            offered_ids,
+        )
+        # The model's own citations first, so the limit never drops what it chose.
+        completed = list(dict.fromkeys(original + grounded))[:MAX_FINDING_CITATION_IDS]
+        added = len(completed) - len(list(dict.fromkeys(original))[:MAX_FINDING_CITATION_IDS])
+        if added > 0:
+            synthesis_result["model_payload"] = payload
+            synthesis_result["payload"] = {**payload, "findings": [{**finding, "citation_ids": completed}]}
+        return {
+            "applied": True,
+            "original_cited_count": len(original),
+            "completed_cited_count": len(completed),
+            "added_citation_count": max(0, added),
+        }
+    except Exception:
+        return {}
+
+
 def _select_citable_evidence(*, citations, currency_requirement, objective="") -> dict[str, Any]:
     """Ask the shared evidence policy which observed sources synthesis may cite.
 
@@ -249,6 +297,11 @@ def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currenc
             objective=str(objective or ""),
             currency_reason=str(currency_reason or ""),
             freshness_window=str(freshness_window or ""),
+            # The full grounded list, so support is judged per exact claim. None
+            # when no assessment step ran, which the receipt reports as unjudged.
+            assessments=(list(assessment_summary["assessments"])
+                         if isinstance(assessment_summary, Mapping)
+                         and isinstance(assessment_summary.get("assessments"), list) else None),
         )
     except Exception:
         # An observation-only measurement must never affect the run it observes.
@@ -1523,6 +1576,14 @@ class BoundedResearchSessionStore:
                         if citable_ids else citation_rows
                     )
                     synthesis_result = dict(synthesize(decomposition=decomposition, citations=synthesis_citations) or {})
+                    # Completed before validation and the verdict, so both - and the
+                    # report - see every source the model grounded for this claim.
+                    citation_completion: dict[str, Any] = {}
+                    if synthesis_result.get("ok") and not requested_result_count:
+                        citation_completion = _complete_finding_citations(
+                            synthesis_result,
+                            offered_ids=[row["citation_id"] for row in synthesis_citations],
+                        )
                     if synthesis_result.get("ok"):
                         expected_dimensions = {
                             "demand", "competition", "implementation_dependencies", "free_tier_feasibility",
@@ -1534,8 +1595,7 @@ class BoundedResearchSessionStore:
                             and len(completed_candidate_follow_up_cells) >= requested_result_count * len(expected_dimensions)
                             and set(candidate_follow_up.get("evidence_dimensions") or []) == expected_dimensions
                         )
-                        validated_synthesis = validate_research_synthesis(
-                            synthesis_result.get("payload") if isinstance(synthesis_result.get("payload"), Mapping) else {},
+                        validation_kwargs = dict(
                             citations=citation_rows,
                             requested_result_count=int(decomposition.get("requested_result_count") or 0),
                             candidate_identities=validated_candidate_discovery,
@@ -1545,6 +1605,10 @@ class BoundedResearchSessionStore:
                                 str((decomposition.get("subquestions") or [{}])[0].get("evidence_dimension") or "")
                                 if decomposition.get("objective_shape") == "single_candidate_dimension" else ""
                             ),
+                        )
+                        validated_synthesis = validate_research_synthesis(
+                            synthesis_result.get("payload") if isinstance(synthesis_result.get("payload"), Mapping) else {},
+                            **validation_kwargs,
                         )
                         if not validated_synthesis.get("ok") and decomposition.get("objective_shape") == "single_candidate_dimension":
                             from research_claim_assessment import model_assessed_conclusion
@@ -1580,6 +1644,19 @@ class BoundedResearchSessionStore:
                             evidence_policy_evaluation["source_selection"] = {
                                 key: value for key, value in source_selection.items() if key != "citable_ids"
                             }
+                        if evidence_policy_evaluation and citation_completion:
+                            evidence_policy_evaluation["citation_completion"] = dict(citation_completion)
+                        # Training records what the model produced and how *that*
+                        # validated. When completion changed the finding, the model's
+                        # own output is validated separately rather than credited with
+                        # citations it did not make.
+                        model_payload = synthesis_result.get("model_payload", synthesis_result.get("payload"))
+                        capture_validation = validated_synthesis
+                        if "model_payload" in synthesis_result:
+                            capture_validation = validate_research_synthesis(
+                                model_payload if isinstance(model_payload, Mapping) else {},
+                                **validation_kwargs,
+                            )
                         synthesis_result["validation_status"] = str(validated_synthesis.get("status") or "")
                         if capture_training_evidence:
                             try:
@@ -1599,12 +1676,12 @@ class BoundedResearchSessionStore:
                                             "citation_ids": [str(row.get("citation_id") or "") for row in citation_rows],
                                             "candidate_follow_up": candidate_follow_up,
                                         },
-                                        model_output=synthesis_result.get("payload") if isinstance(synthesis_result.get("payload"), Mapping) else {},
+                                        model_output=model_payload if isinstance(model_payload, Mapping) else {},
                                         validation={
-                                            "passed": bool(validated_synthesis.get("ok") is True and validated_synthesis.get("status") != "research_model_assessed_inference"),
+                                            "passed": bool(capture_validation.get("ok") is True and capture_validation.get("status") != "research_model_assessed_inference"),
                                             "deterministic": True,
                                             "validator": "validate_research_synthesis",
-                                            "status": str(validated_synthesis.get("status") or ""),
+                                            "status": str(capture_validation.get("status") or ""),
                                         },
                                         provenance={
                                             "session_digest": _digest(session_id),

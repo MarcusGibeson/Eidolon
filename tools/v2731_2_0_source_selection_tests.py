@@ -153,10 +153,13 @@ demand = select_citable_evidence(DEMAND_EVIDENCE_POLICY, citations=[survey],
                                  objective="Research creator sponsorship payment delays demand.")
 require(demand["citable_ids"] == ["web-1"],
         "a_source_is_not_withheld_for_an_assessment_that_has_not_happened_yet")
-require(demand["assessment_conditions_deferred"] == ["evidence_type_admissible", "stance_supports"],
+# Updated deliberately when grounded_support joined the baseline (v2731_2_1): it
+# reads the model's grounded assessment, so every policy now defers it to the
+# verdict, and no policy is left without an assessment-dependent condition.
+require(demand["assessment_conditions_deferred"] == ["evidence_type_admissible", "grounded_support", "stance_supports"],
         "the_deferred_conditions_are_named")
 require(select_citable_evidence(REFERENCE_EVIDENCE_POLICY, citations=[survey], objective=CODING)
-        ["assessment_conditions_deferred"] == [], "a_policy_without_assessment_conditions_defers_none")
+        ["assessment_conditions_deferred"] == ["grounded_support"], "grounded_support_is_deferred_for_every_policy")
 
 # --- the run-side helper never stops a run ------------------------------------
 

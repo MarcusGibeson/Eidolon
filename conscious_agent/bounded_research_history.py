@@ -117,6 +117,11 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "uncited_admissible_citation_count": _bounded_count(value.get("uncited_admissible_citation_count")),
         "admissible_evidence_not_cited": bool(value.get("admissible_evidence_not_cited")),
         "source_selection": _source_selection_projection(value.get("source_selection")),
+        "grounded_support_judged": bool(value.get("grounded_support_judged")),
+        "grounded_supporting_citation_count": _bounded_count(value.get("grounded_supporting_citation_count")),
+        "claim_matched_assessment_count": _bounded_count(value.get("claim_matched_assessment_count")),
+        "claim_mismatched_assessment_count": _bounded_count(value.get("claim_mismatched_assessment_count")),
+        "citation_completion": _citation_completion_projection(value.get("citation_completion")),
         "finding_condition_failures": [
             code for code in (
                 _clean(item, 60) for item in list(value.get("finding_condition_failures") or [])[:12]
@@ -124,6 +129,18 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         ],
         "would_admit": bool(value.get("would_admit")),
         "enforced": bool(value.get("enforced")),
+    }
+
+
+def _citation_completion_projection(value: object) -> dict[str, Any]:
+    """Project how many grounded supporting citations were added to a finding."""
+    if not isinstance(value, Mapping) or not value:
+        return {}
+    return {
+        "applied": bool(value.get("applied")),
+        "original_cited_count": _bounded_count(value.get("original_cited_count")),
+        "completed_cited_count": _bounded_count(value.get("completed_cited_count")),
+        "added_citation_count": _bounded_count(value.get("added_citation_count")),
     }
 
 

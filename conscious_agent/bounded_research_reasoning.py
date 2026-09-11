@@ -270,6 +270,11 @@ _DIMENSION_FRESHNESS = {
 
 EVIDENCE_CURRENCY_REQUIREMENTS = ("reference", "current", "demand_current")
 
+# How many citation ids one finding keeps. Validation truncates silently past
+# this, so anything that adds citations to a finding must respect the same limit
+# or the report and the policy would judge different citation lists.
+MAX_FINDING_CITATION_IDS = 6
+
 # Wording that makes a claim depend on how recent its evidence is. Naming a
 # version does not: "asyncio behaviour in 3.14" is a reference question, and the
 # version is the compatibility answer a reader wants.
@@ -1750,7 +1755,7 @@ def validate_research_synthesis(
         zero_budget_rationale = _clean(raw_row.get("zero_budget_rationale"), 360)
         conclusion = _clean(raw_row.get("evidence_summary") or raw_row.get("conclusion") or raw_row.get("summary") or raw_row.get("why"), 700)
         supplied_ids = raw_row.get("citation_ids") or raw_row.get("citations") or raw_row.get("evidence") or []
-        ids = list(dict.fromkeys(_clean(value, 80) for value in list(supplied_ids) if _clean(value, 80) in citation_index))[:6]
+        ids = list(dict.fromkeys(_clean(value, 80) for value in list(supplied_ids) if _clean(value, 80) in citation_index))[:MAX_FINDING_CITATION_IDS]
         normalized_name = re.sub(r"[^a-z0-9]+", " ", title.casefold()).strip()
         generic_name = bool(re.search(
             r"\b(?:strategy|strategies|opportunities|ideas|guide|framework|frameworks|pricing|validation|"
