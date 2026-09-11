@@ -121,6 +121,9 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "grounded_supporting_citation_count": _bounded_count(value.get("grounded_supporting_citation_count")),
         "claim_matched_assessment_count": _bounded_count(value.get("claim_matched_assessment_count")),
         "claim_mismatched_assessment_count": _bounded_count(value.get("claim_mismatched_assessment_count")),
+        "exact_digest_matches": _bounded_count(value.get("exact_digest_matches")),
+        "normalized_exact_matches": _bounded_count(value.get("normalized_exact_matches")),
+        "different_claim_matches": _bounded_count(value.get("different_claim_matches")),
         "citation_completion": _citation_completion_projection(value.get("citation_completion")),
         "finding_condition_failures": [
             code for code in (

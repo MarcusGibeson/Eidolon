@@ -19,6 +19,30 @@ def digest_of_claim(claim: object) -> str:
     return hashlib.sha256(str(claim if claim is not None else "").encode()).hexdigest()
 
 
+_TRAILING_PUNCTUATION = re.compile(r"[\s.!?;:,]+$")
+
+
+def normalized_claim_text(claim: object) -> str:
+    """A claim with case, whitespace and trailing punctuation made irrelevant.
+
+    Only those three. Anything else - a unit, a figure, a word - is part of the
+    proposition, so "$0.30" and "30 cents" stay different claims.
+    """
+    collapsed = " ".join(str(claim if claim is not None else "").split()).casefold()
+    return _TRAILING_PUNCTUATION.sub("", collapsed)
+
+
+def digest_of_normalized_claim(claim: object) -> str:
+    """A content-free digest of the normalized claim, for measurement only.
+
+    Admission still keys on digest_of_claim. This exists so a receipt can say
+    whether an assessment made for "other wording" differed only cosmetically -
+    in which case the identity test is too literal - or changed the proposition,
+    in which case it is right and the prompt is the thing to fix.
+    """
+    return hashlib.sha256(normalized_claim_text(claim).encode()).hexdigest()
+
+
 def grounded_supporting_citation_ids(
     assessments: object,
     claim: object,
@@ -183,6 +207,7 @@ def assess_source_claims(payload, *, documents, citations, required_dimension=""
         accepted.append({
             "citation_id": cid,
             "claim_digest": digest_of_claim(claim),
+            "normalized_claim_digest": digest_of_normalized_claim(claim),
             "passage_digest": hashlib.sha256(quote.encode()).hexdigest(),
             "observed_excerpt_digest": hashlib.sha256(excerpt.encode()).hexdigest(),
             "model_assessment": stance,

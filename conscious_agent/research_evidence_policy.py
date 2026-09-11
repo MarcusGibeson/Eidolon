@@ -46,7 +46,7 @@ import re
 from typing import Any, Callable
 from urllib.parse import urlsplit
 
-CONTRACT_VERSION = "v2732.1.0"
+CONTRACT_VERSION = "v2732.2.0"
 
 MINIMUM_CLAIM_SOURCE_FIT = 0.5
 MINIMUM_INDEPENDENT_PUBLISHERS = 2
@@ -821,16 +821,27 @@ def evaluate_policy(
     # grounded nothing, which is itself a result.
     grounded_ids: set[str] | None = None
     claim_matched = claim_mismatched = 0
+    exact_digest_matches = normalized_exact_matches = different_claim_matches = 0
     if isinstance(assessments, list):
-        from research_claim_assessment import digest_of_claim, grounded_supporting_citation_ids
+        from research_claim_assessment import (
+            digest_of_claim, digest_of_normalized_claim, grounded_supporting_citation_ids,
+        )
         grounded_ids = set(grounded_supporting_citation_ids(assessments, row.get("summary")))
         finding_digest = digest_of_claim(row.get("summary"))
+        finding_normalized = digest_of_normalized_claim(row.get("summary"))
         for item in assessments:
             if isinstance(item, Mapping):
                 if item.get("claim_digest") == finding_digest:
                     claim_matched += 1
-                else:
-                    claim_mismatched += 1
+                    exact_digest_matches += 1
+                    continue
+                claim_mismatched += 1
+                # Measurement only: admission above still requires the exact digest.
+                normalized = item.get("normalized_claim_digest")
+                if normalized == finding_normalized:
+                    normalized_exact_matches += 1
+                elif normalized:
+                    different_claim_matches += 1
     base_context = {
         "policy_code": policy.policy_code,
         "claim_risk_flags": risk_flags,
@@ -919,6 +930,12 @@ def evaluate_policy(
         "grounded_supporting_citation_count": len(grounded_ids or ()),
         "claim_matched_assessment_count": claim_matched,
         "claim_mismatched_assessment_count": claim_mismatched,
+        # Of the assessments made for other wording: which matched once case,
+        # whitespace and trailing punctuation are ignored, and which stated a
+        # different proposition. Admission is not changed by either.
+        "exact_digest_matches": exact_digest_matches,
+        "normalized_exact_matches": normalized_exact_matches,
+        "different_claim_matches": different_claim_matches,
         "enforced": False,
     }
 
