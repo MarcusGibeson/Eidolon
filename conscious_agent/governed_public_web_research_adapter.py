@@ -36,6 +36,7 @@ FINDINGS_SYNTHESIS_MAX_TOKENS = 640
 MAX_FINDINGS_SYNTHESIS_MAX_TOKENS = 1600
 FINDINGS_TOKENS_PER_EXTRA_ASSESSMENT = 90
 MAX_SOURCE_ASSESSMENTS = 8
+ANSWER_QUALITY_MAX_TOKENS = 40
 
 
 def _single_synthesis_request(prompt, *, temperature, max_tokens, timeout_seconds=None):
@@ -390,6 +391,34 @@ def _evidence_producer_signal(public_url: str, visible: str) -> str:
     return "self_promoting_publisher"
 
 
+# What each requested relation asks for, and what separates a partial answer from
+# a complete one. The relation is decided from the objective by
+# research_evidence_policy.requested_relation; the judge only grades the finding.
+_ANSWER_QUALITY_CRITERIA = {
+    "mechanism": ("how something works or comes about",
+                  "partial (names the agent, force or means without the process); "
+                  "complete (describes the intermediate steps by which it happens)"),
+    "explanation": ("why something happened",
+                    "partial (names causes or factors without connecting them to the outcome); "
+                    "complete (explains how the causes produced the outcome)"),
+    "causes": ("what caused something",
+               "partial (hints at a cause without identifying it); "
+               "complete (identifies one or more of the causes asked for - an explanation is not required)"),
+    "comparison": ("how two or more things differ",
+                   "partial (describes only one side, or only what they share); complete (states how they differ)"),
+    "amount": ("an amount, price, fee or rate",
+               "partial (gives an amount without what it applies to); complete (states the amount asked for)"),
+    "state": ("the current status of something",
+              "partial (describes only a past or planned status); complete (states the current status)"),
+    "configuration": ("how to configure, set up or do something",
+                      "partial (names the relevant tool or setting without how to use it); "
+                      "complete (gives actionable settings, options, values or steps)"),
+    "descriptive": ("what something is or how it behaves",
+                    "partial (touches what was asked only in passing); "
+                    "complete (describes what was asked - no mechanism or explanation is required)"),
+}
+
+
 def _focused_excerpt(text: str, terms: Iterable[str], *, limit: int = 2400, max_sentences: int = 12) -> str:
     sentences = [piece.strip() for piece in re.split(r"(?<=[.!?])\s+|\s{2,}", text) if piece.strip()]
     needles = [str(term).casefold() for term in terms if str(term).strip()][:24]
@@ -490,6 +519,54 @@ class GovernedPublicWebResearchAdapter:
         if self._synthesis_deadline is None:
             return None
         return max(0.0, self._synthesis_deadline - self.clock())
+
+    # A separate model call that grades answer quality. Kept apart from the injected
+    # synthesizer so a fixture synthesizer is never silently reused as a judge.
+    answer_judge: Callable[[str], Mapping[str, Any] | str] | None = None
+
+    def judge_answer_quality(self, *, objective: str, finding: str, requested_relation: str) -> dict[str, Any]:
+        """Judge, apart from synthesis, whether a finding supplies what was asked.
+
+        Measurement only. The judge never sees the evidence and never writes the
+        finding; it returns one fixed level, and nothing admits or refuses on it.
+        The requested relation comes from the objective deterministically: asked to
+        infer it in the benchmark, the judge read a question about behaviour as one
+        about mechanism and demanded depth nobody had asked for.
+        """
+        from research_evidence_policy import ANSWER_QUALITY_LEVELS
+        criteria = _ANSWER_QUALITY_CRITERIA.get(str(requested_relation or ""))
+        question, claim = _clean(objective, 600), _clean(finding, 700)
+        if criteria is None or not question or not claim:
+            return {"ok": False, "status": "answer_quality_not_judgeable", "provider_contacted": False}
+        if self.answer_judge is None and self.synthesizer is not None:
+            return {"ok": False, "status": "answer_quality_judge_unavailable", "provider_contacted": False}
+        remaining = self._synthesis_remaining()
+        if remaining is not None and remaining < 5.0:
+            return {"ok": False, "status": "answer_quality_time_budget_exhausted", "provider_contacted": False}
+        asks, levels = criteria
+        prompt = (
+            "You check whether a research finding answers the question that was asked. "
+            "You do not check whether it is true.\n"
+            f"Question: {question}\nThe question asks for {asks}.\nFinding: {claim}\n"
+            "Levels: off_topic (not about the subject); topic_only (about the subject but does not give what "
+            "was asked - for example it restates the question, gives a category, or lists outcomes); "
+            f"{levels}.\n"
+            'Return only JSON: {"answer":"off_topic|topic_only|partial|complete"}'
+        )
+        try:
+            if self.answer_judge is not None:
+                raw = self.answer_judge(prompt)
+            else:
+                raw = _single_synthesis_request(
+                    prompt, temperature=0.0, max_tokens=ANSWER_QUALITY_MAX_TOKENS,
+                    timeout_seconds=None if remaining is None else min(30.0, remaining),
+                )
+        except Exception:
+            return {"ok": False, "status": "answer_quality_judge_failed", "provider_contacted": True}
+        level = str(_json_object(raw).get("answer") or "").strip().lower()
+        if level not in ANSWER_QUALITY_LEVELS:
+            return {"ok": False, "status": "answer_quality_judge_invalid", "provider_contacted": True}
+        return {"ok": True, "status": "answer_quality_judged", "answer_level": level, "provider_contacted": True}
 
     def describe(self) -> dict[str, Any]:
         return {

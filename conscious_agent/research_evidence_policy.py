@@ -46,7 +46,7 @@ import re
 from typing import Any, Callable
 from urllib.parse import urlsplit
 
-CONTRACT_VERSION = "v2732.4.0"
+CONTRACT_VERSION = "v2732.5.0"
 
 MINIMUM_CLAIM_SOURCE_FIT = 0.5
 MINIMUM_INDEPENDENT_PUBLISHERS = 2
@@ -667,6 +667,86 @@ def _answers_objective(finding: Mapping[str, Any], admissible: list[Mapping[str,
     return True
 
 
+# --- answer quality: measurement only ------------------------------------------
+#
+# answers_objective catches a finding that admits it could not answer. It cannot
+# see one that answers something easier than what was asked: "how do mRNA vaccines
+# produce an immune response" answered with "mRNA vaccines induce immune
+# responses" is on topic, supported, and restates the question. None of fifteen
+# stored how-question findings was a complete mechanism.
+#
+# Whether a finding explains a mechanism is semantic. A deterministic answer-form
+# check failed exactly those cases in a 55-case benchmark - it could not tell an
+# agent-only answer from a restatement, and lost every acronym subject - so a
+# separate model judge supplies the answer level. This module stays
+# deterministic: it derives which relation the objective asked for, and maps the
+# judge's fixed code onto three measured fields. None of them feeds a condition
+# or would_admit.
+
+REQUESTED_RELATIONS = ("mechanism", "explanation", "causes", "comparison", "amount", "state",
+                       "configuration", "descriptive")
+# Relations whose full answer needs more than naming what was asked for: the
+# intermediate steps of a mechanism, or how causes produced an outcome. "What were
+# the causes of X" is answered by the causes; "why did X happen" is not.
+DEPTH_REQUESTING_RELATIONS = frozenset({"mechanism", "explanation"})
+ANSWER_QUALITY_LEVELS = ("off_topic", "topic_only", "partial", "complete")
+
+# First match wins, so the more specific relations come first: "why" before any
+# causal word, "how to" and configuration before a bare "how", a fee before "how".
+_REQUESTED_RELATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+    ("comparison", re.compile(r"\b(?:differences?|differ|differs|compare|compared|comparison|versus|vs)\b"
+                              r"|\bbetween\b.+\band\b", re.IGNORECASE)),
+    ("explanation", re.compile(r"\bwhy\b", re.IGNORECASE)),
+    ("causes", re.compile(r"\b(?:causes?|caused|reasons?|factors?|origins?)\b|\bled to\b|\bresponsible for\b",
+                          re.IGNORECASE)),
+    ("configuration", re.compile(r"\bhow to\b|\b(?:configure|configured|configuring|configuration|settings?"
+                                 r"|set ?up|install|installation|tuning|tune)\b", re.IGNORECASE)),
+    ("amount", re.compile(r"\bhow (?:much|many)\b|\b(?:costs?|price|prices|pricing|fees?|rates?|amount)\b",
+                          re.IGNORECASE)),
+    ("mechanism", re.compile(r"\bhow\b|\b(?:mechanisms?|works?|working)\b", re.IGNORECASE)),
+    ("state", re.compile(r"\b(?:current state|state of|status|latest|currently)\b", re.IGNORECASE)),
+)
+
+
+def requested_relation(objective: str) -> str:
+    """Which relation the objective asks a finding to supply, as a fixed code."""
+    text = re.sub(r"^\s*research\s+", "", str(objective or ""), flags=re.IGNORECASE)
+    if not text.strip():
+        return ""
+    for code, pattern in _REQUESTED_RELATION_PATTERNS:
+        if pattern.search(text):
+            return code
+    return "descriptive"
+
+
+def answer_quality_codes(level: str | None, relation: str) -> dict[str, Any]:
+    """Map a judged answer level onto the three measured answer-quality fields.
+
+    Unjudged stays visibly unjudged - empty codes and answer_quality_judged False -
+    never a quiet pass or a quiet fail.
+    """
+    level = str(level or "").strip().lower()
+    if level not in ANSWER_QUALITY_LEVELS or relation not in REQUESTED_RELATIONS:
+        return {"answer_quality_judged": False, "answer_quality_level": "", "answers_topic": "",
+                "answers_requested_relation": "", "answers_requested_depth": ""}
+    depth_requested = relation in DEPTH_REQUESTING_RELATIONS
+    if level in ("off_topic", "topic_only"):
+        answers_relation = "not_satisfied"
+    elif level == "complete" or depth_requested:
+        # For a mechanism or an explanation, "partial" names the agent or the causes:
+        # the relation is answered, the depth is not.
+        answers_relation = "satisfied"
+    else:
+        answers_relation = "partial"
+    if not depth_requested:
+        depth = "not_requested"
+    else:
+        depth = "satisfied" if level == "complete" else "not_satisfied"
+    return {"answer_quality_judged": True, "answer_quality_level": level,
+            "answers_topic": "no" if level == "off_topic" else "yes",
+            "answers_requested_relation": answers_relation, "answers_requested_depth": depth}
+
+
 def _grounded_refutation(finding: Mapping[str, Any], admissible: list[Mapping[str, Any]], context: Mapping[str, Any]) -> bool:
     """No observed passage was judged to refute exactly this claim.
 
@@ -828,6 +908,7 @@ def evaluate_policy(
     currency_reason: str = "",
     freshness_window: str = "",
     assessments: list[Mapping[str, Any]] | None = None,
+    answer_quality_level: str | None = None,
 ) -> dict[str, Any]:
     """Report which named conditions a finding and its own citations fail.
 
@@ -864,6 +945,7 @@ def evaluate_policy(
     # Decided before the loop: every condition that asks about authority needs the
     # objective's own terms to know whether a source is the first party for it.
     terms = objective_terms(objective)
+    relation_requested = requested_relation(objective)
     risk_flags = claim_risk_flags(row)
     # Which citations the model grounded as supporting exactly this finding's
     # claim. None means no assessment step ran; an empty set means it ran and
@@ -999,6 +1081,10 @@ def evaluate_policy(
         # and how many were a vendor presenting its own offering without a method.
         "producer_signal_judged_count": producer_signal_judged,
         "self_promoting_publisher_count": self_promoting_publishers,
+        # Which relation the objective asked for, and what the separate answer judge
+        # said the finding supplied. Measurement only: no condition above reads them.
+        "requested_relation": relation_requested,
+        **answer_quality_codes(answer_quality_level, relation_requested),
         "enforced": False,
     }
 
@@ -1096,6 +1182,8 @@ __all__ = [
     "claim_source_relationship", "first_party_source",
     "ASSESSMENT_DEPENDENT_CONDITIONS", "CONTEXT_PRESERVING_CONDITIONS", "DERIVED_DISQUALIFYING_ROLES",
     "SELF_PROMOTING_PUBLISHER",
+    "REQUESTED_RELATIONS", "DEPTH_REQUESTING_RELATIONS", "ANSWER_QUALITY_LEVELS",
+    "requested_relation", "answer_quality_codes",
     "SELECTION_ADMISSIBLE_ONLY", "SELECTION_NO_ADMISSIBLE_EVIDENCE", "select_citable_evidence",
     "AUTHORITY_TIER_ORDER", "SELF_SUFFICIENT_TIERS", "HIGHER_RISK_POLICY_CODES",
     "TIER_NONE", "TIER_NON_AUTHORITATIVE", "TIER_UNCLASSIFIED",

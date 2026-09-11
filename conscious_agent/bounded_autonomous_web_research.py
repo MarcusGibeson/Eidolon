@@ -329,7 +329,8 @@ def _select_citable_evidence(*, citations, currency_requirement, objective="") -
 
 
 def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currency_requirement,
-                              objective="", currency_reason="", freshness_window="") -> dict[str, Any]:
+                              objective="", currency_reason="", freshness_window="",
+                              answer_quality_level=None) -> dict[str, Any]:
     """Measure the shared evidence policy without letting it refuse anything."""
     try:
         from research_evidence_policy import evaluate_policy, policy_for_objective
@@ -348,6 +349,7 @@ def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currenc
             objective=str(objective or ""),
             currency_reason=str(currency_reason or ""),
             freshness_window=str(freshness_window or ""),
+            answer_quality_level=answer_quality_level,
             # The full grounded list, so support is judged per exact claim. None
             # when no assessment step ran, which the receipt reports as unjudged.
             assessments=(list(assessment_summary["assessments"])
@@ -357,6 +359,31 @@ def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currenc
     except Exception:
         # An observation-only measurement must never affect the run it observes.
         return {}
+
+
+def _judge_answer_quality(adapter, *, payload, objective) -> dict[str, str]:
+    """Ask the adapter's separate judge whether the finding supplies what was asked.
+
+    Measurement only, and it never stops a run: every outcome is a fixed status,
+    and only a judged level is passed on.
+    """
+    judge = getattr(adapter, "judge_answer_quality", None)
+    if not callable(judge):
+        return {"status": "answer_quality_judge_unavailable", "answer_level": ""}
+    try:
+        from research_evidence_policy import requested_relation
+        findings = (payload or {}).get("findings") if isinstance(payload, Mapping) else None
+        finding = findings[0] if isinstance(findings, list) and findings and isinstance(findings[0], Mapping) else {}
+        claim = str(finding.get("summary") or "")
+        relation = requested_relation(objective)
+        if not claim or not relation:
+            return {"status": "answer_quality_not_judgeable", "answer_level": ""}
+        result = judge(objective=str(objective or ""), finding=claim, requested_relation=relation)
+        result = dict(result) if isinstance(result, Mapping) else {}
+        return {"status": _clean(result.get("status"), 60) or "answer_quality_judge_failed",
+                "answer_level": _clean(result.get("answer_level"), 20) if result.get("ok") is True else ""}
+    except Exception:
+        return {"status": "answer_quality_judge_failed", "answer_level": ""}
 
 
 def _replacement_search_query(candidate: Mapping[str, Any], dimension: str) -> str:
@@ -1680,6 +1707,15 @@ class BoundedResearchSessionStore:
                         # currently admitted on far less than a demand claim, and the
                         # gap has to be measured on real corpora before either side is
                         # recalibrated.
+                        # Report-only: a separate judge grades whether the finding
+                        # supplies the relation the objective asked for. Its fixed code
+                        # is evidence about answer quality; the policy maps it, and
+                        # nothing here admits or refuses anything.
+                        answer_quality = (
+                            {"status": "answer_quality_not_applicable", "answer_level": ""}
+                            if requested_result_count else
+                            _judge_answer_quality(adapter, payload=synthesis_result.get("payload"), objective=objective)
+                        )
                         evidence_policy_evaluation = _evaluate_evidence_policy(
                             payload=synthesis_result.get("payload"),
                             citations=citation_rows,
@@ -1691,7 +1727,10 @@ class BoundedResearchSessionStore:
                             objective=objective,
                             currency_reason=str(decomposition.get("evidence_currency_reason") or ""),
                             freshness_window=str(decomposition.get("recommended_freshness_policy") or ""),
+                            answer_quality_level=answer_quality["answer_level"] or None,
                         )
+                        if evidence_policy_evaluation:
+                            evidence_policy_evaluation["answer_quality_status"] = answer_quality["status"]
                         if evidence_policy_evaluation and source_selection:
                             # Counts and fixed codes only; the offered ids stay in memory.
                             evidence_policy_evaluation["source_selection"] = {

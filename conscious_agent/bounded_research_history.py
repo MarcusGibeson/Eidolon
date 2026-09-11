@@ -84,6 +84,17 @@ def _bounded_count(value: object) -> int:
         return 0
 
 
+_REQUESTED_RELATIONS = frozenset({"mechanism", "explanation", "causes", "comparison", "amount", "state",
+                                  "configuration", "descriptive"})
+_ANSWER_QUALITY_LEVELS = frozenset({"off_topic", "topic_only", "partial", "complete"})
+
+
+def _fixed_code(value: object, allowed: frozenset[str] | set[str]) -> str:
+    """A value from a fixed vocabulary, or "" for anything else."""
+    code = _clean(value, 60)
+    return code if code in allowed else ""
+
+
 def _evidence_policy_projection(value: object) -> dict[str, Any]:
     """Project a policy measurement as condition codes and counts only."""
     if not isinstance(value, Mapping) or not value:
@@ -127,6 +138,15 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "different_claim_matches": _bounded_count(value.get("different_claim_matches")),
         "producer_signal_judged_count": _bounded_count(value.get("producer_signal_judged_count")),
         "self_promoting_publisher_count": _bounded_count(value.get("self_promoting_publisher_count")),
+        "requested_relation": _fixed_code(value.get("requested_relation"), _REQUESTED_RELATIONS),
+        "answer_quality_judged": bool(value.get("answer_quality_judged")),
+        "answer_quality_status": _clean(value.get("answer_quality_status"), 60),
+        "answer_quality_level": _fixed_code(value.get("answer_quality_level"), _ANSWER_QUALITY_LEVELS),
+        "answers_topic": _fixed_code(value.get("answers_topic"), {"yes", "no"}),
+        "answers_requested_relation": _fixed_code(value.get("answers_requested_relation"),
+                                                  {"satisfied", "partial", "not_satisfied"}),
+        "answers_requested_depth": _fixed_code(value.get("answers_requested_depth"),
+                                               {"satisfied", "not_satisfied", "not_requested"}),
         "citation_completion": _citation_completion_projection(value.get("citation_completion")),
         "finding_condition_failures": [
             code for code in (
