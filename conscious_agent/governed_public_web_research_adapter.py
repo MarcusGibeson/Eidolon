@@ -776,9 +776,16 @@ class GovernedPublicWebResearchAdapter:
                         "provider_contacted": False, "provider_request_count": 0,
                         "omitted_passage_source_count": omitted_passage_source_count}
             assessment_cap = max(1, min(MAX_SOURCE_ASSESSMENTS, len(public_documents)))
+            # The summary is the claim's identity: every source assessment must restate
+            # it exactly. Defining it as what the excerpt establishes invited "Excerpts
+            # confirm X" while assessments restated X, so supporting assessments were
+            # discarded as a different claim. State the claim; qualify it in uncertainties.
             schema_instruction = (
-                '{"findings":[{"title":"specific finding","summary":"what the excerpt actually establishes",'
-                '"citation_ids":["web-..."],"uncertainties":["..."]}],"limitations":["..."],'
+                '{"findings":[{"title":"specific finding",'
+                '"summary":"the specific claim the cited excerpts support, stated directly",'
+                '"citation_ids":["web-..."],'
+                '"uncertainties":["evidential qualifications, such as what the excerpts do not establish"]}],'
+                '"limitations":["..."],'
                 '"source_assessments":[{"citation_id":"web-...","claim":"specific claim assessed",'
                 '"passage_index":1,'
                 '"assessment":"unclear","dimension":"demand","evidence_kind":"unknown"}]}'
