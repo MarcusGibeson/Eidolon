@@ -46,7 +46,7 @@ import re
 from typing import Any, Callable
 from urllib.parse import urlsplit
 
-CONTRACT_VERSION = "v2732.2.0"
+CONTRACT_VERSION = "v2732.3.0"
 
 MINIMUM_CLAIM_SOURCE_FIT = 0.5
 MINIMUM_INDEPENDENT_PUBLISHERS = 2
@@ -640,12 +640,32 @@ def _answers_objective(finding: Mapping[str, Any], admissible: list[Mapping[str,
     return True
 
 
+def _grounded_refutation(finding: Mapping[str, Any], admissible: list[Mapping[str, Any]], context: Mapping[str, Any]) -> bool:
+    """No observed passage was judged to refute exactly this claim.
+
+    A current-event finding was admitted on four grounded supporters while a fifth
+    source was grounded as refuting the same exact claim - and nothing in the
+    general policy looked, because grounded_support only asks whether the cited
+    sources support the claim, and completion only adds supporters.
+
+    Listed as a failure, this reads "failed on a grounded refutation". It blocks
+    an uncontested verdict; it does not declare the claim false. Supported and
+    refuted at once is a disputed finding, and the report surfaces it as an
+    unresolved disagreement rather than hiding the contradicting source.
+    """
+    refuting = context.get("grounded_refuting_ids")
+    if refuting is None:
+        return True  # not judged; see grounded_support_judged
+    return not refuting
+
+
 FINDING_CONDITIONS: dict[str, Callable[[Mapping[str, Any], list[Mapping[str, Any]], Mapping[str, Any]], bool]] = {
     "citation_present": _citation_present,
     "uncertainty_declared_where_warranted": _uncertainty_declared_where_warranted,
     "answers_objective": _answers_objective,
     "corroboration_satisfied": _corroboration_satisfied,
     "independent_publishers": _independent_publishers,
+    "grounded_refutation": _grounded_refutation,
 }
 
 
@@ -675,7 +695,7 @@ BASELINE_EVIDENCE_POLICY = EvidencePolicy(
                          "grounded_support"),
     finding_conditions=(
         "citation_present", "answers_objective", "corroboration_satisfied",
-        "uncertainty_declared_where_warranted",
+        "uncertainty_declared_where_warranted", "grounded_refutation",
     ),
 )
 
@@ -820,13 +840,16 @@ def evaluate_policy(
     # claim. None means no assessment step ran; an empty set means it ran and
     # grounded nothing, which is itself a result.
     grounded_ids: set[str] | None = None
+    refuting_ids: set[str] | None = None
     claim_matched = claim_mismatched = 0
     exact_digest_matches = normalized_exact_matches = different_claim_matches = 0
     if isinstance(assessments, list):
         from research_claim_assessment import (
-            digest_of_claim, digest_of_normalized_claim, grounded_supporting_citation_ids,
+            digest_of_claim, digest_of_normalized_claim, grounded_refuting_citation_ids,
+            grounded_supporting_citation_ids,
         )
         grounded_ids = set(grounded_supporting_citation_ids(assessments, row.get("summary")))
+        refuting_ids = set(grounded_refuting_citation_ids(assessments, row.get("summary")))
         finding_digest = digest_of_claim(row.get("summary"))
         finding_normalized = digest_of_normalized_claim(row.get("summary"))
         for item in assessments:
@@ -847,6 +870,7 @@ def evaluate_policy(
         "claim_risk_flags": risk_flags,
         "objective_terms": terms,
         "grounded_supporting_ids": grounded_ids,
+        "grounded_refuting_ids": refuting_ids,
     }
     evaluated: list[tuple[Mapping[str, Any], str, list[str]]] = []
     for citation in rows:
@@ -928,6 +952,7 @@ def evaluate_policy(
         # model that paraphrased the claim from one that found nothing supportive.
         "grounded_support_judged": grounded_ids is not None,
         "grounded_supporting_citation_count": len(grounded_ids or ()),
+        "grounded_refuting_citation_count": len(refuting_ids or ()),
         "claim_matched_assessment_count": claim_matched,
         "claim_mismatched_assessment_count": claim_mismatched,
         # Of the assessments made for other wording: which matched once case,

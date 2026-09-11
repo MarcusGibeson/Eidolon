@@ -56,13 +56,36 @@ def grounded_supporting_citation_ids(
     meaning. An assessment made for a different claim never counts, however
     favourable.
     """
+    return _grounded_citation_ids_with_stance(assessments, claim, offered_ids, "supports")
+
+
+def grounded_refuting_citation_ids(
+    assessments: object,
+    claim: object,
+    offered_ids: object = None,
+) -> list[str]:
+    """Citations the model tied, through an observed passage, to refuting exactly this claim.
+
+    The same grounding standard as support, applied to the opposite judgement: a
+    refutation counts only when its passage was verifiably observed and it was
+    made against this finding's exact claim.
+    """
+    return _grounded_citation_ids_with_stance(assessments, claim, offered_ids, "refutes")
+
+
+def _grounded_citation_ids_with_stance(
+    assessments: object,
+    claim: object,
+    offered_ids: object,
+    stance: str,
+) -> list[str]:
     digest = digest_of_claim(claim)
     allowed = None if offered_ids is None else {str(item) for item in offered_ids}  # type: ignore[union-attr]
     ids: list[str] = []
     for row in assessments if isinstance(assessments, list) else []:
         if not isinstance(row, Mapping):
             continue
-        if row.get("model_assessment") != "supports" or row.get("claim_digest") != digest:
+        if row.get("model_assessment") != stance or row.get("claim_digest") != digest:
             continue
         if row.get("textual_provenance_verified") is not True:
             continue

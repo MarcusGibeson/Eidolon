@@ -186,6 +186,11 @@ WITNESSES = {
     "independent_publishers": (lambda: demand([survey1, survey2]),
                                lambda: demand([survey1, live_row("web-2", "https://researchfirm.example.org/other",
                                                                  publisher=survey1["publisher_digest"])])),
+    # Added with the condition, after this suite refused grounded_refutation for
+    # having no witnesses - the registry check doing exactly its job.
+    "grounded_refutation": (lambda: reference([blog, blog2]),
+                            lambda: reference([blog, blog2], assessments=[("web-1", "supports", "unknown"),
+                                                                          ("web-2", "refutes", "unknown")])),
 }
 
 # --- the registry: every condition a policy uses has a witness pair ---------

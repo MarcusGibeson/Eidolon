@@ -212,6 +212,57 @@ def _inferred_source_kind(url: str, supplied: str) -> str:
     return classify_source_kind(url, "unknown")
 
 
+def _surface_grounded_refutations(conclusion: dict[str, Any], synthesis_result: Mapping[str, Any],
+                                  citation_rows: list[Mapping[str, Any]]) -> int:
+    """Show the operator a grounded refutation instead of letting the finding look uncontested.
+
+    The refuting source is never added to the finding's own citations: a reader
+    seeing five citations on a sentence reasonably assumes all five support it.
+    It is recorded as an unresolved disagreement with its supporters and refuters
+    in separate lists, and its row in the report's source index carries stance
+    "refutes", so its id resolves to something inspectable and plainly marked as
+    contradicting evidence. Returns how many refuting sources were surfaced; any
+    failure leaves the conclusion untouched.
+    """
+    try:
+        from research_claim_assessment import grounded_refuting_citation_ids, grounded_supporting_citation_ids
+        payload = synthesis_result.get("payload")
+        findings = payload.get("findings") if isinstance(payload, Mapping) else None
+        if not isinstance(findings, list) or len(findings) != 1 or not isinstance(findings[0], Mapping):
+            return 0
+        finding = findings[0]
+        summary = synthesis_result.get("source_assessment_summary")
+        assessments = summary.get("assessments") if isinstance(summary, Mapping) else None
+        refuting = grounded_refuting_citation_ids(assessments, finding.get("summary"))
+        if not refuting:
+            return 0
+        supporting = set(grounded_supporting_citation_ids(assessments, finding.get("summary")))
+        cited = [str(item) for item in list(finding.get("citation_ids") or []) if isinstance(item, str)]
+        conclusion["unresolved_disagreements"] = list(conclusion.get("unresolved_disagreements") or []) + [{
+            "claim_code": "grounded_refutation",
+            "finding": _clean(f"Grounded evidence disputes this finding: {finding.get('summary') or ''}", 320),
+            "classification": "unresolved_disagreement",
+            "supporting_citations": [cid for cid in cited if cid in supporting],
+            "refuting_citations": list(refuting),
+            "traceable": True,
+        }]
+        index = {str(row.get("citation_id") or ""): row for row in citation_rows if isinstance(row, Mapping)}
+        listed = {str(row.get("citation_id") or "") for row in list(conclusion.get("citations") or [])
+                  if isinstance(row, Mapping)}
+        contradicting = [{**index[cid], "stance": "refutes"} for cid in refuting if cid in index and cid not in listed]
+        conclusion["citations"] = list(conclusion.get("citations") or []) + contradicting
+        conclusion["citation_count"] = len(conclusion["citations"])
+        rendered = str(conclusion.get("rendered_answer") or "")
+        if rendered:
+            conclusion["rendered_answer"] = (
+                rendered + "\n\nDisputed: " + str(len(refuting)) + " grounded source(s) contradict this finding ["
+                + ", ".join(refuting) + "]. It is not presented as uncontested."
+            )
+        return len(refuting)
+    except Exception:
+        return 0
+
+
 def _complete_finding_citations(synthesis_result: dict[str, Any], *, offered_ids) -> dict[str, Any]:
     """Add every offered source the model grounded as supporting this exact finding.
 
@@ -1707,6 +1758,10 @@ class BoundedResearchSessionStore:
                         # the stricter candidate-specific gate passes below.
                         if validated_synthesis.get("ok") is True:
                             conclusion = validated_synthesis
+                            if not requested_result_count:
+                                # The same fact the policy records as grounded_refutation,
+                                # made visible to the operator in the report itself.
+                                _surface_grounded_refutations(conclusion, synthesis_result, citation_rows)
                         else:
                             conclusion = assemble_cited_conclusion(
                                 comparison,

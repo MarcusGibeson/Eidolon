@@ -119,6 +119,7 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "source_selection": _source_selection_projection(value.get("source_selection")),
         "grounded_support_judged": bool(value.get("grounded_support_judged")),
         "grounded_supporting_citation_count": _bounded_count(value.get("grounded_supporting_citation_count")),
+        "grounded_refuting_citation_count": _bounded_count(value.get("grounded_refuting_citation_count")),
         "claim_matched_assessment_count": _bounded_count(value.get("claim_matched_assessment_count")),
         "claim_mismatched_assessment_count": _bounded_count(value.get("claim_mismatched_assessment_count")),
         "exact_digest_matches": _bounded_count(value.get("exact_digest_matches")),
