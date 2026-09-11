@@ -46,7 +46,7 @@ import re
 from typing import Any, Callable
 from urllib.parse import urlsplit
 
-CONTRACT_VERSION = "v2732.5.0"
+CONTRACT_VERSION = "v2732.6.0"
 
 MINIMUM_CLAIM_SOURCE_FIT = 0.5
 MINIMUM_INDEPENDENT_PUBLISHERS = 2
@@ -192,9 +192,13 @@ def first_party_source(citation: Mapping[str, Any], terms: tuple[str, ...]) -> b
         return False
     labels = {
         _stem(label) for label in host.split(".")
-        if len(label) >= 4 and label not in _HOST_SURFACE_LABELS
+        if len(label) >= _TERM_MIN_LENGTH and label not in _HOST_SURFACE_LABELS
     }
-    return bool(labels & set(terms))
+    # An acronym term never names the publisher. Short labels are mostly suffixes
+    # and topic subdomains, so "EU AI Act" would otherwise make every .ai and .eu
+    # site, and ai.google, the first party - and first-party standing grants
+    # authority. Missing a real first party such as ibm.com is the old behaviour.
+    return bool(labels & {term for term in terms if len(term) >= _TERM_MIN_LENGTH})
 
 
 def claim_source_relationship(
@@ -434,7 +438,23 @@ _NON_ANSWER = re.compile(
     re.IGNORECASE,
 )
 
-_TERM = re.compile(r"[a-z0-9]{4,}", re.IGNORECASE)
+_TOKEN = re.compile(r"[a-z0-9]+", re.IGNORECASE)
+_TERM_MIN_LENGTH = 4
+# Length alone kept "the" and "how" out, and every acronym with them: "how GPS
+# works" had no term for GPS and "TCP and UDP" none for either protocol, so a
+# correct answer about them looked off-topic. Length cannot tell GPS from "how";
+# the writer's casing can. A shorter word is a term when it is written in
+# capitals ("EU", "TCP") or mixes letters with digits ("S3", "5G").
+_ACRONYM_MIN_LENGTH = 2
+# "APIs", "GPUs": the acronym with a plural "s", the same term as "API".
+_ACRONYM_PLURAL = re.compile(r"[A-Z0-9]{2,}s")
+# The grammar of a question, also when capitalised for emphasis ("NOT"). IT, US,
+# WHO and CAN are left out on purpose: each is a subject someone researches.
+_SHORT_FUNCTION_WORDS = frozenset({
+    "an", "and", "are", "as", "at", "be", "but", "by", "did", "do", "for", "had", "has", "he", "her",
+    "his", "how", "if", "in", "is", "its", "me", "my", "no", "not", "of", "on", "or", "our", "she",
+    "so", "the", "to", "too", "up", "was", "we", "why", "yes", "yet", "you",
+})
 _TERM_STOPWORDS = frozenset({
     "research", "about", "what", "which", "when", "where", "does", "into", "with", "from",
     "that", "this", "their", "there", "have", "been", "will", "would", "could", "should",
@@ -458,15 +478,43 @@ def _stem(token: str) -> str:
     return lowered
 
 
+def _term(token: str, case_informative: bool) -> str:
+    """The term a token stands for, or "" when it is not one.
+
+    Capitals say nothing in text that has no lower case at all, so there a short
+    word counts only by carrying a digit.
+    """
+    if _ACRONYM_PLURAL.fullmatch(token):
+        token = token[:-1]
+    lowered = token.lower()
+    if len(token) >= _TERM_MIN_LENGTH:
+        return "" if lowered in _TERM_STOPWORDS else _stem(token)
+    if len(token) < _ACRONYM_MIN_LENGTH or lowered in _SHORT_FUNCTION_WORDS:
+        return ""
+    if not any(ch.isalpha() for ch in token):
+        return ""  # a bare number: "3" in "Python 3" names nothing on its own
+    if any(ch.isdigit() for ch in token) or (case_informative and token.isupper()):
+        return lowered
+    return ""
+
+
+def _terms_in(text: str, case_informative: bool | None = None) -> list[str]:
+    """The terms a text contains, in order.
+
+    Whether capitals carry information is a property of the whole text, so a
+    caller reading a slice of one passes the answer for the whole.
+    """
+    if case_informative is None:
+        case_informative = any(ch.islower() for ch in text)
+    return [term for term in (_term(token, case_informative) for token in _TOKEN.findall(text)) if term]
+
+
 def objective_terms(text: str, limit: int = 24) -> tuple[str, ...]:
     """Substantive terms from the objective, for judging whether it was answered."""
     seen: list[str] = []
-    for token in _TERM.findall(str(text or "")):
-        if token.lower() in _TERM_STOPWORDS:
-            continue
-        stem = _stem(token)
-        if stem not in seen:
-            seen.append(stem)
+    for term in _terms_in(str(text or "")):
+        if term not in seen:
+            seen.append(term)
         if len(seen) >= limit:
             break
     return tuple(seen)
@@ -659,10 +707,10 @@ def _answers_objective(finding: Mapping[str, Any], admissible: list[Mapping[str,
     text = _finding_text(finding)
     if not terms or not text:
         return True  # nothing to judge against; see objective_terms_supplied
+    case_informative = any(ch.islower() for ch in text)
     for match in _NON_ANSWER.finditer(text):
         window = text[max(0, match.start() - OBJECTIVE_TERM_LOOKBEHIND): match.end() + OBJECTIVE_TERM_PROXIMITY]
-        stems = {_stem(token) for token in _TERM.findall(window)}
-        if stems & set(terms):
+        if set(_terms_in(window, case_informative)) & set(terms):
             return False
     return True
 
