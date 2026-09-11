@@ -157,14 +157,22 @@ def _connected_peer_address(response: Any) -> str:
 
 
 class _SearchLinkParser(HTMLParser):
+    # The results section is present on every results page, including one with
+    # no hits ("no-results"). A challenge or blank page has none of these.
+    _RESULT_SECTION_CLASSES = frozenset({"results", "serp__results", "no-results", "result--no-result"})
+
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.links: list[str] = []
+        self.result_section_seen = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        if tag.casefold() != "a":
-            return
         values = {str(key).casefold(): str(value or "") for key, value in attrs}
+        if tag.casefold() != "a":
+            if (self._RESULT_SECTION_CLASSES & set(values.get("class", "").casefold().split())
+                    or values.get("id", "").casefold() == "links"):
+                self.result_section_seen = True
+            return
         href = values.get("href", "").strip()
         classes = values.get("class", "").casefold()
         if href and ("result" in classes or href.startswith("/l/") or href.startswith("http")):
@@ -480,6 +488,7 @@ class GovernedPublicWebResearchAdapter:
         session_factory: Callable[[], Any] = requests.Session,
         synthesizer: Callable[[str], Mapping[str, Any] | str] | None = None,
         search_min_interval_seconds: float = 1.0,
+        search_unavailable_backoff_seconds: float = 3.0,
         clock: Callable[[], float] = time.monotonic,
         sleeper: Callable[[float], None] = time.sleep,
     ) -> None:
@@ -492,9 +501,11 @@ class GovernedPublicWebResearchAdapter:
         self._transient_documents: dict[str, dict[str, Any]] = {}
         self._transient_candidate_discovery: dict[str, Any] = {}
         self.search_min_interval_seconds = max(0.0, min(float(search_min_interval_seconds), 5.0))
+        self.search_unavailable_backoff_seconds = max(0.0, min(float(search_unavailable_backoff_seconds), 10.0))
         self.clock = clock
         self.sleeper = sleeper
         self._last_search_at = 0.0
+        self._search_backoff_until = 0.0
         self._search_pacing_lock = threading.Lock()
         self._synthesis_deadline = None
 
@@ -683,6 +694,7 @@ class GovernedPublicWebResearchAdapter:
         with self._search_pacing_lock:
             now = self.clock()
             wait = self.search_min_interval_seconds - (now - self._last_search_at) if self._last_search_at else 0.0
+            wait = max(wait, self._search_backoff_until - now)
             if wait > 0:
                 self.sleeper(wait)
             self._last_search_at = self.clock()
@@ -714,6 +726,14 @@ class GovernedPublicWebResearchAdapter:
             })
             if len(results) >= count:
                 break
+        if not results and not parser.result_section_seen:
+            # A 200 page with neither results nor a results section is a challenge,
+            # interstitial or blank page, not the engine reporting that nothing
+            # matched - a live query of nonsense words still returns 27 results.
+            # Read as "no results", four runs ended as a finished collection that
+            # had searched nothing. The next search waits out a short backoff.
+            self._search_backoff_until = self.clock() + self.search_unavailable_backoff_seconds
+            raise PublicWebResearchError("public_search_results_unavailable")
         return results
 
     def observe(

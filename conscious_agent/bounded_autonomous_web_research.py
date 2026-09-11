@@ -60,6 +60,14 @@ MAX_CANDIDATE_FOLLOW_UP_SEARCH_ATTEMPTS_PER_CELL = 2
 CANDIDATE_FOLLOW_UP_SOURCES_PER_CELL = 2
 MAX_OBSERVATION_REPLACEMENTS = 3
 MAX_REPLACEMENTS_PER_FAILURE = 2
+# A search that came back as something other than a results page is asked once
+# more; the adapter's own pacing supplies the pause before it.
+SEARCH_RESULTS_UNAVAILABLE_CODE = "public_search_results_unavailable"
+MAX_UNAVAILABLE_SEARCH_RETRIES = 1
+# Why a run ended without observing a single page, when the failure budget did
+# not run out. Each is a failed run: nothing was read, so nothing can be reported.
+ZERO_OBSERVATION_FAILURE_CODES = ("no_search_results", "search_results_unavailable", "no_readable_source_observed")
+_SEARCH_OPERATOR = re.compile(r"-?(?:site|inurl|intitle|intext|allinurl|allintitle|filetype|ext|related|cache):\S*", re.I)
 DEFAULT_BUDGET = {
     "max_queries": 8,
     "max_candidates": 16,
@@ -393,14 +401,34 @@ def _replacement_search_query(candidate: Mapping[str, Any], dimension: str) -> s
     no private objective text reaches a new public request. The dimension bias
     aims the retry at evidence that can actually establish the claim rather than
     at more of whatever the first query surfaced.
+
+    Search operators are not reused. The demand discussion route ends in
+    "site:reddit.com", so its replacement asked only for more Reddit, and every
+    result was then discarded because Reddit was the host that had just failed:
+    the replacement could not succeed by construction.
     """
-    terms = [_clean(term, 40) for term in list(candidate.get("_evidence_terms") or [])[:12]]
+    terms = [_clean(term, 40) for term in list(candidate.get("_evidence_terms") or [])[:12]
+             if not _SEARCH_OPERATOR.fullmatch(str(term or "").strip())]
     bias = {
         "demand": "survey study report respondents",
         "competition": "comparison independent review",
         "free_tier_feasibility": "official documentation pricing limits",
     }.get(str(dimension or ""), "study report")
     return _clean(" ".join([term for term in terms if term] + bias.split()), 320)
+
+
+def _zero_observation_failure_code(*, source_failure_count: int, max_source_failures: int,
+                                   candidate_count: int, search_failure_count: int) -> str:
+    """Name why a run observed nothing, instead of blaming a budget that was not spent.
+
+    Every such run used to report source_failure_budget_exhausted, including runs
+    that had spent 1 of 12 failures on a single unreadable page.
+    """
+    if source_failure_count >= max_source_failures:
+        return "source_failure_budget_exhausted"
+    if not candidate_count:
+        return "search_results_unavailable" if search_failure_count else "no_search_results"
+    return "no_readable_source_observed"
 
 
 def _candidate_follow_up_retry_query(query_row: Mapping[str, Any]) -> str:
@@ -940,6 +968,7 @@ class BoundedResearchSessionStore:
         observed_bytes = 0
         observed_pages = 0
         source_failure_count = 0
+        search_failure_count = 0
         model_assessment_denial_reason = ""
         evidence_policy_evaluation: dict[str, Any] = {}
         # Initialized here, not at the observation loop: the failure report reads it,
@@ -1031,19 +1060,36 @@ class BoundedResearchSessionStore:
                     per_query_limit = min(3, per_query_limit)
                 query_count += 1
                 query = _clean(query_row.get("query"), 320)
-                try:
-                    found = adapter.search(query, limit=per_query_limit, timeout_seconds=max(0.001, min(30.0, budget["max_elapsed_seconds"] - (self.clock() - started))))
-                except Exception as search_error:
-                    source_failure_count += 1
-                    source_code = _clean(getattr(search_error, "code", ""), 120) or type(search_error).__name__
-                    source_failure_code_digests.append(hashlib.sha256(source_code.encode("utf-8")).hexdigest())
-                    self._set_stage(
-                        session_id,
-                        "searching",
-                        query_count=query_count,
-                        candidate_count=len(candidates),
-                        source_failure_count=source_failure_count,
-                    )
+                found = None
+                for attempt in range(1 + MAX_UNAVAILABLE_SEARCH_RETRIES):
+                    if attempt:
+                        if (
+                            query_count >= budget["max_queries"]
+                            or source_failure_count >= budget["max_source_failures"]
+                            or self.clock() - started >= budget["max_elapsed_seconds"]
+                        ):
+                            break
+                        query_count += 1
+                    try:
+                        found = adapter.search(query, limit=per_query_limit, timeout_seconds=max(0.001, min(30.0, budget["max_elapsed_seconds"] - (self.clock() - started))))
+                        break
+                    except Exception as search_error:
+                        source_failure_count += 1
+                        search_failure_count += 1
+                        source_code = _clean(getattr(search_error, "code", ""), 120) or type(search_error).__name__
+                        source_failure_code_digests.append(hashlib.sha256(source_code.encode("utf-8")).hexdigest())
+                        self._set_stage(
+                            session_id,
+                            "searching",
+                            query_count=query_count,
+                            candidate_count=len(candidates),
+                            source_failure_count=source_failure_count,
+                        )
+                        # Only a page that was not a results page is worth asking for
+                        # again; a transport or policy refusal will refuse the same way.
+                        if source_code != SEARCH_RESULTS_UNAVAILABLE_CODE:
+                            break
+                if found is None:
                     if source_failure_count >= budget["max_source_failures"]:
                         break
                     continue
@@ -1087,6 +1133,88 @@ class BoundedResearchSessionStore:
             observation_queue = list(ordered)
             failed_hosts: set[str] = set()
             replacement_searches_used = 0
+            # Eligible results of each replacement search not yet given a slot. A
+            # second page lost to the same host carries the same terms, so it draws
+            # on these instead of repeating an identical search.
+            replacement_reserve: dict[str, list[dict[str, Any]]] = {}
+
+            def replace_lost_source(lost: Mapping[str, Any]) -> None:
+                """Queue replacements for an observation slot a source could not fill.
+
+                The candidate list is fixed before observation begins, so an
+                unreadable or skipped source otherwise shrinks the evidence pool by
+                one and the run finishes short while query budget sits unused.
+                """
+                nonlocal query_count, replacement_searches_used
+                replacement_query = _replacement_search_query(lost, required_dimension)
+                if replacement_query not in replacement_reserve:
+                    if not (
+                        replacement_query
+                        and replacement_searches_used < MAX_OBSERVATION_REPLACEMENTS
+                        and query_count < budget["max_queries"]
+                        and len(candidates) < budget["max_candidates"]
+                        and self.clock() - started < budget["max_elapsed_seconds"]
+                    ):
+                        return
+                    replacement_searches_used += 1
+                    query_count += 1
+                    try:
+                        found_rows = list(adapter.search(
+                            replacement_query,
+                            limit=6,
+                            timeout_seconds=max(1.0, min(30.0, budget["max_elapsed_seconds"] - (self.clock() - started))),
+                        ) or [])
+                    except Exception:
+                        found_rows = []
+                    eligible: list[dict[str, Any]] = []
+                    for raw in found_rows:
+                        url = str(raw.get("url") or "")
+                        if not url:
+                            continue
+                        role = source_evidence_role({"public_url": url})
+                        if role.get("evidence_role") == "generic_definition":
+                            continue
+                        if required_dimension and role.get("promotional_or_listicle"):
+                            continue
+                        replacement = assess_source_candidate(
+                            url=url,
+                            source_kind=_inferred_source_kind(url, str(raw.get("source_kind") or "unknown")),
+                            published_at=str(raw.get("published_at") or ""),
+                            fetched_at=str(raw.get("fetched_at") or ""),
+                            freshness_policy=str(private_row.get("freshness") or "current"),
+                            plan_digest=str(private_row.get("plan_digest") or ""),
+                        )
+                        if replacement.get("ok"):
+                            eligible.append(replacement)
+                    replacement_reserve[replacement_query] = eligible
+                pool = replacement_reserve[replacement_query]
+                added = 0
+                while pool and added < MAX_REPLACEMENTS_PER_FAILURE and len(candidates) < budget["max_candidates"]:
+                    replacement = pool.pop(0)
+                    key = str(replacement.get("public_url") or replacement.get("source_candidate_digest") or "")
+                    host = str(replacement.get("host") or urlsplit(str(replacement.get("public_url") or "")).hostname or "").casefold()
+                    # Checked when drawn, not when found: a host can fail after its
+                    # page was put in reserve.
+                    if not key or key in candidates or host in failed_hosts:
+                        continue
+                    replacement["subquestion_id"] = _clean(lost.get("subquestion_id"), 32) or "rq1"
+                    replacement["preferred_source_kind"] = _clean(lost.get("preferred_source_kind"), 60)
+                    if narrow_demand:
+                        replacement["evidence_dimension"] = "demand"
+                    replacement["_evidence_terms"] = list(lost.get("_evidence_terms") or [])
+                    candidates[key] = replacement
+                    observation_queue.append(replacement)
+                    added += 1
+                self._set_stage(
+                    session_id,
+                    "observing",
+                    observed_page_count=observed_pages,
+                    observed_bytes=observed_bytes,
+                    query_count=query_count,
+                    candidate_count=len(candidates),
+                    source_failure_count=source_failure_count,
+                )
+
             queue_index = 0
             while queue_index < len(observation_queue):
                 candidate = observation_queue[queue_index]
@@ -1103,7 +1231,9 @@ class BoundedResearchSessionStore:
                     # A host that already refused to yield readable text in this run
                     # will refuse again. Spending another failure to learn the same
                     # thing can exhaust the budget on a single unreadable domain.
+                    # The skip costs no failure, but it still leaves a slot empty.
                     skipped_unreadable_host_count += 1
+                    replace_lost_source(candidate)
                     continue
                 remaining_bytes = budget["max_total_bytes"] - observed_bytes
                 try:
@@ -1134,67 +1264,7 @@ class BoundedResearchSessionStore:
                     )
                     if source_failure_count >= budget["max_source_failures"]:
                         break
-                    # The candidate list is fixed before observation begins, so an
-                    # unreadable source otherwise shrinks the evidence pool by one and
-                    # the run finishes short while query budget sits unused.
-                    if (
-                        replacement_searches_used < MAX_OBSERVATION_REPLACEMENTS
-                        and query_count < budget["max_queries"]
-                        and len(candidates) < budget["max_candidates"]
-                        and self.clock() - started < budget["max_elapsed_seconds"]
-                    ):
-                        replacement_searches_used += 1
-                        query_count += 1
-                        try:
-                            replacements = list(adapter.search(
-                                _replacement_search_query(candidate, required_dimension),
-                                limit=6,
-                                timeout_seconds=max(1.0, min(30.0, budget["max_elapsed_seconds"] - (self.clock() - started))),
-                            ) or [])
-                        except Exception:
-                            replacements = []
-                        added = 0
-                        for raw in replacements:
-                            if added >= MAX_REPLACEMENTS_PER_FAILURE or len(candidates) >= budget["max_candidates"]:
-                                break
-                            url = str(raw.get("url") or "")
-                            if not url or str(urlsplit(url).hostname or "").casefold() in failed_hosts:
-                                continue
-                            role = source_evidence_role({"public_url": url})
-                            if role.get("evidence_role") == "generic_definition":
-                                continue
-                            if required_dimension and role.get("promotional_or_listicle"):
-                                continue
-                            replacement = assess_source_candidate(
-                                url=url,
-                                source_kind=_inferred_source_kind(url, str(raw.get("source_kind") or "unknown")),
-                                published_at=str(raw.get("published_at") or ""),
-                                fetched_at=str(raw.get("fetched_at") or ""),
-                                freshness_policy=str(private_row.get("freshness") or "current"),
-                                plan_digest=str(private_row.get("plan_digest") or ""),
-                            )
-                            if not replacement.get("ok"):
-                                continue
-                            key = str(replacement.get("public_url") or replacement.get("source_candidate_digest") or "")
-                            if not key or key in candidates:
-                                continue
-                            replacement["subquestion_id"] = _clean(candidate.get("subquestion_id"), 32) or "rq1"
-                            replacement["preferred_source_kind"] = _clean(candidate.get("preferred_source_kind"), 60)
-                            if narrow_demand:
-                                replacement["evidence_dimension"] = "demand"
-                            replacement["_evidence_terms"] = list(candidate.get("_evidence_terms") or [])
-                            candidates[key] = replacement
-                            observation_queue.append(replacement)
-                            added += 1
-                        self._set_stage(
-                            session_id,
-                            "observing",
-                            observed_page_count=observed_pages,
-                            observed_bytes=observed_bytes,
-                            query_count=query_count,
-                            candidate_count=len(candidates),
-                            source_failure_count=source_failure_count,
-                        )
+                    replace_lost_source(candidate)
                     continue
                 try:
                     byte_count = max(0, min(int(observation.get("observed_bytes") or 0), remaining_bytes))
@@ -1824,10 +1894,17 @@ class BoundedResearchSessionStore:
                     discovery_synthesis_result.get("provider_contacted")
                     or synthesis_result.get("provider_contacted")
                 )
-            # Exhausting the source-failure budget without observing any usable page is
-            # a terminal evidence-acquisition failure, not a completed research session.
-            if source_failure_count > 0 and observed_pages == 0:
-                raise RuntimeError("source_failure_budget_exhausted")
+            # A run that observed no page at all is a terminal evidence-acquisition
+            # failure, not a completed research session - including one whose search
+            # found nothing, which used to finish as a planned collection. The code
+            # names the actual cause; the budget is blamed only when it ran out.
+            if observed_pages == 0 and (source_failure_count > 0 or (not cancelled and query_count and not candidates)):
+                raise RuntimeError(_zero_observation_failure_code(
+                    source_failure_count=source_failure_count,
+                    max_source_failures=budget["max_source_failures"],
+                    candidate_count=len(candidates),
+                    search_failure_count=search_failure_count,
+                ))
             report_status = "research_report_insufficient_evidence"
             synthesis_admitted = (
                 not requested_result_count and decomposition.get("objective_shape") != "single_candidate_dimension"
@@ -1980,7 +2057,10 @@ class BoundedResearchSessionStore:
                 "candidate_count": len(candidates),
                 "observed_page_count": observed_pages,
                 "source_failure_receipts": sanitize_failures(source_failure_receipts),
-                "collection_stop_reason": "source_failure_budget_reached" if source_failure_count >= budget["max_source_failures"] else "adapter_execution_failed_safely",
+                "collection_stop_reason": (
+                    "source_failure_budget_reached" if source_failure_count >= budget["max_source_failures"] else
+                    str(error) if str(error) in ZERO_OBSERVATION_FAILURE_CODES else
+                    "adapter_execution_failed_safely"),
                 "verified_findings": [], "citations": [],
                 "limitations": ["Research execution failed; retained diagnostics are not research findings."],
                 **_DENIED,

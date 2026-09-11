@@ -550,7 +550,10 @@ def _research_report_message(session: Mapping[str, Any], report: Mapping[str, An
     assessments = report.get("source_assessment_summary") or {}
     stop_labels = {"adapter_execution_failed_safely": "execution failed safely", "source_failure_budget_reached": "source-failure limit reached",
                    "time_budget_reached": "time limit reached", "page_budget_reached": "page limit reached",
-                   "byte_budget_reached": "download limit reached", "planned_collection_finished": "planned collection finished"}
+                   "byte_budget_reached": "download limit reached", "planned_collection_finished": "planned collection finished",
+                   "no_search_results": "the search returned no results",
+                   "search_results_unavailable": "the search engine did not return a results page",
+                   "no_readable_source_observed": "no source found could be read"}
     if report.get("collection_stop_reason") in stop_labels:
         lines.append("Collection stopped: " + stop_labels[report["collection_stop_reason"]] + ".")
     from research_failure_receipts import sanitize_failures

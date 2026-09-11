@@ -443,7 +443,8 @@ def sanitize_report(report: Mapping[str, Any] | None) -> dict[str, Any]:
         "source_failure_receipts": sanitize_failures(source.get("source_failure_receipts")),
         "collection_stop_reason": source.get("collection_stop_reason") if source.get("collection_stop_reason") in {
             "source_failure_budget_reached", "time_budget_reached", "page_budget_reached",
-            "byte_budget_reached", "planned_collection_finished", "adapter_execution_failed_safely"} else "",
+            "byte_budget_reached", "planned_collection_finished", "adapter_execution_failed_safely",
+            "no_search_results", "search_results_unavailable", "no_readable_source_observed"} else "",
         "generated_prose_is_evidence": False,
         "research_intelligence_version": _clean(source.get("research_intelligence_version"), 32),
         "source_independence_version": _clean(source.get("source_independence_version"), 32),
