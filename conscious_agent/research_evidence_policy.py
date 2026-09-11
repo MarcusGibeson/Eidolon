@@ -46,7 +46,7 @@ import re
 from typing import Any, Callable
 from urllib.parse import urlsplit
 
-CONTRACT_VERSION = "v2732.3.0"
+CONTRACT_VERSION = "v2732.4.0"
 
 MINIMUM_CLAIM_SOURCE_FIT = 0.5
 MINIMUM_INDEPENDENT_PUBLISHERS = 2
@@ -60,6 +60,9 @@ OBJECTIVE_TERM_PROXIMITY = 72
 OBJECTIVE_TERM_LOOKBEHIND = 24
 UNCERTAINTY_WARRANTED_BELOW_CITATIONS = 2
 SUPPORTING_EVIDENCE_KINDS = frozenset({"customer_experience", "survey_result", "usage_measurement"})
+# The observation code for a page whose publisher presents its own offering and
+# discloses no method (see the adapter's _evidence_producer_signal).
+SELF_PROMOTING_PUBLISHER = "self_promoting_publisher"
 
 # Roles that carry no authority whatever the claim: a broken URL, a dictionary
 # entry, a page whose own path says it is marketing.
@@ -536,6 +539,25 @@ def _evidence_type_admissible(citation: Mapping[str, Any], assessment: Mapping[s
     return str((assessment or {}).get("model_evidence_kind") or "") in SUPPORTING_EVIDENCE_KINDS
 
 
+def _evidence_producer_independent(citation: Mapping[str, Any], assessment: Mapping[str, Any] | None,
+                                   context: Mapping[str, Any]) -> bool:
+    """The evidence was not produced by a vendor making the case for its own offering.
+
+    Publisher identity is not evidence independence. A vendor's explainer on the
+    problem its product solves is third-party to an objective that never names
+    the vendor, yet it is the organisation producing - and benefiting from - the
+    customer evidence it reports. Without a disclosed method it cannot count as
+    independent customer evidence. It stays an observed source that synthesis
+    may read for context; it just does not count.
+
+    A vendor stating its own prices or limits is the record of that fact, so the
+    first-party operational relationship stays exactly as valid as before.
+    """
+    if str(citation.get("evidence_producer_signal") or "") != SELF_PROMOTING_PUBLISHER:
+        return True  # no signal, or not judged; see producer_signal_judged_count
+    return _relationship(context) == CLAIM_SOURCE_FIRST_PARTY_OPERATIONAL
+
+
 CITATION_CONDITIONS: dict[
     str, Callable[[Mapping[str, Any], Mapping[str, Any] | None, Mapping[str, Any]], bool]
 ] = {
@@ -547,6 +569,7 @@ CITATION_CONDITIONS: dict[
     "freshness_current": _freshness_current,
     "stance_supports": _stance_supports,
     "evidence_type_admissible": _evidence_type_admissible,
+    "evidence_producer_independent": _evidence_producer_independent,
     "grounded_support": lambda citation, assessment, context: _grounded_support(citation, context),
 }
 
@@ -555,6 +578,10 @@ CITATION_CONDITIONS: dict[
 # cannot be evaluated before synthesis runs, so selection leaves them to the
 # post-synthesis verdict, exactly as before.
 ASSESSMENT_DEPENDENT_CONDITIONS = frozenset({"stance_supports", "evidence_type_admissible", "grounded_support"})
+
+# Conditions selection could evaluate but leaves to the verdict: a source failing
+# one is still worth reading as context, it just cannot count as support.
+CONTEXT_PRESERVING_CONDITIONS = frozenset({"evidence_producer_independent"})
 
 
 def _grounded_support(citation: Mapping[str, Any], context: Mapping[str, Any]) -> bool:
@@ -709,7 +736,8 @@ CURRENT_EVIDENCE_POLICY = BASELINE_EVIDENCE_POLICY.tightened("current", citation
 
 DEMAND_EVIDENCE_POLICY = BASELINE_EVIDENCE_POLICY.tightened(
     "demand",
-    citation=CURRENCY_LAYER + ("freshness_current", "stance_supports", "evidence_type_admissible"),
+    citation=CURRENCY_LAYER + ("freshness_current", "stance_supports", "evidence_type_admissible",
+                               "evidence_producer_independent"),
     finding=("independent_publishers",),
 )
 
@@ -832,6 +860,7 @@ def evaluate_policy(
     version_signals = 0
     living_documentation = 0
     relationships: dict[str, int] = {}
+    producer_signal_judged = self_promoting_publishers = 0
     # Decided before the loop: every condition that asks about authority needs the
     # objective's own terms to know whether a source is the first party for it.
     terms = objective_terms(objective)
@@ -896,6 +925,10 @@ def evaluate_policy(
             version_signals += 1
         if authoritative_living_documentation(citation):
             living_documentation += 1
+        producer_signal = str(citation.get("evidence_producer_signal") or "")
+        if producer_signal:
+            producer_signal_judged += 1
+            self_promoting_publishers += producer_signal == SELF_PROMOTING_PUBLISHER
         assessment = assessments_by_id.get(str(citation.get("citation_id") or ""))
         failed = [
             name for name in policy.citation_conditions
@@ -961,6 +994,11 @@ def evaluate_policy(
         "exact_digest_matches": exact_digest_matches,
         "normalized_exact_matches": normalized_exact_matches,
         "different_claim_matches": different_claim_matches,
+        # How many observed sources carried a producer signal at all, so a clean
+        # evidence_producer_independent cannot be mistaken for a check that ran;
+        # and how many were a vendor presenting its own offering without a method.
+        "producer_signal_judged_count": producer_signal_judged,
+        "self_promoting_publisher_count": self_promoting_publishers,
         "enforced": False,
     }
 
@@ -1001,7 +1039,8 @@ def select_citable_evidence(
     provisional = {"summary": str(objective or "")}
     base_context = {"policy_code": policy.policy_code, "claim_risk_flags": (), "objective_terms": terms}
     conditions = [name for name in policy.citation_conditions
-                  if name in CITATION_CONDITIONS and name not in ASSESSMENT_DEPENDENT_CONDITIONS]
+                  if name in CITATION_CONDITIONS and name not in ASSESSMENT_DEPENDENT_CONDITIONS
+                  and name not in CONTEXT_PRESERVING_CONDITIONS]
     admissible: list[tuple[int, float, str]] = []
     withheld: dict[str, int] = {}
     offered_tiers: dict[str, int] = {}
@@ -1038,6 +1077,7 @@ def select_citable_evidence(
         "withheld_condition_counts": dict(sorted(withheld.items())) if admissible else {},
         "offered_authority_tiers": dict(sorted(offered_tiers.items())),
         "assessment_conditions_deferred": sorted(ASSESSMENT_DEPENDENT_CONDITIONS & set(policy.citation_conditions)),
+        "context_conditions_deferred": sorted(CONTEXT_PRESERVING_CONDITIONS & set(policy.citation_conditions)),
     }
 
 
@@ -1054,7 +1094,8 @@ __all__ = [
     "CLAIM_SOURCE_FIRST_PARTY_OTHER", "CLAIM_SOURCE_THIRD_PARTY",
     "EVALUATED_NORMALLY_RELATIONSHIPS", "FIRST_PARTY_SETTLED_RISK_FLAGS",
     "claim_source_relationship", "first_party_source",
-    "ASSESSMENT_DEPENDENT_CONDITIONS", "DERIVED_DISQUALIFYING_ROLES",
+    "ASSESSMENT_DEPENDENT_CONDITIONS", "CONTEXT_PRESERVING_CONDITIONS", "DERIVED_DISQUALIFYING_ROLES",
+    "SELF_PROMOTING_PUBLISHER",
     "SELECTION_ADMISSIBLE_ONLY", "SELECTION_NO_ADMISSIBLE_EVIDENCE", "select_citable_evidence",
     "AUTHORITY_TIER_ORDER", "SELF_SUFFICIENT_TIERS", "HIGHER_RISK_POLICY_CODES",
     "TIER_NONE", "TIER_NON_AUTHORITATIVE", "TIER_UNCLASSIFIED",

@@ -353,6 +353,7 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
         return _not_admitted("cited_source_not_assessed_as_supporting")
     eligible = {}
     set_aside_stale: list[str] = []
+    set_aside_vendor: list[str] = []
     for row in rows:
         cid = row.get("citation_id")
         if cid not in ids or not row.get("textual_provenance_verified"):
@@ -375,6 +376,14 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
             # A cited source that argues against the claim is a contradiction, not
             # a weak citation, and still refuses the finding outright.
             return _not_admitted("cited_source_conflicting")
+        if index[cid].get("evidence_producer_signal") == "self_promoting_publisher":
+            # A vendor presenting its own offering, with no disclosed method, did not
+            # produce independent customer evidence however its page was assessed.
+            # Set aside and recorded like a stale source: it neither refuses a finding
+            # whose other citations qualify nor counts toward the two independent
+            # publishers required below.
+            set_aside_vendor.append(cid)
+            continue
         if index[cid].get("freshness") == "stale":
             # An out-of-date source is not bad faith, it is evidence that must not
             # count. Set it aside as ineligible rather than refusing a finding whose
@@ -385,7 +394,7 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
         # Identical selected passages remain one lineage even across different hosts.
         eligible[cid] = {**index[cid], "content_similarity_digest": row["passage_digest"],
                          "content_similarity_confidence": "exact"}
-    if set(eligible) | set(set_aside_stale) != set(ids):
+    if set(eligible) | set(set_aside_stale) | set(set_aside_vendor) != set(ids):
         return _not_admitted("cited_source_ineligible")
     if not eligible:
         return _not_admitted("no_eligible_cited_source")
@@ -419,9 +428,15 @@ def model_assessed_conclusion(payload, *, assessment_summary, citations, dimensi
             f"{len(set_aside_stale)} cited source(s) were out of date and were set aside; "
             "they did not count toward the independent support for this claim."
         )
+    if set_aside_vendor:
+        limitations.append(
+            f"{len(set_aside_vendor)} cited source(s) were published by a vendor presenting its own offering, "
+            "with no disclosed method; they were set aside and did not count as independent customer evidence."
+        )
     inferred = {"finding": claim, "citations": list(eligible), "classification": "model_assessed_inference",
                 "confidence": "tentative", "semantic_support_verified": False,
                 "set_aside_stale_citations": sorted(set_aside_stale),
+                "set_aside_vendor_citations": sorted(set_aside_vendor),
                 "independent_source_count": min(lineage["independent_lineage_count"],
                                                 original_lineage["independent_lineage_count"], len(publishers))}
     return {"ok": True, "status": "research_model_assessed_inference", "verified_findings": [],

@@ -22,8 +22,10 @@ import requests
 
 try:
     from research_web_intelligence_v2100 import NATIVE_RECEIPT_CONTRACT_VERSION, derive_source_freshness
+    from research_source_independence import publisher_name
 except ImportError:
     from research_web_intelligence_v2100 import NATIVE_RECEIPT_CONTRACT_VERSION, derive_source_freshness
+    from research_source_independence import publisher_name
 
 
 CONTRACT_VERSION = "v2501.1"
@@ -333,6 +335,59 @@ def _study_context(text: str, limit: int = 600) -> str:
             if 20 <= len(sentence) <= 350 and sum(map(len, result)) + len(result) + len(sentence) <= limit:
                 result.append(sentence)
     return " ".join(result)
+
+
+# A page presenting its own publisher as the provider of something: "Spark, a
+# Bitcoin Layer 2, supports ...", "CreaSeed can support this stage", "What Spark
+# enables". Verb positions only - a looser draft matched "Stripe support", "Python
+# Help" and "with MediaBrief, <name>", which are nouns and interview framing.
+_OFFERING_THIRD_PERSON = r"(?:supports|enables|helps|lets|offers|provides|powers|handles|automates|simplifies|streamlines)"
+_OFFERING_BASE = r"(?:support|enable|help|offer|provide|power|handle|automate|simplify|streamline)"
+# A disclosed method says who was asked, how many, or how. A byline date or
+# "according to" names a source rather than a method, which is why the broader
+# _study_context vocabulary is not reused here.
+_METHODOLOGY_DISCLOSED = re.compile(
+    r"\b(?:we|they|researchers|the (?:study|survey|report|researchers))\s+(?:surveyed|polled|interviewed)\b"
+    r"|\b(?:survey|poll|study|analysis) of\s+(?:more than\s+|over\s+|nearly\s+|almost\s+)?[\d,]{2,}"
+    r"|\b[\d,]{2,}\s+(?:respondents|participants)\b"
+    r"|\bn\s?=\s?[\d,]{2,}\b"
+    r"|\b(?:our|the|survey|study|research)\s+methodology\b",
+    re.IGNORECASE,
+)
+EVIDENCE_PRODUCER_SIGNALS = ("none", "self_promoting_publisher", "self_promoting_publisher_with_methodology")
+
+
+def _evidence_producer_signal(public_url: str, visible: str) -> str:
+    """Whether a page's publisher presents its own offering, as a fixed code.
+
+    Publisher identity is not evidence independence. spark.money is third-party to
+    a question about creator payment delays - nothing in the objective names it -
+    yet its research page on those delays presents Spark's payment rails as the
+    fix, discloses no method, and was counted as independent customer evidence.
+    The signal is structural: the page names its own publisher as the thing that
+    supports, enables or provides. It is not a list of vendors, and it cannot see
+    a vendor that never names itself. On the demand corpus it caught Spark and
+    CreaSeed, and none of the independent pages.
+    """
+    try:
+        name = publisher_name(urlsplit(str(public_url or "")).hostname or "")
+    except ValueError:
+        return "none"
+    if len(name) < 4 or not visible:
+        return "none"
+    label = re.escape(name)
+    appositive = r"(?:\s*,[^,.]{1,60},)?"
+    offering = re.compile(
+        rf"\b{label}\b{appositive}\s+(?:also\s+|now\s+)?{_OFFERING_THIRD_PERSON}\b"
+        rf"|\b{label}\b{appositive}\s+(?:can|may|will)\s+(?:also\s+)?{_OFFERING_BASE}\b"
+        rf"|\b(?:what|how)\s+{label}\s+(?:{_OFFERING_THIRD_PERSON}|{_OFFERING_BASE})\b",
+        re.IGNORECASE,
+    )
+    if not offering.search(visible):
+        return "none"
+    if _METHODOLOGY_DISCLOSED.search(visible):
+        return "self_promoting_publisher_with_methodology"
+    return "self_promoting_publisher"
 
 
 def _focused_excerpt(text: str, terms: Iterable[str], *, limit: int = 2400, max_sentences: int = 12) -> str:
@@ -679,6 +734,9 @@ class GovernedPublicWebResearchAdapter:
             "redirect_count": fetched["redirect_count"],
             "content_digest": fetched["content_digest"],
             "public_url": fetched["public_url"],
+            # A fixed code, never page text: whether the publisher presents its own
+            # offering here, and whether the page discloses a method.
+            "evidence_producer_signal": _evidence_producer_signal(fetched["public_url"], visible),
             "raw_content_included": False,
             "cookies_sent": False,
             "credentials_sent": False,

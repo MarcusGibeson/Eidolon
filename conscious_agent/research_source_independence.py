@@ -184,6 +184,16 @@ def _publisher_key(host: str, supplied: object = "") -> str:
     return tail2
 
 
+def publisher_name(host: str) -> str:
+    """The label naming the publishing organisation: spark.money -> "spark".
+
+    Taken from the registrable domain, the same identity corroboration counts
+    publishers by, so www.creaseed.ai and creaseed.ai name one organisation.
+    """
+    key = _publisher_key(str(host or "").casefold().strip("."))
+    return key.split(".")[0] if key else ""
+
+
 def source_identity(citation: Mapping[str, Any] | None) -> dict[str, Any]:
     row = dict(citation or {})
     public_url = canonicalize_public_url(row.get("canonical_url") or row.get("public_url"))
@@ -373,6 +383,7 @@ def independence_summary(citations: Iterable[Mapping[str, Any]]) -> dict[str, An
 __all__ = [
     "CONTRACT_VERSION",
     "canonicalize_public_url",
+    "publisher_name",
     "source_evidence_role",
     "source_identity",
     "cluster_evidence_lineages",

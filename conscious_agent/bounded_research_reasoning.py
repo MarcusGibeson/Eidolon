@@ -1220,6 +1220,9 @@ def extract_claim_evidence(
             "candidate_digest": _hex64(meta.get("candidate_digest")),
             "evidence_dimension": _clean(meta.get("evidence_dimension"), 60),
             "stance": stance,
+            # Carried from the signed observation, which is the only place the page
+            # was read; everything downstream sees this fixed code, not the page.
+            "evidence_producer_signal": _clean(native.get("evidence_producer_signal"), 60),
             "freshness": freshness,
             "relevance_score": relevance,
             "quality_score": quality,
@@ -1494,6 +1497,9 @@ def assemble_cited_conclusion(
             "quality_score": _clamp(source.get("quality_score"), 0.0),
             "relevance_score": _clamp(source.get("relevance_score"), 0.0),
             "source_digest": source_digest, "repeated_source_reference": repeated,
+            # Kept so a refused report still says which observed source was a vendor
+            # presenting its own offering; a fixed code, never page text.
+            "evidence_producer_signal": _clean(source.get("evidence_producer_signal"), 60),
         })
 
     lines: list[str] = []
@@ -2105,6 +2111,7 @@ def validate_research_synthesis(
             "candidate_digest": _hex64(source.get("candidate_digest")),
             "evidence_dimension": _clean(source.get("evidence_dimension"), 60),
             "stance": _clean(source.get("stance"), 20) or "unknown",
+            "evidence_producer_signal": _clean(source.get("evidence_producer_signal"), 60),
             "source_identity_digest": _hex64(identity.get("source_identity_digest")),
             "canonical_page_digest": _hex64(identity.get("canonical_page_digest")),
             "publisher_digest": _hex64(identity.get("publisher_digest")),

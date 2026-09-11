@@ -61,18 +61,20 @@ def require(condition: object, name: str) -> None:
 LIVE_ROW_KEYS = {"citation_id", "public_url", "host", "source_kind", "freshness", "quality_score",
                  "relevance_score", "source_digest", "candidate_digest", "evidence_dimension", "stance",
                  "source_identity_digest", "canonical_page_digest", "publisher_digest", "explicit_origin_digest",
-                 "attribution_digest", "content_similarity_digest", "content_similarity_confidence"}
+                 "attribution_digest", "content_similarity_digest", "content_similarity_confidence",
+                 "evidence_producer_signal"}
 
 PASSAGE = ("A 2026 survey of 1,200 creators found that most respondents reported sponsorship payments "
            "arriving late, often by more than sixty days after delivery.")
 
 
-def live_row(cid: str, url: str, *, freshness: str = "fresh", relevance: float = 1.0, publisher: str = "") -> dict:
+def live_row(cid: str, url: str, *, freshness: str = "fresh", relevance: float = 1.0, publisher: str = "",
+             producer: str = "none") -> dict:
     row = {key: "" for key in LIVE_ROW_KEYS}
     row.update({"citation_id": cid, "public_url": url, "host": url.split("/")[2],
                 "source_kind": classify_source_kind(url), "freshness": freshness,
                 "quality_score": 0.5, "relevance_score": relevance, "stance": "unknown",
-                "publisher_digest": publisher or ("p" * 63 + cid[-1])})
+                "publisher_digest": publisher or ("p" * 63 + cid[-1]), "evidence_producer_signal": producer})
     return row
 
 
@@ -191,6 +193,13 @@ WITNESSES = {
     "grounded_refutation": (lambda: reference([blog, blog2]),
                             lambda: reference([blog, blog2], assessments=[("web-1", "supports", "unknown"),
                                                                           ("web-2", "refutes", "unknown")])),
+    # The signal is carried on the live row itself, the only way it reaches the
+    # policy - so the failing witness is the Spark page as the adapter marks it.
+    "evidence_producer_independent": (
+        lambda: demand([survey1, survey2]),
+        lambda: demand([live_row("web-1", "https://www.spark.money/research/creator-economy-payments",
+                                 producer="self_promoting_publisher"), survey2]),
+    ),
 }
 
 # --- the registry: every condition a policy uses has a witness pair ---------

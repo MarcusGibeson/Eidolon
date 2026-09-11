@@ -125,6 +125,8 @@ def _evidence_policy_projection(value: object) -> dict[str, Any]:
         "exact_digest_matches": _bounded_count(value.get("exact_digest_matches")),
         "normalized_exact_matches": _bounded_count(value.get("normalized_exact_matches")),
         "different_claim_matches": _bounded_count(value.get("different_claim_matches")),
+        "producer_signal_judged_count": _bounded_count(value.get("producer_signal_judged_count")),
+        "self_promoting_publisher_count": _bounded_count(value.get("self_promoting_publisher_count")),
         "citation_completion": _citation_completion_projection(value.get("citation_completion")),
         "finding_condition_failures": [
             code for code in (
@@ -163,6 +165,10 @@ def _source_selection_projection(value: object) -> dict[str, Any]:
         "offered_authority_tiers": _count_map(value.get("offered_authority_tiers")),
         "assessment_conditions_deferred": [
             code for code in (_clean(item, 40) for item in list(value.get("assessment_conditions_deferred") or [])[:4])
+            if code
+        ],
+        "context_conditions_deferred": [
+            code for code in (_clean(item, 40) for item in list(value.get("context_conditions_deferred") or [])[:4])
             if code
         ],
     }
@@ -314,6 +320,9 @@ def sanitize_report(report: Mapping[str, Any] | None) -> dict[str, Any]:
         source_kind = _clean(raw.get("source_kind"), 60).casefold()
         if not re.fullmatch(r"[a-z][a-z0-9_-]{0,59}", source_kind):
             source_kind = "unknown"
+        producer_signal = _clean(raw.get("evidence_producer_signal"), 60)
+        if producer_signal not in {"none", "self_promoting_publisher", "self_promoting_publisher_with_methodology"}:
+            producer_signal = ""
         citations.append({
             "citation_id": citation_id,
             "public_url": public_url,
@@ -326,6 +335,7 @@ def sanitize_report(report: Mapping[str, Any] | None) -> dict[str, Any]:
             "candidate_digest": _hex64(raw.get("candidate_digest")),
             "evidence_dimension": _clean(raw.get("evidence_dimension"), 60),
             "stance": _clean(raw.get("stance"), 20),
+            "evidence_producer_signal": producer_signal,
             "source_identity_digest": _hex64(raw.get("source_identity_digest")),
             "canonical_page_digest": _hex64(raw.get("canonical_page_digest")),
             "publisher_digest": _hex64(raw.get("publisher_digest")),
