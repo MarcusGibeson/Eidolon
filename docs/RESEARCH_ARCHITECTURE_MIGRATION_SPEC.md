@@ -1,6 +1,12 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.2, 2026-09-12. Status: the governing migration specification, approved by Marcus.**
+**Version 2.3, 2026-09-12. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.3** (after G-SCHEMA passed):
+- **Two versions, two contracts.** The history contract version (`bounded_research_history.CONTRACT_VERSION`, `v2503.3`) keeps describing the legacy history-record and export contract, and does not change. `finding_schema_version` versions the multi-finding research representation and is present only on a report that uses that representation.
+- **Legacy reports get no migration metadata.** `finding_schema_version`, `synthesis_path` and any equivalent field are never added to legacy reports for consistency. Keeping their keys, digests, projections and bytes unchanged is intentional. A report without `finding_schema_version` is, by contract, the legacy single-finding representation.
+- **Boundaries established by G-SCHEMA** are recorded in §7a and stay in force until a later gate changes one explicitly.
+- **Step status:** G-N1, G-INV and G-SCHEMA passed. G-RETRY is DEFERRED (failed behavioural gate, structural contract validated).
 
 **What the approval covers:**
 - **Implementation may begin, narrowly and behind gates**, starting with the behaviour-neutral list refactor (G-N1).
@@ -241,7 +247,7 @@ The relation is many-to-many: a passage may support several findings (E10), and 
 - `evidence_policy_evaluation` keeps its run-level fields (available admissible evidence, authority states, source selection) and gains `finding_evaluations: [...]` plus aggregate counts.
 - The finding-verdict fields are not duplicated at the top level.
 - `bounded_research_history` gains bounded, fixed-code projections for the new lists.
-- The contract version is bumped (**G-SCHEMA**).
+- **Versioning (2.3, G-SCHEMA).** The multi-finding representation is versioned by `finding_schema_version` (`v2731.4`), present only on a report that uses it. The history contract version (`CONTRACT_VERSION`, `v2503.3`) keeps describing the legacy history-record and export contract and is **not** bumped: it is embedded in every history record and export, so a bump would change every legacy record although G-SCHEMA is behaviour-neutral.
 
 ### Layer 5 — Explanation construction (mechanism route only)
 
@@ -294,7 +300,7 @@ No new model prose follows ordering.
 
 **Why.** A silent fallback would produce an answer and superficially successful telemetry, while hiding which architecture produced it. That would make every validation of the new path unreadable.
 
-**Path provenance.** Every run records which synthesis path produced its result, as a fixed code: `legacy_single_finding` or `atomic_mechanism`. Routing (§0) is decided **before** synthesis. A run routed to `atomic_mechanism` can end in only two ways:
+**Path provenance.** Every atomic-path run records `synthesis_path: atomic_mechanism` together with `finding_schema_version`. Legacy reports carry neither, by design (2.3): a report without `finding_schema_version` is, by contract, the legacy single-finding representation, and legacy bytes are never changed to add provenance. Routing (§0) is decided **before** synthesis. A run routed to `atomic_mechanism` can end in only two ways:
 - an atomic-path result;
 - an atomic-path failure.
 
@@ -382,12 +388,12 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | Gate | Component | Protocol | Draft pass rule | If it fails |
 |---|---|---|---|---|
 | **G-INV** | `OptionSet` | Fixture test that fails loudly: offer, grounding, extraction, assessment and retry | 0 violations; the test fails on a deliberately broken build | Blocks Layer 2 |
-| **G-RETRY** | Retry (findings-only, except demand) | Contract and parity differential against the previous gate, plus a live forced-retry comparison on identical evidence (`prereg_retry.json`) | Non-retry runs, first attempts, demand and policy unchanged; the retry offers exactly the first attempt's set; grounding stays inside the set; a causal witness; no new generation failures or unsupported findings | Blocks the retry change |
-| **G-N1** | Layer 4 refactor | Stored corpus with exactly 1 finding; the existing suite (`v2501_7`, `v2502_*`, `v2731_0_4` to `v2731_2_7`) | Byte-identical reports and history projections; suite unchanged apart from known pre-existing failures | Blocks multi-finding |
-| **G-SCHEMA** | Report shape, N>1 | Fixture reports with several findings through `bounded_research_history` and `conversational_research_actions` | Projections fixed-code and bounded; counts correct; content-free receipts; policy-measurement annotations present on atomic steps | Blocks R1 |
+| **G-RETRY** | Retry (findings-only, except demand) | Contract and parity differential against the previous gate, plus a live forced-retry comparison on identical evidence (`prereg_retry.json`) | Non-retry runs, first attempts, demand and policy unchanged; the retry offers exactly the first attempt's set; grounding stays inside the set; a causal witness; no new generation failures or unsupported findings | Blocks the retry change. **Outcome: DEFERRED** (failed behavioural gate B2, structural contract validated); reconsider after the atomic claim-identity contract |
+| **G-N1** | Layer 4 refactor | Stored corpus with exactly 1 finding; the existing suite (`v2501_7`, `v2502_*`, `v2731_0_4` to `v2731_2_7`) | Byte-identical reports and history projections; suite unchanged apart from known pre-existing failures | Blocks multi-finding. **Outcome: PASS** (`2ed3161`) |
+| **G-SCHEMA** | Report shape, N>1 | Fixture reports with several findings through `bounded_research_history` and `conversational_research_actions` | Projections fixed-code and bounded; counts correct; content-free receipts; policy-measurement annotations present on atomic steps | Blocks R1. **Outcome: PASS** (`d8c6f57`); versioned by `finding_schema_version`, history contract version unchanged (2.3); boundaries in §7a |
 | **G-COST** | Reference execution cost (D3), **early** | Harness-only, **before R1 is built**: the reference R1 + cross-source + C-singleton + ordering pipeline on replayed app-path evidence, instrumented per stage (calls, prompt and output tokens, seconds, time left at synthesis start); then batched variants compared with the reference's outputs | Costs reported per stage. A batched variant may replace a reference stage only if it matches the reference on the pre-registered output metrics (claims extracted and grounded, support and refutation states, mechanism flags) | Informs D3 and the shape of the R1 build; R1 is not built around an unmeasured execution pattern |
 | **G-XS** | Cross-source assessment | App-path replay; claims × other sources hand-labelled blind (supports / refutes / neither), **including planted contradicting passages whose correct label is refutes**; claim text and digest recorded before and after assessment | Supports precision ≥ own-passage VERIFY's; **support recall** and **refutation recall** on labelled pairs each at or above a pre-registered bar, so answering "unclear" to every contradiction fails; the unclear rate reported per labelled class; **false refutations = 0**; **claim mutations = 0** (text and digest byte-identical; every row binds to the unchanged digest); cost reported | **Blocks R1 shipping** (refutation must not regress) |
-| **G-MF** | Layers 3–5 end to end | Live app path, production vs R1 + XS + Layer 5, identical retrieval (replayed); mechanism topics plus non-mechanism and demand controls; induced-failure runs (deadline, extraction, cross-source) | Supported mechanism findings up on ≥4 of 7 topics; asserted unsupported content = 0; 0 invented; judge not lower; controls byte-unchanged; **path provenance on every run; zero silent fallbacks** (induced failures end in their §3a codes) | Harness-only; back to design |
+| **G-MF** | Layers 3–5 end to end | Live app path, production vs R1 + XS + Layer 5, identical retrieval (replayed); mechanism topics plus non-mechanism and demand controls; induced-failure runs (deadline, extraction, cross-source) | Supported mechanism findings up on ≥4 of 7 topics; asserted unsupported content = 0; 0 invented; judge not lower; controls byte-unchanged; **path provenance on every atomic-path run** (legacy reports stay unmarked by contract, 2.3); **zero silent fallbacks** (induced failures end in their §3a codes) | Harness-only; back to design |
 | **G-WHOLE** | The whole composed answer | Every composed answer in the G-MF runs: deterministic sentence-to-finding trace, plus blind hand review of the complete output | 0 asserted sentences without a Supported finding; 0 contradictions within an answer; 0 causal links the findings do not state; unsupported claims reported | **Blocks promotion** |
 | **G-TIME** | Cost (D3) | Instrumented G-MF runs: per-stage time, calls and tokens; time left at synthesis start; parallelism and duplicated work | Within the current budget, or a recorded D3 decision after optimization | D3 |
 | **G-A3** | Excerpt | App objective path; retrieval captured and replayed; A0 vs A3 at **matched characters and matched tokens**; blind labels | Recall and core coverage better on ≥4 held-out topics, worse on ≤1; precision not lower by >0.05; downstream offer (production and O3) not worse | Excerpts stay A0. **The architecture is unaffected** |
@@ -414,15 +420,25 @@ Each step makes one semantic change and is independently revertible. Each needs 
      - `_first_finding`: the policy and the judge read the first finding of any number. That asymmetry is recorded current behaviour.
    - The synthesis prompt, the demand gate and the report projections are untouched. A projection change is a schema change and belongs to step 4.
    - **After G-N1 passes, work stops** for review of the actual diff and the gate evidence before any behavioural change is enabled.
-2. **`OptionSet` identity refactor.** No behaviour change (G-INV).
-3. **Retry semantics** (G-RETRY): findings-only runs except demand.
-4. **Multi-finding report schema** (G-SCHEMA).
+2. **`OptionSet` identity refactor.** No behaviour change (G-INV). **PASS** (`499723f`).
+3. **Retry semantics** (G-RETRY): findings-only runs except demand. **DEFERRED** — failed behavioural gate (B2), structural contract validated. The change is preserved as a scratchpad record, not committed; reconsider it after the atomic claim-identity contract exists.
+4. **Multi-finding report schema** (G-SCHEMA). **PASS** (`d8c6f57`); boundaries in §7a.
 5. **Reference cost probe (G-COST)**, harness-only, before R1 is built; batched candidates measured against the reference.
 6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME).
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
 
 If any step-8 component fails, the architecture stands and only that component returns to design. **The return point for the original objective is M-DEMAND (§9).**
+
+### 7a. Migration boundaries established by G-SCHEMA
+
+These boundaries stay in force until a later gate changes one explicitly (Marcus, 2026-09-12).
+- **Claim-dependent measurements stay per finding.** Authority states and tiers, claim-source relationships, available admissible evidence, and every other policy field that depends on the finding's claim-source relationship live in that finding's entry. Only `RUN_LEVEL_EVALUATION_KEYS` are stated once. None is promoted to run-level state.
+- **The Markdown export refuses multi-finding reports** (`multi_finding_report_export_not_migrated`) until its Layer 5 semantics are designed.
+- **Chat review and count semantics are unchanged.** `conversational_research_review` and `_research_report_message` keep counting rows as today. What those counts mean for an atomic explanation is decided with Layer 5 (steps 6–7), before any multi-finding report reaches chat.
+- **The answer judge is unchanged.** It reads the first finding, and its 700-character bound stays frozen.
+- **Legacy reports carry no path provenance or migration metadata** (2.3).
+- **The multi-finding report builder stays unwired.** `_multi_finding_report_fields` has no production call site.
 
 ---
 
