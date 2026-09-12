@@ -1074,6 +1074,12 @@ class GovernedPublicWebResearchAdapter:
                     180,
                     min(900, retry_excerpt_budget // max(1, len(public_documents))),
                 )
+                # A repair retry fixes the reply's structure, not the evidence: it
+                # re-offers the source's whole option set, exactly as the first
+                # attempt did. Offering one passage per source let a malformed brace
+                # take away the passages a finding could have cited. Demand keeps the
+                # one-passage retry until demand migrates on its own terms.
+                full_retry_offer = decomposition.get("objective_shape") != "single_candidate_dimension"
                 retry_documents = [
                     {
                         "citation_id": row["citation_id"],
@@ -1082,9 +1088,8 @@ class GovernedPublicWebResearchAdapter:
                         "evidence_dimension": row.get("evidence_dimension") or "",
                         "publisher_claimed_dates": row.get("publisher_claimed_dates", []),
                         "unverified_study_context": row.get("unverified_study_context", ""),
-                        # A retry re-offers options from the same set under their original
-                        # indexes, so grounding resolves its selections exactly as before.
-                        **({"passages": [p for p in option_sets[row["citation_id"]].passages() if len(p["text"]) + len(row.get("unverified_study_context", "")) + len(str(row.get("publisher_claimed_dates", []))) <= retry_excerpt_limit][:1]}
+                        **({"passages": option_sets[row["citation_id"]].passages() if full_retry_offer else
+                            [p for p in option_sets[row["citation_id"]].passages() if len(p["text"]) + len(row.get("unverified_study_context", "")) + len(str(row.get("publisher_claimed_dates", []))) <= retry_excerpt_limit][:1]}
                            if findings_only else {"excerpt": _clean(row.get("excerpt"), retry_excerpt_limit)}),
                     }
                     for row in public_documents
