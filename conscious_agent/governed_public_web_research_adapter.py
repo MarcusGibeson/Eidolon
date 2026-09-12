@@ -910,8 +910,11 @@ class GovernedPublicWebResearchAdapter:
         schema_count = requested or "the number justified by evidence"
         findings_only = not requested and phase == "final"
         if findings_only:
-            from research_claim_assessment import passage_options
+            from research_claim_assessment import OptionSet, passage_options
             observed_excerpts = {row["citation_id"]: row["excerpt"] for row in documents}
+            # One option set per offered source: the prompt, any retry and grounding
+            # all read these same options rather than rebuilding them from the excerpt.
+            option_sets: dict[str, OptionSet] = {}
             for document in public_documents:
                 complete = []
                 used = len(document["unverified_study_context"]) + len(str(document["publisher_claimed_dates"]))
@@ -921,9 +924,8 @@ class GovernedPublicWebResearchAdapter:
                         complete.append(option["text"])
                         used += cost
                 document["excerpt"] = " ".join(complete)
-                document["passages"] = passage_options(document["citation_id"], document["excerpt"])
-                for index, passage in enumerate(document["passages"], 1):
-                    passage["passage_index"] = index
+                option_sets[document["citation_id"]] = OptionSet.of(document["citation_id"], document["excerpt"])
+                document["passages"] = option_sets[document["citation_id"]].passages()
             omitted_passage_source_count = sum(not doc["passages"] for doc in public_documents)
             public_documents = [doc for doc in public_documents if doc["passages"]]
             if not public_documents:
@@ -1080,7 +1082,9 @@ class GovernedPublicWebResearchAdapter:
                         "evidence_dimension": row.get("evidence_dimension") or "",
                         "publisher_claimed_dates": row.get("publisher_claimed_dates", []),
                         "unverified_study_context": row.get("unverified_study_context", ""),
-                        **({"passages": [p for p in row["passages"] if len(p["text"]) + len(row.get("unverified_study_context", "")) + len(str(row.get("publisher_claimed_dates", []))) <= retry_excerpt_limit][:1]}
+                        # A retry re-offers options from the same set under their original
+                        # indexes, so grounding resolves its selections exactly as before.
+                        **({"passages": [p for p in option_sets[row["citation_id"]].passages() if len(p["text"]) + len(row.get("unverified_study_context", "")) + len(str(row.get("publisher_claimed_dates", []))) <= retry_excerpt_limit][:1]}
                            if findings_only else {"excerpt": _clean(row.get("excerpt"), retry_excerpt_limit)}),
                     }
                     for row in public_documents
@@ -1128,7 +1132,7 @@ class GovernedPublicWebResearchAdapter:
                 from research_claim_assessment import assess_source_claims
                 required_dimension = str((decomposition.get("subquestions") or [{}])[0].get("evidence_dimension") or "") if decomposition.get("objective_shape") == "single_candidate_dimension" else ""
                 assessment_summary = assess_source_claims(parsed, documents=public_documents, citations=citation_rows,
-                                                          required_dimension=required_dimension)
+                                                          required_dimension=required_dimension, option_sets=option_sets)
                 assessment_summary["omitted_passage_source_count"] = omitted_passage_source_count
                 from datetime import date
                 dates = {}

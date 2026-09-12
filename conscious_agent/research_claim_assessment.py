@@ -5,6 +5,7 @@ import hashlib
 import re
 from collections import Counter
 from collections.abc import Mapping
+from dataclasses import dataclass
 
 from research_source_independence import independence_summary, source_evidence_role, source_identity
 
@@ -160,7 +161,55 @@ def passage_options(citation_id, excerpt):
     return options
 
 
-def assess_source_claims(payload, *, documents, citations, required_dimension=""):
+@dataclass(frozen=True)
+class OptionSet:
+    """The passage options offered for one source in one synthesis attempt.
+
+    Built once, from the excerpt synthesis actually offers. The prompt shows
+    these options, a retry re-offers some of them under their original indexes,
+    and grounding resolves the model's passage_index or passage_id against these
+    same options. Nothing downstream rebuilds the list from the excerpt, so the
+    offer and the check cannot drift apart: when they were rebuilt separately, a
+    passage the model had been shown could be refused as never offered.
+    """
+
+    citation_id: str
+    excerpt: str
+    options: tuple[tuple[str, str], ...]  # (passage_id, text), in offered order
+
+    @classmethod
+    def of(cls, citation_id: str, excerpt: str) -> "OptionSet":
+        text = str(excerpt or "")
+        return cls(citation_id, text, tuple((row["passage_id"], row["text"]) for row in passage_options(citation_id, text)))
+
+    def passages(self) -> list[dict]:
+        """The options as synthesis offers them, each with its 1-based passage_index."""
+        return [{"passage_id": pid, "text": text, "passage_index": index}
+                for index, (pid, text) in enumerate(self.options, 1)]
+
+    def choices(self) -> list[dict]:
+        """The options as a model's selection is resolved against them."""
+        return [{"passage_id": pid, "text": text} for pid, text in self.options]
+
+
+def _offered_choices(cid, excerpt, option_sets):
+    """The options a selection from this source resolves against, or None when they cannot be trusted.
+
+    A caller that ran synthesis passes the option sets it offered; each must be
+    the one built for this source from this exact excerpt. Anything else - a
+    missing set, one keyed to another source, one built from different text - is
+    refused rather than quietly rebuilt. A caller that passes no sets gets the
+    options rebuilt from the excerpt, as grounding always did.
+    """
+    if option_sets is None:
+        return OptionSet.of(cid, excerpt).choices()
+    option_set = option_sets.get(cid) if isinstance(option_sets, Mapping) else None
+    if not isinstance(option_set, OptionSet) or option_set.citation_id != cid or option_set.excerpt != excerpt:
+        return None
+    return option_set.choices()
+
+
+def assess_source_claims(payload, *, documents, citations, required_dimension="", option_sets=None):
     """Retain content-free assessments only when their exact passage was observed.
 
     Matching a passage establishes textual provenance, not entailment. Model stance
@@ -184,8 +233,13 @@ def assess_source_claims(payload, *, documents, citations, required_dimension=""
         quote, claim = row.get("evidence_quote"), row.get("claim")
         stance = row.get("assessment")
         excerpt = str(document_index[cid].get("excerpt") or "")
+        choices = None
+        if "passage_index" in row or "passage_id" in row:
+            choices = _offered_choices(cid, excerpt, option_sets)
+            if choices is None:
+                rejected["option_set_mismatch"] += 1
+                continue
         if "passage_index" in row:
-            choices = passage_options(cid, excerpt)
             position = row["passage_index"]
             if type(position) is not int or not 1 <= position <= len(choices):
                 rejected["unobserved_passage_index"] += 1
@@ -200,7 +254,7 @@ def assess_source_claims(payload, *, documents, citations, required_dimension=""
                 continue
             row = {**row, "passage_id": selected["passage_id"]}
         if "passage_id" in row:
-            options = {item["passage_id"]: item["text"] for item in passage_options(cid, excerpt)}
+            options = {item["passage_id"]: item["text"] for item in choices}
             pid = row["passage_id"]
             if not isinstance(pid, str) or pid not in options:
                 rejected["unobserved_passage_id"] += 1
