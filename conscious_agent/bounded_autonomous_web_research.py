@@ -220,6 +220,57 @@ def _inferred_source_kind(url: str, supplied: str) -> str:
     return classify_source_kind(url, "unknown")
 
 
+def _payload_findings(payload: object) -> list[Any] | None:
+    """The findings list exactly as the payload carries it, or None when it has none."""
+    findings = payload.get("findings") if isinstance(payload, Mapping) else None
+    return findings if isinstance(findings, list) else None
+
+
+def _sole_finding(payload: object) -> Mapping[str, Any] | None:
+    """The payload's finding when it holds exactly one, else None.
+
+    Citation completion and refutation surfacing act on a single finding and
+    leave any other payload untouched. The rule is stated once, here, so that
+    admitting several findings becomes one visible decision instead of a check
+    repeated at every call site (docs/RESEARCH_ARCHITECTURE_MIGRATION_SPEC.md).
+    """
+    findings = _payload_findings(payload)
+    if findings is None or len(findings) != 1 or not isinstance(findings[0], Mapping):
+        return None
+    return findings[0]
+
+
+def _first_finding(payload: object) -> Mapping[str, Any]:
+    """The payload's first finding, or an empty mapping.
+
+    The policy measurement and the answer judge read the first finding of any
+    number, while completion and surfacing act only on a sole one: given two
+    findings, the policy measures the first and nothing is completed. That
+    asymmetry is current behaviour, recorded by the migration specification;
+    the multi-finding path replaces both rules.
+    """
+    findings = _payload_findings(payload)
+    return findings[0] if findings and isinstance(findings[0], Mapping) else {}
+
+
+def _grounded_disagreement(finding: Mapping[str, Any], assessments: object) -> dict[str, Any] | None:
+    """One finding's disagreement row when a grounded source refutes its exact claim, else None."""
+    from research_claim_assessment import grounded_refuting_citation_ids, grounded_supporting_citation_ids
+    refuting = grounded_refuting_citation_ids(assessments, finding.get("summary"))
+    if not refuting:
+        return None
+    supporting = set(grounded_supporting_citation_ids(assessments, finding.get("summary")))
+    cited = [str(item) for item in list(finding.get("citation_ids") or []) if isinstance(item, str)]
+    return {
+        "claim_code": "grounded_refutation",
+        "finding": _clean(f"Grounded evidence disputes this finding: {finding.get('summary') or ''}", 320),
+        "classification": "unresolved_disagreement",
+        "supporting_citations": [cid for cid in cited if cid in supporting],
+        "refuting_citations": list(refuting),
+        "traceable": True,
+    }
+
+
 def _surface_grounded_refutations(conclusion: dict[str, Any], synthesis_result: Mapping[str, Any],
                                   citation_rows: list[Mapping[str, Any]]) -> int:
     """Show the operator a grounded refutation instead of letting the finding look uncontested.
@@ -233,27 +284,16 @@ def _surface_grounded_refutations(conclusion: dict[str, Any], synthesis_result: 
     failure leaves the conclusion untouched.
     """
     try:
-        from research_claim_assessment import grounded_refuting_citation_ids, grounded_supporting_citation_ids
-        payload = synthesis_result.get("payload")
-        findings = payload.get("findings") if isinstance(payload, Mapping) else None
-        if not isinstance(findings, list) or len(findings) != 1 or not isinstance(findings[0], Mapping):
+        finding = _sole_finding(synthesis_result.get("payload"))
+        if finding is None:
             return 0
-        finding = findings[0]
         summary = synthesis_result.get("source_assessment_summary")
-        assessments = summary.get("assessments") if isinstance(summary, Mapping) else None
-        refuting = grounded_refuting_citation_ids(assessments, finding.get("summary"))
-        if not refuting:
+        disagreement = _grounded_disagreement(
+            finding, summary.get("assessments") if isinstance(summary, Mapping) else None)
+        if disagreement is None:
             return 0
-        supporting = set(grounded_supporting_citation_ids(assessments, finding.get("summary")))
-        cited = [str(item) for item in list(finding.get("citation_ids") or []) if isinstance(item, str)]
-        conclusion["unresolved_disagreements"] = list(conclusion.get("unresolved_disagreements") or []) + [{
-            "claim_code": "grounded_refutation",
-            "finding": _clean(f"Grounded evidence disputes this finding: {finding.get('summary') or ''}", 320),
-            "classification": "unresolved_disagreement",
-            "supporting_citations": [cid for cid in cited if cid in supporting],
-            "refuting_citations": list(refuting),
-            "traceable": True,
-        }]
+        refuting = list(disagreement["refuting_citations"])
+        conclusion["unresolved_disagreements"] = list(conclusion.get("unresolved_disagreements") or []) + [disagreement]
         index = {str(row.get("citation_id") or ""): row for row in citation_rows if isinstance(row, Mapping)}
         listed = {str(row.get("citation_id") or "") for row in list(conclusion.get("citations") or [])
                   if isinstance(row, Mapping)}
@@ -287,36 +327,41 @@ def _complete_finding_citations(synthesis_result: dict[str, Any], *, offered_ids
     Any failure leaves the payload untouched.
     """
     try:
-        from bounded_research_reasoning import MAX_FINDING_CITATION_IDS
-        from research_claim_assessment import grounded_supporting_citation_ids
         payload = synthesis_result.get("payload")
-        if not isinstance(payload, Mapping):
+        finding = _sole_finding(payload)
+        if finding is None:
             return {}
-        findings = payload.get("findings")
-        if not isinstance(findings, list) or len(findings) != 1 or not isinstance(findings[0], Mapping):
-            return {}
-        finding = dict(findings[0])
-        original = [str(item) for item in list(finding.get("citation_ids") or []) if isinstance(item, str) and item]
         summary = synthesis_result.get("source_assessment_summary")
-        grounded = grounded_supporting_citation_ids(
-            summary.get("assessments") if isinstance(summary, Mapping) else None,
-            finding.get("summary"),
-            offered_ids,
-        )
-        # The model's own citations first, so the limit never drops what it chose.
-        completed = list(dict.fromkeys(original + grounded))[:MAX_FINDING_CITATION_IDS]
-        added = len(completed) - len(list(dict.fromkeys(original))[:MAX_FINDING_CITATION_IDS])
-        if added > 0:
+        completed, receipt = _completed_finding_citations(
+            finding, summary.get("assessments") if isinstance(summary, Mapping) else None, offered_ids)
+        if receipt["added_citation_count"] > 0:
             synthesis_result["model_payload"] = payload
             synthesis_result["payload"] = {**payload, "findings": [{**finding, "citation_ids": completed}]}
-        return {
-            "applied": True,
-            "original_cited_count": len(original),
-            "completed_cited_count": len(completed),
-            "added_citation_count": max(0, added),
-        }
+        return receipt
     except Exception:
         return {}
+
+
+def _completed_finding_citations(finding: Mapping[str, Any], assessments: object,
+                                 offered_ids) -> tuple[list[str], dict[str, Any]]:
+    """One finding's completed citation list and its receipt.
+
+    The model's own citations come first, so the validator's limit never drops
+    what it chose; then every offered source grounded as supporting this exact
+    claim.
+    """
+    from bounded_research_reasoning import MAX_FINDING_CITATION_IDS
+    from research_claim_assessment import grounded_supporting_citation_ids
+    original = [str(item) for item in list(finding.get("citation_ids") or []) if isinstance(item, str) and item]
+    grounded = grounded_supporting_citation_ids(assessments, finding.get("summary"), offered_ids)
+    completed = list(dict.fromkeys(original + grounded))[:MAX_FINDING_CITATION_IDS]
+    added = len(completed) - len(list(dict.fromkeys(original))[:MAX_FINDING_CITATION_IDS])
+    return completed, {
+        "applied": True,
+        "original_cited_count": len(original),
+        "completed_cited_count": len(completed),
+        "added_citation_count": max(0, added),
+    }
 
 
 def _select_citable_evidence(*, citations, currency_requirement, objective="") -> dict[str, Any]:
@@ -341,32 +386,40 @@ def _evaluate_evidence_policy(*, payload, citations, assessment_summary, currenc
                               answer_quality_level=None) -> dict[str, Any]:
     """Measure the shared evidence policy without letting it refuse anything."""
     try:
-        from research_evidence_policy import evaluate_policy, policy_for_objective
-        findings = (payload or {}).get("findings") if isinstance(payload, Mapping) else None
-        finding = findings[0] if isinstance(findings, list) and findings and isinstance(findings[0], Mapping) else {}
-        assessments = {
-            str(row.get("citation_id") or ""): row
-            for row in ((assessment_summary or {}).get("assessments") or [])
-            if isinstance(row, Mapping)
-        }
-        return evaluate_policy(
-            policy_for_objective(currency_requirement),
-            finding=finding,
-            citations=[row for row in (citations or []) if isinstance(row, Mapping)],
-            assessments_by_citation=assessments,
-            objective=str(objective or ""),
-            currency_reason=str(currency_reason or ""),
-            freshness_window=str(freshness_window or ""),
-            answer_quality_level=answer_quality_level,
-            # The full grounded list, so support is judged per exact claim. None
-            # when no assessment step ran, which the receipt reports as unjudged.
-            assessments=(list(assessment_summary["assessments"])
-                         if isinstance(assessment_summary, Mapping)
-                         and isinstance(assessment_summary.get("assessments"), list) else None),
+        return _finding_policy_evaluation(
+            _first_finding(payload), citations=citations, assessment_summary=assessment_summary,
+            currency_requirement=currency_requirement, objective=objective, currency_reason=currency_reason,
+            freshness_window=freshness_window, answer_quality_level=answer_quality_level,
         )
     except Exception:
         # An observation-only measurement must never affect the run it observes.
         return {}
+
+
+def _finding_policy_evaluation(finding: Mapping[str, Any], *, citations, assessment_summary, currency_requirement,
+                               objective, currency_reason, freshness_window, answer_quality_level) -> dict[str, Any]:
+    """The shared evidence policy measured on one finding and the citations it names."""
+    from research_evidence_policy import evaluate_policy, policy_for_objective
+    assessments = {
+        str(row.get("citation_id") or ""): row
+        for row in ((assessment_summary or {}).get("assessments") or [])
+        if isinstance(row, Mapping)
+    }
+    return evaluate_policy(
+        policy_for_objective(currency_requirement),
+        finding=finding,
+        citations=[row for row in (citations or []) if isinstance(row, Mapping)],
+        assessments_by_citation=assessments,
+        objective=str(objective or ""),
+        currency_reason=str(currency_reason or ""),
+        freshness_window=str(freshness_window or ""),
+        answer_quality_level=answer_quality_level,
+        # The full grounded list, so support is judged per exact claim. None
+        # when no assessment step ran, which the receipt reports as unjudged.
+        assessments=(list(assessment_summary["assessments"])
+                     if isinstance(assessment_summary, Mapping)
+                     and isinstance(assessment_summary.get("assessments"), list) else None),
+    )
 
 
 def _judge_answer_quality(adapter, *, payload, objective) -> dict[str, str]:
@@ -380,9 +433,7 @@ def _judge_answer_quality(adapter, *, payload, objective) -> dict[str, str]:
         return {"status": "answer_quality_judge_unavailable", "answer_level": ""}
     try:
         from research_evidence_policy import requested_relation
-        findings = (payload or {}).get("findings") if isinstance(payload, Mapping) else None
-        finding = findings[0] if isinstance(findings, list) and findings and isinstance(findings[0], Mapping) else {}
-        claim = str(finding.get("summary") or "")
+        claim = str(_first_finding(payload).get("summary") or "")
         relation = requested_relation(objective)
         if not claim or not relation:
             return {"status": "answer_quality_not_judgeable", "answer_level": ""}
