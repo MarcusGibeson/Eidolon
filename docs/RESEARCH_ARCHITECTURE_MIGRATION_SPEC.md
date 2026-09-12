@@ -1,12 +1,24 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.3, 2026-09-12. Status: the governing migration specification, approved by Marcus.**
+**Version 2.4, 2026-09-12. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.4** (experimental-record repair and G-RETRY, Marcus, 2026-09-12):
+- **Runtime-model deviation.** The first live runs of C0/C1 and G-RETRY used isolated data directories that silently resolved `qwen2.5:7b` instead of the registered `qwen3.8:27b`.
+  - Their behavioural verdicts are invalid as production-model verdicts.
+  - The runs and their hashes are kept as deviation evidence, not deleted or rewritten.
+  - The model-free contract and parity evidence from those gates stays valid.
+  - Harness runs now receive only the production local-model settings, verify the complete resolved configuration before any measured call, fail closed on any model but `qwen3.8:27b`, and record the configuration and the Ollama state.
+- **The reruns on `qwen3.8:27b` are the authoritative behavioural results.**
+  - **C0/C1: MIXED / NO DETECTABLE EFFECT** (E7). Not integrated; the cap stays 3.
+  - **G-RETRY: PASS** and integrated (`ddd1577`).
+- **G-COST: PASS WITH QUALIFICATION** (§6). Full budget viability stays unresolved until cross-source assessment and the D7 composer exist and are measured. No optimization is authorized.
+- **Retrieval reliability.** 11 of 14 G-COST live retrievals reached the source-failure limit. This is recorded as an observation and not addressed on this branch.
+- **Step status:** G-N1, G-INV, G-SCHEMA and G-RETRY passed; G-COST passed with qualification. Nothing further is enabled.
 
 **Added in 2.3** (after G-SCHEMA passed):
 - **Two versions, two contracts.** The history contract version (`bounded_research_history.CONTRACT_VERSION`, `v2503.3`) keeps describing the legacy history-record and export contract, and does not change. `finding_schema_version` versions the multi-finding research representation and is present only on a report that uses that representation.
 - **Legacy reports get no migration metadata.** `finding_schema_version`, `synthesis_path` and any equivalent field are never added to legacy reports for consistency. Keeping their keys, digests, projections and bytes unchanged is intentional. A report without `finding_schema_version` is, by contract, the legacy single-finding representation.
 - **Boundaries established by G-SCHEMA** are recorded in §7a and stay in force until a later gate changes one explicitly.
-- **Step status:** G-N1, G-INV and G-SCHEMA passed. G-RETRY is DEFERRED (failed behavioural gate, structural contract validated).
 
 **What the approval covers:**
 - **Implementation may begin, narrowly and behind gates**, starting with the behaviour-neutral list refactor (G-N1).
@@ -67,8 +79,8 @@ The production freeze still applies. A3, O3, C-singleton, the date fallback, the
 | E4 | Offer ranking loses mechanism | O3: 9/40→15/40 mechanism passages; core-stage recall 0.347→0.820; about 12% more characters | Candidate (G-O3) |
 | E5 | Source selection works on metadata only; relevance is full-page | An offline replay reproduced selection on all 7 topics | Structural fact |
 | E6 | URL document-form words misclassify publishers | "guide" and "review" misclassify dn.org and IJCOPE. "best" and "ideas" are retained; "guide" is a removal candidate | Measured; change deferred |
-| E7 | The 3-passage cap constrains exposure and use, but raising it alone fails | C0/C1: exposure 4→28, use 2→12, grounded mechanism 0→0, unsupported findings 8→10. FAIL | Rejected alone; evidence for multi-finding |
-| E8 | The one-finding / exact-claim contract is the acceptance bottleneck | C0/C1's "use up, acceptance flat" branch | Earned |
+| E7 | The 3-passage cap constrains exposure and use, but raising it alone is not enough | C0/C1 on `qwen3.8:27b`: exposure 4→28, mechanism cited 4→8, grounded mechanism 0→6, unsupported findings 0→0; better on 3 of 7 topics and worse on none, below the 4-of-7 bar; the finding largely unchanged on most topics. **MIXED / NO DETECTABLE EFFECT.** The earlier FAIL (grounded mechanism 0→0, unsupported findings 8→10) came from an invalid `qwen2.5:7b` run (2.4) | Not harmful and sometimes useful, but not sufficient alone. Not integrated; the cap stays 3 (G-CAP) |
+| E8 | The one-finding / exact-claim contract is the acceptance bottleneck | C0/C1 on `qwen3.8:27b`: richer grounded mechanism evidence, while the single finding still compresses it into a generic one-line claim on most topics | Earned |
 | E9 | Atomic multi-step extraction works | PASS on TCP and mRNA; exact TCP replication REPLICATED; 0 invented, all steps grounded | Earned |
 | E10 | One passage may yield several findings | TCP passage → 3 atomic steps; Van Jacobson → 4 | Earned |
 | E11 | Stage-less findings belong in context | PASS on all 8 criteria; TCP precision 0.625→1.0, judge partial→complete | Earned |
@@ -388,10 +400,10 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | Gate | Component | Protocol | Draft pass rule | If it fails |
 |---|---|---|---|---|
 | **G-INV** | `OptionSet` | Fixture test that fails loudly: offer, grounding, extraction, assessment and retry | 0 violations; the test fails on a deliberately broken build | Blocks Layer 2 |
-| **G-RETRY** | Retry (findings-only, except demand) | Contract and parity differential against the previous gate, plus a live forced-retry comparison on identical evidence (`prereg_retry.json`) | Non-retry runs, first attempts, demand and policy unchanged; the retry offers exactly the first attempt's set; grounding stays inside the set; a causal witness; no new generation failures or unsupported findings | Blocks the retry change. **Outcome: DEFERRED** (failed behavioural gate B2, structural contract validated); reconsider after the atomic claim-identity contract |
+| **G-RETRY** | Retry (findings-only, except demand) | Contract and parity differential against the previous gate, plus a live forced-retry comparison on identical evidence (`prereg_retry.json`) | Non-retry runs, first attempts, demand and policy unchanged; the retry offers exactly the first attempt's set; grounding stays inside the set; a causal witness; no new generation failures or unsupported findings | Blocks the retry change. **Outcome: PASS on `qwen3.8:27b`** (`ddd1577`): contract and parity proof against `34167e0`; live, unsupported findings 0 vs 0 and grounded support beyond passage 1 4→20. The earlier DEFERRED outcome (B2, unsupported findings 4 vs 8) came from an invalid `qwen2.5:7b` run (2.4) |
 | **G-N1** | Layer 4 refactor | Stored corpus with exactly 1 finding; the existing suite (`v2501_7`, `v2502_*`, `v2731_0_4` to `v2731_2_7`) | Byte-identical reports and history projections; suite unchanged apart from known pre-existing failures | Blocks multi-finding. **Outcome: PASS** (`2ed3161`) |
 | **G-SCHEMA** | Report shape, N>1 | Fixture reports with several findings through `bounded_research_history` and `conversational_research_actions` | Projections fixed-code and bounded; counts correct; content-free receipts; policy-measurement annotations present on atomic steps | Blocks R1. **Outcome: PASS** (`d8c6f57`); versioned by `finding_schema_version`, history contract version unchanged (2.3); boundaries in §7a |
-| **G-COST** | Reference execution cost (D3), **early** | Harness-only, **before R1 is built**: the reference R1 + cross-source + C-singleton + ordering pipeline on replayed app-path evidence, instrumented per stage (calls, prompt and output tokens, seconds, time left at synthesis start); then batched variants compared with the reference's outputs | Costs reported per stage. A batched variant may replace a reference stage only if it matches the reference on the pre-registered output metrics (claims extracted and grounded, support and refutation states, mechanism flags) | Informs D3 and the shape of the R1 build; R1 is not built around an unmeasured execution pattern |
+| **G-COST** | Reference execution cost (D3), **early** | Harness-only, **before R1 is built**: the reference R1 + cross-source + C-singleton + ordering pipeline on replayed app-path evidence, instrumented per stage (calls, prompt and output tokens, seconds, time left at synthesis start); then batched variants compared with the reference's outputs | Costs reported per stage. A batched variant may replace a reference stage only if it matches the reference on the pre-registered output metrics (claims extracted and grounded, support and refutation states, mechanism flags) | Informs D3 and the shape of the R1 build; R1 is not built around an unmeasured execution pattern. **Outcome: PASS WITH QUALIFICATION** (2.4): on 14 replayed runs the measured reference stages take 125 s mean (42–203) in 28 calls, which fits the 300 s budget after 9–17 s of retrieval. Cross-source assessment and the D7 composer do not exist yet and are unmeasured, so full budget viability is unresolved. No optimization is authorized |
 | **G-XS** | Cross-source assessment | App-path replay; claims × other sources hand-labelled blind (supports / refutes / neither), **including planted contradicting passages whose correct label is refutes**; claim text and digest recorded before and after assessment | Supports precision ≥ own-passage VERIFY's; **support recall** and **refutation recall** on labelled pairs each at or above a pre-registered bar, so answering "unclear" to every contradiction fails; the unclear rate reported per labelled class; **false refutations = 0**; **claim mutations = 0** (text and digest byte-identical; every row binds to the unchanged digest); cost reported | **Blocks R1 shipping** (refutation must not regress) |
 | **G-MF** | Layers 3–5 end to end | Live app path, production vs R1 + XS + Layer 5, identical retrieval (replayed); mechanism topics plus non-mechanism and demand controls; induced-failure runs (deadline, extraction, cross-source) | Supported mechanism findings up on ≥4 of 7 topics; asserted unsupported content = 0; 0 invented; judge not lower; controls byte-unchanged; **path provenance on every atomic-path run** (legacy reports stay unmarked by contract, 2.3); **zero silent fallbacks** (induced failures end in their §3a codes) | Harness-only; back to design |
 | **G-WHOLE** | The whole composed answer | Every composed answer in the G-MF runs: deterministic sentence-to-finding trace, plus blind hand review of the complete output | 0 asserted sentences without a Supported finding; 0 contradictions within an answer; 0 causal links the findings do not state; unsupported claims reported | **Blocks promotion** |
@@ -421,9 +433,9 @@ Each step makes one semantic change and is independently revertible. Each needs 
    - The synthesis prompt, the demand gate and the report projections are untouched. A projection change is a schema change and belongs to step 4.
    - **After G-N1 passes, work stops** for review of the actual diff and the gate evidence before any behavioural change is enabled.
 2. **`OptionSet` identity refactor.** No behaviour change (G-INV). **PASS** (`499723f`).
-3. **Retry semantics** (G-RETRY): findings-only runs except demand. **DEFERRED** — failed behavioural gate (B2), structural contract validated. The change is preserved as a scratchpad record, not committed; reconsider it after the atomic claim-identity contract exists.
+3. **Retry semantics** (G-RETRY): findings-only runs except demand. **PASS** on `qwen3.8:27b` (`ddd1577`). The earlier DEFERRED outcome came from an invalid `qwen2.5:7b` run (2.4).
 4. **Multi-finding report schema** (G-SCHEMA). **PASS** (`d8c6f57`); boundaries in §7a.
-5. **Reference cost probe (G-COST)**, harness-only, before R1 is built; batched candidates measured against the reference.
+5. **Reference cost probe (G-COST)**, harness-only, before R1 is built; batched candidates measured against the reference. **PASS WITH QUALIFICATION** (2.4): cross-source assessment and the composer are still unmeasured, and no optimization is authorized.
 6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME).
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
