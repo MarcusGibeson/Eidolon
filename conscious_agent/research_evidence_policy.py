@@ -1137,6 +1137,20 @@ def evaluate_policy(
     }
 
 
+# The keys of an evaluate_policy result that describe the run rather than one
+# finding: the policy, how the observed pool was classified, the objective's
+# requested relation and the judged answer level. A multi-finding report states
+# them once beside the per-finding verdicts. Every other key - including
+# authority states and the available evidence, which depend on the finding's
+# claim-source relationship - is judged on one finding and its own citations.
+RUN_LEVEL_EVALUATION_KEYS = frozenset({
+    "contract_version", "policy_code", "currency_reason", "freshness_window",
+    "url_classification_reasons", "document_forms", "version_signal_count", "living_documentation_count",
+    "objective_terms_supplied", "producer_signal_judged_count", "self_promoting_publisher_count",
+    "requested_relation", "answer_quality_judged", "answer_quality_level", "answers_topic",
+    "answers_requested_relation", "answers_requested_depth", "enforced",
+})
+
 SELECTION_ADMISSIBLE_ONLY = "admissible_only"
 SELECTION_NO_ADMISSIBLE_EVIDENCE = "no_admissible_evidence"
 
@@ -1233,6 +1247,7 @@ __all__ = [
     "REQUESTED_RELATIONS", "DEPTH_REQUESTING_RELATIONS", "ANSWER_QUALITY_LEVELS",
     "requested_relation", "answer_quality_codes",
     "SELECTION_ADMISSIBLE_ONLY", "SELECTION_NO_ADMISSIBLE_EVIDENCE", "select_citable_evidence",
+    "RUN_LEVEL_EVALUATION_KEYS",
     "AUTHORITY_TIER_ORDER", "SELF_SUFFICIENT_TIERS", "HIGHER_RISK_POLICY_CODES",
     "TIER_NONE", "TIER_NON_AUTHORITATIVE", "TIER_UNCLASSIFIED",
     "TIER_COMMUNITY", "TIER_SPECIALIST", "TIER_PRIMARY",

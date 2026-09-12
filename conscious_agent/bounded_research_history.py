@@ -96,9 +96,20 @@ def _fixed_code(value: object, allowed: frozenset[str] | set[str]) -> str:
 
 
 def _evidence_policy_projection(value: object) -> dict[str, Any]:
-    """Project a policy measurement as condition codes and counts only."""
+    """Project a policy measurement as condition codes and counts only.
+
+    A multi-finding measurement has its own shape (_multi_finding_policy_projection);
+    a single-finding one is projected exactly as it always was.
+    """
     if not isinstance(value, Mapping) or not value:
         return {}
+    if "finding_evaluations" in value:
+        return _multi_finding_policy_projection(value)
+    return _single_finding_policy_projection(value)
+
+
+def _single_finding_policy_projection(value: Mapping[str, Any]) -> dict[str, Any]:
+    """One finding's measured verdict, together with the run it belongs to."""
     return {
         "policy_code": _clean(value.get("policy_code"), 40),
         "currency_reason": _clean(value.get("currency_reason"), 40),
@@ -167,6 +178,42 @@ def _citation_completion_projection(value: object) -> dict[str, Any]:
         "original_cited_count": _bounded_count(value.get("original_cited_count")),
         "completed_cited_count": _bounded_count(value.get("completed_cited_count")),
         "added_citation_count": _bounded_count(value.get("added_citation_count")),
+    }
+
+
+_ADMISSION_STATES = frozenset({"supported", "disputed", "unsupported"})
+MAX_FINDING_EVALUATIONS = 32
+
+
+def _multi_finding_policy_projection(value: Mapping[str, Any]) -> dict[str, Any]:
+    """Project a multi-finding measurement: the run's fields once, each finding's verdict in its entry.
+
+    A single-finding projection states that finding's verdict at the top level. A
+    multi-finding report has no single verdict, so those fields are left out here
+    rather than filled with defaults that would read as one failed finding.
+    """
+    from research_evidence_policy import RUN_LEVEL_EVALUATION_KEYS
+    run_level = RUN_LEVEL_EVALUATION_KEYS | {"source_selection", "answer_quality_status"}
+    entries = [row for row in list(value.get("finding_evaluations") or []) if isinstance(row, Mapping)]
+    projected = []
+    for entry in entries[:MAX_FINDING_EVALUATIONS]:
+        projected.append({
+            "claim_code": _clean(entry.get("claim_code"), 120),
+            "claim_digest": _hex64(entry.get("claim_digest")),
+            "admission_state": _fixed_code(entry.get("admission_state"), _ADMISSION_STATES),
+            "policy_measurement": _fixed_code(entry.get("policy_measurement"), {"admitted", "not_admitted"}),
+            **{key: field for key, field in _single_finding_policy_projection(entry).items() if key not in run_level},
+        })
+    counts = value.get("finding_evaluation_counts") if isinstance(value.get("finding_evaluation_counts"), Mapping) else {}
+    return {
+        **{key: field for key, field in _single_finding_policy_projection(value).items() if key in run_level},
+        "answer_quality_unit": _fixed_code(value.get("answer_quality_unit"), {"composed_explanation"}),
+        "answer_quality_input_truncated": bool(value.get("answer_quality_input_truncated")),
+        "finding_evaluations": projected,
+        "finding_evaluation_counts": {
+            key: _bounded_count(counts.get(key)) for key in ("total", "supported", "disputed", "unsupported", "truncated")
+        },
+        "finding_evaluations_not_projected": max(0, len(entries) - len(projected)),
     }
 
 
@@ -408,6 +455,9 @@ def sanitize_report(report: Mapping[str, Any] | None) -> dict[str, Any]:
             if disagreement:
                 row["supporting_citations"] = list(dict.fromkeys(_clean(v, 80) for v in list(raw.get("supporting_citations") or []) if _clean(v, 80)))[:16]
                 row["refuting_citations"] = list(dict.fromkeys(_clean(v, 80) for v in list(raw.get("refuting_citations") or []) if _clean(v, 80)))[:16]
+                # Which finding a multi-finding report's disagreement disputes; absent on legacy rows.
+                if raw.get("finding_claim_code"):
+                    row["finding_claim_code"] = _clean(raw.get("finding_claim_code"), 120)
             else:
                 row["stance"] = _clean(raw.get("stance"), 24)
                 row["citations"] = list(dict.fromkeys(_clean(v, 80) for v in list(raw.get("citations") or []) if _clean(v, 80)))[:16]
@@ -584,6 +634,10 @@ def sanitize_report(report: Mapping[str, Any] | None) -> dict[str, Any]:
         "private_objective_exposed": False,
         **_DENIED,
     }
+    # Present only on a multi-finding report, so a single-finding report keeps its exact keys and digest.
+    if source.get("finding_schema_version"):
+        sanitized["finding_schema_version"] = _clean(source.get("finding_schema_version"), 32)
+        sanitized["synthesis_path"] = _fixed_code(source.get("synthesis_path"), {"atomic_mechanism"})
     original_digest = _hex64(source.get("report_digest"))
     if original_digest:
         sanitized["report_digest"] = original_digest
@@ -846,6 +900,10 @@ def _citation_map(report: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
 def render_markdown_export(session_id: str, report: Mapping[str, Any]) -> dict[str, Any]:
     """Build one local Markdown export payload without writing or transmitting it."""
     sanitized = sanitize_report(report)
+    if sanitized.get("finding_schema_version"):
+        # An atomic explanation - ordered steps, context, disputed findings - has no faithful
+        # rendering in these sections yet. Refuse rather than flatten it into an inference list.
+        return {"ok": False, "status": "multi_finding_report_export_not_migrated", **_DENIED}
     sid = _clean(session_id, 120)
     report_digest = _hex64(sanitized.get("report_digest"))
     if not sid or not report_digest:

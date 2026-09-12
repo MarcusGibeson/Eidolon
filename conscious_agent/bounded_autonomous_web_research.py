@@ -445,6 +445,89 @@ def _judge_answer_quality(adapter, *, payload, objective) -> dict[str, str]:
         return {"status": "answer_quality_judge_failed", "answer_level": ""}
 
 
+# Multi-finding report representation (docs/RESEARCH_ARCHITECTURE_MIGRATION_SPEC.md,
+# G-SCHEMA). The single-finding run never calls these, so its reports keep their
+# exact shape and bytes. A report built here carries finding_schema_version, and
+# the history projection reads it in its own shape rather than as a legacy one.
+FINDING_SCHEMA_VERSION = "v2731.4"
+FINDING_ADMISSION_STATES = ("supported", "disputed", "unsupported")
+
+
+def _admission_state(finding: Mapping[str, Any], assessments: object) -> str:
+    """Supported, disputed or unsupported, from grounded support and refutation of this exact claim."""
+    from research_claim_assessment import grounded_refuting_citation_ids, grounded_supporting_citation_ids
+    if not grounded_supporting_citation_ids(assessments, finding.get("summary")):
+        return "unsupported"
+    return "disputed" if grounded_refuting_citation_ids(assessments, finding.get("summary")) else "supported"
+
+
+def _multi_finding_report_fields(findings, *, assessment_summary, offered_ids, citations, currency_requirement,
+                                 objective="", currency_reason="", freshness_window="", answer_quality_level=None,
+                                 answer_quality_status="", answer_quality_input_truncated=False,
+                                 source_selection=None, truncated_finding_count=0) -> dict[str, Any]:
+    """Report fields for a set of findings, each judged on its own claim and citations.
+
+    Built from the per-finding primitives the single-finding run already uses.
+    The policy's run-level fields are stated once; whatever is judged on a
+    finding lives in that finding's entry with its citation completion,
+    admission state and measured policy verdict, so no top-level field quietly
+    changes meaning. The verdict is a measurement and admits nothing. Inputs are
+    never mutated, and run-level fields that differ between findings are an
+    error, not something to average away.
+    """
+    from research_claim_assessment import digest_of_claim
+    from research_evidence_policy import RUN_LEVEL_EVALUATION_KEYS
+    assessments = assessment_summary.get("assessments") if isinstance(assessment_summary, Mapping) else None
+    completed_findings: list[dict[str, Any]] = []
+    entries: list[dict[str, Any]] = []
+    disagreements: list[dict[str, Any]] = []
+    run_level: dict[str, Any] | None = None
+    for index, raw in enumerate([row for row in list(findings or []) if isinstance(row, Mapping)], 1):
+        claim_code = f"synthesis_{index}"
+        completed, completion = _completed_finding_citations(raw, assessments, offered_ids)
+        finding = {**raw, "citation_ids": completed}
+        evaluation = _finding_policy_evaluation(
+            finding, citations=citations, assessment_summary=assessment_summary,
+            currency_requirement=currency_requirement, objective=objective, currency_reason=currency_reason,
+            freshness_window=freshness_window, answer_quality_level=answer_quality_level,
+        )
+        shared = {key: evaluation[key] for key in RUN_LEVEL_EVALUATION_KEYS if key in evaluation}
+        if run_level is None:
+            run_level = shared
+        elif shared != run_level:
+            raise ValueError("run_level_policy_fields_differ_between_findings")
+        entries.append({
+            "claim_code": claim_code,
+            "claim_digest": digest_of_claim(finding.get("summary")),
+            "admission_state": _admission_state(finding, assessments),
+            "policy_measurement": "admitted" if evaluation.get("would_admit") else "not_admitted",
+            "citation_completion": completion,
+            **{key: value for key, value in evaluation.items() if key not in RUN_LEVEL_EVALUATION_KEYS},
+        })
+        disagreement = _grounded_disagreement(finding, assessments)
+        if disagreement is not None:
+            disagreements.append({**disagreement, "finding_claim_code": claim_code})
+        completed_findings.append(finding)
+    counts = {state: sum(1 for entry in entries if entry["admission_state"] == state) for state in FINDING_ADMISSION_STATES}
+    return {
+        "finding_schema_version": FINDING_SCHEMA_VERSION,
+        "synthesis_path": "atomic_mechanism",
+        "findings": completed_findings,
+        "evidence_policy_evaluation": {
+            **(run_level or {}),
+            "answer_quality_unit": "composed_explanation",
+            "answer_quality_input_truncated": bool(answer_quality_input_truncated),
+            "answer_quality_status": str(answer_quality_status or ""),
+            **({"source_selection": {key: value for key, value in source_selection.items() if key != "citable_ids"}}
+               if isinstance(source_selection, Mapping) and source_selection else {}),
+            "finding_evaluations": entries,
+            "finding_evaluation_counts": {"total": len(entries), **counts,
+                                          "truncated": max(0, int(truncated_finding_count or 0))},
+        },
+        "unresolved_disagreements": disagreements,
+    }
+
+
 def _replacement_search_query(candidate: Mapping[str, Any], dimension: str) -> str:
     """Build a public replacement query after a source could not be read.
 
