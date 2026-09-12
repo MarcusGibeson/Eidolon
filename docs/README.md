@@ -11,6 +11,7 @@ This directory contains only documentation and metadata still required by curren
 
 ## Active files
 
+- `docs/RESEARCH_ARCHITECTURE_MIGRATION_SPEC.md` — governing specification for the research-architecture migration (gates, decisions, integration order)
 - `docs/compatibility/release_metadata_compatibility_registry.json`
 - `docs/legacy/README_NEXT_STEPS_PRE_V1250.md`
 - `docs/legacy/README_PRE_V1250.md`
