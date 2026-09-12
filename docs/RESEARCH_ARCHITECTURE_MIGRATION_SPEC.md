@@ -1,16 +1,24 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.1, 2026-09-12. Status: the governing migration specification, approved by Marcus.**
+**Version 2.2, 2026-09-12. Status: the governing migration specification, approved by Marcus.**
 
 **What the approval covers:**
 - **Implementation may begin, narrowly and behind gates**, starting with the behaviour-neutral list refactor (G-N1).
-- **After G-N1 passes, work stops** so the actual diff and the gate evidence can be reviewed before the first behavioural change is enabled.
+- **After each gate passes, work stops** so the actual diff and the gate evidence can be reviewed before the next step is enabled.
 - **Basis of the review:** Marcus reviewed the v2 contents and the consistency-review results as reported in the session, not a rendering of the published page. This file is the governing text.
 
 **Added in 2.1:**
 - the claim-immutability invariant for cross-source assessment (Layer 3, step 5, and G-XS);
 - fail-closed failure semantics for the mechanism path (§3a);
 - the judge's 700-character bound, frozen for the whole migration (Layer 5).
+
+**Added in 2.2** (Marcus's six tightenings, made before G-RETRY ran):
+- **Blocking vs measuring.** Which conditions block admission and which only measure is now stated explicitly (§3b), and D1 is reworded to match.
+- **Whole-answer assessment.** The frozen 700-character judge stays for comparison, and a whole-answer assessment is required before promotion (G-WHOLE).
+- **G-XS recall.** G-XS must recover known supporters and refuters, not only avoid false refutations.
+- **Early cost probe.** The reference execution pattern is cost-probed before R1 is built (G-COST), and batching is evaluated against the reference.
+- **G-RETRY scope.** The full-set retry applies to findings-only runs except demand, which keeps the one-passage retry (D4).
+- **Demand milestone.** The original demand trial is tracked as a separate acceptance milestone (§9, M-DEMAND).
 
 **Nothing beyond the gated steps is authorized.**
 
@@ -30,14 +38,14 @@ The production freeze still applies. A3, O3, C-singleton, the date fallback, the
 
 **Stays on today's single-finding path in v1:**
 - **Other findings-only objectives,** including "why" questions (`explanation`, which is depth-requesting but untested).
-- **The demand single-dimension path** (`objective_shape == "single_candidate_dimension"`; D4). It uses the same findings-only prompt today, so routing must exclude it explicitly.
+- **The demand single-dimension path** (`objective_shape == "single_candidate_dimension"`; D4). It uses the same findings-only prompt today, so routing must exclude it explicitly — for R1 and for every other change made on the shared findings-only path.
 - **Candidate discovery and opportunity synthesis:** unchanged.
 
 **Principles, unchanged:**
 - **No loosening.** Never loosen an evidence gate or pad the corpus with weaker sources; fix observations and modelling. Evidence behind a gate is not automatically evidence lost.
 - **One change at a time.** Each validation changes one semantic judgment; a gate passing never promotes two things at once.
 - **Content-free receipts.** Receipts carry codes, counts and digests only, never claim text, passages or URLs. The report may show finding text, as today.
-- **Measurements never refuse.** The evidence policy and the answer judge stay report-only (D6).
+- **Measurements never refuse; requirements are named.** Every condition is either a blocking requirement or a report-only measurement, and §3b lists which. The evidence policy and the answer judge stay report-only (D6).
 - **No thinking mode.** With JSON it returns an empty response; without JSON one call takes about 842 s against a 300 s budget.
 - **"Supported" means grounded, model-judged support, not verified truth.** Grounding proves the passage was offered and observed and that the claim digest matches. Whether the passage supports the claim is still a model judgment (`semantic_support_verified: False`), and the report must keep saying so.
 
@@ -71,6 +79,7 @@ The production freeze still applies. A3, O3, C-singleton, the date fallback, the
 - The excerpt, offer and date harnesses captured through `create_session`, so "research" leaked into their terms.
 - **Every harness judge result was bounded to the first 700 characters of the answer.** The harnesses called `judge_answer_quality`, which truncates at `_clean(finding, 700)` (adapter `:549`), so judge levels for longer composed answers saw only their opening.
 - **R1 was tested with same-passage verification only** (§8, finding 1).
+- **Mechanism success is not demand success.** Nothing here shows that Eidolon can evaluate SaaS demand, competition and feasibility; that is M-DEMAND (§9).
 
 ---
 
@@ -148,7 +157,9 @@ plan_public_search_queries (bounded_research_reasoning)   evidence terms = query
 - **Ranking.** Page order, first 3 → candidate O3 (**G-O3**).
 - **Cap.** An `OptionSet` parameter; the global `PASSAGE_OPTION_LIMIT` stays because `research_evidence_directions` bound it at import. The value stays **3** until **G-CAP** passes under the multi-finding contract (E7).
 - **Budgets.** The global 7200 and the per-document `max(320, min(2400, 7200//n))` are unchanged. Characters and tokens offered are reported per source; any candidate consuming more is compared at matched consumption.
-- **Retry semantics.** A retry changes format only and carries the same `OptionSet`. A shorter prompt, if ever needed, becomes a new, separately recorded attempt (**G-RETRY**).
+- **Retry semantics.** A retry changes format only and carries the same `OptionSet` (**G-RETRY**).
+  - This applies to findings-only runs **except demand**, which keeps the one-passage retry until M-DEMAND (D4, §9).
+  - A shorter prompt, if ever needed, becomes a new, separately recorded attempt.
 - **Document order.** Candidate, then citation ID. Unchanged.
 
 ### Layer 3 — Atomic multi-finding synthesis
@@ -160,7 +171,7 @@ plan_public_search_queries (bounded_research_reasoning)   evidence terms = query
 
 The relation is many-to-many: a passage may support several findings (E10), and a finding may be supported by several passages.
 
-**R1 (earned; the default):**
+**R1 (earned; the reference implementation):**
 1. **Extract.** One call per offered passage (`EXTRACT_MULTI`): zero to 4 steps; no definitions, variants, history or context; separate steps kept separate.
 2. **Verify.** An independent call per step (`VERIFY`) on its own passage, returning supports, refutes or unclear. The extractor never certifies itself.
 3. **Ground.** `assess_source_claims` with each step as its own claim. Semantics are unchanged: they are already claim-keyed.
@@ -176,6 +187,8 @@ The relation is many-to-many: a passage may support several findings (E10), and 
      - If assessment suggests a claim is badly framed, the claim is rejected, or a *new* candidate claim enters through the explicit candidate path: extraction, verification and grounding, under its own digest.
      - Wording is never adjusted until the evidence agrees.
      - This is enforced by an assertion, and a violation is a hard failure (G-XS).
+
+**R1 is the reference behaviour, not a committed execution pattern.** One model call per passage, per claim and per classification may be too expensive on the local 27B model. Its cost is probed before R1 is built (**G-COST**). Batched variants — several passages per extraction call, several claims per verification or classification call — are candidates, measured against R1's outputs. A batched variant replaces a reference stage only when it matches the reference on G-COST's pre-registered metrics.
 
 **R2 (untested):** one synthesis call returning N findings. It may replace R1 only after parity (**G-R2**, optional).
 
@@ -194,7 +207,7 @@ The relation is many-to-many: a passage may support several findings (E10), and 
 
 | State | Condition | Where it goes |
 |---|---|---|
-| **Supported** | ≥1 grounded supporting passage for this exact atomic claim, and no grounded refutation | Eligible for the explanation. The evidence policy may require more (for example, multiple publishers for certain claim shapes); it stays report-only (D6) |
+| **Supported** | ≥1 grounded supporting passage for this exact atomic claim, and no grounded refutation | Eligible for the explanation. The evidence policy's verdict — for example, whether this claim shape would need several independent publishers — is **measured** per finding and does **not** block in v1 (D6, §3b). On the atomic path each step carries its measured policy state as a visible fixed-code annotation, so a claim shown despite a failed measurement is never presented as policy-admitted |
 | **Disputed** | Grounded support **and** grounded refutation | Kept out of the causal chain. Presented separately, with supporters and refuters listed apart. Never resolved by counting citations |
 | **Unsupported / unresolved** | No grounded support: unverified, ungrounded, or only unclear assessments | Diagnostic and research state only (counts, digests). **Never asserted answer content** |
 
@@ -205,10 +218,10 @@ The relation is many-to-many: a passage may support several findings (E10), and 
 | Grounded support | `grounded_supporting_citation_ids(assessments, claim)`, from own-passage verification plus G-XS rows | Decides Supported |
 | Grounded refutation | `grounded_refuting_citation_ids(assessments, claim)`, from G-XS rows (and own-passage VERIFY "refutes") | Decides Disputed. One entry per disputed finding in `unresolved_disagreements`; the refuter never joins the finding's citations |
 | Citation completion | `_complete_finding_citations` per finding; `model_payload` preserved | Per-finding counts |
-| Corroboration / independence | `independence_summary` over the finding's grounded supporters | Never pooled across findings |
-| Cross-finding contradiction | **Not defined in v1** | Recorded as a known gap |
+| Corroboration / independence | `independence_summary` over the finding's grounded supporters | Never pooled across findings. Measured, not blocking (§3b) |
+| Cross-finding contradiction | **Not defined in v1** | Recorded as a known gap; G-WHOLE reviews contradictions within an answer |
 | Uncertainty | The finding's `uncertainties` | Limitations stay a separate list |
-| Evidence currency | Citation conditions over the finding's cited sources | — |
+| Evidence currency | Citation conditions over the finding's cited sources | Measured, not blocking (§3b) |
 | Evidence policy | `evaluate_policy` once per finding; one policy per run | A per-finding list; `enforced: False` unchanged (D6) |
 | Enforcing admission | `validate_research_synthesis` per finding. The claim replaces the title; the reported cap replaces the invisible cut at 8 | Report ready if ≥1 finding is admitted (unchanged rule) |
 | Demand gate | Unchanged in v1 (D4) | — |
@@ -252,7 +265,7 @@ Supported findings (Disputed and Unsupported excluded, per D1/D2)
    - That marking is untested (**X-GAP**). Until it passes, only the general statement ships.
 
 **The composed answer:**
-- **Proposed causal order:** the mechanism steps, each with its own citations.
+- **Proposed causal order:** the mechanism steps, each with its own citations and its policy-measurement annotation (§3b).
 - **Context.**
 - **Disputed evidence:** supporters and refuters listed separately.
 - **Limitations.**
@@ -263,9 +276,13 @@ No new model prose follows ordering.
 **Answer judge.** It judges the composed mechanism chain against the requested relation.
 - Its 700-character input bound is made explicit: the chain is bounded to the limit, and truncation is reported (`answer_quality_input_truncated`).
 - **The bound stays at 700 for the whole migration.** Changing the ruler while the architecture changes would make before/after judge levels incomparable.
-- A whole-answer judging strategy is a separate, later measurement decision.
 - Historical judge levels read as "complete, as far as the judge saw in the first 700 characters". They remain valid comparisons between arms that went through the same judge.
 - The judge stays report-only; it needs at least 5 s left and at most 30 s (adapter `:555`, `:573`).
+
+**Whole-answer assessment before promotion (G-WHOLE).** An opening-only score cannot show that a longer explanation works as a whole: the opening could improve while errors appear later. Before the atomic path is promoted, every composed answer in the G-MF runs is assessed in full.
+- **Deterministic trace:** every asserted sentence maps to a Supported finding and that finding's citations. This is possible because composition is deterministic.
+- **Blind hand review of the complete output:** unsupported claims, contradictory statements within the answer, and causal links the findings do not state.
+- It is a promotion gate, run in the harness. It is not a run-time measurement and does not replace the frozen judge.
 
 **Receipts.** Counts of findings extracted, verified, grounded, supported, disputed, unsupported, mechanism, context and truncated; failed calls; the valid-order count; claim digests. Never claim text.
 
@@ -305,6 +322,26 @@ No new model prose follows ordering.
 
 G-MF requires **zero silent fallbacks**. Path provenance must be present on every run.
 
+### 3b. What blocks and what only measures
+
+Every condition is exactly one of three kinds:
+- **Blocking:** its failure keeps content out of the answer.
+- **Measured:** recorded for the operator; its failure never removes content.
+- **Promotion gate:** blocks promoting a component, never a run.
+
+| Condition | Kind | When it fails | Scope |
+|---|---|---|---|
+| Observed citations and a claim (`validate_research_synthesis`) | Blocking | The row is rejected and does not appear | All paths, unchanged |
+| Option-set identity and passage provenance (grounding) | Blocking | The assessment is rejected (disqualifying) | All paths |
+| Grounded support for the exact atomic claim (D1) | Blocking | Unsupported: never asserted | Atomic path |
+| Grounded refutation of the exact atomic claim (D2) | Blocking for the causal chain | Disputed: shown separately, never in the chain | Atomic path. On the legacy path it is surfaced as a disagreement, unchanged |
+| Demand gate (`model_assessed_conclusion`: independent lineages, currency, stance, claim binding) | Blocking | The demand inference is refused | Demand, unchanged |
+| Evidence-policy conditions: corroboration, publisher independence, currency, authority, producer independence, `grounded_refutation` as a policy condition, `would_admit` | **Measured** (D6) | Recorded per finding. **The finding can still appear.** On the atomic path each step shows its measured policy state as a fixed-code annotation. On the legacy path the answer is unchanged and the state is in the receipt only, as today | All paths |
+| Answer judge (700 characters, frozen) | Measured | Recorded | All paths |
+| G-WHOLE, G-XS, G-MF and the other §6 gates | Promotion gate | The component is not promoted | Harness |
+
+**Consequence.** No statement in this specification guarantees that a claim in an answer passed the evidence policy. Moving any measured condition to blocking is a separate decision with its own experiment (D6).
+
 ---
 
 ## 4. Not changed by this design
@@ -317,8 +354,8 @@ G-MF requires **zero silent fallbacks**. Path provenance must be present on ever
 - Content-free receipts.
 - The model and thinking-off setting.
 - The candidate-discovery and opportunity contracts.
-- The demand path.
-- Non-mechanism findings-only objectives.
+- The demand path, including its one-passage repair retry.
+- Non-mechanism findings-only objectives stay off the atomic path. Their repair retry does change with G-RETRY.
 - The report-only status of the policy and the judge.
 - The session budget (D3).
 
@@ -328,10 +365,10 @@ G-MF requires **zero silent fallbacks**. Path provenance must be present on ever
 
 | # | Decision |
 |---|---|
-| **D1** | **Grounded support is the minimum admission requirement; the evidence policy may require more.** Three states: Supported (eligible), Disputed (D2), and Unsupported/unresolved (diagnostic only, never asserted). Corroboration is not required universally; the existing policy decides where claim shape needs multiple independent publishers |
+| **D1** | **Grounded support is the minimum blocking requirement for the explanation. The evidence policy measures whether a claim shape would need more, and in v1 that measurement does not block (D6, §3b).** Three states: Supported (eligible), Disputed (D2), and Unsupported/unresolved (diagnostic only, never asserted). Corroboration is not required universally |
 | **D2** | **Disputed findings stay out of the causal chain** and are presented separately, with supporting and refuting evidence. Eidolon never silently picks the side with more citations |
-| **D3** | **Measure integrated cost first. Optimize structurally. Raise the 300 s mechanism budget only if measured quality requires it, by a separate decision.** 900 s is an emergency ceiling, not a target. G-TIME must report extraction, verification, grounding, cross-source assessment, C-singleton and ordering costs; total wall-clock time; model calls; tokens; safe parallelism; and duplicated work |
-| **D4** | **Demand stays single-finding in v1.** The refactor is list-capable with G-N1 parity, but demand generation stays singular. It migrates later only if a concrete use case benefits |
+| **D3** | **Measure integrated cost first. Optimize structurally. Raise the 300 s mechanism budget only if measured quality requires it, by a separate decision.** 900 s is an emergency ceiling, not a target. The reference pattern is cost-probed before R1 is built (G-COST). G-TIME must report extraction, verification, grounding, cross-source assessment, C-singleton and ordering costs; total wall-clock time; model calls; tokens; safe parallelism; and duplicated work |
+| **D4** | **Demand stays single-finding in v1,** and every change on the shared findings-only path excludes demand unless it is explicitly included and tested. The refactor is list-capable with G-N1 parity, but demand generation stays singular. Demand has its own acceptance milestone (M-DEMAND, §9) |
 | **D5** | **Training capture is off on the new path until explicitly designed.** A design must name which representation is training material (raw extraction, verified, grounded, policy-accepted, classified, or the ordered explanation), what provenance accompanies it, and how disputed or rejected findings are kept out of positive examples |
 | **D6** | **No enforcement change in this migration.** Today's policy behaviour is preserved except where multi-finding semantics require an explicit equivalent. Any move from report-only to enforced conditions needs its own experiment and authorization |
 | **D7** | **Compose from surviving findings; ordering does not assert causation.** Causal linkage must be independently supported (stated by a grounded claim) or represented as unknown. Gaps are represented, never bridged |
@@ -345,11 +382,13 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | Gate | Component | Protocol | Draft pass rule | If it fails |
 |---|---|---|---|---|
 | **G-INV** | `OptionSet` | Fixture test that fails loudly: offer, grounding, extraction, assessment and retry | 0 violations; the test fails on a deliberately broken build | Blocks Layer 2 |
-| **G-RETRY** | Retry | Fixture: the retry's option set equals the first pass's | Identical | Blocks the retry change |
+| **G-RETRY** | Retry (findings-only, except demand) | Contract and parity differential against the previous gate, plus a live forced-retry comparison on identical evidence (`prereg_retry.json`) | Non-retry runs, first attempts, demand and policy unchanged; the retry offers exactly the first attempt's set; grounding stays inside the set; a causal witness; no new generation failures or unsupported findings | Blocks the retry change |
 | **G-N1** | Layer 4 refactor | Stored corpus with exactly 1 finding; the existing suite (`v2501_7`, `v2502_*`, `v2731_0_4` to `v2731_2_7`) | Byte-identical reports and history projections; suite unchanged apart from known pre-existing failures | Blocks multi-finding |
-| **G-SCHEMA** | Report shape, N>1 | Fixture reports with several findings through `bounded_research_history` and `conversational_research_actions` | Projections fixed-code and bounded; counts correct; content-free receipts | Blocks R1 |
-| **G-XS** | Cross-source assessment | App-path replay; claims × other sources hand-labelled blind (supports / refutes / neither); claim text and digest recorded before and after assessment | Supports precision ≥ own-passage VERIFY's; **false refutations = 0** on labelled pairs; **claim mutations = 0** (text and digest byte-identical; every row binds to the unchanged digest); cost reported | **Blocks R1 shipping** (refutation must not regress) |
+| **G-SCHEMA** | Report shape, N>1 | Fixture reports with several findings through `bounded_research_history` and `conversational_research_actions` | Projections fixed-code and bounded; counts correct; content-free receipts; policy-measurement annotations present on atomic steps | Blocks R1 |
+| **G-COST** | Reference execution cost (D3), **early** | Harness-only, **before R1 is built**: the reference R1 + cross-source + C-singleton + ordering pipeline on replayed app-path evidence, instrumented per stage (calls, prompt and output tokens, seconds, time left at synthesis start); then batched variants compared with the reference's outputs | Costs reported per stage. A batched variant may replace a reference stage only if it matches the reference on the pre-registered output metrics (claims extracted and grounded, support and refutation states, mechanism flags) | Informs D3 and the shape of the R1 build; R1 is not built around an unmeasured execution pattern |
+| **G-XS** | Cross-source assessment | App-path replay; claims × other sources hand-labelled blind (supports / refutes / neither), **including planted contradicting passages whose correct label is refutes**; claim text and digest recorded before and after assessment | Supports precision ≥ own-passage VERIFY's; **support recall** and **refutation recall** on labelled pairs each at or above a pre-registered bar, so answering "unclear" to every contradiction fails; the unclear rate reported per labelled class; **false refutations = 0**; **claim mutations = 0** (text and digest byte-identical; every row binds to the unchanged digest); cost reported | **Blocks R1 shipping** (refutation must not regress) |
 | **G-MF** | Layers 3–5 end to end | Live app path, production vs R1 + XS + Layer 5, identical retrieval (replayed); mechanism topics plus non-mechanism and demand controls; induced-failure runs (deadline, extraction, cross-source) | Supported mechanism findings up on ≥4 of 7 topics; asserted unsupported content = 0; 0 invented; judge not lower; controls byte-unchanged; **path provenance on every run; zero silent fallbacks** (induced failures end in their §3a codes) | Harness-only; back to design |
+| **G-WHOLE** | The whole composed answer | Every composed answer in the G-MF runs: deterministic sentence-to-finding trace, plus blind hand review of the complete output | 0 asserted sentences without a Supported finding; 0 contradictions within an answer; 0 causal links the findings do not state; unsupported claims reported | **Blocks promotion** |
 | **G-TIME** | Cost (D3) | Instrumented G-MF runs: per-stage time, calls and tokens; time left at synthesis start; parallelism and duplicated work | Within the current budget, or a recorded D3 decision after optimization | D3 |
 | **G-A3** | Excerpt | App objective path; retrieval captured and replayed; A0 vs A3 at **matched characters and matched tokens**; blind labels | Recall and core coverage better on ≥4 held-out topics, worse on ≤1; precision not lower by >0.05; downstream offer (production and O3) not worse | Excerpts stay A0. **The architecture is unaffected** |
 | **G-O3** | Offer ranking | After G-A3; offline replay; equal count and budget | Mechanism passages and core-stage recall up; stage recall never lower | Page order stays |
@@ -376,13 +415,14 @@ Each step makes one semantic change and is independently revertible. Each needs 
    - The synthesis prompt, the demand gate and the report projections are untouched. A projection change is a schema change and belongs to step 4.
    - **After G-N1 passes, work stops** for review of the actual diff and the gate evidence before any behavioural change is enabled.
 2. **`OptionSet` identity refactor.** No behaviour change (G-INV).
-3. **Retry semantics** (G-RETRY).
+3. **Retry semantics** (G-RETRY): findings-only runs except demand.
 4. **Multi-finding report schema** (G-SCHEMA).
-5. **R1 with cross-source assessment** on the mechanism route (G-XS, G-MF, G-TIME).
-6. **Explanation construction** (Layer 5, D7): validated in the G-MF runs but shipped as its own step.
-7. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
+5. **Reference cost probe (G-COST)**, harness-only, before R1 is built; batched candidates measured against the reference.
+6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME).
+7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
+8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
 
-If any step-7 component fails, the architecture stands and only that component returns to design.
+If any step-8 component fails, the architecture stands and only that component returns to design. **The return point for the original objective is M-DEMAND (§9).**
 
 ---
 
@@ -393,12 +433,29 @@ If any step-7 component fails, the architecture stands and only that component r
 | 1 | Grounded support and refutation vs R1 | Production's single call assesses **every offered source** against the claim (`assessment_cap` = source count, adapter `:933`); that is where corroboration and refutation come from. R1 as tested verifies each step **only against its own passage** (`mech_multistep.verify_and_ground`), and the harness dedupe kept only the first occurrence | Cross-source assessment added (Layer 3, step 5); **G-XS is blocking**; dedupe merges support |
 | 2 | Six single-finding sites | All six confirmed; `architecture_outcome_evaluation.py:43` is unrelated | Unchanged |
 | 3 | Validator | Findings path is ok with ≥1 admitted row, and no recommendation is needed (`:2081-2086`). Rows cut at 8 **before** counting (`:1753`, `:2263`), so truncation is invisible. Title required; duplicate titles rejected; rows are "inference"; rendered disclaimer "not independently verified" | Reported cap; the claim stands in for the title; the disclaimer is kept in Layer 5 |
-| 4 | Synthesis schema and retry | Retry keeps the first-pass `passage_index` (identity holds) but re-offers at most one passage per source (exposure shrinks). The demand path uses the same findings-only prompt | G-RETRY; explicit routing that excludes demand and non-mechanism objectives |
+| 4 | Synthesis schema and retry | Retry keeps the first-pass `passage_index` (identity holds) but re-offers at most one passage per source (exposure shrinks). The demand path uses the same findings-only prompt | G-RETRY; explicit routing that excludes demand and non-mechanism objectives from R1. **Correction (2.2):** the retry change itself sits on the shared findings-only path, so it now explicitly excludes demand, which keeps the one-passage retry |
 | 5 | Citation completion | Single-finding only; preserves `model_payload`; `MAX_FINDING_CITATION_IDS` = 6 | Per-finding loop; G-N1 |
-| 6 | Policy | `evaluate_policy` judges the verdict over the finding's own citations, with pool fields reported separately; `enforced: False` | Per-finding list plus run-level pool fields; D6 |
+| 6 | Policy | `evaluate_policy` judges the verdict over the finding's own citations, with pool fields reported separately; `enforced: False` | Per-finding list plus run-level pool fields; D6; blocking vs measured stated in §3b (2.2) |
 | 7 | Report readers | `bounded_research_history` projects `evidence_policy_evaluation` and `citation_completion` as single mappings; `conversational_research_actions` counts rows | G-SCHEMA; contract version bump |
-| 8 | Answer judge | Input truncated at 700 characters (adapter `:549`); needs ≥5 s left, 30 s maximum. **Harness judge results were bounded the same way** | The bound made explicit and truncation reported; caveat added to §1 |
-| 9 | Demand | `model_assessed_conclusion` requires one finding, and any assessment with another claim denies | Unchanged in v1 (D4); routing excludes it |
-| 10 | Runtime budget | The synthesis deadline is 300 s minus the time retrieval already spent; the judge needs ≥5 s | G-TIME measures the time left at synthesis start and per-stage cost (D3) |
+| 8 | Answer judge | Input truncated at 700 characters (adapter `:549`); needs ≥5 s left, 30 s maximum. **Harness judge results were bounded the same way** | The bound made explicit and truncation reported; caveat added to §1; G-WHOLE added before promotion (2.2) |
+| 9 | Demand | `model_assessed_conclusion` requires one finding, and any assessment with another claim denies | Unchanged in v1 (D4); routing excludes it; M-DEMAND tracks the demand objective (2.2) |
+| 10 | Runtime budget | The synthesis deadline is 300 s minus the time retrieval already spent; the judge needs ≥5 s | G-COST before R1 (2.2); G-TIME measures the time left at synthesis start and per-stage cost (D3) |
 | 11 | Training capture | Enabled by argument **or** `training_policy.research_enabled` (bawr `:925`) | The mechanism route bypasses both, with a fixed status (D5) |
 | 12 | Routing | `requested_relation` maps "how…" and "works" to `mechanism` (`:754`); "why" maps to `explanation` (untested) | R1 only for `mechanism` in v1 |
+
+---
+
+## 9. Acceptance milestones
+
+The migration exists to produce a usable research system. Gates prove components; milestones prove the system does what it was built for.
+
+**M-MECH — mechanism research v1.** G-MF, G-TIME and G-WHOLE pass on the mechanism route, and the step-7 explanation is promoted. This is the controlled testing ground, and it is where this migration's evidence comes from.
+
+**M-DEMAND — the original objective (tracked return point).** Eidolon evaluates SaaS demand, competition, implementation dependencies and free-tier feasibility for real candidates. That is the seven-domain demand trial that started this work.
+- **Success at M-MECH does not demonstrate M-DEMAND.** Demand has different semantics: independence requirements, customer evidence, promotional and vendor restrictions, currency and multiple-publisher requirements.
+- **Return point:** after M-MECH, or earlier if Marcus directs.
+- **Prerequisites:**
+  1. diagnose the pre-existing `v2730_demand_support` failure, which fails on untouched `03aa99a` and is kept off the migration branch;
+  2. decide, from a concrete demand use case, whether demand benefits from atomic findings (D4) and from the full-set repair retry;
+  3. re-run the demand trial with the architecture's observation and presentation fixes under the unchanged demand gates.
+- **Acceptance** is the demand trial's own pre-registered criteria, not the mechanism gates.
