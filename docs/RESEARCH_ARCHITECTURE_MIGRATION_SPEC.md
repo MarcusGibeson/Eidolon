@@ -1,6 +1,44 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.6, 2026-09-13. Status: the governing migration specification, approved by Marcus.**
+**Version 2.7, 2026-09-13. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.7** (Marcus, 2026-09-13; the G-R2 outcome and a new gate before R1):
+- **G-R2: HARMFUL under the registered decision rule.** Relaxing the single-finding cardinality constraint recovers mechanism structure that the legacy singular contract suppresses, but also increases unsupported proposition generation. Multi-finding representation is therefore promising as a representation change but is not safe for integration without a stronger proposition-level support and fidelity mechanism. The result is not evidence that multi-finding representation itself is unsuitable.
+  - **Positive finding:** the multi-finding arm expressed mechanism structure the legacy synthesis did not.
+  - **Blocking finding:** the multi-finding arm increased unsupported proposition generation and so failed D2.
+  - **Measurements** (28/28 calls parsed; both reps identical; blind labels):
+
+    | Arm | Supported core mechanism stages | Supported mechanism findings | Unsupported |
+    |---|---|---|---|
+    | Legacy | 0 | 0 | 0 of 7 |
+    | Multi | 5 | 3 | 5 of 30 (0.167) |
+    | R1 reference | — | 5 | 9 of 42 (0.214) |
+
+    - In the multi arm, 25 of 30 findings were supported. All 5 unsupported findings were grounded by production to passages that only partly state them: a dropped hedge, an infobox, a table of contents, and a claim combining two passages.
+    - The R1 reference shows that per-passage atomic extraction does not by itself provide epistemic safety.
+  - **Caveats:**
+    - The pre-registered 5-stage mechanism ceiling was wrong: finding-level labels found stages in passages that the older passage labels had called summaries.
+    - The TCP stages rest on a single claim about a proposed deep-reinforcement-learning controller.
+    - There was one blind labeller.
+- **The shared failure.** G-XS, G-R2 and the R1 reference show one semantic failure. The model treats passages as licensing propositions that they only partly state, imply only with outside knowledge, or do not state at all. It does not reliably distinguish "this passage is related to the claim" from "this passage licenses this exact proposition".
+- **New gate before R1: G-REL (proposition relationship).** Designed and pre-registered harness-only; not production-wired.
+  - **Its question:** what exact semantic relation holds between this passage and this immutable proposition. It does not ask whether the proposition is true.
+  - **Relations:** direct_support, partial_support, explicit_refutation, scope_or_condition_difference, irrelevant, ambiguous.
+  - **No naked labels.** Every non-irrelevant assessment binds:
+    - the immutable claim and the assessed claim clause;
+    - an exact evidence span;
+    - qualifier compatibility (modality, quantifier, population, condition, polarity, time, units);
+    - whether the passage licenses it directly or it needs outside inference.
+  - **Refutation is strict.** Explicit refutation requires an incompatible proposition under overlapping scope. A same-topic falsehood is not a refutation, and a same-topic truth is not support.
+- **G-FID is now a dependency of the proposition-relationship layer**, while staying separately measurable.
+- **R1 stays blocked until:**
+  1. the value of richer representation is established (G-R2 partly demonstrates it);
+  2. proposition-level support and refutation are trustworthy on real passages (G-REL);
+  3. qualifier and scope fidelity is demonstrated (G-FID);
+  4. the resulting assessor has a measured cost compatible with the episode budget, or a validated equivalent optimization exists.
+- **Double labelling before promotion.** Before any redesigned assessor is promoted, a subset of its evaluation labels is independently double-labelled and disagreements are adjudicated. The subset covers especially partial support, dropped hedges, condition mismatches, inferred contradictions, derived imperatives and scope changes.
+- **No optimization of the failed G-XS implementation.** The order is: correct semantics, then a trustworthy reference, then its measured runtime, and only then batching or filtering tested against that reference.
+- **E1 stays on the near-term roadmap** but is not inserted while this semantic diagnosis is under way.
 
 **Added in 2.6** (Marcus, 2026-09-13; the G-XS outcome):
 - **G-XS: FAIL** under the pre-registered scorer, recorded as two independent failures (28 fixtures and 42 app-path findings, 2 reps each, `qwen3.8:27b`):
@@ -454,8 +492,9 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | **G-O3** | Offer ranking | After G-A3; offline replay; equal count and budget | Mechanism passages and core-stage recall up; stage recall never lower | Page order stays |
 | **G-DATE** | Date observation | Held-out app-path pages; every date verified by hand; selection replay plus end to end | **Zero false dates**; publication and update distinct | The fallback does not ship |
 | **G-CAP** | Offer cap | C0/C1 protocol under R1 | Acceptance up; unsupported findings not increased | The cap stays 3 |
-| **G-R2** | Single-call multi-finding synthesis | **Before R1 (2.5):** the same frozen offers and production runtime as C0/C1 and G-COST; the legacy one-finding call vs a multi-finding call; blind labels; pre-registered | Mechanism extraction materially better on the pre-registered measure; unsupported claims not increased | Decides whether R1 is needed as specified, simplified, or replaced |
-| **G-FID** (future, 2.5) | Atomic-claim fidelity | Decomposed claims vs their source passages, hand-labelled blind for dropped or altered qualifiers (condition, quantifier, population, unit, time scope) | Qualifier loss below a pre-registered bar; a lost qualifier makes a new claim, never a silent narrowing | Blocks promotion of atomic extraction |
+| **G-R2** | Single-call multi-finding synthesis | **Before R1 (2.5):** the same frozen offers and production runtime as C0/C1 and G-COST; the legacy one-finding call vs a multi-finding call; blind labels; pre-registered | Mechanism extraction materially better on the pre-registered measure; unsupported claims not increased | Decides whether R1 is needed as specified, simplified, or replaced. **Outcome (2.7): HARMFUL** under the registered rule. D1 held: 5 supported core stages vs 0, and 3 supported mechanism findings vs 0. D2 failed: unsupported findings rose from 0/7 to 5/30. Multi-finding representation is promising but not safe to admit with the current support semantics |
+| **G-REL** (2.7) | Proposition relationship (the shared support, refutation and qualifier layer) | Adversarial fixtures plus real-passage pairs reused from the G-XS and G-R2 failures, labelled blind. One call per (immutable proposition, offered passage). The six relations, each bound to a claim clause, an exact evidence span, qualifier compatibility and a relation basis; a mechanical validator admits a relation only when those fields are consistent | Pre-registered in `prereg_rel.json` | **Blocks R1** and any redesigned cross-source assessor |
+| **G-FID** (future, 2.5) | Atomic-claim fidelity | Decomposed claims vs their source passages, hand-labelled blind for dropped or altered qualifiers (condition, quantifier, population, unit, time scope) | Qualifier loss below a pre-registered bar; a lost qualifier makes a new claim, never a silent narrowing | Blocks promotion of atomic extraction. **Dependency of G-REL (2.7):** it is measured with G-REL's qualifier compatibility and remains separately reported |
 
 **Open experiments, non-blocking and reported:**
 - **X-SUM:** paraphrased-summary suppression.
@@ -481,8 +520,9 @@ Each step makes one semantic change and is independently revertible. Each needs 
 3. **Retry semantics** (G-RETRY): findings-only runs except demand. **PASS** on `qwen3.8:27b` (`ddd1577`). The earlier DEFERRED outcome came from an invalid `qwen2.5:7b` run (2.4).
 4. **Multi-finding report schema** (G-SCHEMA). **PASS** (`d8c6f57`); boundaries in §7a.
 5. **Reference cost probe (G-COST)**, harness-only, before R1 is built; batched candidates measured against the reference. **PASS WITH QUALIFICATION** (2.4): cross-source assessment and the composer are still unmeasured, and no optimization is authorized.
-   - 5a. **G-R2 (2.5)**, harness-only, after the G-XS review and before R1 is implemented. Its result decides whether step 6 builds R1 as specified or a simpler form.
-6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME). **Gated (2.6)** by two separate questions: G-R2's result on multi-finding representation, and a redesigned, trustworthy proposition-level cross-source assessor.
+   - 5a. **G-R2 (2.5)**, harness-only, after the G-XS review and before R1 is implemented. Its result decides whether step 6 builds R1 as specified or a simpler form. **Outcome (2.7): HARMFUL** under the registered rule, with the positive mechanism finding recorded.
+   - 5b. **G-REL (2.7)**, harness-only: design, pre-register, and review before any live run; then measure its semantics and cost. Nothing is optimized before its semantic reference passes.
+6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME). **Gated (2.6)** by two separate questions: G-R2's result on multi-finding representation, and a redesigned, trustworthy proposition-level cross-source assessor. **Blocked (2.7)** until all four R1 prerequisites hold: richer representation shown to add value, G-REL, G-FID, and a measured compatible cost.
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
 
