@@ -1,6 +1,17 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.4, 2026-09-12. Status: the governing migration specification, approved by Marcus.**
+**Version 2.5, 2026-09-13. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.5** (Marcus, 2026-09-12, while G-XS ran; roadmap only, no gate outcome recorded here):
+- **G-R2 moves ahead of R1.** After the G-XS review and before R1 is implemented, run the narrow G-R2 experiment: multi-finding synthesis in one call, on the same frozen offers and the production `qwen3.8:27b` runtime.
+  - If it materially improves mechanism extraction without increasing unsupported claims, that result decides whether R1 is still necessary or should be simplified.
+  - G-R2 is no longer only an optional later parity check.
+- **E1 joins the near-term architecture-validation roadmap:** a matched comparison of the full system against a minimal governed agent with identical tools, authority and budgets, plus oracle-evidence ablations. It does not interrupt the migration.
+- **A future atomic-claim fidelity gate (G-FID).** Conditions, quantifiers, populations, units and time scope must survive decomposition into atomic claims.
+  - The 20-word bound is a transport limit, not a semantic one; a claim that loses a qualifier is a different claim.
+- **G-XS runs unchanged as pre-registered.** Its relation vocabulary (supports / refutes / unclear) and thresholds are not changed mid-run.
+  - Its known limits are reported with its result: partial support and scope change collapse into unclear, and lineage is page-level.
+- **Helper defects outside the research path** are recorded separately and not fixed on this branch.
 
 **Added in 2.4** (experimental-record repair and G-RETRY, Marcus, 2026-09-12):
 - **Runtime-model deviation.** The first live runs of C0/C1 and G-RETRY used isolated data directories that silently resolved `qwen2.5:7b` instead of the registered `qwen3.8:27b`.
@@ -412,12 +423,15 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | **G-O3** | Offer ranking | After G-A3; offline replay; equal count and budget | Mechanism passages and core-stage recall up; stage recall never lower | Page order stays |
 | **G-DATE** | Date observation | Held-out app-path pages; every date verified by hand; selection replay plus end to end | **Zero false dates**; publication and update distinct | The fallback does not ship |
 | **G-CAP** | Offer cap | C0/C1 protocol under R1 | Acceptance up; unsupported findings not increased | The cap stays 3 |
-| G-R2 (optional) | Single-call synthesis | Parity with R1 | Non-inferior on every G-MF metric | R1 stays |
+| **G-R2** | Single-call multi-finding synthesis | **Before R1 (2.5):** the same frozen offers and production runtime as C0/C1 and G-COST; the legacy one-finding call vs a multi-finding call; blind labels; pre-registered | Mechanism extraction materially better on the pre-registered measure; unsupported claims not increased | Decides whether R1 is needed as specified, simplified, or replaced |
+| **G-FID** (future, 2.5) | Atomic-claim fidelity | Decomposed claims vs their source passages, hand-labelled blind for dropped or altered qualifiers (condition, quantifier, population, unit, time scope) | Qualifier loss below a pre-registered bar; a lost qualifier makes a new claim, never a silent narrowing | Blocks promotion of atomic extraction |
 
 **Open experiments, non-blocking and reported:**
 - **X-SUM:** paraphrased-summary suppression.
 - **X-ORD:** ordering reliability.
 - **X-GAP:** explicit gap marking (D7). Until it passes, only the general "not asserted causal" statement ships.
+
+**Architecture validation (near-term, outside the migration sequence, 2.5):** E1 is a matched comparison of the full system against a minimal governed agent with identical tools, authority and budgets, plus oracle-evidence ablations. It is scheduled without interrupting the migration.
 
 ---
 
@@ -436,6 +450,7 @@ Each step makes one semantic change and is independently revertible. Each needs 
 3. **Retry semantics** (G-RETRY): findings-only runs except demand. **PASS** on `qwen3.8:27b` (`ddd1577`). The earlier DEFERRED outcome came from an invalid `qwen2.5:7b` run (2.4).
 4. **Multi-finding report schema** (G-SCHEMA). **PASS** (`d8c6f57`); boundaries in §7a.
 5. **Reference cost probe (G-COST)**, harness-only, before R1 is built; batched candidates measured against the reference. **PASS WITH QUALIFICATION** (2.4): cross-source assessment and the composer are still unmeasured, and no optimization is authorized.
+   - 5a. **G-R2 (2.5)**, harness-only, after the G-XS review and before R1 is implemented. Its result decides whether step 6 builds R1 as specified or a simpler form.
 6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME).
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
