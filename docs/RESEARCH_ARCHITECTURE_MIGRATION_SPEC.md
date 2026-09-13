@@ -1,6 +1,37 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.5, 2026-09-13. Status: the governing migration specification, approved by Marcus.**
+**Version 2.6, 2026-09-13. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.6** (Marcus, 2026-09-13; the G-XS outcome):
+- **G-XS: FAIL** under the pre-registered scorer, recorded as two independent failures (28 fixtures and 42 app-path findings, 2 reps each, `qwen3.8:27b`):
+  1. **Semantic failure.** On real application passages the assessor overreaches at the proposition level: it supports or refutes from topical, hedged or boilerplate text that does not state or contradict the claim.
+     - False refutations: 19 (bar 0).
+     - Support precision: 0.475, against the registered 0.810 bar (own-passage VERIFY).
+     - The false sets repeat across successful reps.
+  2. **Cost failure.** The unbatched reference makes one call per finding × other source (about 30 calls per topic), which is well outside the 300 s episode budget.
+     - Combined retrieval + replayed pipeline + XS, from the clean rep: XS mean 469 s, total mean 604 s; 2 of 7 topics fit within 300 s.
+     - This combined figure is a capacity estimate, not a measured end-to-end runtime on the same evidence.
+- **What passed:**
+  - immutable claim text, digest and finding identity;
+  - OptionSet and evidence containment;
+  - the 27/27 contract suite;
+  - fixture semantics (all 8 types, both reps);
+  - supporter and refuter recall (1.0 everywhere);
+  - deterministic labels whenever calls succeeded.
+- **Consequence.** The tested three-way assessor (supports / refutes / unclear) is unsuitable, in its current form, as the authoritative cross-source assessor on real application passages. It is not repaired, batched, parallelized, compressed or otherwise optimized before its assessment semantics are redesigned.
+- **R1 is now gated by two separate questions:**
+  1. Does multi-finding representation materially improve extraction and reasoning? (G-R2, next)
+  2. Can a proposition-level cross-source assessor be designed that is trustworthy on real passages? (the G-XS redesign, future)
+- **G-R2 stays a narrow isolation experiment.**
+  - Same frozen offers, same authoritative OptionSets, same production runtime and configuration.
+  - No A3, O3 or C1, and no change to the cross-source assessor, the composer or the evidence policy.
+  - Only the synthesis representation changes, from the singular-finding contract to a bounded multi-finding contract.
+  - It is evaluated with the existing direct grounding and independent blind labels, never with the failed G-XS assessor.
+  - After G-R2, work stops for review before R1 is built.
+- **Future G-XS redesign (noted, not implemented):**
+  - Richer relations: direct support, partial support, explicit contradiction, scope or condition change, irrelevant, ambiguous.
+  - Exact evidence spans and qualifier overlap.
+  - Adversarial cases in which a passage makes true or false statements about the same topic without supporting or refuting the target proposition.
 
 **Added in 2.5** (Marcus, 2026-09-12, while G-XS ran; roadmap only, no gate outcome recorded here):
 - **G-R2 moves ahead of R1.** After the G-XS review and before R1 is implemented, run the narrow G-R2 experiment: multi-finding synthesis in one call, on the same frozen offers and the production `qwen3.8:27b` runtime.
@@ -415,7 +446,7 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | **G-N1** | Layer 4 refactor | Stored corpus with exactly 1 finding; the existing suite (`v2501_7`, `v2502_*`, `v2731_0_4` to `v2731_2_7`) | Byte-identical reports and history projections; suite unchanged apart from known pre-existing failures | Blocks multi-finding. **Outcome: PASS** (`2ed3161`) |
 | **G-SCHEMA** | Report shape, N>1 | Fixture reports with several findings through `bounded_research_history` and `conversational_research_actions` | Projections fixed-code and bounded; counts correct; content-free receipts; policy-measurement annotations present on atomic steps | Blocks R1. **Outcome: PASS** (`d8c6f57`); versioned by `finding_schema_version`, history contract version unchanged (2.3); boundaries in §7a |
 | **G-COST** | Reference execution cost (D3), **early** | Harness-only, **before R1 is built**: the reference R1 + cross-source + C-singleton + ordering pipeline on replayed app-path evidence, instrumented per stage (calls, prompt and output tokens, seconds, time left at synthesis start); then batched variants compared with the reference's outputs | Costs reported per stage. A batched variant may replace a reference stage only if it matches the reference on the pre-registered output metrics (claims extracted and grounded, support and refutation states, mechanism flags) | Informs D3 and the shape of the R1 build; R1 is not built around an unmeasured execution pattern. **Outcome: PASS WITH QUALIFICATION** (2.4): on 14 replayed runs the measured reference stages take 125 s mean (42–203) in 28 calls, which fits the 300 s budget after 9–17 s of retrieval. Cross-source assessment and the D7 composer do not exist yet and are unmeasured, so full budget viability is unresolved. No optimization is authorized |
-| **G-XS** | Cross-source assessment | App-path replay; claims × other sources hand-labelled blind (supports / refutes / neither), **including planted contradicting passages whose correct label is refutes**; claim text and digest recorded before and after assessment | Supports precision ≥ own-passage VERIFY's; **support recall** and **refutation recall** on labelled pairs each at or above a pre-registered bar, so answering "unclear" to every contradiction fails; the unclear rate reported per labelled class; **false refutations = 0**; **claim mutations = 0** (text and digest byte-identical; every row binds to the unchanged digest); cost reported | **Blocks R1 shipping** (refutation must not regress) |
+| **G-XS** | Cross-source assessment | App-path replay; claims × other sources hand-labelled blind (supports / refutes / neither), **including planted contradicting passages whose correct label is refutes**; claim text and digest recorded before and after assessment | Supports precision ≥ own-passage VERIFY's; **support recall** and **refutation recall** on labelled pairs each at or above a pre-registered bar, so answering "unclear" to every contradiction fails; the unclear rate reported per labelled class; **false refutations = 0**; **claim mutations = 0** (text and digest byte-identical; every row binds to the unchanged digest); cost reported | **Blocks R1 shipping** (refutation must not regress). **Outcome (2.6): FAIL** on two independent counts. Semantic: 19 false refutations; support precision 0.475 vs 0.810. Cost: the unbatched reference is far over budget (a capacity estimate). Immutability, containment, contract, fixtures and recall passed. The three-way assessor is unsuitable as specified and is redesigned before any optimization |
 | **G-MF** | Layers 3–5 end to end | Live app path, production vs R1 + XS + Layer 5, identical retrieval (replayed); mechanism topics plus non-mechanism and demand controls; induced-failure runs (deadline, extraction, cross-source) | Supported mechanism findings up on ≥4 of 7 topics; asserted unsupported content = 0; 0 invented; judge not lower; controls byte-unchanged; **path provenance on every atomic-path run** (legacy reports stay unmarked by contract, 2.3); **zero silent fallbacks** (induced failures end in their §3a codes) | Harness-only; back to design |
 | **G-WHOLE** | The whole composed answer | Every composed answer in the G-MF runs: deterministic sentence-to-finding trace, plus blind hand review of the complete output | 0 asserted sentences without a Supported finding; 0 contradictions within an answer; 0 causal links the findings do not state; unsupported claims reported | **Blocks promotion** |
 | **G-TIME** | Cost (D3) | Instrumented G-MF runs: per-stage time, calls and tokens; time left at synthesis start; parallelism and duplicated work | Within the current budget, or a recorded D3 decision after optimization | D3 |
@@ -451,7 +482,7 @@ Each step makes one semantic change and is independently revertible. Each needs 
 4. **Multi-finding report schema** (G-SCHEMA). **PASS** (`d8c6f57`); boundaries in §7a.
 5. **Reference cost probe (G-COST)**, harness-only, before R1 is built; batched candidates measured against the reference. **PASS WITH QUALIFICATION** (2.4): cross-source assessment and the composer are still unmeasured, and no optimization is authorized.
    - 5a. **G-R2 (2.5)**, harness-only, after the G-XS review and before R1 is implemented. Its result decides whether step 6 builds R1 as specified or a simpler form.
-6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME).
+6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME). **Gated (2.6)** by two separate questions: G-R2's result on multi-finding representation, and a redesigned, trustworthy proposition-level cross-source assessor.
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
 
