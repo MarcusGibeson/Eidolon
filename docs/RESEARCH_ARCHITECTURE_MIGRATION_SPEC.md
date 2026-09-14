@@ -17,7 +17,7 @@
     - false escalation: adversarial 0.241, real 0.109;
     - therefore precision on the real corpus: 0.432.
 
-    43 of the 45 structural rejections come from one vocabulary collision: the model wrote the recency value "unknown" in the scope time field.
+    Every one of the 43 structurally rejected candidates carries the same vocabulary collision: the model wrote the recency value "unknown" in the scope time field. 41 were rejected for that alone; 2 also cited a target clause not found in the claim. (Correction: this line first said "43 of the 45 structural rejections", which counted reason codes as rejections.)
   - **Disclosed pre-run prompt edit:** the approved draft never named the recency tokens (`passage_later`, `passage_earlier`), so no reply could carry them. The contract suite found this before any call, and the tokens were named before registration, together with Marcus's `resolution_needed` field.
   - **Correction:** an interim status note during the run called RT01–RT06 planted contradictions the detector missed. They are must-not-flag items, so leaving them unflagged was correct.
   - No downstream work was started.
