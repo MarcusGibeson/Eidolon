@@ -1,6 +1,73 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.10, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+**Version 2.11, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.11** (Marcus, 2026-09-14): **architectural requirements for future governed belief revision.** These are requirements only. Nothing here is implemented or wired, and none of it authorizes implementation.
+- **Destination pipeline:**
+
+  ```
+  new observation
+  → proposition extraction
+  → support and challenge candidate generation
+  → authoritative evidence binding
+  → structural validation
+  → scope and qualifier evaluation
+  → authority, currentness and independence
+  → corroboration
+  → accumulated BeliefEvidenceState
+  → claim-type-specific RevisionPolicy
+  → BeliefRevisionDecision
+  → durable BeliefLineage
+  → later outcome evaluation
+  → eventually, supervised learning about revision-policy performance
+  ```
+
+- **The challenge path:**
+
+  ```
+  ContradictionCandidate
+  → structural validation
+  → scope and qualifier assessment
+  → source authority and currentness
+  → source independence
+  → corroboration (searching for both supporting and conflicting evidence)
+  → optional independent semantic assessment
+  → evidence aggregation
+  → BeliefRevisionDecision
+  ```
+
+  A ContradictionCandidate is provisional. Creating it never changes:
+  - belief confidence or status;
+  - the evidence-policy verdict;
+  - supporter or refuter state;
+  - belief lineage;
+  - active-belief selection.
+
+  It is an observation and a request for investigation, not a belief event.
+- **Structural validation proves only structure:** claim identity, evidence membership, required fields, and no evidence outside the authoritative OptionSet or a validated descendant path. It never implies semantic contradiction.
+- **Decision vocabulary**, at least: retain, weaken, dispute, suspend, revise, supersede.
+- **Principles:**
+  1. **Evidence quantity is not enough.** Revision weighs:
+     - the proposition relationship and scope compatibility;
+     - source authority for the claim type, independence and currentness;
+     - evidence quality;
+     - corroboration;
+     - unresolved counterevidence.
+
+     It never reduces to counting sources.
+  2. **Claim type matters.** Separate policies are planned for empirical, definitional or classificatory, predictive, procedural, autobiographical and preference claims, and normative claims if they are ever represented. There is no universal threshold.
+  3. **Supersession is not ordinary contradiction.** Explicit supersession events represent an authoritative classification, a governing specification, an API contract, a law or a current standard replacing an earlier one.
+  4. **Lineage is preserved, never overwritten:** the old belief, the evidence state at the time, the challenge, the revision decision, the new belief, the reason, and the triggering evidence or policy.
+  5. **Unresolved states are allowed.** "No longer confident in A, not yet able to accept B" is represented as disputed, suspended or unresolved.
+  6. **Hysteresis.** A meaningful evidence advantage is needed before the active belief switches. Its thresholds are to be developed experimentally and are not chosen now.
+  7. **Confidence is separate from revision eligibility.** A slightly more confident alternative does not automatically replace the current belief; eligibility is a governed decision over the evidence state and policy.
+- **Required behaviour, checked against the Pluto scenario (not hardcoded):**
+  - One source says Pluto is not a planet: a candidate contradiction, perhaps investigation, no automatic replacement.
+  - Several independent high-quality sources support the changed classification: a stronger evidence state; the belief may become disputed.
+  - The governing astronomical authority formally changes the classification: authoritative supersession evidence; the revision engine may revise the active belief.
+  - A later definition makes Pluto a planet again: a new supersession event; the active belief may change again, and earlier states and reasons remain in lineage.
+- **Self-development is later and supervised.** Eidolon may eventually analyse her revision history and propose changes to her own epistemic policies. Such changes are supervised self-development that needs review and approval. This is not authorization for autonomous belief-policy modification.
+- **G-FID stays**, as one input to this evidence pipeline, not as a prerequisite for letting one model call rewrite a belief.
 
 **Added in 2.10** (Marcus, 2026-09-14; the G-REL2 record completed, and a change of architectural direction):
 - **G-REL2, recorded in full:**
