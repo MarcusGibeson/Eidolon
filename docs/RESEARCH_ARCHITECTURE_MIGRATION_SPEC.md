@@ -1,6 +1,42 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.14, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+**Version 2.15, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.15** (Marcus, 2026-09-14; the G-STATE outcome):
+- **G-STATE: BINDING_FAILURE, with WITNESS_FAILURE, CONTROL_REGRESSION, MISCLASSIFICATION and PAIR_INSENSITIVITY under the frozen scorer.** This is accepted exactly as scored under `prereg_state.json`.
+  - **Run:** all 176 calls completed with zero request failures, and the locked files were unchanged. The assessments were byte-identical across both runs.
+  - **Passed:**
+    - event-only accuracy 0.852;
+    - unresolved precision 0.909 and recall 0.833;
+    - unsafe event-only 0.044;
+    - identity, candidate non-mutation and belief non-mutation;
+    - repeatability 1.00.
+  - **The authority boundary held.** Every rejected assessment was fail-safe.
+- **Interpretation: the registered failure is dominated by a harness defect, and it stays failed.** G-STATE formally failed its registered scorer primarily because of a binding-contract defect in the experimental harness. Optional cue absence expressed as JSON `null` was rejected, although the prompt did not require the literal string "none".
+  - Rejected assessments feed downstream scoring. So the witness, control, continuing-accuracy and pair-sensitivity failures cannot be interpreted independently from the registered metrics.
+  - Descriptive inspection of the immutable raw outputs showed that, before validator rejection, the model's relation matched frozen gold on 68 of 72 controlled items and 14 of 16 anchors:
+    - all 21 continuing controlled items were answered continuing;
+    - all five RM historical controls stayed event-only;
+    - SS04 and T46 followed the corrected conservative semantics;
+    - explicit persistence cues were recognised correctly.
+  - This descriptive result does not amend the registered verdict. A binding-only successor experiment is required.
+  - This is not evidence that G-STATE's semantic idea failed.
+- **Six real semantic deviations**, all among structurally valid assessments and identical in both runs:
+  - **T19:** unresolved instead of continuing ("From 1 January 2025, the speed limit on Mill Road is 30 km/h").
+  - **T33:** unresolved instead of continuing ("Effective 1 March 2025, the monthly fee is £10").
+  - **ST10:** unresolved instead of event-only.
+  - **ST18:** unresolved instead of event-only.
+  - **ST19:** event-only where the frozen gold specifies unresolved.
+  - **ST40:** unsafe event-only, with the known corpus construction caveat below.
+
+  "From" and "Effective" establish the beginning of an operative state, and the passage presents the new value as applicable from that point onward. So T19 and T33 stay continuing in the frozen gold, unchanged, as witnesses for the remaining semantic weakness.
+- **ST40 carries a known cited-segment construction error.** It was given the default cited segment (the adult removal), while its relevant state is in segment 2. It is kept unchanged in the binding-only rerun for experimental parity, but it must not be used by itself to justify a future semantic architecture change. Whether to repair or remove it is decided after G-STATE2, in a separately versioned corpus-cleanup step.
+- **Next: G-STATE2, a strict binding-only rerun** (the G-CAND2 pattern).
+  - **The only change:** the optional cue fields become `persistence_cue: string | null` and `end_cue: string | null`. The prompt says that an absent cue is returned as JSON `null`, and the validator accepts exactly that. It does not turn absence into a magic word.
+  - **Frozen:** gold, corpus, definitions, labels, witnesses, controls, thresholds, failure order, prompt semantics other than the serialization instruction, runtime, temperature, token ceiling, repair behaviour, model, no batching, and scoring semantics.
+  - **Its question:** did the registered G-STATE failure come primarily from the null-binding defect, and what semantic failures remain once the defect is removed?
+  - **The model calls are rerun under a new pre-registration.** Re-scoring the old outputs is descriptive only and cannot replace the run.
+- No G-FID, R1, belief revision, optimization, batching or other semantic repair. Main and origin/main are untouched.
 
 **Added in 2.14** (Marcus, 2026-09-14; the G-TEMP outcome and the next gate):
 - **G-TEMP: BINDING_FAILURE, with FALSE_SUPPRESSION and UNRESOLVED_RECALL_FAILURE also failing.** This is accepted exactly as scored under `prereg_temp.json` with `temp_gold.json`. Every decision was identical in both runs.
@@ -765,7 +801,7 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | **G-REF** (2.9) | Refutation semantics on the G-REL2 base | Adversarial refutation fixtures plus the G-REL corpora with their adjudicated gold. A proposed refutation must bind the target clause, the passage segment, the proposition the segment expresses, the dimension of incompatibility, population, condition and time comparisons, and whether the incompatibility is directly stated | Pre-registered in `prereg_ref.json`; zero false refutations; refutation recall; direct support and binding stable | Fallback: refutation stays provisional and review-required. **Withdrawn (2.10)** before any result; superseded by candidate-contradiction detection and governed belief revision |
 | **G-CAND** (2.10) | Candidate-contradiction detection, with no belief authority | Adversarial, G-REL fixture and real pairs, plus 10 supersession items. A ContradictionCandidate is bound to the immutable claim and exact segments, and carries incompatibility, scope, recency, uncertainty and `resolution_needed`. It is provisional, with no belief effect | Pre-registered in `prereg_cand.json`: recall ≥ 0.85, false escalation ≤ 0.10, precision ≥ 0.80, binding ≥ 0.95, identity and non-mutation = 1.00, scope preservation ≥ 0.80, repeatability ≥ 0.95; plus a separate supersession gate | Candidates stay provisional under any outcome. **Outcome (2.12): BINDING_FAILURE, with OVER_ESCALATION also failing.** Recall, identity, non-mutation, scope preservation, repeatability and the supersession gate passed. A binding-only time/recency repair and a re-adjudication of the real gold come before any rerun. **G-CAND2 (2.13): OVER_ESCALATION.** Binding is repaired and closed for this stage; over-escalation is addressed one semantic class at a time |
 | **G-TEMP** (2.13) | Temporal compatibility of a contradiction candidate | Controlled temporal pairs, including publication- and update-date traps, plus the G-CAND2 candidates; RM01–RM05 are required witnesses | Pre-registered before any live call; zero false suppression of genuine overlapping contradictions | `non_overlapping` suppresses escalation only in this experimental layer, with no belief effect. **Outcome (2.14): BINDING_FAILURE, with FALSE_SUPPRESSION and UNRESOLVED_RECALL_FAILURE also failing.** It handled the historical-state family (RM01–RM05 5/5, metadata invariant), but suppressed dated transitions whose resulting state continues. Binding is not relaxed |
-| **G-STATE** (2.14) | Continuing resultant state: does a dated transition establish a state that continues after it? | Controlled contrasts and minimal pairs across transition and event wording, plus the G-TEMP witnesses (SS04, SS05, T54, T46), transition controls and historical controls | Pre-registered before any live call; the witnesses read as continuing, and no regression on the controls | Provisional analysis only, with no belief authority and no change to any candidate or temporal assessment. **Planned (2.14)** |
+| **G-STATE** (2.14) | Continuing resultant state: does a dated transition establish a state that continues after it? | Controlled contrasts and minimal pairs across transition and event wording, plus the G-TEMP witnesses (SS04, SS05, T54, T46), transition controls and historical controls | Pre-registered before any live call; the witnesses read as continuing, and no regression on the controls | Provisional analysis only, with no belief authority and no change to any candidate or temporal assessment. **Outcome (2.15): BINDING_FAILURE**, with WITNESS_FAILURE, CONTROL_REGRESSION, MISCLASSIFICATION and PAIR_INSENSITIVITY, dominated by a harness defect: JSON `null` optional cues were rejected. Descriptively 68/72 and 14/16 relations matched gold. Real misses: T19, T33, ST10, ST18, ST19, ST40 (ST40 has a construction caveat). G-STATE2 is the binding-only rerun |
 | **G-FID** (future, 2.5) | Atomic-claim fidelity | Decomposed claims vs their source passages, hand-labelled blind for dropped or altered qualifiers (condition, quantifier, population, unit, time scope) | Qualifier loss below a pre-registered bar; a lost qualifier makes a new claim, never a silent narrowing | Blocks promotion of atomic extraction. **Dependency of G-REL (2.7):** it is measured with G-REL's qualifier compatibility and remains separately reported |
 
 **Open experiments, non-blocking and reported:**
@@ -797,7 +833,8 @@ Each step makes one semantic change and is independently revertible. Each needs 
    - 5c. **G-REF (2.9)**, harness-only: refutation semantics on the G-REL2 base, pre-registered before implementation. Afterwards, work stops for review. The next step is then G-FID if refutation is reliable, or otherwise the provisional-refutation fallback. **Withdrawn (2.10):** its run was stopped unscored. The next experiment is candidate-contradiction detection.
    - 5d. **G-CAND (2.10)**, harness-only: candidate-contradiction detection with no belief authority. **Outcome (2.12): BINDING_FAILURE**, with OVER_ESCALATION also failing; the authority boundary held. Before any rerun come the binding-only time/recency repair and the re-adjudication of the real gold, then review. **G-CAND2 (2.13): OVER_ESCALATION**; binding repaired and closed.
    - 5e. **G-TEMP (2.13)**, harness-only: temporal compatibility of contradiction candidates, the first of the one-class-at-a-time over-escalation gates. It is designed and pre-registered, then reviewed before any live call. **Outcome (2.14): BINDING_FAILURE**, with FALSE_SUPPRESSION and UNRESOLVED_RECALL_FAILURE also failing; the historical-state family was handled.
-   - 5f. **G-STATE (2.14)**, harness-only: whether a dated transition establishes a continuing resultant state. It is designed and pre-registered, then reviewed before any live call.
+   - 5f. **G-STATE (2.14)**, harness-only: whether a dated transition establishes a continuing resultant state. It is designed and pre-registered, then reviewed before any live call. **Outcome (2.15): BINDING_FAILURE**, dominated by the null-cue harness defect; not evidence against the semantic idea.
+   - 5g. **G-STATE2 (2.15)**, harness-only: the binding-only rerun (`string | null` optional cues), with everything semantic frozen.
 6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME). **Gated (2.6)** by two separate questions: G-R2's result on multi-finding representation, and a redesigned, trustworthy proposition-level cross-source assessor. **Blocked (2.7)** until all four R1 prerequisites hold: richer representation shown to add value, G-REL, G-FID, and a measured compatible cost.
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
