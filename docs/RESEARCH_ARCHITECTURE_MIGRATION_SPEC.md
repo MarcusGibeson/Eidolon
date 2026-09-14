@@ -1,6 +1,23 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.9, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+**Version 2.10, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.10** (Marcus, 2026-09-14; the G-REL2 record completed, and a change of architectural direction):
+- **G-REL2, recorded in full:**
+  - G5 binding validity was repaired by the schema change.
+  - The pre-registered schema-friction hypothesis is CONFOUNDED overall. Removing malformed-output rejection also removed an accidental safety filter: G-REL's malformed outputs and per-field qualifier behaviour had kept some semantic overreach from being admitted.
+  - The higher admitted semantic-error counts mostly expose errors already present in the model's proposals, not errors created by the schema repair.
+  - G-REL2 is the preferred structural contract: it is faithful, auditable and substantially easier for the model to satisfy. It is also cheaper, as an observed side effect that is not an optimization result.
+- **A new authority boundary.** Automatic belief modification must not depend directly on one model-produced refutation judgment.
+  - Detecting a possible contradiction is not belief revision.
+  - A model's proposal that evidence contradicts a belief is a provisional contradiction candidate: an observation and a request for investigation. It cannot weaken, refute, replace or supersede a durable belief.
+  - Authority over belief state belongs to a separate, governed belief-revision mechanism that acts on validated, accumulated evidence.
+  - This replaces the 2.9 "fallback", which becomes the general rule.
+- **G-REF is withdrawn before any result.** Its objective, showing that a model refutation is trustworthy enough for automatic admission, is superseded.
+  - The live run started under `prereg_ref.json` was stopped before it finished.
+  - Its partial outputs are kept, unscored and unused.
+  - The next experiment is candidate-contradiction detection, designed and pre-registered separately and reviewed before any live call.
+- R1 remains blocked. No optimization or batching. Main and origin/main are untouched.
 
 **Added in 2.9** (Marcus, 2026-09-14; the G-REL2 outcome):
 - **G-REL2: gate FAIL.** Fixtures passed every rule. On real passages three rules failed:
@@ -540,7 +557,7 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | **G-CAP** | Offer cap | C0/C1 protocol under R1 | Acceptance up; unsupported findings not increased | The cap stays 3 |
 | **G-R2** | Single-call multi-finding synthesis | **Before R1 (2.5):** the same frozen offers and production runtime as C0/C1 and G-COST; the legacy one-finding call vs a multi-finding call; blind labels; pre-registered | Mechanism extraction materially better on the pre-registered measure; unsupported claims not increased | Decides whether R1 is needed as specified, simplified, or replaced. **Outcome (2.7): HARMFUL** under the registered rule. D1 held: 5 supported core stages vs 0, and 3 supported mechanism findings vs 0. D2 failed: unsupported findings rose from 0/7 to 5/30. Multi-finding representation is promising but not safe to admit with the current support semantics |
 | **G-REL** (2.7) | Proposition relationship (the shared support, refutation and qualifier layer) | Adversarial fixtures plus real-passage pairs reused from the G-XS and G-R2 failures, labelled blind. One call per (immutable proposition, offered passage). The six relations, each bound to a claim clause, an exact evidence span, qualifier compatibility and a relation basis; a mechanical validator admits a relation only when those fields are consistent | Pre-registered in `prereg_rel.json` | **Blocks R1** and any redesigned cross-source assessor. **Outcome (2.8): FAIL** in three classes: contract/schema (G5 0.816 / 0.691), semantic fidelity (G6 0.647 on real passages) and residual refutation (G1: 3, one adjudication-dependent). The improvement over G-XS on the same pairs is large. G-REL2 tests a schema-only repair. **G-REL2 (2.9): gate FAIL.** G5 was repaired (0.959 / 0.974), but the hypothesis is CONFOUNDED: the old schema was partly an accidental safety filter. G-REL2 is the structural base |
-| **G-REF** (2.9) | Refutation semantics on the G-REL2 base | Adversarial refutation fixtures plus the G-REL corpora with their adjudicated gold. A proposed refutation must bind the target clause, the passage segment, the proposition the segment expresses, the dimension of incompatibility, population, condition and time comparisons, and whether the incompatibility is directly stated | Pre-registered in `prereg_ref.json`; zero false refutations; refutation recall; direct support and binding stable | Fallback: refutation stays provisional and review-required |
+| **G-REF** (2.9) | Refutation semantics on the G-REL2 base | Adversarial refutation fixtures plus the G-REL corpora with their adjudicated gold. A proposed refutation must bind the target clause, the passage segment, the proposition the segment expresses, the dimension of incompatibility, population, condition and time comparisons, and whether the incompatibility is directly stated | Pre-registered in `prereg_ref.json`; zero false refutations; refutation recall; direct support and binding stable | Fallback: refutation stays provisional and review-required. **Withdrawn (2.10)** before any result; superseded by candidate-contradiction detection and governed belief revision |
 | **G-FID** (future, 2.5) | Atomic-claim fidelity | Decomposed claims vs their source passages, hand-labelled blind for dropped or altered qualifiers (condition, quantifier, population, unit, time scope) | Qualifier loss below a pre-registered bar; a lost qualifier makes a new claim, never a silent narrowing | Blocks promotion of atomic extraction. **Dependency of G-REL (2.7):** it is measured with G-REL's qualifier compatibility and remains separately reported |
 
 **Open experiments, non-blocking and reported:**
@@ -569,7 +586,7 @@ Each step makes one semantic change and is independently revertible. Each needs 
 5. **Reference cost probe (G-COST)**, harness-only, before R1 is built; batched candidates measured against the reference. **PASS WITH QUALIFICATION** (2.4): cross-source assessment and the composer are still unmeasured, and no optimization is authorized.
    - 5a. **G-R2 (2.5)**, harness-only, after the G-XS review and before R1 is implemented. Its result decides whether step 6 builds R1 as specified or a simpler form. **Outcome (2.7): HARMFUL** under the registered rule, with the positive mechanism finding recorded.
    - 5b. **G-REL (2.7)**, harness-only: design, pre-register, and review before any live run; then measure its semantics and cost. Nothing is optimized before its semantic reference passes. **Outcome (2.8): FAIL.** Next is G-REL2, a schema-only repair; after it, either G-FID or a stop for reassessment. **G-REL2 (2.9): FAIL.** G5 was repaired; the hypothesis is confounded.
-   - 5c. **G-REF (2.9)**, harness-only: refutation semantics on the G-REL2 base, pre-registered before implementation. Afterwards, work stops for review. The next step is then G-FID if refutation is reliable, or otherwise the provisional-refutation fallback.
+   - 5c. **G-REF (2.9)**, harness-only: refutation semantics on the G-REL2 base, pre-registered before implementation. Afterwards, work stops for review. The next step is then G-FID if refutation is reliable, or otherwise the provisional-refutation fallback. **Withdrawn (2.10):** its run was stopped unscored. The next experiment is candidate-contradiction detection.
 6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME). **Gated (2.6)** by two separate questions: G-R2's result on multi-finding representation, and a redesigned, trustworthy proposition-level cross-source assessor. **Blocked (2.7)** until all four R1 prerequisites hold: richer representation shown to add value, G-REL, G-FID, and a measured compatible cost.
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
