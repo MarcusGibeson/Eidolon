@@ -1,6 +1,52 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.11, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+**Version 2.12, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.12** (Marcus, 2026-09-14; the G-CAND outcome):
+- **G-CAND: BINDING_FAILURE, with OVER_ESCALATION also failing.** This is accepted exactly as scored under `prereg_cand.json`. The completed run is not rescored under any repaired schema or revised gold.
+  - **Run:** all 564 calls completed with zero request failures, and no repair retry was needed.
+  - **Passed:**
+    - claim identity 1.00;
+    - belief non-mutation 1.00;
+    - scope preservation 1.00;
+    - repeatability 1.00, with every flag decision identical across repeats;
+    - main recall: adversarial 1.00, fixtures 1.00, real 0.938;
+    - the separate supersession gate in both runs: all 6 must-flag cases detected with recency carried, and neither distractor flagged.
+  - **Failed:**
+    - binding validity: adversarial 0.946, fixtures 0.765, real 0.341, real repeat 0.667;
+    - false escalation: adversarial 0.241, real 0.109;
+    - therefore precision on the real corpus: 0.432.
+
+    43 of the 45 structural rejections come from one vocabulary collision: the model wrote the recency value "unknown" in the scope time field.
+  - **Disclosed pre-run prompt edit:** the approved draft never named the recency tokens (`passage_later`, `passage_earlier`), so no reply could carry them. The contract suite found this before any call, and the tokens were named before registration, together with Marcus's `resolution_needed` field.
+  - **Correction:** an interim status note during the run called RT01–RT06 planted contradictions the detector missed. They are must-not-flag items, so leaving them unflagged was correct.
+  - No downstream work was started.
+- **The authority boundary held.** False candidates caused investigation proposals only, never a belief-state effect. Every candidate was provisional with `belief_effects: "none"`, and the belief sentinel was byte-identical after all 564 items.
+- **Architectural reading.** G-CAND did not demonstrate a production-ready candidate detector. It did demonstrate:
+  - high contradiction recall;
+  - no belief mutation;
+  - exact identity preservation;
+  - deterministic repeatability;
+  - successful supersession detection;
+  - strong scope preservation.
+
+  The dominant remaining failure is excessive escalation, not unauthorized belief revision. The distinction matters because the detector is intentionally provisional.
+- **Over-escalation classes, kept separate.** No semantic fix is designed yet.
+  1. Historical or past-state evidence escalated against a current claim.
+  2. Same-topic false statements escalated, though they are not necessarily proposition-level conflicts.
+  3. Partial-support and directionality cases.
+  4. Navigation or non-content text.
+- **Before any G-CAND rerun:**
+  - **A. A binding-only schema repair:** distinct, non-overlapping vocabularies for the scope-time relationship and for passage recency.
+    - Unchanged: candidate semantics, the contradiction definitions, scope semantics, the corpus, thresholds, runtime, one pair per call, uncertainty behaviour and supersession semantics.
+    - Contract tests must prove that neither vocabulary is accepted in the other's field.
+    - The recorded failed outputs must be shown encodable in the repaired representation without relaxing admission.
+  - **B. A re-adjudication of the real candidate gold:**
+    - Scope: every real item mapped from G-REL `partial_support`, plus every other real item where the result exposed a plausible mismatch between the old relation gold and candidate semantics.
+    - A fresh blind labeller re-labels them under the frozen definitions, and only disagreements are adjudicated.
+    - The gold is frozen and hashed before any rerun. Labels are never revised to improve a score.
+  - Then work stops for review before any new live call. No G-FID, belief revision, R1, batching or optimization.
+- Main and origin/main are untouched.
 
 **Added in 2.11** (Marcus, 2026-09-14): **architectural requirements for future governed belief revision.** These are requirements only. Nothing here is implemented or wired, and none of it authorizes implementation.
 - **Destination pipeline:**
@@ -625,6 +671,7 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | **G-R2** | Single-call multi-finding synthesis | **Before R1 (2.5):** the same frozen offers and production runtime as C0/C1 and G-COST; the legacy one-finding call vs a multi-finding call; blind labels; pre-registered | Mechanism extraction materially better on the pre-registered measure; unsupported claims not increased | Decides whether R1 is needed as specified, simplified, or replaced. **Outcome (2.7): HARMFUL** under the registered rule. D1 held: 5 supported core stages vs 0, and 3 supported mechanism findings vs 0. D2 failed: unsupported findings rose from 0/7 to 5/30. Multi-finding representation is promising but not safe to admit with the current support semantics |
 | **G-REL** (2.7) | Proposition relationship (the shared support, refutation and qualifier layer) | Adversarial fixtures plus real-passage pairs reused from the G-XS and G-R2 failures, labelled blind. One call per (immutable proposition, offered passage). The six relations, each bound to a claim clause, an exact evidence span, qualifier compatibility and a relation basis; a mechanical validator admits a relation only when those fields are consistent | Pre-registered in `prereg_rel.json` | **Blocks R1** and any redesigned cross-source assessor. **Outcome (2.8): FAIL** in three classes: contract/schema (G5 0.816 / 0.691), semantic fidelity (G6 0.647 on real passages) and residual refutation (G1: 3, one adjudication-dependent). The improvement over G-XS on the same pairs is large. G-REL2 tests a schema-only repair. **G-REL2 (2.9): gate FAIL.** G5 was repaired (0.959 / 0.974), but the hypothesis is CONFOUNDED: the old schema was partly an accidental safety filter. G-REL2 is the structural base |
 | **G-REF** (2.9) | Refutation semantics on the G-REL2 base | Adversarial refutation fixtures plus the G-REL corpora with their adjudicated gold. A proposed refutation must bind the target clause, the passage segment, the proposition the segment expresses, the dimension of incompatibility, population, condition and time comparisons, and whether the incompatibility is directly stated | Pre-registered in `prereg_ref.json`; zero false refutations; refutation recall; direct support and binding stable | Fallback: refutation stays provisional and review-required. **Withdrawn (2.10)** before any result; superseded by candidate-contradiction detection and governed belief revision |
+| **G-CAND** (2.10) | Candidate-contradiction detection, with no belief authority | Adversarial, G-REL fixture and real pairs, plus 10 supersession items. A ContradictionCandidate is bound to the immutable claim and exact segments, and carries incompatibility, scope, recency, uncertainty and `resolution_needed`. It is provisional, with no belief effect | Pre-registered in `prereg_cand.json`: recall ≥ 0.85, false escalation ≤ 0.10, precision ≥ 0.80, binding ≥ 0.95, identity and non-mutation = 1.00, scope preservation ≥ 0.80, repeatability ≥ 0.95; plus a separate supersession gate | Candidates stay provisional under any outcome. **Outcome (2.12): BINDING_FAILURE, with OVER_ESCALATION also failing.** Recall, identity, non-mutation, scope preservation, repeatability and the supersession gate passed. A binding-only time/recency repair and a re-adjudication of the real gold come before any rerun |
 | **G-FID** (future, 2.5) | Atomic-claim fidelity | Decomposed claims vs their source passages, hand-labelled blind for dropped or altered qualifiers (condition, quantifier, population, unit, time scope) | Qualifier loss below a pre-registered bar; a lost qualifier makes a new claim, never a silent narrowing | Blocks promotion of atomic extraction. **Dependency of G-REL (2.7):** it is measured with G-REL's qualifier compatibility and remains separately reported |
 
 **Open experiments, non-blocking and reported:**
@@ -654,6 +701,7 @@ Each step makes one semantic change and is independently revertible. Each needs 
    - 5a. **G-R2 (2.5)**, harness-only, after the G-XS review and before R1 is implemented. Its result decides whether step 6 builds R1 as specified or a simpler form. **Outcome (2.7): HARMFUL** under the registered rule, with the positive mechanism finding recorded.
    - 5b. **G-REL (2.7)**, harness-only: design, pre-register, and review before any live run; then measure its semantics and cost. Nothing is optimized before its semantic reference passes. **Outcome (2.8): FAIL.** Next is G-REL2, a schema-only repair; after it, either G-FID or a stop for reassessment. **G-REL2 (2.9): FAIL.** G5 was repaired; the hypothesis is confounded.
    - 5c. **G-REF (2.9)**, harness-only: refutation semantics on the G-REL2 base, pre-registered before implementation. Afterwards, work stops for review. The next step is then G-FID if refutation is reliable, or otherwise the provisional-refutation fallback. **Withdrawn (2.10):** its run was stopped unscored. The next experiment is candidate-contradiction detection.
+   - 5d. **G-CAND (2.10)**, harness-only: candidate-contradiction detection with no belief authority. **Outcome (2.12): BINDING_FAILURE**, with OVER_ESCALATION also failing; the authority boundary held. Before any rerun come the binding-only time/recency repair and the re-adjudication of the real gold, then review.
 6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME). **Gated (2.6)** by two separate questions: G-R2's result on multi-finding representation, and a redesigned, trustworthy proposition-level cross-source assessor. **Blocked (2.7)** until all four R1 prerequisites hold: richer representation shown to add value, G-REL, G-FID, and a measured compatible cost.
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
