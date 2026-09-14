@@ -1,6 +1,28 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.7, 2026-09-13. Status: the governing migration specification, approved by Marcus.**
+**Version 2.8, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.8** (Marcus, 2026-09-14; the G-REL outcome):
+- **G-REL: FAIL** under the pre-registered scorer, scored against gold that was independently double-labelled and adjudicated. The run was 424 calls on `qwen3.8:27b`, with no identity or runtime failure. There are three distinct failure classes:
+  1. **Contract/schema failure.** G5 binding validity was 0.816 on fixtures and 0.691 on real passages. Much of it is representation friction:
+     - schema values outside the allowed vocabulary, mostly a clause status written into qualifier fields;
+     - attempts to represent unstated clauses where the schema had no place for them;
+     - quoted spans shortened with an ellipsis.
+
+     It is not treated as equivalent to semantic evidence hallucination.
+  2. **Semantic fidelity failure.** G6 qualifier safety was 0.647 on real passages. Real modality, instruction or purpose form, question fragments and dropped conditions were admitted as direct support. Qualifier detection was 0.94 on synthetic items but 0.47 on real ones, which is a generalization gap.
+  3. **Residual refutation failure.** G1 counted three false refutations on real passages. Two are clear semantic errors. The third depends on an adjudication disagreement in which the independent labeller chose refutation.
+- **Improvement over G-XS on the same real pairs:**
+  - all 21 G-XS false supports became zero admitted direct supports;
+  - only 2 of the 19 G-XS false refutations were admitted as refutations;
+  - real direct-support precision was 0.901 and recall 0.842; real refutation recall was 0.80.
+- **The outside-knowledge self-report gave no observed protection:** the model never reported using outside knowledge. That field is not treated as an effective safeguard unless later evidence establishes otherwise.
+- **The validator's guarantee is structural.** It checks the admission contract, not semantic entailment.
+- **Next: G-REL2, a schema-only repair.** Its hypothesis: most G5 failure comes from a mismatch between the distinctions the model tries to express and the output schema, not from failing to identify the evidence relationship.
+  - Only the schema and structural contract change.
+  - These stay fixed: the corpus, the adjudicated gold, the relation vocabulary, the support, refutation and qualifier reasoning instructions, the model and runtime, the thresholds, batching, and one pair per call.
+  - If G5 passes while G1–G4 and G6 stay materially stable, the hypothesis is supported and G-FID comes next. If G5 stays substantially below its bar, work stops for reassessment rather than stacking semantic changes onto an unresolved contract problem.
+- **No optimization or batching of G-REL yet.** Its reference cost, about 33 s per pair, is far outside the budget, but semantic correctness comes first. R1 remains blocked.
 
 **Added in 2.7** (Marcus, 2026-09-13; the G-R2 outcome and a new gate before R1):
 - **G-R2: HARMFUL under the registered decision rule.** Relaxing the single-finding cardinality constraint recovers mechanism structure that the legacy singular contract suppresses, but also increases unsupported proposition generation. Multi-finding representation is therefore promising as a representation change but is not safe for integration without a stronger proposition-level support and fidelity mechanism. The result is not evidence that multi-finding representation itself is unsuitable.
@@ -493,7 +515,7 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | **G-DATE** | Date observation | Held-out app-path pages; every date verified by hand; selection replay plus end to end | **Zero false dates**; publication and update distinct | The fallback does not ship |
 | **G-CAP** | Offer cap | C0/C1 protocol under R1 | Acceptance up; unsupported findings not increased | The cap stays 3 |
 | **G-R2** | Single-call multi-finding synthesis | **Before R1 (2.5):** the same frozen offers and production runtime as C0/C1 and G-COST; the legacy one-finding call vs a multi-finding call; blind labels; pre-registered | Mechanism extraction materially better on the pre-registered measure; unsupported claims not increased | Decides whether R1 is needed as specified, simplified, or replaced. **Outcome (2.7): HARMFUL** under the registered rule. D1 held: 5 supported core stages vs 0, and 3 supported mechanism findings vs 0. D2 failed: unsupported findings rose from 0/7 to 5/30. Multi-finding representation is promising but not safe to admit with the current support semantics |
-| **G-REL** (2.7) | Proposition relationship (the shared support, refutation and qualifier layer) | Adversarial fixtures plus real-passage pairs reused from the G-XS and G-R2 failures, labelled blind. One call per (immutable proposition, offered passage). The six relations, each bound to a claim clause, an exact evidence span, qualifier compatibility and a relation basis; a mechanical validator admits a relation only when those fields are consistent | Pre-registered in `prereg_rel.json` | **Blocks R1** and any redesigned cross-source assessor |
+| **G-REL** (2.7) | Proposition relationship (the shared support, refutation and qualifier layer) | Adversarial fixtures plus real-passage pairs reused from the G-XS and G-R2 failures, labelled blind. One call per (immutable proposition, offered passage). The six relations, each bound to a claim clause, an exact evidence span, qualifier compatibility and a relation basis; a mechanical validator admits a relation only when those fields are consistent | Pre-registered in `prereg_rel.json` | **Blocks R1** and any redesigned cross-source assessor. **Outcome (2.8): FAIL** in three classes: contract/schema (G5 0.816 / 0.691), semantic fidelity (G6 0.647 on real passages) and residual refutation (G1: 3, one adjudication-dependent). The improvement over G-XS on the same pairs is large. G-REL2 tests a schema-only repair |
 | **G-FID** (future, 2.5) | Atomic-claim fidelity | Decomposed claims vs their source passages, hand-labelled blind for dropped or altered qualifiers (condition, quantifier, population, unit, time scope) | Qualifier loss below a pre-registered bar; a lost qualifier makes a new claim, never a silent narrowing | Blocks promotion of atomic extraction. **Dependency of G-REL (2.7):** it is measured with G-REL's qualifier compatibility and remains separately reported |
 
 **Open experiments, non-blocking and reported:**
@@ -521,7 +543,7 @@ Each step makes one semantic change and is independently revertible. Each needs 
 4. **Multi-finding report schema** (G-SCHEMA). **PASS** (`d8c6f57`); boundaries in §7a.
 5. **Reference cost probe (G-COST)**, harness-only, before R1 is built; batched candidates measured against the reference. **PASS WITH QUALIFICATION** (2.4): cross-source assessment and the composer are still unmeasured, and no optimization is authorized.
    - 5a. **G-R2 (2.5)**, harness-only, after the G-XS review and before R1 is implemented. Its result decides whether step 6 builds R1 as specified or a simpler form. **Outcome (2.7): HARMFUL** under the registered rule, with the positive mechanism finding recorded.
-   - 5b. **G-REL (2.7)**, harness-only: design, pre-register, and review before any live run; then measure its semantics and cost. Nothing is optimized before its semantic reference passes.
+   - 5b. **G-REL (2.7)**, harness-only: design, pre-register, and review before any live run; then measure its semantics and cost. Nothing is optimized before its semantic reference passes. **Outcome (2.8): FAIL.** Next is G-REL2, a schema-only repair; after it, either G-FID or a stop for reassessment.
 6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME). **Gated (2.6)** by two separate questions: G-R2's result on multi-finding representation, and a redesigned, trustworthy proposition-level cross-source assessor. **Blocked (2.7)** until all four R1 prerequisites hold: richer representation shown to add value, G-REL, G-FID, and a measured compatible cost.
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
