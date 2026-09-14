@@ -1,6 +1,43 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.13, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+**Version 2.14, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.14** (Marcus, 2026-09-14; the G-TEMP outcome and the next gate):
+- **G-TEMP: BINDING_FAILURE, with FALSE_SUPPRESSION and UNRESOLVED_RECALL_FAILURE also failing.** This is accepted exactly as scored under `prereg_temp.json` with `temp_gold.json`. Every decision was identical in both runs.
+  - **Run:** 364 of 364 calls completed with zero request failures, and the locked files were unchanged.
+  - **Passed:**
+    - RM01–RM05: 5 of 5 correctly suppressed in both runs;
+    - every metadata-variant group invariant, so publication and update metadata did not leak into proposition-time reasoning;
+    - overlapping accuracy: controlled 0.897, candidates 0.958;
+    - non-overlapping accuracy: 0.886 and 0.857;
+    - unresolved precision 0.900;
+    - claim identity, candidate non-mutation and belief non-mutation;
+    - repeatability 1.00.
+  - **The authority boundary held.** Every assessment was provisional with no belief effect, and no invalid assessment suppressed.
+  - **Failed:**
+    - **False suppression of genuine contradictions:** 6 items, in both runs.
+    - **Binding:** failed narrowly on the controlled corpus, 0.947 against 0.95. The candidate corpus scored 1.00.
+    - **Unresolved recall:** 0.562.
+- **G-TEMP handled the historical-state failure family that motivated RM01–RM05.** It exposed a distinct temporal-semantic failure: dated change events with continuing resultant states. In four of the six false suppressions the model dated the change and treated the state produced by it, which runs to now, as existing only at the event date:
+  - SS04: "version 3 replaced version 2 as the official version in 2023";
+  - SS05 and T54: "retired on 1 July 2025 and is no longer supported";
+  - T46: "an amendment in 2022 removed the helmet requirement".
+
+  Related wording passed (SS01, SS03, SS06, SS09, T19, T33, T50). The other two false suppressions are separate families and are kept out of the next gate: T10 split one 2019 event by month, and RC04 treated a recurring holiday period as disjoint.
+- **Binding is not relaxed yet.** All four rejected assessments named "tense" as the basis where the validator requires dated or relative support for a suppression.
+  - Two of the rejections blocked unsafe suppressions (T07, T09).
+  - Two blocked otherwise-correct suppressions involving "formerly" (T26, T27).
+
+  The mismatch is therefore not shown to be a harmless formatting problem. The suppression requirements and fail-closed behaviour stay unchanged, and the accepted basis values are not broadened merely to raise binding.
+- **Next gate: G-STATE (continuing resultant state).** Its one question: does a passage describe only an event at time T, or does that event establish a resulting state that continues after T?
+  - It separates event time (when a transition happened) from resulting-state validity (the interval during which the state the transition created stays applicable).
+  - It does not infer indefinite persistence from every past-tense event: "sales fell in 2022" is a historical event only.
+  - It is a provisional evidence-analysis layer with no belief authority. It changes no candidate, temporal assessment, evidence state or belief state.
+  - A `continuing` result may keep G-TEMP from suppressing a candidate merely because the transition is dated in the past. It never proves semantic contradiction, current authority, factual truth or eligibility for belief revision, and a later superseding event can end the continuing state.
+  - Required witnesses: SS04, SS05, T54 and T46. Passing controls: SS01, SS03, SS06, SS09, T19, T33 and T50. It must not trade those controls for the witnesses.
+  - Kept outside G-STATE: T10's within-event month split, RC04's recurring holiday period, general unresolved-recall repair, same-topic falsehoods, DNS directionality, navigation text and broader scope compatibility.
+  - It is designed and pre-registered for review before any live call. No G-FID, R1, belief revision, optimization or batching.
+- Main and origin/main are untouched.
 
 **Added in 2.13** (Marcus, 2026-09-14; the G-CAND2 outcome and the next gate):
 - **G-CAND2: OVER_ESCALATION.** This is accepted exactly as scored under `prereg_cand2.json`, with `cand2_gold.json` as the only gold for the verdict.
@@ -727,7 +764,8 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | **G-REL** (2.7) | Proposition relationship (the shared support, refutation and qualifier layer) | Adversarial fixtures plus real-passage pairs reused from the G-XS and G-R2 failures, labelled blind. One call per (immutable proposition, offered passage). The six relations, each bound to a claim clause, an exact evidence span, qualifier compatibility and a relation basis; a mechanical validator admits a relation only when those fields are consistent | Pre-registered in `prereg_rel.json` | **Blocks R1** and any redesigned cross-source assessor. **Outcome (2.8): FAIL** in three classes: contract/schema (G5 0.816 / 0.691), semantic fidelity (G6 0.647 on real passages) and residual refutation (G1: 3, one adjudication-dependent). The improvement over G-XS on the same pairs is large. G-REL2 tests a schema-only repair. **G-REL2 (2.9): gate FAIL.** G5 was repaired (0.959 / 0.974), but the hypothesis is CONFOUNDED: the old schema was partly an accidental safety filter. G-REL2 is the structural base |
 | **G-REF** (2.9) | Refutation semantics on the G-REL2 base | Adversarial refutation fixtures plus the G-REL corpora with their adjudicated gold. A proposed refutation must bind the target clause, the passage segment, the proposition the segment expresses, the dimension of incompatibility, population, condition and time comparisons, and whether the incompatibility is directly stated | Pre-registered in `prereg_ref.json`; zero false refutations; refutation recall; direct support and binding stable | Fallback: refutation stays provisional and review-required. **Withdrawn (2.10)** before any result; superseded by candidate-contradiction detection and governed belief revision |
 | **G-CAND** (2.10) | Candidate-contradiction detection, with no belief authority | Adversarial, G-REL fixture and real pairs, plus 10 supersession items. A ContradictionCandidate is bound to the immutable claim and exact segments, and carries incompatibility, scope, recency, uncertainty and `resolution_needed`. It is provisional, with no belief effect | Pre-registered in `prereg_cand.json`: recall ≥ 0.85, false escalation ≤ 0.10, precision ≥ 0.80, binding ≥ 0.95, identity and non-mutation = 1.00, scope preservation ≥ 0.80, repeatability ≥ 0.95; plus a separate supersession gate | Candidates stay provisional under any outcome. **Outcome (2.12): BINDING_FAILURE, with OVER_ESCALATION also failing.** Recall, identity, non-mutation, scope preservation, repeatability and the supersession gate passed. A binding-only time/recency repair and a re-adjudication of the real gold come before any rerun. **G-CAND2 (2.13): OVER_ESCALATION.** Binding is repaired and closed for this stage; over-escalation is addressed one semantic class at a time |
-| **G-TEMP** (2.13) | Temporal compatibility of a contradiction candidate | Controlled temporal pairs, including publication- and update-date traps, plus the G-CAND2 candidates; RM01–RM05 are required witnesses | Pre-registered before any live call; zero false suppression of genuine overlapping contradictions | `non_overlapping` suppresses escalation only in this experimental layer, with no belief effect. **Planned (2.13)** |
+| **G-TEMP** (2.13) | Temporal compatibility of a contradiction candidate | Controlled temporal pairs, including publication- and update-date traps, plus the G-CAND2 candidates; RM01–RM05 are required witnesses | Pre-registered before any live call; zero false suppression of genuine overlapping contradictions | `non_overlapping` suppresses escalation only in this experimental layer, with no belief effect. **Outcome (2.14): BINDING_FAILURE, with FALSE_SUPPRESSION and UNRESOLVED_RECALL_FAILURE also failing.** It handled the historical-state family (RM01–RM05 5/5, metadata invariant), but suppressed dated transitions whose resulting state continues. Binding is not relaxed |
+| **G-STATE** (2.14) | Continuing resultant state: does a dated transition establish a state that continues after it? | Controlled contrasts and minimal pairs across transition and event wording, plus the G-TEMP witnesses (SS04, SS05, T54, T46), transition controls and historical controls | Pre-registered before any live call; the witnesses read as continuing, and no regression on the controls | Provisional analysis only, with no belief authority and no change to any candidate or temporal assessment. **Planned (2.14)** |
 | **G-FID** (future, 2.5) | Atomic-claim fidelity | Decomposed claims vs their source passages, hand-labelled blind for dropped or altered qualifiers (condition, quantifier, population, unit, time scope) | Qualifier loss below a pre-registered bar; a lost qualifier makes a new claim, never a silent narrowing | Blocks promotion of atomic extraction. **Dependency of G-REL (2.7):** it is measured with G-REL's qualifier compatibility and remains separately reported |
 
 **Open experiments, non-blocking and reported:**
@@ -758,7 +796,8 @@ Each step makes one semantic change and is independently revertible. Each needs 
    - 5b. **G-REL (2.7)**, harness-only: design, pre-register, and review before any live run; then measure its semantics and cost. Nothing is optimized before its semantic reference passes. **Outcome (2.8): FAIL.** Next is G-REL2, a schema-only repair; after it, either G-FID or a stop for reassessment. **G-REL2 (2.9): FAIL.** G5 was repaired; the hypothesis is confounded.
    - 5c. **G-REF (2.9)**, harness-only: refutation semantics on the G-REL2 base, pre-registered before implementation. Afterwards, work stops for review. The next step is then G-FID if refutation is reliable, or otherwise the provisional-refutation fallback. **Withdrawn (2.10):** its run was stopped unscored. The next experiment is candidate-contradiction detection.
    - 5d. **G-CAND (2.10)**, harness-only: candidate-contradiction detection with no belief authority. **Outcome (2.12): BINDING_FAILURE**, with OVER_ESCALATION also failing; the authority boundary held. Before any rerun come the binding-only time/recency repair and the re-adjudication of the real gold, then review. **G-CAND2 (2.13): OVER_ESCALATION**; binding repaired and closed.
-   - 5e. **G-TEMP (2.13)**, harness-only: temporal compatibility of contradiction candidates, the first of the one-class-at-a-time over-escalation gates. It is designed and pre-registered, then reviewed before any live call.
+   - 5e. **G-TEMP (2.13)**, harness-only: temporal compatibility of contradiction candidates, the first of the one-class-at-a-time over-escalation gates. It is designed and pre-registered, then reviewed before any live call. **Outcome (2.14): BINDING_FAILURE**, with FALSE_SUPPRESSION and UNRESOLVED_RECALL_FAILURE also failing; the historical-state family was handled.
+   - 5f. **G-STATE (2.14)**, harness-only: whether a dated transition establishes a continuing resultant state. It is designed and pre-registered, then reviewed before any live call.
 6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME). **Gated (2.6)** by two separate questions: G-R2's result on multi-finding representation, and a redesigned, trustworthy proposition-level cross-source assessor. **Blocked (2.7)** until all four R1 prerequisites hold: richer representation shown to add value, G-REL, G-FID, and a measured compatible cost.
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
