@@ -1,6 +1,66 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.20, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.21, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.21** (Marcus, 2026-09-15; the audit of Review 3, and one final bounded iteration, Review 4, registered before it runs):
+- **Review 3 (`14221600cc4998b1`) is an incomplete infrastructure trial at the synthesis/compression layer.**
+  - It is preserved exactly: `review.json` sha256 `abfd941c…`, `review.md` sha256 `fe50e063…`; record `review_audits/review3_14221600cc4998b1_audit.json`.
+  - It is recorded as progress: 19/19 package coverage, valid grounding, a working omission repair, and guard, authority, blindness, identity and prior-review preservation all held. The failure moved from evidence acquisition into synthesis.
+  - The failure itself: summaries of small groups (8 and 6 observations) cited completely, while larger ones cited about 2 observations per statement against the roughly 3.5 needed. This is not treated as a reasoning failure.
+- **Three incomplete reviews are enough evidence not to keep adding repairs.** Review 4 is the one final bounded infrastructure iteration, implemented in v2731.8.
+- **Three-level hierarchy:**
+  - The levels: grounded observations, then per-part synthesis (one unit per part, at most ceil(n/2) statements), then per-document synthesis (whole parts of one document, at most 12 inputs and 6,000 characters per unit; caps ceil(n/2), scaled by largest remainder to 37 slots), then the final synthesis.
+  - Each statement cites its immediate inputs. Lineage back to the exact quotes is computed by code and recoverable mechanically.
+  - Nothing is tuned to G-INVAR.
+- **The system owns coverage, not the model's prose:**
+  - After every stage, code records which inputs were cited, which were not, and which statements failed.
+  - Every uncited input is carried forward explicitly to the next level, including from a failed optional unit.
+  - The model is never asked again merely to enumerate more ids. The single repair retry covers provider, truncation, parse and schema failures only.
+  - At the end, every observation is either in the lineage of a final entry or listed as evidence the final synthesis did not cite. Any silently dropped observation blocks completion.
+- **Deterministic provenance, and the observation identifier boundary, enforced:**
+  - The system reads each quote's record (line), attaches its metadata (experiment, prompt_form_equivalent, form, variant, condition, run, item, case, record) and the document id, and the model need not quote them.
+  - An observation naming an identifier that neither its quotes nor this provenance establish is rejected.
+  - Metadata values in an omitted suffix count as provenance; other omitted words still make the omission unsafe.
+- **The narrow unit rule:** `7.3s` is supported by `7.3` only when the suffix is a recognized unit (the families s, ms, min, h, kb/mb/gb/tb and kib/mib/gib) and the value is identical. Changed values, other unit families, other item, form or run ids, versions and unrelated suffixes stay different. Deterministic positive and negative tests cover it.
+- **Explicit bounds:**
+  - Final input budget: 12,000 characters, derived from the context. On this model, synthesis prompts measured 3.62 to 4.53 characters per token (Review 3); the minimum less 15% gives 3.08.
+  - Document statements are allocated within 9,000 characters. Carried inputs use the rest.
+  - A final input over budget fails closed without discarding anything. The context window is unchanged.
+  - Output limits, in tokens: 4,096 for observations, 1,024 for part synthesis, 2,048 for document synthesis, 3,072 for the final first half, 2,048 for the final second half.
+- **Registration:** `review4_registration.json`, sha256 `807c701a803be72f88efcf51250911f0a9ca52a394caf049ba695a3cf97ca3f5`. It freezes:
+  - the capability: commit `2b08f01`, v2731.8, module sha256 `d158e253…`;
+  - the five template digests (the observation template is still byte-identical to Review 2's);
+  - the limits, the hierarchy, and the coverage and provenance rules;
+  - the package: manifest `a1f2d4a9…`, the same frozen G-INVAR evidence;
+  - the model: qwen3.8:27b, config `f398196f…`;
+  - the qualification list, the blindness list and the hard stop;
+  - the runner and verifier digests.
+- **Evidence for the implementation:**
+  - The suites pass: 3.5 at 44/44, 3.6 at 38/38, 3.7 (omission) at 15/15, and 3.8 (provenance, boundary, units, hierarchy, carry-forward, bounds, context fit) at 52/52.
+  - Eleven deliberately broken copies of the module each fail a named check, and the unmutated control passes.
+- **Qualification before interpretation** (`review4_verify.py`):
+  - 19/19 required package coverage;
+  - valid grounding;
+  - valid deterministic provenance;
+  - no unsupported semantic identifiers;
+  - complete architectural coverage through every synthesis level, with no silently dropped observation;
+  - every final statement traceable to original evidence;
+  - no unsupported synthesis claims;
+  - no truncation, and no terminal required-stage failure;
+  - the guard passed, and all authority flags false;
+  - source, package, model, templates and limits matching the registration;
+  - blindness verified by reproducing every prompt;
+  - Reviews 1 to 3 unchanged.
+
+  Only then may Review 4 be considered the first valid independent self-review.
+- **Hard stop:** run Review 4 once, then stop for external audit whatever the outcome.
+  - If it fails qualification, do not design Review 5. Reassess whether the architecture is worth its complexity against:
+    - smaller operator-selected review scopes;
+    - interactive or chunked coworking;
+    - direct question-driven evidence inspection;
+    - a simpler local research-assistant workflow.
+  - The goal is a usable Eidolon coworker, not a benchmark-specific summarization engine.
+  - No authority expansion. No end-to-end benchmark, G-FID, R1, belief revision or autonomous development.
 
 **Added in 2.20** (Marcus, 2026-09-15; the audit of Review 2, and the two repairs registered before Review 3):
 - **The sequence is recorded and not reinterpreted.**
