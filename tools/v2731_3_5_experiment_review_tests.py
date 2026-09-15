@@ -59,15 +59,15 @@ def make_package(base: Path, *, extra: dict | None = None) -> Path:
     return pkg
 
 
-FIRST = {"experiment_understanding": {"statement": "It checks label stability.", "int_ids": ["I1"]},
-         "observations": [{"statement": "B changed between runs", "int_ids": ["I2"]}],
-         "passed": [{"statement": "A held", "int_ids": ["I1"]}], "failed": [{"statement": "B moved", "int_ids": ["I2", "I99"]}],
+FIRST = {"experiment_understanding": {"statement": "It checks label stability.", "input_ids": ["DS1"]},
+         "observations": [{"statement": "B changed between runs", "input_ids": ["DS2"]}],
+         "passed": [{"statement": "A held", "input_ids": ["DS1"]}], "failed": [{"statement": "B moved", "input_ids": ["DS2", "DS99"]}],
          "failure_clusters": [], "possible_harness_or_measurement_failures": [], "possible_model_or_reasoning_failures": [], "ambiguous_cases": []}
-SECOND = {"competing_hypotheses": [{"hypothesis": "B is near a boundary", "evidence_for": ["I2"], "evidence_against": []},
-                                   {"hypothesis": "Run noise", "evidence_for": [], "evidence_against": ["I1"]}],
-          "unknowns": [{"statement": "why B moved", "int_ids": ["I2"]}], "confidence": {"level": "low", "reason": "two runs", "int_ids": ["I1"]},
-          "discriminating_experiments": [{"experiment": "repeat B five times", "distinguishes": [1, 2, 7], "int_ids": ["I2"]}],
-          "not_established": [{"statement": "a cause", "int_ids": ["I2"]}]}
+SECOND = {"competing_hypotheses": [{"hypothesis": "B is near a boundary", "evidence_for": ["DS2"], "evidence_against": []},
+                                   {"hypothesis": "Run noise", "evidence_for": [], "evidence_against": ["DS1"]}],
+          "unknowns": [{"statement": "why B moved", "input_ids": ["DS2"]}], "confidence": {"level": "low", "reason": "two runs", "input_ids": ["DS1"]},
+          "discriminating_experiments": [{"experiment": "repeat B five times", "distinguishes": [1, 2, 7], "input_ids": ["DS2"]}],
+          "not_established": [{"statement": "a cause", "input_ids": ["DS2"]}]}
 
 
 class Stub:
@@ -84,9 +84,12 @@ class Stub:
             return json.dumps({"observations": [{"statement": f"the part says {line}", "quote": line},
                                                 {"statement": "an invented fact", "quote": "text that is nowhere in the document"}],
                                "open_questions": ["what next?"]}), {"seconds": 0.0}
-        if "Write a bounded synthesis" in prompt:
-            ids = re.findall(r"^(O[0-9]+) [(]part [0-9]+[)]: ", prompt, re.M)
-            return json.dumps({"statements": [{"statement": "the unit records these observations", "kind": "finding", "obs_ids": ids}]}), {"seconds": 0.0}
+        if "Write a part-level synthesis" in prompt:
+            ids = re.findall(r"^(O[0-9]+)(?: \[[^\]]*\])?: ", prompt, re.M)
+            return json.dumps({"statements": [{"statement": "the part records these observations", "kind": "finding", "obs_ids": ids}]}), {"seconds": 0.0}
+        if "Write a document-level synthesis" in prompt:
+            ids = re.findall(r"^((?:PS|O)[0-9]+) \[", prompt, re.M)
+            return json.dumps({"statements": [{"statement": "the document records these inputs", "kind": "finding", "input_ids": ids}]}), {"seconds": 0.0}
         if "first half" in prompt and "second half" not in prompt:
             if self.bad_first_times:
                 self.bad_first_times -= 1
@@ -138,7 +141,7 @@ require(len(art["grounded_observations"]) == 3 and len(art["rejected_observation
         and all(r["reason"] == "quote_not_found_in_document" for r in art["rejected_observations"]), "every_observation_needs_a_verbatim_quote")
 require(not any("an invented fact" in p for p in stub.prompts if "first half" in p or "second half" in p), "rejected_observations_never_reach_synthesis")
 require([o["obs_id"] for o in art["grounded_observations"]] == ["O1", "O2", "O3"], "observation_ids_are_sequential")
-require(art["unknown_references"] == ["I99"] and art["review"]["failed"][0]["int_ids"] == ["I2"], "references_to_unknown_statements_are_flagged_and_dropped")
+require(art["unknown_references"] == ["DS99"] and art["review"]["failed"][0]["input_ids"] == ["DS2"], "references_to_unknown_inputs_are_flagged_and_dropped")
 require(art["review"]["discriminating_experiments"][0]["distinguishes"] == [1, 2] and art["review"]["discriminating_experiments"][0]["distinguishes_unknown"] == [7],
         "experiments_must_name_existing_hypotheses")
 require(art["non_authoritative"] is True and all(v is False for v in art["authority"].values()), "the_review_is_non_authoritative_with_no_authority")

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-"""Coverage, truncation and grounding repairs to review_experiment (spec 2.19), kept under the hierarchical synthesis of 2.20.
+"""Coverage, truncation and grounding repairs to review_experiment (spec 2.19), kept under the three-level synthesis of 2.21.
 
 Deterministic stub model; no provider contact. The adversarial cases come from the audit of the first G-INVAR review:
 a reply truncated exactly at the output-token limit, a required part that is never reviewed, repair retries that
@@ -65,13 +65,13 @@ def make_package(base: Path, *, docs: dict = DOCS, optional: tuple = ()) -> Path
     return pkg
 
 
-FIRST = {"experiment_understanding": {"statement": "It checks label stability.", "int_ids": ["I1"]},
-         "observations": [{"statement": "the record lists forms", "int_ids": ["I1"]}], "passed": [], "failed": [], "failure_clusters": [],
+FIRST = {"experiment_understanding": {"statement": "It checks label stability.", "input_ids": ["DS1"]},
+         "observations": [{"statement": "the record lists forms", "input_ids": ["DS1"]}], "passed": [], "failed": [], "failure_clusters": [],
          "possible_harness_or_measurement_failures": [], "possible_model_or_reasoning_failures": [], "ambiguous_cases": []}
-SECOND = {"competing_hypotheses": [{"hypothesis": "labels move near a boundary", "evidence_for": ["I1"], "evidence_against": []}],
-          "unknowns": [{"statement": "why", "int_ids": ["I1"]}], "confidence": {"level": "low", "reason": "small", "int_ids": ["I1"]},
-          "discriminating_experiments": [{"experiment": "repeat", "distinguishes": [1], "int_ids": ["I1"]}],
-          "not_established": [{"statement": "a cause", "int_ids": ["I1"]}]}
+SECOND = {"competing_hypotheses": [{"hypothesis": "labels move near a boundary", "evidence_for": ["DS1"], "evidence_against": []}],
+          "unknowns": [{"statement": "why", "input_ids": ["DS1"]}], "confidence": {"level": "low", "reason": "small", "input_ids": ["DS1"]},
+          "discriminating_experiments": [{"experiment": "repeat", "distinguishes": [1], "input_ids": ["DS1"]}],
+          "not_established": [{"statement": "a cause", "input_ids": ["DS1"]}]}
 OK_META = {"seconds": 0.0, "metrics": {"eval_count": 50, "prompt_eval_count": 900}}
 
 
@@ -85,11 +85,13 @@ def good(prompt: str, max_tokens: int):
 
 
 def cover(prompt: str, max_tokens: int):
-    """A conforming intermediate synthesis: every listed observation cited."""
-    ids = re.findall(r"^(O[0-9]+) [(]part [0-9]+[)]: ", prompt, re.M)
+    """A conforming synthesis at the part or document level: every listed input cited."""
+    part = "Write a part-level synthesis" in prompt
+    ids = re.findall(r"^(O[0-9]+)(?: \[[^\]]*\])?: " if part else r"^((?:PS|O)[0-9]+) \[", prompt, re.M)
     cap = int(re.search(r"Give at most ([0-9]+) statements", prompt).group(1))
     groups = [ids[i:i + er.MAX_IDS_PER_STATEMENT] for i in range(0, len(ids), er.MAX_IDS_PER_STATEMENT)][:cap]
-    return json.dumps({"statements": [{"statement": "the unit records these observations", "kind": "finding", "obs_ids": g} for g in groups]}), dict(OK_META)
+    key = "obs_ids" if part else "input_ids"
+    return json.dumps({"statements": [{"statement": "these inputs are recorded", "kind": "finding", key: g} for g in groups]}), dict(OK_META)
 
 
 def reply(observations, meta=None):
@@ -104,8 +106,19 @@ ERROR = lambda p, m: ("", {"seconds": 1.0, "error": "LocalModelHTTPError: connec
 TIMEOUT = lambda p, m: ("", {"seconds": 1.0, "error": "LocalModelTimeoutError: Local model request timed out"})  # noqa: E731
 
 
+def stage_key(prompt: str) -> str:
+    doc = re.search(r"document (D[0-9]+) [(]", prompt)
+    if "List up to" in prompt:
+        return f"{doc.group(1)}:{re.search(r'[)], part ([0-9]+) of', prompt).group(1)}"
+    if "Write a part-level synthesis" in prompt:
+        return f"P:{doc.group(1)}:{re.search(r'[)], part ([0-9]+) of', prompt).group(1)}"
+    if "Write a document-level synthesis" in prompt:
+        return f"D:{doc.group(1)}"
+    return "first_half" if "first half" in prompt and "second half" not in prompt else "second_half"
+
+
 class Stub:
-    """Scripted replies per stage ("D2:1", "I:D2", "first_half", "second_half"), one entry per attempt; otherwise conforming."""
+    """Scripted replies per stage ("D2:1", "P:D2:1", "D:D2", "first_half", "second_half"), one per attempt; otherwise conforming."""
 
     def __init__(self, script=None, *, first=FIRST, second=SECOND, hook=None):
         self.script = {k: list(v) for k, v in (script or {}).items()}
@@ -117,15 +130,9 @@ class Stub:
         self.prompts.append(prompt)
         if self.hook:
             self.hook(prompt)
-        if "List up to" in prompt:
-            key = f"{re.search(r'document (D[0-9]+) [(]', prompt).group(1)}:{re.search(r'[)], part ([0-9]+) of', prompt).group(1)}"
-            default = good
-        elif "Write a bounded synthesis" in prompt:
-            key, default = "I:" + re.search(r"document (D[0-9]+) [(]", prompt).group(1), cover
-        elif "first half" in prompt and "second half" not in prompt:
-            key, default = "first_half", (lambda p, m: (json.dumps(self.first), dict(OK_META)))
-        else:
-            key, default = "second_half", (lambda p, m: (json.dumps(self.second), dict(OK_META)))
+        key = stage_key(prompt)
+        default = {"first_half": lambda p, m: (json.dumps(self.first), dict(OK_META)),
+                   "second_half": lambda p, m: (json.dumps(self.second), dict(OK_META))}.get(key, good if re.fullmatch(r"D[0-9]+:[0-9]+", key) else cover)
         self.calls.append((key, max_tokens))
         queue = self.script.get(key)
         return (queue.pop(0) if queue else default)(prompt, max_tokens)
@@ -159,14 +166,14 @@ largest = er.OBSERVE_PROMPT.format(title="t" * 120, brief="b" * 500, doc_id="D9"
                                    max_quote=er.MAX_QUOTE_CHARS)
 require(len(largest) / 2.4 + er.OBSERVE_MAX_TOKENS <= 8192, "the_largest_observation_prompt_plus_the_limit_fits_the_8192_token_context")
 require(digest(er.OBSERVE_PROMPT) == "e8a061eece3d022cdbe6fbe17a837ed2ff8e595cbc16cfa362d031e1f00333dd"
-        and all(t.startswith(er.FRAME) for t in (er.OBSERVE_PROMPT, er.INTERMEDIATE_PROMPT, er.FINAL_A_PROMPT, er.FINAL_B_PROMPT)),
+        and all(t.startswith(er.FRAME) for t in (er.OBSERVE_PROMPT, er.PART_PROMPT, er.DOCUMENT_PROMPT, er.FINAL_A_PROMPT, er.FINAL_B_PROMPT)),
         "the_observation_prompt_is_byte_identical_to_review_2_and_every_template_keeps_the_frame")
 
 # --- a clean review: full coverage at every level --------------------------------------------------------------------------------
 art, stub = review()
 c, lv = art["coverage"], art["coverage"]["levels"]
 require(art["status"] == "complete" and c["complete"] and c["required_coverage"] == 1.0 and c["reviewed_required_parts"] == c["required_parts"] == 3
-        and c["missing"] == [] and lv["observations"]["coverage"] == 1.0 and lv["intermediate"]["coverage"] == 1.0
+        and c["missing"] == [] and lv["architecture"]["coverage"] == 1.0 and lv["architecture"]["silently_dropped"] == []
         and lv["final"]["first_half"] == lv["final"]["second_half"] == "accepted", "a_clean_review_reports_full_coverage_at_every_level")
 require(all(m == er.OBSERVE_MAX_TOKENS for k, m in stub.calls if re.fullmatch(r"D[0-9]+:[0-9]+", k)), "observation_calls_use_the_raised_limit")
 require(art["provenance"]["capability"]["module_sha256"] == sha(AGENT / "experiment_review.py")
@@ -191,8 +198,8 @@ art, stub = review({"D1:1": [ERROR, ERROR]})
 require(art["status"] == "incomplete" and not art["coverage"]["complete"] and art["coverage"]["required_coverage"] == round(2 / 3, 4)
         and missing_stages(art) == {"observe:D1:1": "provider_error"} and art["coverage"]["missing"][0]["doc_id"] == "D1"
         and art["coverage"]["missing"][0]["part"] == 1, "a_permanently_missing_required_part_is_identified_with_its_reason")
-require(stub.later_calls() == 0 and art["review"] == {} and art["intermediate"]["units"] == [],
-        "no_intermediate_or_final_synthesis_is_requested_over_incomplete_coverage")
+require(stub.later_calls() == 0 and art["review"] == {} and art["hierarchy"]["part_units"] == [],
+        "no_synthesis_is_requested_over_incomplete_package_coverage")
 art, _ = review({"D2:1": [TIMEOUT, TIMEOUT]})
 require(missing_stages(art) == {"observe:D2:1": "timeout"} and art["runtime_accounting"]["timeout_attempts"] == 2, "a_timed_out_part_is_named_as_a_timeout")
 
@@ -261,14 +268,14 @@ art, _ = review(first=claims)
 require(art["status"] == "complete" and "coverage" not in art["review"] and "status" not in art["review"], "coverage_and_status_are_computed_never_taken_from_the_model")
 
 # --- no synthesis level can cite rejected observations -----------------------------------------------------------------------------
-cites = {**FIRST, "failed": [{"statement": "A moved", "int_ids": ["R1", "I2"]}]}
+cites = {**FIRST, "failed": [{"statement": "A moved", "input_ids": ["R1", "DS2"]}]}
 second_cites = {**SECOND, "competing_hypotheses": [{"hypothesis": "h", "evidence_for": ["R1"], "evidence_against": ["O9"]}]}
 art, _ = review({"D2:1": [reply([{"statement": "item A gold", "quotes": ["item=A gold=unresolved"]}, {"statement": "invented", "quotes": ["no such line"]}])],
-                 "I:D2": [lambda p, m: (json.dumps({"statements": [{"statement": "item A gold", "kind": "finding", "obs_ids": ["R1", "O2"]}]}), dict(OK_META))]},
+                 "P:D2:1": [lambda p, m: (json.dumps({"statements": [{"statement": "item A gold", "kind": "finding", "obs_ids": ["R1", "O2"]}]}), dict(OK_META))]},
                 first=cites, second=second_cites)
-i2 = next(s for s in art["intermediate"]["statements"] if s["int_id"] == "I2")
+ps = next(s for s in art["hierarchy"]["part_statements"] if s["doc_id"] == "D2")
 require(art["status"] == "complete" and art["rejected_observation_references"] == ["R1"] and art["unknown_references"] == ["O9"]
-        and i2["obs_ids"] == ["O2"] and i2["dropped_obs_ids"] == ["R1"] and art["review"]["failed"][0]["int_ids"] == ["I2"]
+        and ps["cites"] == ["O2"] and ps["dropped_cites"] == ["R1"] and art["review"]["failed"][0]["input_ids"] == ["DS2"]
         and art["review"]["competing_hypotheses"] == [] and art["review"]["discriminating_experiments"][0]["distinguishes_dropped"] == [1],
         "citations_of_rejected_observations_are_dropped_and_reported_at_every_level")
 
