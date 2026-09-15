@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Operator tool: supervised, read-only experiment self-review and the operator-chosen local research queue (spec 2.18).
 
   python tools/review_experiment.py review <package_dir> [--protect PATH ...] [--protect-root DIR ...]
@@ -12,6 +10,8 @@ Reviews are written only to <EIDOLON_DATA_DIR>/research_reviews/<review_id>/. Th
 before and after; any change marks the review mutation_guard_failed. The review is a non-authoritative research
 artifact and grants no authority.
 """
+
+from __future__ import annotations
 
 import argparse
 import json
@@ -29,7 +29,10 @@ import local_research_queue as lrq  # noqa: E402
 
 def _review(package: str, protect: list[str], protect_root: list[str]) -> dict:
     artifact = er.review_experiment(package, source_root=ROOT, protected_paths=protect, protected_roots=protect_root)
+    coverage = artifact["coverage"]
     print(json.dumps({"review_id": artifact["review_id"], "status": artifact["status"], "mutation_guard_passed": artifact["mutation_guard"]["passed"],
+                      "coverage": {k: coverage[k] for k in ("complete", "required_parts", "reviewed_required_parts", "required_coverage",
+                                                            "delivered_to_synthesis", "grounded_observations", "missing", "synthesis")},
                       "grounded_observations": len(artifact["grounded_observations"]), "rejected_observations": len(artifact["rejected_observations"]),
                       "runtime_accounting": artifact["runtime_accounting"],
                       "written_to": str(er.runtime_root() / er.REVIEW_AREA / artifact["review_id"])}, indent=1))

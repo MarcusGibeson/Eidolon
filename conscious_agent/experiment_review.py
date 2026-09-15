@@ -1,25 +1,36 @@
 from __future__ import annotations
 
-"""Supervised, read-only experiment self-review (spec 2.18, review_experiment).
+"""Supervised, read-only experiment self-review (spec 2.18; coverage, truncation and grounding repairs in 2.19).
 
 Given one explicitly selected, completed experiment package, Eidolon inspects it and writes a structured research
 review into a separate review area. The review is a non-authoritative research artifact: it cannot change gold labels,
 registered verdicts, evidence, memories, beliefs, policies, configuration, patches, experiment authorization or release
-state, and this module has no code path that writes anywhere except the review area.
+state, and this module has no code path that writes anywhere except the review's own directory in the review area.
 
 How the review is bounded:
 - The package is a directory with ``package_manifest.json``. Only the documents listed there are read. Each must lie
-  inside the package directory and match its recorded SHA-256; anything else fails closed before any model call.
+  inside the package directory and match its recorded SHA-256; anything else fails closed before any model call. Every
+  document is required unless the manifest marks it optional before the run, and a document with a required role
+  (design, corpus, raw outputs) cannot be optional.
 - The local model receives text only; it has no tools and no authority. Its reply is data.
-- Observation passes: each bounded document chunk yields observations, each carrying a verbatim quote that must be
-  found in that chunk. Ungrounded observations are kept in the artifact as rejected and are never used downstream.
-- Two synthesis passes turn the grounded observations into the required review sections. Interpretation is kept
-  apart from observation, and every interpretive entry refers to observation ids that are checked to exist.
+- Observation passes: each bounded document part yields observations. Each observation carries one or more exact quotes,
+  and each quote is located separately in that part, with its own document, line and character provenance. One quote
+  that is not found rejects the whole observation; quotes stitched together with an ellipsis are never accepted as one
+  quote. Rejected observations are kept in the artifact under their own ids and never reach synthesis.
+- A reply that reaches the output-token limit or the context limit is rejected as truncated, even when it parses.
+- Coverage is a first-class result. A required part counts as reviewed only when its reply was accepted and at least one
+  of its observations was grounded. If any required part, required role or grounded observation is missing from the
+  synthesis input, the review is ``incomplete``, the missing items are listed with their reasons, and no synthesis is
+  requested: a polished synthesis over partial evidence could look complete.
+- Two synthesis passes turn the grounded observations into the required review sections. Every interpretive entry
+  refers to observation ids that are checked to exist; references to rejected observations are dropped and reported.
 - A deterministic mutation guard fingerprints the protected state before and after the review: the source tree, the
-  package, the operator-named registered files, and every file of each protected runtime root except the review area.
-  Any change marks the review ``mutation_guard_failed``; the guard does not rely on prompt instructions.
+  package, the operator-named registered files, and every file of each protected runtime root except this review's own
+  directory (earlier reviews stay protected). Any change marks the review ``mutation_guard_failed``; the guard does not
+  rely on prompt instructions.
 """
 
+from collections import Counter
 from dataclasses import replace
 from datetime import datetime, timezone
 import hashlib
@@ -30,23 +41,35 @@ import re
 import subprocess
 import time
 from typing import Any, Callable, Iterable, Mapping, Sequence
+import uuid
 
 from cognitive_coding_foundations import DENIED_AUTHORITY, digest
 from json_storage import write_text_atomic
 
-CONTRACT_VERSION = "v2731.5"
+CONTRACT_VERSION = "v2731.6"
 REVIEW_AREA = "research_reviews"
 MANIFEST_NAME = "package_manifest.json"
 DOCUMENT_ROLES = ("design", "prompts", "corpus", "raw_outputs", "scorer", "evidence", "notes", "prior_evidence")
+REQUIRED_ROLES = ("design", "corpus", "raw_outputs")
 TASK_KINDS = ("independent_review",)
 CHUNK_CHARS = 6500
 MAX_OBSERVATIONS_PER_CHUNK = 8
+MAX_QUOTES_PER_OBSERVATION = 3
 MAX_QUOTE_CHARS = 240
+MIN_QUOTE_CHARS = 4
 MAX_OBSERVATION_CHARS = 300
+MAX_QUESTIONS_PER_CHUNK = 5
 SYNTHESIS_OBSERVATION_BUDGET_CHARS = 14000
-OBSERVE_MAX_TOKENS = 700
+# An explicit, finite bound for one observation reply, derived from the reply schema, not from any review's answers. A
+# maximal conforming reply (8 observations, each a 300-character statement with 3 quotes of 240 characters, plus 5
+# questions of 300 characters) is about 10,100 characters of JSON: under 3,400 tokens even at 3 characters per token.
+# The largest observation prompt (a 6,500-character part plus the frame) is under 3,600 tokens at 2.4 characters per
+# token, so prompt and reply together stay inside the 8,192-token context.
+OBSERVE_MAX_TOKENS = 4096
 SYNTHESIS_MAX_TOKENS = 1600
-REVIEW_READ_TIMEOUT_SECONDS = 900.0
+CONTEXT_MARGIN_TOKENS = 16
+REVIEW_READ_TIMEOUT_SECONDS = 1800.0
+ELLIPSES = ("...", "…")
 REPAIR_PREFACE = "Your previous reply was not valid JSON in the requested shape. Return only the JSON requested below.\n"
 REVIEW_AUTHORITY = {**DENIED_AUTHORITY, "review_authoritative": False, "gold_change_authorized": False, "verdict_change_authorized": False,
                     "evidence_change_authorized": False, "belief_change_authorized": False, "memory_change_authorized": False,
@@ -69,9 +92,11 @@ OBSERVE_PROMPT = (
     "Below is one part of one document from the package: document {doc_id} ({role}: {description}), part {part} of {parts}.\n"
     "---\n{chunk}\n---\n"
     "List up to {max_obs} factual observations that this part itself shows. An observation states what the record contains, "
-    "not what it means. For each, copy a short exact quote from this part (quote, at most {max_quote} characters) that shows it. "
+    "not what it means. For each, copy one or more short exact quotes from this part that show it (quotes: at most {max_quotes}, "
+    "each at most {max_quote} characters). Copy each quote exactly as it appears; when an observation rests on more than one "
+    "place in this part, give each place as its own quote instead of joining them. "
     "Also list questions this part raises but does not answer.\n"
-    'Return only JSON: {{"observations": [{{"statement": "...", "quote": "..."}}], "open_questions": ["..."]}}'
+    'Return only JSON: {{"observations": [{{"statement": "...", "quotes": ["..."]}}], "open_questions": ["..."]}}'
 )
 SYNTHESIS_A_PROMPT = (
     FRAME +
@@ -144,10 +169,15 @@ def load_package(package_dir: str | Path) -> dict[str, Any]:
             raise ReviewPackageError("package_document_outside_package")
         if str(entry.get("role") or "") not in DOCUMENT_ROLES:
             raise ReviewPackageError("package_document_role_invalid")
+        optional = entry.get("optional", False)
+        if not isinstance(optional, bool):
+            raise ReviewPackageError("package_document_optional_flag_invalid")
+        if optional and entry["role"] in REQUIRED_ROLES:
+            raise ReviewPackageError("required_role_marked_optional")
         if not target.is_file() or _sha256_file(target) != str(entry.get("sha256") or ""):
             raise ReviewPackageError("package_document_digest_mismatch")
         documents.append({"doc_id": str(entry["doc_id"]), "role": entry["role"], "description": str(entry.get("description") or "")[:200],
-                          "path": rel, "sha256": entry["sha256"], "text": target.read_text(encoding="utf-8")})
+                          "path": rel, "sha256": entry["sha256"], "required": not optional, "text": target.read_text(encoding="utf-8")})
     if not documents:
         raise ReviewPackageError("package_has_no_documents")
     if len({d["doc_id"] for d in documents}) != len(documents):
@@ -205,7 +235,7 @@ def _git_state(source_root: Path) -> dict[str, str]:
 
 def snapshot_protected(*, source_root: Path | None, package_dir: Path, protected_paths: Iterable[Path], protected_roots: Iterable[Path],
                        review_area: Path) -> dict[str, Any]:
-    """Fingerprint everything the review must leave unchanged. The review area itself is the only excluded location."""
+    """Fingerprint everything the review must leave unchanged. ``review_area`` (this review's own directory) is the only exclusion."""
     snap: dict[str, Any] = {"package": _tree_digest(package_dir)}
     if source_root is not None:
         snap["source_tree"] = _git_state(source_root)
@@ -276,33 +306,88 @@ def _parse(text: str) -> dict[str, Any] | None:
     return value if isinstance(value, dict) else None
 
 
-def _ask(call_model, prompt: str, max_tokens: int, accept: Callable[[dict[str, Any]], bool], ledger: list[dict[str, Any]], stage: str):
-    """At most one repair retry over the identical input; every attempt is recorded in the ledger."""
-    for attempt, text in enumerate((prompt, REPAIR_PREFACE + prompt), 1):
-        raw, meta = call_model(text, max_tokens)
-        parsed = _parse(raw or "")
-        ok = parsed is not None and accept(parsed)
-        ledger.append({"stage": stage, "attempt": attempt, "prompt_sha256": hashlib.sha256(text.encode()).hexdigest()[:16], "reply": raw,
-                       "accepted": ok, **meta})
-        if ok:
-            return parsed
+def _rejection(meta: Mapping[str, Any], parsed: Mapping[str, Any] | None, accept: Callable[[dict[str, Any]], bool], max_tokens: int,
+               context_size: int | None) -> str | None:
+    """Why an attempt is not accepted, or None. A reply at the output or context limit is truncated even if it parses."""
+    if meta.get("error"):
+        return "timeout" if "Timeout" in str(meta["error"]) else "provider_error"
+    metrics = meta.get("metrics") or {}
+    produced, prompt_tokens = metrics.get("eval_count"), metrics.get("prompt_eval_count")
+    if isinstance(produced, int) and produced >= max_tokens:
+        return "truncated_at_output_limit"
+    if isinstance(produced, int) and isinstance(prompt_tokens, int) and context_size and \
+            prompt_tokens + produced >= context_size - CONTEXT_MARGIN_TOKENS:
+        return "context_limit_reached"
+    if parsed is None:
+        return "unparseable_json"
+    if not accept(dict(parsed)):
+        return "schema_rejected"
     return None
 
 
+def _ask(call_model, prompt: str, max_tokens: int, accept: Callable[[dict[str, Any]], bool], ledger: list[dict[str, Any]], stage: str,
+         *, context_size: int | None = None) -> tuple[dict[str, Any] | None, str | None]:
+    """At most one repair retry over the identical input; every attempt is recorded with its rejection reason."""
+    reason = None
+    for attempt, text in enumerate((prompt, REPAIR_PREFACE + prompt), 1):
+        raw, meta = call_model(text, max_tokens)
+        parsed = _parse(raw or "")
+        reason = _rejection(meta, parsed, accept, max_tokens, context_size)
+        ledger.append({"stage": stage, "attempt": attempt, "prompt_sha256": hashlib.sha256(text.encode()).hexdigest()[:16], "max_tokens": max_tokens,
+                       "reply": raw, "accepted": reason is None, "rejection": reason, **meta})
+        if reason is None:
+            return parsed, None
+    return None, reason
+
+
 # --- validation -------------------------------------------------------------------------------------------------------------
-def ground_observations(parsed: Mapping[str, Any], chunk_text: str, doc_id: str, part: int, start_index: int):
+def _locate(quote: str, text: str) -> re.Match | None:
+    """Find a whitespace-normalized quote in the raw text, so its exact span is known."""
+    tokens = quote.split()
+    return re.search(r"\s+".join(re.escape(t) for t in tokens), text) if tokens else None
+
+
+def ground_observations(parsed: Mapping[str, Any], chunk_text: str, doc_id: str, part: int, start_index: int, *,
+                        doc_text: str | None = None, chunk_offset: int = 0, rejected_start: int = 1):
+    """Each observation needs 1 to MAX_QUOTES_PER_OBSERVATION exact quotes, each located separately in this part.
+
+    One quote that is not found rejects the whole observation. Each located quote carries its own provenance: document, part,
+    character span and lines within the whole document, and the head of the record (line) it starts in.
+    """
+    doc_text = chunk_text if doc_text is None else doc_text
     grounded, rejected = [], []
-    haystack = _norm(chunk_text)
-    for n, item in enumerate(parsed.get("observations") or [], 0):
-        if not isinstance(item, dict) or len(grounded) + len(rejected) >= MAX_OBSERVATIONS_PER_CHUNK:
-            continue
-        statement, quote = _norm(item.get("statement") or "")[:MAX_OBSERVATION_CHARS], _norm(item.get("quote") or "")[:MAX_QUOTE_CHARS]
-        row = {"doc_id": doc_id, "part": part, "statement": statement, "quote": quote}
-        if statement and len(quote) >= 4 and quote in haystack:
-            grounded.append({**row, "obs_id": f"O{start_index + len(grounded)}"})
+    items = [x for x in parsed.get("observations") or [] if isinstance(x, dict)][:MAX_OBSERVATIONS_PER_CHUNK]
+    for item in items:
+        statement = _norm(item.get("statement") or "")[:MAX_OBSERVATION_CHARS]
+        raw_quotes = item.get("quotes") if "quotes" in item else [item.get("quote")] if "quote" in item else None
+        reason = None
+        if not statement:
+            reason = "empty_statement"
+        elif not isinstance(raw_quotes, list) or not raw_quotes:
+            reason = "no_quotes"
+        elif len(raw_quotes) > MAX_QUOTES_PER_OBSERVATION:
+            reason = "too_many_quotes"
+        quotes = []
+        for value in raw_quotes if isinstance(raw_quotes, list) else []:
+            text = _norm(value if isinstance(value, str) else "")[:MAX_QUOTE_CHARS]
+            match = _locate(text, chunk_text) if len(text) >= MIN_QUOTE_CHARS else None
+            if match is None:
+                quotes.append({"text": text, "found": False})
+                reason = reason or ("quote_too_short" if len(text) < MIN_QUOTE_CHARS else
+                                    "stitched_quote" if any(e in text for e in ELLIPSES) else "quote_not_found_in_document")
+                continue
+            start, end = chunk_offset + match.start(), chunk_offset + match.end()
+            line_begin = doc_text.rfind("\n", 0, start) + 1
+            line_stop = doc_text.find("\n", start)
+            quotes.append({"text": text, "found": True, "doc_id": doc_id, "part": part, "char_start": start, "char_end": end,
+                           "line_start": doc_text.count("\n", 0, start) + 1, "line_end": doc_text.count("\n", 0, max(start, end - 1)) + 1,
+                           "record_head": doc_text[line_begin:len(doc_text) if line_stop < 0 else line_stop][:120]})
+        row = {"doc_id": doc_id, "part": part, "statement": statement, "quotes": quotes}
+        if reason is None:
+            grounded.append({"obs_id": f"O{start_index + len(grounded)}", **row})
         else:
-            rejected.append({**row, "reason": "quote_not_found_in_document" if statement else "empty_statement"})
-    questions = [_norm(q)[:300] for q in (parsed.get("open_questions") or []) if isinstance(q, str) and q.strip()][:5]
+            rejected.append({"rej_id": f"R{rejected_start + len(rejected)}", **row, "reason": reason})
+    questions = [_norm(q)[:300] for q in (parsed.get("open_questions") or []) if isinstance(q, str) and q.strip()][:MAX_QUESTIONS_PER_CHUNK]
     return grounded, rejected, questions
 
 
@@ -360,15 +445,17 @@ def _accept_second(parsed: Mapping[str, Any]) -> bool:
         all(isinstance(parsed.get(k), list) for k in ("unknowns", "discriminating_experiments", "not_established"))
 
 
-def _observation_block(grounded: Sequence[Mapping[str, Any]]) -> str:
-    lines, used = [], 0
+def _observation_block(grounded: Sequence[Mapping[str, Any]]) -> tuple[str, list[str]]:
+    """The synthesis input and the ids it delivers; observations past the budget are withheld, never silently."""
+    lines, used, delivered = [], 0, []
     for o in grounded:
         line = f"{o['obs_id']} [{o['doc_id']}]: {o['statement']}"
         if used + len(line) + 1 > SYNTHESIS_OBSERVATION_BUDGET_CHARS:
             break
         lines.append(line)
         used += len(line) + 1
-    return "\n".join(lines)
+        delivered.append(o["obs_id"])
+    return "\n".join(lines), delivered
 
 
 # --- the operation ----------------------------------------------------------------------------------------------------------
@@ -380,81 +467,154 @@ def review_experiment(package_dir: str | Path, *, call_model: Callable[[str, int
     package = load_package(package_dir)
     root = runtime_root(runtime_root_path)
     area = root / REVIEW_AREA
+    started = clock()
+    review_id = hashlib.sha256(f"{package['manifest_sha256']}|{started}|{uuid.uuid4().hex}".encode()).hexdigest()[:16]
+    out_dir = area / review_id
+    if out_dir.exists():  # a review never overwrites another
+        raise FileExistsError(f"review directory already exists: {out_dir}")
     guarded_roots = [root, *[Path(r).expanduser().resolve() for r in protected_roots]]
     guarded_paths = [Path(p).expanduser().resolve() for p in protected_paths]
     src = Path(source_root).expanduser().resolve() if source_root is not None else None
     before = snapshot_protected(source_root=src, package_dir=package["dir"], protected_paths=guarded_paths, protected_roots=guarded_roots,
-                                review_area=area)
+                                review_area=out_dir)
     call_model = call_model or production_call_model()
     ident = dict(identity) if identity is not None else model_identity()
-    started = clock()
-    review_id = hashlib.sha256(f"{package['manifest_sha256']}|{started}".encode()).hexdigest()[:16]
+    context_size = ident.get("context_size") if isinstance(ident.get("context_size"), int) else None
     ledger: list[dict[str, Any]] = []
-    grounded, rejected, questions = [], [], []
-    for doc in package["documents"]:
-        parts = chunks(doc["text"])
-        for part, chunk_text in enumerate(parts, 1):
-            prompt = OBSERVE_PROMPT.format(title=package["title"], brief=package["brief"], doc_id=doc["doc_id"], role=doc["role"],
-                                           description=doc["description"], part=part, parts=len(parts), chunk=chunk_text,
-                                           max_obs=MAX_OBSERVATIONS_PER_CHUNK, max_quote=MAX_QUOTE_CHARS)
-            parsed = _ask(call_model, prompt, OBSERVE_MAX_TOKENS, lambda p: isinstance(p.get("observations"), list), ledger,
-                          f"observe:{doc['doc_id']}:{part}")
-            if parsed is None:
-                continue
-            g, r, q = ground_observations(parsed, chunk_text, doc["doc_id"], part, len(grounded) + 1)
-            grounded += g
-            rejected += r
-            questions += [{"doc_id": doc["doc_id"], "part": part, "question": x} for x in q]
+    grounded: list[dict[str, Any]] = []
+    rejected: list[dict[str, Any]] = []
+    questions: list[dict[str, Any]] = []
+    parts_coverage: list[dict[str, Any]] = []
+    absent_roles = [r for r in REQUIRED_ROLES if r not in {d["role"] for d in package["documents"]}]
+    if not absent_roles:  # a package missing a required role is incomplete before any model call
+        for doc in package["documents"]:
+            parts, offset = chunks(doc["text"]), 0
+            for part, chunk_text in enumerate(parts, 1):
+                stage = f"observe:{doc['doc_id']}:{part}"
+                prompt = OBSERVE_PROMPT.format(title=package["title"], brief=package["brief"], doc_id=doc["doc_id"], role=doc["role"],
+                                               description=doc["description"], part=part, parts=len(parts), chunk=chunk_text,
+                                               max_obs=MAX_OBSERVATIONS_PER_CHUNK, max_quotes=MAX_QUOTES_PER_OBSERVATION, max_quote=MAX_QUOTE_CHARS)
+                parsed, reason = _ask(call_model, prompt, OBSERVE_MAX_TOKENS, lambda p: isinstance(p.get("observations"), list), ledger, stage,
+                                      context_size=context_size)
+                g: list[dict[str, Any]] = []
+                r: list[dict[str, Any]] = []
+                if parsed is not None:
+                    g, r, q = ground_observations(parsed, chunk_text, doc["doc_id"], part, len(grounded) + 1, doc_text=doc["text"],
+                                                  chunk_offset=offset, rejected_start=len(rejected) + 1)
+                    grounded += g
+                    rejected += r
+                    questions += [{"doc_id": doc["doc_id"], "part": part, "question": x} for x in q]
+                    reason = None if g else "no_grounded_observations"
+                parts_coverage.append({"stage": stage, "doc_id": doc["doc_id"], "role": doc["role"], "part": part, "parts": len(parts),
+                                       "required": doc["required"], "reviewed": reason is None, "reason": reason,
+                                       "attempts": sum(x["stage"] == stage for x in ledger), "grounded_observations": len(g),
+                                       "rejected_observations": len(r)})
+                offset += len(chunk_text)
+    required = [p for p in parts_coverage if p["required"]]
+    optional = [p for p in parts_coverage if not p["required"]]
+    missing: list[dict[str, Any]] = [{"kind": "required_role_absent", "role": role, "reason": "the package lists no document with this required role"}
+                                     for role in absent_roles]
+    missing += [{"kind": "required_part_not_reviewed", "stage": p["stage"], "doc_id": p["doc_id"], "part": p["part"], "reason": p["reason"]}
+                for p in required if not p["reviewed"]]
+    block, delivered = _observation_block(grounded)
+    withheld = [o["obs_id"] for o in grounded if o["obs_id"] not in set(delivered)]
+    if withheld:
+        missing.append({"kind": "synthesis_input_truncated", "withheld_obs_ids": withheld,
+                        "reason": "grounded observations exceed the synthesis input budget"})
     known = {o["obs_id"] for o in grounded}
-    block = _observation_block(grounded)
-    first = _ask(call_model, SYNTHESIS_A_PROMPT.format(title=package["title"], brief=package["brief"], observations=block),
-                 SYNTHESIS_MAX_TOKENS, _accept_first, ledger, "synthesis:first_half")
-    first_half, unknown_a = validate_first_half(first, known) if first else ({}, [])
-    second = None
+    rejected_ids = {o["rej_id"] for o in rejected}
+    first = second = None
+    unknown: list[str] = []
+    if missing:
+        synthesis = {"first_half": "skipped:required_coverage_incomplete", "second_half": "skipped:required_coverage_incomplete"}
+    else:
+        first, reason_a = _ask(call_model, SYNTHESIS_A_PROMPT.format(title=package["title"], brief=package["brief"], observations=block),
+                               SYNTHESIS_MAX_TOKENS, _accept_first, ledger, "synthesis:first_half", context_size=context_size)
+        synthesis = {"first_half": "accepted" if first else f"failed:{reason_a}", "second_half": "skipped:first_half_failed"}
+    first_half, bad = validate_first_half(first, known) if first else ({}, [])
+    unknown += bad
     if first:
         summary = json.dumps({k: [e["statement"] for e in first_half.get(k, [])][:6] for k in SECTIONS_A[2:]}, ensure_ascii=False)[:4000]
-        second = _ask(call_model, SYNTHESIS_B_PROMPT.format(title=package["title"], brief=package["brief"], observations=block, first_half=summary),
-                      SYNTHESIS_MAX_TOKENS, _accept_second, ledger, "synthesis:second_half")
-    second_half, unknown_b = validate_second_half(second, known) if second else ({}, [])
+        second, reason_b = _ask(call_model, SYNTHESIS_B_PROMPT.format(title=package["title"], brief=package["brief"], observations=block, first_half=summary),
+                                SYNTHESIS_MAX_TOKENS, _accept_second, ledger, "synthesis:second_half", context_size=context_size)
+        synthesis["second_half"] = "accepted" if second else f"failed:{reason_b}"
+    second_half, bad = validate_second_half(second, known) if second else ({}, [])
+    unknown += bad
     after = snapshot_protected(source_root=src, package_dir=package["dir"], protected_paths=guarded_paths, protected_roots=guarded_roots,
-                               review_area=area)
+                               review_area=out_dir)
     changes = compare_snapshots(before, after)
-    attempts = len(ledger)
-    status = "mutation_guard_failed" if changes else "complete" if first and second else "incomplete"
+    status = "mutation_guard_failed" if changes else "complete" if not missing and first and second else "incomplete"
+    reviewed_required = sum(p["reviewed"] for p in required)
+    coverage = {"complete": not missing, "required_parts": len(required), "reviewed_required_parts": reviewed_required,
+                "required_coverage": round(reviewed_required / len(required), 4) if required else 0.0,
+                "optional_parts": len(optional), "reviewed_optional_parts": sum(p["reviewed"] for p in optional),
+                "required_roles": list(REQUIRED_ROLES), "absent_required_roles": absent_roles,
+                "grounded_observations": len(grounded), "delivered_to_synthesis": len(delivered), "missing": missing,
+                "synthesis": synthesis, "parts": parts_coverage}
+    rejections = Counter(x["rejection"] for x in ledger if x["rejection"])
+    stage_order = list(dict.fromkeys(x["stage"] for x in ledger))
+    accepted_stages = {x["stage"] for x in ledger if x["accepted"]}
     artifact = {
         "object": "experiment_review", "contract_version": CONTRACT_VERSION, "review_id": review_id, "status": status,
-        "non_authoritative": True, "authority": dict(REVIEW_AUTHORITY),
+        "non_authoritative": True, "authority": dict(REVIEW_AUTHORITY), "coverage": coverage,
         "review": {**first_half, **second_half} if first or second else {},
         "grounded_observations": grounded, "rejected_observations": rejected, "open_questions": questions,
-        "unknown_references": sorted(set(unknown_a + unknown_b)),
+        "unknown_references": sorted(set(unknown) - rejected_ids),
+        "rejected_observation_references": sorted(set(unknown) & rejected_ids),
         "provenance": {"experiment_id": package["experiment_id"], "title": package["title"], "package_dir": str(package["dir"]),
                        "manifest_sha256": package["manifest_sha256"],
-                       "documents": [{k: d[k] for k in ("doc_id", "role", "path", "sha256")} for d in package["documents"]],
+                       "documents": [{k: d[k] for k in ("doc_id", "role", "path", "sha256", "required")} for d in package["documents"]],
                        "model": ident, "started": started, "finished": clock(), "task": package["manifest"].get("task"),
+                       "capability": {"contract_version": CONTRACT_VERSION, "module_sha256": _sha256_file(Path(__file__).resolve()),
+                                      "source_tree": before.get("source_tree")},
+                       "limits": {"observe_max_tokens": OBSERVE_MAX_TOKENS, "synthesis_max_tokens": SYNTHESIS_MAX_TOKENS, "chunk_chars": CHUNK_CHARS,
+                                  "max_observations_per_chunk": MAX_OBSERVATIONS_PER_CHUNK, "max_quotes_per_observation": MAX_QUOTES_PER_OBSERVATION,
+                                  "max_quote_chars": MAX_QUOTE_CHARS, "synthesis_observation_budget_chars": SYNTHESIS_OBSERVATION_BUDGET_CHARS,
+                                  "context_size": context_size},
                        "prompt_templates_sha256": {"observe": digest(OBSERVE_PROMPT), "synthesis_a": digest(SYNTHESIS_A_PROMPT),
                                                    "synthesis_b": digest(SYNTHESIS_B_PROMPT)},
                        "mutation_authority": "none"},
-        "runtime_accounting": {"provider_attempts": attempts, "failed_attempts": sum(bool(x.get("error")) for x in ledger),
+        "runtime_accounting": {"provider_attempts": len(ledger), "failed_attempts": sum(bool(x.get("error")) for x in ledger),
                                "timeout_attempts": sum("Timeout" in str(x.get("error", "")) for x in ledger),
                                "unparseable_or_rejected_replies": sum(not x["accepted"] and not x.get("error") for x in ledger),
+                               "truncated_attempts": rejections["truncated_at_output_limit"] + rejections["context_limit_reached"],
                                "retries": sum(x["attempt"] > 1 for x in ledger),
-                               "stages_without_accepted_reply": sorted({x["stage"] for x in ledger} - {x["stage"] for x in ledger if x["accepted"]})},
+                               "recovered_stages": sorted(s for s in accepted_stages if any(x["stage"] == s and not x["accepted"] for x in ledger)),
+                               "rejections_by_reason": dict(sorted(rejections.items())),
+                               "stages_without_accepted_reply": sorted(set(stage_order) - accepted_stages),
+                               "terminal_stage_failures": [{"stage": s, "reason": [x for x in ledger if x["stage"] == s][-1]["rejection"]}
+                                                           for s in stage_order if s not in accepted_stages],
+                               "accepted_replies_without_token_metrics": sum(x["accepted"] and not isinstance((x.get("metrics") or {}).get("eval_count"), int)
+                                                                             for x in ledger)},
         "mutation_guard": {"passed": not changes, "changes": changes[:50],
                            "protected": {"source_tree": src is not None, "package": True, "paths": [str(p) for p in guarded_paths],
-                                         "roots": [str(r) for r in guarded_roots], "excluded": str(area)}},
+                                         "roots": [str(r) for r in guarded_roots], "excluded": str(out_dir)}},
         "ledger": ledger,
     }
-    out_dir = area / review_id
     write_text_atomic(out_dir / "review.json", json.dumps(artifact, indent=1, ensure_ascii=False))
     write_text_atomic(out_dir / "review.md", render_markdown(artifact))
     return artifact
 
 
+def _missing_text(item: Mapping[str, Any]) -> str:
+    if item["kind"] == "required_role_absent":
+        return f"required role absent: {item['role']}"
+    if item["kind"] == "synthesis_input_truncated":
+        return f"synthesis input truncated: {len(item['withheld_obs_ids'])} grounded observations withheld"
+    return f"{item['stage']} not reviewed: {item['reason']}"
+
+
 def render_markdown(artifact: Mapping[str, Any]) -> str:
-    r, p = artifact.get("review") or {}, artifact["provenance"]
+    r, p, c = artifact.get("review") or {}, artifact["provenance"], artifact["coverage"]
     lines = [f"# Eidolon research review: {p['title']}", "",
              f"Non-authoritative research artifact. Status: {artifact['status']}. Review {artifact['review_id']}, "
-             f"model {p['model'].get('model')}, {p['started']} to {p['finished']}. Mutation guard passed: {artifact['mutation_guard']['passed']}.", ""]
+             f"model {p['model'].get('model')}, {p['started']} to {p['finished']}. Mutation guard passed: {artifact['mutation_guard']['passed']}.", "",
+             f"Required coverage: {c['reviewed_required_parts']} of {c['required_parts']} package parts reviewed ({c['required_coverage']:.0%}); "
+             f"{c['delivered_to_synthesis']} of {c['grounded_observations']} grounded observations reached synthesis.", ""]
+    if artifact["status"] != "complete":
+        lines += ["**INCOMPLETE: this review must not be interpreted as a finished analysis.**", ""]
+    if c["missing"]:
+        lines += ["## Missing coverage", ""] + [f"- {_missing_text(m)}" for m in c["missing"]] + [""]
     if r.get("experiment_understanding"):
         lines += ["## Experiment understanding", "", r["experiment_understanding"], ""]
     titles = {"observations": "Observations", "passed": "Behaviours that passed", "failed": "Behaviours that failed",
@@ -476,10 +636,11 @@ def render_markdown(artifact: Mapping[str, Any]) -> str:
     if r.get("discriminating_experiments"):
         lines += ["## Smallest discriminating experiments", ""] + \
                  [f"- {e['experiment']} (distinguishes hypotheses {', '.join(map(str, e['distinguishes'])) or 'none named'})" for e in r["discriminating_experiments"]] + [""]
-    lines += ["## Grounded observations", ""] + [f"- {o['obs_id']} [{o['doc_id']}]: {o['statement']}" for o in artifact["grounded_observations"]]
+    lines += ["## Grounded observations", ""] + [f"- {o['obs_id']} [{o['doc_id']}, lines {', '.join(str(q['line_start']) for q in o['quotes'])}]: {o['statement']}"
+                                                 for o in artifact["grounded_observations"]]
     return "\n".join(lines) + "\n"
 
 
-__all__ = ["CONTRACT_VERSION", "REVIEW_AREA", "REVIEW_AUTHORITY", "ReviewPackageError", "load_package", "chunks", "snapshot_protected",
-           "compare_snapshots", "ground_observations", "validate_first_half", "validate_second_half", "review_experiment", "render_markdown",
-           "production_call_model", "model_identity", "runtime_root"]
+__all__ = ["CONTRACT_VERSION", "REVIEW_AREA", "REVIEW_AUTHORITY", "REQUIRED_ROLES", "ReviewPackageError", "load_package", "chunks",
+           "snapshot_protected", "compare_snapshots", "ground_observations", "validate_first_half", "validate_second_half", "review_experiment",
+           "render_markdown", "production_call_model", "model_identity", "runtime_root"]

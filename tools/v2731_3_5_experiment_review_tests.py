@@ -46,10 +46,12 @@ def make_package(base: Path, *, extra: dict | None = None) -> Path:
     pkg = base / "pkg"
     pkg.mkdir(parents=True, exist_ok=True)
     (pkg / "design.txt").write_text("The experiment asks whether the label stays the same.\nControls: A, B.\n", encoding="utf-8")
+    (pkg / "items.txt").write_text("A: gold continuing\nB: gold unresolved\n", encoding="utf-8")
     (pkg / "outputs.txt").write_text("run1 A continuing\nrun2 A continuing\nrun1 B unresolved\nrun2 B event_only\n", encoding="utf-8")
     (pkg / "secret_unlisted.txt").write_text("UNLISTED-SECRET-CONTENT", encoding="utf-8")
     docs = [{"doc_id": "D1", "path": "design.txt", "role": "design", "description": "frozen design", "sha256": sha(pkg / "design.txt")},
-            {"doc_id": "D2", "path": "outputs.txt", "role": "raw_outputs", "description": "raw outputs", "sha256": sha(pkg / "outputs.txt")}]
+            {"doc_id": "D2", "path": "items.txt", "role": "corpus", "description": "items", "sha256": sha(pkg / "items.txt")},
+            {"doc_id": "D3", "path": "outputs.txt", "role": "raw_outputs", "description": "raw outputs", "sha256": sha(pkg / "outputs.txt")}]
     manifest = {"experiment_id": "TEST", "title": "Test experiment", "task": "independent_review", "brief": "Review it.", "documents": docs,
                 **(extra or {})}
     (pkg / er.MANIFEST_NAME).write_text(json.dumps(manifest), encoding="utf-8")
@@ -126,16 +128,16 @@ stub = Stub()
 art = er.review_experiment(pkg, call_model=stub, identity=IDENT)
 require(art["status"] == "complete" and art["mutation_guard"]["passed"], "a_clean_review_completes_with_the_guard_passed")
 require(not any("UNLISTED-SECRET-CONTENT" in p for p in stub.prompts), "an_unlisted_file_in_the_package_is_never_read")
-require(len(art["grounded_observations"]) == 2 and len(art["rejected_observations"]) == 2
+require(len(art["grounded_observations"]) == 3 and len(art["rejected_observations"]) == 3
         and all(r["reason"] == "quote_not_found_in_document" for r in art["rejected_observations"]), "every_observation_needs_a_verbatim_quote")
 require(not any("an invented fact" in p for p in stub.prompts if "first half" in p or "second half" in p), "rejected_observations_never_reach_synthesis")
-require([o["obs_id"] for o in art["grounded_observations"]] == ["O1", "O2"], "observation_ids_are_sequential")
+require([o["obs_id"] for o in art["grounded_observations"]] == ["O1", "O2", "O3"], "observation_ids_are_sequential")
 require(art["unknown_references"] == ["O99"] and art["review"]["failed"][0]["obs_ids"] == ["O2"], "references_to_unknown_observations_are_flagged_and_dropped")
 require(art["review"]["discriminating_experiments"][0]["distinguishes"] == [1, 2] and art["review"]["discriminating_experiments"][0]["distinguishes_unknown"] == [7],
         "experiments_must_name_existing_hypotheses")
 require(art["non_authoritative"] is True and all(v is False for v in art["authority"].values()), "the_review_is_non_authoritative_with_no_authority")
 require(art["provenance"]["mutation_authority"] == "none" and art["provenance"]["experiment_id"] == "TEST" and art["provenance"]["model"] == IDENT
-        and len(art["provenance"]["documents"]) == 2 and all(len(d["sha256"]) == 64 for d in art["provenance"]["documents"]),
+        and len(art["provenance"]["documents"]) == 3 and all(len(d["sha256"]) == 64 for d in art["provenance"]["documents"]),
         "provenance_names_the_experiment_model_digests_and_no_mutation_authority")
 out = RUNTIME / er.REVIEW_AREA / art["review_id"]
 require((out / "review.json").is_file() and (out / "review.md").is_file() and sorted(p.name for p in RUNTIME.rglob("*") if p.is_file()) ==
