@@ -1,6 +1,41 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.22, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.23, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.23** (Marcus, 2026-09-15; the two generalization reviews, registered before either runs):
+- **Why the scope is a split, not a whole experiment.** Packaged whole, under the G-INVAR rules, each candidate far exceeds the frozen reviewer's qualified capacity (104k characters, 19 parts):
+  - G-TEMP: about 546k characters, 85 parts;
+  - G-CAND2: about 534k, 83 parts;
+  - G-REL: about 576k, 89 parts.
+
+  A whole package would take about 10 hours and would very likely fail closed at the final input budget, which would test capacity, not generalization. G-TEMP's smallest split (controlled, about 246k) is also over. Marcus chose two whole pre-registered splits. Each package holds the frozen design of the whole experiment, plus every item and every call of its split, and its brief says so.
+- **Generalization review 1: G-CAND2, refx split.**
+  - Scope: 60 items, runs r1 and r2, 120 calls. It exercises over-escalation on irrelevant and same-topic passages.
+  - Package `review_packages/G-CAND2-refx`: 7 documents, 26 parts, 141,822 characters; manifest `414b0f7c…`.
+  - Registration `review_gen1_registration.json`, sha256 `8ed93c09e8c480c4b9b2f4659ade60f28e9c7799b49bbc4a8414cb4c7ef3f69d`.
+  - Withheld: G-CAND's recorded outcome and the repair evidence drawn from it, the encoding demonstration, the real-split re-adjudication detail, the approval text, the interpretation, diagnostic and verdict pointers, results, notes, evidence and the specification.
+  - The outputs table holds the validated model fields only; replies are verbatim in their own document.
+- **Generalization review 2: G-REL, fixtures split.**
+  - Scope: 67 authored items, runs r1 and r2, 134 calls. It exercises the semantics of six relations, binding and qualifiers.
+  - Package `review_packages/G-REL-fixtures`: 7 documents, 27 parts, 145,265 characters; manifest `d3cbeac6…`.
+  - Registration `review_gen2_registration.json`, sha256 `1f09e4d4a8f7f4d35d7285e7b83f8022c7a38c36cf267a9edae00ab8381861cf`.
+  - Gold: the adjudicated gold frozen before any live call.
+  - Withheld: the approval and stop-rule text, the gold changes to real items, any later experiment, results, notes, evidence and the specification.
+  - One person's name in the kept rules text is replaced by "the operator", and the design document records the redaction. Attempt counts come from the preserved records, because no accounting file exists; nothing is manufactured.
+- **Both packages** are built by scripts that refuse to build on any withheld marker, and both rebuild byte-identically.
+- **Frozen for both reviews:**
+  - the reviewer: v2731.8, commit `2b08f01`, module `d158e253…`, the Review 4 templates and limits;
+  - the model: qwen3.8:27b, config `f398196f…`;
+  - the four preserved reviews;
+  - the blindness markers;
+  - the generic runner and verifier (`review_run_general.py`, `review_verify_general.py`). These apply Review 4's checks, reading only the package, its part count and the preserved reviews from the registration.
+- **Rules:**
+  - Review 1 runs before review 2, and each runs once.
+  - The reviewer does not change between them.
+  - If review 1 is mechanically invalid, stop and report: no review 2, no repairs.
+  - Results are preserved regardless of quality.
+  - The known verdicts are never used as an answer key.
+  - After both, stop for external semantic audit.
 
 **Added in 2.22** (Marcus, 2026-09-15; the external audit of Review 4, the qualified baseline, and the generalization phase):
 - **Review 4 (`7e8c69712db4e824`) classification: PASS.**
