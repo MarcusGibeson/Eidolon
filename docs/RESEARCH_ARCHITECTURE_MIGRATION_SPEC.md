@@ -1,6 +1,14 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.23, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.24, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.24** (Marcus, 2026-09-15; the classification of generalization review 1, and review 2 authorized):
+- **Generalization review 1 (`2ce3ae37b092bc10`, G-CAND2 refx): INCOMPLETE, FINAL_SCHEMA_INSTRUCTION_FAILURE.**
+  - It is preserved exactly: `review.json` sha256 `56142ea7…`, `review.md` sha256 `1fc6d2a5…`; record `review_audits/gen1_2ce3ae37b092bc10_classification.json`.
+  - Everything before the final synthesis passed: package 26/26, part and document synthesis complete, 0 silently dropped, guard, blindness and identity (20 of 22 checks).
+  - The final first half returned only experiment_understanding and observations, twice, and omitted the other six required section keys.
+- **The reviewer is not modified.**
+- **Next:** generalization review 2 (G-REL fixtures) runs as registered in 2.23 (`review_gen2_registration.json`, sha256 `1f09e4d4…`) on the identical frozen reviewer (v2731.8, `2b08f01`). It runs once and is verified mechanically, then work stops for external audit whatever the outcome.
 
 **Added in 2.23** (Marcus, 2026-09-15; the two generalization reviews, registered before either runs):
 - **Why the scope is a split, not a whole experiment.** Packaged whole, under the G-INVAR rules, each candidate far exceeds the frozen reviewer's qualified capacity (104k characters, 19 parts):
