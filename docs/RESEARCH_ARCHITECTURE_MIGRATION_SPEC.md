@@ -1,6 +1,110 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.17, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.18, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.18** (Marcus, 2026-09-15; the boundary policy is finalized as a design, and supervised coworking comes before the benchmark):
+- **New order:**
+  1. finalize the boundary uncertainty/escalation policy;
+  2. build and verify a minimal, supervised, read-only coworking and self-review capability;
+  3. use G-INVAR as Eidolon's first independent self-review;
+  4. audit that review externally when premium-model access is available;
+  5. design and run the fresh end-to-end governed-versus-simple comparison;
+  6. only then decide which diagnostic distinctions deserve permanent runtime implementation.
+- **Boundary policy, finalized as a design** (`policy_boundary_design.md`; unevaluated until fresh data). The dispositions:
+  - **use:** stable enough for the specific permitted downstream purpose; not globally true, certain, belief-changing or permanently accepted.
+  - **investigate:** provisional; may be surfaced as unsettled and may cause bounded, targeted evidence gathering when the consequence, budget, privacy, authority and source policy allow. Never an open-ended loop, never silently converted into a preferred label. If it stays unresolved, the uncertainty is preserved and the system continues without that proposition or abstains from that claim.
+  - **abstain:** not used for the consequential purpose, and the disputed conclusion is not asserted; the evidence and reason are kept.
+
+  No disposition changes a belief.
+  - **Signals in the first version:** structural validity, unresolved as boundary, evidence anchoring and cross-layer consistency. An optional second assessment applies to high-consequence uses only, never universally.
+  - **Unresolved means investigate,** never abstain automatically. It never authorizes suppression or belief revision on its own.
+  - **Consequence table:**
+    - suppression needs valid assessments, stable relevant layers, and second-form agreement when high-consequence; otherwise the candidate stays provisional;
+    - unstable support is hedged, excluded or shown as uncertain;
+    - belief-revision input needs the strongest requirements, and a single model classification never authorizes revision;
+    - diagnostic use needs structural validity only.
+  - **No threshold is derived from G-INVAR.** Its exploratory results only generate hypotheses.
+- **Supervised coworking: `review_experiment`.**
+  - **What it does:** given one explicitly selected, completed experiment package, Eidolon inspects it and writes a structured research review in a separate review area, without modifying the experiment or any operational state.
+  - **What it is not:** a general autonomous research framework. It has no authority over source, experiment execution, policy, beliefs, memory, configuration, releases or installation.
+  - **Inputs:** only material intentionally exposed in the package:
+    - design and pre-registration;
+    - frozen corpus;
+    - raw model outputs;
+    - scorer results;
+    - evidence records;
+    - notes;
+    - selected prior evidence.
+
+    No silent traversal of project history or private or runtime data.
+  - **First self-review:** independent. It shows none of ChatGPT's, Claude's or Astra's interpretation, no expected findings and no desired conclusions.
+  - **Required review sections:**
+    - experiment understanding;
+    - observations;
+    - behaviours that passed and behaviours that failed;
+    - failure clusters;
+    - possible harness or measurement failures;
+    - possible model or reasoning failures;
+    - ambiguous cases;
+    - competing hypotheses, with the evidence for and against each;
+    - unknowns;
+    - confidence or uncertainty;
+    - the smallest discriminating experiments;
+    - what the evidence does not establish.
+
+    It separates observation from interpretation, records uncertainty instead of manufacturing conclusions, and proposes no source change merely to make a benchmark pass.
+  - **Output authority:** a review is a non-authoritative research artifact. It never changes gold, verdicts, evidence, memories, beliefs, policies, patches, experiment authorization or release state. It is stored apart from registered evidence, with provenance: the experiment reviewed, model and runtime, timestamp, source digests, and no mutation authority.
+  - **Mutation guard:** verification proves the operation leaves unchanged the source tree, registered experiment files, gold, evidence, configuration, belief state, memory state, release metadata and approval/rollback pointers. It relies on deterministic checks, not prompt instructions.
+  - **External audit** of the first review, when premium access is available, checks:
+    - factual fidelity and invented evidence;
+    - fact versus hypothesis;
+    - recognized uncertainty;
+    - whether the proposed experiments truly discriminate;
+    - restated prompt language;
+    - whether erroneous harness assumptions were challenged.
+
+    A plausible review is not proof of metacognitive capability.
+- **A local research queue, chosen by the operator** (no autonomous scheduling or continuous execution).
+  - **Ready (local, read-only):**
+    - the independent G-INVAR self-review;
+    - summarizing completed evidence;
+    - clustering historical failures;
+    - comparing stable and unstable examples;
+    - generating candidate unlabeled test cases;
+    - identifying unresolved architectural questions;
+    - competing hypotheses;
+    - bounded discriminating experiments.
+  - **Requires external or operator review:**
+    - authoritative gold;
+    - registered-experiment semantics;
+    - belief policy;
+    - source code;
+    - installing fixes;
+    - releases;
+    - runtime architecture;
+    - verification policy;
+    - self-development authority.
+  - **Generated test cases** stay unlabeled or provisionally labelled, provenance-marked and outside gold until independently reviewed. The same model never both generates cases and establishes their authoritative correctness.
+- **Why this capability exists.** It is not only a workaround for external-model limits. It tests a North-Star capability: can Eidolon inspect evidence about her own behaviour, identify uncertainty and failure patterns, form competing explanations and propose bounded tests under supervision? The intended eventual loop:
+
+  ```
+  experience/failure
+  → inspect evidence
+  → identify uncertainty
+  → form competing hypotheses
+  → propose bounded test
+  → external/operator review
+  → authorized experiment
+  → observe result
+  → update understanding
+  ```
+
+  It is not extended to autonomous source modification.
+- **The fresh end-to-end comparison comes after the coworking setup and the independent G-INVAR review.**
+  - **Arms:** the simpler governed baseline against the governed uncertainty/escalation path.
+  - **Measures:** useful and correct answers, harmful unsupported answers, abstentions and unnecessary abstentions, missed useful answers, latency, model calls, retrieval cost, operator intervention, traceability and stability.
+  - **Discipline:** the policy is frozen before the benchmark. G-CAND2's generalization is carried into this fresh blind set, and its earlier precision improvement keeps the revised-gold disclosure.
+- **Still deferred:** reload experiments, verb-specific patches, prompt tuning for borderline labels, G-FID, R1, belief revision, optimization, batching and autonomous self-development. The corrected G-INVAR scorer stays separate from the frozen one, and runtime reports keep separate attempt accounting. Main and origin/main are untouched.
 
 **Added in 2.17** (Marcus, 2026-09-15, with Astra's review; the G-INVAR outcome and a change of direction):
 - **G-INVAR: BOUNDARY_INSTABILITY.** This is accepted unchanged under `prereg_invar.json`.
