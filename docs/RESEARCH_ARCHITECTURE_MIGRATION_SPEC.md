@@ -1,6 +1,44 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.16, 2026-09-14. Status: the governing migration specification, approved by Marcus.**
+**Version 2.17, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.17** (Marcus, 2026-09-15, with Astra's review; the G-INVAR outcome and a change of direction):
+- **G-INVAR: BOUNDARY_INSTABILITY.** This is accepted unchanged under `prereg_invar.json`.
+  - **Run:** all 132 calls completed with no failed attempts, and the locked files were unchanged.
+  - **Invariance:** 12 of 12 clear controls kept one classification across all five meaning-equivalent prompt forms. 8 of 10 borderline items changed (SS04, ST01, ST10, ST19, ST30, ST61, T19, T33); only ST18 and ST60 held.
+  - **Every change was between adjacent labels:** event_only ↔ unresolved, or continuing ↔ unresolved. There was no direct continuing ↔ event_only flip.
+  - **Same-prompt determinism:** a same-session repeat of V0 matched on all 22 items.
+  - **The SS04/ST01/ST61 pattern was BOUNCING.** The "replaced" behaviour is boundary instability, not a stable misunderstanding.
+  - **ST18** was unresolved under every form, a stable disagreement with its gold (event_only), to be settled separately.
+- **Cross-session variation is observed; its cause is unproven.** Byte-identical rendered V0/V1 prompts, on the same model, runtime configuration, Ollama version and CPU/GPU split, gave five different answers between sessions at temperature 0:
+  - SS04, ST61 and T33 under V0;
+  - ST19 and T19 under V1.
+
+  Within each session, repeats were exact. Reload-dependent numerics are a reasonable hypothesis, not a finding. No reload experiment is run now, because the architectural conclusion would not change: a consequential belief system cannot depend on which side of a numerical knife-edge one inference happens to land.
+- **Correction to 2.16:** 2.16 implied that all seven G-STATE2 answer changes were caused by the serialization wording. They were confounded by cross-session variation. T19, for example, also flipped under the identical G-STATE prompt between sessions, and T33, ST19 and ST61 are among the cross-session flips. Borderline answers move under two kinds of irrelevant perturbation, prompt wording and session, while the controls hold under both.
+- **Scorer defect (Astra, 2026-09-15), discovered after the run:**
+  - **The defect:** the registered G-INVAR scorer set aside an item with a missing classification before checking instability. So a demonstrated flip, such as unresolved → event_only → missing, could be hidden and reported as INVARIANT. Its pattern detector also counted a missing answer as a distinct value, so a missing-only case could read as BOUNCING. Both were reproduced synthetically.
+  - **Why the verdict stands:** G-INVAR's BOUNDARY_INSTABILITY does not depend on the defect, because every compared item produced a classification under every form.
+  - **The corrected scorer** (`invar_score_v2.py`) was run post hoc on the immutable evidence as a clearly marked non-registered shadow analysis. It gave BOUNDARY_INSTABILITY, identical on every field. The frozen scorer and verdict are preserved, and the corrected scorer is the one to reuse.
+- **Runtime reporting is corrected.** Reports now separate provider attempts, failed attempts and timeouts, unparseable replies, retries, recovered items and terminally failed items (`runtime_accounting.py`). G-STATE2 had 179 provider attempts, 5 failed attempts (all timeouts), 3 retries, 1 recovered item and 2 terminally failed items. 2.16's "two failed requests" conflated failed attempts with failed items. Every other gate had one attempt per item and none failed.
+- **Direction change: stop creating a production classifier for every distinction.** G-CAND, G-TEMP, G-STATE and G-INVAR have done their job as diagnostics: they showed how the semantic system fails.
+  - The next design is a **boundary uncertainty/escalation policy**. It decides when a proposition relationship is stable enough to use, uncertain enough to investigate, or unsafe enough to abstain from. Preferably it is a decision policy over existing evidence assessments, not another mandatory model call.
+  - **The principle:** when a semantic judgement is close enough to the boundary that equivalent assessments disagree, the correct output is not an arbitrarily selected label but uncertainty requiring more evidence, or abstention. Such uncertainty becomes a legitimate outcome.
+  - **After the policy,** a small fresh end-to-end comparison of the governed pipeline against a simpler baseline, on a completely fresh blind set, measuring together:
+    - useful and correct answers;
+    - harmful unsupported claims;
+    - abstentions and missed useful answers;
+    - latency and model calls;
+    - operator intervention;
+    - evidence traceability.
+
+    Only then is it decided which diagnostic distinctions deserve permanent runtime machinery.
+  - The G-CAND2 generalization question (its real-data precision partly reflected revised gold) is answered by that fresh blind set, not by rerunning G-CAND2 alone.
+- **Not now:**
+  - no reload experiment;
+  - no patching of individual verbs or prompts;
+  - no G-FID, R1, belief revision, optimization or batching.
+- **Status:** installed Eidolon is unchanged. The committed updates since `03aa99a` document isolated experiments, not product improvements. The next milestone should connect these findings to observable task improvement. Main and origin/main are untouched.
 
 **Added in 2.16** (Marcus, 2026-09-14; the G-STATE2 outcome and the next gate):
 - **G-STATE2: UNSAFE_EVENT_ONLY.** This is accepted exactly as scored under `prereg_state2.json`. The frozen experiment included ST40, so unsafe event-only was 3 of 45 = 0.067 in both runs, above the ≤ 0.05 bar.
@@ -834,7 +872,7 @@ All gates are pre-registered. Harnesses are hashed, labels are blind and hashed 
 | **G-CAND** (2.10) | Candidate-contradiction detection, with no belief authority | Adversarial, G-REL fixture and real pairs, plus 10 supersession items. A ContradictionCandidate is bound to the immutable claim and exact segments, and carries incompatibility, scope, recency, uncertainty and `resolution_needed`. It is provisional, with no belief effect | Pre-registered in `prereg_cand.json`: recall ≥ 0.85, false escalation ≤ 0.10, precision ≥ 0.80, binding ≥ 0.95, identity and non-mutation = 1.00, scope preservation ≥ 0.80, repeatability ≥ 0.95; plus a separate supersession gate | Candidates stay provisional under any outcome. **Outcome (2.12): BINDING_FAILURE, with OVER_ESCALATION also failing.** Recall, identity, non-mutation, scope preservation, repeatability and the supersession gate passed. A binding-only time/recency repair and a re-adjudication of the real gold come before any rerun. **G-CAND2 (2.13): OVER_ESCALATION.** Binding is repaired and closed for this stage; over-escalation is addressed one semantic class at a time |
 | **G-TEMP** (2.13) | Temporal compatibility of a contradiction candidate | Controlled temporal pairs, including publication- and update-date traps, plus the G-CAND2 candidates; RM01–RM05 are required witnesses | Pre-registered before any live call; zero false suppression of genuine overlapping contradictions | `non_overlapping` suppresses escalation only in this experimental layer, with no belief effect. **Outcome (2.14): BINDING_FAILURE, with FALSE_SUPPRESSION and UNRESOLVED_RECALL_FAILURE also failing.** It handled the historical-state family (RM01–RM05 5/5, metadata invariant), but suppressed dated transitions whose resulting state continues. Binding is not relaxed |
 | **G-STATE** (2.14) | Continuing resultant state: does a dated transition establish a state that continues after it? | Controlled contrasts and minimal pairs across transition and event wording, plus the G-TEMP witnesses (SS04, SS05, T54, T46), transition controls and historical controls | Pre-registered before any live call; the witnesses read as continuing, and no regression on the controls | Provisional analysis only, with no belief authority and no change to any candidate or temporal assessment. **Outcome (2.15): BINDING_FAILURE**, with WITNESS_FAILURE, CONTROL_REGRESSION, MISCLASSIFICATION and PAIR_INSENSITIVITY, dominated by a harness defect: JSON `null` optional cues were rejected. Descriptively 68/72 and 14/16 relations matched gold. Real misses: T19, T33, ST10, ST18, ST19, ST40 (ST40 has a construction caveat). G-STATE2 is the binding-only rerun. **G-STATE2 (2.16): UNSAFE_EVENT_ONLY** (3/45 including ST40). The null defect is repaired and every other rule passed, but a serialization-only edit moved 7/88 answers |
-| **G-INVAR** (2.16) | Semantic invariance: does a classification survive meaning-equivalent prompt wording? | The G-STATE borderline family plus clear continuing, event-only and unresolved controls, under several pre-registered meaning-equivalent prompt forms with an identical output schema | Per-item classification invariance; instability concentrated at the boundary or spread everywhere | Diagnostic; no belief authority. **Planned (2.16)** |
+| **G-INVAR** (2.16) | Semantic invariance: does a classification survive meaning-equivalent prompt wording? | The G-STATE borderline family plus clear continuing, event-only and unresolved controls, under several pre-registered meaning-equivalent prompt forms with an identical output schema | Per-item classification invariance; instability concentrated at the boundary or spread everywhere | Diagnostic; no belief authority. **Outcome (2.17): BOUNDARY_INSTABILITY.** Controls 12/12 invariant, borderline 8/10 unstable, every change between adjacent labels; cross-session variation observed. A post-run scorer defect is recorded; the corrected shadow scorer agrees |
 | **G-FID** (future, 2.5) | Atomic-claim fidelity | Decomposed claims vs their source passages, hand-labelled blind for dropped or altered qualifiers (condition, quantifier, population, unit, time scope) | Qualifier loss below a pre-registered bar; a lost qualifier makes a new claim, never a silent narrowing | Blocks promotion of atomic extraction. **Dependency of G-REL (2.7):** it is measured with G-REL's qualifier compatibility and remains separately reported |
 
 **Open experiments, non-blocking and reported:**
@@ -868,7 +906,9 @@ Each step makes one semantic change and is independently revertible. Each needs 
    - 5e. **G-TEMP (2.13)**, harness-only: temporal compatibility of contradiction candidates, the first of the one-class-at-a-time over-escalation gates. It is designed and pre-registered, then reviewed before any live call. **Outcome (2.14): BINDING_FAILURE**, with FALSE_SUPPRESSION and UNRESOLVED_RECALL_FAILURE also failing; the historical-state family was handled.
    - 5f. **G-STATE (2.14)**, harness-only: whether a dated transition establishes a continuing resultant state. It is designed and pre-registered, then reviewed before any live call. **Outcome (2.15): BINDING_FAILURE**, dominated by the null-cue harness defect; not evidence against the semantic idea.
    - 5g. **G-STATE2 (2.15)**, harness-only: the binding-only rerun (`string | null` optional cues), with everything semantic frozen. **Outcome (2.16): UNSAFE_EVENT_ONLY**; the null defect is closed as repaired, and prompt sensitivity is recorded.
-   - 5h. **G-INVAR (2.16)**, harness-only: semantic invariance of borderline classifications under meaning-equivalent prompt forms. It is designed and pre-registered, then reviewed before any live call.
+   - 5h. **G-INVAR (2.16)**, harness-only: semantic invariance of borderline classifications under meaning-equivalent prompt forms. It is designed and pre-registered, then reviewed before any live call. **Outcome (2.17): BOUNDARY_INSTABILITY.**
+   - 5i. **Boundary uncertainty/escalation policy (2.17):** a decision policy over existing evidence assessments (use / investigate / abstain). Design first, with no major implementation.
+   - 5j. **Fresh end-to-end comparison (2.17):** the governed pipeline against a simpler baseline, on a fresh blind set, before any diagnostic gate becomes permanent runtime machinery.
 6. **R1 with cross-source assessment** on the mechanism route, in the execution pattern G-COST supports (G-XS, G-MF, G-TIME). **Gated (2.6)** by two separate questions: G-R2's result on multi-finding representation, and a redesigned, trustworthy proposition-level cross-source assessor. **Blocked (2.7)** until all four R1 prerequisites hold: richer representation shown to add value, G-REL, G-FID, and a measured compatible cost.
 7. **Explanation construction** (Layer 5, D7): validated in the G-MF runs, promoted only after G-WHOLE, and shipped as its own step.
 8. **Candidates, each when its gate passes:** G-DATE, G-A3, G-O3, G-CAP.
