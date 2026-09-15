@@ -1,6 +1,56 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.21, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.22, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.22** (Marcus, 2026-09-15; the external audit of Review 4, the qualified baseline, and the generalization phase):
+- **Review 4 (`7e8c69712db4e824`) classification: PASS.**
+  - It is the first valid independent read-only self-review, with moderate semantic usefulness and identified reasoning limitations.
+  - It is preserved exactly: `review.json` sha256 `0112ab05…`, `review.md` sha256 `5813b25b…`.
+  - The external audit is recorded separately from Eidolon's blind review, in `review_audits/review4_7e8c69712db4e824_external_audit.json`.
+- **What the audit found.**
+  - **Strengths:**
+    - she found genuine borderline instability (ST19, ST30);
+    - she separated observation, possible harness failure, possible model failure, ambiguity, hypotheses, unknowns, what is not established, confidence and experiments;
+    - her uncertainty handling was good, with medium confidence and inconsistency not taken as proof of defective reasoning.
+  - **Missed:** she did not synthesize the aggregate pattern:
+    - 12/12 controls were stable;
+    - 8/10 borderline items were unstable;
+    - every flip was between adjacent classifications, with no continuing↔event_only flip;
+    - same-session repetition was deterministic, while cross-session classifications differed.
+
+    That is, instability concentrates at semantic boundaries while clear controls stay stable.
+  - **Reasoning and comprehension limitations** (recorded, never corrected in the review, and the reviewer is not tuned to remove them):
+    - she sometimes treated the forms as identical prompts, when they deliberately varied only the serialization;
+    - she over-weighted an incomplete scorer excerpt;
+    - her ST19/ST30 temperature-zero proposal is weaker than comparing borderline and control items across fresh model loads with everything else held fixed.
+  - **Compression limitation:** final citations reached 54 of 100 observations. This is a measured limitation that may explain the missed aggregate. It is not grounds for another G-INVAR iteration.
+- **Capability decision:** Eidolon may continue as a non-authoritative, read-only local research coworker.
+  - Her reviews are evidence and analysis for later operator or external audit.
+  - Her conclusions may not modify source, experiment gold, policy, beliefs, memory, configuration, releases, architecture, verification rules or self-development authorization.
+  - No authority expansion is approved.
+- **G-INVAR infrastructure work is closed.** No Review 5. No rerun for a preferred conclusion. No tuning of prompts, hierarchy, evidence selection or verifier rules on the external interpretation.
+- **Qualified baseline, frozen.** The reviewer used for every generalization review is exactly v2731.8:
+  - commit `2b08f01`, module sha256 `d158e253…`;
+  - the five templates, limits and rules registered in `review4_registration.json` (sha256 `807c701a…`).
+
+  The mechanical checks stay those of `review4_verify.py`, generalized only in which package and registration they read. The reviewer does not change between generalization reviews unless a genuine infrastructure failure makes a review mechanically invalid; if that happens, stop and report instead of starting another repair campaign.
+- **The generalization phase.** The question is whether the frozen architecture gives useful independent analysis on experiments it was not repaired around.
+  - Two blind reviews, chosen from G-TEMP, G-CAND2 and G-REL.
+  - Each is packaged neutrally under the existing rules. External interpretations and known conclusions are excluded, no missing historical artifact is manufactured, and package identity is frozen before review.
+  - Both are registered before either runs. Each runs once on qwen3.8:27b with full provenance, all authority flags false and the mutation guards on, is verified mechanically, and is preserved whatever its quality. Then external semantic audit.
+  - The known historical verdict is never used as a hidden answer key.
+  - The audit asks:
+    - patterns identified;
+    - observation versus inference;
+    - genuine failure modes;
+    - disagreement and uncertainty preserved;
+    - unsupported conclusions avoided;
+    - competing explanations;
+    - whether the experiments truly discriminate;
+    - material evidence missed;
+    - distortion from compression;
+    - usefulness to Marcus without external models.
+- **Operator usability (a design report only):** report the smallest governed adapter that lets Marcus ask which experiments can be reviewed, and ask for one to be reviewed. It may only select and invoke the already-authorized read-only review operation. No autonomous choice, scheduling, experiment changes, source changes, installed recommendations, belief, policy or configuration changes, or self-development.
 
 **Added in 2.21** (Marcus, 2026-09-15; the audit of Review 3, and one final bounded iteration, Review 4, registered before it runs):
 - **Review 3 (`14221600cc4998b1`) is an incomplete infrastructure trial at the synthesis/compression layer.**
