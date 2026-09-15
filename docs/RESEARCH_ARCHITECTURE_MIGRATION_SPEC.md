@@ -1,6 +1,36 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.18, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.19, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.19** (Marcus, 2026-09-15; the audit of the first coworking review, and repairs before a second):
+- **Review 1 (`01c403147211b279`) is preserved exactly** and classified as a **failed, incomplete infrastructure trial**. It counts as the first external audit of the coworking capability, not as a test of Eidolon's independent G-INVAR analysis.
+  - Its files are unchanged: `review.json` sha256 `e28c04ae…`, `review.md` sha256 `0e2e0a4d…`.
+  - Its own status field still reads "complete". The audit record (`review_audits/review1_01c403147211b279_audit.json`) carries the classification instead.
+- **The authority and safety boundary passed.** The mutation guard held with no changes, and the artifact stayed non-authoritative with every authority flag false. Protected state was unchanged, and nothing reached main or origin/main.
+- **The semantic self-review is not interpretable.** Only 8 of 21 observation stages had an accepted reply, and the design and the items with gold were never observed. It is neither scored nor characterized as evidence about Eidolon's ability.
+- **Capability defects and required repairs:**
+  - **Output limit.** The 700-token observation limit truncated every rejected reply. Raise it enough for complete structured responses, keep an explicit finite bound, and don't tune it to G-INVAR answers.
+  - **Coverage fails closed.** A review is `complete` only when every required package part was reviewed, or was designated optional before the run. Otherwise it is `incomplete`, with machine-readable identification of every missing part or stage and the reason.
+  - **Grounding representation, not grounding strictness.** An observation may carry several separately preserved exact quotations, each with its own document, record and segment provenance. Stitched quotations stay rejected.
+  - **Adversarial tests:**
+    - truncation exactly at the output limit;
+    - a required observation stage permanently missing;
+    - a repair retry that succeeds, and one that fails;
+    - a multi-record comparison with several independently grounded quotes;
+    - a stitched quote staying rejected;
+    - synthesis unable to claim complete coverage when required stages are missing;
+    - synthesis unable to cite rejected observations;
+    - an absent required design or corpus section forcing incomplete.
+- **Infrastructure repairs only.** The independent-review prompt semantics do not change on the basis of Review 1's answers.
+- **Coverage is a first-class metric of every coworking review.** A polished synthesis produced from partial evidence is dangerous precisely because it can look complete.
+- **Sequence:**
+  1. repairs, with deterministic tests passing;
+  2. rebuild the G-INVAR package from the frozen evidence and verify its content and digests are unchanged;
+  3. run **Independent Review 2** fresh, blind to every human and assistant interpretation, to Review 1's conclusions and to the expected verdict;
+  4. verify mechanically before interpreting: 100% required coverage, no terminal observation failures, no truncation, grounding integrity, the mutation guard, the authority flags, and source and package identity;
+  5. stop for external audit.
+
+  No authority expansion, and no end-to-end benchmark yet.
 
 **Added in 2.18** (Marcus, 2026-09-15; the boundary policy is finalized as a design, and supervised coworking comes before the benchmark):
 - **New order:**
