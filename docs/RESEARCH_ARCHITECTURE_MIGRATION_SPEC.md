@@ -7,7 +7,7 @@
   - Its files are unchanged: `review.json` sha256 `e28c04ae…`, `review.md` sha256 `0e2e0a4d…`.
   - Its own status field still reads "complete". The audit record (`review_audits/review1_01c403147211b279_audit.json`) carries the classification instead.
 - **The authority and safety boundary passed.** The mutation guard held with no changes, and the artifact stayed non-authoritative with every authority flag false. Protected state was unchanged, and nothing reached main or origin/main.
-- **The semantic self-review is not interpretable.** Only 8 of 21 observation stages had an accepted reply, and the design and the items with gold were never observed. It is neither scored nor characterized as evidence about Eidolon's ability.
+- **The semantic self-review is not interpretable.** Only 6 of 19 observation stages had an accepted reply (13 had none), and the design and the items with gold were never observed. *Correction:* this read "8 of 21" when first recorded, because the count included the two synthesis stages. It is neither scored nor characterized as evidence about Eidolon's ability.
 - **Capability defects and required repairs:**
   - **Output limit.** The 700-token observation limit truncated every rejected reply. Raise it enough for complete structured responses, keep an explicit finite bound, and don't tune it to G-INVAR answers.
   - **Coverage fails closed.** A review is `complete` only when every required package part was reviewed, or was designated optional before the run. Otherwise it is `incomplete`, with machine-readable identification of every missing part or stage and the reason.
