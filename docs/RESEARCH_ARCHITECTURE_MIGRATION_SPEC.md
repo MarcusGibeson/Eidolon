@@ -1,6 +1,75 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.19, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.20, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.20** (Marcus, 2026-09-15; the audit of Review 2, and the two repairs registered before Review 3):
+- **The sequence is recorded and not reinterpreted.**
+  - Review 1 (`01c403147211b279`) is an incomplete infrastructure trial.
+  - Review 2 (`987f0c0dc12f2705`) is a substantially improved but incomplete infrastructure trial. It is preserved exactly: `review.json` sha256 `6010d310…`, `review.md` sha256 `f705be49…`; audit record `review_audits/review2_987f0c0dc12f2705_audit.json`.
+  - Review 3 is the first candidate valid independent Eidolon self-review.
+  - Neither Review 1 nor Review 2 is a capability result.
+- **Suffix omission (approved, implemented in v2731.7).**
+  - **When it applies:** a single trailing `...` is an explicit omission marker only when the exact, uninterrupted text before it can be independently relocated within one source record. A record is one line of the source document.
+  - **What counts as evidence:** only the exact prefix, never the ellipsis. The prefix must occur exactly once in the part and end on a word boundary.
+  - **What stays rejected:**
+    - ellipses inside the claimed span;
+    - skipped internal text;
+    - quotes assembled from several records;
+    - prefixes that cannot be relocated uniquely;
+    - any omission after which the statement relies on words found only in the omitted rest of the record (`omission_hides_attributed_content`).
+  - **Representation:** the exact prefix, plus an `omission` record carrying the marker, the reply as returned and the omitted suffix.
+  - **An ellipsis that is really in the source is matched exactly.**
+  - **The rule is general,** with no special case for D5:2 or G-INVAR. Re-grounding Review 2's 24 rejections under it grounds 4 (3 in D5:2), and the 18 that skip internal text stay rejected.
+- **Hierarchical synthesis (approved; registered here before Review 3).**
+  - **The levels:** grounded observations feed bounded intermediate syntheses, which feed the final experiment synthesis. It compresses context with provenance; it does not compress conclusions.
+  - **Units:** each unit is whole parts of one document, with at most 6,000 characters of observation lines.
+  - **Every intermediate statement:**
+    - cites 1 to 12 observation ids of its own unit;
+    - carries one kind (finding, disagreement, uncertainty, minority, contradiction, unknown, unresolved_relationship), so disagreement, minority and contradiction are never merged into a consensus;
+    - is at most 200 characters, within the unit's allocation.
+  - **Every grounded observation of a unit must be cited by an accepted statement,** so a lone contradicting observation cannot be dropped silently. A unit that leaves one uncited fails.
+  - **No intermediate statement may introduce evidence:** its identifiers and numbers (item and form ids, field names, years, versions) must occur in the observations it cites. This is a mechanical rule; judging meaning is left to the external audit.
+  - **Every final entry cites intermediate ids,** and each retained entry records its lineage of observation ids. Experiments may trace through the hypotheses they distinguish. Final identifiers must occur in that lineage.
+  - **Untraceable or unsupported statements are rejected and reported,** never repaired or truncated.
+  - **Explicit, finite bounds:**
+    - Final statement slots = 9,000 // 241 = 37. Each unit's cap is proportional to its observations, between 2 and 16. The final input therefore fits 9,000 characters by construction.
+    - The first-half summary for the second half is capped at 3,500 characters.
+    - Output limits: 2,048 tokens for intermediate syntheses, 3,072 for the final first half, 2,048 for the final second half.
+    - The context window is not increased, and no observation is discarded to fit.
+  - **Completion:** Review 3 is `complete` only if the entire required evidence path succeeds:
+    - every required part is reviewed (an accepted reply with at least one grounded observation);
+    - every required unit is accepted with all its observations cited;
+    - the final input fits;
+    - both final halves are accepted;
+    - the guard passes.
+
+    Otherwise it is `incomplete`, with every point of coverage loss named. Later stages are not requested.
+  - **Retries:** at most one registered repair retry per stage, with the generic preface, for provider, truncation, parse, schema or citation-conformance failures. There is no semantic re-asking, and no individual semantic answer is rerun until a preferred result appears.
+  - **Coverage is reported at every level:** package parts, observations cited by intermediate syntheses, intermediate units and statements delivered to the final level, and final citations (the intermediate statements cited, and the observations reached).
+- **Prompts:** the frame and the observation prompt stay byte-identical to Review 2's. The intermediate and final templates are new and registered.
+- **Registration:** `review3_registration.json`, sha256 `50da56a1020ef0449ea8e106b6f7000a6b4c4a439ba1ab3d1959786b3fdf685d`. It pins:
+  - the capability: commit `987c3e0`, v2731.7, module sha256 `5fd02440…`;
+  - the package: manifest `a1f2d4a9…`, byte-identical to its rebuild from the frozen evidence;
+  - the model: qwen3.8:27b, config `f398196f…`;
+  - the four template digests, and the limits;
+  - the verification list, the blindness list and the stop rule;
+  - the runner and verifier digests.
+- **Evidence for the repairs:**
+  - The suites pass: 3.5 at 44/44, 3.6 at 38/38, and 3.7 (omission versus stitching, lineage, citation completeness, supported claims, bounds, context fit) at 44/44.
+  - Six deliberately broken copies of the module each fail a named check, and the unmutated control passes. The six disable: citation coverage, the hidden-content rule, identifier support, the one-record rule, final traceability and the stitched guard.
+- **Before Review 3 is interpreted,** a mechanical verification (`review3_verify.py`) must show:
+  - full required package coverage;
+  - every accepted observation grounded, and every omission safe;
+  - intermediate citations resolving to accepted observations, with every observation cited;
+  - final citations resolving through intermediate records to original observations;
+  - no unsupported intermediate or final claims;
+  - no terminal required-stage failure, and no truncation;
+  - the guard passed, and every authority flag false;
+  - package, source, model and template identity;
+  - blindness by reproduction: every prompt rebuilt from the templates, the package and the review's own outputs;
+  - Reviews 1 and 2 unchanged.
+- **Blindness:** Review 3 sees no ChatGPT, Claude or Astra interpretation, no conclusion of Review 1 or 2, and no expected BOUNDARY_INSTABILITY verdict. Infrastructure failures informed the repairs only.
+- **Stop rule:** if Review 3 qualifies mechanically as complete, stop for external audit before changing anything else. No authority expansion, and no end-to-end benchmark, G-FID, R1, belief revision or other semantic experiment.
 
 **Added in 2.19** (Marcus, 2026-09-15; the audit of the first coworking review, and repairs before a second):
 - **Review 1 (`01c403147211b279`) is preserved exactly** and classified as a **failed, incomplete infrastructure trial**. It counts as the first external audit of the coworking capability, not as a test of Eidolon's independent G-INVAR analysis.
