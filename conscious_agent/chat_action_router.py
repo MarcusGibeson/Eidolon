@@ -786,6 +786,17 @@ def _is_any_experiment_review_request(request: str) -> bool:
     return bool(_is_experiment_review_list_request(lowered) or _is_experiment_review_status_request(lowered) or _experiment_review_target(request))
 
 
+def is_experiment_review_question(request: str) -> bool:
+    """True only for the two question-shaped review phrasings: what can be reviewed, and how a review is going.
+
+    The start phrasing is deliberately excluded.  An explicit "review <name>" already reads as an action request on
+    the conversation path, and its pattern is broad enough to also match ordinary conversation such as "can you
+    review my thoughts on this", which must stay conversation.
+    """
+    lowered = " ".join(str(request or "").split()).lower()
+    return bool(_is_experiment_review_list_request(lowered) or _is_experiment_review_status_request(lowered))
+
+
 def _is_experiment_review_list_request(lowered: str) -> bool:
     return bool(_EXPERIMENT_REVIEW_LIST.search(lowered))
 

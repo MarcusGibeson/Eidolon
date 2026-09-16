@@ -20,6 +20,7 @@ from chat_action_router import (
     DIRECT_FUNCTION,
     INFO,
     SUPERVISED_CAPABILITY_REGISTRY,
+    is_experiment_review_question,
     propose_chat_action,
 )
 from bounded_action_arguments import bind_bounded_action_arguments
@@ -147,6 +148,9 @@ _INTENT_TO_CAPABILITY = {
     "self_development_cycle": "self_development",
     "operator_approved_self_development_patch_draft": "self_development",
     "operator_approved_self_development_patch_application_trial": "self_development",
+    "experiment_review_list": "experiment_review",
+    "experiment_review_start": "experiment_review",
+    "experiment_review_status": "experiment_review",
 }
 
 
@@ -190,6 +194,7 @@ def classify_natural_language_intent(user_text: str) -> dict[str, Any]:
     action_shape = _looks_like_action(text)
     embedded_action_shape = bool(_EMBEDDED_ACTION.search(text))
     question_shape = _question_like(text)
+    review_question = is_experiment_review_question(text)
 
     reasons: list[str]
     requires_clarification = False
@@ -231,6 +236,10 @@ def classify_natural_language_intent(user_text: str) -> dict[str, Any]:
         category = "action_request"
         confidence = 0.97
         reasons = ["natural_language_imperative", "authorization_not_implied"]
+    elif review_question:
+        category = "action_request"
+        confidence = 0.93
+        reasons = ["registered_experiment_review_question", "read_only_listing_or_status", "authorization_not_implied"]
     elif question_shape:
         category = "question"
         confidence = 0.92
@@ -380,7 +389,7 @@ def ground_action_intent(user_text: str, intent: Mapping[str, Any]) -> dict[str,
             intent_name = f"registered_{semantic_capability}_request"
     matched = bool(capability_id and capability_id in _CAPABILITY_IDS)
     unsupported = intent_name.startswith("blocked_") or (not matched and intent_name == "unknown_request")
-    unavailable = bool(matched and mode == INFO and intent_name not in {"supervised_capabilities"})
+    unavailable = bool(matched and mode == INFO and intent_name not in {"supervised_capabilities", "experiment_review_list", "experiment_review_status"})
     authority, authority_required = _authority_for(mode, capability_id, risk)
 
     missing: list[str] = []

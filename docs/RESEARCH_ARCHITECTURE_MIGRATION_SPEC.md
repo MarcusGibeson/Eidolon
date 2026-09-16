@@ -1,6 +1,23 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.25, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.26, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.26** (Marcus, 2026-09-15; the conversational adapter reached from ordinary conversation):
+- **The 2.25 adapter was unreachable from conversation.** It routed correctly on the command surface, but two independent defects on the conversation path meant neither of Marcus's live attempts reached it, and no app restart would have changed that.
+  - **The supervised router was never consulted for a question.** `ground_action_intent` returns before `propose_chat_action` for every category outside `{action_request, ambiguous_request}`. "What experiments can you review?" classifies as `question`, so the listing route never ran and the reply was composed by the model alone.
+  - **The review intents resolved to no capability.** `experiment_review` was in the registry, but `_INTENT_TO_CAPABILITY` had no rows for it, so even the action-shaped "Review G-INVAR independently." grounded `unmatched` and asked the operator to name a registered capability. This gap is general and pre-existing: `supervised_capabilities` grounds `unmatched` today for the same reason.
+- **The repair is three changes in `natural_language_action_routing.py`, plus one public predicate in the router.** The frozen reviewer `d158e253…`, the adapter and the job runner are untouched.
+  - `is_experiment_review_question` exposes the two question-shaped phrasings (what can be reviewed, how a review is going). The start phrasing is deliberately excluded: it already classifies as an action request, and its pattern is broad enough to also match ordinary conversation such as "can you review my thoughts on this".
+  - One classifier branch, ordered after every existing branch, routes those two phrasings as `action_request`.
+  - Three `_INTENT_TO_CAPABILITY` rows map `experiment_review_list`, `experiment_review_start` and `experiment_review_status` to `experiment_review`.
+  - The two read-only review intents join `supervised_capabilities` as INFO-mode intents that are reachable in conversation rather than reported `unavailable`.
+- **`experiment_review_unavailable` is deliberately not mapped.** Mapping it made ordinary conversation ("can you review my thoughts on this?", already an action request at HEAD through `_MODAL_ACTION`) ground on the review capability. An uninstalled package now grounds on no capability instead, which is the safer of the two wrong answers.
+- **Conversation still executes nothing.** Grounding is a proposal: `execution_state` stays `not_executed`, no approval or authorization is inferred, and starting a review still requires separate explicit operator approval. The checkpoint contract `conversation_executor_call_count == 0` is unchanged.
+- **Known limitation, not repaired:** the projection carries the capability, `router_intent` and `router_mode`, but not the eligible package ids. Eidolon can therefore say that the request maps to her registered review capability, but cannot enumerate G-INVAR, G-CAND2-refx and G-REL-fixtures in conversation. Listing them would require adding bounded package ids to the grounding, which is a separate decision.
+- **Known limitation, pre-existing:** `_EXPERIMENT_REVIEW_START` matches conversational objects ("review my thoughts on this"), which on the command surface produces a "not eligible" proposal. Unchanged from 2.25.
+- **Tests:** `tools/v2731_10_0_conversation_path_review_routing_tests.py`, 70 deterministic checks. Every check fails against the unmodified modules.
+- **Verification:** the 27 suites that reference the routing module were run before and after the change. Twenty-one passed in both runs, and the six failures are identical in both: `v1200_1_3`, `v1248_0_2`, `v1489_0001_0010`, `v2730_9_1`, `v1249_3_5` and `v1191_9`.
+- **`v1191_9` is environmental, not a regression.** It fails in any working checkout that has the local `data/` directory, whose 183,062 entries the package privacy scan rejects; it passes 119/119 in a clean checkout of the same commit. Measured with and without this change in the same checkout, it reports the identical 110 of 119.
 
 **Added in 2.25** (Marcus, 2026-09-15; the coworking validation phase accepted with qualifications, and the conversational review adapter):
 - **The coworking validation phase is accepted with qualifications.** The frozen v2731.8 read-only reviewer showed sufficient cross-experiment generalization for supervised, non-authoritative coworking use. The external audit is recorded apart from Eidolon's blind reviews, in `review_audits/coworking_validation_phase_external_audit.json`.
