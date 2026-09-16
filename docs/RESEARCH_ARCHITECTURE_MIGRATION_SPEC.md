@@ -1,6 +1,12 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.26, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.27, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.27** (Marcus, 2026-09-16; the conversation can name what is reviewable):
+- **The eligible package ids reach the conversation.** `eligible_target_ids()` lists the installed packages that load under the reviewer's own rules: ids only, sorted, bounded at `MAX_CONVERSATION_TARGETS` (12), and never a path, a title, a document or a review's conclusions. An unreadable package area answers with nothing rather than raising into the conversation.
+- **Grounding carries them only once the request has already matched the review capability**, as `available_review_targets`. Ordinary conversation receives no listing. The projection stays content free, and `bounded_action_explanation` now names what can be reviewed, so an unverified execution claim is replaced by the listing rather than by the capability's name alone.
+- **This is a read-only directory scan, not an execution.** The conversation surface still executes nothing: `conversation_executor_call_count == 0` is unchanged, grounding remains `not_executed`, and starting a review still requires separate explicit operator approval.
+- **Tests:** the routing suite grows to 88 checks, adding the listing the conversation receives, that a target is never a path, that ordinary conversation receives none, that the listing is bounded above its cap, and that an empty package area lists nothing.
 
 **Added in 2.26** (Marcus, 2026-09-15; the conversational adapter reached from ordinary conversation):
 - **The 2.25 adapter was unreachable from conversation.** It routed correctly on the command surface, but two independent defects on the conversation path meant neither of Marcus's live attempts reached it, and no app restart would have changed that.
@@ -13,7 +19,7 @@
   - The two read-only review intents join `supervised_capabilities` as INFO-mode intents that are reachable in conversation rather than reported `unavailable`.
 - **`experiment_review_unavailable` is deliberately not mapped.** Mapping it made ordinary conversation ("can you review my thoughts on this?", already an action request at HEAD through `_MODAL_ACTION`) ground on the review capability. An uninstalled package now grounds on no capability instead, which is the safer of the two wrong answers.
 - **Conversation still executes nothing.** Grounding is a proposal: `execution_state` stays `not_executed`, no approval or authorization is inferred, and starting a review still requires separate explicit operator approval. The checkpoint contract `conversation_executor_call_count == 0` is unchanged.
-- **Known limitation, not repaired:** the projection carries the capability, `router_intent` and `router_mode`, but not the eligible package ids. Eidolon can therefore say that the request maps to her registered review capability, but cannot enumerate G-INVAR, G-CAND2-refx and G-REL-fixtures in conversation. Listing them would require adding bounded package ids to the grounding, which is a separate decision.
+- **Known limitation at 2.26, repaired in 2.27:** the projection carried the capability, `router_intent` and `router_mode`, but not the eligible package ids. Eidolon can therefore say that the request maps to her registered review capability, but cannot enumerate G-INVAR, G-CAND2-refx and G-REL-fixtures in conversation. Listing them would require adding bounded package ids to the grounding, which is a separate decision.
 - **Known limitation, pre-existing:** `_EXPERIMENT_REVIEW_START` matches conversational objects ("review my thoughts on this"), which on the command surface produces a "not eligible" proposal. Unchanged from 2.25.
 - **Tests:** `tools/v2731_10_0_conversation_path_review_routing_tests.py`, 70 deterministic checks. Every check fails against the unmodified modules.
 - **Verification:** the 27 suites that reference the routing module were run before and after the change. Twenty-one passed in both runs, and the six failures are identical in both: `v1200_1_3`, `v1248_0_2`, `v1489_0001_0010`, `v2730_9_1`, `v1249_3_5` and `v1191_9`.

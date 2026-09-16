@@ -41,6 +41,7 @@ ACTIVE_JOB_FILE = "active_job.json"
 REVIEW_KIND = "independent_experiment_review"
 JOB_RUNNER = Path(__file__).resolve().parents[1] / "tools" / "run_review_job.py"
 MAX_JOB_SECONDS = 6 * 3600
+MAX_CONVERSATION_TARGETS = 12
 NAME = re.compile(r"^[A-Za-z][A-Za-z0-9 _-]{1,60}$")
 FUNCTIONS = ("experiment_review_list", "experiment_review_start", "experiment_review_status")
 
@@ -80,6 +81,20 @@ def eligible_packages(root: str | Path | None = None) -> list[dict[str, Any]]:
                      "characters": sum(len(d["text"]) for d in package["documents"]), "manifest_sha256": package["manifest_sha256"],
                      "eligible": True, "reviews": reviews_of(package["manifest_sha256"], root)})
     return rows
+
+
+def eligible_target_ids(root: str | Path | None = None) -> tuple[str, ...]:
+    """The ids of the installed packages a review can name: bounded, sorted, and content free.
+
+    Never a path, never a title and never a review's conclusions. An unreadable package area answers with nothing
+    rather than raising into the conversation.
+    """
+    try:
+        rows = eligible_packages(root)
+    except Exception:
+        return ()
+    names = {str(row.get("package_id") or "") for row in rows if row.get("eligible")}
+    return tuple(sorted(name for name in names if NAME.match(name)))[:MAX_CONVERSATION_TARGETS]
 
 
 def reviews_of(manifest_sha256: str, root: str | Path | None = None) -> list[dict[str, Any]]:

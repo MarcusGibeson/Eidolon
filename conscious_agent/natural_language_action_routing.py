@@ -310,6 +310,20 @@ def _semantic_capability(text: str) -> str:
     return ""
 
 
+def _eligible_review_targets() -> list[str]:
+    """The installed packages the review capability can name, or nothing.
+
+    Read only: it lists package ids and never reads a review, a document or a path. It is consulted only once the
+    request has already grounded on the review capability, and it never raises into the conversation.
+    """
+    try:
+        from conversational_experiment_review import eligible_target_ids
+
+        return list(eligible_target_ids())
+    except Exception:
+        return []
+
+
 def _capability_for_action(text: str, action: Mapping[str, Any]) -> str:
     semantic = _semantic_capability(text)
     if semantic in _CAPABILITY_IDS:
@@ -426,6 +440,8 @@ def ground_action_intent(user_text: str, intent: Mapping[str, Any]) -> dict[str,
         "router_intent": intent_name[:80] if matched else "",
         "router_mode": mode if matched else "",
     })
+    if matched and capability_id == "experiment_review":
+        base["available_review_targets"] = _eligible_review_targets()
     base["grounding_digest"] = _digest(base)
     return base
 
@@ -697,8 +713,10 @@ def bounded_action_explanation(projection: Mapping[str, Any]) -> str:
         clarification = str(grounding.get("suggested_clarification") or "Please name the exact requested operation.")
         return f"I understood this as a possible action reference, but it is not uniquely grounded. {clarification} Nothing ran and no approval was created."
     if status == "matched" and capability:
+        targets = [str(name) for name in (grounding.get("available_review_targets") or [])]
+        available = f" The installed packages I can review are {', '.join(targets)}." if targets else ""
         return (
-            f"I understood this as an action request that maps to the registered `{capability}` capability. "
+            f"I understood this as an action request that maps to the registered `{capability}` capability.{available} "
             f"Nothing ran through this conversation turn, and authorization was not inferred. The next governed step requires {authority.replace('_', ' ')}."
         )
     if status in {"unsupported", "unmatched", "unavailable"}:

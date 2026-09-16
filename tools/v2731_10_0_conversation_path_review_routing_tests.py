@@ -36,8 +36,8 @@ DOCS = {"design.txt": ("design", "The experiment asks whether each item keeps it
         "outputs.txt": ("raw_outputs", "form=V1 item=A classification=unresolved\n")}
 
 
-def install_package(name: str) -> None:
-    pkg = adapter.package_area() / name
+def install_package(name: str, root: Path | None = None) -> None:
+    pkg = adapter.package_area(root) / name
     pkg.mkdir(parents=True, exist_ok=True)
     entries = []
     for n, (file_name, (role, text)) in enumerate(DOCS.items(), 1):
@@ -134,6 +134,33 @@ for phrase in LIST_PHRASES[:1] + STATUS_PHRASES[:1] + START_PHRASES[:1]:
     require(routing.action_projection_contains_private_fields(public) is False, f"the_public_projection_stays_content_free:{phrase[:40]}")
     require("experiment_review" in routing.bounded_action_explanation(projection),
             f"the_bounded_explanation_names_the_capability:{phrase[:40]}")
+
+# The listing the conversation receives is the installed package ids, bounded and content free.
+INSTALLED = ["G-CAND2-refx", "G-INVAR"]
+for phrase in LIST_PHRASES[:1] + STATUS_PHRASES[:1] + START_PHRASES[:1]:
+    projection = routing.build_natural_language_action_projection(phrase)
+    grounding = dict(projection.get("grounding") or {})
+    targets = list(grounding.get("available_review_targets") or [])
+    require(targets == INSTALLED, f"the_conversation_receives_the_installed_package_ids:{phrase[:40]}")
+    require(all(not set(name) & set("/\\") for name in targets), f"a_target_is_never_a_path:{phrase[:40]}")
+    require(routing.action_projection_contains_private_fields(
+        routing.natural_language_action_public_projection(projection)) is False,
+        f"the_projection_with_targets_stays_content_free:{phrase[:40]}")
+    explanation = routing.bounded_action_explanation(projection)
+    require(all(name in explanation for name in INSTALLED), f"the_explanation_names_what_can_be_reviewed:{phrase[:40]}")
+
+# Ordinary conversation is told nothing about what is installed.
+for phrase in CONVERSATION_PHRASES:
+    grounding = dict(routing.build_natural_language_action_projection(phrase).get("grounding") or {})
+    require(not grounding.get("available_review_targets"), f"ordinary_conversation_receives_no_listing:{phrase[:40]}")
+
+# The listing is bounded, whatever is installed.
+OVERFULL = Path(tempfile.mkdtemp(prefix="eidolon-v2731-10-0-overfull-"))
+for n in range(adapter.MAX_CONVERSATION_TARGETS + 3):
+    install_package(f"G-BOUND-{n:02d}", OVERFULL)
+require(len(adapter.eligible_target_ids(OVERFULL)) == adapter.MAX_CONVERSATION_TARGETS, "the_listing_is_bounded")
+require(adapter.eligible_target_ids(Path(tempfile.mkdtemp(prefix="eidolon-v2731-10-0-empty-"))) == (),
+        "an_empty_package_area_lists_nothing")
 
 # An uninstalled package resolves to no capability rather than to a review that cannot run.
 intent, grounding = project("Review G-NOT-INSTALLED independently.")
