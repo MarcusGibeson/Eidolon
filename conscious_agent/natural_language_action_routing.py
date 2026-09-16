@@ -24,6 +24,7 @@ from chat_action_router import (
     is_review_confirmation,
     propose_chat_action,
     resolve_confirmation,
+    waiting_proposal_for,
     run_confirmed_action,
 )
 from bounded_action_arguments import bind_bounded_action_arguments
@@ -339,17 +340,22 @@ def _requested_review_target(text: str) -> str:
         return ""
 
 
-def _saved_review_proposal_id(text: str) -> str:
+def _saved_review_proposal_id(text: str, package_id: str = "") -> str:
     """Persist this review request as one governed proposal and return its id.
 
-    The same request always resolves to the same saved action, so grounding the turn again, or replaying it from
-    history, never creates a second proposal. Saving a proposal is not running it.
+    The proposal is keyed by the package it targets, not by the words used to ask, so "review G-INVAR independently"
+    and "Review G-INVAR independently." are one proposal rather than two. Saving a proposal is not running it.
     """
     try:
         from chat_action_router import propose_chat_action as _propose
 
-        key = "experiment-review:" + hashlib.sha256(" ".join(text.split()).casefold().encode("utf-8")).hexdigest()[:24]
-        saved = _propose(text, save=True, save_unknown=False, deduplication_key=key)
+        target = " ".join(str(package_id or "").split())
+        existing = waiting_proposal_for(target) if target else None
+        if existing:
+            return str(existing.get("id") or "")
+        key = ("experiment-review:" + target.casefold()) if target else (
+            "experiment-review:" + hashlib.sha256(" ".join(text.split()).casefold().encode("utf-8")).hexdigest()[:24])
+        saved = _propose(text, save=True, save_unknown=False, deduplication_key=key[:120])
         return str(saved.get("id") or "") if str(saved.get("intent") or "") == "experiment_review_start" else ""
     except Exception:
         return ""
@@ -503,7 +509,8 @@ def ground_action_intent(user_text: str, intent: Mapping[str, Any]) -> dict[str,
     if matched and capability_id == "experiment_review":
         base["available_review_targets"] = _eligible_review_targets()
         base["requested_review_target"] = _requested_review_target(text) if intent_name == "experiment_review_start" else ""
-        base["review_action_id"] = _saved_review_proposal_id(text) if intent_name == "experiment_review_start" else ""
+        base["review_action_id"] = (_saved_review_proposal_id(text, str((action.get("function_args") or {}).get("package_id") or ""))
+                                    if intent_name == "experiment_review_start" else "")
         base["review_proposal_persisted"] = bool(base["review_action_id"])
         base["pending_review_action"] = (_pending_review_summary(text)
                                          if intent_name.startswith("experiment_review_confirm") else {})

@@ -265,6 +265,32 @@ require(dict(confirm_grounding.get("pending_review_action") or {}).get("action_i
 require(confirm_grounding.get("execution_state") == "not_executed", "grounding_a_confirmation_still_executes_nothing")
 require(not (RUNTIME / "research_jobs").exists(), "grounding_a_confirmation_creates_no_job")
 
+# Asking for the same package again, phrased differently, is the same proposal rather than a second one.
+# A trailing period was enough to stack a duplicate and make both resolution branches contradict themselves.
+for phrasing in ("Review G-INVAR independently", "review G-INVAR", "Please review G-INVAR."):
+    repeat = dict(routing.build_natural_language_action_projection(phrasing).get("grounding") or {})
+    require(str(repeat.get("review_action_id") or "") == action_id,
+            f"a_rephrased_request_reuses_the_saved_proposal:{phrasing[:34]}")
+g_invar_records = [row for row in router.pending_confirmable_actions()
+                   if str((row.get("function_args") or {}).get("package_id") or "") == "G-INVAR"]
+require(len(g_invar_records) == 1, "rephrasing_never_stacks_a_second_proposal")
+
+# Records that already stacked up for one target still resolve: they are one intent, and the newest wins.
+duplicate = router.propose_chat_action("Review G-INVAR independently", save=True, save_unknown=False,
+                                       deduplication_key="v2731-10-0-forced-duplicate")
+duplicate_id = str(duplicate.get("id") or "")
+require(duplicate_id != "" and duplicate_id != action_id, "a_duplicate_record_exists_for_the_test")
+state, resolved, _ = router.resolve_confirmation("confirm G-INVAR")
+require(state == "one" and str((resolved or {}).get("id") or "") == duplicate_id,
+        "a_named_confirmation_with_duplicates_resolves_to_the_newest")
+require(router.resolve_confirmation("confirm G-INVAR.")[0] == "one", "trailing_punctuation_resolves_the_same_way")
+
+# Genuine ambiguity is still two different targets, and it names them both.
+require(router.resolve_confirmation("confirm")[0] == "ambiguous", "two_different_targets_are_still_ambiguous")
+ambiguous_again = routing.bounded_action_explanation(routing.build_natural_language_action_projection("Confirm."))
+require("G-INVAR" in ambiguous_again and "G-CAND2-refx" in ambiguous_again,
+        "the_ambiguous_answer_still_names_both_targets")
+
 # Only the live turn runs it, and it runs exactly once.
 adapter.SPAWN = lambda argv, cwd, env: 4242
 adapter.ALIVE = lambda pid: pid == 4242

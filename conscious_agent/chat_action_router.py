@@ -859,6 +859,19 @@ def _action_target_name(action: dict[str, Any]) -> str:
     return str((args or {}).get("package_id") or action.get("function_name") or "")
 
 
+def waiting_proposal_for(target_name: str) -> dict[str, Any] | None:
+    """The newest saved proposal still waiting for this target, or None.
+
+    Asking for the same package twice is the same request however it was phrased, so it reuses the proposal already
+    waiting instead of stacking another one behind it.
+    """
+    wanted = " ".join(str(target_name or "").split()).casefold()
+    if not wanted:
+        return None
+    hits = [row for row in pending_confirmable_actions() if _action_target_name(row).casefold() == wanted]
+    return hits[-1] if hits else None
+
+
 def resolve_confirmation(request: str) -> tuple[str, dict[str, Any] | None, list[dict[str, Any]]]:
     """Resolve a confirmation to exactly one saved proposal.
 
@@ -874,10 +887,12 @@ def resolve_confirmation(request: str) -> tuple[str, dict[str, Any] | None, list
         return "none", None, []
     named = " ".join(str(match.group("target") or "").split()).casefold()
     if named:
+        # Several records for one target are one intent, so the newest wins rather than the name reading as unknown.
         hits = [row for row in waiting if _action_target_name(row).casefold() == named]
-        return ("one", hits[0], waiting) if len(hits) == 1 else ("unknown", None, waiting)
-    if len(waiting) == 1:
-        return "one", waiting[0], waiting
+        return ("one", hits[-1], waiting) if hits else ("unknown", None, waiting)
+    # Ambiguity is about distinct targets, not about how many records happen to be waiting for the same one.
+    if len({_action_target_name(row).casefold() for row in waiting}) == 1:
+        return "one", waiting[-1], waiting
     return "ambiguous", None, waiting
 
 

@@ -1,6 +1,13 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.30, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+**Version 2.31, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.31** (Marcus, 2026-09-16; a trailing period stacked a duplicate proposal and deadlocked confirmation):
+- **The defect.** The proposal was keyed by a hash of the request text, so "Review G-INVAR independently." and "Review G-INVAR independently" saved two proposals for the same package. Both resolution branches then contradicted themselves: a bare confirmation counted two records and reported "More than one proposal is waiting: G-INVAR" while listing a single name, and a named confirmation matched two rows, failed its exactly-one test and reported "Nothing waiting matches that name. Waiting now: G-INVAR." The repeated answer was then squashed by the repetition guard. Confirmation could not be completed from chat at all.
+- **A proposal is keyed by the package it targets**, not by the words used to ask, and a request for a package that already has a proposal waiting reuses it. Any phrasing that resolves to the same package is one proposal.
+- **A named confirmation resolves to the newest matching proposal** instead of requiring exactly one, since several records for one target are one intent.
+- **Ambiguity is about distinct targets**, not record count. Proposals that all name the same package resolve without asking; only genuinely different targets ask, and the answer names them.
+- **Tests:** the routing suite reaches 149 checks, adding that three rephrasings reuse one proposal and never stack a second, that already-stacked duplicates resolve to the newest, that trailing punctuation resolves identically, and that two different targets are still ambiguous and still named.
 
 **Added in 2.30** (Marcus, 2026-09-16; a confirmation in chat starts the review):
 - **Authority decision, made explicitly by Marcus.** Until now the conversation surface proposed and never executed. It may now run a saved proposal that the operator has confirmed, and only from a fixed allowlist, `CONVERSATION_CONFIRMABLE_FUNCTIONS`: the independent review plus the low-risk research-session, history, comparison, export and release-summary functions the dashboard console already runs from conversation. Nothing else, at any risk level, is reachable. No shell command and no model endpoint is reachable.
