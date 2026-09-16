@@ -1,6 +1,27 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.24, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+**Version 2.25, 2026-09-15. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.25** (Marcus, 2026-09-15; the coworking validation phase accepted with qualifications, and the conversational review adapter):
+- **The coworking validation phase is accepted with qualifications.** The frozen v2731.8 read-only reviewer showed sufficient cross-experiment generalization for supervised, non-authoritative coworking use. The external audit is recorded apart from Eidolon's blind reviews, in `review_audits/coworking_validation_phase_external_audit.json`.
+- **Preserved limitations** (recorded, not repaired):
+  - weak final-synthesis evidence utilization (final citations reached 54% of observations on G-INVAR, 37% on G-REL fixtures, while the architecture represented 100%);
+  - missed aggregate experiment-level patterns;
+  - semantic-identifier friction (30, 54 and 65 observations rejected across the three completed runs);
+  - occasional final-schema compliance failure (the G-CAND2 refx final first half);
+  - uneven quality of proposed discriminating experiments;
+  - a stored-quote whitespace artifact at the 240-character cap (1 of 230 quotes in generalization 2).
+- **Standing decisions:** no further historical experiment reviews, no Review 5, no tuning of the reviewer against G-INVAR, G-CAND2 or G-REL, and every existing review artifact preserved exactly. The reviewer's own suites (3.5 to 3.8) still pass unchanged, and `experiment_review.py` is still the baseline module `d158e253…`.
+- **The conversational review adapter (v2731.9)** selects and invokes the already-authorized capability; it is not a second reviewer.
+  - **Operator workflow:** ask which experiments can be reviewed (read-only listing); ask to review one by name (a proposal naming the package, its manifest digest and the estimated work); confirm (the review starts as a background job and returns a receipt); ask for status (running, completed or failed, with coverage and the mechanical checks).
+  - **Routing:** three narrow phrasings reach the adapter. The router's conversation gate still governs everything else; it defers only to these three, so ordinary conversation stays conversation and `review <path>` still means the static file review.
+  - **Eligibility:** only packages installed under `<runtime>/research_packages/` that load under the reviewer's own rules. A path, a glob, an unknown name or a package failing its digests never resolves.
+  - **Confirmation:** the proposal starts nothing. While a review runs, a second request is refused at proposal time and never executes.
+  - **Jobs:** one fixed argument vector in its own process group, so a disconnect does not end the review. Exactly one local-model review runs at a time, while listing, status and other queue kinds continue. A job whose process ended without a result, or which passes its six-hour bound, is recorded as failed instead of left running.
+  - **Memory:** conversation memory holds only an operation receipt (ids, digests, status); a review's conclusions never enter it.
+  - **Boundaries preserved:** mutation guards, package identity, blindness, provenance and authority flags are the reviewer's, untouched. The adapter queues only `independent_experiment_review`, exposes no shell and no model endpoint, and schedules nothing.
+- **Tests:** `tools/v2731_4_0_conversational_review_adapter_tests.py`, 46 deterministic checks covering routing, eligibility, confirmation, job exclusivity, deterministic work continuing, completion through the real reviewer under a stub model, status and receipts carrying no conclusions, memory isolation, failure recovery (dead process and bound exceeded) and authority boundaries.
+- **Two pre-existing suite failures are unchanged and not mine:** `v1104_1` (its expected capability list already omitted `bounded_web_research`) and `v1084_1` (conversation prompt guidance). Both fail identically against the pristine router at HEAD.
 
 **Added in 2.24** (Marcus, 2026-09-15; the classification of generalization review 1, and review 2 authorized):
 - **Generalization review 1 (`2ce3ae37b092bc10`, G-CAND2 refx): INCOMPLETE, FINAL_SCHEMA_INSTRUCTION_FAILURE.**

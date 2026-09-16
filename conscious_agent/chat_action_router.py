@@ -742,6 +742,7 @@ SUPERVISED_CAPABILITY_REGISTRY: tuple[dict[str, str], ...] = (
     {"id": "self_development", "label": "proposal-only supervised self-development", "mode": DIRECT_COMMAND, "boundary": "proposal only"},
     {"id": "software_development", "label": "supervised software-development campaign proposals", "mode": DIRECT_FUNCTION, "boundary": "proposal only"},
     {"id": "bounded_web_research", "label": "session-authorized public web research", "mode": DIRECT_FUNCTION, "boundary": "bounded GET/HEAD research"},
+    {"id": "experiment_review", "label": "independent read-only review of an installed experiment package", "mode": DIRECT_FUNCTION, "boundary": "proposal only"},
 )
 
 
@@ -762,6 +763,46 @@ def supervised_capability_summary() -> str:
         + "; ".join(research)
         + ". Modifications remain approval-governed; unrestricted shell access, model management, provider switching, and release promotion are not registered chat capabilities."
     )
+
+
+_EXPERIMENT_REVIEW_LIST = re.compile(
+    r"\b(?:what|which) experiments?(?: packages?)? can you review\b|\bwhat can you review\b|"
+    r"\blist (?:the )?(?:eligible |installed |reviewable )?experiment packages\b",
+)
+_EXPERIMENT_REVIEW_STATUS = re.compile(
+    r"\b(?:review|job) status\b|\bstatus of (?:the |my )?(?:experiment )?review\b|\bis the (?:experiment )?review (?:done|finished|running)\b|"
+    r"\bhow is the (?:experiment )?review (?:going|doing)\b",
+)
+_EXPERIMENT_REVIEW_START = re.compile(
+    r"^(?:please\s+)?(?:can you\s+)?(?:independently\s+)?review (?:the\s+)?(?:experiment\s+)?(?P<name>[A-Za-z][A-Za-z0-9 _-]{1,60}?)"
+    r"(?:\s+independently)?\s*[.?!]*$",
+    re.IGNORECASE,
+)
+
+
+def _is_any_experiment_review_request(request: str) -> bool:
+    """True only for the three explicit review phrasings, so ordinary conversation stays conversation."""
+    lowered = " ".join(str(request or "").split()).lower()
+    return bool(_is_experiment_review_list_request(lowered) or _is_experiment_review_status_request(lowered) or _experiment_review_target(request))
+
+
+def _is_experiment_review_list_request(lowered: str) -> bool:
+    return bool(_EXPERIMENT_REVIEW_LIST.search(lowered))
+
+
+def _is_experiment_review_status_request(lowered: str) -> bool:
+    return bool(_EXPERIMENT_REVIEW_STATUS.search(lowered))
+
+
+def _experiment_review_target(request: str) -> str:
+    """The package name in an explicit review request, or "". Never a path, a file or a free-form instruction."""
+    match = _EXPERIMENT_REVIEW_START.match(" ".join(str(request or "").split()))
+    if not match:
+        return ""
+    name = match.group("name").strip()
+    if _looks_like_path(name) or any(ch in name for ch in "/\\.*?"):
+        return ""
+    return "" if name.lower() in {"it", "this", "that", "them", "everything", "the code", "my code"} else name
 
 
 def classify_chat_action_follow_up(user_request: str) -> str:
@@ -1253,7 +1294,7 @@ def propose_chat_action(
             function_name="release_summary",
             explanation="This provider-free inspection reads four allowlisted source files, changes nothing, and grants no release authority.",
         )
-    elif not quality.should_analyze_action:
+    elif not quality.should_analyze_action and not _is_any_experiment_review_request(request):
         action = _make_action(
             user_request=request,
             intent="conversation_only",
@@ -1299,6 +1340,56 @@ def propose_chat_action(
                 execution_mode=BLOCKED,
                 risk_level="low",
                 blocked_reason="No target file path found. Try: suggest improvement for conscious_agent/memory.py ...",
+            )
+    # Independent experiment review: selection and invocation of the already-authorized read-only capability.
+    elif _is_experiment_review_list_request(lowered):
+        from conversational_experiment_review import list_message
+        action = _make_action(
+            user_request=request,
+            intent="experiment_review_list",
+            title="Experiment packages I can review",
+            summary=list_message(),
+            execution_mode=INFO,
+            risk_level="low",
+            explanation="Reading the installed package listing only. No review runs, and nothing is chosen for you.",
+        )
+    elif _is_experiment_review_status_request(lowered):
+        from conversational_experiment_review import execute_conversational_review_action
+        status = execute_conversational_review_action("experiment_review_status", {})
+        action = _make_action(
+            user_request=request,
+            intent="experiment_review_status",
+            title="Experiment review status",
+            summary=str(status.get("message") or "No review job has been started yet."),
+            execution_mode=INFO,
+            risk_level="low",
+            explanation="Reading the job record only. A review's conclusions stay in its artifact; they are not adopted here.",
+        )
+    elif _experiment_review_target(request):
+        from conversational_experiment_review import propose_message
+        package, message = propose_message(_experiment_review_target(request))
+        if package is None:
+            action = _make_action(
+                user_request=request,
+                intent="experiment_review_unavailable",
+                title="No eligible experiment package",
+                summary=message,
+                execution_mode=BLOCKED,
+                risk_level="low",
+                blocked_reason=message,
+            )
+        else:
+            action = _make_action(
+                user_request=request,
+                intent="experiment_review_start",
+                title=f"Review {package['package_id']} independently",
+                summary=message,
+                execution_mode=DIRECT_FUNCTION,
+                risk_level="medium",
+                function_name="experiment_review_start",
+                function_args={"package_id": package["package_id"]},
+                explanation="Confirming runs the frozen read-only reviewer once on this installed package, as a background job. "
+                            "The result is a non-authoritative artifact; no source, gold, belief, memory, policy, configuration or release changes.",
             )
     # Read-only / safe commands.
     elif is_supervised_capability_catalog_request(request):
@@ -1825,6 +1916,24 @@ def execute_chat_action(
     if mode == DIRECT_FUNCTION:
         function_name = action.get("function_name")
         args = action.get("function_args", {}) or {}
+        if function_name in {"experiment_review_list", "experiment_review_start", "experiment_review_status"}:
+            from conversational_experiment_review import execute_conversational_review_action
+            try:
+                result_data = execute_conversational_review_action(str(function_name), args, dry_run=dry_run)
+            except Exception as error:
+                return _mark_claimed_action_failed(action_id, error, claim_token=claim_token) if not dry_run else ChatActionExecutionResult(
+                    False, action_id, error=f"Dry run failed safely: {type(error).__name__}", dry_run=True)
+            if dry_run:
+                current = _save_dry_run_result(action_id, result_data)
+                return ChatActionExecutionResult(bool(result_data.get("ok")), action_id, message=str(result_data.get("message") or ""),
+                                                 status=current.get("status", "proposed"), result=result_data, dry_run=True)
+            final_status = "executed" if result_data.get("ok") else "failed"
+            current = _complete_execution_attempt(action_id, status=final_status, result_data=result_data, expected_claim_token=claim_token)
+            # the result holds a receipt and status only, so the stored memory can carry no review conclusion
+            _store_execution_memory(current, result_data)
+            return ChatActionExecutionResult(bool(result_data.get("ok")), action_id, message=str(result_data.get("message") or ""),
+                                             status=final_status, result=result_data,
+                                             error="" if result_data.get("ok") else str(result_data.get("message") or ""))
         if function_name in {
             "research_session_create",
             "research_session_authorize_execute",
