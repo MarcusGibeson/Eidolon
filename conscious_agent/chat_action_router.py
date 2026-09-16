@@ -786,32 +786,110 @@ def _is_any_experiment_review_request(request: str) -> bool:
     return bool(_is_experiment_review_list_request(lowered) or _is_experiment_review_status_request(lowered) or _experiment_review_target(request))
 
 
-_REVIEW_CONFIRMATION = re.compile(
-    r"^(?:please\s+)?(?:confirm(?:ed|\s+it)?|yes(?:,?\s+please)?|(?:yes,?\s+)?go\s+ahead|approved?|start\s+it)\s*[.!]*$",
+CONVERSATION_CONFIRMABLE_FUNCTIONS = frozenset({
+    "experiment_review_start",
+    "release_summary",
+    "research_session_create",
+    "research_session_authorize_execute",
+    "research_session_cancel",
+    "research_session_status",
+    "research_history_list",
+    "research_sessions_compare",
+    "research_report_export",
+})
+
+_CONFIRMATION = re.compile(
+    r"^(?:please\s+)?(?:confirm(?:ed|s)?|yes|approved?|go\s+ahead|start\s+it)"
+    r"(?:\s+(?P<target>[A-Za-z][A-Za-z0-9 _-]{1,60}?))?\s*[.!]*$",
     re.I,
 )
 
 
-def pending_review_action() -> dict[str, Any] | None:
-    """The most recent saved review proposal still waiting to run, or None.
+def run_confirmed_action(action_id: str, *, claimant: str = "conversation") -> dict[str, Any]:
+    """Run one saved, allowlisted proposal after an explicit operator confirmation.
+
+    The allowlist is the only route from a conversation turn to an executor. A proposal outside it, or one that is no
+    longer waiting, is refused without running anything, so a repeated confirmation cannot start a second run.
+    """
+    action = load_chat_action(action_id) or {}
+    function_name = str(action.get("function_name") or "")
+    if function_name not in CONVERSATION_CONFIRMABLE_FUNCTIONS:
+        return {"ok": False, "refused": "not_confirmable_from_conversation", "action_id": action_id}
+    if str(action.get("status") or "") != "proposed":
+        return {"ok": False, "refused": "already_resolved", "action_id": action_id,
+                "status": str(action.get("status") or "")}
+    result = execute_chat_action(action_id, dry_run=False, timeout_seconds=180, claimant=claimant)
+    data = result.result if isinstance(result.result, dict) else {}
+    # The adapter reports ids through its own minimal operation receipt, never through free text.
+    action_receipt = data.get("receipt") if isinstance(data.get("receipt"), dict) else {}
+    return {"ok": bool(result.ok), "action_id": action_id, "function_name": function_name,
+            "target_name": _action_target_name(action),
+            "status": str(getattr(result, "status", "") or ""),
+            "job_id": str(action_receipt.get("job_id") or data.get("job_id") or ""),
+            "review_id": str(action_receipt.get("review_id") or data.get("review_id") or ""),
+            "message": str(result.message or getattr(result, "error", "") or "")[:400]}
+
+
+def pending_confirmable_actions() -> list[dict[str, Any]]:
+    """Saved proposals a confirmation may start, oldest first.
 
     A confirmation means nothing on its own: it is a control over a persisted proposal, so it resolves against the
-    saved action record rather than against anything the conversation remembers.
+    saved action records rather than against anything the conversation remembers.
     """
     try:
         rows = [row for row in list_chat_actions(include_closed=False)
-                if str(row.get("intent") or "") == "experiment_review_start" and str(row.get("status") or "") == "proposed"]
+                if str(row.get("function_name") or "") in CONVERSATION_CONFIRMABLE_FUNCTIONS
+                and str(row.get("status") or "") == "proposed"]
     except Exception:
-        return None
+        return []
     rows.sort(key=lambda row: (str(row.get("created") or ""), str(row.get("id") or "")))
-    return rows[-1] if rows else None
+    return rows
+
+
+def pending_review_action() -> dict[str, Any] | None:
+    """The most recent saved review proposal still waiting to run, or None."""
+    reviews = [row for row in pending_confirmable_actions()
+               if str(row.get("function_name") or "") == "experiment_review_start"]
+    return reviews[-1] if reviews else None
+
+
+def _action_target_name(action: dict[str, Any]) -> str:
+    """What an operator would call this proposal: its package when it has one, otherwise its function."""
+    args = action.get("function_args") if isinstance(action.get("function_args"), dict) else {}
+    return str((args or {}).get("package_id") or action.get("function_name") or "")
+
+
+def resolve_confirmation(request: str) -> tuple[str, dict[str, Any] | None, list[dict[str, Any]]]:
+    """Resolve a confirmation to exactly one saved proposal.
+
+    Returns "none" when this is not a confirmation or nothing is waiting, "one" with the resolved proposal,
+    "ambiguous" with everything waiting when a bare confirmation could mean more than one, or "unknown" when a named
+    target matches nothing. A confirmation is never resolved by guessing between proposals.
+    """
+    match = _CONFIRMATION.fullmatch(" ".join(str(request or "").split()))
+    if not match:
+        return "none", None, []
+    waiting = pending_confirmable_actions()
+    if not waiting:
+        return "none", None, []
+    named = " ".join(str(match.group("target") or "").split()).casefold()
+    if named:
+        hits = [row for row in waiting if _action_target_name(row).casefold() == named]
+        return ("one", hits[0], waiting) if len(hits) == 1 else ("unknown", None, waiting)
+    if len(waiting) == 1:
+        return "one", waiting[0], waiting
+    return "ambiguous", None, waiting
+
+
+def is_confirmation_request(request: str) -> bool:
+    """True for a confirmation that has at least one saved proposal to resolve against."""
+    state, _, _ = resolve_confirmation(request)
+    return state != "none"
 
 
 def is_review_confirmation(request: str) -> bool:
-    """True only for a bare confirmation that follows a saved review proposal still waiting to run."""
-    if not _REVIEW_CONFIRMATION.fullmatch(" ".join(str(request or "").split())):
-        return False
-    return pending_review_action() is not None
+    """The conversation path's name for the same question."""
+    return is_confirmation_request(request)
 
 
 def is_experiment_review_question(request: str) -> bool:
@@ -1381,21 +1459,36 @@ def propose_chat_action(
                 blocked_reason="No target file path found. Try: suggest improvement for conscious_agent/memory.py ...",
             )
     # Independent experiment review: selection and invocation of the already-authorized read-only capability.
-    elif is_review_confirmation(request):
-        pending = pending_review_action() or {}
-        pending_id = str(pending.get("id") or "")
-        pending_package = str((pending.get("function_args") or {}).get("package_id") or "the proposed package")
-        action = _make_action(
-            user_request=request,
-            intent="experiment_review_confirm",
-            title=f"Confirmed review of {pending_package}",
-            summary=(f"The review of {pending_package} is saved as action {pending_id} and is waiting to run. "
-                     f"Nothing has started yet: open Chat Actions and press Execute to run it."),
-            execution_mode=INFO,
-            risk_level="low",
-            target_action_id=pending_id,
-            explanation="Conversation confirms the saved proposal and never runs it. Execution stays on the operator-controlled action surface.",
-        )
+    elif is_confirmation_request(request):
+        state, target, waiting = resolve_confirmation(request)
+        if state == "one" and target:
+            target_id = str(target.get("id") or "")
+            target_name = _action_target_name(target)
+            action = _make_action(
+                user_request=request,
+                intent="experiment_review_confirm",
+                title=f"Confirmed {target_name}",
+                summary=f"Confirming the saved proposal {target_id} for {target_name}.",
+                execution_mode=INFO,
+                risk_level="low",
+                target_action_id=target_id,
+                explanation="The confirmation identifies exactly one saved proposal, which the operator's turn then runs.",
+            )
+        else:
+            names = sorted({_action_target_name(row) for row in waiting})
+            listed = ", ".join(names)
+            summary = (f"More than one proposal is waiting: {listed}. Name the one you mean, for example: confirm {names[0]}."
+                       if state == "ambiguous"
+                       else f"Nothing waiting matches that name. Waiting now: {listed}.")
+            action = _make_action(
+                user_request=request,
+                intent="experiment_review_confirm_ambiguous",
+                title="Which proposal are you confirming?",
+                summary=summary,
+                execution_mode=INFO,
+                risk_level="low",
+                explanation="A confirmation is never resolved by guessing between saved proposals.",
+            )
     elif _is_experiment_review_list_request(lowered):
         from conversational_experiment_review import list_message
         action = _make_action(

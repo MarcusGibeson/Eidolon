@@ -23,6 +23,8 @@ from chat_action_router import (
     is_experiment_review_question,
     is_review_confirmation,
     propose_chat_action,
+    resolve_confirmation,
+    run_confirmed_action,
 )
 from bounded_action_arguments import bind_bounded_action_arguments
 from structured_action_clarification import build_structured_clarification_request
@@ -153,6 +155,7 @@ _INTENT_TO_CAPABILITY = {
     "experiment_review_start": "experiment_review",
     "experiment_review_status": "experiment_review",
     "experiment_review_confirm": "experiment_review",
+    "experiment_review_confirm_ambiguous": "experiment_review",
 }
 
 
@@ -352,18 +355,22 @@ def _saved_review_proposal_id(text: str) -> str:
         return ""
 
 
-def _pending_review_summary() -> dict[str, str]:
-    """The saved review proposal a confirmation resolves against: its id and package only."""
+def _pending_review_summary(text: str = "") -> dict[str, str]:
+    """The saved proposal this confirmation resolves to: its state, id and target name only."""
     try:
-        from chat_action_router import pending_review_action
-
-        pending = pending_review_action() or {}
+        state, target, waiting = resolve_confirmation(text)
     except Exception:
         return {}
-    if not pending:
+    if state == "none":
         return {}
-    return {"action_id": str(pending.get("id") or "")[:64],
-            "package_id": str((pending.get("function_args") or {}).get("package_id") or "")[:64]}
+    summary = {"state": state,
+               "waiting": ", ".join(sorted({str((row.get("function_args") or {}).get("package_id")
+                                                or row.get("function_name") or "") for row in waiting}))[:240]}
+    if target:
+        summary["action_id"] = str(target.get("id") or "")[:64]
+        summary["package_id"] = str((target.get("function_args") or {}).get("package_id")
+                                    or target.get("function_name") or "")[:64]
+    return summary
 
 
 def _review_job_sentence() -> str:
@@ -456,7 +463,7 @@ def ground_action_intent(user_text: str, intent: Mapping[str, Any]) -> dict[str,
             intent_name = f"registered_{semantic_capability}_request"
     matched = bool(capability_id and capability_id in _CAPABILITY_IDS)
     unsupported = intent_name.startswith("blocked_") or (not matched and intent_name == "unknown_request")
-    unavailable = bool(matched and mode == INFO and intent_name not in {"supervised_capabilities", "experiment_review_list", "experiment_review_status", "experiment_review_confirm"})
+    unavailable = bool(matched and mode == INFO and intent_name not in {"supervised_capabilities", "experiment_review_list", "experiment_review_status", "experiment_review_confirm", "experiment_review_confirm_ambiguous"})
     authority, authority_required = _authority_for(mode, capability_id, risk)
 
     missing: list[str] = []
@@ -498,7 +505,8 @@ def ground_action_intent(user_text: str, intent: Mapping[str, Any]) -> dict[str,
         base["requested_review_target"] = _requested_review_target(text) if intent_name == "experiment_review_start" else ""
         base["review_action_id"] = _saved_review_proposal_id(text) if intent_name == "experiment_review_start" else ""
         base["review_proposal_persisted"] = bool(base["review_action_id"])
-        base["pending_review_action"] = _pending_review_summary() if intent_name == "experiment_review_confirm" else {}
+        base["pending_review_action"] = (_pending_review_summary(text)
+                                         if intent_name.startswith("experiment_review_confirm") else {})
         base["review_job_sentence"] = _review_job_sentence() if intent_name == "experiment_review_status" else ""
     base["grounding_digest"] = _digest(base)
     return base
@@ -724,6 +732,30 @@ def build_natural_language_action_projection(
     return projection
 
 
+def apply_confirmed_execution(projection: dict[str, Any]) -> dict[str, Any]:
+    """Run the proposal this turn confirmed, once, and record its receipt in the projection.
+
+    Only the live turn calls this. Grounding never runs anything, so replaying a confirmation out of conversation
+    history cannot start a second run, and an already-resolved proposal is refused by the runner itself.
+    """
+    grounding = projection.get("grounding") if isinstance(projection.get("grounding"), dict) else None
+    if not grounding or str(grounding.get("router_intent") or "") != "experiment_review_confirm":
+        return projection
+    pending = dict(grounding.get("pending_review_action") or {})
+    action_id = str(pending.get("action_id") or "")
+    if not action_id:
+        return projection
+    try:
+        receipt = run_confirmed_action(action_id)
+    except Exception as error:
+        receipt = {"ok": False, "refused": f"execution_error:{type(error).__name__}", "action_id": action_id}
+    grounding["confirmed_execution"] = {key: value for key, value in receipt.items() if key != "message"}
+    grounding["confirmed_execution_message"] = str(receipt.get("message") or "")[:400]
+    grounding["execution_state"] = "started" if receipt.get("ok") else "refused"
+    grounding["grounding_digest"] = _digest({k: v for k, v in grounding.items() if k != "grounding_digest"})
+    return projection
+
+
 def natural_language_action_public_projection(projection: Mapping[str, Any]) -> dict[str, Any]:
     intent = dict(projection.get("intent") or {})
     grounding = dict(projection.get("grounding") or {})
@@ -768,23 +800,37 @@ def _experiment_review_answer(grounding: Mapping[str, Any]) -> str:
     if router_intent == "experiment_review_status":
         sentence = str(grounding.get("review_job_sentence") or "")
         return sentence or "No independent review has been started yet, so there is no job to report."
-    if router_intent == "experiment_review_confirm":
+    if router_intent.startswith("experiment_review_confirm"):
         pending = dict(grounding.get("pending_review_action") or {})
         package = str(pending.get("package_id") or "the proposed package")
+        waiting = str(pending.get("waiting") or "")
+        state = str(pending.get("state") or "")
+        if router_intent == "experiment_review_confirm_ambiguous" or state in {"ambiguous", "unknown"}:
+            if state == "unknown":
+                return f"Nothing waiting matches that name. Waiting now: {waiting}. Name one, for example: confirm {waiting.split(', ')[0]}."
+            return f"More than one proposal is waiting: {waiting}. Name the one you mean, for example: confirm {waiting.split(', ')[0]}."
+        receipt = dict(grounding.get("confirmed_execution") or {})
+        if receipt:
+            if receipt.get("ok"):
+                job = str(receipt.get("job_id") or "")
+                as_job = f" It is running as job {job}." if job else ""
+                return (f"Started the independent read-only review of {package}.{as_job} Ask me for the review status "
+                        f"whenever you want to know where it is.")
+            refused = str(receipt.get("refused") or "")
+            detail = str(grounding.get("confirmed_execution_message") or "")
+            if refused == "already_resolved":
+                return f"That proposal for {package} is no longer waiting, so I did not start it again. Ask me for the review status to see where it stands."
+            return f"I did not start the review of {package}. {detail or 'The saved proposal was refused before anything ran.'}".strip()
         action_id = str(pending.get("action_id") or "")
         saved = f" It is saved as action {action_id}." if action_id else ""
-        return (
-            f"Confirmed: the review of {package} is the one waiting to run.{saved} It has not started, and I do not start "
-            f"it from this conversation. Open Chat Actions and press Execute to run it."
-        )
+        return f"Confirmed: the review of {package} is the one waiting to run.{saved} It has not started yet."
     if router_intent == "experiment_review_start":
         requested = str(grounding.get("requested_review_target") or "")
         named = f"{requested} " if requested else ""
         action_id = str(grounding.get("review_action_id") or "")
         saved = f" I have saved it as action {action_id}." if action_id else ""
         return (
-            f"You asked me to review {named}independently.{saved} Nothing has started: say confirm and then run it from "
-            f"Chat Actions, which is the only place a review actually starts."
+            f"You asked me to review {named}independently.{saved} Nothing has started yet: say confirm and I will start it."
         )
     if targets:
         return (

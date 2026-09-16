@@ -103,6 +103,7 @@ from provider_aware_performance import (
 from provider_aware_performance_foundations import public_provider_aware_performance_plan
 from local_model_readiness import provider_capabilities
 from natural_language_action_routing import (
+    apply_confirmed_execution as _apply_confirmed_execution,
     build_natural_language_action_projection,
     natural_language_action_public_projection,
     bound_unverified_action_claim as _bound_natural_language_action_claim,
@@ -1026,6 +1027,9 @@ def run_conversation_turn(
         action_projection = build_natural_language_action_projection(
             routed_action_text, conversation_history=session_history, authoritative_receipts=authoritative_action_results,
         )
+        # The live turn is the only place a confirmed proposal runs. Grounding never executes, so a confirmation
+        # replayed from history cannot start a second run.
+        action_projection = _apply_confirmed_execution(action_projection)
         conversational_command_integration = build_conversational_command_integration(
             message, action_projection=action_projection, conversation_history=session_history, session_id=resolved_session_id,
         )
@@ -1740,6 +1744,9 @@ def stream_conversation_turn(
         action_projection = build_natural_language_action_projection(
             routed_action_text, conversation_history=session_history, authoritative_receipts=authoritative_action_results,
         )
+        # The live turn is the only place a confirmed proposal runs. Grounding never executes, so a confirmation
+        # replayed from history cannot start a second run.
+        action_projection = _apply_confirmed_execution(action_projection)
         conversational_command_integration = build_conversational_command_integration(
             message, action_projection=action_projection, conversation_history=session_history, session_id=resolved_session_id,
         )

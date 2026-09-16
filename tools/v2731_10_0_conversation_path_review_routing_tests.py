@@ -233,27 +233,70 @@ proposals = [row for row in router.list_chat_actions(include_closed=True)
              and str((row.get("function_args") or {}).get("package_id") or "") == "G-INVAR"]
 require(len(proposals) == 1, "no_duplicate_review_proposal_is_created")
 
-# A confirmation resolves against the most recent proposal still waiting, whichever package that is.
-pending = router.pending_review_action() or {}
-pending_id = str(pending.get("id") or "")
-pending_package = str((pending.get("function_args") or {}).get("package_id") or "")
-require(pending_id != "" and pending_package != "", "a_saved_proposal_is_waiting_to_run")
+# Two proposals are waiting by now, so a bare confirmation must not guess between them.
+waiting = router.pending_confirmable_actions()
+require(len(waiting) >= 2, "more_than_one_proposal_is_waiting")
+ambiguous_projection = routing.build_natural_language_action_projection("Confirm.")
+ambiguous_grounding = dict(ambiguous_projection.get("grounding") or {})
+require(ambiguous_grounding.get("router_intent") == "experiment_review_confirm_ambiguous",
+        "a_bare_confirmation_with_several_waiting_is_ambiguous")
+ambiguous_answer = routing.bounded_action_explanation(ambiguous_projection)
+require("G-INVAR" in ambiguous_answer and "G-CAND2-refx" in ambiguous_answer,
+        "the_ambiguous_answer_names_every_waiting_proposal")
+require(routing.apply_confirmed_execution(ambiguous_projection)["grounding"].get("execution_state") == "not_executed",
+        "an_ambiguous_confirmation_runs_nothing")
+require(not (RUNTIME / "research_jobs").exists(), "an_ambiguous_confirmation_creates_no_job")
 
-confirm_projection = routing.build_natural_language_action_projection("Confirm.")
+# Naming the package resolves it, and a name that matches nothing runs nothing.
+unknown_projection = routing.build_natural_language_action_projection("Confirm G-NOTHING")
+require(dict(unknown_projection.get("grounding") or {}).get("router_intent") == "experiment_review_confirm_ambiguous",
+        "a_confirmation_naming_nothing_waiting_resolves_nothing")
+require(routing.apply_confirmed_execution(unknown_projection)["grounding"].get("execution_state") == "not_executed",
+        "a_confirmation_naming_nothing_waiting_runs_nothing")
+
+confirm_projection = routing.build_natural_language_action_projection("Confirm G-INVAR")
 confirm_grounding = dict(confirm_projection.get("grounding") or {})
-require(dict(confirm_projection.get("intent") or {}).get("category") == "action_request", "a_confirmation_after_a_proposal_is_an_action_request")
+require(dict(confirm_projection.get("intent") or {}).get("category") == "action_request",
+        "a_named_confirmation_is_an_action_request")
 require(confirm_grounding.get("capability_id") == "experiment_review", "a_confirmation_grounds_on_the_review_capability")
-require(confirm_grounding.get("router_intent") == "experiment_review_confirm", "a_confirmation_routes_to_the_confirmation_control")
-require(dict(confirm_grounding.get("pending_review_action") or {}).get("action_id") == pending_id,
-        "the_confirmation_resolves_against_the_saved_proposal")
-confirm_answer = routing.bounded_action_explanation(confirm_projection)
-require(pending_id in confirm_answer and pending_package in confirm_answer,
-        "the_confirmation_answer_names_the_proposal_and_package")
-require("has not started" in confirm_answer, "the_confirmation_answer_says_nothing_has_started")
-require(confirm_grounding.get("execution_state") == "not_executed", "confirming_executes_nothing")
+require(confirm_grounding.get("router_intent") == "experiment_review_confirm", "a_named_confirmation_resolves_to_one_proposal")
+require(dict(confirm_grounding.get("pending_review_action") or {}).get("action_id") == action_id,
+        "the_confirmation_resolves_to_the_named_package")
+require(confirm_grounding.get("execution_state") == "not_executed", "grounding_a_confirmation_still_executes_nothing")
+require(not (RUNTIME / "research_jobs").exists(), "grounding_a_confirmation_creates_no_job")
 
-# Confirming is still not an execution: no job exists anywhere after the whole confirmation flow.
-require(not (RUNTIME / "research_jobs").exists(), "confirming_never_creates_a_review_job")
+# Only the live turn runs it, and it runs exactly once.
+adapter.SPAWN = lambda argv, cwd, env: 4242
+adapter.ALIVE = lambda pid: pid == 4242
+executed = routing.apply_confirmed_execution(routing.build_natural_language_action_projection("Confirm G-INVAR"))
+executed_grounding = dict(executed.get("grounding") or {})
+receipt = dict(executed_grounding.get("confirmed_execution") or {})
+require(receipt.get("ok") is True, "the_confirmed_proposal_runs_on_the_live_turn")
+require(executed_grounding.get("execution_state") == "started", "the_projection_records_that_it_started")
+require(str(receipt.get("job_id") or "") != "", "the_receipt_carries_the_job_id")
+job_files = sorted((RUNTIME / "research_jobs").glob("job_*.json"))
+require(len(job_files) == 1, "confirming_starts_exactly_one_job")
+started_answer = routing.bounded_action_explanation(executed)
+require("G-INVAR" in started_answer and str(receipt.get("job_id")) in started_answer,
+        "the_answer_reports_the_started_job")
+
+# The same confirmation replayed cannot start a second run.
+replay = routing.apply_confirmed_execution(routing.build_natural_language_action_projection("Confirm G-INVAR"))
+require(sorted((RUNTIME / "research_jobs").glob("job_*.json")) == job_files, "a_replayed_confirmation_starts_no_second_job")
+require(dict(replay.get("grounding") or {}).get("execution_state") != "started" or
+        dict(dict(replay.get("grounding") or {}).get("confirmed_execution") or {}).get("job_id") == receipt.get("job_id"),
+        "a_replayed_confirmation_reports_no_new_job")
+
+# The allowlist is the only route from a conversation turn to an executor.
+require("experiment_review_start" in router.CONVERSATION_CONFIRMABLE_FUNCTIONS, "the_review_is_confirmable")
+require(all(name.isidentifier() for name in router.CONVERSATION_CONFIRMABLE_FUNCTIONS), "the_allowlist_holds_function_names_only")
+refused = router.run_confirmed_action("chat_action_does_not_exist")
+require(refused.get("ok") is False and refused.get("refused") == "not_confirmable_from_conversation",
+        "an_action_outside_the_allowlist_is_refused")
+runtime_source = (ROOT / "conscious_agent" / "conversation_runtime.py").read_text(encoding="utf-8")
+require(runtime_source.count("_apply_confirmed_execution(action_projection)") == 2,
+        "the_live_turn_applies_the_confirmation_at_both_projection_sites")
+require(runtime_source.count("execute_supervised_action(") == 0, "conversation_still_calls_no_supervised_executor")
 
 # A turn that is not an action request must not claim a review is running when none is.
 ordinary_projection = routing.build_natural_language_action_projection("Thanks!")
@@ -261,7 +304,7 @@ fabricated = ("The read-only review of G-INVAR is now active. I am scanning the 
               "identify any deviations or issues.")
 bound_claim = routing.bound_unverified_action_claim(fabricated, ordinary_projection)
 require(bound_claim != fabricated, "a_fabricated_review_execution_claim_is_replaced")
-require("is running" not in bound_claim or "No independent review is running" in bound_claim,
+require(str(receipt.get("job_id")) in bound_claim or "No independent review is running" in bound_claim,
         "the_replacement_reports_the_job_record")
 for untouched in ("That sounds good, the invariance question is the interesting one.",
                   "I can review G-INVAR, G-CAND2-refx and G-REL-fixtures.",
@@ -270,7 +313,7 @@ for untouched in ("That sounds good, the invariance question is the interesting 
             f"ordinary_text_is_not_rewritten:{untouched[:36]}")
 
 # The confirmation answer is its own answer, not a repeat of the proposal it confirms.
-jaccard, ratio = _similarity(ANSWERS["start"], confirm_answer)
+jaccard, ratio = _similarity(ANSWERS["start"], started_answer)
 require(not (jaccard >= 0.72 and ratio >= 0.86), "the_confirmation_answer_is_not_a_repeat_of_the_proposal")
 
 print(json.dumps({"suite": "v2731.10.0-conversation-path-review-routing", "passed": len(CHECKS), "total": len(CHECKS), "ok": True}))
