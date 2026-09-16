@@ -1,6 +1,16 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.32, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+**Version 2.33, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.33** (Marcus, 2026-09-16; the private, quiescent review runtime — infrastructure repair):
+- **Approved and implemented outside the frozen reviewer.** `conscious_agent/experiment_review.py` stays byte-identical to the qualified v2731.8 baseline `d158e253…`; only `tools/run_review_job.py`, the detached job and runtime preparation layer, changed. The failed live G-INVAR run is preserved exactly as an incomplete infrastructure trial at the mutation-guard layer, not rescored and not reinterpreted.
+- **Each detached review owns a private runtime root** at `<data>/research_review_runtimes/<job_id>/`, written to by nothing else, so the reviewer's unconditional root guard watches a quiescent directory. The artifact is copied into the live review area after the guarded window closes, leaving listing, status and receipts unchanged. No live application state is copied in.
+- **The guard now covers strictly more of what matters**: the Eidolon source tree, which the live runs did not guard at all (`git` HEAD, porcelain status and `diff HEAD --binary`); the package, verified where it is installed by the reviewer's own loader and digests; the installed package area; and each existing review artifact. Ordinary application state — cognition, conversation runtime and session state, Chroma, dashboard chat — is no longer guarded, because the reviewer has no reason to touch it and it changes for reasons unrelated to the review.
+- **Existing reviews are guarded one directory at a time**, never through the review area that holds them: the research queue keeps `local_queue.json` in that same directory, and the adapter deliberately allows other deterministic queue work while a review runs. Guarding the parent would have re-created the same false-failure class this repair removes.
+- **Verified by `tools/v2731_11_0_private_review_runtime_tests.py`**, 52 deterministic checks driving the real runner, private runtime and guard through a stub model, with every adversarial mutation performed mid-review between the guard's two snapshots: live churn (including a real queue write) passes; package, source, protected-artifact and stray private-runtime mutations each fail and are named; existing artifacts are byte-identical afterwards; the baseline digest is checked before the first run and after the last; and chat invocation, detached execution, reconnection/status and receipt-only memory still hold.
+- **The repair and its verification are recorded separately** from the frozen coworking-validation evidence, in `docs/PRIVATE_REVIEW_RUNTIME_REPAIR.md`.
+- **Operating note:** the source tree being guarded means editing the repository while a detached review runs will trip the guard, correctly.
+- **G-EVID1 does not begin** until this repair passes its bounded live smoke test.
 
 **Added in 2.32** (Marcus, 2026-09-16; the first chat-started review, classified as an infrastructure trial):
 - **The first review started from conversation ran end to end.** Job `job_955f1d999e07f538`, package G-INVAR, confirmed from the phone over Tailscale at 20:47:28Z, finished 22:52:02Z, 2h 05m, detached. Review `72a40f4dc8a09ae3`: **19/19 parts, 100% package coverage, 100 grounded observations**, and status `mutation_guard_failed`.

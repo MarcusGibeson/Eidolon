@@ -1,19 +1,34 @@
 from __future__ import annotations
 
-"""Run one queued experiment-review job in its own process (spec 2.25).
+"""Run one queued experiment-review job in its own process and its own private runtime (spec 2.33).
 
   python tools/run_review_job.py <job record path>
 
 Started by the conversational adapter after the operator confirms, or by an operator directly. It runs the operator-chosen
-queue task through the frozen reviewer, then records the outcome in the job record. The record is written before and
-after the review only: the reviewer's mutation guard fingerprints the runtime root while it runs, so nothing may write
-there in between. The review itself stays read-only and non-authoritative.
+queue task through the frozen reviewer, then records the outcome in the job record.
+
+The review runs against a **private runtime root** of its own, created for this job and written to by nothing else. The
+frozen reviewer always guards its runtime root, so pointing that root at the live data directory meant every ordinary
+conversation, cognition or vector-store write during a multi-hour review counted as a mutation. The private root is
+quiescent, so live application state may keep changing while the review runs without touching its guard.
+
+What the review guards is therefore wider than before, not narrower:
+  - the private runtime root, where only this review's own output directory may appear;
+  - the selected package, verified by the reviewer's own loader and digests;
+  - the installed package area and the existing review artifacts, both of which nothing writes during a review;
+  - the Eidolon source tree, which the live runs did not guard at all.
+
+Ordinary application state is not copied into the private runtime and is not guarded, because the reviewer has no reason
+to touch it and it changes for reasons that have nothing to do with the review. The artifact is copied into the live
+review area after the guarded window closes, so listing, status and receipts are unchanged. The review itself stays
+read-only and non-authoritative.
 """
 
 from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
+import shutil
 import sys
 from typing import Any, Callable, Mapping
 
@@ -22,9 +37,58 @@ for value in (str(ROOT), str(ROOT / "conscious_agent")):
     if value not in sys.path:
         sys.path.insert(0, value)
 
+PRIVATE_RUNTIME_AREA = "research_review_runtimes"
+SOURCE_ROOT = ROOT
+
+# Deterministic tests drive the real runner, private runtime and guard through a stub model. Production leaves both
+# None, so the reviewer resolves its own configured local model exactly as before.
+CALL_MODEL: Callable[[str, int], tuple[str, dict[str, Any]]] | None = None
+IDENTITY: Mapping[str, Any] | None = None
+
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def private_runtime_root(job_id: str, root: str | Path) -> Path:
+    """The private runtime this job's review owns. Only the review writes here, so the guard has nothing to race."""
+    private = Path(root) / PRIVATE_RUNTIME_AREA / str(job_id)
+    private.mkdir(parents=True, exist_ok=True)
+    return private
+
+
+def guarded_research_roots(root: str | Path) -> list[Path]:
+    """Live areas a review must leave exactly as it found them: installed packages and each existing review artifact.
+
+    Every earlier review is guarded as its own directory rather than through the review area that contains them,
+    because the research queue keeps ``local_queue.json`` in that same directory and the adapter deliberately lets
+    other deterministic queue work continue while a review runs. Guarding the parent would make that ordinary queue
+    write a mutation, which is the class of false failure this design exists to remove.
+    """
+    import experiment_review as er
+    import conversational_experiment_review as adapter
+
+    package_area = Path(root) / adapter.PACKAGE_AREA
+    review_area = Path(root) / er.REVIEW_AREA
+    for path in (package_area, review_area):
+        path.mkdir(parents=True, exist_ok=True)
+    return [package_area, *sorted(p for p in review_area.iterdir() if p.is_dir())]
+
+
+def publish_artifact(private: Path, root: str | Path, review_id: str) -> Path:
+    """Copy the finished artifact into the live review area, after the guarded window has closed.
+
+    The copy happens once the reviewer has taken its closing snapshot and returned, so publishing a review can never be
+    what a review's own guard reports.
+    """
+    import experiment_review as er
+
+    source = Path(private) / er.REVIEW_AREA / review_id
+    destination = Path(root) / er.REVIEW_AREA / review_id
+    if not source.is_dir() or destination.exists():
+        return destination
+    shutil.copytree(source, destination)
+    return destination
 
 
 def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] | None = None) -> dict[str, Any]:
@@ -37,22 +101,31 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
     import local_research_queue as lrq
 
     root = job["runtime_root"]
-    runner = review or (lambda target: er.review_experiment(target, runtime_root_path=root, protected_roots=[]))
+    private = private_runtime_root(job["job_id"], root)
+    protected = guarded_research_roots(root)
+    runner = review or (lambda target: er.review_experiment(target, runtime_root_path=private, source_root=SOURCE_ROOT,
+                                                            protected_roots=protected, call_model=CALL_MODEL, identity=IDENTITY))
     try:
         task = lrq.run_task(job["task_id"], runner=runner, root=root)
     except Exception as error:  # a failed review is recorded, never hidden, and never retried on its own
-        return adapter.save_job({**job, "status": "failed", "failure": f"{type(error).__name__}: {error}"[:300], "finished": _now()}, root)
+        return adapter.save_job({**job, "status": "failed", "failure": f"{type(error).__name__}: {error}"[:300],
+                                 "finished": _now(), "private_runtime_root": str(private)}, root)
     review_id = str(task.get("review_id") or "")
-    artifact = json.loads((Path(root) / er.REVIEW_AREA / review_id / "review.json").read_text(encoding="utf-8")) if review_id else {}
+    location = publish_artifact(private, root, review_id) if review_id else ""
+    artifact = json.loads((Path(location) / "review.json").read_text(encoding="utf-8")) if review_id else {}
     coverage = artifact.get("coverage", {})
     levels = coverage.get("levels", {})
+    guard = artifact.get("mutation_guard", {})
     final = {
         **job, "status": "completed", "finished": _now(), "review_id": review_id, "review_status": artifact.get("status", ""),
-        "task_status": task.get("status"), "location": str(Path(root) / er.REVIEW_AREA / review_id) if review_id else "",
+        "task_status": task.get("status"), "location": str(location) if review_id else "",
+        "private_runtime_root": str(private),
         "coverage": {k: coverage.get(k) for k in ("complete", "required_parts", "reviewed_required_parts", "required_coverage",
                                                   "grounded_observations")},
         "levels": {k: {kk: vv for kk, vv in (levels.get(k) or {}).items() if isinstance(vv, (int, float, str))} for k in levels},
-        "checks": {"mutation_guard_passed": artifact.get("mutation_guard", {}).get("passed"),
+        "checks": {"mutation_guard_passed": guard.get("passed"),
+                   "source_tree_guarded": bool((guard.get("protected") or {}).get("source_tree")),
+                   "guarded_roots": [str(p) for p in (guard.get("protected") or {}).get("roots", [])],
                    "authority_flags_all_false": all(v is False for v in (artifact.get("authority") or {}).values()) or None,
                    "non_authoritative": artifact.get("non_authoritative"),
                    "provider_attempts": artifact.get("runtime_accounting", {}).get("provider_attempts")},
