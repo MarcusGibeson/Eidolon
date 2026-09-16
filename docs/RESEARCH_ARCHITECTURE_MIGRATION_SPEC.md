@@ -1,6 +1,16 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.27, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+**Version 2.28, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.28** (Marcus, 2026-09-16; one paragraph for every review turn was squashed as a repeat):
+- **The defect.** `conversation_runtime._bound_unverified_action_claim` replaces the whole reply with `bounded_action_explanation` for any turn whose intent is an action request without an execution receipt; it does not wait for an execution claim. Classifying review requests as action requests (2.26) therefore made every review turn the same paragraph, differing only in its final clause. The conversation's own repetition guard scored the second turn at 93% jaccard and 92% sequence, above its 72/86 duplicate thresholds, and replaced Marcus's "Review G-INVAR independently." with "I repeated my previous response instead of responding to what you just said."
+- **The repair: one governed answer per request, each answering what was asked.**
+  - listing: the installed packages, and how to ask for one;
+  - start: the package the operator named, and that nothing has started until they confirm;
+  - status: the job sentence the adapter already produces (ids, status, coverage), or that no review has been started.
+- **Two bounded grounding fields** support this: `requested_review_target` (the package this request names, via the router's own extractor, so a path or a free-form instruction gives nothing) and `review_job_sentence` (the adapter's own status sentence, never a statement the review made). Each is attached only for the request that needs it.
+- **Nothing about the boundary changed.** No answer claims a review ran, grounding stays `not_executed`, and starting a review still requires the operator's confirmation. Other capabilities keep their existing explanation verbatim.
+- **Tests:** the routing suite reaches 99 checks, adding that each answer names what it should, that no answer matches the past-execution claim pattern, that the three answers are pairwise below the guard's own duplicate thresholds, and that the guard, run on the path where it applies, passes the start and status answers through unchanged.
 
 **Added in 2.27** (Marcus, 2026-09-16; the conversation can name what is reviewable):
 - **The eligible package ids reach the conversation.** `eligible_target_ids()` lists the installed packages that load under the reviewer's own rules: ids only, sorted, bounded at `MAX_CONVERSATION_TARGETS` (12), and never a path, a title, a document or a review's conclusions. An unreadable package area answers with nothing rather than raising into the conversation.

@@ -132,8 +132,8 @@ for phrase in LIST_PHRASES[:1] + STATUS_PHRASES[:1] + START_PHRASES[:1]:
             and grounding.get("provider_contacted") is False, f"grounding_mutates_nothing:{phrase[:40]}")
     require(grounding.get("authoritative_execution_receipt_present") is False, f"grounding_claims_no_receipt:{phrase[:40]}")
     require(routing.action_projection_contains_private_fields(public) is False, f"the_public_projection_stays_content_free:{phrase[:40]}")
-    require("experiment_review" in routing.bounded_action_explanation(projection),
-            f"the_bounded_explanation_names_the_capability:{phrase[:40]}")
+    require(routing.bounded_action_explanation(projection).strip() != "",
+            f"the_bounded_explanation_answers_the_request:{phrase[:40]}")
 
 # The listing the conversation receives is the installed package ids, bounded and content free.
 INSTALLED = ["G-CAND2-refx", "G-INVAR"]
@@ -147,7 +147,8 @@ for phrase in LIST_PHRASES[:1] + STATUS_PHRASES[:1] + START_PHRASES[:1]:
         routing.natural_language_action_public_projection(projection)) is False,
         f"the_projection_with_targets_stays_content_free:{phrase[:40]}")
     explanation = routing.bounded_action_explanation(projection)
-    require(all(name in explanation for name in INSTALLED), f"the_explanation_names_what_can_be_reviewed:{phrase[:40]}")
+    if grounding.get("router_intent") == "experiment_review_list":
+        require(all(name in explanation for name in INSTALLED), f"the_explanation_names_what_can_be_reviewed:{phrase[:40]}")
 
 # Ordinary conversation is told nothing about what is installed.
 for phrase in CONVERSATION_PHRASES:
@@ -170,8 +171,38 @@ require(grounding.get("execution_state") == "not_executed", "an_uninstalled_pack
 # An unverified execution claim is still bounded back to the governed explanation.
 projection = routing.build_natural_language_action_projection("Review G-INVAR independently.")
 bounded = routing.bound_unverified_action_claim("I have completed the review of G-INVAR.", projection)
-require(bounded != "I have completed the review of G-INVAR." and "experiment_review" in bounded,
+require(bounded != "I have completed the review of G-INVAR." and "Nothing has started" in bounded,
         "an_unverified_completion_claim_is_replaced_by_the_governed_explanation")
+
+# Each review request gets its own answer. One paragraph reused across turns is squashed by the conversation's own
+# repetition guard, which replaced Marcus's second request with "I repeated my previous response".
+from conversation_target_continuity import _similarity  # noqa: E402
+
+ANSWERS = {}
+for phrase, label in (("What experiments can you review?", "list"), ("Review G-INVAR independently.", "start"),
+                      ("How is the review going?", "status")):
+    ANSWERS[label] = routing.bounded_action_explanation(routing.build_natural_language_action_projection(phrase))
+require("G-INVAR" in ANSWERS["start"] and "proposal" in ANSWERS["start"], "the_start_answer_names_the_requested_package")
+require(all(name in ANSWERS["list"] for name in INSTALLED), "the_list_answer_names_what_is_installed")
+require("no job to report" in ANSWERS["status"], "the_status_answer_reports_no_job_when_none_has_run")
+for left in ANSWERS:
+    for right in ANSWERS:
+        if left >= right:
+            continue
+        jaccard, ratio = _similarity(ANSWERS[left], ANSWERS[right])
+        require(not (jaccard >= 0.72 and ratio >= 0.86), f"two_review_answers_are_not_one_repeated_paragraph:{left}_{right}")
+for label, answer in ANSWERS.items():
+    require(not routing._PAST_EXECUTION_CLAIM.search(answer), f"no_review_answer_claims_a_review_ran:{label}")
+
+# The guard itself, on the path where it runs: asking to review one package after asking what is reviewable must not
+# come back as "I repeated my previous response".
+from conversation_target_continuity import enforce_conversation_target_output  # noqa: E402
+
+history = [{"user_message": "What experiments can you review?", "assistant_response": ANSWERS["list"]}]
+for label in ("start", "status"):
+    out, diagnostics = enforce_conversation_target_output(ANSWERS[label], None, history, casual_fast_path=True)
+    require(diagnostics.get("whole_response_replaced") is False, f"the_repetition_guard_does_not_squash_the_answer:{label}")
+    require(out == ANSWERS[label], f"the_answer_reaches_the_operator_unchanged:{label}")
 
 # No review job exists anywhere after the whole suite: grounding never starts one.
 require(not (RUNTIME / "research_jobs").exists(), "grounding_never_creates_a_review_job")

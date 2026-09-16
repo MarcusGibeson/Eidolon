@@ -324,6 +324,27 @@ def _eligible_review_targets() -> list[str]:
         return []
 
 
+def _requested_review_target(text: str) -> str:
+    """The package this request names, using the router's own extractor. A path or a free-form instruction gives ""."""
+    try:
+        from chat_action_router import _experiment_review_target
+
+        return str(_experiment_review_target(text) or "")[:64]
+    except Exception:
+        return ""
+
+
+def _review_job_sentence() -> str:
+    """One sentence on the current review job: ids, status and coverage only, never a statement the review made."""
+    try:
+        from conversational_experiment_review import job_status
+
+        status = job_status()
+    except Exception:
+        return ""
+    return str((status or {}).get("message") or "")[:400]
+
+
 def _capability_for_action(text: str, action: Mapping[str, Any]) -> str:
     semantic = _semantic_capability(text)
     if semantic in _CAPABILITY_IDS:
@@ -442,6 +463,8 @@ def ground_action_intent(user_text: str, intent: Mapping[str, Any]) -> dict[str,
     })
     if matched and capability_id == "experiment_review":
         base["available_review_targets"] = _eligible_review_targets()
+        base["requested_review_target"] = _requested_review_target(text) if intent_name == "experiment_review_start" else ""
+        base["review_job_sentence"] = _review_job_sentence() if intent_name == "experiment_review_status" else ""
     base["grounding_digest"] = _digest(base)
     return base
 
@@ -702,6 +725,29 @@ def action_projection_contains_private_fields(value: Any) -> bool:
     return False
 
 
+def _experiment_review_answer(grounding: Mapping[str, Any]) -> str:
+    """The governed answer for a review request: distinct per request, and never a claim that a review ran."""
+    targets = [str(name) for name in (grounding.get("available_review_targets") or [])]
+    listing = ", ".join(targets)
+    router_intent = str(grounding.get("router_intent") or "")
+    if router_intent == "experiment_review_status":
+        sentence = str(grounding.get("review_job_sentence") or "")
+        return sentence or "No independent review has been started yet, so there is no job to report."
+    if router_intent == "experiment_review_start":
+        requested = str(grounding.get("requested_review_target") or "")
+        named = f"{requested} " if requested else ""
+        return (
+            f"You asked me to review {named}independently. Nothing has started: this is a proposal, and the read-only "
+            f"review runs only after you confirm it."
+        )
+    if targets:
+        return (
+            f"I can independently review these installed experiment packages: {listing}. Ask for one by name and I will "
+            f"show you what the review involves before anything starts."
+        )
+    return "No experiment packages are installed for me to review yet."
+
+
 def bounded_action_explanation(projection: Mapping[str, Any]) -> str:
     intent = dict(projection.get("intent") or {})
     grounding = dict(projection.get("grounding") or {})
@@ -712,11 +758,11 @@ def bounded_action_explanation(projection: Mapping[str, Any]) -> str:
     if category == "ambiguous_request" or status == "ambiguous":
         clarification = str(grounding.get("suggested_clarification") or "Please name the exact requested operation.")
         return f"I understood this as a possible action reference, but it is not uniquely grounded. {clarification} Nothing ran and no approval was created."
+    if status == "matched" and capability == "experiment_review":
+        return _experiment_review_answer(grounding)
     if status == "matched" and capability:
-        targets = [str(name) for name in (grounding.get("available_review_targets") or [])]
-        available = f" The installed packages I can review are {', '.join(targets)}." if targets else ""
         return (
-            f"I understood this as an action request that maps to the registered `{capability}` capability.{available} "
+            f"I understood this as an action request that maps to the registered `{capability}` capability. "
             f"Nothing ran through this conversation turn, and authorization was not inferred. The next governed step requires {authority.replace('_', ' ')}."
         )
     if status in {"unsupported", "unmatched", "unavailable"}:
