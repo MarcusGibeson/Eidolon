@@ -21,6 +21,7 @@ from chat_action_router import (
     INFO,
     SUPERVISED_CAPABILITY_REGISTRY,
     is_experiment_review_question,
+    is_review_confirmation,
     propose_chat_action,
 )
 from bounded_action_arguments import bind_bounded_action_arguments
@@ -151,6 +152,7 @@ _INTENT_TO_CAPABILITY = {
     "experiment_review_list": "experiment_review",
     "experiment_review_start": "experiment_review",
     "experiment_review_status": "experiment_review",
+    "experiment_review_confirm": "experiment_review",
 }
 
 
@@ -194,7 +196,7 @@ def classify_natural_language_intent(user_text: str) -> dict[str, Any]:
     action_shape = _looks_like_action(text)
     embedded_action_shape = bool(_EMBEDDED_ACTION.search(text))
     question_shape = _question_like(text)
-    review_question = is_experiment_review_question(text)
+    review_question = is_experiment_review_question(text) or is_review_confirmation(text)
 
     reasons: list[str]
     requires_clarification = False
@@ -334,6 +336,36 @@ def _requested_review_target(text: str) -> str:
         return ""
 
 
+def _saved_review_proposal_id(text: str) -> str:
+    """Persist this review request as one governed proposal and return its id.
+
+    The same request always resolves to the same saved action, so grounding the turn again, or replaying it from
+    history, never creates a second proposal. Saving a proposal is not running it.
+    """
+    try:
+        from chat_action_router import propose_chat_action as _propose
+
+        key = "experiment-review:" + hashlib.sha256(" ".join(text.split()).casefold().encode("utf-8")).hexdigest()[:24]
+        saved = _propose(text, save=True, save_unknown=False, deduplication_key=key)
+        return str(saved.get("id") or "") if str(saved.get("intent") or "") == "experiment_review_start" else ""
+    except Exception:
+        return ""
+
+
+def _pending_review_summary() -> dict[str, str]:
+    """The saved review proposal a confirmation resolves against: its id and package only."""
+    try:
+        from chat_action_router import pending_review_action
+
+        pending = pending_review_action() or {}
+    except Exception:
+        return {}
+    if not pending:
+        return {}
+    return {"action_id": str(pending.get("id") or "")[:64],
+            "package_id": str((pending.get("function_args") or {}).get("package_id") or "")[:64]}
+
+
 def _review_job_sentence() -> str:
     """One sentence on the current review job: ids, status and coverage only, never a statement the review made."""
     try:
@@ -424,7 +456,7 @@ def ground_action_intent(user_text: str, intent: Mapping[str, Any]) -> dict[str,
             intent_name = f"registered_{semantic_capability}_request"
     matched = bool(capability_id and capability_id in _CAPABILITY_IDS)
     unsupported = intent_name.startswith("blocked_") or (not matched and intent_name == "unknown_request")
-    unavailable = bool(matched and mode == INFO and intent_name not in {"supervised_capabilities", "experiment_review_list", "experiment_review_status"})
+    unavailable = bool(matched and mode == INFO and intent_name not in {"supervised_capabilities", "experiment_review_list", "experiment_review_status", "experiment_review_confirm"})
     authority, authority_required = _authority_for(mode, capability_id, risk)
 
     missing: list[str] = []
@@ -464,6 +496,9 @@ def ground_action_intent(user_text: str, intent: Mapping[str, Any]) -> dict[str,
     if matched and capability_id == "experiment_review":
         base["available_review_targets"] = _eligible_review_targets()
         base["requested_review_target"] = _requested_review_target(text) if intent_name == "experiment_review_start" else ""
+        base["review_action_id"] = _saved_review_proposal_id(text) if intent_name == "experiment_review_start" else ""
+        base["review_proposal_persisted"] = bool(base["review_action_id"])
+        base["pending_review_action"] = _pending_review_summary() if intent_name == "experiment_review_confirm" else {}
         base["review_job_sentence"] = _review_job_sentence() if intent_name == "experiment_review_status" else ""
     base["grounding_digest"] = _digest(base)
     return base
@@ -733,12 +768,23 @@ def _experiment_review_answer(grounding: Mapping[str, Any]) -> str:
     if router_intent == "experiment_review_status":
         sentence = str(grounding.get("review_job_sentence") or "")
         return sentence or "No independent review has been started yet, so there is no job to report."
+    if router_intent == "experiment_review_confirm":
+        pending = dict(grounding.get("pending_review_action") or {})
+        package = str(pending.get("package_id") or "the proposed package")
+        action_id = str(pending.get("action_id") or "")
+        saved = f" It is saved as action {action_id}." if action_id else ""
+        return (
+            f"Confirmed: the review of {package} is the one waiting to run.{saved} It has not started, and I do not start "
+            f"it from this conversation. Open Chat Actions and press Execute to run it."
+        )
     if router_intent == "experiment_review_start":
         requested = str(grounding.get("requested_review_target") or "")
         named = f"{requested} " if requested else ""
+        action_id = str(grounding.get("review_action_id") or "")
+        saved = f" I have saved it as action {action_id}." if action_id else ""
         return (
-            f"You asked me to review {named}independently. Nothing has started: this is a proposal, and the read-only "
-            f"review runs only after you confirm it."
+            f"You asked me to review {named}independently.{saved} Nothing has started: say confirm and then run it from "
+            f"Chat Actions, which is the only place a review actually starts."
         )
     if targets:
         return (
@@ -771,12 +817,35 @@ def bounded_action_explanation(projection: Mapping[str, Any]) -> str:
     return "I did not identify a live action request in this turn."
 
 
+_REVIEW_EXECUTION_CLAIM = re.compile(
+    r"\breview\b[^.]{0,80}\b(?:is|was|has\s+been)\s+(?:now\s+)?(?:active|running|started|underway|in\s+progress|complete|completed|finished)\b"
+    r"|\bi(?:'m|\s+am)\s+(?:now\s+)?(?:scanning|reviewing|analy[sz]ing|examining)\b"
+    r"|\b(?:started|launched|kicked\s+off|began)\s+(?:the\s+)?(?:read-only\s+|independent\s+)?review\b",
+    re.I,
+)
+
+
+def _bound_review_execution_claim(text: str) -> str:
+    """A turn that is not an action request must still not claim a review is running when none is.
+
+    A bare confirmation is ordinary conversation, so nothing else bounds it, and that is exactly the turn on which a
+    claim like "the review is now active" appears. The claim is answered from the job record instead.
+    """
+    if not _REVIEW_EXECUTION_CLAIM.search(text):
+        return text
+    sentence = _review_job_sentence()
+    if sentence:
+        return sentence
+    return ("No independent review is running, and none has been started. A saved review proposal runs only when it is "
+            "executed from Chat Actions.")
+
+
 def bound_unverified_action_claim(response: str, projection: Mapping[str, Any]) -> str:
     text = str(response or "")
     intent = dict(projection.get("intent") or {})
     grounding = dict(projection.get("grounding") or {})
     if not intent.get("action_intent_present"):
-        return text
+        return _bound_review_execution_claim(text)
     if grounding.get("authoritative_execution_receipt_present"):
         return text
     if _PAST_EXECUTION_CLAIM.search(text) or _FUTURE_EXECUTION_CLAIM.search(text):

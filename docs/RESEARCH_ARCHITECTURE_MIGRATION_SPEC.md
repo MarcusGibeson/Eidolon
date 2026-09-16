@@ -1,6 +1,16 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.28, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+**Version 2.29, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.29** (Marcus, 2026-09-16; confirmation resolves against a saved proposal, and a false execution claim is bound):
+- **The defect.** Eidolon answered "Confirm." with "The read-only review of G-INVAR is now active. I am scanning the package structure...". Nothing had started: `research_jobs` did not exist in the runtime, and there was no job, no active job and no status. Two causes. "Confirm." classified as `conversation` and routed to `conversation_only`, so the start function was never invoked; and because that turn carried no action intent, the claim binder passed the model's prose through untouched. Both the adapter's proposal message and the 2.28 answer ended with "confirm to start it", an instruction with nothing behind it on the conversation surface.
+- **Confirmation now resolves against a persisted proposal**, reusing the action store the dashboard console already uses.
+  - A review request is saved as one governed proposal, keyed by the request text, so grounding the same turn again or replaying it from history never creates a second proposal. Grounding reports this as `review_proposal_persisted`.
+  - `pending_review_action()` is the most recent saved review proposal still waiting to run. A bare confirmation counts only when one exists: with an empty action store, "Confirm." is ordinary conversation and grounds nothing.
+  - Confirming produces an INFO control naming the package and the action id, and says what actually runs it: the Execute control on the Chat Actions surface. **Conversation still starts nothing**, which is the boundary this option was chosen to preserve.
+- **A false execution claim is bound against the job record.** On a turn that is not an action request, a claim that a review is active, running or finished is answered from the adapter's own job sentence, or replaced with the fact that no review is running. Ordinary sentences that merely mention a review are untouched.
+- **Known limitation:** starting a review remains a two-surface workflow. Chat proposes and confirms; the Execute control on `/chat-actions` runs it. Chat-initiated execution of a medium-risk action was considered and not taken.
+- **Tests:** the routing suite reaches 124 checks, adding the saved proposal and its dedupe, that a confirmation with no saved proposal grounds nothing, that a confirmation resolves to the most recent waiting proposal and names it, that confirming creates no job, and that a fabricated execution claim is replaced while ordinary text is not.
 
 **Added in 2.28** (Marcus, 2026-09-16; one paragraph for every review turn was squashed as a repeat):
 - **The defect.** `conversation_runtime._bound_unverified_action_claim` replaces the whole reply with `bounded_action_explanation` for any turn whose intent is an action request without an execution receipt; it does not wait for an execution claim. Classifying review requests as action requests (2.26) therefore made every review turn the same paragraph, differing only in its final clause. The conversation's own repetition guard scored the second turn at 93% jaccard and 92% sequence, above its 72/86 duplicate thresholds, and replaced Marcus's "Review G-INVAR independently." with "I repeated my previous response instead of responding to what you just said."

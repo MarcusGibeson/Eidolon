@@ -786,6 +786,34 @@ def _is_any_experiment_review_request(request: str) -> bool:
     return bool(_is_experiment_review_list_request(lowered) or _is_experiment_review_status_request(lowered) or _experiment_review_target(request))
 
 
+_REVIEW_CONFIRMATION = re.compile(
+    r"^(?:please\s+)?(?:confirm(?:ed|\s+it)?|yes(?:,?\s+please)?|(?:yes,?\s+)?go\s+ahead|approved?|start\s+it)\s*[.!]*$",
+    re.I,
+)
+
+
+def pending_review_action() -> dict[str, Any] | None:
+    """The most recent saved review proposal still waiting to run, or None.
+
+    A confirmation means nothing on its own: it is a control over a persisted proposal, so it resolves against the
+    saved action record rather than against anything the conversation remembers.
+    """
+    try:
+        rows = [row for row in list_chat_actions(include_closed=False)
+                if str(row.get("intent") or "") == "experiment_review_start" and str(row.get("status") or "") == "proposed"]
+    except Exception:
+        return None
+    rows.sort(key=lambda row: (str(row.get("created") or ""), str(row.get("id") or "")))
+    return rows[-1] if rows else None
+
+
+def is_review_confirmation(request: str) -> bool:
+    """True only for a bare confirmation that follows a saved review proposal still waiting to run."""
+    if not _REVIEW_CONFIRMATION.fullmatch(" ".join(str(request or "").split())):
+        return False
+    return pending_review_action() is not None
+
+
 def is_experiment_review_question(request: str) -> bool:
     """True only for the two question-shaped review phrasings: what can be reviewed, and how a review is going.
 
@@ -1305,7 +1333,7 @@ def propose_chat_action(
             function_name="release_summary",
             explanation="This provider-free inspection reads four allowlisted source files, changes nothing, and grants no release authority.",
         )
-    elif not quality.should_analyze_action and not _is_any_experiment_review_request(request):
+    elif not quality.should_analyze_action and not _is_any_experiment_review_request(request) and not is_review_confirmation(request):
         action = _make_action(
             user_request=request,
             intent="conversation_only",
@@ -1353,6 +1381,21 @@ def propose_chat_action(
                 blocked_reason="No target file path found. Try: suggest improvement for conscious_agent/memory.py ...",
             )
     # Independent experiment review: selection and invocation of the already-authorized read-only capability.
+    elif is_review_confirmation(request):
+        pending = pending_review_action() or {}
+        pending_id = str(pending.get("id") or "")
+        pending_package = str((pending.get("function_args") or {}).get("package_id") or "the proposed package")
+        action = _make_action(
+            user_request=request,
+            intent="experiment_review_confirm",
+            title=f"Confirmed review of {pending_package}",
+            summary=(f"The review of {pending_package} is saved as action {pending_id} and is waiting to run. "
+                     f"Nothing has started yet: open Chat Actions and press Execute to run it."),
+            execution_mode=INFO,
+            risk_level="low",
+            target_action_id=pending_id,
+            explanation="Conversation confirms the saved proposal and never runs it. Execution stays on the operator-controlled action surface.",
+        )
     elif _is_experiment_review_list_request(lowered):
         from conversational_experiment_review import list_message
         action = _make_action(

@@ -89,6 +89,10 @@ CONVERSATION_PHRASES = (
     "Do you review your own work?",
 )
 
+intent, grounding = project("Confirm.")
+require(intent.get("category") != "action_request", "a_confirmation_with_no_saved_proposal_is_not_an_action_request")
+require(grounding.get("capability_id") != "experiment_review", "a_confirmation_with_no_saved_proposal_grounds_nothing")
+
 for phrase in LIST_PHRASES + STATUS_PHRASES:
     intent, grounding = project(phrase)
     require(intent.get("category") == "action_request", f"question_shaped_review_request_reaches_the_router:{phrase[:40]}")
@@ -182,7 +186,8 @@ ANSWERS = {}
 for phrase, label in (("What experiments can you review?", "list"), ("Review G-INVAR independently.", "start"),
                       ("How is the review going?", "status")):
     ANSWERS[label] = routing.bounded_action_explanation(routing.build_natural_language_action_projection(phrase))
-require("G-INVAR" in ANSWERS["start"] and "proposal" in ANSWERS["start"], "the_start_answer_names_the_requested_package")
+require("G-INVAR" in ANSWERS["start"] and "Nothing has started" in ANSWERS["start"],
+        "the_start_answer_names_the_requested_package_and_starts_nothing")
 require(all(name in ANSWERS["list"] for name in INSTALLED), "the_list_answer_names_what_is_installed")
 require("no job to report" in ANSWERS["status"], "the_status_answer_reports_no_job_when_none_has_run")
 for left in ANSWERS:
@@ -206,5 +211,66 @@ for label in ("start", "status"):
 
 # No review job exists anywhere after the whole suite: grounding never starts one.
 require(not (RUNTIME / "research_jobs").exists(), "grounding_never_creates_a_review_job")
+
+# A review request becomes one saved proposal, and a confirmation resolves against that same saved action.
+import chat_action_router as router  # noqa: E402
+
+start_grounding = dict(routing.build_natural_language_action_projection("Review G-INVAR independently.").get("grounding") or {})
+action_id = str(start_grounding.get("review_action_id") or "")
+require(action_id != "", "a_review_request_is_saved_as_a_governed_proposal")
+require(start_grounding.get("review_proposal_persisted") is True, "grounding_reports_that_it_saved_a_proposal")
+require(dict(routing.build_natural_language_action_projection("What experiments can you review?").get("grounding") or {})
+        .get("review_proposal_persisted") in (False, None), "listing_saves_no_proposal")
+saved = router.load_chat_action(action_id) or {}
+require(str(saved.get("intent") or "") == "experiment_review_start", "the_saved_proposal_is_the_review_start")
+require(str(saved.get("status") or "") == "proposed", "the_saved_proposal_is_waiting_not_running")
+require(str((saved.get("function_args") or {}).get("package_id") or "") == "G-INVAR", "the_saved_proposal_names_the_package")
+
+again = dict(routing.build_natural_language_action_projection("Review G-INVAR independently.").get("grounding") or {})
+require(str(again.get("review_action_id") or "") == action_id, "grounding_the_same_request_twice_saves_one_proposal")
+proposals = [row for row in router.list_chat_actions(include_closed=True)
+             if str(row.get("intent") or "") == "experiment_review_start"
+             and str((row.get("function_args") or {}).get("package_id") or "") == "G-INVAR"]
+require(len(proposals) == 1, "no_duplicate_review_proposal_is_created")
+
+# A confirmation resolves against the most recent proposal still waiting, whichever package that is.
+pending = router.pending_review_action() or {}
+pending_id = str(pending.get("id") or "")
+pending_package = str((pending.get("function_args") or {}).get("package_id") or "")
+require(pending_id != "" and pending_package != "", "a_saved_proposal_is_waiting_to_run")
+
+confirm_projection = routing.build_natural_language_action_projection("Confirm.")
+confirm_grounding = dict(confirm_projection.get("grounding") or {})
+require(dict(confirm_projection.get("intent") or {}).get("category") == "action_request", "a_confirmation_after_a_proposal_is_an_action_request")
+require(confirm_grounding.get("capability_id") == "experiment_review", "a_confirmation_grounds_on_the_review_capability")
+require(confirm_grounding.get("router_intent") == "experiment_review_confirm", "a_confirmation_routes_to_the_confirmation_control")
+require(dict(confirm_grounding.get("pending_review_action") or {}).get("action_id") == pending_id,
+        "the_confirmation_resolves_against_the_saved_proposal")
+confirm_answer = routing.bounded_action_explanation(confirm_projection)
+require(pending_id in confirm_answer and pending_package in confirm_answer,
+        "the_confirmation_answer_names_the_proposal_and_package")
+require("has not started" in confirm_answer, "the_confirmation_answer_says_nothing_has_started")
+require(confirm_grounding.get("execution_state") == "not_executed", "confirming_executes_nothing")
+
+# Confirming is still not an execution: no job exists anywhere after the whole confirmation flow.
+require(not (RUNTIME / "research_jobs").exists(), "confirming_never_creates_a_review_job")
+
+# A turn that is not an action request must not claim a review is running when none is.
+ordinary_projection = routing.build_natural_language_action_projection("Thanks!")
+fabricated = ("The read-only review of G-INVAR is now active. I am scanning the package structure and logic to "
+              "identify any deviations or issues.")
+bound_claim = routing.bound_unverified_action_claim(fabricated, ordinary_projection)
+require(bound_claim != fabricated, "a_fabricated_review_execution_claim_is_replaced")
+require("is running" not in bound_claim or "No independent review is running" in bound_claim,
+        "the_replacement_reports_the_job_record")
+for untouched in ("That sounds good, the invariance question is the interesting one.",
+                  "I can review G-INVAR, G-CAND2-refx and G-REL-fixtures.",
+                  "A review of a manuscript is usually slower than this."):
+    require(routing.bound_unverified_action_claim(untouched, ordinary_projection) == untouched,
+            f"ordinary_text_is_not_rewritten:{untouched[:36]}")
+
+# The confirmation answer is its own answer, not a repeat of the proposal it confirms.
+jaccard, ratio = _similarity(ANSWERS["start"], confirm_answer)
+require(not (jaccard >= 0.72 and ratio >= 0.86), "the_confirmation_answer_is_not_a_repeat_of_the_proposal")
 
 print(json.dumps({"suite": "v2731.10.0-conversation-path-review-routing", "passed": len(CHECKS), "total": len(CHECKS), "ok": True}))
