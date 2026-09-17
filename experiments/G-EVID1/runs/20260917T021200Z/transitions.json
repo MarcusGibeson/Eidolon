@@ -1,0 +1,3712 @@
+{
+ "contract_version": "g-evid1.0",
+ "experiment_id": "G-EVID1",
+ "note": "provisional assessment -> governance rules fired -> final disposition, one record per observation",
+ "transitions": [
+  {
+   "item_id": "I01",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I02",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I03",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I04",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I05",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I06",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I07",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I08",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I09",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I10",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I11",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I12",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I13",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I14",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I15",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I16",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I17",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I18",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I19",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G3",
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I20",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I21",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I22",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I23",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7"
+   ],
+   "governing_rule": "G7",
+   "reason": "scope_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I24",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7"
+   ],
+   "governing_rule": "G7",
+   "reason": "scope_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I25",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "mismatch",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G3"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I26",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G7"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I27",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I28",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G7"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I29",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7"
+   ],
+   "governing_rule": "G7",
+   "reason": "scope_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I30",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7",
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I31",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I32",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_predates",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G8"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I33",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I34",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I35",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I36",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I37",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I38",
+   "repeat": 1,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I39",
+   "repeat": 1,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I40",
+   "repeat": 1,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I41",
+   "repeat": 1,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I42",
+   "repeat": 1,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I43",
+   "repeat": 1,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I44",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I45",
+   "repeat": 1,
+   "provisional": {
+    "relation": "unclear",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G6"
+   ],
+   "governing_rule": "G6",
+   "reason": "relation_unclear",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I46",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I47",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G3",
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I48",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I49",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "medium",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I50",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I51",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I52",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I53",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I54",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I55",
+   "repeat": 1,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I56",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I57",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I58",
+   "repeat": 1,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I59",
+   "repeat": 1,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G8"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I60",
+   "repeat": 1,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I01",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I02",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I03",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I04",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I05",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I06",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I07",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I08",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I09",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I10",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I11",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I12",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I13",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I14",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I15",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I16",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I17",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I18",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I19",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G3",
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I20",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I21",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I22",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I23",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7"
+   ],
+   "governing_rule": "G7",
+   "reason": "scope_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I24",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7"
+   ],
+   "governing_rule": "G7",
+   "reason": "scope_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I25",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "mismatch",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G3"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I26",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G7"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I27",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I28",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G7"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I29",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7"
+   ],
+   "governing_rule": "G7",
+   "reason": "scope_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I30",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7",
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I31",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I32",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_predates",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G8"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I33",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I34",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I35",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I36",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I37",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I38",
+   "repeat": 2,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I39",
+   "repeat": 2,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I40",
+   "repeat": 2,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I41",
+   "repeat": 2,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I42",
+   "repeat": 2,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I43",
+   "repeat": 2,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I44",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I45",
+   "repeat": 2,
+   "provisional": {
+    "relation": "unclear",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G6"
+   ],
+   "governing_rule": "G6",
+   "reason": "relation_unclear",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I46",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I47",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G3",
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I48",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I49",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "medium",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I50",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I51",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I52",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I53",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I54",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I55",
+   "repeat": 2,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I56",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I57",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I58",
+   "repeat": 2,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I59",
+   "repeat": 2,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G8"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I60",
+   "repeat": 2,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I01",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I02",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I03",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I04",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I05",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I06",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I07",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I08",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I09",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I10",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I11",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I12",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I13",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I14",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I15",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I16",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I17",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I18",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I19",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G3",
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I20",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I21",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I22",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I23",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7"
+   ],
+   "governing_rule": "G7",
+   "reason": "scope_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I24",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7"
+   ],
+   "governing_rule": "G7",
+   "reason": "scope_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I25",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "mismatch",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G3"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I26",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G7"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I27",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I28",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G7"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I29",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7"
+   ],
+   "governing_rule": "G7",
+   "reason": "scope_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I30",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "evidence_narrower",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G7",
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I31",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I32",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_predates",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G8"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I33",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I34",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I35",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I36",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I37",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I38",
+   "repeat": 3,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I39",
+   "repeat": 3,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I40",
+   "repeat": 3,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I41",
+   "repeat": 3,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I42",
+   "repeat": 3,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I43",
+   "repeat": 3,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I44",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I45",
+   "repeat": 3,
+   "provisional": {
+    "relation": "unclear",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G6"
+   ],
+   "governing_rule": "G6",
+   "reason": "relation_unclear",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I46",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I47",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G3",
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I48",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5",
+    "G8"
+   ],
+   "governing_rule": "G8",
+   "reason": "temporal_uncertain",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I49",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "medium",
+    "quotes_anchored": 2,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I50",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I51",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I52",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I53",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "evidence_superseded",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G4"
+   ],
+   "governing_rule": "G4",
+   "reason": "evidence_superseded",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I54",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I55",
+   "repeat": 3,
+   "provisional": {
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G5"
+   ],
+   "governing_rule": "G5",
+   "reason": "partial_support",
+   "disposition": "investigate",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I56",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I57",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I58",
+   "repeat": 3,
+   "provisional": {
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G10"
+   ],
+   "governing_rule": "G10",
+   "reason": "supported_and_compatible",
+   "disposition": "use",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I59",
+   "repeat": 3,
+   "provisional": {
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G2",
+    "G8"
+   ],
+   "governing_rule": "G2",
+   "reason": "evidence_contradicts",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  },
+  {
+   "item_id": "I60",
+   "repeat": 3,
+   "provisional": {
+    "relation": "irrelevant",
+    "scope": "mismatch",
+    "temporal": "unclear",
+    "confidence": "high",
+    "quotes_anchored": 1,
+    "structurally_valid": true,
+    "structural_reasons": []
+   },
+   "rules_fired": [
+    "G1",
+    "G3",
+    "G8"
+   ],
+   "governing_rule": "G3",
+   "reason": "scope_incompatible",
+   "disposition": "abstain",
+   "belief_effects": "none"
+  }
+ ]
+}

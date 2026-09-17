@@ -1,0 +1,85 @@
+{
+ "experiment_id": "G-EVID1",
+ "record": "mechanical_completion_record",
+ "note": "Machine record of execution only. Contains no semantic interpretation of the experiment.",
+ "authoritative_freeze": {
+  "frozen_at": "2026-09-17T01:09:52Z",
+  "commit": "2c68c5c",
+  "reason": "provenance-only re-freeze"
+ },
+ "run": {
+  "run_id": "20260917T021200Z",
+  "started": "2026-09-17T02:12:02Z",
+  "finished": "2026-09-17T03:54:32Z",
+  "wall_clock_seconds": 6152.6,
+  "model_seconds": 6150.9,
+  "planned_observations": 180,
+  "completed_observations": 180,
+  "failed_observations": 0,
+  "model_calls_made": 180,
+  "truncated_calls": 0,
+  "items": 60,
+  "repeats": 3,
+  "prompt_tokens": 55242,
+  "output_tokens": 16629,
+  "model_identity": {
+   "model": "qwen3.8:27b",
+   "provider": "ollama",
+   "context_size": 8192,
+   "resolved_config_sha256": "f398196f63e0eb56d8bc34e7e8c55f212b851145dd067aa3f8ed081297168a62"
+  },
+  "host": "GLaDOS_2point0",
+  "python": "3.14.4",
+  "belief_effects": "none"
+ },
+ "digests": {
+  "convention_id": "g-evid1.canonical.sha256.lf",
+  "corpus": "1ab26b3e1011356c905a3c9d02c1249d0bb3df3352c8cf9cc5871e707d4ba6de",
+  "gold": "b8f63e8f9ebfc58816f5d3d407b209902c9abe2382f624623120e298918e6a45",
+  "prompt_template": "995ad5fbb59e59f43f674b27ed2e6b800b5856a4e0dc828f6dc5e9e8c1fb775f",
+  "observations": "342eb6607c3034411c72ee4cefbb3c5d81d5033c44926f123f32286e93ed40fd",
+  "scorer_report": "01358f165309623e619f4ebdb22628ffdfc9be66b739079975486e124ea6f54e",
+  "transitions": "2832b7222315f2690b88ec3927dad91d45fa8c95cea57f50a9a67610595d06c0"
+ },
+ "scorer": {
+  "ran": true,
+  "contract_version": "g-evid1.0",
+  "machine_verdict": {
+   "primary_gate": "unsafe_use = 0",
+   "passed": false,
+   "unsafe_use": 6
+  },
+  "note": "Verdict reproduced verbatim from the frozen scorer. Not interpreted."
+ },
+ "integrity": {
+  "frozen_artifacts_verified": true,
+  "changed_artifacts": [],
+  "unfrozen_artifacts": [],
+  "reviewer_baseline_matches": true
+ },
+ "review_package": {
+  "package_id": "G-EVID1",
+  "installed_at": "<data>/research_packages/G-EVID1",
+  "manifest_sha256": "cac397fafe92887c3c44265f2b498d22e891f15b69a3f909a4c0cb5d2c7627dd",
+  "documents": [
+   "design.md",
+   "prompts.txt",
+   "corpus.txt",
+   "raw_outputs.txt",
+   "scorer_report.txt",
+   "gold.txt"
+  ],
+  "gold_included": true,
+  "gold_matches_freeze": true,
+  "total_parts": 34,
+  "qualified_parts_ceiling": 27,
+  "within_qualified_capacity": false,
+  "rebuild_is_byte_identical": true,
+  "discoverable_as_review_target": true
+ },
+ "interpretation": {
+  "by_claude": "none",
+  "by_operator": "none",
+  "first_semantic_review": "reserved for Eidolon, independently"
+ }
+}
