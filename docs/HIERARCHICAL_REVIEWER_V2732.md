@@ -1,6 +1,6 @@
 # Hierarchical reviewer v2732.0 — bounded intermediate synthesis
 
-**Status: deterministically qualified to 64 parts. Real-model validation in progress. NOT installed as the active
+**Status: deterministically qualified to 64 parts; real-model validated at 19 parts. NOT installed as the active
 reviewer for any experiment.**
 
 This record is separate from the v2731.8 validation and from
@@ -171,7 +171,50 @@ is architectural rather than model variance. G-EVID1 excluded.
 
 ## 7. Real-model validation
 
-*(pending — see the report accompanying this document)*
+One bounded run with the production model: `qwen3.8:27b`, ollama, context 8,192, resolved config
+`f398196f63e0eb56d8bc34e7e8c55f212b851145dd067aa3f8ed081297168a62` — the same configuration G-EVID1 ran on. 19 parts
+is the smallest synthetic scale that still exercises a consolidation round, so it is the cheapest run that
+demonstrates the hierarchy works with a real model rather than only with a stub.
+
+**Status: `complete`. 1 h 58 m (7,079 s), 53 model calls, 70,727 prompt + 29,420 output tokens.**
+
+| measure | result |
+|---|---|
+| part coverage | 19/19 = **1.00** |
+| grounded observations | **141** |
+| silent loss | **0** |
+| uncaptured accounting | balances |
+| quote relocatability | **298/298 byte-exact**, all inside their own part |
+| identifier validity | valid — 236 known, 236 cited, no unknown or dropped references |
+| intermediate synthesis | 1 round, 4 groups, all accepted, converged |
+| reduction | 43 → 26 inputs (**×0.605**) |
+| final input | 26 inputs, **3,582 chars** = 46.4% of the 7,712 bound, 29.9% of the 12,000 budget |
+| final synthesis | both halves accepted |
+| disagreement preserved | **24 non-finding statements** of 95: 8 disagreement, 9 unresolved_relationship, 5 minority, 2 uncertainty |
+| degradation | 1 truncation at the output limit, recovered on retry; no stage left without an accepted reply |
+| mechanical verification | `missing: []` |
+
+Two results matter beyond the pass:
+
+- **The real model compresses harder than the nominal stub.** Its natural round reduction was ×0.605, comfortably
+  inside `MIN_REDUCTION = 0.80`, so **no folding was needed at all** and no register was created. Where the stub
+  required folding to converge, the production model converged on its own. The nominal band is therefore
+  conservative relative to this model, not optimistic.
+- **The real model grounds more observations per part** — 141 over 19 parts (7.4/part) against the stub's 95
+  (5.0/part). More upstream evidence means more document-level inputs at scale. Extrapolating both measured real
+  rates together (7.4 observations/part, ×0.605 per round), a 64-part package reaches ~145 document-level inputs and
+  converges in 3 rounds, well inside `MAX_ROUNDS = 12`. The two effects offset; the higher observation count does
+  not threaten the bound.
+
+**Not covered by this run:** no real-model run was performed at 34, 48 or 64 parts. The 64-part envelope is
+deterministically qualified and real-model *consistent* by extrapolation from measured rates, but it has not been
+directly demonstrated with the production model. At this host's measured rate a 34-part real run is ≈3.4 hours and a
+64-part run ≈6.7 hours.
+
+One process note: the measurement harness computed `identifier_validity` as false in the raw run output. That was a
+stale import — the run began before the harness was taught to recognise the new `GS` and `U` identifiers.
+Recomputed against the same saved artifact with the corrected function it is valid, as the table records. The
+reviewer's own `unknown_references` and `dropped_references` were empty throughout.
 
 ## 8. Limitations
 
@@ -184,7 +227,10 @@ is architectural rather than model variance. G-EVID1 excluded.
   At this host's measured rate that is a multi-hour review.
 - **The pessimistic band does not qualify at any scale.** A model that cites very little cannot be reviewed at
   length by this architecture; it fails closed rather than producing a thin review.
-- **Detached-job reliability** at large scale has not been exercised; qualification ran in-process.
+- **Detached-job reliability** has not been exercised at all for this reviewer. `tools/run_review_job.py` calls
+  the baseline directly, and pointing it at v2732.0 is installation work, which requirement 18 excludes.
+- **Real-model validation covers 19 parts only.** 34/48/64 are deterministic plus extrapolation from measured
+  real rates, not direct demonstration.
 
 ## 9. Reproducing
 
