@@ -385,4 +385,79 @@ with tempfile.TemporaryDirectory(prefix="g-evid1-package-") as temp:
     for item_id, row in list(gold.items())[:10]:
         require(row["gold_relation"] in rendered and item_id in rendered, f"the_rendered_gold_is_complete:{item_id}")
 
+# --- 12. one canonical digest, everywhere identity is recorded or compared ------------------------------------------------
+import g_evid1_digest as digest_module  # noqa: E402
+import g_evid1_freeze as freeze_module  # noqa: E402
+
+require(digest_module.canonical_digest(b"a\r\nb") == digest_module.canonical_digest(b"a\nb")
+        == digest_module.canonical_digest(b"a\rb"), "the_canonical_digest_ignores_line_endings")
+require(digest_module.canonical_digest("same") == digest_module.canonical_digest(b"same"),
+        "text_and_bytes_digest_identically")
+require(digest_module.canonical_digest(b"a\nb") != digest_module.canonical_digest(b"a b"),
+        "the_canonical_digest_still_distinguishes_content")
+
+FREEZE_PATH = DATA / "FREEZE.json"
+require(FREEZE_PATH.exists(), "the_freeze_record_exists")
+frozen = json.loads(FREEZE_PATH.read_text(encoding="utf-8"))
+require(frozen["digest_convention_id"] == digest_module.CONVENTION_ID,
+        "the_freeze_records_the_convention_it_used")
+require(frozen["digest_convention"] == digest_module.CONVENTION, "the_convention_is_recorded_in_full")
+
+# The verifier is inside the manifest it establishes.
+for name in freeze_module.VERIFIER:
+    require(name in frozen["artifacts"], f"the_verifier_is_in_the_integrity_manifest:{name}")
+    require(frozen["verifier"][name] == frozen["artifacts"][name],
+            f"the_verifier_block_agrees_with_the_manifest:{name}")
+    require(frozen["artifacts"][name] == digest_module.digest_file(ROOT / name),
+            f"the_verifier_digest_matches_the_file_on_disk:{name}")
+
+# Freeze record, verification path and the files themselves agree.
+for name, recorded in frozen["artifacts"].items():
+    require(recorded == digest_module.digest_file(ROOT / name), f"the_freeze_matches_the_artifact:{name}")
+verification = freeze_module.verify()
+require(verification["verified"] is True and not verification["changed_artifacts"],
+        "the_verification_path_agrees_with_the_freeze")
+require(verification["reviewer_baseline_matches"] is True, "the_reviewer_baseline_still_matches")
+
+# Run metadata uses the same convention and the same values.
+with tempfile.TemporaryDirectory(prefix="g-evid1-digest-") as temp:
+    payload = harness.run(confirmed=True, repeats=1, call_model=healthy, out_dir=Path(temp), items=items[:2])
+    conditions = payload["conditions"]
+    require(conditions["digest_convention_id"] == digest_module.CONVENTION_ID,
+            "the_run_records_the_convention_it_used")
+    require(conditions["corpus_sha256"] == frozen["artifacts"]["experiments/G-EVID1/corpus.json"],
+            "run_metadata_and_the_freeze_agree_on_the_corpus")
+    require(conditions["gold_sha256"] == frozen["artifacts"]["experiments/G-EVID1/gold.json"],
+            "run_metadata_and_the_freeze_agree_on_the_gold")
+    require(conditions["prompt_template_sha256"] == frozen["prompt_template_sha256"]
+            == digest_module.canonical_digest(harness.PROMPT_TEMPLATE),
+            "run_metadata_the_freeze_and_the_prompt_all_agree")
+    require(all(o["prompt_sha256"] == digest_module.canonical_digest(harness.build_prompt(by_id[o["item_id"]]))
+                for o in payload["observations"]), "every_prompt_is_identified_canonically")
+
+# No G-EVID1 tool hashes identity any other way. The reviewer's own package contract is the one exception, and it
+# is annotated as such where it is used.
+for name in ("g_evid1_harness.py", "g_evid1_freeze.py", "g_evid1_policy.py", "g_evid1_scorer.py"):
+    source = (ROOT / "tools" / name).read_text(encoding="utf-8")
+    require("hashlib" not in source, f"no_second_hashing_convention:{name}")
+package_source = (ROOT / "tools" / "g_evid1_review_package.py").read_text(encoding="utf-8")
+require("reviewer's package contract" in package_source and "raw bytes" in package_source,
+        "the_one_raw_byte_exception_is_documented_where_it_is_used")
+
+# The re-freeze is recorded as provenance only.
+if "refreeze" in frozen:
+    refreeze = frozen["refreeze"]
+    require(refreeze["reason"].startswith("provenance_only:"), "the_refreeze_is_recorded_as_provenance_only")
+    require(refreeze["semantic_changes"] == "none" and refreeze["experimental_changes"] == "none",
+            "the_refreeze_records_that_nothing_semantic_changed")
+    require(refreeze["driven_by_observed_results"] is False,
+            "the_refreeze_records_that_no_observed_result_drove_it")
+    require(refreeze["supersedes"]["artifacts"], "the_superseded_freeze_is_identified_cryptographically")
+
+# The experiment itself is unchanged by the re-freeze: the gate, the policy and I51 stand as preregistered.
+require(frozen["primary_gate"] == "unsafe_use = 0", "the_primary_gate_is_unchanged")
+require(frozen["plan"] == {"items": 60, "repeats": 3, "model_calls": 180}, "the_plan_is_unchanged")
+require(gold["I51"]["forbidden_dispositions"] == ["use"] and gold["I51"]["gold_scope"] == "mismatch",
+        "I51_and_its_gold_are_unchanged")
+
 print(json.dumps({"suite": "v2731.12.0-g-evid1-contract", "passed": len(CHECKS), "total": len(CHECKS), "ok": True}))

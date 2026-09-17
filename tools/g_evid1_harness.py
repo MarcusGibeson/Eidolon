@@ -11,7 +11,6 @@ live in ``g_evid1_policy`` and run after the call, deterministically.
 """
 
 import argparse
-import hashlib
 import json
 import platform
 import time
@@ -110,6 +109,7 @@ def run(*, confirmed: bool, repeats: int = 1, call_model: Callable[[str], tuple[
         raise PermissionError("g_evid1_run_requires_explicit_operator_confirmation")
 
     import g_evid1_policy as policy
+    import g_evid1_digest as digest
 
     items = items if items is not None else load_corpus()
     out = out_dir or (DATA / "runs" / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"))
@@ -146,7 +146,7 @@ def run(*, confirmed: bool, repeats: int = 1, call_model: Callable[[str], tuple[
                                                     truncated=truncated)
             observations.append({
                 "item_id": item["item_id"], "repeat": repeat, "model_call": True,
-                "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
+                "prompt_sha256": digest.canonical_digest(prompt),
                 "raw_reply": str(reply)[:4000], "assessment": assessment if isinstance(assessment, dict) else None,
                 "validation": decision["validation"], "disposition": decision["disposition"],
                 "rule": decision["rule"], "rules_fired": decision.get("rules_fired", []),
@@ -159,8 +159,10 @@ def run(*, confirmed: bool, repeats: int = 1, call_model: Callable[[str], tuple[
     conditions = {
         "contract_version": CONTRACT_VERSION, "experiment_id": "G-EVID1", "started": started, "finished": finished,
         "repeats": repeats, "items": len(items), "model_identity": identity,
-        "prompt_template_sha256": hashlib.sha256(PROMPT_TEMPLATE.encode("utf-8")).hexdigest(),
-        "corpus_sha256": hashlib.sha256((DATA / "corpus.json").read_bytes()).hexdigest(),
+        "digest_convention_id": digest.CONVENTION_ID, "digest_convention": digest.CONVENTION,
+        "prompt_template_sha256": digest.canonical_digest(PROMPT_TEMPLATE),
+        "corpus_sha256": digest.digest_file(DATA / "corpus.json"),
+        "gold_sha256": digest.digest_file(DATA / "gold.json"),
         "host": platform.node(), "python": platform.python_version(), "belief_effects": policy.BELIEF_EFFECTS,
     }
     payload = {"conditions": conditions, "observations": observations}

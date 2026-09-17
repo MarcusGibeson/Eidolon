@@ -2,15 +2,18 @@ from __future__ import annotations
 
 """G-EVID1: freeze the preregistration, and verify the freeze before any run.
 
-Digests are taken over newline-normalised bytes. A Windows checkout rewrites line endings, so hashing raw bytes
-would report a change that does not exist and would make the freeze unverifiable on another machine.
+Artifact identity comes from ``g_evid1_digest.canonical_digest`` and from nowhere else, so the freeze record, a
+run's condition metadata and this verification path cannot disagree about what a file is. The convention is
+recorded inside the freeze rather than left implicit.
+
+The manifest covers the verifier as well as the experiment: the freeze is only as trustworthy as the tool that
+established it, so ``g_evid1_freeze.py`` and ``g_evid1_digest.py`` are hashed into it alongside everything else.
 
     python tools/g_evid1_freeze.py --write     # record the freeze
     python tools/g_evid1_freeze.py             # verify every artifact still matches it
 """
 
 import argparse
-import hashlib
 import json
 import sys
 from datetime import datetime, timezone
@@ -30,13 +33,23 @@ ARTIFACTS = (
     "tools/g_evid1_review_package.py",
     "tools/g_evid1_build_corpus.py",
     "tools/v2731_12_0_g_evid1_contract_tests.py",
+    # the verifier identifies itself: a freeze is only as good as the tool that established it
+    "tools/g_evid1_digest.py",
+    "tools/g_evid1_freeze.py",
 )
+
+VERIFIER = ("tools/g_evid1_digest.py", "tools/g_evid1_freeze.py")
 
 REVIEWER_BASELINE = "d158e253dd88febca8f22ed050beccde2724fd9b604138fa579c5201228b21c8"
 
 
+sys.path.insert(0, str(ROOT / "tools"))
+from g_evid1_digest import CONVENTION, CONVENTION_ID, canonical_digest, digest_file  # noqa: E402
+
+
 def digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+    """The one canonical digest, shared with the run procedure and the tests."""
+    return digest_file(path)
 
 
 def current() -> dict[str, str]:
@@ -52,6 +65,7 @@ def write() -> dict:
     bootstrap.ensure_runtime_data_env()
     import experiment_review as er
 
+    previous = json.loads(FREEZE.read_text(encoding="utf-8")) if FREEZE.exists() else None
     payload = {
         "experiment_id": "G-EVID1",
         "contract_version": "g-evid1.0",
@@ -61,13 +75,25 @@ def write() -> dict:
         "plan": {"items": 60, "repeats": 3, "model_calls": 180},
         "pilot": {"kind": "structural", "abort_only": True, "items": list(harness.PILOT_ITEMS)},
         "primary_gate": "unsafe_use = 0",
-        "digest_note": "sha256 over newline-normalised bytes, so the freeze verifies on any checkout",
+        "digest_convention": CONVENTION,
+        "digest_convention_id": CONVENTION_ID,
+        "verifier": {name: digest(ROOT / name) for name in VERIFIER},
         "artifacts": current(),
-        "prompt_template_sha256": hashlib.sha256(harness.PROMPT_TEMPLATE.encode("utf-8")).hexdigest(),
+        "prompt_template_sha256": canonical_digest(harness.PROMPT_TEMPLATE),
         "model_identity": er.model_identity(),
         "reviewer_baseline_sha256": REVIEWER_BASELINE,
         "belief_effects": "none",
     }
+    if previous is not None:
+        # A provenance repair, recorded as one. No semantic or experimental change was made, and no pilot result
+        # was used to make it.
+        payload["refreeze"] = {
+            "reason": "provenance_only:hashing_convention_inconsistency",
+            "semantic_changes": "none",
+            "experimental_changes": "none",
+            "driven_by_observed_results": False,
+            "supersedes": {"frozen_at": previous.get("frozen_at"), "artifacts": previous.get("artifacts", {})},
+        }
     FREEZE.write_text(json.dumps(payload, indent=1, ensure_ascii=False), encoding="utf-8")
     return payload
 

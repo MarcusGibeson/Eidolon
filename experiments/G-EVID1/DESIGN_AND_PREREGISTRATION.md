@@ -251,3 +251,26 @@ containment measurements above.
 
 The model never receives and never generates `use`, `investigate` or `abstain`. Those dispositions belong
 exclusively to deterministic governance.
+
+## 11. Provenance re-freeze (Marcus, 2026-09-17)
+
+G-EVID1 was re-frozen once before the full run. **The cause was a hashing-convention inconsistency, not any observed
+semantic result.** No experimental or semantic change was made: not to I51, its gold, the prompt, the disposition
+policy, the thresholds, the gates, the corpus composition, or `max_tokens`. `unsafe_use = 0` stands exactly as
+preregistered.
+
+Repairs, all provenance only:
+
+1. One canonical convention identifies every artifact — sha256 over newline-normalised bytes — implemented once in
+   `tools/g_evid1_digest.py` and used by the freeze record, the run metadata and the verification path alike.
+2. Run-condition metadata records the corpus and gold under that same convention, so a line ending can no longer be
+   mistaken for corpus mutation.
+3. The integrity manifest covers the verifier itself: `g_evid1_digest.py` and `g_evid1_freeze.py` are hashed into
+   the freeze they establish, and named in its `verifier` block.
+4. Deterministic tests prove the freeze record, the run metadata and the verification path agree digest for digest.
+5. The freeze records the repair as `provenance_only:hashing_convention_inconsistency` and carries the superseded
+   freeze's identity and artifact digests inside it.
+
+**The first pilot is preserved exactly as historical evidence from the prior freeze**, including that item I51
+reached `use` through rule G10. It is not erased, rewritten or reinterpreted, and no part of it was used to change
+anything. Both pilot records are kept so that stochastic behaviour between them can be analysed later.

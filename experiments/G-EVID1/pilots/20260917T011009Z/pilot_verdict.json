@@ -1,0 +1,39 @@
+{
+ "pilot": "structural",
+ "abort_only": true,
+ "items": [
+  "I01",
+  "I09",
+  "I17",
+  "I44",
+  "I51"
+ ],
+ "observations": 5,
+ "mechanical_failures": [],
+ "scorer_ran": true,
+ "scorer_error": "",
+ "passed": true,
+ "note": "Mechanical only. No semantic judgement is read, and nothing may be tuned from this result.",
+ "conditions": {
+  "contract_version": "g-evid1.0",
+  "experiment_id": "G-EVID1",
+  "started": "2026-09-17T01:10:09Z",
+  "finished": "2026-09-17T01:11:35Z",
+  "repeats": 1,
+  "items": 5,
+  "model_identity": {
+   "model": "qwen3.8:27b",
+   "provider": "ollama",
+   "context_size": 8192,
+   "resolved_config_sha256": "f398196f63e0eb56d8bc34e7e8c55f212b851145dd067aa3f8ed081297168a62"
+  },
+  "digest_convention_id": "g-evid1.canonical.sha256.lf",
+  "digest_convention": "sha256 over newline-normalised bytes (CRLF and CR both normalised to LF)",
+  "prompt_template_sha256": "995ad5fbb59e59f43f674b27ed2e6b800b5856a4e0dc828f6dc5e9e8c1fb775f",
+  "corpus_sha256": "1ab26b3e1011356c905a3c9d02c1249d0bb3df3352c8cf9cc5871e707d4ba6de",
+  "gold_sha256": "b8f63e8f9ebfc58816f5d3d407b209902c9abe2382f624623120e298918e6a45",
+  "host": "GLaDOS_2point0",
+  "python": "3.11.9",
+  "belief_effects": "none"
+ }
+}

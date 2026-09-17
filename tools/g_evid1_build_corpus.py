@@ -12,6 +12,7 @@ the judgement has to come from the evidence in front of it.
 
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -263,7 +264,11 @@ add("I60", "stable_control", "The Larkin office closes at 18:00 on weekdays.",
 
 
 def digest(payload: object) -> str:
-    return hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8")).hexdigest()
+    """The canonical convention, so a printed digest here means the same thing as one in the freeze record."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from g_evid1_digest import canonical_digest
+
+    return canonical_digest(json.dumps(payload, sort_keys=True, ensure_ascii=False))
 
 
 def main() -> None:

@@ -114,6 +114,8 @@ def build(observations_path: Path | None, *, out_dir: Path, include_gold: bool =
         entries = []
         for n, (name, role, description, text) in enumerate(documents, 1):
             (out_dir / name).write_text(text, encoding="utf-8", newline="\n")
+            # The one place G-EVID1 does not use its canonical digest: these entries belong to the frozen
+            # reviewer's package contract, and its loader verifies them over raw bytes as written.
             entries.append({"doc_id": f"D{n}", "path": name, "role": role, "description": description,
                             "sha256": hashlib.sha256((out_dir / name).read_bytes()).hexdigest()})
         (out_dir / er.MANIFEST_NAME).write_text(json.dumps({

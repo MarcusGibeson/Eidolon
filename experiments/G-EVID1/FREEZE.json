@@ -1,7 +1,7 @@
 {
  "experiment_id": "G-EVID1",
  "contract_version": "g-evid1.0",
- "frozen_at": "2026-09-17T00:39:14Z",
+ "frozen_at": "2026-09-17T01:09:52Z",
  "approved_by": "Marcus",
  "status": "frozen_not_run",
  "plan": {
@@ -21,17 +21,24 @@
   ]
  },
  "primary_gate": "unsafe_use = 0",
- "digest_note": "sha256 over newline-normalised bytes, so the freeze verifies on any checkout",
+ "digest_convention": "sha256 over newline-normalised bytes (CRLF and CR both normalised to LF)",
+ "digest_convention_id": "g-evid1.canonical.sha256.lf",
+ "verifier": {
+  "tools/g_evid1_digest.py": "06d5c0c171d78e041abffd15a1c83f05a3ada06a75127c0a82b9801f6440f652",
+  "tools/g_evid1_freeze.py": "4b0a8f94da69345a9496ee8f3d4448831e29d6dcfb8d392d391c162dc8762d04"
+ },
  "artifacts": {
-  "experiments/G-EVID1/DESIGN_AND_PREREGISTRATION.md": "5f0bf281abc689bfc42b46c6a36ab25ae457a2049625511cea6b8de540e1d7f8",
+  "experiments/G-EVID1/DESIGN_AND_PREREGISTRATION.md": "d39d2ac19978a764a723e46cfa9bb5138f690b4e41cafe79853a264d764085ff",
   "experiments/G-EVID1/corpus.json": "1ab26b3e1011356c905a3c9d02c1249d0bb3df3352c8cf9cc5871e707d4ba6de",
   "experiments/G-EVID1/gold.json": "b8f63e8f9ebfc58816f5d3d407b209902c9abe2382f624623120e298918e6a45",
   "tools/g_evid1_policy.py": "a8a953dd158ba36b9a13bc70a2d60d240218d5e3c8561be3f610b868458986bf",
   "tools/g_evid1_scorer.py": "70d48f54492cf0dcbbe9451dc3e170ec55319e09cbd597beae4cd4c0272d8789",
-  "tools/g_evid1_harness.py": "842d1c7603749c81c799c170723cc94a2c7aa74b5ef1c2f4ae068b47c1e19414",
-  "tools/g_evid1_review_package.py": "f94edfea7cc53b9acf9f7411b88e729535176131f593414927613bb3315cce8a",
-  "tools/g_evid1_build_corpus.py": "d2ee5239626be74d71579eb6ade885b2c9cabd6e1226c5889cf020d88414c14b",
-  "tools/v2731_12_0_g_evid1_contract_tests.py": "ccf836141e612091bf5f948d22b796be59c4a8d15c6ef321c5d7884294240e56"
+  "tools/g_evid1_harness.py": "874f4e7e4a49fd497aab90dd248528d3a0018de63d806fd7b77d788cd0e37339",
+  "tools/g_evid1_review_package.py": "d1764b3aaa1013ab55036c6f79f605a8d7c74b0be572630ca24938e3765a220a",
+  "tools/g_evid1_build_corpus.py": "53ff7840e9f37d34899b5a19018fcb4fcaca14a156492bcece9037e7038ba268",
+  "tools/v2731_12_0_g_evid1_contract_tests.py": "1b9595ef36c7142738401df3ddeb3cd67413d0ecf3e2eb068cea6f5bc32ec0c6",
+  "tools/g_evid1_digest.py": "06d5c0c171d78e041abffd15a1c83f05a3ada06a75127c0a82b9801f6440f652",
+  "tools/g_evid1_freeze.py": "4b0a8f94da69345a9496ee8f3d4448831e29d6dcfb8d392d391c162dc8762d04"
  },
  "prompt_template_sha256": "995ad5fbb59e59f43f674b27ed2e6b800b5856a4e0dc828f6dc5e9e8c1fb775f",
  "model_identity": {
@@ -41,5 +48,25 @@
   "resolved_config_sha256": "f398196f63e0eb56d8bc34e7e8c55f212b851145dd067aa3f8ed081297168a62"
  },
  "reviewer_baseline_sha256": "d158e253dd88febca8f22ed050beccde2724fd9b604138fa579c5201228b21c8",
- "belief_effects": "none"
+ "belief_effects": "none",
+ "refreeze": {
+  "reason": "provenance_only:hashing_convention_inconsistency",
+  "semantic_changes": "none",
+  "experimental_changes": "none",
+  "driven_by_observed_results": false,
+  "supersedes": {
+   "frozen_at": "2026-09-17T00:39:14Z",
+   "artifacts": {
+    "experiments/G-EVID1/DESIGN_AND_PREREGISTRATION.md": "5f0bf281abc689bfc42b46c6a36ab25ae457a2049625511cea6b8de540e1d7f8",
+    "experiments/G-EVID1/corpus.json": "1ab26b3e1011356c905a3c9d02c1249d0bb3df3352c8cf9cc5871e707d4ba6de",
+    "experiments/G-EVID1/gold.json": "b8f63e8f9ebfc58816f5d3d407b209902c9abe2382f624623120e298918e6a45",
+    "tools/g_evid1_policy.py": "a8a953dd158ba36b9a13bc70a2d60d240218d5e3c8561be3f610b868458986bf",
+    "tools/g_evid1_scorer.py": "70d48f54492cf0dcbbe9451dc3e170ec55319e09cbd597beae4cd4c0272d8789",
+    "tools/g_evid1_harness.py": "842d1c7603749c81c799c170723cc94a2c7aa74b5ef1c2f4ae068b47c1e19414",
+    "tools/g_evid1_review_package.py": "f94edfea7cc53b9acf9f7411b88e729535176131f593414927613bb3315cce8a",
+    "tools/g_evid1_build_corpus.py": "d2ee5239626be74d71579eb6ade885b2c9cabd6e1226c5889cf020d88414c14b",
+    "tools/v2731_12_0_g_evid1_contract_tests.py": "ccf836141e612091bf5f948d22b796be59c4a8d15c6ef321c5d7884294240e56"
+   }
+  }
+ }
 }
