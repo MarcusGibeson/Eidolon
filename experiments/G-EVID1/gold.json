@@ -1,0 +1,961 @@
+{
+ "experiment_id": "G-EVID1",
+ "contract_version": "g-evid1.0",
+ "item_count": 60,
+ "gold": [
+  {
+   "item_id": "I01",
+   "family": "clear_direct_support",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "The passage states the proposition directly, at the same scope and with no temporal qualifier.",
+   "pair_id": "A1",
+   "differs": "baseline"
+  },
+  {
+   "item_id": "I02",
+   "family": "clear_direct_support",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "The passage states the proposition directly, at the same scope and with no temporal qualifier.",
+   "pair_id": "A2",
+   "differs": "baseline"
+  },
+  {
+   "item_id": "I03",
+   "family": "clear_direct_support",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "The passage states the proposition directly, at the same scope and with no temporal qualifier.",
+   "pair_id": "A3",
+   "differs": "baseline"
+  },
+  {
+   "item_id": "I04",
+   "family": "clear_direct_support",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "The passage states the proposition directly, at the same scope and with no temporal qualifier.",
+   "pair_id": "A4",
+   "differs": "baseline"
+  },
+  {
+   "item_id": "I05",
+   "family": "clear_direct_support",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "The passage states the proposition directly, at the same scope and with no temporal qualifier.",
+   "pair_id": "A5",
+   "differs": "baseline"
+  },
+  {
+   "item_id": "I06",
+   "family": "clear_direct_support",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "The passage states the proposition directly, at the same scope and with no temporal qualifier.",
+   "pair_id": "A6",
+   "differs": "baseline"
+  },
+  {
+   "item_id": "I07",
+   "family": "clear_direct_support",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "The passage states the proposition directly, at the same scope and with no temporal qualifier.",
+   "pair_id": "A7",
+   "differs": "baseline"
+  },
+  {
+   "item_id": "I08",
+   "family": "clear_direct_support",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "The passage states the proposition directly, at the same scope and with no temporal qualifier.",
+   "pair_id": "A8",
+   "differs": "baseline"
+  },
+  {
+   "item_id": "I09",
+   "family": "clear_contradiction",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage asserts the opposite of the proposition, so it can never be cited as support.",
+   "pair_id": "A1",
+   "differs": "the size limit is denied"
+  },
+  {
+   "item_id": "I10",
+   "family": "clear_contradiction",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage asserts the opposite of the proposition, so it can never be cited as support.",
+   "pair_id": "A2",
+   "differs": "the frequency is changed"
+  },
+  {
+   "item_id": "I11",
+   "family": "clear_contradiction",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage asserts the opposite of the proposition, so it can never be cited as support.",
+   "pair_id": "A3",
+   "differs": "the unit is changed"
+  },
+  {
+   "item_id": "I12",
+   "family": "clear_contradiction",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage asserts the opposite of the proposition, so it can never be cited as support.",
+   "pair_id": "A4",
+   "differs": "the requirement is denied"
+  },
+  {
+   "item_id": "I13",
+   "family": "clear_contradiction",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage asserts the opposite of the proposition, so it can never be cited as support.",
+   "pair_id": "A5",
+   "differs": "the value is changed"
+  },
+  {
+   "item_id": "I14",
+   "family": "clear_contradiction",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage asserts the opposite of the proposition, so it can never be cited as support.",
+   "pair_id": "A6",
+   "differs": "the behaviour is denied"
+  },
+  {
+   "item_id": "I15",
+   "family": "clear_contradiction",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage asserts the opposite of the proposition, so it can never be cited as support.",
+   "pair_id": "A7",
+   "differs": "the location is changed"
+  },
+  {
+   "item_id": "I16",
+   "family": "clear_contradiction",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage asserts the opposite of the proposition, so it can never be cited as support.",
+   "pair_id": "A8",
+   "differs": "the count is changed"
+  },
+  {
+   "item_id": "I17",
+   "family": "partial_support",
+   "gold_relation": "partial",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "investigate"
+   ],
+   "rationale": "One conjunct is supported and the other is simply absent from the passage, so the proposition as a whole is not established.",
+   "pair_id": "",
+   "differs": "logging is not mentioned"
+  },
+  {
+   "item_id": "I18",
+   "family": "partial_support",
+   "gold_relation": "partial",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "investigate"
+   ],
+   "rationale": "One conjunct is supported and the other is simply absent from the passage, so the proposition as a whole is not established.",
+   "pair_id": "",
+   "differs": "duration is not mentioned"
+  },
+  {
+   "item_id": "I19",
+   "family": "partial_support",
+   "gold_relation": "partial",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "investigate"
+   ],
+   "rationale": "One conjunct is supported and the other is simply absent from the passage, so the proposition as a whole is not established.",
+   "pair_id": "",
+   "differs": "the approver's team is not mentioned"
+  },
+  {
+   "item_id": "I20",
+   "family": "partial_support",
+   "gold_relation": "partial",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "investigate"
+   ],
+   "rationale": "One conjunct is supported and the other is simply absent from the passage, so the proposition as a whole is not established.",
+   "pair_id": "",
+   "differs": "encryption is not mentioned"
+  },
+  {
+   "item_id": "I21",
+   "family": "partial_support",
+   "gold_relation": "partial",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "investigate"
+   ],
+   "rationale": "One conjunct is supported and the other is simply absent from the passage, so the proposition as a whole is not established.",
+   "pair_id": "",
+   "differs": "the completion date is not mentioned"
+  },
+  {
+   "item_id": "I22",
+   "family": "partial_support",
+   "gold_relation": "partial",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "investigate"
+   ],
+   "rationale": "One conjunct is supported and the other is simply absent from the passage, so the proposition as a whole is not established.",
+   "pair_id": "",
+   "differs": "notification is not mentioned"
+  },
+  {
+   "item_id": "I23",
+   "family": "partial_support",
+   "gold_relation": "partial",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "investigate"
+   ],
+   "rationale": "One conjunct is supported and the other is simply absent from the passage, so the proposition as a whole is not established.",
+   "pair_id": "",
+   "differs": "resolution is not mentioned"
+  },
+  {
+   "item_id": "I24",
+   "family": "scope_qualifier_mismatch",
+   "gold_relation": "supports",
+   "gold_scope": "mismatch",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage is true of a narrower subject or threshold than the proposition claims, so citing it as support would overstate what the evidence covers.",
+   "pair_id": "",
+   "differs": "the subject is widened from one job to all jobs"
+  },
+  {
+   "item_id": "I25",
+   "family": "scope_qualifier_mismatch",
+   "gold_relation": "supports",
+   "gold_scope": "mismatch",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage is true of a narrower subject or threshold than the proposition claims, so citing it as support would overstate what the evidence covers.",
+   "pair_id": "",
+   "differs": "the threshold is changed"
+  },
+  {
+   "item_id": "I26",
+   "family": "scope_qualifier_mismatch",
+   "gold_relation": "supports",
+   "gold_scope": "mismatch",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage is true of a narrower subject or threshold than the proposition claims, so citing it as support would overstate what the evidence covers.",
+   "pair_id": "",
+   "differs": "the qualifier over 500 units is dropped"
+  },
+  {
+   "item_id": "I27",
+   "family": "scope_qualifier_mismatch",
+   "gold_relation": "supports",
+   "gold_scope": "mismatch",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage is true of a narrower subject or threshold than the proposition claims, so citing it as support would overstate what the evidence covers.",
+   "pair_id": "",
+   "differs": "the quarter qualifier is dropped"
+  },
+  {
+   "item_id": "I28",
+   "family": "scope_qualifier_mismatch",
+   "gold_relation": "supports",
+   "gold_scope": "mismatch",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage is true of a narrower subject or threshold than the proposition claims, so citing it as support would overstate what the evidence covers.",
+   "pair_id": "",
+   "differs": "one named pipeline is widened to all pipelines"
+  },
+  {
+   "item_id": "I29",
+   "family": "scope_qualifier_mismatch",
+   "gold_relation": "supports",
+   "gold_scope": "mismatch",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage is true of a narrower subject or threshold than the proposition claims, so citing it as support would overstate what the evidence covers.",
+   "pair_id": "",
+   "differs": "one helpdesk configuration is widened to every product"
+  },
+  {
+   "item_id": "I30",
+   "family": "scope_qualifier_mismatch",
+   "gold_relation": "supports",
+   "gold_scope": "mismatch",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage is true of a narrower subject or threshold than the proposition claims, so citing it as support would overstate what the evidence covers.",
+   "pair_id": "",
+   "differs": "one firmware version is widened to the whole family"
+  },
+  {
+   "item_id": "I31",
+   "family": "temporal_mismatch_or_supersession",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "evidence_superseded",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage may once have supported the proposition but its time relation makes it unsafe to cite as current support.",
+   "pair_id": "",
+   "differs": "the passage says it was superseded"
+  },
+  {
+   "item_id": "I32",
+   "family": "temporal_mismatch_or_supersession",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "evidence_predates",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage may once have supported the proposition but its time relation makes it unsafe to cite as current support.",
+   "pair_id": "",
+   "differs": "the passage is about an older quarter"
+  },
+  {
+   "item_id": "I33",
+   "family": "temporal_mismatch_or_supersession",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "evidence_superseded",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage may once have supported the proposition but its time relation makes it unsafe to cite as current support.",
+   "pair_id": "",
+   "differs": "the configuration was replaced"
+  },
+  {
+   "item_id": "I34",
+   "family": "temporal_mismatch_or_supersession",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "evidence_predates",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage may once have supported the proposition but its time relation makes it unsafe to cite as current support.",
+   "pair_id": "",
+   "differs": "the status is a year old"
+  },
+  {
+   "item_id": "I35",
+   "family": "temporal_mismatch_or_supersession",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "evidence_superseded",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage may once have supported the proposition but its time relation makes it unsafe to cite as current support.",
+   "pair_id": "",
+   "differs": "the policy was withdrawn"
+  },
+  {
+   "item_id": "I36",
+   "family": "temporal_mismatch_or_supersession",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "evidence_predates",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage may once have supported the proposition but its time relation makes it unsafe to cite as current support.",
+   "pair_id": "",
+   "differs": "the note is from an older build"
+  },
+  {
+   "item_id": "I37",
+   "family": "temporal_mismatch_or_supersession",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "evidence_superseded",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage may once have supported the proposition but its time relation makes it unsafe to cite as current support.",
+   "pair_id": "",
+   "differs": "a later firmware changed the unit"
+  },
+  {
+   "item_id": "I38",
+   "family": "irrelevant_evidence",
+   "gold_relation": "irrelevant",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage has no bearing on the proposition at all.",
+   "pair_id": "",
+   "differs": "unrelated subject matter"
+  },
+  {
+   "item_id": "I39",
+   "family": "irrelevant_evidence",
+   "gold_relation": "irrelevant",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage has no bearing on the proposition at all.",
+   "pair_id": "",
+   "differs": "unrelated subject matter"
+  },
+  {
+   "item_id": "I40",
+   "family": "irrelevant_evidence",
+   "gold_relation": "irrelevant",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage has no bearing on the proposition at all.",
+   "pair_id": "",
+   "differs": "unrelated subject matter"
+  },
+  {
+   "item_id": "I41",
+   "family": "irrelevant_evidence",
+   "gold_relation": "irrelevant",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage has no bearing on the proposition at all.",
+   "pair_id": "",
+   "differs": "unrelated subject matter"
+  },
+  {
+   "item_id": "I42",
+   "family": "irrelevant_evidence",
+   "gold_relation": "irrelevant",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage has no bearing on the proposition at all.",
+   "pair_id": "",
+   "differs": "unrelated subject matter"
+  },
+  {
+   "item_id": "I43",
+   "family": "irrelevant_evidence",
+   "gold_relation": "irrelevant",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The passage has no bearing on the proposition at all.",
+   "pair_id": "",
+   "differs": "unrelated subject matter"
+  },
+  {
+   "item_id": "I44",
+   "family": "ambiguous_unresolved",
+   "gold_relation": "unclear",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage genuinely fails to settle the proposition; more than one conservative disposition is defensible, so no single gold disposition is forced.",
+   "pair_id": "",
+   "differs": "the passage contains an unresolved internal conflict"
+  },
+  {
+   "item_id": "I45",
+   "family": "ambiguous_unresolved",
+   "gold_relation": "unclear",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage genuinely fails to settle the proposition; more than one conservative disposition is defensible, so no single gold disposition is forced.",
+   "pair_id": "",
+   "differs": "the referenced schedule is undefined"
+  },
+  {
+   "item_id": "I46",
+   "family": "ambiguous_unresolved",
+   "gold_relation": "unclear",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage genuinely fails to settle the proposition; more than one conservative disposition is defensible, so no single gold disposition is forced.",
+   "pair_id": "",
+   "differs": "the answer depends on an unstated configuration"
+  },
+  {
+   "item_id": "I47",
+   "family": "ambiguous_unresolved",
+   "gold_relation": "unclear",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage genuinely fails to settle the proposition; more than one conservative disposition is defensible, so no single gold disposition is forced.",
+   "pair_id": "",
+   "differs": "the passage is a draft with a blank threshold"
+  },
+  {
+   "item_id": "I48",
+   "family": "ambiguous_unresolved",
+   "gold_relation": "unclear",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage genuinely fails to settle the proposition; more than one conservative disposition is defensible, so no single gold disposition is forced.",
+   "pair_id": "",
+   "differs": "the passage does not identify the quarter"
+  },
+  {
+   "item_id": "I49",
+   "family": "ambiguous_unresolved",
+   "gold_relation": "unclear",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "The passage genuinely fails to settle the proposition; more than one conservative disposition is defensible, so no single gold disposition is forced.",
+   "pair_id": "",
+   "differs": "the term is genuinely ambiguous"
+  },
+  {
+   "item_id": "I50",
+   "family": "boundary_minimal_pair",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "Direct support at matching scope; the usable side of the boundary.",
+   "pair_id": "BP1",
+   "differs": "quantifier matches exactly"
+  },
+  {
+   "item_id": "I51",
+   "family": "boundary_minimal_pair",
+   "gold_relation": "supports",
+   "gold_scope": "mismatch",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "Exactly three is not at least three; the widened quantifier makes the passage insufficient.",
+   "pair_id": "BP1",
+   "differs": "at least widens the quantifier beyond what the passage states"
+  },
+  {
+   "item_id": "I52",
+   "family": "boundary_minimal_pair",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "Current, direct and at matching scope.",
+   "pair_id": "BP2",
+   "differs": "current note"
+  },
+  {
+   "item_id": "I53",
+   "family": "boundary_minimal_pair",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "evidence_superseded",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "The same sentence, plus a supersession clause, removes its current force.",
+   "pair_id": "BP2",
+   "differs": "one clause states the practice was superseded"
+  },
+  {
+   "item_id": "I54",
+   "family": "boundary_minimal_pair",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "The passage states exactly the proposition.",
+   "pair_id": "BP3",
+   "differs": "single claim"
+  },
+  {
+   "item_id": "I55",
+   "family": "boundary_minimal_pair",
+   "gold_relation": "partial",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "investigate"
+   ],
+   "rationale": "One added conjunct moves the item from usable to partially supported.",
+   "pair_id": "BP3",
+   "differs": "a second conjunct is added that the passage does not mention"
+  },
+  {
+   "item_id": "I56",
+   "family": "boundary_minimal_pair",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "Flat contradiction.",
+   "pair_id": "BP4",
+   "differs": "a plain negation"
+  },
+  {
+   "item_id": "I57",
+   "family": "boundary_minimal_pair",
+   "gold_relation": "unclear",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain",
+    "investigate"
+   ],
+   "rationale": "Not always denies universality without settling the general case; more than one conservative disposition is defensible.",
+   "pair_id": "BP4",
+   "differs": "one hedge word turns the negation into a partial denial"
+  },
+  {
+   "item_id": "I58",
+   "family": "stable_control",
+   "gold_relation": "supports",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [],
+   "expected_dispositions": [
+    "use"
+   ],
+   "rationale": "Control: an unambiguous, current, exactly scoped restatement.",
+   "pair_id": "",
+   "differs": "verbatim restatement"
+  },
+  {
+   "item_id": "I59",
+   "family": "stable_control",
+   "gold_relation": "contradicts",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "Control: an unambiguous contradiction.",
+   "pair_id": "",
+   "differs": "one differing number"
+  },
+  {
+   "item_id": "I60",
+   "family": "stable_control",
+   "gold_relation": "irrelevant",
+   "gold_scope": "match",
+   "gold_temporal": "compatible",
+   "forbidden_dispositions": [
+    "use"
+   ],
+   "expected_dispositions": [
+    "abstain"
+   ],
+   "rationale": "Control: plainly unrelated evidence.",
+   "pair_id": "",
+   "differs": "unrelated notice"
+  }
+ ]
+}

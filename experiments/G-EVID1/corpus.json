@@ -1,0 +1,487 @@
+{
+ "experiment_id": "G-EVID1",
+ "contract_version": "g-evid1.0",
+ "item_count": 60,
+ "items": [
+  {
+   "item_id": "I01",
+   "proposition_id": "P01",
+   "evidence_id": "E01",
+   "proposition": "The Meridian gateway rejects requests larger than 8 MB.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Operations note 14: the Meridian gateway returns HTTP 413 for any request body above 8 MB. The limit has been in force since the gateway was first deployed."
+  },
+  {
+   "item_id": "I02",
+   "proposition_id": "P02",
+   "evidence_id": "E02",
+   "proposition": "Batch reconciliation at Northwind runs nightly.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The Northwind runbook states that batch reconciliation executes every night at 02:15 local time."
+  },
+  {
+   "item_id": "I03",
+   "proposition_id": "P03",
+   "evidence_id": "E03",
+   "proposition": "The Kestrel sensor reports temperature in Celsius.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Kestrel firmware notes: all temperature values emitted by the sensor are in degrees Celsius."
+  },
+  {
+   "item_id": "I04",
+   "proposition_id": "P04",
+   "evidence_id": "E04",
+   "proposition": "Orders over 500 units require a second approver.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Policy 7.2: any order exceeding 500 units must be approved by a second authorised approver before dispatch."
+  },
+  {
+   "item_id": "I05",
+   "proposition_id": "P05",
+   "evidence_id": "E05",
+   "proposition": "The Arden index was 42 in the most recent published quarter.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Quarterly bulletin: the Arden index stood at 42 for the most recent published quarter."
+  },
+  {
+   "item_id": "I06",
+   "proposition_id": "P06",
+   "evidence_id": "E06",
+   "proposition": "Support tickets are closed automatically after 30 days of inactivity.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Helpdesk configuration: tickets with no activity for 30 days are closed automatically by the nightly job."
+  },
+  {
+   "item_id": "I07",
+   "proposition_id": "P07",
+   "evidence_id": "E07",
+   "proposition": "The Halden pipeline stores its checkpoints in object storage.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Design note: Halden pipeline checkpoints are written to object storage rather than the local disk."
+  },
+  {
+   "item_id": "I08",
+   "proposition_id": "P08",
+   "evidence_id": "E08",
+   "proposition": "Two of the four Bramley regions run the new schema.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Migration status: of the four Bramley regions, two now run the new schema and two remain on the old one."
+  },
+  {
+   "item_id": "I09",
+   "proposition_id": "P09",
+   "evidence_id": "E09",
+   "proposition": "The Meridian gateway accepts requests of any size.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Operations note 14: the Meridian gateway returns HTTP 413 for any request body above 8 MB. The limit has been in force since the gateway was first deployed."
+  },
+  {
+   "item_id": "I10",
+   "proposition_id": "P10",
+   "evidence_id": "E10",
+   "proposition": "Batch reconciliation at Northwind runs weekly.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The Northwind runbook states that batch reconciliation executes every night at 02:15 local time."
+  },
+  {
+   "item_id": "I11",
+   "proposition_id": "P11",
+   "evidence_id": "E11",
+   "proposition": "The Kestrel sensor reports temperature in Fahrenheit.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Kestrel firmware notes: all temperature values emitted by the sensor are in degrees Celsius."
+  },
+  {
+   "item_id": "I12",
+   "proposition_id": "P12",
+   "evidence_id": "E12",
+   "proposition": "Large orders can be dispatched with a single approver.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Policy 7.2: any order exceeding 500 units must be approved by a second authorised approver before dispatch."
+  },
+  {
+   "item_id": "I13",
+   "proposition_id": "P13",
+   "evidence_id": "E13",
+   "proposition": "The Arden index was 60 in the most recent published quarter.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Quarterly bulletin: the Arden index stood at 42 for the most recent published quarter."
+  },
+  {
+   "item_id": "I14",
+   "proposition_id": "P14",
+   "evidence_id": "E14",
+   "proposition": "Support tickets are never closed automatically.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Helpdesk configuration: tickets with no activity for 30 days are closed automatically by the nightly job."
+  },
+  {
+   "item_id": "I15",
+   "proposition_id": "P15",
+   "evidence_id": "E15",
+   "proposition": "Halden pipeline checkpoints are kept on the local disk.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Design note: Halden pipeline checkpoints are written to object storage rather than the local disk."
+  },
+  {
+   "item_id": "I16",
+   "proposition_id": "P16",
+   "evidence_id": "E16",
+   "proposition": "All four Bramley regions run the new schema.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Migration status: of the four Bramley regions, two now run the new schema and two remain on the old one."
+  },
+  {
+   "item_id": "I17",
+   "proposition_id": "P17",
+   "evidence_id": "E17",
+   "proposition": "The Meridian gateway rejects requests larger than 8 MB and logs each rejection.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Operations note 14: the Meridian gateway returns HTTP 413 for any request body above 8 MB. The limit has been in force since the gateway was first deployed."
+  },
+  {
+   "item_id": "I18",
+   "proposition_id": "P18",
+   "evidence_id": "E18",
+   "proposition": "Batch reconciliation runs nightly and completes within an hour.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The Northwind runbook states that batch reconciliation executes every night at 02:15 local time."
+  },
+  {
+   "item_id": "I19",
+   "proposition_id": "P19",
+   "evidence_id": "E19",
+   "proposition": "Orders over 500 units require a second approver from a different team.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Policy 7.2: any order exceeding 500 units must be approved by a second authorised approver before dispatch."
+  },
+  {
+   "item_id": "I20",
+   "proposition_id": "P20",
+   "evidence_id": "E20",
+   "proposition": "Halden checkpoints are written to object storage and encrypted at rest.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Design note: Halden pipeline checkpoints are written to object storage rather than the local disk."
+  },
+  {
+   "item_id": "I21",
+   "proposition_id": "P21",
+   "evidence_id": "E21",
+   "proposition": "Two Bramley regions run the new schema and the migration completes this quarter.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Migration status: of the four Bramley regions, two now run the new schema and two remain on the old one."
+  },
+  {
+   "item_id": "I22",
+   "proposition_id": "P22",
+   "evidence_id": "E22",
+   "proposition": "Tickets close after 30 days of inactivity and the requester is notified.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Helpdesk configuration: tickets with no activity for 30 days are closed automatically by the nightly job."
+  },
+  {
+   "item_id": "I23",
+   "proposition_id": "P23",
+   "evidence_id": "E23",
+   "proposition": "The Kestrel sensor reports Celsius at 0.1 degree resolution.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Kestrel firmware notes: all temperature values emitted by the sensor are in degrees Celsius."
+  },
+  {
+   "item_id": "I24",
+   "proposition_id": "P24",
+   "evidence_id": "E24",
+   "proposition": "All Northwind scheduled jobs run nightly.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The Northwind runbook states that batch reconciliation executes every night at 02:15 local time."
+  },
+  {
+   "item_id": "I25",
+   "proposition_id": "P25",
+   "evidence_id": "E25",
+   "proposition": "The Meridian gateway rejects every request larger than 1 MB.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Operations note 14: the Meridian gateway returns HTTP 413 for any request body above 8 MB. The limit has been in force since the gateway was first deployed."
+  },
+  {
+   "item_id": "I26",
+   "proposition_id": "P26",
+   "evidence_id": "E26",
+   "proposition": "All orders require a second approver.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Policy 7.2: any order exceeding 500 units must be approved by a second authorised approver before dispatch."
+  },
+  {
+   "item_id": "I27",
+   "proposition_id": "P27",
+   "evidence_id": "E27",
+   "proposition": "The Arden index is 42.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Quarterly bulletin: the Arden index stood at 42 for the most recent published quarter."
+  },
+  {
+   "item_id": "I28",
+   "proposition_id": "P28",
+   "evidence_id": "E28",
+   "proposition": "All Halden pipelines store checkpoints in object storage.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Design note: the Halden Ingest pipeline writes its checkpoints to object storage rather than the local disk."
+  },
+  {
+   "item_id": "I29",
+   "proposition_id": "P29",
+   "evidence_id": "E29",
+   "proposition": "Across every Northwind product, tickets close after 30 days of inactivity.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Helpdesk configuration: tickets with no activity for 30 days are closed automatically by the nightly job."
+  },
+  {
+   "item_id": "I30",
+   "proposition_id": "P30",
+   "evidence_id": "E30",
+   "proposition": "Every sensor in the Kestrel family reports temperature in Celsius.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Kestrel 3 firmware notes: all temperature values emitted by this sensor are in degrees Celsius."
+  },
+  {
+   "item_id": "I31",
+   "proposition_id": "P31",
+   "evidence_id": "E31",
+   "proposition": "The Meridian gateway limit is 8 MB.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Operations note 14, superseded by note 21: the gateway rejected bodies above 8 MB. Note 21 raised the limit to 32 MB in the current release."
+  },
+  {
+   "item_id": "I32",
+   "proposition_id": "P32",
+   "evidence_id": "E32",
+   "proposition": "The Arden index is 42 this quarter.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Bulletin published three years ago: the Arden index stood at 42 for that quarter."
+  },
+  {
+   "item_id": "I33",
+   "proposition_id": "P33",
+   "evidence_id": "E33",
+   "proposition": "Tickets close after 30 days of inactivity.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Former helpdesk configuration, replaced in the March release: tickets with no activity for 30 days were closed automatically."
+  },
+  {
+   "item_id": "I34",
+   "proposition_id": "P34",
+   "evidence_id": "E34",
+   "proposition": "Two Bramley regions run the new schema.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Migration status as recorded last year: of the four Bramley regions, two had migrated to the new schema."
+  },
+  {
+   "item_id": "I35",
+   "proposition_id": "P35",
+   "evidence_id": "E35",
+   "proposition": "Orders over 500 units require a second approver.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Policy 7.2 required a second approver for orders above 500 units. Policy 7.2 was withdrawn and replaced by policy 9.1."
+  },
+  {
+   "item_id": "I36",
+   "proposition_id": "P36",
+   "evidence_id": "E36",
+   "proposition": "The Halden pipeline stores checkpoints in object storage.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Design note from the original 2019 build: Halden pipeline checkpoints are written to object storage."
+  },
+  {
+   "item_id": "I37",
+   "proposition_id": "P37",
+   "evidence_id": "E37",
+   "proposition": "The Kestrel sensor reports temperature in Celsius.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Firmware 2.x emitted temperatures in Celsius. Firmware 3.0 changed the default unit to Fahrenheit."
+  },
+  {
+   "item_id": "I38",
+   "proposition_id": "P38",
+   "evidence_id": "E38",
+   "proposition": "The Meridian gateway rejects requests larger than 8 MB.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Facilities notice: the east car park will be resurfaced over the bank holiday weekend."
+  },
+  {
+   "item_id": "I39",
+   "proposition_id": "P39",
+   "evidence_id": "E39",
+   "proposition": "Batch reconciliation at Northwind runs nightly.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Catering update: the staff canteen now opens at 07:30 on weekdays."
+  },
+  {
+   "item_id": "I40",
+   "proposition_id": "P40",
+   "evidence_id": "E40",
+   "proposition": "The Kestrel sensor reports temperature in Celsius.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Travel policy: rail fares are reimbursed at standard class for journeys under four hours."
+  },
+  {
+   "item_id": "I41",
+   "proposition_id": "P41",
+   "evidence_id": "E41",
+   "proposition": "Orders over 500 units require a second approver.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The office plant rota has been extended to the third floor meeting rooms."
+  },
+  {
+   "item_id": "I42",
+   "proposition_id": "P42",
+   "evidence_id": "E42",
+   "proposition": "The Halden pipeline stores its checkpoints in object storage.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Reminder: the annual fire drill takes place on the first Tuesday of next month."
+  },
+  {
+   "item_id": "I43",
+   "proposition_id": "P43",
+   "evidence_id": "E43",
+   "proposition": "Two of the four Bramley regions run the new schema.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The visitor sign-in tablets were replaced with a newer model last week."
+  },
+  {
+   "item_id": "I44",
+   "proposition_id": "P44",
+   "evidence_id": "E44",
+   "proposition": "The Meridian gateway rejects requests larger than 8 MB.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Two operations notes disagree: note 14 gives the limit as 8 MB and note 15 gives it as 16 MB. Neither note has been withdrawn."
+  },
+  {
+   "item_id": "I45",
+   "proposition_id": "P45",
+   "evidence_id": "E45",
+   "proposition": "Batch reconciliation at Northwind runs nightly.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The runbook says reconciliation runs on the usual schedule. The usual schedule is not defined anywhere in this document."
+  },
+  {
+   "item_id": "I46",
+   "proposition_id": "P46",
+   "evidence_id": "E46",
+   "proposition": "The Kestrel sensor reports temperature in Celsius.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The firmware notes say the sensor emits temperatures in the configured unit, and the configuration is set per deployment."
+  },
+  {
+   "item_id": "I47",
+   "proposition_id": "P47",
+   "evidence_id": "E47",
+   "proposition": "Orders over 500 units require a second approver.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "A draft of policy 7.2 mentions a second approver for large orders, but the draft is marked as under review and the threshold is left blank."
+  },
+  {
+   "item_id": "I48",
+   "proposition_id": "P48",
+   "evidence_id": "E48",
+   "proposition": "The Arden index was 42 in the most recent published quarter.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The bulletin reports an index of 42 but does not say which quarter it covers, and two quarters were published that month."
+  },
+  {
+   "item_id": "I49",
+   "proposition_id": "P49",
+   "evidence_id": "E49",
+   "proposition": "The Halden pipeline stores its checkpoints in object storage.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "The design note says checkpoints go to durable storage. Durable storage in this system can mean object storage or the replicated volume."
+  },
+  {
+   "item_id": "I50",
+   "proposition_id": "P50",
+   "evidence_id": "E50",
+   "proposition": "The Fenwick job retries failed uploads three times.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Scheduler note: the Fenwick job retries a failed upload three times before giving up."
+  },
+  {
+   "item_id": "I51",
+   "proposition_id": "P51",
+   "evidence_id": "E51",
+   "proposition": "The Fenwick job retries failed uploads at least three times.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Scheduler note: the Fenwick job retries a failed upload three times before giving up."
+  },
+  {
+   "item_id": "I52",
+   "proposition_id": "P52",
+   "evidence_id": "E52",
+   "proposition": "The Corby ledger is reconciled before month end.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Finance note issued this month: the Corby ledger is reconciled before month end."
+  },
+  {
+   "item_id": "I53",
+   "proposition_id": "P53",
+   "evidence_id": "E53",
+   "proposition": "The Corby ledger is reconciled before month end.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Finance note issued this month: the Corby ledger was reconciled before month end until the process moved to quarterly reconciliation in April."
+  },
+  {
+   "item_id": "I54",
+   "proposition_id": "P54",
+   "evidence_id": "E54",
+   "proposition": "The Ashby cache is cleared on deployment.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Deployment checklist: step 6 clears the Ashby cache."
+  },
+  {
+   "item_id": "I55",
+   "proposition_id": "P55",
+   "evidence_id": "E55",
+   "proposition": "The Ashby cache is cleared on deployment and warmed before traffic returns.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Deployment checklist: step 6 clears the Ashby cache."
+  },
+  {
+   "item_id": "I56",
+   "proposition_id": "P56",
+   "evidence_id": "E56",
+   "proposition": "The Dalton report is produced monthly.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Records note: the Dalton report is not produced monthly."
+  },
+  {
+   "item_id": "I57",
+   "proposition_id": "P57",
+   "evidence_id": "E57",
+   "proposition": "The Dalton report is produced monthly.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Records note: the Dalton report is not always produced monthly."
+  },
+  {
+   "item_id": "I58",
+   "proposition_id": "P58",
+   "evidence_id": "E58",
+   "proposition": "The Larkin office closes at 18:00 on weekdays.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Site notice: the Larkin office closes at 18:00 on weekdays."
+  },
+  {
+   "item_id": "I59",
+   "proposition_id": "P59",
+   "evidence_id": "E59",
+   "proposition": "The Larkin office closes at 18:00 on weekdays.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Site notice: the Larkin office closes at 20:00 on weekdays."
+  },
+  {
+   "item_id": "I60",
+   "proposition_id": "P60",
+   "evidence_id": "E60",
+   "proposition": "The Larkin office closes at 18:00 on weekdays.",
+   "intended_use": "decide whether this evidence may be cited as support for the proposition",
+   "evidence": "Site notice: the staff bicycle shelter has been relocated to the north entrance."
+  }
+ ]
+}
