@@ -13,6 +13,14 @@ It keeps two judgements apart on purpose:
 
 The headline secondary measure is disposition invariance under label variation: items whose provisional semantic
 label moved between repeats while the governed disposition stayed the same and stayed safe.
+
+Alongside it the scorer preserves the full operational transition for every observation — provisional assessment,
+the governance rules that fired, the final disposition — and classifies what happened to each item's semantic
+variation: contained, or escaped across an operational boundary. Movement between ``investigate`` and ``abstain``
+is conservative and is reported apart from any movement into ``use``, which is consequential and is listed case by
+case with the exact provisional fields and rule path responsible.
+
+These are explanatory measurements. They do not replace or weaken the primary gate.
 """
 
 import json
@@ -47,6 +55,28 @@ def unsafe_reasons(observation: Mapping[str, Any], gold: Mapping[str, Any]) -> l
     if int((observation.get("validation") or {}).get("quotes_anchored") or 0) < 1:
         reasons.append("no_anchored_quote")
     return sorted(set(reasons))
+
+
+def semantic_signature(observation: Mapping[str, Any]) -> tuple:
+    """The provisional semantic assessment, as the tuple whose variation across repeats is being measured."""
+    a = observation.get("assessment") or {}
+    return (str(a.get("relation")), str(a.get("scope")), str(a.get("temporal")), str(a.get("confidence")))
+
+
+def transition(observation: Mapping[str, Any]) -> dict[str, Any]:
+    """The full operational transition: provisional assessment -> rules triggered -> final disposition."""
+    a = observation.get("assessment") or {}
+    return {
+        "item_id": observation.get("item_id"), "repeat": observation.get("repeat"),
+        "provisional": {"relation": a.get("relation"), "scope": a.get("scope"), "temporal": a.get("temporal"),
+                        "confidence": a.get("confidence"),
+                        "quotes_anchored": (observation.get("validation") or {}).get("quotes_anchored"),
+                        "structurally_valid": (observation.get("validation") or {}).get("valid"),
+                        "structural_reasons": (observation.get("validation") or {}).get("reasons") or []},
+        "rules_fired": list(observation.get("rules_fired") or ([observation.get("rule")] if observation.get("rule") else [])),
+        "governing_rule": observation.get("rule"), "reason": observation.get("reason"),
+        "disposition": observation.get("disposition"), "belief_effects": observation.get("belief_effects", "none"),
+    }
 
 
 def score(observations: Iterable[Mapping[str, Any]], gold_rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
@@ -92,6 +122,41 @@ def score(observations: Iterable[Mapping[str, Any]], gold_rows: Iterable[Mapping
         if len(labels) > 1 and len(dispositions) == 1 and safe:
             invariant_items.append(item_id)
 
+    # --- explanatory containment measurements ----------------------------------------------------------------
+    containment: dict[str, Any] = {}
+    crossings: list[dict[str, Any]] = []
+    for item_id, item_rows in sorted(by_item.items()):
+        signatures = {semantic_signature(r) for r in item_rows}
+        dispositions = {str(r.get("disposition")) for r in item_rows}
+        safe = not any(r["unsafe_reasons"] for r in item_rows)
+        varied = len(signatures) > 1
+        invariant = len(dispositions) == 1
+        if varied and invariant:
+            outcome = "contained" if safe else "invariant_but_unsafe"
+        elif varied:
+            outcome = "escaped"
+        elif not invariant:
+            outcome = "disposition_moved_without_semantic_variation"
+        else:
+            outcome = "stable"
+        movement = ("none" if invariant
+                    else "conservative_investigate_abstain" if dispositions <= {INVESTIGATE, ABSTAIN}
+                    else "consequential_into_use" if USE in dispositions else "other")
+        containment[item_id] = {"outcome": outcome, "movement": movement, "safe": safe,
+                                "distinct_semantic_assessments": len(signatures),
+                                "distinct_dispositions": sorted(dispositions)}
+        if USE in dispositions and len(dispositions) > 1:
+            for row in item_rows:
+                if str(row.get("disposition")) != USE:
+                    continue
+                crossings.append({
+                    "item_id": item_id, "repeat": row.get("repeat"),
+                    "other_dispositions": sorted(dispositions - {USE}),
+                    "provisional": transition(row)["provisional"],
+                    "rules_fired": transition(row)["rules_fired"], "governing_rule": row.get("rule"),
+                    "unsafe": bool(row["unsafe_reasons"]), "unsafe_reasons": row["unsafe_reasons"],
+                })
+
     families: dict[str, Counter] = defaultdict(Counter)
     for row in rows:
         families[str(gold.get(str(row.get("item_id")), {}).get("family"))][str(row.get("disposition"))] += 1
@@ -127,6 +192,18 @@ def score(observations: Iterable[Mapping[str, Any]], gold_rows: Iterable[Mapping
         "boundary_pairs": pairs,
         "stability": stability,
         "label_varies_disposition_invariant": sorted(invariant_items),
+        "containment": {
+            "per_item": containment,
+            "semantic_variation_contained": sorted(i for i, c in containment.items() if c["outcome"] == "contained"),
+            "semantic_variation_escaped": sorted(i for i, c in containment.items() if c["outcome"] == "escaped"),
+            "escaped_conservative_only": sorted(i for i, c in containment.items()
+                                                if c["outcome"] == "escaped"
+                                                and c["movement"] == "conservative_investigate_abstain"),
+            "escaped_into_use": sorted(i for i, c in containment.items()
+                                       if c["movement"] == "consequential_into_use"),
+            "crossings_into_use": crossings,
+        },
+        "transitions": [transition(r) for r in rows],
         "families": {k: dict(v) for k, v in sorted(families.items())},
         "belief_effects": "none",
         "cost": cost,

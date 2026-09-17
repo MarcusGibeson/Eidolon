@@ -245,4 +245,144 @@ with tempfile.TemporaryDirectory(prefix="g-evid1-contract-") as temp:
     for field in ("model_identity", "prompt_template_sha256", "corpus_sha256", "started", "finished", "host"):
         require(field in payload["conditions"], f"the_run_records_its_conditions:{field}")
 
+# --- 7. truncation is its own structural reason ---------------------------------------------------------------------------
+truncated = policy.assess_to_disposition(assessment(), proposition_id="P01", evidence_id="E01",
+                                         evidence_text=EVIDENCE, truncated=True)
+require(truncated["disposition"] == policy.ABSTAIN, "a_truncated_reply_abstains")
+require("truncated_output" in truncated["validation"]["reasons"], "truncation_is_recorded_as_its_own_reason")
+require(truncated["validation"]["valid"] is False, "a_truncated_reply_is_structurally_invalid")
+untruncated = policy.assess_to_disposition(assessment(), proposition_id="P01", evidence_id="E01",
+                                           evidence_text=EVIDENCE, truncated=False)
+require("truncated_output" not in untruncated["validation"]["reasons"] and untruncated["disposition"] == policy.USE,
+        "truncation_is_never_inferred_from_an_intact_reply")
+require("low_confidence" not in truncated["validation"]["reasons"],
+        "truncation_is_not_conflated_with_semantic_uncertainty")
+
+# --- 8. the full operational transition is preserved -------------------------------------------------------------------
+for outcome in (policy.assess_to_disposition(assessment(), proposition_id="P01", evidence_id="E01", evidence_text=EVIDENCE),
+                policy.assess_to_disposition(assessment(relation="contradicts"), proposition_id="P01",
+                                             evidence_id="E01", evidence_text=EVIDENCE),
+                policy.assess_to_disposition({}, proposition_id="P01", evidence_id="E01", evidence_text=EVIDENCE)):
+    require(outcome.get("rules_fired"), f"every_outcome_records_its_rule_path:{outcome['rule']}")
+
+moved = scorer.transition({"item_id": "I01", "repeat": 2, "assessment": {"relation": "supports", "scope": "match",
+                                                                         "temporal": "compatible", "confidence": "high"},
+                           "validation": {"valid": True, "quotes_anchored": 1, "reasons": []},
+                           "rules_fired": ["G10"], "rule": "G10", "reason": "supported_and_compatible",
+                           "disposition": "use", "belief_effects": "none"})
+for field in ("provisional", "rules_fired", "governing_rule", "disposition", "belief_effects"):
+    require(field in moved, f"the_transition_records:{field}")
+require(moved["provisional"]["relation"] == "supports" and moved["rules_fired"] == ["G10"],
+        "the_transition_is_assessment_then_rules_then_disposition")
+
+# --- 9. containment measurements ------------------------------------------------------------------------------------------
+def obs2(item_id, disposition, relation, repeat, *, valid=True, rule="G2"):
+    return {"item_id": item_id, "repeat": repeat, "disposition": disposition, "model_call": True, "rule": rule,
+            "rules_fired": [rule], "assessment": {"relation": relation, "scope": "match", "temporal": "compatible",
+                                                  "confidence": "high"},
+            "validation": {"valid": valid, "quotes_anchored": 1, "reasons": []},
+            "seconds": 1.0, "prompt_tokens": 300, "output_tokens": 150}
+
+
+contained = scorer.score([obs2(forbidden_item, policy.ABSTAIN, "contradicts", 1),
+                          obs2(forbidden_item, policy.ABSTAIN, "unclear", 2)], gold_rows)["containment"]
+require(contained["semantic_variation_contained"] == [forbidden_item], "semantic_variation_contained_is_measured")
+require(contained["semantic_variation_escaped"] == [], "containment_is_not_reported_as_escape")
+require(contained["per_item"][forbidden_item]["movement"] == "none", "an_invariant_disposition_reports_no_movement")
+
+escaped = scorer.score([obs2(forbidden_item, policy.ABSTAIN, "contradicts", 1),
+                        obs2(forbidden_item, policy.INVESTIGATE, "unclear", 2)], gold_rows)["containment"]
+require(escaped["semantic_variation_escaped"] == [forbidden_item], "semantic_variation_escaped_is_measured")
+require(escaped["escaped_conservative_only"] == [forbidden_item],
+        "investigate_abstain_movement_is_classified_as_conservative")
+require(escaped["escaped_into_use"] == [], "conservative_movement_is_not_reported_as_movement_into_use")
+
+crossed_report = scorer.score([obs2(forbidden_item, policy.ABSTAIN, "contradicts", 1),
+                               obs2(forbidden_item, policy.USE, "supports", 2, rule="G10")], gold_rows)
+crossed = crossed_report["containment"]
+require(crossed["escaped_into_use"] == [forbidden_item], "movement_into_use_is_classified_as_consequential")
+require(len(crossed["crossings_into_use"]) == 1, "every_crossing_into_use_is_listed")
+crossing = crossed["crossings_into_use"][0]
+require(crossing["repeat"] == 2 and crossing["provisional"]["relation"] == "supports",
+        "a_crossing_records_the_exact_provisional_fields")
+require(crossing["rules_fired"] == ["G10"] and crossing["governing_rule"] == "G10",
+        "a_crossing_records_the_governance_rule_path")
+require(crossing["other_dispositions"] == [policy.ABSTAIN], "a_crossing_records_what_it_crossed_from")
+require(crossing["unsafe"] is True and crossed_report["primary_gate"]["unsafe_use"] == 1,
+        "a_crossing_into_use_on_a_forbidden_item_still_fails_the_primary_gate")
+require(len(crossed_report["transitions"]) == 2, "the_report_preserves_every_transition")
+
+# --- 10. the abort-only structural pilot ------------------------------------------------------------------------------------
+require(harness.PILOT_ITEMS == ("I01", "I09", "I17", "I44", "I51"), "the_pilot_items_are_frozen")
+require(set(harness.PILOT_ITEMS) <= {i["item_id"] for i in items}, "the_pilot_items_are_corpus_items")
+
+by_id = {i["item_id"]: i for i in items}
+
+
+def healthy(prompt: str):
+    item = next(i for i in items if i["proposition_id"] in prompt)
+    return json.dumps({"proposition_id": item["proposition_id"], "evidence_id": item["evidence_id"],
+                       "relation": "supports", "scope": "match", "temporal": "compatible",
+                       "quotes": [item["evidence"][12:90]], "confidence": "high"}), \
+        {"metrics": {"eval_count": 150, "prompt_eval_count": 340}}
+
+
+def truncated_reply(prompt: str):
+    text, _ = healthy(prompt)
+    return text, {"metrics": {"eval_count": harness.MAX_OUTPUT_TOKENS, "prompt_eval_count": 340}}
+
+
+def unparseable(prompt: str):
+    return "I think this evidence probably supports it.", {"metrics": {"eval_count": 20, "prompt_eval_count": 340}}
+
+
+def fabricated(prompt: str):
+    item = next(i for i in items if i["proposition_id"] in prompt)
+    return json.dumps({"proposition_id": item["proposition_id"], "evidence_id": item["evidence_id"],
+                       "relation": "supports", "scope": "match", "temporal": "compatible",
+                       "quotes": ["a span that is not in the evidence at all"], "confidence": "high"}), \
+        {"metrics": {"eval_count": 150, "prompt_eval_count": 340}}
+
+
+with tempfile.TemporaryDirectory(prefix="g-evid1-pilot-") as temp:
+    verdict = harness.structural_pilot(confirmed=True, call_model=healthy, out_dir=Path(temp))
+    require(verdict["passed"] is True, "a_mechanically_sound_pilot_passes")
+    require(verdict["observations"] == 5 and verdict["abort_only"] is True, "the_pilot_runs_five_items_abort_only")
+    require(verdict["scorer_ran"] is True, "the_pilot_proves_the_scorer_runs")
+    require("unsafe_use" not in json.dumps(verdict), "the_pilot_verdict_carries_no_semantic_score")
+    require((Path(temp) / "pilot_verdict.json").exists(), "the_pilot_records_its_verdict")
+
+for label, model in (("truncated", truncated_reply), ("unparseable", unparseable), ("fabricated", fabricated)):
+    with tempfile.TemporaryDirectory(prefix=f"g-evid1-pilot-{label}-") as temp:
+        verdict = harness.structural_pilot(confirmed=True, call_model=model, out_dir=Path(temp))
+        require(verdict["passed"] is False, f"a_mechanically_broken_pilot_aborts:{label}")
+        require(verdict["mechanical_failures"], f"an_aborting_pilot_names_its_mechanical_failures:{label}")
+
+refused_pilot = False
+try:
+    harness.structural_pilot(confirmed=False)
+except PermissionError:
+    refused_pilot = True
+require(refused_pilot, "the_pilot_also_refuses_without_confirmation")
+
+# --- 11. the review package ---------------------------------------------------------------------------------------------------
+import g_evid1_review_package as review_package  # noqa: E402
+
+with tempfile.TemporaryDirectory(prefix="g-evid1-package-") as temp:
+    payload = harness.run(confirmed=True, repeats=1, call_model=healthy, out_dir=Path(temp), items=items[:5])
+    observations_path = Path(temp) / "observations.json"
+    with_gold = review_package.build(observations_path, out_dir=None, include_gold=True)
+    roles = {d["role"] for d in with_gold["documents"]}
+    require({"design", "prompts", "corpus", "raw_outputs", "scorer"} <= roles, "the_package_carries_the_required_roles")
+    require("evidence" in roles and with_gold["gold_included"] is True, "the_frozen_gold_is_included")
+    require(roles == {"design", "prompts", "corpus", "raw_outputs", "scorer", "evidence"},
+            "the_package_carries_nothing_beyond_the_experiment_and_its_evidence")
+    require(with_gold["within_qualified_capacity"] is True, "the_package_stays_within_the_reviewers_qualified_capacity")
+    without_gold = review_package.build(observations_path, out_dir=None, include_gold=False)
+    require("evidence" not in {d["role"] for d in without_gold["documents"]}, "gold_inclusion_is_a_deliberate_choice")
+
+    rendered = review_package.render_gold(json.loads((DATA / "gold.json").read_text(encoding="utf-8")))
+    for item_id, row in list(gold.items())[:10]:
+        require(row["gold_relation"] in rendered and item_id in rendered, f"the_rendered_gold_is_complete:{item_id}")
+
 print(json.dumps({"suite": "v2731.12.0-g-evid1-contract", "passed": len(CHECKS), "total": len(CHECKS), "ok": True}))

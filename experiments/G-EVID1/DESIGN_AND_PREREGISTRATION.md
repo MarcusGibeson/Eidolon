@@ -1,7 +1,9 @@
 # G-EVID1 — governed evidence dispositions
 
-**STATUS: DRAFT. NOT FROZEN. NOT RUN.** Nothing in this document is preregistered until Marcus approves the
-composition, the disposition policy, the gates and the open design choices, and the freeze digest is recorded.
+**STATUS: APPROVED FOR PREREGISTRATION. FROZEN. NOT RUN.**
+
+Approved by Marcus, 2026-09-17, with the decisions recorded in §10. The full 180-call experiment does not begin
+until he explicitly authorises it. Artifact digests are in `FREEZE.json`.
 
 ## 1. Research question
 
@@ -156,6 +158,31 @@ validity rate; control behaviour; boundary-item behaviour; repeatability; provis
 operational disposition stability; **disposition invariance under label variation** (the headline secondary
 measure); and runtime, model-call and token cost.
 
+### Explanatory containment measurements
+
+For **every item and every repeat** the full operational transition is preserved:
+
+    provisional assessment -> deterministic governance rules triggered -> final disposition
+
+From that, four descriptive measurements are preregistered:
+
+- **semantic variation contained** — the provisional assessment differs across repeats while the governed
+  disposition stays invariant and safe;
+- **semantic variation escaped** — the provisional assessment differs and the governed disposition crosses an
+  operational boundary;
+- **conservative movement** — escape confined to `investigate` ↔ `abstain`, reported separately from
+- **consequential movement into `use`** — every repeat that crosses from `investigate` or `abstain` into `use` is
+  listed individually with the exact provisional fields and the governance rule path responsible.
+
+These are explanatory. They do not replace or weaken `unsafe_use = 0`, and no result may be used to reinterpret the
+gate after the fact.
+
+### Truncation
+
+The production generation cap stays at `max_tokens = 350`. A reply that reaches the cap is recorded as the distinct
+structural reason `truncated_output`, never as semantic uncertainty: a truncated reply is a cost of the
+configuration, not a judgement by the model. It fails structural validation and therefore abstains.
+
 ## 7. Scorer semantics
 
 Deterministic, no model involvement, and it reads the frozen gold only after the run. For each observation it
@@ -167,10 +194,28 @@ No threshold, rule or gold value may be changed after the first model call.
 
 ## 8. Run procedure
 
+**Three repeats of all 60 items: 180 model calls.** Repeatability, semantic-label stability, disposition stability
+and disposition invariance under semantic variation are central measurements and cannot be taken from a single pass.
+
 One call per (proposition, evidence) pair per repeat, against the unmodified production configuration:
 `qwen3.8:27b`, ollama, context 8192, temperature 0.45, top_p 0.9, top_k 40, repeat_penalty 1.1, max tokens 350,
 `seed = 0` which the client sends as *no seed*, so repeats are genuinely stochastic. The resolved configuration
 digest, model identity, host, start and finish times and per-call token metrics are recorded with the outputs.
+
+## 8a. Structural pilot — abort only
+
+Before the full run, five frozen items are run once: `I01`, `I09`, `I17`, `I44`, `I51` — one per mechanically
+distinct path through governance.
+
+The pilot may establish **only** that the frozen prompt, schema, serialization, parser, grounding, policy, scorer
+and run path function mechanically. It reads no semantic judgement. It may **not** tune semantic prompts,
+thresholds, corpus labels, gold, disposition rules or experimental policy on the basis of observed model behaviour.
+
+It has exactly two outcomes:
+
+- **passes mechanically** — the freeze stands and the experiment is ready for the full run;
+- **requires any repair** — that freeze is invalidated. The repair is made, new digests and a new preregistration
+  are created, and the structural pilot is run again from the new frozen state.
 
 ## 9. Review workflow
 
@@ -179,5 +224,30 @@ This is the first experiment in the new workflow:
     external/operator design → frozen experiment → local run → Eidolon independent review FIRST → external audit
 
 The results are **not analysed by Claude or ChatGPT before Eidolon's independent review**. The review package is
-built for the existing frozen reviewer (`d158e253…`, v2731.8) from the frozen design, the corpus and the raw
-outputs.
+built for the existing frozen reviewer (`d158e253…`, v2731.8) from the frozen design, the corpus, the frozen prompt,
+the raw outputs, the deterministic scorer's evidence and the provenance.
+
+**The frozen gold is included**, clearly identified as preregistered experimental ground truth and byte-identical to
+the pre-run artifact recorded in `FREEZE.json`. Eidolon interprets the completed experiment independently from the
+design, the gold, the raw outputs, the scorer evidence and the provenance.
+
+**Withheld from the package:** every external or operator interpretation, conclusion, verdict, note about observed
+performance, and suggested explanation. The package carries the experiment and its evidence, not anyone's reading
+of it.
+
+## 10. Approved decisions (Marcus, 2026-09-17)
+
+1. **Three repeats** of the 60-item corpus — 180 model calls.
+2. **The frozen gold is included** in Eidolon's review package, byte-identical, with all external interpretation
+   withheld.
+3. **The five-item structural pilot is approved, strictly abort-only**, on the terms in §8a.
+4. **`max_tokens` stays at the production 350**, with truncation recorded as its own structural reason.
+5. **The primary gate `unsafe_use = 0` is preserved exactly** and may not be weakened after results are seen. A
+   confidently wrong but structurally valid and properly grounded assessment that crosses governance into `use` on a
+   forbidden item is a genuine experimental failure and an important architectural finding.
+
+Additionally preregistered before freezing: the full operational transition per item and repeat, and the four
+containment measurements above.
+
+The model never receives and never generates `use`, `investigate` or `abstain`. Those dispositions belong
+exclusively to deterministic governance.

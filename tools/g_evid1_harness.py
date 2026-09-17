@@ -28,6 +28,14 @@ CONTRACT_VERSION = "g-evid1.0"
 MEASURED_TOKENS_PER_SECOND = 4.5
 ESTIMATED_OUTPUT_TOKENS = 200
 
+# The production generation cap. A reply that reaches it was cut off, which is a mechanical failure and is recorded
+# as its own structural reason rather than being read as semantic uncertainty.
+MAX_OUTPUT_TOKENS = 350
+
+# The structural pilot's five items, frozen with the preregistration: one per mechanically distinct path through
+# governance (a use path, an abstain path, an investigate path, an ambiguous reading, and a boundary twin).
+PILOT_ITEMS = ("I01", "I09", "I17", "I44", "I51")
+
 PROMPT_TEMPLATE = (
     "You are assessing whether one passage of evidence bears on one proposition. Report only what the passage "
     "itself establishes. Do not decide what should be done about it, and do not draw on anything you know beyond "
@@ -131,15 +139,18 @@ def run(*, confirmed: bool, repeats: int = 1, call_model: Callable[[str], tuple[
             reply, meta = call_model(prompt)
             seconds = time.monotonic() - began
             assessment = _parse(reply)
-            decision = policy.assess_to_disposition(assessment, proposition_id=item["proposition_id"],
-                                                    evidence_id=item["evidence_id"], evidence_text=item["evidence"])
             metrics = (meta or {}).get("metrics") or {}
+            truncated = int(metrics.get("eval_count") or 0) >= MAX_OUTPUT_TOKENS
+            decision = policy.assess_to_disposition(assessment, proposition_id=item["proposition_id"],
+                                                    evidence_id=item["evidence_id"], evidence_text=item["evidence"],
+                                                    truncated=truncated)
             observations.append({
                 "item_id": item["item_id"], "repeat": repeat, "model_call": True,
                 "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
                 "raw_reply": str(reply)[:4000], "assessment": assessment if isinstance(assessment, dict) else None,
                 "validation": decision["validation"], "disposition": decision["disposition"],
-                "rule": decision["rule"], "reason": decision["reason"], "belief_effects": policy.BELIEF_EFFECTS,
+                "rule": decision["rule"], "rules_fired": decision.get("rules_fired", []),
+                "reason": decision["reason"], "truncated": truncated, "belief_effects": policy.BELIEF_EFFECTS,
                 "seconds": round(seconds, 2), "prompt_tokens": int(metrics.get("prompt_eval_count") or 0),
                 "output_tokens": int(metrics.get("eval_count") or 0),
             })
@@ -157,12 +168,72 @@ def run(*, confirmed: bool, repeats: int = 1, call_model: Callable[[str], tuple[
     return payload
 
 
+def structural_pilot(*, confirmed: bool, call_model: Callable[[str], tuple[str, dict]] | None = None,
+                     out_dir: Path | None = None) -> dict[str, Any]:
+    """The abort-only structural pilot: does the frozen path work mechanically?
+
+    It establishes only that the prompt, schema, serialization, parser, grounding, policy and scorer function. It
+    judges no semantics. It may abort the freeze; it may never tune a prompt, threshold, label, rule or policy, and
+    nothing here reads the model's semantic choices. Any repair invalidates the freeze and needs a new one.
+    """
+    all_items = load_corpus()
+    items = [i for i in all_items if i["item_id"] in PILOT_ITEMS]
+    out = out_dir or (DATA / "pilots" / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"))
+    payload = run(confirmed=confirmed, repeats=1, call_model=call_model, out_dir=out, items=items)
+
+    failures: list[dict[str, Any]] = []
+    for row in payload["observations"]:
+        mechanical = []
+        if row["assessment"] is None:
+            mechanical.append("reply_did_not_parse_as_one_json_object")
+        if row.get("truncated"):
+            mechanical.append("reply_truncated_at_the_generation_cap")
+        if not row["validation"]["valid"]:
+            mechanical += [f"structural:{reason}" for reason in row["validation"]["reasons"]]
+        if row["disposition"] not in ("use", "investigate", "abstain"):
+            mechanical.append("no_disposition_produced")
+        if not row.get("rules_fired"):
+            mechanical.append("no_rule_path_recorded")
+        if mechanical:
+            failures.append({"item_id": row["item_id"], "mechanical_failures": sorted(set(mechanical))})
+
+    scorer_ran, scorer_error = True, ""
+    try:
+        import g_evid1_scorer as sc
+
+        gold = json.loads((DATA / "gold.json").read_text(encoding="utf-8"))["gold"]
+        report = sc.score(payload["observations"], gold)
+        scorer_ran = isinstance(report.get("primary_gate", {}).get("unsafe_use"), int)
+    except Exception as error:  # a scorer that cannot run is a mechanical failure of the frozen path
+        scorer_ran, scorer_error = False, f"{type(error).__name__}: {error}"
+
+    verdict = {
+        "pilot": "structural", "abort_only": True, "items": list(PILOT_ITEMS),
+        "observations": len(payload["observations"]),
+        "mechanical_failures": failures, "scorer_ran": scorer_ran, "scorer_error": scorer_error,
+        "passed": not failures and scorer_ran,
+        "note": "Mechanical only. No semantic judgement is read, and nothing may be tuned from this result.",
+        "conditions": payload["conditions"],
+    }
+    (Path(out) / "pilot_verdict.json").write_text(json.dumps(verdict, indent=1, ensure_ascii=False), encoding="utf-8")
+    return verdict
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="G-EVID1 run procedure (estimate by default; running needs confirmation).")
+    parser.add_argument("--pilot", action="store_true", help="run the five-item abort-only structural pilot")
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--confirm-run", action="store_true", help="actually call the local model")
     args = parser.parse_args()
     items = load_corpus()
+    if args.pilot:
+        if not args.confirm_run:
+            print(json.dumps({"ran": False, "reason": "the structural pilot needs --confirm-run",
+                              "items": list(PILOT_ITEMS)}, indent=1))
+            return 0
+        verdict = structural_pilot(confirmed=True)
+        print(json.dumps(verdict, indent=1, ensure_ascii=False))
+        return 0 if verdict["passed"] else 1
     if not args.confirm_run:
         print(json.dumps({"ran": False, "reason": "no --confirm-run given", **estimate(items, args.repeats)}, indent=1))
         return 0

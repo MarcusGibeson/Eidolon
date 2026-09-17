@@ -33,15 +33,22 @@ FORBIDDEN_KEYS = ("disposition", "dispositions", "action", "actions", "belief", 
 BELIEF_EFFECTS = "none"
 
 
-def validate_assessment(assessment: Any, *, proposition_id: str, evidence_id: str, evidence_text: str) -> dict[str, Any]:
+def validate_assessment(assessment: Any, *, proposition_id: str, evidence_id: str, evidence_text: str,
+                        truncated: bool = False) -> dict[str, Any]:
     """Structural validation (stage 2). Returns ``{"valid": bool, "reasons": [...], "quotes_anchored": int}``.
 
     Nothing here judges whether the assessment is *correct*; it judges whether it is well formed, bound to the item
     it was asked about, and anchored in that item's evidence.
+
+    ``truncated`` is recorded as its own reason. A reply cut off at the production generation cap is a mechanical
+    failure, and conflating it with semantic uncertainty would misattribute a cost of the configuration to the
+    model's judgement.
     """
     reasons: list[str] = []
+    if truncated:
+        reasons.append("truncated_output")
     if not isinstance(assessment, Mapping):
-        return {"valid": False, "reasons": ["not_an_object"], "quotes_anchored": 0}
+        return {"valid": False, "reasons": sorted(set(reasons + ["not_an_object"])), "quotes_anchored": 0}
 
     for key in assessment:
         lowered = str(key).casefold()
@@ -87,7 +94,7 @@ def validate_assessment(assessment: Any, *, proposition_id: str, evidence_id: st
 def govern(assessment: Any, validation: Mapping[str, Any]) -> dict[str, Any]:
     """Deterministic governed disposition (stage 3). Pure, ordered, and conservative by construction."""
     if not validation.get("valid"):
-        return {"disposition": ABSTAIN, "rule": "G0", "reason": "structurally_invalid",
+        return {"disposition": ABSTAIN, "rule": "G0", "reason": "structurally_invalid", "rules_fired": ["G0"],
                 "belief_effects": BELIEF_EFFECTS, "contract_version": CONTRACT_VERSION}
 
     relation = str(assessment.get("relation"))
@@ -117,10 +124,10 @@ def govern(assessment: Any, validation: Mapping[str, Any]) -> dict[str, Any]:
 
     if not fired:
         if relation == "supports":
-            return {"disposition": USE, "rule": "G10", "reason": "supported_and_compatible",
+            return {"disposition": USE, "rule": "G10", "reason": "supported_and_compatible", "rules_fired": ["G10"],
                     "belief_effects": BELIEF_EFFECTS, "contract_version": CONTRACT_VERSION}
         # An unrecognised combination is never usable.
-        return {"disposition": ABSTAIN, "rule": "G0", "reason": "unrecognised_assessment",
+        return {"disposition": ABSTAIN, "rule": "G0", "reason": "unrecognised_assessment", "rules_fired": ["G0"],
                 "belief_effects": BELIEF_EFFECTS, "contract_version": CONTRACT_VERSION}
 
     rule, disposition, reason = max(fired, key=lambda row: (CONSERVATISM[row[1]], row[0]))
@@ -129,10 +136,11 @@ def govern(assessment: Any, validation: Mapping[str, Any]) -> dict[str, Any]:
             "contract_version": CONTRACT_VERSION}
 
 
-def assess_to_disposition(assessment: Any, *, proposition_id: str, evidence_id: str, evidence_text: str) -> dict[str, Any]:
+def assess_to_disposition(assessment: Any, *, proposition_id: str, evidence_id: str, evidence_text: str,
+                          truncated: bool = False) -> dict[str, Any]:
     """Stages 2 and 3 together: the only supported way to turn a provisional assessment into a disposition."""
     validation = validate_assessment(assessment, proposition_id=proposition_id, evidence_id=evidence_id,
-                                     evidence_text=evidence_text)
+                                     evidence_text=evidence_text, truncated=truncated)
     governed = govern(assessment, validation)
     return {"validation": validation, **governed}
 
