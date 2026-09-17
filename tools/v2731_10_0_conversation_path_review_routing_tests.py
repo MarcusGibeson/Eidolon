@@ -306,12 +306,43 @@ started_answer = routing.bounded_action_explanation(executed)
 require("G-INVAR" in started_answer and str(receipt.get("job_id")) in started_answer,
         "the_answer_reports_the_started_job")
 
-# The same confirmation replayed cannot start a second run.
-replay = routing.apply_confirmed_execution(routing.build_natural_language_action_projection("Confirm G-INVAR"))
-require(sorted((RUNTIME / "research_jobs").glob("job_*.json")) == job_files, "a_replayed_confirmation_starts_no_second_job")
-require(dict(replay.get("grounding") or {}).get("execution_state") != "started" or
-        dict(dict(replay.get("grounding") or {}).get("confirmed_execution") or {}).get("job_id") == receipt.get("job_id"),
-        "a_replayed_confirmation_reports_no_new_job")
+# Two started reviews in one conversation must read as two statements, not as one repeated paragraph. A templated
+# receipt differing only by package and job id scored 0.85 jaccard against the previous one, above the conversation's
+# duplicate threshold, so a real start was replaced by "I repeated my previous response".
+# Only one review runs at a time, so the first job must finish before a second can start. Its process is gone, which
+# the adapter records as a failure rather than leaving a stuck job.
+adapter.ALIVE = lambda pid: False
+require((adapter.job_status(str(receipt.get("job_id"))) or {}).get("status") == "failed",
+        "a_job_whose_process_ended_without_a_result_is_recorded_as_failed")
+require(adapter.active_job() is None, "the_review_slot_is_free_again")
+second = routing.apply_confirmed_execution(routing.build_natural_language_action_projection("Confirm G-CAND2-refx"))
+second_receipt = dict(dict(second.get("grounding") or {}).get("confirmed_execution") or {})
+require(second_receipt.get("ok") is True, "a_second_package_can_also_be_confirmed")
+second_answer = routing.bounded_action_explanation(second)
+require("G-CAND2-refx" in second_answer and str(second_receipt.get("job_id")) in second_answer,
+        "the_second_answer_reports_its_own_package_and_job")
+jaccard, ratio = _similarity(started_answer, second_answer)
+require(not (jaccard >= 0.72 and ratio >= 0.86), "two_started_reviews_are_not_one_repeated_receipt")
+out, diagnostics = enforce_conversation_target_output(
+    second_answer, None, [{"user_message": "Confirm G-INVAR", "assistant_response": started_answer}],
+    casual_fast_path=True)
+require(diagnostics.get("whole_response_replaced") is False and out == second_answer,
+        "the_guard_lets_a_second_started_review_through")
+# Two reviews have now run, so the replay check below measures against the current set of jobs.
+job_files = sorted((RUNTIME / "research_jobs").glob("job_*.json"))
+require(len(job_files) == 2, "each_confirmed_review_started_exactly_one_job")
+
+# A proposal that has run cannot run again: it is no longer waiting, and the runner refuses it before any executor.
+# This is the guarantee, rather than the incidental one that a review was already occupying the single review slot.
+executed_id = str(receipt.get("action_id") or "")
+before_replay = sorted((RUNTIME / "research_jobs").glob("job_*.json"))
+replayed = router.run_confirmed_action(executed_id)
+require(replayed.get("ok") is False and replayed.get("refused") == "already_resolved",
+        "an_executed_proposal_is_refused_when_it_is_confirmed_again")
+require(sorted((RUNTIME / "research_jobs").glob("job_*.json")) == before_replay,
+        "a_replayed_confirmation_starts_no_second_job")
+require(str((router.load_chat_action(executed_id) or {}).get("status") or "") != "proposed",
+        "an_executed_proposal_is_no_longer_waiting")
 
 # The allowlist is the only route from a conversation turn to an executor.
 require("experiment_review_start" in router.CONVERSATION_CONFIRMABLE_FUNCTIONS, "the_review_is_confirmable")
@@ -330,7 +361,10 @@ fabricated = ("The read-only review of G-INVAR is now active. I am scanning the 
               "identify any deviations or issues.")
 bound_claim = routing.bound_unverified_action_claim(fabricated, ordinary_projection)
 require(bound_claim != fabricated, "a_fabricated_review_execution_claim_is_replaced")
-require(str(receipt.get("job_id")) in bound_claim or "No independent review is running" in bound_claim,
+known_jobs = {json.loads(f.read_text(encoding="utf-8")).get("job_id", "")
+              for f in (RUNTIME / "research_jobs").glob("job_*.json")}
+require(any(job_id and job_id in bound_claim for job_id in known_jobs)
+        or "No independent review is running" in bound_claim,
         "the_replacement_reports_the_job_record")
 for untouched in ("That sounds good, the invariance question is the interesting one.",
                   "I can review G-INVAR, G-CAND2-refx and G-REL-fixtures.",

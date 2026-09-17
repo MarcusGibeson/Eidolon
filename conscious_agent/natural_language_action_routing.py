@@ -756,6 +756,16 @@ def apply_confirmed_execution(projection: dict[str, Any]) -> dict[str, Any]:
         receipt = run_confirmed_action(action_id)
     except Exception as error:
         receipt = {"ok": False, "refused": f"execution_error:{type(error).__name__}", "action_id": action_id}
+    if receipt.get("ok") and receipt.get("job_id"):
+        # The start time makes each receipt its own statement. Two templated receipts differing only by package and
+        # job id scored 0.85 jaccard against each other, above the conversation's duplicate threshold, so a real
+        # start was replaced by "I repeated my previous response" and the operator was never told it had begun.
+        try:
+            from conversational_experiment_review import job_status
+
+            receipt["started"] = str((job_status(str(receipt["job_id"])) or {}).get("started") or "")
+        except Exception:
+            receipt["started"] = ""
     grounding["confirmed_execution"] = {key: value for key, value in receipt.items() if key != "message"}
     grounding["confirmed_execution_message"] = str(receipt.get("message") or "")[:400]
     grounding["execution_state"] = "started" if receipt.get("ok") else "refused"
@@ -820,9 +830,9 @@ def _experiment_review_answer(grounding: Mapping[str, Any]) -> str:
         if receipt:
             if receipt.get("ok"):
                 job = str(receipt.get("job_id") or "")
-                as_job = f" It is running as job {job}." if job else ""
-                return (f"Started the independent read-only review of {package}.{as_job} Ask me for the review status "
-                        f"whenever you want to know where it is.")
+                started = str(receipt.get("started") or "")
+                when = f" started {started}," if started else ""
+                return f"{package}: independent read-only review{when} job {job}."
             refused = str(receipt.get("refused") or "")
             detail = str(grounding.get("confirmed_execution_message") or "")
             if refused == "already_resolved":

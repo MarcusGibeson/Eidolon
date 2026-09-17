@@ -1,6 +1,14 @@
 # Eidolon research architecture — production migration specification
 
-**Version 2.33, 2026-09-16. Status: the governing migration specification, approved by Marcus.**
+**Version 2.34, 2026-09-17. Status: the governing migration specification, approved by Marcus.**
+
+**Added in 2.34** (Marcus, 2026-09-17; the bounded live smoke test passed, and the receipt it exposed):
+- **The infrastructure repair passes its live smoke test.** `G-SMOKE` (3 parts) was installed, requested and confirmed through normal Eidolon conversation, and ran detached for 13.4 minutes as `job_e1e1ac1346cf487c` while ordinary chat continued. **The mutation guard passed with 0 changes**, with the source tree guarded, while **34 live application files were written inside the guarded window** — the same cognition, conversation, dashboard-chat, chat-action and Chroma categories that failed the 2h G-INVAR run. Coverage 3/3 parts, 100%, 15 grounded observations; review `b486a8364765f2e8`.
+- **A defect the smoke test exposed.** The confirmation started the review, but the operator was told "I repeated my previous response". The receipt sentence was templated, so two starts in one session differed only by package and job id and scored 0.85 jaccard / 0.89 sequence against each other, above the conversation's 0.72/0.86 duplicate thresholds. Nothing false was asserted; the start simply was not reported.
+- **A started review now reports per-run facts** — package, start time and job id — with the wording chosen by measuring candidates against the live guard: the same template for two runs now scores 0.50/0.75.
+- **Two checks were tightened.** The routing suite reaches 157 checks: it now confirms two reviews end to end and proves the second receipt survives the guard, and its replay check asserts the real guarantee (an executed proposal is refused by the runner before any executor and is no longer waiting) rather than passing incidentally because the single review slot was occupied.
+- **`experiment_review.py` remains byte-identical** to the qualified v2731.8 baseline throughout. The repair and its verification stay recorded in `docs/PRIVATE_REVIEW_RUNTIME_REPAIR.md`, separate from the frozen coworking-validation evidence.
+- **G-EVID1 is now unblocked** by this infrastructure repair.
 
 **Added in 2.33** (Marcus, 2026-09-16; the private, quiescent review runtime — infrastructure repair):
 - **Approved and implemented outside the frozen reviewer.** `conscious_agent/experiment_review.py` stays byte-identical to the qualified v2731.8 baseline `d158e253…`; only `tools/run_review_job.py`, the detached job and runtime preparation layer, changed. The failed live G-INVAR run is preserved exactly as an incomplete infrastructure trial at the mutation-guard layer, not rescored and not reinterpreted.

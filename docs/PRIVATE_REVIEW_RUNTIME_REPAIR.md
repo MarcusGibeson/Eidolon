@@ -79,7 +79,52 @@ path routing, 149 checks), `v1175_0_2`, `v1176_0_2`, `v1177_0_2`, `v1178_0_2`, `
 Because the source tree is now guarded, editing the repository while a detached review runs will trip the guard — as
 it should. That is a real source mutation during a review, not a false positive.
 
-## Live smoke test
+## Live smoke test — passed
 
-Recorded below once run: a bounded review started through normal Eidolon conversation, with ordinary live-app
-activity while it runs, proving coexistence without a false mutation-guard failure.
+A bounded package, `G-SMOKE` (3 parts, 319 characters), was installed in the live area and reviewed through the
+normal conversation surface (`POST /api/dashboard-chat`, which runs `run_conversation_turn`): "Review G-SMOKE
+independently." then "confirm G-SMOKE". Ordinary chat continued while it ran.
+
+| | |
+|---|---|
+| job | `job_e1e1ac1346cf487c`, package `G-SMOKE` |
+| window | 2026-09-16T23:47:58Z → 2026-09-17T00:01:23Z (13.4 minutes) |
+| **mutation guard** | **passed, 0 changes** |
+| source tree guarded | true |
+| guarded roots | the private runtime, `research_packages`, and the preserved `research_reviews/72a40f4dc8a09ae3` |
+| coverage | 3/3 parts, 100%, 15 grounded observations |
+| provider attempts | 11 |
+| review | `b486a8364765f2e8`, published to the live review area |
+| **live application files written during the guarded window** | **34** |
+
+Those 34 writes are the same categories that failed the 2h G-INVAR run: `cognition/` (including
+`cognitive_cycle_state.json` and `belief_revision.json`), `conversation_runtime/`, `conversation_sessions/`,
+`conversation_policy_state/`, `dashboard_chat/`, `chat_actions/` and `chroma/chroma.sqlite3`. The review coexisted
+with all of it and its guard reported nothing.
+
+Ordinary conversation was answered normally throughout, including while the review was mid-run.
+
+## A defect the smoke test exposed, and its repair
+
+The confirmation started the review correctly, but the operator was told "I repeated my previous response instead of
+responding to what you just said." Nothing false was asserted and nothing failed — the start simply was not reported.
+
+The receipt sentence was templated, so two successful starts in one session differed only by package and job id:
+
+    Started the independent read-only review of G-INVAR. It is running as job job_955f1d999e07f538. ...
+    Started the independent read-only review of G-SMOKE.  It is running as job job_e1e1ac1346cf487c. ...
+
+Measured against the conversation's own duplicate thresholds (jaccard 0.72 / sequence 0.86), that pair scores
+**0.85 / 0.89**, so the second was replaced by the repetition fallback.
+
+A started review now reports facts that differ per run — package, start time and job id — and the wording was chosen
+by measuring candidates against the live guard rather than by eye:
+
+    G-SMOKE: independent read-only review started 2026-09-16T23:47:58Z, job job_e1e1ac1346cf487c.
+
+The same template for two different runs scores **0.50 / 0.75**. `tools/v2731_10_0_conversation_path_review_routing_tests.py`
+now confirms two reviews end to end and asserts that the second receipt survives the guard unchanged.
+
+Two further checks were tightened while proving it: the one-review-at-a-time rule made the old replay check pass
+incidentally, so it now asserts the real guarantee — an executed proposal is refused by the runner before reaching
+any executor, and is no longer waiting.
