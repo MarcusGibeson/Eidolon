@@ -217,6 +217,19 @@ def main() -> int:
         require("architecture" not in old_artifact or old_artifact.get("contract_version") == "v2731.8",
                 "the_two_artifact_kinds_are_distinguishable")
 
+        # --- 10. the operator CLI resolves the same active reviewer, and can still pin the baseline ------------
+        import review_experiment as cli
+
+        require(cli._reviewer("").CONTRACT_VERSION == adapter.ACTIVE_REVIEWER_CONTRACT,
+                "the_operator_cli_defaults_to_the_active_reviewer")
+        require(cli._reviewer("v2731.8") is base, "the_operator_cli_can_still_pin_the_baseline")
+        cli_bad = False
+        try:
+            cli._reviewer("v9999.0")
+        except LookupError:
+            cli_bad = True
+        require(cli_bad, "the_operator_cli_refuses_an_unknown_reviewer_contract")
+
     failed = [name for name, ok in CHECKS if not ok]
     print(json.dumps({"suite": "v2732.1.0-hierarchical-integration", "checks": len(CHECKS),
                       "passed": len(CHECKS) - len(failed), "failed": failed}, indent=1))

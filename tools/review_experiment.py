@@ -27,10 +27,23 @@ import experiment_review as er  # noqa: E402
 import local_research_queue as lrq  # noqa: E402
 
 
-def _review(package: str, protect: list[str], protect_root: list[str]) -> dict:
-    artifact = er.review_experiment(package, source_root=ROOT, protected_paths=protect, protected_roots=protect_root)
+def _reviewer(contract: str):
+    """The reviewer this invocation runs. Defaults to whatever the adapter treats as active, so an operator running
+    this tool gets the same architecture a confirmed conversational review would, and --reviewer pins it explicitly."""
+    import conversational_experiment_review as adapter
+    import run_review_job
+
+    return run_review_job.resolve_reviewer(contract or adapter.ACTIVE_REVIEWER_CONTRACT)
+
+
+def _review(package: str, protect: list[str], protect_root: list[str], contract: str = "") -> dict:
+    reviewer = _reviewer(contract)
+    artifact = reviewer.review_experiment(package, source_root=ROOT, protected_paths=protect, protected_roots=protect_root)
     coverage = artifact["coverage"]
-    print(json.dumps({"review_id": artifact["review_id"], "status": artifact["status"], "mutation_guard_passed": artifact["mutation_guard"]["passed"],
+    print(json.dumps({"review_id": artifact["review_id"], "status": artifact["status"],
+                      "reviewer": {"contract_version": artifact["contract_version"],
+                                   "architecture": artifact.get("architecture", "flat_synthesis")},
+                      "mutation_guard_passed": artifact["mutation_guard"]["passed"],
                       "coverage": {k: coverage[k] for k in ("complete", "required_parts", "reviewed_required_parts", "required_coverage",
                                                             "grounded_observations", "levels", "missing")},
                       "grounded_observations": len(artifact["grounded_observations"]), "rejected_observations": len(artifact["rejected_observations"]),
@@ -46,6 +59,7 @@ def main() -> int:
     rev.add_argument("package")
     rev.add_argument("--protect", action="append", default=[])
     rev.add_argument("--protect-root", action="append", default=[])
+    rev.add_argument("--reviewer", default="", help="reviewer contract to run (default: the active reviewer)")
     queue = sub.add_parser("queue")
     qsub = queue.add_subparsers(dest="queue_command", required=True)
     qsub.add_parser("list")
@@ -57,9 +71,10 @@ def main() -> int:
     run.add_argument("task_id")
     run.add_argument("--protect", action="append", default=[])
     run.add_argument("--protect-root", action="append", default=[])
+    run.add_argument("--reviewer", default="", help="reviewer contract to run (default: the active reviewer)")
     args = parser.parse_args()
     if args.command == "review":
-        _review(args.package, args.protect, args.protect_root)
+        _review(args.package, args.protect, args.protect_root, args.reviewer)
     elif args.queue_command == "list":
         q = lrq.load_queue()
         print(json.dumps({"ready_local_read_only": lrq.READY_LOCAL_READ_ONLY, "implemented": sorted(lrq.IMPLEMENTED),
@@ -67,7 +82,8 @@ def main() -> int:
     elif args.queue_command == "add":
         print(json.dumps(lrq.add_task(args.kind, args.target, operator_note=args.note), indent=1))
     elif args.queue_command == "run":
-        print(json.dumps(lrq.run_task(args.task_id, runner=lambda target: _review(target, args.protect, args.protect_root)), indent=1))
+        print(json.dumps(lrq.run_task(args.task_id,
+                                      runner=lambda target: _review(target, args.protect, args.protect_root, args.reviewer)), indent=1))
     return 0
 
 
