@@ -41,29 +41,29 @@ CALIBRATION = {
 OBS_PER_PART = 5              # 100 grounded observations / 19 parts
 PART_CITE_RATE = 0.80         # share of a part unit's observations that get cited (20 of 100 carried forward)
 DOC_CITE_RATE = 0.66          # share of a document unit's inputs that get cited (22 of 65 carried forward)
-PART_STATEMENTS_PER_UNIT = 2.37   # 45 part statements / 19 part units
-DOC_STATEMENTS_PER_UNIT = 3.0     # 30 document statements / 10 document units
+STATEMENTS_PER_INPUT = 0.45   # 45 statements / 100 observations at the part level, 30 / 65 at the document level
 IDS_PER_STATEMENT = 2         # 45 statements covering ~80 cited observations
 STATEMENT_WORDS = 16          # tuned so a rendered final input line averages the measured ~150 characters
 
 # Sensitivity band: the same structure run with a more and a less compressive model, so a capacity verdict cannot be
 # an artefact of one stub setting.
 SENSITIVITY = {
-    "optimistic": {"part_statements_per_unit": 1.5, "doc_statements_per_unit": 2.0, "ids_per_statement": 4,
-                   "statement_words": 12},
+    "optimistic": {"statements_per_input": 0.60, "ids_per_statement": 4, "statement_words": 12},
     "nominal": {},
-    "pessimistic": {"part_statements_per_unit": 3.0, "doc_statements_per_unit": 4.0, "ids_per_statement": 1,
-                    "statement_words": 20},
+    "pessimistic": {"statements_per_input": 0.25, "ids_per_statement": 1, "statement_words": 20},
 }
 
 # The part shape of each qualification scale. The 34-part shape mirrors the document structure the reviewer must
 # handle in normal operation: six roles, one dominant machine-generated document.
 SHAPES = {
     19: (2, 1, 2, 4, 7, 3),   # the calibration scale: the size of the completed G-INVAR review
+    27: (3, 1, 3, 6, 11, 3),  # the demonstrated v2731.8 ceiling
     28: (3, 1, 3, 7, 11, 3),
     30: (3, 1, 3, 8, 12, 3),
     32: (3, 1, 3, 8, 14, 3),
-    34: (3, 1, 3, 8, 16, 3),
+    34: (3, 1, 3, 8, 16, 3),  # the scale of the unchanged G-EVID1 package
+    48: (4, 1, 4, 11, 23, 5),
+    64: (5, 1, 5, 15, 31, 7),
 }
 DOCS = (
     ("design.md", "design", "Q-CAP synthetic design note"),
@@ -134,7 +134,10 @@ def build_package(out_dir: Path, parts_target: int) -> dict[str, Any]:
 
 # --- the deterministic stub model ----------------------------------------------------------------------------------
 _CHUNK = re.compile(r"part (\d+) of (\d+)\.\n---\n(.*)\n---\n", re.S)
-_INPUT_ID = re.compile(r"^(O\d+|PS\d+|DS\d+)\b", re.M)
+# Every id the hierarchy can present to a synthesis level: observations, part, document and group statements, and
+# uncaptured registers. Missing one starves that level of citable inputs and makes consolidation look far worse than
+# it is, which is exactly the artefact this regex caused before GS and U were added.
+_INPUT_ID = re.compile(r"^(O\d+|PS\d+|DS\d+|GS\d+|U\d+)\b", re.M)
 
 
 def _statement(seed: int, words: int = 12) -> str:
@@ -144,8 +147,7 @@ def _statement(seed: int, words: int = 12) -> str:
 
 def deterministic_stub(*, part_cite_rate: float = PART_CITE_RATE, doc_cite_rate: float = DOC_CITE_RATE,
                        obs_per_part: int = OBS_PER_PART,
-                       part_statements_per_unit: float = PART_STATEMENTS_PER_UNIT,
-                       doc_statements_per_unit: float = DOC_STATEMENTS_PER_UNIT,
+                       statements_per_input: float = STATEMENTS_PER_INPUT,
                        ids_per_statement: int = IDS_PER_STATEMENT,
                        statement_words: int = STATEMENT_WORDS) -> Callable[[str, int], tuple[str, dict[str, Any]]]:
     """A model that always answers in the requested shape, quoting real spans. No randomness anywhere."""
@@ -171,14 +173,16 @@ def deterministic_stub(*, part_cite_rate: float = PART_CITE_RATE, doc_cite_rate:
         if '"statements"' in prompt:
             key = "obs_ids" if '"obs_ids"' in prompt else "input_ids"
             rate = part_cite_rate if key == "obs_ids" else doc_cite_rate
-            per_unit = part_statements_per_unit if key == "obs_ids" else doc_statements_per_unit
             block = prompt.split("Each has an id and, in brackets")[-1]
             ids = list(dict.fromkeys(_INPUT_ID.findall(block)))
             cap_match = re.search(r"Give at most (\d+) statements", prompt)
             cap = int(cap_match.group(1)) if cap_match else 1
             chosen = ids[: max(1, round(len(ids) * rate))] if ids else []
-            # Real models write many short statements citing few inputs each, not one statement citing everything.
-            wanted = min(cap, max(1, round(per_unit)))
+            # Real models write many short statements citing few inputs each, and they write MORE statements when
+            # given more inputs. G-INVAR measured 45 statements over 19 part units of ~5.26 observations (0.45 per
+            # input) and 30 statements over 10 document units of ~6.5 inputs (0.46 per input), so one proportional
+            # rate reproduces both levels instead of two fixed per-unit counts.
+            wanted = min(cap, max(1, round(len(ids) * statements_per_input)))
             statements = []
             for n in range(wanted):
                 group = chosen[n * ids_per_statement:(n + 1) * ids_per_statement]
@@ -247,13 +251,16 @@ def relocatability(artifact: Mapping[str, Any], package_dir: Path) -> dict[str, 
 
 def identifier_validity(artifact: Mapping[str, Any]) -> dict[str, Any]:
     """Every id cited anywhere in the hierarchy must exist; nothing may reference an id the review never made."""
-    known = {o["obs_id"] for o in artifact["grounded_observations"]}
-    known |= {s["id"] for s in artifact["hierarchy"]["part_statements"]}
-    known |= {s["id"] for s in artifact["hierarchy"]["document_statements"]}
+    hierarchy = artifact["hierarchy"]
+    # Every statement kind the reviewer can mint, including the hierarchical version's group statements and
+    # uncaptured registers. Omitting one would report the reviewer as citing identifiers it legitimately created.
+    produced = (hierarchy["part_statements"] + hierarchy["document_statements"]
+                + hierarchy.get("group_statements", []) + hierarchy.get("uncaptured_registers", []))
+    known = {o["obs_id"] for o in artifact["grounded_observations"]} | {s["id"] for s in produced}
     cited: set[str] = set()
-    for s in artifact["hierarchy"]["part_statements"] + artifact["hierarchy"]["document_statements"]:
+    for s in produced:
         cited |= set(s.get("cites") or [])
-    cited |= set(artifact["hierarchy"]["final_inputs"])
+    cited |= set(hierarchy["final_inputs"])
     return {"known_ids": len(known), "cited_ids": len(cited), "unknown_cited": sorted(cited - known),
             "unknown_references": artifact["unknown_references"], "valid": not (cited - known)}
 
@@ -287,7 +294,7 @@ def measure(artifact: Mapping[str, Any], package_dir: Path, seconds: float) -> d
                       "part_units_accepted": lv["part_synthesis"]["accepted"],
                       "document_units": lv["document_synthesis"]["units"],
                       "document_units_accepted": lv["document_synthesis"]["accepted"],
-                      "document_unit_slots": lv["document_synthesis"]["statement_slots"],
+                      "document_unit_slots": lv["document_synthesis"].get("statement_slots"),
                       "final_first_half": lv["final"]["first_half"], "final_second_half": lv["final"]["second_half"],
                       "complete": (lv["part_synthesis"]["units"] == lv["part_synthesis"]["accepted"]
                                    and lv["document_synthesis"]["units"] == lv["document_synthesis"]["accepted"]
@@ -296,11 +303,29 @@ def measure(artifact: Mapping[str, Any], package_dir: Path, seconds: float) -> d
         "final_budget": {"inputs": lv["final"]["inputs"], "chars": lv["final"]["input_chars"],
                          "budget": lv["final"]["input_budget"],
                          "used": round(lv["final"]["input_chars"] / lv["final"]["input_budget"], 4),
-                         "within": lv["final"]["input_chars"] <= lv["final"]["input_budget"]},
+                         "within": lv["final"]["input_chars"] <= lv["final"]["input_budget"],
+                         "bound_inputs": lv["final"].get("input_bound"),
+                         "bound_chars": lv["final"].get("input_bound_chars"),
+                         "within_bound": (lv["final"]["inputs"] <= lv["final"]["input_bound"]
+                                          if lv["final"].get("input_bound") else None)},
+        "intermediate": ({"round_count": lv["intermediate_synthesis"]["round_count"],
+                          "units": lv["intermediate_synthesis"]["units"],
+                          "statements": lv["intermediate_synthesis"]["statements"],
+                          "converged": lv["intermediate_synthesis"]["converged"],
+                          "rounds": [{k: r[k] for k in ("round", "units", "inputs", "statements", "carried",
+                                                        "surviving", "reduction", "accepted")}
+                                     for r in lv["intermediate_synthesis"]["rounds"]],
+                          "complete": all(r["units"] == r["accepted"]
+                                          for r in lv["intermediate_synthesis"]["rounds"])}
+                         if "intermediate_synthesis" in lv else None),
+        "disagreement_preservation": {"statement_kinds": cov.get("statement_kinds", {}),
+                                      "non_finding_kinds": sum(v for k, v in cov.get("statement_kinds", {}).items()
+                                                               if k != "finding")},
         "mechanical_verification": {"complete": cov["complete"], "missing": cov["missing"]},
         "mutation_guard": {"passed": artifact["mutation_guard"]["passed"],
                            "source_tree_protected": artifact["mutation_guard"]["protected"]["source_tree"],
                            "changes": artifact["mutation_guard"]["changes"][:5]},
+        "tokens": {"prompt": run.get("prompt_tokens"), "output": run.get("output_tokens")},
         "degradation": {"provider_attempts": run["provider_attempts"], "retries": run["retries"],
                         "truncated_attempts": run["truncated_attempts"],
                         "unparseable_or_rejected": run["unparseable_or_rejected_replies"],
@@ -311,8 +336,14 @@ def measure(artifact: Mapping[str, Any], package_dir: Path, seconds: float) -> d
     }
 
 
-def qualify(parts_target: int, *, work_dir: Path, guard_source: bool = True, **stub_kwargs: Any) -> dict[str, Any]:
-    """Build a synthetic package at ``parts_target`` and run the real reviewer over it with the deterministic stub."""
+def qualify(parts_target: int, *, work_dir: Path, guard_source: bool = True, reviewer: Any = er,
+            call_model: Callable[[str, int], tuple[str, dict[str, Any]]] | None = None,
+            identity: Mapping[str, Any] | None = None, **stub_kwargs: Any) -> dict[str, Any]:
+    """Build a synthetic package at ``parts_target`` and run a reviewer over it.
+
+    ``reviewer`` is the module under qualification: the frozen baseline (``experiment_review``) or the hierarchical
+    candidate. ``call_model`` overrides the deterministic stub, which is how the real-model runs are driven.
+    """
     import time
 
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -321,15 +352,15 @@ def qualify(parts_target: int, *, work_dir: Path, guard_source: bool = True, **s
     runtime = work_dir / f"runtime-{parts_target}"
     runtime.mkdir(parents=True, exist_ok=True)
     began = time.monotonic()
-    artifact = er.review_experiment(
-        package_dir, call_model=deterministic_stub(**stub_kwargs),
+    artifact = reviewer.review_experiment(
+        package_dir, call_model=call_model or deterministic_stub(**stub_kwargs),
         runtime_root_path=runtime, source_root=ROOT if guard_source else None,
-        identity={"model": "deterministic_stub", "provider": "qualification_harness", "context_size": 8192,
-                  "resolved_config_sha256": "0" * 64})
+        identity=dict(identity) if identity is not None else
+        {"model": "deterministic_stub", "provider": "qualification_harness", "context_size": 8192,
+         "resolved_config_sha256": "0" * 64})
     seconds = time.monotonic() - began
     settings = {"part_cite_rate": PART_CITE_RATE, "doc_cite_rate": DOC_CITE_RATE, "obs_per_part": OBS_PER_PART,
-                "part_statements_per_unit": PART_STATEMENTS_PER_UNIT,
-                "doc_statements_per_unit": DOC_STATEMENTS_PER_UNIT, "ids_per_statement": IDS_PER_STATEMENT,
+                "statements_per_input": STATEMENTS_PER_INPUT, "ids_per_statement": IDS_PER_STATEMENT,
                 "statement_words": STATEMENT_WORDS}
     settings.update(stub_kwargs)
     return {"parts_target": parts_target,
@@ -341,7 +372,7 @@ def qualify(parts_target: int, *, work_dir: Path, guard_source: bool = True, **s
                          "module_sha256": artifact["provenance"]["capability"]["module_sha256"]}}
 
 
-def sweep(scales: tuple[int, ...] = (19, 28, 30, 32, 34)) -> dict[str, Any]:
+def sweep(scales: tuple[int, ...] = (19, 28, 30, 32, 34), reviewer: Any = er) -> dict[str, Any]:
     """Run every scale across the sensitivity band. Deterministic: the same inputs give the same numbers."""
     import tempfile
 
@@ -349,13 +380,16 @@ def sweep(scales: tuple[int, ...] = (19, 28, 30, 32, 34)) -> dict[str, Any]:
     with tempfile.TemporaryDirectory(prefix="q-cap-sweep-") as tmp:
         for band, kwargs in SENSITIVITY.items():
             for target in scales:
-                result = qualify(target, work_dir=Path(tmp) / band / str(target), guard_source=False, **kwargs)
+                result = qualify(target, work_dir=Path(tmp) / band / str(target), guard_source=False,
+                                 reviewer=reviewer, **kwargs)
                 runs.append({"band": band, **result})
-    return {"suite": "reviewer-capacity-qualification", "reviewer_contract": er.CONTRACT_VERSION,
-            "reviewer_module_sha256": er._sha256_file(Path(er.__file__).resolve()),
-            "limits": {"chunk_chars": er.CHUNK_CHARS, "final_input_budget_chars": er.FINAL_INPUT_BUDGET_CHARS,
-                       "document_statement_slots": er.document_statement_slots()},
-            "calibration": CALIBRATION, "scales": list(scales), "runs": runs}
+    limits = {"chunk_chars": er.CHUNK_CHARS, "final_input_budget_chars": er.FINAL_INPUT_BUDGET_CHARS,
+              "document_statement_slots": er.document_statement_slots()}
+    if hasattr(reviewer, "registered_limits"):
+        limits = dict(reviewer.registered_limits())
+    return {"suite": "reviewer-capacity-qualification", "reviewer_contract": reviewer.CONTRACT_VERSION,
+            "reviewer_module_sha256": er._sha256_file(Path(reviewer.__file__).resolve()),
+            "limits": limits, "calibration": CALIBRATION, "scales": list(scales), "runs": runs}
 
 
 def main() -> int:
@@ -363,8 +397,19 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description="Reviewer capacity qualification sweep.")
     parser.add_argument("--out", default="", help="write the full sweep record to this path")
+    parser.add_argument("--reviewer", default="v2731.8", choices=("v2731.8", "v2732.0"),
+                        help="which reviewer to qualify")
+    parser.add_argument("--scales", default="", help="comma-separated part counts")
     args = parser.parse_args()
-    record = sweep()
+    module = er
+    scales = (19, 28, 30, 32, 34)
+    if args.reviewer == "v2732.0":
+        import experiment_review_hierarchical as hier
+
+        module, scales = hier, (19, 27, 34, 48, 64)
+    if args.scales:
+        scales = tuple(int(x) for x in args.scales.split(","))
+    record = sweep(scales, reviewer=module)
     if args.out:
         Path(args.out).parent.mkdir(parents=True, exist_ok=True)
         Path(args.out).write_text(json.dumps(record, indent=1), encoding="utf-8", newline="\n")

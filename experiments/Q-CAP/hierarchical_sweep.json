@@ -1,0 +1,2559 @@
+{
+ "suite": "reviewer-capacity-qualification",
+ "reviewer_contract": "v2732.0",
+ "reviewer_module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3",
+ "limits": {
+  "observe_max_tokens": 4096,
+  "part_max_tokens": 1024,
+  "document_max_tokens": 2048,
+  "final_a_max_tokens": 3072,
+  "final_b_max_tokens": 2048,
+  "chunk_chars": 6500,
+  "max_observations_per_chunk": 8,
+  "max_quotes_per_observation": 3,
+  "max_quote_chars": 240,
+  "max_statement_chars": 200,
+  "max_ids_per_statement": 12,
+  "document_unit_max_inputs": 12,
+  "document_unit_input_budget_chars": 6000,
+  "final_input_budget_chars": 12000,
+  "final_document_statement_budget_chars": 9000,
+  "final_line_overhead_chars": 40,
+  "first_half_summary_chars": 3500,
+  "calibrated_chars_per_token": 3.08,
+  "metadata_keys": [
+   "experiment",
+   "prompt_form_equivalent",
+   "form",
+   "variant",
+   "condition",
+   "run",
+   "item",
+   "case",
+   "record"
+  ],
+  "unit_families": {
+   "s": "s",
+   "sec": "s",
+   "secs": "s",
+   "second": "s",
+   "seconds": "s",
+   "ms": "ms",
+   "millisecond": "ms",
+   "milliseconds": "ms",
+   "min": "min",
+   "mins": "min",
+   "minute": "min",
+   "minutes": "min",
+   "h": "h",
+   "hr": "h",
+   "hrs": "h",
+   "hour": "h",
+   "hours": "h",
+   "kb": "kb",
+   "mb": "mb",
+   "gb": "gb",
+   "tb": "tb",
+   "kib": "kib",
+   "mib": "mib",
+   "gib": "gib"
+  },
+  "group_max_inputs": 12,
+  "group_max_statements": 4,
+  "group_input_budget_chars": 6000,
+  "max_groups_per_round": 32,
+  "final_max_inputs": 32,
+  "max_rounds": 12,
+  "min_reduction": 0.8,
+  "min_synthesised_representation": 0.5,
+  "final_input_bound_chars": 7712
+ },
+ "calibration": {
+  "source": "G-INVAR review 72a40f4dc8a09ae3",
+  "parts": 19,
+  "grounded_observations": 100,
+  "part_statements": 45,
+  "carried_to_document": 20,
+  "document_statements": 30,
+  "carried_to_final": 22,
+  "final_inputs": 52,
+  "final_input_chars": 7800
+ },
+ "scales": [
+  19,
+  27,
+  34,
+  48,
+  64
+ ],
+ "runs": [
+  {
+   "band": "optimistic",
+   "parts_target": 19,
+   "package": {
+    "parts": 19,
+    "chars": 115274,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.6,
+    "ids_per_statement": 4,
+    "statement_words": 12
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 19,
+     "reviewed": 19,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 95,
+    "observation_preservation": {
+     "represented": 95,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 76,
+     "carried_forward": 19,
+     "accounted": 95,
+     "grounded": 95,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 95,
+     "relocated_exactly": 95,
+     "inside_own_part": 95,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 123,
+     "cited_ids": 123,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 19,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 19,
+     "part_units_accepted": 19,
+     "document_units": 7,
+     "document_units_accepted": 7,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 22,
+     "chars": 2997,
+     "budget": 12000,
+     "used": 0.2497,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 0,
+     "units": 0,
+     "statements": 0,
+     "converged": true,
+     "rounds": [],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 28
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 11504
+    },
+    "degradation": {
+     "provider_attempts": 47,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.13,
+     "model_calls": 47
+    }
+   },
+   "review_id": "3d6147ce441ad7c0",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "optimistic",
+   "parts_target": 27,
+   "package": {
+    "parts": 27,
+    "chars": 167088,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.6,
+    "ids_per_statement": 4,
+    "statement_words": 12
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 27,
+     "reviewed": 27,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 135,
+    "observation_preservation": {
+     "represented": 135,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 108,
+     "carried_forward": 27,
+     "accounted": 135,
+     "grounded": 135,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 135,
+     "relocated_exactly": 135,
+     "inside_own_part": 135,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 172,
+     "cited_ids": 172,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 27,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 27,
+     "part_units_accepted": 27,
+     "document_units": 7,
+     "document_units_accepted": 7,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 28,
+     "chars": 3908,
+     "budget": 12000,
+     "used": 0.3257,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 0,
+     "units": 0,
+     "statements": 0,
+     "converged": true,
+     "rounds": [],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 37
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 15933
+    },
+    "degradation": {
+     "provider_attempts": 63,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.16,
+     "model_calls": 63
+    }
+   },
+   "review_id": "a1ca8e624ff4d02e",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "optimistic",
+   "parts_target": 34,
+   "package": {
+    "parts": 34,
+    "chars": 212493,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.6,
+    "ids_per_statement": 4,
+    "statement_words": 12
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 34,
+     "reviewed": 34,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 170,
+    "observation_preservation": {
+     "represented": 170,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 136,
+     "carried_forward": 34,
+     "accounted": 170,
+     "grounded": 170,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 170,
+     "relocated_exactly": 170,
+     "inside_own_part": 170,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 223,
+     "cited_ids": 223,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 34,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 34,
+     "part_units_accepted": 34,
+     "document_units": 9,
+     "document_units_accepted": 9,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 18,
+     "chars": 2397,
+     "budget": 12000,
+     "used": 0.1998,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 1,
+     "units": 3,
+     "statements": 6,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 3,
+       "inputs": 36,
+       "statements": 6,
+       "carried": 12,
+       "surviving": 18,
+       "reduction": 0.5,
+       "accepted": 3
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 53
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 20338
+    },
+    "degradation": {
+     "provider_attempts": 82,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.36,
+     "model_calls": 82
+    }
+   },
+   "review_id": "3931d0f3af68aeb0",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "optimistic",
+   "parts_target": 48,
+   "package": {
+    "parts": 48,
+    "chars": 302994,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.6,
+    "ids_per_statement": 4,
+    "statement_words": 12
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 48,
+     "reviewed": 48,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 240,
+    "observation_preservation": {
+     "represented": 240,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 192,
+     "carried_forward": 48,
+     "accounted": 240,
+     "grounded": 240,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 240,
+     "relocated_exactly": 240,
+     "inside_own_part": 240,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 316,
+     "cited_ids": 316,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 48,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 48,
+     "part_units_accepted": 48,
+     "document_units": 10,
+     "document_units_accepted": 10,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 26,
+     "chars": 3496,
+     "budget": 12000,
+     "used": 0.2913,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 1,
+     "units": 5,
+     "statements": 9,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 5,
+       "inputs": 51,
+       "statements": 9,
+       "carried": 17,
+       "surviving": 26,
+       "reduction": 0.5098,
+       "accepted": 5
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 76
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 28449
+    },
+    "degradation": {
+     "provider_attempts": 113,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.32,
+     "model_calls": 113
+    }
+   },
+   "review_id": "deb0316158d66786",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "optimistic",
+   "parts_target": 64,
+   "package": {
+    "parts": 64,
+    "chars": 406227,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.6,
+    "ids_per_statement": 4,
+    "statement_words": 12
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 64,
+     "reviewed": 64,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 320,
+    "observation_preservation": {
+     "represented": 320,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 256,
+     "carried_forward": 64,
+     "accounted": 320,
+     "grounded": 320,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 320,
+     "relocated_exactly": 320,
+     "inside_own_part": 320,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 426,
+     "cited_ids": 426,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 64,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 64,
+     "part_units_accepted": 64,
+     "document_units": 14,
+     "document_units_accepted": 14,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 17,
+     "chars": 2293,
+     "budget": 12000,
+     "used": 0.1911,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 2,
+     "units": 9,
+     "statements": 18,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 6,
+       "inputs": 67,
+       "statements": 12,
+       "carried": 22,
+       "surviving": 34,
+       "reduction": 0.5075,
+       "accepted": 6
+      },
+      {
+       "round": 2,
+       "units": 3,
+       "inputs": 34,
+       "statements": 6,
+       "carried": 11,
+       "surviving": 17,
+       "reduction": 0.5,
+       "accepted": 3
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 106
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 38078
+    },
+    "degradation": {
+     "provider_attempts": 153,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.61,
+     "model_calls": 153
+    }
+   },
+   "review_id": "e7d42254607e4ea8",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "nominal",
+   "parts_target": 19,
+   "package": {
+    "parts": 19,
+    "chars": 115274,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.45,
+    "ids_per_statement": 2,
+    "statement_words": 16
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 19,
+     "reviewed": 19,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 95,
+    "observation_preservation": {
+     "represented": 95,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 76,
+     "carried_forward": 19,
+     "accounted": 95,
+     "grounded": 95,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 95,
+     "relocated_exactly": 95,
+     "inside_own_part": 95,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 165,
+     "cited_ids": 165,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 19,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 19,
+     "part_units_accepted": 19,
+     "document_units": 7,
+     "document_units_accepted": 7,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 26,
+     "chars": 3939,
+     "budget": 12000,
+     "used": 0.3282,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 1,
+     "units": 4,
+     "statements": 13,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 4,
+       "inputs": 38,
+       "statements": 13,
+       "carried": 13,
+       "surviving": 26,
+       "reduction": 0.6842,
+       "accepted": 4
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 70
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 14278
+    },
+    "degradation": {
+     "provider_attempts": 51,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.15,
+     "model_calls": 51
+    }
+   },
+   "review_id": "48f264e7e276f3b6",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "nominal",
+   "parts_target": 27,
+   "package": {
+    "parts": 27,
+    "chars": 167088,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.45,
+    "ids_per_statement": 2,
+    "statement_words": 16
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 27,
+     "reviewed": 27,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 135,
+    "observation_preservation": {
+     "represented": 135,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 108,
+     "carried_forward": 27,
+     "accounted": 135,
+     "grounded": 135,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 135,
+     "relocated_exactly": 135,
+     "inside_own_part": 135,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 246,
+     "cited_ids": 246,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 27,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 27,
+     "part_units_accepted": 27,
+     "document_units": 9,
+     "document_units_accepted": 9,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 24,
+     "chars": 3606,
+     "budget": 12000,
+     "used": 0.3005,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 2,
+     "units": 8,
+     "statements": 30,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 5,
+       "inputs": 54,
+       "statements": 18,
+       "carried": 18,
+       "surviving": 36,
+       "reduction": 0.6667,
+       "accepted": 5
+      },
+      {
+       "round": 2,
+       "units": 3,
+       "inputs": 36,
+       "statements": 12,
+       "carried": 12,
+       "surviving": 24,
+       "reduction": 0.6667,
+       "accepted": 3
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 111
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 20764
+    },
+    "degradation": {
+     "provider_attempts": 73,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.26,
+     "model_calls": 73
+    }
+   },
+   "review_id": "5b0e21a0490e1817",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "nominal",
+   "parts_target": 34,
+   "package": {
+    "parts": 34,
+    "chars": 212493,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.45,
+    "ids_per_statement": 2,
+    "statement_words": 16
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 34,
+     "reviewed": 34,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 170,
+    "observation_preservation": {
+     "represented": 170,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 136,
+     "carried_forward": 34,
+     "accounted": 170,
+     "grounded": 170,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 170,
+     "relocated_exactly": 170,
+     "inside_own_part": 170,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 311,
+     "cited_ids": 311,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 34,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 34,
+     "part_units_accepted": 34,
+     "document_units": 10,
+     "document_units_accepted": 10,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 31,
+     "chars": 4645,
+     "budget": 12000,
+     "used": 0.3871,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 2,
+     "units": 10,
+     "statements": 39,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 6,
+       "inputs": 68,
+       "statements": 23,
+       "carried": 23,
+       "surviving": 46,
+       "reduction": 0.6765,
+       "accepted": 6
+      },
+      {
+       "round": 2,
+       "units": 4,
+       "inputs": 46,
+       "statements": 16,
+       "carried": 15,
+       "surviving": 31,
+       "reduction": 0.6739,
+       "accepted": 4
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 141
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 26128
+    },
+    "degradation": {
+     "provider_attempts": 90,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.25,
+     "model_calls": 90
+    }
+   },
+   "review_id": "f407b9e36b6622bb",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "nominal",
+   "parts_target": 48,
+   "package": {
+    "parts": 48,
+    "chars": 302994,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.45,
+    "ids_per_statement": 2,
+    "statement_words": 16
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 48,
+     "reviewed": 48,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 240,
+    "observation_preservation": {
+     "represented": 240,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 192,
+     "carried_forward": 48,
+     "accounted": 240,
+     "grounded": 240,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 240,
+     "relocated_exactly": 240,
+     "inside_own_part": 240,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 453,
+     "cited_ids": 453,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 48,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 48,
+     "part_units_accepted": 48,
+     "document_units": 14,
+     "document_units_accepted": 14,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 29,
+     "chars": 4266,
+     "budget": 12000,
+     "used": 0.3555,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 3,
+     "units": 18,
+     "statements": 69,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 8,
+       "inputs": 96,
+       "statements": 32,
+       "carried": 32,
+       "surviving": 64,
+       "reduction": 0.6667,
+       "accepted": 8
+      },
+      {
+       "round": 2,
+       "units": 6,
+       "inputs": 64,
+       "statements": 22,
+       "carried": 21,
+       "surviving": 43,
+       "reduction": 0.6719,
+       "accepted": 6
+      },
+      {
+       "round": 3,
+       "units": 4,
+       "inputs": 43,
+       "statements": 15,
+       "carried": 14,
+       "surviving": 29,
+       "reduction": 0.6744,
+       "accepted": 4
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 213
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 37486
+    },
+    "degradation": {
+     "provider_attempts": 130,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.53,
+     "model_calls": 130
+    }
+   },
+   "review_id": "309b36d6c3dcbaad",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "nominal",
+   "parts_target": 64,
+   "package": {
+    "parts": 64,
+    "chars": 406227,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.45,
+    "ids_per_statement": 2,
+    "statement_words": 16
+   },
+   "measurements": {
+    "status": "complete",
+    "part_coverage": {
+     "required": 64,
+     "reviewed": 64,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 320,
+    "observation_preservation": {
+     "represented": 320,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 256,
+     "carried_forward": 64,
+     "accounted": 320,
+     "grounded": 320,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 320,
+     "relocated_exactly": 320,
+     "inside_own_part": 320,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 617,
+     "cited_ids": 617,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 64,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 64,
+     "part_units_accepted": 64,
+     "document_units": 19,
+     "document_units_accepted": 19,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 26,
+     "chars": 3819,
+     "budget": 12000,
+     "used": 0.3182,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 4,
+     "units": 28,
+     "statements": 105,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 11,
+       "inputs": 128,
+       "statements": 43,
+       "carried": 43,
+       "surviving": 86,
+       "reduction": 0.6719,
+       "accepted": 11
+      },
+      {
+       "round": 2,
+       "units": 8,
+       "inputs": 86,
+       "statements": 29,
+       "carried": 29,
+       "surviving": 58,
+       "reduction": 0.6744,
+       "accepted": 8
+      },
+      {
+       "round": 3,
+       "units": 5,
+       "inputs": 58,
+       "statements": 20,
+       "carried": 19,
+       "surviving": 39,
+       "reduction": 0.6724,
+       "accepted": 5
+      },
+      {
+       "round": 4,
+       "units": 4,
+       "inputs": 39,
+       "statements": 13,
+       "carried": 13,
+       "surviving": 26,
+       "reduction": 0.6667,
+       "accepted": 4
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 297
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": true,
+     "missing": []
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 50666
+    },
+    "degradation": {
+     "provider_attempts": 177,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.74,
+     "model_calls": 177
+    }
+   },
+   "review_id": "ec8dc186a8fcdc6e",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "pessimistic",
+   "parts_target": 19,
+   "package": {
+    "parts": 19,
+    "chars": 115274,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.25,
+    "ids_per_statement": 1,
+    "statement_words": 20
+   },
+   "measurements": {
+    "status": "incomplete",
+    "part_coverage": {
+     "required": 19,
+     "reviewed": 19,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 95,
+    "observation_preservation": {
+     "represented": 95,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 19,
+     "carried_forward": 76,
+     "accounted": 95,
+     "grounded": 95,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 95,
+     "relocated_exactly": 95,
+     "inside_own_part": 95,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 214,
+     "cited_ids": 144,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 19,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 19,
+     "part_units_accepted": 19,
+     "document_units": 11,
+     "document_units_accepted": 11,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 30,
+     "chars": 4773,
+     "budget": 12000,
+     "used": 0.3977,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 5,
+     "units": 27,
+     "statements": 76,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 8,
+       "inputs": 95,
+       "statements": 24,
+       "carried": 71,
+       "surviving": 76,
+       "reduction": 0.8,
+       "accepted": 8
+      },
+      {
+       "round": 2,
+       "units": 7,
+       "inputs": 76,
+       "statements": 19,
+       "carried": 56,
+       "surviving": 60,
+       "reduction": 0.7895,
+       "accepted": 7
+      },
+      {
+       "round": 3,
+       "units": 5,
+       "inputs": 60,
+       "statements": 14,
+       "carried": 44,
+       "surviving": 48,
+       "reduction": 0.8,
+       "accepted": 5
+      },
+      {
+       "round": 4,
+       "units": 4,
+       "inputs": 48,
+       "statements": 11,
+       "carried": 34,
+       "surviving": 38,
+       "reduction": 0.7917,
+       "accepted": 4
+      },
+      {
+       "round": 5,
+       "units": 3,
+       "inputs": 38,
+       "statements": 8,
+       "carried": 26,
+       "surviving": 30,
+       "reduction": 0.7895,
+       "accepted": 3
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 114
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": false,
+     "missing": [
+      {
+       "kind": "final_representation_below_floor",
+       "representation": 0.2632,
+       "floor": 0.5,
+       "observations_reaching_final_as_statements": 25,
+       "observations_reaching_final_only_as_register_pointers": 70,
+       "reason": "too little of the evidence reached the final synthesis as prose"
+      }
+     ]
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 18007
+    },
+    "degradation": {
+     "provider_attempts": 78,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.17,
+     "model_calls": 78
+    }
+   },
+   "review_id": "6e8bb9ea3866a7eb",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "pessimistic",
+   "parts_target": 27,
+   "package": {
+    "parts": 27,
+    "chars": 167088,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.25,
+    "ids_per_statement": 1,
+    "statement_words": 20
+   },
+   "measurements": {
+    "status": "incomplete",
+    "part_coverage": {
+     "required": 27,
+     "reviewed": 27,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 135,
+    "observation_preservation": {
+     "represented": 135,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 27,
+     "carried_forward": 108,
+     "accounted": 135,
+     "grounded": 135,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 135,
+     "relocated_exactly": 135,
+     "inside_own_part": 135,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 324,
+     "cited_ids": 209,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 27,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 27,
+     "part_units_accepted": 27,
+     "document_units": 16,
+     "document_units_accepted": 16,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 27,
+     "chars": 4482,
+     "budget": 12000,
+     "used": 0.3735,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 7,
+     "units": 46,
+     "statements": 128,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 12,
+       "inputs": 135,
+       "statements": 34,
+       "carried": 101,
+       "surviving": 108,
+       "reduction": 0.8,
+       "accepted": 12
+      },
+      {
+       "round": 2,
+       "units": 9,
+       "inputs": 108,
+       "statements": 27,
+       "carried": 80,
+       "surviving": 86,
+       "reduction": 0.7963,
+       "accepted": 9
+      },
+      {
+       "round": 3,
+       "units": 7,
+       "inputs": 86,
+       "statements": 21,
+       "carried": 63,
+       "surviving": 68,
+       "reduction": 0.7907,
+       "accepted": 7
+      },
+      {
+       "round": 4,
+       "units": 6,
+       "inputs": 68,
+       "statements": 16,
+       "carried": 49,
+       "surviving": 54,
+       "reduction": 0.7941,
+       "accepted": 6
+      },
+      {
+       "round": 5,
+       "units": 5,
+       "inputs": 54,
+       "statements": 13,
+       "carried": 37,
+       "surviving": 43,
+       "reduction": 0.7963,
+       "accepted": 5
+      },
+      {
+       "round": 6,
+       "units": 4,
+       "inputs": 43,
+       "statements": 10,
+       "carried": 28,
+       "surviving": 34,
+       "reduction": 0.7907,
+       "accepted": 4
+      },
+      {
+       "round": 7,
+       "units": 3,
+       "inputs": 34,
+       "statements": 7,
+       "carried": 21,
+       "surviving": 27,
+       "reduction": 0.7941,
+       "accepted": 3
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 182
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": false,
+     "missing": [
+      {
+       "kind": "final_representation_below_floor",
+       "representation": 0.1481,
+       "floor": 0.5,
+       "observations_reaching_final_as_statements": 20,
+       "observations_reaching_final_only_as_register_pointers": 115,
+       "reason": "too little of the evidence reached the final synthesis as prose"
+      }
+     ]
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 26776
+    },
+    "degradation": {
+     "provider_attempts": 118,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.17,
+     "model_calls": 118
+    }
+   },
+   "review_id": "afb8605b1b4bf3af",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "pessimistic",
+   "parts_target": 34,
+   "package": {
+    "parts": 34,
+    "chars": 212493,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.25,
+    "ids_per_statement": 1,
+    "statement_words": 20
+   },
+   "measurements": {
+    "status": "incomplete",
+    "part_coverage": {
+     "required": 34,
+     "reviewed": 34,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 170,
+    "observation_preservation": {
+     "represented": 170,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 34,
+     "carried_forward": 136,
+     "accounted": 170,
+     "grounded": 170,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 170,
+     "relocated_exactly": 170,
+     "inside_own_part": 170,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 416,
+     "cited_ids": 265,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 34,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 34,
+     "part_units_accepted": 34,
+     "document_units": 19,
+     "document_units_accepted": 19,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 27,
+     "chars": 4540,
+     "budget": 12000,
+     "used": 0.3783,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 8,
+     "units": 61,
+     "statements": 170,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 15,
+       "inputs": 170,
+       "statements": 43,
+       "carried": 127,
+       "surviving": 136,
+       "reduction": 0.8,
+       "accepted": 15
+      },
+      {
+       "round": 2,
+       "units": 12,
+       "inputs": 136,
+       "statements": 34,
+       "carried": 101,
+       "surviving": 108,
+       "reduction": 0.7941,
+       "accepted": 12
+      },
+      {
+       "round": 3,
+       "units": 9,
+       "inputs": 108,
+       "statements": 26,
+       "carried": 80,
+       "surviving": 86,
+       "reduction": 0.7963,
+       "accepted": 9
+      },
+      {
+       "round": 4,
+       "units": 7,
+       "inputs": 86,
+       "statements": 21,
+       "carried": 62,
+       "surviving": 68,
+       "reduction": 0.7907,
+       "accepted": 7
+      },
+      {
+       "round": 5,
+       "units": 6,
+       "inputs": 68,
+       "statements": 16,
+       "carried": 48,
+       "surviving": 54,
+       "reduction": 0.7941,
+       "accepted": 6
+      },
+      {
+       "round": 6,
+       "units": 5,
+       "inputs": 54,
+       "statements": 13,
+       "carried": 36,
+       "surviving": 43,
+       "reduction": 0.7963,
+       "accepted": 5
+      },
+      {
+       "round": 7,
+       "units": 4,
+       "inputs": 43,
+       "statements": 10,
+       "carried": 27,
+       "surviving": 34,
+       "reduction": 0.7907,
+       "accepted": 4
+      },
+      {
+       "round": 8,
+       "units": 3,
+       "inputs": 34,
+       "statements": 7,
+       "carried": 20,
+       "surviving": 27,
+       "reduction": 0.7941,
+       "accepted": 3
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 238
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": false,
+     "missing": [
+      {
+       "kind": "final_representation_below_floor",
+       "representation": 0.1118,
+       "floor": 0.5,
+       "observations_reaching_final_as_statements": 19,
+       "observations_reaching_final_only_as_register_pointers": 151,
+       "reason": "too little of the evidence reached the final synthesis as prose"
+      }
+     ]
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 34215
+    },
+    "degradation": {
+     "provider_attempts": 150,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.26,
+     "model_calls": 150
+    }
+   },
+   "review_id": "f109f2705f00d795",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "pessimistic",
+   "parts_target": 48,
+   "package": {
+    "parts": 48,
+    "chars": 302994,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.25,
+    "ids_per_statement": 1,
+    "statement_words": 20
+   },
+   "measurements": {
+    "status": "incomplete",
+    "part_coverage": {
+     "required": 48,
+     "reviewed": 48,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 240,
+    "observation_preservation": {
+     "represented": 240,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 48,
+     "carried_forward": 192,
+     "accounted": 240,
+     "grounded": 240,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 240,
+     "relocated_exactly": 240,
+     "inside_own_part": 240,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 594,
+     "cited_ids": 375,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 48,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 48,
+     "part_units_accepted": 48,
+     "document_units": 26,
+     "document_units_accepted": 26,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 30,
+     "chars": 5011,
+     "budget": 12000,
+     "used": 0.4176,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 9,
+     "units": 85,
+     "statements": 249,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 20,
+       "inputs": 240,
+       "statements": 60,
+       "carried": 180,
+       "surviving": 192,
+       "reduction": 0.8,
+       "accepted": 20
+      },
+      {
+       "round": 2,
+       "units": 16,
+       "inputs": 192,
+       "statements": 48,
+       "carried": 143,
+       "surviving": 153,
+       "reduction": 0.7969,
+       "accepted": 16
+      },
+      {
+       "round": 3,
+       "units": 13,
+       "inputs": 153,
+       "statements": 38,
+       "carried": 113,
+       "surviving": 122,
+       "reduction": 0.7974,
+       "accepted": 13
+      },
+      {
+       "round": 4,
+       "units": 10,
+       "inputs": 122,
+       "statements": 30,
+       "carried": 89,
+       "surviving": 97,
+       "reduction": 0.7951,
+       "accepted": 10
+      },
+      {
+       "round": 5,
+       "units": 8,
+       "inputs": 97,
+       "statements": 23,
+       "carried": 70,
+       "surviving": 77,
+       "reduction": 0.7938,
+       "accepted": 8
+      },
+      {
+       "round": 6,
+       "units": 6,
+       "inputs": 77,
+       "statements": 18,
+       "carried": 54,
+       "surviving": 61,
+       "reduction": 0.7922,
+       "accepted": 6
+      },
+      {
+       "round": 7,
+       "units": 5,
+       "inputs": 61,
+       "statements": 14,
+       "carried": 41,
+       "surviving": 48,
+       "reduction": 0.7869,
+       "accepted": 5
+      },
+      {
+       "round": 8,
+       "units": 4,
+       "inputs": 48,
+       "statements": 10,
+       "carried": 31,
+       "surviving": 38,
+       "reduction": 0.7917,
+       "accepted": 4
+      },
+      {
+       "round": 9,
+       "units": 3,
+       "inputs": 38,
+       "statements": 8,
+       "carried": 22,
+       "surviving": 30,
+       "reduction": 0.7895,
+       "accepted": 3
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 345
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": false,
+     "missing": [
+      {
+       "kind": "final_representation_below_floor",
+       "representation": 0.0875,
+       "floor": 0.5,
+       "observations_reaching_final_as_statements": 21,
+       "observations_reaching_final_only_as_register_pointers": 219,
+       "reason": "too little of the evidence reached the final synthesis as prose"
+      }
+     ]
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 48562
+    },
+    "degradation": {
+     "provider_attempts": 209,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.45,
+     "model_calls": 209
+    }
+   },
+   "review_id": "af601b0de1ac9e6e",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  },
+  {
+   "band": "pessimistic",
+   "parts_target": 64,
+   "package": {
+    "parts": 64,
+    "chars": 406227,
+    "documents": 6
+   },
+   "stub": {
+    "part_cite_rate": 0.8,
+    "doc_cite_rate": 0.66,
+    "obs_per_part": 5,
+    "statements_per_input": 0.25,
+    "ids_per_statement": 1,
+    "statement_words": 20
+   },
+   "measurements": {
+    "status": "incomplete",
+    "part_coverage": {
+     "required": 64,
+     "reviewed": 64,
+     "coverage": 1.0,
+     "full": true
+    },
+    "grounded_observations": 320,
+    "observation_preservation": {
+     "represented": 320,
+     "coverage": 1.0,
+     "silently_dropped": [],
+     "no_silent_loss": true
+    },
+    "uncaptured_accounting": {
+     "cited_by_part_statements": 64,
+     "carried_forward": 256,
+     "accounted": 320,
+     "grounded": 320,
+     "balances": true
+    },
+    "relocatability": {
+     "quotes_checked": 320,
+     "relocated_exactly": 320,
+     "inside_own_part": 320,
+     "relocatable": true,
+     "failures": []
+    },
+    "identifier_validity": {
+     "known_ids": 802,
+     "cited_ids": 504,
+     "unknown_cited": [],
+     "unknown_references": [],
+     "valid": true
+    },
+    "document_boundaries": {
+     "documents": 6,
+     "parts_seen": 64,
+     "correct": true
+    },
+    "synthesis": {
+     "part_units": 64,
+     "part_units_accepted": 64,
+     "document_units": 35,
+     "document_units_accepted": 35,
+     "document_unit_slots": null,
+     "final_first_half": "accepted",
+     "final_second_half": "accepted",
+     "complete": true
+    },
+    "final_budget": {
+     "inputs": 32,
+     "chars": 5205,
+     "budget": 12000,
+     "used": 0.4338,
+     "within": true,
+     "bound_inputs": 32,
+     "bound_chars": 7712,
+     "within_bound": true
+    },
+    "intermediate": {
+     "round_count": 10,
+     "units": 119,
+     "statements": 344,
+     "converged": true,
+     "rounds": [
+      {
+       "round": 1,
+       "units": 27,
+       "inputs": 320,
+       "statements": 80,
+       "carried": 240,
+       "surviving": 256,
+       "reduction": 0.8,
+       "accepted": 27
+      },
+      {
+       "round": 2,
+       "units": 22,
+       "inputs": 256,
+       "statements": 64,
+       "carried": 191,
+       "surviving": 204,
+       "reduction": 0.7969,
+       "accepted": 22
+      },
+      {
+       "round": 3,
+       "units": 17,
+       "inputs": 204,
+       "statements": 50,
+       "carried": 152,
+       "surviving": 163,
+       "reduction": 0.799,
+       "accepted": 17
+      },
+      {
+       "round": 4,
+       "units": 14,
+       "inputs": 163,
+       "statements": 40,
+       "carried": 120,
+       "surviving": 130,
+       "reduction": 0.7975,
+       "accepted": 14
+      },
+      {
+       "round": 5,
+       "units": 11,
+       "inputs": 130,
+       "statements": 32,
+       "carried": 94,
+       "surviving": 104,
+       "reduction": 0.8,
+       "accepted": 11
+      },
+      {
+       "round": 6,
+       "units": 9,
+       "inputs": 104,
+       "statements": 25,
+       "carried": 74,
+       "surviving": 83,
+       "reduction": 0.7981,
+       "accepted": 9
+      },
+      {
+       "round": 7,
+       "units": 7,
+       "inputs": 83,
+       "statements": 19,
+       "carried": 58,
+       "surviving": 66,
+       "reduction": 0.7952,
+       "accepted": 7
+      },
+      {
+       "round": 8,
+       "units": 5,
+       "inputs": 66,
+       "statements": 15,
+       "carried": 44,
+       "surviving": 52,
+       "reduction": 0.7879,
+       "accepted": 5
+      },
+      {
+       "round": 9,
+       "units": 4,
+       "inputs": 52,
+       "statements": 11,
+       "carried": 33,
+       "surviving": 41,
+       "reduction": 0.7885,
+       "accepted": 4
+      },
+      {
+       "round": 10,
+       "units": 3,
+       "inputs": 41,
+       "statements": 8,
+       "carried": 24,
+       "surviving": 32,
+       "reduction": 0.7805,
+       "accepted": 3
+      }
+     ],
+     "complete": true
+    },
+    "disagreement_preservation": {
+     "statement_kinds": {
+      "finding": 472
+     },
+     "non_finding_kinds": 0
+    },
+    "mechanical_verification": {
+     "complete": false,
+     "missing": [
+      {
+       "kind": "final_representation_below_floor",
+       "representation": 0.0688,
+       "floor": 0.5,
+       "observations_reaching_final_as_statements": 22,
+       "observations_reaching_final_only_as_register_pointers": 298,
+       "reason": "too little of the evidence reached the final synthesis as prose"
+      }
+     ]
+    },
+    "mutation_guard": {
+     "passed": true,
+     "source_tree_protected": false,
+     "changes": []
+    },
+    "tokens": {
+     "prompt": 0,
+     "output": 65485
+    },
+    "degradation": {
+     "provider_attempts": 284,
+     "retries": 0,
+     "truncated_attempts": 0,
+     "unparseable_or_rejected": 0,
+     "failed_attempts": 0,
+     "stages_without_accepted_reply": [],
+     "rejections_by_reason": {}
+    },
+    "runtime": {
+     "seconds": 0.6,
+     "model_calls": 284
+    }
+   },
+   "review_id": "3b49bcb6137a1f02",
+   "reviewer": {
+    "contract_version": "v2732.0",
+    "module_sha256": "07054cacc0f05fd8fc26594cf9a15c6c5cd7f6cddb3f61b4f7e25904ef00cdd3"
+   }
+  }
+ ]
+}
