@@ -1,0 +1,36 @@
+{
+ "pilot": "structural",
+ "abort_only": true,
+ "items": [
+  "I01",
+  "I09",
+  "I17",
+  "I44",
+  "I51"
+ ],
+ "observations": 5,
+ "mechanical_failures": [],
+ "scorer_ran": true,
+ "scorer_error": "",
+ "passed": true,
+ "note": "Mechanical only. No semantic judgement is read, and nothing may be tuned from this result.",
+ "conditions": {
+  "contract_version": "g-evid1.0",
+  "experiment_id": "G-EVID1",
+  "started": "2026-09-17T00:55:09Z",
+  "finished": "2026-09-17T00:57:31Z",
+  "repeats": 1,
+  "items": 5,
+  "model_identity": {
+   "model": "qwen3.8:27b",
+   "provider": "ollama",
+   "context_size": 8192,
+   "resolved_config_sha256": "f398196f63e0eb56d8bc34e7e8c55f212b851145dd067aa3f8ed081297168a62"
+  },
+  "prompt_template_sha256": "995ad5fbb59e59f43f674b27ed2e6b800b5856a4e0dc828f6dc5e9e8c1fb775f",
+  "corpus_sha256": "51c5f019f8a5145291bec2ea89056972690aceb2c519ed2786945325b7baf823",
+  "host": "GLaDOS_2point0",
+  "python": "3.11.9",
+  "belief_effects": "none"
+ }
+}

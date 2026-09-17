@@ -1,0 +1,196 @@
+{
+ "conditions": {
+  "contract_version": "g-evid1.0",
+  "experiment_id": "G-EVID1",
+  "started": "2026-09-17T00:55:09Z",
+  "finished": "2026-09-17T00:57:31Z",
+  "repeats": 1,
+  "items": 5,
+  "model_identity": {
+   "model": "qwen3.8:27b",
+   "provider": "ollama",
+   "context_size": 8192,
+   "resolved_config_sha256": "f398196f63e0eb56d8bc34e7e8c55f212b851145dd067aa3f8ed081297168a62"
+  },
+  "prompt_template_sha256": "995ad5fbb59e59f43f674b27ed2e6b800b5856a4e0dc828f6dc5e9e8c1fb775f",
+  "corpus_sha256": "51c5f019f8a5145291bec2ea89056972690aceb2c519ed2786945325b7baf823",
+  "host": "GLaDOS_2point0",
+  "python": "3.11.9",
+  "belief_effects": "none"
+ },
+ "observations": [
+  {
+   "item_id": "I01",
+   "repeat": 1,
+   "model_call": true,
+   "prompt_sha256": "9ab2caec8356f8115e7068a8c76b6c695b4590aa1ce0e4000c8e7feb4a68ae47",
+   "raw_reply": "{\n  \"proposition_id\": \"P01\",\n  \"evidence_id\": \"E01\",\n  \"relation\": \"supports\",\n  \"scope\": \"match\",\n  \"temporal\": \"compatible\",\n  \"quotes\": [\n    \"the Meridian gateway returns HTTP 413 for any request body above 8 MB.\",\n    \"The limit has been in force since the gateway was first deployed.\"\n  ],\n  \"confidence\": \"high\"\n}",
+   "assessment": {
+    "proposition_id": "P01",
+    "evidence_id": "E01",
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "quotes": [
+     "the Meridian gateway returns HTTP 413 for any request body above 8 MB.",
+     "The limit has been in force since the gateway was first deployed."
+    ],
+    "confidence": "high"
+   },
+   "validation": {
+    "valid": true,
+    "reasons": [],
+    "quotes_anchored": 2
+   },
+   "disposition": "use",
+   "rule": "G10",
+   "rules_fired": [
+    "G10"
+   ],
+   "reason": "supported_and_compatible",
+   "truncated": false,
+   "belief_effects": "none",
+   "seconds": 53.5,
+   "prompt_tokens": 323,
+   "output_tokens": 108
+  },
+  {
+   "item_id": "I09",
+   "repeat": 1,
+   "model_call": true,
+   "prompt_sha256": "d1cc84d6d9b3408e527d1fd8da6e939fb926749f260393f633014c4ae18012f6",
+   "raw_reply": "{\n  \"proposition_id\": \"P09\",\n  \"evidence_id\": \"E09\",\n  \"relation\": \"contradicts\",\n  \"scope\": \"match\",\n  \"temporal\": \"compatible\",\n  \"quotes\": [\n    \"the Meridian gateway returns HTTP 413 for any request body above 8 MB\"\n  ],\n  \"confidence\": \"high\"\n}",
+   "assessment": {
+    "proposition_id": "P09",
+    "evidence_id": "E09",
+    "relation": "contradicts",
+    "scope": "match",
+    "temporal": "compatible",
+    "quotes": [
+     "the Meridian gateway returns HTTP 413 for any request body above 8 MB"
+    ],
+    "confidence": "high"
+   },
+   "validation": {
+    "valid": true,
+    "reasons": [],
+    "quotes_anchored": 1
+   },
+   "disposition": "abstain",
+   "rule": "G2",
+   "rules_fired": [
+    "G2"
+   ],
+   "reason": "evidence_contradicts",
+   "truncated": false,
+   "belief_effects": "none",
+   "seconds": 25.3,
+   "prompt_tokens": 321,
+   "output_tokens": 94
+  },
+  {
+   "item_id": "I17",
+   "repeat": 1,
+   "model_call": true,
+   "prompt_sha256": "739ac75d4e0baff91fed00b3d002c2a7e268d957afe8cdc75d62af7925eb621e",
+   "raw_reply": "{\n  \"proposition_id\": \"P17\",\n  \"evidence_id\": \"E17\",\n  \"relation\": \"partial\",\n  \"scope\": \"match\",\n  \"temporal\": \"compatible\",\n  \"quotes\": [\n    \"the Meridian gateway returns HTTP 413 for any request body above 8 MB\"\n  ],\n  \"confidence\": \"high\"\n}",
+   "assessment": {
+    "proposition_id": "P17",
+    "evidence_id": "E17",
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "compatible",
+    "quotes": [
+     "the Meridian gateway returns HTTP 413 for any request body above 8 MB"
+    ],
+    "confidence": "high"
+   },
+   "validation": {
+    "valid": true,
+    "reasons": [],
+    "quotes_anchored": 1
+   },
+   "disposition": "investigate",
+   "rule": "G5",
+   "rules_fired": [
+    "G5"
+   ],
+   "reason": "partial_support",
+   "truncated": false,
+   "belief_effects": "none",
+   "seconds": 21.05,
+   "prompt_tokens": 327,
+   "output_tokens": 92
+  },
+  {
+   "item_id": "I44",
+   "repeat": 1,
+   "model_call": true,
+   "prompt_sha256": "62e099e334bdce19c0e1ced75adb83999b1a9f750fc2ddf0231fd31f0bf7d842",
+   "raw_reply": "{\n  \"proposition_id\": \"P44\",\n  \"evidence_id\": \"E44\",\n  \"relation\": \"partial\",\n  \"scope\": \"match\",\n  \"temporal\": \"unclear\",\n  \"quotes\": [\n    \"note 14 gives the limit as 8 MB and note 15 gives it as 16 MB.\",\n    \"Neither note has been withdrawn.\"\n  ],\n  \"confidence\": \"high\"\n}",
+   "assessment": {
+    "proposition_id": "P44",
+    "evidence_id": "E44",
+    "relation": "partial",
+    "scope": "match",
+    "temporal": "unclear",
+    "quotes": [
+     "note 14 gives the limit as 8 MB and note 15 gives it as 16 MB.",
+     "Neither note has been withdrawn."
+    ],
+    "confidence": "high"
+   },
+   "validation": {
+    "valid": true,
+    "reasons": [],
+    "quotes_anchored": 2
+   },
+   "disposition": "investigate",
+   "rule": "G8",
+   "rules_fired": [
+    "G5",
+    "G8"
+   ],
+   "reason": "temporal_uncertain",
+   "truncated": false,
+   "belief_effects": "none",
+   "seconds": 24.39,
+   "prompt_tokens": 320,
+   "output_tokens": 107
+  },
+  {
+   "item_id": "I51",
+   "repeat": 1,
+   "model_call": true,
+   "prompt_sha256": "a3e3680352034ea84eadb3624030ff766df084749b156cf838e9a01416f191ef",
+   "raw_reply": "{\n  \"proposition_id\": \"P51\",\n  \"evidence_id\": \"E51\",\n  \"relation\": \"supports\",\n  \"scope\": \"match\",\n  \"temporal\": \"compatible\",\n  \"quotes\": [\n    \"the Fenwick job retries a failed upload three times before giving up\"\n  ],\n  \"confidence\": \"high\"\n}",
+   "assessment": {
+    "proposition_id": "P51",
+    "evidence_id": "E51",
+    "relation": "supports",
+    "scope": "match",
+    "temporal": "compatible",
+    "quotes": [
+     "the Fenwick job retries a failed upload three times before giving up"
+    ],
+    "confidence": "high"
+   },
+   "validation": {
+    "valid": true,
+    "reasons": [],
+    "quotes_anchored": 1
+   },
+   "disposition": "use",
+   "rule": "G10",
+   "rules_fired": [
+    "G10"
+   ],
+   "reason": "supported_and_compatible",
+   "truncated": false,
+   "belief_effects": "none",
+   "seconds": 17.86,
+   "prompt_tokens": 302,
+   "output_tokens": 87
+  }
+ ]
+}
