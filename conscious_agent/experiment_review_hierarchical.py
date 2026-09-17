@@ -49,9 +49,11 @@ trusting the loop.
 """
 
 from collections import Counter
+import contextlib
 import hashlib
 import json
 import math
+import re
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping, Sequence
 import uuid
@@ -110,6 +112,41 @@ FINAL_A_PROMPT = base.FINAL_A_PROMPT.replace(
 FINAL_B_PROMPT = base.FINAL_B_PROMPT
 
 
+# --- the review-id vocabulary ----------------------------------------------------------------------------------------
+# The baseline treats a token with letters and digits as a factual identifier that must be supported by the evidence,
+# and exempts its own bookkeeping labels O1 / PS1 / DS1 because they name inputs rather than assert anything. This
+# version mints two more label kinds, GS (group statement) and U (uncaptured register), which the baseline's exemption
+# does not know about - so a statement that legitimately wrote "GS1 and DS4 disagree" would be rejected for an
+# unsupported identifier.
+#
+# The fix extends the exemption to exactly those two prefixes and nothing else. It is deliberately not a general
+# relaxation: every genuinely unknown identifier is still rejected, and the baseline's own vocabulary is unchanged
+# when the baseline runs. The extension is scoped to one v2732.0 review by the context manager below and is always
+# restored, so a v2731.8 review in the same process keeps the stricter vocabulary.
+_REVIEW_ID = re.compile(r"(?:gs|u)[0-9]+")
+
+
+def _identifiers(text: Any) -> set[str]:
+    """The baseline's identifier extraction, less this version's two extra label kinds."""
+    return {token for token in _BASE_IDENTIFIERS(text) if not _REVIEW_ID.fullmatch(token)}
+
+
+_BASE_IDENTIFIERS = base._identifiers
+
+
+@contextlib.contextmanager
+def review_id_vocabulary():
+    """Make GS and U count as review labels for the duration of one v2732.0 review, then put the baseline back."""
+    if base._identifiers is _identifiers:
+        raise RuntimeError("review_id_vocabulary_is_not_reentrant")
+    original = base._identifiers
+    base._identifiers = _identifiers
+    try:
+        yield
+    finally:
+        base._identifiers = original
+
+
 def _input_line(item: Mapping[str, Any], level: str) -> str:
     """Render one input for the next level. Group statements are new; everything else defers to the baseline."""
     if item["type"] == "group_statement":
@@ -145,11 +182,16 @@ def plan_group_units(inputs: Sequence[str], items: Mapping[str, Mapping[str, Any
             for n, g in enumerate(groups)]
 
 
-def review_experiment(package_dir: str | Path, *, call_model: Callable[[str, int], tuple[str, dict[str, Any]]] | None = None,
-                      runtime_root_path: str | Path | None = None, source_root: str | Path | None = None,
-                      protected_paths: Iterable[str | Path] = (), protected_roots: Iterable[str | Path] = (),
-                      identity: Mapping[str, Any] | None = None, clock: Callable[[], str] = base._now) -> dict[str, Any]:
-    """Review one package with bounded intermediate synthesis. Writes ``<runtime root>/research_reviews/<id>/``."""
+def review_experiment(package_dir: str | Path, **kwargs: Any) -> dict[str, Any]:
+    """Review one package with bounded intermediate synthesis, under this version's review-id vocabulary."""
+    with review_id_vocabulary():
+        return _review_experiment(package_dir, **kwargs)
+
+
+def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, int], tuple[str, dict[str, Any]]] | None = None,
+                       runtime_root_path: str | Path | None = None, source_root: str | Path | None = None,
+                       protected_paths: Iterable[str | Path] = (), protected_roots: Iterable[str | Path] = (),
+                       identity: Mapping[str, Any] | None = None, clock: Callable[[], str] = base._now) -> dict[str, Any]:
     package = base.load_package(package_dir)
     root = base.runtime_root(runtime_root_path)
     area = root / REVIEW_AREA
@@ -549,7 +591,8 @@ def review_experiment(package_dir: str | Path, *, call_model: Callable[[str, int
                            "baseline_module_sha256": base._sha256_file(Path(base.__file__).resolve()),
                            "source_tree": before.get("source_tree")},
             "limits": registered_limits() | {"context_size": context_size},
-            "prompt_templates_sha256": template_digests(), "mutation_authority": "none"},
+            "prompt_templates_sha256": template_digests(), "mutation_authority": "none",
+            "review_id_vocabulary": ["O", "PS", "DS", "GS", "U"]},
         "runtime_accounting": {
             "provider_attempts": len(ledger), "failed_attempts": sum(bool(x.get("error")) for x in ledger),
             "timeout_attempts": sum("Timeout" in str(x.get("error", "")) for x in ledger),

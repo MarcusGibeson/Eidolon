@@ -34,7 +34,12 @@ from experiment_review import REVIEW_AREA, ReviewPackageError, chunks, load_pack
 from json_storage import write_text_atomic
 import local_research_queue as lrq
 
-CONTRACT_VERSION = "v2731.9"
+CONTRACT_VERSION = "v2731.10"
+
+# The reviewer architecture new reviews run on. v2731.8 stays importable and runnable as the frozen historical
+# baseline; jobs already queued keep whatever contract their own record names, so changing this never rewrites a
+# review that has already been started or completed.
+ACTIVE_REVIEWER_CONTRACT = "v2732.0"
 PACKAGE_AREA = "research_packages"
 JOB_AREA = "research_jobs"
 ACTIVE_JOB_FILE = "active_job.json"
@@ -211,10 +216,12 @@ def latest_job(root: str | Path | None = None) -> dict[str, Any] | None:
 
 def start_review(package_id: str, *, confirmed: bool, root: str | Path | None = None, operator_note: str = "",
                  spawn: Callable[[list[str], Path, dict[str, str]], int] | None = None,
-                 alive: Callable[[int], bool] | None = None) -> dict[str, Any]:
+                 alive: Callable[[int], bool] | None = None,
+                 reviewer_contract: str = "") -> dict[str, Any]:
     """Queue and start one review of one installed package. The operator's confirmation is required; one job at a time."""
     if not confirmed:
         raise PermissionError("operator_confirmation_required")
+    reviewer_contract = str(reviewer_contract or ACTIVE_REVIEWER_CONTRACT)
     package = find_package(package_id, root)
     if package is None:
         raise LookupError("package_not_eligible")
@@ -229,7 +236,8 @@ def start_review(package_id: str, *, confirmed: bool, root: str | Path | None = 
               "kind": REVIEW_KIND, "package_id": package["package_id"], "package_directory": package["directory"],
               "manifest_sha256": package["manifest_sha256"], "package_dir": target, "runtime_root": str(_root(root)),
               "status": "starting", "started": _now(), "started_monotonic_epoch": time.time(), "argv": argv, "pid": 0,
-              "chosen_by": "operator", "authority": "read_only_non_authoritative", "operator_note": str(operator_note)[:300]}
+              "chosen_by": "operator", "authority": "read_only_non_authoritative", "operator_note": str(operator_note)[:300],
+              "reviewer_contract": reviewer_contract}
     save_job(record, root)
     launcher = spawn or SPAWN
     pid = int(launcher(argv, JOB_RUNNER.parents[1], {**os.environ, "EIDOLON_DATA_DIR": str(_root(root)), "PYTHONIOENCODING": "utf-8"}))
@@ -262,7 +270,8 @@ def job_status(job_id: str = "latest", root: str | Path | None = None, *, alive:
     out = {"job_id": job["job_id"], "task_id": job["task_id"], "package_id": job["package_id"], "manifest_sha256": job["manifest_sha256"],
            "status": job["status"], "started": job.get("started"), "finished": job.get("finished"), "review_id": job.get("review_id", ""),
            "review_status": job.get("review_status", ""), "coverage": job.get("coverage", {}), "checks": job.get("checks", {}),
-           "failure": job.get("failure", ""), "location": job.get("location", "")}
+           "failure": job.get("failure", ""), "location": job.get("location", ""),
+           "reviewer_contract": job.get("reviewer_contract", ""), "reviewer": job.get("reviewer", {})}
     out["message"] = _status_message(out)
     return out
 
@@ -275,13 +284,21 @@ def _status_message(status: Mapping[str, Any]) -> str:
         return f"The review of {package} failed: {status.get('failure') or 'see the job record'} (job {status['job_id']})."
     coverage = status.get("coverage") or {}
     parts = coverage.get("required_coverage")
+    reviewer = status.get("reviewer") or {}
+    # Name the architecture that produced the artifact, so a hierarchical review is never mistaken for a flat one.
+    which = str(reviewer.get("contract_version") or status.get("reviewer_contract") or "")
     return (f"The review of {package} finished as {status.get('review_status') or 'unknown'} (review {status.get('review_id')}, job {status['job_id']})."
             + (f" Package coverage {parts:.0%}; {coverage.get('grounded_observations', 0)} grounded observations." if parts is not None else "")
+            + (f" Produced by reviewer {which}"
+               + (f" ({reviewer['architecture']})." if reviewer.get("architecture") else ".") if which else "")
             + " It is a non-authoritative research artifact; read it before drawing conclusions.")
 
 
 def receipt(job: Mapping[str, Any]) -> dict[str, Any]:
     """The minimal operation receipt that may enter conversation memory: ids, digests and status only."""
+    # Deliberately unchanged by the v2732.0 integration. Reviewer identity belongs in the job record, the status
+    # output and the artifact provenance; the receipt is the minimal thing conversation memory may keep, and adding
+    # fields to it widens what every review action writes into memory forever.
     return {"job_id": job.get("job_id"), "task_id": job.get("task_id"), "package_id": job.get("package_id"),
             "manifest_sha256": job.get("manifest_sha256"), "status": job.get("status"), "review_id": job.get("review_id", ""),
             "authority": "read_only_non_authoritative"}

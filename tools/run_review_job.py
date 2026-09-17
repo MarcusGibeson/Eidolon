@@ -40,6 +40,24 @@ for value in (str(ROOT), str(ROOT / "conscious_agent")):
 PRIVATE_RUNTIME_AREA = "research_review_runtimes"
 SOURCE_ROOT = ROOT
 
+# Which reviewer architecture runs a job. The job record chooses; this is only the fallback for records written before
+# the field existed, which must keep running on the reviewer they were queued against.
+REVIEWERS = {"v2731.8": "experiment_review", "v2732.0": "experiment_review_hierarchical"}
+DEFAULT_REVIEWER_CONTRACT = "v2731.8"
+
+
+def resolve_reviewer(contract: str):
+    """Import the reviewer module a job asks for. An unknown contract fails the job rather than silently substituting."""
+    import importlib
+
+    name = REVIEWERS.get(str(contract or DEFAULT_REVIEWER_CONTRACT))
+    if name is None:
+        raise LookupError(f"unknown_reviewer_contract:{contract}")
+    module = importlib.import_module(name)
+    if module.CONTRACT_VERSION != (contract or DEFAULT_REVIEWER_CONTRACT):
+        raise RuntimeError(f"reviewer_contract_mismatch:{module.CONTRACT_VERSION}")
+    return module
+
 # Deterministic tests drive the real runner, private runtime and guard through a stub model. Production leaves both
 # None, so the reviewer resolves its own configured local model exactly as before.
 CALL_MODEL: Callable[[str, int], tuple[str, dict[str, Any]]] | None = None
@@ -103,8 +121,10 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
     root = job["runtime_root"]
     private = private_runtime_root(job["job_id"], root)
     protected = guarded_research_roots(root)
-    runner = review or (lambda target: er.review_experiment(target, runtime_root_path=private, source_root=SOURCE_ROOT,
-                                                            protected_roots=protected, call_model=CALL_MODEL, identity=IDENTITY))
+    contract = str(job.get("reviewer_contract") or DEFAULT_REVIEWER_CONTRACT)
+    reviewer = resolve_reviewer(contract)
+    runner = review or (lambda target: reviewer.review_experiment(target, runtime_root_path=private, source_root=SOURCE_ROOT,
+                                                                  protected_roots=protected, call_model=CALL_MODEL, identity=IDENTITY))
     try:
         task = lrq.run_task(job["task_id"], runner=runner, root=root)
     except Exception as error:  # a failed review is recorded, never hidden, and never retried on its own
@@ -118,6 +138,13 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
     guard = artifact.get("mutation_guard", {})
     final = {
         **job, "status": "completed", "finished": _now(), "review_id": review_id, "review_status": artifact.get("status", ""),
+        # Which architecture produced this artifact, taken from the artifact itself rather than from what was asked for.
+        "reviewer": {"contract_version": artifact.get("contract_version", ""),
+                     "baseline_contract": artifact.get("baseline_contract", ""),
+                     "architecture": artifact.get("architecture", "flat_synthesis"),
+                     "module_sha256": ((artifact.get("provenance") or {}).get("capability") or {}).get("module_sha256", ""),
+                     "review_id_vocabulary": ((artifact.get("provenance") or {}).get("review_id_vocabulary")
+                                              or ["O", "PS", "DS"])},
         "task_status": task.get("status"), "location": str(location) if review_id else "",
         "private_runtime_root": str(private),
         "coverage": {k: coverage.get(k) for k in ("complete", "required_parts", "reviewed_required_parts", "required_coverage",
