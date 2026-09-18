@@ -42,7 +42,10 @@ SOURCE_ROOT = ROOT
 
 # Which reviewer architecture runs a job. The job record chooses; this is only the fallback for records written before
 # the field existed, which must keep running on the reviewer they were queued against.
-REVIEWERS = {"v2731.8": "experiment_review", "v2732.0": "experiment_review_hierarchical"}
+REVIEWERS = {"v2731.8": "experiment_review", "v2732.1": "experiment_review_hierarchical"}
+# Contracts that existed but no longer resolve to any module. A job record pinned to one of these fails
+# loudly rather than being quietly run on a successor whose behaviour differs.
+SUPERSEDED = {"v2732.0": "v2732.1"}
 DEFAULT_REVIEWER_CONTRACT = "v2731.8"
 
 
@@ -50,11 +53,14 @@ def resolve_reviewer(contract: str):
     """Import the reviewer module a job asks for. An unknown contract fails the job rather than silently substituting."""
     import importlib
 
-    name = REVIEWERS.get(str(contract or DEFAULT_REVIEWER_CONTRACT))
+    wanted = str(contract or DEFAULT_REVIEWER_CONTRACT)
+    name = REVIEWERS.get(wanted)
     if name is None:
+        if wanted in SUPERSEDED:
+            raise LookupError(f"superseded_reviewer_contract:{wanted}:superseded_by:{SUPERSEDED[wanted]}")
         raise LookupError(f"unknown_reviewer_contract:{contract}")
     module = importlib.import_module(name)
-    if module.CONTRACT_VERSION != (contract or DEFAULT_REVIEWER_CONTRACT):
+    if module.CONTRACT_VERSION != wanted:
         raise RuntimeError(f"reviewer_contract_mismatch:{module.CONTRACT_VERSION}")
     return module
 

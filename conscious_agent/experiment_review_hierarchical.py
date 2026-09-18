@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-"""Hierarchical experiment reviewer (contract v2732.0): bounded intermediate synthesis.
+"""Hierarchical experiment reviewer (contract v2732.1): bounded intermediate synthesis.
 
 A NEW reviewer, not a change to the qualified one. ``experiment_review`` (v2731.8) stays byte-for-byte as the
 historical baseline and is imported here for every primitive this version does not change: package loading, chunking,
@@ -46,6 +46,11 @@ this version refuses it. The difference is deliberate and is reported in the qua
 Nothing is dropped to achieve the bound. Every observation accepted upstream is, at every level, either cited by a
 statement or explicitly carried forward, and the closing accounting recomputes that from the artifact rather than
 trusting the loop.
+
+v2732.1 adds one thing: a part whose reply parses but grounds nothing gets a second attempt at the same chunk under
+the same contract, with a fixed content-independent preface restating the mechanical form the prompt already
+requires. Grounding, identifier support and coverage are untouched, every attempt and every rejected observation is
+kept, and a part that still grounds nothing still fails the review closed. See docs/REVIEWER_GROUNDING_RETRY.md.
 """
 
 from collections import Counter
@@ -61,7 +66,7 @@ import uuid
 import experiment_review as base
 from json_storage import write_text_atomic
 
-CONTRACT_VERSION = "v2732.0"
+CONTRACT_VERSION = "v2732.1"
 BASELINE_CONTRACT = base.CONTRACT_VERSION
 REVIEW_AREA = base.REVIEW_AREA
 MANIFEST_NAME = base.MANIFEST_NAME
@@ -77,6 +82,22 @@ MAX_ROUNDS = 12                # reduction rounds before the review fails closed
 MIN_REDUCTION = 0.80           # a round must shrink to at most this share, or uncited inputs are folded
 MIN_SYNTHESISED_REPRESENTATION = 0.5  # share of observations that must reach the final as prose, not as a pointer
 GROUP_MAX_TOKENS = 2048
+
+# --- bounded observation retry ---------------------------------------------------------------------------------------
+# A part whose reply parses cleanly but grounds nothing gets one more attempt at the SAME chunk under the SAME
+# contract. This is not a relaxation: nothing about grounding, identifier support or coverage changes, and a part that
+# still grounds nothing still fails the review closed.
+#
+# The preface is a fixed constant. It restates the mechanical form the original prompt already requires and carries
+# nothing from the document, nothing from the rejected reply, and no hint about what any answer should say - so it
+# cannot coach the model toward a conclusion.
+OBSERVE_GROUNDING_ATTEMPTS = 2
+GROUNDING_RETRY_PREFACE = (
+    "Your previous reply produced no usable observations. Every quote must be copied from the passage exactly as it "
+    "appears there, as one continuous span: do not join separate places together, do not write ellipses or '...', and "
+    "do not shorten the middle of a quote. Do not name any identifier that does not appear inside the text you quote. "
+    "Answer the request below again in the same JSON shape.\n"
+)
 
 # Worst-case rounds to reach the cap from N surviving inputs is ceil(log(FINAL_MAX_INPUTS / N) / log(MIN_REDUCTION)),
 # because every round is guaranteed to shrink by at least MIN_REDUCTION. At MIN_REDUCTION = 0.80 and a cap of 32 that
@@ -227,23 +248,39 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                     description=doc["description"], part=part, parts=len(parts), chunk=chunk_text,
                     max_obs=base.MAX_OBSERVATIONS_PER_CHUNK, max_quotes=base.MAX_QUOTES_PER_OBSERVATION,
                     max_quote=base.MAX_QUOTE_CHARS)
-                parsed, reason = base._ask(call_model, prompt, base.OBSERVE_MAX_TOKENS,
-                                           lambda p: isinstance(p.get("observations"), list), ledger, stage,
-                                           context_size=context_size)
                 g: list[dict[str, Any]] = []
                 r: list[dict[str, Any]] = []
-                if parsed is not None:
+                reason = None
+                stages_used: list[str] = []
+                for grounding_attempt in range(1, OBSERVE_GROUNDING_ATTEMPTS + 1):
+                    # A retry is a separate, visible stage; the ledger keeps every attempt and every rejected
+                    # observation from every attempt, so nothing is quietly replaced.
+                    attempt_stage = stage if grounding_attempt == 1 else f"{stage}:retry{grounding_attempt - 1}"
+                    attempt_prompt = prompt if grounding_attempt == 1 else GROUNDING_RETRY_PREFACE + prompt
+                    stages_used.append(attempt_stage)
+                    parsed, reason = base._ask(call_model, attempt_prompt, base.OBSERVE_MAX_TOKENS,
+                                               lambda p: isinstance(p.get("observations"), list), ledger,
+                                               attempt_stage, context_size=context_size)
+                    if parsed is None:
+                        continue
                     g, r, q = base.ground_observations(parsed, chunk_text, doc["doc_id"], part, len(grounded) + 1,
                                                        doc_text=doc["text"], chunk_offset=offset,
                                                        rejected_start=len(rejected) + 1)
-                    grounded += g
                     rejected += r
                     questions += [{"doc_id": doc["doc_id"], "part": part, "question": x} for x in q]
-                    reason = None if g else "no_grounded_observations"
+                    if g:
+                        grounded += g
+                        reason = None
+                        break
+                    reason = "no_grounded_observations"
                 parts_coverage.append({"stage": stage, "doc_id": doc["doc_id"], "role": doc["role"], "part": part,
                                        "parts": len(parts), "required": doc["required"], "reviewed": reason is None,
-                                       "reason": reason, "attempts": sum(x["stage"] == stage for x in ledger),
-                                       "grounded_observations": len(g), "rejected_observations": len(r)})
+                                       "reason": reason,
+                                       "attempts": sum(x["stage"] in stages_used for x in ledger),
+                                       "grounding_attempts": len(stages_used),
+                                       "grounded_observations": len(g),
+                                       "rejected_observations": sum(x["doc_id"] == doc["doc_id"] and x["part"] == part
+                                                                    for x in rejected)})
                 offset += len(chunk_text)
 
     required = [p for p in parts_coverage if p["required"]]
@@ -643,6 +680,7 @@ def registered_limits() -> dict[str, Any]:
         "group_max_inputs": GROUP_MAX_INPUTS, "group_max_statements": GROUP_MAX_STATEMENTS,
         "group_input_budget_chars": GROUP_INPUT_BUDGET_CHARS, "max_groups_per_round": MAX_GROUPS_PER_ROUND,
         "final_max_inputs": FINAL_MAX_INPUTS, "max_rounds": MAX_ROUNDS, "min_reduction": MIN_REDUCTION,
+        "observe_grounding_attempts": OBSERVE_GROUNDING_ATTEMPTS,
         "min_synthesised_representation": MIN_SYNTHESISED_REPRESENTATION,
         "final_input_bound_chars": FINAL_INPUT_BOUND_CHARS}
 
@@ -650,4 +688,5 @@ def registered_limits() -> dict[str, Any]:
 def template_digests() -> dict[str, str]:
     return dict(base.template_digests()) | {
         "GROUP_PROMPT": hashlib.sha256(GROUP_PROMPT.encode()).hexdigest(),
+        "GROUNDING_RETRY_PREFACE": hashlib.sha256(GROUNDING_RETRY_PREFACE.encode()).hexdigest(),
         "FINAL_A_PROMPT_V2": hashlib.sha256(FINAL_A_PROMPT.encode()).hexdigest()}

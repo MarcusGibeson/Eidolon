@@ -56,6 +56,7 @@ SENSITIVITY = {
 # The part shape of each qualification scale. The 34-part shape mirrors the document structure the reviewer must
 # handle in normal operation: six roles, one dominant machine-generated document.
 SHAPES = {
+     6: (1, 1, 1, 1, 1, 1),   # the smallest well-formed package: one part per role, for fast live smoke tests
     16: (2, 1, 2, 4, 4, 3),   # the bounded live smoke-test scale: smallest that still needs a consolidation round
     19: (2, 1, 2, 4, 7, 3),   # the calibration scale: the size of the completed G-INVAR review
     27: (3, 1, 3, 6, 11, 3),  # the demonstrated v2731.8 ceiling
