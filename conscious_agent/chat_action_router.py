@@ -524,6 +524,13 @@ def list_chat_actions(status: str = "", include_closed: bool = True) -> list[dic
         return sorted(actions, key=lambda item: item.get("created_at", ""), reverse=True)
 
 
+# A deduplication key identifies a request that is still waiting to be decided, not one that was already decided.
+# Matching closed records too meant that once a proposal had been executed or cancelled, asking for the same thing
+# again returned the finished action forever: the reply named an action id while nothing was actually waiting, and
+# the confirmation then found no match. Dedupe therefore only ever collapses proposals that are still open.
+_OPEN_ACTION_STATUSES = frozenset({"proposed", "approval_required"})
+
+
 def lookup_chat_actions(*, action_ids: tuple[str, ...] = (), deduplication_keys: tuple[str, ...] = ()) -> list[dict[str, Any]]:
     """Load only action receipts explicitly referenced by the current prompt history."""
     if not CHAT_ACTIONS_DIR.exists():
@@ -1087,7 +1094,9 @@ def propose_ambiguous_chat_action_follow_up(
         lock_key = f"dedupe:{dedupe_key}" if dedupe_key else f"action:{action['id']}"
         with _chat_action_storage_lock(lock_key):
             if dedupe_key:
-                existing = next((item for item in list_chat_actions(include_closed=True) if item.get("deduplication_key") == dedupe_key), None)
+                existing = next((item for item in list_chat_actions(include_closed=False)
+                             if item.get("deduplication_key") == dedupe_key
+                             and str(item.get("status") or "") in _OPEN_ACTION_STATUSES), None)
                 if existing:
                     return existing
             save_chat_action(action)
@@ -1136,7 +1145,9 @@ def propose_chat_action_follow_up(
     dedupe_key = str(deduplication_key or "").strip()[:120]
     if save and dedupe_key:
         with _CHAT_ACTION_LOCK:
-            existing = next((item for item in list_chat_actions(include_closed=True) if item.get("deduplication_key") == dedupe_key), None)
+            existing = next((item for item in list_chat_actions(include_closed=False)
+                             if item.get("deduplication_key") == dedupe_key
+                             and str(item.get("status") or "") in _OPEN_ACTION_STATUSES), None)
         if existing:
             return existing
 
@@ -1226,7 +1237,9 @@ def propose_chat_action_follow_up(
         lock_key = f"dedupe:{dedupe_key}" if dedupe_key else f"action:{action['id']}"
         with _chat_action_storage_lock(lock_key):
             if dedupe_key:
-                existing = next((item for item in list_chat_actions(include_closed=True) if item.get("deduplication_key") == dedupe_key), None)
+                existing = next((item for item in list_chat_actions(include_closed=False)
+                             if item.get("deduplication_key") == dedupe_key
+                             and str(item.get("status") or "") in _OPEN_ACTION_STATUSES), None)
                 if existing:
                     return existing
             save_chat_action(action)
@@ -1256,7 +1269,9 @@ def propose_chat_action(
     dedupe_key = str(deduplication_key or "").strip()[:120]
     if save and dedupe_key:
         with _CHAT_ACTION_LOCK:
-            existing = next((item for item in list_chat_actions(include_closed=True) if item.get("deduplication_key") == dedupe_key), None)
+            existing = next((item for item in list_chat_actions(include_closed=False)
+                             if item.get("deduplication_key") == dedupe_key
+                             and str(item.get("status") or "") in _OPEN_ACTION_STATUSES), None)
         if existing:
             return existing
 
@@ -1645,7 +1660,9 @@ def propose_chat_action(
         lock_key = f"dedupe:{dedupe_key}" if dedupe_key else f"action:{action['id']}"
         with _chat_action_storage_lock(lock_key):
             if dedupe_key:
-                existing = next((item for item in list_chat_actions(include_closed=True) if item.get("deduplication_key") == dedupe_key), None)
+                existing = next((item for item in list_chat_actions(include_closed=False)
+                             if item.get("deduplication_key") == dedupe_key
+                             and str(item.get("status") or "") in _OPEN_ACTION_STATUSES), None)
                 if existing:
                     return existing
             save_chat_action(action)
