@@ -2,11 +2,13 @@
 
 G-EVID1 is closed as FAILED AS PREREGISTERED, not repaired into a pass.
 See docs/research/G_EVID1_CLOSURE.md and docs/ACTIVITY_SUPERVISION.md.
-The next research unit is a design-only, fresh-fictional-corpus semantic
-corroboration proposal after Activity qualification. Do not launch, rerun
+The next research unit is the design-only, fresh-fictional-corpus semantic
+corroboration proposal in experiments/G-CORROB1-candidate/DESIGN.md, prepared
+after Activity qualification and implementation commit c49e375. Do not launch, rerun
 G-EVID1, install a candidate, change beliefs or grant additional authority.
 The operator must separately review the candidate design, independently
 adjudicate gold and authorize any later bounded execution.
+Qualification and remaining limits are in docs/ACTIVITY_CHECKPOINT_REPORT.md.
 Legacy release version metadata remains v2730.9.3; scientific reviewer
 contracts remain v2731.8/v2732.1. Activity's data contract is activity.v1.
 

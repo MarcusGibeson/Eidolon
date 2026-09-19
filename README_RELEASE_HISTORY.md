@@ -11,6 +11,9 @@
   without skipping AST/import checks. No research-source bytes were normalized.
 - This is a feature checkpoint, not a change to the legacy v2730.9.3 release
   authority or a claim of full release certification. See docs/ACTIVITY_SUPERVISION.md.
+- After implementation qualification/clean commit, froze a separate proposed
+  G-CORROB1 candidate design and fresh corpus. No experiment was launched and
+  gold is still subject to independent operator adjudication.
 
 ## v2730.9.3 native review repairs
 

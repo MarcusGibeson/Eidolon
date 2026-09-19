@@ -1,0 +1,15 @@
+Assess the relationship between the proposition and the evidence in this fictional setting. Consider the entire claim, its population and qualifiers, and the time requested in the context. Do not infer unreported observations or persistence of a changeable state.
+Return one JSON object with these fields only:
+proposition_id, evidence_id, relation, scope, temporal, quotes, confidence.
+relation: supports, contradicts, partial, irrelevant, or unclear.
+scope: match, evidence_narrower, evidence_broader, mismatch, or unclear.
+temporal: compatible, evidence_superseded, evidence_predates, or unclear.
+confidence: low, medium, or high.
+quotes: one or two exact evidence substrings, each 8 to 200 characters.
+Provide no additional prose or private reasoning.
+
+Proposition ID: {proposition_id}
+Evidence ID: {evidence_id}
+Context: {context}
+Proposition: {proposition}
+Evidence: {evidence}

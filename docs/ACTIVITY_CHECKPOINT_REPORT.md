@@ -114,3 +114,24 @@ After a clean implementation commit, prepare a separate design-only semantic
 corroboration candidate. Operator gold/construct review and explicit execution
 authorization are required before any later semantic-model calls. A passing
 Activity qualification is not a passing research experiment.
+
+## Completed checkpoints and proposed experiment
+
+Implementation commit: c49e375. The source index/worktree was clean before
+design creation; only the unrelated operator upload directory remained untracked.
+
+The separate experiments/G-CORROB1-candidate/DESIGN.md proposal and candidate
+freeze now exist: 28 fresh fictional items, 3 repeats, 2 blinded judgments,
+168 planned calls. The model sees semantic fields only. Frozen individual
+governance is followed by a conservative second-judge veto; correlated error,
+safety containment and useful-evidence retention are separately measured.
+Gold remains proposed and requires independent adjudication. The 111 passing
+candidate checks verify hashes, binding, balance, prompt-label separation and
+prospective policy consistency, NOT semantic truth or experimental success.
+The G-EVID1 freeze verifier also passed with no changed/unfrozen artifacts.
+
+No G-CORROB1 runner or launch command was added. No next experiment was launched.
+Next operator action: inspect the Activity qualification and review the candidate
+design/gold before commissioning runner/scorer implementation and authorization.
+Exact final source-only ZIP hash and design commit are recorded in the external
+handoff alongside the package to avoid circular archive-hash documentation.

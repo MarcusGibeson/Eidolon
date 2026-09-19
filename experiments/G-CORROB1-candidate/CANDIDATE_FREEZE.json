@@ -1,0 +1,23 @@
+{
+  "candidate_id": "G-CORROB1-candidate-r1",
+  "status": "candidate_frozen_not_authorized",
+  "frozen_at": "2026-09-19T08:10:47.909887+00:00",
+  "implementation_checkpoint": "c49e375",
+  "execution_authorized": false,
+  "gold_adjudicated": false,
+  "experiment_launched": false,
+  "belief_effects": "none",
+  "planned_items": 28,
+  "planned_repeats": 3,
+  "planned_judgments_per_item": 2,
+  "planned_calls": 168,
+  "digest_convention": "sha256; CRLF and CR normalized to LF",
+  "artifacts": {
+    "experiments/G-CORROB1-candidate/DESIGN.md": "54595bcf777a5ab6b3bcce5d115dbc8fa1d5a8734f438843d0a8d7d5d51d609d",
+    "experiments/G-CORROB1-candidate/corpus.json": "cf38d7299f7b1cbeb0a4de6a46710209fd043b52a30f3da7d8b5254ae7ab9fec",
+    "experiments/G-CORROB1-candidate/gold_candidate.json": "83a5405ad9aafe44614b82f7be18306d1992fbc5131ed5e087f16541fccd4086",
+    "experiments/G-CORROB1-candidate/prompt.txt": "fc258c91f72795c6667c3febad46ef98ec432d9bfb72d750e1f9bd904117607a",
+    "tools/corroboration_candidate_tests.py": "7241373d88c22344f86deab6f9cf0821cca6e70508ecaea631b1d3a7ae9387eb",
+    "tools/g_evid1_policy.py": "a8a953dd158ba36b9a13bc70a2d60d240218d5e3c8561be3f610b868458986bf"
+  }
+}
