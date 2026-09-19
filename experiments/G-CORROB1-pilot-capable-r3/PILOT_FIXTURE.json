@@ -1,0 +1,42 @@
+{
+  "contract_version": "g-corrob1.mechanical-pilot.fixture.1",
+  "fixture_id": "G-CORROB1-PX01",
+  "namespace": "g_corrob1_mechanical_pilot",
+  "pilot_only": true,
+  "production_corpus_member": false,
+  "semantic_evaluation_permitted": false,
+  "item": {
+    "item_id": "PX01",
+    "proposition_id": "PPX01",
+    "evidence_id": "PEX01",
+    "proposition": "The fictional Cedar Lab logged calibration token K-17 during rehearsal window W-4.",
+    "intended_use": "Synthetic mechanical-pilot binding and pipeline verification only.",
+    "evidence": "Pilot fixture PEX01 states: during fictional rehearsal window W-4, Cedar Lab logged calibration token K-17. This text is synthetic and is not evidence in G-CORROB1."
+  },
+  "schedule": [
+    {
+      "call_id": "PX01-r1-A",
+      "pair_id": "PX01-r1",
+      "item_id": "PX01",
+      "repeat": 1,
+      "role": "A",
+      "ordinal": 1,
+      "pair_ordinal": 1,
+      "seed": 319682844
+    },
+    {
+      "call_id": "PX01-r1-B",
+      "pair_id": "PX01-r1",
+      "item_id": "PX01",
+      "repeat": 1,
+      "role": "B",
+      "ordinal": 2,
+      "pair_ordinal": 1,
+      "seed": 1888622981
+    }
+  ],
+  "expected_generation_calls": 2,
+  "expected_pairs": 1,
+  "call_order": ["A", "B"],
+  "belief_effects": "none"
+}
