@@ -1,13 +1,21 @@
-## v2732.2 Activity supervision checkpoint
+## G-CORROB1-R2 revised preregistration checkpoint
 
 G-EVID1 is closed as FAILED AS PREREGISTERED, not repaired into a pass.
 See docs/research/G_EVID1_CLOSURE.md and docs/ACTIVITY_SUPERVISION.md.
-The next research unit is the design-only, fresh-fictional-corpus semantic
-corroboration proposal in experiments/G-CORROB1-candidate/DESIGN.md, prepared
-after Activity qualification and implementation commit c49e375. Do not launch, rerun
-G-EVID1, install a candidate, change beliefs or grant additional authority.
-The operator must separately review the candidate design, independently
-adjudicate gold and authorize any later bounded execution.
+The original experiments/G-CORROB1-candidate remains immutable historical design
+evidence. Its adversarial audit required revision. The new design-only proposal is
+experiments/G-CORROB1-candidate-r2/DESIGN.md: blind repeated same-model semantic
+assessment with deterministic disagreement containment, a rebuilt prospective
+corpus, explicit semantic/gold contract, fixed sampling proposal, exact metrics,
+abort rules, Activity specification and second preregistration audit.
+
+The r2 implementation and adversarial implementation audit are now complete.
+The infrastructure candidate is ready for structural-pilot and execution-freeze
+review, not execution. No pilot, execution freeze, provider call or authorization
+exists. Next: historically independent gold signoff, exact live configuration
+preflight, an explicitly authorized mechanical pilot, and a new execution-freeze
+review. Do not launch, rerun G-EVID1, install a candidate, change beliefs or grant
+additional authority.
 Qualification and remaining limits are in docs/ACTIVITY_CHECKPOINT_REPORT.md.
 Legacy release version metadata remains v2730.9.3; scientific reviewer
 contracts remain v2731.8/v2732.1. Activity's data contract is activity.v1.
@@ -1664,3 +1672,18 @@ Archived heading: Next bounded unit
 ## Current checkpoint: v2565.9
 
 Verification observability and coverage intelligence are complete as advisory/read-only layers. Continue with **v2566.0 Verification Coverage-Gap Remediation Candidate Foundations**. Candidates may describe missing direct coverage but must not create tests, mutate source, waive required evidence, or expand authority automatically. The research, architecture-project, real read-only capability, and provider-enabled internal-voice trials remain parked for a combined later trial session.
+
+## G-CORROB1-R2 implementation candidate
+
+The audited blind-repeated-assessment design now has a deterministic implementation
+candidate covering scheduling, minimal semantic requests, strict structural
+validation, frozen G-EVID1 governance, paired comparison, explicit A/B baselines,
+fixed-denominator scoring, correlated-error reporting, append-only persistence,
+shared Activity projection, provider/configuration guards, and freeze preparation.
+
+No Qwen/Ollama call, structural pilot, experiment run, installation, execution
+freeze, belief effect, or G-EVID1 change occurred. The candidate is ready only for
+operator review of a future structural pilot. Before execution freeze it still
+requires historically independent gold signoff, exact installed-model identity,
+live configuration preflight, an explicitly authorized mechanical pilot, and a
+new execution-freeze review and authorization.

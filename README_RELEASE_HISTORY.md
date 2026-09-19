@@ -1,5 +1,14 @@
 ## v2732.2 Activity supervision implementation checkpoint
 
+- Preserved the first G-CORROB1 candidate unchanged after an adversarial
+  preregistration audit returned REVISE AND RE-AUDIT.
+- Added a separate r2 design candidate that restores the original G-EVID1 prompt,
+  removes specified contaminated constructions, defines holistic semantic gold,
+  isolates ambiguity diagnostics, fixes repeated-sampling behavior, and
+  preregisters baselines, paired comparison, metrics, aborts and Activity fields.
+- The second design audit returns READY FOR IMPLEMENTATION AND FREEZE PREPARATION.
+  This is not an execution freeze or authorization. No runner, scorer, pilot,
+  model call, installation, belief effect or G-EVID1 modification occurred.
 - Closed G-EVID1 as failed as preregistered; no frozen gold, policy, run or reviewer edits.
 - Added generic read-only Activity snapshots, history, stages, real-unit progress,
   operational events and truthful governance projections.
@@ -6414,3 +6423,17 @@ Optimized verifier internals without broadening authority or reducing certificat
 - Retained all parked operator trials: research, architecture project, real read-only capability, and provider-enabled internal voice.
 
 Next bounded unit: **v2566.0 Verification Coverage-Gap Remediation Candidate Foundations**.
+
+## G-CORROB1-R2 infrastructure checkpoint (unexecuted)
+
+- Implemented the audited same-model blind repeated semantic-assessment runner
+  architecture without claiming model or evidential independence.
+- Added deterministic 192-call scheduling, A/B isolation, exact configuration
+  submission, strict structural rejection, unchanged G-EVID1 individual
+  governance, exhaustive paired comparison, baseline and correlated-error
+  scoring, append-only records, shared Activity v1 telemetry, and non-executable
+  freeze-candidate verification.
+- Deterministic fixture and adversarial tests use no provider and preserve
+  correlated false-clean agreement as a measurable unsafe path.
+- This checkpoint is not installed, execution-frozen, pilot-authorized, or
+  experiment-authorized. G-EVID1 remains unchanged and failed as preregistered.

@@ -1,0 +1,51 @@
+{
+  "candidate_id": "G-CORROB1-candidate-r2",
+  "status": "sampling_proposal_fixed_not_execution_frozen",
+  "provider": "ollama",
+  "model_name": "qwen3.8:27b",
+  "model_content_digest": "REQUIRED_AT_EXECUTION_FREEZE",
+  "model_configuration_digest": "REQUIRED_AT_EXECUTION_FREEZE",
+  "parameters": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "top_k": 40,
+    "min_p": 0.0,
+    "repeat_penalty": 1.0,
+    "num_ctx": 8192,
+    "num_predict": 350,
+    "stop": [],
+    "stream": false
+  },
+  "items": 32,
+  "repeats_per_item": 3,
+  "roles": ["A", "B"],
+  "planned_pairs": 96,
+  "planned_calls": 192,
+  "seed_contract": {
+    "required": true,
+    "derivation": "seed = uint31(first_8_hex(sha256('G-CORROB1-R2-seed-v1|<item_id>|<repeat>|<role>'))); replace 0 with 1",
+    "distinct_role_seeds": true,
+    "unsupported_seed_behavior": "block_execution_freeze"
+  },
+  "pair_order_contract": "sort ascending by sha256('G-CORROB1-R2-order-v1|<item_id>|<repeat>')",
+  "within_pair_order_contract": "A first when (one_based_item_index + repeat) is even; B first otherwise",
+  "expected_A_first_pairs": 48,
+  "expected_B_first_pairs": 48,
+  "session_isolation": {
+    "fresh_context_per_call": true,
+    "conversation_reuse": false,
+    "response_reuse": false,
+    "retrieval": false,
+    "tools": false,
+    "web": false,
+    "memory": false,
+    "cross_call_cache_or_state": "must_be_disabled_or_proven_not_behavioral_before_execution_freeze"
+  },
+  "retry_policy": {
+    "provider_attempts_per_scheduled_call": 1,
+    "json_repair_calls": 0,
+    "silent_retries": false
+  },
+  "sampling_claim": "separately seeded blind repeated assessments from one model; not model-independent or evidentially independent",
+  "rationale": "A fixed moderate stochastic configuration permits repeated sampling without tuning against semantic outcomes. Distinct deterministic seeds make the proposed schedule reviewable and replay-identifiable but do not establish independent reasoning."
+}

@@ -1,0 +1,22 @@
+You are assessing whether one passage of evidence bears on one proposition. Report only what the passage itself establishes. Do not decide what should be done about it, and do not draw on anything you know beyond the passage.
+
+Proposition {proposition_id}: {proposition}
+Purpose: {intended_use}
+
+Evidence {evidence_id}:
+---
+{evidence}
+---
+
+Reply with one JSON object and nothing else:
+{{
+  "proposition_id": "{proposition_id}",
+  "evidence_id": "{evidence_id}",
+  "relation": one of supports, contradicts, partial, irrelevant, unclear,
+  "scope": one of match, evidence_narrower, evidence_broader, mismatch, unclear,
+  "temporal": one of compatible, evidence_superseded, evidence_predates, unclear,
+  "quotes": up to 2 exact spans copied from the evidence, each 8 to 200 characters,
+  "confidence": one of low, medium, high
+}}
+
+relation describes what the passage does to the proposition. scope describes whether the passage covers the same subject and range as the proposition. temporal describes whether the passage still applies. Every quote must appear in the evidence above, character for character.
