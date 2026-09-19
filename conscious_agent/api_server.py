@@ -1018,6 +1018,13 @@ def handle_api_get(path: str, query: dict[str, list[str]] | None = None) -> tupl
     if not parts:
         return 200, _ok(_api_index())
 
+    if parts == ["activities"] or (len(parts) == 2 and parts[0] == "activities"):
+        from activity import activities
+        try:
+            return 200, _ok(activities(activity_id=parts[1] if len(parts) == 2 else None))
+        except ValueError:
+            return 400, {"ok": False, "error": "invalid_activity_id"}
+
     if parts == ["training-evidence", "status"]:
         from model_training.training_operator import build_training_evidence_status
         return 200, _ok(build_training_evidence_status())

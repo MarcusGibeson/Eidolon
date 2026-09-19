@@ -1,4 +1,16 @@
-## v2730.9.3 native review repair checkpoint
+## v2732.2 Activity supervision checkpoint
+
+G-EVID1 is closed as FAILED AS PREREGISTERED, not repaired into a pass.
+See docs/research/G_EVID1_CLOSURE.md and docs/ACTIVITY_SUPERVISION.md.
+The next research unit is a design-only, fresh-fictional-corpus semantic
+corroboration proposal after Activity qualification. Do not launch, rerun
+G-EVID1, install a candidate, change beliefs or grant additional authority.
+The operator must separately review the candidate design, independently
+adjudicate gold and authorize any later bounded execution.
+Legacy release version metadata remains v2730.9.3; scientific reviewer
+contracts remain v2731.8/v2732.1. Activity's data contract is activity.v1.
+
+## Historical v2730.9.3 native review repair checkpoint
 
 Current source: v2730.9.3. Next: controlled cold start, narrow research, one SaaS loop, then one supervised self-development episode. The large-module debt is intentional and unchanged.
 Checkpoint review state: v2730_9_3_native_review_repairs_checkpoint_candidate.

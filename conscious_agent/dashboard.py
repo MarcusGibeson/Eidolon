@@ -1175,6 +1175,9 @@ def render_cognitive_observability_dashboard() -> str:
 def _layout(path: str, content: str) -> str:
     """Render the extracted dashboard shell with live runtime dependencies."""
     from dashboard_layout import render_dashboard_layout
+    if path == "/":
+        from activity_ui import with_activity
+        content = with_activity(content)
 
     return render_dashboard_layout(
         path,
@@ -1569,6 +1572,8 @@ Rollback the latest patch""")
         )
         + "</div>"
     )
+    from activity_ui import with_activity
+    content = with_activity(content)
     return _layout("/chat-console", content)
 def render_daily_evaluation_console() -> str:
     rating_fields = "".join(
@@ -12892,6 +12897,23 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path
+        if path in {"/assets/activity.css", "/assets/activity.js"}:
+            self._send_static_asset(path.rsplit("/", 1)[1])
+            return
+        if path == "/api/activities" or path.startswith("/api/activities/"):
+            from activity import activities
+            try:
+                activity_id = path[len("/api/activities/"):] if path.startswith("/api/activities/") else None
+                if activity_id == "":
+                    raise ValueError("invalid_activity_id")
+                self._send_lightweight_json(activities(activity_id=activity_id))
+            except ValueError:
+                self._send_json({"ok": False, "error": "invalid_activity_id"}, status=400)
+            return
+        if path == "/activity":
+            from activity_ui import activity_surface
+            self._send_html(_layout("/activity", activity_surface(detail=True)))
+            return
         if path == "/assets/dashboard.css":
             self._send_static_asset("dashboard.css")
             return

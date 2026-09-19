@@ -1,3 +1,17 @@
+## v2732.2 Activity supervision implementation checkpoint
+
+- Closed G-EVID1 as failed as preregistered; no frozen gold, policy, run or reviewer edits.
+- Added generic read-only Activity snapshots, history, stages, real-unit progress,
+  operational events and truthful governance projections.
+- Instrumented the detached reviewer using scoped observational adapters while
+  preserving its pinned contracts, prompts, results and guard boundaries.
+- Added shared web/mobile and native desktop activity supervision surfaces.
+- Added deterministic integration and real browser/native qualification tools.
+- Corrected a legacy source-inspection reader to accept Python UTF-8 BOM input
+  without skipping AST/import checks. No research-source bytes were normalized.
+- This is a feature checkpoint, not a change to the legacy v2730.9.3 release
+  authority or a claim of full release certification. See docs/ACTIVITY_SUPERVISION.md.
+
 ## v2730.9.3 native review repairs
 
 - Generalized research subject handling across the actual conversational parser/planner boundary.

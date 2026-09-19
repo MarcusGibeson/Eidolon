@@ -28,7 +28,7 @@ def build_checkpoint(source_root: str | Path | None = None) -> dict:
     relative = 0
     package_qualified = 0
     for path in agent.rglob("*.py"):
-        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        tree = ast.parse(path.read_bytes(), filename=str(path))
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom):
                 relative += int(bool(node.level))

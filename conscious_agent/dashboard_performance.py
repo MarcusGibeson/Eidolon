@@ -92,7 +92,7 @@ def optimize_dashboard_html_assets(html: str) -> str:
 
 def load_dashboard_asset(name: str) -> tuple[str, bytes] | None:
     token = str(name or "").strip()
-    if token not in {"dashboard.css", "dashboard.js"}:
+    if token not in {"dashboard.css", "dashboard.js", "activity.css", "activity.js"}:
         return None
     path = _ASSET_ROOT / token
     try:

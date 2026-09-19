@@ -25,6 +25,7 @@ read-only and non-authoritative.
 """
 
 from datetime import datetime, timezone
+from contextlib import nullcontext
 import json
 import os
 from pathlib import Path
@@ -131,11 +132,19 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
     reviewer = resolve_reviewer(contract)
     runner = review or (lambda target: reviewer.review_experiment(target, runtime_root_path=private, source_root=SOURCE_ROOT,
                                                                   protected_roots=protected, call_model=CALL_MODEL, identity=IDENTITY))
+    from review_activity import observing_review
+    observer = None
     try:
-        task = lrq.run_task(job["task_id"], runner=runner, root=root)
+        # Custom legacy runners may guard the entire live runtime. Their existing
+        # job record remains observable, but do not write sidecars inside that guard.
+        with (observing_review(job, root, reviewer) if review is None else nullcontext()) as observer:
+            task = lrq.run_task(job["task_id"], runner=runner, root=root)
     except Exception as error:  # a failed review is recorded, never hidden, and never retried on its own
-        return adapter.save_job({**job, "status": "failed", "failure": f"{type(error).__name__}: {error}"[:300],
-                                 "finished": _now(), "private_runtime_root": str(private)}, root)
+        failed = adapter.save_job({**job, "status": "failed", "failure": f"{type(error).__name__}: {error}"[:300],
+                                   "finished": _now(), "private_runtime_root": str(private)}, root)
+        if observer:
+            observer.finish(failed)
+        return failed
     review_id = str(task.get("review_id") or "")
     location = publish_artifact(private, root, review_id) if review_id else ""
     artifact = json.loads((Path(location) / "review.json").read_text(encoding="utf-8")) if review_id else {}
@@ -163,7 +172,10 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
                    "non_authoritative": artifact.get("non_authoritative"),
                    "provider_attempts": artifact.get("runtime_accounting", {}).get("provider_attempts")},
     }
-    return adapter.save_job(final, root)
+    saved = adapter.save_job(final, root)
+    if observer:
+        observer.finish(saved, artifact)
+    return saved
 
 
 def main() -> int:

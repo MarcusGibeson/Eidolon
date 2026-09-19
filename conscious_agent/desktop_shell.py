@@ -626,8 +626,10 @@ def run_desktop_shell() -> None:
 
     settings_button = themed_button(header, "Settings", lambda: open_url("setup"), width=9)
     settings_button.pack(side="right", padx=(8, 0))
-    activity_button = themed_button(header, "Activity", lambda: toggle_drawer("activity"), accent=colors["amber"], width=9)
+    activity_button = themed_button(header, "Activity", lambda: activity_panel.open(), accent=colors["amber"], width=9)
     activity_button.pack(side="right", padx=(8, 0))
+    system_button = themed_button(header, "System", lambda: toggle_drawer("activity"), width=8)
+    system_button.pack(side="right", padx=(8, 0))
     restart_button = themed_button(header, "Restart", lambda: restart_desktop(), accent=colors["cyan"], width=9)
     restart_button.pack(side="right")
 
@@ -640,6 +642,8 @@ def run_desktop_shell() -> None:
     composer_host.pack(side="bottom", fill="x")
     workspace = tk.Frame(root, background=colors["background"])
     workspace.pack(fill="both", expand=True)
+    from desktop_activity import ActivityPanel
+    activity_panel = ActivityPanel(root, workspace, client, colors)
 
     navigation_drawer = tk.Frame(root, background=colors["surface"], highlightthickness=1, highlightbackground=colors["border"])
     tk.Label(navigation_drawer, text="Navigation", background=colors["surface"], foreground=colors["text"], font=("Segoe UI", 14, "bold"), padx=16, pady=14, anchor="w").pack(fill="x")
