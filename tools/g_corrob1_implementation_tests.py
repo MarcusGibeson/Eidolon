@@ -29,7 +29,8 @@ import g_corrob1_scorer as scorer
 def preflight(**changes):
     proposal = contract.load_sampling()
     row = {
-        "provider": "ollama", "requested_model": proposal["model_name"],
+        "provider": "ollama", "provider_version": "fixture-ollama",
+        "requested_model": proposal["model_name"],
         "resolved_model": proposal["model_name"], "model_content_digest": "a" * 64,
         "submitted_parameters": dict(proposal["parameters"]),
         "parameter_submission_support": {name: True for name in proposal["parameters"]},
@@ -186,7 +187,8 @@ class ProviderTests(unittest.TestCase):
     def test_preflight_mismatch_matrix(self):
         self.assertTrue(provider.verify_preflight_receipt(preflight())["valid"])
         cases = [
-            preflight(provider="other"), preflight(resolved_model="fallback"),
+            preflight(provider="other"), preflight(provider_version=""),
+            preflight(resolved_model="fallback"),
             preflight(model_content_digest=""), preflight(retry_limit=1),
             preflight(seed_submission_supported=False), preflight(silent_fallback=True),
             preflight(submitted_parameters={}),

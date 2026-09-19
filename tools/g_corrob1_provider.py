@@ -29,6 +29,7 @@ def prepared_configuration() -> dict[str, Any]:
     proposal = load_sampling()
     return {
         "provider": proposal["provider"],
+        "provider_version": None,
         "model": proposal["model_name"],
         "parameters": dict(proposal["parameters"]),
         "fresh_context_per_call": True,
@@ -55,6 +56,8 @@ def verify_preflight_receipt(receipt: Mapping[str, Any], *, require_model_digest
     reasons: list[str] = []
     if receipt.get("provider") != EXPECTED_PROVIDER:
         reasons.append("provider_mismatch")
+    if not str(receipt.get("provider_version") or ""):
+        reasons.append("provider_version_unresolved")
     if receipt.get("requested_model") != proposal["model_name"]:
         reasons.append("requested_model_mismatch")
     if receipt.get("resolved_model") != proposal["model_name"]:
@@ -117,6 +120,9 @@ class OllamaExperimentAdapter:
         import requests
 
         with requests.Session() as session:
+            version_response = session.get(self.endpoint + "/api/version", timeout=(5, 30))
+            version_response.raise_for_status()
+            provider_version = str(version_response.json().get("version") or "")
             response = session.get(self.endpoint + "/api/tags", timeout=(5, 30))
             response.raise_for_status()
             payload = response.json()
@@ -127,7 +133,8 @@ class OllamaExperimentAdapter:
         digest = str(row.get("digest") or "").lower()
         proposal = load_sampling()
         return {
-            "provider": EXPECTED_PROVIDER, "requested_model": model, "resolved_model": str(row.get("model") or row.get("name")),
+            "provider": EXPECTED_PROVIDER, "provider_version": provider_version,
+            "requested_model": model, "resolved_model": str(row.get("model") or row.get("name")),
             "model_content_digest": digest, "submitted_parameters": dict(proposal["parameters"]),
             "parameter_submission_support": {name: True for name in proposal["parameters"]},
             "seed_submission_supported": True, "fresh_session_per_call": True, "retry_limit": 0,

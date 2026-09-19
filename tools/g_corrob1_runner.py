@@ -56,6 +56,34 @@ def _result_dict(value: ProviderResult | Mapping[str, Any]) -> dict[str, Any]:
     return value.as_dict() if isinstance(value, ProviderResult) else dict(value)
 
 
+def _preflight_matches_execution_manifest(
+    preflight_receipt: Mapping[str, Any], authorization: Mapping[str, Any] | None
+) -> bool:
+    manifest = dict((authorization or {}).get("execution_manifest") or {})
+    try:
+        from g_corrob1_freeze import configuration_digest_for_manifest
+
+        frozen_view = {
+            "provider": preflight_receipt["provider"],
+            "provider_version": preflight_receipt["provider_version"],
+            "requested_model": preflight_receipt["requested_model"],
+            "resolved_model": preflight_receipt["resolved_model"],
+            "model_manifest_sha256": preflight_receipt["model_content_digest"],
+            "experiment_submission": preflight_receipt["submitted_parameters"],
+        }
+        return (
+            preflight_receipt["provider"] == manifest["model_provider"]
+            and preflight_receipt["provider_version"] == manifest["provider_version"]
+            and preflight_receipt["requested_model"] == manifest["requested_model"]
+            and preflight_receipt["resolved_model"] == manifest["resolved_model"]
+            and preflight_receipt["model_content_digest"] == manifest["model_content_digest"]
+            and configuration_digest_for_manifest(frozen_view)
+            == manifest["model_configuration_digest"]
+        )
+    except (KeyError, TypeError, ValueError):
+        return False
+
+
 def execute(
     *,
     provider_call: Callable[[str, Mapping[str, Any]], ProviderResult | Mapping[str, Any]],
@@ -77,6 +105,10 @@ def execute(
     preflight = verify_preflight_receipt(preflight_receipt, require_model_digest=True)
     if not preflight["valid"]:
         raise ValueError("provider_preflight_rejected:" + ",".join(preflight["reasons"]))
+    if not synthetic_fixture and not _preflight_matches_execution_manifest(
+        preflight_receipt, authorization
+    ):
+        raise ValueError("provider_preflight_not_bound_to_execution_freeze")
 
     corpus = load_corpus()
     items = {row["item_id"]: row for row in corpus}
