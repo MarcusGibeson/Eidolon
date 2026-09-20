@@ -8,12 +8,13 @@ import sys
 from typing import Any
 
 
-CONTRACT_VERSION = "g-corrob1.mechanical-pilot.activity.1"
+CONTRACT_VERSION = "g-corrob1.mechanical-pilot.activity.2"
 STAGES = ("pilot_preparing", "assessment_collection", "structural_validation",
           "paired_comparison", "mechanical_verification", "finalization")
 ALLOWED_METRICS = frozenset({
     "scheduled_calls", "provider_contacts", "calls_completed", "A_completed", "B_completed",
     "validation_completed", "structural_failures", "pairs_completed", "comparisons_completed",
+    "extractions_completed", "extraction_failures",
 })
 
 
@@ -37,7 +38,7 @@ class PilotActivity:
             root=root,
             stages=STAGES,
             identities={
-                "candidate_id": "G-CORROB1-pilot-capable-r3",
+                "candidate_id": "G-CORROB1-pilot-envelope-r4",
                 "run_id": run_id,
                 "record_namespace": "g_corrob1_mechanical_pilot",
             },

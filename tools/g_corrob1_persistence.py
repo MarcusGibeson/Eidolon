@@ -12,7 +12,7 @@ from typing import Any, Mapping
 from g_corrob1_contract import canonical_digest
 
 
-CONTRACT_VERSION = "g-corrob1.r2.persistence-candidate.1"
+CONTRACT_VERSION = "g-corrob1.r2.persistence-candidate.2"
 
 
 def now() -> str:
@@ -52,7 +52,8 @@ class RunStore:
                 "contract_version": CONTRACT_VERSION, "run_id": self.run_id,
                 "state": "preparing", "started": now(), "updated": now(), "finished": None,
                 "belief_effects": "none", "provider_contacts": 0, "returned_responses": 0,
-                "calls_persisted": 0, "pairs_persisted": 0, "valid_verdict": False,
+                "provider_envelopes_persisted": 0, "calls_persisted": 0,
+                "pairs_persisted": 0, "valid_verdict": False,
                 **dict(run_manifest or {}),
             }
             _write_new(self.manifest_path, manifest)
@@ -83,6 +84,21 @@ class RunStore:
         manifest["calls_persisted"] = int(manifest.get("calls_persisted") or 0) + 1
         manifest["provider_contacts"] = int(manifest.get("provider_contacts") or 0) + int(bool(record.get("provider_contacted")))
         manifest["returned_responses"] = int(manifest.get("returned_responses") or 0) + int(not bool(record.get("provider_error")))
+        manifest["updated"] = now()
+        _replace(self.manifest_path, manifest)
+        return path
+
+    def write_provider_envelope(self, record: Mapping[str, Any]) -> Path:
+        """Persist immutable provider evidence before semantic output is consumed."""
+        call_id = str(record.get("call_id") or "")
+        if not call_id:
+            raise ValueError("provider_envelope_call_id_missing")
+        path = self.root / "provider_envelopes" / f"{call_id}.json"
+        payload = dict(record)
+        payload["record_sha256"] = canonical_digest(json.dumps(payload, sort_keys=True, separators=(",", ":")))
+        _write_new(path, payload)
+        manifest = self.manifest()
+        manifest["provider_envelopes_persisted"] = int(manifest.get("provider_envelopes_persisted") or 0) + 1
         manifest["updated"] = now()
         _replace(self.manifest_path, manifest)
         return path
@@ -123,6 +139,10 @@ class RunStore:
 
     def pair_records(self) -> list[dict[str, Any]]:
         return [json.loads(path.read_text(encoding="utf-8")) for path in sorted((self.root / "pairs").glob("*.json"))]
+
+    def provider_envelope_records(self) -> list[dict[str, Any]]:
+        return [json.loads(path.read_text(encoding="utf-8"))
+                for path in sorted((self.root / "provider_envelopes").glob("*.json"))]
 
 
 __all__ = ["CONTRACT_VERSION", "RunStore", "now"]

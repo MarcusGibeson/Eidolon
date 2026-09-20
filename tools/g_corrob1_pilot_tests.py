@@ -18,8 +18,9 @@ if str(TOOLS) not in sys.path:
 import g_corrob1_contract as production_contract
 import g_corrob1_live_pilot as pilot
 import g_corrob1_pilot_activity as pilot_activity
-import g_corrob1_pilot_freeze as pilot_freeze
+import g_corrob1_pilot_envelope_freeze as pilot_freeze
 import g_corrob1_pilot_verifier as pilot_verifier
+from g_corrob1_provider_envelope import fixture_envelope_fields
 import g_corrob1_scorer as production_scorer
 
 
@@ -98,6 +99,8 @@ class FixtureAdapter:
         if self.mutation:
             self.mutation(request_id, body, result, assessment)
         result.setdefault("raw_response", json.dumps(assessment))
+        result.update(fixture_envelope_fields({"response": str(result.get("raw_response") or "")}))
+        result["raw_response"] = result["extracted_model_output"]
         self.generations.append({"request_id": request_id, "body": deepcopy(body),
                                  "allow_provider_contact": allow_provider_contact,
                                  "result": deepcopy(result)})
@@ -346,10 +349,12 @@ class ActivityAndLineageTests(unittest.TestCase):
             manifest = json.loads((root / "run.json").read_text(encoding="utf-8"))
             score = json.loads((root / "score.json").read_text(encoding="utf-8"))
             terminal = json.loads((root / "terminal_receipt.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["provider_envelopes_persisted"], 2)
             self.assertEqual(manifest["calls_persisted"], 2)
             self.assertEqual(manifest["pairs_persisted"], 1)
             self.assertEqual(manifest["state"], "complete")
             self.assertEqual(score["calls_verified"], 2)
+            self.assertEqual(score["provider_envelopes_verified"], 2)
             self.assertEqual(score["pairs_verified"], 1)
             self.assertEqual(len(score["lineage_sha256"]), 64)
             self.assertFalse(manifest["valid_verdict"])
@@ -359,6 +364,7 @@ class ActivityAndLineageTests(unittest.TestCase):
                 production_contract.canonical_digest(json.dumps(unsigned, sort_keys=True, separators=(",", ":"))),
             )
             self.assertEqual(terminal["terminal_state"], "complete")
+            self.assertEqual(len(terminal["provider_envelope_record_sha256"]), 2)
 
 
 class FreezeTests(unittest.TestCase):
@@ -371,11 +377,17 @@ class FreezeTests(unittest.TestCase):
         self.assertFalse(first["experiment_authorized"])
 
     def test_serialized_candidate_hash_matches_authorization_digest_convention(self):
-        candidate = json.loads(pilot_freeze.CANDIDATE.read_text(encoding="utf-8"))
-        self.assertEqual(
-            production_contract.digest_file(pilot_freeze.CANDIDATE),
-            pilot_freeze.candidate_file_sha256(candidate),
-        )
+        candidate = pilot_freeze.build_candidate()
+        if pilot_freeze.CANDIDATE.is_file():
+            candidate = json.loads(pilot_freeze.CANDIDATE.read_text(encoding="utf-8"))
+            self.assertEqual(
+                production_contract.digest_file(pilot_freeze.CANDIDATE),
+                pilot_freeze.candidate_file_sha256(candidate),
+            )
+        else:
+            serialized = json.dumps(candidate, indent=1, ensure_ascii=False, sort_keys=True) + "\n"
+            self.assertEqual(production_contract.canonical_digest(serialized),
+                             pilot_freeze.candidate_file_sha256(candidate))
 
     def test_every_bound_artifact_drift_and_authority_change_fails(self):
         candidate = pilot_freeze.build_candidate()

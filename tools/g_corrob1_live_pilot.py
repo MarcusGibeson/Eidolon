@@ -20,14 +20,15 @@ from g_corrob1_contract import (
 )
 from g_corrob1_persistence import RunStore
 from g_corrob1_pilot_activity import NullPilotActivity, PilotActivity
-from g_corrob1_pilot_freeze import verify_pilot_authorization
+from g_corrob1_pilot_envelope_freeze import verify_pilot_authorization
 from g_corrob1_pilot_verifier import NAMESPACE, load_fixture, verify_pilot_records
 from g_corrob1_policy import compare_pair, process_assessment
 from g_corrob1_provider import ProviderResult, verify_preflight_receipt
+from g_corrob1_provider_envelope import verify_envelope_record
 from g_corrob1_runner import _preflight_matches_execution_manifest
 
 
-CONTRACT_VERSION = "g-corrob1.mechanical-pilot.runner.1"
+CONTRACT_VERSION = "g-corrob1.mechanical-pilot.runner.2"
 
 
 def utc_run_id() -> str:
@@ -84,6 +85,9 @@ def _write_terminal_receipt(store: RunStore) -> Path:
         "terminal_reason": manifest.get("reason"),
         "run_manifest_sha256": canonical_digest(store.manifest_path.read_bytes()),
         "call_record_sha256": [str(row.get("record_sha256") or "") for row in store.call_records()],
+        "provider_envelope_record_sha256": [
+            str(row.get("record_sha256") or "") for row in store.provider_envelope_records()
+        ],
         "pair_record_sha256": [str(row.get("record_sha256") or "") for row in store.pair_records()],
         "mechanical_report_sha256": (
             canonical_digest(score_path.read_bytes()) if score_path.is_file() else None
@@ -147,7 +151,7 @@ def execute(
         resolved_run_id,
         create=True,
         run_manifest={
-            "candidate_id": "G-CORROB1-pilot-capable-r3",
+            "candidate_id": "G-CORROB1-pilot-envelope-r4",
             "runner_contract": CONTRACT_VERSION,
             "record_namespace": NAMESPACE,
             "pilot_only": True,
@@ -162,7 +166,8 @@ def execute(
             "synthetic_fixture": bool(synthetic_fixture),
         },
     )
-    counts = {"calls": 0, "A": 0, "B": 0, "pairs": 0, "validations": 0, "structural_failures": 0}
+    counts = {"calls": 0, "A": 0, "B": 0, "pairs": 0, "validations": 0,
+              "structural_failures": 0, "extractions": 0, "extraction_failures": 0}
     emit("pilot_preparing", state="preparing", stage="pilot_preparing", metrics={"scheduled_calls": 2})
 
     try:
@@ -202,7 +207,44 @@ def execute(
                 scheduled.call_id, body, allow_provider_contact=not synthetic_fixture
             ))
             counts["calls"] += 1
-            binding_reasons = []
+            envelope_path = store.write_provider_envelope({
+                "call_id": scheduled.call_id,
+                "request_id": str(result.get("request_id") or ""),
+                "raw_provider_envelope_b64": str(result.get("raw_provider_envelope_b64") or ""),
+                "raw_provider_envelope_sha256": str(result.get("raw_provider_envelope_sha256") or ""),
+                "provider_envelope": result.get("provider_envelope"),
+                "provider_envelope_sha256": str(result.get("provider_envelope_sha256") or ""),
+                "provider_contacted": bool(result.get("provider_contacted")),
+                "returned_model": str(result.get("returned_model") or ""),
+                "metrics": dict(result.get("metrics") or {}),
+                "record_kind": "raw_provider_envelope",
+                "record_namespace": NAMESPACE,
+                "pilot_only": True,
+                "production_result": False,
+            })
+            envelope_record_sha256 = json.loads(envelope_path.read_text(encoding="utf-8"))["record_sha256"]
+            envelope_check = verify_envelope_record(result)
+            extraction = dict(result.get("output_extraction") or {})
+            counts["extractions"] += 1
+            counts["extraction_failures"] += int(extraction.get("status") != "success")
+            emit(
+                "pilot_provider_response_received", state="running", stage="assessment_collection",
+                units=(counts["calls"], 2, "calls"),
+                metrics={"scheduled_calls": 2, "provider_contacts": counts["calls"],
+                         "calls_completed": counts["calls"],
+                         "extractions_completed": counts["extractions"],
+                         "extraction_failures": counts["extraction_failures"]},
+            )
+            emit(
+                "pilot_output_extraction_succeeded" if extraction.get("status") == "success"
+                else "pilot_output_extraction_failed",
+                state="running", stage="structural_validation",
+                metrics={"scheduled_calls": 2, "provider_contacts": counts["calls"],
+                         "calls_completed": counts["calls"],
+                         "extractions_completed": counts["extractions"],
+                         "extraction_failures": counts["extraction_failures"]},
+            )
+            binding_reasons = list(envelope_check["reasons"])
             if result.get("request_id") != scheduled.call_id:
                 binding_reasons.append("request_binding_mismatch")
             if result.get("submitted_body_sha256") != request["submitted_body_sha256"]:
@@ -214,7 +256,7 @@ def execute(
                 sampling["parameters"]["num_predict"]
             )
             processed = process_assessment(
-                str(result.get("raw_response") or ""),
+                str(result.get("extracted_model_output") or ""),
                 proposition_id=item["proposition_id"], evidence_id=item["evidence_id"],
                 evidence_text=item["evidence"], truncated=truncated,
                 binding_error=";".join(binding_reasons) if binding_reasons else None,
@@ -224,7 +266,14 @@ def execute(
                 **scheduled.identity(),
                 "record_namespace": NAMESPACE, "pilot_only": True, "production_result": False,
                 "semantic_evaluation_performed": False, "request": request,
-                "raw_response": str(result.get("raw_response") or ""),
+                "raw_provider_envelope_b64": str(result.get("raw_provider_envelope_b64") or ""),
+                "raw_provider_envelope_sha256": str(result.get("raw_provider_envelope_sha256") or ""),
+                "provider_envelope": result.get("provider_envelope"),
+                "provider_envelope_sha256": str(result.get("provider_envelope_sha256") or ""),
+                "extracted_model_output": str(result.get("extracted_model_output") or ""),
+                "output_extraction": extraction,
+                "provider_envelope_record_sha256": envelope_record_sha256,
+                "raw_response": str(result.get("extracted_model_output") or ""),
                 "assessment": processed["assessment"], "parse_error": processed["parse_error"],
                 "validation": processed["validation"], "disposition": processed["disposition"],
                 "rule": processed["rule"], "rules_fired": processed.get("rules_fired") or [],
@@ -249,11 +298,13 @@ def execute(
                          "B_completed": counts["B"], "validation_completed": counts["validations"],
                          "structural_failures": counts["structural_failures"], "pairs_completed": counts["pairs"]},
             )
-            if provider_error or binding_reasons or not processed["validation"]["valid"]:
+            if provider_error or binding_reasons or extraction.get("status") != "success" or not processed["validation"]["valid"]:
                 if provider_error:
                     reason = "provider_failure"
                 elif binding_reasons:
                     reason = "provenance_or_binding_failure"
+                elif extraction.get("status") != "success":
+                    reason = "output_extraction_failure"
                 else:
                     reason = "structural_assessment_rejection"
                 store.finish(state="incomplete", reason=reason, valid_verdict=False)
@@ -289,6 +340,7 @@ def execute(
                       "comparisons_completed": 1, "structural_failures": counts["structural_failures"]})
         report = verify_pilot_records(
             store.call_records(), store.pair_records(), fixture=fixture,
+            provider_envelopes=store.provider_envelope_records(),
             pilot_manifest_sha256=manifest_sha256,
         )
         store.write_score(report)

@@ -21,9 +21,10 @@ from g_corrob1_contract import (
 from g_corrob1_persistence import RunStore
 from g_corrob1_policy import compare_pair, process_assessment
 from g_corrob1_provider import ProviderResult, verify_preflight_receipt
+from g_corrob1_provider_envelope import verify_envelope_record
 
 
-CONTRACT_VERSION = "g-corrob1.r2.runner-candidate.1"
+CONTRACT_VERSION = "g-corrob1.r2.runner-candidate.2"
 
 
 def utc_run_id() -> str:
@@ -134,7 +135,8 @@ def execute(
         },
     )
     counts = {"A": 0, "B": 0, "calls": 0, "pairs": 0, "validations": 0,
-              "structural_failures": 0, "grounding_failures": 0}
+              "structural_failures": 0, "grounding_failures": 0,
+              "extractions": 0, "extraction_failures": 0}
     records_by_pair: dict[str, dict[str, dict[str, Any]]] = {}
     emit("preflight_verified", state="preparing", stage="preflight_validation",
          metrics={"scheduled_calls": EXPECTED_CALLS})
@@ -154,8 +156,40 @@ def execute(
             )
             result = _result_dict(provider_call(scheduled.call_id, body))
             counts["calls"] += int(bool(result.get("provider_contacted")))
+            envelope_path = store.write_provider_envelope({
+                "call_id": scheduled.call_id,
+                "request_id": str(result.get("request_id") or ""),
+                "raw_provider_envelope_b64": str(result.get("raw_provider_envelope_b64") or ""),
+                "raw_provider_envelope_sha256": str(result.get("raw_provider_envelope_sha256") or ""),
+                "provider_envelope": result.get("provider_envelope"),
+                "provider_envelope_sha256": str(result.get("provider_envelope_sha256") or ""),
+                "provider_contacted": bool(result.get("provider_contacted")),
+                "returned_model": str(result.get("returned_model") or ""),
+                "metrics": dict(result.get("metrics") or {}),
+                "record_kind": "raw_provider_envelope",
+            })
+            envelope_record_sha256 = json.loads(envelope_path.read_text(encoding="utf-8"))["record_sha256"]
+            envelope_check = verify_envelope_record(result)
+            extraction = dict(result.get("output_extraction") or {})
+            counts["extractions"] += 1
+            counts["extraction_failures"] += int(extraction.get("status") != "success")
+            emit(
+                "provider_response_received", state="running", stage="assessment_collection",
+                units=(counts["calls"], EXPECTED_CALLS, "calls"),
+                metrics={"scheduled_calls": EXPECTED_CALLS, "provider_contacts": counts["calls"],
+                         "extractions_completed": counts["extractions"],
+                         "extraction_failures": counts["extraction_failures"]},
+            )
+            emit(
+                "output_extraction_succeeded" if extraction.get("status") == "success"
+                else "output_extraction_failed",
+                state="running", stage="structural_validation",
+                metrics={"scheduled_calls": EXPECTED_CALLS, "provider_contacts": counts["calls"],
+                         "extractions_completed": counts["extractions"],
+                         "extraction_failures": counts["extraction_failures"]},
+            )
             provider_error = str(result.get("error") or "")
-            binding_reasons = []
+            binding_reasons = list(envelope_check["reasons"])
             if result.get("request_id") != scheduled.call_id:
                 binding_reasons.append("request_binding_mismatch")
             if result.get("submitted_body_sha256") != request["submitted_body_sha256"]:
@@ -167,12 +201,20 @@ def execute(
                 sampling["parameters"]["num_predict"]
             )
             processed = process_assessment(
-                str(result.get("raw_response") or ""), proposition_id=item["proposition_id"],
+                str(result.get("extracted_model_output") or ""), proposition_id=item["proposition_id"],
                 evidence_id=item["evidence_id"], evidence_text=item["evidence"], truncated=truncated,
                 binding_error=";".join(binding_reasons) if binding_reasons else None,
             )
             record = {
-                **scheduled.identity(), "request": request, "raw_response": str(result.get("raw_response") or ""),
+                **scheduled.identity(), "request": request,
+                "raw_provider_envelope_b64": str(result.get("raw_provider_envelope_b64") or ""),
+                "raw_provider_envelope_sha256": str(result.get("raw_provider_envelope_sha256") or ""),
+                "provider_envelope": result.get("provider_envelope"),
+                "provider_envelope_sha256": str(result.get("provider_envelope_sha256") or ""),
+                "extracted_model_output": str(result.get("extracted_model_output") or ""),
+                "output_extraction": extraction,
+                "provider_envelope_record_sha256": envelope_record_sha256,
+                "raw_response": str(result.get("extracted_model_output") or ""),
                 "assessment": processed["assessment"], "parse_error": processed["parse_error"],
                 "validation": processed["validation"], "disposition": processed["disposition"],
                 "rule": processed["rule"], "rules_fired": processed.get("rules_fired") or [],

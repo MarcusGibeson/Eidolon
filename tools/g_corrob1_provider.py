@@ -14,9 +14,10 @@ import time
 from typing import Any, Mapping
 
 from g_corrob1_contract import assert_minimal_semantic_body, canonical_digest, load_sampling
+from g_corrob1_provider_envelope import envelope_record, raw_envelope_evidence
 
 
-CONTRACT_VERSION = "g-corrob1.r2.provider-candidate.1"
+CONTRACT_VERSION = "g-corrob1.r2.provider-candidate.2"
 EXPECTED_PROVIDER = "ollama"
 DIGEST_RE = re.compile(r"^[0-9a-f]{64}$")
 
@@ -97,6 +98,12 @@ class ProviderResult:
     seconds: float
     provider_contacted: bool
     submitted_body_sha256: str
+    raw_provider_envelope_b64: str
+    raw_provider_envelope_sha256: str
+    provider_envelope: Any
+    provider_envelope_sha256: str
+    extracted_model_output: str
+    output_extraction: dict[str, Any]
     error: str = ""
 
     def as_dict(self) -> dict[str, Any]:
@@ -104,7 +111,15 @@ class ProviderResult:
             "request_id": self.request_id, "raw_response": self.raw_response,
             "returned_model": self.returned_model, "metrics": dict(self.metrics),
             "seconds": self.seconds, "provider_contacted": self.provider_contacted,
-            "submitted_body_sha256": self.submitted_body_sha256, "error": self.error,
+            "submitted_body_sha256": self.submitted_body_sha256,
+            "raw_provider_envelope_b64": self.raw_provider_envelope_b64,
+            "raw_provider_envelope_sha256": self.raw_provider_envelope_sha256,
+            "provider_envelope": (dict(self.provider_envelope)
+                                  if isinstance(self.provider_envelope, Mapping)
+                                  else self.provider_envelope),
+            "provider_envelope_sha256": self.provider_envelope_sha256,
+            "extracted_model_output": self.extracted_model_output,
+            "output_extraction": dict(self.output_extraction), "error": self.error,
         }
 
 
@@ -151,29 +166,40 @@ class OllamaExperimentAdapter:
 
         encoded = json.dumps(dict(body), sort_keys=True, separators=(",", ":"))
         started = time.perf_counter()
+        envelope_fields: dict[str, Any] = {
+            "raw_provider_envelope_b64": "", "raw_provider_envelope_sha256": canonical_digest(b""),
+            "provider_envelope": {}, "provider_envelope_sha256": canonical_digest("{}"),
+            "extracted_model_output": "", "output_extraction": {},
+        }
         try:
             # A new Session per call prevents conversation/session reuse. Requests performs no
             # application-level retry here, and no response-repair request exists.
             with requests.Session() as session:
                 response = session.post(self.endpoint + "/api/generate", json=dict(body), timeout=(5, 900))
+                raw_body = bytes(response.content)
+                envelope_fields = raw_envelope_evidence(raw_body)
+                envelope_fields = envelope_record(raw_body)
                 response.raise_for_status()
-                payload = response.json()
+                payload = envelope_fields["provider_envelope"]
             returned_model = str(payload.get("model") or body["model"])
             if returned_model != body["model"]:
                 raise RuntimeError("provider_model_fallback_detected")
             metrics = {key: payload.get(key) for key in
                        ("prompt_eval_count", "eval_count", "total_duration", "load_duration") if payload.get(key) is not None}
             return ProviderResult(
-                request_id=request_id, raw_response=str(payload.get("response") or ""),
+                request_id=request_id, raw_response=envelope_fields["extracted_model_output"],
                 returned_model=returned_model, metrics=metrics,
                 seconds=round(time.perf_counter() - started, 6), provider_contacted=True,
                 submitted_body_sha256=canonical_digest(encoded),
+                **envelope_fields,
             )
         except Exception as error:
             return ProviderResult(
-                request_id=request_id, raw_response="", returned_model="", metrics={},
+                request_id=request_id, raw_response=str(envelope_fields.get("extracted_model_output") or ""),
+                returned_model="", metrics={},
                 seconds=round(time.perf_counter() - started, 6), provider_contacted=True,
                 submitted_body_sha256=canonical_digest(encoded),
+                **envelope_fields,
                 error=f"{type(error).__name__}:{error}"[:400],
             )
 

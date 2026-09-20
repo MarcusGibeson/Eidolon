@@ -14,6 +14,7 @@ ALLOWED_METRICS = frozenset({
     "items_completed", "pairs_completed", "A_completed", "B_completed", "scheduled_calls",
     "provider_contacts", "returned_responses", "validation_completed", "structural_failures",
     "grounding_failures", "comparisons_completed", "scoring_units_completed",
+    "extractions_completed", "extraction_failures",
 })
 
 

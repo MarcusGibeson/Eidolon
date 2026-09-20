@@ -11,7 +11,7 @@ import unittest
 import g_corrob1_activity as activity
 import g_corrob1_freeze as freeze
 import g_corrob1_runner as runner
-from g_corrob1_contract import canonical_digest, load_sampling
+from g_corrob1_contract import canonical_digest, digest_file, load_sampling
 from g_corrob1_persistence import RunStore
 from g_corrob1_provider import verify_preflight_receipt
 
@@ -48,8 +48,15 @@ class ExecutionFreezeAuditTests(unittest.TestCase):
     def setUp(self) -> None:
         self.manifest = _json("EXECUTION_FREEZE_CANDIDATE.json")
 
-    def test_candidate_rebuilds_exactly_but_cannot_authorize_execution(self) -> None:
-        self.assertTrue(freeze.verify_execution_freeze_candidate(self.manifest)["valid"])
+    def test_historical_candidate_is_preserved_but_current_code_invalidates_execution(self) -> None:
+        candidate_path = DATA / "EXECUTION_FREEZE_CANDIDATE.json"
+        self.assertEqual(
+            digest_file(candidate_path),
+            "366a787cbf901f25e795d72ad4f71bd09a1f5318a51ed6549940bc9c3aff5114",
+        )
+        current_check = freeze.verify_execution_freeze_candidate(self.manifest)
+        self.assertFalse(current_check["valid"])
+        self.assertTrue(any("artifact" in reason for reason in current_check["reasons"]))
         self.assertFalse(self.manifest["pilot_authorized"])
         self.assertFalse(self.manifest["experiment_authorized"])
         self.assertFalse(freeze.verify_execution_manifest(self.manifest)["valid"])

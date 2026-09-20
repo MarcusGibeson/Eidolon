@@ -22,6 +22,7 @@ import g_corrob1_freeze as freeze
 import g_corrob1_persistence as persistence
 import g_corrob1_policy as policy
 import g_corrob1_provider as provider
+from g_corrob1_provider_envelope import fixture_envelope_fields
 import g_corrob1_runner as runner
 import g_corrob1_scorer as scorer
 
@@ -71,6 +72,8 @@ class FixtureProvider:
             result.update(raw_response="", error="fixture_transport_failure")
         if self.mutation:
             self.mutation(request_id, body, result, assessment)
+        result.update(fixture_envelope_fields({"response": str(result.get("raw_response") or "")}))
+        result["raw_response"] = result["extracted_model_output"]
         self.requests.append({"request_id": request_id, "body": deepcopy(body), "result": deepcopy(result)})
         return result
 
@@ -254,6 +257,10 @@ class EndToEndTests(unittest.TestCase):
             result, fixture = self.run_fixture(td)
             self.assertEqual(result["state"], "complete")
             self.assertEqual(len(fixture.requests), 192)
+            root = Path(td) / "run"
+            manifest = json.loads((root / "run.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["provider_envelopes_persisted"], 192)
+            self.assertEqual(len(list((root / "provider_envelopes").glob("*.json"))), 192)
             report = result["report"]
             self.assertTrue(report["all_gates_passed"])
             self.assertEqual(report["conditions"]["paired"]["primary_unsafe_use"], {"count": 0, "of": 42, "offending": []})

@@ -12,12 +12,13 @@ from typing import Any, Iterable, Mapping
 
 from g_corrob1_contract import canonical_digest, load_json
 from g_corrob1_policy import compare_pair
+from g_corrob1_provider_envelope import verify_envelope_record
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "experiments" / "G-CORROB1-pilot-capable-r3"
 FIXTURE_PATH = DATA / "PILOT_FIXTURE.json"
-CONTRACT_VERSION = "g-corrob1.mechanical-pilot.verifier.1"
+CONTRACT_VERSION = "g-corrob1.mechanical-pilot.verifier.2"
 NAMESPACE = "g_corrob1_mechanical_pilot"
 EXPECTED_CALLS = 2
 EXPECTED_PAIRS = 1
@@ -62,18 +63,22 @@ def verify_pilot_records(
     calls: Iterable[Mapping[str, Any]],
     pairs: Iterable[Mapping[str, Any]],
     *,
+    provider_envelopes: Iterable[Mapping[str, Any]] = (),
     fixture: Mapping[str, Any] | None = None,
     pilot_manifest_sha256: str,
 ) -> dict[str, Any]:
     selected = dict(fixture or load_fixture())
     call_rows = [dict(row) for row in calls]
     pair_rows = [dict(row) for row in pairs]
+    envelope_rows = [dict(row) for row in provider_envelopes]
     reasons: list[str] = []
 
     if len(call_rows) != EXPECTED_CALLS:
         reasons.append("pilot_fixed_call_denominator_mismatch")
     if len(pair_rows) != EXPECTED_PAIRS:
         reasons.append("pilot_fixed_pair_denominator_mismatch")
+    if len(envelope_rows) != EXPECTED_CALLS:
+        reasons.append("pilot_fixed_provider_envelope_denominator_mismatch")
     if len({row.get("call_id") for row in call_rows}) != len(call_rows):
         reasons.append("duplicate_pilot_call_identity")
     if len({row.get("pair_id") for row in pair_rows}) != len(pair_rows):
@@ -81,8 +86,11 @@ def verify_pilot_records(
 
     expected_calls = {row["call_id"]: row for row in selected["schedule"]}
     observed_calls = {str(row.get("call_id")): row for row in call_rows}
+    observed_envelopes = {str(row.get("call_id")): row for row in envelope_rows}
     if set(observed_calls) != set(expected_calls):
         reasons.append("pilot_call_coverage_mismatch")
+    if set(observed_envelopes) != set(expected_calls):
+        reasons.append("pilot_provider_envelope_coverage_mismatch")
     if not pilot_manifest_sha256 or len(pilot_manifest_sha256) != 64:
         reasons.append("pilot_manifest_digest_missing")
 
@@ -105,12 +113,30 @@ def verify_pilot_records(
             reasons.append(f"pilot_structural_validation_failed:{call_id}")
         if row.get("provider_error"):
             reasons.append(f"pilot_provider_error:{call_id}")
+        envelope_check = verify_envelope_record(row)
+        reasons.extend(f"pilot_envelope:{call_id}:{reason}" for reason in envelope_check["reasons"])
+        if (row.get("output_extraction") or {}).get("status") != "success":
+            reasons.append(f"pilot_output_extraction_failed:{call_id}")
         request = row.get("request") or {}
         for key in ("call_id", "pair_id", "item_id", "repeat", "role", "seed"):
             if request.get(key) != expected.get(key):
                 reasons.append(f"pilot_request_binding_mismatch:{call_id}:{key}")
         if row.get("submitted_body_sha256") != request.get("submitted_body_sha256"):
             reasons.append(f"pilot_request_digest_mismatch:{call_id}")
+        envelope = observed_envelopes.get(call_id)
+        if envelope is not None:
+            if envelope.get("record_namespace") != NAMESPACE or envelope.get("pilot_only") is not True:
+                reasons.append(f"pilot_provider_envelope_namespace_mismatch:{call_id}")
+            if envelope.get("production_result") is not False:
+                reasons.append(f"pilot_provider_envelope_result_boundary_mismatch:{call_id}")
+            if not _verify_record_digest(envelope):
+                reasons.append(f"pilot_provider_envelope_record_digest_mismatch:{call_id}")
+            if row.get("provider_envelope_record_sha256") != envelope.get("record_sha256"):
+                reasons.append(f"pilot_provider_envelope_lineage_mismatch:{call_id}")
+            for key in ("raw_provider_envelope_b64", "raw_provider_envelope_sha256",
+                        "provider_envelope", "provider_envelope_sha256"):
+                if row.get(key) != envelope.get(key):
+                    reasons.append(f"pilot_provider_envelope_copy_mismatch:{call_id}:{key}")
 
     if len(pair_rows) == 1 and set(observed_calls) == set(expected_calls):
         pair = pair_rows[0]
@@ -132,6 +158,7 @@ def verify_pilot_records(
         "pilot_manifest_sha256": pilot_manifest_sha256,
         "fixture_sha256": canonical_digest(json.dumps(selected, sort_keys=True, separators=(",", ":"))),
         "call_record_sha256": [str(row.get("record_sha256") or "") for row in call_rows],
+        "provider_envelope_record_sha256": [str(row.get("record_sha256") or "") for row in envelope_rows],
         "pair_record_sha256": [str(row.get("record_sha256") or "") for row in pair_rows],
     }
     lineage_sha256 = canonical_digest(json.dumps(lineage, sort_keys=True, separators=(",", ":")))
@@ -153,6 +180,7 @@ def verify_pilot_records(
         "mechanical_pass": not reasons,
         "reasons": sorted(set(reasons)),
         "calls_verified": len(call_rows),
+        "provider_envelopes_verified": len(envelope_rows),
         "pairs_verified": len(pair_rows),
         "pilot_item_ids": sorted({str(row.get("item_id") or "") for row in call_rows}),
         "pilot_repeats": sorted({int(row.get("repeat") or 0) for row in call_rows}),
