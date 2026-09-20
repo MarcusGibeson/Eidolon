@@ -34,7 +34,7 @@ from experiment_review import REVIEW_AREA, ReviewPackageError, chunks, load_pack
 from json_storage import write_text_atomic
 import local_research_queue as lrq
 
-CONTRACT_VERSION = "v2731.10"
+CONTRACT_VERSION = "v2731.11"
 
 # The reviewer architecture new reviews run on. v2731.8 stays importable and runnable as the frozen historical
 # baseline; jobs already queued keep whatever contract their own record names, so changing this never rewrites a
@@ -81,7 +81,14 @@ def eligible_packages(root: str | Path | None = None) -> list[dict[str, Any]]:
         except Exception as exc:  # unreadable or malformed manifest: reported, never raised into the conversation
             rows.append({"package_id": directory.name, "eligible": False, "reason": f"unreadable:{type(exc).__name__}"})
             continue
+        aliases = package["manifest"].get("selector_aliases", [])
+        if (not isinstance(aliases, list) or any(not isinstance(alias, str) or not NAME.fullmatch(alias) for alias in aliases)
+                or len(set(alias.casefold() for alias in aliases)) != len(aliases)):
+            rows.append({"package_id": package["experiment_id"] or directory.name, "eligible": False,
+                         "reason": "package_selector_aliases_invalid"})
+            continue
         rows.append({"package_id": package["experiment_id"] or directory.name, "title": package["title"], "directory": directory.name,
+                     "selector_aliases": list(aliases),
                      "documents": len(package["documents"]), "parts": sum(len(chunks(d["text"])) for d in package["documents"]),
                      "characters": sum(len(d["text"]) for d in package["documents"]), "manifest_sha256": package["manifest_sha256"],
                      "eligible": True, "reviews": reviews_of(package["manifest_sha256"], root)})
@@ -98,7 +105,8 @@ def eligible_target_ids(root: str | Path | None = None) -> tuple[str, ...]:
         rows = eligible_packages(root)
     except Exception:
         return ()
-    names = {str(row.get("package_id") or "") for row in rows if row.get("eligible")}
+    names = {name for row in rows if row.get("eligible")
+             for name in (str(row.get("package_id") or ""), *[str(alias) for alias in row.get("selector_aliases", [])])}
     return tuple(sorted(name for name in names if NAME.match(name)))[:MAX_CONVERSATION_TARGETS]
 
 
@@ -126,9 +134,14 @@ def find_package(name: str, root: str | Path | None = None) -> dict[str, Any] | 
         return None
     lowered = value.lower()
     rows = [r for r in eligible_packages(root) if r.get("eligible")]
-    for row in rows:
-        if lowered in (str(row["package_id"]).lower(), str(row["directory"]).lower()):
-            return row
+    exact = [row for row in rows if lowered in (
+        str(row["package_id"]).lower(), str(row["directory"]).lower(),
+        *[str(alias).lower() for alias in row.get("selector_aliases", [])],
+    )]
+    if len(exact) == 1:
+        return exact[0]
+    if exact:
+        return None
     matches = [r for r in rows if str(r["package_id"]).lower().startswith(lowered) or str(r["title"]).lower().startswith(lowered)]
     return matches[0] if len(matches) == 1 else None
 
