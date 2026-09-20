@@ -21,6 +21,7 @@ already-installed package and invokes the already-authorized operation; it adds 
 
 from datetime import datetime, timezone
 import hashlib
+import hmac
 import json
 import os
 from pathlib import Path
@@ -230,7 +231,7 @@ def latest_job(root: str | Path | None = None) -> dict[str, Any] | None:
 def start_review(package_id: str, *, confirmed: bool, root: str | Path | None = None, operator_note: str = "",
                  spawn: Callable[[list[str], Path, dict[str, str]], int] | None = None,
                  alive: Callable[[int], bool] | None = None,
-                 reviewer_contract: str = "") -> dict[str, Any]:
+                 reviewer_contract: str = "", expected_manifest_sha256: str = "") -> dict[str, Any]:
     """Queue and start one review of one installed package. The operator's confirmation is required; one job at a time."""
     if not confirmed:
         raise PermissionError("operator_confirmation_required")
@@ -238,6 +239,9 @@ def start_review(package_id: str, *, confirmed: bool, root: str | Path | None = 
     package = find_package(package_id, root)
     if package is None:
         raise LookupError("package_not_eligible")
+    expected_manifest = str(expected_manifest_sha256 or "").lower()
+    if expected_manifest and not hmac.compare_digest(expected_manifest, str(package.get("manifest_sha256") or "").lower()):
+        raise LookupError("package_manifest_drift")
     if active_job(root, alive=alive) is not None:
         raise RuntimeError("review_job_already_running")
     target = str(package_area(root) / package["directory"])
@@ -360,13 +364,17 @@ def execute_conversational_review_action(function_name: str, args: Mapping[str, 
         status = job_status(str(args.get("job_id") or "latest"), root)
         return {"ok": bool(status), "message": status["message"] if status else "No review job has been started yet.", "receipt": receipt(status or {})}
     package_id = str(args.get("package_id") or "")
+    expected_manifest = str(args.get("manifest_sha256") or "")
     if dry_run:
         package = find_package(package_id, root)
-        return {"ok": bool(package) and active_job(root) is None,
+        manifest_matches = bool(package) and (not expected_manifest or hmac.compare_digest(
+            expected_manifest.lower(), str((package or {}).get("manifest_sha256") or "").lower()))
+        return {"ok": manifest_matches and active_job(root) is None,
                 "message": ("Dry run passed. The installed package would be reviewed once, read-only, as a background job."
-                            if package and active_job(root) is None else "Dry run: the package is not eligible, or a review is already running.")}
+                            if manifest_matches and active_job(root) is None else "Dry run: the package is not eligible, has drifted, or a review is already running.")}
     try:
-        job = start_review(package_id, confirmed=True, root=root, operator_note=str(args.get("operator_note") or ""))
+        job = start_review(package_id, confirmed=True, root=root, operator_note=str(args.get("operator_note") or ""),
+                           expected_manifest_sha256=expected_manifest)
     except PermissionError:
         return {"ok": False, "message": "The review did not start: an explicit operator confirmation is required."}
     except LookupError:

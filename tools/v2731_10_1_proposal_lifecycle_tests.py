@@ -33,16 +33,24 @@ def main() -> int:
         for module in [m for m in list(sys.modules) if m in ("chat_action_router", "experiment_review")]:
             del sys.modules[module]
         import chat_action_router as r
+        import conversational_experiment_review as review_adapter
 
         r.CHAT_ACTIONS_DIR = Path(tmp) / "chat_actions"
         r.CHAT_ACTIONS_DIR.mkdir(parents=True, exist_ok=True)
 
         KEY = "experiment-review:q-cap-demo"
+        MANIFEST = "a" * 64
+        review_adapter.find_package = lambda name, root=None: ({"package_id": "Q-CAP-DEMO", "manifest_sha256": MANIFEST}
+                                                               if name == "Q-CAP-DEMO" else None)
 
         def action(status: str, ident: str) -> dict:
-            return {"id": ident, "function_name": "experiment_review_start", "status": status,
+            row = {"id": ident, "function_name": "experiment_review_start", "status": status,
                     "deduplication_key": KEY, "created": "2026-09-18T00:00:00Z",
-                    "function_args": {"package_id": "Q-CAP-DEMO"}}
+                    "created_at": r._now(),
+                    "function_args": {"package_id": "Q-CAP-DEMO", "manifest_sha256": MANIFEST}}
+            if status == "proposed":
+                r._ensure_confirmation_contract(row)
+            return row
 
         # --- 1. only open statuses are dedupe candidates -------------------------------------------------------
         require(r._OPEN_ACTION_STATUSES == frozenset({"proposed", "approval_required"}),

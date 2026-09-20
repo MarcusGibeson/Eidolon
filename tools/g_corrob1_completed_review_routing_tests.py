@@ -50,7 +50,7 @@ class CompletedExperimentReviewRoutingTests(unittest.TestCase):
         self.assertEqual(selected, ["G-CORROB1-R2"])
         self.assertEqual(action["intent"], "experiment_review_start")
         self.assertEqual(action["function_name"], "experiment_review_start")
-        self.assertEqual(action["function_args"], {"package_id": "G-CORROB1-R2"})
+        self.assertEqual(action["function_args"], {"package_id": "G-CORROB1-R2", "manifest_sha256": "a" * 64})
         self.assertEqual(action["execution_mode"], router.DIRECT_FUNCTION)
 
     def test_model_and_provider_metadata_do_not_become_management(self):
@@ -90,7 +90,7 @@ class CompletedExperimentReviewRoutingTests(unittest.TestCase):
     def test_review_boundary_is_non_authoritative_and_content_minimized(self):
         action, _ = self.route(BASE_REQUEST)
         serialized_args = json.dumps(action["function_args"], sort_keys=True)
-        self.assertEqual(serialized_args, '{"package_id": "G-CORROB1-R2"}')
+        self.assertEqual(serialized_args, '{"manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "package_id": "G-CORROB1-R2"}')
         self.assertIn("non-authoritative", action["explanation"])
         for forbidden in ("source code", "change gold", "model behavior", "external audit"):
             self.assertNotIn(forbidden, serialized_args)

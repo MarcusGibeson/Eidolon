@@ -225,6 +225,8 @@ saved = router.load_chat_action(action_id) or {}
 require(str(saved.get("intent") or "") == "experiment_review_start", "the_saved_proposal_is_the_review_start")
 require(str(saved.get("status") or "") == "proposed", "the_saved_proposal_is_waiting_not_running")
 require(str((saved.get("function_args") or {}).get("package_id") or "") == "G-INVAR", "the_saved_proposal_names_the_package")
+require(str((saved.get("function_args") or {}).get("manifest_sha256") or "") == str((adapter.find_package("G-INVAR") or {}).get("manifest_sha256") or ""),
+        "the_saved_proposal_binds_the_exact_package_manifest")
 
 again = dict(routing.build_natural_language_action_projection("Review G-INVAR independently.").get("grounding") or {})
 require(str(again.get("review_action_id") or "") == action_id, "grounding_the_same_request_twice_saves_one_proposal")
@@ -275,15 +277,17 @@ g_invar_records = [row for row in router.pending_confirmable_actions()
                    if str((row.get("function_args") or {}).get("package_id") or "") == "G-INVAR"]
 require(len(g_invar_records) == 1, "rephrasing_never_stacks_a_second_proposal")
 
-# Records that already stacked up for one target still resolve: they are one intent, and the newest wins.
+# Records that already stacked up for one target are ambiguous. Confirmation never guesses which durable action wins.
 duplicate = router.propose_chat_action("Review G-INVAR independently", save=True, save_unknown=False,
                                        deduplication_key="v2731-10-0-forced-duplicate")
 duplicate_id = str(duplicate.get("id") or "")
 require(duplicate_id != "" and duplicate_id != action_id, "a_duplicate_record_exists_for_the_test")
 state, resolved, _ = router.resolve_confirmation("confirm G-INVAR")
-require(state == "one" and str((resolved or {}).get("id") or "") == duplicate_id,
-        "a_named_confirmation_with_duplicates_resolves_to_the_newest")
-require(router.resolve_confirmation("confirm G-INVAR.")[0] == "one", "trailing_punctuation_resolves_the_same_way")
+require(state == "ambiguous" and resolved is None,
+        "a_named_confirmation_with_duplicate_actions_fails_closed")
+require(router.resolve_confirmation("confirm G-INVAR.")[0] == "ambiguous", "trailing_punctuation_resolves_the_same_way")
+require(router.cancel_pending_chat_action(duplicate_id).ok, "the_duplicate_test_proposal_can_be_cancelled_without_execution")
+require(router.resolve_confirmation("confirm G-INVAR")[0] == "one", "one_remaining_exact_action_is_confirmable")
 
 # Genuine ambiguity is still two different targets, and it names them both.
 require(router.resolve_confirmation("confirm")[0] == "ambiguous", "two_different_targets_are_still_ambiguous")

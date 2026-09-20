@@ -210,6 +210,10 @@ def classify_natural_language_intent(user_text: str) -> dict[str, Any]:
         confidence = 0.0
         reasons = ["empty_request", "clarification_required"]
         requires_clarification = True
+    elif review_question:
+        category = "action_request"
+        confidence = 0.93
+        reasons = ["registered_experiment_review_question", "pending_action_confirmation", "authorization_not_implied_without_binding"]
     elif follow_up:
         category = "ambiguous_request"
         confidence = 0.62
@@ -243,10 +247,6 @@ def classify_natural_language_intent(user_text: str) -> dict[str, Any]:
         category = "action_request"
         confidence = 0.97
         reasons = ["natural_language_imperative", "authorization_not_implied"]
-    elif review_question:
-        category = "action_request"
-        confidence = 0.93
-        reasons = ["registered_experiment_review_question", "read_only_listing_or_status", "authorization_not_implied"]
     elif question_shape:
         category = "question"
         confidence = 0.92
@@ -823,6 +823,8 @@ def _experiment_review_answer(grounding: Mapping[str, Any]) -> str:
         package = str(pending.get("package_id") or "the proposed package")
         waiting = str(pending.get("waiting") or "")
         state = str(pending.get("state") or "")
+        if state == "unavailable":
+            return "No valid pending conversational action is available to start. Ask for the exact review again first."
         if router_intent == "experiment_review_confirm_ambiguous" or state in {"ambiguous", "unknown"}:
             if state == "unknown":
                 return f"Nothing waiting matches that name. Waiting now: {waiting}. Name one, for example: confirm {waiting.split(', ')[0]}."

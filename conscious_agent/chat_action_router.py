@@ -45,6 +45,7 @@ _CHAT_ACTION_STALE_LOCK_SECONDS = 300.0
 _CHAT_ACTION_INTERRUPTED_CLAIM_SECONDS = 240.0
 _CHAT_ACTION_CLAIM_LEASE_SECONDS = 240.0
 _CHAT_ACTION_MAX_CLAIM_LEASE_SECONDS = 900.0
+_PENDING_CONFIRMATION_TTL_SECONDS = 24 * 60 * 60
 _MAX_EXECUTION_ATTEMPTS = 12
 _MAX_ACTION_EVENTS = 40
 
@@ -863,10 +864,112 @@ CONVERSATION_CONFIRMABLE_FUNCTIONS = frozenset({
 })
 
 _CONFIRMATION = re.compile(
-    r"^(?:please\s+)?(?:confirm(?:ed|s)?|yes|approved?|go\s+ahead|start\s+it)"
-    r"(?:\s+(?P<target>[A-Za-z][A-Za-z0-9 _-]{1,60}?))?\s*[.!]*$",
+    r"^(?:please\s+)?(?:(?P<review>(?:start|run)\s+the\s+review)|"
+    r"(?P<verb>confirm(?:ed|s)?|yes|approved?|go\s+ahead|start\s+it|proceed)"
+    r"(?:\s+(?P<target>[A-Za-z][A-Za-z0-9 _-]{1,60}?))?)\s*[.!]*$",
     re.I,
 )
+
+
+def _confirmation_digest(action: dict[str, Any]) -> str:
+    payload = {
+        "action_id": str(action.get("id") or ""),
+        "function_name": str(action.get("function_name") or ""),
+        "function_args": dict(action.get("function_args") or {}),
+    }
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+def _confirmation_expiry(action: dict[str, Any]) -> str:
+    created = str(action.get("created_at") or action.get("created") or "")
+    try:
+        instant = datetime.fromisoformat(created.replace("Z", "+00:00"))
+    except ValueError:
+        instant = datetime.now()
+    return datetime.fromtimestamp(instant.timestamp() + _PENDING_CONFIRMATION_TTL_SECONDS).isoformat(timespec="seconds")
+
+
+def _ensure_confirmation_contract(action: dict[str, Any]) -> None:
+    """Bind a proposed conversational execution to its exact saved arguments."""
+    if (str(action.get("status") or "") != "proposed"
+            or str(action.get("function_name") or "") not in CONVERSATION_CONFIRMABLE_FUNCTIONS):
+        return
+    current = action.get("confirmation") if isinstance(action.get("confirmation"), dict) else {}
+    if current:
+        return
+    action["confirmation"] = {
+        "state": "pending",
+        "expires_at": _confirmation_expiry(action),
+        "binding_sha256": _confirmation_digest(action),
+        "target_manifest_sha256": str((action.get("function_args") or {}).get("manifest_sha256") or ""),
+        "approved_at": "",
+        "consumed_at": "",
+    }
+    action["lifecycle_stage"] = "proposed"
+
+
+def _legacy_review_manifest(action: dict[str, Any]) -> str:
+    """Recover the old proposal's manifest only when its recorded prefix proves the same installed package."""
+    if str(action.get("function_name") or "") != "experiment_review_start":
+        return ""
+    args = action.get("function_args") if isinstance(action.get("function_args"), dict) else {}
+    package_id = str((args or {}).get("package_id") or "")
+    prefix_match = re.search(r"\bmanifest\s+([0-9a-f]{16,64})\b", str(action.get("summary") or ""), re.I)
+    if not package_id or not prefix_match:
+        return ""
+    try:
+        from conversational_experiment_review import find_package
+
+        package = find_package(package_id)
+    except Exception:
+        package = None
+    digest = str((package or {}).get("manifest_sha256") or "").lower()
+    return digest if digest and digest.startswith(prefix_match.group(1).lower()) else ""
+
+
+def _pending_confirmation_validity(action: dict[str, Any], *, now_epoch: float | None = None) -> tuple[bool, str, str]:
+    """Validate pending state, expiry, exact arguments, and the current review package digest."""
+    if str(action.get("function_name") or "") not in CONVERSATION_CONFIRMABLE_FUNCTIONS:
+        return False, "not_confirmable_from_conversation", ""
+    if str(action.get("status") or "") != "proposed":
+        return False, "already_resolved", ""
+    confirmation = action.get("confirmation") if isinstance(action.get("confirmation"), dict) else {}
+    if confirmation and str(confirmation.get("state") or "pending") != "pending":
+        return False, "confirmation_already_consumed", ""
+    expires_at = str(confirmation.get("expires_at") or _confirmation_expiry(action))
+    try:
+        expires_epoch = datetime.fromisoformat(expires_at.replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return False, "confirmation_expiry_invalid", ""
+    if (time.time() if now_epoch is None else float(now_epoch)) >= expires_epoch:
+        return False, "pending_action_expired", ""
+    expected_binding = str(confirmation.get("binding_sha256") or "")
+    if confirmation and not expected_binding:
+        return False, "pending_action_binding_missing", ""
+    if not confirmation and str(action.get("function_name") or "") != "experiment_review_start":
+        return False, "pending_action_binding_missing", ""
+    if expected_binding and not hmac.compare_digest(expected_binding, _confirmation_digest(action)):
+        return False, "pending_action_drift", ""
+
+    legacy_manifest = ""
+    if str(action.get("function_name") or "") == "experiment_review_start":
+        args = action.get("function_args") if isinstance(action.get("function_args"), dict) else {}
+        expected_manifest = str((args or {}).get("manifest_sha256") or confirmation.get("target_manifest_sha256") or "").lower()
+        if not expected_manifest:
+            legacy_manifest = _legacy_review_manifest(action)
+            expected_manifest = legacy_manifest
+        if not expected_manifest:
+            return False, "pending_target_binding_missing", ""
+        try:
+            from conversational_experiment_review import find_package
+
+            package = find_package(str((args or {}).get("package_id") or ""))
+        except Exception:
+            package = None
+        current_manifest = str((package or {}).get("manifest_sha256") or "").lower()
+        if not current_manifest or not hmac.compare_digest(expected_manifest, current_manifest):
+            return False, "pending_target_drift", ""
+    return True, "pending", legacy_manifest
 
 
 def run_confirmed_action(action_id: str, *, claimant: str = "conversation") -> dict[str, Any]:
@@ -875,13 +978,28 @@ def run_confirmed_action(action_id: str, *, claimant: str = "conversation") -> d
     The allowlist is the only route from a conversation turn to an executor. A proposal outside it, or one that is no
     longer waiting, is refused without running anything, so a repeated confirmation cannot start a second run.
     """
-    action = load_chat_action(action_id) or {}
-    function_name = str(action.get("function_name") or "")
-    if function_name not in CONVERSATION_CONFIRMABLE_FUNCTIONS:
-        return {"ok": False, "refused": "not_confirmable_from_conversation", "action_id": action_id}
-    if str(action.get("status") or "") != "proposed":
-        return {"ok": False, "refused": "already_resolved", "action_id": action_id,
-                "status": str(action.get("status") or "")}
+    with _chat_action_storage_lock(f"action:{action_id}"):
+        action = load_chat_action(action_id) or {}
+        function_name = str(action.get("function_name") or "")
+        valid, reason, legacy_manifest = _pending_confirmation_validity(action)
+        if not valid:
+            return {"ok": False, "refused": reason, "action_id": action_id,
+                    "status": str(action.get("status") or "")}
+        if legacy_manifest:
+            args = dict(action.get("function_args") or {})
+            args["manifest_sha256"] = legacy_manifest
+            action["function_args"] = args
+        _ensure_confirmation_contract(action)
+        confirmation = dict(action.get("confirmation") or {})
+        confirmation.update({"state": "consumed", "approved_at": _now(), "consumed_at": _now()})
+        action["confirmation"] = confirmation
+        action["lifecycle_stage"] = "starting"
+        _append_action_event(action, "operator_approval_consumed", "operator_approved",
+                             "Operator confirmation was bound to this exact pending action.")
+        _append_action_event(action, "action_starting", "starting",
+                             "The approved action is entering its governed executor.")
+        action["updated_at"] = _now()
+        save_chat_action(action)
     result = execute_chat_action(action_id, dry_run=False, timeout_seconds=180, claimant=claimant)
     data = result.result if isinstance(result.result, dict) else {}
     # The adapter reports ids through its own minimal operation receipt, never through free text.
@@ -902,8 +1020,7 @@ def pending_confirmable_actions() -> list[dict[str, Any]]:
     """
     try:
         rows = [row for row in list_chat_actions(include_closed=False)
-                if str(row.get("function_name") or "") in CONVERSATION_CONFIRMABLE_FUNCTIONS
-                and str(row.get("status") or "") == "proposed"]
+                if _pending_confirmation_validity(row)[0]]
     except Exception:
         return []
     rows.sort(key=lambda row: (str(row.get("created") or ""), str(row.get("id") or "")))
@@ -939,31 +1056,36 @@ def waiting_proposal_for(target_name: str) -> dict[str, Any] | None:
 def resolve_confirmation(request: str) -> tuple[str, dict[str, Any] | None, list[dict[str, Any]]]:
     """Resolve a confirmation to exactly one saved proposal.
 
-    Returns "none" when this is not a confirmation or nothing is waiting, "one" with the resolved proposal,
-    "ambiguous" with everything waiting when a bare confirmation could mean more than one, or "unknown" when a named
-    target matches nothing. A confirmation is never resolved by guessing between proposals.
+    Returns "none" when this is not a confirmation, "unavailable" when nothing valid is waiting, "one" with the
+    resolved proposal, "ambiguous" when more than one proposal could match, or "unknown" when a named target matches
+    nothing. A confirmation is never resolved by guessing between proposals.
     """
     match = _CONFIRMATION.fullmatch(" ".join(str(request or "").split()))
     if not match:
         return "none", None, []
     waiting = pending_confirmable_actions()
     if not waiting:
-        return "none", None, []
+        return "unavailable", None, []
+    required_function = "experiment_review_start" if match.group("review") else ""
+    if required_function:
+        waiting = [row for row in waiting if str(row.get("function_name") or "") == required_function]
+        if not waiting:
+            return "unavailable", None, []
     named = " ".join(str(match.group("target") or "").split()).casefold()
     if named:
-        # Several records for one target are one intent, so the newest wins rather than the name reading as unknown.
         hits = [row for row in waiting if _action_target_name(row).casefold() == named]
-        return ("one", hits[-1], waiting) if hits else ("unknown", None, waiting)
-    # Ambiguity is about distinct targets, not about how many records happen to be waiting for the same one.
-    if len({_action_target_name(row).casefold() for row in waiting}) == 1:
-        return "one", waiting[-1], waiting
+        if len(hits) == 1:
+            return "one", hits[0], waiting
+        return ("ambiguous", None, waiting) if len(hits) > 1 else ("unknown", None, waiting)
+    if len(waiting) == 1:
+        return "one", waiting[0], waiting
     return "ambiguous", None, waiting
 
 
 def is_confirmation_request(request: str) -> bool:
-    """True for a confirmation that has at least one saved proposal to resolve against."""
+    """True only when a recognized phrase has saved proposal state to resolve against."""
     state, _, _ = resolve_confirmation(request)
-    return state != "none"
+    return state not in {"none", "unavailable"}
 
 
 def is_review_confirmation(request: str) -> bool:
@@ -1590,7 +1712,9 @@ def propose_chat_action(
             listed = ", ".join(names)
             summary = (f"More than one proposal is waiting: {listed}. Name the one you mean, for example: confirm {names[0]}."
                        if state == "ambiguous"
-                       else f"Nothing waiting matches that name. Waiting now: {listed}.")
+                       else (f"Nothing waiting matches that name. Waiting now: {listed}."
+                             if state == "unknown"
+                             else "No valid pending conversational action is available to confirm."))
             action = _make_action(
                 user_request=request,
                 intent="experiment_review_confirm_ambiguous",
@@ -1645,7 +1769,7 @@ def propose_chat_action(
                 execution_mode=DIRECT_FUNCTION,
                 risk_level="medium",
                 function_name="experiment_review_start",
-                function_args={"package_id": package["package_id"]},
+                function_args={"package_id": package["package_id"], "manifest_sha256": package["manifest_sha256"]},
                 explanation="Confirming runs the frozen read-only reviewer once on this installed package, as a background job. "
                             "The result is a non-authoritative artifact; no source, gold, belief, memory, policy, configuration or release changes.",
             )
@@ -1732,6 +1856,7 @@ def propose_chat_action(
             explanation="Try phrasing it as: run diagnostics, check approvals, plan session, run watch, review conscious_agent/memory.py, or suggest improvement for conscious_agent/memory.py.",
         )
 
+    _ensure_confirmation_contract(action)
     persistable_intent = action.get("intent") not in {"small_talk", "conversation_only"}
     if dedupe_key:
         action["deduplication_key"] = dedupe_key
@@ -1817,6 +1942,7 @@ def _claim_execution_attempt(
         "result": {},
     })
     action["status"] = "running"
+    action["lifecycle_stage"] = "running"
     action["execution_started_at"] = attempts[-1]["started_at"]
     action["execution_attempt"] = attempt_number
     action["active_attempt_id"] = attempt_id
@@ -1927,6 +2053,8 @@ def _complete_execution_attempt(
         current["execution_attempts"] = attempts
         current["active_attempt_id"] = ""
         current["status"] = status
+        if isinstance(current.get("confirmation"), dict):
+            current["lifecycle_stage"] = "terminal"
         current["updated_at"] = _now()
         current["result"] = dict(result_data)
         current["result_summary"] = summary
