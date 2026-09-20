@@ -789,6 +789,59 @@ _EXPERIMENT_REVIEW_START = re.compile(
     r"(?:\s+independently)?\s*[.?!]*$",
     re.IGNORECASE,
 )
+_COMPLETED_EXPERIMENT_REVIEW_START = re.compile(
+    r"^(?:please\s+)?(?:can you\s+)?(?:independently\s+)?(?:review|analyze|assess)\s+(?:the\s+)?"
+    r"(?:completed\s+)?(?:frozen\s+)?(?P<name>[A-Za-z][A-Za-z0-9_-]{1,60})\s+"
+    r"(?:(?:completed|frozen)\s+)*experiment\b",
+    re.IGNORECASE,
+)
+_MODEL_PROVIDER_MANAGEMENT = re.compile(
+    r"\b(?:install|delete|remove|download|pull|switch|change|replace|select)\b[^\n]{0,100}\b(?:model|provider)\b",
+    re.IGNORECASE,
+)
+_UNAUTHORIZED_EXPERIMENT_EXECUTION = re.compile(
+    r"\b(?:rerun|re-run|run|execute|launch)\b[^.\n]{0,100}\b(?:experiment|G-CORROB1-R2)\b",
+    re.IGNORECASE,
+)
+_PROTECTED_REVIEW_MUTATION = re.compile(
+    r"\b(?:modify|edit|change|write|apply|install|update|delete|remove|rerun|run|execute)\b[^.\n]{0,100}"
+    r"\b(?:source|code|gold|policy|beliefs?|memor(?:y|ies)|configuration|provider|model|experiment|artifacts?)\b",
+    re.IGNORECASE,
+)
+_DIRECT_NEGATION = re.compile(r"(?:do\s+not|don't|dont|never|must\s+not|without)\s*$", re.IGNORECASE)
+
+
+def _has_unnegated_match(pattern: re.Pattern[str], request: str) -> bool:
+    """Return true when a protected action is requested rather than explicitly prohibited."""
+    for match in pattern.finditer(str(request or "")):
+        prefix = str(request or "")[max(0, match.start() - 32):match.start()]
+        if _DIRECT_NEGATION.search(prefix):
+            continue
+        return True
+    return False
+
+
+def _is_model_provider_management_request(request: str) -> bool:
+    return _has_unnegated_match(_MODEL_PROVIDER_MANAGEMENT, request)
+
+
+def _completed_experiment_review_target(request: str) -> str:
+    """Resolve only an explicitly bounded review request to one package id.
+
+    Long review briefs may mention model/provider metadata and may state prohibited
+    changes in negative form. Only the package id crosses into the existing review
+    selector; the free-form brief is never forwarded to the reviewer.
+    """
+    text = " ".join(str(request or "").split())
+    lowered = text.casefold()
+    if "read-only" not in lowered and "read only" not in lowered:
+        return ""
+    if "non-authoritative" not in lowered and "non authoritative" not in lowered:
+        return ""
+    match = _COMPLETED_EXPERIMENT_REVIEW_START.match(text)
+    if not match or _has_unnegated_match(_PROTECTED_REVIEW_MUTATION, text):
+        return ""
+    return match.group("name").strip()
 
 
 def _is_any_experiment_review_request(request: str) -> bool:
@@ -940,9 +993,9 @@ def _is_experiment_review_status_request(lowered: str) -> bool:
 def _experiment_review_target(request: str) -> str:
     """The package name in an explicit review request, or "". Never a path, a file or a free-form instruction."""
     match = _EXPERIMENT_REVIEW_START.match(" ".join(str(request or "").split()))
-    if not match:
+    name = match.group("name").strip() if match else _completed_experiment_review_target(request)
+    if not name:
         return ""
-    name = match.group("name").strip()
     if _looks_like_path(name) or any(ch in name for ch in "/\\.*?"):
         return ""
     return "" if name.lower() in {"it", "this", "that", "them", "everything", "the code", "my code"} else name
@@ -1346,6 +1399,17 @@ def propose_chat_action(
             function_args={"manifest_id": manifest_id},
             explanation="Conversation supplies only the registered manifest identifier. It cannot create authority, select paths, change artifacts, override configuration, retry, or interpret results.",
         )
+    elif _UNAUTHORIZED_EXPERIMENT_EXECUTION.search(request):
+        action = _make_action(
+            user_request=request,
+            intent="blocked_experiment_execution_without_authorization",
+            title="Experiment execution requires exact authorization",
+            summary="A conversational rerun or launch request cannot create or infer experiment authority.",
+            execution_mode=BLOCKED,
+            risk_level="high",
+            blocked_reason="Use only the exact separately authorized frozen-experiment invocation; no execution authority was found in this request.",
+            explanation="No experiment or provider call ran. Review requests and execution requests remain separate governed capabilities.",
+        )
     elif _is_small_talk_only(request):
         action = _make_action(
             user_request=request,
@@ -1425,7 +1489,7 @@ def propose_chat_action(
             "python conscious_agent/main.py --self-development-cycle --self-development-create-task --no-ai-self-development --self-development-prompt " + _quote_cli_value(request),
             risk="low",
         )
-    elif re.search(r"\b(?:install|delete|remove|download|pull|switch|change|replace|select)\b[^\n]{0,100}\b(?:model|provider)\b", lowered):
+    elif _is_model_provider_management_request(request):
         action = _make_action(
             user_request=request,
             intent="blocked_model_provider_management",
