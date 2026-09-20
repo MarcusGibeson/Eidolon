@@ -131,6 +131,7 @@ from supervised_action_execution import (
     supervised_execution_prompt,
     supervised_execution_public,
 )
+from authorized_frozen_experiment_execution import process_authorized_frozen_experiment_command
 from conversation_policy_state import (
     build_conversation_policy_state,
     stage_conversation_policy_state,
@@ -1383,15 +1384,23 @@ def run_conversation_turn(
             result.user_memory_stored = True
             result.user_memory_attribution_id = str(user_memory.get("memory_candidate_id") or "")
 
+        authorized_experiment_execution = process_authorized_frozen_experiment_command(
+            message, cancel_event=active_cancel
+        )
+        if authorized_experiment_execution.get("active"):
+            result.cognitive_context["authorized_frozen_experiment_execution"] = dict(
+                authorized_experiment_execution.get("receipt") or {}
+            )
+        authorized_experiment_response = str(authorized_experiment_execution.get("response") or "")
         development_response_active = bool(
             development_campaign_lifecycle.get("active")
             and development_campaign_lifecycle.get("conversation_response")
-        )
+        ) or bool(authorized_experiment_response)
         mutation_result = user_memory.get("entity_association_mutation", {}) if not result.user_memory_reused else {}
         grounded_response = (
             str(mutation_result.get("response") or "")
             if mutation_result.get("handled") else
-            (None if development_response_active else immediate_grounding.deterministic_response())
+            (authorized_experiment_response or (None if development_response_active else immediate_grounding.deterministic_response()))
         )
         if grounded_response:
             response = grounded_response
@@ -1399,8 +1408,12 @@ def run_conversation_turn(
             result.display_message = response
             result.success = True
             result.completion_state = "grounded_immediate_context"
-            result.provider_request_count = 0
-            result.cognitive_context["immediate_conversation_grounding"]["provider_bypassed"] = True
+            result.provider_request_count = int(
+                (authorized_experiment_execution.get("receipt") or {}).get("provider_call_count") or 0
+            )
+            result.cognitive_context["immediate_conversation_grounding"]["provider_bypassed"] = (
+                result.provider_request_count == 0
+            )
             if not _claim_operation_completion(operation_id, active_cancel):
                 raise LocalModelCancelledError(
                     "Grounded conversation response was cancelled before memory commit.",
@@ -2101,15 +2114,23 @@ def stream_conversation_turn(
             result.user_memory_attribution_id = str(user_memory.get("memory_candidate_id") or "")
         yield {"event": "status", "stage": "user_saved", "operation_id": operation_id}
 
+        authorized_experiment_execution = process_authorized_frozen_experiment_command(
+            message, cancel_event=active_cancel
+        )
+        if authorized_experiment_execution.get("active"):
+            result.cognitive_context["authorized_frozen_experiment_execution"] = dict(
+                authorized_experiment_execution.get("receipt") or {}
+            )
+        authorized_experiment_response = str(authorized_experiment_execution.get("response") or "")
         development_response_active = bool(
             development_campaign_lifecycle.get("active")
             and development_campaign_lifecycle.get("conversation_response")
-        )
+        ) or bool(authorized_experiment_response)
         mutation_result = user_memory.get("entity_association_mutation", {}) if not result.user_memory_reused else {}
         grounded_response = (
             str(mutation_result.get("response") or "")
             if mutation_result.get("handled") else
-            (None if development_response_active else immediate_grounding.deterministic_response())
+            (authorized_experiment_response or (None if development_response_active else immediate_grounding.deterministic_response()))
         )
         if grounded_response:
             response = grounded_response
@@ -2117,8 +2138,12 @@ def stream_conversation_turn(
             result.display_message = response
             result.success = True
             result.completion_state = "grounded_immediate_context"
-            result.provider_request_count = 0
-            result.cognitive_context["immediate_conversation_grounding"]["provider_bypassed"] = True
+            result.provider_request_count = int(
+                (authorized_experiment_execution.get("receipt") or {}).get("provider_call_count") or 0
+            )
+            result.cognitive_context["immediate_conversation_grounding"]["provider_bypassed"] = (
+                result.provider_request_count == 0
+            )
             if not _claim_operation_completion(operation_id, active_cancel):
                 raise LocalModelCancelledError(
                     "Grounded conversation response was cancelled before memory commit.",

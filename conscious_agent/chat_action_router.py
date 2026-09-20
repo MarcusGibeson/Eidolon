@@ -750,6 +750,7 @@ SUPERVISED_CAPABILITY_REGISTRY: tuple[dict[str, str], ...] = (
     {"id": "software_development", "label": "supervised software-development campaign proposals", "mode": DIRECT_FUNCTION, "boundary": "proposal only"},
     {"id": "bounded_web_research", "label": "session-authorized public web research", "mode": DIRECT_FUNCTION, "boundary": "bounded GET/HEAD research"},
     {"id": "experiment_review", "label": "independent read-only review of an installed experiment package", "mode": DIRECT_FUNCTION, "boundary": "proposal only"},
+    {"id": "authorized_frozen_experiment_execution", "label": "exact-bound execution of a separately authorized frozen experiment", "mode": DIRECT_FUNCTION, "boundary": "external exact authorization only"},
 )
 
 
@@ -761,6 +762,7 @@ def supervised_capability_summary() -> str:
     direct = [item["label"] for item in SUPERVISED_CAPABILITY_REGISTRY if item["boundary"] == "allowlisted read"]
     proposals = [item["label"] for item in SUPERVISED_CAPABILITY_REGISTRY if item["boundary"] == "proposal only"]
     research = [item["label"] for item in SUPERVISED_CAPABILITY_REGISTRY if item["boundary"] == "bounded GET/HEAD research"]
+    exact = [item["label"] for item in SUPERVISED_CAPABILITY_REGISTRY if item["boundary"] == "external exact authorization only"]
     return (
         "Currently registered supervised capabilities: allowlisted reads for "
         + "; ".join(direct)
@@ -768,6 +770,8 @@ def supervised_capability_summary() -> str:
         + "; ".join(proposals)
         + ". Session-authorized read-only research: "
         + "; ".join(research)
+        + ". Externally exact-authorized capabilities: "
+        + "; ".join(exact)
         + ". Modifications remain approval-governed; unrestricted shell access, model management, provider switching, and release promotion are not registered chat capabilities."
     )
 
@@ -1328,6 +1332,19 @@ def propose_chat_action(
             function_args=dict(research_request.get("function_args") or {}),
             blocked_reason="Research chat controls cannot post, publish, upload, message, purchase, authenticate, or create accounts." if research_blocked else "",
             explanation="Research remains session-bounded, public-network-only, GET/HEAD-only, content-minimized, and exactly-once. It grants no standing web or write authority.",
+        )
+    elif __import__("authorized_frozen_experiment_execution").parse_authorized_experiment_command(request):
+        manifest_id = __import__("authorized_frozen_experiment_execution").parse_authorized_experiment_command(request)
+        action = _make_action(
+            user_request=request,
+            intent="authorized_frozen_experiment_execution",
+            title=f"Execute authorized frozen experiment {manifest_id}",
+            summary="Invoke only the exact frozen experiment named by the operator through its separately persisted one-run authorization.",
+            execution_mode=DIRECT_FUNCTION,
+            risk_level="high",
+            function_name="authorized_frozen_experiment_execution",
+            function_args={"manifest_id": manifest_id},
+            explanation="Conversation supplies only the registered manifest identifier. It cannot create authority, select paths, change artifacts, override configuration, retry, or interpret results.",
         )
     elif _is_small_talk_only(request):
         action = _make_action(

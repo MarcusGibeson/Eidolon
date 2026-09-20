@@ -24,7 +24,7 @@ from g_corrob1_provider import ProviderResult, verify_preflight_receipt
 from g_corrob1_provider_envelope import verify_envelope_record
 
 
-CONTRACT_VERSION = "g-corrob1.r2.runner-candidate.2"
+CONTRACT_VERSION = "g-corrob1.r2.runner-candidate.3"
 
 
 def utc_run_id() -> str:
@@ -38,9 +38,16 @@ def _authorization_valid(authorization: Mapping[str, Any] | None) -> bool:
     if not isinstance(manifest, Mapping):
         return False
     calculated = canonical_digest(json.dumps(dict(manifest), sort_keys=True, separators=(",", ":")))
+    new_contract = manifest.get("authorization_manifest_contract") == "g-corrob1.r2.authorized-execution-manifest.1"
     try:
-        from g_corrob1_freeze import verify_execution_manifest
-        freeze_valid = verify_execution_manifest(manifest)["valid"]
+        if new_contract:
+            from g_corrob1_execution_capability_freeze import verify_authorized_execution_manifest
+
+            freeze_valid = verify_authorized_execution_manifest(manifest)["valid"]
+        else:
+            from g_corrob1_freeze import verify_execution_manifest
+
+            freeze_valid = verify_execution_manifest(manifest)["valid"]
     except Exception:
         freeze_valid = False
     return (
@@ -49,7 +56,10 @@ def _authorization_valid(authorization: Mapping[str, Any] | None) -> bool:
         and len(expected) == 64
         and expected == calculated
         and freeze_valid
-        and row.get("operator_confirmation") == f"Authorize G-CORROB1-R2 execution {expected}"
+        and row.get("operator_confirmation") == (
+            f"Authorize G-CORROB1-R2 frozen execution {expected}"
+            if new_contract else f"Authorize G-CORROB1-R2 execution {expected}"
+        )
     )
 
 

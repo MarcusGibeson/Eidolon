@@ -157,6 +157,7 @@ _INTENT_TO_CAPABILITY = {
     "experiment_review_status": "experiment_review",
     "experiment_review_confirm": "experiment_review",
     "experiment_review_confirm_ambiguous": "experiment_review",
+    "authorized_frozen_experiment_execution": "authorized_frozen_experiment_execution",
 }
 
 
