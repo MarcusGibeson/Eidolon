@@ -1,0 +1,31 @@
+{
+  "audit_contract": "g-corrob1.mechanical-pilot.envelope-freeze-audit.1",
+  "audit_date": "2026-09-19",
+  "candidate_id": "G-CORROB1-pilot-envelope-r4",
+  "candidate_sha256": "758c4b8683df43d43cf3299db76b034563e34d2d38259b0f06d4cee5056b28a2",
+  "implementation_commit": "02faea8316c910cb8bd83b953c62d1241916dd2b",
+  "candidate_rebuild_valid": true,
+  "artifact_drift_matrix_passed": true,
+  "authority_tamper_matrix_passed": true,
+  "historical_production_candidate_sha256": "366a787cbf901f25e795d72ad4f71bd09a1f5318a51ed6549940bc9c3aff5114",
+  "historical_pilot_candidate_sha256": "8f0274b66043a83a37d603556141962ef1288749f55cfc9701f12249358cfb9e",
+  "historical_failed_pilot_reinterpreted": false,
+  "g_evid1_contract_assertions_passed": 1966,
+  "focused_tests": {
+    "provider_envelope": {"passed": 13, "failed": 0},
+    "pilot": {"passed": 21, "failed": 0},
+    "implementation": {"passed": 28, "failed": 0},
+    "historical_freeze": {"passed": 7, "failed": 0},
+    "gold_signoff": {"passed": 5, "failed": 0}
+  },
+  "python_files_parsed": 4841,
+  "provider_generation_calls_during_repair": 0,
+  "pilot_launch_count": 0,
+  "experiment_launch_count": 0,
+  "pilot_authorized": false,
+  "provider_contact_authorized": false,
+  "execution_authorized": false,
+  "experiment_authorized": false,
+  "belief_effects": "none",
+  "verdict": "READY FOR OPERATOR REVIEW BEFORE MECHANICAL PILOT RETRY"
+}
