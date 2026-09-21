@@ -20,7 +20,10 @@ from json_storage import write_text_atomic
 
 CONTRACT = "activity.v1"
 TERMINAL = frozenset({"complete", "incomplete", "failed", "cancelled"})
-STATES = TERMINAL | {"queued", "preparing", "running", "blocked"}
+# pause_requested and paused are alive, not terminal: a paused producer expects to be resumed and its record keeps
+# accepting events. Cancelled stays terminal and separate - it is the state that means the work will not continue.
+PAUSE_STATES = frozenset({"pause_requested", "paused"})
+STATES = TERMINAL | PAUSE_STATES | {"queued", "preparing", "running", "blocked"}
 AREA = "activities"
 MAX_EVENTS = 1000
 

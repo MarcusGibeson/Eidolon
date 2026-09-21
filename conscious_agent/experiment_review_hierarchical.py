@@ -63,10 +63,11 @@ from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping, Sequence
 import uuid
 
+import cooperative_pause as pause
 import experiment_review as base
 from json_storage import write_text_atomic
 
-CONTRACT_VERSION = "v2732.1"
+CONTRACT_VERSION = "v2733.0"
 BASELINE_CONTRACT = base.CONTRACT_VERSION
 REVIEW_AREA = base.REVIEW_AREA
 MANIFEST_NAME = base.MANIFEST_NAME
@@ -76,7 +77,13 @@ MANIFEST_NAME = base.MANIFEST_NAME
 GROUP_MAX_INPUTS = 12          # inputs one intermediate group may synthesise
 GROUP_MAX_STATEMENTS = 4       # statements one intermediate group may emit
 GROUP_INPUT_BUDGET_CHARS = 6000  # a group prompt stays inside the same per-unit budget the document level uses
-MAX_GROUPS_PER_ROUND = 32      # a round wider than this fails closed rather than fanning out without limit
+MAX_GROUPS_PER_ROUND = 48      # a round wider than this fails closed rather than fanning out without limit
+# 48, not 32, since the 140-part review package. Measured, not chosen for comfort: the nominal 140-part case opens
+# consolidation with 491 inputs, which is 41 groups of 12, and 32 refused it outright. 41 is the exact requirement and
+# 48 carries the first round up to 576 inputs, about a sixth of headroom for a model that grounds a little more than
+# the measurement did. It is reviewer-capacity infrastructure and nothing else: no grounding rule, acceptance rule,
+# coverage requirement, representation floor or retry limit moves with it, and a round wider than 48 still fails
+# closed. See tools/v2733_2_0_scale_140_qualification_tests.py.
 FINAL_MAX_INPUTS = 32          # the structural cap on final synthesis input
 MAX_ROUNDS = 12                # reduction rounds before the review fails closed (see the bound below)
 MIN_REDUCTION = 0.80           # a round must shrink to at most this share, or uncited inputs are folded
@@ -131,6 +138,28 @@ FINAL_A_PROMPT = base.FINAL_A_PROMPT.replace(
     "statements (DS ids) and, marked as uncaptured, part statements (PS ids) and observations (O ids) that no higher "
     "statement captured.")
 FINAL_B_PROMPT = base.FINAL_B_PROMPT
+
+
+class ReviewPaused(Exception):
+    """Raised to unwind out of the review once a checkpoint has been sealed. Not an error; the work is resumable."""
+
+    def __init__(self, checkpoint: Mapping[str, Any]):
+        super().__init__("review_paused")
+        self.checkpoint = dict(checkpoint)
+
+
+class ReviewCancelled(Exception):
+    """Raised when an operator cancelled the work. Terminal: the checkpoint is kept as evidence, never resumed."""
+
+    def __init__(self, checkpoint: Mapping[str, Any]):
+        super().__init__("review_cancelled")
+        self.checkpoint = dict(checkpoint)
+
+
+# The work units this reviewer may stop between. Each is an atomic unit: its provider call has returned and its
+# result is already in the accumulated state when the boundary is reached, so resuming never repeats a call and
+# never re-does the unit.
+CHECKPOINT_UNITS = ("observe", "part", "document", "group", "round", "final")
 
 
 # --- the review-id vocabulary ----------------------------------------------------------------------------------------
@@ -203,24 +232,67 @@ def plan_group_units(inputs: Sequence[str], items: Mapping[str, Mapping[str, Any
             for n, g in enumerate(groups)]
 
 
+def work_review_id(manifest_sha256: str, work_id: str) -> str:
+    """The review directory named work takes. Deterministic so a resume can find its checkpoint before reading it."""
+    return hashlib.sha256(f"{manifest_sha256}|{work_id}".encode()).hexdigest()[:16]
+
+
+def control_root_for(runtime_root_path: str | Path | None, manifest_sha256: str, work_id: str) -> Path:
+    """Where an operator writes a pause or cancel request for this work, and where its checkpoint is sealed."""
+    return base.runtime_root(runtime_root_path) / REVIEW_AREA / work_review_id(manifest_sha256, work_id)
+
+
 def review_experiment(package_dir: str | Path, **kwargs: Any) -> dict[str, Any]:
-    """Review one package with bounded intermediate synthesis, under this version's review-id vocabulary."""
+    """Review one package with bounded intermediate synthesis, under this version's review-id vocabulary.
+
+    A cooperative pause returns a non-artifact record describing where the work stopped; the review itself is not
+    finished and no review.json is written. Resume with ``resume_review`` using the same work id.
+    """
     with review_id_vocabulary():
-        return _review_experiment(package_dir, **kwargs)
+        try:
+            return _review_experiment(package_dir, **kwargs)
+        except ReviewPaused as paused:
+            return {"object": "experiment_review_paused", "contract_version": CONTRACT_VERSION,
+                    "status": pause.PAUSED, "work_id": paused.checkpoint.get("work_id"),
+                    "review_id": (paused.checkpoint.get("state") or {}).get("review_id"),
+                    "sequence": paused.checkpoint.get("sequence"),
+                    "completed_units": paused.checkpoint.get("completed_unit_count"),
+                    "position": paused.checkpoint.get("position"),
+                    "checkpoint_digest": paused.checkpoint.get("digest"), "resumable": True}
+        except ReviewCancelled as stopped:
+            return {"object": "experiment_review_cancelled", "contract_version": CONTRACT_VERSION,
+                    "status": pause.CANCELLED, "work_id": stopped.checkpoint.get("work_id"),
+                    "review_id": (stopped.checkpoint.get("state") or {}).get("review_id"),
+                    "sequence": stopped.checkpoint.get("sequence"),
+                    "completed_units": stopped.checkpoint.get("completed_unit_count"),
+                    "position": stopped.checkpoint.get("position"),
+                    "checkpoint_digest": stopped.checkpoint.get("digest"), "resumable": False}
+
+
+def resume_review(package_dir: str | Path, *, work_id: str, **kwargs: Any) -> dict[str, Any]:
+    """Continue a paused review. Refuses, rather than starting fresh, if anything it was bound to has changed."""
+    return review_experiment(package_dir, work_id=work_id, resume=True, **kwargs)
 
 
 def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, int], tuple[str, dict[str, Any]]] | None = None,
                        runtime_root_path: str | Path | None = None, source_root: str | Path | None = None,
                        protected_paths: Iterable[str | Path] = (), protected_roots: Iterable[str | Path] = (),
-                       identity: Mapping[str, Any] | None = None, clock: Callable[[], str] = base._now) -> dict[str, Any]:
+                       identity: Mapping[str, Any] | None = None, clock: Callable[[], str] = base._now,
+                       work_id: str = "", control_root: str | Path | None = None,
+                       resume: bool = False, on_state: Callable[[str, Mapping[str, Any]], None] | None = None,
+                       release_model: bool = True) -> dict[str, Any]:
     package = base.load_package(package_dir)
     root = base.runtime_root(runtime_root_path)
     area = root / REVIEW_AREA
     started = clock()
-    review_id = hashlib.sha256(f"{package['manifest_sha256']}|{started}|{uuid.uuid4().hex}".encode()).hexdigest()[:16]
+    # Named work gets a deterministic review directory: a resume has to find its own checkpoint before it has read
+    # anything, and the checkpoint lives inside that directory because it is the one place the mutation guard excludes.
+    review_id = (hashlib.sha256(f"{package['manifest_sha256']}|{work_id}".encode()).hexdigest()[:16] if work_id
+                 else hashlib.sha256(f"{package['manifest_sha256']}|{started}|{uuid.uuid4().hex}".encode()).hexdigest()[:16])
     out_dir = area / review_id
-    if out_dir.exists():
+    if out_dir.exists() and not resume:
         raise FileExistsError(f"review directory already exists: {out_dir}")
+    out_dir.mkdir(parents=True, exist_ok=True)
     guarded_roots = [root, *[Path(r).expanduser().resolve() for r in protected_roots]]
     guarded_paths = [Path(p).expanduser().resolve() for p in protected_paths]
     src = Path(source_root).expanduser().resolve() if source_root is not None else None
@@ -236,13 +308,130 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
     questions: list[dict[str, Any]] = []
     parts_coverage: list[dict[str, Any]] = []
 
+    # --- cooperative pause and durable checkpoints ----------------------------------------------------------------
+    # Both the checkpoint and the operator's pause signal live inside this review's own directory, which is the
+    # single path the mutation guard excludes. Anywhere else and a durable pause would itself fail the guard.
+    controls = Path(control_root).expanduser().resolve() if control_root is not None else out_dir
+    bindings = {
+        "package_id": package["experiment_id"], "manifest_sha256": package["manifest_sha256"],
+        "package_documents": {d["path"]: d["sha256"] for d in package["documents"]},
+        "package_contract": str(package["manifest"].get("package_contract") or ""),
+        "rendering": str((package["manifest"].get("rendering") or {}).get("id") or ""),
+        "reviewer_contract": CONTRACT_VERSION, "baseline_contract": BASELINE_CONTRACT,
+        "reviewer_module_sha256": base._sha256_file(Path(__file__).resolve()),
+        "baseline_module_sha256": base._sha256_file(Path(base.__file__).resolve()),
+        "model": {k: ident.get(k) for k in ("model", "provider", "context_size", "resolved_config_sha256")},
+        "source_tree": before.get("source_tree"),
+        "limits": registered_limits(),
+    }
+    completed_units: list[str] = []
+    restored: dict[str, Any] = {}
+    # Declared before level 0 so a checkpoint taken during the observation pass can snapshot the whole shape of the
+    # work, not just the part of it that happens to exist yet. Later levels re-initialise these from the same
+    # restored state, which is idempotent because nothing before them writes to any of them.
+    absent_roles: list[str] = []
+    missing: list[dict[str, Any]] = []
+    part_units: list[dict[str, Any]] = []
+    doc_units: list[dict[str, Any]] = []
+    group_rounds: list[dict[str, Any]] = []
+    uncaptured_registers: list[str] = []
+    carry_counts: dict[str, int] = {}
+    group_units_done: dict[str, dict[str, Any]] = {}
+    part_statements: list[str] = []
+    doc_statements: list[str] = []
+    group_statements: list[str] = []
+    rejected_statements: list[dict[str, Any]] = []
+    carried_to_document: list[str] = []
+    carried_to_intermediate: list[str] = []
+    dropped_refs: list[str] = []
+    final_inputs: list[str] = []
+    surviving: list[str] = []
+    round_no = 0
+    first_half: dict[str, Any] = {}
+    second_half: dict[str, Any] = {}
+    final_rejected: list[dict[str, Any]] = []
+    final_unknown: list[str] = []
+    final_state: dict[str, Any] = {}
+    if resume:
+        record = pause.load_checkpoint(work_id, controls)
+        if record is None:
+            raise pause.ResumeRefused("no_checkpoint_to_resume")
+        verified = pause.verify_resume(record, bindings=bindings)
+        completed_units = list(verified["completed_units"])
+        restored = dict(record.get("state") or {})
+        review_id = str(record.get("state", {}).get("review_id") or review_id)
+        out_dir = area / review_id
+    checkpointer = pause.Checkpointer(work_id or review_id, controls, bindings=bindings, clock=clock)
+    checkpointer.sequence = int(restored.get("sequence") or 0)
+    items: dict[str, dict[str, Any]] = {}
+
+    def _report(event: str, **fields: Any) -> None:
+        checkpointer.note(event, **fields)
+        if on_state is not None:
+            on_state(event, {"review_id": review_id, "completed_units": len(completed_units), **fields})
+
+    def _snapshot() -> dict[str, Any]:
+        """Everything a resume needs. Ids, lineage and inputs are stored, never recomputed, so they cannot drift."""
+        return {
+            "review_id": review_id, "started": started, "sequence": checkpointer.sequence,
+            "ledger": ledger, "grounded": grounded, "rejected": rejected, "questions": questions,
+            "parts_coverage": parts_coverage, "items": items, "absent_roles": absent_roles,
+            "part_units": part_units, "doc_units": doc_units, "group_rounds": group_rounds,
+            "uncaptured_registers": uncaptured_registers, "carry_counts": carry_counts, "group_units_done": group_units_done,
+            "part_statements": part_statements, "doc_statements": doc_statements,
+            "group_statements": group_statements, "carried_to_document": carried_to_document,
+            "carried_to_intermediate": carried_to_intermediate, "rejected_statements": rejected_statements,
+            "dropped_refs": dropped_refs, "surviving": surviving, "round_no": round_no,
+            "missing": missing, "final_inputs": final_inputs, "first_half": first_half,
+            "second_half": second_half, "final_rejected": final_rejected, "final_unknown": final_unknown,
+            "final_state": final_state,
+        }
+
+    def _boundary(unit: str, level: str, position: Mapping[str, Any]) -> None:
+        """A safe stopping point. The unit is already finished and its result is already in the state."""
+        if unit not in completed_units:
+            completed_units.append(unit)
+        signal = checkpointer.should_stop()
+        status = pause.RUNNING if not signal else (pause.PAUSED if signal == "pause" else pause.CANCELLED)
+        if signal:
+            _report("pause_requested" if signal == "pause" else "cancel_requested", unit=unit, level=level)
+        record = checkpointer.write(position={"level": level, **dict(position)},
+                                    completed_units=completed_units, next_unit="",
+                                    state=_snapshot(), status=status)
+        if not signal:
+            return
+        if release_model and str(ident.get("provider") or "") == "ollama":
+            released = pause.release_local_model(str(ident.get("model") or ""))
+            _report("model_released" if released.get("released") else "model_release_skipped")
+        _report("paused" if signal == "pause" else "cancelled", unit=unit, level=level)
+        checkpointer.write(position={"level": level, **dict(position)}, completed_units=completed_units,
+                           next_unit="", state=_snapshot(), status=status)
+        raise (ReviewPaused if signal == "pause" else ReviewCancelled)(record)
+
+    def _done(unit: str) -> bool:
+        return unit in completed_units
+
     # --- level 0: package parts -> grounded observations ---------------------------------------------------------
-    absent_roles = [r for r in base.REQUIRED_ROLES if r not in {d["role"] for d in package["documents"]}]
+    if restored:
+        # Restored wholesale, never recomputed: identifiers, lineage and inputs are exactly what the earlier run made.
+        ledger[:] = restored.get("ledger") or []
+        grounded[:] = restored.get("grounded") or []
+        rejected[:] = restored.get("rejected") or []
+        questions[:] = restored.get("questions") or []
+        parts_coverage[:] = restored.get("parts_coverage") or []
+        _report("resumed", from_sequence=int(restored.get("sequence") or 0))
+
+    absent_roles = restored.get("absent_roles") if restored else None
+    if absent_roles is None:
+        absent_roles = [r for r in base.REQUIRED_ROLES if r not in {d["role"] for d in package["documents"]}]
     if not absent_roles:
         for doc in package["documents"]:
             parts, offset = base.chunks(doc["text"]), 0
             for part, chunk_text in enumerate(parts, 1):
                 stage = f"observe:{doc['doc_id']}:{part}"
+                if _done(stage):
+                    offset += len(chunk_text)
+                    continue
                 prompt = base.OBSERVE_PROMPT.format(
                     title=package["title"], brief=package["brief"], doc_id=doc["doc_id"], role=doc["role"],
                     description=doc["description"], part=part, parts=len(parts), chunk=chunk_text,
@@ -282,35 +471,41 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                                        "rejected_observations": sum(x["doc_id"] == doc["doc_id"] and x["part"] == part
                                                                     for x in rejected)})
                 offset += len(chunk_text)
+                _boundary(stage, "observe", {"doc_id": doc["doc_id"], "part": part, "parts": len(parts)})
 
     required = [p for p in parts_coverage if p["required"]]
     optional = [p for p in parts_coverage if not p["required"]]
-    missing: list[dict[str, Any]] = [
+    missing: list[dict[str, Any]] = list(restored.get("missing") or []) or [
         {"kind": "required_role_absent", "role": role, "reason": "the package lists no document with this required role"}
         for role in absent_roles]
     missing += [{"kind": "required_part_not_reviewed", "stage": p["stage"], "doc_id": p["doc_id"], "part": p["part"],
                  "reason": p["reason"]} for p in required if not p["reviewed"]]
     rejected_ids = {o["rej_id"] for o in rejected}
 
-    items: dict[str, dict[str, Any]] = {
+    items.clear()
+    items.update({
         o["obs_id"]: {"id": o["obs_id"], "type": "observation", "doc_id": o["doc_id"], "part": o["part"],
                       "statement": o["statement"], "lineage": [o["obs_id"]],
-                      "meta": base._metadata_label(o["provenance"]["metadata"])} for o in grounded}
+                      "meta": base._metadata_label(o["provenance"]["metadata"])} for o in grounded})
+    if restored.get("items"):
+        # Statement records minted by earlier levels come back exactly as they were, so no id is ever reissued.
+        items.update({k: v for k, v in restored["items"].items() if k not in items})
     evidence = {o["obs_id"]: base.observation_evidence(o) for o in grounded}
 
-    part_units: list[dict[str, Any]] = []
-    doc_units: list[dict[str, Any]] = []
-    group_rounds: list[dict[str, Any]] = []
-    uncaptured_registers: list[str] = []
-    carry_counts: dict[str, int] = {}
-    part_statements: list[str] = []
-    doc_statements: list[str] = []
-    group_statements: list[str] = []
-    rejected_statements: list[dict[str, Any]] = []
-    carried_to_document: list[str] = []
-    carried_to_intermediate: list[str] = []
-    final_inputs: list[str] = []
-    dropped_refs: list[str] = []
+    part_units: list[dict[str, Any]] = list(restored.get("part_units") or [])
+    doc_units: list[dict[str, Any]] = list(restored.get("doc_units") or [])
+    group_rounds = list(restored.get('group_rounds') or [])
+    uncaptured_registers = list(restored.get('uncaptured_registers') or [])
+    carry_counts: dict[str, int] = dict(restored.get('carry_counts') or {})
+    group_units_done = dict(restored.get('group_units_done') or {})
+    part_statements = list(restored.get('part_statements') or [])
+    doc_statements = list(restored.get('doc_statements') or [])
+    group_statements = list(restored.get('group_statements') or [])
+    rejected_statements = list(restored.get('rejected_statements') or [])
+    carried_to_document = list(restored.get('carried_to_document') or [])
+    carried_to_intermediate = list(restored.get('carried_to_intermediate') or [])
+    final_inputs = list(restored.get('final_inputs') or [])
+    dropped_refs = list(restored.get('dropped_refs') or [])
 
     def run_unit(unit: dict[str, Any], prompt: str, max_tokens: int, ids_key: str, prefix: str, kind: str,
                  extra: Callable[[dict], dict]) -> str | None:
@@ -338,14 +533,19 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
 
     # --- level 1: grounded observations -> per-part synthesis ----------------------------------------------------
     if not missing:
-        part_units = base.plan_part_units(package, grounded)
+        planned = base.plan_part_units(package, grounded)
+        by_id = {u["unit_id"]: u for u in part_units}
+        part_units = [by_id.get(u["unit_id"], u) for u in planned]
         for unit in part_units:
+            if _done(unit["stage"]):
+                continue
             reason = run_unit(unit, base.part_prompt(package, unit, items), base.PART_MAX_TOKENS, "obs_ids", "PS",
                               "part_statement", lambda s, unit=unit: {"part": unit["part"], "doc_id": unit["doc_id"]})
             if reason and unit["required"]:
                 missing.append({"kind": "synthesis_stage_failed", "level": "part", "unit_id": unit["unit_id"],
                                 "stage": unit["stage"], "doc_id": unit["doc_id"], "parts": [unit["part"]],
                                 "reason": reason, "inputs_lost_at_stage": unit["inputs"]})
+            _boundary(unit["stage"], "part", {"unit_id": unit["unit_id"], "doc_id": unit["doc_id"]})
         part_statements = [i for u in part_units for i in u.get("statements", [])]
         carried_to_document = [i for u in part_units if u.get("status") == "accepted" or not u["required"]
                                for i in u["uncited"]]
@@ -353,10 +553,14 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
     # --- level 2: per-document synthesis -------------------------------------------------------------------------
     if not missing:
         part_inputs = {(u["doc_id"], u["part"]): u["statements"] + u["uncited"] for u in part_units}
-        doc_units = base.plan_document_units(package, part_units, items, part_inputs)
+        planned_docs = base.plan_document_units(package, part_units, items, part_inputs)
+        done_docs = {u["unit_id"]: u for u in doc_units}
+        doc_units = [done_docs.get(u["unit_id"], u) for u in planned_docs]
         for unit in doc_units:
             unit["max_statements"] = max(1, math.ceil(len(unit["inputs"]) / 2))
         for unit in doc_units:
+            if _done(unit["stage"]):
+                continue
             reason = run_unit(unit, base.document_prompt(package, unit, items), base.DOCUMENT_MAX_TOKENS,
                               "input_ids", "DS", "document_statement",
                               lambda s, unit=unit: {"parts": unit["parts"], "doc_id": unit["doc_id"]})
@@ -364,6 +568,7 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                 missing.append({"kind": "synthesis_stage_failed", "level": "document", "unit_id": unit["unit_id"],
                                 "stage": unit["stage"], "doc_id": unit["doc_id"], "parts": unit["parts"],
                                 "reason": reason, "inputs_lost_at_stage": unit["inputs"]})
+            _boundary(unit["stage"], "document", {"unit_id": unit["unit_id"], "doc_id": unit["doc_id"]})
         doc_statements = [i for u in doc_units for i in u.get("statements", [])]
         carried_to_intermediate = [i for u in doc_units if u.get("status") == "accepted" or not u["required"]
                                    for i in u["uncited"]]
@@ -376,9 +581,12 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
         surviving = doc_statements + sorted(
             carried_to_intermediate,
             key=lambda i: (next(order[u["unit_id"]] for u in doc_units if i in u["inputs"]), i))
-        round_no = 0
+        if restored.get("surviving"):
+            surviving = list(restored["surviving"])
         while len(surviving) > FINAL_MAX_INPUTS and not missing:
-            round_no += 1
+            # Derived from completed rounds, never incremented: a round is only appended to group_rounds once it
+            # finishes, so an interrupted round keeps its own number and its group stage ids when work resumes.
+            round_no = len(group_rounds) + 1
             if round_no > MAX_ROUNDS:
                 missing.append({"kind": "intermediate_synthesis_did_not_converge", "rounds": MAX_ROUNDS,
                                 "surviving_inputs": len(surviving), "cap": FINAL_MAX_INPUTS,
@@ -387,7 +595,8 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
             # Registers are already minimal; they pass through untouched rather than being re-consolidated.
             groupable = [i for i in surviving if items[i]["type"] != "uncaptured_register"]
             registers_in = [i for i in surviving if items[i]["type"] == "uncaptured_register"]
-            units = plan_group_units(groupable, items, round_no)
+            units = [group_units_done.get(u["stage"], u)
+                     for u in plan_group_units(groupable, items, round_no)]
             if len(units) > MAX_GROUPS_PER_ROUND:
                 missing.append({"kind": "intermediate_round_too_wide", "round": round_no, "groups": len(units),
                                 "limit": MAX_GROUPS_PER_ROUND, "inputs": len(surviving),
@@ -401,6 +610,10 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                     round=round_no, inputs=_block(unit["inputs"], items, "group"), max_ids=base.MAX_IDS_PER_STATEMENT,
                     max_statements=unit["max_statements"], max_chars=base.MAX_STATEMENT_CHARS,
                     kinds=", ".join(base.SYNTHESIS_KINDS))
+                if _done(unit["stage"]):
+                    produced += unit.get("statements", [])
+                    carried += unit.get("uncited", [])
+                    continue
                 reason = run_unit(unit, prompt, GROUP_MAX_TOKENS, "input_ids", "GS", "group_statement",
                                   lambda s, unit=unit: {"round": unit["round"], "group": unit["group"],
                                                         "doc_id": f"round {unit['round']}"})
@@ -414,6 +627,9 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                     break
                 produced += unit["statements"]
                 carried += unit["uncited"]
+                group_units_done[unit["stage"]] = unit
+                _boundary(unit["stage"], "group", {"round": round_no, "group": unit["group"],
+                                                   "groups": len(units)})
             if missing:
                 break
             for input_id in carried:
@@ -463,15 +679,17 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                                 "reason": "a consolidation round did not reduce the surviving input count"})
                 break
             surviving = nxt
+            _boundary(f"round:r{round_no}", "round", {"round": round_no, "surviving": len(surviving)})
         final_inputs = list(surviving)
 
     # --- level 3: final synthesis --------------------------------------------------------------------------------
     first = second = None
-    first_half: dict[str, Any] = {}
-    second_half: dict[str, Any] = {}
-    final_rejected: list[dict[str, Any]] = []
-    final_unknown: list[str] = []
-    final_state = {"first_half": "skipped:earlier_coverage_incomplete", "second_half": "skipped:earlier_coverage_incomplete"}
+    first_half: dict[str, Any] = dict(restored.get("first_half") or {})
+    second_half: dict[str, Any] = dict(restored.get("second_half") or {})
+    final_rejected = list(restored.get("final_rejected") or [])
+    final_unknown = list(restored.get("final_unknown") or [])
+    final_state = dict(restored.get("final_state") or {
+        "first_half": "skipped:earlier_coverage_incomplete", "second_half": "skipped:earlier_coverage_incomplete"})
     block = ""
     if not missing:
         block = _block(final_inputs, items, "final")
@@ -484,29 +702,40 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                             "reason": "the final input block exceeded the configured budget"})
     if not missing:
         known = set(final_inputs)
-        first, reason_a = base._ask(call_model, FINAL_A_PROMPT.format(title=package["title"], brief=package["brief"],
-                                                                     inputs=block),
-                                    base.FINAL_A_MAX_TOKENS, base._accept_final_first, ledger, "final:first_half",
-                                    context_size=context_size)
+        if _done("final:first_half"):
+            # Already answered and already validated before the pause; asking again would repeat a provider call.
+            first, reason_a = first_half or {"resumed": True}, None
+        else:
+            first, reason_a = base._ask(call_model, FINAL_A_PROMPT.format(title=package["title"],
+                                                                         brief=package["brief"], inputs=block),
+                                        base.FINAL_A_MAX_TOKENS, base._accept_final_first, ledger,
+                                        "final:first_half", context_size=context_size)
         if first is None:
             final_state = {"first_half": f"failed:{reason_a}", "second_half": "skipped:first_half_failed"}
             missing.append({"kind": "final_synthesis_failed", "stage": "final:first_half", "reason": reason_a})
         else:
-            first_half, rej, unk = base.validate_final_first(first, known, items, evidence)
-            final_rejected += rej
-            final_unknown += unk
-            second, reason_b = base._ask(
-                call_model, FINAL_B_PROMPT.format(title=package["title"], brief=package["brief"], inputs=block,
-                                                  first_half=base.first_half_summary(first_half)),
-                base.FINAL_B_MAX_TOKENS, base._accept_final_second, ledger, "final:second_half",
-                context_size=context_size)
+            if not _done("final:first_half"):
+                first_half, rej, unk = base.validate_final_first(first, known, items, evidence)
+                final_rejected += rej
+                final_unknown += unk
+                _boundary("final:first_half", "final", {"half": 1})
+            if _done("final:second_half"):
+                second, reason_b = second_half or {"resumed": True}, None
+            else:
+                second, reason_b = base._ask(
+                    call_model, FINAL_B_PROMPT.format(title=package["title"], brief=package["brief"], inputs=block,
+                                                      first_half=base.first_half_summary(first_half)),
+                    base.FINAL_B_MAX_TOKENS, base._accept_final_second, ledger, "final:second_half",
+                    context_size=context_size)
             final_state = {"first_half": "accepted", "second_half": "accepted" if second else f"failed:{reason_b}"}
             if second is None:
                 missing.append({"kind": "final_synthesis_failed", "stage": "final:second_half", "reason": reason_b})
             else:
-                second_half, rej, unk = base.validate_final_second(second, known, items, evidence)
-                final_rejected += rej
-                final_unknown += unk
+                if not _done("final:second_half"):
+                    second_half, rej, unk = base.validate_final_second(second, known, items, evidence)
+                    final_rejected += rej
+                    final_unknown += unk
+                    _boundary("final:second_half", "final", {"half": 2})
     review = {**first_half, **second_half}
 
     # --- mechanical verification ---------------------------------------------------------------------------------
@@ -650,6 +879,8 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                                          "roots": [str(r) for r in guarded_roots], "excluded": str(out_dir)}},
         "ledger": ledger,
     }
+    checkpointer.write(position={"level": "finished"}, completed_units=completed_units, next_unit="",
+                       state=_snapshot(), status=status)
     write_text_atomic(out_dir / "review.json", json.dumps(artifact, indent=1, ensure_ascii=False))
     write_text_atomic(out_dir / "review.md", render_markdown(artifact))
     return artifact

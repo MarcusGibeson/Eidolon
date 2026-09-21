@@ -44,10 +44,10 @@ def main() -> int:
         install(root, "Q-CAP-INT", 19)
 
         # --- 1. the active reviewer is v2732.0, and the baseline is still reachable and unchanged ---------------
-        require(adapter.ACTIVE_REVIEWER_CONTRACT == "v2732.1", "the_active_reviewer_is_the_hierarchical_one")
+        require(adapter.ACTIVE_REVIEWER_CONTRACT == "v2733.0", "the_active_reviewer_is_the_hierarchical_one")
         require(base.CONTRACT_VERSION == "v2731.8", "the_baseline_contract_is_unchanged")
         require(job_runner.resolve_reviewer("v2731.8") is base, "the_baseline_is_still_selectable_by_contract")
-        require(job_runner.resolve_reviewer("v2732.1") is hier, "the_candidate_is_selectable_by_contract")
+        require(job_runner.resolve_reviewer("v2733.0") is hier, "the_candidate_is_selectable_by_contract")
         bad = False
         try:
             job_runner.resolve_reviewer("v9999.0")
@@ -73,7 +73,7 @@ def main() -> int:
         started = adapter.start_review("Q-CAP-INT", confirmed=True, root=root, spawn=fake_spawn,
                                        alive=lambda pid: True)
         require(len(spawned) == 1, "confirmation_spawns_exactly_one_detached_process")
-        require(started["reviewer_contract"] == "v2732.1", "the_job_record_names_the_hierarchical_reviewer")
+        require(started["reviewer_contract"] == "v2733.0", "the_job_record_names_the_hierarchical_reviewer")
         require(started["status"] == "running" and started["pid"] == 4242, "the_job_is_recorded_as_running")
         require(str(job_runner.__file__).endswith(Path(spawned[0][2]).suffix) or spawned[0][2].endswith(".json"),
                 "the_detached_process_is_handed_a_job_record")
@@ -119,7 +119,7 @@ def main() -> int:
 
         require(final["status"] == "completed", "the_detached_job_completes")
         require(final["review_status"] == "complete", "the_review_itself_completes")
-        require(final["reviewer"]["contract_version"] == "v2732.1",
+        require(final["reviewer"]["contract_version"] == "v2733.0",
                 "the_completed_job_record_identifies_v2732_0")
         require(final["reviewer"]["baseline_contract"] == "v2731.8",
                 "the_completed_job_record_names_the_baseline_it_builds_on")
@@ -135,7 +135,7 @@ def main() -> int:
 
         # --- 5. the published artifact is retrievable and unmistakably hierarchical ------------------------------
         artifact = json.loads((Path(final["location"]) / "review.json").read_text(encoding="utf-8"))
-        require(artifact["contract_version"] == "v2732.1", "the_published_artifact_states_its_contract")
+        require(artifact["contract_version"] == "v2733.0", "the_published_artifact_states_its_contract")
         require(artifact["architecture"] == "hierarchical_bounded_synthesis",
                 "the_published_artifact_states_its_architecture")
         require("intermediate_synthesis" in artifact["coverage"]["levels"],
@@ -153,8 +153,8 @@ def main() -> int:
 
         # --- 7. GS and U identifiers survive downstream validation and status ------------------------------------
         status = adapter.job_status(started["job_id"], root, alive=lambda pid: False)
-        require(status["reviewer_contract"] == "v2732.1", "status_reports_the_reviewer_contract")
-        require("v2732.1" in status["message"], "the_status_message_names_the_reviewer")
+        require(status["reviewer_contract"] == "v2733.0", "status_reports_the_reviewer_contract")
+        require("v2733.0" in status["message"], "the_status_message_names_the_reviewer")
         require("hierarchical" in status["message"], "the_status_message_names_the_architecture")
         # The receipt is deliberately NOT extended. Reviewer identity is available from the job record and status;
         # the receipt is what conversation memory keeps for every review action, so its key set stays frozen.
@@ -198,7 +198,7 @@ def main() -> int:
                 "the_representation_floor_is_recorded_in_the_published_artifact")
         thin_status = adapter.job_status(thin_started["job_id"], root, alive=lambda pid: False)
         require("incomplete" in thin_status["message"], "the_status_message_does_not_present_it_as_finished")
-        require(thin_final["reviewer"]["contract_version"] == "v2732.1",
+        require(thin_final["reviewer"]["contract_version"] == "v2733.0",
                 "even_a_failed_review_identifies_its_reviewer")
 
         # --- 9. a job pinned to the baseline still runs on the baseline ------------------------------------------

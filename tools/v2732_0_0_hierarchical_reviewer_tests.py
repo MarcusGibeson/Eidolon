@@ -39,7 +39,7 @@ def main() -> int:
 
         # --- 1. the baseline is untouched and the identity is new ----------------------------------------------
         require(base.CONTRACT_VERSION == "v2731.8", "the_baseline_contract_is_unchanged")
-        require(hier.CONTRACT_VERSION == "v2732.1", "the_candidate_has_its_own_contract_version")
+        require(hier.CONTRACT_VERSION == "v2733.0", "the_candidate_has_its_own_contract_version")
         require(hier.BASELINE_CONTRACT == base.CONTRACT_VERSION, "the_candidate_records_the_baseline_it_builds_on")
         require(base.CHUNK_CHARS == 6500 and base.FINAL_INPUT_BUDGET_CHARS == 12000,
                 "the_candidate_does_not_raise_any_baseline_limit")
