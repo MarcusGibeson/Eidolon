@@ -66,6 +66,8 @@ SHAPES = {
     34: (3, 1, 3, 8, 16, 3),  # the scale of the unchanged G-EVID1 package
     48: (4, 1, 4, 11, 23, 5),
     64: (5, 1, 5, 15, 31, 7),
+   140: (9, 2, 9, 34, 68, 18),  # the scale of the G-CORROB1-R2 review package
+
 }
 DOCS = (
     ("design.md", "design", "Q-CAP synthetic design note"),
