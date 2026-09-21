@@ -1,4 +1,6 @@
-/* Operational facts only. No mutation endpoints, provider calls, or model prose. */
+/* Operational facts only. No provider calls or model prose.
+   One governed mutation: the research play/pause control, which forwards to the existing cooperative pause path.
+   What the control may do is decided by the backend and arrives as activity.control; this file only draws it. */
 (() => {
   'use strict';
   const host = document.getElementById('activity-surface');
@@ -31,6 +33,58 @@
       bar.setAttribute('aria-label', p.unit); parent.append(bar);
     } else parent.append(el('small', 'Indeterminate'));
   }
+  const submitting = new Set();      // requests in flight, so a second click cannot stack a second request
+  const awaiting = new Map();        // activity id -> state the backend told us to expect next
+
+  async function sendControl(a, control, button) {
+    const id = a.activity_id;
+    if (!control.action || !control.enabled || submitting.has(id)) return;
+    submitting.add(id);
+    button.disabled = true;
+    button.setAttribute('data-tip', control.action === 'pause' ? 'Pausing…' : 'Resuming…');
+    button.setAttribute('aria-label', control.action === 'pause' ? 'Pausing' : 'Resuming');
+    try {
+      const response = await fetch('/api/research/control', {
+        method: 'POST', cache: 'no-store',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({job_id: id, action: control.action}),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (result && result.expect_state) awaiting.set(id, result.expect_state);
+    } catch (error) {
+      awaiting.delete(id);
+    } finally {
+      submitting.delete(id);
+      poll();
+    }
+  }
+
+  function researchControl(a, parent) {
+    const control = a.control;
+    if (!control || !control.visible) return;
+    const row = el('div', undefined, 'activity-control');
+    const button = el('button');
+    button.type = 'button';
+    button.className = 'activity-control-button icon-' + (control.icon || 'none');
+    // The backend said what to expect; hold the pending look until its state actually changes.
+    const expecting = awaiting.get(a.activity_id);
+    const settled = !expecting || expecting === a.state;
+    if (settled) awaiting.delete(a.activity_id);
+    const pending = control.pending || !settled || submitting.has(a.activity_id);
+    const label = pending && !control.pending
+      ? (expecting === 'paused' || expecting === 'pause_requested' ? 'Pausing…' : 'Resuming…')
+      : control.label;
+    button.disabled = !control.enabled || pending;
+    button.setAttribute('aria-label', label.replace('…', ''));
+    button.setAttribute('data-tip', pending ? label : (control.tip || label));
+    if (pending) button.setAttribute('aria-busy', 'true');
+    button.append(el('span', control.icon === 'play' ? '▶' : '❙❙', 'activity-control-glyph'));
+    button.append(el('span', label, 'activity-control-text'));
+    button.addEventListener('click', () => sendControl(a, control, button));
+    row.append(button);
+    parent.append(row);
+  }
+
   function summary(a) {
     const box = el('div', undefined, 'activity-summary');
     const top = el('div', undefined, 'activity-heading');
@@ -38,6 +92,7 @@
     top.append(el('small', pretty(a.type))); box.append(top);
     box.append(el('h2', a.title), el('div', a.subject), el('strong', a.stage || 'Queued'));
     meter(a.progress, box);
+    researchControl(a, box);
     box.append(el('div', elapsed(a.elapsed_seconds), 'activity-time'));
     governance(a, box);
     for (const w of a.warnings || []) box.append(el('p', pretty(w), 'activity-warning'));

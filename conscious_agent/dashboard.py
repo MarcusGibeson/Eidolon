@@ -12902,11 +12902,13 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
             return
         if path == "/api/activities" or path.startswith("/api/activities/"):
             from activity import activities
+            from research_control import decorate
             try:
                 activity_id = path[len("/api/activities/"):] if path.startswith("/api/activities/") else None
                 if activity_id == "":
                     raise ValueError("invalid_activity_id")
-                self._send_lightweight_json(activities(activity_id=activity_id))
+                # The control affordance is decided here, not in the page, so a refresh shows backend state.
+                self._send_lightweight_json(decorate(activities(activity_id=activity_id)))
             except ValueError:
                 self._send_json({"ok": False, "error": "invalid_activity_id"}, status=400)
             return
@@ -15200,6 +15202,17 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
                 self._send_lightweight_json({"ok": False, "status": "training_capture_settings_invalid", "failure_class": type(error).__name__}, status=400)
                 return
             self._send_lightweight_json({"ok": True, "status": "training_capture_settings_updated", "policy": policy.public_record()})
+            return
+        if parsed.path == "/api/research/control":
+            from research_control import control
+            try:
+                payload = control(str(body.get("job_id") or ""), str(body.get("action") or ""),
+                                  Path(os.environ.get("EIDOLON_DATA_DIR") or DATA_DIR))
+            except Exception as error:  # a refusal is a result; an unexpected failure is reported, never hidden
+                self._send_lightweight_json({"ok": False, "status": "research_control_failed",
+                                             "failure_class": type(error).__name__}, status=500)
+                return
+            self._send_lightweight_json(payload, status=200 if payload.get("ok") else 400)
             return
         if parsed.path == "/api/operator-experience/control":
             from operator_experience import operator_experience_session_control, operator_experience_reconcile_recovery

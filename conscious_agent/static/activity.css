@@ -33,3 +33,22 @@
  #activity-history { border-right:0; border-bottom:1px solid #344147; max-height:230px; overflow:auto; }
  .activity-events li { grid-template-columns:minmax(0,1fr); gap:4px; }
 }
+
+/* Research play/pause. Command-deck styling, custom data-tip only, and a touch target larger than the glyph. */
+.activity-control { display:flex; margin:6px 0 2px; }
+.activity-control-button { position:relative; display:inline-flex; align-items:center; gap:7px; min-height:34px;
+  min-width:34px; padding:6px 11px; border:1px solid var(--border, #2a3342); border-radius:9px;
+  background:#0d1016; color:var(--text, #d8e0ee); font:inherit; font-size:12px; letter-spacing:.02em;
+  cursor:pointer; }
+.activity-control-button:hover:not(:disabled), .activity-control-button:focus-visible:not(:disabled) {
+  border-color:#3d7fb5; background:#111722; }
+.activity-control-button:focus-visible { outline:2px solid #3d7fb5; outline-offset:2px; }
+.activity-control-button:disabled { opacity:.55; cursor:default; }
+.activity-control-button[aria-busy='true'] { cursor:progress; }
+.activity-control-glyph { font-size:11px; line-height:1; }
+.activity-control-button[data-tip]:hover::after, .activity-control-button[data-tip]:focus::after {
+  content:attr(data-tip); position:absolute; left:0; top:calc(100% + 7px); z-index:20; width:max-content;
+  max-width:min(280px, 70vw); padding:8px 10px; border:1px solid var(--border, #2a3342); border-radius:9px;
+  background:#080a0f; color:var(--text, #d8e0ee); box-shadow:0 8px 22px rgba(0,0,0,.35); font-size:12px;
+  line-height:1.35; white-space:normal; }
+@media (max-width: 640px) { .activity-control-button { min-height:40px; padding:8px 13px; } }
