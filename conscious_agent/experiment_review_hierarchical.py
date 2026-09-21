@@ -67,7 +67,7 @@ import cooperative_pause as pause
 import experiment_review as base
 from json_storage import write_text_atomic
 
-CONTRACT_VERSION = "v2733.0"
+CONTRACT_VERSION = "v2733.1"
 BASELINE_CONTRACT = base.CONTRACT_VERSION
 REVIEW_AREA = base.REVIEW_AREA
 MANIFEST_NAME = base.MANIFEST_NAME
@@ -131,6 +131,24 @@ GROUP_PROMPT = (
     "statements, each at most {max_chars} characters, and label each with one kind: {kinds}.\n"
     'Return only JSON: {{"statements": [{{"statement": "...", "kind": "finding", "input_ids": ["DS1"]}}]}}'
 )
+# --- observation discipline -------------------------------------------------------------------------------------
+# The baseline already requires every identifier a statement names to be established by that statement's own quotes.
+# What it does not say is how to behave when a part holds records that are nearly identical, and a model reading such
+# a part naturally writes one comparative observation - "R15 and R16 share ..." - while quoting only one of them. The
+# validator refuses that, correctly, and a part made entirely of such pairs can ground nothing at all: it is what
+# stopped G-CORROB1 review attempt 2 at 139 of 140 parts.
+#
+# This restates the existing rule and adds one instruction about form: observe each record on its own, and leave
+# comparison to a later stage unless every identifier compared is grounded in the observation itself. It relaxes
+# nothing. Identifier support, quote grounding and every acceptance rule are exactly the baseline's.
+OBSERVE_PROMPT = base.OBSERVE_PROMPT.replace(
+    "Also list questions this part raises but does not answer.",
+    "An observation may name only the records and identifiers its own quotes establish. If an observation concerns "
+    "more than one record, quote each of those records, so that every identifier it names appears inside the text "
+    "you quoted. When this part holds records that are similar to one another, write a separate observation for each "
+    "record rather than one observation comparing them; comparisons across records belong to a later stage. "
+    "Also list questions this part raises but does not answer.")
+
 FINAL_A_PROMPT = base.FINAL_A_PROMPT.replace(
     "These are syntheses of the package's grounded observations: document-level statements (DS ids) and, marked as "
     "uncaptured, part-level statements (PS ids) and observations (O ids) that no higher-level statement captured.",
@@ -435,7 +453,7 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                 if _done(stage):
                     offset += len(chunk_text)
                     continue
-                prompt = base.OBSERVE_PROMPT.format(
+                prompt = OBSERVE_PROMPT.format(
                     title=package["title"], brief=package["brief"], doc_id=doc["doc_id"], role=doc["role"],
                     description=doc["description"], part=part, parts=len(parts), chunk=chunk_text,
                     max_obs=base.MAX_OBSERVATIONS_PER_CHUNK, max_quotes=base.MAX_QUOTES_PER_OBSERVATION,
@@ -922,5 +940,6 @@ def registered_limits() -> dict[str, Any]:
 def template_digests() -> dict[str, str]:
     return dict(base.template_digests()) | {
         "GROUP_PROMPT": hashlib.sha256(GROUP_PROMPT.encode()).hexdigest(),
+        "OBSERVE_PROMPT_V2": hashlib.sha256(OBSERVE_PROMPT.encode()).hexdigest(),
         "GROUNDING_RETRY_PREFACE": hashlib.sha256(GROUNDING_RETRY_PREFACE.encode()).hexdigest(),
         "FINAL_A_PROMPT_V2": hashlib.sha256(FINAL_A_PROMPT.encode()).hexdigest()}
