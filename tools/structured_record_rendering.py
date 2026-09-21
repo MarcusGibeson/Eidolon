@@ -39,9 +39,10 @@ reshape evidence, and it is not specific to any experiment, document or item.
 import json
 from typing import Any
 
-RENDERING_ID = "record-per-line.v1"
+RENDERING_ID = "record-per-line.v2"
 RENDERING_DESCRIPTION = (
-    "One logical record per line, written as a JSON path followed by the record's compact JSON. Lossless, "
+    "One logical record per line, written as a JSON path followed by the record itself. Every field appears as "
+    "\"key\": value on the line that carries it, so a field can be quoted the way it is written. Lossless, "
     "reversible and deterministic; the reviewer grounds quotes against these lines."
 )
 
@@ -49,12 +50,19 @@ RENDERING_DESCRIPTION = (
 # quotable. It bounds line length only. It never drops or summarises anything.
 MAX_RECORD_CHARS = 1200
 
-_COMPACT = (",", ":")
+# Conventional JSON spacing, not the most compact form. A reviewer copies a span as it is written, and models write
+# {"key": value, "next": value}. Rendering without the spaces made every honestly-copied field a byte mismatch.
+_SEPARATORS = (", ", ": ")
 _DECODER = json.JSONDecoder()
 
 
 def _compact(value: Any) -> str:
-    return json.dumps(value, ensure_ascii=False, separators=_COMPACT)
+    return json.dumps(value, ensure_ascii=False, separators=_SEPARATORS)
+
+
+def _path(path: list[Any]) -> str:
+    """The locator prefix. Kept compact so it never competes with the record for quotable width."""
+    return json.dumps(path, ensure_ascii=False, separators=(",", ":"))
 
 
 def _emit(path: list[Any], value: Any, lines: list[str], *, atomic: bool = False) -> None:
@@ -63,14 +71,33 @@ def _emit(path: list[Any], value: Any, lines: list[str], *, atomic: bool = False
     ``atomic`` marks an element of an array. An array element is a record, and a record is never split: splitting one
     would put its identity on a different line from its fields, which is precisely the failure this rendering exists
     to remove. A long record is emitted whole and stays quotable from its start, where its identity is.
+
+    A dict too large to emit whole is split into object *fragments*, never into bare values under a longer path. A
+    field's name must appear on the line that carries its value, written the way JSON writes it, or that field cannot
+    be quoted at all: a line reading ``["execution_manifest","one_run_only"] true`` contains no ``"one_run_only":
+    true`` for a reviewer to copy, and every honest attempt to cite it fails to locate. That defect emptied two
+    required parts of the first G-CORROB1 review.
     """
     body = _compact(value)
     if atomic or len(body) <= MAX_RECORD_CHARS or not isinstance(value, (dict, list)) or not value:
-        lines.append(f"{_compact(path)} {body}")
+        lines.append(f"{_path(path)} {body}")
         return
     if isinstance(value, dict):
+        fragment: dict[str, Any] = {}
         for key, item in value.items():
-            _emit(path + [key], item, lines)
+            single = _compact({key: item})
+            if len(single) > MAX_RECORD_CHARS and isinstance(item, (dict, list)) and item:
+                if fragment:
+                    lines.append(f"{_path(path)} {_compact(fragment)}")
+                    fragment = {}
+                _emit(path + [key], item, lines)
+                continue
+            if fragment and len(_compact({**fragment, key: item})) > MAX_RECORD_CHARS:
+                lines.append(f"{_path(path)} {_compact(fragment)}")
+                fragment = {}
+            fragment[key] = item
+        if fragment:
+            lines.append(f"{_path(path)} {_compact(fragment)}")
         return
     for index, item in enumerate(value):
         _emit(path + [index], item, lines, atomic=True)
@@ -83,34 +110,49 @@ def render(document: Any) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _merge(existing: Any, value: Any) -> Any:
+    """Combine a node with the next fragment written for the same path, keeping first-seen key order."""
+    if isinstance(existing, dict) and isinstance(value, dict):
+        existing.update(value)
+        return existing
+    return value
+
+
 def _place(root: Any, path: list[Any], value: Any) -> Any:
     """Put ``value`` at ``path``, creating the containers the path implies, preserving encounter order."""
     if not path:
-        return value
+        return _merge(root, value)
     key = path[0]
     if isinstance(key, int):
         if not isinstance(root, list):
             root = []
         while len(root) <= key:
             root.append(None)
-        root[key] = _place(root[key] if len(path) > 1 else None, path[1:], value)
+        root[key] = _place(root[key], path[1:], value)
         return root
     if not isinstance(root, dict):
         root = {}
-    root[key] = _place(root.get(key) if len(path) > 1 else None, path[1:], value)
+    root[key] = _place(root.get(key), path[1:], value)
     return root
 
 
 def reconstruct(text: str) -> Any:
-    """Rebuild the document a rendering came from. The inverse of :func:`render`."""
+    """Rebuild the document a rendering came from. The inverse of :func:`render`.
+
+    A dict split into fragments arrives as several lines sharing one path; they merge in the order written, which is
+    the order the source had.
+    """
     root: Any = None
+    seen_root = False
     for line in text.split("\n"):
         if not line.strip():
             continue
         path, offset = _DECODER.raw_decode(line)
         value = json.loads(line[offset:].strip())
         if not path:
-            return value
+            root = _merge(root, value) if seen_root else value
+            seen_root = True
+            continue
         root = _place(root, list(path), value)
     return root
 

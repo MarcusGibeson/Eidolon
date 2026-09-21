@@ -127,7 +127,11 @@ require(listing["intent"] == "experiment_review_list" and listing["execution_mod
 require(status_action["intent"] == "experiment_review_status" and status_action["execution_mode"] == router.INFO
         and "No review job" in status_action["summary"], "the_status_phrase_answers_read_only")
 require(start["intent"] == "experiment_review_start" and start["execution_mode"] == router.DIRECT_FUNCTION
-        and start["function_name"] == "experiment_review_start" and start["function_args"] == {"package_id": "G-TEST"}
+        and start["function_name"] == "experiment_review_start"
+        # The proposal binds the manifest it was made against as well as the package name, so manifest drift between
+        # proposal and confirmation fails closed. Assert the binding is present rather than pinning the exact shape.
+        and start["function_args"].get("package_id") == "G-TEST"
+        and len(str(start["function_args"].get("manifest_sha256") or "")) == 64
         and start["status"] == "proposed", "a_review_request_becomes_a_proposal_for_the_governed_capability")
 require(unknown["intent"] == "experiment_review_unavailable" and unknown["execution_mode"] == router.BLOCKED and "G-TEST" in unknown["blocked_reason"],
         "an_unknown_name_is_blocked_with_the_eligible_list")
