@@ -79,8 +79,17 @@ def run_task(task_id: str, *, runner: Callable[[str], Mapping[str, Any]], root: 
     if task["kind"] not in IMPLEMENTED:
         raise NotImplementedError("task_kind_not_implemented")
     artifact = runner(task["target"])
-    task.update(status="completed" if artifact.get("status") == "complete" else f"finished_{artifact.get('status')}", finished=_now(),
+    status = str(artifact.get("status") or "")
+    if status == "paused":
+        # A paused task is not finished. It goes back to queued so the same task can be resumed, and it keeps the
+        # work id it was paused under; nothing else about it changes.
+        task.update(status="queued", paused_at=_now(), review_id=artifact.get("review_id"),
+                    paused_work_id=artifact.get("work_id"))
+        _save(queue, root)
+        return task
+    task.update(status="completed" if status == "complete" else f"finished_{status}", finished=_now(),
                 review_id=artifact.get("review_id"))
+    task.pop("paused_at", None)
     _save(queue, root)
     return task
 

@@ -130,8 +130,13 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
     protected = guarded_research_roots(root)
     contract = str(job.get("reviewer_contract") or DEFAULT_REVIEWER_CONTRACT)
     reviewer = resolve_reviewer(contract)
-    runner = review or (lambda target: reviewer.review_experiment(target, runtime_root_path=private, source_root=SOURCE_ROOT,
-                                                                  protected_roots=protected, call_model=CALL_MODEL, identity=IDENTITY))
+    # The work id is the job id, so a pause request an operator raises against this job reaches this review, and a
+    # resume continues the same review rather than starting a second one.
+    resuming = bool(job.get("status") == "paused")
+    runner = review or (lambda target: reviewer.review_experiment(
+        target, runtime_root_path=private, source_root=SOURCE_ROOT, protected_roots=protected,
+        call_model=CALL_MODEL, identity=IDENTITY,
+        **({"work_id": job["job_id"], "resume": resuming} if hasattr(reviewer, "resume_review") else {})))
     from review_activity import observing_review
     observer = None
     try:
@@ -145,6 +150,14 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
         if observer:
             observer.finish(failed)
         return failed
+    if str(task.get("status") or "") == "queued" and task.get("paused_at"):
+        # Paused, not finished: the job stays alive, holds its work id, and publishes no artifact yet.
+        paused = adapter.save_job({**job, "status": "paused", "paused": task.get("paused_at"),
+                                   "review_id": task.get("review_id") or job.get("review_id", ""),
+                                   "private_runtime_root": str(private)}, root)
+        if observer:
+            observer.finish(paused)
+        return paused
     review_id = str(task.get("review_id") or "")
     location = publish_artifact(private, root, review_id) if review_id else ""
     artifact = json.loads((Path(location) / "review.json").read_text(encoding="utf-8")) if review_id else {}
