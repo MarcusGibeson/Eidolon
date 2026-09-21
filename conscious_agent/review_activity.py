@@ -12,7 +12,7 @@ from functools import wraps
 import logging
 from threading import Event, Thread, get_ident
 
-from activity import Activity, TERMINAL
+from activity import Activity, PAUSE_STATES, TERMINAL
 
 STAGES = ("Preparing", "Observing", "Part Synthesis", "Document Synthesis", "Consolidating", "Final Synthesis", "Verifying")
 STAGE_NAMES = {"observe": "Observing", "part": "Part Synthesis", "document": "Document Synthesis",
@@ -20,21 +20,33 @@ STAGE_NAMES = {"observe": "Observing", "part": "Part Synthesis", "document": "Do
 
 
 class ReviewActivity:
-    def __init__(self, job, root):
-        self.activity = Activity(job["job_id"], "experiment_review", "Independent experiment review",
-                                 job.get("package_id", ""), root=root, stages=STAGES, started=job.get("started"),
-                                 identities={k: job.get(k, "") for k in ("job_id", "task_id", "package_id", "reviewer_contract")},
-                                 governance={"read_only": True, "non_authoritative": True, "belief_effects": "none",
-                                             "mutation_guard": "pending", "execution_authority": "existing_operator_confirmation"})
-        self.counts = {"model_calls": 0, "responses_received": 0, "retries": 0, "grounded_observations": 0,
+    def __init__(self, job, root, *, resuming=False):
+        base_counts = {"model_calls": 0, "responses_received": 0, "retries": 0, "grounded_observations": 0,
                        "rejected_observations": 0, "synthesis_units": 0}
+        if resuming:
+            # One activity for one review. Resumed work continues the same record and the same cumulative metrics;
+            # a second activity would make the same job look like two, which is the falsehood this repair removes.
+            self.activity = Activity.reopen(job["job_id"], root=root)
+            self.resumed = True
+        else:
+            self.activity = Activity(job["job_id"], "experiment_review", "Independent experiment review",
+                                     job.get("package_id", ""), root=root, stages=STAGES, started=job.get("started"),
+                                     identities={k: job.get(k, "") for k in ("job_id", "task_id", "package_id", "reviewer_contract")},
+                                     governance={"read_only": True, "non_authoritative": True, "belief_effects": "none",
+                                                 "mutation_guard": "pending", "execution_authority": "existing_operator_confirmation"})
+            self.resumed = False
+        carried = self.activity.record.get("metrics") or {}
+        self.counts = {key: int(carried.get(key, 0)) for key in base_counts}
         self.parts, self.done, self.required = {}, set(), set()
         self.stage_done, self.stage_totals = {}, {}
         self.seen_asks = set()
         self.stopped = Event()
         self.worker = Thread(target=self._heartbeat, daemon=True)
         self.worker.start()
-        self.emit("job_started", state="preparing", stage="Preparing")
+        if self.resumed:
+            self.emit("resume_requested", state="running", metrics=self.counts)
+        else:
+            self.emit("job_started", state="preparing", stage="Preparing")
 
     def emit(self, event, **kw):
         try:
@@ -57,10 +69,31 @@ class ReviewActivity:
         self.stopped.set()
         self.worker.join(timeout=1)
         artifact = artifact or {}
+        if job.get("status") == "paused" or artifact.get("status") == "paused":
+            # Paused work has not finished and has produced no result. Sealing a terminal state here is exactly the
+            # false telemetry this repair removes: the record stays alive so the same activity can resume.
+            self.emit("paused", state="paused", metrics=self.counts,
+                      identities={k: str(v) for k, v in (
+                          ("review_id", job.get("review_id", "")),
+                          ("checkpoint_digest", (artifact.get("checkpoint_digest") or "")[:64]),
+                          ("completed_units", artifact.get("completed_units", "")),
+                      ) if v not in (None, "")})
+            return
         state = "failed" if job.get("status") == "failed" else {
             "complete": "complete", "mutation_guard_failed": "failed"}.get(artifact.get("status"), "incomplete")
         checks = artifact.get("mutation_guard") or {}
-        self.counts["missing_required_parts"] = sum(key not in self.done for key in self.required)
+        coverage = artifact.get("coverage") or {}
+        if coverage:
+            # Authoritative, and correct across a resume: this observer only saw the parts of its own segment.
+            self.counts["missing_required_parts"] = max(
+                0, int(coverage.get("required_parts", 0)) - int(coverage.get("reviewed_required_parts", 0)))
+            self.counts["required_parts"] = int(coverage.get("required_parts", 0))
+            self.counts["reviewed_required_parts"] = int(coverage.get("reviewed_required_parts", 0))
+            self.counts["grounded_observations"] = int(coverage.get("grounded_observations",
+                                                                    self.counts["grounded_observations"]))
+            self.counts["coverage_percent"] = round(float(coverage.get("required_coverage", 0.0)) * 100, 2)
+        else:
+            self.counts["missing_required_parts"] = sum(key not in self.done for key in self.required)
         model = (artifact.get("provenance") or {}).get("model") or {}
         for missing in (artifact.get("coverage") or {}).get("missing", []):
             level = missing.get("level")
@@ -80,6 +113,33 @@ class ReviewActivity:
                               "provider": model.get("provider", ""), "model": model.get("model", "")},
                   governance={"mutation_guard": "passed" if checks.get("passed") is True else
                               "failed" if checks.get("passed") is False else "unverified"})
+
+    # Operational events the reviewer reports at its own safe boundaries. Names only, plus identifiers and counts:
+    # no prompt, reply, quote, statement, label or reasoning ever reaches an activity record.
+    REVIEWER_EVENTS = {
+        "pause_requested": ("pause_requested", "pause_requested"),
+        "model_released": ("model_released", None),
+        "model_release_skipped": ("model_release_skipped", None),
+        "paused": ("paused", "paused"),
+        "checkpoint_integrity_verified": ("checkpoint_integrity_verified", "running"),
+        "resumed": ("resumed", "running"),
+        "cancel_requested": ("cancel_requested", None),
+        "cancelled": ("cancelled", "cancelled"),
+    }
+
+    def on_reviewer_event(self, event, fields=None):
+        """Bridge one reviewer boundary event into the activity record. Never raises into the review."""
+        try:
+            name, state = self.REVIEWER_EVENTS.get(str(event), (None, None))
+            if name is None:
+                return
+            safe_fields = {k: str(v)[:80] for k, v in (fields or {}).items()
+                           if k in ("review_id", "checkpoint_digest", "unit", "level", "completed_units",
+                                    "from_sequence")}
+            self.emit(name, metrics=self.counts, **({"state": state} if state else {}),
+                      **({"identities": safe_fields} if safe_fields else {}))
+        except Exception:
+            logging.getLogger(__name__).warning("Activity observation unavailable: %s", event)
 
     @contextmanager
     def observe(self, reviewer):
@@ -232,11 +292,15 @@ class ReviewActivity:
 
 
 @contextmanager
-def observing_review(job, root, reviewer):
-    """Only instrumentation setup may fail open; never retry the operation."""
+def observing_review(job, root, reviewer, *, resuming=False):
+    """Only instrumentation setup may fail open; never retry the operation.
+
+    A resume continues the same activity. If it cannot - the record is missing, or already terminal - telemetry is
+    dropped for this segment rather than forked into a second activity that would misrepresent one review as two.
+    """
     observer = None
     try:
-        observer = ReviewActivity(job, root)
+        observer = ReviewActivity(job, root, resuming=resuming)
     except Exception:
         logging.getLogger(__name__).warning("Review activity unavailable; review continues without telemetry")
     if observer is None:

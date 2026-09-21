@@ -133,16 +133,30 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
     # The work id is the job id, so a pause request an operator raises against this job reaches this review, and a
     # resume continues the same review rather than starting a second one.
     resuming = bool(job.get("status") == "paused")
-    runner = review or (lambda target: reviewer.review_experiment(
-        target, runtime_root_path=private, source_root=SOURCE_ROOT, protected_roots=protected,
-        call_model=CALL_MODEL, identity=IDENTITY,
-        **({"work_id": job["job_id"], "resume": resuming} if hasattr(reviewer, "resume_review") else {})))
     from review_activity import observing_review
     observer = None
+    holder: dict[str, Any] = {}
+
+    def runner_for(target: str) -> Mapping[str, Any]:
+        extra: dict[str, Any] = {}
+        if hasattr(reviewer, "resume_review"):
+            extra = {"work_id": job["job_id"], "resume": resuming}
+            watcher = holder.get("observer")
+            if watcher is not None:
+                extra["on_state"] = watcher.on_reviewer_event
+        result = reviewer.review_experiment(target, runtime_root_path=private, source_root=SOURCE_ROOT,
+                                            protected_roots=protected, call_model=CALL_MODEL, identity=IDENTITY,
+                                            **extra)
+        holder["result"] = result
+        return result
+
+    runner = review or runner_for
     try:
         # Custom legacy runners may guard the entire live runtime. Their existing
         # job record remains observable, but do not write sidecars inside that guard.
-        with (observing_review(job, root, reviewer) if review is None else nullcontext()) as observer:
+        with (observing_review(job, root, reviewer, resuming=resuming) if review is None
+              else nullcontext()) as observer:
+            holder["observer"] = observer
             task = lrq.run_task(job["task_id"], runner=runner, root=root)
     except Exception as error:  # a failed review is recorded, never hidden, and never retried on its own
         failed = adapter.save_job({**job, "status": "failed", "failure": f"{type(error).__name__}: {error}"[:300],
@@ -156,7 +170,7 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
                                    "review_id": task.get("review_id") or job.get("review_id", ""),
                                    "private_runtime_root": str(private)}, root)
         if observer:
-            observer.finish(paused)
+            observer.finish(paused, holder.get("result") or {})
         return paused
     review_id = str(task.get("review_id") or "")
     location = publish_artifact(private, root, review_id) if review_id else ""

@@ -88,6 +88,23 @@ class Activity:
             raise FileExistsError("activity_id_already_exists")
         self.update("job_queued")
 
+    @classmethod
+    def reopen(cls, activity_id, *, root=None, clock=now):
+        """Continue an activity that is still alive, so paused work keeps one identity and one history.
+
+        Refuses a terminal record rather than forking a second activity for the same work: a caller that cannot
+        safely continue must say so, not fabricate continuity.
+        """
+        obj = cls.__new__(cls)
+        obj.root, obj.clock, obj.lock = _root(root), clock, RLock()
+        obj.path = obj.root / AREA / (_id(activity_id) + ".json")
+        if not obj.path.is_file():
+            raise FileNotFoundError("activity_not_found")
+        obj.record = json.loads(obj.path.read_text(encoding="utf-8"))
+        if obj.record.get("state") in TERMINAL:
+            raise ValueError("activity_already_terminal")
+        return obj
+
     def update(self, event, *, state=None, stage=None, units=None, stage_units=None,
                metrics=None, governance=None, breakdown=None, reason=None, result=None, identities=None):
         with self.lock:

@@ -403,7 +403,8 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
         if release_model and str(ident.get("provider") or "") == "ollama":
             released = pause.release_local_model(str(ident.get("model") or ""))
             _report("model_released" if released.get("released") else "model_release_skipped")
-        _report("paused" if signal == "pause" else "cancelled", unit=unit, level=level)
+        _report("paused" if signal == "pause" else "cancelled", unit=unit, level=level,
+                checkpoint_digest=str(record.get("digest") or ""), completed_units=len(completed_units))
         checkpointer.write(position={"level": level, **dict(position)}, completed_units=completed_units,
                            next_unit="", state=_snapshot(), status=status)
         raise (ReviewPaused if signal == "pause" else ReviewCancelled)(record)
@@ -419,6 +420,8 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
         rejected[:] = restored.get("rejected") or []
         questions[:] = restored.get("questions") or []
         parts_coverage[:] = restored.get("parts_coverage") or []
+        _report("checkpoint_integrity_verified", from_sequence=int(restored.get("sequence") or 0),
+                completed_units=len(completed_units))
         _report("resumed", from_sequence=int(restored.get("sequence") or 0))
 
     absent_roles = restored.get("absent_roles") if restored else None
