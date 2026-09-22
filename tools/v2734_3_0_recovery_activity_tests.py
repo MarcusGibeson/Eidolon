@@ -229,6 +229,15 @@ def main() -> int:
         require(int((rec_act.get("metrics") or {}).get("inherited_grounded_observations", 0)) ==
                 len(art["grounded_observations"]), "the_activity_reports_inherited_observations")
         require(rec_act["state"] in ("complete", "incomplete"), "the_activity_reaches_a_terminal_state")
+        # The artifact total counts inherited evidence too, so the panel must also say what this recovery produced.
+        metrics = rec_act.get("metrics") or {}
+        total_obs = len(derived["grounded_observations"])
+        require(metrics["grounded_observations"] == total_obs, "the_total_matches_the_derived_artifact")
+        require(metrics["grounded_observations_this_recovery"] ==
+                total_obs - len(art["grounded_observations"]),
+                "the_activity_says_how_much_this_recovery_produced")
+        require(metrics["grounded_observations_this_recovery"] < metrics["grounded_observations"],
+                "inherited_evidence_is_not_reported_as_newly_made")
 
         # --- 7c. a recovery that is paused and resumed keeps one activity -------------------------------------
         # The live run found this: the control marks a resumed job running before its worker starts, so deciding

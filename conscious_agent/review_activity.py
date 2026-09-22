@@ -113,6 +113,11 @@ class ReviewActivity:
             self.counts["grounded_observations"] = int(coverage.get("grounded_observations",
                                                                     self.counts["grounded_observations"]))
             self.counts["coverage_percent"] = round(float(coverage.get("required_coverage", 0.0)) * 100, 2)
+            if "inherited_grounded_observations" in self.counts:
+                # The artifact's total is what a review holds; on a recovery most of it was carried forward. Say how
+                # much this recovery actually produced, or the total reads as though every observation was re-made.
+                self.counts["grounded_observations_this_recovery"] = max(
+                    0, self.counts["grounded_observations"] - int(self.counts["inherited_grounded_observations"]))
         else:
             self.counts["missing_required_parts"] = sum(key not in self.done for key in self.required)
         model = (artifact.get("provenance") or {}).get("model") or {}
