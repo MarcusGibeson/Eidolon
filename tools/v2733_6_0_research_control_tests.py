@@ -195,19 +195,91 @@ def main() -> int:
         out = rc.control(job_id, "resume", root)
         require(not out["ok"] and out["status"] == "job_already_terminal",
                 "a_real_failure_is_not_silently_treated_as_recoverable")
-        require(out["recovery"] == "failure_not_recoverable", "the_refusal_names_why")
+        require(out["recovery"] == "failure_is_a_refusal", "the_refusal_names_why")
 
         # a completed checkpoint is not recoverable either
         adapter.save_job(job, root)
         cp.write(position={"level": "finished"}, completed_units=["observe:D1:1"], next_unit="",
                  state={"review_id": "rev_rec"}, status="complete")
         out = rc.resumable_checkpoint(job, root)
-        require(not out["resumable"] and out["reason"] == "checkpoint_terminal",
+        require(not out["resumable"] and out["reason"] == "checkpoint_not_live:complete",
                 "a_finished_checkpoint_is_not_offered_for_resume")
+
+        # An interruption wears whatever message was written last. A second crash shape must not lock the operator
+        # out of work the checkpoint says is still live: this exact case cost a real review its resume button.
+        cp.write(position={"level": "observe"}, completed_units=["observe:D1:1", "observe:D2:1"],
+                 next_unit="", state={"review_id": "rev_rec"}, status=pause.RUNNING)
+        adapter.save_job({**job, "failure": "FileExistsError: review directory already exists: " + str(private)},
+                         root)
+        out = rc.resumable_checkpoint(adapter._read(adapter._job_path(job_id, root)), root)
+        require(out["resumable"], "an_unfamiliar_interruption_message_does_not_hide_live_work")
+
+        # ...but a checkpoint that cannot vouch for itself promises something resume would refuse
+        target = pause.checkpoint_path(job_id, controls)
+        sealed = json.loads(target.read_text(encoding="utf-8"))
+        target.write_text(json.dumps({**sealed, "completed_unit_count": 99}), encoding="utf-8")
+        out = rc.resumable_checkpoint(adapter._read(adapter._job_path(job_id, root)), root)
+        require(not out["resumable"] and out["reason"] == "checkpoint_refused:checkpoint_digest_mismatch",
+                "a_checkpoint_whose_seal_does_not_hold_is_not_offered_for_resume")
+        target.write_text(json.dumps(sealed), encoding="utf-8")
+
+        # an accepted resume reads as live at once, so a second press cannot start a second worker
+        adapter.save_job({**job, "failure": "job_process_ended_without_result"}, root)
+        spawned = []
+        original = adapter.SPAWN
+        adapter.SPAWN = lambda argv, cwd, env: (spawned.append(list(argv)), 4242)[1]
+        try:
+            require(rc.control(job_id, "resume", root)["ok"], "the_recovered_job_resumes")
+            live = adapter._read(adapter._job_path(job_id, root))
+            require(live["status"] == "running" and live["pid"] == 4242,
+                    "an_accepted_resume_marks_the_work_live")
+            require(not live.get("failure") and not live.get("finished"),
+                    "the_resumed_job_no_longer_carries_the_interruption")
+            second = rc.control(job_id, "resume", root)
+            require(not second["ok"] and second["status"] == "job_not_paused",
+                    "a_second_press_does_not_start_a_second_worker")
+            require(len(spawned) == 1, "exactly_one_worker_was_started")
+        finally:
+            adapter.SPAWN = original
 
     # --- 6c. the decorated payload detects recovery from the job records --------------------------------------
     require(rc.decorate({"activities": [activity_row("failed")]}, None)["activities"][0]["control"]["enabled"]
             is False, "without_a_data_root_a_failed_activity_is_not_assumed_recoverable")
+
+    # --- 6d. the runner continues live checkpointed work instead of starting a second review -----------------
+    # The control can only offer what the worker will honour. Keying this on the job's status meant a crashed run
+    # was restarted from scratch and refused by the reviewer's single-review guard, reaching nothing.
+    with tempfile.TemporaryDirectory(prefix="v2733-route-") as tmp:
+        root = Path(tmp)
+        import experiment_review as frozen
+        import experiment_review_hierarchical as hier
+        import run_review_job as runner
+
+        job_id, manifest = "job_route", "c" * 64
+        private = root / "research_review_runtimes" / job_id
+        job = {"job_id": job_id, "manifest_sha256": manifest, "status": "failed",
+               "failure": "job_process_ended_without_result", "runtime_root": str(root),
+               "private_runtime_root": str(private)}
+        controls = hier.control_root_for(private, manifest, job_id)
+        require(controls == rc._controls_root(job, root),
+                "the_control_and_the_runner_look_for_the_checkpoint_in_the_same_place")
+
+        require(runner._resumable(job, private, hier) is False, "with_no_checkpoint_the_runner_starts_fresh")
+        cp = pause.Checkpointer(job_id, controls, bindings={"manifest_sha256": manifest})
+        cp.write(position={"level": "observe"}, completed_units=["observe:D1:1"], next_unit="observe:D2:1",
+                 state={"review_id": "rev_route"}, status=pause.RUNNING)
+        require(runner._resumable(job, private, hier) is True,
+                "a_crashed_run_with_live_work_is_routed_to_resume_not_restarted")
+        cp.write(position={"level": "observe"}, completed_units=["observe:D1:1"], next_unit="",
+                 state={"review_id": "rev_route"}, status=pause.PAUSED)
+        require(runner._resumable(job, private, hier) is True, "a_deliberate_pause_still_resumes")
+        cp.write(position={"level": "finished"}, completed_units=["observe:D1:1"], next_unit="",
+                 state={"review_id": "rev_route"}, status="complete")
+        require(runner._resumable(job, private, hier) is False, "finished_work_is_never_resumed")
+        require(runner._resumable({**job, "manifest_sha256": ""}, private, hier) is False,
+                "work_with_no_package_binding_is_never_resumed")
+        require(runner._resumable(job, private, frozen) is False,
+                "a_reviewer_without_resume_is_never_asked_to_resume")
 
     # --- 7. the control changes no contract ------------------------------------------------------------------
     require("paused" not in act.TERMINAL and "pause_requested" not in act.TERMINAL,

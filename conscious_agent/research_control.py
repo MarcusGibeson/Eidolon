@@ -35,10 +35,15 @@ ACTIONS = ("pause", "resume")
 
 _PAUSABLE = {"running", "preparing", "blocked"}
 _TERMINAL = {"complete", "incomplete", "failed", "cancelled"}
-# A job whose process died leaves a sealed checkpoint behind. That is interrupted work, not a finished review, so the
-# control offers to continue it - but only when the checkpoint actually verifies, and resume still runs the full
-# integrity check before any work restarts.
-_RECOVERABLE_FAILURES = {"job_process_ended_without_result"}
+# A job whose process died leaves a checkpoint behind. That is interrupted work, not a finished review, so the control
+# offers to continue it - but only when the checkpoint is live and its own seal verifies, and resume still runs the
+# full binding integrity check before any work restarts.
+#
+# Which interruption message happened to be written last is not evidence about what survived: an allowlist of failure
+# strings locked the operator out of intact work the first time a second interruption shape appeared. So the
+# checkpoint decides, and only these failures stay terminal regardless - they are decisions the system made, and a
+# progress control must not dress a refusal up as work waiting to continue.
+_REFUSALS = ("ResumeRefused", "ReviewPackageError")
 
 
 def _now() -> str:
@@ -94,17 +99,21 @@ def resumable_checkpoint(job: Mapping[str, Any], root: str | Path) -> dict[str, 
     if status not in {"failed", "paused"}:
         return {"resumable": False, "reason": "job_not_interrupted"}
     failure = str(job.get("failure") or "")
-    if status == "failed" and failure.split(":")[0] not in _RECOVERABLE_FAILURES:
-        return {"resumable": False, "reason": "failure_not_recoverable"}
+    if status == "failed" and failure.split(":")[0].strip() in _REFUSALS:
+        return {"resumable": False, "reason": "failure_is_a_refusal"}
     try:
         controls = _controls_root(job, root)
         record = pause.load_checkpoint(str(job.get("job_id")), controls)
+    except pause.ResumeRefused as refused:
+        # ``load_checkpoint`` verifies the seal itself and refuses a corrupt one. Carry its own words through, so the
+        # surface can say why work it will not offer to continue is being held back.
+        return {"resumable": False, "reason": "checkpoint_refused:" + str(refused)}
     except Exception as exc:
         return {"resumable": False, "reason": "checkpoint_unreadable:" + type(exc).__name__}
     if not record:
         return {"resumable": False, "reason": "no_checkpoint"}
-    if str(record.get("status")) in {"complete", "incomplete", "cancelled"}:
-        return {"resumable": False, "reason": "checkpoint_terminal"}
+    if str(record.get("status")) not in {pause.RUNNING, pause.PAUSE_REQUESTED, pause.PAUSED}:
+        return {"resumable": False, "reason": "checkpoint_not_live:" + str(record.get("status") or "")}
     return {"resumable": True, "completed_units": record.get("completed_unit_count", 0),
             "sequence": record.get("sequence"), "digest": str(record.get("digest") or "")}
 
@@ -180,7 +189,13 @@ def _resume(job: Mapping[str, Any], root: str | Path) -> int:
 
     argv = [sys.executable, "-B", str(adapter.JOB_RUNNER), str(adapter._job_path(str(job.get("job_id")), root))]
     env = {**os.environ, "EIDOLON_DATA_DIR": str(adapter._root(root)), "PYTHONIOENCODING": "utf-8"}
-    return int(adapter.SPAWN(argv, adapter.JOB_RUNNER.parents[1], env))
+    pid = int(adapter.SPAWN(argv, adapter.JOB_RUNNER.parents[1], env))
+    # Record the work as live before returning. Otherwise the job still reads interrupted while its new worker runs,
+    # the surface keeps offering Resume, and a second press spawns a second process against the same review. Writing
+    # it running also restores the single-active-job pointer that ``save_job`` maintains.
+    record = {key: value for key, value in dict(job).items() if key not in ("failure", "finished")}
+    adapter.save_job({**record, "status": "running", "pid": pid, "resumed": _now()}, root)
+    return pid
 
 
 def decorate(payload: Mapping[str, Any], root: str | Path | None = None) -> dict[str, Any]:

@@ -116,6 +116,35 @@ def publish_artifact(private: Path, root: str | Path, review_id: str) -> Path:
     return destination
 
 
+def _resumable(job: Mapping[str, Any], private: Path, reviewer: Any) -> bool:
+    """Whether this job has live checkpointed work to continue, asked of the checkpoint itself.
+
+    A deliberate pause is not the only way work stops. A worker killed mid-call leaves a ``running`` checkpoint and no
+    pause signal, and keying this on the job's own status meant such work was restarted from scratch - which the
+    reviewer's single-review guard then refused outright, so the run reached nothing and the recorded interruption was
+    overwritten by that refusal. The checkpoint knows what survived, so it decides.
+
+    This only chooses which entry point runs. ``resume_review`` still verifies the seal and every package binding, and
+    refuses rather than continuing if anything it was bound to has drifted.
+    """
+    import cooperative_pause as pause
+
+    if not hasattr(reviewer, "resume_review"):
+        return False
+    manifest = str(job.get("manifest_sha256") or "")
+    if not manifest:
+        return False
+    try:
+        controls = reviewer.control_root_for(private, manifest, str(job["job_id"]))
+        record = pause.load_checkpoint(str(job["job_id"]), controls)
+    except Exception:
+        # Nothing readable to continue from. Starting fresh is the honest fallback, and the guard still applies.
+        return False
+    if not record:
+        return False
+    return str(record.get("status") or "") in (pause.RUNNING, pause.PAUSE_REQUESTED, pause.PAUSED)
+
+
 def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] | None = None) -> dict[str, Any]:
     """Run the job's queue task once and record the outcome. Returns the final job record."""
     path = Path(job_path)
@@ -132,7 +161,7 @@ def run_job(job_path: str | Path, *, review: Callable[[str], Mapping[str, Any]] 
     reviewer = resolve_reviewer(contract)
     # The work id is the job id, so a pause request an operator raises against this job reaches this review, and a
     # resume continues the same review rather than starting a second one.
-    resuming = bool(job.get("status") == "paused")
+    resuming = _resumable(job, private, reviewer)
     from review_activity import observing_review
     observer = None
     holder: dict[str, Any] = {}
