@@ -250,6 +250,27 @@ def plan_group_units(inputs: Sequence[str], items: Mapping[str, Mapping[str, Any
             for n, g in enumerate(groups)]
 
 
+def execution_bindings(package: Mapping[str, Any], ident: Mapping[str, Any],
+                       *, source_tree: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Everything a run is bound to, in one definition.
+
+    A checkpoint seals these and a resume verifies them, so the same dict has to be reachable from outside this
+    module: governed failed-unit recovery seals a checkpoint of its own before handing the work back here.
+    """
+    return {
+        "package_id": package["experiment_id"], "manifest_sha256": package["manifest_sha256"],
+        "package_documents": {d["path"]: d["sha256"] for d in package["documents"]},
+        "package_contract": str(package["manifest"].get("package_contract") or ""),
+        "rendering": str((package["manifest"].get("rendering") or {}).get("id") or ""),
+        "reviewer_contract": CONTRACT_VERSION, "baseline_contract": BASELINE_CONTRACT,
+        "reviewer_module_sha256": base._sha256_file(Path(__file__).resolve()),
+        "baseline_module_sha256": base._sha256_file(Path(base.__file__).resolve()),
+        "model": {k: ident.get(k) for k in ("model", "provider", "context_size", "resolved_config_sha256")},
+        "source_tree": source_tree,
+        "limits": registered_limits(),
+    }
+
+
 def work_review_id(manifest_sha256: str, work_id: str) -> str:
     """The review directory named work takes. Deterministic so a resume can find its checkpoint before reading it."""
     return hashlib.sha256(f"{manifest_sha256}|{work_id}".encode()).hexdigest()[:16]
@@ -298,7 +319,8 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                        identity: Mapping[str, Any] | None = None, clock: Callable[[], str] = base._now,
                        work_id: str = "", control_root: str | Path | None = None,
                        resume: bool = False, on_state: Callable[[str, Mapping[str, Any]], None] | None = None,
-                       release_model: bool = True) -> dict[str, Any]:
+                       release_model: bool = True,
+                       continuation_lineage: Mapping[str, Any] | None = None) -> dict[str, Any]:
     package = base.load_package(package_dir)
     root = base.runtime_root(runtime_root_path)
     area = root / REVIEW_AREA
@@ -330,18 +352,7 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
     # Both the checkpoint and the operator's pause signal live inside this review's own directory, which is the
     # single path the mutation guard excludes. Anywhere else and a durable pause would itself fail the guard.
     controls = Path(control_root).expanduser().resolve() if control_root is not None else out_dir
-    bindings = {
-        "package_id": package["experiment_id"], "manifest_sha256": package["manifest_sha256"],
-        "package_documents": {d["path"]: d["sha256"] for d in package["documents"]},
-        "package_contract": str(package["manifest"].get("package_contract") or ""),
-        "rendering": str((package["manifest"].get("rendering") or {}).get("id") or ""),
-        "reviewer_contract": CONTRACT_VERSION, "baseline_contract": BASELINE_CONTRACT,
-        "reviewer_module_sha256": base._sha256_file(Path(__file__).resolve()),
-        "baseline_module_sha256": base._sha256_file(Path(base.__file__).resolve()),
-        "model": {k: ident.get(k) for k in ("model", "provider", "context_size", "resolved_config_sha256")},
-        "source_tree": before.get("source_tree"),
-        "limits": registered_limits(),
-    }
+    bindings = execution_bindings(package, ident, source_tree=before.get("source_tree"))
     completed_units: list[str] = []
     restored: dict[str, Any] = {}
     # Declared before level 0 so a checkpoint taken during the observation pass can snapshot the whole shape of the
@@ -879,6 +890,10 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                            "source_tree": before.get("source_tree")},
             "limits": registered_limits() | {"context_size": context_size},
             "prompt_templates_sha256": template_digests(), "mutation_authority": "none",
+            # Recorded verbatim when this run continues earlier work, so a derived artifact says so in its own
+            # provenance rather than only in a sidecar: which review it came from, which units were re-executed,
+            # and where its inherited observations end.
+            "lineage": dict(continuation_lineage) if continuation_lineage else None,
             "review_id_vocabulary": ["O", "PS", "DS", "GS", "U"]},
         "runtime_accounting": {
             "provider_attempts": len(ledger), "failed_attempts": sum(bool(x.get("error")) for x in ledger),
