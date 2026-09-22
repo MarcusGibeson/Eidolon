@@ -142,6 +142,25 @@ def main() -> int:
         require(len({o["obs_id"] for o in derived["grounded_observations"]}) ==
                 len(derived["grounded_observations"]), "no_observation_id_was_reissued")
 
+        # --- 6b. inherited and this-run attempts are told apart -------------------------------------------------
+        # The derived ledger is cumulative, so a recovered unit's attempt count spans both runs. The artifact must
+        # say which attempts it inherited and which this execution made, without erasing either.
+        rec_part = [x for x in derived["coverage"]["parts"] if x["stage"] == missing[0]][0]
+        src_part = [x for x in art["coverage"]["parts"] if x["stage"] == missing[0]][0]
+        require(rec_part["attempts_inherited"] == src_part["attempts_total"],
+                "inherited_attempts_equal_what_the_source_recorded")
+        require(src_part["attempts_inherited"] == 0 and src_part["attempts_this_run"] == src_part["attempts_total"],
+                "in_the_source_artifact_every_attempt_was_its_own")
+        require(rec_part["attempts_this_run"] >= 1, "this_run_made_at_least_one_attempt")
+        require(rec_part["attempts_total"] == rec_part["attempts_inherited"] + rec_part["attempts_this_run"],
+                "inherited_plus_this_run_accounts_for_every_attempt")
+        require(rec_part["grounding_attempts_this_run"] == rec_part["grounding_attempts"],
+                "grounding_attempts_describe_this_execution")
+        untouched = [x for x in derived["coverage"]["parts"] if x["stage"] != missing[0]][0]
+        require(untouched["attempts_this_run"] == 0, "a_unit_this_run_did_not_execute_reports_no_attempts")
+        require(untouched["attempts_inherited"] == untouched["attempts_total"],
+                "an_inherited_unit_is_entirely_inherited")
+
         # --- 7. the derived artifact declares its own lineage --------------------------------------------------
         lin = derived["provenance"]["lineage"]
         require(lin and lin["source_review_id"] == source_id, "the_artifact_names_the_review_it_came_from")

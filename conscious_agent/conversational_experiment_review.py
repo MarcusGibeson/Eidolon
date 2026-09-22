@@ -40,7 +40,7 @@ CONTRACT_VERSION = "v2731.11"
 # The reviewer architecture new reviews run on. v2731.8 stays importable and runnable as the frozen historical
 # baseline; jobs already queued keep whatever contract their own record names, so changing this never rewrites a
 # review that has already been started or completed.
-ACTIVE_REVIEWER_CONTRACT = "v2733.1"
+ACTIVE_REVIEWER_CONTRACT = "v2734.0"
 PACKAGE_AREA = "research_packages"
 JOB_AREA = "research_jobs"
 ACTIVE_JOB_FILE = "active_job.json"

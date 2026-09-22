@@ -278,7 +278,7 @@ def main() -> int:
 
         # --- 9. nothing about grounding or acceptance moved ----------------------------------------------------
         require(base.CONTRACT_VERSION == "v2731.8", "the_baseline_reviewer_is_unchanged")
-        require(hier.CONTRACT_VERSION == "v2733.1", "the_reviewer_carries_a_new_contract_version")
+        require(hier.CONTRACT_VERSION == "v2734.0", "the_reviewer_carries_a_new_contract_version")
         require(hier.OBSERVE_GROUNDING_ATTEMPTS == 2, "the_retry_limit_is_unchanged")
         require(hier.MIN_SYNTHESISED_REPRESENTATION == 0.5, "the_representation_floor_is_unchanged")
         require(base.REQUIRED_ROLES == ("design", "corpus", "raw_outputs"), "required_roles_are_unchanged")

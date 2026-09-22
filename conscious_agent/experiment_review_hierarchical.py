@@ -67,7 +67,7 @@ import cooperative_pause as pause
 import experiment_review as base
 from json_storage import write_text_atomic
 
-CONTRACT_VERSION = "v2733.1"
+CONTRACT_VERSION = "v2734.0"
 BASELINE_CONTRACT = base.CONTRACT_VERSION
 REVIEW_AREA = base.REVIEW_AREA
 MANIFEST_NAME = base.MANIFEST_NAME
@@ -202,6 +202,49 @@ def _identifiers(text: Any) -> set[str]:
 _BASE_IDENTIFIERS = base._identifiers
 
 
+# --- the identity a record declares about itself -------------------------------------------------------------------
+# An observation may name only identifiers its own evidence establishes, and evidence is its quotes plus the metadata
+# the system reads from the record the quote sits in. That second half is why an observation can say which record it
+# is about without spending a quote on the record's id.
+#
+# The baseline reads metadata from a fixed list of key names - experiment, form, variant, condition, run, item, case,
+# record - which describes one corpus shape. A package whose records identify themselves by ``call_id`` / ``pair_id``
+# / ``item_id`` matches none of them, so the system dropped the identity of the very line it had located the quote in,
+# and any observation naming that record was refused as unsupported. With records rendered one per line and a 240
+# character quote cap, no single quote could carry both a 2500 character record's id and the field it described.
+#
+# So this recognises identity keys by shape (``id`` or ``*_id``) rather than by a corpus-specific list. It adds no
+# identifier that the located record does not declare about itself, and it changes no validation rule: quotes are
+# still located exactly, stitched quotes still refused, quote counts still capped, and an identifier that neither the
+# quotes nor the record establish is still unsupported.
+_RECORD_IDENTITY = re.compile(r'(?<![A-Za-z0-9_])"?([A-Za-z][A-Za-z0-9_]*_id|id)"?\s*[=:]\s*"?([A-Za-z0-9][A-Za-z0-9_.:\-]*)')
+_BASE_RECORD_METADATA = base.record_metadata
+
+
+def record_metadata(doc_text: str, line_start: int, line_end: int) -> dict[str, list[str]]:
+    """The baseline's metadata, plus the identity the located record declares about itself."""
+    found = dict(_BASE_RECORD_METADATA(doc_text, line_start, line_end))
+    for line in str(doc_text).split("\n")[line_start - 1:line_end]:
+        for key, value in _RECORD_IDENTITY.findall(line):
+            value = value.rstrip(".:-")
+            if value and value not in found.setdefault(key, []):
+                found[key].append(value)
+    return found
+
+
+@contextlib.contextmanager
+def record_identity_metadata():
+    """Read record identity keys for the duration of one review, then put the baseline back."""
+    if base.record_metadata is record_metadata:
+        raise RuntimeError("record_identity_metadata_is_not_reentrant")
+    original = base.record_metadata
+    base.record_metadata = record_metadata
+    try:
+        yield
+    finally:
+        base.record_metadata = original
+
+
 @contextlib.contextmanager
 def review_id_vocabulary():
     """Make GS and U count as review labels for the duration of one v2732.0 review, then put the baseline back."""
@@ -287,7 +330,7 @@ def review_experiment(package_dir: str | Path, **kwargs: Any) -> dict[str, Any]:
     A cooperative pause returns a non-artifact record describing where the work stopped; the review itself is not
     finished and no review.json is written. Resume with ``resume_review`` using the same work id.
     """
-    with review_id_vocabulary():
+    with review_id_vocabulary(), record_identity_metadata():
         try:
             return _review_experiment(package_dir, **kwargs)
         except ReviewPaused as paused:
@@ -453,6 +496,11 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                 completed_units=len(completed_units))
         _report("resumed", from_sequence=int(restored.get("sequence") or 0))
 
+    # Where inherited work ends. A continued review carries the earlier run's provider rows forward verbatim, so a
+    # part's attempt count is cumulative across runs - correct, but unreadable without saying which attempts were
+    # inherited and which this execution actually made.
+    inherited_ledger_rows = len(restored.get("ledger") or [])
+
     absent_roles = restored.get("absent_roles") if restored else None
     if absent_roles is None:
         absent_roles = [r for r in base.REQUIRED_ROLES if r not in {d["role"] for d in package["documents"]}]
@@ -504,6 +552,21 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                                                                     for x in rejected)})
                 offset += len(chunk_text)
                 _boundary(stage, "observe", {"doc_id": doc["doc_id"], "part": part, "parts": len(parts)})
+
+    # Attempts, said once for every part from this artifact's point of view. A continued review inherits the earlier
+    # run's provider rows verbatim, so a part's attempt count is genuinely cumulative; without separating them, a unit
+    # this run never touched still reported attempts, and a recovered unit's total silently spanned two executions.
+    # Counting by unit rather than by the stages this run happened to use keeps the three numbers adding up even when
+    # a continuation needs fewer stages than the run it continues. ``attempts`` and ``grounding_attempts`` keep their
+    # historical meaning and are left exactly as each run wrote them.
+    for row in parts_coverage:
+        unit = str(row["stage"])
+        rows_here = [x for x in ledger if base_unit_of(str(x["stage"])) == unit]
+        inherited_here = [x for x in ledger[:inherited_ledger_rows] if base_unit_of(str(x["stage"])) == unit]
+        row["attempts_total"] = len(rows_here)
+        row["attempts_inherited"] = len(inherited_here)
+        row["attempts_this_run"] = len(rows_here) - len(inherited_here)
+        row["grounding_attempts_this_run"] = int(row.get("grounding_attempts") or 0) if row["attempts_this_run"] else 0
 
     required = [p for p in parts_coverage if p["required"]]
     optional = [p for p in parts_coverage if not p["required"]]

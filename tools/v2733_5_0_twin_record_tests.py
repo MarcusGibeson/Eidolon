@@ -141,7 +141,7 @@ def main() -> int:
 
     # --- 5. the reviewer's own limits are untouched ---------------------------------------------------------------
     require(base.CONTRACT_VERSION == "v2731.8", "the_baseline_reviewer_is_unchanged")
-    require(hier.CONTRACT_VERSION == "v2733.1", "the_repair_carries_its_own_contract_version")
+    require(hier.CONTRACT_VERSION == "v2734.0", "the_repair_carries_its_own_contract_version")
     require(base.MAX_QUOTE_CHARS == 240 and base.MIN_QUOTE_CHARS == 4, "quote_limits_are_unchanged")
     require(base.MAX_OBSERVATIONS_PER_CHUNK == 8, "the_per_chunk_observation_limit_is_unchanged")
     require(base.MAX_QUOTES_PER_OBSERVATION == 3, "the_per_observation_quote_limit_is_unchanged")
