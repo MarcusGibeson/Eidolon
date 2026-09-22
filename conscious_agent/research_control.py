@@ -215,7 +215,10 @@ def decorate(payload: Mapping[str, Any], root: str | Path | None = None) -> dict
         for row in rows:
             if isinstance(row, dict):
                 row["control"] = affordance(row, recoverable=recoverable(row))
-    row = out.get("activity")
-    if isinstance(row, dict):
-        row["control"] = affordance(row, recoverable=recoverable(row))
+    # ``current`` is the row both surfaces actually draw, and it is the one carrying work that is still running - so
+    # leaving it undecorated meant the control was missing from exactly the case a pause button exists for.
+    for key in ("activity", "current"):
+        row = out.get(key)
+        if isinstance(row, dict):
+            row["control"] = affordance(row, recoverable=recoverable(row))
     return out

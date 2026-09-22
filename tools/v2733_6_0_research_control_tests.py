@@ -246,6 +246,18 @@ def main() -> int:
     require(rc.decorate({"activities": [activity_row("failed")]}, None)["activities"][0]["control"]["enabled"]
             is False, "without_a_data_root_a_failed_activity_is_not_assumed_recoverable")
 
+    # --- 6c-bis. the row the surfaces actually draw carries the control -------------------------------------
+    # Both the desktop panel and the web page render `current`, and running work only ever appears there. An
+    # undecorated `current` meant the control was missing from precisely the case it exists for.
+    running_row = activity_row("running")
+    decorated = rc.decorate({"activities": [running_row], "current": running_row, "activity": running_row}, None)
+    for where in ("activities", "current", "activity"):
+        got = decorated[where][0] if where == "activities" else decorated[where]
+        require((got.get("control") or {}).get("action") == "pause" and got["control"]["enabled"],
+                f"running_work_offers_pause_in_{where}")
+    require("control" in rc.decorate({"current": activity_row("running")}, None)["current"],
+            "a_payload_with_only_a_current_row_is_still_decorated")
+
     # --- 6d. the runner continues live checkpointed work instead of starting a second review -----------------
     # The control can only offer what the worker will honour. Keying this on the job's status meant a crashed run
     # was restarted from scratch and refused by the reviewer's single-review guard, reaching nothing.
