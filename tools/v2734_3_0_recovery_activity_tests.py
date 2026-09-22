@@ -185,6 +185,59 @@ def main() -> int:
         require(not rc.affordance(done)["enabled"], "a_terminal_recovery_offers_no_control")
         require("cannot be resumed" in rc.affordance(done)["tip"], "and_says_so_plainly")
 
+    # --- 7b. the worker itself runs, end to end ----------------------------------------------------------------
+    # The job layer was tested without ever executing its worker, and a name that did not exist in the worker's
+    # setup went unnoticed until a live run: it raised before the guard, so the job sat at "running" forever with
+    # no Activity and no failure. This drives the real worker.
+    with tempfile.TemporaryDirectory(prefix="v2734-worker-") as tmp:
+        import run_recovery_job as worker
+        import run_review_job as review_runner
+
+        work = Path(tmp)
+        pkg, runtime, art = incomplete_source(work)
+        source_id = art["review_id"]
+        started = rec.start_recovery(source_id, confirmed=True, root=runtime, identity=IDENTITY,
+                                     spawn=lambda argv, cwd, env: os.getpid())
+        original_call, original_ident = review_runner.CALL_MODEL, review_runner.IDENTITY
+        review_runner.CALL_MODEL, review_runner.IDENTITY = q.deterministic_stub(), IDENTITY
+        try:
+            done = worker.run_job(adapter._job_path(started["job_id"], runtime))
+        finally:
+            review_runner.CALL_MODEL, review_runner.IDENTITY = original_call, original_ident
+
+        require(done["status"] == "completed", "the_recovery_worker_runs_to_completion")
+        require(not done.get("failure"), "the_worker_records_no_failure")
+        require(done["review_id"] == started["recovery"]["derived_review_id"],
+                "the_worker_produced_the_planned_derived_review")
+        require(done["review_status"] == "complete", "the_recovered_review_is_complete")
+
+        published = Path(done["location"])
+        require((published / "review.json").is_file(), "the_derived_artifact_is_published")
+        require((published / rec.LINEAGE_NAME).is_file(), "the_lineage_record_is_published_beside_it")
+        derived = json.loads((published / "review.json").read_text(encoding="utf-8"))
+        require(derived["coverage"]["required_coverage"] == 1.0, "the_merged_review_reached_full_coverage")
+        require(derived["mutation_guard"]["passed"] is True, "the_worker_run_passes_the_mutation_guard")
+        require(derived["grounded_observations"][:len(art["grounded_observations"])] ==
+                art["grounded_observations"], "the_worker_preserved_inherited_observations")
+
+        acts = sorted((runtime / "activities").glob(f"{started['job_id']}*.json"))
+        require(len(acts) == 1, "the_worker_created_exactly_one_activity")
+        rec_act = json.loads(acts[0].read_text(encoding="utf-8"))
+        require("recovery" in rec_act["title"].lower(), "the_activity_it_created_says_recovery")
+        require((rec_act.get("identities") or {}).get("source_review_id") == source_id,
+                "the_activity_it_created_names_the_source")
+        require(int((rec_act.get("metrics") or {}).get("inherited_grounded_observations", 0)) ==
+                len(art["grounded_observations"]), "the_activity_reports_inherited_observations")
+        require(rec_act["state"] in ("complete", "incomplete"), "the_activity_reaches_a_terminal_state")
+
+        # a setup failure must still be recorded as a failed job, not left running
+        bad = adapter.save_job({**adapter._read(adapter._job_path(started["job_id"], runtime)),
+                                "status": "running", "recovery": {**started["recovery"],
+                                                                  "source_review_digest": "0" * 64}}, runtime)
+        outcome = worker.run_job(adapter._job_path(bad["job_id"], runtime))
+        require(outcome["status"] == "failed", "a_setup_failure_is_recorded_as_a_failed_job")
+        require("digest" in str(outcome.get("failure")), "and_says_what_failed")
+
     # --- 8. the job layer adds visibility, never authority -----------------------------------------------------
     require(rec.RECOVERY_KIND not in getattr(adapter, "REVIEW_KIND", ""), "recovery_is_its_own_job_kind")
     require("review_recovery" not in (ROOT / "conscious_agent" / "dashboard.py").read_text(encoding="utf-8"),

@@ -38,32 +38,35 @@ def run_job(job_path: str | Path) -> dict[str, Any]:
 
     import conversational_experiment_review as adapter
     import experiment_review as base
+    import research_control as control
     import review_recovery as rec
     from review_activity import observing_review
 
     root = job["runtime_root"]
     recovery = dict(job.get("recovery") or {})
-    private = Path(job.get("private_runtime_root") or review_runner.private_runtime_root(job["job_id"], root))
-    protected = review_runner.guarded_research_roots(root)
     source_id = str(recovery.get("source_review_id") or "")
-
-    # The source artifact is staged read-only into the private runtime, so the recovery reads it there while the live
-    # original stays guarded and provably untouched.
-    staged = private / base.REVIEW_AREA / source_id
-    staged.mkdir(parents=True, exist_ok=True)
-    live_source = Path(root) / base.REVIEW_AREA / source_id / "review.json"
-    if not (staged / "review.json").is_file():
-        shutil.copy2(live_source, staged / "review.json")
-    if base._sha256_file(staged / "review.json") != str(recovery.get("source_review_digest") or ""):
-        failed = adapter.save_job({**job, "status": "failed", "failure": "staged_source_does_not_match_authorized_digest",
-                                   "finished": review_runner._now()}, root)
-        return failed
-
-    # A recovery whose worker stopped leaves a live checkpoint; recover() continues it rather than re-sealing.
-    resuming = bool(rec.resumable_checkpoint(job, root).get("resumable")) or str(job.get("status")) == "paused"
     observer = None
     holder: dict[str, Any] = {}
+    # Everything below is inside the guard, including the setup. A failure before the work starts is still a failed
+    # job: leaving the record saying "running" forever is how a dead worker becomes invisible.
     try:
+        private = Path(job.get("private_runtime_root") or review_runner.private_runtime_root(job["job_id"], root))
+        protected = review_runner.guarded_research_roots(root)
+
+        # The source artifact is staged read-only into the private runtime, so the recovery reads it there while the
+        # live original stays guarded and provably untouched.
+        staged = private / base.REVIEW_AREA / source_id
+        staged.mkdir(parents=True, exist_ok=True)
+        live_source = Path(root) / base.REVIEW_AREA / source_id / "review.json"
+        if not (staged / "review.json").is_file():
+            shutil.copy2(live_source, staged / "review.json")
+        if base._sha256_file(staged / "review.json") != str(recovery.get("source_review_digest") or ""):
+            return adapter.save_job({**job, "status": "failed",
+                                     "failure": "staged_source_does_not_match_authorized_digest",
+                                     "finished": review_runner._now()}, root)
+
+        # A recovery whose worker stopped leaves a live checkpoint; recover() continues it rather than re-sealing.
+        resuming = bool(control.resumable_checkpoint(job, root).get("resumable")) or str(job.get("status")) == "paused"
         with observing_review(job, root, rec, resuming=resuming) as observer:
             holder["observer"] = observer
             result = rec.recover(
