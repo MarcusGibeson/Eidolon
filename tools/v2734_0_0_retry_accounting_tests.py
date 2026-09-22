@@ -1,10 +1,16 @@
 """v2734.0.0 - retry totals derived from the stages that actually ran.
 
 G-CORROB1 independent review attempt 3 (b6e64bc963efc2b9) reported ``runtime_accounting.retries = 0`` after executing
-twenty-seven retries. A retry runs as its own stage (``observe:D13:63:retry1``) whose ``attempt`` stays 1, because it
-is a fresh provider call rather than a second attempt at the same one - so counting ``attempt > 1`` was structurally
-always zero. ``recovered_stages`` was empty for the same reason: it looked for one stage id that was both accepted
-and not accepted.
+twenty-seven retries.
+
+Two different things were both being called retries. A *repair* attempt happens inside one stage: ``base._ask``
+re-asks the identical input once when a reply fails to arrive, truncates or will not parse, and that ask carries
+``attempt == 2``. A *grounding* retry is a whole new stage (``observe:D13:63:retry1``) given to a part whose reply
+parsed cleanly but grounded nothing; its ``attempt`` starts at 1 again because it is a fresh ask.
+
+The summary counted ``attempt > 1``, so it reported repair attempts under the name "retries" and grounding retries
+not at all. Attempt 3 ran twenty-seven grounding retries and no repairs, and so reported zero. ``recovered_stages``
+was empty for a related reason: it looked for one stage id that was both accepted and not accepted.
 
 Per-part ``attempts`` / ``grounding_attempts`` were correct throughout. Only the summary block was wrong, and the
 summary block is what a reader skims.
@@ -79,13 +85,19 @@ def main() -> int:
     require("observe:D3:7" not in many["recovered_stages"], "a_failed_retry_is_never_a_recovery")
     require("observe:D3:7:retry1" in many["retry_stages"], "a_failed_retry_still_counts_as_an_executed_retry")
 
-    # --- 5. the old rule is genuinely gone ---------------------------------------------------------------------
-    # Every synthetic call above carries attempt == 1, exactly as the real reviewer writes them. Under the previous
-    # `attempt > 1` rule all of these totals would have been zero.
+    # --- 5. grounding retries and in-stage repair attempts are counted separately ------------------------------
+    # A grounding retry is a fresh stage with attempt == 1; a repair attempt is a second ask inside one stage.
+    # Conflating them is what hid twenty-seven retries behind a zero.
     require(all(c["attempt"] == 1 for c in [call("x"), call("x:retry1")]), "the_fixture_matches_how_stages_are_written")
-    require(many["retries"] != sum(c.get("attempt", 1) > 1 for c in
-                                   [call("observe:D1:1"), call("observe:D1:1:retry1")]),
-            "the_total_no_longer_depends_on_the_attempt_counter")
+    require(many["repair_attempts"] == 0, "grounding_retries_are_not_counted_as_repairs")
+    repaired = hier.retry_totals(
+        [call("observe:D1:1"), {**call("observe:D1:1"), "attempt": 2}, call("observe:D2:1"),
+         call("observe:D2:1:retry1")],
+        [part("observe:D1:1", 1, True), part("observe:D2:1", 2, True)])
+    require(repaired["repair_attempts"] == 1, "an_in_stage_repair_is_counted_as_a_repair")
+    require(repaired["stages_with_repair_attempts"] == ["observe:D1:1"], "the_repaired_stage_is_named")
+    require(repaired["retries"] == 1, "a_repair_is_not_counted_as_a_grounding_retry")
+    require(repaired["recovered_stages"] == ["observe:D2:1"], "recovery_still_follows_grounding_not_repair")
 
     # --- 6. base-unit naming -----------------------------------------------------------------------------------
     require(hier.base_unit_of("observe:D13:63:retry1") == "observe:D13:63", "a_retry_stage_maps_to_its_unit")
@@ -112,6 +124,8 @@ def main() -> int:
         require(len(real["recovered_stages"]) == 26, "twenty_six_of_those_retries_recovered")
         require(real["units_retried_without_recovery"] == ["observe:D13:63"],
                 "the_one_retry_that_never_recovered_is_the_blocking_unit")
+        require(real["repair_attempts"] == 0,
+                "attempt3_ran_no_in_stage_repairs_which_is_why_the_old_counter_read_zero")
         require(ATTEMPT3.read_bytes() == before, "reading_the_historical_artifact_does_not_change_it")
 
     failed = [name for name, ok in CHECKS if not ok]

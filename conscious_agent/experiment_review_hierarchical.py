@@ -941,9 +941,17 @@ def render_markdown(artifact: Mapping[str, Any]) -> str:
 
 
 RETRY_STAGE = re.compile(r":retry(\d+)$")
-# A retry is executed as its own stage (``observe:D13:63:retry1``) whose ``attempt`` stays 1, because each stage is a
-# fresh provider call rather than a second attempt at the same one. Counting ``attempt > 1`` therefore reported zero
-# retries however many ran. Totals are derived from the stages that actually executed instead.
+# Two different things were both called "retries", and only one of them was ever counted.
+#
+# A *repair* attempt happens inside one stage: ``base._ask`` re-asks the identical input once when a reply fails to
+# arrive, truncates, or will not parse, and that second ask carries ``attempt == 2``.
+#
+# A *grounding* retry is a whole new stage (``observe:D13:63:retry1``) given to a part whose reply parsed cleanly but
+# grounded nothing. Its ``attempt`` starts at 1 again, because it is a fresh ask, not a repair of the previous one.
+#
+# The summary counted ``attempt > 1``, so it reported repair attempts under the name "retries" and grounding retries
+# not at all. Attempt 3 ran twenty-seven grounding retries and no repairs, and so reported zero. Both are now counted,
+# each under its own name, and derived from what actually executed.
 ACCOUNTING_CONTRACT = "retry-accounting.v2"
 
 
@@ -954,11 +962,12 @@ def base_unit_of(stage: str) -> str:
 
 def retry_totals(ledger: Sequence[Mapping[str, Any]],
                  parts_coverage: Sequence[Mapping[str, Any]] = ()) -> dict[str, Any]:
-    """Retry accounting derived from executed stages, not from a per-call attempt counter.
+    """Retry accounting derived from what executed, separating grounding retries from in-stage repair attempts.
 
-    ``retries`` counts extra attempts that actually ran. ``recovered_stages`` names units that grounded nothing on
-    their first attempt and succeeded on a later one - taken from per-part coverage, which records grounding outcomes,
-    because the ledger only records whether a reply parsed.
+    ``retries`` counts grounding retries: extra stages given to a part that grounded nothing. ``repair_attempts``
+    counts the re-asks ``base._ask`` makes inside a single stage after a provider, truncation or parse failure.
+    ``recovered_stages`` names units that grounded nothing at first and succeeded on a later attempt - taken from
+    per-part coverage, which records grounding outcomes, because the ledger only records whether a reply parsed.
     """
     retry_stages = [str(x["stage"]) for x in ledger if RETRY_STAGE.search(str(x["stage"]))]
     retried_units = {base_unit_of(s) for s in retry_stages}
@@ -969,7 +978,10 @@ def retry_totals(ledger: Sequence[Mapping[str, Any]],
             "retry_stages": sorted(retry_stages),
             "units_retried": len(retried_units),
             "units_retried_without_recovery": sorted(retried_units - set(recovered)),
-            "recovered_stages": recovered}
+            "recovered_stages": recovered,
+            "repair_attempts": sum(int(x.get("attempt") or 1) > 1 for x in ledger),
+            "stages_with_repair_attempts": sorted({str(x["stage"]) for x in ledger
+                                                   if int(x.get("attempt") or 1) > 1})}
 
 
 def registered_limits() -> dict[str, Any]:
