@@ -230,6 +230,46 @@ def main() -> int:
                 len(art["grounded_observations"]), "the_activity_reports_inherited_observations")
         require(rec_act["state"] in ("complete", "incomplete"), "the_activity_reaches_a_terminal_state")
 
+        # --- 7c. a recovery that is paused and resumed keeps one activity -------------------------------------
+        # The live run found this: the control marks a resumed job running before its worker starts, so deciding
+        # "am I resuming?" from the job status reported a continuation as a first run. That tried to create a second
+        # activity under the same id, telemetry failed open to None, and the worker then dereferenced it and killed
+        # the review. Both halves are pinned here.
+        work2 = Path(tmp) / "second"
+        work2.mkdir(parents=True, exist_ok=True)
+        pkg2, runtime2, art2 = incomplete_source(work2)
+        started2 = rec.start_recovery(art2["review_id"], confirmed=True, root=runtime2, identity=IDENTITY,
+                                      spawn=lambda argv, cwd, env: os.getpid())
+        job2 = adapter._read(adapter._job_path(started2["job_id"], runtime2))
+        private2 = Path(job2["private_runtime_root"])
+        require(rec.live_checkpoint(job2, private2) is False, "before_any_work_there_is_no_live_checkpoint")
+
+        controls2 = rc._controls_root(job2, runtime2)
+        pause.request(rc._work_id(job2), "pause", controls2, note="deterministic pause")
+        review_runner.CALL_MODEL, review_runner.IDENTITY = q.deterministic_stub(), IDENTITY
+        try:
+            paused_job = worker.run_job(adapter._job_path(started2["job_id"], runtime2))
+            require(paused_job["status"] == "paused", "a_pause_signal_pauses_the_recovery_worker")
+            require(rec.live_checkpoint(paused_job, private2) is True,
+                    "a_paused_recovery_leaves_a_live_checkpoint")
+
+            # the control marks it running before the worker restarts, exactly as a real resume does
+            resumed_job = adapter.save_job({**paused_job, "status": "running"}, runtime2)
+            require(rec.live_checkpoint(resumed_job, private2) is True,
+                    "resuming_is_decided_by_the_checkpoint_not_the_job_status")
+            finished = worker.run_job(adapter._job_path(started2["job_id"], runtime2))
+            require(finished["status"] == "completed", "the_resumed_recovery_finishes")
+            require(not finished.get("failure"), "the_resumed_worker_records_no_failure")
+        finally:
+            review_runner.CALL_MODEL, review_runner.IDENTITY = original_call, original_ident
+        acts2 = sorted((runtime2 / "activities").glob(f"{started2['job_id']}*.json"))
+        require(len(acts2) == 1, "pause_and_resume_share_one_activity")
+        a2 = json.loads(acts2[0].read_text(encoding="utf-8"))
+        ev2 = [e["event"] for e in a2.get("events", [])]
+        require("paused" in ev2, "the_activity_recorded_the_pause")
+        require("resumed" in ev2 or "resume_requested" in ev2, "the_activity_recorded_the_resume")
+        require(a2["state"] in ("complete", "incomplete"), "the_shared_activity_reaches_a_terminal_state")
+
         # a setup failure must still be recorded as a failed job, not left running
         bad = adapter.save_job({**adapter._read(adapter._job_path(started["job_id"], runtime)),
                                 "status": "running", "recovery": {**started["recovery"],

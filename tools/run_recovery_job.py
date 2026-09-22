@@ -38,7 +38,6 @@ def run_job(job_path: str | Path) -> dict[str, Any]:
 
     import conversational_experiment_review as adapter
     import experiment_review as base
-    import research_control as control
     import review_recovery as rec
     from review_activity import observing_review
 
@@ -66,7 +65,9 @@ def run_job(job_path: str | Path) -> dict[str, Any]:
                                      "finished": review_runner._now()}, root)
 
         # A recovery whose worker stopped leaves a live checkpoint; recover() continues it rather than re-sealing.
-        resuming = bool(control.resumable_checkpoint(job, root).get("resumable")) or str(job.get("status")) == "paused"
+        # Asked of the checkpoint, not the job's status: a resumed job is already marked running before this worker
+        # starts, so the status would report a continuation as a first run and the activity would be forked in two.
+        resuming = rec.live_checkpoint(job, private)
         with observing_review(job, root, rec, resuming=resuming) as observer:
             holder["observer"] = observer
             result = rec.recover(
@@ -75,7 +76,7 @@ def run_job(job_path: str | Path) -> dict[str, Any]:
                 units=list(recovery.get("units_planned") or []) or None,
                 source_root=review_runner.SOURCE_ROOT, protected_roots=protected,
                 call_model=review_runner.CALL_MODEL, identity=review_runner.IDENTITY,
-                on_state=observer.on_reviewer_event)
+                on_state=observer.on_reviewer_event if observer is not None else None)
             holder["result"] = result
     except Exception as error:  # a failed recovery is recorded, never hidden, and never retried on its own
         failed = adapter.save_job({**job, "status": "failed", "failure": f"{type(error).__name__}: {error}"[:300],

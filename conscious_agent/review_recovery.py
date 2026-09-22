@@ -157,6 +157,24 @@ def work_id_for(source_review_id: str) -> str:
     return f"recovery_{source_review_id}"
 
 
+def live_checkpoint(job: Mapping[str, Any], private: str | Path) -> bool:
+    """Whether this recovery already has checkpointed work, asked of the checkpoint rather than the job's status.
+
+    A resumed job is marked running before its worker starts - that is what stops a second press starting a second
+    worker - so the status cannot tell a first run from a continuation. The checkpoint can.
+    """
+    source = str((job.get("recovery") or {}).get("source_review_id") or "")
+    manifest = str(job.get("manifest_sha256") or "")
+    if not source or not manifest:
+        return False
+    work = work_id_for(source)
+    try:
+        record = pause.load_checkpoint(work, hier.control_root_for(private, manifest, work))
+    except Exception:
+        return False
+    return bool(record) and str(record.get("status")) in (pause.RUNNING, pause.PAUSE_REQUESTED, pause.PAUSED)
+
+
 def plan(source_review_id: str, *, root: str | Path, package_dir: str | Path | None = None,
          identity: Mapping[str, Any] | None = None, units: Iterable[str] | None = None) -> dict[str, Any]:
     """Everything recovery would do, decided before anything is written or called.
