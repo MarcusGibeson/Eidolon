@@ -12908,7 +12908,10 @@ class EidolonDashboardHandler(BaseHTTPRequestHandler):
                 if activity_id == "":
                     raise ValueError("invalid_activity_id")
                 # The control affordance is decided here, not in the page, so a refresh shows backend state.
-                self._send_lightweight_json(decorate(activities(activity_id=activity_id)))
+                # The data root lets the control detect work that stopped without a result but left a
+                # checkpoint that still verifies, so the operator can continue it.
+                self._send_lightweight_json(decorate(activities(activity_id=activity_id),
+                                                     Path(os.environ.get("EIDOLON_DATA_DIR") or DATA_DIR)))
             except ValueError:
                 self._send_json({"ok": False, "error": "invalid_activity_id"}, status=400)
             return
