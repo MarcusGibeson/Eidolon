@@ -964,18 +964,26 @@ def retry_totals(ledger: Sequence[Mapping[str, Any]],
                  parts_coverage: Sequence[Mapping[str, Any]] = ()) -> dict[str, Any]:
     """Retry accounting derived from what executed, separating grounding retries from in-stage repair attempts.
 
-    ``retries`` counts grounding retries: extra stages given to a part that grounded nothing. ``repair_attempts``
-    counts the re-asks ``base._ask`` makes inside a single stage after a provider, truncation or parse failure.
-    ``recovered_stages`` names units that grounded nothing at first and succeeded on a later attempt - taken from
-    per-part coverage, which records grounding outcomes, because the ledger only records whether a reply parsed.
+    ``grounding_retries`` counts *distinct* extra stages given to parts that grounded nothing; ``retry_stages``
+    names them. A single retry stage stays one grounding retry however many ledger rows it produced, because a
+    retry stage that fails to parse gets a repair ask of its own and so appears more than once.
+
+    ``repair_attempts`` counts those re-asks: the second ask ``base._ask`` makes inside one stage after a provider,
+    truncation or parse failure, carrying ``attempt == 2``.
+
+    ``recovered_stages`` names the units that grounded nothing at first and succeeded on a later attempt, by their
+    base stage - taken from per-part coverage, which records grounding outcomes, because the ledger only records
+    whether a reply parsed. Both lists are unique.
     """
-    retry_stages = [str(x["stage"]) for x in ledger if RETRY_STAGE.search(str(x["stage"]))]
+    # Distinct stage names, not ledger rows: a retry stage that itself needed a repair ask appears twice in the
+    # ledger, and counting rows reported it as two grounding retries. One extra stage is one grounding retry.
+    retry_stages = sorted({str(x["stage"]) for x in ledger if RETRY_STAGE.search(str(x["stage"]))})
     retried_units = {base_unit_of(s) for s in retry_stages}
-    recovered = sorted(str(p["stage"]) for p in parts_coverage
-                       if int(p.get("grounding_attempts") or 1) > 1 and p.get("reviewed"))
+    recovered = sorted({str(p["stage"]) for p in parts_coverage
+                        if int(p.get("grounding_attempts") or 1) > 1 and p.get("reviewed")})
     return {"accounting_contract": ACCOUNTING_CONTRACT,
-            "retries": len(retry_stages),
-            "retry_stages": sorted(retry_stages),
+            "grounding_retries": len(retry_stages),
+            "retry_stages": retry_stages,
             "units_retried": len(retried_units),
             "units_retried_without_recovery": sorted(retried_units - set(recovered)),
             "recovered_stages": recovered,

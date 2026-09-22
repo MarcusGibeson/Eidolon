@@ -51,10 +51,62 @@ def part(stage: str, grounding_attempts: int, reviewed: bool) -> dict:
 
 
 def main() -> int:
+    # --- 0. the ten cases the accounting must get right --------------------------------------------------------
+    # Case 3 is the defect the Q-RECOVER live qualification exposed: a retry stage that itself needs a repair ask
+    # appears twice in the ledger, and counting rows reported one grounding retry as two.
+    cases = {
+        "no_grounding_retry": (
+            [call("observe:D1:1")], [part("observe:D1:1", 1, True)], 0, 0, [], []),
+        "one_grounding_retry_no_repair": (
+            [call("observe:D1:1"), call("observe:D1:1:retry1")],
+            [part("observe:D1:1", 2, True)], 1, 0, ["observe:D1:1:retry1"], ["observe:D1:1"]),
+        "one_grounding_retry_whose_retry_stage_needed_a_repair_ask": (
+            [call("observe:D2:1"), {**call("observe:D2:1"), "attempt": 2},
+             call("observe:D2:1:retry1"), {**call("observe:D2:1:retry1"), "attempt": 2}],
+            [part("observe:D2:1", 2, False)], 1, 2, ["observe:D2:1:retry1"], []),
+        "multiple_grounding_retries": (
+            [call("observe:D1:1"), call("observe:D1:1:retry1"), call("observe:D2:2"),
+             call("observe:D2:2:retry1"), call("observe:D3:3"), call("observe:D3:3:retry1")],
+            [part("observe:D1:1", 2, True), part("observe:D2:2", 2, True), part("observe:D3:3", 2, True)],
+            3, 0, ["observe:D1:1:retry1", "observe:D2:2:retry1", "observe:D3:3:retry1"],
+            ["observe:D1:1", "observe:D2:2", "observe:D3:3"]),
+        "repair_attempts_without_any_grounding_retry": (
+            [call("observe:D1:1"), {**call("observe:D1:1"), "attempt": 2}],
+            [part("observe:D1:1", 1, True)], 0, 1, [], []),
+        "failed_grounding_retry": (
+            [call("observe:D4:1"), call("observe:D4:1:retry1")],
+            [part("observe:D4:1", 2, False)], 1, 0, ["observe:D4:1:retry1"], []),
+        "recovered_grounding_retry": (
+            [call("observe:D5:1"), call("observe:D5:1:retry1")],
+            [part("observe:D5:1", 2, True)], 1, 0, ["observe:D5:1:retry1"], ["observe:D5:1"]),
+    }
+    for name, (led, cov, retries, repairs, stages, recovered) in cases.items():
+        got = hier.retry_totals(led, cov)
+        require(got["grounding_retries"] == retries, f"{name}__grounding_retries")
+        require(got["repair_attempts"] == repairs, f"{name}__repair_attempts")
+        require(got["retry_stages"] == stages, f"{name}__retry_stages")
+        require(got["recovered_stages"] == recovered, f"{name}__recovered_stages")
+        require(len(got["retry_stages"]) == len(set(got["retry_stages"])), f"{name}__retry_stages_are_unique")
+        require(len(got["recovered_stages"]) == len(set(got["recovered_stages"])),
+                f"{name}__recovered_stages_are_unique")
+        # consistency with per-part accounting: every part that took more than one grounding attempt must have a
+        # retry stage, and every retried unit must be a part that took more than one grounding attempt.
+        retried_parts = {p["stage"] for p in cov if p["grounding_attempts"] > 1}
+        require({hier.base_unit_of(s) for s in got["retry_stages"]} == retried_parts,
+                f"{name}__agrees_with_per_part_grounding_attempts")
+        require(set(got["recovered_stages"]) <= retried_parts, f"{name}__recovery_is_a_subset_of_retried_parts")
+
+    # a duplicated retry stage is still one grounding retry however many rows it produced
+    noisy = hier.retry_totals([call("observe:D9:1"), *[{**call("observe:D9:1:retry1"), "attempt": a}
+                                                      for a in (1, 2)]],
+                              [part("observe:D9:1", 2, True)])
+    require(noisy["grounding_retries"] == 1, "duplicate_ledger_rows_are_not_extra_grounding_retries")
+    require(noisy["retry_stages"] == ["observe:D9:1:retry1"], "the_duplicated_stage_is_named_once")
+
     # --- 1. a clean run reports no retries ---------------------------------------------------------------------
     clean = hier.retry_totals([call("observe:D1:1"), call("observe:D1:2")],
                               [part("observe:D1:1", 1, True), part("observe:D1:2", 1, True)])
-    require(clean["retries"] == 0, "no_retry_reports_zero")
+    require(clean["grounding_retries"] == 0, "no_retry_reports_zero")
     require(clean["retry_stages"] == [], "no_retry_names_no_stages")
     require(clean["recovered_stages"] == [], "no_retry_recovers_nothing")
     require(clean["units_retried"] == 0, "no_retry_counts_no_units")
@@ -64,7 +116,7 @@ def main() -> int:
     one = hier.retry_totals([call("observe:D1:1"), call("observe:D1:2", accepted=True),
                              call("observe:D1:2:retry1")],
                             [part("observe:D1:1", 1, True), part("observe:D1:2", 2, True)])
-    require(one["retries"] == 1, "one_retry_reports_one")
+    require(one["grounding_retries"] == 1, "one_retry_reports_one")
     require(one["retry_stages"] == ["observe:D1:2:retry1"], "the_retry_stage_is_named")
     require(one["recovered_stages"] == ["observe:D1:2"], "a_recovered_unit_is_named_by_its_base_stage")
     require(one["units_retried_without_recovery"] == [], "a_recovered_unit_is_not_also_reported_as_unrecovered")
@@ -75,7 +127,7 @@ def main() -> int:
          call("observe:D3:7"), call("observe:D3:7:retry1"), call("observe:D4:1")],
         [part("observe:D1:1", 2, True), part("observe:D2:1", 2, True), part("observe:D3:7", 2, False),
          part("observe:D4:1", 1, True)])
-    require(many["retries"] == 3, "three_retry_stages_report_three")
+    require(many["grounding_retries"] == 3, "three_retry_stages_report_three")
     require(many["units_retried"] == 3, "three_distinct_units_retried")
     require(many["recovered_stages"] == ["observe:D1:1", "observe:D2:1"], "only_units_that_succeeded_are_recovered")
 
@@ -96,7 +148,7 @@ def main() -> int:
         [part("observe:D1:1", 1, True), part("observe:D2:1", 2, True)])
     require(repaired["repair_attempts"] == 1, "an_in_stage_repair_is_counted_as_a_repair")
     require(repaired["stages_with_repair_attempts"] == ["observe:D1:1"], "the_repaired_stage_is_named")
-    require(repaired["retries"] == 1, "a_repair_is_not_counted_as_a_grounding_retry")
+    require(repaired["grounding_retries"] == 1, "a_repair_is_not_counted_as_a_grounding_retry")
     require(repaired["recovered_stages"] == ["observe:D2:1"], "recovery_still_follows_grounding_not_repair")
 
     # --- 6. base-unit naming -----------------------------------------------------------------------------------
@@ -110,7 +162,7 @@ def main() -> int:
     coverage = [part("observe:D1:1", 2, True), part("observe:D1:2", 1, True), part("observe:D2:1", 3, False)]
     totals = hier.retry_totals([call("observe:D1:1"), call("observe:D1:1:retry1"), call("observe:D2:1"),
                                 call("observe:D2:1:retry1"), call("observe:D2:1:retry2")], coverage)
-    require(totals["retries"] == 3, "executed_retries_match_the_ledger")
+    require(totals["grounding_retries"] == 3, "executed_retries_match_the_ledger")
     require(set(totals["recovered_stages"]) == {"observe:D1:1"}, "recovery_follows_the_per_part_reviewed_flag")
     require(all(p["grounding_attempts"] >= 1 for p in coverage), "per_part_accounting_is_untouched")
 
@@ -119,7 +171,7 @@ def main() -> int:
         before = ATTEMPT3.read_bytes()
         art = json.loads(before.decode("utf-8"))
         real = hier.retry_totals(art["ledger"], art["coverage"]["parts"])
-        require(real["retries"] == 27, "attempt3_really_ran_twenty_seven_retries")
+        require(real["grounding_retries"] == 27, "attempt3_really_ran_twenty_seven_retries")
         require(art["runtime_accounting"]["retries"] == 0, "the_historical_artifact_still_reports_its_own_zero")
         require(len(real["recovered_stages"]) == 26, "twenty_six_of_those_retries_recovered")
         require(real["units_retried_without_recovery"] == ["observe:D13:63"],

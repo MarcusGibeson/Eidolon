@@ -330,7 +330,10 @@ def measure(artifact: Mapping[str, Any], package_dir: Path, seconds: float) -> d
                            "source_tree_protected": artifact["mutation_guard"]["protected"]["source_tree"],
                            "changes": artifact["mutation_guard"]["changes"][:5]},
         "tokens": {"prompt": run.get("prompt_tokens"), "output": run.get("output_tokens")},
-        "degradation": {"provider_attempts": run["provider_attempts"], "retries": run["retries"],
+        # ``grounding_retries`` since retry-accounting.v2; older artifacts still carry the conflated ``retries``.
+        "degradation": {"provider_attempts": run["provider_attempts"],
+                        "grounding_retries": run.get("grounding_retries", run.get("retries", 0)),
+                        "repair_attempts": run.get("repair_attempts", 0),
                         "truncated_attempts": run["truncated_attempts"],
                         "unparseable_or_rejected": run["unparseable_or_rejected_replies"],
                         "failed_attempts": run["failed_attempts"],
