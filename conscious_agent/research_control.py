@@ -103,7 +103,7 @@ def resumable_checkpoint(job: Mapping[str, Any], root: str | Path) -> dict[str, 
         return {"resumable": False, "reason": "failure_is_a_refusal"}
     try:
         controls = _controls_root(job, root)
-        record = pause.load_checkpoint(str(job.get("job_id")), controls)
+        record = pause.load_checkpoint(_work_id(job), controls)
     except pause.ResumeRefused as refused:
         # ``load_checkpoint`` verifies the seal itself and refuses a corrupt one. Carry its own words through, so the
         # surface can say why work it will not offer to continue is being held back.
@@ -127,6 +127,15 @@ def _job_record(job_id: str, root: str | Path) -> dict[str, Any]:
     return record
 
 
+def _work_id(job: Mapping[str, Any]) -> str:
+    """The id the reviewer's checkpoint is filed under. A recovery's work is named after the review it continues,
+    not after the job, so the same recovery keeps one identity across pause, resume and restart."""
+    import review_recovery as recovery
+
+    source = str((job.get("recovery") or {}).get("source_review_id") or "")
+    return recovery.work_id_for(source) if source else str(job.get("job_id"))
+
+
 def _controls_root(job: Mapping[str, Any], root: str | Path) -> Path:
     import experiment_review_hierarchical as hier
 
@@ -135,7 +144,7 @@ def _controls_root(job: Mapping[str, Any], root: str | Path) -> Path:
         raise LookupError("job_has_no_package_binding")
     private = Path(job.get("private_runtime_root") or
                    Path(root) / "research_review_runtimes" / str(job.get("job_id")))
-    return private / hier.REVIEW_AREA / hier.work_review_id(manifest, str(job.get("job_id")))
+    return private / hier.REVIEW_AREA / hier.work_review_id(manifest, _work_id(job))
 
 
 def control(job_id: str, action: str, root: str | Path) -> dict[str, Any]:
@@ -161,22 +170,24 @@ def control(job_id: str, action: str, root: str | Path) -> dict[str, Any]:
         controls = _controls_root(job, root)
     except LookupError as exc:
         return {"ok": False, "status": str(exc), "contract": CONTRACT}
+    # The signal must reach the work, which a recovery names after the review it continues rather than after the job.
+    work = _work_id(job)
 
     if value == "pause":
         if status == "paused":
             return {"ok": True, "status": "already_paused", "job_id": job_id, "expect_state": "paused",
                     "contract": CONTRACT}
-        if pause.pending(str(job_id), controls) == "pause":
+        if pause.pending(work, controls) == "pause":
             # Already asked for. Asking twice must not stack a second request or restart the countdown.
             return {"ok": True, "status": "pause_already_requested", "job_id": job_id,
                     "expect_state": "pause_requested", "contract": CONTRACT}
-        pause.request(str(job_id), "pause", controls, note="operator pause from research progress control")
+        pause.request(work, "pause", controls, note="operator pause from research progress control")
         return {"ok": True, "status": "pause_requested", "job_id": job_id, "expect_state": "pause_requested",
                 "requested_at": _now(), "contract": CONTRACT}
 
     if status != "paused" and not (status == "failed" and recovery["resumable"]):
         return {"ok": False, "status": "job_not_paused", "job_status": status, "contract": CONTRACT}
-    pause.clear(str(job_id), controls)
+    pause.clear(work, controls)
     spawned = _resume(job, root)
     return {"ok": True, "status": "resume_requested", "job_id": job_id, "expect_state": "running",
             "pid": spawned, "recovered_from_interruption": status == "failed",
@@ -187,7 +198,11 @@ def _resume(job: Mapping[str, Any], root: str | Path) -> int:
     """Restart the same job record. The runner continues the same review from its checkpoint, or fails closed."""
     import conversational_experiment_review as adapter
 
-    argv = [sys.executable, "-B", str(adapter.JOB_RUNNER), str(adapter._job_path(str(job.get("job_id")), root))]
+    # Restart exactly what started this job. A recovery runs through a different runner than a package review, and
+    # rebuilding the command from one fixed path would hand a recovery job to the wrong worker.
+    recorded = [str(a) for a in (job.get("argv") or [])]
+    argv = recorded or [sys.executable, "-B", str(adapter.JOB_RUNNER),
+                        str(adapter._job_path(str(job.get("job_id")), root))]
     env = {**os.environ, "EIDOLON_DATA_DIR": str(adapter._root(root)), "PYTHONIOENCODING": "utf-8"}
     pid = int(adapter.SPAWN(argv, adapter.JOB_RUNNER.parents[1], env))
     # Record the work as live before returning. Otherwise the job still reads interrupted while its new worker runs,

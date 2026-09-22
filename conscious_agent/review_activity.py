@@ -29,14 +29,35 @@ class ReviewActivity:
             self.activity = Activity.reopen(job["job_id"], root=root)
             self.resumed = True
         else:
-            self.activity = Activity(job["job_id"], "experiment_review", "Independent experiment review",
+            recovery = dict(job.get("recovery") or {})
+            identities = {k: job.get(k, "") for k in ("job_id", "task_id", "package_id", "reviewer_contract")}
+            if recovery:
+                # A recovery is still an independent review, so it keeps the same activity type and the same operator
+                # control. What it adds is which review it continues and what it inherited, so an operator reading the
+                # panel can tell executed work from carried-forward work.
+                identities.update({"mode": "failed_unit_recovery",
+                                   "source_review_id": str(recovery.get("source_review_id", "")),
+                                   "derived_review_id": str(recovery.get("derived_review_id", "")),
+                                   "units_planned": ", ".join(recovery.get("units_planned") or [])})
+            self.activity = Activity(job["job_id"], "experiment_review",
+                                     "Independent experiment review - recovery" if recovery
+                                     else "Independent experiment review",
                                      job.get("package_id", ""), root=root, stages=STAGES, started=job.get("started"),
-                                     identities={k: job.get(k, "") for k in ("job_id", "task_id", "package_id", "reviewer_contract")},
+                                     identities=identities,
                                      governance={"read_only": True, "non_authoritative": True, "belief_effects": "none",
                                                  "mutation_guard": "pending", "execution_authority": "existing_operator_confirmation"})
             self.resumed = False
         carried = self.activity.record.get("metrics") or {}
         self.counts = {key: int(carried.get(key, 0)) for key in base_counts}
+        # Inherited totals are reported, never incremented: they describe work an earlier review already did, so
+        # mixing them into this run's counters would make a recovery look like it re-executed everything.
+        inherited = dict(job.get("recovery") or {})
+        if inherited:
+            self.counts.update({
+                "inherited_units": int(inherited.get("inherited_units") or 0),
+                "inherited_grounded_observations": int(inherited.get("inherited_grounded_observations") or 0),
+                "units_planned_this_recovery": len(inherited.get("units_planned") or []),
+            })
         self.parts, self.done, self.required = {}, set(), set()
         self.stage_done, self.stage_totals = {}, {}
         self.seen_asks = set()

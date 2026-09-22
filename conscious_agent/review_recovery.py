@@ -28,7 +28,10 @@ Everything that actually determines how an observation is produced and validated
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
+import sys
+import time
 from typing import Any, Callable, Iterable, Mapping
 
 import cooperative_pause as pause
@@ -271,13 +274,30 @@ def recover(source_review_id: str, *, root: str | Path, package_dir: str | Path 
     ident = dict(identity) if identity is not None else base.model_identity()
 
     derived_id, work_id = str(proposal["derived_review_id"]), str(proposal["work_id"])
+    src = Path(source_root).expanduser().resolve() if source_root is not None else None
     out_dir = review_area(root) / derived_id
     if (out_dir / "review.json").is_file():
+        # A recovery that reached a terminal artifact is finished, whatever that artifact concluded. Continuing it
+        # would need a separately authorized recovery operation, not a second pass at this one.
         raise RecoveryRefused("derived_review_already_exists:" + derived_id)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # A recovery that was paused, or whose worker died, already has live checkpointed work. Re-sealing a fresh
+    # checkpoint over it would throw that away, so the existing one is continued instead - same work id, same derived
+    # review, and the reviewer verifies the seal and every binding exactly as it does for any resume.
+    existing = None
+    try:
+        existing = pause.load_checkpoint(work_id, out_dir)
+    except pause.ResumeRefused:
+        existing = None
+    if existing and str(existing.get("status")) in (pause.RUNNING, pause.PAUSE_REQUESTED, pause.PAUSED):
+        pause.clear(work_id, out_dir)
+        result = hier.review_experiment(
+            package["dir"], work_id=work_id, resume=True, runtime_root_path=root, source_root=src,
+            protected_roots=protected_roots, identity=ident, call_model=call_model, on_state=on_state)
+        return _summary(proposal, result, out_dir, str(source_review_id), derived_id, compat, continued=True)
+
     started = _now()
-    src = Path(source_root).expanduser().resolve() if source_root is not None else None
     lineage = {
         "contract": CONTRACT, "recovered_at": started,
         "source_review_id": str(source_review_id), "source_review_digest": proposal["source_digest"],
@@ -308,14 +328,94 @@ def recover(source_review_id: str, *, root: str | Path, package_dir: str | Path 
         package["dir"], work_id=work_id, resume=True, runtime_root_path=root, source_root=src,
         protected_roots=protected_roots, identity=ident, call_model=call_model, on_state=on_state,
         continuation_lineage=lineage)
-    summary = {"contract": CONTRACT, "ok": str(result.get("status")) in ("complete", "incomplete"),
-               "source_review_id": str(source_review_id), "derived_review_id": derived_id,
-               "status": str(result.get("status")), "units_executed": list(proposal["units_to_execute"]),
-               "lineage_path": str(out_dir / LINEAGE_NAME), "compatibility": compat["verdict"]}
+    return _summary(proposal, result, out_dir, str(source_review_id), derived_id, compat, continued=False)
+
+
+RECOVERY_KIND = "independent_experiment_review_recovery"
+JOB_RUNNER = Path(__file__).resolve().parents[1] / "tools" / "run_recovery_job.py"
+
+
+def start_recovery(source_review_id: str, *, confirmed: bool, root: str | Path,
+                   acknowledge_module_change: str = "", units: Iterable[str] | None = None,
+                   operator_note: str = "", identity: Mapping[str, Any] | None = None,
+                   spawn: Callable[[list[str], Path, dict[str, str]], int] | None = None) -> dict[str, Any]:
+    """Start one governed recovery as an ordinary research job, so it has an Activity and an operator control.
+
+    Everything admissibility and compatibility depends on is settled here, before a job record exists: a refusal
+    leaves nothing behind to resume, restart or explain away. The worker then performs the same :func:`recover`
+    operation this module already defines - the job layer adds visibility and an operator control, never authority.
+    """
+    import conversational_experiment_review as adapter
+    import experiment_review as base_mod
+    import run_review_job as runner
+
+    if not confirmed:
+        raise RecoveryRefused("recovery_requires_explicit_confirmation")
+    if adapter.active_job(root) is not None:
+        raise RecoveryRefused("a_research_job_is_already_running")
+
+    ident = dict(identity) if identity is not None else base_mod.model_identity()
+    proposal = plan(source_review_id, root=root, identity=ident, units=units)
+    compat = proposal["compatibility"]
+    if compat["verdict"] == "incompatible":
+        raise RecoveryRefused("execution_conditions_differ:" + ",".join(compat["execution_bindings_differing"]))
+    if compat["verdict"] == "execution_equivalent":
+        expected = str((compat["detail"].get("reviewer_module_sha256") or {}).get("current") or "")
+        if acknowledge_module_change.strip() != expected:
+            raise RecoveryRefused("reviewer_module_change_not_acknowledged:" + expected)
+    if (review_area(root) / str(proposal["derived_review_id"]) / "review.json").is_file():
+        raise RecoveryRefused("derived_review_already_exists:" + str(proposal["derived_review_id"]))
+
+    job_id = "job_" + hashlib.sha256(f"recovery|{source_review_id}|{_now()}".encode()).hexdigest()[:16]
+    private = runner.private_runtime_root(job_id, root)
+    adapter.job_area(root).mkdir(parents=True, exist_ok=True)
+    argv = [sys.executable, "-B", str(JOB_RUNNER), str(adapter._job_path(job_id, root))]
+    record = {
+        "object": "experiment_review_job", "contract_version": adapter.CONTRACT_VERSION, "job_id": job_id,
+        "task_id": "", "kind": RECOVERY_KIND, "mode": "failed_unit_recovery",
+        "package_id": str(proposal["package_id"]), "package_dir": str(proposal["package_dir"]),
+        "manifest_sha256": str((load_source(source_review_id, root).get("provenance") or {}).get("manifest_sha256") or ""),
+        "runtime_root": str(adapter._root(root)), "private_runtime_root": str(private),
+        "status": "starting", "started": _now(), "started_monotonic_epoch": time.time(), "argv": argv, "pid": 0,
+        "chosen_by": "operator", "authority": "read_only_non_authoritative",
+        "operator_note": str(operator_note)[:300], "reviewer_contract": hier.CONTRACT_VERSION,
+        "recovery": {
+            "contract": CONTRACT, "source_review_id": str(source_review_id),
+            "source_review_digest": str(proposal["source_digest"]),
+            "derived_review_id": str(proposal["derived_review_id"]),
+            "units_planned": list(proposal["units_to_execute"]),
+            "inherited_units": int(proposal["preserved_units"]),
+            "inherited_grounded_observations": int(proposal["preserved_observations"]),
+            "required_parts": int(proposal["required_parts"]),
+            "compatibility_verdict": compat["verdict"],
+            "acknowledged_reviewer_module_change": acknowledge_module_change.strip() or None,
+        },
+    }
+    adapter.save_job(record, root)
+    launcher = spawn or adapter.SPAWN
+    pid = int(launcher(argv, JOB_RUNNER.parents[1],
+                       {**os.environ, "EIDOLON_DATA_DIR": str(adapter._root(root)), "PYTHONIOENCODING": "utf-8"}))
+    return adapter.save_job({**record, "status": "running", "pid": pid}, root)
+
+
+def _summary(proposal: Mapping[str, Any], result: Mapping[str, Any], out_dir: Path, source_review_id: str,
+             derived_id: str, compat: Mapping[str, Any], *, continued: bool) -> dict[str, Any]:
+    """One content-minimized record of what a recovery did. A pause is reported as a pause, not as a result."""
+    status = str(result.get("status") or "")
+    summary = {"contract": CONTRACT, "ok": status in ("complete", "incomplete", "paused"),
+               "source_review_id": source_review_id, "derived_review_id": derived_id, "status": status,
+               "units_executed": list(proposal["units_to_execute"]), "continued_existing_work": bool(continued),
+               "lineage_path": str(out_dir / LINEAGE_NAME), "compatibility": compat["verdict"],
+               "preserved_observations": int(proposal["preserved_observations"])}
+    if status in ("paused", "cancelled"):
+        # No artifact exists yet; the checkpoint holds the work and says where it stopped.
+        summary["completed_units"] = result.get("completed_units")
+        summary["checkpoint_digest"] = result.get("checkpoint_digest")
+        summary["resumable"] = bool(result.get("resumable"))
+        return summary
     coverage = result.get("coverage") or {}
     summary["coverage"] = {"required_parts": coverage.get("required_parts"),
                            "reviewed_required_parts": coverage.get("reviewed_required_parts"),
                            "required_coverage": coverage.get("required_coverage")}
-    summary["preserved_observations"] = int(proposal["preserved_observations"])
     summary["total_observations"] = len(result.get("grounded_observations") or [])
     return summary
