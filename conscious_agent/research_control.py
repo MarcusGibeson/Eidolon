@@ -35,13 +35,17 @@ ACTIONS = ("pause", "resume")
 
 _PAUSABLE = {"running", "preparing", "blocked"}
 _TERMINAL = {"complete", "incomplete", "failed", "cancelled"}
+# A job whose process died leaves a sealed checkpoint behind. That is interrupted work, not a finished review, so the
+# control offers to continue it - but only when the checkpoint actually verifies, and resume still runs the full
+# integrity check before any work restarts.
+_RECOVERABLE_FAILURES = {"job_process_ended_without_result"}
 
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
-def affordance(activity: Mapping[str, Any]) -> dict[str, Any]:
+def affordance(activity: Mapping[str, Any], *, recoverable: bool = False) -> dict[str, Any]:
     """The one control this activity should show, as operational fact only.
 
     ``action`` is what a click would request, ``enabled`` whether it may be clicked, ``pending`` whether the backend
@@ -56,6 +60,10 @@ def affordance(activity: Mapping[str, Any]) -> dict[str, Any]:
     if kind not in RESEARCH_TYPES:
         return {**base, "reason": "not_research_work"}
     if state in _TERMINAL:
+        if recoverable:
+            return {**base, "action": "resume", "icon": "play", "label": "Resume research", "enabled": True,
+                    "tip": "This research was interrupted. Continue it from its saved checkpoint.",
+                    "reason": "interrupted_with_checkpoint"}
         return {**base, "icon": "none", "label": "Research finished",
                 "tip": f"This research is {state.replace('_', ' ')} and cannot be resumed.",
                 "reason": f"terminal:{state}"}
@@ -72,6 +80,33 @@ def affordance(activity: Mapping[str, Any]) -> dict[str, Any]:
         return {**base, "action": "pause", "icon": "pause", "label": "Pause research", "enabled": True,
                 "tip": "Finish the current step, save a checkpoint, and stop."}
     return {**base, "reason": f"unknown_state:{state}"}
+
+
+def resumable_checkpoint(job: Mapping[str, Any], root: str | Path) -> dict[str, Any]:
+    """Whether work that stopped without a result still has a checkpoint worth continuing.
+
+    Reports only what the checkpoint says about itself. No binding comparison happens here; ``control`` and the
+    reviewer do that, and either may still refuse.
+    """
+    import cooperative_pause as pause
+
+    status = str(job.get("status") or "")
+    if status not in {"failed", "paused"}:
+        return {"resumable": False, "reason": "job_not_interrupted"}
+    failure = str(job.get("failure") or "")
+    if status == "failed" and failure.split(":")[0] not in _RECOVERABLE_FAILURES:
+        return {"resumable": False, "reason": "failure_not_recoverable"}
+    try:
+        controls = _controls_root(job, root)
+        record = pause.load_checkpoint(str(job.get("job_id")), controls)
+    except Exception as exc:
+        return {"resumable": False, "reason": "checkpoint_unreadable:" + type(exc).__name__}
+    if not record:
+        return {"resumable": False, "reason": "no_checkpoint"}
+    if str(record.get("status")) in {"complete", "incomplete", "cancelled"}:
+        return {"resumable": False, "reason": "checkpoint_terminal"}
+    return {"resumable": True, "completed_units": record.get("completed_unit_count", 0),
+            "sequence": record.get("sequence"), "digest": str(record.get("digest") or "")}
 
 
 def _job_record(job_id: str, root: str | Path) -> dict[str, Any]:
@@ -109,8 +144,10 @@ def control(job_id: str, action: str, root: str | Path) -> dict[str, Any]:
     except LookupError as exc:
         return {"ok": False, "status": str(exc), "contract": CONTRACT}
     status = str(job.get("status") or "")
-    if status in {"completed", "failed", "cancelled"}:
-        return {"ok": False, "status": "job_already_terminal", "job_status": status, "contract": CONTRACT}
+    recovery = resumable_checkpoint(job, root)
+    if status in {"completed", "cancelled"} or (status == "failed" and not recovery["resumable"]):
+        return {"ok": False, "status": "job_already_terminal", "job_status": status,
+                "recovery": recovery.get("reason", ""), "contract": CONTRACT}
     try:
         controls = _controls_root(job, root)
     except LookupError as exc:
@@ -128,12 +165,13 @@ def control(job_id: str, action: str, root: str | Path) -> dict[str, Any]:
         return {"ok": True, "status": "pause_requested", "job_id": job_id, "expect_state": "pause_requested",
                 "requested_at": _now(), "contract": CONTRACT}
 
-    if status != "paused":
+    if status != "paused" and not (status == "failed" and recovery["resumable"]):
         return {"ok": False, "status": "job_not_paused", "job_status": status, "contract": CONTRACT}
     pause.clear(str(job_id), controls)
     spawned = _resume(job, root)
     return {"ok": True, "status": "resume_requested", "job_id": job_id, "expect_state": "running",
-            "pid": spawned, "requested_at": _now(), "contract": CONTRACT}
+            "pid": spawned, "recovered_from_interruption": status == "failed",
+            "completed_units": recovery.get("completed_units"), "requested_at": _now(), "contract": CONTRACT}
 
 
 def _resume(job: Mapping[str, Any], root: str | Path) -> int:
@@ -145,15 +183,24 @@ def _resume(job: Mapping[str, Any], root: str | Path) -> int:
     return int(adapter.SPAWN(argv, adapter.JOB_RUNNER.parents[1], env))
 
 
-def decorate(payload: Mapping[str, Any]) -> dict[str, Any]:
+def decorate(payload: Mapping[str, Any], root: str | Path | None = None) -> dict[str, Any]:
     """Attach the control affordance to an activities API payload, in place of nothing else."""
     out = json.loads(json.dumps(payload))
+
+    def recoverable(row: Mapping[str, Any]) -> bool:
+        if root is None or str(row.get("state")) != "failed" or str(row.get("type")) not in RESEARCH_TYPES:
+            return False
+        try:
+            return bool(resumable_checkpoint(_job_record(str(row.get("activity_id")), root), root)["resumable"])
+        except Exception:
+            return False
+
     rows = out.get("activities")
     if isinstance(rows, list):
         for row in rows:
             if isinstance(row, dict):
-                row["control"] = affordance(row)
+                row["control"] = affordance(row, recoverable=recoverable(row))
     row = out.get("activity")
     if isinstance(row, dict):
-        row["control"] = affordance(row)
+        row["control"] = affordance(row, recoverable=recoverable(row))
     return out

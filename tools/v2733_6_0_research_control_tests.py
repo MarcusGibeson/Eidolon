@@ -143,6 +143,72 @@ def main() -> int:
         require(rc.control(job_id, "", root)["status"] == "unknown_action", "an_empty_action_is_refused")
         require(rc.ACTIONS == ("pause", "resume"), "the_control_offers_only_pause_and_resume")
 
+    # --- 6b. work interrupted without a result is recoverable, and only then ---------------------------------
+    with tempfile.TemporaryDirectory(prefix="v2733-recover-") as tmp:
+        root = Path(tmp)
+        import conversational_experiment_review as adapter
+
+        job_id = "job_crash"
+        manifest = "b" * 64
+        (root / adapter.JOB_AREA).mkdir(parents=True, exist_ok=True)
+        private = root / "research_review_runtimes" / job_id
+        job = {"job_id": job_id, "task_id": "t1", "package_id": "Q-REC", "manifest_sha256": manifest,
+               "status": "failed", "failure": "job_process_ended_without_result",
+               "private_runtime_root": str(private), "runtime_root": str(root),
+               "started": "2026-09-22T00:00:00Z"}
+        adapter.save_job(job, root)
+        controls = rc._controls_root(job, root)
+
+        # no checkpoint yet: nothing to continue
+        out = rc.resumable_checkpoint(job, root)
+        require(not out["resumable"] and out["reason"] == "no_checkpoint",
+                "an_interrupted_job_with_no_checkpoint_is_not_resumable")
+        require(not rc.affordance(activity_row("failed"), recoverable=False)["enabled"],
+                "without_a_checkpoint_the_control_stays_disabled")
+
+        cp = pause.Checkpointer(job_id, controls, bindings={"package_id": "Q-REC"})
+        cp.write(position={"level": "observe"}, completed_units=["observe:D1:1", "observe:D2:1"],
+                 next_unit="", state={"review_id": "rev_rec"}, status=pause.RUNNING)
+        out = rc.resumable_checkpoint(job, root)
+        require(out["resumable"] and out["completed_units"] == 2,
+                "an_interrupted_job_with_a_sealed_checkpoint_is_resumable")
+
+        a = rc.affordance(activity_row("failed"), recoverable=True)
+        require(a["action"] == "resume" and a["enabled"], "interrupted_work_offers_resume")
+        require(a["reason"] == "interrupted_with_checkpoint", "the_reason_says_it_was_interrupted")
+        require("interrupted" in a["tip"], "the_tip_says_the_work_was_interrupted_rather_than_finished")
+
+        spawned = []
+        original = adapter.SPAWN
+        adapter.SPAWN = lambda argv, cwd, env: (spawned.append(list(argv)), 99)[1]
+        try:
+            res = rc.control(job_id, "resume", root)
+            require(res["ok"] and res["status"] == "resume_requested", "an_interrupted_job_can_be_resumed")
+            require(res["recovered_from_interruption"] is True, "the_response_says_it_recovered_an_interruption")
+            require(res["completed_units"] == 2, "the_response_reports_what_was_already_done")
+            require(len(spawned) == 1, "recovery_starts_exactly_one_process")
+        finally:
+            adapter.SPAWN = original
+
+        # a failure that is not a bare interruption stays terminal
+        adapter.save_job({**job, "failure": "ReviewPackageError: package_document_digest_mismatch"}, root)
+        out = rc.control(job_id, "resume", root)
+        require(not out["ok"] and out["status"] == "job_already_terminal",
+                "a_real_failure_is_not_silently_treated_as_recoverable")
+        require(out["recovery"] == "failure_not_recoverable", "the_refusal_names_why")
+
+        # a completed checkpoint is not recoverable either
+        adapter.save_job(job, root)
+        cp.write(position={"level": "finished"}, completed_units=["observe:D1:1"], next_unit="",
+                 state={"review_id": "rev_rec"}, status="complete")
+        out = rc.resumable_checkpoint(job, root)
+        require(not out["resumable"] and out["reason"] == "checkpoint_terminal",
+                "a_finished_checkpoint_is_not_offered_for_resume")
+
+    # --- 6c. the decorated payload detects recovery from the job records --------------------------------------
+    require(rc.decorate({"activities": [activity_row("failed")]}, None)["activities"][0]["control"]["enabled"]
+            is False, "without_a_data_root_a_failed_activity_is_not_assumed_recoverable")
+
     # --- 7. the control changes no contract ------------------------------------------------------------------
     require("paused" not in act.TERMINAL and "pause_requested" not in act.TERMINAL,
             "pause_states_remain_nonterminal")

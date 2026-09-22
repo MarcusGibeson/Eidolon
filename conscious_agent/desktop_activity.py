@@ -8,6 +8,27 @@ from tkinter import ttk
 CONTRACT = "activity.v1"
 
 
+def _make_readonly_copyable(widget):
+    """Read-only without being dead: selection, Ctrl+C, Ctrl+A and context copy keep working.
+
+    ``state="disabled"`` would block editing and selection together, which is why the panel could not be copied.
+    """
+    def block_edit(event):
+        allowed = {"c", "a", "C", "A", "Insert"}
+        if (event.state & 0x4) and event.keysym in allowed:   # Control held
+            return None
+        if event.keysym in {"Left", "Right", "Up", "Down", "Home", "End", "Prior", "Next", "Shift_L", "Shift_R",
+                            "Control_L", "Control_R"}:
+            return None
+        return "break"
+
+    widget.bind("<Key>", block_edit)
+    widget.bind("<<Paste>>", lambda _e: "break")
+    widget.bind("<<Cut>>", lambda _e: "break")
+    widget.bind("<Control-a>", lambda _e: (widget.tag_add("sel", "1.0", "end"), "break")[1])
+    widget.bind("<Control-A>", lambda _e: (widget.tag_add("sel", "1.0", "end"), "break")[1])
+
+
 def summary_lines(row):
     p, g = row.get("progress") or {}, row.get("governance") or {}
     lines = [str(row.get("state", "unknown")).upper(), str(row.get("title", "")), str(row.get("type", "")),
@@ -66,18 +87,104 @@ class ActivityPanel:
                                  background=colors["surface"], foreground=colors["text"], font=("Segoe UI", 10))
         self.body.pack(fill="both", expand=True, pady=12)
         def sync_text(*_):
-            self.body.configure(state="normal")
+            selection = None
+            try:
+                if self.body.tag_ranges("sel"):
+                    selection = (self.body.index("sel.first"), self.body.index("sel.last"))
+            except tk.TclError:
+                selection = None
+            view = self.body.yview()
             self.body.delete("1.0", "end")
             self.body.insert("end", self.state.get())
-            self.body.configure(state="disabled")
+            if selection:
+                try:
+                    self.body.tag_add("sel", *selection)
+                except tk.TclError:
+                    pass
+            try:
+                self.body.yview_moveto(view[0])
+            except tk.TclError:
+                pass
         self.state.trace_add("write", sync_text)
+        _make_readonly_copyable(self.body)
         sync_text()
         self.bar = ttk.Progressbar(self.frame, maximum=100)
         self.bar.pack(fill="x")
+        # The same governed control the dashboard shows, driven by the same backend affordance.
+        self.control = {}
+        self.control_button = tk.Button(self.frame, text="", command=self.toggle, state="disabled",
+                                        background=colors["surface_raised"], foreground=colors["text"],
+                                        relief="flat", padx=10, pady=7)
+        self.control_button.pack(fill="x", pady=(8, 0))
+        self.control_note = tk.Label(self.frame, text="", background=colors["surface"],
+                                     foreground=colors["text"], font=("Segoe UI", 8), wraplength=250,
+                                     justify="left", anchor="w")
+        self.control_note.pack(fill="x", pady=(2, 0))
+        self.control_busy = False
+        tk.Button(self.frame, text="Copy activity text", command=self.copy_text,
+                  background=colors["surface_raised"], foreground=colors["text"], relief="flat").pack(fill="x", pady=(8, 0))
         tk.Button(self.frame, text="Activity details and history", command=self.open,
                   background=colors["surface_raised"], foreground=colors["text"], relief="flat").pack(fill="x", pady=12)
         root.bind("<Destroy>", self._destroyed, add="+")
         self.poll()
+
+    def copy_text(self):
+        """Put the panel text on the clipboard, for an operator who wants to paste it somewhere."""
+        try:
+            self.root.clipboard_clear()
+            self.root.clipboard_append(self.state.get())
+        except tk.TclError:
+            pass
+
+    def render_control(self, row):
+        """Draw whatever the backend says the operator may do. The panel decides nothing itself."""
+        control = (row or {}).get("control") or {}
+        self.control = control
+        if not control.get("visible"):
+            self.control_button.pack_forget()
+            self.control_note.pack_forget()
+            return
+        if not self.control_button.winfo_ismapped():
+            self.control_button.pack(fill="x", pady=(8, 0))
+            self.control_note.pack(fill="x", pady=(2, 0))
+        pending = bool(control.get("pending")) or self.control_busy
+        glyph = "\u25b6" if control.get("icon") == "play" else "\u2759\u2759"
+        label = control.get("label") or ""
+        if self.control_busy and not control.get("pending"):
+            label = "Pausing..." if control.get("action") == "pause" else "Resuming..."
+        self.control_button.configure(
+            text=(glyph + "  " + label) if control.get("icon") not in ("", "none") else label,
+            state=("normal" if control.get("enabled") and not pending else "disabled"))
+        self.control_note.configure(text=control.get("tip") or "")
+
+    def toggle(self):
+        """One governed request, on the same path the dashboard button uses."""
+        control = self.control or {}
+        action = str(control.get("action") or "")
+        if not action or not control.get("enabled") or self.control_busy:
+            return
+        self.control_busy = True
+        self.control_button.configure(state="disabled",
+                                      text="Pausing..." if action == "pause" else "Resuming...")
+
+        def send():
+            try:
+                # dashboard_request, not post: a control request must not fail over to a second server, where
+                # the retry could become a second request against the same job.
+                self.client.dashboard_request(
+                    "POST", "/research/control",
+                    {"job_id": control.get("activity_id"), "action": action}, timeout=30)
+            except Exception:
+                pass
+            finally:
+                self.control_busy = False
+                if not self.closed:
+                    try:
+                        self.root.after(0, self.poll)
+                    except RuntimeError:
+                        pass
+
+        Thread(target=send, daemon=True).start()
 
     def _destroyed(self, event):
         if event.widget is self.root:
@@ -114,6 +221,7 @@ class ActivityPanel:
         self.state.set(("ACTIVE\n" if data.get("current") else "No active work\n") +
                        ("\n".join(summary_lines(row)) if row else "No activity recorded"))
         self.bar["value"] = (row.get("progress", {}).get("percent") or 0) if row else 0
+        self.render_control(row)
         if self.window and self.window.winfo_exists():
             self.history.delete(0, "end")
             for r in rows:
