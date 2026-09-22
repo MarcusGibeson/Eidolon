@@ -885,11 +885,9 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
             "timeout_attempts": sum("Timeout" in str(x.get("error", "")) for x in ledger),
             "unparseable_or_rejected_replies": sum(not x["accepted"] and not x.get("error") for x in ledger),
             "truncated_attempts": rejections["truncated_at_output_limit"] + rejections["context_limit_reached"],
-            "retries": sum(x["attempt"] > 1 for x in ledger),
+            **retry_totals(ledger, parts_coverage),
             "prompt_tokens": sum(int((x.get("metrics") or {}).get("prompt_eval_count") or 0) for x in ledger),
             "output_tokens": sum(int((x.get("metrics") or {}).get("eval_count") or 0) for x in ledger),
-            "recovered_stages": sorted(s for s in accepted_stages
-                                       if any(x["stage"] == s and not x["accepted"] for x in ledger)),
             "rejections_by_reason": dict(sorted(rejections.items())),
             "stages_without_accepted_reply": sorted(set(stage_order) - accepted_stages),
             "terminal_stage_failures": [{"stage": s, "reason": [x for x in ledger if x["stage"] == s][-1]["rejection"]}
@@ -925,6 +923,38 @@ def render_markdown(artifact: Mapping[str, Any]) -> str:
                          f"= {r['surviving']} surviving (x{r['reduction']})")
         text += "\n".join(lines) + "\n"
     return text
+
+
+RETRY_STAGE = re.compile(r":retry(\d+)$")
+# A retry is executed as its own stage (``observe:D13:63:retry1``) whose ``attempt`` stays 1, because each stage is a
+# fresh provider call rather than a second attempt at the same one. Counting ``attempt > 1`` therefore reported zero
+# retries however many ran. Totals are derived from the stages that actually executed instead.
+ACCOUNTING_CONTRACT = "retry-accounting.v2"
+
+
+def base_unit_of(stage: str) -> str:
+    """The unit a stage belongs to, with any retry suffix removed."""
+    return RETRY_STAGE.sub("", str(stage))
+
+
+def retry_totals(ledger: Sequence[Mapping[str, Any]],
+                 parts_coverage: Sequence[Mapping[str, Any]] = ()) -> dict[str, Any]:
+    """Retry accounting derived from executed stages, not from a per-call attempt counter.
+
+    ``retries`` counts extra attempts that actually ran. ``recovered_stages`` names units that grounded nothing on
+    their first attempt and succeeded on a later one - taken from per-part coverage, which records grounding outcomes,
+    because the ledger only records whether a reply parsed.
+    """
+    retry_stages = [str(x["stage"]) for x in ledger if RETRY_STAGE.search(str(x["stage"]))]
+    retried_units = {base_unit_of(s) for s in retry_stages}
+    recovered = sorted(str(p["stage"]) for p in parts_coverage
+                       if int(p.get("grounding_attempts") or 1) > 1 and p.get("reviewed"))
+    return {"accounting_contract": ACCOUNTING_CONTRACT,
+            "retries": len(retry_stages),
+            "retry_stages": sorted(retry_stages),
+            "units_retried": len(retried_units),
+            "units_retried_without_recovery": sorted(retried_units - set(recovered)),
+            "recovered_stages": recovered}
 
 
 def registered_limits() -> dict[str, Any]:
