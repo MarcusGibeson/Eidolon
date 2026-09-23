@@ -136,10 +136,15 @@ def source_roles(ids: Sequence[str], items: Mapping[str, Mapping[str, Any]]) -> 
 DEMOTION_FORBIDDEN_WITH = {
     "design_constraint": ("measured_result", "conclusion", "observation"),
     "uncertainty": ("measured_result", "conclusion"),
-    "limitation": ("conclusion",),
+    # Widened from conclusion alone on G-SYNTH1-R2 evidence. Two live merges demoted a critical role under a direct
+    # measured_result and were never even checked: "29/32 items had identical dispositions" is qualified by a
+    # minority finding exactly as a conclusion would be, and "correlated error was observed in three items" is
+    # qualified by the size of the pool they came from. A result asserted flatly misleads the same way a conclusion
+    # does, so the same roles must be challenged against it.
+    "limitation": ("measured_result", "conclusion", "observation"),
     "contradiction": ("measured_result", "conclusion", "observation"),
-    "minority_finding": ("conclusion",),
-    "hypothesis": ("measured_result", "conclusion"),
+    "minority_finding": ("measured_result", "conclusion", "observation"),
+    "hypothesis": ("measured_result", "conclusion", "observation"),
 }
 
 # Wording that marks a role explicitly in the sentence itself. This is a marker check, not comprehension: it asks
@@ -153,18 +158,33 @@ ROLE_MARKERS = {
     "uncertainty": ("uncertain", "unclear", "unknown", "may ", "might", "possibly", "not established",
                     "cannot be determined", "inconclusive", "ambiguous"),
     "limitation": ("limitation", "limited", "only", "does not cover", "scope", "caveat", "restricted"),
-    "contradiction": ("contradict", "conflict", "disagree", "inconsistent", "opposed"),
+    # "opposite" was the exact wording of a live false refusal: a sentence reporting "opposite relations for the
+    # same evidence" plainly carries a contradiction and matched nothing. Its immediate variants are added with it;
+    # this is not an open synonym expansion.
+    "contradiction": ("contradict", "conflict", "disagree", "inconsistent", "opposed", "opposite", "opposing",
+                      "contrary"),
+    # Numerals likewise: the same run wrote "1 item produced a unique disposition", which the spelled-out forms
+    # did not match.
     "minority_finding": ("minority", "one case", "single case", "exception", "outlier", "in one", "one item",
                          "single item", "one record", "only one", "a single", "just one", "one of thirty",
-                         "one of the"),
+                         "one of the", "1 item", "1 record", "1 case"),
     "hypothesis": ("hypothes", "may indicate", "suggests", "could be", "proposed explanation", "if ", "would imply"),
 }
 
 
+def matched_markers(text: str, role: str) -> list[str]:
+    """Which marker phrases this sentence actually carries for a role - the evidence behind any promotion.
+
+    Reported so an operator can judge whether the wording genuinely expresses the role. A matched marker is not a
+    proof of meaning; it is the thing that has to be inspected.
+    """
+    lowered = str(text).lower()
+    return [marker for marker in ROLE_MARKERS.get(role, ()) if marker in lowered]
+
+
 def prose_marks_role(text: str, role: str) -> bool:
     """Whether the sentence carries explicit framing for this role. Structural obligation, not understanding."""
-    lowered = str(text).lower()
-    return any(marker in lowered for marker in ROLE_MARKERS.get(role, ()))
+    return bool(matched_markers(text, role))
 
 
 def role_fidelity(text: str, direct: Sequence[str], contributors: Mapping[str, Sequence[str]],
@@ -204,6 +224,7 @@ def role_fidelity(text: str, direct: Sequence[str], contributors: Mapping[str, S
         return {"ok": False, "reason": "role_fidelity_lost", "roles_required_direct": required,
                 "roles_missing_from_prose": failed, "promoted": []}
     return {"ok": True, "roles_required_direct": required, "promoted": promote,
+            "promotion_markers": {role: matched_markers(text, role) for role in promote},
             "role_promotion": "deterministic_required" if promote else ""}
 
 

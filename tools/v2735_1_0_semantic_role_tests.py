@@ -129,9 +129,17 @@ def main() -> int:
                            settled["role_lineage"], settled["inherited_roles"])
     require(not v["ok"] and v["roles_missing_from_prose"] == ["minority_finding"],
             "the_same_merge_with_the_qualifier_stripped_is_refused")
-    # the old signature, without inherited roles, must not silently pass the same case
-    old = hier.role_fidelity(kept, settled["direct_roles"], settled["role_lineage"])
-    require(old["roles_required_direct"] == [], "direct_only_conflicts_are_what_let_it_through_before")
+    # Widening the table later subsumed the inherited path for most roles - any assertive role they are claimed
+    # beside is now in their conflict set, so the direct check catches it first. It stays load-bearing for
+    # uncertainty, whose conflicts deliberately exclude observation: there, only the inherited reading fires.
+    narrow = {"A": {"direct_roles": ["observation"], "inherited_roles": ["conclusion", "uncertainty"]}}
+    s_narrow = hier.assign_roles(["observation"], ["A"], narrow)
+    flat = "Item T04 contradicted its evidence."
+    require(hier.role_fidelity(flat, s_narrow["direct_roles"], s_narrow["role_lineage"])["roles_required_direct"]
+            == [], "a_direct_only_reading_misses_a_conflict_that_is_itself_inherited")
+    require("uncertainty" in hier.role_fidelity(flat, s_narrow["direct_roles"], s_narrow["role_lineage"],
+                                                s_narrow["inherited_roles"])["roles_required_direct"],
+            "the_inherited_reading_still_catches_it")
 
     # relevance: an inherited conflict matters only when the sentence asserts something settled
     procedural = {"A": {"direct_roles": ["procedure"], "inherited_roles": ["design_constraint", "measured_result"]}}
@@ -146,6 +154,56 @@ def main() -> int:
     require(not v["ok"], "asserting_a_fact_while_its_uncertainty_was_demoted_is_refused")
     require(hier.ASSERTIVE_ROLES == ("measured_result", "conclusion", "observation"),
             "the_assertive_roles_are_named_explicitly")
+
+    # --- 3c. the three merges G-SYNTH1-R2 actually produced, verbatim -------------------------------------------
+    # Every one of these is a real live sentence from the R2 run, kept exactly as the model wrote it. Two exposed
+    # gaps that the table and the lexicon have since been widened to close; the third is a known limit of a marker
+    # check and is recorded as such rather than papered over.
+    live_cases = [
+        ("contradiction_expressed_as_opposite_relations",
+         {"DS2": {"direct_roles": ["contradiction"], "inherited_roles": []},
+          "DS3": {"direct_roles": ["observation"], "inherited_roles": []},
+          "DS4": {"direct_roles": ["procedure"], "inherited_roles": []}},
+         ["measured_result", "procedure"],
+         "Records T07-r1 and T07-r2 report opposite relations for the same evidence, while both cited two spans "
+         "and were read in fixed order.",
+         "promoted", "contradiction"),
+        ("minority_finding_written_with_a_numeral",
+         {"DS1": {"direct_roles": ["measured_result"], "inherited_roles": []},
+          "DS2": {"direct_roles": ["minority_finding"], "inherited_roles": []}},
+         ["measured_result"],
+         "29/32 items had identical dispositions; 1 item produced a unique disposition (DS1, DS2).",
+         "promoted", "minority_finding"),
+        ("limitation_expressed_only_as_a_quantity",
+         {"DS1": {"direct_roles": ["measured_result"], "inherited_roles": []},
+          "DS2": {"direct_roles": ["limitation"], "inherited_roles": []},
+          "DS3": {"direct_roles": ["observation"], "inherited_roles": []},
+          "DS4": {"direct_roles": ["procedure"], "inherited_roles": []}},
+         ["measured_result", "procedure"],
+         "Correlated error was observed in three items, which were drawn from a pool of twelve ambiguous items "
+         "examined after the primary scoring pass.",
+         "refused", "limitation"),
+    ]
+    for name, items_map, proposed, text, expected, role in live_cases:
+        settled_live = hier.assign_roles(proposed, list(items_map), items_map)
+        v = hier.role_fidelity(text, settled_live["direct_roles"], settled_live["role_lineage"],
+                               settled_live["inherited_roles"])
+        require(role in v["roles_required_direct"], f"{name}__is_challenged_at_all")
+        if expected == "promoted":
+            require(v["ok"] and role in v["promoted"], f"{name}__is_promoted")
+            require(v["promotion_markers"].get(role), f"{name}__reports_the_marker_that_triggered_it")
+        else:
+            require(not v["ok"] and role in v["roles_missing_from_prose"], f"{name}__is_refused")
+
+    require("opposite" in hier.ROLE_MARKERS["contradiction"], "opposite_is_a_contradiction_marker")
+    require("1 item" in hier.ROLE_MARKERS["minority_finding"], "a_numeral_minority_is_matched")
+    for role in ("minority_finding", "limitation", "hypothesis"):
+        require("measured_result" in hier.DEMOTION_FORBIDDEN_WITH[role],
+                f"{role}_is_challenged_under_a_measured_result")
+        require("observation" in hier.DEMOTION_FORBIDDEN_WITH[role],
+                f"{role}_is_challenged_under_an_observation")
+    require(hier.matched_markers("nothing here", "contradiction") == [],
+            "a_sentence_with_no_marker_reports_none")
 
     # --- 4. what the table must NOT do ---------------------------------------------------------------------------
     # ordinary ancestry is allowed to be inherited
