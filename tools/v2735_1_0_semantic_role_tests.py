@@ -113,6 +113,40 @@ def main() -> int:
         require(not v["ok"], f"{critical}_may_not_be_demoted_beside_{other}")
         require(critical in v["roles_missing_from_prose"], f"{critical}_is_named_in_the_refusal")
 
+    # --- 3b. an inherited conflict counts, when the sentence asserts something settled ---------------------------
+    # G-SYNTH1's single genuine live merge slipped through here: minority_finding was demoted while the role it
+    # conflicts with, conclusion, had itself been demoted to inherited, so nothing fired. Being flattened together
+    # is no safer than being flattened under a directly claimed role.
+    live = {"DS1": {"direct_roles": ["measured_result"], "inherited_roles": []},
+            "DS2": {"direct_roles": ["minority_finding"], "inherited_roles": ["conclusion"]}}
+    settled = hier.assign_roles(["measured_result"], list(live), live)
+    kept = ("Dispositions were consistent across the corpus, with one item out of thirty-two producing a unique "
+            "disposition.")
+    v = hier.role_fidelity(kept, settled["direct_roles"], settled["role_lineage"], settled["inherited_roles"])
+    require(v["ok"] and v["promoted"] == ["minority_finding"],
+            "an_inherited_conflict_triggers_the_check_and_prose_that_kept_the_fact_is_promoted")
+    v = hier.role_fidelity("Dispositions were consistent across the corpus.", settled["direct_roles"],
+                           settled["role_lineage"], settled["inherited_roles"])
+    require(not v["ok"] and v["roles_missing_from_prose"] == ["minority_finding"],
+            "the_same_merge_with_the_qualifier_stripped_is_refused")
+    # the old signature, without inherited roles, must not silently pass the same case
+    old = hier.role_fidelity(kept, settled["direct_roles"], settled["role_lineage"])
+    require(old["roles_required_direct"] == [], "direct_only_conflicts_are_what_let_it_through_before")
+
+    # relevance: an inherited conflict matters only when the sentence asserts something settled
+    procedural = {"A": {"direct_roles": ["procedure"], "inherited_roles": ["design_constraint", "measured_result"]}}
+    s2 = hier.assign_roles(["procedure"], ["A"], procedural)
+    v = hier.role_fidelity("Records were read in fixed order.", s2["direct_roles"], s2["role_lineage"],
+                           s2["inherited_roles"])
+    require(v["ok"] and not v["promoted"], "a_purely_procedural_statement_is_not_refused_for_its_ancestry")
+    asserted = {"A": {"direct_roles": ["observation"], "inherited_roles": ["uncertainty", "conclusion"]}}
+    s3 = hier.assign_roles(["observation"], ["A"], asserted)
+    v = hier.role_fidelity("Item T04 contradicted its evidence.", s3["direct_roles"], s3["role_lineage"],
+                           s3["inherited_roles"])
+    require(not v["ok"], "asserting_a_fact_while_its_uncertainty_was_demoted_is_refused")
+    require(hier.ASSERTIVE_ROLES == ("measured_result", "conclusion", "observation"),
+            "the_assertive_roles_are_named_explicitly")
+
     # --- 4. what the table must NOT do ---------------------------------------------------------------------------
     # ordinary ancestry is allowed to be inherited
     deep = {"A": {"direct_roles": ["conclusion"], "inherited_roles": ["procedure", "observation"]}}

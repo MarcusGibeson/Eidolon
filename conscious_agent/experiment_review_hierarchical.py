@@ -93,6 +93,10 @@ SEMANTIC_ROLES = ("design_constraint", "measured_result", "observation", "hypoth
 INTERPRETATION_CRITICAL_ROLES = ("design_constraint", "contradiction", "limitation", "uncertainty",
                                  "minority_finding")
 
+# Roles that assert something as settled. A demoted qualifier is dangerous precisely when the sentence carrying it
+# reads as established fact, so these decide whether an inherited conflict is relevant or merely present.
+ASSERTIVE_ROLES = ("measured_result", "conclusion", "observation")
+
 _ROLE_INSTRUCTION = (
     # The vocabulary is baked in rather than left as a placeholder: these templates are filled by the frozen
     # baseline's prompt builders, which know nothing about roles and would fail on an unfilled field.
@@ -150,7 +154,9 @@ ROLE_MARKERS = {
                     "cannot be determined", "inconclusive", "ambiguous"),
     "limitation": ("limitation", "limited", "only", "does not cover", "scope", "caveat", "restricted"),
     "contradiction": ("contradict", "conflict", "disagree", "inconsistent", "opposed"),
-    "minority_finding": ("minority", "one case", "single case", "exception", "outlier", "in one"),
+    "minority_finding": ("minority", "one case", "single case", "exception", "outlier", "in one", "one item",
+                         "single item", "one record", "only one", "a single", "just one", "one of thirty",
+                         "one of the"),
     "hypothesis": ("hypothes", "may indicate", "suggests", "could be", "proposed explanation", "if ", "would imply"),
 }
 
@@ -161,7 +167,8 @@ def prose_marks_role(text: str, role: str) -> bool:
     return any(marker in lowered for marker in ROLE_MARKERS.get(role, ()))
 
 
-def role_fidelity(text: str, direct: Sequence[str], contributors: Mapping[str, Sequence[str]]) -> dict[str, Any]:
+def role_fidelity(text: str, direct: Sequence[str], contributors: Mapping[str, Sequence[str]],
+                  inherited: Sequence[str] = ()) -> dict[str, Any]:
     """Whether a statement may claim what it claims, given the roles its sources carried.
 
     Traceability is not the same as fidelity. Keeping ``design_constraint`` in ancestry while the sentence reads as
@@ -174,11 +181,22 @@ def role_fidelity(text: str, direct: Sequence[str], contributors: Mapping[str, S
     the framing is a semantic loss, and no amount of metadata makes the sentence honest again - that one is refused.
     """
     claimed = set(direct)
+    # A conflicting role counts whether the statement claims it outright or carries it from its sources. G-SYNTH1's
+    # one genuine live merge slipped through on exactly that gap: minority_finding was demoted while conclusion -
+    # the role it conflicts with - had itself been demoted to inherited, so nothing fired and a sentence asserting
+    # corpus-wide consistency kept its qualifier only by luck of wording. Being flattened together is no safer than
+    # being flattened under a directly claimed role.
+    #
+    # A role is still only *satisfied* by being claimed directly; inheritance never discharges the obligation.
+    # ...but only when the statement actually asserts something settled. A purely procedural sentence whose ancestry
+    # happened to include a constraint is not misleading anyone, and refusing it would cost reduction for nothing.
+    # What makes a demotion dangerous is a sentence that reads as established fact while the qualifier is gone.
+    standing = claimed | (set(inherited) if claimed & set(ASSERTIVE_ROLES) else set())
     required, promote, failed = [], [], []
     for role, conflicts in DEMOTION_FORBIDDEN_WITH.items():
         if role in claimed or role not in contributors:
             continue
-        if not any(other in claimed for other in conflicts):
+        if not any(other in standing for other in conflicts):
             continue
         required.append(role)
         (promote if prose_marks_role(text, role) else failed).append(role)
@@ -797,7 +815,8 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
             queue = proposals.get(s["statement"]) or []
             proposed = queue.pop(0) if queue else None
             roles = assign_roles(proposed, s["cites"], items)
-            verdict = role_fidelity(s["statement"], roles["direct_roles"], roles["role_lineage"])
+            verdict = role_fidelity(s["statement"], roles["direct_roles"], roles["role_lineage"],
+                                    roles["inherited_roles"])
             if not verdict["ok"]:
                 dropped.append({**s, "reason": verdict["reason"],
                                 "roles_required_direct": verdict["roles_required_direct"],
