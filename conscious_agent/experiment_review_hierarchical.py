@@ -126,6 +126,69 @@ def source_roles(ids: Sequence[str], items: Mapping[str, Mapping[str, Any]]) -> 
     return contributors
 
 
+# Which demotions change what a sentence means. Read as: this role may not fall to inherited-only when the output
+# directly claims one of these. Deliberately small - one summariser ate an adjective; that does not call for a
+# theory of meaning.
+DEMOTION_FORBIDDEN_WITH = {
+    "design_constraint": ("measured_result", "conclusion", "observation"),
+    "uncertainty": ("measured_result", "conclusion"),
+    "limitation": ("conclusion",),
+    "contradiction": ("measured_result", "conclusion", "observation"),
+    "minority_finding": ("conclusion",),
+    "hypothesis": ("measured_result", "conclusion"),
+}
+
+# Wording that marks a role explicitly in the sentence itself. This is a marker check, not comprehension: it asks
+# whether the framing we required is present, the way a citation check asks whether an id is present. It cannot
+# tell a true sentence from a false one, and it is not meant to. Whether the prose genuinely carries the role is
+# measured in the bounded live qualification, where a reader can judge it.
+ROLE_MARKERS = {
+    "design_constraint": ("by design", "architecture", "architectural", "design", "intentionally", "deliberately",
+                          "specification", "specifies", "specified", "contract", "constraint", "constrained",
+                          "required to", "prohibited", "forbidden", "not permitted", "mandated", "prescribed"),
+    "uncertainty": ("uncertain", "unclear", "unknown", "may ", "might", "possibly", "not established",
+                    "cannot be determined", "inconclusive", "ambiguous"),
+    "limitation": ("limitation", "limited", "only", "does not cover", "scope", "caveat", "restricted"),
+    "contradiction": ("contradict", "conflict", "disagree", "inconsistent", "opposed"),
+    "minority_finding": ("minority", "one case", "single case", "exception", "outlier", "in one"),
+    "hypothesis": ("hypothes", "may indicate", "suggests", "could be", "proposed explanation", "if ", "would imply"),
+}
+
+
+def prose_marks_role(text: str, role: str) -> bool:
+    """Whether the sentence carries explicit framing for this role. Structural obligation, not understanding."""
+    lowered = str(text).lower()
+    return any(marker in lowered for marker in ROLE_MARKERS.get(role, ()))
+
+
+def role_fidelity(text: str, direct: Sequence[str], contributors: Mapping[str, Sequence[str]]) -> dict[str, Any]:
+    """Whether a statement may claim what it claims, given the roles its sources carried.
+
+    Traceability is not the same as fidelity. Keeping ``design_constraint`` in ancestry while the sentence reads as
+    a deficiency preserves the provenance and still misleads the reader - which is exactly what happened to
+    Attempt 5. So a role that changes interpretation may not fall to inherited-only while the output directly
+    claims a result, conclusion or observation.
+
+    Two different failures, two different answers. Metadata the model omitted while writing prose that still carries
+    the framing is a bookkeeping miss, and governance promotes the role deterministically. Prose that has dropped
+    the framing is a semantic loss, and no amount of metadata makes the sentence honest again - that one is refused.
+    """
+    claimed = set(direct)
+    required, promote, failed = [], [], []
+    for role, conflicts in DEMOTION_FORBIDDEN_WITH.items():
+        if role in claimed or role not in contributors:
+            continue
+        if not any(other in claimed for other in conflicts):
+            continue
+        required.append(role)
+        (promote if prose_marks_role(text, role) else failed).append(role)
+    if failed:
+        return {"ok": False, "reason": "role_fidelity_lost", "roles_required_direct": required,
+                "roles_missing_from_prose": failed, "promoted": []}
+    return {"ok": True, "roles_required_direct": required, "promoted": promote,
+            "role_promotion": "deterministic_required" if promote else ""}
+
+
 def assign_roles(proposed: Any, cites: Sequence[str],
                  items: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
     """Settle a statement's roles: what it claims, what it carries, and where each role came from.
@@ -725,18 +788,40 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
         proposals: dict[str, list[Any]] = {}
         for item in (x for x in (parsed.get("statements") or []) if isinstance(x, dict)):
             proposals.setdefault(base._norm(item.get("statement") or "")[:600], []).append(item.get("semantic_roles"))
+        # Roles are settled and fidelity judged before anything is minted, so a statement that lost framing its
+        # sources carried never enters the record and its inputs stay uncited - which carries them forward
+        # unchanged, exactly as any other uncited input. Nothing is lost; the compression simply does not get to
+        # claim this one.
+        survivors: list[tuple[dict[str, Any], dict[str, Any]]] = []
+        for s in kept:
+            queue = proposals.get(s["statement"]) or []
+            proposed = queue.pop(0) if queue else None
+            roles = assign_roles(proposed, s["cites"], items)
+            verdict = role_fidelity(s["statement"], roles["direct_roles"], roles["role_lineage"])
+            if not verdict["ok"]:
+                dropped.append({**s, "reason": verdict["reason"],
+                                "roles_required_direct": verdict["roles_required_direct"],
+                                "roles_missing_from_prose": verdict["roles_missing_from_prose"]})
+                continue
+            if verdict["promoted"]:
+                # The prose still carries the framing; only the label was missing. Promote it, and record that
+                # governance did so rather than the model.
+                roles["direct_roles"] = [r for r in SEMANTIC_ROLES
+                                         if r in set(roles["direct_roles"]) | set(verdict["promoted"])]
+                roles["inherited_roles"] = [r for r in roles["inherited_roles"] if r not in verdict["promoted"]]
+                roles["role_promotion"] = verdict["role_promotion"]
+                roles["promoted_roles"] = list(verdict["promoted"])
+            survivors.append((s, roles))
+        kept = [s for s, _ in survivors]
         cited = {i for s in kept for i in s["cites"]}
         unit.update(status="accepted", cited=[i for i in unit["inputs"] if i in cited],
                     uncited=[i for i in unit["inputs"] if i not in cited], statements=[],
                     rejected_statements=len(dropped))
-        for s in kept:
+        for s, roles in survivors:
             sid = f"{prefix}{sum(1 for x in items.values() if x['type'] == kind) + 1}"
-            queue = proposals.get(s["statement"]) or []
-            proposed = queue.pop(0) if queue else None
             items[sid] = {"id": sid, "type": kind, "unit_id": unit["unit_id"], "kind": s["kind"],
                           "statement": s["statement"], "cites": s["cites"], "dropped_cites": s["dropped_cites"],
-                          "lineage": base.lineage_of(s["cites"], items),
-                          **assign_roles(proposed, s["cites"], items), **extra(s)}
+                          "lineage": base.lineage_of(s["cites"], items), **roles, **extra(s)}
             unit["statements"].append(sid)
         rejected_statements.extend({"level": unit["stage"].split(":")[0], "unit_id": unit["unit_id"], **d}
                                    for d in dropped)
