@@ -43,10 +43,10 @@ SOURCE_ROOT = ROOT
 
 # Which reviewer architecture runs a job. The job record chooses; this is only the fallback for records written before
 # the field existed, which must keep running on the reviewer they were queued against.
-REVIEWERS = {"v2731.8": "experiment_review", "v2734.0": "experiment_review_hierarchical"}
+REVIEWERS = {"v2731.8": "experiment_review", "v2735.0": "experiment_review_hierarchical"}
 # Contracts that existed but no longer resolve to any module. A job record pinned to one of these fails
 # loudly rather than being quietly run on a successor whose behaviour differs.
-SUPERSEDED = {"v2732.0": "v2732.1", "v2732.1": "v2733.0", "v2733.0": "v2733.1", "v2733.1": "v2734.0"}
+SUPERSEDED = {"v2732.0": "v2732.1", "v2732.1": "v2733.0", "v2733.0": "v2733.1", "v2733.1": "v2734.0", "v2734.0": "v2735.0"}
 DEFAULT_REVIEWER_CONTRACT = "v2731.8"
 
 

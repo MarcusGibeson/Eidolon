@@ -67,7 +67,13 @@ import cooperative_pause as pause
 import experiment_review as base
 from json_storage import write_text_atomic
 
-CONTRACT_VERSION = "v2734.0"
+CONTRACT_VERSION = "v2735.0"
+
+# What a fold-register is, said in words that survive being read by the next layer. It records evidence that no
+# synthesis statement happened to cite, with its identifiers and full observation lineage intact - a coverage
+# mechanism, not a gap in what is known.
+REGISTER_KIND = "preserved_register"
+REGISTER_STATUS = "preserved_indirectly"
 BASELINE_CONTRACT = base.CONTRACT_VERSION
 REVIEW_AREA = base.REVIEW_AREA
 MANIFEST_NAME = base.MANIFEST_NAME
@@ -122,7 +128,8 @@ FINAL_INPUT_BOUND_CHARS = FINAL_MAX_INPUTS * (base.MAX_STATEMENT_CHARS + base.FI
 GROUP_PROMPT = (
     base.FRAME +
     "Experiment: {title}\nTask brief: {brief}\n"
-    "Below are syntheses and uncaptured evidence drawn from across the package, group {group} of {groups} in "
+    "Below are syntheses and directly-preserved evidence drawn from across the package, group {group} of "
+    "{groups} in "
     "consolidation round {round}. Each has an id and, in brackets, where it came from:\n"
     "{inputs}\n"
     "Write a consolidated synthesis of these inputs for the final review. " + base._PRESERVE +
@@ -153,8 +160,8 @@ FINAL_A_PROMPT = base.FINAL_A_PROMPT.replace(
     "These are syntheses of the package's grounded observations: document-level statements (DS ids) and, marked as "
     "uncaptured, part-level statements (PS ids) and observations (O ids) that no higher-level statement captured.",
     "These are consolidated syntheses of the package's grounded observations: group statements (GS ids), document "
-    "statements (DS ids) and, marked as uncaptured, part statements (PS ids) and observations (O ids) that no higher "
-    "statement captured.")
+    "statements (DS ids) and, marked as preserved, part statements (PS ids) and observations (O ids) that no higher "
+    "statement cited. Preserved evidence is present and carried forward, not missing.")
 FINAL_B_PROMPT = base.FINAL_B_PROMPT
 
 
@@ -751,12 +758,17 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
                 register_id = f"U{round_no}"
                 lineage = base.lineage_of(folded, items)
                 docs = sorted({items[i].get("doc_id", "") for i in folded} - {""})
+                # A register is a preservation mechanism, so it must say so in words a later reasoner can use.
+                # Describing itself as "unknown" and "unrepresented" made the final synthesis report preserved
+                # evidence as missing, while the architecture accounting recorded every observation represented.
+                # "Unknown" denotes epistemic uncertainty and "unrepresented" denotes absence; neither is true here.
                 items[register_id] = {
-                    "id": register_id, "type": "uncaptured_register", "round": round_no, "kind": "unknown",
+                    "id": register_id, "type": "uncaptured_register", "round": round_no,
+                    "kind": REGISTER_KIND, "representation_status": REGISTER_STATUS,
                     "doc_id": f"round {round_no}", "covers": list(folded), "lineage": lineage, "cites": [],
                     "statement": (f"{len(folded)} input(s) resting on {len(lineage)} observation(s) from "
-                                  f"{', '.join(docs) or 'the package'} that no synthesis statement cited across "
-                                  f"{round_no} round(s); unrepresented above, not discarded")}
+                                  f"{', '.join(docs) or 'the package'}: not directly cited by a synthesis "
+                                  f"statement; preserved through register lineage")}
                 nxt = produced + kept_verbatim + [register_id] + registers_in
             group_rounds.append({"round": round_no, "units": len(units), "inputs": len(surviving),
                                  "statements": len(produced), "carried": len(carried), "folded": len(folded),

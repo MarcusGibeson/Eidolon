@@ -153,7 +153,7 @@ def main() -> int:
     require(base.CONTRACT_VERSION == "v2731.8", "the_frozen_baseline_contract_is_unchanged")
     require(base.METADATA_KEYS == ("experiment", "prompt_form_equivalent", "form", "variant", "condition", "run",
                                    "item", "case", "record"), "the_baseline_key_list_itself_is_untouched")
-    require(hier.CONTRACT_VERSION == "v2734.0", "the_change_carries_its_own_contract_version")
+    require(hier.CONTRACT_VERSION == "v2735.0", "the_change_carries_its_own_contract_version")
 
     # --- 9. the extension is scoped, not global -------------------------------------------------------------------
     require(base.record_metadata is not hier.record_metadata, "the_baseline_is_not_patched_at_import")
