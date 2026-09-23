@@ -187,6 +187,19 @@ def main() -> int:
         require(act.project(legacy, "2027-01-01T00:00:00.000Z")["elapsed_seconds"] == 123,
                 "records_written_before_active_accounting_keep_their_wall_clock_reading")
 
+    # --- 14b. a duration reads the way a person says one -------------------------------------------------------
+    from desktop_activity import human_duration
+
+    for seconds, expected in ((21241, "5 hrs 54 mins 1 sec"), (119, "1 min 59 secs"), (3600, "1 hr"),
+                              (3661, "1 hr 1 min 1 sec"), (3605, "1 hr 5 secs"), (7200, "2 hrs"),
+                              (1, "1 sec"), (59, "59 secs"), (60, "1 min"), (0, "0 secs"),
+                              (86399, "23 hrs 59 mins 59 secs")):
+        require(human_duration(seconds) == expected, f"{seconds}s_reads_as_{expected.replace(' ', '_')}")
+    require("0 hr" not in human_duration(119) and "0 min" not in human_duration(3605),
+            "a_unit_that_is_zero_is_left_out_entirely")
+    require(human_duration(3600).endswith("hr") and human_duration(7200).endswith("hrs"),
+            "units_are_singular_or_plural_on_their_own_count")
+
     # --- 15-17. both surfaces read the same projection ------------------------------------------------------------
     desktop = (ROOT / "conscious_agent" / "desktop_activity.py").read_text(encoding="utf-8")
     page = (ROOT / "conscious_agent" / "static" / "activity.js").read_text(encoding="utf-8")
@@ -194,6 +207,8 @@ def main() -> int:
     require("data.current || rows[0]" in page, "the_web_page_reads_the_same_current_row")
     for surface, text in (("desktop", desktop), ("web", page)):
         require("elapsed_seconds" in text, f"the_{surface}_renders_the_projected_elapsed_time")
+        require("hr" in text and "min" in text and "sec" in text,
+                f"the_{surface}_spells_hours_minutes_and_seconds")
         require("control" in text, f"the_{surface}_renders_the_backend_control")
     require("a.control" in page and "control.enabled" in page, "the_web_control_comes_from_the_backend_not_the_browser")
     require("progress" in desktop and "percent" in page, "both_surfaces_render_the_projected_progress")

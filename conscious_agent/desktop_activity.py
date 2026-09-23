@@ -29,13 +29,27 @@ def _make_readonly_copyable(widget):
     widget.bind("<Control-A>", lambda _e: (widget.tag_add("sel", "1.0", "end"), "break")[1])
 
 
+def human_duration(seconds):
+    """A duration read the way a person says one: "5 hrs 54 mins 1 sec", "1 min 59 secs", "1 hr".
+
+    Units that are zero are left out entirely rather than padded, and each is singular or plural on its own count.
+    The web page carries the same rule; both surfaces must read identically from the same projected seconds.
+    """
+    total = max(0, int(seconds or 0))
+    hours, rest = divmod(total, 3600)
+    minutes, secs = divmod(rest, 60)
+    parts = [f"{value} {unit}" + ("" if value == 1 else "s")
+             for value, unit in ((hours, "hr"), (minutes, "min"), (secs, "sec")) if value]
+    return " ".join(parts) or "0 secs"
+
+
 def summary_lines(row):
     p, g = row.get("progress") or {}, row.get("governance") or {}
     lines = [str(row.get("state", "unknown")).upper(), str(row.get("title", "")), str(row.get("type", "")),
              str(row.get("subject", "")), str(row.get("stage") or "Queued"),
              f"{p.get('completed', 0)} / {p.get('total') if p.get('total') is not None else '?'} {p.get('unit', 'units')}"]
     seconds = row.get("elapsed_seconds")
-    lines.append(f"{seconds // 60}m {seconds % 60}s elapsed" if seconds is not None else "Elapsed unknown")
+    lines.append(f"{human_duration(seconds)} elapsed" if seconds is not None else "Elapsed unknown")
     if g.get("read_only") is True:
         lines.append("READ ONLY")
     if g.get("non_authoritative") is True:

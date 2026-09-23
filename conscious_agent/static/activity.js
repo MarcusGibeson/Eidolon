@@ -15,7 +15,17 @@
     return n;
   };
   const pretty = s => String(s || '').replaceAll('_', ' ');
-  const elapsed = seconds => seconds == null ? 'Elapsed unknown' : `${Math.floor(seconds / 60)}m ${seconds % 60}s elapsed`;
+  // A duration read the way a person says one: "5 hrs 54 mins 1 sec", "1 min 59 secs", "1 hr". Zero units are
+  // left out rather than padded, and each is singular or plural on its own count. The desktop panel carries the
+  // same rule, so both surfaces read identically from the same projected seconds.
+  const duration = seconds => {
+    const total = Math.max(0, Math.floor(seconds));
+    const parts = [[Math.floor(total / 3600), 'hr'], [Math.floor(total / 60) % 60, 'min'], [total % 60, 'sec']]
+      .filter(([value]) => value > 0)
+      .map(([value, unit]) => `${value} ${unit}${value === 1 ? '' : 's'}`);
+    return parts.length ? parts.join(' ') : '0 secs';
+  };
+  const elapsed = seconds => seconds == null ? 'Elapsed unknown' : `${duration(seconds)} elapsed`;
   function governance(a, parent) {
     const g = a.governance || {};
     const box = el('div', undefined, 'activity-governance');
