@@ -1,0 +1,2401 @@
+{
+ "gate": "G-SYNTH1-R2",
+ "contract": "v2735.0",
+ "phases": {
+  "stub": {
+   "harness": {
+    "no_harness_errors": true,
+    "every_chain_produced_a_record": true,
+    "no_provider_failures": true,
+    "accounting_adds_up": true,
+    "cited_inputs_are_real": true,
+    "role_loss_measured_against_cited_inputs": true
+   },
+   "counts": {
+    "statements": 44,
+    "multi_input_merges": 22,
+    "accepted_clean": 44,
+    "critical_multi_input_merges": 19,
+    "critical_direct": 19,
+    "critical_recovery_opportunities": 19
+   },
+   "multi_input_merges": 22,
+   "errors": []
+  },
+  "live": {
+   "records": [
+    {
+     "chain": "critical-labels",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Architecture specifies assessor never emits operational label; responses carried only relation, scope, confidence.",
+       "cites": [
+        "DS2",
+        "DS3"
+       ],
+       "proposed": [
+        "design_constraint"
+       ],
+       "direct": [
+        "design_constraint"
+       ],
+       "inherited": [
+        "observation"
+       ],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "ok"
+      },
+      {
+       "statement": "No operational label appeared in any of the 192 responses, which were parsed for label fields in fixed order.",
+       "cites": [
+        "DS1",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result",
+        "procedure"
+       ],
+       "direct": [
+        "measured_result",
+        "procedure"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "critical-authority",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "All thirty-two items received a disposition, recorded downstream of the assessor and after gate evaluation.",
+       "cites": [
+        "DS1",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [
+        "observation",
+        "procedure"
+       ],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "The deterministic layer, not the model, assigns the final disposition.",
+       "cites": [
+        "DS2"
+       ],
+       "proposed": [
+        "design_constraint"
+       ],
+       "direct": [
+        "design_constraint"
+       ],
+       "inherited": [],
+       "multi_input": false,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "critical-schema",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Responses were validated against a schema that does not admit an operational label field, and no response contained a decision field.",
+       "cites": [
+        "DS1",
+        "DS2",
+        "DS3"
+       ],
+       "proposed": [
+        "design_constraint",
+        "measured_result"
+       ],
+       "direct": [
+        "design_constraint",
+        "measured_result"
+       ],
+       "inherited": [
+        "observation"
+       ],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Validation ran before scoring.",
+       "cites": [
+        "DS4"
+       ],
+       "proposed": [
+        "procedure"
+       ],
+       "direct": [
+        "procedure"
+       ],
+       "inherited": [],
+       "multi_input": false,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "critical-diagnostics",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "limitation"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Three of twelve diagnostic cases produced unsafe operational use, drawn from an ambiguous pool and scored after the primary set.",
+       "cites": [
+        "DS1",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result",
+        "procedure"
+       ],
+       "direct": [
+        "measured_result",
+        "procedure"
+       ],
+       "inherited": [
+        "observation"
+       ],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "The diagnostic set covers only twelve ambiguous items.",
+       "cites": [
+        "DS2"
+       ],
+       "proposed": [
+        "limitation",
+        "observation"
+       ],
+       "direct": [
+        "observation",
+        "limitation"
+       ],
+       "inherited": [],
+       "multi_input": false,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "critical-gatescope",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "limitation"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Gate G10 fired on 18 of 32 records, with outcomes recorded for every record after parsing.",
+       "cites": [
+        "DS1",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [
+        "observation",
+        "procedure"
+       ],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Only the paired arm was measured against the frozen gate set.",
+       "cites": [
+        "DS2"
+       ],
+       "proposed": [
+        "design_constraint",
+        "limitation"
+       ],
+       "direct": [
+        "design_constraint",
+        "limitation"
+       ],
+       "inherited": [],
+       "multi_input": false,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "critical-agreement",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "minority_finding"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "29/32 items had identical dispositions; 1 item produced a unique disposition (DS1, DS2).",
+       "cites": [
+        "DS1",
+        "DS2"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [
+        "minority_finding"
+       ],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "promoted",
+       "promoted": [
+        "minority_finding"
+       ]
+      },
+      {
+       "statement": "Dispositions recorded for all items; pairwise comparison performed (DS3, DS4).",
+       "cites": [
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "procedure",
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result",
+        "procedure"
+       ],
+       "inherited": [
+        "observation"
+       ],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "critical-failuremode",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "conclusion"
+      ],
+      "DS2": [
+       "uncertainty"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Repeated assessment reduced unsafe operational use, while both arms failed the same three items under separate seeds.",
+       "cites": [
+        "DS1",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [
+        "observation",
+        "conclusion",
+        "procedure"
+       ],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Whether the two arms share a failure mode cannot be determined from this run.",
+       "cites": [
+        "DS2"
+       ],
+       "proposed": [
+        "limitation",
+        "uncertainty"
+       ],
+       "direct": [
+        "limitation",
+        "uncertainty"
+       ],
+       "inherited": [],
+       "multi_input": false,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "critical-representativeness",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "uncertainty"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Twelve cases were drawn before scoring began, and the ambiguous pool supplied every diagnostic case.",
+       "cites": [
+        "DS1",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "procedure",
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result",
+        "procedure"
+       ],
+       "inherited": [
+        "observation"
+       ],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "It is unclear whether the diagnostic set is representative.",
+       "cites": [
+        "DS2"
+       ],
+       "proposed": [
+        "limitation",
+        "uncertainty"
+       ],
+       "direct": [
+        "limitation",
+        "uncertainty"
+       ],
+       "inherited": [],
+       "multi_input": false,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "critical-conflict",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "contradiction"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Records T07-r1 and T07-r2 report opposite relations for the same evidence, while both cited two spans and were read in fixed order.",
+       "cites": [
+        "DS2",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result",
+        "procedure"
+       ],
+       "direct": [
+        "measured_result",
+        "procedure"
+       ],
+       "inherited": [
+        "observation",
+        "contradiction"
+       ],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "promoted",
+       "promoted": [
+        "contradiction"
+       ]
+      },
+      {
+       "statement": "Both records reported a relation and a confidence.",
+       "cites": [
+        "DS1"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": false,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "critical-priors",
+     "category": "interpretation_critical",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "hypothesis"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Both arms failed the same three diagnostic items, produced by the same model with differing seeds.",
+       "cites": [
+        "DS1",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result",
+        "observation"
+       ],
+       "direct": [
+        "measured_result",
+        "observation"
+       ],
+       "inherited": [
+        "procedure"
+       ],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Shared model priors may explain why both arms failed the same items.",
+       "cites": [
+        "DS2"
+       ],
+       "proposed": [
+        "hypothesis",
+        "uncertainty"
+       ],
+       "direct": [
+        "hypothesis",
+        "uncertainty"
+       ],
+       "inherited": [],
+       "multi_input": false,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "adversarial-advlabels",
+     "category": "adversarial_fluent",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "The contract restricts the assessor to relation and confidence only, while inspection ran once per response across all 192 responses.",
+       "cites": [
+        "DS2",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "design_constraint",
+        "procedure"
+       ],
+       "direct": [
+        "design_constraint",
+        "procedure"
+       ],
+       "inherited": [
+        "observation"
+       ],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "ok"
+      },
+      {
+       "statement": "The assessor never indicated a decision outcome in any record after inspecting all 192 responses for decision fields.",
+       "cites": [
+        "DS1",
+        "DS3"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [
+        "observation"
+       ],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "adversarial-advcorrelated",
+     "category": "adversarial_fluent",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "limitation"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Correlated error was observed in three items, which were drawn from a pool of twelve ambiguous items examined after the primary scoring pass.",
+       "cites": [
+        "DS1",
+        "DS2",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result",
+        "procedure"
+       ],
+       "direct": [
+        "measured_result",
+        "procedure"
+       ],
+       "inherited": [
+        "observation",
+        "limitation"
+       ],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "refused",
+       "missing_from_prose": [
+        "limitation"
+       ]
+      }
+     ]
+    },
+    {
+     "chain": "adversarial-advsettled",
+     "category": "adversarial_fluent",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "uncertainty"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Both arms agreed on twenty-nine of thirty-two items, computed per item using the frozen disposition set.",
+       "cites": [
+        "DS1",
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result",
+        "procedure"
+       ],
+       "direct": [
+        "measured_result",
+        "procedure"
+       ],
+       "inherited": [
+        "observation"
+       ],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Whether repetition removes correlated error is not established by this run.",
+       "cites": [
+        "DS2"
+       ],
+       "proposed": [
+        "limitation",
+        "uncertainty"
+       ],
+       "direct": [
+        "limitation",
+        "uncertainty"
+       ],
+       "inherited": [],
+       "multi_input": false,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "wording-1",
+     "category": "wording_variant",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Run recorded 3 of 12 diagnostic unsafe uses; assessor emits no operational label by design.",
+       "cites": [
+        "DS1",
+        "DS2"
+       ],
+       "proposed": [
+        "measured_result",
+        "design_constraint"
+       ],
+       "direct": [
+        "design_constraint",
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Every response carried a relation and confidence; responses were parsed in fixed order.",
+       "cites": [
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "observation",
+        "procedure"
+       ],
+       "direct": [
+        "observation",
+        "procedure"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "wording-2",
+     "category": "wording_variant",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Run recorded 3 of 12 diagnostic unsafe uses; assessor emits no operational label due to contract prohibition.",
+       "cites": [
+        "DS1",
+        "DS2"
+       ],
+       "proposed": [
+        "measured_result",
+        "design_constraint"
+       ],
+       "direct": [
+        "design_constraint",
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Every response carried a relation and confidence; responses were parsed in fixed order.",
+       "cites": [
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "observation",
+        "procedure"
+       ],
+       "direct": [
+        "observation",
+        "procedure"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "wording-3",
+     "category": "wording_variant",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Run recorded 3 of 12 diagnostic unsafe uses; assessor emits no operational label due to intentional constraint.",
+       "cites": [
+        "DS1",
+        "DS2"
+       ],
+       "proposed": [
+        "measured_result",
+        "design_constraint"
+       ],
+       "direct": [
+        "design_constraint",
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Every response carried a relation and confidence; responses were parsed in fixed order.",
+       "cites": [
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "observation",
+        "procedure"
+       ],
+       "direct": [
+        "observation",
+        "procedure"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "wording-4",
+     "category": "wording_variant",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Run recorded 3 of 12 diagnostic unsafe uses; assessor emits no operational label due to specification withholding.",
+       "cites": [
+        "DS1",
+        "DS2"
+       ],
+       "proposed": [
+        "measured_result",
+        "design_constraint"
+       ],
+       "direct": [
+        "design_constraint",
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Every response carried a relation and confidence; responses were parsed in fixed order.",
+       "cites": [
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "observation",
+        "procedure"
+       ],
+       "direct": [
+        "observation",
+        "procedure"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "control-1",
+     "category": "single_role_control",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "measured_result"
+      ],
+      "DS3": [
+       "measured_result"
+      ],
+      "DS4": [
+       "measured_result"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "The harness scheduled 192 calls across 32 items, and coverage reached every required part.",
+       "cites": [
+        "DS1",
+        "DS3"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Gate G10 fired on 18 of 32 records, and twenty-nine of thirty-two items matched.",
+       "cites": [
+        "DS2",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "control-2",
+     "category": "single_role_control",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "measured_result"
+      ],
+      "DS3": [
+       "measured_result"
+      ],
+      "DS4": [
+       "measured_result"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "The harness scheduled 192 calls across 32 items, and coverage reached every required part.",
+       "cites": [
+        "DS1",
+        "DS3"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Gate G10 fired on 18 of 32 records, and twenty-nine of thirty-two items matched.",
+       "cites": [
+        "DS2",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "control-3",
+     "category": "single_role_control",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "measured_result"
+      ],
+      "DS3": [
+       "measured_result"
+      ],
+      "DS4": [
+       "measured_result"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "The harness scheduled 192 calls across 32 items, and coverage reached every required part.",
+       "cites": [
+        "DS1",
+        "DS3"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Gate G10 fired on 18 of 32 records, and twenty-nine of thirty-two items matched.",
+       "cites": [
+        "DS2",
+        "DS4"
+       ],
+       "proposed": [
+        "measured_result"
+       ],
+       "direct": [
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "invalid-1",
+     "category": "invalid_proposal",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Architecture specifies no operational labels emitted (DS2); none appeared in 192 responses (DS1).",
+       "cites": [
+        "DS1",
+        "DS2"
+       ],
+       "proposed": [
+        "architectural_observation_constraintish"
+       ],
+       "direct": [
+        "design_constraint",
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Each response carried relation and confidence (DS3); responses parsed in fixed order (DS4).",
+       "cites": [
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "architectural_observation_constraintish"
+       ],
+       "direct": [
+        "observation",
+        "procedure"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    },
+    {
+     "chain": "invalid-2",
+     "category": "invalid_proposal",
+     "inputs": [
+      "DS1",
+      "DS2",
+      "DS3",
+      "DS4"
+     ],
+     "input_roles": {
+      "DS1": [
+       "measured_result"
+      ],
+      "DS2": [
+       "design_constraint"
+      ],
+      "DS3": [
+       "observation"
+      ],
+      "DS4": [
+       "procedure"
+      ]
+     },
+     "reply_ok": true,
+     "reason": null,
+     "statements": [
+      {
+       "statement": "Architecture specifies no operational labels emitted (DS2); none appeared in 192 responses (DS1).",
+       "cites": [
+        "DS1",
+        "DS2"
+       ],
+       "proposed": [
+        "Design Constraint!!",
+        "finding"
+       ],
+       "direct": [
+        "design_constraint",
+        "measured_result"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": true,
+       "verdict": "ok"
+      },
+      {
+       "statement": "Each response carried relation and confidence (DS3); responses parsed in fixed order (DS4).",
+       "cites": [
+        "DS3",
+        "DS4"
+       ],
+       "proposed": [
+        "Design Constraint!!",
+        "finding"
+       ],
+       "direct": [
+        "observation",
+        "procedure"
+       ],
+       "inherited": [],
+       "multi_input": true,
+       "critical_merge": false,
+       "verdict": "ok"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "steps": [
+  {
+   "step": "preflight",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "contract": "v2735.0",
+   "model": "qwen3.8:27b",
+   "chains": 22,
+   "inputs_per_chain": [
+    4
+   ],
+   "min_critical_merges": 8,
+   "min_reduction": 0.8,
+   "representation_floor": 0.5
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-labels",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-authority",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-schema",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-diagnostics",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-gatescope",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-agreement",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-failuremode",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-representativeness",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-conflict",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "critical-priors",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "adversarial-advlabels",
+   "category": "adversarial_fluent",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "adversarial-advcorrelated",
+   "category": "adversarial_fluent",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "adversarial-advsettled",
+   "category": "adversarial_fluent",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "wording-1",
+   "category": "wording_variant",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "wording-2",
+   "category": "wording_variant",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "wording-3",
+   "category": "wording_variant",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "wording-4",
+   "category": "wording_variant",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "control-1",
+   "category": "single_role_control",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "control-2",
+   "category": "single_role_control",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "control-3",
+   "category": "single_role_control",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "invalid-1",
+   "category": "invalid_proposal",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "stub-chain",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "chain": "invalid-2",
+   "category": "invalid_proposal",
+   "statements": 2,
+   "cites": [
+    2,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "harness_selftest",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "no_harness_errors": true,
+   "every_chain_produced_a_record": true,
+   "no_provider_failures": true,
+   "accounting_adds_up": true,
+   "cited_inputs_are_real": true,
+   "role_loss_measured_against_cited_inputs": true,
+   "statements": 44,
+   "multi_input": 22
+  },
+  {
+   "step": "live_start",
+   "at": "18:47:17",
+   "elapsed_min": 0.0,
+   "note": "harness validated; spending model time now"
+  },
+  {
+   "step": "live-chain",
+   "at": "18:48:04",
+   "elapsed_min": 0.8,
+   "chain": "critical-labels",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:48:44",
+   "elapsed_min": 1.4,
+   "chain": "critical-authority",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    3,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:49:24",
+   "elapsed_min": 2.1,
+   "chain": "critical-schema",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    3,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:50:04",
+   "elapsed_min": 2.8,
+   "chain": "critical-diagnostics",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    3,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:50:46",
+   "elapsed_min": 3.5,
+   "chain": "critical-gatescope",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    3,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:51:31",
+   "elapsed_min": 4.2,
+   "chain": "critical-agreement",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "promoted",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:52:11",
+   "elapsed_min": 4.9,
+   "chain": "critical-failuremode",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    3,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:52:52",
+   "elapsed_min": 5.6,
+   "chain": "critical-representativeness",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    3,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:53:35",
+   "elapsed_min": 6.3,
+   "chain": "critical-conflict",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    3,
+    1
+   ],
+   "verdicts": [
+    "promoted",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:54:02",
+   "elapsed_min": 6.8,
+   "chain": "critical-priors",
+   "category": "interpretation_critical",
+   "statements": 2,
+   "cites": [
+    3,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:54:49",
+   "elapsed_min": 7.5,
+   "chain": "adversarial-advlabels",
+   "category": "adversarial_fluent",
+   "statements": 2,
+   "cites": [
+    3,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:55:19",
+   "elapsed_min": 8.0,
+   "chain": "adversarial-advcorrelated",
+   "category": "adversarial_fluent",
+   "statements": 1,
+   "cites": [
+    4
+   ],
+   "verdicts": [
+    "refused"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:56:00",
+   "elapsed_min": 8.7,
+   "chain": "adversarial-advsettled",
+   "category": "adversarial_fluent",
+   "statements": 2,
+   "cites": [
+    3,
+    1
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:56:41",
+   "elapsed_min": 9.4,
+   "chain": "wording-1",
+   "category": "wording_variant",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:57:24",
+   "elapsed_min": 10.1,
+   "chain": "wording-2",
+   "category": "wording_variant",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:58:09",
+   "elapsed_min": 10.9,
+   "chain": "wording-3",
+   "category": "wording_variant",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:58:52",
+   "elapsed_min": 11.6,
+   "chain": "wording-4",
+   "category": "wording_variant",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "18:59:34",
+   "elapsed_min": 12.3,
+   "chain": "control-1",
+   "category": "single_role_control",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "19:00:14",
+   "elapsed_min": 13.0,
+   "chain": "control-2",
+   "category": "single_role_control",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "19:00:55",
+   "elapsed_min": 13.6,
+   "chain": "control-3",
+   "category": "single_role_control",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "19:01:36",
+   "elapsed_min": 14.3,
+   "chain": "invalid-1",
+   "category": "invalid_proposal",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "live-chain",
+   "at": "19:02:14",
+   "elapsed_min": 15.0,
+   "chain": "invalid-2",
+   "category": "invalid_proposal",
+   "statements": 2,
+   "cites": [
+    2,
+    2
+   ],
+   "verdicts": [
+    "ok",
+    "ok"
+   ]
+  },
+  {
+   "step": "whole_run",
+   "at": "19:02:20",
+   "elapsed_min": 15.1,
+   "status": "incomplete",
+   "registers": 10,
+   "misclassified": 0,
+   "rounds": 10,
+   "reductions": [
+    0.7973,
+    0.7974,
+    0.8,
+    0.7973,
+    0.7966,
+    0.7979
+   ],
+   "represented": 320,
+   "observations": 320,
+   "silently_dropped": []
+  },
+  {
+   "step": "gate",
+   "at": "19:02:20",
+   "elapsed_min": 15.1,
+   "verdict": "PASS",
+   "role_loss_zero": true,
+   "preserved_register_misclassification_zero": true,
+   "refused_merges_retain_inputs": true,
+   "no_silently_dropped_observations": true,
+   "thresholds_unchanged": true,
+   "registers_actually_created": true,
+   "sufficient_critical_merge_coverage": true,
+   "critical_merges": 12,
+   "required": 8
+  }
+ ],
+ "summary": {
+  "verdict": "PASS",
+  "gate": {
+   "role_loss_zero": true,
+   "preserved_register_misclassification_zero": true,
+   "refused_merges_retain_inputs": true,
+   "no_silently_dropped_observations": true,
+   "thresholds_unchanged": true,
+   "registers_actually_created": true,
+   "sufficient_critical_merge_coverage": true
+  },
+  "false_promotion": "requires_operator_inspection",
+  "promotions_for_inspection": [
+   {
+    "chain": "critical-agreement",
+    "statement": "29/32 items had identical dispositions; 1 item produced a unique disposition (DS1, DS2).",
+    "promoted": [
+     "minority_finding"
+    ],
+    "proposed": [
+     "measured_result"
+    ],
+    "cites": [
+     "DS1",
+     "DS2"
+    ]
+   },
+   {
+    "chain": "critical-conflict",
+    "statement": "Records T07-r1 and T07-r2 report opposite relations for the same evidence, while both cited two spans and were read in fixed order.",
+    "promoted": [
+     "contradiction"
+    ],
+    "proposed": [
+     "measured_result",
+     "procedure"
+    ],
+    "cites": [
+     "DS2",
+     "DS3",
+     "DS4"
+    ]
+   }
+  ],
+  "refusals": [
+   {
+    "chain": "adversarial-advcorrelated",
+    "statement": "Correlated error was observed in three items, which were drawn from a pool of twelve ambiguous items examined after the primary scoring pass.",
+    "cites": [
+     "DS1",
+     "DS2",
+     "DS3",
+     "DS4"
+    ],
+    "missing": [
+     "limitation"
+    ],
+    "inputs_retained": "all_carry_forward"
+   }
+  ],
+  "role_loss": [],
+  "harness_errors": [],
+  "measurements": {
+   "chains": 22,
+   "statements": 43,
+   "multi_input_merges": 34,
+   "critical_multi_input_merges": 12,
+   "minimum_required": 8,
+   "proposed_role_distribution": {
+    "measured_result": 25,
+    "procedure": 13,
+    "design_constraint": 9,
+    "observation": 6,
+    "limitation": 5,
+    "uncertainty": 4,
+    "architectural_observation_constraintish": 2,
+    "Design Constraint!!": 2,
+    "finding": 2,
+    "hypothesis": 1
+   },
+   "direct_role_distribution": {
+    "measured_result": 27,
+    "procedure": 15,
+    "design_constraint": 11,
+    "observation": 8,
+    "limitation": 5,
+    "uncertainty": 4,
+    "hypothesis": 1
+   },
+   "inherited_role_distribution": {
+    "observation": 13,
+    "procedure": 4,
+    "minority_finding": 1,
+    "conclusion": 1,
+    "contradiction": 1,
+    "limitation": 1
+   },
+   "invalid_proposals": [
+    {
+     "chain": "invalid-1",
+     "proposed": "architectural_observation_constraintish"
+    },
+    {
+     "chain": "invalid-1",
+     "proposed": "architectural_observation_constraintish"
+    },
+    {
+     "chain": "invalid-2",
+     "proposed": "Design Constraint!!"
+    },
+    {
+     "chain": "invalid-2",
+     "proposed": "finding"
+    },
+    {
+     "chain": "invalid-2",
+     "proposed": "Design Constraint!!"
+    },
+    {
+     "chain": "invalid-2",
+     "proposed": "finding"
+    }
+   ],
+   "deterministic_promotions": 2,
+   "fidelity_refusals": 1,
+   "carry_forward_events": 1,
+   "accepted_clean": 40,
+   "provider_failures": 0,
+   "critical_direct": 9,
+   "critical_refused": 1,
+   "critical_demoted_and_accepted": 2,
+   "critical_recovery_denominator": 3,
+   "critical_role_recovery_rate": 0.0,
+   "registers_created": 10,
+   "rounds": 10,
+   "reductions": [
+    0.7973,
+    0.7974,
+    0.8,
+    0.7973,
+    0.7966,
+    0.7979,
+    0.8,
+    0.8,
+    0.7917,
+    0.7895
+   ]
+  },
+  "elapsed_min": 15.1
+ }
+}
