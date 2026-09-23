@@ -64,14 +64,36 @@ class ActivityTests(unittest.TestCase):
             self.new()
 
     def test_all_terminal_states_and_elapsed(self):
+        # elapsed_seconds measures active work, not wall clock. An activity that went straight from queued to a
+        # terminal state never ran, so it reports no active time; the wall span is reported separately and both are
+        # stable once terminal.
         for state in a.TERMINAL:
             act = self.new(state, clock=lambda: "2026-01-01T00:00:00Z")
             act.clock = lambda: "2026-01-01T00:02:03Z"
             result = act.update("finished", state=state)
-            self.assertEqual(result["elapsed_seconds"], 123)
+            self.assertEqual(result["elapsed_seconds"], 0)
+            self.assertEqual(result["wall_elapsed_seconds"], 123)
             self.assertEqual(result["state"], state)
-            self.assertEqual(a.project(act.record, "2027-01-01T00:00:00Z")["elapsed_seconds"], 123)
+            later = a.project(act.record, "2027-01-01T00:00:00Z")
+            self.assertEqual(later["elapsed_seconds"], 0)
+            self.assertEqual(later["wall_elapsed_seconds"], 123)
         self.assertEqual({r["state"] for r in a.activities(self.root)["activities"]}, a.TERMINAL)
+
+    def test_active_elapsed_counts_running_time_only(self):
+        moment = {"t": "2026-01-01T00:00:00Z"}
+        act = self.new("running", clock=lambda: moment["t"])
+        act.update("job_started", state="running")
+        moment["t"] = "2026-01-01T02:00:00Z"
+        act.update("paused", state="paused")
+        self.assertEqual(a.project(act.record, "2026-01-01T02:00:00Z")["elapsed_seconds"], 7200)
+        # three hours paused add nothing
+        self.assertEqual(a.project(act.record, "2026-01-01T05:00:00Z")["elapsed_seconds"], 7200)
+        moment["t"] = "2026-01-01T05:00:00Z"
+        act.update("resumed", state="running")
+        moment["t"] = "2026-01-01T06:00:00Z"
+        result = act.update("job_complete", state="complete")
+        self.assertEqual(result["elapsed_seconds"], 10800)
+        self.assertEqual(result["wall_elapsed_seconds"], 21600)
 
     def test_validation_read_only_and_path_containment(self):
         before = tree(self.root)
@@ -138,7 +160,8 @@ class ActivityTests(unittest.TestCase):
         self.assertIn("missing required parts", detail_text(row))
         from activity_ui import activity_surface
         self.assertIn("data-detail='true'", activity_surface(detail=True))
-        js = (ROOT / "conscious_agent/static/activity.js").read_text()
+        # Explicit encoding: the control glyphs are non-ASCII and the platform codec is not UTF-8 everywhere.
+        js = (ROOT / "conscious_agent/static/activity.js").read_text(encoding="utf-8")
         self.assertIn("a.reason", js)
         self.assertIn("g.belief_effects", js)
         self.assertNotIn("innerHTML", js)

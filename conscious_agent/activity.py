@@ -54,14 +54,40 @@ def progress(completed=0, total=None, unit="units") -> dict:
             "percent": round(100 * completed / total, 1) if total else None}
 
 
+# States during which the clock runs. A paused producer is doing nothing, and counting that as elapsed work told the
+# operator a stopped review was still going. Blocked stays active: it means a running producer we have lost contact
+# with, which is unresolved rather than deliberately stopped.
+ACTIVE_STATES = frozenset({"preparing", "running", "blocked"})
+
+
+def _stamp(value):
+    return datetime.fromisoformat(value)
+
+
 def project(record: dict, instant: str | None = None) -> dict:
     out = deepcopy(record)
+    moment = instant or now()
     try:
-        end = datetime.fromisoformat(out.get("finished") or instant or now())
-        start = datetime.fromisoformat(out["started"])
-        out["elapsed_seconds"] = max(0, int((end - start).total_seconds()))
+        end = _stamp(out.get("finished") or moment)
+        start = _stamp(out["started"])
+        out["wall_elapsed_seconds"] = max(0, int((end - start).total_seconds()))
     except (ValueError, KeyError, TypeError):
-        out["elapsed_seconds"] = None
+        out["wall_elapsed_seconds"] = None
+    if "active_seconds" in out:
+        # Accumulated active duration, plus whatever the current running segment has added so far. Wall clock stays
+        # available beside it, so the span from start to finish is still reconstructible.
+        try:
+            seconds = float(out.get("active_seconds") or 0.0)
+            since = out.get("active_since")
+            if since and out.get("state") not in TERMINAL:
+                seconds += max(0.0, (_stamp(moment) - _stamp(since)).total_seconds())
+            out["elapsed_seconds"] = max(0, int(seconds))
+        except (ValueError, TypeError):
+            out["elapsed_seconds"] = None
+    else:
+        # Records written before active accounting existed keep their original wall-clock reading rather than
+        # silently reporting zero.
+        out["elapsed_seconds"] = out["wall_elapsed_seconds"]
     out["terminal"] = out.get("state") in TERMINAL
     return out
 
@@ -80,6 +106,7 @@ class Activity:
                        "title": str(title)[:180], "subject": str(subject)[:180], "state": "queued",
                        "stage": "", "started": started or clock(), "finished": None, "updated": clock(),
                        "progress": progress(), "stage_progress": progress(), "metrics": {},
+                       "active_seconds": 0.0, "active_since": None,
                        "warnings": [], "reason": "", "result": "", "identities": dict(identities or {}),
                        "governance": dict(governance or {}), "breakdown": [], "events": [],
                        "events_omitted": 0, "sequence": 0,
@@ -104,6 +131,30 @@ class Activity:
         if obj.record.get("state") in TERMINAL:
             raise ValueError("activity_already_terminal")
         return obj
+
+    def _accrue_active_time(self, stamp):
+        """Bank the running segment when work stops, and open a new one when it starts.
+
+        Called on every update, before ``updated`` moves, so a segment is measured from the last event that left the
+        activity active to the one that stopped it. Pausing closes the segment; resuming opens another; a terminal
+        state closes it for good. Nothing accrues while paused, which is the whole point.
+        """
+        if "active_seconds" not in self.record:
+            # A record written before active accounting existed. Start measuring from here rather than inventing a
+            # history for it.
+            self.record["active_seconds"] = 0.0
+            self.record["active_since"] = None
+        state, since = self.record["state"], self.record.get("active_since")
+        active = state in ACTIVE_STATES
+        if since and not active:
+            try:
+                self.record["active_seconds"] = round(
+                    float(self.record["active_seconds"]) + max(0.0, (_stamp(stamp) - _stamp(since)).total_seconds()), 3)
+            except (ValueError, TypeError):
+                pass
+            self.record["active_since"] = None
+        elif active and not since:
+            self.record["active_since"] = stamp
 
     def update(self, event, *, state=None, stage=None, units=None, stage_units=None,
                metrics=None, governance=None, breakdown=None, reason=None, result=None, identities=None):
@@ -140,6 +191,7 @@ class Activity:
                 if value is not None:
                     self.record[field] = deepcopy(value)
             stamp = self.clock()
+            self._accrue_active_time(stamp)
             self.record["updated"] = stamp
             if self.record["state"] in TERMINAL:
                 self.record["finished"] = stamp
@@ -243,7 +295,12 @@ def activities(root=None, *, activity_id=None, limit=100) -> dict[str, Any]:
             stale = (datetime.fromisoformat(stamp) - datetime.fromisoformat(item["updated"])).total_seconds() > 90
         except (ValueError, TypeError, KeyError):
             stale = True
-        if stale and item["state"] not in TERMINAL and item["state"] != "blocked":
+        # Staleness is evidence about work that is supposed to be running. A paused producer has finished its unit,
+        # sealed a checkpoint and exited on purpose, so its heartbeats stop by design: calling that "execution state
+        # unconfirmed" turned a deliberate pause into an apparent fault, and because blocked counts as pausable the
+        # operator was offered Pause again instead of Play. Intentionally quiescent is not the same as stale.
+        if (stale and item["state"] not in TERMINAL and item["state"] not in PAUSE_STATES
+                and item["state"] != "blocked"):
             item.update(state="blocked", reason="progress_heartbeat_stale; execution state unconfirmed")
             item["warnings"] = list(item.get("warnings", [])) + ["stale_telemetry"]
         output.append(item)

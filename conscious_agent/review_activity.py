@@ -19,6 +19,34 @@ STAGE_NAMES = {"observe": "Observing", "part": "Part Synthesis", "document": "Do
                "group": "Consolidating", "final": "Final Synthesis"}
 
 
+def completed_parts_from_checkpoint(job, root=None):
+    """Observation units an earlier segment already finished, read from the checkpoint the reviewer sealed.
+
+    Progress has to describe the review, not the segment of it that happens to be running. Counting only this
+    process's own completions meant a resumed review announced 1 / 140 when 28 units were done. The checkpoint is
+    where completed work actually lives, so that is what seeds the count.
+
+    Telemetry never fails the operation: anything unreadable here yields no seed rather than an error.
+    """
+    from pathlib import Path
+
+    try:
+        import cooperative_pause as pause
+        import experiment_review_hierarchical as hier
+
+        manifest = str(job.get("manifest_sha256") or "")
+        private = str(job.get("private_runtime_root") or "")
+        if not manifest or not private:
+            return set()
+        source = str((job.get("recovery") or {}).get("source_review_id") or "")
+        work = f"recovery_{source}" if source else str(job.get("job_id"))
+        record = pause.load_checkpoint(work, hier.control_root_for(Path(private), manifest, work))
+        coverage = ((record or {}).get("state") or {}).get("parts_coverage") or []
+        return {(str(p["doc_id"]), int(p["part"])) for p in coverage if p.get("reviewed")}
+    except Exception:
+        return set()
+
+
 class ReviewActivity:
     def __init__(self, job, root, *, resuming=False):
         base_counts = {"model_calls": 0, "responses_received": 0, "retries": 0, "grounded_observations": 0,
@@ -59,6 +87,9 @@ class ReviewActivity:
                 "units_planned_this_recovery": len(inherited.get("units_planned") or []),
             })
         self.parts, self.done, self.required = {}, set(), set()
+        # Units an earlier segment completed. Applied once the package is known, because that is when the units this
+        # review consists of are first enumerated.
+        self.inherited_parts = completed_parts_from_checkpoint(job, root)
         self.stage_done, self.stage_totals = {}, {}
         self.seen_asks = set()
         self.stopped = Event()
@@ -195,7 +226,12 @@ class ReviewActivity:
                 self.parts[doc["doc_id"]] = {"id": doc["doc_id"], "label": doc["role"], "completed": 0, "total": n}
                 if doc["required"]:
                     self.required.update((doc["doc_id"], p) for p in range(1, n + 1))
-            self.emit("package_validated", units=(0, len(self.required), "required parts"),
+            for doc_id, part in self.inherited_parts:
+                if (doc_id, part) not in self.done and doc_id in self.parts:
+                    self.done.add((doc_id, part))
+                    self.parts[doc_id]["completed"] += 1
+            self.emit("package_validated",
+                      units=(len(self.done & self.required), len(self.required), "required parts"),
                       breakdown=list(self.parts.values()))
 
         def load(original, *args, **kwargs):
