@@ -1,0 +1,242 @@
+{
+  "schema_version": "1",
+  "design_id": "G-ROUTE1-CANDIDATE",
+  "status": "design_only_not_frozen",
+  "source_checkpoint": "8a2c15d35cb1ff36a97e6c91c89920d4529f07f9",
+  "created_on": "2026-09-23",
+  "research_question": "Can a cheaper installed local model safely satisfy a bounded cognitive task class under the same frozen prompt and deterministic validators as the incumbent, and can validator-detectable failures be contained by one explicit escalation without allowing false-clean errors or authority drift?",
+  "current_runtime": {
+    "provider": "ollama",
+    "model": "qwen3.8:27b",
+    "context_size": 8192,
+    "max_tokens": 350,
+    "temperature": 0.45,
+    "top_p": 0.9,
+    "top_k": 40,
+    "repeat_penalty": 1.1,
+    "thinking_mode": "off",
+    "retry_limit": 1,
+    "read_timeout_seconds": 300.0,
+    "metadata_only_inspection": true
+  },
+  "installed_candidates": [
+    {
+      "model": "qwen2.5:7b",
+      "local_id": "845dbda0ea48",
+      "parameters": "7.6B",
+      "quantization": "Q4_K_M",
+      "declared_context": 32768,
+      "local_size_gb": 4.7,
+      "role": "cheaper_candidate",
+      "execution_freeze_identity": false
+    },
+    {
+      "model": "qwen3.8:27b",
+      "local_id": "22130167c4c2",
+      "parameters": "27.3B",
+      "quantization": "Q4_K_M",
+      "declared_context": 262144,
+      "local_size_gb": 17.0,
+      "role": "incumbent",
+      "execution_freeze_identity": false
+    }
+  ],
+  "architecture_map": [
+    {
+      "surface": "shared_transport",
+      "source_files": ["conscious_agent/local_model.py", "conscious_agent/settings_manager.py"],
+      "selection": "single operator-configured generation model",
+      "validation": "provider configuration and returned-model identity",
+      "activity": "none",
+      "accounting": "transport retry count and provider metrics available"
+    },
+    {
+      "surface": "ordinary_conversation",
+      "source_files": ["conscious_agent/conversation_runtime.py", "conscious_agent/local_brain.py"],
+      "selection": "configured model resolved before client construction",
+      "validation": "response cleaning, action-claim, target, grounding, continuity and quality checks",
+      "activity": "chat stream provider event and turn receipts",
+      "accounting": "one semantic request plus transport retry count"
+    },
+    {
+      "surface": "bounded_conversation_cognition",
+      "source_files": ["conscious_agent/conversation_cognition_bounded_generation.py"],
+      "selection": "configured profile digest",
+      "validation": "bounded executor and arbitration bindings",
+      "activity": "content-minimized runtime receipts",
+      "accounting": "path-specific"
+    },
+    {
+      "surface": "bounded_web_research",
+      "source_files": ["conscious_agent/bounded_autonomous_web_research.py", "conscious_agent/governed_public_web_research_adapter.py"],
+      "selection": "configured model with phase-specific envelope",
+      "validation": "schema, citation identity, source lineage, signed observations and answer-quality gates",
+      "activity": "no shared long-running Activity producer found",
+      "accounting": "explicit semantic attempts; transport retry disabled"
+    },
+    {
+      "surface": "experiment_review",
+      "source_files": ["conscious_agent/experiment_review.py", "conscious_agent/experiment_review_hierarchical.py", "conscious_agent/review_activity.py"],
+      "selection": "configured model with temperature zero and structured JSON",
+      "validation": "schema, grounding, role lineage, coverage and mutation guard",
+      "activity": "shared Activity producer",
+      "accounting": "explicit model calls and repair attempts"
+    },
+    {
+      "surface": "coding_and_repair",
+      "source_files": [
+        "conscious_agent/isolated_coding_execution.py",
+        "conscious_agent/structured_development_generation.py",
+        "conscious_agent/conversational_supervised_repair_execution.py",
+        "conscious_agent/v1489_generic_self_development_execution.py"
+      ],
+      "selection": "configured model with independently constructed coding envelopes",
+      "validation": "authority, path, edit, syntax, test and source snapshot checks",
+      "activity": "path-specific receipts",
+      "accounting": "semantic attempt counts vary; some paths retain configured transport retry"
+    },
+    {
+      "surface": "reflection_and_planning",
+      "source_files": ["conscious_agent/model_backed_reflective_session.py", "conscious_agent/native_reflection_evaluation.py"],
+      "selection": "configured model",
+      "validation": "schema, uncertainty, evidence references and no-authority checks",
+      "activity": "bounded runtime records",
+      "accounting": "path-specific"
+    },
+    {
+      "surface": "training_benchmark",
+      "source_files": ["conscious_agent/model_training/training_operator.py", "conscious_agent/model_training/training_benchmark.py"],
+      "selection": "operator-named configured provider/model",
+      "validation": "frozen evaluation corpus and sealed scoring",
+      "activity": "operator workflow status",
+      "accounting": "provider count retained"
+    },
+    {
+      "surface": "readiness_and_diagnostics",
+      "source_files": ["conscious_agent/local_model_readiness.py", "conscious_agent/native_conversation_validation.py"],
+      "selection": "configured model",
+      "validation": "health, identity, smoke and quality probes",
+      "activity": "diagnostic reports",
+      "accounting": "request and latency evidence"
+    },
+    {
+      "surface": "experiment_specific_transport",
+      "source_files": ["tools/g_corrob1_provider.py", "conscious_agent/authorized_frozen_experiment_execution.py"],
+      "selection": "digest-bound frozen experiment contract",
+      "validation": "experiment-specific",
+      "activity": "G-CORROB Activity adapter",
+      "accounting": "experiment-specific"
+    }
+  ],
+  "known_accounting_constraints": [
+    "benchmark_transport_retry_limit_must_be_zero",
+    "semantic_repair_attempts_are_separate_provider_calls",
+    "friendly_error_text_must_not_be_scored_as_model_output",
+    "activity_coverage_is_not_uniform_across_call_paths",
+    "g_synth1_r2_harness_promotion_accounting_defect_blocks_reuse"
+  ],
+  "task_taxonomy": [
+    {"id": "deterministic_only", "provider_required": false, "fixture_count": 4, "repeats": 1},
+    {"id": "ordinary_conversation", "provider_required": true, "fixture_count": 4, "repeats": 3},
+    {"id": "structured_extraction", "provider_required": true, "fixture_count": 4, "repeats": 3},
+    {"id": "grounded_research_synthesis", "provider_required": true, "fixture_count": 4, "repeats": 3},
+    {"id": "hierarchical_semantic_synthesis", "provider_required": true, "fixture_count": 4, "repeats": 3},
+    {"id": "coding_generation_repair", "provider_required": true, "fixture_count": 4, "repeats": 3},
+    {"id": "reflective_planning", "provider_required": true, "fixture_count": 4, "repeats": 3}
+  ],
+  "risk_taxonomy": [
+    {"id": "R0", "meaning": "deterministic no-model work"},
+    {"id": "R1", "meaning": "reversible private wording without action consequence"},
+    {"id": "R2", "meaning": "factual synthesis, recommendation or plan guiding an operator decision"},
+    {"id": "R3", "meaning": "source, security, governance or action-adjacent candidate"},
+    {"id": "R4", "meaning": "frozen experiment, gold, threshold, policy, release, provider, belief or authority boundary"}
+  ],
+  "benchmark_plan": {
+    "model_backed_fixture_count": 24,
+    "repeats_per_fixture": 3,
+    "candidate_count": 2,
+    "intended_generation_calls": 144,
+    "concurrency": 1,
+    "transport_retry_limit": 0,
+    "hidden_fallback_allowed": false,
+    "thinking_mode": "off",
+    "context_size": 8192,
+    "same_fixture_prompt_and_config_across_candidates": true,
+    "candidate_identity_exposed_to_prompt": false,
+    "cold_load_reported_separately": true,
+    "semantic_repair_in_first_pass": false,
+    "live_web_collection": false,
+    "one_local_model_research_job_at_a_time": true
+  },
+  "qualification_rule": {
+    "ordering": ["hard_safety_and_contract", "task_utility", "repeat_stability", "cost"],
+    "all_hard_gates_must_pass": true,
+    "false_clean_failure_blocks_class_qualification_when_production_validator_misses_it": true,
+    "aggregate_may_hide_hard_failure": false,
+    "no_qualified_candidate_means_unrouted": true,
+    "uncertain_cost_win_keeps_incumbent": true,
+    "self_reported_confidence_used": false
+  },
+  "planned_metrics": [
+    "hard_gate_result_by_fixture_repeat",
+    "first_pass_structural_validity",
+    "grounding_validity",
+    "task_specific_utility",
+    "false_clean_semantic_failures",
+    "safe_and_false_refusals",
+    "repeat_agreement",
+    "disposition_stability",
+    "median_and_p95_first_token_latency",
+    "median_and_p95_total_latency",
+    "prompt_and_output_tokens",
+    "tokens_per_second",
+    "cold_load_time",
+    "provider_calls",
+    "semantic_repairs",
+    "transport_retries",
+    "escalation_eligible_caught_missed_and_unnecessary",
+    "model_config_output_validator_and_scorer_digests"
+  ],
+  "activity_contract": {
+    "allowed_live_fields": ["phase", "candidate_id", "task_class", "completed", "total", "provider_calls", "elapsed_seconds", "structural_failure_count", "terminal_state"],
+    "forbidden_live_fields": ["prompt_text", "fixture_content", "model_output", "expected_labels", "quality_judgment", "routing_decision"],
+    "activity_grants_authority": false
+  },
+  "execution_prerequisites": [
+    "fresh_fixture_corpus_authored",
+    "independent_corpus_and_gold_audit_clean",
+    "g_synth_accounting_defect_prospectively_repaired_or_fresh_equivalent_runner_verified",
+    "isolated_runner_and_scorer_implemented",
+    "model_and_configuration_verifier_implemented",
+    "append_only_persistence_and_activity_adapter_implemented",
+    "single_job_lease_implemented",
+    "deterministic_adversarial_tests_pass",
+    "mechanical_pilot_pass",
+    "execution_freeze_audited",
+    "explicit_operator_authorization"
+  ],
+  "excluded_artifacts": [
+    {
+      "path": "qualifications/g_synth1_r2_harness.py",
+      "reason": "preserved historical harness has a known promotion-accounting defect and cannot be reused"
+    }
+  ],
+  "authority": {
+    "production_routing_authorized": false,
+    "benchmark_execution_authorized": false,
+    "provider_generation_authorized": false,
+    "model_download_authorized": false,
+    "model_install_authorized": false,
+    "provider_switch_authorized": false,
+    "source_mutation_authorized": false,
+    "belief_effects": "none",
+    "automatic_escalation_authorized": false,
+    "release_or_promotion_authorized": false
+  },
+  "observed_counts": {
+    "provider_generation_calls": 0,
+    "benchmark_launches": 0,
+    "production_router_changes": 0,
+    "model_downloads": 0
+  }
+}
