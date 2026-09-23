@@ -74,6 +74,77 @@ CONTRACT_VERSION = "v2735.0"
 # mechanism, not a gap in what is known.
 REGISTER_KIND = "preserved_register"
 REGISTER_STATUS = "preserved_indirectly"
+
+# --- semantic roles ---------------------------------------------------------------------------------------------
+# What kind of fact a statement is, kept beside the prose rather than inside it. In the frozen Attempt 5 baseline a
+# consolidation merge glued a measured result to a design constraint and dropped the three words that carried the
+# second one's role; the stripped sentence then travelled six rounds unchanged and the final layer, reading a bare
+# behavioural claim next to failed gates, filed it as a model deficiency. Prose alone cannot carry a role through
+# compression, because a compressing model is free to decide the qualifier was clutter.
+#
+# A closed vocabulary, never free text: given a keyboard and an open field, the labels drift into invention.
+SEMANTIC_ROLES = ("design_constraint", "measured_result", "observation", "hypothesis", "conclusion",
+                  "limitation", "uncertainty", "contradiction", "minority_finding", "procedure")
+
+# Roles whose demotion changes how a sentence reads. A statement may inherit these through its ancestry, but if one
+# describes what the statement itself asserts it has to stay direct - and the prose has to say so. Moving
+# design_constraint into a hidden ancestry field while the sentence still reads as a deficiency would preserve the
+# metadata and still mislead the reader, which is precisely the defect this exists to prevent.
+INTERPRETATION_CRITICAL_ROLES = ("design_constraint", "contradiction", "limitation", "uncertainty",
+                                 "minority_finding")
+
+_ROLE_INSTRUCTION = (
+    # The vocabulary is baked in rather than left as a placeholder: these templates are filled by the frozen
+    # baseline's prompt builders, which know nothing about roles and would fail on an unfilled field.
+    "Also label each statement with semantic_roles: one or more of " + ", ".join(SEMANTIC_ROLES) +
+    ", saying what kind of fact it is. "
+    "A statement that reports what the design or architecture requires is a design_constraint; one that reports a "
+    "measurement or outcome is a measured_result. If a statement expresses more than one kind, list each. "
+    "Use only these labels.\n")
+
+
+def valid_roles(value: Any) -> list[str]:
+    """The roles in ``value`` that this contract recognises, in vocabulary order. Anything else is discarded."""
+    if isinstance(value, str):
+        value = [value]
+    if not isinstance(value, (list, tuple, set)):
+        return []
+    seen = {str(v).strip().lower() for v in value}
+    return [role for role in SEMANTIC_ROLES if role in seen]
+
+
+def source_roles(ids: Sequence[str], items: Mapping[str, Mapping[str, Any]]) -> dict[str, list[str]]:
+    """Which inputs contributed which role, direct or inherited, across the sources a statement cites."""
+    contributors: dict[str, list[str]] = {}
+    for input_id in ids:
+        item = items.get(input_id) or {}
+        roles = list(item.get("direct_roles") or []) or (["observation"] if item.get("type") == "observation" else [])
+        for role in list(roles) + list(item.get("inherited_roles") or []):
+            contributors.setdefault(role, [])
+            if input_id not in contributors[role]:
+                contributors[role].append(input_id)
+    return contributors
+
+
+def assign_roles(proposed: Any, cites: Sequence[str],
+                 items: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
+    """Settle a statement's roles: what it claims, what it carries, and where each role came from.
+
+    The model proposes; this governs. A proposal outside the vocabulary is discarded rather than corrected, and a
+    statement that proposes nothing usable inherits its sources' roles, so a role can never be lost by the model
+    simply declining to mention it.
+
+    Direct and inherited are kept apart on purpose. Taking the union forever would, after nine rounds, hand the
+    final layer statements claiming to be six kinds of fact at once - technically lossless and practically
+    meaningless. A statement claims only the roles it expresses; everything its ancestry contributed stays
+    traceable beside it.
+    """
+    contributors = source_roles(cites, items)
+    direct = valid_roles(proposed) or sorted(contributors, key=SEMANTIC_ROLES.index)
+    inherited = [role for role in SEMANTIC_ROLES if role in contributors and role not in direct]
+    lineage = {role: contributors[role] for role in SEMANTIC_ROLES if role in contributors}
+    return {"direct_roles": direct, "inherited_roles": inherited, "role_lineage": lineage,
+            "proposed_roles": valid_roles(proposed)}
 BASELINE_CONTRACT = base.CONTRACT_VERSION
 REVIEW_AREA = base.REVIEW_AREA
 MANIFEST_NAME = base.MANIFEST_NAME
@@ -135,8 +206,10 @@ GROUP_PROMPT = (
     "Write a consolidated synthesis of these inputs for the final review. " + base._PRESERVE +
     "Each statement must cite the ids of the inputs it rests on (input_ids, at most {max_ids}). Inputs you leave out "
     "are carried forward unchanged, so cite only what a statement actually rests on. Give at most {max_statements} "
-    "statements, each at most {max_chars} characters, and label each with one kind: {kinds}.\n"
-    'Return only JSON: {{"statements": [{{"statement": "...", "kind": "finding", "input_ids": ["DS1"]}}]}}'
+    "statements, each at most {max_chars} characters, and label each with one kind: {kinds}.\n" +
+    _ROLE_INSTRUCTION +
+    'Return only JSON: {{"statements": [{{"statement": "...", "kind": "finding", '
+    '"semantic_roles": ["measured_result"], "input_ids": ["DS1"]}}]}}'
 )
 # --- observation discipline -------------------------------------------------------------------------------------
 # The baseline already requires every identifier a statement names to be established by that statement's own quotes.
@@ -239,6 +312,35 @@ def record_metadata(doc_text: str, line_start: int, line_end: int) -> dict[str, 
     return found
 
 
+
+# The synthesis prompts ask for the role alongside the statement. The baseline's templates are frozen, so this
+# version builds its own from them and installs them for the duration of one review, exactly as it does for the
+# review-id vocabulary and record-identity metadata.
+PART_PROMPT = base.PART_PROMPT.replace(
+    'Return only JSON: {{"statements": [{{"statement": "...", "kind": "finding", "obs_ids": ["O1"]}}]}}',
+    _ROLE_INSTRUCTION +
+    'Return only JSON: {{"statements": [{{"statement": "...", "kind": "finding", '
+    '"semantic_roles": ["measured_result"], "obs_ids": ["O1"]}}]}}')
+DOCUMENT_PROMPT = base.DOCUMENT_PROMPT.replace(
+    'Return only JSON: {{"statements": [{{"statement": "...", "kind": "finding", "input_ids": ["PS1"]}}]}}',
+    _ROLE_INSTRUCTION +
+    'Return only JSON: {{"statements": [{{"statement": "...", "kind": "finding", '
+    '"semantic_roles": ["measured_result"], "input_ids": ["PS1"]}}]}}')
+
+
+@contextlib.contextmanager
+def semantic_role_prompts():
+    """Ask for semantic roles at part and document level for the duration of one review, then restore the baseline."""
+    if base.PART_PROMPT is PART_PROMPT:
+        raise RuntimeError("semantic_role_prompts_is_not_reentrant")
+    originals = (base.PART_PROMPT, base.DOCUMENT_PROMPT)
+    base.PART_PROMPT, base.DOCUMENT_PROMPT = PART_PROMPT, DOCUMENT_PROMPT
+    try:
+        yield
+    finally:
+        base.PART_PROMPT, base.DOCUMENT_PROMPT = originals
+
+
 @contextlib.contextmanager
 def record_identity_metadata():
     """Read record identity keys for the duration of one review, then put the baseline back."""
@@ -337,7 +439,7 @@ def review_experiment(package_dir: str | Path, **kwargs: Any) -> dict[str, Any]:
     A cooperative pause returns a non-artifact record describing where the work stopped; the review itself is not
     finished and no review.json is written. Resume with ``resume_review`` using the same work id.
     """
-    with review_id_vocabulary(), record_identity_metadata():
+    with review_id_vocabulary(), record_identity_metadata(), semantic_role_prompts():
         try:
             return _review_experiment(package_dir, **kwargs)
         except ReviewPaused as paused:
@@ -618,15 +720,23 @@ def _review_experiment(package_dir: str | Path, *, call_model: Callable[[str, in
             unit.update(status=f"failed:{reason}", cited=[], uncited=list(unit["inputs"]), statements=[])
             return reason
         kept, dropped = base.validate_statements(parsed, unit, items, evidence, ids_key=ids_key)
+        # The baseline validator keeps only the fields it knows about, so the proposed roles are read from the
+        # reply itself and matched back by statement text, in reply order.
+        proposals: dict[str, list[Any]] = {}
+        for item in (x for x in (parsed.get("statements") or []) if isinstance(x, dict)):
+            proposals.setdefault(base._norm(item.get("statement") or "")[:600], []).append(item.get("semantic_roles"))
         cited = {i for s in kept for i in s["cites"]}
         unit.update(status="accepted", cited=[i for i in unit["inputs"] if i in cited],
                     uncited=[i for i in unit["inputs"] if i not in cited], statements=[],
                     rejected_statements=len(dropped))
         for s in kept:
             sid = f"{prefix}{sum(1 for x in items.values() if x['type'] == kind) + 1}"
+            queue = proposals.get(s["statement"]) or []
+            proposed = queue.pop(0) if queue else None
             items[sid] = {"id": sid, "type": kind, "unit_id": unit["unit_id"], "kind": s["kind"],
                           "statement": s["statement"], "cites": s["cites"], "dropped_cites": s["dropped_cites"],
-                          "lineage": base.lineage_of(s["cites"], items), **extra(s)}
+                          "lineage": base.lineage_of(s["cites"], items),
+                          **assign_roles(proposed, s["cites"], items), **extra(s)}
             unit["statements"].append(sid)
         rejected_statements.extend({"level": unit["stage"].split(":")[0], "unit_id": unit["unit_id"], **d}
                                    for d in dropped)
