@@ -1,30 +1,33 @@
 {
   "artifacts": {
     "experiments/G-ROUTE1-candidate/prompt_profiles.json": "f54e85795a3bf972b8593a28644f9229aea21f61327e324db4af518bc9c368b8",
-    "experiments/G-ROUTE3-candidate/CONTAMINATION_ANALYSIS.md": "a3c630ecbcdb0f958d13064e00afddee209601128fb800808ce3bc3e9bf34a4f",
-    "experiments/G-ROUTE3-candidate/DESIGN.md": "fff0a9e7694b96f7ce99bee69770b0fd348ef4a00718f03cd778ef26a6a5bf57",
-    "experiments/G-ROUTE3-candidate/DETERMINISTIC_TEST_RESULTS.json": "b6927a7ae8eac19d0c8ea38c0c6634d2f475f57991d2a40287330d6657ee6ff4",
-    "experiments/G-ROUTE3-candidate/GOLD_DERIVABILITY.md": "352d951a23de19926bbe61ed685dd448d3b5a9243a33c9ef26e568f4838b442a",
+    "experiments/G-ROUTE3-candidate/CONTAMINATION_ANALYSIS.md": "b238ff736bc884ed4c22a83e4d67d06164b5cb810bf0d74b4a0b6db6aad1bbc7",
+    "experiments/G-ROUTE3-candidate/DESIGN.md": "e2696f4f0e6b16c4eb12ff4f2180085f27a9a1a00364c63e675af890dfa10e98",
+    "experiments/G-ROUTE3-candidate/DETERMINISTIC_TEST_RESULTS.json": "2f48f835bf5ef847fffeffe8f5591ee88dbb9be17642c9c2fef79312443d8560",
+    "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json": "b63f0094bbba9c3e822a359cb92b56f66f3ff244e29bbc834ce9af42a4f1653c",
+    "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND1.md": "cfe852a9cddfcc08f35c23c016b6bfd353cabda8825e980d10b005d9f296c63a",
+    "experiments/G-ROUTE3-candidate/GOLD_DERIVABILITY.md": "11b1e0c12de47f37e6367f7c7c0a26d797a3ff143def9200717ea260c2797160",
     "experiments/G-ROUTE3-candidate/GOLD_DERIVABILITY_DIAGNOSTIC.json": "05f8dfbb066b702536801d48408115e4a54b2ae32e4798eba702c4e85449bc64",
-    "experiments/G-ROUTE3-candidate/INDEPENDENCE_REPORT.json": "b37ba16deb4d21dd57c22c559b3023b5cd14e9a5f1422853d5fdd8ca6646e6ad",
-    "experiments/G-ROUTE3-candidate/INDEPENDENT_AUDIT.md": "3f896fd00c66cd7311a18eaf77ac01a115a5992c2f07c58294e0d3bf9b0bde9b",
-    "experiments/G-ROUTE3-candidate/PRODUCTION_ADAPTER_MAPPING.md": "251fe8accac9b5ea16fd3a1f65ac471c0448f4914d7899b1ce12267e7d654af6",
-    "experiments/G-ROUTE3-candidate/QUALIFICATION_CONTRACT.md": "e58a77d2832deee5d11e9b0ad77f631f32794ff83fd75d996147211cc742a512",
-    "experiments/G-ROUTE3-candidate/ROUTING_POLICY.md": "64ad5d3cb6265364ea1caea5aa1a57e70c88c2e863e469dacc5448aa630fde87",
-    "experiments/G-ROUTE3-candidate/SCORING_CONTRACT.md": "d88be0f7ec9c1309b386085f234cc2037983837d9d7a6d76d35d728da49a2296",
-    "experiments/G-ROUTE3-candidate/authoring/assemble_g3.py": "d7490ea891babf7d29bbab51e111cd3a250bc3e8b441e409324ce44e9455bb2d",
-    "experiments/G-ROUTE3-candidate/authoring/author_g3_part1.py": "0c228e932de63eb2051509e53712504dd9025a81c56fda6e8570a57eb0171244",
-    "experiments/G-ROUTE3-candidate/authoring/author_g3_part2.py": "986d4748bad13e57525b9530b02734fd9661935c833fb5c38d5efcc9afeb5c86",
-    "experiments/G-ROUTE3-candidate/authoring/author_g3_part3.py": "5edbb53835d8695dae95932996c757767f5deb61185bec5115940c2952dab845",
-    "experiments/G-ROUTE3-candidate/corpus_a.json": "8c765b283498edb4f4920f0fe01f5c67cad952ada66ab76ba687c889ad2ee64d",
-    "experiments/G-ROUTE3-candidate/corpus_b.json": "6926924af01c3884d1990777bf8f9f45c405fc131ad186391a3cd5e3a103296e",
-    "experiments/G-ROUTE3-candidate/fixture_design.json": "f31898143cd4c8d064b517c1dbb5e549237be6a5689503145832a84c8352b515",
-    "experiments/G-ROUTE3-candidate/gold_a.json": "0af1f84bfe001dd780493ca7aededbddd1d146bd693e1b6aaa7f8900f97e2491",
-    "experiments/G-ROUTE3-candidate/gold_b.json": "d82f66abde41369be597f7e631f73e3872cb85c62b4aa83263d4a31d05f6cec4",
+    "experiments/G-ROUTE3-candidate/INDEPENDENCE_REPORT.json": "b0a52c05686724aaefd2a067a824056a73ba25bb6fb454638b00874a104023f9",
+    "experiments/G-ROUTE3-candidate/INDEPENDENT_AUDIT.md": "df341cff4a0a28284988309601e15be56f54fa7f9b7e3dd547d0ad7727abda25",
+    "experiments/G-ROUTE3-candidate/PRODUCTION_ADAPTER_MAPPING.md": "dbc855d0d4794953616b7730ad160b16a107c2c96b34e3cc3d0d280198d09e34",
+    "experiments/G-ROUTE3-candidate/QUALIFICATION_CONTRACT.md": "18f72a08013ce21b56e0494a52480bb96ea7cb7f35d714ea40e80c65921e1b53",
+    "experiments/G-ROUTE3-candidate/ROUTING_POLICY.md": "a3c8045beed3cffa14990bc00f2b4416840f9cd2ec2990787512da5811154d61",
+    "experiments/G-ROUTE3-candidate/SCORING_CONTRACT.md": "1c88512e2dfb761679b1a803053dc837d9cb21ad96c6cc9176d20a5f9eec7951",
+    "experiments/G-ROUTE3-candidate/authoring/assemble_g3.py": "77811ad453825a69d911c956262de9529c1265e59280d60fd85aefa8914fc112",
+    "experiments/G-ROUTE3-candidate/authoring/author_g3_part1.py": "d6a06e90265ce3b70248df91dd197cf3b54d60a597849ec40be213572c2b76f7",
+    "experiments/G-ROUTE3-candidate/authoring/author_g3_part2.py": "146ff1366a8c8f026ca8106a466cbd4d49fd2c4d94c3b069594b3aa67e0ac88d",
+    "experiments/G-ROUTE3-candidate/authoring/author_g3_part3.py": "c963c937a599a16a03e779200cc94c240c812514faeb71ec3f11bf7777abe5e2",
+    "experiments/G-ROUTE3-candidate/authoring/author_g3_part3_round2.py": "db326f751a0e6c154e8f6b85776ddb59bf99f13a080b6b0cb93c27d499d0674f",
+    "experiments/G-ROUTE3-candidate/corpus_a.json": "1de3954b4dd630ecaab6313ff72426f0fcdc5fb8743665e242268ce54297a0ae",
+    "experiments/G-ROUTE3-candidate/corpus_b.json": "a9f8a8477ad6224bba4daa925079fdc0bee394ef16cde2e69ce55959e8d53547",
+    "experiments/G-ROUTE3-candidate/fixture_design.json": "cd52ac61933cc3dc5798a9680e28b818b6f8ccd8090ddfab40a99aa878b78a03",
+    "experiments/G-ROUTE3-candidate/gold_a.json": "f50f10ee4d90915af0d3b478962b51436665cf10b4d124e523b0dadaa4afdd01",
+    "experiments/G-ROUTE3-candidate/gold_b.json": "5ba2c7cff73e27ea04a82dfa66ef1f18040b1ad23db5cc0ba9e7da227af36e7a",
     "experiments/G-ROUTE3-candidate/model_bindings.json": "ae7ddc2a47bc12e757ecbc4599c2c73470e3a1f77bb4cf6b56aabf746f976510",
-    "experiments/G-ROUTE3-candidate/schedule_a.json": "d0afe8a4d651cf47e00253a3a1ab6f80e9c4091d469158a0cf4d6b233ff8e265",
-    "experiments/G-ROUTE3-candidate/schedule_b.json": "46b03afb64292615915e163b5fe021ae1ad45ce14c1eef37d4e1a5cecd0feaa2",
-    "experiments/G-ROUTE3-candidate/thresholds.json": "da97c9ef06950bcadc51a4e366c6792071c858639804b0a32908a8861bb2bd4e",
+    "experiments/G-ROUTE3-candidate/schedule_a.json": "72192f331765a4d05590212a687af241cc868059ff92aa8ac7c8b8141321cb6d",
+    "experiments/G-ROUTE3-candidate/schedule_b.json": "00f5614edd4885015918afad52d498f04c5a5aec9f665f0ce02268d2e5c4bb8c",
+    "experiments/G-ROUTE3-candidate/thresholds.json": "6ec29e23683a01c21b73380fd35c5a1bebac2267755f9659813965a20b4c30e3",
     "tools/g_route1_coding_runner.py": "1ec72ca8f567b279599d61e06d6ebf78894772840e4c0b5514227232b7995c4e",
     "tools/g_route1_contract.py": "680132919ac8f249b0d72be2b70ea65511b6f0b9555e3ff5ccf82cd5c9ab3292",
     "tools/g_route1_operational.py": "07cbc8c60c1255bdae222c394a7046adad3ed56131d3d30c9071f4832291b0b4",
@@ -32,15 +35,16 @@
     "tools/g_route1_provider.py": "cab0404337fea4b8be5f29ac8b1a0f69db141e81d9e2fc840350a82c0005329d",
     "tools/g_route1_validators.py": "64ae53f4510828e1ec8275dc1ef1e6d6fd6bc5fa9b2600116ec9afd32643850d",
     "tools/g_route2_normalization.py": "24d263cf98339bed0dff35756f01466e220e7c597665e27ad5d13e96aaf264be",
-    "tools/g_route2_policy.py": "bbc52c75e1f2647a0dd074e05f88ec2e7b0b55dd141b237112c103cb1465befb",
     "tools/g_route3_contract.py": "163f1e8f4ad27248d153da3540fe0b7af4aa7baf8bb32c873284a05a3cf0f43c",
-    "tools/g_route3_freeze.py": "65dfbb8b0d1a55fc8d50ab81eb5ed592367b3aba8276f8ee30e46b1b04610ce1",
-    "tools/g_route3_independence.py": "73328e23600bb75d4681092bfbbf3f31894d57558d9451f4f23b0d4fbd8dedc3",
-    "tools/g_route3_qualification.py": "d8d05520d927fe683f5d2240c42769d2fb44279f3cfa1965a0b2e524edc464fb",
-    "tools/g_route3_routing.py": "1b7c675d8d39fc248ca19ccd8c9acf23cc759eb3da6892d26b777e2426ea9d10",
-    "tools/g_route3_runner.py": "d053f47069669a5c63f4f56d05fbe4a0a897edf19c7e9ca63166a2c65c10994b",
-    "tools/g_route3_tests.py": "1a8fcdedae179584f49d0786a47153ee8e1f3c2200598c4c18e066ab4b24b05c",
-    "tools/g_route3_validation.py": "96f4f75a7fe5ed9bb2529078181b223f6528e584170226812adf2647ef4079bb"
+    "tools/g_route3_freeze.py": "b6d93bf4c1457fe4a12a1cb11856a86c70f1d810387e8069bb08c7b8d3f3ff37",
+    "tools/g_route3_independence.py": "ffac25ac8c5624aaac360114c60966105dc5b40213555c716947014a87888b7e",
+    "tools/g_route3_operational.py": "efa3ace32a3d5072d25fbd861ca2ffc2fa3fdfc7b675ca203d86f5158c3017ff",
+    "tools/g_route3_qualification.py": "d8f2b16aba512479110f3f7f85071043c0d76eb87019d259f48a111900ade4f0",
+    "tools/g_route3_routing.py": "0357d16ed47ce9ed02280560f889aec9e21d8ffe4adaf2dd900f1595279746e2",
+    "tools/g_route3_runner.py": "4a739f56922d65ad113f3bf026909d8a46d8d409d9034a42f4471a1992dbf0f5",
+    "tools/g_route3_tests.py": "4702bd6bc0a55e29e324d46e09b5c4b3ef85dae3f28f929d771aa996aeb8177b",
+    "tools/g_route3_triggers.py": "f9da251e6b4862bb913d14bd381433959e37ae34c5a3969f002524031d353351",
+    "tools/g_route3_validation.py": "6d9507535ae2dd2f1f02f557102402de992fa9541686736408f9abf7171b4a75"
   },
   "authorization_artifact_created": false,
   "automatic_escalation_authorized": false,
@@ -48,19 +52,26 @@
   "benchmark_execution_authorized": false,
   "benchmark_launches": 0,
   "both_corpora_frozen_before_any_contact": true,
-  "candidate_id": "G-ROUTE3-EXECUTION-R1",
-  "contract_version": "g-route3.execution-freeze-candidate.v1",
+  "candidate_id": "G-ROUTE3-EXECUTION-R2",
+  "contract_version": "g-route3.execution-freeze-candidate.v2",
+  "conversation_operational_validator_replaced": true,
   "corpus_digests": {
-    "corpus_a.json": "8c765b283498edb4f4920f0fe01f5c67cad952ada66ab76ba687c889ad2ee64d",
-    "corpus_b.json": "6926924af01c3884d1990777bf8f9f45c405fc131ad186391a3cd5e3a103296e",
-    "gold_a.json": "0af1f84bfe001dd780493ca7aededbddd1d146bd693e1b6aaa7f8900f97e2491",
-    "gold_b.json": "d82f66abde41369be597f7e631f73e3872cb85c62b4aa83263d4a31d05f6cec4"
+    "corpus_a.json": "1de3954b4dd630ecaab6313ff72426f0fcdc5fb8743665e242268ce54297a0ae",
+    "corpus_b.json": "a9f8a8477ad6224bba4daa925079fdc0bee394ef16cde2e69ce55959e8d53547",
+    "gold_a.json": "f50f10ee4d90915af0d3b478962b51436665cf10b4d124e523b0dadaa4afdd01",
+    "gold_b.json": "5ba2c7cff73e27ea04a82dfa66ef1f18040b1ad23db5cc0ba9e7da227af36e7a"
   },
   "deterministic_tests_passed": true,
   "digest_convention": "sha256; CRLF and CR normalized to LF for source artifacts",
   "evidence_scale": "pilot",
   "execution_freeze": true,
-  "execution_freeze_content_sha256": "7249e83c6b6540ce7e7cdab1b98e0451ad83a6a1ceb7fd2977290956b18e6fd6",
+  "execution_freeze_content_sha256": "b311db100187f2964eb6a825c314f0cd609f1dbcde71819c963a42ed9a4ff5fc",
+  "external_review_required_before_authorization": true,
+  "external_review_round1": {
+    "record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND1.md",
+    "reviewed_binding": "64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
+    "verdict": "FINDINGS"
+  },
   "generation_configuration": {
     "fresh_session_per_call": true,
     "options": {
@@ -77,8 +88,9 @@
     "stream": false,
     "think": false
   },
-  "implementation_commit": "4246b00bcf5ff95e6462df5eef5335a2ada1f805",
-  "independence_report_sha256": "b37ba16deb4d21dd57c22c559b3023b5cd14e9a5f1422853d5fdd8ca6646e6ad",
+  "implementation_commit": "248eb2cdf57e499d02d25289a022499c39bc07da",
+  "independence_report_sha256": "b0a52c05686724aaefd2a067a824056a73ba25bb6fb454638b00874a104023f9",
+  "independent_audit_is_author_self_audit": true,
   "independent_audit_verdict": "READY",
   "model_bindings_sha256": "52b14ca35e34487d88627aa9f38af1c08c65ebfa94b0455d8d4883ce3782998e",
   "model_identities": [
@@ -102,13 +114,14 @@
     }
   ],
   "normalization_contract": "g-route2.transport-normalization.v1",
+  "operational_validator_contract": "g-route3.operational-validator.v1",
   "phases": {
     "A": {
       "authorization_format": "Authorize G-ROUTE3 phase A execution <execution_freeze_binding>",
       "corpus": "G-ROUTE3-CORPUS-A",
       "planned_calls": 288,
       "role": "qualification",
-      "schedule_sha256": "acca4eb2892c09aa7869e0d6d1697dd3f83ae6e294449477ba81b1fc8529b977"
+      "schedule_sha256": "0da78fc0801ec941b740ae29136626029947be7646e4e10945cc617a896282a0"
     },
     "B": {
       "authorization_format": "Authorize G-ROUTE3 phase B execution <execution_freeze_binding> table <qualification_table_sha256>",
@@ -116,7 +129,7 @@
       "planned_calls": 144,
       "requires_frozen_audited_qualification_table": true,
       "role": "validation",
-      "schedule_sha256": "e8f71a083f88f075a5621564c4fa63567851dd0f81b1fe48ae6ba89abf5d51af"
+      "schedule_sha256": "01f42b3c0bd8d09c75bdd2d4ea7f14934c26b8fcfc848d8e6d2e509c0dc5e86d"
     }
   },
   "prior_experiments_modified": false,
@@ -128,9 +141,19 @@
     "primary": "Can a task x risk x model qualification table derived prospectively from one independent qualification corpus safely guide cheapest-qualified model selection and stopping on a separate unseen validation corpus?",
     "secondary": "When a qualified model's individual output fails deterministic validation, can escalation to the next independently qualified tier improve usable admission without creating unsafe stops?"
   },
+  "semantic_validators_unchanged_from_g_route1": true,
   "source_mutation_authorized": false,
   "status": "READY_FOR_EXPLICIT_SCIENTIFIC_EXECUTION_AUTHORIZATION",
-  "thresholds_sha256": "d2acb4181d401766747cb903452ce535a7a8cd9e08b6e22f47f150a3c2ca46a2",
-  "validator_contract": "g-route1.validators.v1",
-  "validators_unchanged_from_g_route1": true
+  "supersedes": {
+    "authorized": false,
+    "binding_sha256": "64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
+    "candidate_id": "G-ROUTE3-EXECUTION-R1",
+    "literal_sha256": "b63f0094bbba9c3e822a359cb92b56f66f3ff244e29bbc834ce9af42a4f1653c",
+    "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
+    "provider_generation_calls": 0,
+    "reason": "independent pre-contact review returned FINDINGS: hidden grader rules in conversation, coding and planning, ambiguous gold, a trigger that fired on correct answers, template reuse between corpora, a gate that could mask failure, weak table provenance, and a freeze check that made Phase B impossible to authorize"
+  },
+  "thresholds_sha256": "54b3779ce3935267af3fcb18ee70ffd6a1eb88231c017e8afd50d532d12ac0ae",
+  "trigger_contract": "g-route3.triggers.v1",
+  "validator_contract": "g-route1.validators.v1"
 }
