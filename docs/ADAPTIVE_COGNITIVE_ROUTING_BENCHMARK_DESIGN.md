@@ -1,6 +1,6 @@
 # Adaptive Cognitive Routing: inspection and benchmark design
 
-**Status:** design-only checkpoint; no production router, benchmark runner, model call, or routing authority exists.
+**Status:** fixture and validator freeze complete; no production router, benchmark runner, model call, execution freeze, or routing authority exists.
 
 **Source checkpoint:** `8a2c15d35cb1ff36a97e6c91c89920d4529f07f9` (`v2735.0` semantic-fidelity closure).
 
@@ -95,7 +95,7 @@ Risk never changes the task class and never creates authority.
 
 ## Benchmark candidate G-ROUTE1
 
-This checkpoint defines the design, not the corpus or execution freeze.
+This checkpoint now includes a separately audited and digest-bound 24-fixture corpus, evaluator-only gold, prompt profiles, and deterministic validators. It is not an execution freeze.
 
 ### Corpus plan
 
@@ -184,7 +184,7 @@ Before any live call, stop on corpus, prompt, model, configuration, schedule, va
 
 ## Required work before live benchmarking
 
-1. Author and independently audit the 24-fixture corpus and class-specific gold/validators.
+1. **Completed:** author, independently audit, deterministically test, and freeze the 24-fixture corpus and class-specific gold/validators.
 2. Prospectively repair the G-SYNTH harness accounting defect or implement a fresh equivalent runner with a regression proving promotions update local role accounting.
 3. Implement an immutable task/risk decision record, benchmark runner, scorer, model/config verifier, append-only persistence, Activity adapter, and one-job lease in isolation from production routing.
 4. Run deterministic/adversarial tests and a no-generation mechanical pilot.
@@ -194,4 +194,4 @@ Before any live call, stop on corpus, prompt, model, configuration, schedule, va
 
 ## Current conclusion
 
-The complete 7B → 14B → 27B ladder is now locally available and represented in every qualification and scoring dimension. There is still no qualification evidence to route any production task to a different model. G-ROUTE1 is ready for fixture and validator construction, not a model-selection switch.
+The complete 7B → 14B → 27B ladder is locally available, and its 24-fixture corpus plus model-neutral validators are frozen. There is still no qualification evidence to route any production task to a different model. G-ROUTE1 is ready for isolated runner, scorer, schedule, Activity, and persistence construction, not a model-selection switch or live run.

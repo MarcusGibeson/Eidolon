@@ -19,8 +19,8 @@ def main() -> None:
     doc = DOC_PATH.read_text(encoding="utf-8")
 
     require(design["design_id"] == "G-ROUTE1-CANDIDATE", "wrong design identity")
-    require(design["status"] == "design_only_not_frozen", "design must not claim an execution freeze")
-    require(design["next_phase_status"] == "ready_for_fixture_construction", "design is not ready for fixture construction")
+    require(design["status"] == "fixture_validator_frozen_not_execution_frozen", "fixture freeze status drifted")
+    require(design["next_phase_status"] == "ready_for_runner_construction", "design is not ready for runner construction")
     require(design["source_checkpoint"] == "8a2c15d35cb1ff36a97e6c91c89920d4529f07f9", "wrong source checkpoint")
     require(design["design_predecessor_commit"] == "d6fde928071c1df31e264576b256111f9921186a", "wrong design predecessor")
 
@@ -139,7 +139,11 @@ def main() -> None:
     require("no shared cognitive-routing seam" in doc, "architecture conclusion missing")
     require("7B → 14B → 27B" in doc, "three-tier ladder missing from documentation")
     require("a qualified 14B tier cannot be bypassed" in doc, "mid-tier skip boundary undocumented")
-    require("G-ROUTE1 is ready for fixture and validator construction" in doc, "next design phase misstated")
+    require("G-ROUTE1 is ready for isolated runner" in doc, "next design phase misstated")
+    completed = set(design["completed_prerequisites"])
+    require("fresh_fixture_corpus_authored" in completed, "corpus completion not recorded")
+    require("independent_corpus_and_gold_audit_clean" in completed, "gold audit completion not recorded")
+    require("deterministic_fixture_validators_frozen" in completed, "validator freeze completion not recorded")
 
     print("adaptive cognitive routing design checks: PASS")
     print(f"task classes: {len(tasks)}; risk tiers: {len(risks)}; model tiers: {len(tiers)}; qualification cells: {expected_cells}")

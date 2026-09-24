@@ -1,8 +1,8 @@
 {
   "schema_version": "2",
   "design_id": "G-ROUTE1-CANDIDATE",
-  "status": "design_only_not_frozen",
-  "next_phase_status": "ready_for_fixture_construction",
+  "status": "fixture_validator_frozen_not_execution_frozen",
+  "next_phase_status": "ready_for_runner_construction",
   "source_checkpoint": "8a2c15d35cb1ff36a97e6c91c89920d4529f07f9",
   "design_predecessor_commit": "d6fde928071c1df31e264576b256111f9921186a",
   "created_on": "2026-09-23",
@@ -283,6 +283,11 @@
     "mechanical_pilot_pass",
     "execution_freeze_audited",
     "explicit_operator_authorization"
+  ],
+  "completed_prerequisites": [
+    "fresh_fixture_corpus_authored",
+    "independent_corpus_and_gold_audit_clean",
+    "deterministic_fixture_validators_frozen"
   ],
   "excluded_artifacts": [
     {
