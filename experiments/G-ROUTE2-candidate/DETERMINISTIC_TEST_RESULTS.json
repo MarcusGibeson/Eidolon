@@ -1,0 +1,46 @@
+{
+  "schema_version": "g-route2.deterministic-test-results.v1",
+  "recorded_on": "2026-09-24",
+  "provider_generation_calls": 0,
+  "benchmark_launches": 0,
+  "suites": [
+    {
+      "command": "python tools/g_route2_tests.py",
+      "tests": 45,
+      "result": "PASS",
+      "groups": {
+        "transport_normalization": 14,
+        "escalation_and_verdict_separation": 18,
+        "contract_schedule_and_scoring": 8,
+        "counterfactual_replay_diagnostic": 5
+      },
+      "notes": "Adversarial transport cases cover raw valid JSON, fenced valid JSON, untagged fences, unsupported fence tags, fenced malformed JSON, prose before a fence, prose after a fence, two fenced blocks, nested fences, unterminated fences, two raw objects, a JSON array where an object is required, semantic-value preservation over a pretty-printed body, provenance retention, text profiles, and determinism under repetition. Escalation cases cover accepted-but-unqualified tiers, qualified tiers with clean output, normalization-triggered escalation, structurally accepted output that is not safe to stop, evidence-only risk, weak grounding, settled claims with no evidence, legitimately single-lineage support, vendor repetition only where independence was available, structural anomalies, repeat disagreement, 7B fails then 14B stops, 14B fails then 27B stops, accepted 14B never skipped, all tiers failing, and the assertion that no trigger fires on any fixture's reference answer."
+    },
+    {
+      "command": "python tools/g_route2_replay.py",
+      "tests": 1,
+      "result": "PASS",
+      "notes": "Counterfactual / prospective normalization diagnostic over all 216 frozen G-ROUTE1 raw records. Zero findings."
+    },
+    {
+      "command": "python -m py_compile <G-ROUTE2 modules>",
+      "tests": 1,
+      "result": "PASS"
+    }
+  ],
+  "total_assertion_suites": 47,
+  "synthetic_full_run_exercise": {
+    "calls": 216,
+    "provider_contacted": false,
+    "raw_contract_qualified_cells": 52,
+    "normalized_contract_qualified_cells": 72,
+    "stops": 48,
+    "useful_admission": 48,
+    "unsafe_early_stops": 0,
+    "blocked_by_design": 24,
+    "notes": "Reference answers with the 27B's observed fence habit injected. The 20-cell gap between the raw and normalized matrices is the transport effect the experiment isolates. The 24 fixture-repeats that never stop are the 18 evidence-only R4 units and the 6 conversation units above R1, exactly as the policy intends."
+  },
+  "live_provider_used": false,
+  "production_routing_invoked": false,
+  "belief_effects": "none"
+}

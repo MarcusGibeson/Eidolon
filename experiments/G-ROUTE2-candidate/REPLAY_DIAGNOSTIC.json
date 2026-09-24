@@ -1,0 +1,4994 @@
+{
+  "amends_g_route1": false,
+  "findings": [],
+  "is_canonical_result": false,
+  "json_profile_records": 180,
+  "judged_failures_flipped_to_pass": 0,
+  "label": "counterfactual / prospective normalization diagnostic",
+  "large_tier_fenced_now_structurally_parseable": 41,
+  "large_tier_fenced_records": 41,
+  "normalization_contract": "g-route2.transport-normalization.v1",
+  "normalized_by_tier": {
+    "large": 41,
+    "small": 19
+  },
+  "normalized_records": 60,
+  "operational_acceptance_normalized": 140,
+  "operational_acceptance_raw": 104,
+  "outcome_counts": {
+    "fence_removed": 60,
+    "invalid_json": 0,
+    "multiple_payloads": 0,
+    "not_applicable": 36,
+    "raw_valid": 120,
+    "trailing_text": 0,
+    "wrapper_rejected": 0
+  },
+  "per_record": [
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch",
+        "observation_dropped:O1"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch",
+        "observation_dropped:O1"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch",
+        "meaning_anchor_missing:O1",
+        "meaning_anchor_missing:O2",
+        "meaning_anchor_missing:O3",
+        "meaning_anchor_missing:O4"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch",
+        "meaning_anchor_missing:O1",
+        "meaning_anchor_missing:O2",
+        "meaning_anchor_missing:O3",
+        "meaning_anchor_missing:O4"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R1-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R1-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R1-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R1-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R1-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R1-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R2-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R2-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R2-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R4-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "focused_tests_failed",
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "focused_tests_failed",
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R4-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R4-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "focused_tests_failed"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "focused_tests_failed"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R3-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R3-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R3-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R1-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R1-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R1-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R2-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R2-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R2-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R2-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R2-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R2-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch",
+        "uncertainty_element_type_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R3-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R3-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R3-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R3-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R3-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R3-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch",
+        "uncertainty_element_type_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch",
+        "uncertainty_element_type_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch",
+        "observation_dropped:O1"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R1-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R1-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R1-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch",
+        "uncertainty_element_type_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch",
+        "uncertainty_element_type_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "claims_not_list",
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "claims_not_list",
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R1-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R1-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "fence_removed",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R1-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R4-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "fence_removed",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R4-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R4-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch",
+        "uncertainty_element_type_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R2-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R2-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R2-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R4-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R4-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "focused_tests_failed"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "focused_tests_failed"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R4-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "focused_tests_failed",
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "focused_tests_failed",
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch",
+        "uncertainty_element_type_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R2-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R2-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R2-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch",
+        "observation_dropped:O1"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R1-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R1-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R1-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch",
+        "gold_role_mismatch:O3",
+        "mixed_semantic_roles:S2"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch",
+        "gold_role_mismatch:O3",
+        "mixed_semantic_roles:S2"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R1-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R1-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R1-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch",
+        "meaning_anchor_missing:O3"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch",
+        "meaning_anchor_missing:O2",
+        "meaning_anchor_missing:O3"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R4-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "focused_tests_failed"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "focused_tests_failed"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R4-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "focused_tests_failed",
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "focused_tests_failed",
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R4-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R3-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "fence_removed",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R3-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R3-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R1-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R1-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R1-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:2"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:2"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R4-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R4-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "fence_removed",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R4-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:2"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:2"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "claims_not_list",
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "claims_not_list",
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R4-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R4-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R4-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R2-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R2-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R2-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R2",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R1-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R1-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R1-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R1-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R1-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch",
+        "uncertainty_element_type_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R1-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R1-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "fence_removed",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R1-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R1-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "authority_expansion",
+        "planning_contract_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "planning.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R1-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R1-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R1-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "research.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R1-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R1-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "focused_tests_failed"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "focused_tests_failed"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R1-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R1",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R3-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R3-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "candidate_compile_failed",
+        "focused_test_count_invalid",
+        "focused_tests_failed",
+        "isolated_execution_candidate_digest_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CODE-R3-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "focused_tests_failed",
+        "source_anchor_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "coding.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "focused_tests_failed",
+        "source_anchor_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R3-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R3-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R3-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "not_applicable",
+      "profile": "conversation.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R4",
+      "semantic_values_preserved": true,
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R3-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R3-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "fence_removed",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-EXTRACT-R3-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": true,
+      "normalized_semantic_reasons": [],
+      "outcome": "raw_valid",
+      "profile": "extraction.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": true,
+      "raw_semantic_reasons": [],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "structured_extraction"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R2-small",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "normalized": true,
+      "normalized_operational_accepted": false,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R2-mid",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "normalized": false,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "raw_valid",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": false,
+      "raw_operational_accepted": true,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R2-large",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "normalized": true,
+      "normalized_operational_accepted": true,
+      "normalized_semantic_pass": false,
+      "normalized_semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "outcome": "fence_removed",
+      "profile": "synthesis.v1",
+      "raw_failure_was_transport_only": true,
+      "raw_operational_accepted": false,
+      "raw_preserved": true,
+      "raw_semantic_pass": false,
+      "raw_semantic_reasons": [
+        "malformed_json"
+      ],
+      "risk_class": "R3",
+      "semantic_values_preserved": true,
+      "task_class": "hierarchical_semantic_synthesis"
+    }
+  ],
+  "records_replayed": 216,
+  "records_whose_raw_failure_was_transport_only": 60,
+  "semantic_pass_normalized": 54,
+  "semantic_pass_raw": 48,
+  "valid": true
+}

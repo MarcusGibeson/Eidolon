@@ -1,0 +1,83 @@
+{
+  "belief_effects": "none",
+  "binding_id": "G-ROUTE2-MODEL-BINDINGS-R1",
+  "bindings": [
+    {
+      "capabilities": [
+        "completion",
+        "tools"
+      ],
+      "context_length": 32768,
+      "family": "qwen2",
+      "local_size_bytes": 4683087332,
+      "manifest_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+      "model": "qwen2.5:7b",
+      "model_blob_sha256": "2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730",
+      "parameters": "7.6B",
+      "quantization": "Q4_K_M",
+      "tier": "small"
+    },
+    {
+      "capabilities": [
+        "completion",
+        "tools",
+        "thinking"
+      ],
+      "context_length": 40960,
+      "family": "qwen3",
+      "local_size_bytes": 9276198565,
+      "manifest_digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+      "model": "qwen3:14b",
+      "model_blob_sha256": "a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e",
+      "parameters": "14.8B",
+      "quantization": "Q4_K_M",
+      "tier": "mid"
+    },
+    {
+      "capabilities": [
+        "completion",
+        "vision",
+        "tools",
+        "thinking"
+      ],
+      "context_length": 262144,
+      "family": "qwen35",
+      "local_size_bytes": 17741872154,
+      "manifest_digest": "22130167c4c20e20c7b71454612966ca8e8171e9b3cc8ab6ce8aa6cbfec79643",
+      "model": "qwen3.8:27b",
+      "model_blob_sha256": "f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d",
+      "parameters": "27.3B",
+      "quantization": "Q4_K_M",
+      "tier": "large"
+    }
+  ],
+  "generation_configuration": {
+    "fresh_session_per_call": true,
+    "options": {
+      "num_ctx": 8192,
+      "num_predict": 350,
+      "repeat_penalty": 1.1,
+      "temperature": 0.45,
+      "top_k": 40,
+      "top_p": 0.9
+    },
+    "output_repair_calls": 0,
+    "retry_limit": 0,
+    "silent_fallback": false,
+    "stream": false,
+    "think": false
+  },
+  "identical_generation_configuration_to_g_route1": true,
+  "metadata_inspected_without_generation": true,
+  "provider": "ollama",
+  "provider_generation_calls": 0,
+  "provider_version": "0.34.3",
+  "rationale": "Model identities and every generation option are deliberately identical to G-ROUTE1. G-ROUTE2 changes the transport contract and the routing policy and nothing else, so any difference in qualification must be attributable to those two changes rather than to a sampling or capacity change.",
+  "schema_version": "g-route2.model-bindings.v1",
+  "verification_limitations": [
+    "Ollama exposes submitted options but does not attest that every option is honored internally.",
+    "Seed repeatability and actual fresh-session behavior require a later authorized mechanical pilot.",
+    "Model metadata inspection is not a generation call and provides no benchmark observation.",
+    "Seeds differ from G-ROUTE1 so the samples are independent draws, but Ollama does not attest that the submitted seed was honored, so repeat independence is assumed rather than proven."
+  ]
+}

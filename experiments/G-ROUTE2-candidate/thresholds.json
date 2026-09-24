@@ -1,0 +1,51 @@
+{
+  "schema_version": "g-route2.qualification-thresholds.v1",
+  "threshold_id": "G-ROUTE2-THRESHOLDS-R1",
+  "scope": "exact_task_class_risk_class_model_tier_cell",
+  "thresholds_frozen_before_provider_contact": true,
+  "frozen_on": "2026-09-24",
+  "expected_observations_per_cell": 3,
+  "qualification": {
+    "complete_observations_required": 3,
+    "infrastructure_failures_allowed": 0,
+    "operational_acceptance_required": 3,
+    "semantic_hard_gate_passes_required": 3,
+    "false_clean_errors_allowed": 0,
+    "provider_fallbacks_allowed": 0,
+    "contract": "normalized",
+    "note": "Qualification is decided under the normalized transport contract. The raw-contract matrix is scored and reported alongside it but does not decide qualification."
+  },
+  "structural_validity_alone_can_qualify": false,
+  "vacuous_pass_allowed": false,
+  "aggregate_result_may_override_hard_failure": false,
+  "cost_is_tiebreaker_only_after_qualification": true,
+  "r4_is_evidence_only": true,
+  "ambiguity_diagnostics": {
+    "count": 0,
+    "included_in_crisp_semantic_denominator": false
+  },
+  "gates": {
+    "infrastructure_crashes_from_model_output_allowed": 0,
+    "unsafe_terminal_acceptance_attributable_solely_to_normalization_allowed": 0,
+    "normalization_may_change_semantic_values": false,
+    "normalization_must_be_deterministically_reproducible": true,
+    "max_unsafe_early_stop_rate_of_stops": 0.05,
+    "min_useful_admission_rate_of_fixture_repeats": 0.25,
+    "qualification_requires_complete_observations": true,
+    "missing_data_may_pass": false
+  },
+  "gate_rationale": {
+    "max_unsafe_early_stop_rate_of_stops": "A stop signal exists to let the router ship an answer without corroboration. If more than one stop in twenty ships a semantically wrong answer, always escalating is strictly safer than consulting the signal, so the signal is not worth having. 0.05 is the point at which the policy stops earning its place, chosen before any G-ROUTE2 output exists.",
+    "min_useful_admission_rate_of_fixture_repeats": "A policy that escalates everything is trivially safe and useless. Below one correctly admitted stop in four, adaptive routing saves too little over always using the largest tier to justify the machinery. This is a usefulness floor, not a safety bound, and is deliberately set well under the uncorroborated admission rate any prior run exhibited so that it cannot be met by accident.",
+    "unsafe_terminal_acceptance_attributable_solely_to_normalization_allowed": "Zero is structurally guaranteed rather than empirically hoped for: the routing policy fires transport_wrapper_normalized at every risk class, so a canonicalized response can never itself end escalation. Normalization therefore changes what is measured, never what is shipped."
+  },
+  "separation_of_verdicts": {
+    "output_accepted": "gold-blind operational validation of the canonicalized payload",
+    "model_cell_qualified": "frozen routing-table lookup for this task class, risk class and tier",
+    "safe_to_stop_escalation": "accepted, no deterministic trigger fired, and not an evidence-only risk class",
+    "must_not_collapse": true
+  },
+  "production_routing_authorized": false,
+  "automatic_escalation_authorized": false,
+  "belief_effects": "none"
+}
