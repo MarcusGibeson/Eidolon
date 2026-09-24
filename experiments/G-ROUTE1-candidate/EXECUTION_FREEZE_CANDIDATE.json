@@ -13,6 +13,7 @@
     "experiments/G-ROUTE1-candidate/SCORING_CONTRACT.md": "5cfb99ccdf3fb06182f1dc6d9976bd4fe5bd11e1f177f07af7b5a1811ed52fd6",
     "experiments/G-ROUTE1-candidate/TERMINAL_CHECKPOINT_REPAIR_AUDIT.md": "ac56dfe64b48baf82c23718392342151ea6a9539f965dd51a78bdf39cb1c4fd1",
     "experiments/G-ROUTE1-candidate/VALIDATOR_CONTRACT.md": "720323645723171c624933d5a368a8d8d8b06e32e11df62cb315954cb70ebb9b",
+    "experiments/G-ROUTE1-candidate/VALIDATOR_REPAIR_AUDIT.md": "9e8a564ca2d585d39e1fde3ebd7a1c065ad6a043fb6bae2a31b905a41cedd1b5",
     "experiments/G-ROUTE1-candidate/corpus.json": "57f74610f6836eeb1586c5c7bed59de0c324055d3d119f059ec667c30a00ee79",
     "experiments/G-ROUTE1-candidate/gold.json": "176ea8d6c75ea35fe21b9583944e9876196b93c62df298600babdc2b4e57e72d",
     "experiments/G-ROUTE1-candidate/model_bindings.json": "fd3840145b4b8dbe380388bf046976944d37794e65755ffb8ed5ae55071bc7f4",
@@ -23,7 +24,7 @@
     "tools/g_route1_coding_runner.py": "1ec72ca8f567b279599d61e06d6ebf78894772840e4c0b5514227232b7995c4e",
     "tools/g_route1_contract.py": "680132919ac8f249b0d72be2b70ea65511b6f0b9555e3ff5ccf82cd5c9ab3292",
     "tools/g_route1_execution_contract.py": "3ea2ba45f0c683fd2e525818254a2ce0bb41bbebbc0649e161cdc3c7ad849987",
-    "tools/g_route1_execution_freeze.py": "1f47141a244ed9f1818e20d1bd3569bd468f397345ffca4fb23a12d9b42c6743",
+    "tools/g_route1_execution_freeze.py": "3279686713496ce74824406371525d12f9f3c7d459d65dbb95c7ac08ff14af8d",
     "tools/g_route1_execution_freeze_tests.py": "388cdafb5a18c724b91c966d47639a34a1cf75dcfeeb6655ee5a9eafdb56d4f7",
     "tools/g_route1_execution_tests.py": "e42ba5a95836cafc2b5517e26191237e9f559f7f4ee83ec7c7980842e2360ffa",
     "tools/g_route1_operational.py": "07cbc8c60c1255bdae222c394a7046adad3ed56131d3d30c9071f4832291b0b4",
@@ -46,7 +47,7 @@
   "deterministic_tests_passed": true,
   "digest_convention": "sha256; CRLF and CR normalized to LF for source artifacts",
   "execution_freeze": true,
-  "execution_freeze_content_sha256": "8bd35d54302dd3bf406b2e2b19230dcb113a4e025f48cd8976566f17e2b4d6b0",
+  "execution_freeze_content_sha256": "850ced32358f3b3bc16f4e8b21f6200096b95f186c9b3b8ab0944285b8f1df00",
   "fixture_freeze_content_sha256": "10c78f1ecdc3a65e1b34c422cc19d247532ae0e115d8f141eae1d563fde607e0",
   "fixture_freeze_literal_sha256": "4d34fb0517b220a0d65c3f2e3e85e9720c579762d2818e1151e20046fce6f464",
   "generation_configuration": {
@@ -66,7 +67,7 @@
     "think": false
   },
   "implementation_audit_verdict": "CLEAN",
-  "implementation_commit": "91ba0d2e13f2820326022b0164f17731f386e161",
+  "implementation_commit": "4fa5978799492939178c8c1fd6b2ef0bd316539e",
   "mechanical_pilot_authorized": false,
   "model_bindings_sha256": "cd65b291237460413ccaf14d3dbdc16931960f1db3c8793ba0f50e17bd0f1099",
   "model_identities": [

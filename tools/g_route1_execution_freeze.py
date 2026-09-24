@@ -62,6 +62,7 @@ ARTIFACTS = (
     "experiments/G-ROUTE1-candidate/IMPLEMENTATION_AUDIT.md",
     "experiments/G-ROUTE1-candidate/BLOCKED_PREFLIGHT_TERMINAL_CHECKPOINT.md",
     "experiments/G-ROUTE1-candidate/TERMINAL_CHECKPOINT_REPAIR_AUDIT.md",
+    "experiments/G-ROUTE1-candidate/VALIDATOR_REPAIR_AUDIT.md",
     "tools/g_route1_contract.py",
     "tools/g_route1_validators.py",
     "tools/g_route1_execution_contract.py",
