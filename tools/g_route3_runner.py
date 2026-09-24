@@ -33,7 +33,7 @@ MODEL_CAUSED_CODING_ERRORS = (ValueError, SyntaxError, json.JSONDecodeError, sub
 def json_dumps(value: Any) -> str:
     return json.dumps(value, indent=2, sort_keys=True)
 
-CONTRACT_VERSION = "g-route3.runner.v3"
+CONTRACT_VERSION = "g-route3.runner.v4"
 BENCHMARK_ID = "G-ROUTE3"
 GUARDED_PATHS = (
     "experiments/G-ROUTE3-candidate/model_bindings.json",
@@ -58,6 +58,12 @@ GUARDED_PATHS = (
 )
 TABLE_RELATIVE = "experiments/G-ROUTE3-candidate/QUALIFICATION_TABLE.json"
 AUTHORIZATION_LEDGER = DATA / "authorization_ledger"
+RUN_ANCHORS = DATA / "run_anchors"
+RUN_ROOTS = {"A": ROOT / "data" / "g_route3" / "phase_a", "B": ROOT / "data" / "g_route3" / "phase_b"}
+OLLAMA_ENDPOINT = "http://127.0.0.1:11434"
+THREAT_MODEL = ("honest operator with tamper-evident records: the code stops accidents, misuse through any supported "
+                "path and cheap tampering; a deliberate local adversary (a fake model server, a second checkout, a "
+                "consistent rewrite of sealed files) is out of scope and is countered by the git anchor commits")
 ALLOWED_METRICS = frozenset({"scheduled_calls", "calls_completed", "provider_contacts", "structural_failures",
                              "normalized_outputs", "checkpoint_position"})
 ALLOWED_IDENTITIES = frozenset({"current_model_tier", "current_task_class", "current_fixture_id", "phase"})
@@ -122,6 +128,11 @@ def ledger_entries(phase: str) -> list[dict[str, Any]]:
     rows.sort(key=lambda row: int(row["attempt"]))
     if [int(row["attempt"]) for row in rows] != list(range(1, len(rows) + 1)):
         raise ValueError(f"authorization_ledger_not_contiguous:{phase}")
+    previous = "genesis"
+    for row in rows:
+        if row.get("previous_entry_sha256", "genesis") != previous:
+            raise ValueError(f"authorization_ledger_chain_broken:{phase}")
+        previous = json_digest(row)
     return rows
 
 
@@ -145,10 +156,32 @@ def attempt_outcome(entry: Mapping[str, Any]) -> dict[str, Any]:
     return {"outcome": str(manifest.get("state") or "unknown"), "reason": str(manifest.get("reason") or "")}
 
 
+def sealed_call_count(entry: Mapping[str, Any]) -> int:
+    try:
+        return len(RouteRunStore(Path(str(entry["run_root"])), str(entry["run_id"]), create=False).call_records())
+    except Exception:
+        return 0
+
+
 def attempts_with_outcomes(phase: str) -> list[dict[str, Any]]:
     return [{"attempt": int(row["attempt"]), "run_id": row["run_id"], "run_root": row["run_root"],
-             "operator_confirmation": row["operator_confirmation"], **attempt_outcome(row)}
+             "operator_confirmation": row["operator_confirmation"], "sealed_calls": sealed_call_count(row),
+             **attempt_outcome(row)}
             for row in ledger_entries(phase)]
+
+
+def ledger_run_root_mismatches(phase: str) -> list[str]:
+    """Every run directory under the phase's fixed root must be a ledger attempt, and every attempt's run must
+    exist there. A deleted ledger entry or an unrecorded run shows up here."""
+    root = RUN_ROOTS[phase]
+    on_disk = {p.name for p in root.iterdir() if (p / "run.json").is_file()} if root.is_dir() else set()
+    entries = ledger_entries(phase)
+    recorded = {str(row["run_id"]) for row in entries}
+    problems = [f"run_directory_not_in_ledger:{name}" for name in sorted(on_disk - recorded)]
+    problems += [f"ledger_run_missing_on_disk:{name}" for name in sorted(recorded - on_disk)]
+    problems += [f"ledger_run_root_not_fixed_root:{row['run_id']}" for row in entries
+                 if Path(str(row["run_root"])).resolve() != root.resolve()]
+    return problems
 
 
 def _authorization_ok(phase: str, authorization: Mapping[str, Any] | None, *, run_id: str | None,
@@ -169,7 +202,7 @@ def _authorization_ok(phase: str, authorization: Mapping[str, Any] | None, *, ru
             or row.get("operator_confirmation") != confirmation_string(phase, attempt, freeze=digest, table=table)):
         return False
     entries = ledger_entries(phase)
-    fresh = (not resume and attempt == len(entries) + 1
+    fresh = (not resume and attempt == len(entries) + 1 and not ledger_run_root_mismatches(phase)
              and all(attempt_outcome(entry)["outcome"] in NON_COMPLETE_OUTCOMES for entry in entries))
     resuming = (resume and attempt == len(entries) and run_id is not None and run_root is not None
                 and entries[-1].get("run_id") == run_id
@@ -194,6 +227,8 @@ def abandon_attempt(phase: str, reason: str) -> dict[str, Any]:
     store = RouteRunStore(Path(str(entry["run_root"])), str(entry["run_id"]), create=False)
     if store.manifest().get("state") in TERMINAL:
         raise ValueError("attempt_already_terminal")
+    if len(store.call_records()) >= EXPECTED_CALLS[phase]:
+        raise ValueError("attempt_has_every_call_record_resume_it_instead")
     with store.lease():
         return store.finish(state="incomplete", reason=f"abandoned_by_operator:{str(reason).strip()}"[:500],
                             valid_verdict=False)
@@ -209,7 +244,9 @@ def consume_authorization(phase: str, authorization: Mapping[str, Any], run_id: 
     attempt = int(authorization["attempt"])
     path = AUTHORIZATION_LEDGER / f"phase-{phase}-attempt-{attempt:03d}.json"
     path.parent.mkdir(parents=True, exist_ok=True)
+    prior = ledger_entries(phase)
     entry = {"benchmark_id": BENCHMARK_ID, "phase": phase, "attempt": attempt,
+             "previous_entry_sha256": json_digest(prior[-1]) if prior else "genesis",
              "operator_confirmation": str(authorization["operator_confirmation"]),
              "authorization_sha256": json_digest(dict(authorization)), "run_id": run_id,
              "run_root": str(Path(run_root)), "consumed_at": now()}
@@ -222,6 +259,15 @@ def consume_authorization(phase: str, authorization: Mapping[str, Any], run_id: 
                 or Path(str(existing.get("run_root"))).resolve() != Path(run_root).resolve()):
             raise PermissionError("authorization_already_consumed")
     return path
+
+
+def _consume_and_anchor(phase: str, authorization: Mapping[str, Any], run_id: str, run_root: Path, anchor) -> None:
+    """Consume the attempt; anchor the ledger entry in git only when this call created it (not on resume)."""
+    path = AUTHORIZATION_LEDGER / f"phase-{phase}-attempt-{int(authorization['attempt']):03d}.json"
+    created = not path.exists()
+    consume_authorization(phase, authorization, run_id, run_root)
+    if created:
+        anchor("authorization_consumed", path)
 
 
 def phase_a_attempts() -> list[dict[str, Any]]:
@@ -264,6 +310,7 @@ def phase_b_preconditions(phase_a_root: Path, phase_a_run_id: str, *, allow_synt
             reasons.append("phase_a_records_disagree_with_receipt_on_synthetic")
         if not synthetic:
             reasons += _provider_evidence_problems(records, "A")
+            reasons += _authorized_run_problems(receipt, records, phase_a_run_id, "A")
         if synthetic and not allow_synthetic_phase_a:
             reasons.append("phase_a_was_synthetic")
         if receipt.get("execution_freeze_sha256") != _freeze_digest():
@@ -310,6 +357,51 @@ def phase_b_authorized(authorization: Mapping[str, Any] | None, phase_a_root: Pa
                                               table=pre.get("table_sha256"), phase_a_run_id=phase_a_run_id)
 
 
+def _authorized_run_problems(receipt: Mapping[str, Any], records: list[Mapping[str, Any]], run_id: str,
+                            phase: str) -> list[str]:
+    """Tamper evidence for an authorized run: its attempt and authorization are sealed into every record and the
+    receipt and agree with the ledger; the ledger agrees with the fixed run root; the model receipts and endpoint
+    were recorded; and the git anchor file for the run matches its receipt."""
+    problems = list(ledger_run_root_mismatches(phase))
+    entry = next((row for row in ledger_entries(phase) if row["run_id"] == run_id), None)
+    if entry is None:
+        return problems + ["run_not_in_authorization_ledger"]
+    for row in (receipt, *records):
+        if (row.get("authorization_attempt") != entry["attempt"]
+                or row.get("authorization_sha256") != entry["authorization_sha256"]):
+            problems.append("sealed_attempt_differs_from_ledger")
+            break
+    if receipt.get("provider_endpoint") != OLLAMA_ENDPOINT:
+        problems.append("provider_endpoint_not_the_fixed_endpoint")
+    if not verify_model_receipts(list(receipt.get("model_receipts") or []))["valid"]:
+        problems.append("recorded_model_receipts_invalid")
+    anchor = RUN_ANCHORS / f"phase-{phase}-{run_id}.json"
+    if not anchor.is_file() or load_json(anchor) != _anchor_record(phase, run_id, receipt):
+        problems.append("run_anchor_missing_or_different")
+    return sorted(set(problems))
+
+
+def _anchor_record(phase: str, run_id: str, receipt: Mapping[str, Any]) -> dict[str, Any]:
+    return {"benchmark_id": BENCHMARK_ID, "phase": phase, "run_id": run_id,
+            "terminal_receipt_sha256": receipt.get("record_sha256"),
+            "score_record_sha256": receipt.get("score_record_sha256"),
+            "call_records_sha256": receipt.get("call_records_sha256"),
+            "calls_persisted": receipt.get("calls_persisted"),
+            "authorization_attempt": receipt.get("authorization_attempt"),
+            "authorization_sha256": receipt.get("authorization_sha256")}
+
+
+def sanitize_strings(value: Any) -> Any:
+    """Replace lone surrogates (from JSON escapes such as \\ud800) so a record can always be sealed as UTF-8."""
+    if isinstance(value, str):
+        return value.encode("utf-8", "surrogatepass").decode("utf-8", "replace")
+    if isinstance(value, list):
+        return [sanitize_strings(item) for item in value]
+    if isinstance(value, dict):
+        return {sanitize_strings(key): sanitize_strings(item) for key, item in value.items()}
+    return value
+
+
 def _provider_evidence_problems(records: list[Mapping[str, Any]], phase: str) -> list[str]:
     """Every record of an authorized run must carry the provider's own raw body, consistent with its fields."""
     import base64
@@ -325,7 +417,7 @@ def _provider_evidence_problems(records: list[Mapping[str, Any]], phase: str) ->
             if not raw or hashlib.sha256(raw).hexdigest() != row.get("raw_provider_body_sha256"):
                 problems.add("provider_raw_body_digest_mismatch")
                 continue
-            envelope = json.loads(raw.decode("utf-8"))
+            envelope = sanitize_strings(json.loads(raw.decode("utf-8")))
             if envelope != row.get("raw_provider_envelope"):
                 problems.add("provider_envelope_differs_from_raw_body")
             if envelope.get("model") != row.get("requested_model") or row.get("returned_model") != row.get("requested_model"):
@@ -379,9 +471,10 @@ class GovernedOllamaProvider:
 
     synthetic_provider = False
 
-    def __init__(self, endpoint: str = "http://127.0.0.1:11434") -> None:
+    def __init__(self) -> None:
         from g_route1_provider import OllamaRouteAdapter
-        self.adapter = OllamaRouteAdapter(endpoint)
+        self.endpoint = OLLAMA_ENDPOINT          # fixed: the authorized path cannot be pointed elsewhere
+        self.adapter = OllamaRouteAdapter(self.endpoint)
 
     def model_receipts(self) -> list[dict[str, Any]]:
         return self.adapter.inspect_models(allow_metadata_inspection=True)
@@ -393,11 +486,15 @@ class GovernedOllamaProvider:
 REAL_PROVIDER_TYPES: tuple[type, ...] = (GovernedOllamaProvider,)
 
 
-def _require_governed_real_path(provider_call, guarded_root) -> None:
+def _require_governed_real_path(provider_call, guarded_root, phase: str, run_root, anchor) -> None:
     if type(provider_call) not in REAL_PROVIDER_TYPES or getattr(provider_call, "synthetic_provider", False):
         raise PermissionError("authorized_path_requires_governed_ollama_provider")
     if guarded_root is not None:
         raise PermissionError("authorized_path_forbids_guarded_root_override")
+    if Path(run_root).resolve() != RUN_ROOTS[phase].resolve():
+        raise PermissionError("authorized_path_requires_the_fixed_run_root")
+    if anchor is None:
+        raise PermissionError("authorized_path_requires_a_git_anchor")
 
 
 class RouteThreeActivity:
@@ -444,20 +541,20 @@ def _failed_coding_evidence(fixture: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _host_baseline_ok(fixture: Mapping[str, Any]) -> bool:
+    """Run a trivial whitelist-clean candidate on the same host. It fails its tests quickly, so a timeout or any
+    exception here means the host, not the model, is the problem."""
     source = str(fixture["input"]["source"])
-    baseline = json.dumps({"path": fixture["input"]["allowed_path"], "old": source, "new": source})
+    baseline = json.dumps({"path": fixture["input"]["allowed_path"], "old": source, "new": "baseline = 0\n"})
     try:
         run_isolated_fixture(fixture, baseline)
-    except subprocess.TimeoutExpired:
-        return False
     except Exception:
-        return True
+        return False
     return True
 
 
 def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, activity, control, guarded_root,
              resume, include_table, manifest_extra, on_ready: Callable[[], Any] | None = None) -> dict[str, Any]:
-    from g_route3_qualification import collect_evaluation
+    from g_route3_qualification import collect_evaluation, safe_normalize
 
     receipts = verify_model_receipts(model_receipts)
     if not receipts["valid"]:
@@ -539,8 +636,11 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
             infrastructure_failure = str(result.get("error") or "")
             if result.get("returned_model") != scheduled["model"]:
                 infrastructure_failure = infrastructure_failure or "provider_model_fallback_or_mismatch"
+            sanitized = sanitize_strings(result)
+            strings_sanitized = sanitized != result
+            result = sanitized
             raw_output = result.get("raw_output")
-            canonical = normalize(raw_output, validator_profile=fixture["validator_profile"])
+            canonical = safe_normalize(raw_output, fixture["validator_profile"])
             evidence = None
             if fixture["validator_profile"] == "coding.v1":
                 executable, _ = canonical_coding_payload(fixture, canonical["payload"])
@@ -578,7 +678,9 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
                 if metrics.get("eval_count") and latency > 0 else None,
                 "mutation_guard": {"status": "passed", "guarded_digest": guarded},
                 "gold_loaded": False, "belief_effects": "none", "production_routing_invoked": False,
-                "synthetic_fixture": synthetic,
+                "synthetic_fixture": synthetic, "provider_strings_sanitized": strings_sanitized,
+                "authorization_attempt": manifest_extra.get("authorization_attempt"),
+                "authorization_sha256": manifest_extra.get("authorization_sha256"),
             })
             counts["completed"] += 1
             counts["structural_failures"] += int(not evaluation["normalized_operational_validation"]["structural_valid"])
@@ -595,8 +697,42 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
     return {"state": "collected", "run_id": run_id, "store": store, "guarded": guarded, "activity": activity}
 
 
+def _write_anchor(store, phase: str, anchor) -> None:
+    """Authorized runs only: a small tracked file binding the run to its sealed receipt, committed by the anchor."""
+    if anchor is None:
+        return
+    receipt = store.terminal_receipt()
+    path = RUN_ANCHORS / f"phase-{phase}-{store.run_id}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rendered = json_dumps(_anchor_record(phase, store.run_id, receipt)) + "\n"
+    if not path.exists():
+        path.write_text(rendered, encoding="utf-8", newline="\n")
+    anchor("run_complete", path)
+
+
+def _complete_interrupted_finalization(store, activity, *, phase: str, anchor) -> dict[str, Any] | None:
+    """A run killed after sealing its receipt but before finishing would otherwise deadlock. Finish it."""
+    try:
+        receipt = store.terminal_receipt()
+    except FileNotFoundError:
+        return None
+    if store.manifest().get("state") in TERMINAL:
+        return None
+    if receipt.get("call_records_sha256") != _call_records_digest(store.call_records()):
+        raise ValueError("interrupted_finalization_receipt_mismatch")
+    store.finish(state="complete", reason="completed_and_scored_finalization_resumed", valid_verdict=True)
+    expected = EXPECTED_CALLS[phase]
+    projection = activity.emit("benchmark_complete", state="complete", stage="finalization",
+                               units=(expected, expected, "calls"))
+    store.seal_terminal_checkpoint(state="complete", expected_calls=expected,
+                                   activity_state=str((projection or {}).get("state") or ""))
+    _write_anchor(store, phase, anchor)
+    return {"state": "complete", "run_id": store.run_id, "calls_completed": len(store.call_records()),
+            "score": store.score_record(), "finalization_resumed": True}
+
+
 def _finish(store, activity, *, phase: str, report: Mapping[str, Any], guarded: str, include_table: bool,
-            guarded_root) -> dict[str, Any]:
+            guarded_root, anchor=None) -> dict[str, Any]:
     expected = EXPECTED_CALLS[phase]
     store.write_score(report)
     if guarded_dependency_digest(include_table=include_table, root=guarded_root) != guarded:
@@ -609,6 +745,11 @@ def _finish(store, activity, *, phase: str, report: Mapping[str, Any], guarded: 
         "call_records_sha256": _call_records_digest(records),
         "synthetic_fixture": bool(store.manifest().get("synthetic_fixture")),
         "execution_freeze_sha256": _freeze_digest(),
+        "authorization_attempt": store.manifest().get("authorization_attempt"),
+        "authorization_sha256": store.manifest().get("authorization_sha256"),
+        "provider_endpoint": store.manifest().get("provider_endpoint"),
+        "model_receipts": store.manifest().get("model_receipts"),
+        "threat_model": THREAT_MODEL,
         "completed_position": expected, "next_position": expected + 1,
         "score_record_sha256": store.score_record()["record_sha256"], "guarded_digest": guarded,
         "mutation_guard": "passed", "production_routing_invoked": False, "belief_effects": "none", "completed": now()})
@@ -620,25 +761,50 @@ def _finish(store, activity, *, phase: str, report: Mapping[str, Any], guarded: 
     views = verify_terminal_views(store, projection or {}, expected_calls=expected)
     if not views["valid"]:
         raise RuntimeError("route_terminal_view_mismatch:" + ",".join(views["reasons"]))
+    _write_anchor(store, phase, anchor)
     return {"state": "complete", "run_id": store.run_id, "calls_completed": len(records),
             "score": report, "terminal_views": views}
 
 
+def _manifest_extra(synthetic: bool, authorization, model_receipts) -> dict[str, Any]:
+    row = {"synthetic_fixture": bool(synthetic), "authorization_attempt": None, "authorization_sha256": None,
+           "provider_endpoint": None, "model_receipts": None}
+    if not synthetic:
+        row.update(authorization_attempt=int(authorization["attempt"]),
+                   authorization_sha256=json_digest(dict(authorization)),
+                   provider_endpoint=OLLAMA_ENDPOINT, model_receipts=sanitize_strings(list(model_receipts)))
+    return row
+
+
+def _resume_finalization(phase: str, run_root, run_id, resume: bool, activity, anchor) -> dict[str, Any] | None:
+    if not resume or not run_id:
+        return None
+    try:
+        store = RouteRunStore(Path(run_root), run_id, create=False)
+    except FileNotFoundError:
+        return None
+    return _complete_interrupted_finalization(store, activity or NullActivity(), phase=phase, anchor=anchor)
+
+
 def execute_phase_a(*, provider_call, model_receipts, run_root, run_id: str | None = None, activity=None,
                     authorization: Mapping[str, Any] | None = None, synthetic_fixture: bool = False,
-                    resume: bool = False, control: Callable[[], str] | None = None, guarded_root=None) -> dict[str, Any]:
+                    resume: bool = False, control: Callable[[], str] | None = None, guarded_root=None,
+                    anchor: Callable[[str, Path], Any] | None = None) -> dict[str, Any]:
     run_id = run_id or utc_run_id("A")
     on_ready = None
     if synthetic_fixture:
         _require_declared_synthetic_provider(provider_call)
     else:
-        _require_governed_real_path(provider_call, guarded_root)
+        _require_governed_real_path(provider_call, guarded_root, "A", run_root, anchor)
         if not phase_a_authorized(authorization, run_id=run_id, run_root=Path(run_root), resume=resume):
             raise PermissionError("g_route3_phase_a_not_authorized")
-        on_ready = lambda: consume_authorization("A", authorization or {}, run_id, Path(run_root))  # noqa: E731
+        on_ready = lambda: _consume_and_anchor("A", authorization or {}, run_id, Path(run_root), anchor)  # noqa: E731
+    finished = _resume_finalization("A", run_root, run_id, resume, activity, anchor)
+    if finished is not None:
+        return finished
     got = _collect(phase="A", provider_call=provider_call, model_receipts=model_receipts, run_root=run_root,
                    run_id=run_id, activity=activity, control=control, guarded_root=guarded_root, resume=resume,
-                   include_table=False, manifest_extra={"synthetic_fixture": bool(synthetic_fixture)},
+                   include_table=False, manifest_extra=_manifest_extra(synthetic_fixture, authorization, model_receipts),
                    on_ready=on_ready)
     if got["state"] != "collected":
         return got
@@ -660,13 +826,14 @@ def execute_phase_a(*, provider_call, model_receipts, run_root, run_id: str | No
         store.finish(state="failed", reason=reason, valid_verdict=False)
         return {"state": "failed", "reason": reason, "run_id": run_id}
     return _finish(store, activity, phase="A", report=report, guarded=got["guarded"], include_table=False,
-                   guarded_root=guarded_root)
+                   guarded_root=guarded_root, anchor=anchor)
 
 
 def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, phase_a_run_id: str,
                     run_id: str | None = None, activity=None, authorization: Mapping[str, Any] | None = None,
                     synthetic_fixture: bool = False, resume: bool = False,
-                    control: Callable[[], str] | None = None, guarded_root=None) -> dict[str, Any]:
+                    control: Callable[[], str] | None = None, guarded_root=None,
+                    anchor: Callable[[str, Path], Any] | None = None) -> dict[str, Any]:
     if synthetic_fixture:
         _require_declared_synthetic_provider(provider_call)
         try:
@@ -677,7 +844,7 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
         if not phase_a_synthetic:
             raise PermissionError("synthetic_phase_b_requires_a_synthetic_phase_a")
     else:
-        _require_governed_real_path(provider_call, guarded_root)
+        _require_governed_real_path(provider_call, guarded_root, "B", run_root, anchor)
     pre = phase_b_preconditions(Path(phase_a_root), phase_a_run_id, allow_synthetic_phase_a=synthetic_fixture)
     if not pre["valid"]:
         raise PermissionError("g_route3_phase_b_blocked:" + ",".join(pre["reasons"]))
@@ -687,10 +854,13 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
         if not phase_b_authorized(authorization, Path(phase_a_root), phase_a_run_id, run_id=run_id,
                                   run_root=Path(run_root), resume=resume):
             raise PermissionError("g_route3_phase_b_not_authorized")
-        on_ready = lambda: consume_authorization("B", authorization or {}, run_id, Path(run_root))  # noqa: E731
+        on_ready = lambda: _consume_and_anchor("B", authorization or {}, run_id, Path(run_root), anchor)  # noqa: E731
+    finished = _resume_finalization("B", run_root, run_id, resume, activity, anchor)
+    if finished is not None:
+        return finished
     got = _collect(phase="B", provider_call=provider_call, model_receipts=model_receipts, run_root=run_root,
                    run_id=run_id, activity=activity, control=control, guarded_root=guarded_root, resume=resume,
-                   include_table=True, manifest_extra={"synthetic_fixture": bool(synthetic_fixture),
+                   include_table=True, manifest_extra={**_manifest_extra(synthetic_fixture, authorization, model_receipts),
                                                        "qualification_table_sha256": pre["table_sha256"],
                                                        "phase_a_run_id": phase_a_run_id},
                    on_ready=on_ready)
@@ -715,12 +885,13 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
         store.finish(state="failed", reason=reason, valid_verdict=False)
         return {"state": "failed", "reason": reason, "run_id": run_id}
     return _finish(store, activity, phase="B", report=report, guarded=got["guarded"], include_table=True,
-                   guarded_root=guarded_root)
+                   guarded_root=guarded_root, anchor=anchor)
 
 
 __all__ = ["CONTRACT_VERSION", "BENCHMARK_ID", "GUARDED_PATHS", "TABLE_RELATIVE", "AUTHORIZATION_LEDGER",
            "RouteThreeActivity", "NullActivity", "guarded_dependency_digest", "phase_a_authorized",
            "phase_b_preconditions", "phase_a_attempts", "consume_authorization", "confirmation_string",
            "ledger_entries", "verify_model_receipts", "GovernedOllamaProvider", "REAL_PROVIDER_TYPES",
-           "attempt_outcome", "attempts_with_outcomes", "abandon_attempt",
+           "attempt_outcome", "attempts_with_outcomes", "abandon_attempt", "RUN_ROOTS", "RUN_ANCHORS",
+           "OLLAMA_ENDPOINT", "THREAT_MODEL", "ledger_run_root_mismatches", "sanitize_strings",
            "phase_b_authorized", "execute_phase_a", "execute_phase_b", "utc_run_id"]

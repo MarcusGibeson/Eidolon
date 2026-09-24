@@ -13,7 +13,7 @@ import math
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
-from g_route1_contract import ROOT, digest_file
+from g_route1_contract import ROOT, canonical_digest, digest_file
 from g_route3_operational import validate_operational
 from g_route3_semantics import validate_fixture_output
 from g_route2_normalization import normalize
@@ -25,15 +25,43 @@ TABLE_SCHEMA = "g-route3.qualification-table.v1"
 QUALIFIED, NOT_QUALIFIED, INSUFFICIENT = "qualified", "not_qualified", "insufficient_evidence"
 
 
+def safe_normalize(raw_output: Any, profile: str) -> dict[str, Any]:
+    """Transport normalization that never raises on model output (for example JSON nested too deeply)."""
+    try:
+        return normalize(raw_output, validator_profile=str(profile))
+    except Exception as exc:
+        text = raw_output if isinstance(raw_output, str) else ""
+        return {"contract_version": "g-route2.transport-normalization.v1", "validator_profile": str(profile),
+                "raw_output": raw_output, "raw_sha256": canonical_digest(text), "normalized": False,
+                "outcome": f"normalization_error:{type(exc).__name__}", "payload": raw_output,
+                "payload_sha256": canonical_digest(text), "wrapper_removed": "", "is_repair": False,
+                "semantic_values_changed": False}
+
+
+def sealable(result: dict[str, Any], *, gate: str) -> dict[str, Any]:
+    """A validator result must be recordable. If its parsed copy of the model output cannot be serialized
+    (nesting too deep), drop that copy and fail the gate; the raw output is still recorded."""
+    try:
+        json_digest(result)
+        return result
+    except (RecursionError, ValueError, TypeError):
+        reasons = sorted(set(result.get("reasons") or []) | {"model_output_not_recordable"})
+        return {key: value for key, value in result.items() if key in ("contract_version", "validator_contract")} | {
+            gate: False, "reasons": reasons, "parsed_output": None, "structural_valid": False,
+            "uses_gold": bool(result.get("uses_gold")), "belief_effects": "none"}
+
+
 def collect_evaluation(fixture: Mapping[str, Any], raw_output: Any,
                        execution_evidence: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    """Gold-blind part of evaluation, safe for the collection path."""
-    record = normalize(raw_output, validator_profile=str(fixture["validator_profile"]))
+    """Gold-blind part of evaluation, safe for the collection path. Model output cannot make it raise."""
+    record = safe_normalize(raw_output, str(fixture["validator_profile"]))
     return {
         "normalization": record,
-        "raw_operational_validation": validate_operational(fixture, raw_output, execution_evidence=execution_evidence),
-        "normalized_operational_validation": validate_operational(fixture, record["payload"],
-                                                                  execution_evidence=execution_evidence),
+        "raw_operational_validation": sealable(validate_operational(fixture, raw_output, execution_evidence=execution_evidence),
+                                               gate="accepted"),
+        "normalized_operational_validation": sealable(validate_operational(fixture, record["payload"],
+                                                                           execution_evidence=execution_evidence),
+                                                      gate="accepted"),
     }
 
 
@@ -46,8 +74,10 @@ def attach_semantics(records: Iterable[Mapping[str, Any]], corpus: str) -> list[
             raise ValueError("cross_corpus_record_in_scoring")
         fixture, gold = index[row["fixture_id"]]
         evidence = row.get("coding_execution_evidence")
-        raw_sem = validate_fixture_output(fixture, gold, row["raw_output"], execution_evidence=evidence)
-        norm_sem = validate_fixture_output(fixture, gold, row["normalization"]["payload"], execution_evidence=evidence)
+        raw_sem = sealable(validate_fixture_output(fixture, gold, row["raw_output"], execution_evidence=evidence),
+                           gate="hard_gate_pass")
+        norm_sem = sealable(validate_fixture_output(fixture, gold, row["normalization"]["payload"],
+                                                    execution_evidence=evidence), gate="hard_gate_pass")
         out.append({**dict(row), "semantics": {
             "raw_semantic_evaluation": raw_sem, "normalized_semantic_evaluation": norm_sem,
             "raw_false_clean": bool(row["raw_operational_validation"]["accepted"] and not raw_sem["hard_gate_pass"]),

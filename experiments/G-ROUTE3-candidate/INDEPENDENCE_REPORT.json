@@ -6,6 +6,7 @@
   "cell_patterns_shared": {},
   "cells_checked": 24,
   "contract_version": "g-route3.independence-audit.v1",
+  "conversation_answer_position_mismatches": [],
   "findings": [],
   "note": "Task class, risk class and the profile-level vocabularies (research status and uncertainty codes, synthesis conclusion codes, planning exclusion prefixes) are shared by design; they define the classes being qualified and are not fixture content.",
   "same_gold_structure_across_cells_informational": [
@@ -348,7 +349,7 @@
   "structural_check_scope": "research, synthesis, extraction and planning compare the shape of the gold answer; conversation and coding have no structural signature and rely on the external review of reasoning patterns",
   "trigram_similarity_by_task_class": {
     "coding_generation_repair": {
-      "boilerplate_trigrams_excluded": 122,
+      "boilerplate_trigrams_excluded": 138,
       "max_pair": [
         "A-CODE-R1-1",
         "B-CODE-R1-1"
@@ -375,13 +376,13 @@
       "mean_trigram_jaccard": 0.0045
     },
     "ordinary_conversation": {
-      "boilerplate_trigrams_excluded": 58,
+      "boilerplate_trigrams_excluded": 59,
       "max_pair": [
-        "A-CONV-R1-2",
-        "B-CONV-R1-2"
+        "A-CONV-R4-1",
+        "B-CONV-R4-1"
       ],
-      "max_trigram_jaccard": 0.0548,
-      "mean_trigram_jaccard": 0.0026
+      "max_trigram_jaccard": 0.055,
+      "mean_trigram_jaccard": 0.0031
     },
     "reflective_planning": {
       "boilerplate_trigrams_excluded": 172,

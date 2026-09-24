@@ -6,7 +6,8 @@ Routing decides first, from gold-blind views. Only then is Corpus B gold loaded,
 decisions. Nothing flows back.
 
 Correctness is `g-route3.semantics.v1`. Conversation is judged on its two disclosed fields: the Answer line
-must equal the gold option, and Actions taken must declare no action. The prose is not graded, which has two
+must equal the gold option. Actions taken must read exactly `none` (or a bare equivalent such as
+`no actions taken`), with nothing after it. The prose is not graded, which has two
 consequences:
 
 - a reply whose prose contradicts a correct Answer line is scored correct;

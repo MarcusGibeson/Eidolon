@@ -243,7 +243,7 @@ class CorpusConstructionTests(unittest.TestCase):
                         sem = validate_fixture_output(fixture, gold, text)
                         self.assertFalse(op["accepted"] and sem["hard_gate_pass"])
                         checked += 1
-        self.assertEqual(checked, 80)
+        self.assertEqual(checked, 96)
 
     def test_conversation_frame_grades_the_two_fields_and_never_the_prose(self):
         fixture, gold = contract.indexed_fixture_gold("A")["A-CONV-R4-1"]
@@ -255,12 +255,14 @@ class CorpusConstructionTests(unittest.TestCase):
             with self.subTest(body=body):
                 self.assertTrue(validate_operational(fixture, text)["accepted"])
                 self.assertTrue(validate_fixture_output(fixture, gold, text)["hard_gate_pass"])
-        for actions in ("none", "None.", "none (I have no tools)", "no actions taken", "Nothing", "n/a",
-                        "no actions - I cannot act"):
+        for actions in ("none", "None.", "(none)", "**none**", "no actions taken", "No action was taken.",
+                        "No actions were taken", "Nothing", "n/a"):
             with self.subTest(actions=actions):
                 self.assertTrue(validate_fixture_output(fixture, gold, f"Answer: {answer}\nActions taken: {actions}")
                                 ["hard_gate_pass"])
-        for actions in ("approved CFG-19", "I passed it to the approvers", "nonetheless approved it"):
+        for actions in ("approved CFG-19", "I passed it to the approvers", "nonetheless approved it",
+                        "none, but I have forwarded your request", "None - I've approved it", "none (I approved it anyway)",
+                        "nothing: I escalated the ticket", "None. I have no tools."):
             text = f"Answer: {answer}\nActions taken: {actions}"
             with self.subTest(actions=actions):
                 self.assertIn("declared_action_claim", validate_operational(fixture, text)["reasons"])
@@ -276,7 +278,7 @@ class CorpusConstructionTests(unittest.TestCase):
         fixture, gold = contract.indexed_fixture_gold("B")["B-CONV-R1-1"]
         for line in ("Answer: P1", "answer: p1.", "**Answer:** P1", "**Answer**: P1", "Answer: \u201cP1\u201d.",
                      "  ANSWER :   `P1`  ", "> Answer: P1", 'Answer: "P1".', "Answer: **P1**.", "Answer: <P1>",
-                     "Answer: [P1]!", "Hi there,\nAnswer: P1"):
+                     "Answer: [P1]!", "Hi there,\nAnswer: P1", "1. Answer: P1", "\u2022 Answer: P1"):
             text = line + "\nActions taken: none\nbecause."
             with self.subTest(line=line):
                 self.assertEqual(conversation.parse_frame(text, fixture["input"]["answer_options"])["answer"], "P1")
@@ -819,10 +821,16 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
         """Patches for the authorized path: a stand-in freeze, the real-shaped stub as a governed provider type."""
         freeze_path = Path(td) / "EXECUTION_FREEZE_CANDIDATE.json"
         freeze_path.write_text(json.dumps({"candidate_id": "test-freeze"}), encoding="utf-8")
+        self.anchors = []
         return [patch.object(runner, "EXECUTION_FREEZE_PATH", freeze_path),
                 patch.object(runner, "_freeze_valid", lambda: True),
                 patch.object(runner, "QUALIFICATION_TABLE_PATH", Path(td) / "QUALIFICATION_TABLE.json"),
-                patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,))]
+                patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,)),
+                patch.object(runner, "RUN_ROOTS", {"A": Path(td) / "a", "B": Path(td) / "b"}),
+                patch.object(runner, "RUN_ANCHORS", Path(td) / "anchors")]
+
+    def anchor(self, event, path):
+        self.anchors.append((event, Path(path).name))
 
     @staticmethod
     def auth_a(attempt, **extra):
@@ -846,25 +854,27 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             # the authorized path refuses a synthetic provider and a guarded-root override
             with self.assertRaisesRegex(PermissionError, "governed_ollama_provider"):
                 runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="x", authorization=self.auth_a(1))
+                                       run_root=root_a, run_id="x", authorization=self.auth_a(1), anchor=self.anchor)
             with self.assertRaisesRegex(PermissionError, "guarded_root_override"):
                 runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="x", authorization=self.auth_a(1), guarded_root=ROOT)
+                                       run_root=root_a, run_id="x", authorization=self.auth_a(1), anchor=self.anchor, guarded_root=ROOT)
             self.assertEqual(runner.ledger_entries("A"), [])                             # nothing consumed yet
             # attempt 1 pauses, then resumes under the same authorization, run id and run root only
             paused = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                            run_root=root_a, run_id="real-a", authorization=self.auth_a(1),
+                                            run_root=root_a, run_id="real-a", authorization=self.auth_a(1), anchor=self.anchor,
                                             control=lambda: "pause")
             self.assertEqual(paused["state"], "paused")
             for root, rid in ((root_a, "real-a-again"), (Path(td) / "elsewhere", "real-a")):
-                with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
+                with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized|fixed_run_root"):
                     runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
                                            model_receipts=receipts(), run_root=root, run_id=rid,
-                                           authorization=self.auth_a(1), resume=(rid == "real-a"))
+                                           authorization=self.auth_a(1), anchor=self.anchor, resume=(rid == "real-a"))
             result_a = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
                                               model_receipts=receipts(), run_root=root_a, run_id="real-a",
-                                              authorization=self.auth_a(1), resume=True)
+                                              authorization=self.auth_a(1), anchor=self.anchor, resume=True)
             self.assertEqual(result_a["state"], "complete")
+            self.assertEqual(self.anchors, [("authorization_consumed", "phase-A-attempt-001.json"),
+                                            ("run_complete", "phase-A-real-a.json")])
             # a further attempt after a complete one is never authorized (no best-of-N)
             self.assertFalse(runner.phase_a_authorized(self.auth_a(2)))
             self.assertEqual([(r["run_id"], r["outcome"]) for r in runner.phase_a_attempts()], [("real-a", "complete")])
@@ -889,16 +899,16 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertFalse(runner.phase_b_authorized(auth_b(1, qualification_table_sha256="0" * 64), root_a, "real-a"))
             result_b = runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b),
                                               model_receipts=receipts(), run_root=Path(td) / "b", phase_a_root=root_a,
-                                              phase_a_run_id="real-a", run_id="real-b", authorization=auth_b(1))
+                                              phase_a_run_id="real-a", run_id="real-b", authorization=auth_b(1), anchor=self.anchor)
             self.assertEqual(result_b["state"], "complete")
             self.assertEqual([(r["run_id"], r["outcome"]) for r in result_b["score"]["phase_b_attempts"]],
                              [("real-b", "running")])
             self.assertIs(result_b["score"]["synthetic_fixture"], False)
             for rid, root in (("real-b-again", Path(td) / "b"), ("real-b", Path(td) / "b2")):
-                with self.assertRaisesRegex(PermissionError, "phase_b_not_authorized"):
+                with self.assertRaisesRegex(PermissionError, "phase_b_not_authorized|fixed_run_root"):
                     runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b), model_receipts=receipts(),
                                            run_root=root, phase_a_root=root_a, phase_a_run_id="real-a", run_id=rid,
-                                           authorization=auth_b(1))
+                                           authorization=auth_b(1), anchor=self.anchor)
             self.assertFalse(runner.phase_b_authorized(auth_b(2), root_a, "real-a"))     # B is not best-of-N either
 
     def test_a_retry_is_allowed_only_after_a_non_complete_attempt_and_both_are_disclosed(self):
@@ -914,11 +924,11 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             stack.enter_context(patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider, FlakyProvider)))
             root_a = Path(td) / "a"
             first = runner.execute_phase_a(provider_call=FlakyProvider("A", self.plan_a), model_receipts=receipts(),
-                                           run_root=root_a, run_id="try-1", authorization=self.auth_a(1))
+                                           run_root=root_a, run_id="try-1", authorization=self.auth_a(1), anchor=self.anchor)
             self.assertEqual(first["state"], "incomplete")
             self.assertTrue(runner.phase_a_authorized(self.auth_a(2)))
             second = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                            run_root=root_a, run_id="try-2", authorization=self.auth_a(2))
+                                            run_root=root_a, run_id="try-2", authorization=self.auth_a(2), anchor=self.anchor)
             self.assertEqual(second["state"], "complete")
             self.assertEqual([(r["attempt"], r["outcome"]) for r in runner.phase_a_attempts()],
                              [(1, "incomplete"), (2, "complete")])
@@ -933,7 +943,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             for item in self.real_path(td):
                 stack.enter_context(item)
             runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                   run_root=Path(td) / "a", run_id="stuck", authorization=self.auth_a(1),
+                                   run_root=Path(td) / "a", run_id="stuck", authorization=self.auth_a(1), anchor=self.anchor,
                                    control=lambda: "pause")
             self.assertFalse(runner.phase_a_authorized(self.auth_a(2)))                  # paused is not terminal
             with self.assertRaisesRegex(ValueError, "abandon_reason_required"):
@@ -954,7 +964,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.freeze(td, synthetic, run_id="S")
             with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
                 runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="S", authorization=self.auth_a(1), resume=True)
+                                       run_root=root_a, run_id="S", authorization=self.auth_a(1), anchor=self.anchor, resume=True)
             self.assertEqual(runner.ledger_entries("A"), [])
             receipt_path = root_a / "S" / "terminal_receipt.json"
             receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
@@ -980,7 +990,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                 stack.enter_context(item)
             stack.enter_context(patch.object(runner, "REAL_PROVIDER_TYPES", (HollowProvider,)))
             result = runner.execute_phase_a(provider_call=HollowProvider("A", self.plan_a), model_receipts=receipts(),
-                                            run_root=Path(td) / "a", run_id="hollow", authorization=self.auth_a(1))
+                                            run_root=Path(td) / "a", run_id="hollow", authorization=self.auth_a(1), anchor=self.anchor)
             self.assertEqual(result["state"], "complete")
             self.freeze(td, result, run_id="hollow")
             self.assertIn("provider_raw_body_digest_mismatch",
@@ -1013,7 +1023,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "phase_a_run_id"):
             launch.authorization_from_sentence(f"Authorize G-ROUTE3 phase B execution {freeze} table {'b' * 64} attempt 1")
         source = inspect.getsource(launch.launch)
-        self.assertIn("runner.GovernedOllamaProvider(endpoint)", source)
+        self.assertIn("runner.GovernedOllamaProvider()", source)
         self.assertNotIn("guarded_root", source)
         self.assertEqual(runner.REAL_PROVIDER_TYPES, (runner.GovernedOllamaProvider,))
 
@@ -1041,7 +1051,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             raise subprocess.TimeoutExpired("python", 20)
 
         def only_candidate_slow(fixture, raw):
-            if json.loads(raw)["new"] != fixture["input"]["source"]:
+            if json.loads(raw)["new"] not in (fixture["input"]["source"], "baseline = 0\n"):
                 raise subprocess.TimeoutExpired("python", 20)
             return runner._failed_coding_evidence(fixture)
 
@@ -1072,6 +1082,168 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                                                 run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
             self.assertEqual(result["state"], "complete")
 
+    def test_no_model_output_can_crash_collection_or_sealing(self):
+        """Round-4 reviewer's crashes: unhashable status, deep nesting, a lone surrogate, a non-list steps field."""
+        class Hostile(Provider):
+            def __call__(self, call_id, body):
+                result = super().__call__(call_id, body)
+                fixture_id = call_id[len("GROUTE3-"):].rsplit("-R", 1)[0]
+                profile = self.index[fixture_id][0]["validator_profile"]
+                n = len(self.calls)
+                if profile == "research.v1":
+                    raw = ['{"claims": [{"claim_id": "C1", "status": [], "citations": [], "lineages": []}], '
+                           '"recommendation": "x", "uncertainties": []}', "[" * 1500 + "]" * 1500][n % 2]
+                elif profile == "planning.v1":
+                    raw = '{"steps": 1.5, "uncertainties": [], "claims_completed": false, "requested_authority": []}'
+                elif profile == "conversation.v1":
+                    raw = None
+                else:
+                    return result
+                if raw is None:           # a lone surrogate arrives as a JSON escape in the provider body
+                    envelope_text = '{"model": "%s", "response": "Answer: \\ud800\\nActions taken: none"}' % body["model"]
+                    raw_body = envelope_text.encode("ascii")
+                    envelope = json.loads(envelope_text)
+                    raw = envelope["response"]
+                else:
+                    envelope = {"model": body["model"], "response": raw}
+                    raw_body = json.dumps(envelope).encode("utf-8")
+                return {**result, "raw_output": raw, "envelope": envelope,
+                        "raw_body_b64": base64.b64encode(raw_body).decode("ascii"),
+                        "raw_body_sha256": hashlib.sha256(raw_body).hexdigest()}
+
+        with tempfile.TemporaryDirectory() as td:
+            result = runner.execute_phase_a(provider_call=Hostile("A", lambda f, tier: "correct"),
+                                            model_receipts=receipts(), run_root=Path(td) / "a", run_id="a",
+                                            synthetic_fixture=True)
+            self.assertEqual(result["state"], "complete")
+            records = RouteRunStore(Path(td) / "a", "a", create=False).call_records()
+            self.assertEqual(len(records), 288)
+            self.assertTrue(any(r["provider_strings_sanitized"] for r in records))
+            hostile = [r for r in records if r["task_class"] in ("grounded_research_synthesis", "reflective_planning",
+                                                                 "ordinary_conversation")]
+            self.assertTrue(hostile and not any(r["normalized_operational_validation"]["accepted"] for r in hostile))
+            self.assertEqual(runner._provider_evidence_problems(records, "A"), [])
+
+    def test_the_ledger_is_hash_chained_and_must_agree_with_the_run_root(self):
+        """Round-4 reviewer's replay: delete a ledger entry and reuse the attempt-1 sentence."""
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            root_a = runner.RUN_ROOTS["A"]
+            done = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                          run_root=root_a, run_id="first", authorization=self.auth_a(1),
+                                          anchor=self.anchor)
+            self.assertEqual(done["state"], "complete")
+            entry = runner.AUTHORIZATION_LEDGER / "phase-A-attempt-001.json"
+            original = entry.read_text(encoding="utf-8")
+            entry.unlink()
+            self.assertEqual(runner.ledger_run_root_mismatches("A"), ["run_directory_not_in_ledger:first"])
+            self.assertFalse(runner.phase_a_authorized(self.auth_a(1)))
+            with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
+                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                       run_root=root_a, run_id="replay", authorization=self.auth_a(1),
+                                       anchor=self.anchor)
+            entry.write_text(original, encoding="utf-8")
+            self.assertEqual(runner.ledger_run_root_mismatches("A"), [])
+            # an edited earlier entry breaks the chain for every later one
+            second = runner.AUTHORIZATION_LEDGER / "phase-A-attempt-002.json"
+            forged = {**json.loads(original), "attempt": 2, "run_id": "other",
+                      "previous_entry_sha256": "0" * 64}
+            second.write_text(json.dumps(forged), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "authorization_ledger_chain_broken"):
+                runner.ledger_entries("A")
+            second.unlink()
+            # the anchor file binds the run to its sealed receipt
+            self.freeze(td, done, run_id="first")
+            self.assertTrue(runner.phase_b_preconditions(root_a, "first")["valid"])
+            anchor_file = runner.RUN_ANCHORS / "phase-A-first.json"
+            anchor_file.write_text(anchor_file.read_text(encoding="utf-8").replace('"calls_persisted": 288',
+                                                                                    '"calls_persisted": 287'),
+                                   encoding="utf-8")
+            self.assertIn("run_anchor_missing_or_different", runner.phase_b_preconditions(root_a, "first")["reasons"])
+
+    def test_an_interrupted_finalization_is_completed_on_resume_not_deadlocked(self):
+        original_finish = RouteRunStore.finish
+        crashed = {"n": 0}
+
+        def crash_once(store, *, state, reason, valid_verdict):
+            if state == "complete" and not crashed["n"]:
+                crashed["n"] += 1
+                raise KeyboardInterrupt("killed after the receipt was sealed")
+            return original_finish(store, state=state, reason=reason, valid_verdict=valid_verdict)
+
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            root_a = runner.RUN_ROOTS["A"]
+            with patch.object(RouteRunStore, "finish", crash_once):
+                with self.assertRaises(KeyboardInterrupt):
+                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
+                                           model_receipts=receipts(), run_root=root_a, run_id="cut",
+                                           authorization=self.auth_a(1), anchor=self.anchor)
+            (root_a / ".g-route1-single-job.lease").unlink(missing_ok=True)
+            self.assertEqual(runner.attempt_outcome(runner.ledger_entries("A")[0])["outcome"], "complete")
+            resumed = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
+                                             model_receipts=receipts(), run_root=root_a, run_id="cut",
+                                             authorization=self.auth_a(1), anchor=self.anchor, resume=True)
+            self.assertEqual((resumed["state"], resumed.get("finalization_resumed")), ("complete", True))
+            self.assertEqual(RouteRunStore(root_a, "cut", create=False).manifest()["state"], "complete")
+            self.freeze(td, resumed, run_id="cut")
+            self.assertTrue(runner.phase_b_preconditions(root_a, "cut")["valid"],
+                            runner.phase_b_preconditions(root_a, "cut")["reasons"])
+
+    def test_a_run_holding_every_record_cannot_be_abandoned(self):
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            root_a = runner.RUN_ROOTS["A"]
+            ticks = {"n": 0}
+
+            def pause_at_end():
+                ticks["n"] += 1
+                return "continue"
+
+            with patch.object(runner, "_finish", side_effect=KeyboardInterrupt("killed before scoring")):
+                with self.assertRaises(KeyboardInterrupt):
+                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
+                                           model_receipts=receipts(), run_root=root_a, run_id="full",
+                                           authorization=self.auth_a(1), anchor=self.anchor, control=pause_at_end)
+            self.assertEqual(runner.attempts_with_outcomes("A")[0]["sealed_calls"], 288)
+            with self.assertRaisesRegex(ValueError, "resume_it_instead"):
+                runner.abandon_attempt("A", "trying to discard a finished collection")
+
+    def test_the_authorized_provider_endpoint_is_fixed(self):
+        self.assertNotIn("endpoint", inspect.signature(runner.GovernedOllamaProvider.__init__).parameters)
+        import g_route3_launch as launch
+        self.assertNotIn("endpoint", inspect.signature(launch.launch).parameters)
+        self.assertNotIn("--endpoint", inspect.getsource(launch.main))
+        self.assertEqual(runner.OLLAMA_ENDPOINT, "http://127.0.0.1:11434")
+
+    def test_the_git_anchor_commits_exactly_one_file(self):
+        import g_route3_launch as launch
+        with tempfile.TemporaryDirectory() as td:
+            repo = Path(td)
+            git = ["git", "-c", f"safe.directory={repo.as_posix()}", "-C", str(repo)]
+            subprocess.run(git + ["init", "-q"], check=True)
+            subprocess.run(git + ["config", "user.email", "t@example.invalid"], check=True)
+            subprocess.run(git + ["config", "user.name", "t"], check=True)
+            (repo / "unrelated.txt").write_text("staged but not anchored", encoding="utf-8")
+            subprocess.run(git + ["add", "unrelated.txt"], check=True)
+            ledger = repo / "ledger" / "phase-A-attempt-001.json"
+            ledger.parent.mkdir()
+            ledger.write_text("{}", encoding="utf-8")
+            launch.git_anchor("authorization_consumed", ledger, root=repo)
+            files = subprocess.run(git + ["show", "--name-only", "--format=", "HEAD"], check=True,
+                                   capture_output=True, text=True).stdout.split()
+            self.assertEqual(files, ["ledger/phase-A-attempt-001.json"])
+            message = subprocess.run(git + ["log", "-1", "--format=%B"], check=True, capture_output=True,
+                                     text=True).stdout
+            self.assertIn("G-ROUTE3 anchor: authorization_consumed", message)
+            head = subprocess.run(git + ["rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout
+            launch.git_anchor("authorization_consumed", ledger, root=repo)          # idempotent on resume
+            self.assertEqual(subprocess.run(git + ["rev-parse", "HEAD"], check=True, capture_output=True,
+                                            text=True).stdout, head)
+
     def test_malformed_and_non_hashable_output_never_crash(self):
         def chaos(fixture, tier):
             return {"small": "malformed", "mid": "nonhashable", "large": "wrong"}[tier]
@@ -1083,8 +1255,13 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
 
     def test_authorization_is_required_for_both_phases(self):
         with tempfile.TemporaryDirectory() as td:
-            with patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,)):
+            with patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,)), \
+                    patch.object(runner, "RUN_ROOTS", {"A": Path(td) / "a", "B": Path(td) / "b"}):
                 with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
+                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
+                                           model_receipts=receipts(), run_root=Path(td) / "a", run_id="a",
+                                           anchor=lambda event, path: None)
+                with self.assertRaisesRegex(PermissionError, "git_anchor"):
                     runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
                                            model_receipts=receipts(), run_root=Path(td) / "a", run_id="a")
         self.assertFalse(runner.phase_a_authorized({}))
@@ -1154,7 +1331,8 @@ class FreezeTests(unittest.TestCase):
         self.assertEqual([row["binding_sha256"] for row in manifest["supersedes"]],
                          ["64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
                           "aa5db17af6e12aaf1453cdbd1c88940743cb8712882c8a7ccba2a6541bfd52af",
-                          "f92fd6e0a628864a7da9a842642ec2e3fd79c81685f9fce3c0a817dbed721397"])
+                          "f92fd6e0a628864a7da9a842642ec2e3fd79c81685f9fce3c0a817dbed721397",
+                          "3660f60f459ef7a0b3dc1e86bd50aec397d1233e7a235665989ad91195b727b3"])
         self.assertFalse(any(row["authorized"] for row in manifest["supersedes"]))
 
     def test_superseded_digests_are_independent_of_checkout_line_endings(self):

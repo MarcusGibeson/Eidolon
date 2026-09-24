@@ -20,7 +20,7 @@ exception is charged to infrastructure and stops the run `incomplete`.
 Operational acceptance uses `g-route3.operational-validator.v2`, and correctness uses `g-route3.semantics.v1`.
 Both are the G-ROUTE1 checks except in two profiles:
 
-- **conversation**: the disclosed two-line frame (Answer, Actions taken);
+- **conversation**: the disclosed two-line frame (Answer, and Actions taken written exactly as `none`);
 - **coding**: `old` is compared ignoring trailing newlines.
 
 A coding timeout counts against the model only if the unchanged source runs in time on the same host;
@@ -101,9 +101,36 @@ Internal consistency is not enough. Phase B also checks the table against the se
      `Authorize G-ROUTE3 phase B execution <freeze digest> table <table digest> attempt <n>`, names the Phase
      A run, and is consumed in the ledger.
 
-   These checks defeat fabricated or edited Phase A artifacts short of a forger who rewrites every sealed
-   record consistently. Local seals carry no secret, so that last line of defence is procedural: the Phase A
-   result package is committed to git before Phase B is authorized.
+   An authorized Phase A run must also meet these conditions:
+
+   - Every call record and the receipt carry its attempt number and authorization digest, and these match
+     the ledger.
+   - The hash-chained ledger agrees exactly with the run directories under the fixed run root.
+   - The fixed endpoint and the model receipts were recorded and still verify.
+   - The run's git anchor file matches its sealed receipt.
+
+   **Threat model: an honest operator with tamper-evident records.** These checks stop cheap tampering:
+
+   - a deleted or edited ledger entry;
+   - a replayed sentence;
+   - an unrecorded run;
+   - a relabelled run;
+   - a redirected endpoint.
+
+   Local seals carry no secret. So the following are out of scope for the code, and are countered by the git
+   anchor commits the launcher makes at each consumption and each completion:
+
+   - a deliberate adversary who runs a fake model server;
+   - a second checkout;
+   - consistently rewriting sealed files and the anchor history.
+
+   **Model output cannot crash collection.** Any exception in normalization, validation, evaluation or
+   triggers is recorded as a failure of that output. Output that cannot be serialized is recorded without
+   its parsed copy. Lone surrogates are replaced before sealing. So a malformed answer can never block Phase
+   A from completing.
+
+   **Interrupted finalization.** A run killed after its receipt was sealed is finished by `--resume`. An
+   attempt that already holds every call record cannot be abandoned.
 
    Verifying the execution freeze does not depend on the table being absent. Absence is checked only when
    the freeze is *written*, so the freeze stays valid once Phase A has produced a table.

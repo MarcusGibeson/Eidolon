@@ -30,7 +30,7 @@ def canonical_coding_payload(fixture: Mapping[str, Any], payload: Any) -> tuple[
         return payload, False
     try:
         value = dict(payload) if isinstance(payload, Mapping) else json.loads(str(payload))
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, RecursionError):
         return payload, False
     if not isinstance(value, dict):
         return payload, False
@@ -44,6 +44,17 @@ def canonical_coding_payload(fixture: Mapping[str, Any], payload: Any) -> tuple[
 
 def validate_fixture_output(fixture: Mapping[str, Any], gold: Mapping[str, Any], raw_output: Any, *,
                             execution_evidence: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Never raises on model output: an evaluator exception is a failed answer, recorded with its type."""
+    try:
+        return _judge(fixture, gold, raw_output, execution_evidence)
+    except Exception as exc:
+        return {"contract_version": CONTRACT_VERSION, "valid": False, "hard_gate_pass": False,
+                "reasons": [f"evaluator_exception_on_model_output:{type(exc).__name__}"], "metrics": {},
+                "belief_effects": "none", "routing_authority": False}
+
+
+def _judge(fixture: Mapping[str, Any], gold: Mapping[str, Any], raw_output: Any,
+           execution_evidence: Mapping[str, Any] | None) -> dict[str, Any]:
     profile = str(fixture.get("validator_profile") or "")
     if profile == "conversation.v1":
         return conversation.semantic(fixture, gold, raw_output)

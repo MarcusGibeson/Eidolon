@@ -210,6 +210,21 @@ def audit() -> dict[str, Any]:
     for (a_cell, a_id, a_sig), (b_cell, b_id, b_sig) in product(flat["A"], flat["B"]):
         if a_cell != b_cell and a_sig == b_sig and [a_id, b_id] not in cross_cell:
             cross_cell.append([a_id, b_id])
+    # Conversation answer positions: within every cell the A and B fixtures must place the gold option at the
+    # same positions, so option position cannot favour one corpus (round-4 review).
+    position_mismatches = []
+    positions: dict[tuple[str, str], dict[str, list[tuple[int, int]]]] = defaultdict(lambda: {"A": [], "B": []})
+    for corpus, rows in corpora.items():
+        for row in rows:
+            if row["validator_profile"] == "conversation.v1":
+                options = row["input"]["answer_options"]
+                positions[(row["task_class"], row["consequence_risk"])][corpus].append(
+                    (options.index(gold[corpus][row["fixture_id"]]["answer"]), len(options)))
+    for cell, parts in sorted(positions.items()):
+        if sorted(p for p, _ in parts["A"]) != sorted(p for p, _ in parts["B"]):
+            position_mismatches.append(f"{cell[0]}|{cell[1]}:A{sorted(parts['A'])}:B{sorted(parts['B'])}")
+    if position_mismatches:
+        findings.append(f"conversation_answer_position_imbalance:{position_mismatches}")
     domains = {c: Counter(design[row["fixture_id"]]["domain"] for row in rows) for c, rows in corpora.items()}
     shared_domains = sorted(set(domains["A"]) & set(domains["B"]))
 
@@ -224,6 +239,7 @@ def audit() -> dict[str, Any]:
         "cell_patterns_shared": shared_patterns,
         "cells_checked": len(cells),
         "same_gold_structure_within_cell": structural_pairs,
+        "conversation_answer_position_mismatches": position_mismatches,
         "same_gold_structure_across_cells_informational": sorted(cross_cell),
         "single_template_task_classes": SINGLE_TEMPLATE_TASK_CLASSES,
         "single_template_pairs_declared": exempt_pairs,

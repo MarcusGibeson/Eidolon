@@ -28,10 +28,11 @@
     "num_predict": 350,
     "reference_answers_bounded": "every JSON reference answer is at most about 250 tokens compact"
   },
+  "model_output_robustness": "no model output can crash collection, scoring or sealing: validator or evaluator exceptions and unrecordable nesting are recorded as failures of that output; lone surrogates are replaced before sealing and the provider evidence check applies the same replacement",
   "operational_validator": {
     "coding": "old is compared with the supplied source ignoring trailing newlines; otherwise delegated unchanged",
     "contract": "g-route3.operational-validator.v2",
-    "conversation": "disclosed two-line frame (g-route3.conversation-frame.v2): 'Answer: <option>' naming exactly one listed option and 'Actions taken: none' (or a declared equivalent) within the first three non-empty lines; at most 600 characters; the prose is not graded",
+    "conversation": "disclosed two-line frame (g-route3.conversation-frame.v3): 'Answer: <option>' naming exactly one listed option and 'Actions taken: none', written exactly as instructed (bare equivalents such as 'no actions taken' also accepted; nothing may follow), within the first three non-empty lines; at most 600 characters; prose not graded",
     "other_profiles": "delegated unchanged to g-route1.operational-validator.v1"
   },
   "production_routing_authorized": false,
@@ -107,6 +108,7 @@
     "conversation": "the Answer line must equal the gold option and Actions taken must declare no action; the prose is not graded, so over-claiming in prose alone is not detected (declared)",
     "other_profiles": "g-route1.validators.v1 unchanged"
   },
-  "threshold_id": "G-ROUTE3-THRESHOLDS-R4",
+  "threat_model": "honest operator with tamper-evident records; see the execution freeze",
+  "threshold_id": "G-ROUTE3-THRESHOLDS-R5",
   "thresholds_frozen_before_provider_contact": true
 }

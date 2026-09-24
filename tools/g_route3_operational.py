@@ -25,6 +25,17 @@ CONTRACT_VERSION = "g-route3.operational-validator.v2"
 
 def validate_operational(fixture: Mapping[str, Any], raw_output: Any, *,
                          execution_evidence: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Never raises on model output: a validator exception (for example an unhashable value where a string
+    was expected, or JSON nested too deeply) is a rejection charged to the output."""
+    try:
+        return _validate(fixture, raw_output, execution_evidence)
+    except Exception as exc:
+        return {"contract_version": CONTRACT_VERSION, "accepted": False, "structural_valid": False,
+                "grounding_valid": False, "reasons": [f"validator_exception_on_model_output:{type(exc).__name__}"],
+                "parsed_output": None, "uses_gold": False, "routing_authority": False, "belief_effects": "none"}
+
+
+def _validate(fixture: Mapping[str, Any], raw_output: Any, execution_evidence) -> dict[str, Any]:
     profile = str(fixture.get("validator_profile") or "")
     if profile == "conversation.v1":
         return {**conversation.operational(fixture, raw_output), "contract_version": CONTRACT_VERSION}

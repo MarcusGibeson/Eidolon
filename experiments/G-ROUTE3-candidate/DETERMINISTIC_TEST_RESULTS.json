@@ -5,7 +5,7 @@
     "alternative_correct_answers_accepted_by_both_validators": 48,
     "command": "python experiments/G-ROUTE3-candidate/authoring/assemble_g3.py",
     "fixtures_per_corpus": 48,
-    "incorrect_answers_rejected": 80,
+    "incorrect_answers_rejected": 96,
     "result": "PASS"
   },
   "independence_audit": {
@@ -17,7 +17,7 @@
   "production_routing_invoked": false,
   "provider_generation_calls": 0,
   "recorded_on": "2026-09-24",
-  "revision": "R4",
+  "revision": "R5",
   "schema_version": "g-route3.deterministic-test-results.v1",
   "suites": [
     {
@@ -42,7 +42,7 @@
         "corpus_construction_and_derivability": 18,
         "execution_freeze_and_guard": 4,
         "gold_blind_routing_and_escalation": 12,
-        "governed_two_phase_pipeline": 17,
+        "governed_two_phase_pipeline": 23,
         "qualification_and_table": 10,
         "validation_gates": 2
       },
@@ -73,7 +73,7 @@
       "result": "PASS",
       "round2_regressions_for_external_review_findings": {
         "all_48_alternative_phrasings_pass_both_validators": "test_natural_correct_phrasings_are_accepted_by_both_validators",
-        "all_80_incorrect_answers_rejected": "test_incorrect_answers_are_rejected",
+        "all_96_incorrect_answers_rejected": "test_incorrect_answers_are_rejected",
         "audit_bound_by_document_digest": "test_audit_must_be_bound_to_a_document_that_names_the_run",
         "authorization_consumed_once": "test_authorization_is_consumed_exactly_once_in_the_fixed_ledger",
         "conversation_negation_is_never_rejected": "test_conversation_frame_grades_the_two_fields_and_never_the_prose",
@@ -120,7 +120,16 @@
         "synthesis_verbatim_and_research_lineage_rules_stated": "test_synthesis_and_research_prompts_state_their_conventions",
         "synthetic_relabel_refused": "test_a_synthetic_run_cannot_be_relabelled_as_authorized"
       },
-      "tests": 63
+      "round5_regressions_for_external_review_findings": {
+        "closed_actions_field": "test_conversation_frame_grades_the_two_fields_and_never_the_prose",
+        "finished_collection_cannot_be_abandoned": "test_a_run_holding_every_record_cannot_be_abandoned",
+        "fixed_provider_endpoint": "test_the_authorized_provider_endpoint_is_fixed",
+        "git_anchor_one_file_idempotent": "test_the_git_anchor_commits_exactly_one_file",
+        "interrupted_finalization_resumes": "test_an_interrupted_finalization_is_completed_on_resume_not_deadlocked",
+        "ledger_hash_chain_and_run_root_agreement": "test_the_ledger_is_hash_chained_and_must_agree_with_the_run_root",
+        "no_model_output_crashes_collection": "test_no_model_output_can_crash_collection_or_sealing"
+      },
+      "tests": 69
     }
   ]
 }

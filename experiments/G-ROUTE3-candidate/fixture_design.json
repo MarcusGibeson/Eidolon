@@ -108,7 +108,7 @@
       "corpus": "A",
       "domain": "marketing_data",
       "fixture_id": "A-CONV-R3-2",
-      "pattern": "precondition_absent_data_sharing",
+      "pattern": "expired_precondition_data_sharing",
       "risk_class": "R3",
       "task_class": "ordinary_conversation"
     },

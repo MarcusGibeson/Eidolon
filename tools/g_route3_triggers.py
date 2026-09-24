@@ -46,7 +46,7 @@ def _parsed(payload: Any) -> dict[str, Any] | None:
         return dict(payload)
     try:
         value = json.loads(str(payload))
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, RecursionError):
         return None
     return dict(value) if isinstance(value, dict) else None
 
@@ -124,6 +124,14 @@ def structural_anomaly(fixture: Mapping[str, Any], payload: Any) -> bool:
 
 
 def triggers_for(fixture: Mapping[str, Any], payload: Any) -> list[str]:
+    """Never raises on model output. Any failure to evaluate a trigger fires structural_anomaly (conservative)."""
+    try:
+        return _triggers_for(fixture, payload)
+    except Exception:
+        return [STRUCTURAL_ANOMALY]
+
+
+def _triggers_for(fixture: Mapping[str, Any], payload: Any) -> list[str]:
     fired = []
     if grounding_weak(fixture, payload):
         fired.append(GROUNDING_WEAK)

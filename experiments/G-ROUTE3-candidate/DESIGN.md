@@ -3,7 +3,7 @@
 Status: **design and freeze only.** No model has been contacted. Provider generation calls: **0**.
 Benchmark launches: **0**. Production routing: disabled. Automatic escalation: disabled. Belief effects: `none`.
 
-Revision: **R4.** No earlier freeze was ever authorized; all are preserved and superseded.
+Revision: **R5.** No earlier freeze was ever authorized; all are preserved and superseded.
 
 - **R1** (binding `64eed1ba…`). An external pre-contact review found hidden grader rules, a trigger that fired
   on correct answers, template reuse between corpora, a gate that could hide a failure, weak table
@@ -22,11 +22,35 @@ Revision: **R4.** No earlier freeze was ever authorized; all are preserved and s
   - the conversation action-claim pattern failed in both directions;
   - synthesis graded keywords the model was never shown.
 
-See `EXTERNAL_REVIEW_ROUND1.md`, `EXTERNAL_REVIEW_ROUND2.md` and `EXTERNAL_REVIEW_ROUND3.md`.
+- **R4** (binding `3660f60f…`). A fourth review found four problems:
+  - The "Actions taken" field accepted an action smuggled in after a note, and rejected natural no-action
+    forms.
+  - Malformed model output could crash collection, so Phase A could never finish.
+  - An interrupted finalization could deadlock an attempt.
+  - Cheap ledger tampering, or a redirected endpoint, was not tamper-evident.
 
-Authorized runs go only through `tools/g_route3_launch.py`. It builds the Ollama provider itself and reads
-the operator's verbatim sentence. That sentence names a numbered attempt, and an attempt may follow only
-attempts that did not complete.
+See `EXTERNAL_REVIEW_ROUND1.md` to `EXTERNAL_REVIEW_ROUND4.md`.
+
+**Threat model (operator decision): an honest operator with tamper-evident records.**
+
+- **What the code stops:**
+  - accidents;
+  - misuse through any supported path;
+  - cheap tampering, such as a deleted ledger entry, a replayed sentence, a redirected endpoint or a
+    relabelled run.
+- **What is out of scope:** a deliberate local adversary. That means someone running a fake model server,
+  using a second checkout, or consistently rewriting sealed files.
+- **How the out-of-scope case is countered:** by the launcher's local git anchor commits. Every consumed
+  authorization and every completed run is committed as it happens.
+
+**Authorized runs** go only through `tools/g_route3_launch.py`:
+
+- It builds the Ollama provider itself, at a fixed local endpoint.
+- It reads the operator's verbatim sentence, which names a numbered attempt.
+- It uses one fixed run root per phase.
+- It anchors each step in git.
+
+An attempt may follow only attempts that did not complete.
 
 ## Research questions
 
@@ -73,8 +97,8 @@ byte-for-byte. Two profiles differ, by operator decision after the external revi
 
 - **Conversation** uses a **disclosed two-line frame** (`g_route3_conversation.py`). The input lists
   `answer_options`, and the prompt states that the assistant has no tools. The reply opens with two lines:
-  `Answer: <option>` and `Actions taken: <none, or each action carried out>`. Both are closed fields and are
-  graded exactly. The prose after them is not graded. Two earlier approaches each failed external review in
+  `Answer: <option>`, and `Actions taken: none`, which must be written exactly as instructed, with nothing
+  after it. Both are closed fields and are graded exactly. The prose after them is not graded. Two earlier approaches each failed external review in
   both directions: phrase anchors, and then scanning the prose for action claims.
 - **Coding** compares `old` with the source ignoring trailing newlines only (`g_route3_semantics.py`). Correct,
   test-passing fixes had failed on that one byte.

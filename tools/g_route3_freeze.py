@@ -12,8 +12,8 @@ from g_route1_contract import ROOT, digest_file
 from g_route3_contract import (DATA, EXPECTED_CALLS, EXECUTION_FREEZE_PATH, json_digest, load_corpus, load_gold,
                                load_json, load_model_bindings, load_thresholds, verify_checked_schedule)
 
-CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v4"
-CANDIDATE_ID = "G-ROUTE3-EXECUTION-R4"
+CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v5"
+CANDIDATE_ID = "G-ROUTE3-EXECUTION-R5"
 SUPERSEDED = (
     {"candidate_id": "G-ROUTE3-EXECUTION-R1",
      "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
@@ -46,6 +46,16 @@ SUPERSEDED = (
                 "conversation action-claim pattern failed in both directions, and synthesis graded keywords the "
                 "model was never shown"),
      "authorized": False, "provider_generation_calls": 0},
+    {"candidate_id": "G-ROUTE3-EXECUTION-R4",
+     "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R4.json",
+     "literal_sha256": "555c45b59f1e9892a8482c09bbe9129bc866539749879229cdbe9004388a16bb",
+     "binding_sha256": "3660f60f459ef7a0b3dc1e86bd50aec397d1233e7a235665989ad91195b727b3",
+     "review_record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND4.md",
+     "reason": ("fourth independent pre-contact review returned FINDINGS: the Actions taken field accepted a trailing "
+                "note that could carry an action and rejected natural no-action forms, malformed model output could "
+                "crash collection so Phase A could never finish, an interrupted finalization could deadlock an "
+                "attempt, and cheap ledger tampering or a redirected endpoint was not tamper-evident"),
+     "authorized": False, "provider_generation_calls": 0},
 )
 FREEZE_PATH = EXECUTION_FREEZE_PATH
 ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
@@ -55,6 +65,7 @@ ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
     "EXTERNAL_REVIEW_ROUND1.md", "EXECUTION_FREEZE_CANDIDATE_R1.json",
     "EXTERNAL_REVIEW_ROUND2.md", "EXECUTION_FREEZE_CANDIDATE_R2.json",
     "EXTERNAL_REVIEW_ROUND3.md", "EXECUTION_FREEZE_CANDIDATE_R3.json",
+    "EXTERNAL_REVIEW_ROUND4.md", "EXECUTION_FREEZE_CANDIDATE_R4.json",
     "corpus_a.json", "gold_a.json", "corpus_b.json", "gold_b.json", "fixture_design.json",
     "model_bindings.json", "thresholds.json", "schedule_a.json", "schedule_b.json",
     "authoring/author_g3_part1.py", "authoring/author_g3_part2.py", "authoring/author_g3_part3.py",
@@ -143,9 +154,15 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "validator_contract": "g-route1.validators.v1",
         "operational_validator_contract": "g-route3.operational-validator.v2",
         "semantic_contract": "g-route3.semantics.v1",
-        "conversation_contract": "g-route3.conversation-frame.v2",
-        "runner_contract": "g-route3.runner.v3",
-        "launcher": {"contract": "g-route3.launcher.v1", "path": "tools/g_route3_launch.py",
+        "conversation_contract": "g-route3.conversation-frame.v3",
+        "runner_contract": "g-route3.runner.v4",
+        "threat_model": ("honest operator with tamper-evident records (operator decision): the code stops accidents, "
+                         "misuse through any supported path and cheap tampering; a deliberate local adversary (a fake "
+                         "model server, a second checkout, a consistent rewrite of sealed files) is out of scope and "
+                         "is countered by the launcher's local git anchor commits"),
+        "launcher": {"contract": "g-route3.launcher.v2", "path": "tools/g_route3_launch.py",
+                     "provider_endpoint": "http://127.0.0.1:11434 (fixed)",
+                     "git_anchor": "local commit of each consumed ledger entry and each completed run's anchor file",
                      "authorized_runs_only_through_launcher": True,
                      "run_roots": {"A": "data/g_route3/phase_a", "B": "data/g_route3/phase_b"}},
         "attempt_policy": ("numbered attempts, each separately authorized; attempt n+1 only after every earlier "
