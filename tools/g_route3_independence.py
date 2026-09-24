@@ -65,6 +65,34 @@ def _trigrams(text: str) -> set[tuple[str, str, str]]:
     return {tuple(words[i:i + 3]) for i in range(len(words) - 2)}
 
 
+# Task classes whose construct is, by design, a single answer template. Their A and B fixtures are
+# fresh instances of the same template with matched difficulty, and the claim is scoped accordingly.
+SINGLE_TEMPLATE_TASK_CLASSES = {
+    "reflective_planning": ("Every planning fixture has four included steps in a stated total order, one excluded "
+                            "action and one holding uncertainty code. Planning is qualified as that construct."),
+}
+
+
+def structural_signature(fixture: dict[str, Any], expected: dict[str, Any]) -> Any:
+    """Shape of the gold answer, independent of wording and entities. None when no shape is defined."""
+    profile = fixture["validator_profile"]
+    if profile == "research.v1":
+        recommendations = fixture["input"]["allowed_recommendations"]
+        return ("research",
+                tuple(sorted((c["status"], len(c["citations"]), len(c["lineages"])) for c in expected["claims"])),
+                recommendations.index(expected["recommendation"]), tuple(expected["uncertainties"]),
+                len(fixture["input"]["sources"]), fixture["input"]["decision_rule"].split(" only if")[1][:40]
+                if " only if" in fixture["input"]["decision_rule"] else "")
+    if profile == "synthesis.v1":
+        return ("synthesis", tuple(sorted(expected["roles"].values())), expected["conclusion"])
+    if profile == "extraction.v1":
+        return ("extraction", tuple(sorted(str(v) for v in fixture["input"]["schema"].values())))
+    if profile == "planning.v1":
+        return ("planning", len(expected["steps"]), len(fixture["input"]["allowed_actions"]),
+                len(fixture["input"]["evidence"]), len(expected["uncertainties"]))
+    return None
+
+
 def audit() -> dict[str, Any]:
     corpora = {c: load_corpus(c)["fixtures"] for c in ("A", "B")}
     gold = {c: {g["fixture_id"]: g["expected"] for g in load_gold(c)["items"]} for c in ("A", "B")}
@@ -133,6 +161,23 @@ def audit() -> dict[str, Any]:
     shared_patterns = {f"{t}|{r}": sorted(v["A"] & v["B"]) for (t, r), v in cells.items() if v["A"] & v["B"]}
     if shared_patterns:
         findings.append(f"cell_patterns_shared:{shared_patterns}")
+    structural_pairs = []
+    exempt_pairs = []
+    by_cell: dict[tuple[str, str], dict[str, list[Any]]] = defaultdict(lambda: {"A": [], "B": []})
+    for corpus, rows in corpora.items():
+        for row in rows:
+            signature = structural_signature(row, gold[corpus][row["fixture_id"]])
+            if signature is not None:
+                by_cell[(row["task_class"], row["consequence_risk"])][corpus].append((row["fixture_id"], signature))
+    for (task, risk), parts in sorted(by_cell.items()):
+        for (a_id, a_sig), (b_id, b_sig) in product(parts["A"], parts["B"]):
+            if a_sig == b_sig:
+                if task in SINGLE_TEMPLATE_TASK_CLASSES:
+                    exempt_pairs.append([a_id, b_id])
+                else:
+                    structural_pairs.append([a_id, b_id])
+    if structural_pairs:
+        findings.append(f"same_gold_structure_within_cell:{structural_pairs}")
     domains = {c: Counter(design[row["fixture_id"]]["domain"] for row in rows) for c, rows in corpora.items()}
     shared_domains = sorted(set(domains["A"]) & set(domains["B"]))
 
@@ -146,6 +191,12 @@ def audit() -> dict[str, Any]:
         "shared_answers": shared_answers,
         "cell_patterns_shared": shared_patterns,
         "cells_checked": len(cells),
+        "same_gold_structure_within_cell": structural_pairs,
+        "single_template_task_classes": SINGLE_TEMPLATE_TASK_CLASSES,
+        "single_template_pairs_declared": exempt_pairs,
+        "structural_check_scope": ("research, synthesis, extraction and planning compare the shape of the gold "
+                                   "answer; conversation and coding have no structural signature and rely on the "
+                                   "external review of reasoning patterns"),
         "shared_domains_across_different_cells": shared_domains,
         "shared_rule_keys_excluded_from_content": list(SHARED_RULE_KEYS),
         "shared_rule_tokens_excluded": sorted(SHARED_RULE_TOKENS),

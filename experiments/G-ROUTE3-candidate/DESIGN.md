@@ -3,6 +3,11 @@
 Status: **design and freeze only.** No model has been contacted. Provider generation calls: **0**.
 Benchmark launches: **0**. Production routing: disabled. Automatic escalation: disabled. Belief effects: `none`.
 
+Revision: **R2.** The R1 freeze (binding `64eed1ba…`) was never authorized. An external pre-contact review
+found hidden grader rules, a trigger that fired on correct answers, template reuse between corpora, a gate
+that could hide a failure, weak table provenance, and a freeze check that made Phase B impossible to
+authorize. All are repaired. R1 is preserved and superseded; see `EXTERNAL_REVIEW_ROUND1.md`.
+
 ## Research questions
 
 **Primary.** Can a task × risk × model qualification table derived prospectively from one independent
@@ -41,8 +46,13 @@ it.
 a property of how those fixtures were built, not a capability finding. G-ROUTE3's corpora are built under a
 **derivability rule** so the question can actually be answered: every closed-vocabulary label in gold is
 given to the model as an allowed set, every ordering the validator enforces is stated in the prompt, and
-every execution constraint is disclosed. The validators themselves are the frozen G-ROUTE1 validators,
-byte-for-byte. Nothing was loosened; the fixtures were made answerable.
+every execution constraint is disclosed.
+
+The semantic validators are the frozen G-ROUTE1 validators, byte-for-byte. The one change is the
+conversation operational check, `g_route3_operational.py`. G-ROUTE1's version rejected negated statements
+("hasn't been completed"), a rule no model was told about. The new check rejects only affirmative
+first-person claims that an action was done. Nothing else was loosened; the fixtures were made
+answerable.
 
 ## Architecture
 
@@ -69,6 +79,11 @@ and is named in a second authorization.
 | Seeds | 43001–43472 | 44001–44471 |
 | Observations per cell for qualification | 4 | — |
 
+**Out of sample means "same construct, fresh instance".** B fixtures are new instances of the constructs
+qualified on A: new entities, facts and answers, and a different reasoning problem within each cell wherever
+the class allows one. Planning is deliberately one template in both corpora, and that is declared. See
+`CONTAMINATION_ANALYSIS.md`.
+
 Six task classes and R1–R4 are preserved and never collapsed. Models are `qwen2.5:7b`, `qwen3:14b` and
 `qwen3.8:27b`, with the identical G-ROUTE1 and G-ROUTE2 generation configuration.
 
@@ -90,4 +105,5 @@ whether such a screen predicts anything at all.
 ## Documents
 
 `GOLD_DERIVABILITY.md` · `QUALIFICATION_CONTRACT.md` · `ROUTING_POLICY.md` · `SCORING_CONTRACT.md` ·
-`CONTAMINATION_ANALYSIS.md` · `PRODUCTION_ADAPTER_MAPPING.md` · `INDEPENDENT_AUDIT.md`
+`CONTAMINATION_ANALYSIS.md` · `PRODUCTION_ADAPTER_MAPPING.md` · `INDEPENDENT_AUDIT.md` ·
+`EXTERNAL_REVIEW_ROUND1.md`

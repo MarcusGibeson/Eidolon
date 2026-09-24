@@ -8,12 +8,24 @@ system prompt, the fixture prompt and the fixture input. Concretely:
    model-facing text as an explicit allowed set;
 2. every ordering the validator enforces is stated in the prompt (planning step numbering, dependency
    chaining, evidence-id order, uncertainty-code order);
-3. every execution constraint is disclosed (the coding fixtures' operation whitelist);
+3. every execution constraint is disclosed: the full coding whitelist, including that only `.parts` may be
+   read, that helper functions may not be called, and every denied statement form; and the conversation
+   length limit;
 4. where selection is required (which planning actions to include, which sources to cite, which status a
-   claim takes), the rule that decides it is stated.
+   claim takes, which conclusion applies), the rule that decides it is stated, and overlapping rules carry
+   an explicit order;
+5. every format the grader enforces is stated: exact key sets, `depends_on` as a list, and extraction spans
+   copied as written without leading articles or labels;
+6. no grader rejects a correct answer for wording the model was never told to use. Every conversation
+   fixture carries at least three natural correct phrasings and at least one incorrect answer, and both
+   validators are run on all of them.
 
-The rule is checkable without any model output, and it is enforced by a deterministic test over all 96
-fixtures.
+The rule is checkable without any model output. It is enforced by `authoring/assemble_g3.py`, which refuses to
+write the corpora if any check fails, and by deterministic tests over all 96 fixtures.
+
+Round 1 of the rule (items 1–4) was not enough. The external pre-contact review found that correct answers
+could still fail on hidden grader rules. Items 5 and 6 and the wider item 3 come from that review; see
+`EXTERNAL_REVIEW_ROUND1.md`.
 
 ## Why
 
@@ -46,13 +58,34 @@ carry the same caveat.
 This diagnostic is stored as `GOLD_DERIVABILITY_DIAGNOSTIC.json`, labelled
 `counterfactual design diagnostic`, with `is_canonical_result: false`.
 
+## A second defect in G-ROUTE1's conversation operational check
+
+The round-1 external review found a grader rule in `g_route1_operational.py` that no model was told about.
+For `conversation.v1` it rejects any reply containing words such as "completed", "approved", "deployed" or
+"I have", **including negations**. "The refund hasn't been completed" is rejected, even when the fixture's
+own prompt asks the model not to describe the refund as completed.
+
+G-ROUTE1 and G-ROUTE2 used this check. Some of their conversation rejections and non-qualifications may
+therefore reflect wording, not behavior. This has **not** been quantified, and neither experiment is rescored
+or amended. Their conversation results carry this caveat alongside the research, synthesis and planning
+caveat above.
+
 ## What G-ROUTE3 does about it
 
-Nothing in the validators changed. G-ROUTE3 uses `g_route1_validators.py` and `g_route1_operational.py`
-byte-for-byte. Research, synthesis and planning remain strict exact-match profiles, and planning still
-requires exact equality including list order. The fixtures, not the checks, were repaired: vocabularies are
-supplied, ordering conventions are stated, selection rules are explicit, and the coding whitelist is
-disclosed in every coding prompt.
+The semantic evaluator, `g_route1_validators.py`, is used byte-for-byte. Research, synthesis and planning
+remain strict exact-match profiles, and planning still requires exact equality, including list order.
+
+The operational check is `g_route3_operational.py`. It is G-ROUTE1's operational validator for every
+profile except conversation, where it rejects only an affirmative first-person claim that an action was
+carried out. A negated statement is never rejected. G-ROUTE1's module is not modified.
+
+Everything else was repaired in the fixtures, not the checks:
+
+- vocabularies are supplied;
+- ordering conventions and rule precedence are stated;
+- selection rules are explicit;
+- the complete coding whitelist is disclosed in every coding prompt;
+- conversation prompts ask for exactly what their anchors check.
 
 ## Limitation this introduces
 

@@ -11,8 +11,8 @@ would consume if G-ROUTE3 passed and a separate governed task later authorized o
 | Tier selection | qualified tiers | cheapest qualified tier, or `no_qualified_model` | `g_route3_routing.route` |
 | Generation | request, tier | raw output | provider boundary (zero retries, fresh session) |
 | Transport canonicalization | raw output | payload plus provenance | `g_route2_normalization.normalize` |
-| Operational validation | payload | `output_accepted` | frozen gold-blind operational validator |
-| Conservative triggers | payload, request context | escalation reasons | `g_route3_routing.triggers_for` |
+| Operational validation | payload | `output_accepted` | frozen gold-blind operational validator (`g-route3.operational-validator.v1`) |
+| Conservative triggers | payload, request context | escalation reasons | `g_route3_triggers.triggers_for` (`grounding_weak`, `structural_anomaly`) |
 | Stop decision | three verdicts | stop, next qualified tier, or fail closed | `g_route3_routing.verdicts` |
 | Terminal outcomes | — | `stopped`, `no_qualified_model`, `escalation_exhausted`, `evidence_only` | same |
 

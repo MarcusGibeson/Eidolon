@@ -12,22 +12,32 @@ from g_route1_contract import ROOT, digest_file
 from g_route3_contract import (DATA, EXPECTED_CALLS, EXECUTION_FREEZE_PATH, json_digest, load_corpus, load_gold,
                                load_json, load_model_bindings, load_thresholds, verify_checked_schedule)
 
-CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v1"
-CANDIDATE_ID = "G-ROUTE3-EXECUTION-R1"
+CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v2"
+CANDIDATE_ID = "G-ROUTE3-EXECUTION-R2"
+SUPERSEDED = {"candidate_id": "G-ROUTE3-EXECUTION-R1",
+              "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
+              "literal_sha256": "b63f0094bbba9c3e822a359cb92b56f66f3ff244e29bbc834ce9af42a4f1653c",
+              "binding_sha256": "64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
+              "reason": ("independent pre-contact review returned FINDINGS: hidden grader rules in conversation, "
+                         "coding and planning, ambiguous gold, a trigger that fired on correct answers, template "
+                         "reuse between corpora, a gate that could mask failure, weak table provenance, and a freeze "
+                         "check that made Phase B impossible to authorize"),
+              "authorized": False, "provider_generation_calls": 0}
 FREEZE_PATH = EXECUTION_FREEZE_PATH
 ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
     "DESIGN.md", "GOLD_DERIVABILITY.md", "GOLD_DERIVABILITY_DIAGNOSTIC.json", "QUALIFICATION_CONTRACT.md",
     "ROUTING_POLICY.md", "SCORING_CONTRACT.md", "CONTAMINATION_ANALYSIS.md", "PRODUCTION_ADAPTER_MAPPING.md",
     "INDEPENDENT_AUDIT.md", "DETERMINISTIC_TEST_RESULTS.json", "INDEPENDENCE_REPORT.json",
+    "EXTERNAL_REVIEW_ROUND1.md", "EXECUTION_FREEZE_CANDIDATE_R1.json",
     "corpus_a.json", "gold_a.json", "corpus_b.json", "gold_b.json", "fixture_design.json",
     "model_bindings.json", "thresholds.json", "schedule_a.json", "schedule_b.json",
     "authoring/author_g3_part1.py", "authoring/author_g3_part2.py", "authoring/author_g3_part3.py",
-    "authoring/assemble_g3.py",
+    "authoring/author_g3_part3_round2.py", "authoring/assemble_g3.py",
 )) + (
     "experiments/G-ROUTE1-candidate/prompt_profiles.json",
     "tools/g_route1_contract.py", "tools/g_route1_validators.py", "tools/g_route1_operational.py",
     "tools/g_route1_coding_runner.py", "tools/g_route1_persistence.py", "tools/g_route1_provider.py",
-    "tools/g_route2_normalization.py", "tools/g_route2_policy.py",
+    "tools/g_route2_normalization.py", "tools/g_route3_operational.py", "tools/g_route3_triggers.py",
     "tools/g_route3_contract.py", "tools/g_route3_qualification.py", "tools/g_route3_routing.py",
     "tools/g_route3_validation.py", "tools/g_route3_runner.py", "tools/g_route3_independence.py",
     "tools/g_route3_tests.py", "tools/g_route3_freeze.py",
@@ -40,6 +50,10 @@ def current_commit(root: Path = ROOT) -> str:
 
 
 def build_manifest(*, implementation_commit: str | None = None, root: Path = ROOT) -> dict[str, Any]:
+    import hashlib
+    superseded = root / SUPERSEDED["path"]
+    if not superseded.is_file() or hashlib.sha256(superseded.read_bytes()).hexdigest() != SUPERSEDED["literal_sha256"]:
+        raise ValueError("superseded_r1_freeze_not_preserved")
     missing = [path for path in ARTIFACTS if not (root / path).is_file()]
     if missing:
         raise FileNotFoundError("execution_freeze_artifacts_missing:" + ",".join(missing))
@@ -50,8 +64,6 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
     independence = load_json(DATA / "INDEPENDENCE_REPORT.json")
     if independence.get("valid") is not True:
         raise ValueError("independence_report_not_clean")
-    if (DATA / "QUALIFICATION_TABLE.json").exists():
-        raise ValueError("qualification_table_must_not_exist_at_execution_freeze")
     models = load_model_bindings()
     thresholds = load_thresholds()
     seed = {
@@ -59,6 +71,7 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "candidate_id": CANDIDATE_ID,
         "status": "READY_FOR_EXPLICIT_SCIENTIFIC_EXECUTION_AUTHORIZATION",
         "implementation_commit": implementation_commit or current_commit(root),
+        "supersedes": dict(SUPERSEDED),
         "research_questions": {
             "primary": ("Can a task x risk x model qualification table derived prospectively from one independent "
                         "qualification corpus safely guide cheapest-qualified model selection and stopping on a "
@@ -88,7 +101,10 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "generation_configuration": models["generation_configuration"],
         "normalization_contract": "g-route2.transport-normalization.v1",
         "validator_contract": "g-route1.validators.v1",
-        "validators_unchanged_from_g_route1": True,
+        "operational_validator_contract": "g-route3.operational-validator.v1",
+        "semantic_validators_unchanged_from_g_route1": True,
+        "conversation_operational_validator_replaced": True,
+        "trigger_contract": "g-route3.triggers.v1",
         "evidence_scale": "pilot",
         "digest_convention": "sha256; CRLF and CR normalized to LF for source artifacts",
         "artifacts": {path: digest_file(root / path) for path in ARTIFACTS},
@@ -105,6 +121,10 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "benchmark_launches": 0,
         "deterministic_tests_passed": True,
         "independent_audit_verdict": "READY",
+        "independent_audit_is_author_self_audit": True,
+        "external_review_round1": {"verdict": "FINDINGS", "reviewed_binding": SUPERSEDED["binding_sha256"],
+                                   "record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND1.md"},
+        "external_review_required_before_authorization": True,
     }
     seed["execution_freeze_content_sha256"] = json_digest(seed)
     return seed
@@ -135,10 +155,16 @@ def verify_manifest(manifest: Mapping[str, Any], root: Path = ROOT) -> dict[str,
 
 
 def write_manifest(path: Path = FREEZE_PATH, *, implementation_commit: str | None = None) -> dict[str, Any]:
+    # The execution freeze must precede any qualification table. This is checked when the freeze is
+    # written, not when it is verified, so a valid freeze stays valid once Phase A has produced a table.
+    if (DATA / "QUALIFICATION_TABLE.json").exists():
+        raise ValueError("qualification_table_must_not_exist_at_execution_freeze")
     manifest = build_manifest(implementation_commit=implementation_commit)
     rendered = json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if path.exists() and path.read_text(encoding="utf-8") != rendered:
-        if load_json(path).get("candidate_id") != CANDIDATE_ID:
+        import hashlib
+        replacing_preserved_r1 = hashlib.sha256(path.read_bytes()).hexdigest() == SUPERSEDED["literal_sha256"]
+        if load_json(path).get("candidate_id") != CANDIDATE_ID and not replacing_preserved_r1:
             raise FileExistsError("conflicting_execution_freeze_candidate_exists")
     path.write_text(rendered, encoding="utf-8", newline="\n")
     return manifest

@@ -22,6 +22,14 @@ from g_route1_validators import CODING_EVIDENCE_CONTRACT
 from g_route2_normalization import normalize
 from g_route3_contract import (EXECUTION_FREEZE_PATH, EXPECTED_CALLS, QUALIFICATION_TABLE_PATH, json_digest,
                                load_json, request_body, runtime_fixtures, verify_checked_schedule)
+import json
+import subprocess
+
+MODEL_CAUSED_CODING_ERRORS = (ValueError, SyntaxError, json.JSONDecodeError, subprocess.TimeoutExpired)
+
+
+def json_dumps(value: Any) -> str:
+    return json.dumps(value, indent=2, sort_keys=True)
 
 CONTRACT_VERSION = "g-route3.runner.v1"
 BENCHMARK_ID = "G-ROUTE3"
@@ -37,7 +45,8 @@ GUARDED_PATHS = (
     "experiments/G-ROUTE1-candidate/prompt_profiles.json",
     "tools/g_route1_validators.py", "tools/g_route1_operational.py", "tools/g_route1_coding_runner.py",
     "tools/g_route1_persistence.py", "tools/g_route1_provider.py", "tools/g_route2_normalization.py",
-    "tools/g_route2_policy.py", "tools/g_route3_contract.py", "tools/g_route3_qualification.py",
+    "tools/g_route3_operational.py", "tools/g_route3_triggers.py",
+    "tools/g_route3_contract.py", "tools/g_route3_qualification.py",
     "tools/g_route3_routing.py", "tools/g_route3_validation.py", "tools/g_route3_runner.py",
 )
 TABLE_RELATIVE = "experiments/G-ROUTE3-candidate/QUALIFICATION_TABLE.json"
@@ -91,35 +100,74 @@ def phase_a_authorized(authorization: Mapping[str, Any] | None) -> bool:
             and _freeze_valid())
 
 
-def phase_b_preconditions(phase_a_root: Path, phase_a_run_id: str) -> dict[str, Any]:
+def phase_a_attempts(phase_a_root: Path) -> list[dict[str, Any]]:
+    """Every Phase A run directory, so a table cannot quietly come from the best of several attempts."""
+    root = Path(phase_a_root)
+    rows = []
+    if root.is_dir():
+        for run_dir in sorted(p for p in root.iterdir() if p.is_dir()):
+            manifest_path = run_dir / "run.json"
+            if manifest_path.is_file():
+                manifest = load_json(manifest_path)
+                rows.append({"run_id": run_dir.name, "state": manifest.get("state"),
+                             "synthetic_fixture": bool(manifest.get("synthetic_fixture")),
+                             "calls_persisted": manifest.get("calls_persisted")})
+    return rows
+
+
+def phase_b_preconditions(phase_a_root: Path, phase_a_run_id: str, *, allow_synthetic_phase_a: bool = False) -> dict[str, Any]:
     """Every condition that must hold before Corpus B may be contacted at all."""
-    from g_route3_qualification import verify_table
+    from g_route3_qualification import qualify, verify_table
 
     reasons = []
     if not QUALIFICATION_TABLE_PATH.is_file():
         return {"valid": False, "reasons": ["qualification_table_not_frozen"], "table_sha256": None}
     table = load_json(QUALIFICATION_TABLE_PATH)
-    check = verify_table(table)
-    reasons += check["reasons"]
+    reasons += verify_table(table)["reasons"]
+    source = table.get("source", {})
     try:
         store = RouteRunStore(phase_a_root, phase_a_run_id, create=False)
         manifest = store.manifest()
+        score = store.score_record()
         if manifest.get("state") != "complete" or manifest.get("phase") != "A":
             reasons.append("phase_a_not_complete")
-        if store.score_record()["record_sha256"] != table.get("source", {}).get("score_record_sha256"):
+        if manifest.get("synthetic_fixture") and not allow_synthetic_phase_a:
+            reasons.append("phase_a_was_synthetic")
+        if manifest.get("execution_freeze_sha256") != _freeze_digest():
+            reasons.append("phase_a_ran_under_a_different_freeze")
+        if score["record_sha256"] != source.get("score_record_sha256"):
             reasons.append("table_not_derived_from_this_phase_a_score")
-        if table.get("source", {}).get("run_id") != phase_a_run_id:
+        if score.get("cells") != table.get("cells"):
+            reasons.append("table_cells_differ_from_sealed_phase_a_score")
+        if source.get("run_id") != phase_a_run_id:
             reasons.append("table_run_mismatch")
+        if source.get("phase_a_attempts") != phase_a_attempts(phase_a_root):
+            reasons.append("phase_a_attempts_not_fully_disclosed")
     except Exception as exc:
         reasons.append(f"phase_a_unverifiable:{type(exc).__name__}")
-    if table.get("source", {}).get("execution_freeze_binding") != _freeze_digest():
+    if source.get("execution_freeze_binding") != _freeze_digest():
         reasons.append("table_bound_to_different_freeze")
     return {"valid": not reasons, "reasons": sorted(set(reasons)), "table_sha256": table.get("table_sha256")}
 
 
+def consume_authorization(run_root: Path, phase: str, authorization: Mapping[str, Any], run_id: str) -> Path:
+    """Record that a one-shot authorization has been used. A second use is refused."""
+    digest = json_digest(dict(authorization))
+    path = Path(run_root) / f"authorization-{phase}-{digest[:24]}.consumed.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with path.open("x", encoding="utf-8", newline="\n") as handle:
+            handle.write(json_dumps({"phase": phase, "authorization_sha256": digest, "run_id": run_id}))
+    except FileExistsError:
+        existing = load_json(path)
+        if existing.get("run_id") != run_id:
+            raise PermissionError("authorization_already_consumed")
+    return path
+
+
 def phase_b_authorized(authorization: Mapping[str, Any] | None, phase_a_root: Path, phase_a_run_id: str) -> bool:
     row = dict(authorization or {})
-    pre = phase_b_preconditions(phase_a_root, phase_a_run_id)
+    pre = phase_b_preconditions(phase_a_root, phase_a_run_id, allow_synthetic_phase_a=False)
     digest = _freeze_digest()
     table_digest = pre.get("table_sha256")
     return (pre["valid"] and row.get("benchmark_id") == BENCHMARK_ID and row.get("phase") == "B"
@@ -258,8 +306,14 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
             if fixture["validator_profile"] == "coding.v1":
                 try:
                     evidence = run_isolated_fixture(fixture, canonical["payload"])
-                except Exception:
+                except MODEL_CAUSED_CODING_ERRORS:
+                    # malformed answer, disallowed code or a candidate that hangs: the model's failure
                     evidence = _failed_coding_evidence(fixture)
+                except Exception as exc:
+                    # the sandbox host failed; never charge that to the model
+                    evidence = _failed_coding_evidence(fixture)
+                    infrastructure_failure = (infrastructure_failure
+                                              or f"coding_sandbox_host_failure:{type(exc).__name__}"[:200])
             evaluation = collect_evaluation(fixture, raw_output, evidence)
             metrics = dict(result.get("metrics") or {})
             latency = float(result.get("latency_seconds") or 0.0)
@@ -327,6 +381,8 @@ def execute_phase_a(*, provider_call, model_receipts, run_root, run_id: str | No
     if not synthetic_fixture and not phase_a_authorized(authorization):
         raise PermissionError("g_route3_phase_a_not_authorized")
     run_id = run_id or utc_run_id("A")
+    if not synthetic_fixture:
+        consume_authorization(Path(run_root), "A", authorization or {}, run_id)
     got = _collect(phase="A", provider_call=provider_call, model_receipts=model_receipts, run_root=run_root,
                    run_id=run_id, activity=activity, control=control, guarded_root=guarded_root, resume=resume,
                    include_table=False, manifest_extra={"synthetic_fixture": bool(synthetic_fixture)})
@@ -357,12 +413,14 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
                     run_id: str | None = None, activity=None, authorization: Mapping[str, Any] | None = None,
                     synthetic_fixture: bool = False, resume: bool = False,
                     control: Callable[[], str] | None = None, guarded_root=None) -> dict[str, Any]:
-    pre = phase_b_preconditions(Path(phase_a_root), phase_a_run_id)
+    pre = phase_b_preconditions(Path(phase_a_root), phase_a_run_id, allow_synthetic_phase_a=synthetic_fixture)
     if not pre["valid"]:
         raise PermissionError("g_route3_phase_b_blocked:" + ",".join(pre["reasons"]))
     if not synthetic_fixture and not phase_b_authorized(authorization, Path(phase_a_root), phase_a_run_id):
         raise PermissionError("g_route3_phase_b_not_authorized")
     run_id = run_id or utc_run_id("B")
+    if not synthetic_fixture:
+        consume_authorization(Path(run_root), "B", authorization or {}, run_id)
     got = _collect(phase="B", provider_call=provider_call, model_receipts=model_receipts, run_root=run_root,
                    run_id=run_id, activity=activity, control=control, guarded_root=guarded_root, resume=resume,
                    include_table=True, manifest_extra={"synthetic_fixture": bool(synthetic_fixture),
@@ -393,4 +451,5 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
 
 __all__ = ["CONTRACT_VERSION", "BENCHMARK_ID", "GUARDED_PATHS", "TABLE_RELATIVE", "RouteThreeActivity",
            "NullActivity", "guarded_dependency_digest", "phase_a_authorized", "phase_b_preconditions",
+           "phase_a_attempts", "consume_authorization",
            "phase_b_authorized", "execute_phase_a", "execute_phase_b", "utc_run_id"]

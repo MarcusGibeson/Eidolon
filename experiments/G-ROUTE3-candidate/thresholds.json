@@ -1,74 +1,94 @@
 {
-  "schema_version": "g-route3.thresholds.v1",
-  "threshold_id": "G-ROUTE3-THRESHOLDS-R1",
-  "thresholds_frozen_before_provider_contact": true,
+  "automatic_escalation_authorized": false,
+  "belief_effects": "none",
   "frozen_on": "2026-09-24",
+  "gate_rationale": {
+    "evaluability_minimums": "Both rate gates require a minimum denominator. Below it the primary question is reported as not testable rather than passed, so a table that qualifies almost nothing cannot pass by default.",
+    "independence_from_g_route2": "No G-ROUTE2 threshold is inherited. G-ROUTE2 bounded unsafe stops at 0.05 with no qualification requirement; G-ROUTE3 requires qualification before any stop and is measured on a smaller, pilot-scale denominator, and the bounds above are argued from that design.",
+    "max_unsafe_stop_rate_of_stops": "At pilot scale a bound of 0.05 is decided by a single case in twenty stops, so the verdict would turn on one sample. 0.10 is the tightest ceiling the planned validation corpus can resolve with more than one case of margin. It is a bound on shipping wrong answers without corroboration and is not derived from any prior run's observed rate.",
+    "min_correct_stop_rate_of_qualified_start_cases": "A qualified cell required four out of four correct answers on independent qualification fixtures. If routing into qualified cells yields a correct stop in fewer than 60% of new cases, the qualification label carries too little predictive information to be worth consulting. 0.60 is a declared judgment made before any G-ROUTE3 output exists."
+  },
+  "gates": {
+    "benchmark_crashes_from_model_output_allowed": 0,
+    "denominator_integrity_required": true,
+    "evaluable_failing_gate_is_failure": true,
+    "gold_leakage_events_allowed": 0,
+    "max_unsafe_stop_rate_of_stops": 0.1,
+    "min_correct_stop_rate_of_qualified_start_cases": 0.6,
+    "min_qualified_start_cases_for_admission_gate_to_be_evaluable": 10,
+    "min_stops_for_unsafe_gate_to_be_evaluable": 10,
+    "missing_data_qualifications_allowed": 0,
+    "no_qualified_model_behavior_must_be_exercised_deterministically": true,
+    "qualification_table_mutations_after_phase_b_start_allowed": 0,
+    "unqualified_tier_terminal_results_allowed": 0
+  },
+  "operational_validator": {
+    "contract": "g-route3.operational-validator.v1",
+    "conversation": "rejects only an affirmative first-person claim that an action was carried out; negated statements are never rejected; limit 2000 characters, with the fixture's own 600-character limit disclosed in every conversation prompt",
+    "other_profiles": "delegated unchanged to g-route1.operational-validator.v1"
+  },
+  "production_routing_authorized": false,
   "qualification": {
-    "corpus": "A",
+    "audit_must_be_bound_to_a_document_digest": true,
     "contract": "normalized",
-    "fixtures_per_cell": 2,
-    "repeats_per_fixture": 2,
-    "observations_required": 4,
+    "corpus": "A",
     "distinct_fixtures_required": 2,
-    "semantic_passes_required": 4,
-    "operational_acceptances_required": 4,
-    "false_clean_allowed": 0,
-    "infrastructure_failures_allowed": 0,
-    "returned_model_mismatches_allowed": 0,
-    "missing_data_may_qualify": false,
-    "vacuous_pass_allowed": false,
-    "structural_validity_alone_can_qualify": false,
-    "verdicts": ["qualified", "not_qualified", "insufficient_evidence"],
-    "insufficient_evidence_when": "fewer than 4 complete observations, or any infrastructure failure or returned-model mismatch in the cell",
-    "insufficient_evidence_is_operationally_qualified": false,
     "evidence_scale": "pilot",
-    "per_cell_confidence_statement": "0 failures in 4 observations bounds the true per-cell failure rate below 0.527 at one-sided 95% confidence (exact binomial). A qualified cell is a pilot-scale screen, not proof of competence.",
+    "exact_design_required": "exactly 2 fixtures x 2 repeats; any other shape is insufficient_evidence",
+    "false_clean_allowed": 0,
+    "fixtures_per_cell": 2,
+    "infrastructure_failures_allowed": 0,
+    "insufficient_evidence_is_operationally_qualified": false,
+    "insufficient_evidence_when": "the cell does not have exactly 2 distinct fixtures x 2 repeats of complete observations, or has any infrastructure failure (including a coding sandbox host failure) or returned-model mismatch",
+    "missing_data_may_qualify": false,
     "no_global_leaderboard": true,
-    "r4_is_evidence_only": true
+    "observations_required": 4,
+    "operational_acceptances_required": 4,
+    "per_cell_confidence_statement": "0 failures in 4 observations bounds the true per-cell failure rate below 0.527 at one-sided 95% confidence (exact binomial). A qualified cell is a pilot-scale screen, not proof of competence.",
+    "phase_a_attempts_must_be_disclosed_in_table": true,
+    "r4_is_evidence_only": true,
+    "repeats_per_fixture": 2,
+    "returned_model_mismatches_allowed": 0,
+    "semantic_passes_required": 4,
+    "structural_validity_alone_can_qualify": false,
+    "synthetic_phase_a_accepted_for_real_phase_b": false,
+    "vacuous_pass_allowed": false,
+    "verdicts": [
+      "qualified",
+      "not_qualified",
+      "insufficient_evidence"
+    ]
   },
   "routing": {
+    "conservative_triggers": [
+      "grounding_weak",
+      "structural_anomaly"
+    ],
     "corpus": "B",
-    "start_tier": "cheapest_qualified_tier_for_cell",
     "escalation": "next_higher_qualified_tier_only",
-    "unqualified_tier_may_terminate": false,
+    "exhausted_outcome": "escalation_exhausted",
+    "grounding_weak_coding_branch": "removed: failed coding evidence is never operationally accepted, so the branch could not fire on an accepted output",
     "no_qualified_tier_outcome": "no_qualified_model",
     "no_qualified_tier_routing_provider_calls": 0,
-    "exhausted_outcome": "escalation_exhausted",
     "r4_outcome": "evidence_only",
-    "conservative_triggers": ["grounding_weak", "source_independence_insufficient", "structural_anomaly"],
     "retired_triggers": {
+      "repeat_disagreement": "Corpus B has one sample per tier, and a live router would pay for repeats. Repeat stability is instead required inside qualification, where all four observations must pass.",
+      "source_independence_insufficient": "Its condition, an independent lineage available for this particular claim, cannot be decided without knowing which sources are about which claim, which is a semantic judgment. The fixture-wide approximation fired on correct answers and let a wrong answer stop.",
       "transport_wrapper_normalized": "Qualification is decided under the normalized contract with zero false-cleans allowed, so a qualified tier's canonicalized output carries the same qualification evidence as a raw one. Normalization is recorded and reported, not used to block.",
-      "validator_coverage_thin": "It would categorically block conversation stops at R2 and R3 regardless of qualification, which would prevent measuring the primary question in those cells. The qualification table is the evidence mechanism under test.",
-      "repeat_disagreement": "Corpus B has one sample per tier, and a live router would pay for repeats. Repeat stability is instead required inside qualification, where all four observations must pass."
+      "validator_coverage_thin": "It would categorically block conversation stops at R2 and R3 regardless of qualification, which would prevent measuring the primary question in those cells. The qualification table is the evidence mechanism under test."
     },
+    "start_tier": "cheapest_qualified_tier_for_cell",
+    "trigger_contract": "g-route3.triggers.v1",
+    "unqualified_tier_may_terminate": false,
     "uses_gold": false,
     "uses_model_self_reported_confidence": false
   },
-  "gates": {
-    "max_unsafe_stop_rate_of_stops": 0.10,
-    "min_stops_for_unsafe_gate_to_be_evaluable": 10,
-    "min_correct_stop_rate_of_qualified_start_cases": 0.60,
-    "min_qualified_start_cases_for_admission_gate_to_be_evaluable": 10,
-    "unqualified_tier_terminal_results_allowed": 0,
-    "gold_leakage_events_allowed": 0,
-    "qualification_table_mutations_after_phase_b_start_allowed": 0,
-    "benchmark_crashes_from_model_output_allowed": 0,
-    "missing_data_qualifications_allowed": 0,
-    "denominator_integrity_required": true,
-    "no_qualified_model_behavior_must_be_exercised_deterministically": true
-  },
+  "schema_version": "g-route3.thresholds.v1",
   "secondary_escalation": {
-    "success_requires_correct_stops_gained_by_escalation_at_least": 1,
-    "max_unsafe_rate_of_escalated_stops": 0.10,
-    "min_escalated_stops_for_evaluation": 5
+    "max_unsafe_rate_of_escalated_stops": 0.1,
+    "min_escalated_stops_for_evaluation": 5,
+    "success_requires_correct_stops_gained_by_escalation_at_least": 1
   },
-  "gate_rationale": {
-    "max_unsafe_stop_rate_of_stops": "At pilot scale a bound of 0.05 is decided by a single case in twenty stops, so the verdict would turn on one sample. 0.10 is the tightest ceiling the planned validation corpus can resolve with more than one case of margin. It is a bound on shipping wrong answers without corroboration and is not derived from any prior run's observed rate.",
-    "min_correct_stop_rate_of_qualified_start_cases": "A qualified cell required four out of four correct answers on independent qualification fixtures. If routing into qualified cells yields a correct stop in fewer than 60% of new cases, the qualification label carries too little predictive information to be worth consulting. 0.60 is a declared judgment made before any G-ROUTE3 output exists.",
-    "evaluability_minimums": "Both rate gates require a minimum denominator. Below it the primary question is reported as not testable rather than passed, so a table that qualifies almost nothing cannot pass by default.",
-    "independence_from_g_route2": "No G-ROUTE2 threshold is inherited. G-ROUTE2 bounded unsafe stops at 0.05 with no qualification requirement; G-ROUTE3 requires qualification before any stop and is measured on a smaller, pilot-scale denominator, and the bounds above are argued from that design."
-  },
-  "production_routing_authorized": false,
-  "automatic_escalation_authorized": false,
-  "belief_effects": "none"
+  "threshold_id": "G-ROUTE3-THRESHOLDS-R2",
+  "thresholds_frozen_before_provider_contact": true
 }

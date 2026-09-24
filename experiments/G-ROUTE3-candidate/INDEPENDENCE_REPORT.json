@@ -8,6 +8,7 @@
   "contract_version": "g-route3.independence-audit.v1",
   "findings": [],
   "note": "Task class, risk class and the profile-level vocabularies (research status and uncertainty codes, synthesis conclusion codes, planning exclusion prefixes) are shared by design; they define the classes being qualified and are not fixture content.",
+  "same_gold_structure_within_cell": [],
   "shared_answers": {
     "coding_function_names": [],
     "extraction_string_values": [],
@@ -16,7 +17,9 @@
   },
   "shared_domains_across_different_cells": [
     "backup_operations",
-    "network_security"
+    "laboratory_safety",
+    "network_security",
+    "web_security"
   ],
   "shared_named_entities": [],
   "shared_rule_keys_excluded_from_content": [
@@ -27,9 +30,79 @@
   "shared_rule_tokens_excluded": [
     "PurePosixPath"
   ],
+  "single_template_pairs_declared": [
+    [
+      "A-PLAN-R1-1",
+      "B-PLAN-R1-1"
+    ],
+    [
+      "A-PLAN-R1-1",
+      "B-PLAN-R1-2"
+    ],
+    [
+      "A-PLAN-R1-2",
+      "B-PLAN-R1-1"
+    ],
+    [
+      "A-PLAN-R1-2",
+      "B-PLAN-R1-2"
+    ],
+    [
+      "A-PLAN-R2-1",
+      "B-PLAN-R2-1"
+    ],
+    [
+      "A-PLAN-R2-1",
+      "B-PLAN-R2-2"
+    ],
+    [
+      "A-PLAN-R2-2",
+      "B-PLAN-R2-1"
+    ],
+    [
+      "A-PLAN-R2-2",
+      "B-PLAN-R2-2"
+    ],
+    [
+      "A-PLAN-R3-1",
+      "B-PLAN-R3-1"
+    ],
+    [
+      "A-PLAN-R3-1",
+      "B-PLAN-R3-2"
+    ],
+    [
+      "A-PLAN-R3-2",
+      "B-PLAN-R3-1"
+    ],
+    [
+      "A-PLAN-R3-2",
+      "B-PLAN-R3-2"
+    ],
+    [
+      "A-PLAN-R4-1",
+      "B-PLAN-R4-1"
+    ],
+    [
+      "A-PLAN-R4-1",
+      "B-PLAN-R4-2"
+    ],
+    [
+      "A-PLAN-R4-2",
+      "B-PLAN-R4-1"
+    ],
+    [
+      "A-PLAN-R4-2",
+      "B-PLAN-R4-2"
+    ]
+  ],
+  "single_template_task_classes": {
+    "reflective_planning": "Every planning fixture has four included steps in a stated total order, one excluded action and one holding uncertainty code. Planning is qualified as that construct."
+  },
+  "structural_check_scope": "research, synthesis, extraction and planning compare the shape of the gold answer; conversation and coding have no structural signature and rely on the external review of reasoning patterns",
   "trigram_similarity_by_task_class": {
     "coding_generation_repair": {
-      "boilerplate_trigrams_excluded": 81,
+      "boilerplate_trigrams_excluded": 110,
       "max_pair": [
         "A-CODE-R1-1",
         "B-CODE-R1-1"
@@ -38,49 +111,49 @@
       "mean_trigram_jaccard": 0.0008
     },
     "grounded_research_synthesis": {
-      "boilerplate_trigrams_excluded": 122,
+      "boilerplate_trigrams_excluded": 186,
       "max_pair": [
-        "A-RESEARCH-R4-1",
-        "B-RESEARCH-R4-1"
+        "A-RESEARCH-R3-1",
+        "B-RESEARCH-R1-1"
       ],
-      "max_trigram_jaccard": 0.0508,
-      "mean_trigram_jaccard": 0.0013
+      "max_trigram_jaccard": 0.0408,
+      "mean_trigram_jaccard": 0.0019
     },
     "hierarchical_semantic_synthesis": {
-      "boilerplate_trigrams_excluded": 55,
+      "boilerplate_trigrams_excluded": 65,
       "max_pair": [
-        "A-SYNTH-R4-1",
-        "B-SYNTH-R2-2"
+        "A-SYNTH-R4-2",
+        "B-SYNTH-R3-1"
       ],
-      "max_trigram_jaccard": 0.0319,
+      "max_trigram_jaccard": 0.0294,
       "mean_trigram_jaccard": 0.0043
     },
     "ordinary_conversation": {
-      "boilerplate_trigrams_excluded": 9,
+      "boilerplate_trigrams_excluded": 12,
       "max_pair": [
         "A-CONV-R4-2",
-        "B-CONV-R4-2"
+        "B-CONV-R4-1"
       ],
-      "max_trigram_jaccard": 0.058,
-      "mean_trigram_jaccard": 0.0018
+      "max_trigram_jaccard": 0.0706,
+      "mean_trigram_jaccard": 0.0026
     },
     "reflective_planning": {
-      "boilerplate_trigrams_excluded": 147,
+      "boilerplate_trigrams_excluded": 158,
       "max_pair": [
-        "A-PLAN-R4-1",
-        "B-PLAN-R4-1"
+        "A-PLAN-R1-2",
+        "B-PLAN-R1-2"
       ],
-      "max_trigram_jaccard": 0.0276,
-      "mean_trigram_jaccard": 0.0039
+      "max_trigram_jaccard": 0.0423,
+      "mean_trigram_jaccard": 0.0048
     },
     "structured_extraction": {
-      "boilerplate_trigrams_excluded": 2,
+      "boilerplate_trigrams_excluded": 29,
       "max_pair": [
         "A-EXTRACT-R2-1",
         "B-EXTRACT-R4-2"
       ],
-      "max_trigram_jaccard": 0.0316,
-      "mean_trigram_jaccard": 0.0021
+      "max_trigram_jaccard": 0.0404,
+      "mean_trigram_jaccard": 0.0015
     }
   },
   "valid": true

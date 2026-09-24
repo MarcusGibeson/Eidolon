@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping
 
 from g_route1_contract import digest_file
-from g_route1_operational import validate_operational
+from g_route3_operational import validate_operational
 from g_route1_validators import validate_fixture_output
 from g_route2_normalization import normalize
 from g_route3_contract import (QUALIFICATION_TABLE_PATH, RISK_CLASSES, TASK_CLASSES, TIER_ORDER, corpus_path,
@@ -95,8 +95,11 @@ def qualify(records: Iterable[Mapping[str, Any]], thresholds: Mapping[str, Any] 
                 correct = sum(bool(r["semantics"]["normalized_semantic_evaluation"]["hard_gate_pass"]) for r in rows)
                 false_clean = sum(bool(r["semantics"]["normalized_false_clean"]) for r in rows)
                 fixtures = {r["fixture_id"] for r in complete_rows}
-                if (len(complete_rows) < limits["observations_required"] or infra
-                        or len(fixtures) < limits["distinct_fixtures_required"]):
+                per_fixture = [sum(r["fixture_id"] == f for r in complete_rows) for f in sorted(fixtures)]
+                exact_design = (len(complete_rows) == limits["observations_required"]
+                                and len(fixtures) == limits["distinct_fixtures_required"]
+                                and set(per_fixture) == {limits["repeats_per_fixture"]})
+                if infra or not exact_design:
                     verdict = INSUFFICIENT
                 elif (accepted >= limits["operational_acceptances_required"]
                       and correct >= limits["semantic_passes_required"]
@@ -123,17 +126,40 @@ def routing_lookup(cells: Iterable[Mapping[str, Any]]) -> dict[str, list[str]]:
     return {key: [tier for tier in TIER_ORDER if tier in value] for key, value in table.items()}
 
 
-def build_table(cells: list[Mapping[str, Any]], *, run_id: str, score_record_sha256: str,
-                execution_freeze_binding: str, audit: Mapping[str, Any]) -> dict[str, Any]:
+def audit_record(document: Path, verdict: str, auditor: str) -> dict[str, Any]:
+    """Bind the Phase A audit to a file by digest. A bare dictionary saying READY is not an audit."""
+    if not Path(document).is_file():
+        raise FileNotFoundError("qualification_audit_document_missing")
+    return {"verdict": verdict, "auditor": auditor, "document_path": str(document),
+            "document_sha256": digest_file(document)}
+
+
+def verify_audit(audit: Mapping[str, Any]) -> list[str]:
+    reasons = []
     if str(audit.get("verdict")) != "READY":
-        raise ValueError("qualification_audit_not_ready")
+        reasons.append("qualification_audit_not_ready")
+    path = Path(str(audit.get("document_path") or ""))
+    if not path.is_file():
+        reasons.append("qualification_audit_document_missing")
+    elif digest_file(path) != audit.get("document_sha256"):
+        reasons.append("qualification_audit_document_digest_mismatch")
+    return reasons
+
+
+def build_table(cells: list[Mapping[str, Any]], *, run_id: str, score_record_sha256: str,
+                execution_freeze_binding: str, audit: Mapping[str, Any],
+                phase_a_attempts: list[Mapping[str, Any]]) -> dict[str, Any]:
+    problems = verify_audit(audit)
+    if problems:
+        raise ValueError("qualification_audit_invalid:" + ",".join(problems))
     doc = {
         "schema_version": TABLE_SCHEMA, "table_id": "G-ROUTE3-QUALIFICATION-TABLE-R1",
         "source": {"corpus": "A", "corpus_sha256": digest_file(corpus_path("A")),
                    "gold_sha256": digest_file(gold_path("A")), "run_id": run_id,
                    "score_record_sha256": score_record_sha256,
                    "thresholds_sha256": json_digest(load_thresholds()),
-                   "execution_freeze_binding": execution_freeze_binding},
+                   "execution_freeze_binding": execution_freeze_binding,
+                   "phase_a_attempts": [dict(row) for row in phase_a_attempts]},
         "audit": dict(audit),
         "evidence_scale": "pilot",
         "cells": [dict(cell) for cell in cells],
@@ -160,8 +186,7 @@ def verify_table(doc: Mapping[str, Any]) -> dict[str, Any]:
         reasons.append("table_cell_count_mismatch")
     if any(c.get("verdict") not in (QUALIFIED, NOT_QUALIFIED, INSUFFICIENT) for c in doc.get("cells") or []):
         reasons.append("unknown_verdict")
-    if doc.get("audit", {}).get("verdict") != "READY":
-        reasons.append("qualification_audit_not_ready")
+    reasons += verify_audit(doc.get("audit") or {})
     return {"valid": not reasons, "reasons": reasons, "table_sha256": doc.get("table_sha256")}
 
 
@@ -187,6 +212,7 @@ def load_frozen_table(path: Path = QUALIFICATION_TABLE_PATH) -> dict[str, Any]:
     return doc
 
 
-__all__ = ["CONTRACT_VERSION", "TABLE_SCHEMA", "QUALIFIED", "NOT_QUALIFIED", "INSUFFICIENT",
+__all__ = ["CONTRACT_VERSION", "TABLE_SCHEMA", "QUALIFIED", "NOT_QUALIFIED", "INSUFFICIENT", "audit_record",
+           "verify_audit",
            "collect_evaluation", "attach_semantics", "failure_rate_upper_bound", "qualify",
            "routing_lookup", "build_table", "verify_table", "freeze_table", "load_frozen_table"]

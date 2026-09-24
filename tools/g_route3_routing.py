@@ -9,14 +9,13 @@ receives a semantic label, and never sends work to a tier the table has not qual
 
 from typing import Any, Callable, Mapping, Sequence
 
-from g_route2_policy import grounding_weak, source_independence_insufficient, structural_anomaly
+from g_route3_triggers import TRIGGERS, triggers_for as _payload_triggers
 
 CONTRACT_VERSION = "g-route3.routing.v1"
 TIER_ORDER = ("small", "mid", "large")
 STOPPED, NO_QUALIFIED_MODEL, EVIDENCE_ONLY, ESCALATION_EXHAUSTED = (
     "stopped", "no_qualified_model", "evidence_only", "escalation_exhausted")
 OUTCOMES = (STOPPED, NO_QUALIFIED_MODEL, EVIDENCE_ONLY, ESCALATION_EXHAUSTED)
-TRIGGERS = ("grounding_weak", "source_independence_insufficient", "structural_anomaly")
 RUNTIME_VIEW_KEYS = frozenset({
     "fixture_id", "task_class", "risk_class", "model_tier", "normalization",
     "normalized_operational_validation", "infrastructure_failure", "coding_execution_evidence",
@@ -44,16 +43,7 @@ def qualified_tiers(table: Mapping[str, Any], task_class: str, risk_class: str) 
 
 
 def triggers_for(fixture: Mapping[str, Any], view: Mapping[str, Any]) -> list[str]:
-    payload = (view.get("normalization") or {}).get("payload")
-    evidence = view.get("coding_execution_evidence")
-    fired = []
-    if grounding_weak(fixture, payload, evidence):
-        fired.append("grounding_weak")
-    if source_independence_insufficient(fixture, payload):
-        fired.append("source_independence_insufficient")
-    if structural_anomaly(fixture, payload):
-        fired.append("structural_anomaly")
-    return fired
+    return _payload_triggers(fixture, (view.get("normalization") or {}).get("payload"))
 
 
 def verdicts(fixture: Mapping[str, Any], view: Mapping[str, Any], table: Mapping[str, Any]) -> dict[str, Any]:

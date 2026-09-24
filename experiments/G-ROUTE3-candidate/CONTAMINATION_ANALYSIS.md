@@ -2,36 +2,116 @@
 
 ## A versus B
 
-Both corpora are new. Neither reuses a G-ROUTE1 fixture template, entity, number or answer. Independence
-between them is measured, not asserted, by `tools/g_route3_independence.py`, and the result is frozen as
-`INDEPENDENCE_REPORT.json`.
+Both corpora are new. Neither reuses a G-ROUTE1 fixture template, entity, number or answer.
+
+### What "out of sample" means here
+
+The operator set the standard after the round-1 external review: **same construct, fresh instance.** Corpus B
+tests whether a model qualified on one instance of a task construct also succeeds on a *fresh instance of
+that construct*, with new entities, new facts, new answers and a different reasoning problem wherever the
+class allows one. It does not claim that B poses new *kinds* of problem. For planning, B deliberately poses
+the same kind of problem, as declared below. The primary result is read at that scope.
+
+### Measured independence
+
+Measured by `tools/g_route3_independence.py`, and frozen as `INDEPENDENCE_REPORT.json`.
 
 | Check | Bound | Result |
 |---|---|---|
-| Highest cross-corpus word-trigram overlap, same task class, shared boilerplate removed | ≤ 0.20 | **0.058** (conversation R4); every class ≤ 0.058 |
-| Mean cross-corpus overlap | — | ≤ 0.004 per class |
+| Highest cross-corpus word-trigram overlap, same task class, shared boilerplate removed | ≤ 0.20 | **0.071** (conversation R4); every other class ≤ 0.042 |
+| Mean cross-corpus overlap | — | ≤ 0.005 per class |
 | Shared named entities and identifiers | 0 | **0** |
 | Shared planning actions in gold | 0 | **0** |
 | Shared coding function names | 0 | **0** |
 | Shared extraction string values | 0 | **0** |
 | Shared research source lineages | 0 | **0** |
-| Reasoning pattern shared by A and B within a cell | 0 | **0 of 24 cells** |
+| Same **gold-answer structure** in A and B within a cell (research, synthesis, extraction, planning), outside a declared single-template class | 0 | **0** |
+| Author-assigned reasoning-pattern label shared within a cell | 0 | **0 of 24 cells** |
 
-Independence is defined at the level of the reasoning problem, not vocabulary. Each fixture carries a pattern
-tag in `fixture_design.json` (model-invisible), such as `temporal_precedence_resolution`,
-`narrower_scope_source` or `self_approval_detection`. Within every task × risk cell, the A and B pattern sets
-are disjoint. Across different cells a structural shape may recur. That is permitted, because qualification
-and validation are both per cell.
+**Why a structural check was added.** In round 1 the reasoning-pattern check rested only on labels the
+author had assigned, and the trigram check removes shared boilerplate. So a renamed copy of the same
+template passed both. The external reviewer found seven routed cells where that had happened. The
+tool now also compares the *shape* of each gold answer within each cell:
 
-**Declared, not hidden.** Some vocabulary is shared by design, because it defines the task class being
-qualified rather than any fixture's content: research status and uncertainty codes, synthesis conclusion
-rules and codes, the planning exclusion prefixes, and the coding whitelist text. The independence tool
-excludes these explicitly and lists the exclusions in its report. Two findings were fixed during design:
-a planning action shared between A and B in the same cell was renamed, and a trigram overlap caused by a
-shared conclusion rule was traced to that rule rather than to fixture content.
+- **research**: claim statuses with their citation and lineage counts, the recommendation's position in the
+  allowed list, the uncertainty codes, the source count and the decision-rule form;
+- **synthesis**: the sorted roles and the conclusion;
+- **extraction**: the schema's field types;
+- **planning**: the step, action, evidence and uncertainty counts.
 
-**Also declared.** Two broad domains, `backup_operations` and `network_security`, appear in both corpora,
-in different task classes and cells. No entity or answer is shared.
+A match between A and B in the same cell is a finding. Conversation and coding have no structural
+signature. For those two classes, independence rests on the rewritten fixtures and on the external
+review's reading.
+
+### Research: one sub-skill per cell, never the same in A and B
+
+Research uses one prompt in every risk class, so risk cannot separate its fixtures. Instead each fixture
+exercises one of eight declared sub-skills:
+
+| Code | Sub-skill |
+|---|---|
+| S1 | positive lineage-count rule |
+| S2 | direct contradiction |
+| S3 | other subject, so the claim is unaddressed |
+| S4 | same-lineage repetition |
+| S5 | conflict left unresolved |
+| S6 | narrower scope |
+| S7 | conflict settled by a stated rule |
+| S8 | quantitative contradiction |
+
+Each corpus uses each sub-skill exactly once:
+
+| Cell | A | B |
+|---|---|---|
+| R1 | S2, S3 | S1, S8 |
+| R2 | S4, S5 | S6, S7 |
+| R3 | S1, S6 | S2, S5 |
+| R4 | S8, S7 | S3, S4 |
+
+A research cell qualified on A is therefore validated on B against *different* sub-skills of the same
+construct. This is a harder transfer than instance-level reuse, and it is declared.
+
+### Planning is a declared single-template construct
+
+Every planning fixture in both corpora has the same shape:
+
+- four included steps in a total order, each consecutive pair linked by an evidence line stating the
+  precedence;
+- one excluded action, named by a stated prefix;
+- five evidence items;
+- two uncertainty codes, of which exactly one holds.
+
+That shape is the construct being qualified: exact rule-following over stated precedences, exclusions and
+conditions. It is declared in `SINGLE_TEMPLATE_TASK_CLASSES`, and the independence report lists all 16
+same-cell A/B planning pairs, so the reuse is visible rather than hidden. Planning in B tests fresh
+instances of exactly this template. A planning result says nothing about open-ended planning.
+
+### Difficulty matching
+
+Round 1 had within-cell difficulty mismatches: B's extraction R1 computed values while A only copied them;
+B's plans were larger; one B research fixture was trivially easy; one B coding fixture was much easier. They
+were repaired:
+
+- Each corpus's extraction R1 cell has one copy-only fixture and one fixture with a computed field.
+- Planning is normalized to one size.
+- B-RESEARCH-R1-1 applies a two-lineage rule.
+- B-CODE-R3-2 is now a redirect-safety check of comparable difficulty to A's R3 coding fixtures.
+
+Difficulty matching is still the author's judgment. It was not measured on any model.
+
+**Declared shared vocabulary.** Some vocabulary is shared by design, because it defines the task class
+being qualified rather than any fixture's content:
+
+- research status and uncertainty codes;
+- synthesis conclusion rules and codes;
+- the planning exclusion prefixes;
+- the coding whitelist text.
+
+The independence tool excludes these explicitly and lists the exclusions in its report.
+
+**Also declared.** Four broad domains appear in both corpora, but in different task classes and cells:
+`backup_operations`, `laboratory_safety`, `network_security` and `web_security`. No entity or answer is
+shared.
 
 ## Corpus B cannot influence qualification
 
@@ -60,6 +140,7 @@ The designer has seen G-ROUTE1 and G-ROUTE2 outcomes. What that knowledge was us
   property, checkable without any model output, and it moves fixtures toward being answerable rather than
   toward any particular outcome.
 - **Trigger retirement** — reasons are argued from the G-ROUTE3 design, and recorded.
+- **Round-1 external review** — its findings concern fixture construction and code boundaries, checked without model output. No review finding was based on, or tuned against, model behavior.
 
 What it was not used for: no G-ROUTE2 cell verdict, pass rate or threshold is carried into G-ROUTE3. Fixture
 difficulty was not tuned against any observed model behavior, and no fixture was tested on a model.
@@ -67,5 +148,9 @@ Thresholds are argued from the pilot-scale denominator, not from prior observed 
 
 ## G-ROUTE1 and G-ROUTE2
 
-Untouched. G-ROUTE3 reads their frozen artifacts only to reuse the validators and prompt profiles
-byte-for-byte, and to produce the labelled derivability diagnostic.
+Untouched. G-ROUTE3 reads their frozen artifacts only for three things:
+
+- to reuse the semantic validators, the non-conversation operational checks, the transport normalization and
+  the prompt profiles, byte-for-byte;
+- to wrap G-ROUTE1's operational validator with a new conversation check, in a separate module;
+- to produce the labelled derivability diagnostic.

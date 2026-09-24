@@ -1,44 +1,26 @@
 {
-  "schema_version": "g-route3.deterministic-test-results.v1",
-  "recorded_on": "2026-09-24",
-  "provider_generation_calls": 0,
+  "belief_effects": "none",
   "benchmark_launches": 0,
+  "construction_self_validation": {
+    "alternative_correct_answers_accepted_by_both_validators": 48,
+    "command": "python experiments/G-ROUTE3-candidate/authoring/assemble_g3.py",
+    "fixtures_per_corpus": 48,
+    "incorrect_answers_rejected": 36,
+    "result": "PASS"
+  },
+  "independence_audit": {
+    "command": "python tools/g_route3_independence.py",
+    "findings": 0,
+    "valid": true
+  },
+  "live_provider_used": false,
+  "production_routing_invoked": false,
+  "provider_generation_calls": 0,
+  "recorded_on": "2026-09-24",
+  "revision": "R2",
+  "schema_version": "g-route3.deterministic-test-results.v1",
   "suites": [
     {
-      "command": "python tools/g_route3_tests.py",
-      "tests": 33,
-      "result": "PASS",
-      "groups": {
-        "corpus_construction_and_derivability": 7,
-        "gold_blind_routing_and_escalation": 12,
-        "qualification_and_table": 7,
-        "governed_two_phase_pipeline": 6,
-        "validation_gates": 1
-      },
-      "required_cases_covered": {
-        "a_and_b_ids_cannot_collide": "test_a_and_b_namespaces_and_call_ids_never_collide",
-        "b_gold_cannot_enter_routing_context": "test_b_gold_cannot_enter_routing_context",
-        "b_cannot_launch_before_table_freeze": "test_full_pipeline_boundary_arithmetic_and_denominators",
-        "table_cannot_mutate_after_b_launch": "test_table_mutation_after_phase_b_launch_fails_closed",
-        "unqualified_starting_tier_rejected": "test_unqualified_start_tier_is_never_contacted",
-        "cheapest_qualified_tier_selected": "test_cheapest_qualified_tier_is_the_start",
-        "unqualified_intermediate_tier_skipped": "test_unqualified_intermediate_tier_is_skipped",
-        "qualified_intermediate_tier_not_skipped": "test_qualified_intermediate_tier_is_not_skipped",
-        "no_qualified_model_no_provider_fallback": "test_no_qualified_model_makes_no_routing_contact",
-        "accepted_unqualified_output_cannot_stop": "test_accepted_output_from_unqualified_tier_cannot_stop",
-        "accepted_qualified_clean_output_can_stop": "test_accepted_qualified_clean_output_can_stop_and_verdicts_stay_separate",
-        "failed_output_escalates_to_next_qualified_tier": "test_failed_output_escalates_to_next_qualified_tier",
-        "no_higher_qualified_tier_fails_closed": "test_no_higher_qualified_tier_fails_closed",
-        "normalization_provenance_preserved": "test_full_pipeline_boundary_arithmetic_and_denominators",
-        "malformed_output_cannot_crash": "test_malformed_and_non_hashable_output_never_crash",
-        "repeat_disagreement_not_dead_code": "test_every_retained_trigger_fires_and_retired_triggers_are_absent",
-        "missing_observations_cannot_qualify": "test_missing_observations_cannot_qualify",
-        "incomplete_a_blocks_b": "test_incomplete_phase_a_blocks_phase_b",
-        "scorer_arithmetic_and_denominators": "test_full_pipeline_boundary_arithmetic_and_denominators",
-        "table_digest_mismatch_fails_closed": "test_table_digest_mismatch_fails_closed",
-        "model_binding_drift_fails_closed": "test_model_binding_drift_fails_closed",
-        "vacuous_pass_impossible": "test_vacuous_pass_is_impossible, test_an_empty_table_is_not_testable_rather_than_passing"
-      },
       "additional_cases": [
         "every reference answer passes the frozen validators and every gold code is model-visible",
         "every buggy coding source fails its own tests",
@@ -54,28 +36,61 @@
         "the table is write-once and refuses a non-READY audit",
         "R4 is evidence-only and contacts nothing",
         "authorization is required for both phases"
-      ]
-    },
-    {
-      "command": "python experiments/G-ROUTE3-candidate/authoring/assemble_g3.py",
-      "tests": 1,
+      ],
+      "command": "python -m unittest -v g_route3_tests  (from tools/)",
+      "groups": {
+        "corpus_construction_and_derivability": 13,
+        "execution_freeze": 2,
+        "gold_blind_routing_and_escalation": 12,
+        "governed_two_phase_pipeline": 10,
+        "qualification_and_table": 9,
+        "validation_gates": 2
+      },
+      "required_cases_covered": {
+        "a_and_b_ids_cannot_collide": "test_a_and_b_namespaces_and_call_ids_never_collide",
+        "accepted_qualified_clean_output_can_stop": "test_accepted_qualified_clean_output_can_stop_and_verdicts_stay_separate",
+        "accepted_unqualified_output_cannot_stop": "test_accepted_output_from_unqualified_tier_cannot_stop",
+        "b_cannot_launch_before_table_freeze": "test_full_pipeline_boundary_arithmetic_and_denominators",
+        "b_gold_cannot_enter_routing_context": "test_b_gold_cannot_enter_routing_context",
+        "cheapest_qualified_tier_selected": "test_cheapest_qualified_tier_is_the_start",
+        "failed_output_escalates_to_next_qualified_tier": "test_failed_output_escalates_to_next_qualified_tier",
+        "incomplete_a_blocks_b": "test_incomplete_phase_a_blocks_phase_b",
+        "malformed_output_cannot_crash": "test_malformed_and_non_hashable_output_never_crash",
+        "missing_observations_cannot_qualify": "test_missing_observations_cannot_qualify",
+        "model_binding_drift_fails_closed": "test_model_binding_drift_fails_closed",
+        "no_higher_qualified_tier_fails_closed": "test_no_higher_qualified_tier_fails_closed",
+        "no_qualified_model_no_provider_fallback": "test_no_qualified_model_makes_no_routing_contact",
+        "normalization_provenance_preserved": "test_full_pipeline_boundary_arithmetic_and_denominators",
+        "qualified_intermediate_tier_not_skipped": "test_qualified_intermediate_tier_is_not_skipped",
+        "retained_triggers_fire_and_retired_are_absent": "test_every_retained_trigger_fires_and_retired_triggers_are_absent",
+        "scorer_arithmetic_and_denominators": "test_full_pipeline_boundary_arithmetic_and_denominators",
+        "table_cannot_mutate_after_b_launch": "test_table_mutation_after_phase_b_launch_fails_closed",
+        "table_digest_mismatch_fails_closed": "test_table_digest_mismatch_fails_closed",
+        "unqualified_intermediate_tier_skipped": "test_unqualified_intermediate_tier_is_skipped",
+        "unqualified_starting_tier_rejected": "test_unqualified_start_tier_is_never_contacted",
+        "vacuous_pass_impossible": "test_vacuous_pass_is_impossible, test_an_empty_table_is_not_testable_rather_than_passing"
+      },
       "result": "PASS",
-      "notes": "Self-validation over all 96 fixtures: counts and namespaces, cell balance, reference answers pass the frozen validators, gold coding answers stay inside the whitelist and pass their tests, buggy sources fail, every gold code is model-visible, planning selection is derivable, enum values are in schema, and no reasoning pattern is shared by A and B within a cell."
-    },
-    {
-      "command": "python tools/g_route3_independence.py",
-      "tests": 1,
-      "result": "PASS",
-      "notes": "Zero findings. Highest cross-corpus trigram overlap 0.058 against a bound of 0.20."
-    },
-    {
-      "command": "python -m py_compile <G-ROUTE3 modules>",
-      "tests": 1,
-      "result": "PASS"
+      "round2_regressions_for_external_review_findings": {
+        "all_36_incorrect_answers_rejected": "test_incorrect_answers_are_rejected",
+        "all_48_alternative_phrasings_pass_both_validators": "test_natural_correct_phrasings_are_accepted_by_both_validators",
+        "audit_bound_by_document_digest": "test_audit_must_be_bound_to_a_document_digest",
+        "authorization_consumed_once": "test_authorization_file_is_consumed_exactly_once",
+        "conversation_negation_is_never_rejected": "test_conversation_operational_check_accepts_negation_and_rejects_affirmative_claims",
+        "evaluable_failing_gate_is_fail": "test_an_evaluable_failing_gate_is_a_failure_even_when_the_other_gate_is_not_evaluable",
+        "exact_two_by_two_required": "test_only_the_exact_two_by_two_design_can_qualify",
+        "forged_table_synthetic_phase_a_and_undisclosed_attempt_rejected": "test_table_provenance_is_checked_against_the_sealed_phase_a_run",
+        "freeze_cannot_be_written_after_table": "test_a_freeze_cannot_be_written_once_a_table_exists",
+        "freeze_verification_survives_table_existence": "test_freeze_verification_does_not_depend_on_table_absence",
+        "full_coding_whitelist_disclosed": "test_coding_prompts_disclose_the_operation_whitelist",
+        "grounding_tokenizer_handles_fused_units": "test_synthesis_paraphrase_with_attached_units_is_grounded",
+        "no_trigger_fires_on_gold_or_alternatives": "test_no_trigger_fires_on_any_reference_or_alternative_answer",
+        "planning_single_template_declared": "test_planning_is_a_declared_single_template_construct",
+        "real_authorization_path_opens_both_phases_once": "test_real_authorizations_open_both_phases_once_each",
+        "sandbox_host_failure_is_infrastructure": "test_coding_sandbox_host_failure_is_infrastructure_not_model_failure",
+        "structural_reuse_detectable": "test_structural_check_detects_a_reused_gold_shape"
+      },
+      "tests": 48
     }
-  ],
-  "total_assertion_suites": 36,
-  "live_provider_used": false,
-  "production_routing_invoked": false,
-  "belief_effects": "none"
+  ]
 }

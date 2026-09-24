@@ -1,99 +1,132 @@
 # G-ROUTE3 Design Audit
 
 Date: 2026-09-24
-Verdict: **READY** (after one REVISE cycle)
-Authority: non-authoritative. It grants no execution, provider, routing or belief authority and changes no
-artifact. Provider generation calls during design and audit: **0**.
+Revision: **R2**
+Verdict: **READY for external round-2 review.** This is not a verdict that Phase A may be authorized.
+Authority: non-authoritative. It grants no execution, provider, routing or belief authority, and changes no
+artifact. Provider generation calls during design, review and repair: **0**.
 
-**A limit on independence, stated first.** This audit was performed by the same agent that authored the
-corpora and the code. It is procedurally separate: it was a distinct adversarial pass, with its own checks
-and its own recorded findings. It is not a second pair of eyes. The pre-contact gold review in particular
-would benefit from a human reading of all 96 fixtures, and nothing here substitutes for that.
+## Read this first: what this audit is worth
 
-## First pass: REVISE
+This audit was performed by the agent that wrote the corpora and the code. In R1 it said READY. Two external
+reviewers then found six blocking grader traps, a trigger that fired on correct answers, template reuse
+across corpora, a gate that could hide a failure, weak table provenance, and a freeze check that made
+Phase B impossible to authorize (`EXTERNAL_REVIEW_ROUND1.md`). It had missed all of them.
 
-Seven findings, all repaired before this verdict:
+So this document is a record of what the author checked, not an assurance. The R2 freeze goes to fresh
+external reviewers. Phase A may be authorized only if that review is clean, and only against the exact R2
+binding.
+
+## Round-2 repair, summarized
+
+Every round-1 finding is either repaired or explicitly kept and declared. Each entry in
+`EXTERNAL_REVIEW_ROUND1.md` names the test or construction check that locks it. In brief:
+
+- **Grader rules.** The conversation operational check is replaced, in a separate module, so that only
+  affirmative first-person action claims are rejected. Every other hidden rule was made explicit in the
+  prompts:
+  - the complete coding whitelist;
+  - rule precedence for research statuses and synthesis conclusions;
+  - exact key sets and `depends_on` as a list;
+  - extraction span conventions;
+  - the conversation length limit.
+- **Conversation fixtures.** All 16 were rewritten.
+- **Triggers.** `source_independence_insufficient` is retired. `grounding_weak` tokenizes robustly. The dead
+  coding branch is removed.
+- **Boundaries and scoring.**
+  - An evaluable failing gate now yields FAIL.
+  - Freeze verification survives the table's existence.
+  - The table must match the sealed Phase A score, trace to a non-synthetic Phase A run under this freeze,
+    disclose every Phase A attempt, and carry an audit bound by document digest.
+  - Authorizations are consumed once.
+  - A sandbox host failure is infrastructure, not model failure.
+  - Qualification requires exactly 2 × 2.
+- **A/B separation.** It is scoped to "same construct, fresh instance". Accidental same-template pairs are
+  rewritten. Research is assigned by sub-skill. Planning is declared as a single template. A structural
+  gold-shape check is added to the independence tool.
+
+## Findings of this author pass, beyond round 1
+
+The author pass for R2 found two more problems, both repaired before the freeze:
 
 | # | Finding | Repair |
 |---|---|---|
-| 1 | `A-SYNTH-R1-1`: a battery at 0% five minutes before an outage is suggestive, not an identified cause, so `insufficient_evidence` was defensible | observation reworded so the log attributes the shutdown to the battery |
-| 2 | `B-SYNTH-R2-2`: a 2 mm tread is above the 1.6 mm legal minimum, so no harm is indicated and `no_action_needed` was defensible | tread changed to 1.4 mm |
-| 3 | `B-CONV-R3-2` rejected the correct answer "Two databases verified and one failed" | accepted phrasings widened to cover natural statements of partial success |
-| 4 | `B-CONV-R2-1` rejected the correct answer "It expired in February" | accepted date phrasings widened |
-| 5 | `A-CONV-R3-2` accepted "share" but not "send" phrasings of the same refusal | widened |
-| 6 | A planning action, `propose_shutdown_date`, appeared in gold in both corpora in the same cell | renamed in Corpus B |
-| 7 | The pipeline test never produced a false-clean on an unqualified tier, so the "caught because unqualified" count was unexercised | scenario extended; the count and a false-positive qualification are now asserted |
+| 1 | `grounding_weak` still fired on a faithful synthesis restatement when a number was fused to its unit ("11C for 40min" against "11 C for 40 min"). Found by a new regression test. | Tokens split at every digit–letter boundary |
+| 2 | A-EXTRACT-R1-1's gold "Branch East" began with what the new extraction rule tells the model to drop as a label, so a rule-following "East" would fail. Found by listing every extraction string gold value in its source context. | Renamed "Eastgate Library". Every other string value was confirmed to follow the leading-label convention. |
 
-Findings 3 to 5 are the conversation form of the derivability problem: a correct answer must not fail on
-wording the model was never told to use. A regression now locks in natural phrasings.
+## Checks performed for R2
 
-## Final pass
+**Corpus construction** (`authoring/assemble_g3.py`, which writes nothing unless every check passes):
 
-**Corpus A quality and gold.** All 48 reference answers pass the frozen validators. Every closed-vocabulary
-gold code is model-visible, every enforced ordering is stated, the coding whitelist is disclosed, every gold
-coding answer passes its tests inside the whitelist, and every buggy source fails. Each fixture's rationale
-states why its gold is the single defensible answer. *Residual:* uniqueness was reviewed by the author; see
-the limit above.
+- 48 fixtures per corpus, with exactly 2 per cell;
+- namespaces are disjoint;
+- every reference answer passes the operational validator (G-ROUTE3), the semantic validator (G-ROUTE1)
+  and, for coding, the isolated runner inside the whitelist;
+- every buggy coding source fails its own tests;
+- no trigger fires on any reference answer;
+- **48 alternative correct answers are accepted by both validators, and 36 incorrect answers are rejected**;
+- every conversation prompt discloses the 600-character limit;
+- every coding prompt discloses the full whitelist;
+- planning shape is normalized;
+- every string extraction value is a verbatim span, and every enum value is in its schema;
+- every synthesis anchor is a substring of its observation;
+- every closed-vocabulary gold code is model-visible;
+- no author-assigned reasoning pattern is shared within a cell.
 
-**Corpus B independence.** No fixture content, entity, identifier, gold action, function name, extraction
-value or source lineage is shared with A. The highest trigram overlap is 0.058 against a bound of 0.20. No
-reasoning pattern is shared within any of the 24 cells. Shared vocabulary is limited to declared
-profile-level rule text.
+**Planning order derivability** (a mechanical check over all 32 fixtures). Every consecutive pair of gold
+steps shares an evidence item that states a "before" precedence between them. Each fixture has exactly three
+such lines, so the total order is fully stated and unique.
 
-**Task and risk assignment.** Six classes × R1–R4, two fixtures per cell in each corpus, balanced. Risk
-classes are designer judgments of consequence (R1 personal/low, R2 money and routine operations, R3 security
-and data, R4 authority and safety) and are applied the same way in both corpora.
+**Independence** (`INDEPENDENCE_REPORT.json`, valid, 0 findings):
 
-**Normalization contract.** The G-ROUTE2 contract is reused unchanged, and transport outcomes are recorded
-on every call.
+- highest cross-corpus trigram overlap 0.071 (conversation), with a bound of 0.20;
+- 0 shared entities, planning actions, function names, extraction values or lineages;
+- 0 same-cell gold-structure matches outside planning;
+- the 16 planning pairs are declared.
 
-**Qualification criteria.** 4 of 4 complete, accepted, correct, with zero false-cleans. Anything short of
-complete evidence is `insufficient_evidence`, which is never operationally qualified. No missing-data pass
-and no vacuous pass are possible, and both are asserted by test.
+**Deterministic tests** (`tools/g_route3_tests.py`): the results are in `DETERMINISTIC_TEST_RESULTS.json`.
+They include:
 
-**Sample-size claims.** Stated as pilot scale, with the exact 0.527 bound carried on every cell. No claim
-beyond that is made.
+- a real (non-synthetic) authorization path through both phases, using a synthetic provider and a stand-in
+  freeze file;
+- forged-table rejection;
+- undisclosed-attempt rejection;
+- consumed-authorization refusal;
+- sandbox host-failure classification;
+- the gate-ordering regression;
+- both validators run over every alternative and incorrect answer.
 
-**Thresholds.** Frozen before contact and argued from the design's own denominators, not from G-ROUTE2's
-observed rates. Both rate gates carry minimum denominators, so a thin table is reported `NOT_TESTABLE`
-rather than passing.
+**Unchanged and re-confirmed:**
 
-**Table-freeze boundary.** The table is write-once, digest-bound and requires a READY audit. It must trace
-to a complete Phase A run and its sealed score, and must be bound to this execution freeze. Phase B needs a
-second authorization naming the table digest. The table is inside Phase B's mutation guard. Each property is
-exercised by a test, including a mid-run table edit that stops the run `incomplete`.
+- The router is gold-blind in code and by test.
+- An unqualified tier is never contacted or used as a terminal result.
+- `no_qualified_model` makes zero routing calls, and R4 is evidence-only.
+- Qualification cannot pass on missing data.
+- Normalization is the unchanged G-ROUTE2 contract.
+- Denominators sum to 48 cases and 144 observations.
+- Thresholds are argued from the design, not from prior observed rates.
 
-**Runtime lookup and escalation.** The router starts at the cheapest qualified tier, never contacts an
-unqualified tier, skips unqualified intermediate tiers, never skips qualified ones, and fails closed when
-exhausted. `no_qualified_model` makes zero routing calls. The three verdicts are separate fields.
+## Residual limitations accepted into the R2 freeze
 
-**Gold blindness.** The routing module imports no gold loader, and runtime views reject semantic fields.
-Collection never loads gold, and a full Phase A completes with Corpus B gold made unloadable.
-
-**Scorer and denominators.** 48 cases each receive exactly one outcome, and there are 144 observations.
-Routing and diagnostic calls are counted separately and sum to 144. The arithmetic is exercised end to end.
-
-**Triggers.** Three are retained and each fires in a test. Three are retired, with reasons recorded. None is
-dead code.
-
-**Contamination from G-ROUTE1 and G-ROUTE2.** No outcome, cell verdict or threshold was carried over. The
-derivability rule was motivated by a diagnostic over G-ROUTE2 records; it is a construction property
-checkable without model output, and it is declared.
-
-**Authority.** Production routing, automatic escalation and source mutation remain unauthorized. Belief
-effects are `none`. G-ROUTE1 and G-ROUTE2 are untouched.
-
-## Residual limitations accepted into the freeze
-
-- The pilot-scale qualification bound is weak by construction.
-- Task and risk classes are given to the router, not inferred, so classifier error is unmeasured.
-- Conversation remains phrase-matched. Widened alternatives reduce but do not remove brittleness.
-- Planning fixtures now test exact rule-following rather than open-ended planning; that trade is declared.
-- The Phase B diagnostic calls are necessary for false-negative analysis and cost 144 − (routing calls)
-  extra provider calls.
-- Ollama does not attest option or seed honoring.
+- **Pilot scale.** 0 failures in 4 bounds the per-cell failure rate only below 0.527.
+- **Given classes.** Task and risk classes are given to the router, not inferred, so classifier error is
+  unmeasured.
+- **Conversation checks remain phrase-anchored.** Widened, negation-safe anchors and three tested
+  alternatives per fixture reduce brittleness but cannot eliminate it.
+- **Planning** tests exact rule-following on one declared template, not open-ended planning.
+- **Research** cells are validated on B against different sub-skills from the ones A qualified in that cell.
+  This is declared as a harder transfer.
+- **Difficulty matching** within cells is the author's judgment and was not measured.
+- **Unequal denominators.** B success needs 2/2 while A qualification needs 4/4. Per-observation rates are
+  reported beside every generalization label.
+- **Extra Phase B calls.** Phase B makes declared diagnostic calls beyond routing calls.
+- **Ollama** does not attest option or seed honoring.
+- **Caveats on G-ROUTE1 and G-ROUTE2.** Both carry the gold-derivability caveat and, for conversation, the
+  operational-check caveat. Neither is rescored.
 
 ## Verdict
 
-**READY** for explicit scientific execution authorization of Phase A. Phase B additionally requires a frozen,
-audited qualification table and its own authorization.
+**READY for external round-2 review** of the R2 freeze. Phase A may be authorized only after that review is
+clean, and only by the verbatim string `Authorize G-ROUTE3 phase A execution <R2 binding>`. Phase B
+additionally requires a frozen, audited qualification table and its own authorization naming that table's
+digest.
