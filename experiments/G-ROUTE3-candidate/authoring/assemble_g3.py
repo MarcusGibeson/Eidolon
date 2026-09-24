@@ -1,4 +1,4 @@
-"""Assemble and self-validate the G-ROUTE3 corpora (round 2). Writes only after every check passes."""
+"""Assemble and self-validate the G-ROUTE3 corpora (round 3). Writes only after every check passes."""
 import json
 import sys
 from collections import Counter, defaultdict
@@ -6,14 +6,15 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-ROOT = Path("C:/Users/marcu/Eidolon")
+ROOT = HERE.parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
 
 import author_g3_part1 as p1
 import author_g3_part2  # noqa: F401  (registers fixtures)
 import author_g3_part3  # noqa: F401
 from g_route1_coding_runner import run_isolated_fixture, validate_candidate_ast
-from g_route1_validators import validate_fixture_output
+from g_route3_semantics import canonical_coding_payload, validate_fixture_output
+from g_route3_conversation import FRAME_INSTRUCTION
 from g_route3_operational import validate_operational
 from g_route3_triggers import triggers_for
 
@@ -34,7 +35,9 @@ def as_raw(value):
 
 
 def judged(fixture, gold, raw):
-    evidence = run_isolated_fixture(fixture, raw) if fixture["validator_profile"] == "coding.v1" else None
+    # exactly as the runner does: execution evidence is built from the canonical coding payload
+    evidence = (run_isolated_fixture(fixture, canonical_coding_payload(fixture, raw)[0])
+                if fixture["validator_profile"] == "coding.v1" else None)
     op = validate_operational(fixture, raw, execution_evidence=evidence)
     sem = validate_fixture_output(fixture, gold, raw, execution_evidence=evidence)
     return op, sem
@@ -89,10 +92,26 @@ for corpus, rows in by_corpus.items():
             w_op, w_sem = judged(fixture, gold, text)
             if w_op["accepted"] and w_sem["hard_gate_pass"]:
                 problems.append(f"{fid}:incorrect_answer_accepted:{text!r}")
-        if profile == "conversation.v1" and len(gold.get("alternative_correct_outputs", [])) < 3:
-            problems.append(f"{fid}:too_few_alternative_phrasings")
-        if profile == "conversation.v1" and "600 characters" not in fixture["prompt"]:
-            problems.append(f"{fid}:length_limit_not_disclosed")
+        if profile == "conversation.v1":
+            if len(gold.get("alternative_correct_outputs", [])) < 3 or len(gold.get("incorrect_outputs", [])) < 3:
+                problems.append(f"{fid}:too_few_alternative_or_incorrect_answers")
+            if not fixture["prompt"].endswith(FRAME_INSTRUCTION):
+                problems.append(f"{fid}:answer_frame_not_disclosed")
+            if gold["expected"]["answer"] not in fixture["input"]["answer_options"]:
+                problems.append(f"{fid}:gold_answer_not_an_option")
+        else:
+            if "350 tokens" not in fixture["prompt"]:
+                problems.append(f"{fid}:output_budget_not_disclosed")
+            compact = json.dumps(gold["reference_output"], separators=(",", ":"), ensure_ascii=False)
+            if len(compact) / 2.75 > 250:
+                problems.append(f"{fid}:reference_too_close_to_output_budget:{len(compact)}")
+        if profile == "coding.v1":
+            ref = gold["reference_output"] if isinstance(gold["reference_output"], dict) else json.loads(raw)
+            for variant in (ref["old"].rstrip("\n"), ref["old"] + "\n"):
+                text_variant = json.dumps({**ref, "old": variant})
+                v_op, v_sem = judged(fixture, gold, text_variant)
+                if not (v_op["accepted"] and v_sem["hard_gate_pass"]):
+                    problems.append(f"{fid}:trailing_newline_variant_rejected:{v_op['reasons']}{v_sem['reasons']}")
 
         text = model_facing(fixture)
         exp = gold["expected"]
@@ -106,8 +125,13 @@ for corpus, rows in by_corpus.items():
                 for term in terms:
                     if term.casefold() not in obs.casefold():
                         problems.append(f"{fid}:required_term_not_in_observation:{oid}:{term}")
+        elif profile == "conversation.v1":
+            codes = [exp["answer"]]
         elif profile == "planning.v1":
             codes = [s["action"] for s in exp["steps"]] + list(exp["uncertainties"])
+            listed = [a["action"] for a in fixture["input"]["allowed_actions"]]
+            if [a for a in listed if a in {s["action"] for s in exp["steps"]}] == [s["action"] for s in exp["steps"]]:
+                problems.append(f"{fid}:allowed_actions_listed_in_gold_order")
             allowed = {a["action"] for a in fixture["input"]["allowed_actions"]}
             chosen = [s["action"] for s in exp["steps"]]
             excluded = {a for a in allowed if any(a.startswith(p) for p in p1.EXCLUDED_PREFIXES)}
@@ -133,6 +157,12 @@ for corpus, rows in by_corpus.items():
         for code in codes:
             if str(code) not in text:
                 problems.append(f"{fid}:gold_code_not_model_visible:{code}")
+
+for corpus, rows in by_corpus.items():
+    positions = Counter(f["input"]["answer_options"].index(g["expected"]["answer"])
+                        for f, g, _ in rows if f["validator_profile"] == "conversation.v1")
+    if len(positions) < 3:
+        problems.append(f"{corpus}:conversation_answer_position_not_varied:{dict(positions)}")
 
 patterns = defaultdict(lambda: defaultdict(set))
 for corpus, fixture, gold, design in p1.FIXTURES:

@@ -18,14 +18,14 @@ Measured by `tools/g_route3_independence.py`, and frozen as `INDEPENDENCE_REPORT
 
 | Check | Bound | Result |
 |---|---|---|
-| Highest cross-corpus word-trigram overlap, same task class, shared boilerplate removed | ≤ 0.20 | **0.071** (conversation R4); every other class ≤ 0.042 |
+| Highest cross-corpus word-trigram overlap, same task class, shared boilerplate removed | ≤ 0.20 | **0.055** (ordinary_conversation); every other class ≤ 0.042 |
 | Mean cross-corpus overlap | — | ≤ 0.005 per class |
 | Shared named entities and identifiers | 0 | **0** |
 | Shared planning actions in gold | 0 | **0** |
 | Shared coding function names | 0 | **0** |
 | Shared extraction string values | 0 | **0** |
 | Shared research source lineages | 0 | **0** |
-| Same **gold-answer structure** in A and B within a cell (research, synthesis, extraction, planning), outside a declared single-template class | 0 | **0** |
+| Same **gold-answer structure** in A and B within a cell (research fine and coarse, synthesis, extraction, planning), outside a declared single-template class | 0 | **0** |
 | Author-assigned reasoning-pattern label shared within a cell | 0 | **0 of 24 cells** |
 
 **Why a structural check was added.** In round 1 the reasoning-pattern check rested only on labels the
@@ -39,9 +39,29 @@ tool now also compares the *shape* of each gold answer within each cell:
 - **extraction**: the schema's field types;
 - **planning**: the step, action, evidence and uncertainty counts.
 
+The research signature is checked twice.
+
+- The fine version is the shape above.
+- The coarse version keeps only three things: the claim statuses, the recommendation, and why a claim is
+  unresolved (conflict, scope or unaddressed). It ignores lineage counts, so two fixtures posing the same
+  problem cannot differ in a lineage count alone.
+
+The coarse check found A-RESEARCH-R1-1 and B-RESEARCH-R1-2 in round 3; B-RESEARCH-R1-2 was changed. The
+extraction signature also counts derived fields, so copying a value and computing one are different
+shapes.
+
 A match between A and B in the same cell is a finding. Conversation and coding have no structural
-signature. For those two classes, independence rests on the rewritten fixtures and on the external
-review's reading.
+signature. For those two classes, independence rests on two things: the rewritten fixtures, whose
+operation within each cell is stated below, and the external reviews' reading.
+
+**Conversation operations by cell (round 3):**
+
+| Cell | Corpus A | Corpus B |
+|---|---|---|
+| R1 | open-slot filter; whole-number division | maximum with unit conversion; conditional count |
+| R2 | date difference against a review window; time difference against a threshold | month arithmetic for expiry; percentage fee |
+| R3 | lockout expiry by time addition; precondition absent | multi-item age threshold; partial-result lookup |
+| R4 | dual-control refusal; role-reserved override | legal-hold prohibition; remaining-capacity computation |
 
 ### Research: one sub-skill per cell, never the same in A and B
 
@@ -93,6 +113,10 @@ B's plans were larger; one B research fixture was trivially easy; one B coding f
 were repaired:
 
 - Each corpus's extraction R1 cell has one copy-only fixture and one fixture with a computed field.
+- Extraction R2 and R3 each have one derived computation per fixture in both corpora. A-EXTRACT-R2-2 gained a
+  date addition, B-EXTRACT-R2-2 was reduced to one multiplication, and B-EXTRACT-R3-2 derives retention
+  days from two dates.
+- Conversation R2 and R3 each pair one computation with one lookup in both corpora.
 - Planning is normalized to one size.
 - B-RESEARCH-R1-1 applies a two-lineage rule.
 - B-CODE-R3-2 is now a redirect-safety check of comparable difficulty to A's R3 coding fixtures.
@@ -152,5 +176,6 @@ Untouched. G-ROUTE3 reads their frozen artifacts only for three things:
 
 - to reuse the semantic validators, the non-conversation operational checks, the transport normalization and
   the prompt profiles, byte-for-byte;
-- to wrap G-ROUTE1's operational validator with a new conversation check, in a separate module;
+- to wrap G-ROUTE1's validators, in separate modules, with the conversation answer frame and the coding
+  trailing-newline canonicalization;
 - to produce the labelled derivability diagnostic.

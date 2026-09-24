@@ -5,7 +5,7 @@ Contract: `g-route3.routing.v1` · implementation `tools/g_route3_routing.py`
 ## Inputs the router may use
 
 Task class, risk class, the frozen qualification table, model availability, the gold-blind operational
-validation of the canonicalized payload (`g-route3.operational-validator.v1`), the transport normalization outcome, provider and infrastructure
+validation of the canonicalized payload (`g-route3.operational-validator.v2`), the transport normalization outcome, provider and infrastructure
 status, isolated coding execution evidence, and two conservative triggers.
 
 It never receives validation gold, semantic correctness, expected answers, fixture safety labels, or any
@@ -74,7 +74,7 @@ Retired, with reasons recorded in `thresholds.json`:
 The coding branch of `grounding_weak` was removed. Failed coding evidence is never operationally accepted, so
 that branch could not fire on an accepted output.
 
-No trigger is dead code. Both retained triggers fire in a deterministic test. Neither fires on any of the 96
+Some branches inside the triggers are defensive: they are total over any payload, but they cannot fire on an output the operational validator has already accepted, such as an unparseable payload or an empty claim list. The module lists them. No retained trigger is dead code. Both retained triggers fire in a deterministic test. Neither fires on any of the 96
 reference answers or the 48 alternative correct answers, and a test asserts this. The suite also asserts
 that the retired triggers are absent from the router.
 

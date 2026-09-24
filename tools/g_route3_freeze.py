@@ -12,23 +12,37 @@ from g_route1_contract import ROOT, digest_file
 from g_route3_contract import (DATA, EXPECTED_CALLS, EXECUTION_FREEZE_PATH, json_digest, load_corpus, load_gold,
                                load_json, load_model_bindings, load_thresholds, verify_checked_schedule)
 
-CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v2"
-CANDIDATE_ID = "G-ROUTE3-EXECUTION-R2"
-SUPERSEDED = {"candidate_id": "G-ROUTE3-EXECUTION-R1",
-              "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
-              "literal_sha256": "b63f0094bbba9c3e822a359cb92b56f66f3ff244e29bbc834ce9af42a4f1653c",
-              "binding_sha256": "64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
-              "reason": ("independent pre-contact review returned FINDINGS: hidden grader rules in conversation, "
-                         "coding and planning, ambiguous gold, a trigger that fired on correct answers, template "
-                         "reuse between corpora, a gate that could mask failure, weak table provenance, and a freeze "
-                         "check that made Phase B impossible to authorize"),
-              "authorized": False, "provider_generation_calls": 0}
+CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v3"
+CANDIDATE_ID = "G-ROUTE3-EXECUTION-R3"
+SUPERSEDED = (
+    {"candidate_id": "G-ROUTE3-EXECUTION-R1",
+     "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
+     "literal_sha256": "b63f0094bbba9c3e822a359cb92b56f66f3ff244e29bbc834ce9af42a4f1653c",
+     "binding_sha256": "64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
+     "review_record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND1.md",
+     "reason": ("independent pre-contact review returned FINDINGS: hidden grader rules in conversation, "
+                "coding and planning, ambiguous gold, a trigger that fired on correct answers, template "
+                "reuse between corpora, a gate that could mask failure, weak table provenance, and a freeze "
+                "check that made Phase B impossible to authorize"),
+     "authorized": False, "provider_generation_calls": 0},
+    {"candidate_id": "G-ROUTE3-EXECUTION-R2",
+     "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R2.json",
+     "literal_sha256": "b029632eae910a2f261508e9710e4dbd5620760baac405cf350bf11ebd56d83f",
+     "binding_sha256": "aa5db17af6e12aaf1453cdbd1c88940743cb8712882c8a7ccba2a6541bfd52af",
+     "review_record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND2.md",
+     "reason": ("second independent pre-contact review returned FINDINGS: Phase A provenance could be fabricated "
+                "from unsealed fields, the one-shot authorization could be reused under a new key or run root, "
+                "conversation anchors still rejected correct and accepted wrong replies, coding rejected a "
+                "correct fix whose old lacked the final newline, and several runtime dependencies were unguarded"),
+     "authorized": False, "provider_generation_calls": 0},
+)
 FREEZE_PATH = EXECUTION_FREEZE_PATH
 ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
     "DESIGN.md", "GOLD_DERIVABILITY.md", "GOLD_DERIVABILITY_DIAGNOSTIC.json", "QUALIFICATION_CONTRACT.md",
     "ROUTING_POLICY.md", "SCORING_CONTRACT.md", "CONTAMINATION_ANALYSIS.md", "PRODUCTION_ADAPTER_MAPPING.md",
     "INDEPENDENT_AUDIT.md", "DETERMINISTIC_TEST_RESULTS.json", "INDEPENDENCE_REPORT.json",
     "EXTERNAL_REVIEW_ROUND1.md", "EXECUTION_FREEZE_CANDIDATE_R1.json",
+    "EXTERNAL_REVIEW_ROUND2.md", "EXECUTION_FREEZE_CANDIDATE_R2.json",
     "corpus_a.json", "gold_a.json", "corpus_b.json", "gold_b.json", "fixture_design.json",
     "model_bindings.json", "thresholds.json", "schedule_a.json", "schedule_b.json",
     "authoring/author_g3_part1.py", "authoring/author_g3_part2.py", "authoring/author_g3_part3.py",
@@ -36,6 +50,9 @@ ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
 )) + (
     "experiments/G-ROUTE1-candidate/prompt_profiles.json",
     "tools/g_route1_contract.py", "tools/g_route1_validators.py", "tools/g_route1_operational.py",
+    "tools/g_route1_execution_contract.py", "tools/g_route1_freeze.py", "conscious_agent/activity.py",
+    "conscious_agent/json_storage.py", "conscious_agent/metadata_mutation_coordination.py",
+    "tools/g_route3_conversation.py", "tools/g_route3_semantics.py",
     "tools/g_route1_coding_runner.py", "tools/g_route1_persistence.py", "tools/g_route1_provider.py",
     "tools/g_route2_normalization.py", "tools/g_route3_operational.py", "tools/g_route3_triggers.py",
     "tools/g_route3_contract.py", "tools/g_route3_qualification.py", "tools/g_route3_routing.py",
@@ -57,9 +74,10 @@ def current_commit(root: Path = ROOT) -> str:
 
 
 def build_manifest(*, implementation_commit: str | None = None, root: Path = ROOT) -> dict[str, Any]:
-    superseded = root / SUPERSEDED["path"]
-    if not superseded.is_file() or literal_sha256(superseded) != SUPERSEDED["literal_sha256"]:
-        raise ValueError("superseded_r1_freeze_not_preserved")
+    for prior in SUPERSEDED:
+        superseded = root / prior["path"]
+        if not superseded.is_file() or literal_sha256(superseded) != prior["literal_sha256"]:
+            raise ValueError(f"superseded_freeze_not_preserved:{prior['candidate_id']}")
     missing = [path for path in ARTIFACTS if not (root / path).is_file()]
     if missing:
         raise FileNotFoundError("execution_freeze_artifacts_missing:" + ",".join(missing))
@@ -77,7 +95,7 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "candidate_id": CANDIDATE_ID,
         "status": "READY_FOR_EXPLICIT_SCIENTIFIC_EXECUTION_AUTHORIZATION",
         "implementation_commit": implementation_commit or current_commit(root),
-        "supersedes": dict(SUPERSEDED),
+        "supersedes": [dict(prior) for prior in SUPERSEDED],
         "research_questions": {
             "primary": ("Can a task x risk x model qualification table derived prospectively from one independent "
                         "qualification corpus safely guide cheapest-qualified model selection and stopping on a "
@@ -88,11 +106,14 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "phases": {
             "A": {"corpus": "G-ROUTE3-CORPUS-A", "role": "qualification", "planned_calls": EXPECTED_CALLS["A"],
                   "schedule_sha256": json_digest(schedules["A"]),
-                  "authorization_format": "Authorize G-ROUTE3 phase A execution <execution_freeze_binding>"},
+                  "authorization_format": ("Authorize G-ROUTE3 phase A execution <execution_freeze_binding> "
+                                           "attempt <n>"),
+                  "attempts": "numbered from 1; each attempt is a separate explicit authorization recorded in "
+                              "the fixed authorization ledger, and the table discloses every Phase A attempt"},
             "B": {"corpus": "G-ROUTE3-CORPUS-B", "role": "validation", "planned_calls": EXPECTED_CALLS["B"],
                   "schedule_sha256": json_digest(schedules["B"]),
                   "authorization_format": ("Authorize G-ROUTE3 phase B execution <execution_freeze_binding> "
-                                           "table <qualification_table_sha256>"),
+                                           "table <qualification_table_sha256> attempt <n>"),
                   "requires_frozen_audited_qualification_table": True},
         },
         "corpus_digests": {name: digest_file(root / f"experiments/G-ROUTE3-candidate/{name}")
@@ -107,9 +128,13 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "generation_configuration": models["generation_configuration"],
         "normalization_contract": "g-route2.transport-normalization.v1",
         "validator_contract": "g-route1.validators.v1",
-        "operational_validator_contract": "g-route3.operational-validator.v1",
-        "semantic_validators_unchanged_from_g_route1": True,
-        "conversation_operational_validator_replaced": True,
+        "operational_validator_contract": "g-route3.operational-validator.v2",
+        "semantic_contract": "g-route3.semantics.v1",
+        "conversation_contract": "g-route3.conversation-frame.v1",
+        "semantic_validators_unchanged_from_g_route1": ("research, synthesis, extraction and planning: yes; "
+                                                        "conversation: replaced by the disclosed answer frame; "
+                                                        "coding: unchanged except that old is compared with the "
+                                                        "source ignoring trailing newlines"),
         "trigger_contract": "g-route3.triggers.v1",
         "evidence_scale": "pilot",
         "digest_convention": "sha256; CRLF and CR normalized to LF for source artifacts",
@@ -128,8 +153,8 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "deterministic_tests_passed": True,
         "independent_audit_verdict": "READY",
         "independent_audit_is_author_self_audit": True,
-        "external_review_round1": {"verdict": "FINDINGS", "reviewed_binding": SUPERSEDED["binding_sha256"],
-                                   "record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND1.md"},
+        "external_reviews": [{"round": index, "verdict": "FINDINGS", "reviewed_binding": prior["binding_sha256"],
+                              "record": prior["review_record"]} for index, prior in enumerate(SUPERSEDED, 1)],
         "external_review_required_before_authorization": True,
     }
     seed["execution_freeze_content_sha256"] = json_digest(seed)
@@ -168,8 +193,8 @@ def write_manifest(path: Path = FREEZE_PATH, *, implementation_commit: str | Non
     manifest = build_manifest(implementation_commit=implementation_commit)
     rendered = json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if path.exists() and path.read_text(encoding="utf-8") != rendered:
-        replacing_preserved_r1 = literal_sha256(path) == SUPERSEDED["literal_sha256"]
-        if load_json(path).get("candidate_id") != CANDIDATE_ID and not replacing_preserved_r1:
+        replacing_preserved = literal_sha256(path) in {prior["literal_sha256"] for prior in SUPERSEDED}
+        if load_json(path).get("candidate_id") != CANDIDATE_ID and not replacing_preserved:
             raise FileExistsError("conflicting_execution_freeze_candidate_exists")
     path.write_text(rendered, encoding="utf-8", newline="\n")
     return manifest

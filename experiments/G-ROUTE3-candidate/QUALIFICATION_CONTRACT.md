@@ -17,9 +17,14 @@ An infrastructure failure includes a coding-sandbox host failure. Only model-cau
 a syntax error, a whitelist denial, a timeout of the candidate) count as failed evidence. Any other sandbox
 exception is charged to infrastructure and stops the run `incomplete`.
 
-Operational acceptance uses `g-route3.operational-validator.v1`. It is the G-ROUTE1 operational validator for
-every profile except conversation, where it rejects only an affirmative first-person claim that an action
-was carried out. The semantic evaluator is `g_route1_validators.py`, unchanged.
+Operational acceptance uses `g-route3.operational-validator.v2`, and correctness uses `g-route3.semantics.v1`.
+Both are the G-ROUTE1 checks except in two profiles:
+
+- **conversation**: the disclosed answer frame;
+- **coding**: `old` is compared ignoring trailing newlines.
+
+A coding timeout counts against the model only if the unchanged source runs in time on the same host;
+otherwise it is an infrastructure failure.
 
 `insufficient_evidence` is never operationally qualified. There is no aggregate score, no global
 leaderboard, and no qualification from structural validity, formatting or model size. A missing
@@ -40,8 +45,8 @@ Corpus B is the real check. If pilot-scale qualification predicts nothing, Corpu
 `QUALIFICATION_TABLE.json`, schema `g-route3.qualification-table.v1`:
 
 - `source` — corpus A digest, gold A digest, Phase A run id, sealed Phase A score digest, thresholds digest,
-  execution-freeze binding, and `phase_a_attempts`: every Phase A run directory with its state, so a table
-  cannot quietly come from the best of several attempts;
+  execution-freeze binding, and `phase_a_attempts`: every authorized Phase A attempt from the fixed
+  authorization ledger, so a table cannot quietly come from the best of several attempts;
 - `audit` — the independent audit of the Phase A results. It must read `READY` and is bound to an audit
   document by path and sha256. A bare statement is not an audit, and editing the document afterwards
   invalidates the table;
@@ -57,19 +62,36 @@ Internal consistency is not enough. Phase B also checks the table against the se
 
 ## The hard A → table → B boundary
 
-1. Phase A runs under its own authorization: `Authorize G-ROUTE3 phase A execution <freeze digest>`. The
-   authorization is consumed on use by exclusive file creation. A second run under it is refused.
+1. Phase A runs under its own numbered authorization:
+   `Authorize G-ROUTE3 phase A execution <freeze digest> attempt <n>`, with n = 1 for the first attempt.
+
+   - It has an exact key set.
+   - It is consumed by exclusive creation in the fixed ledger `authorization_ledger/`, not in the run root.
+   - Another run under it is refused, although the same run may resume.
+   - A retry after an infrastructure failure needs the next attempt number, as a new, explicit
+     authorization. Every attempt is disclosed in the table.
 2. Phase A is scored and sealed, and reaches five-view terminal agreement.
 3. The Phase A results are audited independently.
 4. `freeze_table` writes the table **once**. A second write with different content is refused.
 5. Phase B requires, before any provider contact:
    - the table exists and verifies;
-   - its cells equal the cells in the sealed Phase A score, and the score digest matches;
-   - it names this Phase A run, and discloses every Phase A attempt;
-   - Phase A is `complete`, was not synthetic, and ran under this execution freeze;
-   - the table is bound to this execution freeze;
-   - a second authorization reads `Authorize G-ROUTE3 phase B execution <freeze digest> table <table digest>`,
-     and it too is consumed on use.
+   - its cells equal the cells **re-derived from the sealed Phase A call records**, and also equal the sealed
+     score;
+   - the call records cover all 288 scheduled calls in order;
+   - the sealed terminal receipt chains to the call records and to the score;
+   - it names this Phase A run, which appears in the authorization ledger, and it discloses every Phase A
+     attempt in that ledger;
+   - Phase A is `complete`, and, **according to the sealed receipt** (never the unsealed run manifest), it
+     was not synthetic, ran under this execution freeze, and ran with today's guarded dependencies;
+   - the table is bound to this execution freeze, and its corpus, gold and threshold digests match;
+   - the audit document names the run and the score digest, and is not itself a frozen artifact;
+   - a second authorization reads
+     `Authorize G-ROUTE3 phase B execution <freeze digest> table <table digest> attempt <n>`, names the Phase
+     A run, and is consumed in the ledger.
+
+   These checks defeat fabricated or edited Phase A artifacts short of a forger who rewrites every sealed
+   record consistently. Local seals carry no secret, so that last line of defence is procedural: the Phase A
+   result package is committed to git before Phase B is authorized.
 
    Verifying the execution freeze does not depend on the table being absent. Absence is checked only when
    the freeze is *written*, so the freeze stays valid once Phase A has produced a table.

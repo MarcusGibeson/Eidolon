@@ -5,7 +5,7 @@
     "alternative_correct_answers_accepted_by_both_validators": 48,
     "command": "python experiments/G-ROUTE3-candidate/authoring/assemble_g3.py",
     "fixtures_per_corpus": 48,
-    "incorrect_answers_rejected": 36,
+    "incorrect_answers_rejected": 64,
     "result": "PASS"
   },
   "independence_audit": {
@@ -17,7 +17,7 @@
   "production_routing_invoked": false,
   "provider_generation_calls": 0,
   "recorded_on": "2026-09-24",
-  "revision": "R2",
+  "revision": "R3",
   "schema_version": "g-route3.deterministic-test-results.v1",
   "suites": [
     {
@@ -39,11 +39,11 @@
       ],
       "command": "python -m unittest -v g_route3_tests  (from tools/)",
       "groups": {
-        "corpus_construction_and_derivability": 13,
-        "execution_freeze": 3,
+        "corpus_construction_and_derivability": 17,
+        "execution_freeze_and_guard": 4,
         "gold_blind_routing_and_escalation": 12,
-        "governed_two_phase_pipeline": 10,
-        "qualification_and_table": 9,
+        "governed_two_phase_pipeline": 12,
+        "qualification_and_table": 10,
         "validation_gates": 2
       },
       "required_cases_covered": {
@@ -72,26 +72,44 @@
       },
       "result": "PASS",
       "round2_regressions_for_external_review_findings": {
-        "all_36_incorrect_answers_rejected": "test_incorrect_answers_are_rejected",
         "all_48_alternative_phrasings_pass_both_validators": "test_natural_correct_phrasings_are_accepted_by_both_validators",
-        "audit_bound_by_document_digest": "test_audit_must_be_bound_to_a_document_digest",
-        "authorization_consumed_once": "test_authorization_file_is_consumed_exactly_once",
-        "conversation_negation_is_never_rejected": "test_conversation_operational_check_accepts_negation_and_rejects_affirmative_claims",
+        "all_64_incorrect_answers_rejected": "test_incorrect_answers_are_rejected",
+        "audit_bound_by_document_digest": "test_audit_must_be_bound_to_a_document_that_names_the_run",
+        "authorization_consumed_once": "test_authorization_is_consumed_exactly_once_in_the_fixed_ledger",
+        "conversation_negation_is_never_rejected": "test_conversation_frame_accepts_negation_and_rejects_action_claims",
         "evaluable_failing_gate_is_fail": "test_an_evaluable_failing_gate_is_a_failure_even_when_the_other_gate_is_not_evaluable",
         "exact_two_by_two_required": "test_only_the_exact_two_by_two_design_can_qualify",
-        "forged_table_synthetic_phase_a_and_undisclosed_attempt_rejected": "test_table_provenance_is_checked_against_the_sealed_phase_a_run",
+        "forged_table_synthetic_phase_a_and_undisclosed_attempt_rejected": "test_table_provenance_is_rederived_from_the_sealed_call_records",
         "freeze_cannot_be_written_after_table": "test_a_freeze_cannot_be_written_once_a_table_exists",
         "freeze_verification_survives_table_existence": "test_freeze_verification_does_not_depend_on_table_absence",
         "full_coding_whitelist_disclosed": "test_coding_prompts_disclose_the_operation_whitelist",
         "grounding_tokenizer_handles_fused_units": "test_synthesis_paraphrase_with_attached_units_is_grounded",
         "no_trigger_fires_on_gold_or_alternatives": "test_no_trigger_fires_on_any_reference_or_alternative_answer",
         "planning_single_template_declared": "test_planning_is_a_declared_single_template_construct",
-        "real_authorization_path_opens_both_phases_once": "test_real_authorizations_open_both_phases_once_each",
+        "real_authorization_path_opens_both_phases_once": "test_real_authorizations_are_numbered_attempts_recorded_in_a_fixed_ledger",
         "sandbox_host_failure_is_infrastructure": "test_coding_sandbox_host_failure_is_infrastructure_not_model_failure",
         "structural_reuse_detectable": "test_structural_check_detects_a_reused_gold_shape",
-        "superseded_r1_digest_independent_of_line_endings": "test_superseded_r1_digest_is_independent_of_checkout_line_endings"
+        "superseded_digests_independent_of_line_endings": "test_superseded_digests_are_independent_of_checkout_line_endings"
       },
-      "tests": 49
+      "round3_regressions_for_external_review_findings": {
+        "audit_names_run_and_is_not_frozen": "test_audit_must_be_bound_to_a_document_that_names_the_run",
+        "coarse_research_signature": "test_structural_check_detects_a_reused_gold_shape",
+        "coding_old_trailing_newlines": "test_coding_old_is_compared_ignoring_trailing_newlines_only",
+        "coding_timeout_host_baseline": "test_coding_sandbox_host_failure_is_infrastructure_not_model_failure",
+        "conversation_answer_frame_action_claims": "test_conversation_frame_accepts_negation_and_rejects_action_claims",
+        "conversation_answer_line_parsing": "test_conversation_answer_line_parsing_is_lenient_only_in_form",
+        "conversation_answer_positions": "test_conversation_answer_positions_carry_no_information",
+        "fabricated_phase_a_cannot_open_phase_b": "test_a_fabricated_phase_a_run_cannot_open_phase_b",
+        "model_preflight_uses_g_route3_bindings": "test_model_binding_drift_fails_closed",
+        "numbered_attempts_in_fixed_ledger": "test_real_authorizations_are_numbered_attempts_recorded_in_a_fixed_ledger",
+        "output_budget_disclosed": "test_every_json_prompt_discloses_the_output_budget",
+        "planning_not_listed_in_gold_order": "test_planning_is_a_declared_single_template_construct",
+        "runtime_import_closure_frozen_and_guarded": "test_every_runtime_module_is_frozen_and_guarded",
+        "synthetic_path_requires_declared_provider": "test_synthetic_path_requires_a_declared_synthetic_provider",
+        "table_rederived_from_sealed_call_records": "test_table_provenance_is_rederived_from_the_sealed_call_records",
+        "table_source_digests_verified": "test_table_source_digests_are_verified"
+      },
+      "tests": 57
     }
   ]
 }

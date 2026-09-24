@@ -3,6 +3,8 @@
 Imported by author_g3_part3.py after its round-1 definitions have been removed for the
 fixtures replaced here.
 """
+import hashlib
+
 from author_g3_part1 import CODING_RULES, PLAN_RULES, add
 
 
@@ -59,7 +61,16 @@ def plan4(corpus, fid, risk, title, objective, context, chain, uncertainty_text,
     steps in a total order stated pairwise, one excluded action, five evidence items, two uncertainty
     codes of which exactly one holds."""
     evidence = [("F1", context)] + [(f"F{i}", text) for i, text in enumerate(chain, 2)] + [("F5", uncertainty_text)]
-    planning(corpus, fid, risk, title, objective, evidence, list(actions) + [excluded],
+    # Round 3: allowed_actions were listed in gold order with the excluded action last, so the order could be
+    # copied rather than derived. List them in a fixed pseudo-random order that is never the gold order.
+    listed = sorted(list(actions) + [excluded], key=lambda a: hashlib.sha256(f"{fid}|{a[0]}".encode()).hexdigest())
+    included = [name for name, _ in listed if name != excluded[0]]
+    if included == [name for name, _ in actions] or listed[-1] == excluded:
+        listed = listed[1:] + listed[:1]
+    included = [name for name, _ in listed if name != excluded[0]]
+    if included == [name for name, _ in actions]:
+        listed = list(reversed(listed))
+    planning(corpus, fid, risk, title, objective, evidence, listed,
              [name for name, _ in actions], codes, [codes[0][0]], pattern, domain,
              f"Each consecutive precedence is stated in the evidence; {excluded[0]} is excluded by its prefix.")
 

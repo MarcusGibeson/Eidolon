@@ -15,6 +15,17 @@ Changes from the G-ROUTE2 policy module, which is not modified:
   "11 C for 40 min" is not mistaken for ungrounded text.
 - grounding_weak's coding branch is removed: failed coding evidence is never accepted,
   so the branch could not fire on an accepted output and was dead code.
+
+Defensive branches (round 3, stated rather than hidden): triggers are evaluated only on
+operationally accepted outputs, and the operational validator already rejects unparseable
+payloads, empty claim or statement lists, empty extraction values and failing coding output.
+The corresponding branches below (the `value is None` returns, empty `claims` / `statements`
+/ `steps`, extraction `[]`, coding `new == ""`) therefore cannot fire on an accepted output.
+They are kept so the trigger functions are total over any payload. The live conditions are:
+a settled research claim with no citation or lineage, a synthesis statement sharing no
+content token with the observations it cites, a planning step with no evidence, and an
+empty string value in an extraction field (each verified live by test). A synthesis
+statement citing no observation is rejected operationally, so that branch is defensive too.
 """
 
 import json

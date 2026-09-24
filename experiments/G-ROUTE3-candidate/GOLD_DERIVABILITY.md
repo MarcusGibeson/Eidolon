@@ -9,23 +9,26 @@ system prompt, the fixture prompt and the fixture input. Concretely:
 2. every ordering the validator enforces is stated in the prompt (planning step numbering, dependency
    chaining, evidence-id order, uncertainty-code order);
 3. every execution constraint is disclosed: the full coding whitelist, including that only `.parts` may be
-   read, that helper functions may not be called, and every denied statement form; and the conversation
-   length limit;
+   read, that helper functions may not be called, and every denied statement form; the conversation
+   answer frame and length limit; and the 350-token output budget in every JSON prompt;
 4. where selection is required (which planning actions to include, which sources to cite, which status a
    claim takes, which conclusion applies), the rule that decides it is stated, and overlapping rules carry
    an explicit order;
 5. every format the grader enforces is stated: exact key sets, `depends_on` as a list, and extraction spans
    copied as written without leading articles or labels;
-6. no grader rejects a correct answer for wording the model was never told to use. Every conversation
-   fixture carries at least three natural correct phrasings and at least one incorrect answer, and both
-   validators are run on all of them.
+6. no grader rejects a correct answer for wording the model was never told to use. Conversation is judged
+   on a disclosed closed option set, not on phrase anchors. Each conversation fixture carries three
+   alternative correct replies in varied formats and four incorrect ones, and both validators are run on all
+   of them;
+7. no listed order gives the answer away: planning actions are never listed in gold order, and a
+   conversation answer's position in its option list is pseudo-random.
 
 The rule is checkable without any model output. It is enforced by `authoring/assemble_g3.py`, which refuses to
 write the corpora if any check fails, and by deterministic tests over all 96 fixtures.
 
-Round 1 of the rule (items 1–4) was not enough. The external pre-contact review found that correct answers
-could still fail on hidden grader rules. Items 5 and 6 and the wider item 3 come from that review; see
-`EXTERNAL_REVIEW_ROUND1.md`.
+Items 1–4 alone were not enough. Two external pre-contact reviews found correct answers still failing on
+hidden grader rules. Items 5–7 and the wider item 3 come from those reviews; see
+`EXTERNAL_REVIEW_ROUND1.md` and `EXTERNAL_REVIEW_ROUND2.md`.
 
 ## Why
 
@@ -72,12 +75,15 @@ caveat above.
 
 ## What G-ROUTE3 does about it
 
-The semantic evaluator, `g_route1_validators.py`, is used byte-for-byte. Research, synthesis and planning
-remain strict exact-match profiles, and planning still requires exact equality, including list order.
+For research, synthesis, extraction and planning, the semantic evaluator `g_route1_validators.py` is used
+byte-for-byte. Research, synthesis and planning remain strict exact-match profiles, and planning still
+requires exact equality, including list order. Coding uses the same evaluator, after `old` is canonicalized
+for trailing newlines only.
 
 The operational check is `g_route3_operational.py`. It is G-ROUTE1's operational validator for every
-profile except conversation, where it rejects only an affirmative first-person claim that an action was
-carried out. A negated statement is never rejected. G-ROUTE1's module is not modified.
+profile except conversation and coding. Conversation uses the disclosed answer frame, with an action-claim
+check that never matches a negation. Coding uses the same trailing-newline canonicalization. G-ROUTE1's
+module is not modified.
 
 Everything else was repaired in the fixtures, not the checks:
 
@@ -85,7 +91,7 @@ Everything else was repaired in the fixtures, not the checks:
 - ordering conventions and rule precedence are stated;
 - selection rules are explicit;
 - the complete coding whitelist is disclosed in every coding prompt;
-- conversation prompts ask for exactly what their anchors check.
+- conversation fixtures state their answer options and the frame, and the output budget is stated.
 
 ## Limitation this introduces
 

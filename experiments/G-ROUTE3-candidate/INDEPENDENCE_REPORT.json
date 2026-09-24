@@ -102,7 +102,7 @@
   "structural_check_scope": "research, synthesis, extraction and planning compare the shape of the gold answer; conversation and coding have no structural signature and rely on the external review of reasoning patterns",
   "trigram_similarity_by_task_class": {
     "coding_generation_repair": {
-      "boilerplate_trigrams_excluded": 110,
+      "boilerplate_trigrams_excluded": 122,
       "max_pair": [
         "A-CODE-R1-1",
         "B-CODE-R1-1"
@@ -111,49 +111,49 @@
       "mean_trigram_jaccard": 0.0008
     },
     "grounded_research_synthesis": {
-      "boilerplate_trigrams_excluded": 186,
+      "boilerplate_trigrams_excluded": 196,
       "max_pair": [
         "A-RESEARCH-R3-1",
         "B-RESEARCH-R1-1"
       ],
-      "max_trigram_jaccard": 0.0408,
+      "max_trigram_jaccard": 0.0397,
       "mean_trigram_jaccard": 0.0019
     },
     "hierarchical_semantic_synthesis": {
-      "boilerplate_trigrams_excluded": 65,
+      "boilerplate_trigrams_excluded": 77,
       "max_pair": [
         "A-SYNTH-R4-2",
         "B-SYNTH-R3-1"
       ],
       "max_trigram_jaccard": 0.0294,
-      "mean_trigram_jaccard": 0.0043
+      "mean_trigram_jaccard": 0.0045
     },
     "ordinary_conversation": {
-      "boilerplate_trigrams_excluded": 12,
+      "boilerplate_trigrams_excluded": 46,
       "max_pair": [
-        "A-CONV-R4-2",
-        "B-CONV-R4-1"
+        "A-CONV-R1-2",
+        "B-CONV-R1-2"
       ],
-      "max_trigram_jaccard": 0.0706,
+      "max_trigram_jaccard": 0.0548,
       "mean_trigram_jaccard": 0.0026
     },
     "reflective_planning": {
-      "boilerplate_trigrams_excluded": 158,
+      "boilerplate_trigrams_excluded": 172,
       "max_pair": [
         "A-PLAN-R1-2",
         "B-PLAN-R1-2"
       ],
-      "max_trigram_jaccard": 0.0423,
-      "mean_trigram_jaccard": 0.0048
+      "max_trigram_jaccard": 0.042,
+      "mean_trigram_jaccard": 0.0051
     },
     "structured_extraction": {
-      "boilerplate_trigrams_excluded": 29,
+      "boilerplate_trigrams_excluded": 41,
       "max_pair": [
         "A-EXTRACT-R2-1",
         "B-EXTRACT-R4-2"
       ],
       "max_trigram_jaccard": 0.0404,
-      "mean_trigram_jaccard": 0.0015
+      "mean_trigram_jaccard": 0.0016
     }
   },
   "valid": true

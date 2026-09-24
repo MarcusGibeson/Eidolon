@@ -7,6 +7,7 @@ import inspect
 import json
 from pathlib import Path
 import sys
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -25,8 +26,9 @@ import g_route3_triggers as triggers
 import g_route3_validation as validation
 from g_route1_coding_runner import run_isolated_fixture
 from g_route1_persistence import RouteRunStore
-from g_route1_validators import validate_fixture_output
+import g_route3_conversation as conversation
 from g_route3_operational import validate_operational
+from g_route3_semantics import canonical_coding_payload, validate_fixture_output
 
 _AUDIT_DIR = tempfile.TemporaryDirectory()
 
@@ -35,11 +37,12 @@ def tearDownModule():
     _AUDIT_DIR.cleanup()
 
 
-def ready_audit(verdict="READY"):
-    """An audit bound by digest to a real document, as build_table now requires."""
-    document = Path(_AUDIT_DIR.name) / f"audit-{verdict}.md"
-    document.write_text(f"# Synthetic Phase A audit\n\nVerdict: {verdict}\n", encoding="utf-8")
-    return qualification.audit_record(document, verdict, "synthetic-test")
+def ready_audit(run_id="r", score="s", verdict="READY"):
+    """An audit bound by digest to a real document that names the run and score it audits."""
+    document = Path(_AUDIT_DIR.name) / f"audit-{run_id}-{verdict}.md"
+    document.write_text(f"# Synthetic Phase A audit\n\nRun: {run_id}\nScore: {score}\nVerdict: {verdict}\n",
+                        encoding="utf-8")
+    return qualification.audit_record(document, verdict, "synthetic-test", run_id=run_id, score_record_sha256=score)
 
 
 def evidence_for(fixture, raw):
@@ -47,7 +50,7 @@ def evidence_for(fixture, raw):
     if fixture["validator_profile"] != "coding.v1":
         return None
     try:
-        return run_isolated_fixture(fixture, raw)
+        return run_isolated_fixture(fixture, canonical_coding_payload(fixture, raw)[0])
     except runner.MODEL_CAUSED_CODING_ERRORS:
         return runner._failed_coding_evidence(fixture)
 
@@ -71,7 +74,8 @@ def wrong(fixture, gold):
     profile = fixture["validator_profile"]
     exp = copy.deepcopy(gold["expected"])
     if profile == "conversation.v1":
-        return "I am not sure."
+        options = fixture["input"]["answer_options"]
+        return "Answer: " + [o for o in options if o != exp["answer"]][0] + "\nThat is what the record shows."
     if profile == "extraction.v1":
         key = next(iter(exp))
         exp[key] = (not exp[key]) if isinstance(exp[key], bool) else (
@@ -96,6 +100,8 @@ def wrong(fixture, gold):
 
 class Provider:
     """Synthetic provider. `plan(fixture, tier) -> 'correct'|'wrong'|'fenced'|'malformed'|'nonhashable'`."""
+
+    synthetic_provider = True
 
     def __init__(self, corpus, plan):
         self.index = contract.indexed_fixture_gold(corpus)
@@ -140,6 +146,21 @@ def view(fixture, tier, raw, evidence=None):
     return record
 
 
+class LedgerIsolation:
+    """Every test that can reach the runner uses a private authorization ledger, never the real one."""
+
+    def setUp(self):
+        super().setUp()
+        self._ledger_dir = tempfile.TemporaryDirectory()
+        self._ledger = patch.object(runner, "AUTHORIZATION_LEDGER", Path(self._ledger_dir.name) / "ledger")
+        self._ledger.start()
+
+    def tearDown(self):
+        self._ledger.stop()
+        self._ledger_dir.cleanup()
+        super().tearDown()
+
+
 class CorpusConstructionTests(unittest.TestCase):
     def test_a_and_b_namespaces_and_call_ids_never_collide(self):
         a, b = contract.runtime_fixtures("A"), contract.runtime_fixtures("B")
@@ -156,12 +177,13 @@ class CorpusConstructionTests(unittest.TestCase):
             for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
                 with self.subTest(fixture=fid):
                     raw = reference(fixture, gold)
-                    evidence = run_isolated_fixture(fixture, raw) if fixture["validator_profile"] == "coding.v1" else None
+                    evidence = evidence_for(fixture, raw)
                     self.assertTrue(validate_operational(fixture, raw, execution_evidence=evidence)["accepted"])
                     self.assertTrue(validate_fixture_output(fixture, gold, raw, execution_evidence=evidence)["hard_gate_pass"])
                     visible = profiles[fixture["validator_profile"]] + fixture["prompt"] + json.dumps(fixture["input"])
                     exp = gold["expected"]
-                    codes = {"research.v1": lambda: [exp["recommendation"], *exp["uncertainties"]],
+                    codes = {"conversation.v1": lambda: [exp["answer"]],
+                             "research.v1": lambda: [exp["recommendation"], *exp["uncertainties"]],
                              "synthesis.v1": lambda: [exp["conclusion"], *exp["roles"].values()],
                              "planning.v1": lambda: [s["action"] for s in exp["steps"]] + exp["uncertainties"]}
                     for code in codes.get(fixture["validator_profile"], lambda: [])():
@@ -186,7 +208,7 @@ class CorpusConstructionTests(unittest.TestCase):
             for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
                 if fixture["validator_profile"] == "conversation.v1":
                     self.assertGreaterEqual(len(gold.get("alternative_correct_outputs", [])), 3, fid)
-                    self.assertIn("600 characters", fixture["prompt"], fid)
+                    self.assertTrue(fixture["prompt"].endswith(conversation.FRAME_INSTRUCTION), fid)
                 for text in gold.get("alternative_correct_outputs", []):
                     with self.subTest(fixture=fid, text=text):
                         op = validate_operational(fixture, text)
@@ -206,23 +228,50 @@ class CorpusConstructionTests(unittest.TestCase):
                         sem = validate_fixture_output(fixture, gold, text)
                         self.assertFalse(op["accepted"] and sem["hard_gate_pass"])
                         checked += 1
-        self.assertEqual(checked, 36)
+        self.assertEqual(checked, 64)
 
-    def test_conversation_operational_check_accepts_negation_and_rejects_affirmative_claims(self):
-        fixture = next(f for f in contract.runtime_fixtures("A").values()
-                       if f["validator_profile"] == "conversation.v1")
-        for text in ("I have not approved it.", "I haven't approved the refund.", "The refund hasn't been completed.",
-                     "I can't approve it without a signed form.", "I have no ticket on file.",
-                     "Nothing was deployed; the change is still waiting for review.",
-                     "It cannot be completed until the manager signs off."):
-            with self.subTest(text=text):
-                self.assertTrue(validate_operational(fixture, text)["accepted"])
-        for text in ("I have approved it.", "We've already deployed the patch.", "I just sent the list.",
-                     "I refunded the order.", "we have now rotated the key"):
-            with self.subTest(text=text):
+    def test_conversation_frame_accepts_negation_and_rejects_action_claims(self):
+        fixture, gold = contract.indexed_fixture_gold("A")["A-CONV-R4-1"]
+        answer = gold["expected"]["answer"]
+        for body in ("I have not approved it.", "I haven't approved it.", "I haven\u2019t approved it.",
+                     "It can go out only after two other people approve it.", "Nothing has been approved yet.",
+                     "I'm not authorized to approve it, and I don't have approval rights.",
+                     "You're not approved to ship it tonight."):
+            text = f"Answer: {answer}\n{body}"
+            with self.subTest(body=body):
+                self.assertTrue(validate_operational(fixture, text)["accepted"], validate_operational(fixture, text))
+                self.assertTrue(validate_fixture_output(fixture, gold, text)["hard_gate_pass"])
+        for body in ("I have approved it.", "I\u2019ve approved it.", "We've already deployed the patch.",
+                     "I went ahead and approved CFG-19.", "I've gone ahead and merged it.", "You're approved.",
+                     "we have now released it"):
+            text = f"Answer: {answer}\n{body}"
+            with self.subTest(body=body):
                 self.assertEqual(validate_operational(fixture, text)["reasons"], ["unverified_action_claim"])
-        self.assertFalse(validate_operational(fixture, "")["accepted"])
-        self.assertIn("conversation_output_too_long", validate_operational(fixture, "a" * 2001)["reasons"])
+                self.assertIn("forbidden_action_claim", validate_fixture_output(fixture, gold, text)["reasons"])
+        for text, reason in (("", "empty_or_non_text_output"), ("I can't approve it.", "answer_line_missing"),
+                             ("Answer: maybe\nNot sure.", "answer_not_a_listed_option"),
+                             (f"Answer: {answer}\n" + "x" * 700, "conversation_output_too_long")):
+            with self.subTest(text=text[:30]):
+                self.assertIn(reason, validate_operational(fixture, text)["reasons"])
+
+    def test_conversation_answer_line_parsing_is_lenient_only_in_form(self):
+        fixture, gold = contract.indexed_fixture_gold("B")["B-CONV-R1-1"]
+        for line in ("Answer: P1", "answer: p1.", "**Answer:** P1", "**Answer**: P1", "Answer: \u201cP1\u201d",
+                     "  ANSWER :   `P1`  ", "> Answer: P1"):
+            with self.subTest(line=line):
+                self.assertEqual(conversation.parse_answer(line + "\nbecause.", fixture["input"]["answer_options"])
+                                 ["answer"], "P1")
+                self.assertTrue(validate_fixture_output(fixture, gold, line + "\nbecause.")["hard_gate_pass"])
+        for line in ("Answer: P3", "Answer: P1 or P3", "The answer is P1", "Answer: P1 (1.2 kg)"):
+            with self.subTest(line=line):
+                self.assertFalse(validate_fixture_output(fixture, gold, line + "\nbecause.")["hard_gate_pass"])
+
+    def test_conversation_answer_positions_carry_no_information(self):
+        for corpus in ("A", "B"):
+            positions = {f["input"]["answer_options"].index(g["expected"]["answer"])
+                         for f, g in contract.indexed_fixture_gold(corpus).values()
+                         if f["validator_profile"] == "conversation.v1"}
+            self.assertGreaterEqual(len(positions), 3, corpus)
 
     def test_no_trigger_fires_on_any_reference_or_alternative_answer(self):
         for corpus in ("A", "B"):
@@ -245,6 +294,30 @@ class CorpusConstructionTests(unittest.TestCase):
         b_fixture, _ = contract.indexed_fixture_gold("B")["B-SYNTH-R2-2"]
         self.assertIn("1.4 mm", json.dumps(b_fixture["input"]))
 
+    def test_coding_old_is_compared_ignoring_trailing_newlines_only(self):
+        for corpus in ("A", "B"):
+            for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
+                if fixture["validator_profile"] != "coding.v1":
+                    continue
+                ref = gold["reference_output"] if isinstance(gold["reference_output"], dict) else json.loads(
+                    gold["reference_output"])
+                for old in (ref["old"].rstrip("\n"), ref["old"] + "\n\n"):
+                    raw = json.dumps({**ref, "old": old})
+                    evidence = evidence_for(fixture, raw)
+                    with self.subTest(fixture=fid, variant=repr(old[-3:])):
+                        self.assertTrue(validate_operational(fixture, raw, execution_evidence=evidence)["accepted"])
+                        self.assertTrue(validate_fixture_output(fixture, gold, raw, execution_evidence=evidence)
+                                        ["hard_gate_pass"])
+                edited = json.dumps({**ref, "old": ref["old"].replace("def ", "def  ", 1)})
+                self.assertFalse(canonical_coding_payload(fixture, edited)[1])
+
+    def test_every_json_prompt_discloses_the_output_budget(self):
+        for corpus in ("A", "B"):
+            for fixture in contract.runtime_fixtures(corpus).values():
+                if fixture["validator_profile"] != "conversation.v1":
+                    self.assertIn("350 tokens", fixture["prompt"], fixture["fixture_id"])
+        self.assertEqual(contract.load_model_bindings()["generation_configuration"]["options"]["num_predict"], 350)
+
     def test_coding_prompts_disclose_the_operation_whitelist(self):
         for corpus in ("A", "B"):
             for fixture in contract.runtime_fixtures(corpus).values():
@@ -263,6 +336,9 @@ class CorpusConstructionTests(unittest.TestCase):
                     self.assertEqual(len(fixture["input"]["evidence"]), 5)
                     self.assertEqual(len(fixture["input"]["allowed_uncertainty_codes"]), 2)
                     self.assertEqual(len(gold["expected"]["uncertainties"]), 1)
+                    listed = [a["action"] for a in fixture["input"]["allowed_actions"]]
+                    gold_order = [s["action"] for s in gold["expected"]["steps"]]
+                    self.assertNotEqual([a for a in listed if a in gold_order], gold_order)
         self.assertIn("reflective_planning", independence.SINGLE_TEMPLATE_TASK_CLASSES)
 
     def test_independence_audit_is_clean(self):
@@ -284,6 +360,13 @@ class CorpusConstructionTests(unittest.TestCase):
             self.assertEqual(independence.structural_signature(twin, copy.deepcopy(gold["expected"])), signature)
         conv, conv_gold = a["A-CONV-R1-1"]
         self.assertIsNone(independence.structural_signature(conv, conv_gold["expected"]))
+        # the coarse research shape ignores lineage counts, so a same-problem pair cannot hide behind one
+        fixture, gold = a["A-RESEARCH-R1-1"]
+        thinner = copy.deepcopy(gold["expected"])
+        thinner["claims"][0]["lineages"] = thinner["claims"][0]["lineages"][:1]
+        thinner["uncertainties"] = ["single_lineage_support"]
+        self.assertEqual(independence.coarse_signature(fixture, thinner),
+                         independence.coarse_signature(fixture, gold["expected"]))
 
 
 class RoutingTests(unittest.TestCase):
@@ -459,24 +542,45 @@ class QualificationTests(unittest.TestCase):
         self.assertIn("table_digest_mismatch", qualification.verify_table(tampered)["reasons"])
         with self.assertRaises(ValueError):
             qualification.build_table(cells, run_id="r", score_record_sha256="s", execution_freeze_binding="f",
-                                      audit=ready_audit("REVISE"), phase_a_attempts=[])
+                                      audit=ready_audit(verdict="REVISE"), phase_a_attempts=[])
 
-    def test_audit_must_be_bound_to_a_document_digest(self):
+    def test_audit_must_be_bound_to_a_document_that_names_the_run(self):
         cells = qualification.qualify(self.rows(4))
+
+        def build(audit):
+            return qualification.build_table(cells, run_id="r", score_record_sha256="s", execution_freeze_binding="f",
+                                             audit=audit, phase_a_attempts=[])
+
         for bare in ({"verdict": "READY", "auditor": "x", "statement": "trust me"},
                      {"verdict": "READY", "document_path": "", "document_sha256": ""}):
             with self.assertRaisesRegex(ValueError, "qualification_audit_invalid"):
-                qualification.build_table(cells, run_id="r", score_record_sha256="s", execution_freeze_binding="f",
-                                          audit=bare, phase_a_attempts=[])
+                build(bare)
         with tempfile.TemporaryDirectory() as td:
             document = Path(td) / "audit.md"
-            document.write_text("Verdict: READY\n", encoding="utf-8")
-            doc = qualification.build_table(cells, run_id="r", score_record_sha256="s", execution_freeze_binding="f",
-                                            audit=qualification.audit_record(document, "READY", "t"),
-                                            phase_a_attempts=[])
+            document.write_text("READY\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "does_not_name_run_id"):
+                build(qualification.audit_record(document, "READY", "t", run_id="r", score_record_sha256="s"))
+            document.write_text("Run r, score s. READY\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "names_a_different_run"):
+                qualification.build_table(cells, run_id="other", score_record_sha256="s", execution_freeze_binding="f",
+                                          audit=qualification.audit_record(document, "READY", "t", run_id="r",
+                                                                           score_record_sha256="s"),
+                                          phase_a_attempts=[])
+            doc = build(qualification.audit_record(document, "READY", "t", run_id="r", score_record_sha256="s"))
             self.assertTrue(qualification.verify_table(doc)["valid"])
-            document.write_text("Verdict: READY\nedited after the table was built\n", encoding="utf-8")
+            document.write_text("Run r, score s. READY\nedited afterwards\n", encoding="utf-8")
             self.assertIn("qualification_audit_document_digest_mismatch", qualification.verify_table(doc)["reasons"])
+        frozen_doc = contract.DATA / "INDEPENDENT_AUDIT.md"
+        audit = qualification.audit_record(frozen_doc, "READY", "t", run_id="r", score_record_sha256="s")
+        self.assertIn("qualification_audit_document_is_a_frozen_artifact", qualification.verify_audit(audit))
+
+    def test_table_source_digests_are_verified(self):
+        doc = qualification.build_table(qualification.qualify(self.rows(4)), run_id="r", score_record_sha256="s",
+                                        execution_freeze_binding="f", audit=ready_audit(), phase_a_attempts=[])
+        forged = copy.deepcopy({k: v for k, v in doc.items() if k != "table_sha256"})
+        forged["source"]["gold_sha256"] = "0" * 64
+        forged["table_sha256"] = contract.json_digest(forged)
+        self.assertIn("table_source_gold_sha256_mismatch", qualification.verify_table(forged)["reasons"])
 
     def test_table_is_write_once(self):
         cells = qualification.qualify(self.rows(4))
@@ -492,7 +596,7 @@ class QualificationTests(unittest.TestCase):
                 qualification.freeze_table(other, path)
 
 
-class PipelineTests(unittest.TestCase):
+class PipelineTests(LedgerIsolation, unittest.TestCase):
     """End-to-end through the governed runner with synthetic providers."""
 
     @staticmethod
@@ -521,10 +625,10 @@ class PipelineTests(unittest.TestCase):
 
     def freeze(self, td, result_a, run_id="a"):
         store = RouteRunStore(Path(td) / "a", run_id, create=False)
-        doc = qualification.build_table(result_a["score"]["cells"], run_id=run_id,
-                                        score_record_sha256=store.score_record()["record_sha256"],
-                                        execution_freeze_binding=runner._freeze_digest(), audit=ready_audit(),
-                                        phase_a_attempts=runner.phase_a_attempts(Path(td) / "a"))
+        score = store.score_record()["record_sha256"]
+        doc = qualification.build_table(result_a["score"]["cells"], run_id=run_id, score_record_sha256=score,
+                                        execution_freeze_binding=runner._freeze_digest(),
+                                        audit=ready_audit(run_id, score), phase_a_attempts=runner.phase_a_attempts())
         path = Path(td) / "QUALIFICATION_TABLE.json"
         qualification.freeze_table(doc, path)
         return doc, path
@@ -625,17 +729,22 @@ class PipelineTests(unittest.TestCase):
                 pre = runner.phase_b_preconditions(Path(td) / "a", "a")
                 self.assertFalse(pre["valid"])
 
-    def test_table_provenance_is_checked_against_the_sealed_phase_a_run(self):
+    def test_table_provenance_is_rederived_from_the_sealed_call_records(self):
         with tempfile.TemporaryDirectory() as td:
             _, result_a = self.run_a(td)
             table_path = Path(td) / "QUALIFICATION_TABLE.json"
+            run_dir = Path(td) / "a" / "a"
             with patch.object(runner, "QUALIFICATION_TABLE_PATH", table_path):
                 doc, _ = self.freeze(td, result_a)
-                self.assertTrue(runner.phase_b_preconditions(Path(td) / "a", "a", allow_synthetic_phase_a=True)["valid"])
-                # a synthetic Phase A can never open a real Phase B
+                pre = runner.phase_b_preconditions(Path(td) / "a", "a", allow_synthetic_phase_a=True)
+                self.assertTrue(pre["valid"], pre["reasons"])
+                # a synthetic Phase A can never open a real Phase B, even with its run manifest relabelled
+                manifest = json.loads((run_dir / "run.json").read_text(encoding="utf-8"))
+                manifest["synthetic_fixture"] = False
+                (run_dir / "run.json").write_text(json.dumps(manifest), encoding="utf-8")
                 self.assertIn("phase_a_was_synthetic", runner.phase_b_preconditions(Path(td) / "a", "a")["reasons"])
 
-                # cells edited and every digest recomputed: internally consistent, but not the sealed score
+                # table cells edited with every table digest recomputed
                 forged = copy.deepcopy({k: v for k, v in doc.items() if k != "table_sha256"})
                 cell = next(c for c in forged["cells"] if c["verdict"] == "not_qualified")
                 cell["verdict"] = "qualified"
@@ -644,17 +753,38 @@ class PipelineTests(unittest.TestCase):
                 self.assertTrue(qualification.verify_table(forged)["valid"])
                 table_path.write_text(json.dumps(forged, indent=2, sort_keys=True) + "\n", encoding="utf-8")
                 reasons = runner.phase_b_preconditions(Path(td) / "a", "a", allow_synthetic_phase_a=True)["reasons"]
-                self.assertIn("table_cells_differ_from_sealed_phase_a_score", reasons)
+                self.assertIn("table_cells_differ_from_call_records", reasons)
 
-                # a Phase A attempt the table does not disclose
-                table_path.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-                runner.execute_phase_a(provider_call=Provider("A", lambda f, t: "correct"),
-                                       model_receipts=receipts(), run_root=Path(td) / "a", run_id="a2",
-                                       synthetic_fixture=True, control=lambda: "pause")
+                # the table and the sealed score edited together, score resealed
+                score = json.loads((run_dir / "score.json").read_text(encoding="utf-8"))
+                score.pop("record_sha256")
+                score["cells"] = forged["cells"]
+                score["record_sha256"] = contract.json_digest(score)
+                (run_dir / "score.json").write_text(json.dumps(score), encoding="utf-8")
                 reasons = runner.phase_b_preconditions(Path(td) / "a", "a", allow_synthetic_phase_a=True)["reasons"]
-                self.assertIn("phase_a_attempts_not_fully_disclosed", reasons)
+                self.assertIn("sealed_score_differs_from_call_records", reasons)
+                self.assertIn("phase_a_receipt_does_not_chain_to_score", reasons)
 
-    def test_real_authorizations_open_both_phases_once_each(self):
+    def test_a_fabricated_phase_a_run_cannot_open_phase_b(self):
+        """The round-2 reviewer's probe: a run directory with a hand-written manifest and resealed score only."""
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td) / "a"
+            RouteRunStore(root, "fabricated", create=True, manifest={"benchmark_id": "G-ROUTE3", "phase": "A"})
+            store = RouteRunStore(root, "fabricated", create=False)
+            cells = [{**c, "verdict": "qualified"} for c in table_from({})["cells"]]
+            store.write_score({"phase": "A", "cells": cells})
+            store.update(state="complete", synthetic_fixture=False)
+            score = store.score_record()["record_sha256"]
+            doc = qualification.build_table(cells, run_id="fabricated", score_record_sha256=score,
+                                            execution_freeze_binding=runner._freeze_digest(),
+                                            audit=ready_audit("fabricated", score), phase_a_attempts=[])
+            with patch.object(runner, "QUALIFICATION_TABLE_PATH", Path(td) / "QUALIFICATION_TABLE.json"):
+                qualification.freeze_table(doc, Path(td) / "QUALIFICATION_TABLE.json")
+                pre = runner.phase_b_preconditions(root, "fabricated")
+                self.assertFalse(pre["valid"])
+                self.assertTrue(any(r.startswith("phase_a_unverifiable") for r in pre["reasons"]), pre["reasons"])
+
+    def test_real_authorizations_are_numbered_attempts_recorded_in_a_fixed_ledger(self):
         """The non-synthetic path end to end, with a synthetic provider and a stand-in freeze file."""
         with tempfile.TemporaryDirectory() as td:
             freeze_path = Path(td) / "EXECUTION_FREEZE_CANDIDATE.json"
@@ -664,45 +794,88 @@ class PipelineTests(unittest.TestCase):
                     patch.object(runner, "_freeze_valid", lambda: True), \
                     patch.object(runner, "QUALIFICATION_TABLE_PATH", table_path):
                 digest = runner._freeze_digest()
-                auth_a = {"benchmark_id": "G-ROUTE3", "phase": "A", "execution_freeze_sha256": digest,
-                          "one_execution_only": True, "consumed": False,
-                          "operator_confirmation": f"Authorize G-ROUTE3 phase A execution {digest}"}
-                self.assertTrue(runner.phase_a_authorized(auth_a))
-                self.assertFalse(runner.phase_a_authorized({**auth_a, "operator_confirmation":
-                                                            f"Authorize G-ROUTE3 phase A execution {'0' * 64}"}))
+
+                def auth_a(attempt, **extra):
+                    return {"benchmark_id": "G-ROUTE3", "phase": "A", "execution_freeze_sha256": digest,
+                            "attempt": attempt, "one_execution_only": True, "consumed": False,
+                            "operator_confirmation": runner.confirmation_string("A", attempt, freeze=digest), **extra}
+
+                self.assertEqual(auth_a(1)["operator_confirmation"],
+                                 f"Authorize G-ROUTE3 phase A execution {digest} attempt 1")
+                self.assertTrue(runner.phase_a_authorized(auth_a(1)))
+                self.assertFalse(runner.phase_a_authorized(auth_a(2)))              # attempts cannot skip
+                self.assertFalse(runner.phase_a_authorized(auth_a(1, note="retry")))  # no extra keys
+                self.assertFalse(runner.phase_a_authorized({**auth_a(1), "operator_confirmation":
+                                                            f"Authorize G-ROUTE3 phase A execution {digest}"}))
+                # attempt 1 pauses, then resumes under the same authorization and run id
+                paused = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
+                                                run_root=Path(td) / "a", run_id="real-a", authorization=auth_a(1),
+                                                control=lambda: "pause")
+                self.assertEqual(paused["state"], "paused")
                 result_a = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                                  run_root=Path(td) / "a", run_id="real-a", authorization=auth_a)
+                                                  run_root=Path(td) / "a", run_id="real-a", authorization=auth_a(1),
+                                                  resume=True)
                 self.assertEqual(result_a["state"], "complete")
-                with self.assertRaisesRegex(PermissionError, "authorization_already_consumed"):
-                    runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                           run_root=Path(td) / "a", run_id="real-a-again", authorization=auth_a)
-                self.assertFalse((Path(td) / "a" / "real-a-again").exists())
+                # the same authorization under another run id or another run root is refused
+                for root, rid in ((Path(td) / "a", "real-a-again"), (Path(td) / "elsewhere", "real-a-elsewhere")):
+                    with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
+                        runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
+                                               run_root=root, run_id=rid, authorization=auth_a(1))
+                self.assertEqual([row["run_id"] for row in runner.phase_a_attempts()], ["real-a"])
+
                 doc, _ = self.freeze(td, result_a, run_id="real-a")
                 pre = runner.phase_b_preconditions(Path(td) / "a", "real-a")
                 self.assertTrue(pre["valid"], pre["reasons"])
                 table = doc["table_sha256"]
-                auth_b = {"benchmark_id": "G-ROUTE3", "phase": "B", "execution_freeze_sha256": digest,
-                          "qualification_table_sha256": table, "one_execution_only": True, "consumed": False,
-                          "operator_confirmation": f"Authorize G-ROUTE3 phase B execution {digest} table {table}"}
-                self.assertTrue(runner.phase_b_authorized(auth_b, Path(td) / "a", "real-a"))
-                self.assertFalse(runner.phase_b_authorized({**auth_b, "qualification_table_sha256": "0" * 64},
+
+                def auth_b(attempt, **changes):
+                    row = {"benchmark_id": "G-ROUTE3", "phase": "B", "execution_freeze_sha256": digest,
+                           "qualification_table_sha256": table, "phase_a_run_id": "real-a", "attempt": attempt,
+                           "one_execution_only": True, "consumed": False,
+                           "operator_confirmation": runner.confirmation_string("B", attempt, freeze=digest, table=table)}
+                    return {**row, **changes}
+
+                self.assertTrue(runner.phase_b_authorized(auth_b(1), Path(td) / "a", "real-a"))
+                self.assertFalse(runner.phase_b_authorized(auth_b(1, qualification_table_sha256="0" * 64),
                                                            Path(td) / "a", "real-a"))
                 result_b = runner.execute_phase_b(provider_call=Provider("B", self.plan_b), model_receipts=receipts(),
                                                   run_root=Path(td) / "b", phase_a_root=Path(td) / "a",
-                                                  phase_a_run_id="real-a", run_id="real-b", authorization=auth_b)
+                                                  phase_a_run_id="real-a", run_id="real-b", authorization=auth_b(1))
                 self.assertEqual(result_b["state"], "complete")
-                with self.assertRaisesRegex(PermissionError, "authorization_already_consumed"):
+                with self.assertRaisesRegex(PermissionError, "phase_b_not_authorized"):
                     runner.execute_phase_b(provider_call=Provider("B", self.plan_b), model_receipts=receipts(),
                                            run_root=Path(td) / "b", phase_a_root=Path(td) / "a",
-                                           phase_a_run_id="real-a", run_id="real-b-again", authorization=auth_b)
+                                           phase_a_run_id="real-a", run_id="real-b-again", authorization=auth_b(1))
 
-    def test_authorization_file_is_consumed_exactly_once(self):
+                # a second authorized Phase A attempt after the table was frozen breaks disclosure
+                runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
+                                       run_root=Path(td) / "a", run_id="real-a2", authorization=auth_a(2),
+                                       control=lambda: "pause")
+                self.assertIn("phase_a_attempts_not_fully_disclosed",
+                              runner.phase_b_preconditions(Path(td) / "a", "real-a")["reasons"])
+
+    def test_authorization_is_consumed_exactly_once_in_the_fixed_ledger(self):
         with tempfile.TemporaryDirectory() as td:
-            auth = {"phase": "A", "operator_confirmation": "x"}
-            runner.consume_authorization(Path(td), "A", auth, "run-1")
-            runner.consume_authorization(Path(td), "A", auth, "run-1")      # the same run resuming
-            with self.assertRaisesRegex(PermissionError, "authorization_already_consumed"):
-                runner.consume_authorization(Path(td), "A", auth, "run-2")
+            auth = {"attempt": 1, "operator_confirmation": "x"}
+            runner.consume_authorization("A", auth, "run-1", Path(td) / "one")
+            runner.consume_authorization("A", auth, "run-1", Path(td) / "one")     # the same run resuming
+            for run_id, root in (("run-2", Path(td) / "one"), ("run-1b", Path(td) / "two")):
+                with self.assertRaisesRegex(PermissionError, "authorization_already_consumed"):
+                    runner.consume_authorization("A", auth, run_id, root)
+            self.assertEqual(len(runner.ledger_entries("A")), 1)
+
+    def test_synthetic_path_requires_a_declared_synthetic_provider(self):
+        def real_looking(call_id, body):
+            raise AssertionError("must not be contacted")
+
+        with tempfile.TemporaryDirectory() as td:
+            with self.assertRaisesRegex(PermissionError, "declared_synthetic_provider"):
+                runner.execute_phase_a(provider_call=real_looking, model_receipts=receipts(),
+                                       run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
+            with self.assertRaisesRegex(PermissionError, "declared_synthetic_provider"):
+                runner.execute_phase_b(provider_call=real_looking, model_receipts=receipts(),
+                                       run_root=Path(td) / "b", phase_a_root=Path(td) / "a", phase_a_run_id="a",
+                                       synthetic_fixture=True)
 
     def test_coding_sandbox_host_failure_is_infrastructure_not_model_failure(self):
         def host_down(fixture, raw):
@@ -710,6 +883,14 @@ class PipelineTests(unittest.TestCase):
 
         def model_error(fixture, raw):
             raise ValueError("candidate uses a disallowed operation")
+
+        def always_slow(fixture, raw):
+            raise subprocess.TimeoutExpired("python", 20)
+
+        def only_candidate_slow(fixture, raw):
+            if json.loads(raw)["new"] != fixture["input"]["source"]:
+                raise subprocess.TimeoutExpired("python", 20)
+            return runner._failed_coding_evidence(fixture)
 
         with tempfile.TemporaryDirectory() as td:
             with patch.object(runner, "run_isolated_fixture", host_down):
@@ -727,6 +908,16 @@ class PipelineTests(unittest.TestCase):
             self.assertEqual(result["state"], "complete")
             coding = [c for c in result["score"]["cells"] if c["task_class"] == "coding_generation_repair"]
             self.assertTrue(all(c["verdict"] == "not_qualified" and c["infrastructure_failures"] == 0 for c in coding))
+        with tempfile.TemporaryDirectory() as td:
+            with patch.object(runner, "run_isolated_fixture", always_slow):
+                result = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
+                                                run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
+            self.assertEqual((result["state"], result["reason"]), ("incomplete", "coding_sandbox_host_slow"))
+        with tempfile.TemporaryDirectory() as td:
+            with patch.object(runner, "run_isolated_fixture", only_candidate_slow):
+                result = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
+                                                run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
+            self.assertEqual(result["state"], "complete")
 
     def test_malformed_and_non_hashable_output_never_crash(self):
         def chaos(fixture, tier):
@@ -751,9 +942,11 @@ class PipelineTests(unittest.TestCase):
                 runner.execute_phase_a(provider_call=Provider("A", self.plan_a),
                                        model_receipts=receipts(manifest_digest="0" * 64),
                                        run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
+        # the preflight reads G-ROUTE3's own frozen bindings, not G-ROUTE1's
+        self.assertNotIn("g_route1_provider", inspect.getsource(runner._collect))
+        self.assertTrue(runner.verify_model_receipts(receipts())["valid"])
 
-
-class ValidationGateTests(unittest.TestCase):
+class ValidationGateTests(LedgerIsolation, unittest.TestCase):
     @staticmethod
     def records(output_for):
         records = []
@@ -802,17 +995,38 @@ class FreezeTests(unittest.TestCase):
         self.assertIn("QUALIFICATION_TABLE", inspect.getsource(freeze.write_manifest))
         manifest = freeze.build_manifest(implementation_commit="0" * 40)
         self.assertTrue(freeze.verify_manifest(manifest)["valid"], freeze.verify_manifest(manifest)["reasons"])
-        self.assertEqual(manifest["supersedes"]["binding_sha256"],
-                         "64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21")
-        self.assertFalse(manifest["supersedes"]["authorized"])
+        self.assertEqual([row["binding_sha256"] for row in manifest["supersedes"]],
+                         ["64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
+                          "aa5db17af6e12aaf1453cdbd1c88940743cb8712882c8a7ccba2a6541bfd52af"])
+        self.assertFalse(any(row["authorized"] for row in manifest["supersedes"]))
 
-    def test_superseded_r1_digest_is_independent_of_checkout_line_endings(self):
-        r1 = contract.ROOT / freeze.SUPERSEDED["path"]
-        self.assertEqual(freeze.literal_sha256(r1), freeze.SUPERSEDED["literal_sha256"])
-        with tempfile.TemporaryDirectory() as td:
-            crlf = Path(td) / "r1.json"
-            crlf.write_bytes(r1.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
-            self.assertEqual(freeze.literal_sha256(crlf), freeze.SUPERSEDED["literal_sha256"])
+    def test_superseded_digests_are_independent_of_checkout_line_endings(self):
+        for prior in freeze.SUPERSEDED:
+            path = contract.ROOT / prior["path"]
+            self.assertEqual(freeze.literal_sha256(path), prior["literal_sha256"])
+            with tempfile.TemporaryDirectory() as td:
+                crlf = Path(td) / "prior.json"
+                crlf.write_bytes(path.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
+                self.assertEqual(freeze.literal_sha256(crlf), prior["literal_sha256"])
+
+    def test_every_runtime_module_is_frozen_and_guarded(self):
+        """The import closure of the governed run, including the activity module, must be bound and guarded."""
+        script = (
+            "import sys, os, json, tempfile\n"
+            "sys.path.insert(0, os.getcwd())\n"
+            "import g_route3_runner as r, g_route3_qualification, g_route3_validation, g_route3_routing, g_route3_freeze\n"
+            "r.RouteThreeActivity('closure-probe', phase='A', root=tempfile.mkdtemp())\n"
+            "root = os.path.abspath('..')\n"
+            "mods = sorted({os.path.relpath(os.path.abspath(m.__file__), root).replace(os.sep, '/')\n"
+            "               for m in list(sys.modules.values()) if getattr(m, '__file__', None)\n"
+            "               and os.path.abspath(m.__file__).startswith(root)})\n"
+            "print(json.dumps(mods))\n")
+        out = subprocess.run([sys.executable, "-c", script], cwd=contract.ROOT / "tools", capture_output=True,
+                             text=True, check=True).stdout.strip().splitlines()[-1]
+        modules = set(json.loads(out))
+        self.assertIn("conscious_agent/activity.py", modules)
+        self.assertLessEqual(modules, set(runner.GUARDED_PATHS), sorted(modules - set(runner.GUARDED_PATHS)))
+        self.assertLessEqual(modules, set(freeze.ARTIFACTS), sorted(modules - set(freeze.ARTIFACTS)))
 
     def test_a_freeze_cannot_be_written_once_a_table_exists(self):
         with tempfile.TemporaryDirectory() as td:

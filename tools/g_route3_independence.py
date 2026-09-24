@@ -86,11 +86,24 @@ def structural_signature(fixture: dict[str, Any], expected: dict[str, Any]) -> A
     if profile == "synthesis.v1":
         return ("synthesis", tuple(sorted(expected["roles"].values())), expected["conclusion"])
     if profile == "extraction.v1":
-        return ("extraction", tuple(sorted(str(v) for v in fixture["input"]["schema"].values())))
+        derived = sum(f"{key} is " in fixture["prompt"] for key in fixture["input"]["schema"])
+        return ("extraction", tuple(sorted(str(v) for v in fixture["input"]["schema"].values())), derived)
     if profile == "planning.v1":
         return ("planning", len(expected["steps"]), len(fixture["input"]["allowed_actions"]),
                 len(fixture["input"]["evidence"]), len(expected["uncertainties"]))
     return None
+
+
+def coarse_signature(fixture: dict[str, Any], expected: dict[str, Any]) -> Any:
+    """A deliberately coarse research shape (round 3): claim statuses, the recommendation's position, and why a
+    claim is unresolved (conflict, scope or unaddressed), ignoring lineage counts.
+    The fine signature also counts citations and lineages, so two fixtures posing the same problem could
+    differ in a lineage count alone and pass."""
+    if fixture["validator_profile"] != "research.v1":
+        return None
+    reason_codes = tuple(sorted(set(expected["uncertainties"]) - {"single_lineage_support"}))
+    return ("research-coarse", tuple(sorted(c["status"] for c in expected["claims"])),
+            fixture["input"]["allowed_recommendations"].index(expected["recommendation"]), reason_codes)
 
 
 def audit() -> dict[str, Any]:
@@ -166,15 +179,16 @@ def audit() -> dict[str, Any]:
     by_cell: dict[tuple[str, str], dict[str, list[Any]]] = defaultdict(lambda: {"A": [], "B": []})
     for corpus, rows in corpora.items():
         for row in rows:
-            signature = structural_signature(row, gold[corpus][row["fixture_id"]])
-            if signature is not None:
-                by_cell[(row["task_class"], row["consequence_risk"])][corpus].append((row["fixture_id"], signature))
+            for signature in (structural_signature(row, gold[corpus][row["fixture_id"]]),
+                              coarse_signature(row, gold[corpus][row["fixture_id"]])):
+                if signature is not None:
+                    by_cell[(row["task_class"], row["consequence_risk"])][corpus].append((row["fixture_id"], signature))
     for (task, risk), parts in sorted(by_cell.items()):
         for (a_id, a_sig), (b_id, b_sig) in product(parts["A"], parts["B"]):
             if a_sig == b_sig:
                 if task in SINGLE_TEMPLATE_TASK_CLASSES:
                     exempt_pairs.append([a_id, b_id])
-                else:
+                elif [a_id, b_id] not in structural_pairs:
                     structural_pairs.append([a_id, b_id])
     if structural_pairs:
         findings.append(f"same_gold_structure_within_cell:{structural_pairs}")

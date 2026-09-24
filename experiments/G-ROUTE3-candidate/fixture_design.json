@@ -68,7 +68,7 @@
       "corpus": "A",
       "domain": "social_walking_group",
       "fixture_id": "A-CONV-R1-1",
-      "pattern": "single_open_slot_offer",
+      "pattern": "single_open_slot_filter",
       "risk_class": "R1",
       "task_class": "ordinary_conversation"
     },
@@ -84,7 +84,7 @@
       "corpus": "A",
       "domain": "retail_refunds",
       "fixture_id": "A-CONV-R2-1",
-      "pattern": "pending_state_not_completion",
+      "pattern": "review_window_date_difference",
       "risk_class": "R2",
       "task_class": "ordinary_conversation"
     },
@@ -92,15 +92,15 @@
       "corpus": "A",
       "domain": "shift_work",
       "fixture_id": "A-CONV-R2-2",
-      "pattern": "conditional_permission_missing_approval",
+      "pattern": "time_difference_threshold_permission",
       "risk_class": "R2",
       "task_class": "ordinary_conversation"
     },
     {
       "corpus": "A",
-      "domain": "workplace_email",
+      "domain": "account_security",
       "fixture_id": "A-CONV-R3-1",
-      "pattern": "policy_following_security_advice",
+      "pattern": "lockout_expiry_time_addition",
       "risk_class": "R3",
       "task_class": "ordinary_conversation"
     },
@@ -156,7 +156,7 @@
       "corpus": "A",
       "domain": "online_orders",
       "fixture_id": "A-EXTRACT-R2-2",
-      "pattern": "explicit_absence_capture",
+      "pattern": "explicit_absence_and_date_addition",
       "risk_class": "R2",
       "task_class": "structured_extraction"
     },
@@ -450,17 +450,17 @@
     },
     {
       "corpus": "B",
-      "domain": "neighbourhood_shops",
+      "domain": "parcel_shipping",
       "fixture_id": "B-CONV-R1-1",
-      "pattern": "attribute_filter_lookup",
+      "pattern": "max_with_unit_conversion",
       "risk_class": "R1",
       "task_class": "ordinary_conversation"
     },
     {
       "corpus": "B",
-      "domain": "evening_classes",
+      "domain": "event_catering",
       "fixture_id": "B-CONV-R1-2",
-      "pattern": "clock_addition_across_hour",
+      "pattern": "conditional_count",
       "risk_class": "R1",
       "task_class": "ordinary_conversation"
     },
@@ -468,7 +468,7 @@
       "corpus": "B",
       "domain": "consumer_warranty",
       "fixture_id": "B-CONV-R2-1",
-      "pattern": "temporal_expiry_computation",
+      "pattern": "month_arithmetic_expiry",
       "risk_class": "R2",
       "task_class": "ordinary_conversation"
     },
@@ -484,7 +484,7 @@
       "corpus": "B",
       "domain": "api_credentials",
       "fixture_id": "B-CONV-R3-1",
-      "pattern": "age_threshold_selection",
+      "pattern": "multi_item_age_threshold",
       "risk_class": "R3",
       "task_class": "ordinary_conversation"
     },
@@ -492,7 +492,7 @@
       "corpus": "B",
       "domain": "backup_operations",
       "fixture_id": "B-CONV-R3-2",
-      "pattern": "partial_success_reporting",
+      "pattern": "partial_result_lookup",
       "risk_class": "R3",
       "task_class": "ordinary_conversation"
     },
@@ -508,7 +508,7 @@
       "corpus": "B",
       "domain": "laboratory_safety",
       "fixture_id": "B-CONV-R4-2",
-      "pattern": "instruction_precedence_over_sensor",
+      "pattern": "capacity_remaining_computation",
       "risk_class": "R4",
       "task_class": "ordinary_conversation"
     },
@@ -540,7 +540,7 @@
       "corpus": "B",
       "domain": "small_business_invoicing",
       "fixture_id": "B-EXTRACT-R2-2",
-      "pattern": "multi_step_computed_total",
+      "pattern": "product_computed_total",
       "risk_class": "R2",
       "task_class": "structured_extraction"
     },
@@ -556,7 +556,7 @@
       "corpus": "B",
       "domain": "backup_policy",
       "fixture_id": "B-EXTRACT-R3-2",
-      "pattern": "retention_requirement_gap",
+      "pattern": "retention_date_difference_gap",
       "risk_class": "R3",
       "task_class": "structured_extraction"
     },

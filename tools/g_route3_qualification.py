@@ -13,9 +13,9 @@ import math
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
-from g_route1_contract import digest_file
+from g_route1_contract import ROOT, digest_file
 from g_route3_operational import validate_operational
-from g_route1_validators import validate_fixture_output
+from g_route3_semantics import validate_fixture_output
 from g_route2_normalization import normalize
 from g_route3_contract import (QUALIFICATION_TABLE_PATH, RISK_CLASSES, TASK_CLASSES, TIER_ORDER, corpus_path,
                                gold_path, indexed_fixture_gold, json_digest, load_json, load_thresholds)
@@ -126,34 +126,56 @@ def routing_lookup(cells: Iterable[Mapping[str, Any]]) -> dict[str, list[str]]:
     return {key: [tier for tier in TIER_ORDER if tier in value] for key, value in table.items()}
 
 
-def audit_record(document: Path, verdict: str, auditor: str) -> dict[str, Any]:
-    """Bind the Phase A audit to a file by digest. A bare dictionary saying READY is not an audit."""
+def _protected_paths() -> set[str]:
+    from g_route3_freeze import ARTIFACTS
+    from g_route3_runner import GUARDED_PATHS
+    return {str(path).replace("\\", "/") for path in (*ARTIFACTS, *GUARDED_PATHS)}
+
+
+def audit_record(document: Path, verdict: str, auditor: str, *, run_id: str, score_record_sha256: str) -> dict[str, Any]:
+    """Bind the Phase A audit to a document by digest, and the document to the run it audits."""
     if not Path(document).is_file():
         raise FileNotFoundError("qualification_audit_document_missing")
     return {"verdict": verdict, "auditor": auditor, "document_path": str(document),
-            "document_sha256": digest_file(document)}
+            "document_sha256": digest_file(document), "run_id": run_id, "score_record_sha256": score_record_sha256}
 
 
-def verify_audit(audit: Mapping[str, Any]) -> list[str]:
+def verify_audit(audit: Mapping[str, Any], source: Mapping[str, Any] | None = None) -> list[str]:
     reasons = []
     if str(audit.get("verdict")) != "READY":
         reasons.append("qualification_audit_not_ready")
     path = Path(str(audit.get("document_path") or ""))
-    if not path.is_file():
+    if not str(audit.get("document_path") or "") or not path.is_file():
         reasons.append("qualification_audit_document_missing")
-    elif digest_file(path) != audit.get("document_sha256"):
+        return reasons
+    if digest_file(path) != audit.get("document_sha256"):
         reasons.append("qualification_audit_document_digest_mismatch")
+    text = path.read_text(encoding="utf-8", errors="replace")
+    for key in ("run_id", "score_record_sha256"):
+        if not audit.get(key) or str(audit[key]) not in text:
+            reasons.append(f"qualification_audit_document_does_not_name_{key}")
+    try:
+        relative = path.resolve().relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        relative = ""
+    if relative and relative in _protected_paths():
+        reasons.append("qualification_audit_document_is_a_frozen_artifact")
+    if source is not None:
+        if audit.get("run_id") != source.get("run_id"):
+            reasons.append("qualification_audit_names_a_different_run")
+        if audit.get("score_record_sha256") != source.get("score_record_sha256"):
+            reasons.append("qualification_audit_names_a_different_score")
     return reasons
 
 
 def build_table(cells: list[Mapping[str, Any]], *, run_id: str, score_record_sha256: str,
                 execution_freeze_binding: str, audit: Mapping[str, Any],
                 phase_a_attempts: list[Mapping[str, Any]]) -> dict[str, Any]:
-    problems = verify_audit(audit)
+    problems = verify_audit(audit, {"run_id": run_id, "score_record_sha256": score_record_sha256})
     if problems:
         raise ValueError("qualification_audit_invalid:" + ",".join(problems))
     doc = {
-        "schema_version": TABLE_SCHEMA, "table_id": "G-ROUTE3-QUALIFICATION-TABLE-R1",
+        "schema_version": TABLE_SCHEMA, "table_id": "G-ROUTE3-QUALIFICATION-TABLE",
         "source": {"corpus": "A", "corpus_sha256": digest_file(corpus_path("A")),
                    "gold_sha256": digest_file(gold_path("A")), "run_id": run_id,
                    "score_record_sha256": score_record_sha256,
@@ -186,7 +208,13 @@ def verify_table(doc: Mapping[str, Any]) -> dict[str, Any]:
         reasons.append("table_cell_count_mismatch")
     if any(c.get("verdict") not in (QUALIFIED, NOT_QUALIFIED, INSUFFICIENT) for c in doc.get("cells") or []):
         reasons.append("unknown_verdict")
-    reasons += verify_audit(doc.get("audit") or {})
+    source = doc.get("source") or {}
+    reasons += verify_audit(doc.get("audit") or {}, source)
+    for key, path in (("corpus_sha256", corpus_path("A")), ("gold_sha256", gold_path("A"))):
+        if source.get(key) != digest_file(path):
+            reasons.append(f"table_source_{key}_mismatch")
+    if source.get("thresholds_sha256") != json_digest(load_thresholds()):
+        reasons.append("table_source_thresholds_sha256_mismatch")
     return {"valid": not reasons, "reasons": reasons, "table_sha256": doc.get("table_sha256")}
 
 

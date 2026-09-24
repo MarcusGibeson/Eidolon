@@ -5,6 +5,12 @@ Contract: `g-route3.validation.v1` · implementation `tools/g_route3_validation.
 Routing decides first, from gold-blind views. Only then is Corpus B gold loaded, and only to judge those
 decisions. Nothing flows back.
 
+Correctness is `g-route3.semantics.v1`. Conversation is judged on the disclosed answer line, plus the absence
+of action claims. Coding is judged after the trailing-newline canonicalization of `old`. Every other profile
+uses the G-ROUTE1 evaluator. Synthesis meaning anchors are word stems. Anchor checks are lenient by nature: a
+restatement that keeps the stem but reverses the meaning can pass. The strict parts of synthesis are the
+roles, coverage and the closed-vocabulary conclusion.
+
 ## Primary metrics
 
 Validation cases (48); R4 evidence-only cases; eligible cases (R1–R3, 36); qualified-start cases; no-qualified-

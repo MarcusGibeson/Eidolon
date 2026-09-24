@@ -3,10 +3,19 @@
 Status: **design and freeze only.** No model has been contacted. Provider generation calls: **0**.
 Benchmark launches: **0**. Production routing: disabled. Automatic escalation: disabled. Belief effects: `none`.
 
-Revision: **R2.** The R1 freeze (binding `64eed1ba…`) was never authorized. An external pre-contact review
-found hidden grader rules, a trigger that fired on correct answers, template reuse between corpora, a gate
-that could hide a failure, weak table provenance, and a freeze check that made Phase B impossible to
-authorize. All are repaired. R1 is preserved and superseded; see `EXTERNAL_REVIEW_ROUND1.md`.
+Revision: **R3.** Neither earlier freeze was ever authorized; both are preserved and superseded.
+
+- **R1** (binding `64eed1ba…`). An external pre-contact review found hidden grader rules, a trigger that fired
+  on correct answers, template reuse between corpora, a gate that could hide a failure, weak table
+  provenance, and a freeze check that made Phase B impossible to authorize.
+- **R2** (binding `aa5db17a…`). A second review found that:
+  - Phase A provenance could be fabricated;
+  - authorizations could be reused;
+  - conversation phrase anchors still failed in both directions;
+  - coding rejected correct fixes over a trailing newline;
+  - some runtime modules were unguarded.
+
+See `EXTERNAL_REVIEW_ROUND1.md` and `EXTERNAL_REVIEW_ROUND2.md`.
 
 ## Research questions
 
@@ -48,11 +57,18 @@ a property of how those fixtures were built, not a capability finding. G-ROUTE3'
 given to the model as an allowed set, every ordering the validator enforces is stated in the prompt, and
 every execution constraint is disclosed.
 
-The semantic validators are the frozen G-ROUTE1 validators, byte-for-byte. The one change is the
-conversation operational check, `g_route3_operational.py`. G-ROUTE1's version rejected negated statements
-("hasn't been completed"), a rule no model was told about. The new check rejects only affirmative
-first-person claims that an action was done. Nothing else was loosened; the fixtures were made
-answerable.
+For research, synthesis, extraction and planning, the validators are the frozen G-ROUTE1 validators,
+byte-for-byte. Two profiles differ, by operator decision after the external reviews:
+
+- **Conversation** uses a **disclosed answer frame** (`g_route3_conversation.py`). The input lists
+  `answer_options`, and the reply's first line is `Answer: <option>`. The decision is judged exactly on that
+  line. The free text is judged only for claims that the assistant carried out an action; negations are never
+  such claims. Phrase anchors were dropped because two independent reviews showed them rejecting correct
+  replies and accepting wrong ones.
+- **Coding** compares `old` with the source ignoring trailing newlines only (`g_route3_semantics.py`). Correct,
+  test-passing fixes had failed on that one byte.
+
+Nothing else was loosened; the fixtures were made answerable.
 
 ## Architecture
 
