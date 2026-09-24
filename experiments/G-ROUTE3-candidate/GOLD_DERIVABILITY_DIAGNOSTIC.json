@@ -1,0 +1,32 @@
+{
+  "amends_g_route1": false,
+  "amends_g_route2": false,
+  "coding": {
+    "calls": 36,
+    "outside_whitelist_or_unparseable": 9,
+    "whitelist_disclosed_in_prompt": false,
+    "within_whitelist": 27
+  },
+  "is_canonical_result": false,
+  "label": "counterfactual design diagnostic over frozen G-ROUTE2 records; not a rescoring of G-ROUTE1 or G-ROUTE2",
+  "planning": {
+    "calls": 36,
+    "emitted_actions": 100,
+    "emitted_actions_matching_any_gold_action": 0,
+    "gold_actions_total": 15,
+    "gold_actions_visible_to_model": 0
+  },
+  "research": {
+    "calls": 36,
+    "claims_exactly_right": 22,
+    "gold_recommendation_codes_visible_to_model": 1,
+    "recommendation_code_right": 0,
+    "uncertainty_codes_right": 0
+  },
+  "source_package": "G-ROUTE2-RESULT-R1",
+  "synthesis": {
+    "calls": 36,
+    "failing_only_on_conclusion_code": 33,
+    "gold_conclusion_codes_visible_to_model": 0
+  }
+}

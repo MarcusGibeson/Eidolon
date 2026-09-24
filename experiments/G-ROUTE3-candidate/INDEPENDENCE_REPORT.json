@@ -1,0 +1,87 @@
+{
+  "bounds": {
+    "boilerplate_share": 0.25,
+    "max_cross_corpus_trigram_jaccard": 0.2
+  },
+  "cell_patterns_shared": {},
+  "cells_checked": 24,
+  "contract_version": "g-route3.independence-audit.v1",
+  "findings": [],
+  "note": "Task class, risk class and the profile-level vocabularies (research status and uncertainty codes, synthesis conclusion codes, planning exclusion prefixes) are shared by design; they define the classes being qualified and are not fixture content.",
+  "shared_answers": {
+    "coding_function_names": [],
+    "extraction_string_values": [],
+    "planning_actions": [],
+    "research_source_lineages": []
+  },
+  "shared_domains_across_different_cells": [
+    "backup_operations",
+    "network_security"
+  ],
+  "shared_named_entities": [],
+  "shared_rule_keys_excluded_from_content": [
+    "allowed_uncertainty_codes",
+    "conclusion_rule",
+    "allowed_conclusions"
+  ],
+  "shared_rule_tokens_excluded": [
+    "PurePosixPath"
+  ],
+  "trigram_similarity_by_task_class": {
+    "coding_generation_repair": {
+      "boilerplate_trigrams_excluded": 81,
+      "max_pair": [
+        "A-CODE-R1-1",
+        "B-CODE-R1-1"
+      ],
+      "max_trigram_jaccard": 0.0167,
+      "mean_trigram_jaccard": 0.0008
+    },
+    "grounded_research_synthesis": {
+      "boilerplate_trigrams_excluded": 122,
+      "max_pair": [
+        "A-RESEARCH-R4-1",
+        "B-RESEARCH-R4-1"
+      ],
+      "max_trigram_jaccard": 0.0508,
+      "mean_trigram_jaccard": 0.0013
+    },
+    "hierarchical_semantic_synthesis": {
+      "boilerplate_trigrams_excluded": 55,
+      "max_pair": [
+        "A-SYNTH-R4-1",
+        "B-SYNTH-R2-2"
+      ],
+      "max_trigram_jaccard": 0.0319,
+      "mean_trigram_jaccard": 0.0043
+    },
+    "ordinary_conversation": {
+      "boilerplate_trigrams_excluded": 9,
+      "max_pair": [
+        "A-CONV-R4-2",
+        "B-CONV-R4-2"
+      ],
+      "max_trigram_jaccard": 0.058,
+      "mean_trigram_jaccard": 0.0018
+    },
+    "reflective_planning": {
+      "boilerplate_trigrams_excluded": 147,
+      "max_pair": [
+        "A-PLAN-R4-1",
+        "B-PLAN-R4-1"
+      ],
+      "max_trigram_jaccard": 0.0276,
+      "mean_trigram_jaccard": 0.0039
+    },
+    "structured_extraction": {
+      "boilerplate_trigrams_excluded": 2,
+      "max_pair": [
+        "A-EXTRACT-R2-1",
+        "B-EXTRACT-R4-2"
+      ],
+      "max_trigram_jaccard": 0.0316,
+      "mean_trigram_jaccard": 0.0021
+    }
+  },
+  "valid": true
+}

@@ -1,0 +1,774 @@
+{
+  "items": [
+    {
+      "corpus": "A",
+      "domain": "name_formatting",
+      "fixture_id": "A-CODE-R1-1",
+      "pattern": "token_initials",
+      "risk_class": "R1",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "A",
+      "domain": "config_parsing",
+      "fixture_id": "A-CODE-R1-2",
+      "pattern": "delimiter_truncation",
+      "risk_class": "R1",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "A",
+      "domain": "config_parsing",
+      "fixture_id": "A-CODE-R2-1",
+      "pattern": "key_value_parsing_edge_cases",
+      "risk_class": "R2",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "A",
+      "domain": "customer_privacy",
+      "fixture_id": "A-CODE-R2-2",
+      "pattern": "pii_masking_with_validation",
+      "risk_class": "R2",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "A",
+      "domain": "log_hygiene",
+      "fixture_id": "A-CODE-R3-1",
+      "pattern": "exact_key_secret_redaction",
+      "risk_class": "R3",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "A",
+      "domain": "web_security",
+      "fixture_id": "A-CODE-R3-2",
+      "pattern": "exact_match_against_spoofing",
+      "risk_class": "R3",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "A",
+      "domain": "change_control",
+      "fixture_id": "A-CODE-R4-1",
+      "pattern": "normalized_self_approval_guard",
+      "risk_class": "R4",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "A",
+      "domain": "change_control",
+      "fixture_id": "A-CODE-R4-2",
+      "pattern": "distinct_count_threshold",
+      "risk_class": "R4",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "A",
+      "domain": "social_walking_group",
+      "fixture_id": "A-CONV-R1-1",
+      "pattern": "single_open_slot_offer",
+      "risk_class": "R1",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "A",
+      "domain": "kitchen_measures",
+      "fixture_id": "A-CONV-R1-2",
+      "pattern": "whole_number_division",
+      "risk_class": "R1",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "A",
+      "domain": "retail_refunds",
+      "fixture_id": "A-CONV-R2-1",
+      "pattern": "pending_state_not_completion",
+      "risk_class": "R2",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "A",
+      "domain": "shift_work",
+      "fixture_id": "A-CONV-R2-2",
+      "pattern": "conditional_permission_missing_approval",
+      "risk_class": "R2",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "A",
+      "domain": "workplace_email",
+      "fixture_id": "A-CONV-R3-1",
+      "pattern": "policy_following_security_advice",
+      "risk_class": "R3",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "A",
+      "domain": "marketing_data",
+      "fixture_id": "A-CONV-R3-2",
+      "pattern": "precondition_absent_data_sharing",
+      "risk_class": "R3",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "A",
+      "domain": "production_configuration",
+      "fixture_id": "A-CONV-R4-1",
+      "pattern": "dual_control_refusal",
+      "risk_class": "R4",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "A",
+      "domain": "building_safety",
+      "fixture_id": "A-CONV-R4-2",
+      "pattern": "role_reserved_override",
+      "risk_class": "R4",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "A",
+      "domain": "public_library",
+      "fixture_id": "A-EXTRACT-R1-1",
+      "pattern": "verbatim_span_capture",
+      "risk_class": "R1",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "A",
+      "domain": "home_cooking",
+      "fixture_id": "A-EXTRACT-R1-2",
+      "pattern": "integer_field_capture",
+      "risk_class": "R1",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "A",
+      "domain": "travel_expenses",
+      "fixture_id": "A-EXTRACT-R2-1",
+      "pattern": "threshold_comparison_expense",
+      "risk_class": "R2",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "A",
+      "domain": "online_orders",
+      "fixture_id": "A-EXTRACT-R2-2",
+      "pattern": "explicit_absence_capture",
+      "risk_class": "R2",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "A",
+      "domain": "vulnerability_management",
+      "fixture_id": "A-EXTRACT-R3-1",
+      "pattern": "version_range_membership",
+      "risk_class": "R3",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "A",
+      "domain": "data_protection",
+      "fixture_id": "A-EXTRACT-R3-2",
+      "pattern": "date_validity_gate",
+      "risk_class": "R3",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "A",
+      "domain": "change_management",
+      "fixture_id": "A-EXTRACT-R4-1",
+      "pattern": "self_approval_detection",
+      "risk_class": "R4",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "A",
+      "domain": "laboratory_safety",
+      "fixture_id": "A-EXTRACT-R4-2",
+      "pattern": "measurement_threshold_and_certificate",
+      "risk_class": "R4",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "A",
+      "domain": "photo_management",
+      "fixture_id": "A-PLAN-R1-1",
+      "pattern": "three_step_delete_distractor",
+      "risk_class": "R1",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "A",
+      "domain": "community_events",
+      "fixture_id": "A-PLAN-R1-2",
+      "pattern": "three_step_pay_distractor",
+      "risk_class": "R1",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "A",
+      "domain": "records_storage",
+      "fixture_id": "A-PLAN-R2-1",
+      "pattern": "four_step_measure_first_delete_distractor",
+      "risk_class": "R2",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "A",
+      "domain": "team_finance",
+      "fixture_id": "A-PLAN-R2-2",
+      "pattern": "three_step_adopt_distractor",
+      "risk_class": "R2",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "A",
+      "domain": "endpoint_security",
+      "fixture_id": "A-PLAN-R3-1",
+      "pattern": "four_step_incident_wipe_distractor",
+      "risk_class": "R3",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "A",
+      "domain": "database_administration",
+      "fixture_id": "A-PLAN-R3-2",
+      "pattern": "four_step_credential_rotate_distractor",
+      "risk_class": "R3",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "A",
+      "domain": "model_release_governance",
+      "fixture_id": "A-PLAN-R4-1",
+      "pattern": "three_step_promotion_deploy_distractor",
+      "risk_class": "R4",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "A",
+      "domain": "data_center",
+      "fixture_id": "A-PLAN-R4-2",
+      "pattern": "three_step_decommission_remove_distractor",
+      "risk_class": "R4",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "A",
+      "domain": "productivity_software",
+      "fixture_id": "A-RESEARCH-R1-1",
+      "pattern": "one_claim_contradicted",
+      "risk_class": "R1",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "event_venues",
+      "fixture_id": "A-RESEARCH-R1-2",
+      "pattern": "distractor_entity_leaves_claim_unaddressed",
+      "risk_class": "R1",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "small_business_accounting",
+      "fixture_id": "A-RESEARCH-R2-1",
+      "pattern": "vendor_repetition_positive",
+      "risk_class": "R2",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "grant_funding",
+      "fixture_id": "A-RESEARCH-R2-2",
+      "pattern": "unresolved_source_conflict",
+      "risk_class": "R2",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "vulnerability_patching",
+      "fixture_id": "A-RESEARCH-R3-1",
+      "pattern": "lineage_count_rule_met",
+      "risk_class": "R3",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "supplier_risk",
+      "fixture_id": "A-RESEARCH-R3-2",
+      "pattern": "conflict_plus_unaddressed",
+      "risk_class": "R3",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "model_release_governance",
+      "fixture_id": "A-RESEARCH-R4-1",
+      "pattern": "missing_authorization_contradiction",
+      "risk_class": "R4",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "road_infrastructure",
+      "fixture_id": "A-RESEARCH-R4-2",
+      "pattern": "temporal_precedence_resolution",
+      "risk_class": "R4",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "home_automation",
+      "fixture_id": "A-SYNTH-R1-1",
+      "pattern": "direct_cause_mergeable_findings",
+      "risk_class": "R1",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "community_newsletter",
+      "fixture_id": "A-SYNTH-R1-2",
+      "pattern": "single_finding_trend_insufficient",
+      "risk_class": "R1",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "warehouse_operations",
+      "fixture_id": "A-SYNTH-R2-1",
+      "pattern": "hypothesis_disputed",
+      "risk_class": "R2",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "customer_refunds",
+      "fixture_id": "A-SYNTH-R2-2",
+      "pattern": "policy_explains_behavior",
+      "risk_class": "R2",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "network_security",
+      "fixture_id": "A-SYNTH-R3-1",
+      "pattern": "authority_reserved_response",
+      "risk_class": "R3",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "backup_operations",
+      "fixture_id": "A-SYNTH-R3-2",
+      "pattern": "constraint_violated",
+      "risk_class": "R3",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "model_release_governance",
+      "fixture_id": "A-SYNTH-R4-1",
+      "pattern": "promotion_reserved_to_operator",
+      "risk_class": "R4",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "A",
+      "domain": "water_treatment",
+      "fixture_id": "A-SYNTH-R4-2",
+      "pattern": "disputed_cause_with_limitation",
+      "risk_class": "R4",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "file_handling",
+      "fixture_id": "B-CODE-R1-1",
+      "pattern": "last_segment_with_hidden_file_rule",
+      "risk_class": "R1",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "B",
+      "domain": "url_handling",
+      "fixture_id": "B-CODE-R1-2",
+      "pattern": "two_delimiter_truncation",
+      "risk_class": "R1",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "B",
+      "domain": "contact_data",
+      "fixture_id": "B-CODE-R2-1",
+      "pattern": "character_class_filter_with_rejection",
+      "risk_class": "R2",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "B",
+      "domain": "data_export",
+      "fixture_id": "B-CODE-R2-2",
+      "pattern": "escaping_and_quoting",
+      "risk_class": "R2",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "B",
+      "domain": "account_creation",
+      "fixture_id": "B-CODE-R3-1",
+      "pattern": "allowlist_character_validation",
+      "risk_class": "R3",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "B",
+      "domain": "http_security",
+      "fixture_id": "B-CODE-R3-2",
+      "pattern": "control_character_injection_block",
+      "risk_class": "R3",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "B",
+      "domain": "records_management",
+      "fixture_id": "B-CODE-R4-1",
+      "pattern": "hold_overrides_age_rule",
+      "risk_class": "R4",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "B",
+      "domain": "authorization",
+      "fixture_id": "B-CODE-R4-2",
+      "pattern": "exact_token_membership",
+      "risk_class": "R4",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "corpus": "B",
+      "domain": "neighbourhood_shops",
+      "fixture_id": "B-CONV-R1-1",
+      "pattern": "attribute_filter_lookup",
+      "risk_class": "R1",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "B",
+      "domain": "evening_classes",
+      "fixture_id": "B-CONV-R1-2",
+      "pattern": "clock_addition_across_hour",
+      "risk_class": "R1",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "B",
+      "domain": "consumer_warranty",
+      "fixture_id": "B-CONV-R2-1",
+      "pattern": "temporal_expiry_computation",
+      "risk_class": "R2",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "B",
+      "domain": "travel_booking",
+      "fixture_id": "B-CONV-R2-2",
+      "pattern": "queue_position_not_confirmation",
+      "risk_class": "R2",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "B",
+      "domain": "account_security",
+      "fixture_id": "B-CONV-R3-1",
+      "pattern": "identity_verification_gate",
+      "risk_class": "R3",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "B",
+      "domain": "backup_operations",
+      "fixture_id": "B-CONV-R3-2",
+      "pattern": "partial_success_reporting",
+      "risk_class": "R3",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "B",
+      "domain": "records_management",
+      "fixture_id": "B-CONV-R4-1",
+      "pattern": "legal_retention_prohibition",
+      "risk_class": "R4",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "B",
+      "domain": "electrical_safety",
+      "fixture_id": "B-CONV-R4-2",
+      "pattern": "licensure_reserved_action",
+      "risk_class": "R4",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "corpus": "B",
+      "domain": "houseplants",
+      "fixture_id": "B-EXTRACT-R1-1",
+      "pattern": "date_addition",
+      "risk_class": "R1",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "B",
+      "domain": "party_planning",
+      "fixture_id": "B-EXTRACT-R1-2",
+      "pattern": "list_counting",
+      "risk_class": "R1",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "B",
+      "domain": "household_finance",
+      "fixture_id": "B-EXTRACT-R2-1",
+      "pattern": "equal_division_share",
+      "risk_class": "R2",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "B",
+      "domain": "subscriptions",
+      "fixture_id": "B-EXTRACT-R2-2",
+      "pattern": "deferred_value_state",
+      "risk_class": "R2",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "B",
+      "domain": "identity_policy",
+      "fixture_id": "B-EXTRACT-R3-1",
+      "pattern": "conjunctive_compliance_one_failing",
+      "risk_class": "R3",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "B",
+      "domain": "backup_policy",
+      "fixture_id": "B-EXTRACT-R3-2",
+      "pattern": "retention_requirement_gap",
+      "risk_class": "R3",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "B",
+      "domain": "lifting_equipment",
+      "fixture_id": "B-EXTRACT-R4-1",
+      "pattern": "percentage_threshold_plus_signature",
+      "risk_class": "R4",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "B",
+      "domain": "payments_fraud",
+      "fixture_id": "B-EXTRACT-R4-2",
+      "pattern": "threshold_triggered_control",
+      "risk_class": "R4",
+      "task_class": "structured_extraction"
+    },
+    {
+      "corpus": "B",
+      "domain": "home_gardening",
+      "fixture_id": "B-PLAN-R1-1",
+      "pattern": "four_step_no_distractor_two_uncertainties",
+      "risk_class": "R1",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "B",
+      "domain": "school_fundraising",
+      "fixture_id": "B-PLAN-R1-2",
+      "pattern": "four_step_two_distractors_no_uncertainty",
+      "risk_class": "R1",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "B",
+      "domain": "club_communications",
+      "fixture_id": "B-PLAN-R2-1",
+      "pattern": "four_step_known_value_distractor_code",
+      "risk_class": "R2",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "B",
+      "domain": "payroll_scheduling",
+      "fixture_id": "B-PLAN-R2-2",
+      "pattern": "four_step_release_distractor",
+      "risk_class": "R2",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "B",
+      "domain": "privacy_incident",
+      "fixture_id": "B-PLAN-R3-1",
+      "pattern": "three_step_two_distractors_privacy",
+      "risk_class": "R3",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "B",
+      "domain": "network_security",
+      "fixture_id": "B-PLAN-R3-2",
+      "pattern": "five_step_apply_distractor",
+      "risk_class": "R3",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "B",
+      "domain": "life_safety_systems",
+      "fixture_id": "B-PLAN-R4-1",
+      "pattern": "four_step_two_distractors_signoff_last",
+      "risk_class": "R4",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "B",
+      "domain": "billing_operations",
+      "fixture_id": "B-PLAN-R4-2",
+      "pattern": "four_step_two_transfer_distractors",
+      "risk_class": "R4",
+      "task_class": "reflective_planning"
+    },
+    {
+      "corpus": "B",
+      "domain": "outdoor_gear",
+      "fixture_id": "B-RESEARCH-R1-1",
+      "pattern": "clean_independent_positive",
+      "risk_class": "R1",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "community_spaces",
+      "fixture_id": "B-RESEARCH-R1-2",
+      "pattern": "quantitative_threshold_contradiction",
+      "risk_class": "R1",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "facilities_contracting",
+      "fixture_id": "B-RESEARCH-R2-1",
+      "pattern": "narrower_scope_source",
+      "risk_class": "R2",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "food_delivery",
+      "fixture_id": "B-RESEARCH-R2-2",
+      "pattern": "distractor_entity_positive",
+      "risk_class": "R2",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "backup_services",
+      "fixture_id": "B-RESEARCH-R3-1",
+      "pattern": "repetition_plus_quantitative_contradiction",
+      "risk_class": "R3",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "access_governance",
+      "fixture_id": "B-RESEARCH-R3-2",
+      "pattern": "adjacent_subject_not_evidence",
+      "risk_class": "R3",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "embedded_firmware_release",
+      "fixture_id": "B-RESEARCH-R4-1",
+      "pattern": "all_supported_mixed_independence",
+      "risk_class": "R4",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "electrical_commissioning",
+      "fixture_id": "B-RESEARCH-R4-2",
+      "pattern": "authority_precedence_resolution",
+      "risk_class": "R4",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "library_services",
+      "fixture_id": "B-SYNTH-R1-1",
+      "pattern": "configuration_explains_behavior",
+      "risk_class": "R1",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "small_retail",
+      "fixture_id": "B-SYNTH-R1-2",
+      "pattern": "two_findings_establish_trend",
+      "risk_class": "R1",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "drone_fleet",
+      "fixture_id": "B-SYNTH-R2-1",
+      "pattern": "intervention_confirms_cause",
+      "risk_class": "R2",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "vehicle_fleet",
+      "fixture_id": "B-SYNTH-R2-2",
+      "pattern": "fleet_decision_reserved",
+      "risk_class": "R2",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "email_security",
+      "fixture_id": "B-SYNTH-R3-1",
+      "pattern": "source_hypothesis_disputed",
+      "risk_class": "R3",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "building_hvac",
+      "fixture_id": "B-SYNTH-R3-2",
+      "pattern": "untested_hypothesis_with_limitation",
+      "risk_class": "R3",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "laboratory_storage",
+      "fixture_id": "B-SYNTH-R4-1",
+      "pattern": "safety_limit_breached",
+      "risk_class": "R4",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "corpus": "B",
+      "domain": "payroll_operations",
+      "fixture_id": "B-SYNTH-R4-2",
+      "pattern": "cutoff_policy_explains_hold",
+      "risk_class": "R4",
+      "task_class": "hierarchical_semantic_synthesis"
+    }
+  ],
+  "model_input": false,
+  "schema_version": "g-route3.fixture-design.v1"
+}
