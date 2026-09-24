@@ -1,0 +1,38 @@
+{
+  "schema_version": "g-route1.deterministic-test-results.v1",
+  "recorded_on": "2026-09-23",
+  "provider_generation_calls": 0,
+  "benchmark_launches": 0,
+  "suites": [
+    {
+      "command": "python tools/g_route1_execution_tests.py",
+      "tests": 18,
+      "result": "PASS",
+      "notes": "Includes one complete 216-call stub run, pause after four persisted calls, exact resume, false-clean, malformed output, model/config drift, global lease, Activity, coding isolation, and scorer arithmetic."
+    },
+    {
+      "command": "python tools/g_route1_fixture_tests.py",
+      "tests": 13,
+      "result": "PASS"
+    },
+    {
+      "command": "python tools/g_route1_freeze_tests.py",
+      "tests": 7,
+      "result": "PASS"
+    },
+    {
+      "command": "python tools/adaptive_cognitive_routing_design_tests.py",
+      "tests": 1,
+      "result": "PASS"
+    },
+    {
+      "command": "python -m py_compile <G-ROUTE1 execution modules>",
+      "tests": 1,
+      "result": "PASS"
+    }
+  ],
+  "total_assertion_suites": 40,
+  "live_provider_used": false,
+  "production_routing_invoked": false,
+  "belief_effects": "none"
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "g-route1.qualification-thresholds.v1",
+  "scope": "exact_task_class_risk_class_model_tier_cell",
+  "expected_observations_per_cell": 3,
+  "qualification": {
+    "complete_observations_required": 3,
+    "infrastructure_failures_allowed": 0,
+    "operational_acceptance_required": 3,
+    "semantic_hard_gate_passes_required": 3,
+    "false_clean_errors_allowed": 0,
+    "provider_fallbacks_allowed": 0
+  },
+  "ambiguity_diagnostics": {
+    "count": 0,
+    "included_in_crisp_semantic_denominator": false
+  },
+  "cost_is_tiebreaker_only_after_qualification": true,
+  "r4_is_evidence_only": true,
+  "aggregate_result_may_override_hard_failure": false,
+  "vacuous_pass_allowed": false,
+  "production_routing_authorized": false,
+  "belief_effects": "none"
+}
