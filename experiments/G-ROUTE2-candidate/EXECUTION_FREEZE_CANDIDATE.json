@@ -42,7 +42,7 @@
   "digest_convention": "sha256; CRLF and CR normalized to LF for source artifacts",
   "dual_contract_scoring": true,
   "execution_freeze": true,
-  "execution_freeze_content_sha256": "7410d16ba30fcea9c01ed49de56185b8d0aa25ec6426004c946d97eece91f514",
+  "execution_freeze_content_sha256": "059f3d96a5ce39ba68e79cf0f082417dd417e3b54d2cd2221c7b3231c3459844",
   "generation_configuration": {
     "fresh_session_per_call": true,
     "options": {
@@ -60,7 +60,7 @@
     "think": false
   },
   "generation_configuration_identical_to_g_route1": true,
-  "implementation_commit": "b9e18f92e3682af134666ec646b74118687eca86",
+  "implementation_commit": "2403a169fc97893a949482795227d78f41062941",
   "independent_audit_verdict": "READY",
   "independent_replication_claimed": false,
   "inherited_content": {
