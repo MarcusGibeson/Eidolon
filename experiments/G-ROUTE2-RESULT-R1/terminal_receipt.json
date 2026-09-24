@@ -1,0 +1,16 @@
+{
+  "belief_effects": "none",
+  "calls_persisted": 216,
+  "completed": "2026-09-24T12:37:05.135Z",
+  "completed_position": 216,
+  "contract_version": "g-route2.terminal-receipt.v1",
+  "guarded_digest": "6776fc73fae773e93a1f40c58bb583961fcc7361d8002f6716404552a7044331",
+  "mutation_guard": "passed",
+  "next_position": 217,
+  "production_routing_invoked": false,
+  "record_sha256": "e02e2b865416a6c8d1e18c2060f745e56c808ace02389129dd343f83484f2acd",
+  "result_state": "complete",
+  "run_id": "groute2_20260924T112152427806Z",
+  "score_record_sha256": "34f1d85917a6fe3b7982bb2097b8f0314073a0ccb3d41ee813df8d99a161481e",
+  "state": "complete"
+}

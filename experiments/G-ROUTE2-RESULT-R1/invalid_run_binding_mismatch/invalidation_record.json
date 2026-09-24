@@ -1,0 +1,17 @@
+{
+  "authorization_artifact_in_run_root_is_void": true,
+  "authorized_binding": "051d2b09ac42c9a8d7e7d2cc9b7be5eaf79b74c9bce541dfe40bdef8aaa0b44f",
+  "belief_effects": "none",
+  "calls_persisted": 6,
+  "classification": "INVALID / UNAUTHORIZED_EXECUTION_BINDING_MISMATCH",
+  "executed_binding": "5f869283d9362fd596671f4b23e52f4a4fac59556926b69d07805484ad4cf2f8",
+  "failure_type": "governance_invalidation",
+  "production_routing_invoked": false,
+  "provider_generation_calls": 6,
+  "reason": "Operator authorization was issued for execution-freeze binding 051d2b09ac42c9a8d7e7d2cc9b7be5eaf79b74c9bce541dfe40bdef8aaa0b44f. This run executed against 5f869283d9362fd596671f4b23e52f4a4fac59556926b69d07805484ad4cf2f8 after the execution harness was added and repeat_disagreement was made computable. Scientific artifacts were byte-identical, but the execution harness is part of the authorized boundary, so the run was not validly authorized.",
+  "record_sha256": "ac13fc8d474a4ab4c7b7aa3a1ca50653c1692f6f77c0ee65c5c3272095f079a4",
+  "records_preserved": true,
+  "records_usable_as_scientific_observations": false,
+  "resumable": false,
+  "stopped_at": "between-call boundary after schedule position 6"
+}

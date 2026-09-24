@@ -1,0 +1,10 @@
+{
+  "calls_persisted": 6,
+  "checkpoint_sha256": "ca2dadac37ad274a00c8b1141d661a28018a9a398b9aca3efeeb731fad7eb925",
+  "contract_version": "g-route1.checkpoint.v1",
+  "guarded_digest": "6776fc73fae773e93a1f40c58bb583961fcc7361d8002f6716404552a7044331",
+  "next_position": 7,
+  "run_id": "groute2_20260924T111500685334Z",
+  "state": "cancelled",
+  "updated": "2026-09-24T11:18:42.878Z"
+}

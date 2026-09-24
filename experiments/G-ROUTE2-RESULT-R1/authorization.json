@@ -1,0 +1,15 @@
+{
+  "authorized_by": "operator_prompt_2026-09-24",
+  "automatic_escalation_authorized": false,
+  "belief_effects": "none",
+  "benchmark_execution_authorized": true,
+  "benchmark_id": "G-ROUTE2",
+  "candidate_id": "G-ROUTE2-EXECUTION-R1",
+  "consumed": false,
+  "execution_freeze_sha256": "5f869283d9362fd596671f4b23e52f4a4fac59556926b69d07805484ad4cf2f8",
+  "one_execution_only": true,
+  "operator_confirmation": "Authorize G-ROUTE2 execution 5f869283d9362fd596671f4b23e52f4a4fac59556926b69d07805484ad4cf2f8",
+  "production_routing_authorized": false,
+  "provider_generation_authorized": true,
+  "source_mutation_authorized": false
+}

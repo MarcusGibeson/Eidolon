@@ -1,0 +1,72 @@
+{
+  "activity_id": "groute2_20260924T112152427806Z",
+  "activity_root": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\data",
+  "belief_effects": "none",
+  "candidate_id": "G-ROUTE2-EXECUTION-R1",
+  "contract_version": "g-route2.scientific-job.v1",
+  "execution_freeze_content_sha256": "059f3d96a5ce39ba68e79cf0f082417dd417e3b54d2cd2221c7b3231c3459844",
+  "execution_freeze_sha256": "5f869283d9362fd596671f4b23e52f4a4fac59556926b69d07805484ad4cf2f8",
+  "experiment_id": "G-ROUTE2",
+  "generation_configuration": {
+    "fresh_session_per_call": true,
+    "options": {
+      "num_ctx": 8192,
+      "num_predict": 350,
+      "repeat_penalty": 1.1,
+      "temperature": 0.45,
+      "top_k": 40,
+      "top_p": 0.9
+    },
+    "output_repair_calls": 0,
+    "retry_limit": 0,
+    "silent_fallback": false,
+    "stream": false,
+    "think": false
+  },
+  "implementation_commit": "2403a169fc97893a949482795227d78f41062941",
+  "inherited_content": {
+    "corpus_id": "G-ROUTE1-FIXTURES-R1",
+    "corpus_sha256": "57f74610f6836eeb1586c5c7bed59de0c324055d3d119f059ec667c30a00ee79",
+    "gold_id": "G-ROUTE1-GOLD-R1",
+    "gold_sha256": "176ea8d6c75ea35fe21b9583944e9876196b93c62df298600babdc2b4e57e72d",
+    "operational_validator_sha256": "07cbc8c60c1255bdae222c394a7046adad3ed56131d3d30c9071f4832291b0b4",
+    "prompt_profiles_sha256": "f54e85795a3bf972b8593a28644f9229aea21f61327e324db4af518bc9c368b8",
+    "validators_sha256": "64ae53f4510828e1ec8275dc1ef1e6d6fd6bc5fa9b2600116ec9afd32643850d"
+  },
+  "job_id": "groute2_20260924T112152427806Z",
+  "model_bindings_sha256": "a56e757b5f5ade8b6c24fa76d7fe9edc78718bbaf706773eedd9522b3922de15",
+  "model_identities": [
+    {
+      "manifest_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+      "model": "qwen2.5:7b",
+      "model_blob_sha256": "2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730",
+      "tier": "small"
+    },
+    {
+      "manifest_digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+      "model": "qwen3:14b",
+      "model_blob_sha256": "a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e",
+      "tier": "mid"
+    },
+    {
+      "manifest_digest": "22130167c4c20e20c7b71454612966ca8e8171e9b3cc8ab6ce8aa6cbfec79643",
+      "model": "qwen3.8:27b",
+      "model_blob_sha256": "f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d",
+      "tier": "large"
+    }
+  ],
+  "mutation_guard": {
+    "guarded_digest": "6776fc73fae773e93a1f40c58bb583961fcc7361d8002f6716404552a7044331",
+    "status": "passed"
+  },
+  "normalization_contract": "g-route2.transport-normalization.v1",
+  "production_routing_invoked": false,
+  "routing_policy_contract": "g-route2.routing-policy.v1",
+  "run_root": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\data\\g_route2_scientific_runs\\groute2_20260924T112152427806Z",
+  "schedule_sha256": "214a0dc27b0824ab7d75d38ff786b43620c90a8f0a6524c3e3adbbd869430738",
+  "scorer_contract": "g-route2.scorer.v1",
+  "separate_from_g_route1": true,
+  "source_commit": "a7b2012c28f1bd3d7b52ae60fa492ae65b0b6d16",
+  "started": "2026-09-24T11:21:52.432Z",
+  "thresholds_sha256": "70072473724581875d4f0288ec35e2a129c4652fc74e079ff6c56b0f3e0d4ce8"
+}
