@@ -10,7 +10,9 @@ system prompt, the fixture prompt and the fixture input. Concretely:
    chaining, evidence-id order, uncertainty-code order);
 3. every execution constraint is disclosed: the full coding whitelist, including that only `.parts` may be
    read, that helper functions may not be called, and every denied statement form; the conversation
-   answer frame and length limit; and the 350-token output budget in every JSON prompt;
+   two-line frame and length limit, and that the assistant has no tools; the 350-token output budget in
+   every JSON prompt; that synthesis statement text is the verbatim observation text; and that a research
+   source whose text does not name its subject is about the subject its lineage names;
 4. where selection is required (which planning actions to include, which sources to cite, which status a
    claim takes, which conclusion applies), the rule that decides it is stated, and overlapping rules carry
    an explicit order;
@@ -81,8 +83,8 @@ requires exact equality, including list order. Coding uses the same evaluator, a
 for trailing newlines only.
 
 The operational check is `g_route3_operational.py`. It is G-ROUTE1's operational validator for every
-profile except conversation and coding. Conversation uses the disclosed answer frame, with an action-claim
-check that never matches a negation. Coding uses the same trailing-newline canonicalization. G-ROUTE1's
+profile except conversation and coding. Conversation uses the disclosed two-line frame, and its prose is
+not graded. Coding uses the same trailing-newline canonicalization. G-ROUTE1's
 module is not modified.
 
 Everything else was repaired in the fixtures, not the checks:

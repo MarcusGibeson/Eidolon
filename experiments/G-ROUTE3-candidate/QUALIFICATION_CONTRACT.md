@@ -20,7 +20,7 @@ exception is charged to infrastructure and stops the run `incomplete`.
 Operational acceptance uses `g-route3.operational-validator.v2`, and correctness uses `g-route3.semantics.v1`.
 Both are the G-ROUTE1 checks except in two profiles:
 
-- **conversation**: the disclosed answer frame;
+- **conversation**: the disclosed two-line frame (Answer, Actions taken);
 - **coding**: `old` is compared ignoring trailing newlines.
 
 A coding timeout counts against the model only if the unchanged source runs in time on the same host;
@@ -65,11 +65,19 @@ Internal consistency is not enough. Phase B also checks the table against the se
 1. Phase A runs under its own numbered authorization:
    `Authorize G-ROUTE3 phase A execution <freeze digest> attempt <n>`, with n = 1 for the first attempt.
 
-   - It has an exact key set.
-   - It is consumed by exclusive creation in the fixed ledger `authorization_ledger/`, not in the run root.
-   - Another run under it is refused, although the same run may resume.
-   - A retry after an infrastructure failure needs the next attempt number, as a new, explicit
-     authorization. Every attempt is disclosed in the table.
+   - The run starts only through the launcher, `tools/g_route3_launch.py`. The launcher builds the Ollama
+     provider itself and reads the operator's verbatim sentence. The authorized path refuses any other
+     provider type and any override of the guarded root.
+   - The authorization has an exact key set.
+   - It is consumed by exclusive creation in the fixed ledger `authorization_ledger/`. This happens only
+     once the run exists and holds its lease.
+   - Another run under the same authorization is refused. The same run may resume only with its own run id,
+     its own run root and `--resume`.
+   - **Attempt policy:** attempt n+1 is authorized only if every earlier attempt ended incomplete, failed or
+     cancelled. The first complete run is the result, so a best-of-N choice is impossible.
+   - A stuck attempt can be closed only by an explicit abandon (`--abandon A --reason …`). Its reason is
+     recorded.
+   - Every attempt is disclosed in the table with its run root, outcome and reason.
 2. Phase A is scored and sealed, and reaches five-view terminal agreement.
 3. The Phase A results are audited independently.
 4. `freeze_table` writes the table **once**. A second write with different content is refused.
@@ -79,8 +87,12 @@ Internal consistency is not enough. Phase B also checks the table against the se
      score;
    - the call records cover all 288 scheduled calls in order;
    - the sealed terminal receipt chains to the call records and to the score;
-   - it names this Phase A run, which appears in the authorization ledger, and it discloses every Phase A
-     attempt in that ledger;
+   - it names this Phase A run. That run appears in the authorization ledger at the same run root, and it is
+     the only complete Phase A attempt. The table also discloses every Phase A attempt;
+   - every call record agrees with the receipt on the synthetic flag. Each record of an authorized run also
+     carries the provider's own raw body, and the envelope, model, output and request body are all consistent
+     with it;
+   - the unsealed run manifest also reads `complete`;
    - Phase A is `complete`, and, **according to the sealed receipt** (never the unsealed run manifest), it
      was not synthetic, ran under this execution freeze, and ran with today's guarded dependencies;
    - the table is bound to this execution freeze, and its corpus, gold and threshold digests match;

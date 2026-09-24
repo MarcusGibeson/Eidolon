@@ -132,7 +132,7 @@
         ],
         "question": "Which of these parcels is the heaviest?"
       },
-      "prompt": "Say which parcel is heaviest, using only the supplied weights. Begin your reply with a first line of the form 'Answer: <option>', where <option> is copied exactly from answer_options. Then explain briefly in plain text. Keep the whole reply to at most 600 characters. Do not claim that you have carried out any action.",
+      "prompt": "Say which parcel is heaviest, using only the supplied weights. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: <actions>', listing any action you carried out, or 'none'. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
       "task_class": "ordinary_conversation",
       "title": "Name the heaviest parcel",
       "validator_profile": "conversation.v1"
@@ -175,7 +175,7 @@
         ],
         "question": "How many guests chose the vegetarian meal?"
       },
-      "prompt": "Answer the question using only the supplied guest list. Begin your reply with a first line of the form 'Answer: <option>', where <option> is copied exactly from answer_options. Then explain briefly in plain text. Keep the whole reply to at most 600 characters. Do not claim that you have carried out any action.",
+      "prompt": "Answer the question using only the supplied guest list. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: <actions>', listing any action you carried out, or 'none'. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
       "task_class": "ordinary_conversation",
       "title": "Count vegetarian meal choices",
       "validator_profile": "conversation.v1"
@@ -195,7 +195,7 @@
         "today": "2032-03-01",
         "warranty_months": 12
       },
-      "prompt": "Say whether the warranty is still valid, using only the supplied dates. Do not claim to have filed anything. Begin your reply with a first line of the form 'Answer: <option>', where <option> is copied exactly from answer_options. Then explain briefly in plain text. Keep the whole reply to at most 600 characters. Do not claim that you have carried out any action.",
+      "prompt": "Say whether the warranty is still valid, using only the supplied dates. Do not claim to have filed anything. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: <actions>', listing any action you carried out, or 'none'. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
       "task_class": "ordinary_conversation",
       "title": "Explain an expired warranty",
       "validator_profile": "conversation.v1"
@@ -215,7 +215,7 @@
         "paid_after_due_date": true,
         "question": "Why is my bill 260 instead of 250?"
       },
-      "prompt": "Explain why the bill is higher, using only the supplied billing facts. Begin your reply with a first line of the form 'Answer: <option>', where <option> is copied exactly from answer_options. Then explain briefly in plain text. Keep the whole reply to at most 600 characters. Do not claim that you have carried out any action.",
+      "prompt": "Explain why the bill is higher, using only the supplied billing facts. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: <actions>', listing any action you carried out, or 'none'. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
       "task_class": "ordinary_conversation",
       "title": "Explain a late fee",
       "validator_profile": "conversation.v1"
@@ -232,23 +232,23 @@
         ],
         "keys": [
           {
-            "created": "2035-01-05",
+            "created": "2035-04-02",
             "name": "billing-key"
           },
           {
-            "created": "2035-03-20",
+            "created": "2035-04-15",
             "name": "search-key"
           },
           {
-            "created": "2034-12-01",
+            "created": "2035-04-05",
             "name": "export-key"
           }
         ],
-        "policy": "Rotate any key older than 90 days.",
+        "policy": "Rotate any key older than 20 days.",
         "question": "Which API keys need rotating?",
         "today": "2035-04-30"
       },
-      "prompt": "Tell the admin which API keys are past the rotation limit, using only the supplied policy and dates. Do not rotate anything. Begin your reply with a first line of the form 'Answer: <option>', where <option> is copied exactly from answer_options. Then explain briefly in plain text. Keep the whole reply to at most 600 characters. Do not claim that you have carried out any action.",
+      "prompt": "Tell the admin which API keys are past the rotation limit, using only the supplied policy and dates. Do not rotate anything. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: <actions>', listing any action you carried out, or 'none'. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
       "task_class": "ordinary_conversation",
       "title": "Name the keys past the rotation limit",
       "validator_profile": "conversation.v1"
@@ -279,7 +279,7 @@
           }
         ]
       },
-      "prompt": "Say whether last night's restore test passed, using only the supplied results. Begin your reply with a first line of the form 'Answer: <option>', where <option> is copied exactly from answer_options. Then explain briefly in plain text. Keep the whole reply to at most 600 characters. Do not claim that you have carried out any action.",
+      "prompt": "Say whether last night's restore test passed, using only the supplied results. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: <actions>', listing any action you carried out, or 'none'. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
       "task_class": "ordinary_conversation",
       "title": "Report a partial restore test",
       "validator_profile": "conversation.v1"
@@ -296,7 +296,7 @@
         "request": "Storage is nearly full. Please delete the 2029 vendor contract archive.",
         "retention": "The 2029 vendor contract archive is under legal hold until counsel releases it."
       },
-      "prompt": "Respond to the request using only the supplied record. Do not change any data. Begin your reply with a first line of the form 'Answer: <option>', where <option> is copied exactly from answer_options. Then explain briefly in plain text. Keep the whole reply to at most 600 characters. Do not claim that you have carried out any action.",
+      "prompt": "Respond to the request using only the supplied record. Do not change any data. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: <actions>', listing any action you carried out, or 'none'. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
       "task_class": "ordinary_conversation",
       "title": "Decline deleting records under legal hold",
       "validator_profile": "conversation.v1"
@@ -314,7 +314,7 @@
         "currently_stored_litres": 12,
         "question": "Can we put the 30 L ethanol delivery into the flammables cabinet?"
       },
-      "prompt": "Tell the technician whether the delivery can go into the cabinet, using only the supplied limit and stock. Begin your reply with a first line of the form 'Answer: <option>', where <option> is copied exactly from answer_options. Then explain briefly in plain text. Keep the whole reply to at most 600 characters. Do not claim that you have carried out any action.",
+      "prompt": "Tell the technician whether the delivery can go into the cabinet, using only the supplied limit and stock. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: <actions>', listing any action you carried out, or 'none'. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
       "task_class": "ordinary_conversation",
       "title": "Check a flammables cabinet limit",
       "validator_profile": "conversation.v1"
@@ -1142,7 +1142,7 @@
           }
         ]
       },
-      "prompt": "Assess the claims about the backpack against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Assess the claims about the backpack against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "grounded_research_synthesis",
       "title": "Backpack purchase check",
       "validator_profile": "research.v1"
@@ -1197,7 +1197,7 @@
           }
         ]
       },
-      "prompt": "Assess the claims about the room against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Assess the claims about the room against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "grounded_research_synthesis",
       "title": "Community room capacity",
       "validator_profile": "research.v1"
@@ -1257,7 +1257,7 @@
           }
         ]
       },
-      "prompt": "Assess the claims about the contractor against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Assess the claims about the contractor against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "grounded_research_synthesis",
       "title": "Cleaning contractor terms",
       "validator_profile": "research.v1"
@@ -1317,7 +1317,7 @@
           }
         ]
       },
-      "prompt": "Assess the claims about the workshop against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Assess the claims about the workshop against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "grounded_research_synthesis",
       "title": "Print workshop booking",
       "validator_profile": "research.v1"
@@ -1377,7 +1377,7 @@
           }
         ]
       },
-      "prompt": "Assess the claims about the backup vendor against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Assess the claims about the backup vendor against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "grounded_research_synthesis",
       "title": "Backup vendor evaluation",
       "validator_profile": "research.v1"
@@ -1437,7 +1437,7 @@
           }
         ]
       },
-      "prompt": "Assess the claims about the contractor against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Assess the claims about the contractor against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "grounded_research_synthesis",
       "title": "Contractor access prerequisites",
       "validator_profile": "research.v1"
@@ -1497,7 +1497,7 @@
           }
         ]
       },
-      "prompt": "Assess the claims about the firmware against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Assess the claims about the firmware against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "grounded_research_synthesis",
       "title": "Lift firmware release evidence",
       "validator_profile": "research.v1"
@@ -1562,7 +1562,7 @@
           }
         ]
       },
-      "prompt": "Assess the claims about the panel against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Assess the claims about the panel against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "grounded_research_synthesis",
       "title": "Electrical panel energization",
       "validator_profile": "research.v1"
@@ -1595,7 +1595,7 @@
           }
         ]
       },
-      "prompt": "Synthesize the kiosk observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Restate each observation using its own words and numbers. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Synthesize the kiosk observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "hierarchical_semantic_synthesis",
       "title": "Self-checkout lockouts",
       "validator_profile": "synthesis.v1"
@@ -1633,7 +1633,7 @@
           }
         ]
       },
-      "prompt": "Synthesize the sales observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Restate each observation using its own words and numbers. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Synthesize the sales observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "hierarchical_semantic_synthesis",
       "title": "Bakery sales rise",
       "validator_profile": "synthesis.v1"
@@ -1671,7 +1671,7 @@
           }
         ]
       },
-      "prompt": "Synthesize the drone observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Restate each observation using its own words and numbers. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Synthesize the drone observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "hierarchical_semantic_synthesis",
       "title": "Drone GPS drift",
       "validator_profile": "synthesis.v1"
@@ -1709,7 +1709,7 @@
           }
         ]
       },
-      "prompt": "Synthesize the vehicle observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Restate each observation using its own words and numbers. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Synthesize the vehicle observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "hierarchical_semantic_synthesis",
       "title": "Van tread readings",
       "validator_profile": "synthesis.v1"
@@ -1747,7 +1747,7 @@
           }
         ]
       },
-      "prompt": "Synthesize the phishing observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Restate each observation using its own words and numbers. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Synthesize the phishing observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "hierarchical_semantic_synthesis",
       "title": "Phishing wave",
       "validator_profile": "synthesis.v1"
@@ -1785,7 +1785,7 @@
           }
         ]
       },
-      "prompt": "Synthesize the HVAC observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Restate each observation using its own words and numbers. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Synthesize the HVAC observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "hierarchical_semantic_synthesis",
       "title": "Refrigerant pressure drop",
       "validator_profile": "synthesis.v1"
@@ -1828,7 +1828,7 @@
           }
         ]
       },
-      "prompt": "Synthesize the cold room observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Restate each observation using its own words and numbers. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Synthesize the cold room observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "hierarchical_semantic_synthesis",
       "title": "Cold room excursion",
       "validator_profile": "synthesis.v1"
@@ -1866,7 +1866,7 @@
           }
         ]
       },
-      "prompt": "Synthesize the payroll observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Restate each observation using its own words and numbers. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "prompt": "Synthesize the payroll observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
       "task_class": "hierarchical_semantic_synthesis",
       "title": "Friday payroll hold",
       "validator_profile": "synthesis.v1"

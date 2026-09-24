@@ -46,7 +46,11 @@ The research signature is checked twice.
   unresolved (conflict, scope or unaddressed). It ignores lineage counts, so two fixtures posing the same
   problem cannot differ in a lineage count alone.
 
-The coarse check found A-RESEARCH-R1-1 and B-RESEARCH-R1-2 in round 3; B-RESEARCH-R1-2 was changed. The
+The coarse check found A-RESEARCH-R1-1 and B-RESEARCH-R1-2 in round 3; B-RESEARCH-R1-2 was changed.
+Extraction field types are abstracted: enum sets become `enumN`, and dates and times are one type. A
+relabelled enum therefore cannot hide a shared shape. The report also lists, as information only, answer
+shapes shared between A and B in *different* cells. It lists 61 such pairs, 48 of them from the
+declared planning template. Qualification and validation are per cell, so these are not findings. The
 extraction signature also counts derived fields, so copying a value and computing one are different
 shapes.
 
@@ -58,9 +62,9 @@ operation within each cell is stated below, and the external reviews' reading.
 
 | Cell | Corpus A | Corpus B |
 |---|---|---|
-| R1 | open-slot filter; whole-number division | maximum with unit conversion; conditional count |
+| R1 | two-condition slot filter; whole-number division | maximum with unit conversion; conditional count |
 | R2 | date difference against a review window; time difference against a threshold | month arithmetic for expiry; percentage fee |
-| R3 | lockout expiry by time addition; precondition absent | multi-item age threshold; partial-result lookup |
+| R3 | lockout expiry by time addition; precondition absent | three same-month age differences against a threshold; partial-result lookup |
 | R4 | dual-control refusal; role-reserved override | legal-hold prohibition; remaining-capacity computation |
 
 ### Research: one sub-skill per cell, never the same in A and B
@@ -116,7 +120,10 @@ were repaired:
 - Extraction R2 and R3 each have one derived computation per fixture in both corpora. A-EXTRACT-R2-2 gained a
   date addition, B-EXTRACT-R2-2 was reduced to one multiplication, and B-EXTRACT-R3-2 derives retention
   days from two dates.
-- Conversation R2 and R3 each pair one computation with one lookup in both corpora.
+- Conversation R1 pairs a filter or comparison with one arithmetic operation in both corpora. Conversation
+  R2 is two computations in both corpora. Conversation R3 pairs one computation with one lookup in both
+  corpora. Round 3 corrected a wrong statement here, made A-CONV-R1-1 a two-condition filter and kept
+  B-CONV-R3-1's date differences within one month.
 - Planning is normalized to one size.
 - B-RESEARCH-R1-1 applies a two-lineage rule.
 - B-CODE-R3-2 is now a redirect-safety check of comparable difficulty to A's R3 coding fixtures.
@@ -176,6 +183,6 @@ Untouched. G-ROUTE3 reads their frozen artifacts only for three things:
 
 - to reuse the semantic validators, the non-conversation operational checks, the transport normalization and
   the prompt profiles, byte-for-byte;
-- to wrap G-ROUTE1's validators, in separate modules, with the conversation answer frame and the coding
+- to wrap G-ROUTE1's validators, in separate modules, with the conversation two-line frame and the coding
   trailing-newline canonicalization;
 - to produce the labelled derivability diagnostic.

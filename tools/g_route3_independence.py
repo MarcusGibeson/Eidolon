@@ -73,6 +73,16 @@ SINGLE_TEMPLATE_TASK_CLASSES = {
 }
 
 
+def _field_type(schema: Any) -> str:
+    """Abstract schema types so relabelled enum values or date formats cannot hide a shared shape."""
+    text = str(schema)
+    if "|" in text:
+        return f"enum{len(text.split('|'))}"
+    if text in ("YYYY-MM-DD", "HH:MM"):
+        return "date_or_time"
+    return text
+
+
 def structural_signature(fixture: dict[str, Any], expected: dict[str, Any]) -> Any:
     """Shape of the gold answer, independent of wording and entities. None when no shape is defined."""
     profile = fixture["validator_profile"]
@@ -87,7 +97,7 @@ def structural_signature(fixture: dict[str, Any], expected: dict[str, Any]) -> A
         return ("synthesis", tuple(sorted(expected["roles"].values())), expected["conclusion"])
     if profile == "extraction.v1":
         derived = sum(f"{key} is " in fixture["prompt"] for key in fixture["input"]["schema"])
-        return ("extraction", tuple(sorted(str(v) for v in fixture["input"]["schema"].values())), derived)
+        return ("extraction", tuple(sorted(_field_type(v) for v in fixture["input"]["schema"].values())), derived)
     if profile == "planning.v1":
         return ("planning", len(expected["steps"]), len(fixture["input"]["allowed_actions"]),
                 len(fixture["input"]["evidence"]), len(expected["uncertainties"]))
@@ -192,6 +202,14 @@ def audit() -> dict[str, Any]:
                     structural_pairs.append([a_id, b_id])
     if structural_pairs:
         findings.append(f"same_gold_structure_within_cell:{structural_pairs}")
+    # Informational: the same answer shape in A and B in DIFFERENT cells. Qualification and validation are
+    # per cell, so this is not a finding, but it is reported so the reader can see where shapes recur.
+    cross_cell = []
+    flat = {corpus: [(cell, fid, sig) for cell, parts in by_cell.items() for fid, sig in parts[corpus]]
+            for corpus in ("A", "B")}
+    for (a_cell, a_id, a_sig), (b_cell, b_id, b_sig) in product(flat["A"], flat["B"]):
+        if a_cell != b_cell and a_sig == b_sig and [a_id, b_id] not in cross_cell:
+            cross_cell.append([a_id, b_id])
     domains = {c: Counter(design[row["fixture_id"]]["domain"] for row in rows) for c, rows in corpora.items()}
     shared_domains = sorted(set(domains["A"]) & set(domains["B"]))
 
@@ -206,6 +224,7 @@ def audit() -> dict[str, Any]:
         "cell_patterns_shared": shared_patterns,
         "cells_checked": len(cells),
         "same_gold_structure_within_cell": structural_pairs,
+        "same_gold_structure_across_cells_informational": sorted(cross_cell),
         "single_template_task_classes": SINGLE_TEMPLATE_TASK_CLASSES,
         "single_template_pairs_declared": exempt_pairs,
         "structural_check_scope": ("research, synthesis, extraction and planning compare the shape of the gold "

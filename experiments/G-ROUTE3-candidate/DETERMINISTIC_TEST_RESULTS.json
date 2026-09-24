@@ -5,7 +5,7 @@
     "alternative_correct_answers_accepted_by_both_validators": 48,
     "command": "python experiments/G-ROUTE3-candidate/authoring/assemble_g3.py",
     "fixtures_per_corpus": 48,
-    "incorrect_answers_rejected": 64,
+    "incorrect_answers_rejected": 80,
     "result": "PASS"
   },
   "independence_audit": {
@@ -17,7 +17,7 @@
   "production_routing_invoked": false,
   "provider_generation_calls": 0,
   "recorded_on": "2026-09-24",
-  "revision": "R3",
+  "revision": "R4",
   "schema_version": "g-route3.deterministic-test-results.v1",
   "suites": [
     {
@@ -39,10 +39,10 @@
       ],
       "command": "python -m unittest -v g_route3_tests  (from tools/)",
       "groups": {
-        "corpus_construction_and_derivability": 17,
+        "corpus_construction_and_derivability": 18,
         "execution_freeze_and_guard": 4,
         "gold_blind_routing_and_escalation": 12,
-        "governed_two_phase_pipeline": 12,
+        "governed_two_phase_pipeline": 17,
         "qualification_and_table": 10,
         "validation_gates": 2
       },
@@ -73,10 +73,10 @@
       "result": "PASS",
       "round2_regressions_for_external_review_findings": {
         "all_48_alternative_phrasings_pass_both_validators": "test_natural_correct_phrasings_are_accepted_by_both_validators",
-        "all_64_incorrect_answers_rejected": "test_incorrect_answers_are_rejected",
+        "all_80_incorrect_answers_rejected": "test_incorrect_answers_are_rejected",
         "audit_bound_by_document_digest": "test_audit_must_be_bound_to_a_document_that_names_the_run",
         "authorization_consumed_once": "test_authorization_is_consumed_exactly_once_in_the_fixed_ledger",
-        "conversation_negation_is_never_rejected": "test_conversation_frame_accepts_negation_and_rejects_action_claims",
+        "conversation_negation_is_never_rejected": "test_conversation_frame_grades_the_two_fields_and_never_the_prose",
         "evaluable_failing_gate_is_fail": "test_an_evaluable_failing_gate_is_a_failure_even_when_the_other_gate_is_not_evaluable",
         "exact_two_by_two_required": "test_only_the_exact_two_by_two_design_can_qualify",
         "forged_table_synthetic_phase_a_and_undisclosed_attempt_rejected": "test_table_provenance_is_rederived_from_the_sealed_call_records",
@@ -96,7 +96,7 @@
         "coarse_research_signature": "test_structural_check_detects_a_reused_gold_shape",
         "coding_old_trailing_newlines": "test_coding_old_is_compared_ignoring_trailing_newlines_only",
         "coding_timeout_host_baseline": "test_coding_sandbox_host_failure_is_infrastructure_not_model_failure",
-        "conversation_answer_frame_action_claims": "test_conversation_frame_accepts_negation_and_rejects_action_claims",
+        "conversation_answer_frame_action_claims": "test_conversation_frame_grades_the_two_fields_and_never_the_prose",
         "conversation_answer_line_parsing": "test_conversation_answer_line_parsing_is_lenient_only_in_form",
         "conversation_answer_positions": "test_conversation_answer_positions_carry_no_information",
         "fabricated_phase_a_cannot_open_phase_b": "test_a_fabricated_phase_a_run_cannot_open_phase_b",
@@ -109,7 +109,18 @@
         "table_rederived_from_sealed_call_records": "test_table_provenance_is_rederived_from_the_sealed_call_records",
         "table_source_digests_verified": "test_table_source_digests_are_verified"
       },
-      "tests": 57
+      "round4_regressions_for_external_review_findings": {
+        "answer_line_decoration_and_greeting": "test_conversation_answer_line_parsing_is_lenient_only_in_form",
+        "conversation_two_field_frame": "test_conversation_frame_grades_the_two_fields_and_never_the_prose",
+        "explicit_abandon_of_stuck_attempt": "test_a_stuck_attempt_can_only_be_abandoned_explicitly",
+        "launcher_exact_sentence_and_own_provider": "test_launcher_builds_its_own_provider_and_reads_only_the_exact_sentence",
+        "provider_raw_bodies_verified": "test_authorized_runs_must_carry_the_providers_own_raw_bodies",
+        "retry_only_after_non_complete_attempt": "test_a_retry_is_allowed_only_after_a_non_complete_attempt_and_both_are_disclosed",
+        "run_root_swap_refused_and_best_of_n_impossible": "test_real_authorizations_are_numbered_attempts_recorded_in_a_fixed_ledger",
+        "synthesis_verbatim_and_research_lineage_rules_stated": "test_synthesis_and_research_prompts_state_their_conventions",
+        "synthetic_relabel_refused": "test_a_synthetic_run_cannot_be_relabelled_as_authorized"
+      },
+      "tests": 63
     }
   ]
 }

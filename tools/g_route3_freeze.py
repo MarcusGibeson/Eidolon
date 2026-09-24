@@ -12,8 +12,8 @@ from g_route1_contract import ROOT, digest_file
 from g_route3_contract import (DATA, EXPECTED_CALLS, EXECUTION_FREEZE_PATH, json_digest, load_corpus, load_gold,
                                load_json, load_model_bindings, load_thresholds, verify_checked_schedule)
 
-CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v3"
-CANDIDATE_ID = "G-ROUTE3-EXECUTION-R3"
+CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v4"
+CANDIDATE_ID = "G-ROUTE3-EXECUTION-R4"
 SUPERSEDED = (
     {"candidate_id": "G-ROUTE3-EXECUTION-R1",
      "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
@@ -35,6 +35,17 @@ SUPERSEDED = (
                 "conversation anchors still rejected correct and accepted wrong replies, coding rejected a "
                 "correct fix whose old lacked the final newline, and several runtime dependencies were unguarded"),
      "authorized": False, "provider_generation_calls": 0},
+    {"candidate_id": "G-ROUTE3-EXECUTION-R3",
+     "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R3.json",
+     "literal_sha256": "dbbb473d26f0f24ef98d2f5b7119ce2d2f4e8c13060bc0c440cb8bfc8e69a536",
+     "binding_sha256": "f92fd6e0a628864a7da9a842642ec2e3fd79c81685f9fce3c0a817dbed721397",
+     "review_record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND3.md",
+     "reason": ("third independent pre-contact review returned FINDINGS: one authorization could drive several "
+                "complete runs by changing the run root, the authorized path accepted any provider, a synthetic run "
+                "could be relabelled with one resealed receipt, complete attempts could be repeated best-of-N, the "
+                "conversation action-claim pattern failed in both directions, and synthesis graded keywords the "
+                "model was never shown"),
+     "authorized": False, "provider_generation_calls": 0},
 )
 FREEZE_PATH = EXECUTION_FREEZE_PATH
 ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
@@ -43,12 +54,14 @@ ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
     "INDEPENDENT_AUDIT.md", "DETERMINISTIC_TEST_RESULTS.json", "INDEPENDENCE_REPORT.json",
     "EXTERNAL_REVIEW_ROUND1.md", "EXECUTION_FREEZE_CANDIDATE_R1.json",
     "EXTERNAL_REVIEW_ROUND2.md", "EXECUTION_FREEZE_CANDIDATE_R2.json",
+    "EXTERNAL_REVIEW_ROUND3.md", "EXECUTION_FREEZE_CANDIDATE_R3.json",
     "corpus_a.json", "gold_a.json", "corpus_b.json", "gold_b.json", "fixture_design.json",
     "model_bindings.json", "thresholds.json", "schedule_a.json", "schedule_b.json",
     "authoring/author_g3_part1.py", "authoring/author_g3_part2.py", "authoring/author_g3_part3.py",
     "authoring/author_g3_part3_round2.py", "authoring/assemble_g3.py",
 )) + (
-    "experiments/G-ROUTE1-candidate/prompt_profiles.json",
+    "experiments/G-ROUTE1-candidate/prompt_profiles.json", "experiments/G-ROUTE1-candidate/model_bindings.json",
+    "tools/g_route3_launch.py",
     "tools/g_route1_contract.py", "tools/g_route1_validators.py", "tools/g_route1_operational.py",
     "tools/g_route1_execution_contract.py", "tools/g_route1_freeze.py", "conscious_agent/activity.py",
     "conscious_agent/json_storage.py", "conscious_agent/metadata_mutation_coordination.py",
@@ -130,9 +143,17 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "validator_contract": "g-route1.validators.v1",
         "operational_validator_contract": "g-route3.operational-validator.v2",
         "semantic_contract": "g-route3.semantics.v1",
-        "conversation_contract": "g-route3.conversation-frame.v1",
+        "conversation_contract": "g-route3.conversation-frame.v2",
+        "runner_contract": "g-route3.runner.v3",
+        "launcher": {"contract": "g-route3.launcher.v1", "path": "tools/g_route3_launch.py",
+                     "authorized_runs_only_through_launcher": True,
+                     "run_roots": {"A": "data/g_route3/phase_a", "B": "data/g_route3/phase_b"}},
+        "attempt_policy": ("numbered attempts, each separately authorized; attempt n+1 only after every earlier "
+                           "attempt of the phase ended incomplete, failed or cancelled; every attempt and its "
+                           "outcome disclosed in the table and the Phase B score"),
         "semantic_validators_unchanged_from_g_route1": ("research, synthesis, extraction and planning: yes; "
-                                                        "conversation: replaced by the disclosed answer frame; "
+                                                        "conversation: replaced by the disclosed two-line frame "
+                                                        "(Answer, Actions taken); "
                                                         "coding: unchanged except that old is compared with the "
                                                         "source ignoring trailing newlines"),
         "trigger_contract": "g-route3.triggers.v1",

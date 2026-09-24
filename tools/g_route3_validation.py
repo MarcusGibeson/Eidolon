@@ -123,6 +123,14 @@ def score(records: list[Mapping[str, Any]], table: Mapping[str, Any],
             "escalation_exhausted_cases": outcome_counts[ESCALATION_EXHAUSTED],
             "stops": len(stops), "correct_stops": len(correct_stops), "unsafe_stops": len(unsafe_stops),
             "unsafe_stops_of_stops": _ratio(len(unsafe_stops), len(stops)),
+            # Coding acceptance requires the focused tests to pass, so a coding stop cannot be unsafe. These two
+            # views keep coding stops from silently diluting the pooled rate; the pooled gate itself is unchanged.
+            "unsafe_stops_of_stops_excluding_coding": _ratio(
+                sum(d["task_class"] != "coding_generation_repair" for d in unsafe_stops),
+                sum(d["task_class"] != "coding_generation_repair" for d in stops)),
+            "unsafe_stops_by_task_class": {
+                task: _ratio(sum(d["task_class"] == task for d in unsafe_stops), sum(d["task_class"] == task for d in stops))
+                for task in sorted({d["task_class"] for d in decisions})},
             "correct_stops_of_qualified_start_cases": _ratio(len(correct_stops), len(qualified_start)),
             "operational_rejection_rate_of_routed_attempts": _ratio(
                 sum(not a["output_accepted"] for a in routed_attempts), len(routed_attempts)),

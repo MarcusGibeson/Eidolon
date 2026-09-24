@@ -33,7 +33,7 @@ MODEL_CAUSED_CODING_ERRORS = (ValueError, SyntaxError, json.JSONDecodeError, sub
 def json_dumps(value: Any) -> str:
     return json.dumps(value, indent=2, sort_keys=True)
 
-CONTRACT_VERSION = "g-route3.runner.v2"
+CONTRACT_VERSION = "g-route3.runner.v3"
 BENCHMARK_ID = "G-ROUTE3"
 GUARDED_PATHS = (
     "experiments/G-ROUTE3-candidate/model_bindings.json",
@@ -44,7 +44,8 @@ GUARDED_PATHS = (
     "experiments/G-ROUTE3-candidate/corpus_b.json",
     "experiments/G-ROUTE3-candidate/gold_a.json",
     "experiments/G-ROUTE3-candidate/gold_b.json",
-    "experiments/G-ROUTE1-candidate/prompt_profiles.json",
+    "experiments/G-ROUTE1-candidate/prompt_profiles.json", "experiments/G-ROUTE1-candidate/model_bindings.json",
+    "tools/g_route3_launch.py",
     "tools/g_route1_validators.py", "tools/g_route1_operational.py", "tools/g_route1_coding_runner.py",
     "tools/g_route1_persistence.py", "tools/g_route1_provider.py", "tools/g_route2_normalization.py",
     "tools/g_route1_contract.py", "tools/g_route1_execution_contract.py", "tools/g_route1_freeze.py",
@@ -124,7 +125,34 @@ def ledger_entries(phase: str) -> list[dict[str, Any]]:
     return rows
 
 
+NON_COMPLETE_OUTCOMES = frozenset({"incomplete", "failed", "cancelled"})
+
+
+def attempt_outcome(entry: Mapping[str, Any]) -> dict[str, Any]:
+    """An attempt is complete if its run sealed a terminal receipt; otherwise its manifest state and reason."""
+    try:
+        store = RouteRunStore(Path(str(entry["run_root"])), str(entry["run_id"]), create=False)
+    except Exception:
+        return {"outcome": "never_started", "reason": "run_directory_missing"}
+    try:
+        store.terminal_receipt()
+        return {"outcome": "complete", "reason": "completed_and_scored"}
+    except FileNotFoundError:
+        pass
+    except Exception as exc:
+        return {"outcome": "unverifiable", "reason": f"terminal_receipt_invalid:{type(exc).__name__}"}
+    manifest = store.manifest()
+    return {"outcome": str(manifest.get("state") or "unknown"), "reason": str(manifest.get("reason") or "")}
+
+
+def attempts_with_outcomes(phase: str) -> list[dict[str, Any]]:
+    return [{"attempt": int(row["attempt"]), "run_id": row["run_id"], "run_root": row["run_root"],
+             "operator_confirmation": row["operator_confirmation"], **attempt_outcome(row)}
+            for row in ledger_entries(phase)]
+
+
 def _authorization_ok(phase: str, authorization: Mapping[str, Any] | None, *, run_id: str | None,
+                      run_root: Path | None = None, resume: bool = False,
                       table: str | None = None, phase_a_run_id: str | None = None) -> bool:
     row = dict(authorization or {})
     digest = _freeze_digest()
@@ -141,15 +169,39 @@ def _authorization_ok(phase: str, authorization: Mapping[str, Any] | None, *, ru
             or row.get("operator_confirmation") != confirmation_string(phase, attempt, freeze=digest, table=table)):
         return False
     entries = ledger_entries(phase)
-    fresh = attempt == len(entries) + 1
-    resuming = (attempt <= len(entries) and run_id is not None
-                and entries[attempt - 1].get("run_id") == run_id
-                and entries[attempt - 1].get("operator_confirmation") == row["operator_confirmation"])
+    fresh = (not resume and attempt == len(entries) + 1
+             and all(attempt_outcome(entry)["outcome"] in NON_COMPLETE_OUTCOMES for entry in entries))
+    resuming = (resume and attempt == len(entries) and run_id is not None and run_root is not None
+                and entries[-1].get("run_id") == run_id
+                and Path(str(entries[-1].get("run_root"))).resolve() == Path(run_root).resolve()
+                and entries[-1].get("operator_confirmation") == row["operator_confirmation"])
     return (fresh or resuming) and _freeze_valid()
 
 
-def phase_a_authorized(authorization: Mapping[str, Any] | None, *, run_id: str | None = None) -> bool:
-    return _authorization_ok("A", authorization, run_id=run_id)
+def abandon_attempt(phase: str, reason: str) -> dict[str, Any]:
+    """Close the latest attempt of a phase as incomplete when it can neither finish nor resume.
+
+    Only a non-terminal run can be abandoned, and only while no process holds its lease. The reason is
+    recorded in the run manifest and disclosed with the attempt's outcome. This makes room for the next
+    numbered attempt, which still needs its own explicit authorization.
+    """
+    if not str(reason).strip():
+        raise ValueError("abandon_reason_required")
+    entries = ledger_entries(phase)
+    if not entries:
+        raise ValueError("no_attempt_to_abandon")
+    entry = entries[-1]
+    store = RouteRunStore(Path(str(entry["run_root"])), str(entry["run_id"]), create=False)
+    if store.manifest().get("state") in TERMINAL:
+        raise ValueError("attempt_already_terminal")
+    with store.lease():
+        return store.finish(state="incomplete", reason=f"abandoned_by_operator:{str(reason).strip()}"[:500],
+                            valid_verdict=False)
+
+
+def phase_a_authorized(authorization: Mapping[str, Any] | None, *, run_id: str | None = None,
+                       run_root: Path | None = None, resume: bool = False) -> bool:
+    return _authorization_ok("A", authorization, run_id=run_id, run_root=run_root, resume=resume)
 
 
 def consume_authorization(phase: str, authorization: Mapping[str, Any], run_id: str, run_root: Path) -> Path:
@@ -166,15 +218,15 @@ def consume_authorization(phase: str, authorization: Mapping[str, Any], run_id: 
             handle.write(json_dumps(entry))
     except FileExistsError:
         existing = load_json(path)
-        if existing.get("run_id") != run_id or existing.get("operator_confirmation") != entry["operator_confirmation"]:
+        if (existing.get("run_id") != run_id or existing.get("operator_confirmation") != entry["operator_confirmation"]
+                or Path(str(existing.get("run_root"))).resolve() != Path(run_root).resolve()):
             raise PermissionError("authorization_already_consumed")
     return path
 
 
 def phase_a_attempts() -> list[dict[str, Any]]:
-    """Every authorized Phase A attempt, from the ledger, so a table cannot come from an undisclosed best-of-N."""
-    return [{"attempt": int(row["attempt"]), "run_id": row["run_id"],
-             "operator_confirmation": row["operator_confirmation"]} for row in ledger_entries("A")]
+    """Every authorized Phase A attempt with its outcome, so a table cannot come from an undisclosed best-of-N."""
+    return attempts_with_outcomes("A")
 
 
 def _call_records_digest(records: list[Mapping[str, Any]]) -> str:
@@ -206,6 +258,12 @@ def phase_b_preconditions(phase_a_root: Path, phase_a_run_id: str, *, allow_synt
         synthetic = receipt.get("synthetic_fixture") is not False
         if receipt.get("phase") != "A" or receipt.get("state") != "complete" or receipt.get("run_id") != phase_a_run_id:
             reasons.append("phase_a_not_complete")
+        if store.manifest().get("state") != "complete":
+            reasons.append("phase_a_manifest_not_complete")
+        if any(row.get("synthetic_fixture") is not synthetic for row in records):
+            reasons.append("phase_a_records_disagree_with_receipt_on_synthetic")
+        if not synthetic:
+            reasons += _provider_evidence_problems(records, "A")
         if synthetic and not allow_synthetic_phase_a:
             reasons.append("phase_a_was_synthetic")
         if receipt.get("execution_freeze_sha256") != _freeze_digest():
@@ -230,8 +288,14 @@ def phase_b_preconditions(phase_a_root: Path, phase_a_run_id: str, *, allow_synt
         attempts = phase_a_attempts()
         if source.get("phase_a_attempts") != attempts:
             reasons.append("phase_a_attempts_not_fully_disclosed")
-        if not synthetic and phase_a_run_id not in {row["run_id"] for row in attempts}:
-            reasons.append("phase_a_run_not_in_authorization_ledger")
+        if not synthetic:
+            named = [row for row in attempts if row["run_id"] == phase_a_run_id]
+            if not named:
+                reasons.append("phase_a_run_not_in_authorization_ledger")
+            elif Path(str(named[-1]["run_root"])).resolve() != Path(phase_a_root).resolve():
+                reasons.append("phase_a_run_root_differs_from_ledger")
+            if [row["run_id"] for row in attempts if row["outcome"] == "complete"] != [phase_a_run_id]:
+                reasons.append("phase_a_run_is_not_the_only_complete_attempt")
     except Exception as exc:
         reasons.append(f"phase_a_unverifiable:{type(exc).__name__}")
     if source.get("execution_freeze_binding") != _freeze_digest():
@@ -240,10 +304,40 @@ def phase_b_preconditions(phase_a_root: Path, phase_a_run_id: str, *, allow_synt
 
 
 def phase_b_authorized(authorization: Mapping[str, Any] | None, phase_a_root: Path, phase_a_run_id: str, *,
-                       run_id: str | None = None) -> bool:
+                       run_id: str | None = None, run_root: Path | None = None, resume: bool = False) -> bool:
     pre = phase_b_preconditions(phase_a_root, phase_a_run_id, allow_synthetic_phase_a=False)
-    return pre["valid"] and _authorization_ok("B", authorization, run_id=run_id, table=pre.get("table_sha256"),
-                                              phase_a_run_id=phase_a_run_id)
+    return pre["valid"] and _authorization_ok("B", authorization, run_id=run_id, run_root=run_root, resume=resume,
+                                              table=pre.get("table_sha256"), phase_a_run_id=phase_a_run_id)
+
+
+def _provider_evidence_problems(records: list[Mapping[str, Any]], phase: str) -> list[str]:
+    """Every record of an authorized run must carry the provider's own raw body, consistent with its fields."""
+    import base64
+    import hashlib
+    from g_route1_provider import extract_output
+
+    fixtures = runtime_fixtures(phase)
+    schedule = {row["call_id"]: row for row in verify_checked_schedule(phase)}
+    problems = set()
+    for row in records:
+        try:
+            raw = base64.b64decode(str(row.get("raw_provider_body_b64") or ""), validate=True)
+            if not raw or hashlib.sha256(raw).hexdigest() != row.get("raw_provider_body_sha256"):
+                problems.add("provider_raw_body_digest_mismatch")
+                continue
+            envelope = json.loads(raw.decode("utf-8"))
+            if envelope != row.get("raw_provider_envelope"):
+                problems.add("provider_envelope_differs_from_raw_body")
+            if envelope.get("model") != row.get("requested_model") or row.get("returned_model") != row.get("requested_model"):
+                problems.add("provider_model_differs_from_request")
+            if extract_output(envelope)[0] != row.get("raw_output"):
+                problems.add("raw_output_differs_from_provider_body")
+            call = schedule[row["call_id"]]
+            if row.get("request_body_sha256") != json_digest(request_body(fixtures[call["fixture_id"]], call)):
+                problems.add("request_body_differs_from_schedule")
+        except Exception:
+            problems.add("provider_evidence_unreadable")
+    return sorted(problems)
 
 
 def verify_model_receipts(receipts: list[Mapping[str, Any]]) -> dict[str, Any]:
@@ -276,8 +370,34 @@ def verify_model_receipts(receipts: list[Mapping[str, Any]]) -> dict[str, Any]:
 
 def _require_declared_synthetic_provider(provider_call) -> None:
     """The synthetic path skips authorization, so it may only drive a provider that declares itself synthetic."""
-    if getattr(provider_call, "synthetic_provider", False) is not True:
+    if getattr(provider_call, "synthetic_provider", False) is not True or type(provider_call) in REAL_PROVIDER_TYPES:
         raise PermissionError("synthetic_path_requires_declared_synthetic_provider")
+
+
+class GovernedOllamaProvider:
+    """The only provider the authorized path accepts. It builds its own Ollama adapter; nothing is injected."""
+
+    synthetic_provider = False
+
+    def __init__(self, endpoint: str = "http://127.0.0.1:11434") -> None:
+        from g_route1_provider import OllamaRouteAdapter
+        self.adapter = OllamaRouteAdapter(endpoint)
+
+    def model_receipts(self) -> list[dict[str, Any]]:
+        return self.adapter.inspect_models(allow_metadata_inspection=True)
+
+    def __call__(self, call_id: str, body: Mapping[str, Any]):
+        return self.adapter.generate(call_id, body, allow_generation=True)
+
+
+REAL_PROVIDER_TYPES: tuple[type, ...] = (GovernedOllamaProvider,)
+
+
+def _require_governed_real_path(provider_call, guarded_root) -> None:
+    if type(provider_call) not in REAL_PROVIDER_TYPES or getattr(provider_call, "synthetic_provider", False):
+        raise PermissionError("authorized_path_requires_governed_ollama_provider")
+    if guarded_root is not None:
+        raise PermissionError("authorized_path_forbids_guarded_root_override")
 
 
 class RouteThreeActivity:
@@ -336,7 +456,7 @@ def _host_baseline_ok(fixture: Mapping[str, Any]) -> bool:
 
 
 def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, activity, control, guarded_root,
-             resume, include_table, manifest_extra) -> dict[str, Any]:
+             resume, include_table, manifest_extra, on_ready: Callable[[], Any] | None = None) -> dict[str, Any]:
     from g_route3_qualification import collect_evaluation
 
     receipts = verify_model_receipts(model_receipts)
@@ -354,6 +474,9 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
         **manifest_extra} if not resume else None)
     if resume and store.manifest().get("state") in TERMINAL:
         raise ValueError("terminal_route_run_not_resumable")
+    synthetic = bool(manifest_extra.get("synthetic_fixture"))
+    if bool(store.manifest().get("synthetic_fixture")) != synthetic:
+        raise ValueError("resume_synthetic_mode_mismatch")
     checkpoint = store.checkpoint()
     if checkpoint["guarded_digest"] != guarded:
         raise ValueError("resume_dependency_drift")
@@ -373,6 +496,8 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
                   units=(counts["completed"], expected, "calls"), metrics=telemetry(int(checkpoint["next_position"])))
     store.update(state="running")
     with store.lease():
+        if on_ready is not None:
+            on_ready()      # the authorization is consumed only once this run exists and holds its lease
         for scheduled in schedule[int(checkpoint["next_position"]) - 1:]:
             if guarded_dependency_digest(include_table=include_table, root=guarded_root) != guarded:
                 store.finish(state="incomplete", reason="guarded_dependency_drift", valid_verdict=False)
@@ -453,6 +578,7 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
                 if metrics.get("eval_count") and latency > 0 else None,
                 "mutation_guard": {"status": "passed", "guarded_digest": guarded},
                 "gold_loaded": False, "belief_effects": "none", "production_routing_invoked": False,
+                "synthetic_fixture": synthetic,
             })
             counts["completed"] += 1
             counts["structural_failures"] += int(not evaluation["normalized_operational_validation"]["structural_valid"])
@@ -502,15 +628,18 @@ def execute_phase_a(*, provider_call, model_receipts, run_root, run_id: str | No
                     authorization: Mapping[str, Any] | None = None, synthetic_fixture: bool = False,
                     resume: bool = False, control: Callable[[], str] | None = None, guarded_root=None) -> dict[str, Any]:
     run_id = run_id or utc_run_id("A")
+    on_ready = None
     if synthetic_fixture:
         _require_declared_synthetic_provider(provider_call)
-    elif not phase_a_authorized(authorization, run_id=run_id):
-        raise PermissionError("g_route3_phase_a_not_authorized")
     else:
-        consume_authorization("A", authorization or {}, run_id, Path(run_root))
+        _require_governed_real_path(provider_call, guarded_root)
+        if not phase_a_authorized(authorization, run_id=run_id, run_root=Path(run_root), resume=resume):
+            raise PermissionError("g_route3_phase_a_not_authorized")
+        on_ready = lambda: consume_authorization("A", authorization or {}, run_id, Path(run_root))  # noqa: E731
     got = _collect(phase="A", provider_call=provider_call, model_receipts=model_receipts, run_root=run_root,
                    run_id=run_id, activity=activity, control=control, guarded_root=guarded_root, resume=resume,
-                   include_table=False, manifest_extra={"synthetic_fixture": bool(synthetic_fixture)})
+                   include_table=False, manifest_extra={"synthetic_fixture": bool(synthetic_fixture)},
+                   on_ready=on_ready)
     if got["state"] != "collected":
         return got
     from g_route3_qualification import attach_semantics, qualify
@@ -540,21 +669,31 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
                     control: Callable[[], str] | None = None, guarded_root=None) -> dict[str, Any]:
     if synthetic_fixture:
         _require_declared_synthetic_provider(provider_call)
+        try:
+            phase_a_synthetic = RouteRunStore(Path(phase_a_root), phase_a_run_id, create=False) \
+                .terminal_receipt().get("synthetic_fixture") is True
+        except Exception:
+            phase_a_synthetic = False
+        if not phase_a_synthetic:
+            raise PermissionError("synthetic_phase_b_requires_a_synthetic_phase_a")
+    else:
+        _require_governed_real_path(provider_call, guarded_root)
     pre = phase_b_preconditions(Path(phase_a_root), phase_a_run_id, allow_synthetic_phase_a=synthetic_fixture)
     if not pre["valid"]:
         raise PermissionError("g_route3_phase_b_blocked:" + ",".join(pre["reasons"]))
     run_id = run_id or utc_run_id("B")
-    if synthetic_fixture:
-        pass
-    elif not phase_b_authorized(authorization, Path(phase_a_root), phase_a_run_id, run_id=run_id):
-        raise PermissionError("g_route3_phase_b_not_authorized")
-    else:
-        consume_authorization("B", authorization or {}, run_id, Path(run_root))
+    on_ready = None
+    if not synthetic_fixture:
+        if not phase_b_authorized(authorization, Path(phase_a_root), phase_a_run_id, run_id=run_id,
+                                  run_root=Path(run_root), resume=resume):
+            raise PermissionError("g_route3_phase_b_not_authorized")
+        on_ready = lambda: consume_authorization("B", authorization or {}, run_id, Path(run_root))  # noqa: E731
     got = _collect(phase="B", provider_call=provider_call, model_receipts=model_receipts, run_root=run_root,
                    run_id=run_id, activity=activity, control=control, guarded_root=guarded_root, resume=resume,
                    include_table=True, manifest_extra={"synthetic_fixture": bool(synthetic_fixture),
                                                        "qualification_table_sha256": pre["table_sha256"],
-                                                       "phase_a_run_id": phase_a_run_id})
+                                                       "phase_a_run_id": phase_a_run_id},
+                   on_ready=on_ready)
     if got["state"] != "collected":
         return got
     from g_route3_qualification import load_frozen_table
@@ -568,7 +707,8 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
     activity.emit("benchmark_scoring", state="running", stage="scoring",
                   units=(EXPECTED_CALLS["B"], EXPECTED_CALLS["B"], "calls"))
     try:
-        report = score(store.call_records(), table)
+        report = {**score(store.call_records(), table), "synthetic_fixture": bool(synthetic_fixture),
+                  "phase_b_attempts": attempts_with_outcomes("B"), "phase_a_run_id": phase_a_run_id}
     except Exception as exc:
         reason = f"scorer_integrity_failure:{type(exc).__name__}:{exc}"[:500]
         store.write_failure({"failure_type": "scorer_integrity_failure", "reason": reason, "belief_effects": "none"})
@@ -581,5 +721,6 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
 __all__ = ["CONTRACT_VERSION", "BENCHMARK_ID", "GUARDED_PATHS", "TABLE_RELATIVE", "AUTHORIZATION_LEDGER",
            "RouteThreeActivity", "NullActivity", "guarded_dependency_digest", "phase_a_authorized",
            "phase_b_preconditions", "phase_a_attempts", "consume_authorization", "confirmation_string",
-           "ledger_entries", "verify_model_receipts",
+           "ledger_entries", "verify_model_receipts", "GovernedOllamaProvider", "REAL_PROVIDER_TYPES",
+           "attempt_outcome", "attempts_with_outcomes", "abandon_attempt",
            "phase_b_authorized", "execute_phase_a", "execute_phase_b", "utc_run_id"]

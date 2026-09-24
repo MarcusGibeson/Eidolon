@@ -68,7 +68,7 @@
       "corpus": "A",
       "domain": "social_walking_group",
       "fixture_id": "A-CONV-R1-1",
-      "pattern": "single_open_slot_filter",
+      "pattern": "two_condition_slot_filter",
       "risk_class": "R1",
       "task_class": "ordinary_conversation"
     },

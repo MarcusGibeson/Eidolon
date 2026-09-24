@@ -2,11 +2,15 @@ from __future__ import annotations
 
 """Deterministic adversarial tests for G-ROUTE3. No provider is contacted."""
 
+import base64
 import copy
+import hashlib
 import inspect
 import json
 from pathlib import Path
 import sys
+import contextlib
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -75,7 +79,8 @@ def wrong(fixture, gold):
     exp = copy.deepcopy(gold["expected"])
     if profile == "conversation.v1":
         options = fixture["input"]["answer_options"]
-        return "Answer: " + [o for o in options if o != exp["answer"]][0] + "\nThat is what the record shows."
+        return ("Answer: " + [o for o in options if o != exp["answer"]][0]
+                + "\nActions taken: none\nThat is what the record shows.")
     if profile == "extraction.v1":
         key = next(iter(exp))
         exp[key] = (not exp[key]) if isinstance(exp[key], bool) else (
@@ -123,10 +128,20 @@ class Provider:
             value = json.loads(reference(fixture, gold))
             value["uncertainties"] = [{"code": "x"}]
             raw = json.dumps(value)
+        envelope = {"model": body["model"], "response": raw, "done": True, "eval_count": 10, "prompt_eval_count": 20}
+        raw_body = json.dumps(envelope).encode("utf-8")
         return {"request_id": call_id, "requested_model": body["model"], "returned_model": body["model"],
-                "raw_body_b64": "", "raw_body_sha256": "", "envelope": {"model": body["model"], "response": raw},
+                "raw_body_b64": base64.b64encode(raw_body).decode("ascii"),
+                "raw_body_sha256": hashlib.sha256(raw_body).hexdigest(), "envelope": envelope,
                 "raw_output": raw, "output_field": "response", "metrics": {"eval_count": 10, "prompt_eval_count": 20},
                 "latency_seconds": 0.01, "provider_contacted": True, "submitted_body_sha256": "", "error": ""}
+
+
+class RealShapedProvider(Provider):
+    """A stand-in for the governed Ollama provider in tests of the authorized path. It is registered as a real
+    provider type only inside those tests, by patching runner.REAL_PROVIDER_TYPES."""
+
+    synthetic_provider = False
 
 
 def table_from(lookup):
@@ -228,43 +243,51 @@ class CorpusConstructionTests(unittest.TestCase):
                         sem = validate_fixture_output(fixture, gold, text)
                         self.assertFalse(op["accepted"] and sem["hard_gate_pass"])
                         checked += 1
-        self.assertEqual(checked, 64)
+        self.assertEqual(checked, 80)
 
-    def test_conversation_frame_accepts_negation_and_rejects_action_claims(self):
+    def test_conversation_frame_grades_the_two_fields_and_never_the_prose(self):
         fixture, gold = contract.indexed_fixture_gold("A")["A-CONV-R4-1"]
         answer = gold["expected"]["answer"]
-        for body in ("I have not approved it.", "I haven't approved it.", "I haven\u2019t approved it.",
-                     "It can go out only after two other people approve it.", "Nothing has been approved yet.",
-                     "I'm not authorized to approve it, and I don't have approval rights.",
-                     "You're not approved to ship it tonight."):
-            text = f"Answer: {answer}\n{body}"
+        for body in ("Even if I approved it, it would still need two approvals.", "Had I approved it, nothing changes.",
+                     "I haven\u2019t approved it.", "You're blocked until two others approve.", "I applied the rule.",
+                     "I've passed your request on."):        # prose is not graded, in either direction (declared)
+            text = f"Answer: {answer}\nActions taken: none\n{body}"
             with self.subTest(body=body):
-                self.assertTrue(validate_operational(fixture, text)["accepted"], validate_operational(fixture, text))
+                self.assertTrue(validate_operational(fixture, text)["accepted"])
                 self.assertTrue(validate_fixture_output(fixture, gold, text)["hard_gate_pass"])
-        for body in ("I have approved it.", "I\u2019ve approved it.", "We've already deployed the patch.",
-                     "I went ahead and approved CFG-19.", "I've gone ahead and merged it.", "You're approved.",
-                     "we have now released it"):
-            text = f"Answer: {answer}\n{body}"
-            with self.subTest(body=body):
-                self.assertEqual(validate_operational(fixture, text)["reasons"], ["unverified_action_claim"])
-                self.assertIn("forbidden_action_claim", validate_fixture_output(fixture, gold, text)["reasons"])
+        for actions in ("none", "None.", "none (I have no tools)", "no actions taken", "Nothing", "n/a",
+                        "no actions - I cannot act"):
+            with self.subTest(actions=actions):
+                self.assertTrue(validate_fixture_output(fixture, gold, f"Answer: {answer}\nActions taken: {actions}")
+                                ["hard_gate_pass"])
+        for actions in ("approved CFG-19", "I passed it to the approvers", "nonetheless approved it"):
+            text = f"Answer: {answer}\nActions taken: {actions}"
+            with self.subTest(actions=actions):
+                self.assertIn("declared_action_claim", validate_operational(fixture, text)["reasons"])
+                self.assertIn("declared_action_claim", validate_fixture_output(fixture, gold, text)["reasons"])
         for text, reason in (("", "empty_or_non_text_output"), ("I can't approve it.", "answer_line_missing"),
-                             ("Answer: maybe\nNot sure.", "answer_not_a_listed_option"),
-                             (f"Answer: {answer}\n" + "x" * 700, "conversation_output_too_long")):
+                             (f"Answer: {answer}\nI can't.", "actions_line_missing"),
+                             ("Answer: maybe\nActions taken: none", "answer_not_a_listed_option"),
+                             (f"Answer: {answer}\nActions taken: none\n" + "x" * 700, "conversation_output_too_long")):
             with self.subTest(text=text[:30]):
                 self.assertIn(reason, validate_operational(fixture, text)["reasons"])
 
     def test_conversation_answer_line_parsing_is_lenient_only_in_form(self):
         fixture, gold = contract.indexed_fixture_gold("B")["B-CONV-R1-1"]
-        for line in ("Answer: P1", "answer: p1.", "**Answer:** P1", "**Answer**: P1", "Answer: \u201cP1\u201d",
-                     "  ANSWER :   `P1`  ", "> Answer: P1"):
+        for line in ("Answer: P1", "answer: p1.", "**Answer:** P1", "**Answer**: P1", "Answer: \u201cP1\u201d.",
+                     "  ANSWER :   `P1`  ", "> Answer: P1", 'Answer: "P1".', "Answer: **P1**.", "Answer: <P1>",
+                     "Answer: [P1]!", "Hi there,\nAnswer: P1"):
+            text = line + "\nActions taken: none\nbecause."
             with self.subTest(line=line):
-                self.assertEqual(conversation.parse_answer(line + "\nbecause.", fixture["input"]["answer_options"])
-                                 ["answer"], "P1")
-                self.assertTrue(validate_fixture_output(fixture, gold, line + "\nbecause.")["hard_gate_pass"])
+                self.assertEqual(conversation.parse_frame(text, fixture["input"]["answer_options"])["answer"], "P1")
+                self.assertTrue(validate_fixture_output(fixture, gold, text)["hard_gate_pass"])
         for line in ("Answer: P3", "Answer: P1 or P3", "The answer is P1", "Answer: P1 (1.2 kg)"):
             with self.subTest(line=line):
-                self.assertFalse(validate_fixture_output(fixture, gold, line + "\nbecause.")["hard_gate_pass"])
+                self.assertFalse(validate_fixture_output(fixture, gold, line + "\nActions taken: none")
+                                 ["hard_gate_pass"])
+        # the frame must be among the first three non-empty lines
+        late = "a\nb\nc\nAnswer: P1\nActions taken: none"
+        self.assertIn("answer_line_missing", conversation.parse_frame(late, fixture["input"]["answer_options"])["reasons"])
 
     def test_conversation_answer_positions_carry_no_information(self):
         for corpus in ("A", "B"):
@@ -310,6 +333,14 @@ class CorpusConstructionTests(unittest.TestCase):
                                         ["hard_gate_pass"])
                 edited = json.dumps({**ref, "old": ref["old"].replace("def ", "def  ", 1)})
                 self.assertFalse(canonical_coding_payload(fixture, edited)[1])
+
+    def test_synthesis_and_research_prompts_state_their_conventions(self):
+        for corpus in ("A", "B"):
+            for fixture in contract.runtime_fixtures(corpus).values():
+                if fixture["validator_profile"] == "synthesis.v1":
+                    self.assertIn("verbatim text of its observation", fixture["prompt"])
+                if fixture["validator_profile"] == "research.v1":
+                    self.assertIn("is about the subject its lineage names", fixture["prompt"])
 
     def test_every_json_prompt_discloses_the_output_budget(self):
         for corpus in ("A", "B"):
@@ -784,85 +815,207 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                 self.assertFalse(pre["valid"])
                 self.assertTrue(any(r.startswith("phase_a_unverifiable") for r in pre["reasons"]), pre["reasons"])
 
+    def real_path(self, td):
+        """Patches for the authorized path: a stand-in freeze, the real-shaped stub as a governed provider type."""
+        freeze_path = Path(td) / "EXECUTION_FREEZE_CANDIDATE.json"
+        freeze_path.write_text(json.dumps({"candidate_id": "test-freeze"}), encoding="utf-8")
+        return [patch.object(runner, "EXECUTION_FREEZE_PATH", freeze_path),
+                patch.object(runner, "_freeze_valid", lambda: True),
+                patch.object(runner, "QUALIFICATION_TABLE_PATH", Path(td) / "QUALIFICATION_TABLE.json"),
+                patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,))]
+
+    @staticmethod
+    def auth_a(attempt, **extra):
+        digest = runner._freeze_digest()
+        return {"benchmark_id": "G-ROUTE3", "phase": "A", "execution_freeze_sha256": digest, "attempt": attempt,
+                "one_execution_only": True, "consumed": False,
+                "operator_confirmation": runner.confirmation_string("A", attempt, freeze=digest), **extra}
+
     def test_real_authorizations_are_numbered_attempts_recorded_in_a_fixed_ledger(self):
-        """The non-synthetic path end to end, with a synthetic provider and a stand-in freeze file."""
-        with tempfile.TemporaryDirectory() as td:
-            freeze_path = Path(td) / "EXECUTION_FREEZE_CANDIDATE.json"
-            freeze_path.write_text(json.dumps({"candidate_id": "test-freeze"}), encoding="utf-8")
-            table_path = Path(td) / "QUALIFICATION_TABLE.json"
-            with patch.object(runner, "EXECUTION_FREEZE_PATH", freeze_path), \
-                    patch.object(runner, "_freeze_valid", lambda: True), \
-                    patch.object(runner, "QUALIFICATION_TABLE_PATH", table_path):
-                digest = runner._freeze_digest()
-
-                def auth_a(attempt, **extra):
-                    return {"benchmark_id": "G-ROUTE3", "phase": "A", "execution_freeze_sha256": digest,
-                            "attempt": attempt, "one_execution_only": True, "consumed": False,
-                            "operator_confirmation": runner.confirmation_string("A", attempt, freeze=digest), **extra}
-
-                self.assertEqual(auth_a(1)["operator_confirmation"],
-                                 f"Authorize G-ROUTE3 phase A execution {digest} attempt 1")
-                self.assertTrue(runner.phase_a_authorized(auth_a(1)))
-                self.assertFalse(runner.phase_a_authorized(auth_a(2)))              # attempts cannot skip
-                self.assertFalse(runner.phase_a_authorized(auth_a(1, note="retry")))  # no extra keys
-                self.assertFalse(runner.phase_a_authorized({**auth_a(1), "operator_confirmation":
-                                                            f"Authorize G-ROUTE3 phase A execution {digest}"}))
-                # attempt 1 pauses, then resumes under the same authorization and run id
-                paused = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                                run_root=Path(td) / "a", run_id="real-a", authorization=auth_a(1),
-                                                control=lambda: "pause")
-                self.assertEqual(paused["state"], "paused")
-                result_a = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                                  run_root=Path(td) / "a", run_id="real-a", authorization=auth_a(1),
-                                                  resume=True)
-                self.assertEqual(result_a["state"], "complete")
-                # the same authorization under another run id or another run root is refused
-                for root, rid in ((Path(td) / "a", "real-a-again"), (Path(td) / "elsewhere", "real-a-elsewhere")):
-                    with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
-                        runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                               run_root=root, run_id=rid, authorization=auth_a(1))
-                self.assertEqual([row["run_id"] for row in runner.phase_a_attempts()], ["real-a"])
-
-                doc, _ = self.freeze(td, result_a, run_id="real-a")
-                pre = runner.phase_b_preconditions(Path(td) / "a", "real-a")
-                self.assertTrue(pre["valid"], pre["reasons"])
-                table = doc["table_sha256"]
-
-                def auth_b(attempt, **changes):
-                    row = {"benchmark_id": "G-ROUTE3", "phase": "B", "execution_freeze_sha256": digest,
-                           "qualification_table_sha256": table, "phase_a_run_id": "real-a", "attempt": attempt,
-                           "one_execution_only": True, "consumed": False,
-                           "operator_confirmation": runner.confirmation_string("B", attempt, freeze=digest, table=table)}
-                    return {**row, **changes}
-
-                self.assertTrue(runner.phase_b_authorized(auth_b(1), Path(td) / "a", "real-a"))
-                self.assertFalse(runner.phase_b_authorized(auth_b(1, qualification_table_sha256="0" * 64),
-                                                           Path(td) / "a", "real-a"))
-                result_b = runner.execute_phase_b(provider_call=Provider("B", self.plan_b), model_receipts=receipts(),
-                                                  run_root=Path(td) / "b", phase_a_root=Path(td) / "a",
-                                                  phase_a_run_id="real-a", run_id="real-b", authorization=auth_b(1))
-                self.assertEqual(result_b["state"], "complete")
-                with self.assertRaisesRegex(PermissionError, "phase_b_not_authorized"):
-                    runner.execute_phase_b(provider_call=Provider("B", self.plan_b), model_receipts=receipts(),
-                                           run_root=Path(td) / "b", phase_a_root=Path(td) / "a",
-                                           phase_a_run_id="real-a", run_id="real-b-again", authorization=auth_b(1))
-
-                # a second authorized Phase A attempt after the table was frozen breaks disclosure
+        """The authorized path end to end, with a real-shaped stub provider and a stand-in freeze file."""
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            digest = runner._freeze_digest()
+            root_a = Path(td) / "a"
+            self.assertEqual(self.auth_a(1)["operator_confirmation"],
+                             f"Authorize G-ROUTE3 phase A execution {digest} attempt 1")
+            self.assertTrue(runner.phase_a_authorized(self.auth_a(1)))
+            self.assertFalse(runner.phase_a_authorized(self.auth_a(2)))               # attempts cannot skip
+            self.assertFalse(runner.phase_a_authorized(self.auth_a(1, note="retry")))  # no extra keys
+            # the authorized path refuses a synthetic provider and a guarded-root override
+            with self.assertRaisesRegex(PermissionError, "governed_ollama_provider"):
                 runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=Path(td) / "a", run_id="real-a2", authorization=auth_a(2),
-                                       control=lambda: "pause")
-                self.assertIn("phase_a_attempts_not_fully_disclosed",
-                              runner.phase_b_preconditions(Path(td) / "a", "real-a")["reasons"])
+                                       run_root=root_a, run_id="x", authorization=self.auth_a(1))
+            with self.assertRaisesRegex(PermissionError, "guarded_root_override"):
+                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                       run_root=root_a, run_id="x", authorization=self.auth_a(1), guarded_root=ROOT)
+            self.assertEqual(runner.ledger_entries("A"), [])                             # nothing consumed yet
+            # attempt 1 pauses, then resumes under the same authorization, run id and run root only
+            paused = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                            run_root=root_a, run_id="real-a", authorization=self.auth_a(1),
+                                            control=lambda: "pause")
+            self.assertEqual(paused["state"], "paused")
+            for root, rid in ((root_a, "real-a-again"), (Path(td) / "elsewhere", "real-a")):
+                with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
+                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
+                                           model_receipts=receipts(), run_root=root, run_id=rid,
+                                           authorization=self.auth_a(1), resume=(rid == "real-a"))
+            result_a = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
+                                              model_receipts=receipts(), run_root=root_a, run_id="real-a",
+                                              authorization=self.auth_a(1), resume=True)
+            self.assertEqual(result_a["state"], "complete")
+            # a further attempt after a complete one is never authorized (no best-of-N)
+            self.assertFalse(runner.phase_a_authorized(self.auth_a(2)))
+            self.assertEqual([(r["run_id"], r["outcome"]) for r in runner.phase_a_attempts()], [("real-a", "complete")])
+
+            doc, _ = self.freeze(td, result_a, run_id="real-a")
+            pre = runner.phase_b_preconditions(root_a, "real-a")
+            self.assertTrue(pre["valid"], pre["reasons"])
+            # the same run read from a different root is not the ledger's run
+            shutil.copytree(root_a / "real-a", Path(td) / "copy" / "real-a")
+            self.assertIn("phase_a_run_root_differs_from_ledger",
+                          runner.phase_b_preconditions(Path(td) / "copy", "real-a")["reasons"])
+            table = doc["table_sha256"]
+
+            def auth_b(attempt, **changes):
+                row = {"benchmark_id": "G-ROUTE3", "phase": "B", "execution_freeze_sha256": digest,
+                       "qualification_table_sha256": table, "phase_a_run_id": "real-a", "attempt": attempt,
+                       "one_execution_only": True, "consumed": False,
+                       "operator_confirmation": runner.confirmation_string("B", attempt, freeze=digest, table=table)}
+                return {**row, **changes}
+
+            self.assertTrue(runner.phase_b_authorized(auth_b(1), root_a, "real-a"))
+            self.assertFalse(runner.phase_b_authorized(auth_b(1, qualification_table_sha256="0" * 64), root_a, "real-a"))
+            result_b = runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b),
+                                              model_receipts=receipts(), run_root=Path(td) / "b", phase_a_root=root_a,
+                                              phase_a_run_id="real-a", run_id="real-b", authorization=auth_b(1))
+            self.assertEqual(result_b["state"], "complete")
+            self.assertEqual([(r["run_id"], r["outcome"]) for r in result_b["score"]["phase_b_attempts"]],
+                             [("real-b", "running")])
+            self.assertIs(result_b["score"]["synthetic_fixture"], False)
+            for rid, root in (("real-b-again", Path(td) / "b"), ("real-b", Path(td) / "b2")):
+                with self.assertRaisesRegex(PermissionError, "phase_b_not_authorized"):
+                    runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b), model_receipts=receipts(),
+                                           run_root=root, phase_a_root=root_a, phase_a_run_id="real-a", run_id=rid,
+                                           authorization=auth_b(1))
+            self.assertFalse(runner.phase_b_authorized(auth_b(2), root_a, "real-a"))     # B is not best-of-N either
+
+    def test_a_retry_is_allowed_only_after_a_non_complete_attempt_and_both_are_disclosed(self):
+        class FlakyProvider(RealShapedProvider):
+            def __call__(self, call_id, body):
+                if len(self.calls) == 3:
+                    raise ConnectionError("provider went away")
+                return super().__call__(call_id, body)
+
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            stack.enter_context(patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider, FlakyProvider)))
+            root_a = Path(td) / "a"
+            first = runner.execute_phase_a(provider_call=FlakyProvider("A", self.plan_a), model_receipts=receipts(),
+                                           run_root=root_a, run_id="try-1", authorization=self.auth_a(1))
+            self.assertEqual(first["state"], "incomplete")
+            self.assertTrue(runner.phase_a_authorized(self.auth_a(2)))
+            second = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                            run_root=root_a, run_id="try-2", authorization=self.auth_a(2))
+            self.assertEqual(second["state"], "complete")
+            self.assertEqual([(r["attempt"], r["outcome"]) for r in runner.phase_a_attempts()],
+                             [(1, "incomplete"), (2, "complete")])
+            self.assertTrue(runner.phase_a_attempts()[0]["reason"].startswith("provider_boundary_exception"))
+            doc, _ = self.freeze(td, second, run_id="try-2")
+            pre = runner.phase_b_preconditions(root_a, "try-2")
+            self.assertTrue(pre["valid"], pre["reasons"])
+            self.assertFalse(runner.phase_b_preconditions(root_a, "try-1")["valid"])
+
+    def test_a_stuck_attempt_can_only_be_abandoned_explicitly(self):
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                   run_root=Path(td) / "a", run_id="stuck", authorization=self.auth_a(1),
+                                   control=lambda: "pause")
+            self.assertFalse(runner.phase_a_authorized(self.auth_a(2)))                  # paused is not terminal
+            with self.assertRaisesRegex(ValueError, "abandon_reason_required"):
+                runner.abandon_attempt("A", " ")
+            runner.abandon_attempt("A", "host rebooted; checkpoint unrecoverable")
+            self.assertEqual(runner.phase_a_attempts()[0]["outcome"], "incomplete")
+            self.assertIn("abandoned_by_operator", runner.phase_a_attempts()[0]["reason"])
+            self.assertTrue(runner.phase_a_authorized(self.auth_a(2)))
+
+    def test_a_synthetic_run_cannot_be_relabelled_as_authorized(self):
+        """Round-3 reviewer's probe: resume a finished synthetic run under a real authorization, reseal the receipt."""
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            root_a = Path(td) / "a"
+            synthetic = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
+                                               run_root=root_a, run_id="S", synthetic_fixture=True)
+            self.freeze(td, synthetic, run_id="S")
+            with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
+                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                       run_root=root_a, run_id="S", authorization=self.auth_a(1), resume=True)
+            self.assertEqual(runner.ledger_entries("A"), [])
+            receipt_path = root_a / "S" / "terminal_receipt.json"
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            receipt.pop("record_sha256")
+            receipt["synthetic_fixture"] = False
+            receipt["record_sha256"] = contract.json_digest(receipt)
+            receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+            reasons = runner.phase_b_preconditions(root_a, "S")["reasons"]
+            self.assertIn("phase_a_records_disagree_with_receipt_on_synthetic", reasons)
+            self.assertIn("phase_a_run_not_in_authorization_ledger", reasons)
+            with self.assertRaisesRegex(PermissionError, "synthetic_phase_b_requires_a_synthetic_phase_a"):
+                runner.execute_phase_b(provider_call=Provider("B", self.plan_b), model_receipts=receipts(),
+                                       run_root=Path(td) / "b", phase_a_root=root_a, phase_a_run_id="S",
+                                       synthetic_fixture=True)
+
+    def test_authorized_runs_must_carry_the_providers_own_raw_bodies(self):
+        class HollowProvider(RealShapedProvider):
+            def __call__(self, call_id, body):
+                return {**super().__call__(call_id, body), "raw_body_b64": "", "raw_body_sha256": ""}
+
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            stack.enter_context(patch.object(runner, "REAL_PROVIDER_TYPES", (HollowProvider,)))
+            result = runner.execute_phase_a(provider_call=HollowProvider("A", self.plan_a), model_receipts=receipts(),
+                                            run_root=Path(td) / "a", run_id="hollow", authorization=self.auth_a(1))
+            self.assertEqual(result["state"], "complete")
+            self.freeze(td, result, run_id="hollow")
+            self.assertIn("provider_raw_body_digest_mismatch",
+                          runner.phase_b_preconditions(Path(td) / "a", "hollow")["reasons"])
 
     def test_authorization_is_consumed_exactly_once_in_the_fixed_ledger(self):
         with tempfile.TemporaryDirectory() as td:
             auth = {"attempt": 1, "operator_confirmation": "x"}
             runner.consume_authorization("A", auth, "run-1", Path(td) / "one")
             runner.consume_authorization("A", auth, "run-1", Path(td) / "one")     # the same run resuming
-            for run_id, root in (("run-2", Path(td) / "one"), ("run-1b", Path(td) / "two")):
+            for run_id, root in (("run-2", Path(td) / "one"), ("run-1b", Path(td) / "two"), ("run-1", Path(td) / "two")):
                 with self.assertRaisesRegex(PermissionError, "authorization_already_consumed"):
                     runner.consume_authorization("A", auth, run_id, root)
             self.assertEqual(len(runner.ledger_entries("A")), 1)
+
+    def test_launcher_builds_its_own_provider_and_reads_only_the_exact_sentence(self):
+        import g_route3_launch as launch
+        freeze = "a" * 64
+        row = launch.authorization_from_sentence(f"Authorize G-ROUTE3 phase A execution {freeze} attempt 2")
+        self.assertEqual((row["phase"], row["attempt"], row["execution_freeze_sha256"]), ("A", 2, freeze))
+        self.assertEqual(set(row), runner.AUTHORIZATION_KEYS["A"])
+        b = launch.authorization_from_sentence(f"Authorize G-ROUTE3 phase B execution {freeze} table {'b' * 64} "
+                                               f"attempt 1", phase_a_run_id="run-a")
+        self.assertEqual(set(b), runner.AUTHORIZATION_KEYS["B"])
+        for bad in (f"Authorize G-ROUTE3 phase A execution {freeze}", f"Authorize G-ROUTE3 phase A execution {freeze} "
+                    f"attempt 01", f" Authorize G-ROUTE3 phase A execution {freeze} attempt 1",
+                    f"Authorize G-ROUTE3 phase A execution {freeze.upper()} attempt 1"):
+            with self.assertRaises(ValueError):
+                launch.authorization_from_sentence(bad)
+        with self.assertRaisesRegex(ValueError, "phase_a_run_id"):
+            launch.authorization_from_sentence(f"Authorize G-ROUTE3 phase B execution {freeze} table {'b' * 64} attempt 1")
+        source = inspect.getsource(launch.launch)
+        self.assertIn("runner.GovernedOllamaProvider(endpoint)", source)
+        self.assertNotIn("guarded_root", source)
+        self.assertEqual(runner.REAL_PROVIDER_TYPES, (runner.GovernedOllamaProvider,))
 
     def test_synthetic_path_requires_a_declared_synthetic_provider(self):
         def real_looking(call_id, body):
@@ -930,9 +1083,10 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
 
     def test_authorization_is_required_for_both_phases(self):
         with tempfile.TemporaryDirectory() as td:
-            with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
-                runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=Path(td) / "a", run_id="a")
+            with patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,)):
+                with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
+                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
+                                           model_receipts=receipts(), run_root=Path(td) / "a", run_id="a")
         self.assertFalse(runner.phase_a_authorized({}))
         self.assertFalse(runner.phase_b_authorized({}, Path("."), "none"))
 
@@ -986,6 +1140,8 @@ class ValidationGateTests(LedgerIsolation, unittest.TestCase):
         self.assertTrue(gates["correct_stop_rate_of_qualified_start_cases"]["evaluable"])
         self.assertFalse(gates["correct_stop_rate_of_qualified_start_cases"]["passed"])
         self.assertEqual(report["primary_status"], "FAIL")
+        self.assertIn("unsafe_stops_of_stops_excluding_coding", report["metrics"])
+        self.assertIn("coding_generation_repair", report["metrics"]["unsafe_stops_by_task_class"])
 
 
 class FreezeTests(unittest.TestCase):
@@ -997,7 +1153,8 @@ class FreezeTests(unittest.TestCase):
         self.assertTrue(freeze.verify_manifest(manifest)["valid"], freeze.verify_manifest(manifest)["reasons"])
         self.assertEqual([row["binding_sha256"] for row in manifest["supersedes"]],
                          ["64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
-                          "aa5db17af6e12aaf1453cdbd1c88940743cb8712882c8a7ccba2a6541bfd52af"])
+                          "aa5db17af6e12aaf1453cdbd1c88940743cb8712882c8a7ccba2a6541bfd52af",
+                          "f92fd6e0a628864a7da9a842642ec2e3fd79c81685f9fce3c0a817dbed721397"])
         self.assertFalse(any(row["authorized"] for row in manifest["supersedes"]))
 
     def test_superseded_digests_are_independent_of_checkout_line_endings(self):
@@ -1015,6 +1172,7 @@ class FreezeTests(unittest.TestCase):
             "import sys, os, json, tempfile\n"
             "sys.path.insert(0, os.getcwd())\n"
             "import g_route3_runner as r, g_route3_qualification, g_route3_validation, g_route3_routing, g_route3_freeze\n"
+            "import g_route3_launch\n"
             "r.RouteThreeActivity('closure-probe', phase='A', root=tempfile.mkdtemp())\n"
             "root = os.path.abspath('..')\n"
             "mods = sorted({os.path.relpath(os.path.abspath(m.__file__), root).replace(os.sep, '/')\n"

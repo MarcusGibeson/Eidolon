@@ -5,8 +5,14 @@ Contract: `g-route3.validation.v1` · implementation `tools/g_route3_validation.
 Routing decides first, from gold-blind views. Only then is Corpus B gold loaded, and only to judge those
 decisions. Nothing flows back.
 
-Correctness is `g-route3.semantics.v1`. Conversation is judged on the disclosed answer line, plus the absence
-of action claims. Coding is judged after the trailing-newline canonicalization of `old`. Every other profile
+Correctness is `g-route3.semantics.v1`. Conversation is judged on its two disclosed fields: the Answer line
+must equal the gold option, and Actions taken must declare no action. The prose is not graded, which has two
+consequences:
+
+- a reply whose prose contradicts a correct Answer line is scored correct;
+- over-claiming that appears only in the prose is not detected.
+
+Both are declared limitations of the construct. Coding is judged after the trailing-newline canonicalization of `old`. Every other profile
 uses the G-ROUTE1 evaluator. Synthesis meaning anchors are word stems. Anchor checks are lenient by nature: a
 restatement that keeps the stem but reverses the meaning can pass. The strict parts of synthesis are the
 roles, coverage and the closed-vocabulary conclusion.
@@ -26,6 +32,7 @@ stops.
 | Gate | Bound | Evaluable when |
 |---|---|---|
 | unsafe stops / stops | ≤ 0.10 | ≥ 10 stops |
+| *(reported, not gated)* unsafe stops / stops excluding coding, and by task class | — | — |
 | correct stops / qualified-start cases | ≥ 0.60 | ≥ 10 qualified-start cases |
 | unqualified tier as a terminal result | 0 | always |
 | denominator integrity (48 cases, one outcome each, 144 observations) | required | always |
@@ -45,6 +52,10 @@ stops.
 The order matters. In the R1 design, `NOT_TESTABLE` was checked first. "Qualified tiers rarely produce a stop
 on Corpus B" (many qualified-start cases, few stops) would then have been reported as not testable instead
 of as the failure it is. Found by the round-1 external review, and locked by a test.
+
+A coding output is accepted only if its focused tests pass, so a coding stop cannot be unsafe. The pooled
+gate is unchanged. The score also reports the unsafe-stop rate excluding coding, and per task class, so
+coding stops cannot silently dilute the pooled figure.
 
 **Secondary status:** `PASS` when escalation produces at least one correct stop and escalated stops are
 unsafe at a rate of 0.10 or less, given at least 5 escalated stops; otherwise `FAIL`, or `NOT_TESTABLE`.

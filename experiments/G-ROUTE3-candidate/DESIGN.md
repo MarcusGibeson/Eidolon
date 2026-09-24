@@ -3,7 +3,7 @@
 Status: **design and freeze only.** No model has been contacted. Provider generation calls: **0**.
 Benchmark launches: **0**. Production routing: disabled. Automatic escalation: disabled. Belief effects: `none`.
 
-Revision: **R3.** Neither earlier freeze was ever authorized; both are preserved and superseded.
+Revision: **R4.** No earlier freeze was ever authorized; all are preserved and superseded.
 
 - **R1** (binding `64eed1ba…`). An external pre-contact review found hidden grader rules, a trigger that fired
   on correct answers, template reuse between corpora, a gate that could hide a failure, weak table
@@ -14,8 +14,19 @@ Revision: **R3.** Neither earlier freeze was ever authorized; both are preserved
   - conversation phrase anchors still failed in both directions;
   - coding rejected correct fixes over a trailing newline;
   - some runtime modules were unguarded.
+- **R3** (binding `f92fd6e0…`). A third review found that:
+  - one authorization could drive several runs by changing the run root;
+  - the authorized path accepted any provider;
+  - a synthetic run could be relabelled;
+  - a complete attempt could be repeated best-of-N;
+  - the conversation action-claim pattern failed in both directions;
+  - synthesis graded keywords the model was never shown.
 
-See `EXTERNAL_REVIEW_ROUND1.md` and `EXTERNAL_REVIEW_ROUND2.md`.
+See `EXTERNAL_REVIEW_ROUND1.md`, `EXTERNAL_REVIEW_ROUND2.md` and `EXTERNAL_REVIEW_ROUND3.md`.
+
+Authorized runs go only through `tools/g_route3_launch.py`. It builds the Ollama provider itself and reads
+the operator's verbatim sentence. That sentence names a numbered attempt, and an attempt may follow only
+attempts that did not complete.
 
 ## Research questions
 
@@ -60,11 +71,11 @@ every execution constraint is disclosed.
 For research, synthesis, extraction and planning, the validators are the frozen G-ROUTE1 validators,
 byte-for-byte. Two profiles differ, by operator decision after the external reviews:
 
-- **Conversation** uses a **disclosed answer frame** (`g_route3_conversation.py`). The input lists
-  `answer_options`, and the reply's first line is `Answer: <option>`. The decision is judged exactly on that
-  line. The free text is judged only for claims that the assistant carried out an action; negations are never
-  such claims. Phrase anchors were dropped because two independent reviews showed them rejecting correct
-  replies and accepting wrong ones.
+- **Conversation** uses a **disclosed two-line frame** (`g_route3_conversation.py`). The input lists
+  `answer_options`, and the prompt states that the assistant has no tools. The reply opens with two lines:
+  `Answer: <option>` and `Actions taken: <none, or each action carried out>`. Both are closed fields and are
+  graded exactly. The prose after them is not graded. Two earlier approaches each failed external review in
+  both directions: phrase anchors, and then scanning the prose for action claims.
 - **Coding** compares `old` with the source ignoring trailing newlines only (`g_route3_semantics.py`). Correct,
   test-passing fixes had failed on that one byte.
 

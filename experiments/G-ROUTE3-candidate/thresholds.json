@@ -20,7 +20,8 @@
     "missing_data_qualifications_allowed": 0,
     "no_qualified_model_behavior_must_be_exercised_deterministically": true,
     "qualification_table_mutations_after_phase_b_start_allowed": 0,
-    "unqualified_tier_terminal_results_allowed": 0
+    "unqualified_tier_terminal_results_allowed": 0,
+    "unsafe_stop_rate_reported_excluding_coding_and_by_task_class": true
   },
   "model_output_budget": {
     "disclosed_in_every_json_prompt": true,
@@ -30,7 +31,7 @@
   "operational_validator": {
     "coding": "old is compared with the supplied source ignoring trailing newlines; otherwise delegated unchanged",
     "contract": "g-route3.operational-validator.v2",
-    "conversation": "disclosed answer frame (g-route3.conversation-frame.v1): the first line must be 'Answer: <option>' naming exactly one listed option; the reply must fit the disclosed 600 characters; it must not claim that the assistant carried out an action (first-person or 'you are booked'-style claims, typographic apostrophes normalized); negations are never claims",
+    "conversation": "disclosed two-line frame (g-route3.conversation-frame.v2): 'Answer: <option>' naming exactly one listed option and 'Actions taken: none' (or a declared equivalent) within the first three non-empty lines; at most 600 characters; the prose is not graded",
     "other_profiles": "delegated unchanged to g-route1.operational-validator.v1"
   },
   "production_routing_authorized": false,
@@ -38,6 +39,7 @@
     "audit_document_may_not_be_a_frozen_artifact": true,
     "audit_document_must_name_run_and_score": true,
     "audit_must_be_bound_to_a_document_digest": true,
+    "authorized_runs_only_through_launcher": true,
     "contract": "normalized",
     "corpus": "A",
     "distinct_fixtures_required": 2,
@@ -54,7 +56,7 @@
     "operational_acceptances_required": 4,
     "per_cell_confidence_statement": "0 failures in 4 observations bounds the true per-cell failure rate below 0.527 at one-sided 95% confidence (exact binomial). A qualified cell is a pilot-scale screen, not proof of competence.",
     "phase_a_attempts_must_be_disclosed_in_table": true,
-    "phase_a_attempts_source": "fixed authorization ledger; every attempt is separately authorized and disclosed in the table",
+    "phase_a_attempts_source": "fixed authorization ledger; attempt n+1 only after every earlier attempt ended incomplete, failed or cancelled; every attempt disclosed with its run root, outcome and reason",
     "r4_is_evidence_only": true,
     "repeats_per_fixture": 2,
     "returned_model_mismatches_allowed": 0,
@@ -102,9 +104,9 @@
   "semantic_evaluation": {
     "coding": "g-route1 coding validator on the payload whose old has been canonicalized for trailing newlines only",
     "contract": "g-route3.semantics.v1",
-    "conversation": "the answer line must equal the gold option, and no action may be claimed; nothing else in the free text is graded",
+    "conversation": "the Answer line must equal the gold option and Actions taken must declare no action; the prose is not graded, so over-claiming in prose alone is not detected (declared)",
     "other_profiles": "g-route1.validators.v1 unchanged"
   },
-  "threshold_id": "G-ROUTE3-THRESHOLDS-R3",
+  "threshold_id": "G-ROUTE3-THRESHOLDS-R4",
   "thresholds_frozen_before_provider_contact": true
 }
