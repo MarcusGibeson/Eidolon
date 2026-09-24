@@ -25,6 +25,7 @@ from g_route1_provider import OllamaRouteAdapter, verify_model_receipts
 CONTRACT_VERSION = "g-route1.mechanical-pilot.v1"
 PILOT_IDENTITY = "PX-ROUTE-MECHANICS-01"
 EXPECTED_GENERATION_CALLS = 9
+TERMINAL_STATES = frozenset({"complete", "failed", "incomplete", "cancelled"})
 FROZEN_CONTENT_DIGEST = "e9f674ecec069d3f296023cc568eb030a650292d2fdad96fe294fc5e20c3ee71"
 FROZEN_LITERAL_SHA256 = "836ee16db8a6f92e08570473c1e553a8ff564e785feb2c80b9ceb56750770029"
 FREEZE_PATH = DATA / "EXECUTION_FREEZE_CANDIDATE.json"
@@ -203,7 +204,13 @@ class PilotStore:
         value["updated"] = now()
         _replace(self.manifest_path, value)
 
-    def write_checkpoint(self, *, next_position: int, state: str) -> dict[str, Any]:
+    def write_checkpoint(
+        self, *, next_position: int, state: str, completed_position: int | None = None,
+    ) -> dict[str, Any]:
+        if self.checkpoint_path.is_file():
+            existing = json.loads(self.checkpoint_path.read_text(encoding="utf-8"))
+            if existing.get("state") in TERMINAL_STATES:
+                raise ValueError("terminal_pilot_checkpoint_immutable")
         value = {
             "contract_version": "g-route1.mechanical-pilot-checkpoint.v1",
             "pilot_id": self.root.name, "next_position": int(next_position),
@@ -212,6 +219,8 @@ class PilotStore:
             "pilot_definition_sha256": pilot_definition()["pilot_definition_sha256"],
             "updated": now(),
         }
+        if completed_position is not None:
+            value["completed_position"] = int(completed_position)
         value["checkpoint_sha256"] = json_digest(value)
         _replace(self.checkpoint_path, value)
         return value
@@ -235,9 +244,46 @@ class PilotStore:
             row["record_sha256"] = digest
         return sorted(rows, key=lambda row: row["position"])
 
+    def terminal_receipt(self) -> dict[str, Any]:
+        path = self.root / "terminal_receipt.json"
+        if not path.is_file():
+            raise FileNotFoundError("pilot_terminal_receipt_missing")
+        value = json.loads(path.read_text(encoding="utf-8"))
+        observed = value.pop("record_sha256", "")
+        if observed != json_digest(value):
+            raise ValueError("pilot_terminal_receipt_digest_mismatch")
+        value["record_sha256"] = observed
+        return value
+
+    def seal_terminal_checkpoint(self, *, state: str, expected_calls: int) -> dict[str, Any]:
+        if state not in TERMINAL_STATES:
+            raise ValueError("pilot_checkpoint_terminal_state_required")
+        manifest = self.manifest()
+        receipt = self.terminal_receipt()
+        records = self.calls()
+        if manifest.get("state") != state or receipt.get("state") != state:
+            raise ValueError("pilot_terminal_state_disagreement")
+        if state == "complete" and len(records) != expected_calls:
+            raise ValueError("pilot_terminal_call_count_mismatch")
+        existing = self.checkpoint()
+        expected_next = len(records) + 1
+        if existing.get("state") in TERMINAL_STATES:
+            if (
+                existing.get("state") == state
+                and existing.get("next_position") == expected_next
+                and existing.get("completed_position") == len(records)
+            ):
+                return existing
+            raise ValueError("pilot_terminal_checkpoint_conflict")
+        if existing.get("next_position") != expected_next:
+            raise ValueError("pilot_terminal_checkpoint_position_mismatch")
+        return self.write_checkpoint(
+            next_position=expected_next, state=state, completed_position=len(records),
+        )
+
     def finish(self, state: str, reason: str) -> dict[str, Any]:
         value = self.manifest()
-        if value.get("state") in {"complete", "failed", "incomplete", "cancelled"}:
+        if value.get("state") in TERMINAL_STATES:
             raise ValueError("terminal_pilot_immutable")
         value.update(state=state, reason=reason, finished=now(), updated=now())
         _replace(self.manifest_path, value)
@@ -245,6 +291,30 @@ class PilotStore:
 
     def write_terminal_receipt(self, receipt: Mapping[str, Any]) -> None:
         _write_new(self.root / "terminal_receipt.json", _seal(receipt))
+
+
+def verify_terminal_views(
+    store: PilotStore, activity_projection: Mapping[str, Any], *, expected_calls: int,
+) -> dict[str, Any]:
+    manifest = store.manifest()
+    receipt = store.terminal_receipt()
+    checkpoint = store.checkpoint()
+    states = {
+        "pilot": manifest.get("state"),
+        "receipt": receipt.get("state"),
+        "activity": activity_projection.get("state"),
+        "checkpoint": checkpoint.get("state"),
+    }
+    reasons = []
+    if set(states.values()) != {"complete"}:
+        reasons.append("terminal_state_disagreement")
+    if checkpoint.get("completed_position") != expected_calls:
+        reasons.append("terminal_completed_position_mismatch")
+    if checkpoint.get("next_position") != expected_calls + 1:
+        reasons.append("terminal_next_position_mismatch")
+    if manifest.get("calls_persisted") != expected_calls or receipt.get("generation_calls") != expected_calls:
+        reasons.append("terminal_call_count_mismatch")
+    return {"valid": not reasons, "reasons": reasons, "states": states, "checkpoint": checkpoint}
 
 
 class PilotActivity:
@@ -483,7 +553,16 @@ def run_resume(*, pilot_id: str, root: Path, activity_root: Path, endpoint: str,
     store.write_terminal_receipt(terminal)
     store.finish("complete", "mechanical_pilot_complete")
     activity_projection = activity.emit("pilot_complete", state="complete", stage="finalization", completed=len(records), provider_calls=len(records))
-    return {**terminal, "activity": activity_projection, "runtime_root": str(store.root)}
+    store.seal_terminal_checkpoint(state="complete", expected_calls=EXPECTED_GENERATION_CALLS)
+    terminal_views = verify_terminal_views(
+        store, activity_projection, expected_calls=EXPECTED_GENERATION_CALLS,
+    )
+    if not terminal_views["valid"]:
+        raise RuntimeError("pilot_terminal_view_mismatch:" + ",".join(terminal_views["reasons"]))
+    return {
+        **terminal, "activity": activity_projection, "terminal_views": terminal_views,
+        "runtime_root": str(store.root),
+    }
 
 
 def main() -> int:
