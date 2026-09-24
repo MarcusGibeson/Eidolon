@@ -21,6 +21,11 @@
       "result": "PASS"
     },
     {
+      "command": "python tools/g_route1_execution_freeze_tests.py",
+      "tests": 7,
+      "result": "PASS"
+    },
+    {
       "command": "python tools/adaptive_cognitive_routing_design_tests.py",
       "tests": 1,
       "result": "PASS"
@@ -31,7 +36,7 @@
       "result": "PASS"
     }
   ],
-  "total_assertion_suites": 40,
+  "total_assertion_suites": 47,
   "live_provider_used": false,
   "production_routing_invoked": false,
   "belief_effects": "none"
