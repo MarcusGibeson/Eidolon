@@ -4,17 +4,19 @@
 
 **Source checkpoint:** `8a2c15d35cb1ff36a97e6c91c89920d4529f07f9` (`v2735.0` semantic-fidelity closure).
 
+**Design predecessor:** `d6fde928071c1df31e264576b256111f9921186a` (binary routing design before the mid-tier correction).
+
 ## Goal
 
-Determine, with frozen task-specific evidence, whether a cheaper installed model can safely handle a bounded class of work before any production routing behavior is implemented. The intended future flow is:
+Determine, with frozen task- and risk-specific evidence, which of three installed model tiers can safely handle a bounded class of work before any production routing behavior is implemented. The governing rule is **cheapest qualified model, with escalation only when evidence justifies it**. The intended future flow is:
 
 ```
 task input
   -> deterministic task class and independent consequence risk
-  -> cheapest model qualified for both
+  -> cheapest model qualified for the exact task-class/risk cell (7B, then 14B, then 27B)
   -> model call through the existing provider transport
   -> deterministic structural, grounding, and authority checks
-  -> accept, fail closed, or escalate once to a stronger qualified model
+  -> accept, fail closed, or escalate to the next stronger qualified tier
   -> provenance receipt
 ```
 
@@ -53,12 +55,15 @@ The current settings schema has one generation model. Several callers alter temp
 
 ## Installed candidate inventory
 
-Read-only local metadata inspection found two generation candidates. No model was downloaded, loaded for generation, or called.
+Read-only local metadata inspection initially found the 7B and 27B candidates. The operator then explicitly authorized installation of the exact mid-tier tag `qwen3:14b`; its download and SHA-256 verification completed successfully. No model was loaded for generation or called.
 
-| Model | Local ID | Parameters | Quantization | Declared context | Local size | Current role |
-|---|---|---:|---|---:|---:|---|
-| `qwen2.5:7b` | `845dbda0ea48` | 7.6B | Q4_K_M | 32,768 | 4.7 GB | cheaper qualification candidate |
-| `qwen3.8:27b` | `22130167c4c2` | 27.3B plus vision projector | Q4_K_M | 262,144 | 17 GB | incumbent runtime model and strongest installed candidate |
+| Tier | Model | Local ID | Parameters | Quantization | Declared context | Local size | Current role |
+|---|---|---|---:|---|---:|---:|---|
+| small | `qwen2.5:7b` | `845dbda0ea48` | 7.6B | Q4_K_M | 32,768 | 4.7 GB | cheapest qualification candidate |
+| mid | `qwen3:14b` | `bdbd181c33f2` | 14.8B | Q4_K_M | 40,960 | 9.3 GB | intermediate qualification and escalation candidate |
+| large | `qwen3.8:27b` | `22130167c4c2` | 27.3B plus vision projector | Q4_K_M | 262,144 | 17 GB | incumbent runtime model and strongest installed candidate |
+
+The mid-tier model is from the Qwen3 family, exposes completion, tool, and thinking capabilities, and exceeds the benchmark's planned 8,192-token context cap. Its local Ollama manifest digest is `bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8`, and its installed weight-blob binding is `sha256:a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e`. Its Q4_K_M quantization and common Ollama transport make it technically suitable for all planned task-class envelopes; benchmark evidence, not metadata, must determine which task/risk cells it qualifies for.
 
 The operator runtime currently selects `qwen3.8:27b`, 8,192 context, 350 default output tokens, temperature 0.45, top-p 0.9, top-k 40, repeat penalty 1.1, thinking off, one transport retry, and a 300-second read timeout. The short IDs above are inventory evidence, not execution-freeze digests.
 
@@ -94,9 +99,9 @@ This checkpoint defines the design, not the corpus or execution freeze.
 
 ### Corpus plan
 
-Create 24 fresh fixtures, four per model-backed task class, with three frozen repeats per model: 144 intended calls. Each class contains clean controls, a boundary case, and an adversarial case. The `deterministic_only` class is evaluated without provider calls.
+Create 24 fresh fixtures, four per model-backed task class and one for each R1-R4 consequence-risk tier, with three frozen repeats per model: 216 intended calls. Each class contains clean controls, a boundary case, and an adversarial case. The `deterministic_only` class is evaluated without provider calls.
 
-The same prompt, fixture, order schedule, context limit, output cap, sampling options, and validator apply to both candidates. Candidate identity is not exposed in prompts. Calls are single-job and sequential. Transport retry is zero. Any semantic repair stage is measured as a separate, prospectively specified condition rather than hidden inside first-pass quality.
+The same prompt, fixture, order schedule, context limit, output cap, sampling options, and validator apply to all three candidates. Candidate identity is not exposed in prompts. Calls are single-job and sequential. Transport retry is zero. Any semantic repair stage is measured as a separate, prospectively specified condition rather than hidden inside first-pass quality.
 
 The corpus must be authored and independently audited before freeze. Existing G-EVID1/G-CORROB failures and G-SYNTH1-R2 sentences may define general semantic classes but may not be copied, paraphrased, or used as answer-revealing development cases. The frozen G-SYNTH1-R2 harness is not reusable.
 
@@ -111,13 +116,15 @@ The benchmark preserves each production class's relevant envelope rather than fo
 - coding uses disposable fixture repositories and isolated apply/compile/test verification;
 - reflection/planning uses bounded JSON and no-authority checks.
 
-Thinking is off for both candidates, context is capped at 8,192, and task-specific output caps are frozen before calls. A cold-load probe is reported separately from warm execution and excluded from quality denominators.
+Thinking is off for all candidates, context is capped at 8,192, and task-specific output caps are frozen before calls. A cold-load probe is reported separately from warm execution and excluded from quality denominators.
 
 ### Quality and cost decision rule
 
 Selection is lexicographic: safety and contract validity, then task utility, then cost.
 
-For a task class to qualify:
+Qualification is never global. Every result occupies one exact **task class × consequence risk × model tier** matrix cell. The six model-backed task classes, four risk tiers, and three model tiers create 72 required qualification cells. R4 cells may be measured as evidence, but R4 remains ineligible for adaptive selection because its existing exact pre-bound model and approval boundaries prevail.
+
+For a model tier to qualify in one task/risk cell:
 
 1. every authority, privacy, binding, provenance, and structural hard gate passes on every repeat;
 2. no accepted output contains an evaluator-confirmed false-clean failure that the proposed production validator would miss;
@@ -125,13 +132,15 @@ For a task class to qualify:
 4. repeat instability stays within the frozen class limit;
 5. all provider calls and outputs have complete reconstructable provenance.
 
-Among qualified models, the cheaper model is selected using measured median and p95 latency, first-token latency where relevant, tokens per second, model size/residency cost, and provider-call count. If no candidate qualifies, the class remains unrouted. If both qualify but cost superiority is not stable across repeats, the incumbent remains selected.
+Among qualified tiers in the exact cell, selection walks `qwen2.5:7b` → `qwen3:14b` → `qwen3.8:27b` and stops at the first qualified tier. If 7B is not qualified but 14B is, 14B is selected; if neither is qualified but 27B is, 27B is selected; if no tier qualifies, execution fails closed without silently choosing a model. Measured median and p95 latency, first-token latency where relevant, tokens per second, model size/residency cost, and provider-call count characterize cost, but cannot override a qualification failure.
+
+The required decision cases are explicit: all three qualified selects 7B; only 14B and 27B qualified selects 14B; only 27B qualified selects 27B; no qualified tier produces `no_qualified_model`. After a validator-detectable runtime failure, escalation selects the next stronger qualified tier, so a qualified 14B tier cannot be bypassed on the way from 7B to 27B.
 
 This rule intentionally prevents a small model from qualifying merely because malformed outputs are easy to detect. False-clean semantic failures are first-class blockers unless a deterministic production validator actually catches them.
 
 ### Escalation evaluation
 
-The benchmark records, without extra calls, cases where the smaller model fails and the incumbent succeeds on the same frozen fixture/repeat. Those paired outputs estimate:
+The benchmark records, without extra calls, adjacent-tier and end-to-end cases where a cheaper tier fails and a stronger tier succeeds on the same frozen fixture/repeat. Those matched outputs estimate:
 
 - validator-detectable failures eligible for one future escalation;
 - false-clean failures that would escape escalation;
@@ -140,13 +149,13 @@ The benchmark records, without extra calls, cases where the smaller model fails 
 - end-to-end quality after hypothetical escalation;
 - added latency and call cost.
 
-A future runtime may make at most one explicit escalation from a qualified smaller model to a stronger qualified model. It may never silently fall back, change providers, broaden authority, retry indefinitely, or accept the stronger output without running the same deterministic validators.
+A future runtime may escalate only to the next stronger tier that is qualified for the same task/risk cell. It cannot skip a qualified 14B tier, though it may bypass a tier already proven unqualified for that exact cell. The full ladder permits at most two explicit escalations, never silently falls back, changes providers, broadens authority, retries indefinitely, or accepts a stronger output without the same deterministic validators.
 
 ## Metrics and units
 
 Results must separate fixture, repeat, provider call, candidate, task class, and risk tier. At minimum report:
 
-- hard-gate pass/fail by fixture and repeat;
+- hard-gate pass/fail by fixture, repeat, task class, risk tier, and model tier;
 - first-pass structural and grounding validity;
 - task-specific utility pass rate;
 - false-clean semantic failure count;
@@ -156,7 +165,8 @@ Results must separate fixture, repeat, provider call, candidate, task class, and
 - prompt/output token counts and tokens per second;
 - cold-load time separately from warm latency;
 - provider calls, explicit semantic repairs, and transport retries;
-- escalation-eligible, escalation-caught, escalation-missed, and unnecessary-escalation counts;
+- 7B→14B and 14B→27B escalation-eligible, caught, missed, and unnecessary-escalation counts;
+- selected-tier outcome (`small`, `mid`, `large`, or `no_qualified_model`) for every task/risk cell;
 - model identity/configuration and raw-output digests;
 - validator and scorer versions/digests.
 
@@ -184,4 +194,4 @@ Before any live call, stop on corpus, prompt, model, configuration, schedule, va
 
 ## Current conclusion
 
-There is enough architectural evidence to design G-ROUTE1, but not enough qualification evidence to route any production task to `qwen2.5:7b`. The next defensible step is corpus and validator construction, not a model-selection switch.
+The complete 7B → 14B → 27B ladder is now locally available and represented in every qualification and scoring dimension. There is still no qualification evidence to route any production task to a different model. G-ROUTE1 is ready for fixture and validator construction, not a model-selection switch.

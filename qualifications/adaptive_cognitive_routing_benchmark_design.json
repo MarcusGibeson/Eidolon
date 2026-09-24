@@ -1,10 +1,12 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
   "design_id": "G-ROUTE1-CANDIDATE",
   "status": "design_only_not_frozen",
+  "next_phase_status": "ready_for_fixture_construction",
   "source_checkpoint": "8a2c15d35cb1ff36a97e6c91c89920d4529f07f9",
+  "design_predecessor_commit": "d6fde928071c1df31e264576b256111f9921186a",
   "created_on": "2026-09-23",
-  "research_question": "Can a cheaper installed local model safely satisfy a bounded cognitive task class under the same frozen prompt and deterministic validators as the incumbent, and can validator-detectable failures be contained by one explicit escalation without allowing false-clean errors or authority drift?",
+  "research_question": "For each bounded task class and independently classified consequence-risk tier, what is the cheapest installed local-model tier that satisfies the same frozen prompt, deterministic validators, and utility contract, and can validator-detectable failures be contained by ordered escalation from 7B to 14B to 27B without allowing false-clean errors, tier skipping, or authority drift?",
   "current_runtime": {
     "provider": "ollama",
     "model": "qwen3.8:27b",
@@ -22,6 +24,7 @@
   "installed_candidates": [
     {
       "model": "qwen2.5:7b",
+      "tier": "small",
       "local_id": "845dbda0ea48",
       "parameters": "7.6B",
       "quantization": "Q4_K_M",
@@ -31,7 +34,27 @@
       "execution_freeze_identity": false
     },
     {
+      "model": "qwen3:14b",
+      "tier": "mid",
+      "family": "Qwen3",
+      "local_id": "bdbd181c33f2",
+      "local_manifest_digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+      "model_blob_sha256": "a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e",
+      "format": "gguf",
+      "parameters": "14.8B",
+      "parameter_class": "approximately_14B",
+      "quantization": "Q4_K_M",
+      "declared_context": 40960,
+      "local_size_gb": 9.3,
+      "local_size_bytes": 9276198565,
+      "capabilities": ["completion", "tools", "thinking"],
+      "locally_available": true,
+      "role": "mid_tier_candidate",
+      "execution_freeze_identity": false
+    },
+    {
       "model": "qwen3.8:27b",
+      "tier": "large",
       "local_id": "22130167c4c2",
       "parameters": "27.3B",
       "quantization": "Q4_K_M",
@@ -151,17 +174,58 @@
     {"id": "R3", "meaning": "source, security, governance or action-adjacent candidate"},
     {"id": "R4", "meaning": "frozen experiment, gold, threshold, policy, release, provider, belief or authority boundary"}
   ],
+  "model_tiers": [
+    {"id": "small", "order": 1, "model": "qwen2.5:7b", "selection_role": "cheapest_first"},
+    {"id": "mid", "order": 2, "model": "qwen3:14b", "selection_role": "intermediate_escalation"},
+    {"id": "large", "order": 3, "model": "qwen3.8:27b", "selection_role": "strongest_candidate"}
+  ],
+  "qualification_matrix": {
+    "cell_key": ["task_class", "consequence_risk", "model_tier"],
+    "task_classes": [
+      "ordinary_conversation",
+      "structured_extraction",
+      "grounded_research_synthesis",
+      "hierarchical_semantic_synthesis",
+      "coding_generation_repair",
+      "reflective_planning"
+    ],
+    "consequence_risks": ["R1", "R2", "R3", "R4"],
+    "model_tiers": ["small", "mid", "large"],
+    "required_cell_count": 72,
+    "initial_cell_status": "unqualified_pending_benchmark",
+    "complete_cartesian_evaluation_required": true,
+    "global_model_qualification_allowed": false,
+    "r4_measurement_is_evidence_only": true,
+    "r4_adaptive_selection_allowed": false
+  },
+  "routing_ladder": {
+    "ordered_tiers": ["small", "mid", "large"],
+    "selection_rule": "first_qualified_tier_for_exact_task_and_risk_cell",
+    "escalation_rule": "next_stronger_qualified_tier_for_exact_task_and_risk_cell",
+    "skip_qualified_mid_tier_allowed": false,
+    "unqualified_tiers_may_be_bypassed": true,
+    "outcomes": ["use_small", "use_mid", "use_large", "no_qualified_model"],
+    "no_qualified_model_behavior": "fail_closed_without_provider_call",
+    "maximum_runtime_escalations": 2,
+    "required_decision_cases": [
+      {"qualified_tiers": ["small", "mid", "large"], "selected_outcome": "use_small"},
+      {"qualified_tiers": ["mid", "large"], "selected_outcome": "use_mid"},
+      {"qualified_tiers": ["large"], "selected_outcome": "use_large"},
+      {"qualified_tiers": [], "selected_outcome": "no_qualified_model"}
+    ]
+  },
   "benchmark_plan": {
     "model_backed_fixture_count": 24,
     "repeats_per_fixture": 3,
-    "candidate_count": 2,
-    "intended_generation_calls": 144,
+    "candidate_count": 3,
+    "intended_generation_calls": 216,
     "concurrency": 1,
     "transport_retry_limit": 0,
     "hidden_fallback_allowed": false,
     "thinking_mode": "off",
     "context_size": 8192,
     "same_fixture_prompt_and_config_across_candidates": true,
+    "one_fixture_per_task_risk_cell": true,
     "candidate_identity_exposed_to_prompt": false,
     "cold_load_reported_separately": true,
     "semantic_repair_in_first_pass": false,
@@ -174,6 +238,9 @@
     "false_clean_failure_blocks_class_qualification_when_production_validator_misses_it": true,
     "aggregate_may_hide_hard_failure": false,
     "no_qualified_candidate_means_unrouted": true,
+    "qualification_scope": "exact_task_class_consequence_risk_model_tier_cell",
+    "cheapest_qualified_tier_selected": true,
+    "qualified_mid_tier_cannot_be_skipped": true,
     "uncertain_cost_win_keeps_incumbent": true,
     "self_reported_confidence_used": false
   },
@@ -195,7 +262,9 @@
     "semantic_repairs",
     "transport_retries",
     "escalation_eligible_caught_missed_and_unnecessary",
-    "model_config_output_validator_and_scorer_digests"
+    "model_config_output_validator_and_scorer_digests",
+    "qualification_result_by_task_risk_model_tier",
+    "selection_outcome_small_mid_large_or_none"
   ],
   "activity_contract": {
     "allowed_live_fields": ["phase", "candidate_id", "task_class", "completed", "total", "provider_calls", "elapsed_seconds", "structural_failure_count", "terminal_state"],
@@ -237,6 +306,6 @@
     "provider_generation_calls": 0,
     "benchmark_launches": 0,
     "production_router_changes": 0,
-    "model_downloads": 0
+    "operator_authorized_model_installs": 1
   }
 }
