@@ -1,0 +1,5251 @@
+{
+  "boundaries": {
+    "all_records_gold_linked": true,
+    "belief_effects": [
+      "none"
+    ],
+    "operational_validator_uses_gold": false,
+    "production_routing_invoked": false
+  },
+  "efficiency": {
+    "activity_active_seconds": 4467.119,
+    "by_tier": {
+      "large": {
+        "calls": 72,
+        "done_reasons": {
+          "stop": 72
+        },
+        "latency_max": 84.463,
+        "latency_median": 44.105,
+        "latency_min": 8.585,
+        "model": "qwen3.8:27b",
+        "observed_load_seconds_total": 932.121,
+        "output_tokens": 10532,
+        "prompt_tokens": 12153,
+        "tokens_per_second_median": 3.27,
+        "total_latency_seconds": 3224.739
+      },
+      "mid": {
+        "calls": 72,
+        "done_reasons": {
+          "stop": 72
+        },
+        "latency_max": 18.353,
+        "latency_median": 9.391,
+        "latency_min": 0.654,
+        "model": "qwen3:14b",
+        "observed_load_seconds_total": 391.004,
+        "output_tokens": 8683,
+        "prompt_tokens": 12303,
+        "tokens_per_second_median": 12.434,
+        "total_latency_seconds": 715.445
+      },
+      "small": {
+        "calls": 72,
+        "done_reasons": {
+          "stop": 72
+        },
+        "latency_max": 11.243,
+        "latency_median": 7.219,
+        "latency_min": 0.29,
+        "model": "qwen2.5:7b",
+        "observed_load_seconds_total": 336.725,
+        "output_tokens": 8947,
+        "prompt_tokens": 11727,
+        "tokens_per_second_median": 18.024,
+        "total_latency_seconds": 509.77
+      }
+    },
+    "manifest_finished": "2026-09-24T04:31:14.143Z",
+    "manifest_started": "2026-09-24T03:16:47.013Z",
+    "total_provider_latency_seconds": 4449.954
+  },
+  "escalation_simulation": [
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CODE-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "CODE-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "CODE-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CODE-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CODE-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CODE-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "CODE-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "CODE-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "CODE-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "CODE-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "CODE-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "CODE-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": true,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "EXTRACT-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "PLAN-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "PLAN-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "PLAN-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "PLAN-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "PLAN-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "large",
+      "fixture_id": "PLAN-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "PLAN-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "PLAN-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "PLAN-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "PLAN-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "PLAN-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "PLAN-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "RESEARCH-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "large",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "mid"
+        },
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": null,
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "large"
+        }
+      ],
+      "false_clean_prevented_escalation": false,
+      "final_simulated_tier": "no_qualified_model",
+      "fixture_id": "RESEARCH-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "small"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "RESEARCH-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R1",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R2",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R3",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 1
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 2
+    },
+    {
+      "attempts": [
+        {
+          "accepted": false,
+          "available": true,
+          "escalation_triggered": true,
+          "false_clean": false,
+          "next_tier": "mid",
+          "reason": "operational_rejection",
+          "semantic_correct": false,
+          "tier": "small"
+        },
+        {
+          "accepted": true,
+          "available": true,
+          "escalation_triggered": false,
+          "false_clean": true,
+          "next_tier": null,
+          "reason": "operational_accept",
+          "semantic_correct": false,
+          "tier": "mid"
+        }
+      ],
+      "false_clean_prevented_escalation": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R4",
+      "initial_tier": "small",
+      "production_routing_invoked": false,
+      "repeat": 3
+    }
+  ],
+  "escalation_summary": {
+    "false_clean_suppressed_escalation": [
+      "CONV-R2:R1",
+      "CONV-R2:R2",
+      "CONV-R2:R3",
+      "CONV-R3:R1",
+      "CONV-R3:R2",
+      "CONV-R3:R3",
+      "CONV-R4:R2",
+      "PLAN-R2:R3",
+      "PLAN-R3:R1",
+      "PLAN-R3:R2",
+      "PLAN-R3:R3",
+      "PLAN-R4:R1",
+      "PLAN-R4:R2",
+      "RESEARCH-R1:R1",
+      "RESEARCH-R1:R2",
+      "RESEARCH-R1:R3",
+      "RESEARCH-R2:R3",
+      "RESEARCH-R3:R1",
+      "RESEARCH-R3:R2",
+      "RESEARCH-R3:R3",
+      "RESEARCH-R4:R1",
+      "RESEARCH-R4:R2",
+      "RESEARCH-R4:R3",
+      "SYNTH-R1:R1",
+      "SYNTH-R1:R2",
+      "SYNTH-R1:R3",
+      "SYNTH-R2:R1",
+      "SYNTH-R2:R2",
+      "SYNTH-R2:R3",
+      "SYNTH-R3:R1",
+      "SYNTH-R3:R2",
+      "SYNTH-R3:R3",
+      "SYNTH-R4:R1",
+      "SYNTH-R4:R2",
+      "SYNTH-R4:R3"
+    ],
+    "final_tier_counts": {
+      "large": 1,
+      "mid": 25,
+      "no_qualified_model": 16,
+      "small": 30
+    },
+    "no_qualified_model": [
+      "CODE-R1:R2",
+      "CODE-R1:R3",
+      "CODE-R3:R1",
+      "CODE-R3:R2",
+      "CODE-R3:R3",
+      "CODE-R4:R1",
+      "CODE-R4:R2",
+      "CODE-R4:R3",
+      "PLAN-R1:R1",
+      "PLAN-R1:R2",
+      "PLAN-R1:R3",
+      "PLAN-R2:R1",
+      "PLAN-R2:R2",
+      "PLAN-R4:R3",
+      "RESEARCH-R2:R1",
+      "RESEARCH-R2:R2"
+    ]
+  },
+  "false_clean_analysis": [
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R4",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch",
+        "meaning_anchor_missing:O1",
+        "meaning_anchor_missing:O2",
+        "meaning_anchor_missing:O3",
+        "meaning_anchor_missing:O4"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R2",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R2-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R2",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R1-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R1-small",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "PLAN-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "PLAN-R4",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R2-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R2-small",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "RESEARCH-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R1-small",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "RESEARCH-R3",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch",
+        "uncertainty_element_type_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R4",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R2-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R4",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R2-R3-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "large",
+      "fixture_id": "PLAN-R2",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R1-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R4",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R3-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R4",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R1",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R1",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R4",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R3-small",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_text_missing:75"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R2-R3-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R2",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R3-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R4",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R4-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R4",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R1",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R1",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R2-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R1",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R1",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R2",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R1-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R2",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R2-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R2",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R2",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "PLAN-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R1",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R1",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R1-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R1",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R1",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R1-small",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:2"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R1",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R1",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R2-small",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R2-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:2"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R2-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R4",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R2-small",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R4",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R3-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R3-R3-small",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R3",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1",
+        "required_alternative_missing:2",
+        "required_text_missing:staging"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R3-R1-small",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "small",
+      "fixture_id": "PLAN-R3",
+      "model": "qwen2.5:7b",
+      "model_tier": "small",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R3-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R1",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R1",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R1-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R1",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R1",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R4-R1-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R4",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 1,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-PLAN-R4-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "PLAN-R4",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "planning_contract_mismatch"
+      ],
+      "task_class": "reflective_planning"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R3-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-RESEARCH-R1-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "RESEARCH-R1",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R1",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "research_judgment_mismatch"
+      ],
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "call_id": "GROUTE1-CONV-R4-R3-large",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": false,
+      "final_simulated_tier": "small",
+      "fixture_id": "CONV-R4",
+      "model": "qwen3.8:27b",
+      "model_tier": "large",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 3,
+      "risk_class": "R4",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "required_alternative_missing:1"
+      ],
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "call_id": "GROUTE1-SYNTH-R3-R2-mid",
+      "detectable_by_gold_blind_validator": false,
+      "escalation_incorrectly_suppressed": true,
+      "final_simulated_tier": "mid",
+      "fixture_id": "SYNTH-R3",
+      "model": "qwen3:14b",
+      "model_tier": "mid",
+      "operational_reasons": [],
+      "operationally_accepted": true,
+      "repeat": 2,
+      "risk_class": "R3",
+      "semantic_gold_pass": false,
+      "semantic_reasons": [
+        "conclusion_mismatch"
+      ],
+      "task_class": "hierarchical_semantic_synthesis"
+    }
+  ],
+  "global_diagnostics": {
+    "ambiguity_handling": {
+      "count": 0,
+      "included_in_crisp_denominator": false
+    },
+    "false_clean_errors": {
+      "call_ids": [
+        "GROUTE1-SYNTH-R4-R1-mid",
+        "GROUTE1-SYNTH-R2-R2-mid",
+        "GROUTE1-RESEARCH-R2-R3-mid",
+        "GROUTE1-CONV-R2-R1-mid",
+        "GROUTE1-CONV-R2-R1-large",
+        "GROUTE1-CONV-R2-R1-small",
+        "GROUTE1-PLAN-R3-R3-mid",
+        "GROUTE1-PLAN-R4-R1-mid",
+        "GROUTE1-RESEARCH-R3-R3-mid",
+        "GROUTE1-CONV-R2-R2-large",
+        "GROUTE1-CONV-R2-R2-small",
+        "GROUTE1-CONV-R2-R2-mid",
+        "GROUTE1-RESEARCH-R3-R1-mid",
+        "GROUTE1-RESEARCH-R3-R1-small",
+        "GROUTE1-SYNTH-R4-R2-mid",
+        "GROUTE1-SYNTH-R4-R2-large",
+        "GROUTE1-PLAN-R2-R3-large",
+        "GROUTE1-CONV-R4-R1-large",
+        "GROUTE1-RESEARCH-R3-R2-mid",
+        "GROUTE1-RESEARCH-R4-R2-mid",
+        "GROUTE1-RESEARCH-R1-R1-mid",
+        "GROUTE1-RESEARCH-R4-R3-mid",
+        "GROUTE1-CONV-R2-R3-small",
+        "GROUTE1-CONV-R2-R3-mid",
+        "GROUTE1-CONV-R2-R3-large",
+        "GROUTE1-SYNTH-R4-R3-large",
+        "GROUTE1-SYNTH-R4-R3-mid",
+        "GROUTE1-SYNTH-R1-R2-mid",
+        "GROUTE1-SYNTH-R1-R2-large",
+        "GROUTE1-SYNTH-R2-R1-mid",
+        "GROUTE1-SYNTH-R2-R1-large",
+        "GROUTE1-SYNTH-R2-R3-mid",
+        "GROUTE1-SYNTH-R3-R1-mid",
+        "GROUTE1-PLAN-R3-R2-mid",
+        "GROUTE1-SYNTH-R1-R1-mid",
+        "GROUTE1-SYNTH-R1-R1-large",
+        "GROUTE1-CONV-R3-R1-small",
+        "GROUTE1-CONV-R3-R1-mid",
+        "GROUTE1-RESEARCH-R1-R3-mid",
+        "GROUTE1-CONV-R3-R2-small",
+        "GROUTE1-CONV-R3-R2-mid",
+        "GROUTE1-CONV-R3-R2-large",
+        "GROUTE1-CONV-R4-R2-large",
+        "GROUTE1-CONV-R4-R2-small",
+        "GROUTE1-CONV-R3-R3-mid",
+        "GROUTE1-CONV-R3-R3-large",
+        "GROUTE1-CONV-R3-R3-small",
+        "GROUTE1-PLAN-R3-R1-small",
+        "GROUTE1-SYNTH-R1-R3-large",
+        "GROUTE1-SYNTH-R1-R3-mid",
+        "GROUTE1-RESEARCH-R4-R1-mid",
+        "GROUTE1-PLAN-R4-R2-mid",
+        "GROUTE1-SYNTH-R3-R3-mid",
+        "GROUTE1-RESEARCH-R1-R2-mid",
+        "GROUTE1-CONV-R4-R3-large",
+        "GROUTE1-SYNTH-R3-R2-mid"
+      ],
+      "count": 56
+    },
+    "output_tokens": 28162,
+    "prompt_tokens": 36183,
+    "provider_calls": 216,
+    "provider_runtime_failures": 0
+  },
+  "integrity": {
+    "activity_state": "complete",
+    "calls_persisted": 216,
+    "checkpoint": {
+      "calls_persisted": 216,
+      "checkpoint_sha256": "8a4f54ea69188c50f6d0e68900f32769e8fca4000de83bc4661663928f4dd1ec",
+      "completed_position": 216,
+      "contract_version": "g-route1.checkpoint.v1",
+      "guarded_digest": "0717d43984d0ef65c5c612f90ff262bc46d50983ebe7df1bf3fce5f4145187f5",
+      "next_position": 217,
+      "run_id": "groute1_20260924T031646930437Z",
+      "state": "complete",
+      "updated": "2026-09-24T04:31:14.386Z"
+    },
+    "duplicates": [],
+    "expected_positions_present": true,
+    "failures_recorded": [],
+    "frozen_dependency_drift": [],
+    "manifest_calls_persisted": 216,
+    "mutation_guard_agrees": true,
+    "mutation_guard_at_run": "0717d43984d0ef65c5c612f90ff262bc46d50983ebe7df1bf3fce5f4145187f5",
+    "mutation_guard_now": "0717d43984d0ef65c5c612f90ff262bc46d50983ebe7df1bf3fce5f4145187f5",
+    "omissions": [],
+    "provider_contacted": 216,
+    "provider_failure_reasons": [],
+    "provider_failures": 0,
+    "raw_envelope_drift": [],
+    "record_digests_verified": true,
+    "request_config_drift": [],
+    "returned_model_drift": [],
+    "schedule_binding_drift": [],
+    "scheduled_calls": 216,
+    "source_commit_now": "90ae79ca6c88d15a8e187b1bbdd8b220fd4e06ee"
+  },
+  "manifest_state": "complete",
+  "qualification_matrix": [
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 5.552019,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 2.521605,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 6.875589,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 2.181631,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 22.659634,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 1.015021,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 6.67938,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 9.132584,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 8.448607,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 7.979407,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 34.729702,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 2.447473,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 5.748481,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 2.435426,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 7.687285,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 5.593652,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 2,
+      "grounding_accuracy": {
+        "count": 2,
+        "of": 3,
+        "rate": 0.666667
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 20.593316,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 2,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 1.370842,
+      "validator_detected_failures": 1,
+      "validator_missed_semantic_failures": 2,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 1,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 5.726476,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R4",
+      "semantic": 2,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 3.915329,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 1,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 6.535732,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 1.989066,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 26.449617,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "ordinary_conversation",
+      "tokens_per_second_median": 1.247655,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 6.033953,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 7.623526,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 7.750111,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 5.935399,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 25.800882,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 1,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R1",
+      "semantic": 1,
+      "structural": 1,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 2.118499,
+      "validator_detected_failures": 2,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 6.603085,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 8.480884,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 8.350197,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 6.706429,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 27.439233,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 2.150206,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 6.205531,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 7.573889,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 7.77666,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 6.043726,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 25.938523,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 1,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R3",
+      "semantic": 1,
+      "structural": 1,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 2.154451,
+      "validator_detected_failures": 2,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 6.52628,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 9.500052,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 8.256772,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 7.508988,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 29.089664,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 1,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R4",
+      "semantic": 1,
+      "structural": 1,
+      "task_class": "structured_extraction",
+      "tokens_per_second_median": 2.543859,
+      "validator_detected_failures": 2,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 8.450944,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 20.471086,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 11.276724,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 12.947023,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 46.413423,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 3.748915,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.447113,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 22.229013,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 1,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 11.782814,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 1,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 12.082688,
+      "validator_detected_failures": 2,
+      "validator_missed_semantic_failures": 1,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 53.752985,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 3.776534,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 1,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.08633,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 1,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 1,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 22.231198,
+      "validator_detected_failures": 2,
+      "validator_missed_semantic_failures": 1,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 12.315379,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 14.128676,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 54.478338,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 3.338813,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.071663,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 23.038775,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 11.531826,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 13.26763,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 48.201114,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "grounded_research_synthesis",
+      "tokens_per_second_median": 3.775846,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 7.143508,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 13.998724,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 10.329232,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 11.714327,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 42.721647,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 3.136583,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.709417,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 1,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 19.479496,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 13.439832,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 14.294052,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 1,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 61.218078,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 1,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 1,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 3.838735,
+      "validator_detected_failures": 2,
+      "validator_missed_semantic_failures": 1,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.965433,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 1,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 25.688798,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 14.839066,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 16.577863,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 56.805167,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 4.013719,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.178172,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 1,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 22.335602,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 3,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 15.834836,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 3,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 16.640085,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 3,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 2,
+      "grounding_accuracy": {
+        "count": 2,
+        "of": 3,
+        "rate": 0.666667
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 71.592099,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 2,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 2,
+      "task_class": "hierarchical_semantic_synthesis",
+      "tokens_per_second_median": 3.902975,
+      "validator_detected_failures": 1,
+      "validator_missed_semantic_failures": 2,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 6.399034,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 1,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R1",
+      "semantic": 1,
+      "structural": 3,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 8.438774,
+      "validator_detected_failures": 2,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 8.128068,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 6.397584,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 28.422269,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 2.433954,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 7.482648,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 3,
+      "qualified": true,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 3,
+      "structural": 3,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 9.755905,
+      "validator_detected_failures": 0,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.404987,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 7.549186,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 34.791398,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 2.356904,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 7.239987,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 14.64091,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 2,
+        "of": 3,
+        "rate": 0.666667
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.377019,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 10.648385,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 79.282109,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 3.249486,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 7.105499,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 12.103302,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 8.661273,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 8.197409,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 35.312568,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 0,
+      "task_class": "coding_generation_repair",
+      "tokens_per_second_median": 2.803055,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 7.661726,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 13.124688,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 11.945404,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 12.640845,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 2,
+        "of": 3,
+        "rate": 0.666667
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 58.75273,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R1",
+      "semantic": 0,
+      "structural": 2,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 3.131836,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 2,
+        "of": 3,
+        "rate": 0.666667
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.858268,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 24.446485,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 12.257252,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 14.503645,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 1,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 75.963084,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 1,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R2",
+      "semantic": 0,
+      "structural": 1,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 3.846584,
+      "validator_detected_failures": 2,
+      "validator_missed_semantic_failures": 1,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 1,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 7.913417,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 1,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 24.887908,
+      "validator_detected_failures": 2,
+      "validator_missed_semantic_failures": 1,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 2,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 13.884288,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 2,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 15.003187,
+      "validator_detected_failures": 1,
+      "validator_missed_semantic_failures": 2,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 69.685733,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R3",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 3.515236,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 0,
+        "of": 3,
+        "rate": 0.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 9.704797,
+      "model_tier": "small",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 1,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 26.464772,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 2,
+      "grounding_accuracy": {
+        "count": 3,
+        "of": 3,
+        "rate": 1.0
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 15.878579,
+      "model_tier": "mid",
+      "observations": 3,
+      "operational": 2,
+      "qualified": false,
+      "repeat_consistency": false,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 3,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 16.815107,
+      "validator_detected_failures": 1,
+      "validator_missed_semantic_failures": 2,
+      "verdict": "not_qualified"
+    },
+    {
+      "complete": true,
+      "false_clean_errors": 0,
+      "grounding_accuracy": {
+        "count": 1,
+        "of": 3,
+        "rate": 0.333333
+      },
+      "infrastructure_failures": 0,
+      "latency_median": 65.05011,
+      "model_tier": "large",
+      "observations": 3,
+      "operational": 0,
+      "qualified": false,
+      "repeat_consistency": true,
+      "risk_class": "R4",
+      "semantic": 0,
+      "structural": 1,
+      "task_class": "reflective_planning",
+      "tokens_per_second_median": 3.397381,
+      "validator_detected_failures": 3,
+      "validator_missed_semantic_failures": 0,
+      "verdict": "not_qualified"
+    }
+  ],
+  "reason": "completed_and_scored",
+  "run_id": "groute1_20260924T031646930437Z",
+  "score_complete": true,
+  "score_units": {
+    "ambiguity_diagnostics": 0,
+    "fixtures": 24,
+    "model_tiers": 3,
+    "observed_calls": 216,
+    "qualification_cells": 72,
+    "repeats_per_cell": 3,
+    "risk_classes": 4,
+    "scheduled_calls": 216,
+    "task_classes": 6
+  },
+  "scoring_audit": {
+    "recompute_digest": "18c5be669d456fac234c89d4bfe802a829f637ccdba85e7243e6c3fb694eb375",
+    "recompute_matches_sealed": true,
+    "sealed_score_digest": "18c5be669d456fac234c89d4bfe802a829f637ccdba85e7243e6c3fb694eb375"
+  },
+  "selection_matrix": [
+    {
+      "cheapest_qualified": "small",
+      "outcome": "use_small",
+      "qualified_tiers": [
+        "small",
+        "mid",
+        "large"
+      ],
+      "risk_class": "R1",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R2",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R3",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "evidence_only",
+      "qualified_tiers": [
+        "mid"
+      ],
+      "risk_class": "R4",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "cheapest_qualified": "small",
+      "outcome": "use_small",
+      "qualified_tiers": [
+        "small",
+        "mid"
+      ],
+      "risk_class": "R1",
+      "task_class": "structured_extraction"
+    },
+    {
+      "cheapest_qualified": "small",
+      "outcome": "use_small",
+      "qualified_tiers": [
+        "small",
+        "mid",
+        "large"
+      ],
+      "risk_class": "R2",
+      "task_class": "structured_extraction"
+    },
+    {
+      "cheapest_qualified": "small",
+      "outcome": "use_small",
+      "qualified_tiers": [
+        "small",
+        "mid"
+      ],
+      "risk_class": "R3",
+      "task_class": "structured_extraction"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "evidence_only",
+      "qualified_tiers": [
+        "small",
+        "mid"
+      ],
+      "risk_class": "R4",
+      "task_class": "structured_extraction"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R1",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R2",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R3",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "evidence_only",
+      "qualified_tiers": [],
+      "risk_class": "R4",
+      "task_class": "grounded_research_synthesis"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R1",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R2",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R3",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "evidence_only",
+      "qualified_tiers": [],
+      "risk_class": "R4",
+      "task_class": "hierarchical_semantic_synthesis"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R1",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "cheapest_qualified": "small",
+      "outcome": "use_small",
+      "qualified_tiers": [
+        "small"
+      ],
+      "risk_class": "R2",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R3",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "evidence_only",
+      "qualified_tiers": [],
+      "risk_class": "R4",
+      "task_class": "coding_generation_repair"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R1",
+      "task_class": "reflective_planning"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R2",
+      "task_class": "reflective_planning"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "no_qualified_model",
+      "qualified_tiers": [],
+      "risk_class": "R3",
+      "task_class": "reflective_planning"
+    },
+    {
+      "cheapest_qualified": null,
+      "outcome": "evidence_only",
+      "qualified_tiers": [],
+      "risk_class": "R4",
+      "task_class": "reflective_planning"
+    }
+  ],
+  "terminal_contract": {
+    "activity_state": "complete",
+    "calls_persisted": 216,
+    "checkpoint_state": "complete",
+    "completed_position": 216,
+    "five_view_agreement": true,
+    "manifest_state": "complete",
+    "next_position": 217,
+    "receipt_state": "complete",
+    "result_state": "complete",
+    "resume_after_terminal_rejected": true,
+    "resume_rejection": "ValueError:terminal_route_run_not_resumable",
+    "score_record_sha256": "18c5be669d456fac234c89d4bfe802a829f637ccdba85e7243e6c3fb694eb375",
+    "terminal_receipt_digest": "5561c92bd642044e53c4653fa452b5c137b9d113842a9f9ccc95014922207318",
+    "view_reasons": []
+  }
+}

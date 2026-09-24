@@ -1,0 +1,67 @@
+{
+  "activity_id": "groute1_20260924T031646930437Z",
+  "activity_root": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\data",
+  "belief_effects": "none",
+  "candidate_id": "G-ROUTE1-EXECUTION-R3",
+  "contract_version": "g-route1.scientific-job.v1",
+  "corpus_sha256": "57f74610f6836eeb1586c5c7bed59de0c324055d3d119f059ec667c30a00ee79",
+  "execution_freeze_content_sha256": "850ced32358f3b3bc16f4e8b21f6200096b95f186c9b3b8ab0944285b8f1df00",
+  "execution_freeze_sha256": "9779c29ea33fdedcbba2e050d0663a8566df244caa11d7052a9c5201d9a5d7b0",
+  "experiment_id": "G-ROUTE1",
+  "generation_configuration": {
+    "fresh_session_per_call": true,
+    "options": {
+      "num_ctx": 8192,
+      "num_predict": 350,
+      "repeat_penalty": 1.1,
+      "temperature": 0.45,
+      "top_k": 40,
+      "top_p": 0.9
+    },
+    "output_repair_calls": 0,
+    "retry_limit": 0,
+    "silent_fallback": false,
+    "stream": false,
+    "think": false
+  },
+  "gold_sha256": "176ea8d6c75ea35fe21b9583944e9876196b93c62df298600babdc2b4e57e72d",
+  "implementation_commit": "4fa5978799492939178c8c1fd6b2ef0bd316539e",
+  "job_id": "groute1_20260924T031646930437Z",
+  "model_bindings_sha256": "cd65b291237460413ccaf14d3dbdc16931960f1db3c8793ba0f50e17bd0f1099",
+  "model_identities": [
+    {
+      "manifest_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+      "model": "qwen2.5:7b",
+      "model_blob_sha256": "2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730",
+      "tier": "small"
+    },
+    {
+      "manifest_digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+      "model": "qwen3:14b",
+      "model_blob_sha256": "a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e",
+      "tier": "mid"
+    },
+    {
+      "manifest_digest": "22130167c4c20e20c7b71454612966ca8e8171e9b3cc8ab6ce8aa6cbfec79643",
+      "model": "qwen3.8:27b",
+      "model_blob_sha256": "f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d",
+      "tier": "large"
+    }
+  ],
+  "mutation_guard": {
+    "guarded_digest": "0717d43984d0ef65c5c612f90ff262bc46d50983ebe7df1bf3fce5f4145187f5",
+    "status": "passed"
+  },
+  "planned_generation_calls": 216,
+  "production_routing_invoked": false,
+  "run_root": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\data\\g_route1_scientific_runs\\groute1_20260924T031646930437Z",
+  "schedule_manifest_sha256": "75d7e4abafb61238e570b4428ca6b6a059086401c631ccee07d6348ef8e0b27d",
+  "schedule_sha256": "75d7e4abafb61238e570b4428ca6b6a059086401c631ccee07d6348ef8e0b27d",
+  "scorer_sha256": "6de068b092162b3580d748c41cf207498f38b76e925e4d1c54b3c10d5b24c5a4",
+  "separate_from_blocked_r1_preflight": true,
+  "separate_from_mechanical_pilots": true,
+  "source_commit": "90ae79ca6c88d15a8e187b1bbdd8b220fd4e06ee",
+  "started": "2026-09-24T03:16:46.932Z",
+  "thresholds_sha256": "8ee20613126d87d07b4facf8a44370b415fdb0801305f9067e14e177de212ec4",
+  "validators_sha256": "64ae53f4510828e1ec8275dc1ef1e6d6fd6bc5fa9b2600116ec9afd32643850d"
+}
