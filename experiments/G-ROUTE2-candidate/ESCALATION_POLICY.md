@@ -34,7 +34,17 @@ self-reported confidence.** Gold appears only in scoring.
 | `grounding_weak` | a settled claim, statement or step binds no evidence, or coding evidence has no test |
 | `source_independence_insufficient` | several cited sources collapse to one lineage *and* another lineage was available |
 | `structural_anomaly` | an accepted payload carries empty content where the profile requires content |
-| `repeat_disagreement` | repeats of the same fixture and tier disagree on acceptance |
+| `repeat_disagreement` | repeats of the same fixture and tier disagree on acceptance or on transport outcome |
+
+`repeat_disagreement` is the one trigger that cannot be decided while a call is being made, because it
+compares that call against its siblings. The runner therefore records a provisional verdict and
+scoring settles every record's verdicts once all repeats exist. Without that pass the trigger would
+be dead code this document claims is active, so the suite asserts both that it fires on diverging
+repeats and that it stays silent on agreeing ones.
+
+Coding fixtures are executed in isolation on the **canonicalized** payload, so a fenced answer is run
+on the same bytes the validators judge, and that evidence is persisted on the record because scoring
+re-derives the routing verdicts from it.
 
 ### Why `transport_wrapper_normalized` fires at every risk class
 

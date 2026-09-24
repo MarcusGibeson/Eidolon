@@ -75,6 +75,43 @@ def _contract(row: Mapping[str, Any], contract: str) -> Mapping[str, Any]:
     return row[contract + "_contract"]
 
 
+def finalize_policies(records: list[Mapping[str, Any]], *,
+                      routing_table: Mapping[str, Sequence[str]] | None = None) -> list[dict[str, Any]]:
+    """Recompute each record's routing verdicts once the repeats are known.
+
+    `repeat_disagreement` compares the repeats of one fixture at one tier, so it
+    cannot be decided while a call is still being made. The runner therefore records
+    a provisional policy and scoring settles it here. Without this pass the trigger
+    could never fire in a real run and would be dead code the policy document claims
+    is active.
+    """
+    from g_route1_contract import indexed_fixture_gold
+
+    index = indexed_fixture_gold()
+    grouped: dict[tuple[str, str], list[Mapping[str, Any]]] = defaultdict(list)
+    for row in records:
+        grouped[(str(row["fixture_id"]), str(row["model_tier"]))].append(row)
+    disagreeing = {
+        key for key, rows in grouped.items()
+        if len({bool(_contract(row, "normalized")["operational_validation"]["accepted"]) for row in rows}) > 1
+        or len({str(row["normalization"]["outcome"]) for row in rows}) > 1
+    }
+    settled = []
+    for row in records:
+        fixture, _gold = index[str(row["fixture_id"])]
+        observed = (str(row["fixture_id"]), str(row["model_tier"])) in disagreeing
+        policy = evaluate_policy(
+            fixture=fixture, normalization=row["normalization"],
+            operational=_contract(row, "normalized")["operational_validation"],
+            routing_table=routing_table, model_tier=str(row["model_tier"]),
+            execution_evidence=row.get("coding_execution_evidence"),
+            repeat_disagreement_observed=observed,
+        )
+        settled.append({**dict(row), "policy": policy,
+                        "repeat_disagreement_observed": observed})
+    return settled
+
+
 def _cell(records: list[Mapping[str, Any]], thresholds: Mapping[str, Any], contract: str) -> dict[str, Any]:
     expected = int(thresholds["expected_observations_per_cell"])
     rows = [_contract(row, contract) for row in records]
@@ -182,6 +219,7 @@ def score(records: list[Mapping[str, Any]], *, thresholds: Mapping[str, Any] | N
     call_ids = [str(row.get("call_id") or "") for row in records]
     complete_run = len(records) == EXPECTED_CALLS and len(set(call_ids)) == EXPECTED_CALLS
 
+    records = finalize_policies(list(records))
     normalized_matrix = matrix(records, limits, "normalized")
     raw_matrix = matrix(records, limits, "raw")
     table = routing_table(normalized_matrix)
@@ -303,5 +341,5 @@ def score(records: list[Mapping[str, Any]], *, thresholds: Mapping[str, Any] | N
     return report
 
 
-__all__ = ["CONTRACT_VERSION", "evaluate_output", "matrix", "routing_table", "selection",
-           "escalation", "score"]
+__all__ = ["CONTRACT_VERSION", "evaluate_output", "finalize_policies", "matrix",
+           "routing_table", "selection", "escalation", "score"]

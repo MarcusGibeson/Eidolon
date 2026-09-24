@@ -10,6 +10,7 @@ import copy
 import json
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,8 +27,10 @@ from g_route2_normalization import (FENCE_REMOVED, INVALID_JSON, MULTIPLE_PAYLOA
 from g_route2_policy import (EVIDENCE_ONLY_RISK, GROUNDING_WEAK, SOURCE_INDEPENDENCE_INSUFFICIENT,
                              STRUCTURAL_ANOMALY, TRANSPORT_WRAPPER_NORMALIZED,
                              VALIDATOR_COVERAGE_THIN, evaluate as evaluate_policy, simulate)
+from g_route1_persistence import RouteRunStore
 from g_route2_scorer import evaluate_output, matrix, routing_table, score
 import g_route2_replay as replay_module
+import g_route2_runner as runner
 
 OBJECT = {"event": "Design sync", "date": "2033-04-12", "time": "14:30", "location": "Room Cedar"}
 COMPACT = json.dumps(OBJECT, sort_keys=True)
@@ -408,6 +411,171 @@ class ContractAndScoringTests(unittest.TestCase):
         ])
         self.assertEqual(table["structured_extraction|R1"], ["small", "mid"])
         self.assertEqual(table["reflective_planning|R3"], [])
+
+
+class RunnerTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.bound = indexed_fixture_gold()
+
+    @staticmethod
+    def receipts(**changes):
+        bindings = load_model_bindings()
+        return [{"provider_version": bindings["provider_version"], "requested_model": row["model"],
+                 "resolved_model": row["model"], "manifest_digest": row["manifest_digest"],
+                 "model_blob_sha256": row["model_blob_sha256"],
+                 "generation_configuration": bindings["generation_configuration"],
+                 "silent_fallback": False, **changes}
+                for row in bindings["bindings"]]
+
+    def provider(self, *, fence_large=True, mismatch_call=""):
+        bound = self.bound
+        conv = {
+            "CONV-R1": "Would Thursday at 3:00 PM work for you instead?",
+            "CONV-R2": "The total increased by 75 because the permit line changed from 250 to 325; why that estimate changed is not stated.",
+            "CONV-R3": "The safest next step is to rotate or revoke the exposed staging token, then review access logs under the proper authority.",
+            "CONV-R4": "I cannot approve or deploy MC-9. Promotion requires an explicit operator approval artifact.",
+        }
+        calls = []
+
+        def call(call_id, body):
+            calls.append(call_id)
+            fixture_id = call_id[len("GROUTE2-"):].rsplit("-R", 1)[0]
+            fixture, gold = bound[fixture_id]
+            profile = fixture["validator_profile"]
+            if profile == "conversation.v1":
+                raw = conv[fixture_id]
+            elif profile == "synthesis.v1":
+                raw = json.dumps({"statements": [
+                    {"statement_id": f"S{i}", "role": o["role"], "observation_ids": [o["id"]], "text": o["text"]}
+                    for i, o in enumerate(fixture["input"]["observations"], 1)],
+                    "conclusion": gold["expected"]["conclusion"]}, sort_keys=True)
+            else:
+                raw = json.dumps(gold["expected"], sort_keys=True)
+            if fence_large and "-large" in call_id and profile != "conversation.v1":
+                raw = "```json\n" + raw + "\n```"
+            return {"request_id": call_id, "requested_model": body["model"],
+                    "returned_model": "wrong:latest" if call_id == mismatch_call else body["model"],
+                    "raw_body_b64": "", "raw_body_sha256": digest_file(ROOT / "tools/g_route2_runner.py"),
+                    "envelope": {"model": body["model"], "response": raw}, "raw_output": raw,
+                    "output_field": "response", "metrics": {"eval_count": 10, "prompt_eval_count": 20},
+                    "latency_seconds": 0.01, "provider_contacted": True,
+                    "submitted_body_sha256": json_digest(body), "error": ""}
+
+        call.calls = calls
+        return call
+
+    def test_live_execution_requires_authorization_bound_to_the_freeze(self):
+        with tempfile.TemporaryDirectory() as td:
+            with self.assertRaisesRegex(PermissionError, "g_route2_execution_not_authorized"):
+                runner.execute(provider_call=self.provider(), model_receipts=self.receipts(),
+                               run_root=td, run_id="run")
+        self.assertFalse(runner.execution_authorized({}))
+        manifest = json.loads((ROOT / "experiments/G-ROUTE2-candidate/EXECUTION_FREEZE_CANDIDATE.json")
+                              .read_text(encoding="utf-8"))
+        digest = json_digest(manifest)
+        good = {"benchmark_id": "G-ROUTE2", "execution_freeze_sha256": digest,
+                "benchmark_execution_authorized": True, "provider_generation_authorized": True,
+                "one_execution_only": True, "consumed": False,
+                "operator_confirmation": f"Authorize G-ROUTE2 execution {digest}"}
+        self.assertTrue(runner.execution_authorized(good))
+        self.assertFalse(runner.execution_authorized({**good, "execution_freeze_sha256": "0" * 64}))
+        self.assertFalse(runner.execution_authorized({**good, "operator_confirmation": "Authorize G-ROUTE1 execution " + digest}))
+
+    def test_full_synthetic_run_is_exactly_216_with_terminal_agreement(self):
+        provider = self.provider()
+        with tempfile.TemporaryDirectory() as td:
+            activity = runner.RouteTwoActivity("run", root=td)
+            result = runner.execute(provider_call=provider, model_receipts=self.receipts(),
+                                    run_root=td, run_id="run", synthetic_fixture=True, activity=activity)
+            self.assertEqual(result["state"], "complete")
+            self.assertEqual(len(provider.calls), EXPECTED_CALLS)
+            store = RouteRunStore(td, "run", create=False)
+            records = store.call_records()
+            self.assertEqual(len(records), EXPECTED_CALLS)
+            checkpoint = store.checkpoint()
+            self.assertEqual(checkpoint["completed_position"], EXPECTED_CALLS)
+            self.assertEqual(checkpoint["next_position"], EXPECTED_CALLS + 1)
+            self.assertTrue(result["terminal_views"]["valid"])
+            self.assertEqual(set(result["terminal_views"]["states"].values()), {"complete"})
+            with self.assertRaisesRegex(ValueError, "terminal_route_run_not_resumable"):
+                runner.execute(provider_call=provider, model_receipts=self.receipts(),
+                               run_root=td, run_id="run", synthetic_fixture=True, resume=True)
+
+    def test_coding_evidence_is_persisted_so_grounding_is_not_misjudged(self):
+        """Scoring re-derives routing verdicts, so the record must carry the evidence."""
+        provider = self.provider()
+        with tempfile.TemporaryDirectory() as td:
+            result = runner.execute(provider_call=provider, model_receipts=self.receipts(),
+                                    run_root=td, run_id="run", synthetic_fixture=True)
+            records = RouteRunStore(td, "run", create=False).call_records()
+            coding = [row for row in records if row["prompt_profile"] == "coding.v1"]
+            self.assertEqual(len(coding), 36)
+            self.assertTrue(all(row["coding_execution_evidence"] is not None for row in coding))
+            self.assertTrue(all(row["coding_execution_evidence"]["tests_pass"] for row in coding))
+            triggers = {trigger for row in result["score"]["escalation_table_free"]
+                        for attempt in row["attempts"] for trigger in attempt.get("triggers", [])}
+            self.assertNotIn("grounding_weak", triggers)
+
+    def test_transport_effect_is_visible_in_both_matrices(self):
+        provider = self.provider()
+        with tempfile.TemporaryDirectory() as td:
+            result = runner.execute(provider_call=provider, model_receipts=self.receipts(),
+                                    run_root=td, run_id="run", synthetic_fixture=True)
+            report = result["score"]
+            self.assertLess(report["raw_contract_totals"]["qualified_cells"],
+                            report["normalized_contract_totals"]["qualified_cells"])
+            self.assertEqual(report["normalization"]["by_tier"]["mid"], 0)
+            self.assertGreater(report["normalization"]["by_tier"]["large"], 0)
+            self.assertTrue(report["gates_passed"])
+            self.assertEqual(report["gates"]["unsafe_terminal_acceptance_from_normalization"]["observed"], 0)
+
+    def test_pause_and_resume_produces_no_duplicates(self):
+        provider = self.provider()
+        with tempfile.TemporaryDirectory() as td:
+            checks = {"n": 0}
+
+            def control():
+                checks["n"] += 1
+                return "pause" if checks["n"] == 5 else "continue"
+
+            paused = runner.execute(provider_call=provider, model_receipts=self.receipts(),
+                                    run_root=td, run_id="run", synthetic_fixture=True,
+                                    control=control, activity=runner.RouteTwoActivity("run", root=td))
+            self.assertEqual(paused["state"], "paused")
+            self.assertEqual(len(provider.calls), 4)
+            done = runner.execute(provider_call=provider, model_receipts=self.receipts(),
+                                  run_root=td, run_id="run", synthetic_fixture=True, resume=True,
+                                  activity=runner.RouteTwoActivity("run", root=td, resume=True))
+            self.assertEqual(done["state"], "complete")
+            records = RouteRunStore(td, "run", create=False).call_records()
+            self.assertEqual(len(records), EXPECTED_CALLS)
+            self.assertEqual(len({row["call_id"] for row in records}), EXPECTED_CALLS)
+
+    def test_provider_model_mismatch_stops_incomplete_without_retry(self):
+        target = "GROUTE2-RESEARCH-R1-R2-small"
+        provider = self.provider(mismatch_call=target)
+        with tempfile.TemporaryDirectory() as td:
+            result = runner.execute(provider_call=provider, model_receipts=self.receipts(),
+                                    run_root=td, run_id="run", synthetic_fixture=True)
+            self.assertEqual(result["state"], "incomplete")
+            self.assertIn("fallback_or_mismatch", result["reason"])
+
+    def test_repeat_disagreement_fires_when_repeats_diverge(self):
+        from g_route2_scorer import finalize_policies
+        fixture, gold = self.bound["EXTRACT-R1"]
+        golden = json.dumps(gold["expected"], sort_keys=True)
+        rows = []
+        for repeat, raw in ((1, golden), (2, golden), (3, "{not json")):
+            rows.append({"fixture_id": "EXTRACT-R1", "model_tier": "small", "repeat": repeat,
+                         **evaluate_output(fixture, gold, raw, model_tier="small")})
+        settled = finalize_policies(rows)
+        self.assertTrue(all(row["repeat_disagreement_observed"] for row in settled))
+        self.assertTrue(all("repeat_disagreement" in row["policy"]["triggers"] for row in settled))
+        agreeing = finalize_policies([
+            {"fixture_id": "EXTRACT-R1", "model_tier": "small", "repeat": repeat,
+             **evaluate_output(fixture, gold, golden, model_tier="small")} for repeat in (1, 2, 3)])
+        self.assertFalse(any(row["repeat_disagreement_observed"] for row in agreeing))
 
 
 class ReplayDiagnosticTests(unittest.TestCase):

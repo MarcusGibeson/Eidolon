@@ -124,6 +124,29 @@ carries `production_routing_invoked: false`. No runner is wired to a provider in
 
 **Audited: no production-routing authority, no belief effects.**
 
+## Execution harness
+
+The governed runner is bound into the freeze alongside the reused G-ROUTE1 persistence, provider and
+Activity layers, which it imports without modification. It refuses to contact a provider without an
+authorization artifact carrying the exact freeze digest and the matching confirmation string, and
+rejects a wrong digest, a wrong benchmark name and a G-ROUTE1-shaped confirmation. A mutation guard
+over 19 paths is recomputed before every call and again after scoring.
+
+A complete provider-free 216-call run reaches five-view terminal agreement at 216/217, resume after
+terminal is refused before the provider is callable, pause at four calls resumes to exactly 216 with
+no duplicates, and a returned-model mismatch stops the run incomplete without retry.
+
+Two defects were found and fixed during harness construction, both of the same family the design
+phase already surfaced twice — a rule that cannot fire is a rule the document lies about:
+
+* `repeat_disagreement` had no producer. Nothing compared the repeats, so the trigger could never
+  have fired in a real run. Scoring now settles every record's verdicts once the repeats exist.
+* Isolated coding evidence was not persisted on the record, so when scoring re-derived the verdicts
+  it saw no test evidence and fired `grounding_weak` on all 36 coding calls. The runner now stores
+  it, and a regression asserts the trigger stays silent on passing coding answers.
+
+**Audited: the harness exists, is bound by digest, and is guarded during execution.**
+
 ## Verdict
 
 **READY** for explicit scientific execution authorization. No model may be contacted under this

@@ -5,9 +5,9 @@
     "experiments/G-ROUTE1-candidate/prompt_profiles.json": "f54e85795a3bf972b8593a28644f9229aea21f61327e324db4af518bc9c368b8",
     "experiments/G-ROUTE2-candidate/CONTAMINATION_ANALYSIS.md": "8b6d0e6fcb4d0f4a0699dfff9b7d11f108269837acb207d1c673eb6fc9e0a824",
     "experiments/G-ROUTE2-candidate/DESIGN.md": "b872e9acc488df38586ce8a1b76e9a28d7b09ffb01a7bb47f9faaf344ea6fe41",
-    "experiments/G-ROUTE2-candidate/DETERMINISTIC_TEST_RESULTS.json": "cb27f358b03d3041e980bf74bdf8d0e6d6e1a6b185fb0eed45ac3d3e55ebc39c",
-    "experiments/G-ROUTE2-candidate/ESCALATION_POLICY.md": "f088a2f6e8997c8f5ed42e1e83bd48839f3c04419262ae2cdc735bc171984fe2",
-    "experiments/G-ROUTE2-candidate/INDEPENDENT_AUDIT.md": "7c462aaa40bbee46453305a2ba5ef9e76c25774e9c349d7c38623fc85e847aa3",
+    "experiments/G-ROUTE2-candidate/DETERMINISTIC_TEST_RESULTS.json": "4ddbdf403ddf855072a93b0add4f57f705706d27cc97625675aa853d1668ac8a",
+    "experiments/G-ROUTE2-candidate/ESCALATION_POLICY.md": "32eba28cdb68c938970e5e4c0e4d2e57c6e2dc8e9ffa1bf86dcc73e2ee43ee9b",
+    "experiments/G-ROUTE2-candidate/INDEPENDENT_AUDIT.md": "445eb7a0396c66a6fe070e2e9001cb87d0790db777430e240571864434747dc5",
     "experiments/G-ROUTE2-candidate/NORMALIZATION_CONTRACT.md": "a0a9e45e3d1403711a7df73daa3182f70f759ccc3472b72eab1e1434c3eb7b06",
     "experiments/G-ROUTE2-candidate/REPLAY_DIAGNOSTIC.json": "8fe9effe9f6488498ca7e256daa3b37e422dbb2deb100c79746c2cda81b0a581",
     "experiments/G-ROUTE2-candidate/SCORING_CONTRACT.md": "9880c776761b1073f403224cbfb236550dd7b1a1c329e222079428af118b07ac",
@@ -17,14 +17,17 @@
     "tools/g_route1_coding_runner.py": "1ec72ca8f567b279599d61e06d6ebf78894772840e4c0b5514227232b7995c4e",
     "tools/g_route1_contract.py": "680132919ac8f249b0d72be2b70ea65511b6f0b9555e3ff5ccf82cd5c9ab3292",
     "tools/g_route1_operational.py": "07cbc8c60c1255bdae222c394a7046adad3ed56131d3d30c9071f4832291b0b4",
+    "tools/g_route1_persistence.py": "8c1e692a57d08a772807557a74bd350b3938fd0da680ff0d3cc89f1229675d04",
+    "tools/g_route1_provider.py": "cab0404337fea4b8be5f29ac8b1a0f69db141e81d9e2fc840350a82c0005329d",
     "tools/g_route1_validators.py": "64ae53f4510828e1ec8275dc1ef1e6d6fd6bc5fa9b2600116ec9afd32643850d",
     "tools/g_route2_contract.py": "c5ba2a7710ff9405b06dfc580393e1c1585228ad07eb25724d757af1d0dcf717",
-    "tools/g_route2_freeze.py": "48fa55869f77745bb69a3ae98649050eefb9c02e978b13270d12c0aca35bdff1",
+    "tools/g_route2_freeze.py": "31cf9aa53930ff42d33aabd27a8221758346f51870c2590e9d141797531979eb",
     "tools/g_route2_normalization.py": "24d263cf98339bed0dff35756f01466e220e7c597665e27ad5d13e96aaf264be",
     "tools/g_route2_policy.py": "bbc52c75e1f2647a0dd074e05f88ec2e7b0b55dd141b237112c103cb1465befb",
     "tools/g_route2_replay.py": "59bfa1b0443b06be8989d819fca15a027e36f782b445fdb28d1bffac5d5baf54",
-    "tools/g_route2_scorer.py": "dd31914ed048853d92915366193ce2fe6d816b120dbc886388055a16d087210e",
-    "tools/g_route2_tests.py": "16267fa17bdd170759cc81d631ed80f4c0236212f6d9ece7f0f2f0a0bc4a05da"
+    "tools/g_route2_runner.py": "6937b288340e143904a1571658a109d6e19efe9f0e30d5ee4c07d00ed6a511b8",
+    "tools/g_route2_scorer.py": "6a83b1583c05559e1d4e955acd3ded731b55896860739ca8dd1b62cd7e409beb",
+    "tools/g_route2_tests.py": "a446f78b4c369c3f0dbb5c2b040609583581e206247c8902e1707a3a05c1f6a8"
   },
   "authorization_artifact_created": false,
   "automatic_escalation_authorized": false,
@@ -39,7 +42,7 @@
   "digest_convention": "sha256; CRLF and CR normalized to LF for source artifacts",
   "dual_contract_scoring": true,
   "execution_freeze": true,
-  "execution_freeze_content_sha256": "b414a4f34f7b935e15bb19576a979b0b01eb42c40e8bcf09f2b28a54780d3e6c",
+  "execution_freeze_content_sha256": "7410d16ba30fcea9c01ed49de56185b8d0aa25ec6426004c946d97eece91f514",
   "generation_configuration": {
     "fresh_session_per_call": true,
     "options": {
@@ -57,7 +60,7 @@
     "think": false
   },
   "generation_configuration_identical_to_g_route1": true,
-  "implementation_commit": "7f60716cdd5f445a3466c746aeb688cbc21daf5b",
+  "implementation_commit": "b9e18f92e3682af134666ec646b74118687eca86",
   "independent_audit_verdict": "READY",
   "independent_replication_claimed": false,
   "inherited_content": {
