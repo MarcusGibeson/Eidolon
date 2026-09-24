@@ -16,7 +16,7 @@ class GRoute1ExecutionFreezeTests(unittest.TestCase):
     def test_candidate_rebuilds_and_is_ready_but_unauthorized(self):
         result = freeze.verify_manifest(self.manifest)
         self.assertTrue(result["valid"], result)
-        self.assertEqual(result["status"], "READY_FOR_EXECUTION_AUTHORIZATION")
+        self.assertEqual(result["status"], "READY_FOR_EXPLICIT_SCIENTIFIC_EXECUTION_AUTHORIZATION")
         self.assertFalse(result["authorized"])
         self.assertEqual(result["planned_generation_calls"], 216)
         self.assertEqual(result["provider_generation_calls"], 0)
@@ -72,6 +72,14 @@ class GRoute1ExecutionFreezeTests(unittest.TestCase):
         serialized = json.dumps(self.manifest["artifacts"])
         self.assertNotIn("experiments/G-EVID1", serialized)
         self.assertNotIn("experiments/G-CORROB1", serialized)
+
+    def test_superseded_freeze_is_preserved_exactly(self):
+        self.assertEqual(freeze.literal_digest(freeze.HISTORICAL_FREEZE_PATH), freeze.HISTORICAL_LITERAL_SHA256)
+        historical = json.loads(freeze.HISTORICAL_FREEZE_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(historical["execution_freeze_content_sha256"], freeze.HISTORICAL_CONTENT_SHA256)
+        self.assertEqual(self.manifest["supersedes_candidate_id"], historical["candidate_id"])
+        self.assertEqual(self.manifest["superseded_literal_sha256"], freeze.HISTORICAL_LITERAL_SHA256)
+        self.assertEqual(self.manifest["superseded_content_sha256"], freeze.HISTORICAL_CONTENT_SHA256)
 
 
 if __name__ == "__main__":

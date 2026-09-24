@@ -131,11 +131,74 @@ class RouteRunStore:
         return path
 
     def write_checkpoint(self, *, next_position: int, state: str, guarded_digest: str) -> dict[str, Any]:
+        if self.checkpoint_path.is_file():
+            existing = json.loads(self.checkpoint_path.read_text(encoding="utf-8"))
+            if existing.get("state") in TERMINAL:
+                raise ValueError("terminal_route_checkpoint_immutable")
         value = {
             "contract_version": "g-route1.checkpoint.v1", "run_id": self.run_id,
             "next_position": int(next_position), "state": str(state),
             "calls_persisted": len(list((self.root / "calls").glob("*.json"))),
             "guarded_digest": str(guarded_digest), "updated": now(),
+        }
+        value["checkpoint_sha256"] = json_digest(value)
+        _replace(self.checkpoint_path, value)
+        return value
+
+    def write_terminal_receipt(self, receipt: Mapping[str, Any]) -> Path:
+        path = self.root / "terminal_receipt.json"
+        _write_new(path, _sealed_record(receipt))
+        return path
+
+    def terminal_receipt(self) -> dict[str, Any]:
+        path = self.root / "terminal_receipt.json"
+        if not path.is_file():
+            raise FileNotFoundError("route_terminal_receipt_missing")
+        value = json.loads(path.read_text(encoding="utf-8"))
+        if not verify_record(value):
+            raise ValueError("route_terminal_receipt_digest_mismatch")
+        return value
+
+    def score_record(self) -> dict[str, Any]:
+        path = self.root / "score.json"
+        if not path.is_file():
+            raise FileNotFoundError("route_score_missing")
+        value = json.loads(path.read_text(encoding="utf-8"))
+        if not verify_record(value):
+            raise ValueError("route_score_digest_mismatch")
+        return value
+
+    def seal_terminal_checkpoint(
+        self, *, state: str, expected_calls: int, activity_state: str,
+    ) -> dict[str, Any]:
+        if state not in TERMINAL:
+            raise ValueError("route_terminal_state_required")
+        manifest = self.manifest()
+        receipt = self.terminal_receipt()
+        records = self.call_records()
+        if manifest.get("state") != state or receipt.get("state") != state or activity_state != state:
+            raise ValueError("route_terminal_state_disagreement")
+        if state == "complete":
+            if len(records) != expected_calls:
+                raise ValueError("route_terminal_call_count_mismatch")
+            self.score_record()
+        existing = self.checkpoint()
+        expected_next = len(records) + 1
+        if existing.get("state") in TERMINAL:
+            if (
+                existing.get("state") == state
+                and existing.get("next_position") == expected_next
+                and existing.get("completed_position") == len(records)
+            ):
+                return existing
+            raise ValueError("route_terminal_checkpoint_conflict")
+        if existing.get("next_position") != expected_next:
+            raise ValueError("route_terminal_checkpoint_position_mismatch")
+        value = {
+            "contract_version": "g-route1.checkpoint.v1", "run_id": self.run_id,
+            "next_position": expected_next, "completed_position": len(records),
+            "state": state, "calls_persisted": len(records),
+            "guarded_digest": existing["guarded_digest"], "updated": now(),
         }
         value["checkpoint_sha256"] = json_digest(value)
         _replace(self.checkpoint_path, value)
@@ -184,4 +247,32 @@ class RouteRunStore:
         return sorted(records, key=lambda record: int(record.get("schedule_position") or 0))
 
 
-__all__ = ["CONTRACT_VERSION", "RouteRunStore", "RunLease", "TERMINAL", "now", "verify_record"]
+def verify_terminal_views(
+    store: RouteRunStore, activity_projection: Mapping[str, Any], *, expected_calls: int,
+) -> dict[str, Any]:
+    manifest = store.manifest()
+    receipt = store.terminal_receipt()
+    checkpoint = store.checkpoint()
+    states = {
+        "result": receipt.get("result_state"),
+        "manifest": manifest.get("state"),
+        "receipt": receipt.get("state"),
+        "activity": activity_projection.get("state"),
+        "checkpoint": checkpoint.get("state"),
+    }
+    reasons = []
+    if set(states.values()) != {"complete"}:
+        reasons.append("route_terminal_state_disagreement")
+    if checkpoint.get("completed_position") != expected_calls:
+        reasons.append("route_terminal_completed_position_mismatch")
+    if checkpoint.get("next_position") != expected_calls + 1:
+        reasons.append("route_terminal_next_position_mismatch")
+    if checkpoint.get("calls_persisted") != expected_calls or manifest.get("calls_persisted") != expected_calls:
+        reasons.append("route_terminal_call_count_mismatch")
+    return {"valid": not reasons, "reasons": reasons, "states": states, "checkpoint": checkpoint}
+
+
+__all__ = [
+    "CONTRACT_VERSION", "RouteRunStore", "RunLease", "TERMINAL", "now",
+    "verify_record", "verify_terminal_views",
+]

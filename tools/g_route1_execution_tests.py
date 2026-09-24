@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from g_route1_activity import RouteActivity
 from g_route1_coding_runner import run_isolated_fixture
@@ -14,7 +15,7 @@ from g_route1_execution_contract import (
     load_thresholds, request_body, validate_schedule,
 )
 from g_route1_operational import validate_operational
-from g_route1_persistence import RouteRunStore
+from g_route1_persistence import RouteRunStore, verify_terminal_views
 from g_route1_provider import verify_model_receipts
 from g_route1_runner import execute, guarded_dependency_digest
 from g_route1_scorer import score, simulate_escalation
@@ -207,6 +208,28 @@ class GRoute1ExecutionTests(unittest.TestCase):
                     with second.lease():
                         pass
 
+    def test_terminal_seal_rejects_activity_disagreement_and_missing_calls(self):
+        for run_id, activity_state in (("activity_disagreement", "running"), ("missing_calls", "complete")):
+            with self.subTest(run_id=run_id), tempfile.TemporaryDirectory() as td:
+                store = RouteRunStore(td, run_id, create=True, manifest={"guarded_digest": "abc"})
+                store.write_call({
+                    "call_id": "C1", "schedule_position": 1,
+                    "provider_contacted": False, "raw_output": "x",
+                })
+                store.write_checkpoint(next_position=2, state="running", guarded_digest="abc")
+                store.write_score({"valid_completed_report": True})
+                store.write_terminal_receipt({
+                    "run_id": run_id, "state": "complete", "result_state": "complete",
+                })
+                store.finish(state="complete", reason="synthetic", valid_verdict=True)
+                expected = "route_terminal_state_disagreement" if activity_state == "running" else "route_terminal_call_count_mismatch"
+                with self.assertRaisesRegex(ValueError, expected):
+                    store.seal_terminal_checkpoint(
+                        state="complete", expected_calls=EXPECTED_CALLS,
+                        activity_state=activity_state,
+                    )
+                self.assertNotEqual(store.checkpoint()["state"], "complete")
+
     def test_mutation_guard_detects_guarded_source_change(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
@@ -271,6 +294,7 @@ class GRoute1ExecutionTests(unittest.TestCase):
     def test_full_synthetic_run_is_exactly_216_and_pause_resume_has_no_duplicates(self):
         provider = StubProvider()
         with tempfile.TemporaryDirectory() as td:
+            activity = RouteActivity("run", root=td)
             first = True
             checks = 0
             def control():
@@ -282,17 +306,19 @@ class GRoute1ExecutionTests(unittest.TestCase):
                 return "continue"
             paused = execute(
                 provider_call=provider, model_receipts=model_receipts(), run_root=td,
-                run_id="run", synthetic_fixture=True, control=control,
+                run_id="run", synthetic_fixture=True, control=control, activity=activity,
             )
             self.assertEqual(paused["state"], "paused")
             self.assertEqual(len(provider.calls), 4)
             completed = execute(
                 provider_call=provider, model_receipts=model_receipts(), run_root=td,
                 run_id="run", synthetic_fixture=True, resume=True,
+                activity=RouteActivity("run", root=td, resume=True),
             )
             self.assertEqual(completed["state"], "complete")
             self.assertEqual(len(provider.calls), EXPECTED_CALLS)
-            records = RouteRunStore(td, "run", create=False).call_records()
+            store = RouteRunStore(td, "run", create=False)
+            records = store.call_records()
             self.assertEqual(len(records), EXPECTED_CALLS)
             self.assertEqual(len({row["call_id"] for row in records}), EXPECTED_CALLS)
             self.assertEqual(sum(row["provider_contacted"] for row in records), EXPECTED_CALLS)
@@ -301,6 +327,36 @@ class GRoute1ExecutionTests(unittest.TestCase):
             self.assertEqual(sum(row["qualified"] for row in report["qualification_matrix"]), 72)
             self.assertTrue(all(row["observations"] == 3 for row in report["qualification_matrix"]))
             self.assertIsNone(report["overall_leaderboard"])
+            manifest = store.manifest()
+            checkpoint = store.checkpoint()
+            receipt = store.terminal_receipt()
+            activity_record = json.loads((Path(td) / "activities" / "run.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["state"], "complete")
+            self.assertEqual(receipt["state"], "complete")
+            self.assertEqual(activity_record["state"], "complete")
+            self.assertEqual(checkpoint["state"], "complete")
+            self.assertEqual(checkpoint["completed_position"], EXPECTED_CALLS)
+            self.assertEqual(checkpoint["next_position"], EXPECTED_CALLS + 1)
+            self.assertTrue(completed["terminal_views"]["valid"])
+            record_bytes = {path.name: path.read_bytes() for path in (store.root / "calls").glob("*.json")}
+            sealed = store.seal_terminal_checkpoint(
+                state="complete", expected_calls=EXPECTED_CALLS, activity_state="complete",
+            )
+            self.assertEqual(sealed, checkpoint)
+            self.assertEqual(
+                record_bytes,
+                {path.name: path.read_bytes() for path in (store.root / "calls").glob("*.json")},
+            )
+            calls_before = len(provider.calls)
+            with self.assertRaisesRegex(ValueError, "terminal_route_run_not_resumable"):
+                execute(
+                    provider_call=provider, model_receipts=model_receipts(), run_root=td,
+                    run_id="run", synthetic_fixture=True, resume=True,
+                )
+            self.assertEqual(len(provider.calls), calls_before)
+            self.assertFalse(verify_terminal_views(
+                store, {"state": "running"}, expected_calls=EXPECTED_CALLS,
+            )["valid"])
 
     def test_live_execution_requires_separate_authorization(self):
         with tempfile.TemporaryDirectory() as td:
@@ -334,6 +390,23 @@ class GRoute1ExecutionTests(unittest.TestCase):
             self.assertEqual(len(list((root / "failures").glob("*.json"))), 1)
             manifest = json.loads((root / "run.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["state"], "incomplete")
+            checkpoint = json.loads((root / "checkpoint.json").read_text(encoding="utf-8"))
+            self.assertNotEqual(checkpoint["state"], "complete")
+            self.assertFalse((root / "terminal_receipt.json").exists())
+
+    def test_scorer_failure_cannot_seal_complete(self):
+        provider = StubProvider()
+        with tempfile.TemporaryDirectory() as td:
+            with patch("g_route1_runner.score", side_effect=ArithmeticError("synthetic scorer failure")):
+                result = execute(
+                    provider_call=provider, model_receipts=model_receipts(), run_root=td,
+                    run_id="scorer_failure", synthetic_fixture=True,
+                )
+            self.assertEqual(result["state"], "failed")
+            store = RouteRunStore(td, "scorer_failure", create=False)
+            self.assertEqual(store.manifest()["state"], "failed")
+            self.assertNotEqual(store.checkpoint()["state"], "complete")
+            self.assertFalse((store.root / "terminal_receipt.json").exists())
 
 
 if __name__ == "__main__":

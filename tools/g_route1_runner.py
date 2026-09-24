@@ -20,7 +20,7 @@ from g_route1_execution_contract import (
     json_digest, load_json, request_body, validate_schedule, verify_fixture_freeze_current,
 )
 from g_route1_operational import parse_object, validate_operational
-from g_route1_persistence import RouteRunStore
+from g_route1_persistence import RouteRunStore, TERMINAL, now, verify_terminal_views
 from g_route1_provider import ProviderResult, verify_model_receipts
 from g_route1_scorer import score
 from g_route1_validators import CODING_EVIDENCE_CONTRACT, validate_fixture_output
@@ -94,7 +94,7 @@ def execution_authorized(authorization: Mapping[str, Any] | None) -> bool:
         and row.get("consumed") is False
         and row.get("operator_confirmation") == f"Authorize G-ROUTE1 execution {digest}"
         and freeze_valid
-        and manifest.get("status") == "READY_FOR_EXECUTION_AUTHORIZATION"
+        and manifest.get("status") == "READY_FOR_EXPLICIT_SCIENTIFIC_EXECUTION_AUTHORIZATION"
         and manifest.get("benchmark_execution_authorized") is False
     )
 
@@ -141,6 +141,8 @@ def execute(
             "synthetic_fixture": bool(synthetic_fixture), "authorization_present": bool(authorization),
         } if not resume else None,
     )
+    if resume and store.manifest().get("state") in TERMINAL:
+        raise ValueError("terminal_route_run_not_resumable")
     checkpoint = store.checkpoint()
     if checkpoint["guarded_digest"] != guarded:
         raise ValueError("resume_dependency_drift")
@@ -281,9 +283,35 @@ def execute(
         if not report["valid_completed_report"]:
             store.finish(state="incomplete", reason="scorer_denominator_incomplete", valid_verdict=False)
             return {"state": "incomplete", "run_id": resolved_id, "calls_completed": len(records)}
+        terminal_receipt = {
+            "contract_version": "g-route1.terminal-receipt.v1",
+            "run_id": resolved_id, "state": "complete", "result_state": "complete",
+            "calls_persisted": len(records), "completed_position": EXPECTED_CALLS,
+            "next_position": EXPECTED_CALLS + 1,
+            "score_record_sha256": store.score_record()["record_sha256"],
+            "guarded_digest": guarded, "mutation_guard": "passed",
+            "production_routing_invoked": False, "belief_effects": "none",
+            "completed": now(),
+        }
+        store.write_terminal_receipt(terminal_receipt)
         store.finish(state="complete", reason="completed_and_scored", valid_verdict=True)
-        activity.emit("benchmark_complete", state="complete", stage="finalization", units=(EXPECTED_CALLS, EXPECTED_CALLS, "calls"))
-        return {"state": "complete", "run_id": resolved_id, "calls_completed": len(records), "score": report}
+        activity_projection = activity.emit(
+            "benchmark_complete", state="complete", stage="finalization",
+            units=(EXPECTED_CALLS, EXPECTED_CALLS, "calls"),
+        )
+        store.seal_terminal_checkpoint(
+            state="complete", expected_calls=EXPECTED_CALLS,
+            activity_state=str((activity_projection or {}).get("state") or ""),
+        )
+        terminal_views = verify_terminal_views(
+            store, activity_projection or {}, expected_calls=EXPECTED_CALLS,
+        )
+        if not terminal_views["valid"]:
+            raise RuntimeError("route_terminal_view_mismatch:" + ",".join(terminal_views["reasons"]))
+        return {
+            "state": "complete", "run_id": resolved_id, "calls_completed": len(records),
+            "score": report, "terminal_views": terminal_views,
+        }
 
 
 __all__ = [

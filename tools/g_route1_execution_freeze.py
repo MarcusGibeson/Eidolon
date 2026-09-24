@@ -3,6 +3,7 @@ from __future__ import annotations
 """Build and verify the non-authorizing G-ROUTE1 execution-freeze candidate."""
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -15,9 +16,13 @@ from g_route1_execution_contract import (
 )
 
 
-CONTRACT_VERSION = "g-route1.execution-freeze-candidate.v1"
+CONTRACT_VERSION = "g-route1.execution-freeze-candidate.v2"
 FREEZE_PATH = DATA / "EXECUTION_FREEZE_CANDIDATE.json"
+HISTORICAL_FREEZE_PATH = DATA / "EXECUTION_FREEZE_CANDIDATE_R1.json"
+HISTORICAL_LITERAL_SHA256 = "836ee16db8a6f92e08570473c1e553a8ff564e785feb2c80b9ceb56750770029"
+HISTORICAL_CONTENT_SHA256 = "e9f674ecec069d3f296023cc568eb030a650292d2fdad96fe294fc5e20c3ee71"
 ARTIFACTS = (
+    "experiments/G-ROUTE1-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
     "experiments/G-ROUTE1-candidate/FIXTURE_VALIDATOR_FREEZE.json",
     "experiments/G-ROUTE1-candidate/corpus.json",
     "experiments/G-ROUTE1-candidate/gold.json",
@@ -32,6 +37,8 @@ ARTIFACTS = (
     "experiments/G-ROUTE1-candidate/RUNNER_ARCHITECTURE.md",
     "experiments/G-ROUTE1-candidate/DETERMINISTIC_TEST_RESULTS.json",
     "experiments/G-ROUTE1-candidate/IMPLEMENTATION_AUDIT.md",
+    "experiments/G-ROUTE1-candidate/BLOCKED_PREFLIGHT_TERMINAL_CHECKPOINT.md",
+    "experiments/G-ROUTE1-candidate/TERMINAL_CHECKPOINT_REPAIR_AUDIT.md",
     "tools/g_route1_contract.py",
     "tools/g_route1_validators.py",
     "tools/g_route1_execution_contract.py",
@@ -48,6 +55,10 @@ ARTIFACTS = (
 )
 
 
+def literal_digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def current_commit(root: Path = ROOT) -> str:
     result = subprocess.run(
         ["git", "-c", "safe.directory=C:/Users/marcu/Eidolon", "rev-parse", "HEAD"],
@@ -57,6 +68,11 @@ def current_commit(root: Path = ROOT) -> str:
 
 
 def build_manifest(*, implementation_commit: str | None = None, root: Path = ROOT) -> dict[str, Any]:
+    historical = load_json(root / HISTORICAL_FREEZE_PATH.relative_to(ROOT))
+    if literal_digest(root / HISTORICAL_FREEZE_PATH.relative_to(ROOT)) != HISTORICAL_LITERAL_SHA256:
+        raise ValueError("historical_execution_freeze_literal_digest_mismatch")
+    if historical.get("execution_freeze_content_sha256") != HISTORICAL_CONTENT_SHA256:
+        raise ValueError("historical_execution_freeze_content_digest_mismatch")
     verify_fixture_freeze_current()
     missing = [path for path in ARTIFACTS if not (root / path).is_file()]
     if missing:
@@ -71,8 +87,12 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
     artifacts = {path: digest_file(root / path) for path in ARTIFACTS}
     seed = {
         "contract_version": CONTRACT_VERSION,
-        "candidate_id": "G-ROUTE1-EXECUTION-R1",
-        "status": "READY_FOR_EXECUTION_AUTHORIZATION",
+        "candidate_id": "G-ROUTE1-EXECUTION-R2",
+        "status": "READY_FOR_EXPLICIT_SCIENTIFIC_EXECUTION_AUTHORIZATION",
+        "supersedes_candidate_id": "G-ROUTE1-EXECUTION-R1",
+        "superseded_literal_sha256": HISTORICAL_LITERAL_SHA256,
+        "superseded_content_sha256": HISTORICAL_CONTENT_SHA256,
+        "supersession_reason": "scientific terminal checkpoint remained running after successful provider-free completion",
         "implementation_commit": implementation_commit or current_commit(root),
         "fixture_freeze_content_sha256": fixture_freeze["freeze_content_sha256"],
         "fixture_freeze_literal_sha256": digest_file(root / "experiments/G-ROUTE1-candidate/FIXTURE_VALIDATOR_FREEZE.json"),
@@ -145,7 +165,12 @@ def write_manifest(path: Path = FREEZE_PATH, *, implementation_commit: str | Non
     manifest = build_manifest(implementation_commit=implementation_commit)
     rendered = json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if path.exists() and path.read_text(encoding="utf-8") != rendered:
-        raise FileExistsError("conflicting_execution_freeze_candidate_exists")
+        if path.resolve() != FREEZE_PATH.resolve():
+            raise FileExistsError("conflicting_execution_freeze_candidate_exists")
+        if literal_digest(path) != HISTORICAL_LITERAL_SHA256:
+            raise FileExistsError("unexpected_execution_freeze_candidate_exists")
+        if not HISTORICAL_FREEZE_PATH.is_file() or literal_digest(HISTORICAL_FREEZE_PATH) != HISTORICAL_LITERAL_SHA256:
+            raise FileExistsError("historical_execution_freeze_not_preserved")
     path.write_text(rendered, encoding="utf-8", newline="\n")
     return manifest
 

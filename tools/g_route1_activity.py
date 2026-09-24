@@ -16,8 +16,12 @@ ALLOWED_IDENTITIES = frozenset({"current_model_tier", "current_task_class", "cur
 
 
 class NullRouteActivity:
-    def emit(self, event: str, **kwargs: Any) -> None:
-        return None
+    def __init__(self) -> None:
+        self.state = "queued"
+
+    def emit(self, event: str, **kwargs: Any) -> dict[str, Any]:
+        self.state = str(kwargs.get("state") or self.state)
+        return {"state": self.state, "event": str(event)}
 
 
 class RouteActivity:
@@ -41,7 +45,7 @@ class RouteActivity:
                 },
             )
 
-    def emit(self, event: str, **kwargs: Any) -> None:
+    def emit(self, event: str, **kwargs: Any) -> dict[str, Any]:
         metrics = dict(kwargs.pop("metrics", {}) or {})
         identities = dict(kwargs.pop("identities", {}) or {})
         if set(metrics) - ALLOWED_METRICS:
@@ -51,7 +55,9 @@ class RouteActivity:
         forbidden = {"breakdown", "result", "reason", "governance"} & set(kwargs)
         if forbidden:
             raise ValueError("route_activity_content_field_not_allowed")
-        self.activity.update(str(event)[:100], metrics=metrics or None, identities=identities or None, **kwargs)
+        return self.activity.update(
+            str(event)[:100], metrics=metrics or None, identities=identities or None, **kwargs,
+        )
 
 
 __all__ = ["STAGES", "ALLOWED_METRICS", "ALLOWED_IDENTITIES", "NullRouteActivity", "RouteActivity"]
