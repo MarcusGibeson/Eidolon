@@ -60,7 +60,7 @@
   "digest_convention": "sha256; CRLF and CR normalized to LF for source artifacts",
   "evidence_scale": "pilot",
   "execution_freeze": true,
-  "execution_freeze_content_sha256": "d355cfd0a53ec3601b84814630f2d51ca785dc3da3d21ff51adcb90c60ee889d",
+  "execution_freeze_content_sha256": "7249e83c6b6540ce7e7cdab1b98e0451ad83a6a1ceb7fd2977290956b18e6fd6",
   "generation_configuration": {
     "fresh_session_per_call": true,
     "options": {
@@ -77,7 +77,7 @@
     "stream": false,
     "think": false
   },
-  "implementation_commit": "54725f850129aef9d975d5d2ddd2727752df123d",
+  "implementation_commit": "4246b00bcf5ff95e6462df5eef5335a2ada1f805",
   "independence_report_sha256": "b37ba16deb4d21dd57c22c559b3023b5cd14e9a5f1422853d5fdd8ca6646e6ad",
   "independent_audit_verdict": "READY",
   "model_bindings_sha256": "52b14ca35e34487d88627aa9f38af1c08c65ebfa94b0455d8d4883ce3782998e",
