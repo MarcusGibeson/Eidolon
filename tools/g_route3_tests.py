@@ -806,6 +806,14 @@ class FreezeTests(unittest.TestCase):
                          "64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21")
         self.assertFalse(manifest["supersedes"]["authorized"])
 
+    def test_superseded_r1_digest_is_independent_of_checkout_line_endings(self):
+        r1 = contract.ROOT / freeze.SUPERSEDED["path"]
+        self.assertEqual(freeze.literal_sha256(r1), freeze.SUPERSEDED["literal_sha256"])
+        with tempfile.TemporaryDirectory() as td:
+            crlf = Path(td) / "r1.json"
+            crlf.write_bytes(r1.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
+            self.assertEqual(freeze.literal_sha256(crlf), freeze.SUPERSEDED["literal_sha256"])
+
     def test_a_freeze_cannot_be_written_once_a_table_exists(self):
         with tempfile.TemporaryDirectory() as td:
             (Path(td) / "QUALIFICATION_TABLE.json").write_text("{}", encoding="utf-8")

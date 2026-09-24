@@ -40,7 +40,7 @@
       "command": "python -m unittest -v g_route3_tests  (from tools/)",
       "groups": {
         "corpus_construction_and_derivability": 13,
-        "execution_freeze": 2,
+        "execution_freeze": 3,
         "gold_blind_routing_and_escalation": 12,
         "governed_two_phase_pipeline": 10,
         "qualification_and_table": 9,
@@ -88,9 +88,10 @@
         "planning_single_template_declared": "test_planning_is_a_declared_single_template_construct",
         "real_authorization_path_opens_both_phases_once": "test_real_authorizations_open_both_phases_once_each",
         "sandbox_host_failure_is_infrastructure": "test_coding_sandbox_host_failure_is_infrastructure_not_model_failure",
-        "structural_reuse_detectable": "test_structural_check_detects_a_reused_gold_shape"
+        "structural_reuse_detectable": "test_structural_check_detects_a_reused_gold_shape",
+        "superseded_r1_digest_independent_of_line_endings": "test_superseded_r1_digest_is_independent_of_checkout_line_endings"
       },
-      "tests": 48
+      "tests": 49
     }
   ]
 }

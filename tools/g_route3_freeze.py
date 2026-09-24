@@ -44,15 +44,21 @@ ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
 )
 
 
+def literal_sha256(path: Path) -> str:
+    """sha256 of the file's bytes with CRLF and CR normalized to LF, so a git checkout's line endings do not matter."""
+    import hashlib
+    data = Path(path).read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(data).hexdigest()
+
+
 def current_commit(root: Path = ROOT) -> str:
     return subprocess.run(["git", "-c", "safe.directory=C:/Users/marcu/Eidolon", "rev-parse", "HEAD"],
                           cwd=root, capture_output=True, text=True, check=True).stdout.strip()
 
 
 def build_manifest(*, implementation_commit: str | None = None, root: Path = ROOT) -> dict[str, Any]:
-    import hashlib
     superseded = root / SUPERSEDED["path"]
-    if not superseded.is_file() or hashlib.sha256(superseded.read_bytes()).hexdigest() != SUPERSEDED["literal_sha256"]:
+    if not superseded.is_file() or literal_sha256(superseded) != SUPERSEDED["literal_sha256"]:
         raise ValueError("superseded_r1_freeze_not_preserved")
     missing = [path for path in ARTIFACTS if not (root / path).is_file()]
     if missing:
@@ -162,8 +168,7 @@ def write_manifest(path: Path = FREEZE_PATH, *, implementation_commit: str | Non
     manifest = build_manifest(implementation_commit=implementation_commit)
     rendered = json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if path.exists() and path.read_text(encoding="utf-8") != rendered:
-        import hashlib
-        replacing_preserved_r1 = hashlib.sha256(path.read_bytes()).hexdigest() == SUPERSEDED["literal_sha256"]
+        replacing_preserved_r1 = literal_sha256(path) == SUPERSEDED["literal_sha256"]
         if load_json(path).get("candidate_id") != CANDIDATE_ID and not replacing_preserved_r1:
             raise FileExistsError("conflicting_execution_freeze_candidate_exists")
     path.write_text(rendered, encoding="utf-8", newline="\n")
