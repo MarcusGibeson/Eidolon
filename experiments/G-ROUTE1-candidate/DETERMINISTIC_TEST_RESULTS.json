@@ -1,24 +1,26 @@
 {
   "schema_version": "g-route1.deterministic-test-results.v1",
-  "recorded_on": "2026-09-23",
+  "recorded_on": "2026-09-24",
   "provider_generation_calls": 0,
   "benchmark_launches": 0,
   "suites": [
     {
       "command": "python tools/g_route1_execution_tests.py",
-      "tests": 20,
+      "tests": 22,
       "result": "PASS",
-      "notes": "Includes a complete provider-free 216-call scientific-runner execution, pause after four persisted calls, exact resume, terminal checkpoint sealing at 216/217, five-view terminal agreement, immutable terminal resume rejection, idempotent finalization, scorer-failure non-completion, false-clean, malformed output, model/config drift, global lease, Activity, coding isolation, and scorer arithmetic."
+      "notes": "Includes a complete provider-free 216-call scientific-runner execution, pause after four persisted calls, exact resume, terminal checkpoint sealing at 216/217, five-view terminal agreement, immutable terminal resume rejection, idempotent finalization, scorer-failure non-completion, false-clean, malformed output, model/config drift, global lease, Activity, coding isolation, and scorer arithmetic. Adds the R2 regressions: non-hashable list elements are classified by the gold-blind validator across research, synthesis and planning, and a full 216-call run completes with a non-hashable answer preserved as false-clean scientific data."
     },
     {
       "command": "python tools/g_route1_fixture_tests.py",
-      "tests": 13,
-      "result": "PASS"
+      "tests": 15,
+      "result": "PASS",
+      "notes": "Adds evaluator-side adversarial coverage of uncertainties, citations and lineages carrying objects, lists, mixed text-and-object, and non-list values, plus proof that all-text elements are judged exactly as before the repair."
     },
     {
       "command": "python tools/g_route1_freeze_tests.py",
-      "tests": 7,
-      "result": "PASS"
+      "tests": 9,
+      "result": "PASS",
+      "notes": "Adds byte-for-byte preservation of the superseded R1 fixture freeze and proof that corpus, gold and prompt profiles did not change across the validator repair."
     },
     {
       "command": "python tools/g_route1_execution_freeze_tests.py",
@@ -42,7 +44,12 @@
       "notes": "Historical and current pilot isolation, pause/resume, terminal immutability, and scientific-freeze binding regressions."
     }
   ],
-  "total_assertion_suites": 60,
+  "total_assertion_suites": 66,
+  "differential_over_preserved_r2_records": {
+    "records_revalidated": 56,
+    "verdict_changes": 0,
+    "notes": "Every persisted R2 observation was re-validated with the repaired validators. Operational acceptance, semantic hard-gate outcome and reason lists are identical, so the repair converts crashes into recorded failures and changes no observed judgment."
+  },
   "live_provider_used": false,
   "production_routing_invoked": false,
   "belief_effects": "none"

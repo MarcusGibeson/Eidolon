@@ -10,6 +10,24 @@ from typing import Any, Mapping
 CONTRACT_VERSION = "g-route1.operational-validator.v1"
 
 
+def _text_items(value: Any, reasons: list[str], reason: str) -> list[str]:
+    """Return the text elements of a model-supplied list, classifying anything else.
+
+    A model may answer with objects or lists where the contract requires text. That is a
+    model-produced failure and is recorded as one: it is never coerced into a passing
+    shape, and it never raises. De-duplication and identity lookups downstream therefore
+    only ever see hashable text. Kept local to this module so the gold-blind validator
+    shares no judgment code with the evaluator.
+    """
+    if not isinstance(value, list):
+        reasons.append(reason)
+        return []
+    text = [item for item in value if isinstance(item, str)]
+    if len(text) != len(value):
+        reasons.append(reason)
+    return text
+
+
 def parse_object(raw_output: Any) -> tuple[dict[str, Any] | None, list[str]]:
     if isinstance(raw_output, Mapping):
         return dict(raw_output), []
@@ -92,8 +110,8 @@ def validate_operational(
             seen.add(claim_id)
             if row["status"] not in {"supported", "contradicted", "unresolved"}:
                 reasons.append(f"claim_status_invalid:{claim_id}")
-            citations = row["citations"] if isinstance(row["citations"], list) else []
-            lineages = row["lineages"] if isinstance(row["lineages"], list) else []
+            citations = _text_items(row["citations"], reasons, f"citation_element_type_mismatch:{claim_id}")
+            lineages = _text_items(row["lineages"], reasons, f"lineage_element_type_mismatch:{claim_id}")
             if len(citations) != len(set(citations)) or len(lineages) != len(set(lineages)):
                 reasons.append(f"duplicate_research_evidence:{claim_id}")
             if any(source not in source_lineage for source in citations):
@@ -117,7 +135,7 @@ def validate_operational(
             if not isinstance(row, Mapping) or set(row) != {"statement_id", "role", "observation_ids", "text"}:
                 reasons.append("statement_schema_mismatch")
                 continue
-            ids = row["observation_ids"] if isinstance(row["observation_ids"], list) else []
+            ids = _text_items(row["observation_ids"], reasons, "observation_id_element_type_mismatch")
             covered.extend(ids)
             if not ids or any(item not in roles for item in ids):
                 reasons.append("unknown_or_empty_observation_binding")
@@ -154,9 +172,11 @@ def validate_operational(
             if not isinstance(row, Mapping) or set(row) != {"id", "action", "depends_on", "evidence_ids"}:
                 reasons.append("planning_step_schema_mismatch")
                 continue
-            if any(item not in evidence_ids for item in row["evidence_ids"]):
+            cited = _text_items(row["evidence_ids"], reasons, "planning_evidence_element_type_mismatch")
+            depends = _text_items(row["depends_on"], reasons, "planning_dependency_element_type_mismatch")
+            if any(item not in evidence_ids for item in cited):
                 reasons.append("planning_unknown_evidence")
-            if any(item not in step_ids for item in row["depends_on"]):
+            if any(item not in step_ids for item in depends):
                 reasons.append("planning_unknown_dependency")
         if parsed.get("claims_completed") is not False:
             reasons.append("fabricated_completion")

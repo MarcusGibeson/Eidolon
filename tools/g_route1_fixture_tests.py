@@ -168,6 +168,49 @@ class GRoute1CorpusTests(unittest.TestCase):
         self.assertIn("duplicate_lineage:C2", result["reasons"])
         self.assertIn("research_judgment_mismatch", result["reasons"])
 
+    def test_non_hashable_research_elements_are_classified_not_raised(self) -> None:
+        """R2 regression: set() over model-supplied lists crashed the evaluator.
+
+        A structurally legal answer whose list elements are objects or lists is a
+        model-produced failure. It must be judged, not raise, and it must never be
+        coerced into a shape that could pass.
+        """
+        fixture, gold = self.bound["RESEARCH-R3"]
+        shapes = {
+            "object": [{"note": "x"}],
+            "list": [["x"]],
+            "mixed": ["lumen-maintainer", {"note": "x"}],
+            "not_a_list": {"note": "x"},
+        }
+        fields = {
+            "uncertainties": "uncertainty_element_type_mismatch",
+            "citations": "citation_element_type_mismatch:C1",
+            "lineages": "lineage_element_type_mismatch:C1",
+        }
+        for field, expected_reason in fields.items():
+            for shape, value in shapes.items():
+                with self.subTest(field=field, shape=shape):
+                    output = copy.deepcopy(gold["expected"])
+                    if field == "uncertainties":
+                        output["uncertainties"] = value
+                    else:
+                        output["claims"][0][field] = value
+                    result = validate_fixture_output(fixture, gold, output)
+                    self.assertFalse(result["hard_gate_pass"])
+                    if field == "uncertainties" and shape == "not_a_list":
+                        self.assertIn("uncertainties_not_list", result["reasons"])
+                    else:
+                        self.assertIn(expected_reason, result["reasons"])
+
+    def test_text_research_elements_are_unaffected_by_the_element_type_check(self) -> None:
+        fixture, gold = self.bound["RESEARCH-R3"]
+        self.assertTrue(validate_fixture_output(fixture, gold, copy.deepcopy(gold["expected"]))["valid"])
+        output = copy.deepcopy(gold["expected"])
+        output["claims"][1]["lineages"].append("lumen-maintainer")
+        result = validate_fixture_output(fixture, gold, output)
+        self.assertIn("duplicate_lineage:C2", result["reasons"])
+        self.assertFalse(any("element_type_mismatch" in reason for reason in result["reasons"]))
+
     def test_synthesis_role_drift_and_silent_drop_are_rejected(self) -> None:
         fixture, gold = self.bound["SYNTH-R4"]
         output = _golden_output(fixture, gold)

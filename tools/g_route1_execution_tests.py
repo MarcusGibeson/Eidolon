@@ -61,17 +61,22 @@ def golden_output(fixture, gold):
 
 
 class StubProvider:
-    def __init__(self, *, malformed_call: str = "", mismatch_call: str = "") -> None:
+    def __init__(self, *, malformed_call: str = "", mismatch_call: str = "",
+                 nonhashable_call: str = "") -> None:
         self.bound = indexed_fixture_gold()
         self.calls = []
         self.malformed_call = malformed_call
         self.mismatch_call = mismatch_call
+        self.nonhashable_call = nonhashable_call
 
     def __call__(self, call_id, body):
         self.calls.append((call_id, copy.deepcopy(body)))
         fixture_id = call_id[len("GROUTE1-"):].rsplit("-R", 1)[0]
         fixture, gold = self.bound[fixture_id]
         output = golden_output(fixture, gold)
+        if call_id == self.nonhashable_call:
+            output = copy.deepcopy(output)
+            output["uncertainties"] = [{"note": "not text"}]
         raw = "{not-json" if call_id == self.malformed_call else (
             output if isinstance(output, str) else json.dumps(output, sort_keys=True)
         )
@@ -173,6 +178,57 @@ class GRoute1ExecutionTests(unittest.TestCase):
         self.assertFalse(record["operational_validation"]["accepted"])
         self.assertFalse(record["semantic_evaluation"]["hard_gate_pass"])
         self.assertEqual(record["infrastructure_failure"], "")
+
+    def test_non_hashable_elements_are_classified_by_the_gold_blind_validator(self):
+        """R2 regression, operational side: identity lookups over model lists must not raise."""
+        cases = (
+            ("RESEARCH-R3", "citations", "citation_element_type_mismatch:C1"),
+            ("RESEARCH-R3", "lineages", "lineage_element_type_mismatch:C1"),
+            ("SYNTH-R4", "observation_ids", "observation_id_element_type_mismatch"),
+            ("PLAN-R1", "evidence_ids", "planning_evidence_element_type_mismatch"),
+            ("PLAN-R1", "depends_on", "planning_dependency_element_type_mismatch"),
+        )
+        for shape in ({"note": "x"}, ["x"]):
+            for fixture_id, field, expected_reason in cases:
+                with self.subTest(fixture=fixture_id, field=field, shape=type(shape).__name__):
+                    fixture, gold = self.bound[fixture_id]
+                    output = copy.deepcopy(golden_output(fixture, gold))
+                    if field in {"citations", "lineages"}:
+                        output["claims"][0][field] = [shape]
+                    elif field == "observation_ids":
+                        output["statements"][0][field] = [shape]
+                    else:
+                        output["steps"][0][field] = [shape]
+                    result = validate_operational(fixture, json.dumps(output))
+                    self.assertFalse(result["accepted"])
+                    self.assertFalse(result["structural_valid"])
+                    self.assertIn(expected_reason, result["reasons"])
+
+    def test_non_hashable_output_is_scientific_evidence_and_the_run_still_completes(self):
+        """R2 halted at position 57 on this exact shape. The benchmark must survive it."""
+        target = "GROUTE1-RESEARCH-R3-R1-small"
+        provider = StubProvider(nonhashable_call=target)
+        with tempfile.TemporaryDirectory() as td:
+            result = execute(
+                provider_call=provider, model_receipts=model_receipts(), run_root=td,
+                run_id="run", synthetic_fixture=True,
+            )
+            self.assertEqual(result["state"], "complete")
+            self.assertEqual(len(provider.calls), EXPECTED_CALLS)
+            store = RouteRunStore(td, "run", create=False)
+            record = next(row for row in store.call_records() if row["call_id"] == target)
+            self.assertEqual(record["infrastructure_failure"], "")
+            self.assertTrue(record["provider_contacted"])
+            self.assertTrue(record["operational_validation"]["accepted"])
+            self.assertFalse(record["semantic_evaluation"]["hard_gate_pass"])
+            self.assertIn("uncertainty_element_type_mismatch", record["semantic_evaluation"]["reasons"])
+            self.assertTrue(record["false_clean"])
+            cell = next(row for row in result["score"]["qualification_matrix"]
+                        if (row["task_class"], row["risk_class"], row["model_tier"])
+                        == ("grounded_research_synthesis", "R3", "small"))
+            self.assertFalse(cell["qualified"])
+            self.assertEqual(cell["false_clean_errors"], 1)
+            self.assertEqual(sum(row["qualified"] for row in result["score"]["qualification_matrix"]), 71)
 
     def test_restricted_coding_runner_accepts_gold_and_rejects_unsafe_code(self):
         fixture, gold = self.bound["CODE-R3"]

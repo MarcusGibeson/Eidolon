@@ -24,6 +24,7 @@ class GRoute1FreezeTests(unittest.TestCase):
     def test_freeze_binds_every_behaviorally_relevant_fixture_artifact(self) -> None:
         required = {
             "docs/ADAPTIVE_COGNITIVE_ROUTING_BENCHMARK_DESIGN.md",
+            "experiments/G-ROUTE1-candidate/FIXTURE_VALIDATOR_FREEZE_R1.json",
             "qualifications/adaptive_cognitive_routing_benchmark_design.json",
             "experiments/G-ROUTE1-candidate/corpus.json",
             "experiments/G-ROUTE1-candidate/gold.json",
@@ -86,6 +87,30 @@ class GRoute1FreezeTests(unittest.TestCase):
         self.assertFalse(self.manifest["persistence_implemented"])
         self.assertEqual(self.manifest["provider_generation_calls"], 0)
         self.assertEqual(self.manifest["benchmark_launches"], 0)
+
+    def test_superseded_r1_freeze_is_preserved_byte_for_byte(self) -> None:
+        historical = freeze.HISTORICAL_FREEZE_PATH
+        self.assertTrue(historical.is_file())
+        self.assertEqual(freeze.literal_digest(historical), freeze.HISTORICAL_LITERAL_SHA256)
+        preserved = json.loads(historical.read_text(encoding="utf-8"))
+        self.assertEqual(preserved["freeze_id"], "G-ROUTE1-FIXTURE-VALIDATOR-R1")
+        self.assertEqual(preserved["freeze_content_sha256"], freeze.HISTORICAL_CONTENT_SHA256)
+        self.assertEqual(self.manifest["supersedes_freeze_id"], "G-ROUTE1-FIXTURE-VALIDATOR-R1")
+        self.assertEqual(self.manifest["superseded_literal_sha256"], freeze.HISTORICAL_LITERAL_SHA256)
+
+    def test_corpus_gold_and_prompt_profiles_did_not_change_across_the_repair(self) -> None:
+        preserved = json.loads(freeze.HISTORICAL_FREEZE_PATH.read_text(encoding="utf-8"))
+        for path in (
+            "experiments/G-ROUTE1-candidate/corpus.json",
+            "experiments/G-ROUTE1-candidate/gold.json",
+            "experiments/G-ROUTE1-candidate/prompt_profiles.json",
+        ):
+            self.assertEqual(self.manifest["artifacts"][path], preserved["artifacts"][path], path)
+        self.assertNotEqual(
+            self.manifest["artifacts"]["tools/g_route1_validators.py"],
+            preserved["artifacts"]["tools/g_route1_validators.py"],
+        )
+        self.assertTrue(self.manifest["corpus_gold_prompts_unchanged_since_r1"])
 
     def test_freeze_is_idempotent_and_separate_from_historical_experiments(self) -> None:
         self.assertEqual(freeze.build_manifest(), self.manifest)

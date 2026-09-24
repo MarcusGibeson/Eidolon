@@ -3,6 +3,7 @@ from __future__ import annotations
 """Build and verify the non-executable G-ROUTE1 fixture/validator freeze."""
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any, Mapping
@@ -10,10 +11,16 @@ from typing import Any, Mapping
 from g_route1_contract import DATA, ROOT, canonical_digest, digest_file, load_corpus, load_gold
 
 
-CONTRACT_VERSION = "g-route1.fixture-validator-freeze.v1"
+CONTRACT_VERSION = "g-route1.fixture-validator-freeze.v2"
+FREEZE_ID = "G-ROUTE1-FIXTURE-VALIDATOR-R2"
+SUPERSEDED_FREEZE_ID = "G-ROUTE1-FIXTURE-VALIDATOR-R1"
 FREEZE_PATH = DATA / "FIXTURE_VALIDATOR_FREEZE.json"
+HISTORICAL_FREEZE_PATH = DATA / "FIXTURE_VALIDATOR_FREEZE_R1.json"
+HISTORICAL_LITERAL_SHA256 = "ee6018a026f7f0ca7e9f32b333b5970d18b75e2441cf2188d26b74db6650fe0b"
+HISTORICAL_CONTENT_SHA256 = "ee584e20011d7ce04f0cd376b27417e570c530bc4b2943e8585e59385380e659"
 ARTIFACTS = (
     "docs/ADAPTIVE_COGNITIVE_ROUTING_BENCHMARK_DESIGN.md",
+    "experiments/G-ROUTE1-candidate/FIXTURE_VALIDATOR_FREEZE_R1.json",
     "qualifications/adaptive_cognitive_routing_benchmark_design.json",
     "experiments/G-ROUTE1-candidate/corpus.json",
     "experiments/G-ROUTE1-candidate/gold.json",
@@ -31,17 +38,34 @@ ARTIFACTS = (
 )
 
 
+def literal_digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def build_manifest(root: Path = ROOT) -> dict[str, Any]:
     missing = [path for path in ARTIFACTS if not (root / path).is_file()]
     if missing:
         raise FileNotFoundError("freeze_artifacts_missing:" + ",".join(missing))
+    historical_path = root / HISTORICAL_FREEZE_PATH.relative_to(ROOT)
+    if literal_digest(historical_path) != HISTORICAL_LITERAL_SHA256:
+        raise ValueError("historical_fixture_freeze_literal_digest_mismatch")
+    if json.loads(historical_path.read_text(encoding="utf-8")).get("freeze_content_sha256") != HISTORICAL_CONTENT_SHA256:
+        raise ValueError("historical_fixture_freeze_content_digest_mismatch")
     corpus = load_corpus(root / "experiments/G-ROUTE1-candidate/corpus.json")
     gold = load_gold(root / "experiments/G-ROUTE1-candidate/gold.json")
     artifacts = {path: digest_file(root / path) for path in ARTIFACTS}
     seed = {
         "contract_version": CONTRACT_VERSION,
-        "freeze_id": "G-ROUTE1-FIXTURE-VALIDATOR-R1",
+        "freeze_id": FREEZE_ID,
         "status": "fixture_and_validator_frozen_not_executable",
+        "supersedes_freeze_id": SUPERSEDED_FREEZE_ID,
+        "superseded_literal_sha256": HISTORICAL_LITERAL_SHA256,
+        "superseded_content_sha256": HISTORICAL_CONTENT_SHA256,
+        "supersession_reason": (
+            "validators raised TypeError on non-hashable model list elements instead of classifying them; "
+            "corpus, gold and prompt profiles are unchanged"
+        ),
+        "corpus_gold_prompts_unchanged_since_r1": True,
         "base_design_commit": "384388171bf06e11cb4e31df53e51ae54af9ba7d",
         "digest_convention": "sha256; CRLF and CR normalized to LF",
         "corpus_id": corpus["corpus_id"],
@@ -126,7 +150,15 @@ def write_manifest(path: Path = FREEZE_PATH) -> dict[str, Any]:
     manifest = build_manifest()
     rendered = json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if path.exists() and path.read_text(encoding="utf-8") != rendered:
-        raise FileExistsError("conflicting_fixture_validator_freeze_exists")
+        if path.resolve() != FREEZE_PATH.resolve():
+            raise FileExistsError("conflicting_fixture_validator_freeze_exists")
+        if not HISTORICAL_FREEZE_PATH.is_file() or literal_digest(HISTORICAL_FREEZE_PATH) != HISTORICAL_LITERAL_SHA256:
+            raise FileExistsError("historical_fixture_validator_freeze_not_preserved")
+        existing = json.loads(path.read_text(encoding="utf-8"))
+        superseded = literal_digest(path) == HISTORICAL_LITERAL_SHA256
+        same_generation = existing.get("freeze_id") == FREEZE_ID
+        if not superseded and not same_generation:
+            raise FileExistsError("unexpected_fixture_validator_freeze_exists")
     path.write_text(rendered, encoding="utf-8", newline="\n")
     return manifest
 

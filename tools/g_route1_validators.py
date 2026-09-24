@@ -39,6 +39,23 @@ def _result(reasons: list[str], **metrics: Any) -> dict[str, Any]:
     }
 
 
+def _text_items(value: Any, reasons: list[str], reason: str) -> list[str]:
+    """Return the text elements of a model-supplied list, classifying anything else.
+
+    A model may answer with objects or lists where the contract requires text. That is a
+    model-produced failure and is recorded as one: it is never coerced into a passing
+    shape, and it never raises. De-duplication and identity lookups downstream therefore
+    only ever see hashable text.
+    """
+    if not isinstance(value, list):
+        reasons.append(reason)
+        return []
+    text = [item for item in value if isinstance(item, str)]
+    if len(text) != len(value):
+        reasons.append(reason)
+    return text
+
+
 def _parse_object(raw_output: Any) -> tuple[dict[str, Any] | None, list[str]]:
     if isinstance(raw_output, Mapping):
         return dict(raw_output), []
@@ -105,8 +122,8 @@ def _normalize_research(value: Mapping[str, Any], reasons: list[str]) -> dict[st
         if claim_id in seen:
             reasons.append(f"duplicate_claim:{claim_id}")
         seen.add(claim_id)
-        citations = row["citations"] if isinstance(row["citations"], list) else []
-        lineages = row["lineages"] if isinstance(row["lineages"], list) else []
+        citations = _text_items(row["citations"], reasons, f"citation_element_type_mismatch:{claim_id}")
+        lineages = _text_items(row["lineages"], reasons, f"lineage_element_type_mismatch:{claim_id}")
         if len(citations) != len(set(citations)):
             reasons.append(f"duplicate_citation:{claim_id}")
         if len(lineages) != len(set(lineages)):
@@ -121,6 +138,8 @@ def _normalize_research(value: Mapping[str, Any], reasons: list[str]) -> dict[st
     if not isinstance(uncertainties, list):
         reasons.append("uncertainties_not_list")
         uncertainties = []
+    else:
+        uncertainties = _text_items(uncertainties, reasons, "uncertainty_element_type_mismatch")
     if len(uncertainties) != len(set(uncertainties)):
         reasons.append("duplicate_uncertainty")
     return {

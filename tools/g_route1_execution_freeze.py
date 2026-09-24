@@ -16,13 +16,36 @@ from g_route1_execution_contract import (
 )
 
 
-CONTRACT_VERSION = "g-route1.execution-freeze-candidate.v2"
+CONTRACT_VERSION = "g-route1.execution-freeze-candidate.v3"
+CANDIDATE_ID = "G-ROUTE1-EXECUTION-R3"
+SUPERSEDED_CANDIDATE_ID = "G-ROUTE1-EXECUTION-R2"
 FREEZE_PATH = DATA / "EXECUTION_FREEZE_CANDIDATE.json"
-HISTORICAL_FREEZE_PATH = DATA / "EXECUTION_FREEZE_CANDIDATE_R1.json"
-HISTORICAL_LITERAL_SHA256 = "836ee16db8a6f92e08570473c1e553a8ff564e785feb2c80b9ceb56750770029"
-HISTORICAL_CONTENT_SHA256 = "e9f674ecec069d3f296023cc568eb030a650292d2fdad96fe294fc5e20c3ee71"
+HISTORICAL_FREEZE_PATH = DATA / "EXECUTION_FREEZE_CANDIDATE_R2.json"
+HISTORICAL_LITERAL_SHA256 = "77138604fc0b63b6860b1b9c0aaa4b43b68cd7560e8a4f8dfffabfdc1d1673cf"
+HISTORICAL_CONTENT_SHA256 = "feebf0e418e0cdab94463cdc0464c701e61a867deab72ee1cf93b26a33d7dfb1"
+SUPERSEDED_FREEZES = (
+    {"candidate_id": "G-ROUTE1-EXECUTION-R1",
+     "path": "experiments/G-ROUTE1-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
+     "literal_sha256": "836ee16db8a6f92e08570473c1e553a8ff564e785feb2c80b9ceb56750770029",
+     "content_sha256": "e9f674ecec069d3f296023cc568eb030a650292d2fdad96fe294fc5e20c3ee71"},
+    {"candidate_id": "G-ROUTE1-EXECUTION-R2",
+     "path": "experiments/G-ROUTE1-candidate/EXECUTION_FREEZE_CANDIDATE_R2.json",
+     "literal_sha256": HISTORICAL_LITERAL_SHA256,
+     "content_sha256": HISTORICAL_CONTENT_SHA256},
+)
+PRIOR_EXECUTIONS = (
+    {"candidate_id": "G-ROUTE1-EXECUTION-R1", "outcome": "blocked_before_provider_contact",
+     "provider_generation_calls": 0, "benchmark_launches": 0, "calls_persisted": 0,
+     "reason": "scientific terminal checkpoint remained running after successful provider-free completion"},
+    {"candidate_id": "G-ROUTE1-EXECUTION-R2", "outcome": "incomplete_after_provider_contact",
+     "provider_generation_calls": 57, "benchmark_launches": 1, "calls_persisted": 56,
+     "run_id": "groute1_20260924T022359279436Z",
+     "reason": "frozen evaluator raised TypeError on non-hashable model list elements at schedule position 57"},
+)
 ARTIFACTS = (
+    "experiments/G-ROUTE1-candidate/BLOCKED_EXECUTION_R2_EVALUATOR_DEFECT.md",
     "experiments/G-ROUTE1-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
+    "experiments/G-ROUTE1-candidate/EXECUTION_FREEZE_CANDIDATE_R2.json",
     "experiments/G-ROUTE1-candidate/FIXTURE_VALIDATOR_FREEZE.json",
     "experiments/G-ROUTE1-candidate/corpus.json",
     "experiments/G-ROUTE1-candidate/gold.json",
@@ -68,11 +91,15 @@ def current_commit(root: Path = ROOT) -> str:
 
 
 def build_manifest(*, implementation_commit: str | None = None, root: Path = ROOT) -> dict[str, Any]:
-    historical = load_json(root / HISTORICAL_FREEZE_PATH.relative_to(ROOT))
-    if literal_digest(root / HISTORICAL_FREEZE_PATH.relative_to(ROOT)) != HISTORICAL_LITERAL_SHA256:
-        raise ValueError("historical_execution_freeze_literal_digest_mismatch")
-    if historical.get("execution_freeze_content_sha256") != HISTORICAL_CONTENT_SHA256:
-        raise ValueError("historical_execution_freeze_content_digest_mismatch")
+    for entry in SUPERSEDED_FREEZES:
+        path = root / entry["path"]
+        if literal_digest(path) != entry["literal_sha256"]:
+            raise ValueError("historical_execution_freeze_literal_digest_mismatch:" + entry["candidate_id"])
+        preserved = load_json(path)
+        if preserved.get("execution_freeze_content_sha256") != entry["content_sha256"]:
+            raise ValueError("historical_execution_freeze_content_digest_mismatch:" + entry["candidate_id"])
+        if preserved.get("candidate_id") != entry["candidate_id"]:
+            raise ValueError("historical_execution_freeze_identity_mismatch:" + entry["candidate_id"])
     verify_fixture_freeze_current()
     missing = [path for path in ARTIFACTS if not (root / path).is_file()]
     if missing:
@@ -87,12 +114,20 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
     artifacts = {path: digest_file(root / path) for path in ARTIFACTS}
     seed = {
         "contract_version": CONTRACT_VERSION,
-        "candidate_id": "G-ROUTE1-EXECUTION-R2",
+        "candidate_id": CANDIDATE_ID,
         "status": "READY_FOR_EXPLICIT_SCIENTIFIC_EXECUTION_AUTHORIZATION",
-        "supersedes_candidate_id": "G-ROUTE1-EXECUTION-R1",
+        "supersedes_candidate_id": SUPERSEDED_CANDIDATE_ID,
         "superseded_literal_sha256": HISTORICAL_LITERAL_SHA256,
         "superseded_content_sha256": HISTORICAL_CONTENT_SHA256,
-        "supersession_reason": "scientific terminal checkpoint remained running after successful provider-free completion",
+        "supersession_reason": (
+            "both validators raised TypeError on non-hashable model list elements instead of classifying them, "
+            "halting R2 at schedule position 57"
+        ),
+        "superseded_freezes": [dict(entry) for entry in SUPERSEDED_FREEZES],
+        "prior_executions": [dict(entry) for entry in PRIOR_EXECUTIONS],
+        "cumulative_provider_generation_calls": sum(row["provider_generation_calls"] for row in PRIOR_EXECUTIONS),
+        "cumulative_benchmark_launches": sum(row["benchmark_launches"] for row in PRIOR_EXECUTIONS),
+        "corpus_gold_thresholds_schedule_bindings_unchanged_since_r2": True,
         "implementation_commit": implementation_commit or current_commit(root),
         "fixture_freeze_content_sha256": fixture_freeze["freeze_content_sha256"],
         "fixture_freeze_literal_sha256": digest_file(root / "experiments/G-ROUTE1-candidate/FIXTURE_VALIDATOR_FREEZE.json"),
@@ -167,10 +202,15 @@ def write_manifest(path: Path = FREEZE_PATH, *, implementation_commit: str | Non
     if path.exists() and path.read_text(encoding="utf-8") != rendered:
         if path.resolve() != FREEZE_PATH.resolve():
             raise FileExistsError("conflicting_execution_freeze_candidate_exists")
-        if literal_digest(path) != HISTORICAL_LITERAL_SHA256:
+        for entry in SUPERSEDED_FREEZES:
+            preserved = ROOT / entry["path"]
+            if not preserved.is_file() or literal_digest(preserved) != entry["literal_sha256"]:
+                raise FileExistsError("historical_execution_freeze_not_preserved:" + entry["candidate_id"])
+        existing = load_json(path)
+        superseded = any(literal_digest(path) == entry["literal_sha256"] for entry in SUPERSEDED_FREEZES)
+        same_generation = existing.get("candidate_id") == CANDIDATE_ID
+        if not superseded and not same_generation:
             raise FileExistsError("unexpected_execution_freeze_candidate_exists")
-        if not HISTORICAL_FREEZE_PATH.is_file() or literal_digest(HISTORICAL_FREEZE_PATH) != HISTORICAL_LITERAL_SHA256:
-            raise FileExistsError("historical_execution_freeze_not_preserved")
     path.write_text(rendered, encoding="utf-8", newline="\n")
     return manifest
 

@@ -36,6 +36,19 @@ Compile and focused-test results must come from a separately governed isolated r
 
 The result has exactly `steps`, `uncertainties`, `claims_completed`, and `requested_authority`. Evidence binding, dependencies, uncertainty, non-completion, and no-authority constraints are exact. Fabricated completion or authority expansion fails.
 
+## Element types in model-supplied lists
+
+Wherever the contract requires a list of text — `uncertainties`, `citations`, `lineages`,
+`observation_ids`, `evidence_ids`, `depends_on` — a model may instead return objects, nested lists, or
+no list at all. That is a model-produced failure and is classified as one, in both the gold-blind
+operational validator and the evaluator, under `*_element_type_mismatch`. The non-text element is
+excluded from de-duplication and identity lookups; it is never stringified into a shape that could
+pass, and it never raises.
+
+This rule exists because it was once violated. R2 halted at schedule position 57 when a structurally
+legal answer carried objects in `uncertainties` and the evaluator de-duplicated with `set()`. A wrong
+answer must be scored, not crash the benchmark.
+
 ## Hard boundaries
 
 - No aggregate result can erase a failed fixture/repeat hard gate.
