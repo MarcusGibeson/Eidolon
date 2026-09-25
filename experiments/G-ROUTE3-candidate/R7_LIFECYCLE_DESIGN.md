@@ -1,6 +1,6 @@
-# G-ROUTE3 R7 — journal/replay lifecycle architecture (design revision 7)
+# G-ROUTE3 R7 — journal/replay lifecycle architecture (design revision 8)
 
-Status: **design-review candidate, revision 7.** Revisions 1 to 6 were each reviewed by two independent
+Status: **design-review candidate, revision 8.** Revisions 1 to 7 were each reviewed by two independent
 reviewers and found not clean:
 
 | Revision | Commit |
@@ -11,12 +11,24 @@ reviewers and found not clean:
 | 4 | `4499175` |
 | 5 | `73f4d26` |
 | 6 | `5e4db59` (Reviewer B: no blocking findings) |
+| 7 | `3780271` |
 
-The findings, and the responses, are recorded in `R7_DESIGN_REVIEW_ROUND1.md` … `R7_DESIGN_REVIEW_ROUND6.md`.
+The findings, and the responses, are recorded in `R7_DESIGN_REVIEW_ROUND1.md` … `R7_DESIGN_REVIEW_ROUND7.md`.
 
-Revision 7 answers round 6. It adds:
-- quarantine records for files that cannot be read (§13.4);
-- placeholders for unreadable temporary files (§6);
+Revision 8 answers round 7. It makes these changes:
+- **Unreadable files are simpler.** Revision 7's machinery for them (quarantine records and placeholders) is
+  removed. Any file that stays unreadable after retries now makes the command refuse, and this is a declared
+  exception: a failing device needs an operator (§1.3, §4.4). Readable but damaged committed files are still
+  restored.
+- **Encoding is lossless** from the model output to the sandbox worker, and the scorer sanitizes exactly as
+  R6 does (§8, §4.2).
+- **The Phase B score carries no commit ids** (§12).
+- **Tables:** tighter table-freeze pending and rerun rules (§7, §13.3).
+- **R3:** the `closed` reason is a function of the prefix (§5).
+- **Export:** a supported `--export-evidence` command (§13.4).
+- **§20:** rows for the remaining R6 clauses.
+
+Revision 7 answered round 6. It added:
 - R3 reason binding that agrees with §6 (§5);
 - a pending table-freeze boundary (§7, §13.3);
 - a collection boundary (§13.1);
@@ -29,7 +41,7 @@ Revision 6 answered round 5. It carries R6's provider-failure rule and R6's codi
 over verbatim, which fixes two regressions (§8). It also adds these changes:
 - a disclosure record at the consumption boundary (§12);
 - git isolated from host configuration, so evidence bytes are stored exactly (§13.1);
-- restores of committed files that cannot be read (§13.4);
+- restores of committed files that cannot be read (§13.4), superseded in revision 8, where an unreadable file makes the command refuse;
 - a setup lock (§3.1);
 - the worker's own hidden console (§8);
 - self-assignment to the kill-on-close job before any child is created (§15).
@@ -113,8 +125,9 @@ Each of these blocks the phase until an operator ruling:
 - a ledger that replays to `integrity_failure` (§9.1);
 - a committed sealed entry whose on-disk copy seals but differs, or an add-only conflict (§13.4);
 - `D` existing without an intact evidence repository (§3.1);
-- an uncommitted **entry** (`NNNNNN.json` or `.torn`) that cannot be read after retries, or a committed file that
-  can be neither read nor moved to quarantine (§4.4, §13.4).
+- **any file under `D` that stays unreadable after retries** (§4.4). This includes entries, committed files,
+  temporary files, quarantined files, tables and disclosure copies. It indicates a failing device or a
+  persistent lock, and the operator repairs or copies the data before the next command.
 
 ## 2. Invariants
 
@@ -235,10 +248,10 @@ No seal contains a timestamp.
 
 | Kind | Payload | May follow (the last valid entry) |
 |---|---|---|
-| `run_created` | Phase, attempt number, authorization digest and sentence sha256, claimed ledger head, freeze binding, schedule, guarded and freeze digests, `root_id`, synthetic flag, fixed endpoint, model receipts, transport contract. For Phase B, also the table digest, the Phase A run id, and the evidence commit id bound into the table. | Nothing: it is entry 1 |
+| `run_created` | Phase, attempt number, authorization digest and sentence sha256, claimed ledger head, freeze binding, schedule, guarded and freeze digests, `root_id`, synthetic flag, fixed endpoint, model receipts, transport contract, `gold_loaded_during_collection: false`. For Phase B, also the table digest, the Phase A run id, and the evidence commit id bound into the table. | Nothing: it is entry 1 |
 | `call_started` | Position k, call id, request digest, guarded digest observed now | `run_created` (k = 1); a clean non-coding `call_recorded` k−1; a clean `execution_recorded` k−1 |
-| `call_recorded` | Position k, equal to the preceding `call_started`. Provider raw body (base64) and its sha256; raw output (base64) and the sha256 of its text; returned model; scalar metrics; the adapter's `error`; `transport_failure` (§8 step 4). | `call_started` k |
-| `execution_started` | Position k, candidate digest | A clean coding `call_recorded` k |
+| `call_recorded` | Position k, equal to the preceding `call_started`. Provider raw body (base64) and its sha256; raw output, stored as base64 of its UTF-8 bytes encoded with `surrogatepass` (lossless, including lone surrogates from JSON escapes), with the sha256 of those bytes; returned model; scalar metrics; the adapter's `error`; `transport_failure` (§8 step 4). | `call_started` k |
+| `execution_started` | Position k, `executable_sha256` (§8 step 5) | A clean coding `call_recorded` k |
 | `execution_recorded` | Position k, sandbox evidence, candidate error, `infrastructure_failure`: empty, `execution_interrupted`, R6's `coding_sandbox_host_slow` or `coding_sandbox_host_failure:<class>`, or `sandbox_worker_failure:<detail>` (§8) | `execution_started` k |
 | `scoring_started` | Digest of the fact prefix. For Phase B, the seals of the disclosure inputs: the ledger head, and every earlier attempt's terminal entry. | `collected` |
 | `scored` | The score report: a pure function of the inputs named in `scoring_started` (§4.3) | `scoring_started` |
@@ -277,9 +290,10 @@ allow_nan=False).encode("utf-8")`, where `value` is the envelope without `record
 `safe_value`. Integers of 10^30 or more become strings. Floats use the shortest round-trip `repr`.
 
 **Reading.** An error while reading a file (a sharing violation or an I/O error) is retried up to 20 times at
-100 ms intervals. Only bytes actually read can be judged torn. What happens after the retries depends on the file:
-- a **committed** file is quarantined and restored (§13.4);
-- an **uncommitted** entry blocks the phase (§1.3). It could be protective, so it is never guessed.
+100 ms intervals. Only bytes actually read can be judged torn. If a file is still unreadable after the retries,
+the command refuses and names it. That is the declared exception in §1.3, whatever the file is. An unreadable
+file is never renamed, guessed or skipped. The next command tries again, since the condition may be
+transient.
 
 ## 5. Replay: an ordered, total decision procedure
 
@@ -294,7 +308,7 @@ Rules apply **in order; the first match wins**:
 
 | # | Condition | State |
 |---|---|---|
-| R−1 | An entry cannot be read after retries (§4.4) | `unreadable(n)`: the command refuses. Verification (J8 step 2) runs first and has already handled committed files. |
+| R−1 | An entry cannot be read after retries (§4.4) | `unreadable(n)`: the command refuses (§1.3) |
 | R0 | No `journal/` folder, or no entries in it | `absent` |
 | R1 | The numbers 1 … highest are not each occupied exactly once, or an `n.json` and an `n.torn` differ | `integrity_failure` |
 | R2 | A `.json` entry, other than the highest-numbered one, fails to parse or seal | `integrity_failure` |
@@ -325,12 +339,17 @@ Rules apply **in order; the first match wins**:
 - `closed` never follows `collected`;
 - only `closed` follows a failure field;
 - a `closed` reason matches its source (§4.2):
-  - if the last valid entry carries a failure field, the reason is that failure's reason, whether or not
-    `acknowledges` is empty;
-  - otherwise, with a non-empty `acknowledges`, the reason is `durability_uncertain`;
-  - otherwise, after `call_started`, it is `call_outcome_unknown`;
-  - otherwise, `operator_interrupt` and `abandoned_preflight_failed:*` appear only after `run_created` or after a
-    clean record, and `durability_uncertain` never appears.
+  - The reason is a **function of the last valid entry L and `acknowledges`**. Any other reason is an
+    integrity failure.
+    - If L carries a failure field, the reason is that failure's reason, whether or not `acknowledges` is
+      empty.
+    - Otherwise, if `acknowledges` is non-empty, the reason is `durability_uncertain`.
+    - Otherwise, if L is `call_started`, the reason is `call_outcome_unknown`.
+    - Otherwise, if L is `execution_started`, no `closed` may follow; `execution_recorded` must come first.
+    - Otherwise, when L is `run_created` or a clean record, the reason is `operator_interrupt` or
+      `abandoned_preflight_failed:*`. These are the only free choices.
+  - `execution_started.executable_sha256` must equal the executable re-derived from the `call_recorded` that
+    precedes it (§8 step 5).
 
   A property test checks every §6 publication against R3.
 - the `completed` receipt matches the chain.
@@ -378,9 +397,7 @@ Torn bytes are never parsed for decisions.
 **Temporary files.**
 - A `.tmp-*` file whose bytes equal the entry published at its number is deleted.
 - Any other `.tmp-*` file is renamed to `.orphan-tmp-<n>-<token>`. The next entry published in that folder
-  names it. A temporary file that cannot be read after retries is renamed the same way, which needs no read. It
-  is named with `"sha256": "unreadable"`, and commits and snapshots carry a placeholder record (name, size if a
-  stat works, reason) instead of its bytes. If the folder is terminal, the terminal commit carries it instead. Orphan temporary files are
+  names it. If the folder is terminal, the terminal commit carries it instead. Orphan temporary files are
   committed with the journal. No provider output is ever deleted.
 
 ## 7. Commands
@@ -436,11 +453,14 @@ exists. The run id comes from the ledger.
    commit.
 5. **Before that commit exists**, the table-freeze boundary is pending (§13.3), and only a rerun of
    `--freeze-table` completes it:
-   - the rerun takes the same sentence and audit document, and rebuilds the table deterministically;
-   - a table or audit copy on disk that differs from the rebuilt bytes, or is torn, is quarantined and
-     republished;
-   - an identical one is kept;
-   - the rerun then commits.
+   - The rerun takes the same sentence and audit document, and rebuilds the table deterministically.
+   - A table or audit copy on disk is handled by its state:
+     - **identical** to the rebuilt bytes: kept;
+     - **torn** (does not parse, or does not match its own digest): quarantined and republished;
+     - **intact but different**: the rerun **refuses**, as it does after the commit. This covers a different
+       READY audit document.
+   - Every other file in `D/tables/`, such as temporary files or other names, is quarantined.
+   - The rerun then commits.
 6. **After that commit exists**, a rerun that finds the identical table does nothing, and a different table is
    refused.
 
@@ -486,11 +506,21 @@ model receipts, which is metadata contact, as in R6. Every sentence is Marcus's 
      `provider_model_fallback_detected` into `error`); or
    - the returned model differs from the scheduled model (`provider_model_fallback_or_mismatch`).
 5. For a coding call:
-   - In the holder, derive the executable with **R6's chain, carried verbatim**: `sanitize_strings` on the
-     provider result, then `safe_normalize(raw_output, validator_profile)`, then
-     `canonical_coding_payload(fixture, canonical["payload"])`. These are pure, provider-free functions.
-   - Publish `execution_started` k, binding the sha256 of that executable, and make it durable.
-   - Run the sandbox once in an **isolated worker child** (below), passing it the executable.
+   - In the holder, derive the executable **from the published `call_recorded` k**, never from values held in
+     memory, so launch and resume take the same path:
+     1. Decode the raw output with base64, then UTF-8 with `surrogatepass`.
+     2. Apply **R6's chain, carried verbatim**: `sanitize_strings` on the result, then
+        `safe_normalize(raw_output, validator_profile)`, then `canonical_coding_payload(fixture,
+        canonical["payload"])`.
+
+     These are pure, provider-free functions. For realistic outputs they never raise, since `safe_normalize`
+     does not raise and `canonical_coding_payload` catches parse and recursion errors.
+   - Publish `execution_started` k and make it durable. It binds `executable_sha256`: the sha256 of
+     `json.dumps(executable, ensure_ascii=True, sort_keys=True)`. R3 and the scorer re-derive and check it.
+   - Run the sandbox once in an **isolated worker child** (below). The worker receives exactly that
+     `ensure_ascii` JSON, which is lossless for lone surrogates, and parses it back. It therefore sees the
+     executable exactly as R6's in-process code did, and R6's classification applies unchanged. One example:
+     a lone surrogate in `new` is rejected by `_coding_candidate_error` as the model's failure, as in R6.
    - Publish `execution_recorded` k.
 6. If a failure field is set, publish `closed`.
 
@@ -526,15 +556,21 @@ A candidate cannot make the worker die or time out in a way that R6 would have c
 reaches the worker: an exception message huge enough to exhaust the worker's memory while it is buffered. R6
 also records that case as a host failure. It is declared in §1.2.
 
-**Nested job.** Each worker runs in its own job, nested in the holder's. When the 180 s timeout kills the job,
-the worker's test grandchildren die with it.
+**Nested job.** At startup, before creating any child, the worker assigns **itself** to its own
+kill-on-close job. That job is nested in the holder's. On timeout, the holder terminates the worker. The worker's
+job handle then closes, and its test grandchildren die with it. No `CREATE_SUSPENDED` is needed.
+
+**Scoring sanitizes as R6 did.** The scorer child decodes each `call_recorded` losslessly and applies
+`sanitize_strings` to the recorded result before `collect_evaluation` and `attach_semantics`, exactly as R6's
+collection did. It also performs the §10.6 re-derivation of Phase A cells and the table's partial cells. It is
+therefore the only process that reads gold.
 
 ## 9. Attempts: the ledger
 
 ### 9.1 Ledger entries
 
 Each phase has one ledger in `D/phase_X/ledger/`, spanning every freeze. It is a hash-chained journal with the
-same envelope, protocol, reading rules, temporary-file handling, and rules R0–R6 as a run journal, except:
+same envelope, protocol, reading rules, temporary-file handling, and rules R−1 to R6 as a run journal, except:
 - it starts from the genesis seal;
 - R4's entry-1 clause does not apply.
 
@@ -596,9 +632,11 @@ It has three kinds:
   - `--abandon` is allowed only when the command's own preflight fails with a **persistent** condition:
     - the model receipts differ from the frozen bindings;
     - the receipts cannot be read after a bounded wait of 10 minutes.
-  - Drift is not a preflight failure, because it refuses until the files are restored. A freeze-verification
-    failure that restoring committed files would repair is treated the same way: the command refuses and names
-    the files.
+  - Drift is not a preflight failure, because it refuses until the files are restored.
+  - Freeze verification works as in R6's `_freeze_valid`: `verify_manifest` passes and the status reads
+    `READY`. It runs at J8 step 6, before any consumption or call. Every failure refuses and names the files.
+    It never permits abandon, because R6's manifest is rebuilt from checkout files and so is always
+    repairable.
   - The closure names the failing checks.
   - Abandon is an optional stop, and it is disclosed like one.
 
@@ -713,10 +751,12 @@ disclosure records:
   For ledger-level closures, these come from the snapshot's individually sealed records, labelled as such;
 - for every seeded position recorded in more than one attempt, whether the raw-output sha256 values are
   identical. Where no sealed record exists, it is marked **undeterminable**;
-- the evidence commit id of each boundary.
+- the evidence commit id of each boundary. This is **in disclosure records only**.
 
 **Where the disclosure appears:**
-- The qualification table and the Phase B score contain it.
+- The qualification table and the Phase B score contain it, **without commit ids and without the restore
+  log**. So the `scored` payload stays a pure function of the inputs that `scoring_started` names (J7). The
+  table does record the fixed terminal commit id of the Phase A attempt it names (§7).
 - **In addition, a phase disclosure record is committed at every consumption, collection, terminal and
   ledger-closure boundary**, under `disclosure/<phase>/<commit sequence>.json`.
   - At consumption, the new attempt is marked *in progress*.
@@ -752,11 +792,13 @@ quarantine/<token>/<path>                       damaged files moved aside by §1
 ```
 
 Every boundary commit **except the restore boundary** also adds every uncommitted ledger entry below its own,
-and every uncommitted quarantine file or quarantine record. A restore boundary adds only quarantine files and
-quarantine records.
+and every uncommitted quarantine file. A restore boundary adds only quarantine files.
 
-Disclosure records are committed from their bytes in memory (`hash-object -w --no-filters --stdin`). Their
-copy on disk is written through the restore path; existing identical bytes are accepted. The boundaries are:
+Disclosure records are committed **first**, from their bytes in memory (`hash-object -w --no-filters
+--stdin`). **Then** their copy on disk is written through the restore path.
+- If the disk copy already holds identical bytes, it is accepted.
+- An uncommitted record on disk that differs is quarantined before the write. This happens, for example, after
+  a consumption boundary is superseded. The boundaries are:
 
 | Boundary | When | Adds |
 |---|---|---|
@@ -766,7 +808,7 @@ copy on disk is written through the restore path; existing identical bytes are a
 | **Ledger closure** | After any ledger-level closure | The closure snapshot, plus a disclosure record |
 | **Orphan** | Before an orphan folder moves | The orphan snapshot |
 | **Table freeze** | After the table is published | The table and the audit copy |
-| **Restore** | Straight after any §13.4 quarantine, before the command continues | The quarantined files, or quarantine records for files that cannot be read |
+| **Restore** | Straight after any §13.4 quarantine, before the command continues | The quarantined files |
 
 **Where commit content comes from.** A commit's content comes only from a replay that reached the boundary's
 state. For a snapshot, it comes from the files as found.
@@ -816,8 +858,10 @@ boundaries are computed from replay in J8 step 5.
 - A pending terminal boundary blocks the next launch, the table freeze and Phase B.
 - A collection boundary is pending while a run replays as `collected` or later without a committed collection
   or terminal copy. It is committed at J8 step 5.
-- A table-freeze boundary is pending while `D/tables/` holds a file that is not in the ref. Only
-  `--freeze-table` completes it (§7). Meanwhile it blocks Phase B and new freezes.
+- A table-freeze boundary is pending while `D/tables/` holds a table or an audit copy whose **name** is not
+  in the ref. Only `--freeze-table` completes it (§7). Meanwhile it blocks Phase B and new freezes. Other
+  stray files in `D/tables/` do not keep it pending. The rerun quarantines them, and after the commit any
+  command's verification quarantines them.
 - A pending consumption boundary is superseded by the §6 ledger-level closure **only** when the run has no
   valid entry (`absent`, or a tear from entry 1).
 - Any other run that cannot be committed as it replays is an integrity failure (§9.4).
@@ -832,12 +876,12 @@ folder are not counted as extra.
 |---|---|
 | Identical | Nothing |
 | Missing | Restore |
-| Unreadable after retries | Quarantine (a rename, which needs no read) and restore. The quarantined file is never read again. The restore boundary commits a **quarantine record** for it: original path, the committed blob id it replaced, size if a stat works, and reason `unreadable`. If the rename also fails, refuse (§1.3). |
+| Unreadable after retries | Refuse (§1.3, §4.4) |
 | Differs and is not a sealed entry: `root.json`, audit copy, table, `.torn`, orphan temporary file, snapshot file, disclosure record | Quarantine and restore. The commit is authoritative for unsealed files. |
 | A sealed entry that fails to parse or seal | Quarantine and restore |
 | A sealed entry that parses and seals but differs | Integrity failure (§1.3). Damage cannot produce a valid different seal. |
 | An extra `NNNNNN.*` entry in a terminal-committed journal | Integrity failure (§1.3) |
-| **Exception:** `000001.json` of a run committed only at consumption, when missing or damaged | Not restored. The attempt becomes `integrity_failure` (§9.4): later entries may also be lost, and continuing could repeat calls. Its protection is still evaluated file by file. **If the file is present but unreadable, it is not quarantined.** The command refuses, and the next command evaluates it again, since the condition may be transient. |
+| **Exception:** `000001.json` of a run committed only at consumption, when missing or damaged | Not restored. The attempt becomes `integrity_failure` (§9.4): later entries may also be lost, and continuing could repeat calls. Its protection is still evaluated file by file. |
 
 **How a restore works.**
 1. Move the damaged file to `D/quarantine/<token>/<relative path>`, with no replace, and flush the directory.
@@ -848,8 +892,10 @@ A kill at any point leaves the target either missing (restored again next time) 
 `D/staging/` is emptied by the lease holder. Restores are logged in `recovery.log`. Quarantined files are
 committed at once by a **restore boundary** commit, and they form the **restore log** that §12 discloses.
 
-**Export.** The runbook requires these steps:
-- a `git bundle` of `evidence.git` at the table freeze and at every Phase B terminal boundary;
+**Export.** `--export-evidence <path outside D>` is a supported command. It takes the lease and uses the
+controlled git environment (§13.1) to write a `git bundle` of `evidence.git`. The runbook requires these
+steps:
+- an export at the table freeze and at every Phase B terminal boundary;
 - a copy of the table committed to `main` (§10.9);
 - the evidence head, recorded in the Phase B terminal disclosure record. It is not in the `completed` receipt,
   so that receipt stays a pure derivation (J7).
@@ -974,8 +1020,10 @@ The redirect stub documents the declared behaviour.
 | Ctrl+Break during the sandbox | The worker is shielded; no effect |
 | Collection boundary commit | Pending, completed by J8 step 5 |
 | Table published, with its commit not yet made | Pending. A rerun of `--freeze-table` completes it (§7). |
-| Unreadable temporary file | Renamed; named `unreadable`; a placeholder is committed |
-| Unreadable quarantined file | Never read again; its quarantine record is committed |
+| Any file unreadable after retries | Refuse, and retry on the next command (§1.3) |
+| Disclosure record committed, before its disk copy is written | The disk copy is rewritten through the restore path |
+| `--freeze-table` rerun, mid-quarantine or mid-republish | Rerun; idempotent |
+| `--export-evidence` | Rerun; the bundle is written to a temp name and renamed |
 
 ## 19. Verification
 
@@ -1019,8 +1067,12 @@ The redirect stub documents the declared behaviour.
     - a provider stub that returns an error, and one that returns a fallback model, before position N and at
       position N;
     - a candidate that loops forever, and one that exhausts memory, graded as in R6;
-    - an unreadable temporary file, an unreadable quarantined file, and an unreadable consumption-only
-      `000001.json`;
+    - a persistently unreadable file of every kind, expected to refuse until it is readable again;
+    - a coding answer whose `old` differs from the source only by trailing newlines, with a `\ud800` escape
+      in `new`, graded as in R6;
+    - a provider body with a surrogate escape in `response`, graded as in R6;
+    - a torn Phase B `scored` after the collection commit;
+    - a leftover temporary file in `D/tables/`, and an intact but different audit copy before the commit;
     - inherited `GIT_OBJECT_DIRECTORY` and `GIT_CONFIG_PARAMETERS`;
     - a kill between publishing the table and committing it, and a torn audit copy before the commit;
     - a fenced (```json) coding answer, and an `old` that differs from the source only by trailing newlines;
@@ -1084,7 +1136,12 @@ freeze are replaced or carried. The replacements are reviewed with the implement
 | `_local_only_network` (proxy variables stripped, loopback `NO_PROXY`) | **Carried** (§17) |
 | The coding input chain `sanitize_strings` → `safe_normalize` → `canonical_coding_payload` | **Carried verbatim** (§8 step 5) |
 | `gold_loaded_during_collection: false`, and `gold_loaded: false` per record | **Carried**: recorded in `run_created`, and gold is read only by the scorer child (§12) |
-| Abandon when the freeze fails to verify | Refused while committed files can repair it. Abandon covers only receipts (§9.3). |
+| Abandon when the freeze fails to verify | Refused. Abandon covers only receipts (§9.3). |
+| `_freeze_valid` (`verify_manifest` passes and the status reads `READY`) before launch and resume | **Carried**: J8 step 6, before any consumption or call (§9.3) |
+| Guarded-dependency drift (`guarded_dependency_drift`, `post_run_dependency_drift`) closes the run `incomplete` | Drift refuses until the files are restored, and never closes (§7, J13) |
+| A scorer exception closes the run `failed` (`scorer_integrity_failure`) | Refuse. A persistent failure is the §1.3 scorer defect. |
+| `_require_declared_synthetic_provider`: the synthetic path, which skips authorization, may drive only a provider that declares itself synthetic | **Carried**. Synthetic runs also use a temporary data root (§3). |
+| "Model output cannot crash collection" | **Carried**. Every model-output path in the holder is total and lossless (§8 step 5). The scorer sanitizes as R6 did. |
 
 ## 21. Operator decisions and rulings
 
