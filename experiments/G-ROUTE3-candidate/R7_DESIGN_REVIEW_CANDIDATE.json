@@ -1,7 +1,7 @@
 {
   "base_commit": "3780271fc8ae22c16435d8308e191658d664a86b",
   "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R8",
-  "design_review_candidate_sha256": "032866f09150af8c1b9b02e8d0c5ffc1385eef3987cc811b6900446c8f6d6c64",
+  "design_review_candidate_sha256": "b3ad7370fd70453728e0063a486f3b699d257662cc7f0718eb08ae7b897f4564",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
   "document_sha256": "554852607f28e04e4752b90c330c78c750b835b4b12ccdd7a83edda61d15cc03",
   "execution_authorization": false,
@@ -22,9 +22,23 @@
     ],
     "2026-09-25 (after design review round 2)": [
       "accidents handled in code, tampering at boundaries: whole journals committed at consumption/terminal boundaries and table freeze; table freeze and Phase B verify byte-for-byte; per-call git evidence removed"
+    ],
+    "2026-09-25 (after design review round 7)": [
+      "design review gate: safety-gated round. Blocking only: a call sent twice (G1), best-of-N (G3), provider contact without the correct verbatim sentence, a silent scientific or grading change, or a contradiction with operator rulings. Robustness and progress dead-end (G4) findings become required cases for the implementation review and certification crash campaign, which precede any execution freeze."
     ]
   },
   "provider_generation_calls": 0,
+  "review_gate": {
+    "blocking_classes": [
+      "G1_repeat_call",
+      "G3_best_of_n",
+      "unauthorized_or_wrongly_authorized_contact",
+      "silent_scientific_or_grading_change",
+      "contradiction_with_operator_rulings"
+    ],
+    "from_round": 8,
+    "non_blocking_obligations": "G4/robustness findings are carried as mandatory implementation-review and certification-campaign cases"
+  },
   "review_record_round1": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND1.md",
   "review_record_round1_sha256": "b97b745527b90672f4f6c3e0183e80099a4964a8bde86ee3d0f6bae8e29e6729",
   "review_record_round2": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND2.md",
