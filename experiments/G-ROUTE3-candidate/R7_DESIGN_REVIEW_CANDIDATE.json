@@ -1,9 +1,9 @@
 {
-  "base_commit": "df78fa0c91260c4503e3429d9e005fa7cf9b0733",
-  "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R4",
-  "design_review_candidate_sha256": "88a5cb1d62392fe59b6f2bb0e4ab27745e09956749618e198365152a69d033a7",
+  "base_commit": "4499175a0dc3569630d32c3a5faac724fa49827f",
+  "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R5",
+  "design_review_candidate_sha256": "5672b3b5747d67da80bd304840f62d1c7ee827b653f87e85e350c9a04b3828eb",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "2283b5ba35fe2ada28aa7d3968d1d25672b7188dfaa8649cd72e1f1b938fa62d",
+  "document_sha256": "c52a8ed5c66ebbb9a6a178f4d18aa0d1a82592a2d5f1791745f8b3a6edf94857",
   "execution_authorization": false,
   "implementation_started": false,
   "operator_rulings": {
@@ -31,6 +31,8 @@
   "review_record_round2_sha256": "bc53bb9f563d44322179488bbed23caa8fd7fa4339ee3b38dea114f2934eb7f8",
   "review_record_round3": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND3.md",
   "review_record_round3_sha256": "fd71a83229c3b72cfa9c39578bd3284a6151c6ff879e589f684c25eb33c9accd",
+  "review_record_round4": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND4.md",
+  "review_record_round4_sha256": "03db961e732d3b11da60a3fb793280efe2f5fa84da354c5877833285d34b9bbc",
   "schema_version": "g-route3.design-review-candidate.v1",
   "scientific_runs_launched": 0,
   "scope": "R7 run-lifecycle architecture (journal/replay) only; the scientific design is unchanged; grading changes are out of scope (separate record)",
@@ -56,6 +58,13 @@
       "design_review_candidate_sha256": "2c0096d5c91cd2f2d461b5f42c67c1d3b77fb92dfa408b62a3d36c2934434729",
       "document_sha256": "bda5feeb7b7f64f3308448de7ff92c6dac2b00785267179b1aece244325830dd",
       "outcome": "FINDINGS (A: 6 blocking, B: 4 blocking)"
+    },
+    {
+      "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R4",
+      "commit": "4499175",
+      "design_review_candidate_sha256": "88a5cb1d62392fe59b6f2bb0e4ab27745e09956749618e198365152a69d033a7",
+      "document_sha256": "2283b5ba35fe2ada28aa7d3968d1d25672b7188dfaa8649cd72e1f1b938fa62d",
+      "outcome": "FINDINGS (A: 6 blocking, B: 2 blocking; 7 distinct)"
     }
   ]
 }
