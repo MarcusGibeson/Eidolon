@@ -1,9 +1,9 @@
 {
-  "base_commit": "80a10d9063e23dcf0d0ae64cb9887d1e633b5eb6",
-  "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R2",
-  "design_review_candidate_sha256": "052099267443fe83a04043b92162f25aed6f150784f313712b316ff7c252f6a5",
+  "base_commit": "fd5c9f803d0492a5fbdea584ba4327a6cf202d37",
+  "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R3",
+  "design_review_candidate_sha256": "2c0096d5c91cd2f2d461b5f42c67c1d3b77fb92dfa408b62a3d36c2934434729",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "b98091616a056d8a574a39576a7c4ce99f951a266bf05e9d13bd5a73e6285197",
+  "document_sha256": "bda5feeb7b7f64f3308448de7ff92c6dac2b00785267179b1aece244325830dd",
   "execution_authorization": false,
   "implementation_started": false,
   "operator_rulings": {
@@ -15,24 +15,38 @@
       "partial drafts stay untracked and unwired until acceptance"
     ],
     "2026-09-25": [
-      "torn scored/completed re-derived byte-identically; mismatch is an integrity failure",
+      "torn scored/completed re-derived byte-identically (payload); mismatch is an integrity failure",
       "abandon only when the command's own preflight fails; disclose partial cells and cross-attempt output identity",
-      "evidence committed to a dedicated git ref (plumbing, private index) before every provider call",
+      "SUPERSEDED by ruling 10: evidence committed to a dedicated git ref before every provider call",
       "integrity failure recorded at ledger level; next attempt needs a distinct acknowledging sentence"
+    ],
+    "2026-09-25 (after design review round 2)": [
+      "accidents handled in code, tampering at boundaries: whole journals committed at consumption/terminal boundaries and table freeze; table freeze and Phase B verify byte-for-byte; per-call git evidence removed"
     ]
   },
   "provider_generation_calls": 0,
   "review_record_round1": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND1.md",
   "review_record_round1_sha256": "b97b745527b90672f4f6c3e0183e80099a4964a8bde86ee3d0f6bae8e29e6729",
+  "review_record_round2": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND2.md",
+  "review_record_round2_sha256": "bc53bb9f563d44322179488bbed23caa8fd7fa4339ee3b38dea114f2934eb7f8",
   "schema_version": "g-route3.design-review-candidate.v1",
   "scientific_runs_launched": 0,
   "scope": "R7 run-lifecycle architecture (journal/replay) only; the scientific design is unchanged; grading changes are out of scope (separate record)",
   "status": "DESIGN_REVIEW_CANDIDATE",
-  "supersedes": {
-    "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R1",
-    "commit": "80a10d9",
-    "design_review_candidate_sha256": "b1eb97045baa1363a174db433a3c3a4e72a8a675b24c46edcc7b9c1ccee229dd",
-    "document_sha256": "e4c9c8f63fdee86261a3859d61f2559b88b794cb6b8ff4f4cc54a0d742c025ab",
-    "outcome": "FINDINGS (A: 12 blocking, B: 6 blocking)"
-  }
+  "supersedes": [
+    {
+      "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R1",
+      "commit": "80a10d9",
+      "design_review_candidate_sha256": "b1eb97045baa1363a174db433a3c3a4e72a8a675b24c46edcc7b9c1ccee229dd",
+      "document_sha256": "e4c9c8f63fdee86261a3859d61f2559b88b794cb6b8ff4f4cc54a0d742c025ab",
+      "outcome": "FINDINGS (A: 12 blocking, B: 6 blocking)"
+    },
+    {
+      "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R2",
+      "commit": "fd5c9f8",
+      "design_review_candidate_sha256": "052099267443fe83a04043b92162f25aed6f150784f313712b316ff7c252f6a5",
+      "document_sha256": "b98091616a056d8a574a39576a7c4ce99f951a266bf05e9d13bd5a73e6285197",
+      "outcome": "FINDINGS (A: 12 blocking, B: 6 blocking)"
+    }
+  ]
 }
