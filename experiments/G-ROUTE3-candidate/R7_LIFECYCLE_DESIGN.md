@@ -1,7 +1,8 @@
-# G-ROUTE3 R7 — journal/replay lifecycle architecture (design revision 8)
+# G-ROUTE3 R7 — journal/replay lifecycle architecture (design revision 9)
 
-Status: **design-review candidate, revision 8.** Revisions 1 to 7 were each reviewed by two independent
-reviewers and found not clean:
+Status: **design-review candidate, revision 9.** Revisions 1 to 7 were each reviewed by two independent
+reviewers and found not clean. Revision 8 was reviewed in a safety-gated round, per the operator ruling
+recorded in the candidate JSON. Reviewer A found it clean. Reviewer B found one narrow class-4 finding.
 
 | Revision | Commit |
 |---|---|
@@ -12,10 +13,21 @@ reviewers and found not clean:
 | 5 | `73f4d26` |
 | 6 | `5e4db59` (Reviewer B: no blocking findings) |
 | 7 | `3780271` |
+| 8 | `0b753ce` (safety-gated: A clean, B one class-4 finding) |
 
-The findings, and the responses, are recorded in `R7_DESIGN_REVIEW_ROUND1.md` … `R7_DESIGN_REVIEW_ROUND7.md`.
+The findings, and the responses, are recorded in `R7_DESIGN_REVIEW_ROUND1.md` … `R7_DESIGN_REVIEW_ROUND8.md`.
+The round-8 obligations are in `R7_IMPLEMENTATION_OBLIGATIONS.md`.
 
-Revision 8 answers round 7. It makes these changes:
+Revision 9 is a minimal change that answers round 8:
+- **Pinned recursion budget.** Every function that handles model output runs from a fresh thread at a pinned
+  recursion budget. The narrow band near Python's recursion limit, where R6 itself was not consistent, is
+  declared (§1.2, §8).
+- **Stored executable.** `execution_started` stores the executable bytes, and the worker runs exactly those
+  bytes. R3 checks only their sha256, so replay is pure again. The re-derivation check moves to the scorer,
+  after the drift check (§5, §8).
+- **The §10.8 wording** now excludes commit ids.
+
+Revision 8 answered round 7. It makes these changes:
 - **Unreadable files are simpler.** Revision 7's machinery for them (quarantine records and placeholders) is
   removed. Any file that stays unreadable after retries now makes the command refuse, and this is a declared
   exception: a failing device needs an operator (§1.3, §4.4). Readable but damaged committed files are still
@@ -114,6 +126,15 @@ These are trust assumptions, stated openly:
   - A candidate can exhaust the worker's memory through a huge exception message, which is buffered by
     `capture_output`. This is recorded as a host failure (R6: `MemoryError` → `coding_sandbox_host_failure`),
     or as `sandbox_worker_failure`. Both close the attempt, and both are equivalent to R6.
+  - **Outputs nested close to Python's recursion limit.** Whether `json.loads` and R6's recursive helpers
+    succeed on these depends on how deep the call stack already is. R6 ran them at the launcher's own depth,
+    which differed between launch and resume, so R6 was not consistent here either.
+    - **R7 is deterministic.** Every function that handles model output runs from a fresh thread at a pinned
+      recursion budget (§8). The holder, worker, scorer and R3 therefore all reach the same result.
+    - **The declared difference.** For outputs inside a band a few nesting levels wide (around depth 960–1000
+      on Python 3.11), R7's result may differ from what R6 would have given at R6's own, variable, depth.
+    - **Scope.** This is declared here and belongs to the grading record (§22). A certification case covers
+      that band.
 - **Out of scope, as before:** a fake model server, a second copy of `D`, rewriting the evidence
   repository's history, or deleting `D` as a whole.
 
@@ -251,7 +272,7 @@ No seal contains a timestamp.
 | `run_created` | Phase, attempt number, authorization digest and sentence sha256, claimed ledger head, freeze binding, schedule, guarded and freeze digests, `root_id`, synthetic flag, fixed endpoint, model receipts, transport contract, `gold_loaded_during_collection: false`. For Phase B, also the table digest, the Phase A run id, and the evidence commit id bound into the table. | Nothing: it is entry 1 |
 | `call_started` | Position k, call id, request digest, guarded digest observed now | `run_created` (k = 1); a clean non-coding `call_recorded` k−1; a clean `execution_recorded` k−1 |
 | `call_recorded` | Position k, equal to the preceding `call_started`. Provider raw body (base64) and its sha256; raw output, stored as base64 of its UTF-8 bytes encoded with `surrogatepass` (lossless, including lone surrogates from JSON escapes), with the sha256 of those bytes; returned model; scalar metrics; the adapter's `error`; `transport_failure` (§8 step 4). | `call_started` k |
-| `execution_started` | Position k, `executable_sha256` (§8 step 5) | A clean coding `call_recorded` k |
+| `execution_started` | Position k; `executable_json` (the executable as `ensure_ascii` JSON, §8 step 5); `executable_sha256` | A clean coding `call_recorded` k |
 | `execution_recorded` | Position k, sandbox evidence, candidate error, `infrastructure_failure`: empty, `execution_interrupted`, R6's `coding_sandbox_host_slow` or `coding_sandbox_host_failure:<class>`, or `sandbox_worker_failure:<detail>` (§8) | `execution_started` k |
 | `scoring_started` | Digest of the fact prefix. For Phase B, the seals of the disclosure inputs: the ledger head, and every earlier attempt's terminal entry. | `collected` |
 | `scored` | The score report: a pure function of the inputs named in `scoring_started` (§4.3) | `scoring_started` |
@@ -348,8 +369,10 @@ Rules apply **in order; the first match wins**:
     - Otherwise, if L is `execution_started`, no `closed` may follow; `execution_recorded` must come first.
     - Otherwise, when L is `run_created` or a clean record, the reason is `operator_interrupt` or
       `abandoned_preflight_failed:*`. These are the only free choices.
-  - `execution_started.executable_sha256` must equal the executable re-derived from the `call_recorded` that
-    precedes it (§8 step 5).
+  - `execution_started.executable_sha256` must equal the sha256 of its own `executable_json`. This check is
+    pure. Checking that the stored executable equals one re-derived from the preceding `call_recorded` needs
+    the corpus and the guarded code, so the scorer child does it after the drift check (§8). A mismatch there
+    is an integrity failure.
 
   A property test checks every §6 publication against R3.
 - the `completed` receipt matches the chain.
@@ -515,10 +538,11 @@ model receipts, which is metadata contact, as in R6. Every sentence is Marcus's 
 
      These are pure, provider-free functions. For realistic outputs they never raise, since `safe_normalize`
      does not raise and `canonical_coding_payload` catches parse and recursion errors.
-   - Publish `execution_started` k and make it durable. It binds `executable_sha256`: the sha256 of
-     `json.dumps(executable, ensure_ascii=True, sort_keys=True)`. R3 and the scorer re-derive and check it.
-   - Run the sandbox once in an **isolated worker child** (below). The worker receives exactly that
-     `ensure_ascii` JSON, which is lossless for lone surrogates, and parses it back. It therefore sees the
+   - Publish `execution_started` k and make it durable. It **stores** `executable_json`, which is
+     `json.dumps(executable, ensure_ascii=True)`, and `executable_sha256`, the sha256 of that JSON.
+   - Run the sandbox once in an **isolated worker child** (below). The worker receives exactly the stored
+     `executable_json`, which is lossless for lone surrogates, and parses it back. On resume, the worker runs
+     the stored bytes and nothing is re-derived. It therefore sees the
      executable exactly as R6's in-process code did, and R6's classification applies unchanged. One example:
      a lone surrogate in `new` is rejected by `_coding_candidate_error` as the model's failure, as in R6.
    - Publish `execution_recorded` k.
@@ -560,10 +584,19 @@ also records that case as a host failure. It is declared in §1.2.
 kill-on-close job. That job is nested in the holder's. On timeout, the holder terminates the worker. The worker's
 job handle then closes, and its test grandchildren die with it. No `CREATE_SUSPENDED` is needed.
 
+**Pinned recursion budget.** Every function that handles model output runs on a **fresh thread**, with a
+pinned stack size and a pinned `sys.setrecursionlimit`, entered at a fixed depth. The functions are:
+- `sanitize_strings`, `safe_normalize` and `canonical_coding_payload` in the holder;
+- `_coding_candidate_error` and `run_isolated_fixture` in the worker;
+- `collect_evaluation`, `attach_semantics`, the triggers and R6's `qualify`/`score` in the scorer.
+
+The result for a given output is then the same in every process and on launch and on resume (§1.2).
+
 **Scoring sanitizes as R6 did.** The scorer child decodes each `call_recorded` losslessly and applies
 `sanitize_strings` to the recorded result before `collect_evaluation` and `attach_semantics`, exactly as R6's
 collection did. It also performs the §10.6 re-derivation of Phase A cells and the table's partial cells. It is
-therefore the only process that reads gold.
+therefore the only process that reads gold. Before it publishes `scored`, it checks that every stored
+`executable_json` equals the executable re-derived from its `call_recorded`, at the pinned budget.
 
 ## 9. Attempts: the ledger
 
@@ -703,7 +736,8 @@ committed item.
      - the table's run id and seals equal the named attempt's;
      - the table names the evidence commit that holds the attempt's terminal copy, and that commit is an
        ancestor of the evidence head.
-8. The table's attempt disclosure equals the disclosure computed now (§12, excluding the restore log).
+8. The table's attempt disclosure equals the disclosure computed now (§12, excluding commit ids and the
+   restore log).
 9. A read-only git check of the checkout's `main` finds that the table file:
    - at the **tip** has exactly the table's bytes; and
    - has exactly one version in `main`'s first-parent history.

@@ -1,10 +1,12 @@
 {
-  "base_commit": "3780271fc8ae22c16435d8308e191658d664a86b",
-  "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R8",
-  "design_review_candidate_sha256": "b3ad7370fd70453728e0063a486f3b699d257662cc7f0718eb08ae7b897f4564",
+  "base_commit": "8c7af2869a7579dd6dc4348795a6875bd0778f99",
+  "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R9",
+  "design_review_candidate_sha256": "1e0115761e70d727a15579bd0f7248445b273d69b83b1fc8bee546ed9ba67471",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "554852607f28e04e4752b90c330c78c750b835b4b12ccdd7a83edda61d15cc03",
+  "document_sha256": "39ee3bdd1b9a7799d57229bb88a97b5391f6d6e155a06c3e4425eb67ff6c78eb",
   "execution_authorization": false,
+  "implementation_obligations": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_OBLIGATIONS.md",
+  "implementation_obligations_sha256": "ea488946bc8ac9be82fc5f980fcbd6fb6c1943703a5b394ba4820415a412961c",
   "implementation_started": false,
   "operator_rulings": {
     "2026-09-24": [
@@ -53,6 +55,8 @@
   "review_record_round6_sha256": "bba88424f8bec70a92288cdd58755ac45d02ebc51dd9ce65f092b53457a01929",
   "review_record_round7": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND7.md",
   "review_record_round7_sha256": "49abb1631de4b7e2446ec0ee579b5279f9d4ac8376c2365c533e370195f553c3",
+  "review_record_round8": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND8.md",
+  "review_record_round8_sha256": "e09d9394165ca1de2218a641467ee59a65ae0d1c39e173543f8201b7a7cc4c34",
   "schema_version": "g-route3.design-review-candidate.v1",
   "scientific_runs_launched": 0,
   "scope": "R7 run-lifecycle architecture (journal/replay) only; the scientific design is unchanged; grading changes are out of scope (separate record)",
@@ -106,6 +110,13 @@
       "design_review_candidate_sha256": "41483ae2af56e27ba21391d4fd247f87dd59f5c41efb40079b69557154ef277e",
       "document_sha256": "2b456675b8f0f577577796c4377b7b3696c84533fbb4d5c423807a0efa2814dc",
       "outcome": "FINDINGS (A: 4 blocking, B: 1 blocking)"
+    },
+    {
+      "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R8",
+      "commit": "0b753ce",
+      "design_review_candidate_sha256": "b3ad7370fd70453728e0063a486f3b699d257662cc7f0718eb08ae7b897f4564",
+      "document_sha256": "554852607f28e04e4752b90c330c78c750b835b4b12ccdd7a83edda61d15cc03",
+      "outcome": "SAFETY-GATED: A CLEAN, B 1 blocking (class 4, recursion-depth grading)"
     }
   ]
 }
