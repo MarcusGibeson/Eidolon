@@ -1,0 +1,22 @@
+{
+  "base_commit": "0a5a5e11833992f74f204162860742ba916ed7f3",
+  "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R1",
+  "design_review_candidate_sha256": "b1eb97045baa1363a174db433a3c3a4e72a8a675b24c46edcc7b9c1ccee229dd",
+  "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
+  "document_sha256": "e4c9c8f63fdee86261a3859d61f2559b88b794cb6b8ff4f4cc54a0d742c025ab",
+  "execution_authorization": false,
+  "implementation_started": false,
+  "operator_decisions": {
+    "crash_harness": "exhaustive campaign at freeze certification; quick representative recovery subset in normal tests",
+    "drafts": "tools/g_route3_store.py and tools/g_route3_runner_new.py stay untracked and unwired until acceptance",
+    "journal": "one append-only journal per run is authoritative; other artifacts are projections",
+    "review": "design review now (Reviewer A: journal/replay correctness and recoverability; Reviewer B: scientific integrity and authorization/attempt semantics); implementation review later by fresh reviewers",
+    "torn_write": "close the attempt rather than repeat a call; implemented with a write-ahead call_started entry; torn scored/completed are re-derived (refinement flagged for review)"
+  },
+  "provider_generation_calls": 0,
+  "schema_version": "g-route3.design-review-candidate.v1",
+  "scientific_runs_launched": 0,
+  "scope": "R7 run-lifecycle architecture (journal/replay) only; the scientific design is unchanged",
+  "status": "DESIGN_REVIEW_CANDIDATE",
+  "supersedes_execution_freeze": null
+}
