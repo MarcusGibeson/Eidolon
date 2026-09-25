@@ -26,6 +26,13 @@ Revision 9 is a minimal change that answers round 8:
   bytes. R3 checks only their sha256, so replay is pure again. The re-derivation check moves to the scorer,
   after the drift check (§5, §8).
 - **The §10.8 wording** now excludes commit ids.
+- **After the revision-9 confirmation review:**
+  - the budget values are pinned, with one shared entry wrapper;
+  - the declared band now names each mechanism, including R6's candidate-source syntax-tree depth;
+  - the measured thresholds are recorded in the freeze;
+  - the executable is derived from the in-memory fixture, bound by digest;
+  - the wrapper keeps each exception's class;
+  - the worker reports the digests of the modules it loaded.
 
 Revision 8 answered round 7. It makes these changes:
 - **Unreadable files are simpler.** Revision 7's machinery for them (quarantine records and placeholders) is
@@ -129,12 +136,21 @@ These are trust assumptions, stated openly:
   - **Outputs nested close to Python's recursion limit.** Whether `json.loads` and R6's recursive helpers
     succeed on these depends on how deep the call stack already is. R6 ran them at the launcher's own depth,
     which differed between launch and resume, so R6 was not consistent here either.
-    - **R7 is deterministic.** Every function that handles model output runs from a fresh thread at a pinned
-      recursion budget (§8). The holder, worker, scorer and R3 therefore all reach the same result.
-    - **The declared difference.** For outputs inside a band a few nesting levels wide (around depth 960–1000
-      on Python 3.11), R7's result may differ from what R6 would have given at R6's own, variable, depth.
-    - **Scope.** This is declared here and belongs to the grading record (§22). A certification case covers
-      that band.
+    - **R7 is deterministic.** Every function that handles model output runs through one shared entry
+      wrapper, on a fresh thread, at the pinned budget in §8. The holder, the worker and the scorer therefore
+      all reach the same result. R3 re-derives nothing.
+    - **The declared difference.** Near each limit there is a narrow band where R7's result may differ from
+      the one R6 would have given at its own, variable, launcher depth. The mechanisms and the bands measured
+      on CPython 3.11.9 are:
+      - **JSON and encoder nesting of the model output** (`json.loads` / `json.dumps` in R6's chain): about
+        960–1000 levels.
+      - **The depth of the candidate source's syntax tree** (`validate_candidate_ast`, which converts the AST
+        at three times the recursion limit): for example, a binary chain of about 2,900–2,980 terms in `new`.
+        In this band, R6 at a deeper launcher depth rejects the candidate with `RecursionError`, which counts
+        as the model's failure. R7 at the pinned budget may accept it, and the sandbox then runs it.
+    - **Recording and scope.** The freeze records the exact thresholds measured at the pinned budget.
+      Certification cases cover both bands. The residual is declared here, and it is listed in §22 for the
+      grading record.
 - **Out of scope, as before:** a fake model server, a second copy of `D`, rewriting the evidence
   repository's history, or deleting `D` as a whole.
 
@@ -529,8 +545,10 @@ model receipts, which is metadata contact, as in R6. Every sentence is Marcus's 
      `provider_model_fallback_detected` into `error`); or
    - the returned model differs from the scheduled model (`provider_model_fallback_or_mismatch`).
 5. For a coding call:
-   - In the holder, derive the executable **from the published `call_recorded` k**, never from values held in
-     memory, so launch and resume take the same path:
+   - In the holder, derive the executable from the published `call_recorded` k, never from provider values
+     held in memory, so launch and resume take the same path. The fixture and profile come from the corpus
+     loaded **in memory** at preflight and bound by digest. They are never re-read from disk after the drift
+     check. Steps:
      1. Decode the raw output with base64, then UTF-8 with `surrogatepass`.
      2. Apply **R6's chain, carried verbatim**: `sanitize_strings` on the result, then
         `safe_normalize(raw_output, validator_profile)`, then `canonical_coding_payload(fixture,
@@ -541,8 +559,7 @@ model receipts, which is metadata contact, as in R6. Every sentence is Marcus's 
    - Publish `execution_started` k and make it durable. It **stores** `executable_json`, which is
      `json.dumps(executable, ensure_ascii=True)`, and `executable_sha256`, the sha256 of that JSON.
    - Run the sandbox once in an **isolated worker child** (below). The worker receives exactly the stored
-     `executable_json`, which is lossless for lone surrogates, and parses it back. On resume, the worker runs
-     the stored bytes and nothing is re-derived. It therefore sees the
+     `executable_json`, which is lossless for lone surrogates, and parses it back. It therefore sees the
      executable exactly as R6's in-process code did, and R6's classification applies unchanged. One example:
      a lone surrogate in `new` is rejected by `_coding_candidate_error` as the model's failure, as in R6.
    - Publish `execution_recorded` k.
@@ -584,19 +601,34 @@ also records that case as a host failure. It is declared in §1.2.
 kill-on-close job. That job is nested in the holder's. On timeout, the holder terminates the worker. The worker's
 job handle then closes, and its test grandchildren die with it. No `CREATE_SUSPENDED` is needed.
 
-**Pinned recursion budget.** Every function that handles model output runs on a **fresh thread**, with a
-pinned stack size and a pinned `sys.setrecursionlimit`, entered at a fixed depth. The functions are:
+**Pinned recursion budget.** Every function that handles model output is called through **one shared entry
+wrapper**, `run_pinned(fn, *args)`. The wrapper:
+- runs `fn` on a **fresh thread** created with `threading.stack_size(64 MiB)`;
+- keeps `sys.setrecursionlimit` at **1000**, which is R6's effective default, since R6 never changes it. The
+  limit is set process-wide before any such thread starts;
+- enters `fn` directly from the thread's `run`, so the entry depth is fixed;
+- joins the thread and **re-raises the original exception object with its class intact**, so R6's attribution
+  stays exact: `TimeoutExpired`, `MemoryError`, `MODEL_CAUSED_CODING_ERRORS`, or any other exception.
+
+The confirmation review measured this as deterministic on CPython 3.11.9 on Windows, whatever the spawning
+thread's depth and in separate processes. The functions are:
 - `sanitize_strings`, `safe_normalize` and `canonical_coding_payload` in the holder;
 - `_coding_candidate_error` and `run_isolated_fixture` in the worker;
 - `collect_evaluation`, `attach_semantics`, the triggers and R6's `qualify`/`score` in the scorer.
 
 The result for a given output is then the same in every process and on launch and on resume (§1.2).
 
+The worker reports the sha256 of every guarded module it actually loaded. The holder compares them with
+`run_created` before publishing `execution_recorded`, and refuses as drift on a mismatch.
+
 **Scoring sanitizes as R6 did.** The scorer child decodes each `call_recorded` losslessly and applies
 `sanitize_strings` to the recorded result before `collect_evaluation` and `attach_semantics`, exactly as R6's
 collection did. It also performs the §10.6 re-derivation of Phase A cells and the table's partial cells. It is
-therefore the only process that reads gold. Before it publishes `scored`, it checks that every stored
-`executable_json` equals the executable re-derived from its `call_recorded`, at the pinned budget.
+therefore the only process that reads gold. Before it publishes `scored`, it checks, through the same
+wrapper, that every stored `executable_json` equals the executable re-derived from its `call_recorded`:
+- for the **current attempt**, a mismatch is an integrity failure (§1.3);
+- for **earlier closed attempts** whose partial cells are disclosed, a mismatch is disclosed, and that
+  position counts as undeterminable in their partial cells.
 
 ## 9. Attempts: the ledger
 
@@ -1112,6 +1144,12 @@ The redirect stub documents the declared behaviour.
     - a fenced (```json) coding answer, and an `old` that differs from the source only by trailing newlines;
     - a proxy variable set in the launcher's environment;
     - every §6 publication checked against R3.
+    - near-limit bands at the pinned budget, all spawned from several caller depths and in two processes, which
+      must give identical results. The bands covered are:
+      - JSON nesting from 955 to 1000;
+      - candidate-source binary chains from 2,880 to 3,000 terms;
+    - `run_pinned` preserving the class of every exception R6's attribution distinguishes;
+    - a worker that loads a guarded module which has drifted.
 - **Kills** after every operation and before every rename, then recursively during recovery, until a fixpoint.
 - **Power loss** drops every unflushed operation and reorders unflushed renames. A separate **damage**
   injector truncates or corrupts any file.
@@ -1224,7 +1262,8 @@ review (`EXTERNAL_REVIEW_ROUND6.md`):
 - dash and space normalization;
 - a duplicate Answer line;
 - a synthesis verbatim check;
-- recursion and operators disclosure;
-- a regex bound.
+- recursion and operators disclosure (the self-recursion rule);
+- a regex bound;
+- the near-limit recursion bands declared in §1.2. These are carried R6 residuals made deterministic by R7.
 
 Provider generation calls for this design: **0**. Scientific runs launched: **0**.

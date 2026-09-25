@@ -44,6 +44,14 @@ this list. A conflict is itself a finding.
 | B-O9 | Pin the resolved path of `D` literally in the qualification contract. | An overridden `%LOCALAPPDATA%` at the first freeze. |
 | B-O10 | Text fixes: §20's "no candidate can reach" wording (see §1.2); a producer for the `journal_missing` reason; R6's `operator_confirmation` in the §12 disclosure; the schema version for the Phase B score's `phase_b_attempts` and for the table; binding snapshots in `scoring_started` (see A-O11). | — |
 
+## From the revision-9 confirmation review
+
+| # | Obligation | Certification case |
+|---|---|---|
+| C-O1 | **(in rev 9)** One shared `run_pinned` wrapper (fresh thread, 64 MiB stack, recursion limit 1000, fixed entry, exception class preserved) for every function that handles model output, in the holder, the worker and the scorer. | Near-limit bands from several caller depths and in two processes. Every exception class R6's attribution distinguishes. |
+| C-O2 | **(in rev 9)** The freeze records the thresholds measured at the pinned budget, for JSON nesting and for syntax-tree chain length. | Threshold measurement run at certification. |
+| C-O3 | **(in rev 9)** The worker reports the digests of the guarded modules it loaded, and a mismatch refuses as drift. | A worker that loads a drifted module. |
+
 ## Also required, from earlier rounds
 
 Every seed listed in §19 of the design, and every row in §18.

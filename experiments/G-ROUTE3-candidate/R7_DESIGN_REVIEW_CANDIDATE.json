@@ -1,12 +1,12 @@
 {
   "base_commit": "8c7af2869a7579dd6dc4348795a6875bd0778f99",
   "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R9",
-  "design_review_candidate_sha256": "1e0115761e70d727a15579bd0f7248445b273d69b83b1fc8bee546ed9ba67471",
+  "design_review_candidate_sha256": "49a28f0c5e72cd0c7866dfcad09f1509bfe235e2aad7856080d04dfcdb1802a6",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "39ee3bdd1b9a7799d57229bb88a97b5391f6d6e155a06c3e4425eb67ff6c78eb",
+  "document_sha256": "6c8a8b584d0ec8dc382e2b524e14fd9ff06fa047be71efa3603cb98deda29fc7",
   "execution_authorization": false,
   "implementation_obligations": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_OBLIGATIONS.md",
-  "implementation_obligations_sha256": "ea488946bc8ac9be82fc5f980fcbd6fb6c1943703a5b394ba4820415a412961c",
+  "implementation_obligations_sha256": "eca9a044236b25363ef9784241f2ad60e583560402badb33f29ef588af9aaf90",
   "implementation_started": false,
   "operator_rulings": {
     "2026-09-24": [
@@ -56,7 +56,7 @@
   "review_record_round7": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND7.md",
   "review_record_round7_sha256": "49abb1631de4b7e2446ec0ee579b5279f9d4ac8376c2365c533e370195f553c3",
   "review_record_round8": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND8.md",
-  "review_record_round8_sha256": "e09d9394165ca1de2218a641467ee59a65ae0d1c39e173543f8201b7a7cc4c34",
+  "review_record_round8_sha256": "883da06aef9fc71a0cb66138aade3476adca1c92a30e91a5523868cb8a024f41",
   "schema_version": "g-route3.design-review-candidate.v1",
   "scientific_runs_launched": 0,
   "scope": "R7 run-lifecycle architecture (journal/replay) only; the scientific design is unchanged; grading changes are out of scope (separate record)",
