@@ -1,6 +1,6 @@
-# G-ROUTE3 R7 — journal/replay lifecycle architecture (design revision 5)
+# G-ROUTE3 R7 — journal/replay lifecycle architecture (design revision 6)
 
-Status: **design-review candidate, revision 5.** Revisions 1 to 4 were each reviewed by two independent
+Status: **design-review candidate, revision 6.** Revisions 1 to 5 were each reviewed by two independent
 reviewers and found not clean:
 
 | Revision | Commit |
@@ -9,10 +9,20 @@ reviewers and found not clean:
 | 2 | `fd5c9f8` |
 | 3 | `df78fa0` |
 | 4 | `4499175` |
+| 5 | `73f4d26` |
 
-The findings, and the responses, are recorded in `R7_DESIGN_REVIEW_ROUND1.md` … `R7_DESIGN_REVIEW_ROUND4.md`.
+The findings, and the responses, are recorded in `R7_DESIGN_REVIEW_ROUND1.md` … `R7_DESIGN_REVIEW_ROUND5.md`.
 
-Revision 5 answers round 4 with these changes:
+Revision 6 answers round 5. It carries R6's provider-failure rule and R6's coding-exception classification
+over verbatim, which fixes two regressions (§8). It also adds these changes:
+- a disclosure record at the consumption boundary (§12);
+- git isolated from host configuration, so evidence bytes are stored exactly (§13.1);
+- restores of committed files that cannot be read (§13.4);
+- a setup lock (§3.1);
+- the worker's own hidden console (§8);
+- self-assignment to the kill-on-close job before any child is created (§15).
+
+Revision 5's changes, still in force:
 - **The data root belongs to the experiment, not to a freeze.** Attempts and disclosure span freezes, and a
   new freeze cannot restart the ledgers (§3, §9.3).
 - **The data root is set up atomically,** with a root evidence commit, before any ledger entry exists (§3.1).
@@ -24,8 +34,8 @@ Revision 5 answers round 4 with these changes:
 - **Restores are staged outside the verified folders,** and damaged files are quarantined elsewhere (§13.4).
 
 Nothing scientific changes: corpora, gold, validators, prompts, the qualification rule, routing, gates,
-thresholds and denominators all stay as they are. The sandbox's grading of a normal child exit is unchanged
-(§8). Grading changes are out of scope (§22). No implementation is wired in, no execution freeze is written,
+thresholds and denominators all stay as they are. R6's provider-failure rule and R6's coding classification
+are carried verbatim (§8). Grading changes are out of scope (§22). No implementation is wired in, no execution freeze is written,
 no provider is contacted, and no scientific run is launched.
 
 **Review sequence.**
@@ -83,7 +93,9 @@ Each of these blocks the phase until an operator ruling:
 - an integrity failure of a protected attempt (§9.4);
 - a ledger that replays to `integrity_failure` (§9.1);
 - a committed sealed entry whose on-disk copy seals but differs, or an add-only conflict (§13.4);
-- `D` existing without an intact evidence repository (§3.1).
+- `D` existing without an intact evidence repository (§3.1);
+- an uncommitted entry that cannot be read after retries, or a committed file that can be neither read nor
+  moved to quarantine (§4.4, §13.4).
 
 ## 2. Invariants
 
@@ -107,7 +119,7 @@ Each of these blocks the phase until an operator ruling:
   1. take the lease (§15);
   2. verify committed evidence (§13.4);
   3. replay the ledgers and runs;
-  4. recover to a fixpoint (§6);
+  4. recover to a fixpoint (§6), which never derives an entry and never runs a child;
   5. complete pending boundary commits (§13.3);
   6. decide and act, running the drift check before any derivation, sandbox run or call;
   7. commit any boundary the action reached, before returning.
@@ -123,7 +135,7 @@ Each of these blocks the phase until an operator ruling:
 - **J13 — nothing closes a finished collection.** Once every position is recorded and executed cleanly (the
   state `collected`), only `scoring_started`, `scored` and `completed` may follow. From `collected` onward,
   drift, scorer failures and interrupts make commands **refuse or exit**. They never close the attempt.
-- **J14 — zero transport retries.** Exactly one HTTP request is made per call (§17).
+- **J14 — zero transport retries.** Exactly one request is initiated per call. There are no retries (§17).
 
 ## 3. Files
 
@@ -132,8 +144,11 @@ checkout, named in the qualification contract, and recorded in every execution f
 `%LOCALAPPDATA%\Eidolon\research\g_route3`. That parent folder already exists as the desktop app's data
 folder; the app touches only its own `data` and `runtime` subfolders.
 
-The freeze writer refuses to name any other `D`. Every checkout and every freeze uses the same `D`. Preflight
-refuses a network volume.
+Each freeze records `D` as a **canonical, fully resolved path**, with no environment variables. Commands use
+that recorded path and never expand `%LOCALAPPDATA%` themselves. The freeze writer reads the `D` of every earlier
+R7 freeze manifest in `main`'s history, and of every superseded manifest it lists, and refuses any other `D`.
+Every checkout and every freeze therefore uses the same `D`. Preflight refuses a network volume. Synthetic runs
+and tests never use this `D`; they use a temporary data root.
 
 ```
 D/
@@ -144,6 +159,7 @@ D/
   staging/                        temp files for restores (§13.4)
   quarantine/<token>/…            damaged files moved aside by verification (§13.4)
   tables/                         the qualification table and its audit copy (§7)
+  disclosure/phase_a/, phase_b/   disclosure records (§12)
   phase_a/, phase_b/
     ledger/NNNNNN.json | .torn | .tmp-* | .orphan-tmp-*
     runs/<run_id>/journal/NNNNNN.json | NNNNNN.torn | .tmp-* | .orphan-tmp-*
@@ -153,18 +169,19 @@ D/
 
 ### 3.1 Setup
 
-The first launch of G-ROUTE3 sets `D` up **atomically**:
+The first launch of G-ROUTE3 sets `D` up **atomically**, holding a **setup lock**: the §15 lock on
+`D.setup.lock`, in `D`'s parent folder.
 1. Build `D.setup-<token>` next to `D`, containing:
    - `root.json`;
    - the empty folders;
    - `evidence.git`, with its config (§13.1) and a **root commit** holding `root.json` on
      `refs/heads/evidence`.
 2. Flush every file and folder in it.
-3. Rename it to `D` without replace.
+3. Rename it to `D` without replace. WinError 5 is retried as in §14.
 4. Flush the parent folder.
 
-`D` therefore either does not exist or is complete. Leftover `D.setup-*` folders are removed by the next setup
-attempt. If `D` exists but `evidence.git`, its ref or its root commit is missing or unreadable, the command
+`D` therefore either does not exist or is complete. Leftover `D.setup-*` folders, and an **empty** `D`, are
+removed only while the setup lock is held, and an empty `D` counts as absent. If `D` exists but `evidence.git`, its ref or its root commit is missing or unreadable, the command
 refuses (§1.3). `root.json` is a committed item: it is restored (§13.4) and never regenerated.
 
 Replay considers only `NNNNNN.json` and `NNNNNN.torn` files. Every other file is reported and ignored.
@@ -201,20 +218,20 @@ No seal contains a timestamp.
 |---|---|---|
 | `run_created` | Phase, attempt number, authorization digest and sentence sha256, claimed ledger head, freeze binding, schedule, guarded and freeze digests, `root_id`, synthetic flag, fixed endpoint, model receipts, transport contract. For Phase B, also the table digest, the Phase A run id, and the evidence commit id bound into the table. | Nothing: it is entry 1 |
 | `call_started` | Position k, call id, request digest, guarded digest observed now | `run_created` (k = 1); a clean non-coding `call_recorded` k−1; a clean `execution_recorded` k−1 |
-| `call_recorded` | Position k, equal to the preceding `call_started`. Provider raw body (base64) and its sha256; raw output (base64) and the sha256 of its text; returned model; scalar metrics; `transport_failure` (empty unless the provider boundary raised). | `call_started` k |
+| `call_recorded` | Position k, equal to the preceding `call_started`. Provider raw body (base64) and its sha256; raw output (base64) and the sha256 of its text; returned model; scalar metrics; the adapter's `error`; `transport_failure` (§8 step 4). | `call_started` k |
 | `execution_started` | Position k, candidate digest | A clean coding `call_recorded` k |
-| `execution_recorded` | Position k, sandbox evidence, candidate error, `infrastructure_failure` (empty, `execution_interrupted`, `sandbox_host_failure:<detail>`) | `execution_started` k |
+| `execution_recorded` | Position k, sandbox evidence, candidate error, `infrastructure_failure`: empty, `execution_interrupted`, R6's `coding_sandbox_host_slow` or `coding_sandbox_host_failure:<class>`, or `sandbox_worker_failure:<detail>` (§8) | `execution_started` k |
 | `scoring_started` | Digest of the fact prefix. For Phase B, the seals of the disclosure inputs: the ledger head, and every earlier attempt's terminal entry. | `collected` |
 | `scored` | The score report: a pure function of the inputs named in `scoring_started` (§4.3) | `scoring_started` |
 | `completed` | Receipt: chain head seal, `scored` seal, `run_created` seal, freeze and guarded digests | `scored` |
-| `closed` | A reason (below); `calls_started`, `calls_recorded`, `executions_started`; the in-doubt position if any; the exception class and message if any | Any entry from `run_created` up to, but not including, `collected` (J13) |
+| `closed` | A reason (below); the exception class and message if any. Counts and the in-doubt position are not stored, because they are recomputed from the chain (J5). | Any entry from `run_created` up to, but not including, `collected` (J13) |
 
 **`closed` reasons.** Each reason has one source:
 
 | Reason | Source |
 |---|---|
-| `transport_failure` | `call_recorded.transport_failure` is non-empty |
-| `infrastructure_failure` | `execution_recorded.infrastructure_failure` is `sandbox_host_failure:*` |
+| `transport_failure` | `call_recorded.transport_failure` is non-empty (§8 step 4) |
+| `infrastructure_failure` | `execution_recorded.infrastructure_failure` is non-empty, other than `execution_interrupted` |
 | `execution_interrupted` | `execution_recorded.infrastructure_failure` is `execution_interrupted` |
 | `call_outcome_unknown` | A `call_started` with no record |
 | `durability_uncertain` | A torn entry that cannot be re-derived |
@@ -241,7 +258,9 @@ allow_nan=False).encode("utf-8")`, where `value` is the envelope without `record
 `safe_value`. Integers of 10^30 or more become strings. Floats use the shortest round-trip `repr`.
 
 **Reading.** An error while reading a file (a sharing violation or an I/O error) is retried up to 20 times at
-100 ms intervals, and after that the command refuses. Only bytes actually read can be judged torn.
+100 ms intervals. Only bytes actually read can be judged torn. What happens after the retries depends on the file:
+- a **committed** file is quarantined and restored (§13.4);
+- an **uncommitted** entry blocks the phase (§1.3). It could be protective, so it is never guessed.
 
 ## 5. Replay: an ordered, total decision procedure
 
@@ -285,6 +304,12 @@ Rules apply **in order; the first match wins**:
 - nothing follows `completed` or `closed`;
 - `closed` never follows `collected`;
 - only `closed` follows a failure field;
+- a `closed` reason matches its source (§4.2):
+  - after a failure field, the reason is that field's reason;
+  - after `call_started`, it is `call_outcome_unknown`;
+  - a non-empty `acknowledges` goes with `durability_uncertain`, and the reverse;
+  - `operator_interrupt` and `abandoned_preflight_failed:*` appear only after `run_created` or after a clean
+    record;
 - the `completed` receipt matches the chain.
 
 **Predicting a trailing tear (R6).** The prediction comes from the last valid entry and the fact prefix. Every
@@ -308,7 +333,8 @@ Torn bytes are never parsed for decisions.
 ## 6. `recover()`: one step at a time, by the lease holder
 
 - Every recovery rename, unlink or deletion is followed by a directory flush before the next step.
-- `recover()` never runs the sandbox or the scorer. Those run only as actions of `--resume` and launch (§7),
+- `recover()` never derives an entry and never runs a child (sandbox, scorer or git). Re-deriving a torn
+  derived entry, running the sandbox and scoring are all actions of `--resume` and launch (§7), and each runs
   after the drift check.
 - Runs closed at ledger level are frozen, and `recover()` never touches them.
 
@@ -317,11 +343,11 @@ Torn bytes are never parsed for decisions.
 | `torn_tail(n)` | Rename `n.json` to `n.torn` without replace. If an identical `n.torn` exists, unlink `n.json` instead. |
 | `torn_pending(T, provider)` | Publish `closed(durability_uncertain)` after the tear, acknowledging T |
 | `torn_pending(T, closure)` | Publish `closed(<the failure's reason>)` after the tear, acknowledging T |
-| `torn_pending(T, derived)` | Drift check, then re-derive the entry and publish it after the tear, acknowledging T. If a committed copy of that kind exists, the payloads must be equal; a mismatch is an integrity failure. Under drift, stop without writing and leave the state for `--resume`, which refuses until the files are restored. |
+| `torn_pending(T, derived)` | No step. Left for §7. |
 | `torn_pending(T from 1, run_created)`, or `absent`, with a ledger entry and the consumption boundary **not** committed | No call can have been made. Publish `attempt_closed_at_ledger(durability_uncertain)` with a snapshot (§9.1). |
 | `torn_pending(T from 1, run_created)` with the consumption boundary committed | `integrity_failure` (§9.4) |
 | No ledger entry names this run | An orphan (§9.4). `recover()` does nothing. |
-| `in_doubt(k)` | Publish `closed(call_outcome_unknown, in_doubt=k)` |
+| `in_doubt(k)` | Publish `closed(call_outcome_unknown)` |
 | `execution_in_doubt(k)` | Publish `execution_recorded(k, infrastructure_failure=execution_interrupted)`. `faulted` then closes the attempt as `execution_interrupted`. The sandbox is never re-run. |
 | `faulted(k)` | Publish `closed(<the failure's reason>)` |
 | `created`, `collecting`, `awaiting_execution`, `collected`, `scoring_interrupted`, `scored` | No step: these are left for §7 |
@@ -342,8 +368,9 @@ after recovery.
 | No run, attempt n not consumed | Allowed when §9.3 holds: publish `run_created` and make it durable, publish `attempt_consumed`, commit the consumption boundary, then collect, score and complete | refused | refused | refused |
 | `created`, `collecting`, `awaiting_execution` | refused | Drift check, then collect | Allowed only on a failing preflight (§9.3) | refused |
 | `collected`, `scoring_interrupted`, `scored` | refused | Drift check, then score and complete | refused | refused |
+| `torn_pending(T, derived)` | refused | Drift check, then re-derive the entry and publish it after the tear, acknowledging T. If a committed copy of that kind exists, the payloads must be equal; a mismatch is an integrity failure. Then continue scoring and completion. | refused | refused |
 | `completed` | refused | Re-project only | refused | **refused** |
-| `closed`, or closed at ledger level | The next attempt | refused | refused | refused |
+| `closed`, or closed at ledger level | The next attempt, unless an orphan run folder exists in the phase (clear it first) | refused | refused | refused |
 | `integrity_failure`, or `absent` with the consumption committed | refused | refused | refused | Allowed unless protected (§9.4) |
 | A run folder without a ledger entry | refused | refused | refused | refused (`--clear-orphan` instead) |
 
@@ -360,7 +387,7 @@ at two safe points:
 - **after each record whose state is not `collected`.**
 
 If the flag is set at either point, the loop publishes `closed(operator_interrupt)` through the normal path and
-exits. A request already in flight is completed and recorded first. If the flag is set once the state is
+exits. If the record at that point carries a failure field, the failure's reason takes precedence. A request already in flight is completed and recorded first. If the flag is set once the state is
 `collected` or later, the process exits **without writing**, and `--resume` then scores. A second signal, or a
 hard kill, leaves the state for the next command to classify.
 
@@ -370,8 +397,8 @@ exists. The run id comes from the ledger.
 
 **`--freeze-table`** runs after J8 steps 1–5. Those steps have already verified every committed item.
 1. It requires:
-   - the named Phase A attempt to be `completed`, with its terminal boundary committed;
-   - every other Phase A attempt to be closed or closed at ledger level;
+   - §10 items 1–6 to hold for the named Phase A attempt: `completed` and committed, the only completed
+     attempt, ledger agreement, not synthetic, receipts, endpoint, provider evidence, and cells;
    - no Phase A attempt to be in progress.
 2. It builds the table deterministically from the replayed `scored` entry. The table records:
    - the attempt's run id;
@@ -385,7 +412,7 @@ exists. The run id comes from the ledger.
 5. A rerun that finds the identical table does nothing. A different table is refused.
 
 After the freeze, the operator commits a copy of the table to `main` at
-`experiments/G-ROUTE3-candidate/QUALIFICATION_TABLE.json` (§10.9).
+`experiments/G-ROUTE3-candidate/QUALIFICATION_TABLE.json`, and pushes `main` (§10.9).
 
 **`--clear-orphan`** is described in §9.4.
 
@@ -410,7 +437,8 @@ Each sentence is matched as a full string.
 
 The distinct launch form is required exactly when attempt n−1 was closed at ledger level as `integrity_failure`
 or `journal_missing`. In that case the ordinary form is refused, and otherwise the distinct form is refused.
-Only launch sentences authorize provider contact. Every sentence is Marcus's to give; none is ever self-issued.
+Only launch sentences authorize provider **generation** calls. Preflight for `--resume` and `--abandon` reads the
+model receipts, which is metadata contact, as in R6. Every sentence is Marcus's to give; none is ever self-issued.
 
 ## 8. One call
 
@@ -418,7 +446,12 @@ Only launch sentences authorize provider contact. Every sentence is Marcus's to 
 2. Publish `call_started` k and make it **durable** (§14). If it cannot be made durable, exit without sending.
    The next command then finds `in_doubt(k)` and closes the attempt.
 3. Send exactly one request (J14).
-4. Publish `call_recorded` k, with `transport_failure` set if the provider boundary raised.
+4. Publish `call_recorded` k. `transport_failure` is set by **R6's rule, carried verbatim**
+   (`g_route3_runner.py`, around the provider call). It is set when:
+   - the provider boundary raised; or
+   - the adapter's `error` is non-empty (the adapter turns HTTP errors, connection failures, timeouts and its own
+     `provider_model_fallback_detected` into `error`); or
+   - the returned model differs from the scheduled model (`provider_model_fallback_or_mismatch`).
 5. For a coding call:
    - Publish `execution_started` k and make it durable.
    - Run the sandbox once in an **isolated worker child** (below).
@@ -427,20 +460,34 @@ Only launch sentences authorize provider contact. Every sentence is Marcus's to 
 
 No git operation happens inside the per-call loop.
 
-**Isolated children.** The sandbox worker, the scorer, and every git process run as children of the lease
-holder:
-- **Job object.** On Windows they run in a job object with `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`. On POSIX they
-  run in their own process group, which the holder kills on exit, with `PR_SET_PDEATHSIG` on Linux. A dead
-  holder therefore leaves no live children.
-- **Console signals.** The sandbox worker is started with `CREATE_NEW_PROCESS_GROUP` on Windows, which disables
-  Ctrl+C for it and for its descendants, or `start_new_session` on POSIX. So a console interrupt never reaches
-  the candidate's test process.
-- **Inside the worker.** The worker calls the unchanged `run_isolated_fixture`, so the grading of a normal
-  child exit is exactly as in R6.
-- **Host failures.** A worker that dies, times out at the worker level, or reports a test exit caused by a
-  signal or a console control is recorded as `infrastructure_failure=sandbox_host_failure:<detail>`, never as
-  a model failure. A console-control test exit is Windows `0xC000013A`; a signal exit is a negative return
-  code on POSIX.
+**Isolated children.** The sandbox worker, the scorer and every git process are children of the lease holder,
+and all of them run inside the holder's kill-on-close job (§15).
+
+**Console shielding.** The sandbox worker and the scorer are started with `CREATE_NO_WINDOW` on Windows, which
+gives each its own hidden console. On POSIX they use `start_new_session`. The reviewers tested that this shields
+the worker and its test children from both Ctrl+C and Ctrl+Break.
+
+**The worker runs R6's coding classification verbatim** (`g_route3_runner.py`, the coding branch after the
+provider call):
+- `_coding_candidate_error` rejects the candidate before any subprocess starts, which is the model's failure;
+- `run_isolated_fixture` runs unchanged;
+- `subprocess.TimeoutExpired` is the model's failure only if `_host_baseline_ok` holds; otherwise it is
+  `coding_sandbox_host_slow`;
+- `MODEL_CAUSED_CODING_ERRORS` are the model's failure;
+- any other exception is `coding_sandbox_host_failure:<class>`.
+
+The worker returns the evidence and that classification. A candidate that loops forever, or that exhausts
+memory inside its test process, is therefore graded exactly as in R6.
+
+**Worker-level failures** are recorded as `infrastructure_failure=sandbox_worker_failure:<detail>`, never as
+model failures. There are three:
+- the worker process itself dies without returning a result;
+- the worker exceeds its own timeout of **180 seconds**. That is above R6's worst case: compile 10 s plus test
+  20 s, then a baseline of the same, plus start-up;
+- the worker exits because of a console control or a signal.
+
+Nothing a candidate can do inside the test process reaches the worker, so none of these can hide a model
+failure.
 
 ## 9. Attempts: the ledger
 
@@ -462,7 +509,8 @@ It has three kinds:
 - **`ledger_torn_acknowledged`:** acknowledges a torn ledger tail that was never committed. It has one
   deterministic rule:
   - If a run folder exists whose `run_created` claims the ledger head before the tear, the torn entry was that
-    run's `attempt_consumed`. The acknowledgement records attempt n = consumed count + 1 as consumed and closed
+    run's `attempt_consumed`. There is at most one such folder, because launch is refused while an orphan run
+    folder exists (§7). The acknowledgement records attempt n = consumed count + 1 as consumed and closed
     `durability_uncertain`, with that run id. No call can have been made, because J11 requires the consumption
     commit first.
   - Otherwise the torn entry was a closure or an acknowledgement. Nothing is closed, and the condition that
@@ -496,8 +544,11 @@ It has three kinds:
 - **New freezes.**
   - A new execution freeze cannot reset anything: `D`, the ledgers and the disclosure are shared by every
     freeze.
-  - The freeze writer refuses once `D` holds a table, or any attempt that is protected or `completed`. This
-    carries over R6's "no new freeze once a table exists".
+  - The freeze writer refuses in four cases. The first carries over R6's "no new freeze once a table exists".
+    - `D` holds a table.
+    - `D` holds a `completed` attempt.
+    - `D` holds a protected attempt.
+    - `D` holds an attempt in progress.
   - Each `run_created` and `attempt_consumed` records its freeze binding, and the disclosure lists every
     attempt under every binding.
 - **Abandon.**
@@ -513,8 +564,9 @@ It has three kinds:
 
 **Protection.** An attempt is **protected** when any of these holds:
 - it has a committed terminal copy;
-- **any individually sealed entry** on disk, or in a committed copy, or in a closure snapshot, is:
-  - a `call_recorded` or `execution_recorded` of position N;
+- **any individually sealed entry** on disk, in a committed copy, or in a closure snapshot, is:
+  - a **clean** non-coding `call_recorded` of position N;
+  - a **clean** `execution_recorded` of position N;
   - a `scoring_started`, a `scored` or a `completed`.
 
   Each file is checked on its own, independent of the chain, so damage elsewhere cannot hide a finished
@@ -571,8 +623,11 @@ committed item.
      - the table names the evidence commit that holds the attempt's terminal copy, and that commit is an
        ancestor of the evidence head.
 8. The table's attempt disclosure equals the disclosure computed now (§12, excluding the restore log).
-9. A read-only git check finds that `main`, in the checkout, contains a commit whose
-   `experiments/G-ROUTE3-candidate/QUALIFICATION_TABLE.json` has exactly the table's bytes.
+9. A read-only git check of the checkout's `main` finds that the table file:
+   - at the **tip** has exactly the table's bytes; and
+   - has exactly one version in `main`'s first-parent history.
+
+   Pushing `main` before Phase B is a runbook step, and the operator's to perform.
 10. The Phase B sentence names the freeze, the table and attempt n, and is consumed through §9.
 11. `D/tables/<table>` is inside Phase B's per-call guard.
 
@@ -584,8 +639,13 @@ committed item.
   that depends on it. Irreversible steps are a request, the sandbox, and a boundary commit that names the
   entry.
 - **Boundary commits.** Boundary commits are durable before a command reports success.
-  - The evidence repository uses the `files` ref backend, with `core.fsync=all`, `core.fsyncMethod=fsync`,
-    `gc.auto=0` and `core.logAllRefUpdates=always` in its own config. Every command checks these settings.
+  - The evidence repository uses the `files` ref backend. Its own config sets:
+    - `core.fsync=all` and `core.fsyncMethod=fsync`;
+    - `gc.auto=0`;
+    - `core.logAllRefUpdates=always`;
+    - `core.autocrlf=false` and `core.safecrlf=false`.
+
+    Every command checks these settings.
   - Git 2.38 or later is required.
   - The ref directory is flushed after `update-ref`.
   - Only the lease holder's children run git in the repository.
@@ -614,9 +674,10 @@ disclosure records:
 
 **Where the disclosure appears:**
 - The qualification table and the Phase B score contain it.
-- **In addition, a phase disclosure record is committed at every terminal and ledger-closure boundary**, under
-  `disclosure/<phase>/<commit sequence>.json`. The runbook requires publishing the latest one whether or not
-  any attempt completes.
+- **In addition, a phase disclosure record is committed at every consumption, terminal and ledger-closure
+  boundary**, under `disclosure/<phase>/<commit sequence>.json`. At consumption, the new attempt is marked
+  *in progress*. Every consumed attempt is therefore in a committed record from the moment calls become
+  possible. The runbook requires publishing the latest record whether or not any attempt completes.
 - The restore log (§13.4) is disclosed alongside it, but kept out of the §10.8 comparison.
 
 ## 13. The evidence repository
@@ -644,17 +705,38 @@ quarantine file. The boundaries are:
 
 | Boundary | When | Adds |
 |---|---|---|
-| **Consumption** | After `attempt_consumed`, before any `call_started` | `000001.json` |
+| **Consumption** | After `attempt_consumed`, before any `call_started` | `000001.json`, plus a disclosure record |
 | **Terminal** | After `completed` or `closed` | Every file in the run's `journal/`, plus a disclosure record |
 | **Ledger closure** | After any ledger-level closure | The closure snapshot, plus a disclosure record |
 | **Orphan** | Before an orphan folder moves | The orphan snapshot |
 | **Table freeze** | After the table is published | The table and the audit copy |
+| **Restore** | Straight after any §13.4 quarantine, before the command continues | The quarantined files |
 
 **Where commit content comes from.** A commit's content comes only from a replay that reached the boundary's
 state. For a snapshot, it comes from the files as found.
 
-**How commits are made.** Commits use plumbing with a private index: `hash-object -w`, `mktree`, `commit-tree`,
-then `update-ref <ref> <new> <expected-old>`.
+**How commits are made.** Commits use plumbing with a private index: `hash-object -w --no-filters`, `mktree`,
+`commit-tree`, then `update-ref <ref> <new> <expected-old>`. Blobs are read back only with `cat-file blob`, so
+bytes are stored and returned exactly.
+
+**Isolation from host git settings.** Every git call runs with a controlled environment:
+- `GIT_CONFIG_NOSYSTEM=1` and `GIT_CONFIG_GLOBAL` set to the null device, so no host setting applies;
+  `core.autocrlf=true` in the machine's system config is a known case;
+- a fixed author and committer identity (`G-ROUTE3 evidence`) and a fixed date format;
+- no signing.
+
+**On-disk locations of committed paths:**
+
+| Tree prefix | On disk |
+|---|---|
+| `root.json` | `D/root.json` |
+| `phase_X/ledger/` | `D/phase_X/ledger/` |
+| `phase_X/runs/<run_id>/journal/` | `D/phase_X/runs/<run_id>/journal/` |
+| `closures/<phase>/<attempt>/` | The ledger-closed run's folder, frozen |
+| `orphans/<phase>/<run_id>/` | `D/phase_X/runs/<run_id>/` if the move has not happened; otherwise `D/phase_X/orphans/<run_id>-<token>/`. A partial POSIX per-file move is completed by the next `--clear-orphan`. |
+| `tables/` | `D/tables/` |
+| `disclosure/` | `D/disclosure/` |
+| `quarantine/` | `D/quarantine/` |
 
 ### 13.2 Rules
 
@@ -687,7 +769,7 @@ folder are not counted as extra.
 |---|---|
 | Identical | Nothing |
 | Missing | Restore |
-| Unreadable after retries | Refuse (§4.4) |
+| Unreadable after retries | Quarantine (a rename, which needs no read) and restore. If the rename also fails, refuse (§1.3). |
 | Differs and is not a sealed entry: `root.json`, audit copy, table, `.torn`, orphan temporary file, snapshot file, disclosure record | Quarantine and restore. The commit is authoritative for unsealed files. |
 | A sealed entry that fails to parse or seal | Quarantine and restore |
 | A sealed entry that parses and seals but differs | Integrity failure (§1.3). Damage cannot produce a valid different seal. |
@@ -701,7 +783,7 @@ folder are not counted as extra.
 
 A kill at any point leaves the target either missing (restored again next time) or complete.
 `D/staging/` is emptied by the lease holder. Restores are logged in `recovery.log`. Quarantined files are
-committed at the next boundary, and they form the **restore log** that §12 discloses.
+committed at once by a **restore boundary** commit, and they form the **restore log** that §12 discloses.
 
 **Export.** The runbook requires these steps:
 - a `git bundle` of `evidence.git` at the table freeze and at every Phase B terminal boundary;
@@ -752,8 +834,15 @@ staleness heuristic, no manual break, and no process-id check.
 
 **Rules:**
 - The lock handle is non-inheritable.
-- Every child runs in the holder's kill-on-close job (§8). No child outlives the holder, and no child holds
-  the lock.
+- **Job.** Before creating any child, the holder assigns **itself** to a new job object with
+  `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`. The handle is non-inheritable, and breakaway is forbidden: no
+  `CREATE_BREAKAWAY_FROM_JOB`, and no `JOB_OBJECT_LIMIT_BREAKAWAY_OK`. Nested jobs work on Windows 8 and later;
+  the reviewers tested this from Python through ctypes. Every child is born inside the job, so no child
+  outlives the holder, and no child holds the lock.
+- **POSIX.** The supported POSIX platform is Linux. The holder becomes a child subreaper
+  (`PR_SET_CHILD_SUBREAPER`), runs children in its own process group, and kills that group when it exits.
+  Descendants of a holder that was killed with SIGKILL may survive. This is a declared POSIX limit; the
+  governed run executes on Windows.
 - One lease covers both phases, both ledgers, every run, the table freeze and the evidence repository.
 - Network volumes are refused at preflight.
 
@@ -765,8 +854,14 @@ staleness heuristic, no manual break, and no process-id check.
 
 ## 17. Transport contract
 
-Exactly one `POST /api/generate` per call. The adapter uses `max_retries=0` and follows no redirects. A test
-uses a stub server that counts requests.
+Exactly one `POST /api/generate` is initiated per call.
+- The unchanged, guarded adapter uses `requests` with no transport retries (the default `max_retries=0`), so
+  the adapter is not modified.
+- `requests` would follow a redirect, but only a server other than Ollama at the fixed loopback endpoint could
+  issue one. That is a fake-server scenario, and out of scope.
+
+A test uses a stub server that counts requests. Further stubs return an error, a fallback model, and a redirect.
+The redirect stub documents the declared behaviour.
 
 ## 18. Write and crash table
 
@@ -804,7 +899,10 @@ uses a stub server that counts requests.
 | Table and audit copy published, then committed | An identical rerun does nothing. A torn table is rebuilt before its commit and restored after it. |
 | Disclosure record | Part of its boundary commit, and rebuilt with it |
 | Projection | Rebuilt |
-| Interrupt flag set | Closed through the normal path before `collected`; plain exit after |
+| Interrupt flag set | Closed through the normal path before `collected`; plain exit after. A failure field takes precedence. |
+| Setup lock | Released by the OS; leftovers removed by the next holder |
+| Restore boundary commit | Pending, completed by J8 step 5 |
+| Ctrl+Break during the sandbox | The worker is shielded; no effect |
 
 ## 19. Verification
 
@@ -839,7 +937,15 @@ uses a stub server that counts requests.
     - a git lock left behind;
     - a transient read error;
     - a second checkout, with `git gc` and `pack-refs` run in another checkout;
-    - a new freeze after a completed or protected attempt.
+    - a new freeze after a completed or protected attempt, and during an attempt in progress;
+    - Ctrl+Break during the sandbox and during scoring;
+    - a persistent read error on a committed file and on an uncommitted entry;
+    - two concurrent first setups;
+    - an audit document with CRLF on a host whose system config sets `core.autocrlf=true`;
+    - an interrupt that coincides with a failure record;
+    - a provider stub that returns an error, and one that returns a fallback model, before position N and at
+      position N;
+    - a candidate that loops forever, and one that exhausts memory, graded as in R6.
 - **Kills** after every operation and before every rename, then recursively during recovery, until a fixpoint.
 - **Power loss** drops every unflushed operation and reorders unflushed renames. A separate **damage**
   injector truncates or corrupts any file.
@@ -854,7 +960,7 @@ uses a stub server that counts requests.
   - `closed` with a truthful reason, followed by a next attempt that completes;
   - a declared refusal (§1.3).
 - J12: a stub provider counts calls per attempt and position, and every count is at most 1.
-- No host-caused sandbox failure is recorded as a model failure.
+- No host-caused sandbox failure is recorded as a model failure, and no model-caused one as a host failure.
 - No temporary file is deleted unless it is identical to its entry.
 - The disclosure is correct.
 - Every committed item equals its copy on disk.
@@ -890,7 +996,11 @@ freeze are replaced or carried. The replacements are reviewed with the implement
 | `authorization_ledger/` files in the checkout | A hash-chained ledger journal per phase in `D`, spanning freezes (§9.1) |
 | Data under each checkout's `data/` | One fixed data root `D` for the experiment (§3) |
 | The freeze writer refuses once a table exists | **Carried and extended** (§9.3): it refuses once `D` holds a table or a protected or completed attempt, and it refuses any other `D` |
-| Coding execution runs in the runner's own process | An isolated worker in a kill-on-close job, shielded from console signals. Grading of a normal exit is unchanged (§8). |
+| Coding execution runs in the runner's own process | An isolated worker in a kill-on-close job, shielded from console signals. The worker runs R6's classification verbatim. The one addition is `sandbox_worker_failure` for the worker process itself, which no candidate can reach (§8). |
+| Provider failure: an exception, a non-empty `result.error`, or a returned-model mismatch closes the attempt | **Carried verbatim** (§8 step 4) |
+| Pause and cancel commands | Removed. An interrupt closes as `operator_interrupt` before `collected` (§7), and there is no paused state. |
+| `_require_governed_real_path` (governed provider only, no guarded-root override) | **Carried**. The fixed-run-root clause becomes the fixed `D` (§3). |
+| No redirect handling in the adapter | Unchanged. A redirect needs a fake server, which is out of scope (§17). |
 
 ## 21. Operator decisions and rulings
 
@@ -912,12 +1022,14 @@ marked *design note* and is not part of the ruling.
    never a closure.
    - *Design note:* the payload is what is compared. Torn `scoring_started` entries are re-derived the same way
      (§5, §6).
-7. `--abandon` is allowed only when the attempt is verified stuck. Partial cells and cross-attempt output
-   identity are disclosed.
+7. Abandon: "Verified-stuck only + disclose". `--abandon` is allowed only when the attempt is verified stuck.
+   Partial cells and cross-attempt output identity are disclosed.
+   - *Design note:* "verified stuck" is implemented as a persistent failing preflight (§9.3).
 8. Evidence is committed to a dedicated git ref before every provider call. **This ruling is superseded by
    ruling 10.**
 9. An integrity failure is recorded at ledger level, and the next attempt needs a distinct acknowledging
    sentence.
+   - *Design note:* a `journal_missing` closure is treated the same way (§7.1).
 
 **2026-09-25, after design review round 2**
 

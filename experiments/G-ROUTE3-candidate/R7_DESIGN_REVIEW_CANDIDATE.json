@@ -1,9 +1,9 @@
 {
-  "base_commit": "4499175a0dc3569630d32c3a5faac724fa49827f",
-  "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R5",
-  "design_review_candidate_sha256": "5672b3b5747d67da80bd304840f62d1c7ee827b653f87e85e350c9a04b3828eb",
+  "base_commit": "73f4d26bd289c19ab82ec6ba12b359fcff299288",
+  "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R6",
+  "design_review_candidate_sha256": "1d45381bc6cf6f9a4de545311539ba53c3183e1ad2089c9ecb9cdb1d4e743007",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "c52a8ed5c66ebbb9a6a178f4d18aa0d1a82592a2d5f1791745f8b3a6edf94857",
+  "document_sha256": "f0e71d6ae7d460b93a46094eba1c563e14972859d549de0d010bc7616fdca133",
   "execution_authorization": false,
   "implementation_started": false,
   "operator_rulings": {
@@ -16,7 +16,7 @@
     ],
     "2026-09-25": [
       "torn scored/completed re-derived byte-identically (payload); mismatch is an integrity failure",
-      "abandon only when the command's own preflight fails; disclose partial cells and cross-attempt output identity",
+      "abandon: Verified-stuck only + disclose (design note: implemented as a persistent failing preflight); disclose partial cells and cross-attempt output identity",
       "SUPERSEDED by ruling 10: evidence committed to a dedicated git ref before every provider call",
       "integrity failure recorded at ledger level; next attempt needs a distinct acknowledging sentence"
     ],
@@ -33,6 +33,8 @@
   "review_record_round3_sha256": "fd71a83229c3b72cfa9c39578bd3284a6151c6ff879e589f684c25eb33c9accd",
   "review_record_round4": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND4.md",
   "review_record_round4_sha256": "03db961e732d3b11da60a3fb793280efe2f5fa84da354c5877833285d34b9bbc",
+  "review_record_round5": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND5.md",
+  "review_record_round5_sha256": "2e00a5da4b33ee7616c2c3073c76f7f7dd80ea6126acec296d2059f44466cfa9",
   "schema_version": "g-route3.design-review-candidate.v1",
   "scientific_runs_launched": 0,
   "scope": "R7 run-lifecycle architecture (journal/replay) only; the scientific design is unchanged; grading changes are out of scope (separate record)",
@@ -65,6 +67,13 @@
       "design_review_candidate_sha256": "88a5cb1d62392fe59b6f2bb0e4ab27745e09956749618e198365152a69d033a7",
       "document_sha256": "2283b5ba35fe2ada28aa7d3968d1d25672b7188dfaa8649cd72e1f1b938fa62d",
       "outcome": "FINDINGS (A: 6 blocking, B: 2 blocking; 7 distinct)"
+    },
+    {
+      "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R5",
+      "commit": "73f4d26",
+      "design_review_candidate_sha256": "5672b3b5747d67da80bd304840f62d1c7ee827b653f87e85e350c9a04b3828eb",
+      "document_sha256": "c52a8ed5c66ebbb9a6a178f4d18aa0d1a82592a2d5f1791745f8b3a6edf94857",
+      "outcome": "FINDINGS (A: 3 blocking, B: 3 blocking)"
     }
   ]
 }
