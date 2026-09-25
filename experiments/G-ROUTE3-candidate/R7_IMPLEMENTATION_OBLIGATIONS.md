@@ -52,6 +52,10 @@ this list. A conflict is itself a finding.
 | C-O2 | **(in rev 9)** The freeze records the thresholds measured at the pinned budget, for JSON nesting and for syntax-tree chain length. | Threshold measurement run at certification. |
 | C-O3 | **(in rev 9)** The worker reports the digests of the guarded modules it loaded, and a mismatch refuses as drift. | A worker that loads a drifted module. |
 
+| C-O4 | **(in rev 9 erratum)** Worker-module drift found after the sandbox ran is recorded as `sandbox_worker_failure:guarded_module_drift` and closes the attempt truthfully. | A drifted module loaded by the worker. |
+| C-O5 | **(in rev 9 erratum)** The scorer's re-derivation mirrors the holder's `run_pinned` calls exactly, with the same function split. | Band cases re-derived in the scorer, with no false integrity failure. |
+| C-O6 | Earlier closed attempts from another freeze whose corpus differs: their re-derivation mismatches, and those positions are disclosed as undeterminable. State this in the disclosure. | A closed attempt under an earlier freeze. |
+
 ## Also required, from earlier rounds
 
 Every seed listed in §19 of the design, and every row in §18.

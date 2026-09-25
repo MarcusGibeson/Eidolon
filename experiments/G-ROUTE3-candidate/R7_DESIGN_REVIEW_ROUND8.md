@@ -99,3 +99,27 @@ stated.
   - for earlier closed attempts, a mismatch is disclosed, and the position counts as undeterminable.
 - `run_pinned` re-raises exceptions with their class intact.
 - The worker reports the digests of the modules it loaded, and a mismatch refuses as drift.
+
+## Confirmation of the fix (same reviewer): CLEAN
+
+The class-4 finding is closed. The pinned values are stated, and the band is declared for each mechanism,
+including syntax-tree depth. The bands match the reviewer's measurements: JSON reached 991 at the pinned budget
+(R6's main thread ranged 971–991), and syntax-tree chains reached 2,976 terms (R6 ranged 2,916–2,975). The
+thresholds are recorded in the freeze, and there are certification cases. The reviewer confirmed that these two
+mechanisms are the only ones limited by recursion depth in the grading path. The diff introduces nothing in the
+five blocking classes.
+
+**Erratum applied after the confirmation (G2 wording).** The reviewer noted that worker-module drift, found after
+the sandbox has run, would in practice close the attempt as `execution_interrupted`. That is not the true reason.
+§8 now records it as `sandbox_worker_failure:guarded_module_drift`, and states that this is the one place where
+drift closes an attempt. It also states that the scorer's re-derivation mirrors the holder's `run_pinned` calls
+exactly. Neither change touches the five blocking classes.
+
+## Outcome
+
+Under the operator's safety-gated rule, the R7 lifecycle design is **accepted for implementation**:
+- Reviewer A found revision 8 CLEAN.
+- Reviewer B's single class-4 finding was closed in revision 9, and a fresh confirmation reviewer confirmed it.
+
+The implementation must satisfy `R7_IMPLEMENTATION_OBLIGATIONS.md`. It will then face a fresh implementation
+review and the certification crash campaign, before any execution freeze is offered.

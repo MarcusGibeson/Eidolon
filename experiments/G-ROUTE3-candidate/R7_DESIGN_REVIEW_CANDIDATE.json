@@ -1,12 +1,17 @@
 {
   "base_commit": "8c7af2869a7579dd6dc4348795a6875bd0778f99",
   "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R9",
-  "design_review_candidate_sha256": "49a28f0c5e72cd0c7866dfcad09f1509bfe235e2aad7856080d04dfcdb1802a6",
+  "design_acceptance": {
+    "basis": "safety-gated round 8: Reviewer A CLEAN on revision 8; Reviewer B's single class-4 finding closed in revision 9 and confirmed CLEAN by a fresh confirmation reviewer; post-confirmation G2 wording erratum recorded in R7_DESIGN_REVIEW_ROUND8.md",
+    "date": "2026-09-25",
+    "next": "implement R7 from this document and R7_IMPLEMENTATION_OBLIGATIONS.md; fresh implementation review plus certification crash campaign before any execution freeze"
+  },
+  "design_review_candidate_sha256": "25e04af7f9e722c191b61b94f17d6160223e30cebae8ef7cd02432fd403443c3",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "6c8a8b584d0ec8dc382e2b524e14fd9ff06fa047be71efa3603cb98deda29fc7",
+  "document_sha256": "417b7fb9f7d8ddd650bcf42e26ec039a7d5a09aae8e1f33454ab47826f182539",
   "execution_authorization": false,
   "implementation_obligations": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_OBLIGATIONS.md",
-  "implementation_obligations_sha256": "eca9a044236b25363ef9784241f2ad60e583560402badb33f29ef588af9aaf90",
+  "implementation_obligations_sha256": "d79a9596d6092ce4b165aeb36b35b3b0807c82ed0b6511bbbaa68a8d05c9efa5",
   "implementation_started": false,
   "operator_rulings": {
     "2026-09-24": [
@@ -56,11 +61,11 @@
   "review_record_round7": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND7.md",
   "review_record_round7_sha256": "49abb1631de4b7e2446ec0ee579b5279f9d4ac8376c2365c533e370195f553c3",
   "review_record_round8": "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND8.md",
-  "review_record_round8_sha256": "883da06aef9fc71a0cb66138aade3476adca1c92a30e91a5523868cb8a024f41",
+  "review_record_round8_sha256": "20f379149a7e6fb0fcdd7ff705736da1c99e386b7eb6cf2d9b03044ba4a6516a",
   "schema_version": "g-route3.design-review-candidate.v1",
   "scientific_runs_launched": 0,
   "scope": "R7 run-lifecycle architecture (journal/replay) only; the scientific design is unchanged; grading changes are out of scope (separate record)",
-  "status": "DESIGN_REVIEW_CANDIDATE",
+  "status": "DESIGN_ACCEPTED_SAFETY_GATED",
   "supersedes": [
     {
       "candidate_id": "G-ROUTE3-R7-LIFECYCLE-DESIGN-R1",

@@ -618,8 +618,13 @@ thread's depth and in separate processes. The functions are:
 
 The result for a given output is then the same in every process and on launch and on resume (§1.2).
 
-The worker reports the sha256 of every guarded module it actually loaded. The holder compares them with
-`run_created` before publishing `execution_recorded`, and refuses as drift on a mismatch.
+The worker reports the sha256 of every guarded module it actually loaded. The holder compares these digests
+with `run_created` before publishing `execution_recorded`. A mismatch cannot simply refuse, because the sandbox
+has already run and must not run again. The holder therefore publishes `execution_recorded` with
+`infrastructure_failure=sandbox_worker_failure:guarded_module_drift`, and the attempt closes truthfully
+(§4.2). This is the one place where drift closes an attempt: drift was found only after an irreversible step.
+The scorer's re-derivation calls `run_pinned` in exactly the same way as the holder: the same functions, split
+the same way.
 
 **Scoring sanitizes as R6 did.** The scorer child decodes each `call_recorded` losslessly and applies
 `sanitize_strings` to the recorded result before `collect_evaluation` and `attach_semantics`, exactly as R6's
