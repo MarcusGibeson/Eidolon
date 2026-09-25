@@ -95,6 +95,46 @@ Each corpus uses each sub-skill exactly once:
 A research cell qualified on A is therefore validated on B against *different* sub-skills of the same
 construct. This is a harder transfer than instance-level reuse, and it is declared.
 
+### Synthesis conclusion rules by cell (declared, round 6)
+
+Synthesis fixtures draw their conclusion rule from six families. Each family is a fixed rule text plus a
+fixed list of allowed conclusions:
+
+- **Cause:** cause_established / cause_unresolved / insufficient_evidence
+- **Trend:** decline_established / improvement_established / insufficient_evidence
+- **Design:** defect_found / behavior_by_design / insufficient_evidence
+- **Authority:** three variants, each ending in requires_operator_decision / no_action_needed. They differ
+  only in the reserved action: block_now, promote_now or remove_from_service_now.
+
+| Cell | Corpus A (rule → gold) | Corpus B (rule → gold) |
+|---|---|---|
+| R1 | cause → cause_established; trend → insufficient_evidence | design → behavior_by_design; trend → improvement_established |
+| R2 | cause → cause_unresolved; design → behavior_by_design | cause → cause_established; authority → requires_operator_decision |
+| R3 | authority → requires_operator_decision; design → defect_found | cause → cause_unresolved; cause → insufficient_evidence |
+| R4 | authority → requires_operator_decision; cause → cause_unresolved | design → defect_found; design → behavior_by_design |
+
+In R1 the trend rule appears in both corpora, and in R2 the cause rule does. In each case the gold
+conclusion differs between A and B. Under the operator's standard, a fresh instance of the same construct,
+this counts as the same rule applied to a new instance with a different answer. It is not a copied problem.
+The claim that each cell poses a different reasoning problem wherever the class allows one is therefore
+weakened for synthesis R1 and R2. It holds there only at the level of instance and answer.
+
+### Research recommendation direction by cell (declared, round 6)
+
+A research recommendation is either **positive** (the first allowed recommendation) or **conservative**
+(the second). For each cell, the corpora use:
+
+| Cell | Corpus A | Corpus B |
+|---|---|---|
+| R1 | conservative, conservative | positive, conservative |
+| R2 | positive, conservative | conservative, conservative |
+| R3 | positive, conservative | conservative, conservative |
+| R4 | conservative, conservative | conservative, conservative |
+
+In R2 and R3, both Corpus B fixtures need the conservative recommendation, while Corpus A has one of each.
+The recommendation follows mechanically from the claim statuses under the stated decision rule, so the
+effect is small. It is declared rather than rebalanced.
+
 ### Planning is a declared single-template construct
 
 Every planning fixture in both corpora has the same shape:

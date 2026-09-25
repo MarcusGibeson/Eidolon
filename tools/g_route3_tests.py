@@ -336,6 +336,16 @@ class CorpusConstructionTests(unittest.TestCase):
                 edited = json.dumps({**ref, "old": ref["old"].replace("def ", "def  ", 1)})
                 self.assertFalse(canonical_coding_payload(fixture, edited)[1])
 
+    def test_typographic_text_never_fails_a_correct_answer(self):
+        from g_route3_qualification import collect_evaluation
+        fixture, gold = contract.indexed_fixture_gold("A")["A-SYNTH-R4-1"]
+        ref = json.loads(json.dumps(gold["reference_output"]))
+        ref["statements"][0]["text"] = ref["statements"][0]["text"].replace("-", "\u2011")
+        self.assertTrue(validate_fixture_output(fixture, gold, json.dumps(ref))["hard_gate_pass"])
+        record = collect_evaluation(fixture, "\ud800")                       # raw lone surrogate, direct call
+        contract.json_digest(record)
+        self.assertFalse(record["normalized_operational_validation"]["accepted"])
+
     def test_synthesis_and_research_prompts_state_their_conventions(self):
         for corpus in ("A", "B"):
             for fixture in contract.runtime_fixtures(corpus).values():
@@ -827,7 +837,8 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                 patch.object(runner, "QUALIFICATION_TABLE_PATH", Path(td) / "QUALIFICATION_TABLE.json"),
                 patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,)),
                 patch.object(runner, "RUN_ROOTS", {"A": Path(td) / "a", "B": Path(td) / "b"}),
-                patch.object(runner, "RUN_ANCHORS", Path(td) / "anchors")]
+                patch.object(runner, "RUN_ANCHORS", Path(td) / "anchors"),
+                patch.object(runner, "AUTHORIZATION_LEDGER", Path(td) / "ledger")]
 
     def anchor(self, event, path):
         self.anchors.append((event, Path(path).name))
@@ -873,8 +884,9 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                                               model_receipts=receipts(), run_root=root_a, run_id="real-a",
                                               authorization=self.auth_a(1), anchor=self.anchor, resume=True)
             self.assertEqual(result_a["state"], "complete")
-            self.assertEqual(self.anchors, [("authorization_consumed", "phase-A-attempt-001.json"),
-                                            ("run_complete", "phase-A-real-a.json")])
+            # anchoring is idempotent and re-applied on resume, so compare what was anchored, not how often
+            self.assertEqual(sorted(set(self.anchors)), [("authorization_consumed", "phase-A-attempt-001.json"),
+                                                         ("run_complete", "phase-A-real-a.json")])
             # a further attempt after a complete one is never authorized (no best-of-N)
             self.assertFalse(runner.phase_a_authorized(self.auth_a(2)))
             self.assertEqual([(r["run_id"], r["outcome"]) for r in runner.phase_a_attempts()], [("real-a", "complete")])
@@ -899,7 +911,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertFalse(runner.phase_b_authorized(auth_b(1, qualification_table_sha256="0" * 64), root_a, "real-a"))
             result_b = runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b),
                                               model_receipts=receipts(), run_root=Path(td) / "b", phase_a_root=root_a,
-                                              phase_a_run_id="real-a", run_id="real-b", authorization=auth_b(1), anchor=self.anchor)
+                                              phase_a_run_id="real-a", run_id="real-b", authorization=auth_b(1), anchor=self.anchor, committed=lambda path: True)
             self.assertEqual(result_b["state"], "complete")
             self.assertEqual([(r["run_id"], r["outcome"]) for r in result_b["score"]["phase_b_attempts"]],
                              [("real-b", "running")])
@@ -908,7 +920,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                 with self.assertRaisesRegex(PermissionError, "phase_b_not_authorized|fixed_run_root"):
                     runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b), model_receipts=receipts(),
                                            run_root=root, phase_a_root=root_a, phase_a_run_id="real-a", run_id=rid,
-                                           authorization=auth_b(1), anchor=self.anchor)
+                                           authorization=auth_b(1), anchor=self.anchor, committed=lambda path: True)
             self.assertFalse(runner.phase_b_authorized(auth_b(2), root_a, "real-a"))     # B is not best-of-N either
 
     def test_a_retry_is_allowed_only_after_a_non_complete_attempt_and_both_are_disclosed(self):
@@ -1203,7 +1215,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                 ticks["n"] += 1
                 return "continue"
 
-            with patch.object(runner, "_finish", side_effect=KeyboardInterrupt("killed before scoring")):
+            with patch.object(runner, "_score_and_finalize", side_effect=KeyboardInterrupt("killed before scoring")):
                 with self.assertRaises(KeyboardInterrupt):
                     runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
                                            model_receipts=receipts(), run_root=root_a, run_id="full",
@@ -1211,6 +1223,218 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertEqual(runner.attempts_with_outcomes("A")[0]["sealed_calls"], 288)
             with self.assertRaisesRegex(ValueError, "resume_it_instead"):
                 runner.abandon_attempt("A", "trying to discard a finished collection")
+
+    def test_pathological_coding_candidates_are_model_failures_not_infrastructure(self):
+        """Round-5 reviewers: a 3,200-dash expression or JSON nested 1,500 deep raised before the sandbox
+        subprocess and was charged to infrastructure, stopping Phase A."""
+        class Pathological(Provider):
+            def __call__(self, call_id, body):
+                result = super().__call__(call_id, body)
+                fixture_id = call_id[len("GROUTE3-"):].rsplit("-R", 1)[0]
+                fixture = self.index[fixture_id][0]
+                if fixture["validator_profile"] != "coding.v1":
+                    return result
+                source = fixture["input"]["source"]
+                raw = [json.dumps({"path": "app.py", "old": source, "new": "x = " + "-" * 3200 + "1\n"}),
+                       "[" * 1500 + "]" * 1500,
+                       json.dumps({"path": "app.py", "old": source, "new": "x = " + "(" * 3000 + "1" + ")" * 3000})
+                       ][len(self.calls) % 3]
+                envelope = {"model": body["model"], "response": raw}
+                raw_body = json.dumps(envelope).encode("utf-8")
+                return {**result, "raw_output": raw, "envelope": envelope,
+                        "raw_body_b64": base64.b64encode(raw_body).decode("ascii"),
+                        "raw_body_sha256": hashlib.sha256(raw_body).hexdigest()}
+
+        with tempfile.TemporaryDirectory() as td:
+            result = runner.execute_phase_a(provider_call=Pathological("A", lambda f, tier: "correct"),
+                                            model_receipts=receipts(), run_root=Path(td) / "a", run_id="a",
+                                            synthetic_fixture=True)
+            self.assertEqual(result["state"], "complete")
+            coding = [r for r in RouteRunStore(Path(td) / "a", "a", create=False).call_records()
+                      if r["task_class"] == "coding_generation_repair"]
+            self.assertEqual(len(coding), 48)
+            self.assertTrue(all(not r["infrastructure_failure"] for r in coding))
+            self.assertFalse(any(r["normalized_operational_validation"]["accepted"] for r in coding))
+
+    def _crash_during(self, td, target, *, when):
+        """Run an authorized Phase A and kill it once inside `target` (a RouteRunStore method) when `when`
+        holds; return the root. The lease a killed process leaves behind is removed, as the launcher documents."""
+        root_a = runner.RUN_ROOTS["A"]
+        original = getattr(RouteRunStore, target)
+        fired = {"n": 0}
+
+        def crash(store, *args, **kwargs):
+            if not fired["n"] and when(store, *args, **kwargs):
+                fired["n"] += 1
+                raise KeyboardInterrupt(f"killed in {target}")
+            return original(store, *args, **kwargs)
+
+        with patch.object(RouteRunStore, target, crash):
+            with self.assertRaises(KeyboardInterrupt):
+                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                       run_root=root_a, run_id="w", authorization=self.auth_a(1), anchor=self.anchor)
+        (root_a / ".g-route1-single-job.lease").unlink(missing_ok=True)
+        return root_a
+
+    def _resume_and_check(self, td, root_a):
+        resumed = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                         run_root=root_a, run_id="w", authorization=self.auth_a(1),
+                                         anchor=self.anchor, resume=True)
+        self.assertEqual(resumed["state"], "complete")
+        self.assertEqual(RouteRunStore(root_a, "w", create=False).manifest()["state"], "complete")
+        self.assertIn(("run_complete", "phase-A-w.json"), self.anchors)
+        self.freeze(td, resumed, run_id="w")
+        pre = runner.phase_b_preconditions(root_a, "w")
+        self.assertTrue(pre["valid"], pre["reasons"])
+
+    def test_finalization_recovers_from_a_crash_after_the_score_before_the_receipt(self):
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            root_a = self._crash_during(td, "write_terminal_receipt", when=lambda store, *a, **k: True)
+            self.assertTrue((root_a / "w" / "score.json").is_file())
+            self._resume_and_check(td, root_a)
+
+    def test_finalization_recovers_from_a_crash_after_completion_before_the_anchor(self):
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            root_a = self._crash_during(td, "seal_terminal_checkpoint", when=lambda store, *a, **k: True)
+            self.assertEqual(RouteRunStore(root_a, "w", create=False).manifest()["state"], "complete")
+            self.assertNotIn(("run_complete", "phase-A-w.json"), self.anchors)
+            self._resume_and_check(td, root_a)
+
+    def test_a_checkpoint_one_record_behind_is_reconciled_at_the_end_and_mid_run(self):
+        for last in (288, 100):
+            with self.subTest(position=last), tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+                for item in self.real_path(td):
+                    stack.enter_context(item)
+                root_a = self._crash_during(
+                    td, "write_checkpoint",
+                    when=lambda store, *a, next_position=0, **k: next_position == last + 1)
+                self.assertEqual(len(RouteRunStore(root_a, "w", create=False).call_records()), last)
+                self._resume_and_check(td, root_a)
+
+    def test_a_closed_run_is_never_resumable_even_if_its_manifest_is_edited(self):
+        class Failing(RealShapedProvider):
+            def __call__(self, call_id, body):
+                if len(self.calls) == 5:
+                    raise ConnectionError("provider went away")
+                return super().__call__(call_id, body)
+
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            stack.enter_context(patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider, Failing)))
+            root_a = runner.RUN_ROOTS["A"]
+            first = runner.execute_phase_a(provider_call=Failing("A", self.plan_a), model_receipts=receipts(),
+                                           run_root=root_a, run_id="f", authorization=self.auth_a(1),
+                                           anchor=self.anchor)
+            self.assertEqual(first["state"], "incomplete")
+            self.assertIn(("run_closed", "phase-A-f-closed.json"), self.anchors)
+            manifest_path = root_a / "f" / "run.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["state"] = "running"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            self.assertEqual(runner.phase_a_attempts()[0]["outcome"], "incomplete")     # the sealed closure decides
+            with self.assertRaisesRegex(ValueError, "closed_and_is_not_resumable"):
+                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                       run_root=root_a, run_id="f", authorization=self.auth_a(1),
+                                       anchor=self.anchor, resume=True)
+
+    def test_an_orphan_run_folder_can_be_cleared_on_the_record(self):
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            root_a = runner.RUN_ROOTS["A"]
+            RouteRunStore(root_a, "orphan", create=True, manifest={"benchmark_id": "G-ROUTE3", "phase": "A"})
+            self.assertFalse(runner.phase_a_authorized(self.auth_a(1)))                 # root disagrees with ledger
+            with self.assertRaisesRegex(ValueError, "orphan_reason_required"):
+                runner.clear_orphan_run("A", "orphan", "")
+            runner.clear_orphan_run("A", "orphan", "launch interrupted before its lease", anchor=self.anchor)
+            self.assertIn(("orphan_cleared", "phase-A-orphan-orphan.json"), self.anchors)
+            self.assertEqual(runner.ledger_run_root_mismatches("A"), [])
+            self.assertTrue(runner.phase_a_authorized(self.auth_a(1)))
+
+    def test_authorized_phase_b_requires_phase_a_evidence_committed_in_git(self):
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            root_a = runner.RUN_ROOTS["A"]
+            result_a = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
+                                              model_receipts=receipts(), run_root=root_a, run_id="c",
+                                              authorization=self.auth_a(1), anchor=self.anchor)
+            doc, _ = self.freeze(td, result_a, run_id="c")
+            digest, table = runner._freeze_digest(), doc["table_sha256"]
+            auth_b = {"benchmark_id": "G-ROUTE3", "phase": "B", "execution_freeze_sha256": digest,
+                      "qualification_table_sha256": table, "phase_a_run_id": "c", "attempt": 1,
+                      "one_execution_only": True, "consumed": False,
+                      "operator_confirmation": runner.confirmation_string("B", 1, freeze=digest, table=table)}
+            for committed, pattern in ((None, "requires_a_git_commit_check"),
+                                       (lambda path: path.name != "phase-A-c.json", "not_committed_in_git:phase-A-c")):
+                with self.assertRaisesRegex(PermissionError, pattern):
+                    runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b), model_receipts=receipts(),
+                                           run_root=runner.RUN_ROOTS["B"], phase_a_root=root_a, phase_a_run_id="c",
+                                           run_id="b", authorization=auth_b, anchor=self.anchor, committed=committed)
+            self.assertEqual(runner.ledger_entries("B"), [])
+
+    def test_a_failed_consumption_anchor_is_reapplied_on_resume(self):
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            root_a = runner.RUN_ROOTS["A"]
+
+            def failing_anchor(event, path):
+                raise RuntimeError("index.lock held by another program")
+
+            with self.assertRaisesRegex(RuntimeError, "index.lock"):
+                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                       run_root=root_a, run_id="g", authorization=self.auth_a(1),
+                                       anchor=failing_anchor)
+            (root_a / ".g-route1-single-job.lease").unlink(missing_ok=True)
+            runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                   run_root=root_a, run_id="g", authorization=self.auth_a(1), anchor=self.anchor,
+                                   resume=True, control=lambda: "pause")
+            self.assertIn(("authorization_consumed", "phase-A-attempt-001.json"), self.anchors)
+
+    def test_launcher_table_freeze_and_local_only_network(self):
+        import g_route3_launch as launch
+        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
+            for item in self.real_path(td):
+                stack.enter_context(item)
+            anchored = []
+            stack.enter_context(patch.object(launch, "git_anchor", lambda event, path: anchored.append(event)))
+            runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
+                                   run_root=runner.RUN_ROOTS["A"], run_id="t", authorization=self.auth_a(1),
+                                   anchor=self.anchor)
+            score = RouteRunStore(runner.RUN_ROOTS["A"], "t", create=False).score_record()["record_sha256"]
+            audit = Path(td) / "PHASE_A_AUDIT.md"
+            audit.write_text(f"Phase A run t, score {score}: READY\n", encoding="utf-8")
+            relative = Path(audit).relative_to(Path(td))
+            cwd = Path.cwd()
+            try:
+                import os
+                os.chdir(td)
+                result = launch.freeze_table("t", str(relative), "auditor", "READY")
+            finally:
+                os.chdir(cwd)
+            self.assertEqual(anchored, ["qualification_table_frozen"])
+            self.assertTrue(result["phase_b_preconditions"]["valid"], result["phase_b_preconditions"]["reasons"])
+            table = json.loads(runner.QUALIFICATION_TABLE_PATH.read_text(encoding="utf-8"))
+            self.assertTrue(Path(table["audit"]["document_path"]).is_absolute())
+        import os
+        saved = {k: os.environ.get(k) for k in launch.PROXY_VARIABLES + ("NO_PROXY", "no_proxy")}
+        try:
+            os.environ["HTTP_PROXY"] = "http://proxy.invalid:8080"
+            launch._local_only_network()
+            self.assertNotIn("HTTP_PROXY", os.environ)
+            self.assertIn("127.0.0.1", os.environ["NO_PROXY"])
+        finally:
+            for key, value in saved.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = value
 
     def test_the_authorized_provider_endpoint_is_fixed(self):
         self.assertNotIn("endpoint", inspect.signature(runner.GovernedOllamaProvider.__init__).parameters)
@@ -1332,7 +1556,8 @@ class FreezeTests(unittest.TestCase):
                          ["64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
                           "aa5db17af6e12aaf1453cdbd1c88940743cb8712882c8a7ccba2a6541bfd52af",
                           "f92fd6e0a628864a7da9a842642ec2e3fd79c81685f9fce3c0a817dbed721397",
-                          "3660f60f459ef7a0b3dc1e86bd50aec397d1233e7a235665989ad91195b727b3"])
+                          "3660f60f459ef7a0b3dc1e86bd50aec397d1233e7a235665989ad91195b727b3",
+                          "2e97b75e0b3ce68bd2cd21fd5cbcc69f6133abaa736727b62452d729061fce94"])
         self.assertFalse(any(row["authorized"] for row in manifest["supersedes"]))
 
     def test_superseded_digests_are_independent_of_checkout_line_endings(self):

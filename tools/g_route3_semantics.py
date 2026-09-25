@@ -59,7 +59,25 @@ def _judge(fixture: Mapping[str, Any], gold: Mapping[str, Any], raw_output: Any,
     if profile == "conversation.v1":
         return conversation.semantic(fixture, gold, raw_output)
     payload, _ = canonical_coding_payload(fixture, raw_output)
+    if profile == "synthesis.v1":
+        payload = _typographic_statement_text(payload)
     return _g_route1_validate(fixture, gold, payload, execution_evidence=execution_evidence)
+
+
+def _typographic_statement_text(payload: Any) -> Any:
+    """Synthesis statements copy observation text verbatim; a typographic hyphen, dash, quote or no-break space
+    in that copy is the same text. Normalize statement text only (as the conversation frame does)."""
+    try:
+        value = dict(payload) if isinstance(payload, Mapping) else json.loads(str(payload))
+    except (TypeError, ValueError, RecursionError):
+        return payload
+    statements = value.get("statements") if isinstance(value, dict) else None
+    if not isinstance(statements, list):
+        return payload
+    value["statements"] = [{**row, "text": conversation.normalize_text(row["text"])}
+                           if isinstance(row, dict) and isinstance(row.get("text"), str) else row
+                           for row in statements]
+    return value if isinstance(payload, Mapping) else json.dumps(value, ensure_ascii=False)
 
 
 __all__ = ["CONTRACT_VERSION", "canonical_coding_payload", "validate_fixture_output"]

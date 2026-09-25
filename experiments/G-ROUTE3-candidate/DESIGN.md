@@ -3,7 +3,7 @@
 Status: **design and freeze only.** No model has been contacted. Provider generation calls: **0**.
 Benchmark launches: **0**. Production routing: disabled. Automatic escalation: disabled. Belief effects: `none`.
 
-Revision: **R5.** No earlier freeze was ever authorized; all are preserved and superseded.
+Revision: **R6.** No earlier freeze was ever authorized; all are preserved and superseded.
 
 - **R1** (binding `64eed1ba…`). An external pre-contact review found hidden grader rules, a trigger that fired
   on correct answers, template reuse between corpora, a gate that could hide a failure, weak table
@@ -29,7 +29,15 @@ Revision: **R5.** No earlier freeze was ever authorized; all are preserved and s
   - An interrupted finalization could deadlock an attempt.
   - Cheap ledger tampering, or a redirected endpoint, was not tamper-evident.
 
-See `EXTERNAL_REVIEW_ROUND1.md` to `EXTERNAL_REVIEW_ROUND4.md`.
+- **R5** (binding `2e97b75e…`). A fifth review found two problems, each a class that round 5 had repaired
+  only for the exact case previously probed:
+  - a pathological coding candidate raised an error before the sandbox subprocess started, and the run
+    charged it to infrastructure, which stopped Phase A;
+  - three crash windows during finalization left an attempt unrecoverable.
+
+  Round 6 repairs each class at its root.
+
+See `EXTERNAL_REVIEW_ROUND1.md` to `EXTERNAL_REVIEW_ROUND5.md`.
 
 **Threat model (operator decision): an honest operator with tamper-evident records.**
 

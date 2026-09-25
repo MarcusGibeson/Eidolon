@@ -30,7 +30,8 @@ def safe_normalize(raw_output: Any, profile: str) -> dict[str, Any]:
     try:
         return normalize(raw_output, validator_profile=str(profile))
     except Exception as exc:
-        text = raw_output if isinstance(raw_output, str) else ""
+        text = (raw_output if isinstance(raw_output, str) else "").encode("utf-8", "surrogatepass") \
+            .decode("utf-8", "replace")
         return {"contract_version": "g-route2.transport-normalization.v1", "validator_profile": str(profile),
                 "raw_output": raw_output, "raw_sha256": canonical_digest(text), "normalized": False,
                 "outcome": f"normalization_error:{type(exc).__name__}", "payload": raw_output,
@@ -53,7 +54,10 @@ def sealable(result: dict[str, Any], *, gate: str) -> dict[str, Any]:
 
 def collect_evaluation(fixture: Mapping[str, Any], raw_output: Any,
                        execution_evidence: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    """Gold-blind part of evaluation, safe for the collection path. Model output cannot make it raise."""
+    """Gold-blind part of evaluation, safe for the collection path. Model output cannot make it raise, and the
+    result can always be sealed: lone surrogates are replaced first, exactly as the runner does."""
+    if isinstance(raw_output, str):
+        raw_output = raw_output.encode("utf-8", "surrogatepass").decode("utf-8", "replace")
     record = safe_normalize(raw_output, str(fixture["validator_profile"]))
     return {
         "normalization": record,
@@ -166,7 +170,7 @@ def audit_record(document: Path, verdict: str, auditor: str, *, run_id: str, sco
     """Bind the Phase A audit to a document by digest, and the document to the run it audits."""
     if not Path(document).is_file():
         raise FileNotFoundError("qualification_audit_document_missing")
-    return {"verdict": verdict, "auditor": auditor, "document_path": str(document),
+    return {"verdict": verdict, "auditor": auditor, "document_path": str(Path(document).resolve()),
             "document_sha256": digest_file(document), "run_id": run_id, "score_record_sha256": score_record_sha256}
 
 

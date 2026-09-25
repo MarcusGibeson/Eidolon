@@ -12,8 +12,8 @@ from g_route1_contract import ROOT, digest_file
 from g_route3_contract import (DATA, EXPECTED_CALLS, EXECUTION_FREEZE_PATH, json_digest, load_corpus, load_gold,
                                load_json, load_model_bindings, load_thresholds, verify_checked_schedule)
 
-CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v5"
-CANDIDATE_ID = "G-ROUTE3-EXECUTION-R5"
+CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v6"
+CANDIDATE_ID = "G-ROUTE3-EXECUTION-R6"
 SUPERSEDED = (
     {"candidate_id": "G-ROUTE3-EXECUTION-R1",
      "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
@@ -56,6 +56,15 @@ SUPERSEDED = (
                 "crash collection so Phase A could never finish, an interrupted finalization could deadlock an "
                 "attempt, and cheap ledger tampering or a redirected endpoint was not tamper-evident"),
      "authorized": False, "provider_generation_calls": 0},
+    {"candidate_id": "G-ROUTE3-EXECUTION-R5",
+     "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R5.json",
+     "literal_sha256": "55c40f1633d5c4b2a29ed97218580750e54d07f9eb19979bb5dd0de40ae7e467",
+     "binding_sha256": "2e97b75e0b3ce68bd2cd21fd5cbcc69f6133abaa736727b62452d729061fce94",
+     "review_record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND5.md",
+     "reason": ("fifth independent pre-contact review returned FINDINGS: a pathological coding candidate raised "
+                "before the sandbox subprocess and was charged to infrastructure, stopping Phase A, and several "
+                "crash windows during finalization left an attempt unrecoverable by any supported command"),
+     "authorized": False, "provider_generation_calls": 0},
 )
 FREEZE_PATH = EXECUTION_FREEZE_PATH
 ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
@@ -66,6 +75,7 @@ ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
     "EXTERNAL_REVIEW_ROUND2.md", "EXECUTION_FREEZE_CANDIDATE_R2.json",
     "EXTERNAL_REVIEW_ROUND3.md", "EXECUTION_FREEZE_CANDIDATE_R3.json",
     "EXTERNAL_REVIEW_ROUND4.md", "EXECUTION_FREEZE_CANDIDATE_R4.json",
+    "EXTERNAL_REVIEW_ROUND5.md", "EXECUTION_FREEZE_CANDIDATE_R5.json",
     "corpus_a.json", "gold_a.json", "corpus_b.json", "gold_b.json", "fixture_design.json",
     "model_bindings.json", "thresholds.json", "schedule_a.json", "schedule_b.json",
     "authoring/author_g3_part1.py", "authoring/author_g3_part2.py", "authoring/author_g3_part3.py",
@@ -155,12 +165,12 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "operational_validator_contract": "g-route3.operational-validator.v2",
         "semantic_contract": "g-route3.semantics.v1",
         "conversation_contract": "g-route3.conversation-frame.v3",
-        "runner_contract": "g-route3.runner.v4",
+        "runner_contract": "g-route3.runner.v5",
         "threat_model": ("honest operator with tamper-evident records (operator decision): the code stops accidents, "
                          "misuse through any supported path and cheap tampering; a deliberate local adversary (a fake "
                          "model server, a second checkout, a consistent rewrite of sealed files) is out of scope and "
                          "is countered by the launcher's local git anchor commits"),
-        "launcher": {"contract": "g-route3.launcher.v2", "path": "tools/g_route3_launch.py",
+        "launcher": {"contract": "g-route3.launcher.v3", "path": "tools/g_route3_launch.py",
                      "provider_endpoint": "http://127.0.0.1:11434 (fixed)",
                      "git_anchor": "local commit of each consumed ledger entry and each completed run's anchor file",
                      "authorized_runs_only_through_launcher": True,

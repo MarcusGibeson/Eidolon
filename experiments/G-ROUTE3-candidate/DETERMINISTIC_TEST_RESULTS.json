@@ -17,7 +17,7 @@
   "production_routing_invoked": false,
   "provider_generation_calls": 0,
   "recorded_on": "2026-09-24",
-  "revision": "R5",
+  "revision": "R6",
   "schema_version": "g-route3.deterministic-test-results.v1",
   "suites": [
     {
@@ -39,10 +39,10 @@
       ],
       "command": "python -m unittest -v g_route3_tests  (from tools/)",
       "groups": {
-        "corpus_construction_and_derivability": 18,
+        "corpus_construction_and_derivability": 19,
         "execution_freeze_and_guard": 4,
         "gold_blind_routing_and_escalation": 12,
-        "governed_two_phase_pipeline": 23,
+        "governed_two_phase_pipeline": 32,
         "qualification_and_table": 10,
         "validation_gates": 2
       },
@@ -129,7 +129,19 @@
         "ledger_hash_chain_and_run_root_agreement": "test_the_ledger_is_hash_chained_and_must_agree_with_the_run_root",
         "no_model_output_crashes_collection": "test_no_model_output_can_crash_collection_or_sealing"
       },
-      "tests": 69
+      "round6_regressions_for_external_review_findings": {
+        "anchor_reapplied_on_resume": "test_a_failed_consumption_anchor_is_reapplied_on_resume",
+        "checkpoint_one_behind_reconciled": "test_a_checkpoint_one_record_behind_is_reconciled_at_the_end_and_mid_run",
+        "closed_run_never_resumable": "test_a_closed_run_is_never_resumable_even_if_its_manifest_is_edited",
+        "finalization_crash_after_completion": "test_finalization_recovers_from_a_crash_after_completion_before_the_anchor",
+        "finalization_crash_after_score": "test_finalization_recovers_from_a_crash_after_the_score_before_the_receipt",
+        "governed_table_freeze_and_local_network": "test_launcher_table_freeze_and_local_only_network",
+        "orphan_folder_cleared_on_record": "test_an_orphan_run_folder_can_be_cleared_on_the_record",
+        "phase_b_requires_committed_phase_a_evidence": "test_authorized_phase_b_requires_phase_a_evidence_committed_in_git",
+        "pre_subprocess_coding_failures_are_model_failures": "test_pathological_coding_candidates_are_model_failures_not_infrastructure",
+        "typographic_text_and_surrogates": "test_typographic_text_never_fails_a_correct_answer"
+      },
+      "tests": 79
     }
   ]
 }

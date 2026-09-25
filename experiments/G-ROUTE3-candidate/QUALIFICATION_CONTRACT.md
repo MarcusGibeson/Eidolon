@@ -129,8 +129,26 @@ Internal consistency is not enough. Phase B also checks the table against the se
    its parsed copy. Lone surrogates are replaced before sealing. So a malformed answer can never block Phase
    A from completing.
 
-   **Interrupted finalization.** A run killed after its receipt was sealed is finished by `--resume`. An
-   attempt that already holds every call record cannot be abandoned.
+   **Coding sandbox attribution.** Any exception raised before the sandbox subprocess starts is the model's
+   failure. That covers parsing, the schema and path checks, building the candidate, and the AST whitelist,
+   including `RecursionError` or `MemoryError` from pathological input. Only the subprocess stage can report
+   a host failure.
+
+   **Run lifecycle.**
+
+   - Finalization is idempotent. An existing sealed score must equal the recomputed one, and an existing
+     receipt must chain to the records and the score. The manifest, the checkpoint seal and the git anchor
+     are completed if missing.
+   - `--resume` repairs any interrupted finalization, and reconciles a checkpoint that is one sealed record
+     behind.
+   - Every non-complete end writes a sealed closure record, anchored in git on the authorized path. A closed
+     run is never resumable, and its disclosed outcome comes from that record.
+   - An attempt that already holds every call record cannot be abandoned.
+   - An orphan run folder (one with no ledger entry and no call record) is cleared by a recorded, anchored
+     step.
+   - The table is frozen by the launcher's `--freeze-table` command.
+   - An authorized Phase B requires the Phase A ledger entries, the Phase A run anchor and the table to be
+     committed and unmodified in git.
 
    Verifying the execution freeze does not depend on the table being absent. Absence is checked only when
    the freeze is *written*, so the freeze stays valid once Phase A has produced a table.

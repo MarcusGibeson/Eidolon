@@ -1,88 +1,72 @@
 # G-ROUTE3 Design Audit
 
 Date: 2026-09-24
-Revision: **R5**
-Verdict: **READY for external round-5 review.** This is not a verdict that Phase A may be authorized.
+Revision: **R6**
+Verdict: **READY for external round-6 review.** This is not a verdict that Phase A may be authorized.
 Authority: non-authoritative. It grants no execution, provider, routing or belief authority, and changes no
 artifact. Provider generation calls during design, review and repair: **0**.
 
 ## Read this first: what this audit is worth
 
-The agent that wrote the corpora and the code also wrote this audit. It said READY for R1 through R4. Each
-time, an external review then found blocking defects it had missed; see the four `EXTERNAL_REVIEW_ROUND*.md`
-records. In round 4, two of the blocking defects came from a leniency this author added in round 4 itself.
+The agent that wrote the corpora and the code also wrote this audit.
 
-This document records what the author checked. It is not an assurance. The R5 freeze goes to fresh external
-reviewers, who are given the operator's threat model. Phase A may be authorized only if that review is clean.
+- It said READY for R1 through R5, and each time an external review found blocking defects it had missed.
+- In round 5, both blocking classes had been "repaired" only for the exact case the earlier probe used.
 
-## Threat model (operator decision)
+This document is a record of what the author checked, not an assurance. The R6 freeze goes to fresh
+external reviewers under the operator's threat model (an honest operator, tamper-evident records).
 
-G-ROUTE3 assumes an honest operator and relies on tamper-evident records.
+## Round-6 repair: by class, not by instance
 
-- **What the code must stop:**
-  - accidents;
-  - misuse through any supported path;
-  - cheap tampering.
-- **What is out of scope, and declared:**
-  - a fake model server;
-  - a second checkout;
-  - a consistent rewrite of sealed files together with the git history.
-- **What counters the out-of-scope cases:** the launcher's local git anchor commits.
+**Model output and the coding sandbox.** Any exception raised before the sandbox subprocess starts is the
+model's failure, whatever its type. Only the subprocess stage can report a host failure.
 
-## Round-5 repair, summarized
+**Finalization.** A single idempotent `_finalize` replaces the per-window recovery code. `--resume` routes
+any run that holds every record, or is already complete, into it. A checkpoint one record behind is
+reconciled.
 
-Every round-4 finding is either repaired or declared. See `EXTERNAL_REVIEW_ROUND4.md`, which names the test
-that locks each one.
+**Closure.** Every non-complete end is a sealed closure record, anchored in git. A closed run is never
+resumable.
 
-- **Conversation.** The "Actions taken" line is a closed field. The prompt says to write exactly `none`, and
-  nothing may follow it.
-- **Robustness to model output.** No model output can crash collection, scoring or sealing. A full 288-call
-  Phase A with hostile outputs completes.
-- **Tamper evidence:**
-  - the ledger is hash-chained;
-  - the ledger and the fixed run root must agree exactly;
-  - the attempt and the authorization are sealed into every record;
-  - the endpoint is fixed;
-  - the endpoint and the model receipts are recorded;
-  - a git anchor commit is made at each consumption and each completion.
-- **Lifecycle:**
-  - an interrupted finalization completes on resume;
-  - a finished collection cannot be abandoned;
-  - the host baseline for coding timeouts is honest.
-- **Balance.** Within each cell, conversation answers sit at the same position in A and B. A-CONV-R3-2 now
-  requires checking an expiry date.
+**Git evidence.**
 
-## Findings of this author pass, beyond round 4
+- Anchors are always re-applied (idempotently).
+- An authorized Phase B requires the Phase A ledger, the run anchor and the table to be committed.
+- The table is frozen by a governed launcher command.
+- Orphan folders are cleared by a recorded step.
+
+**Small repairs.**
+
+- The launcher neutralizes proxies.
+- Audit paths are absolute.
+- Synthesis text normalizes typographic hyphens.
+- `collect_evaluation` sanitizes its own input.
+
+## Findings of this author pass, beyond round 5
 
 | # | Finding | Repair |
 |---|---|---|
-| 1 | Resuming an attempt would have re-anchored the ledger entry that was already consumed. `git commit` with nothing to commit fails, which would have stopped a legitimate resume. | The runner anchors an entry only when it creates it, and `git_anchor` does nothing when the file is already committed with the same content. Both behaviours are tested. |
-| 2 | With 3-option and 4-option fixtures paired in one cell, a per-fixture modulo gave different answer positions in A and B | Each position is computed from the cell and slot, modulo the smallest option count (3). The independence tool now reports any imbalance as a finding; it reports none. |
-| 3 | Coding canonicalization, which the runner calls directly, did not tolerate `RecursionError` | It now does |
+| 1 | A new test showed that `collect_evaluation`, called directly on a raw lone surrogate, returned a record that could not be sealed | It sanitizes its input first, as the runner does |
 
-## Checks performed for R5
+## Checks performed for R6
 
-**Construction self-validation.** All 48 alternative correct replies are accepted by both validators, and
-all 96 incorrect replies are rejected. The incorrect set includes an action smuggled in after "none". All
-earlier construction checks still pass.
+- **Construction and independence.** The corpus and gold are byte-identical to R5 (checked with git), so all
+  R5 construction checks still pass. The independence report is valid.
+- **Declared per-cell tables.** `CONTAMINATION_ANALYSIS.md` now declares two tables: synthesis
+  conclusion-rule families and research recommendation direction.
+- **Deterministic tests.** They cover:
+  - a full Phase A with pathological coding candidates (3,200-dash chains, JSON nested 1,500 deep, 3,000
+    nested parentheses), which completes with no infrastructure failure;
+  - every finalization crash window, each followed by `--resume` and a Phase B that is valid to open;
+  - a checkpoint one record behind, at both the end and mid-run;
+  - a closed run with an edited manifest, which is refused;
+  - orphan clearing;
+  - a Phase B refused when Phase A evidence is not committed;
+  - a failed consumption anchor, re-applied on resume;
+  - the governed table freeze, with a relative audit path resolved to an absolute one;
+  - proxy neutralization.
 
-**Arithmetic.** Every computed gold value added in round 5 was re-derived by hand. A-CONV-R3-2: the
-agreement expired on 2034-01-31, before 2034-02-14.
-
-**Independence.** The report is valid with 0 findings. Answer positions are balanced within every cell.
-
-**Deterministic tests.** These are in `tools/g_route3_tests.py`, and their results are in
-`DETERMINISTIC_TEST_RESULTS.json`. They include the round-4 reviewer's attacks, now refused or
-tamper-evident:
-- ledger deletion and replay;
-- an edited ledger entry;
-- an altered anchor file;
-- an endpoint flag.
-
-They also include the reviewer's crashes, now recorded as failures; the interrupted-finalization recovery;
-the abandon guard; and the git anchor, which commits exactly one file and does nothing on resume.
-
-## Residual limitations accepted into the R5 freeze
+## Residual limitations accepted into the R6 freeze
 
 - **Pilot scale.** Zero failures in 4 bounds the per-cell failure rate below 0.527 and no lower.
 - **Router inputs.** Task and risk classes are given to the router, not inferred.
@@ -100,6 +84,6 @@ the abandon guard; and the git anchor, which commits exactly one file and does n
 
 ## Verdict
 
-**READY for external round-5 review** of the R5 freeze. Phase A may be authorized only after that review is
-clean. The authorization is the verbatim sentence `Authorize G-ROUTE3 phase A execution <R5 binding> attempt 1`,
+**READY for external round-6 review** of the R6 freeze. Phase A may be authorized only after that review is
+clean. The authorization is the verbatim sentence `Authorize G-ROUTE3 phase A execution <R6 binding> attempt 1`,
 given to `tools/g_route3_launch.py`.

@@ -28,7 +28,7 @@
     "num_predict": 350,
     "reference_answers_bounded": "every JSON reference answer is at most about 250 tokens compact"
   },
-  "model_output_robustness": "no model output can crash collection, scoring or sealing: validator or evaluator exceptions and unrecordable nesting are recorded as failures of that output; lone surrogates are replaced before sealing and the provider evidence check applies the same replacement",
+  "model_output_robustness": "no model output can crash collection, scoring or sealing: every exception before the coding sandbox subprocess starts is the model's failure; validator, evaluator, normalization and trigger exceptions are recorded as failures of that output; unserializable results drop their parsed copy; lone surrogates are replaced before sealing",
   "operational_validator": {
     "coding": "old is compared with the supplied source ignoring trailing newlines; otherwise delegated unchanged",
     "contract": "g-route3.operational-validator.v2",
@@ -96,6 +96,7 @@
     "uses_gold": false,
     "uses_model_self_reported_confidence": false
   },
+  "run_lifecycle": "finalization is idempotent and completed by --resume; a checkpoint one record behind is reconciled; a closed run (sealed closure record, anchored) is never resumable; orphan run folders are cleared by a recorded, anchored step; an authorized Phase B requires the Phase A ledger, run anchor and table committed",
   "schema_version": "g-route3.thresholds.v1",
   "secondary_escalation": {
     "max_unsafe_rate_of_escalated_stops": 0.1,
@@ -109,6 +110,6 @@
     "other_profiles": "g-route1.validators.v1 unchanged"
   },
   "threat_model": "honest operator with tamper-evident records; see the execution freeze",
-  "threshold_id": "G-ROUTE3-THRESHOLDS-R5",
+  "threshold_id": "G-ROUTE3-THRESHOLDS-R6",
   "thresholds_frozen_before_provider_contact": true
 }

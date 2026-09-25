@@ -33,7 +33,7 @@ MODEL_CAUSED_CODING_ERRORS = (ValueError, SyntaxError, json.JSONDecodeError, sub
 def json_dumps(value: Any) -> str:
     return json.dumps(value, indent=2, sort_keys=True)
 
-CONTRACT_VERSION = "g-route3.runner.v4"
+CONTRACT_VERSION = "g-route3.runner.v5"
 BENCHMARK_ID = "G-ROUTE3"
 GUARDED_PATHS = (
     "experiments/G-ROUTE3-candidate/model_bindings.json",
@@ -152,6 +152,9 @@ def attempt_outcome(entry: Mapping[str, Any]) -> dict[str, Any]:
         pass
     except Exception as exc:
         return {"outcome": "unverifiable", "reason": f"terminal_receipt_invalid:{type(exc).__name__}"}
+    closed = closure_record(store)
+    if closed is not None:
+        return {"outcome": str(closed["state"]), "reason": str(closed["reason"])}
     manifest = store.manifest()
     return {"outcome": str(manifest.get("state") or "unknown"), "reason": str(manifest.get("reason") or "")}
 
@@ -211,7 +214,7 @@ def _authorization_ok(phase: str, authorization: Mapping[str, Any] | None, *, ru
     return (fresh or resuming) and _freeze_valid()
 
 
-def abandon_attempt(phase: str, reason: str) -> dict[str, Any]:
+def abandon_attempt(phase: str, reason: str, anchor=None) -> dict[str, Any]:
     """Close the latest attempt of a phase as incomplete when it can neither finish nor resume.
 
     Only a non-terminal run can be abandoned, and only while no process holds its lease. The reason is
@@ -230,8 +233,34 @@ def abandon_attempt(phase: str, reason: str) -> dict[str, Any]:
     if len(store.call_records()) >= EXPECTED_CALLS[phase]:
         raise ValueError("attempt_has_every_call_record_resume_it_instead")
     with store.lease():
-        return store.finish(state="incomplete", reason=f"abandoned_by_operator:{str(reason).strip()}"[:500],
-                            valid_verdict=False)
+        _close(store, state="incomplete", reason=f"abandoned_by_operator:{str(reason).strip()}"[:500],
+               phase=phase, anchor=anchor)
+    return store.manifest()
+
+
+def clear_orphan_run(phase: str, run_id: str, reason: str, anchor=None) -> dict[str, Any]:
+    """Move aside a run folder that a launch created but never consumed an authorization for (for example a
+    launch interrupted before taking its lease). Only a folder with no ledger entry and no call record qualifies.
+    The move and its reason are recorded and anchored, so the fixed root agrees with the ledger again."""
+    if not str(reason).strip():
+        raise ValueError("orphan_reason_required")
+    if any(str(row["run_id"]) == run_id for row in ledger_entries(phase)):
+        raise ValueError("run_is_a_ledger_attempt_not_an_orphan")
+    source = RUN_ROOTS[phase] / run_id
+    store = RouteRunStore(RUN_ROOTS[phase], run_id, create=False)
+    if store.call_records():
+        raise ValueError("orphan_has_call_records")
+    target = RUN_ROOTS[phase] / "_orphaned" / run_id
+    target.parent.mkdir(parents=True, exist_ok=True)
+    source.rename(target)
+    record = {"benchmark_id": BENCHMARK_ID, "phase": phase, "run_id": run_id, "reason": str(reason).strip()[:500],
+              "moved_to": str(target), "cleared_at": now()}
+    path = RUN_ANCHORS / f"phase-{phase}-{run_id}-orphan.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json_dumps(record) + "\n", encoding="utf-8", newline="\n")
+    if anchor is not None:
+        anchor("orphan_cleared", path)
+    return record
 
 
 def phase_a_authorized(authorization: Mapping[str, Any] | None, *, run_id: str | None = None,
@@ -262,12 +291,9 @@ def consume_authorization(phase: str, authorization: Mapping[str, Any], run_id: 
 
 
 def _consume_and_anchor(phase: str, authorization: Mapping[str, Any], run_id: str, run_root: Path, anchor) -> None:
-    """Consume the attempt; anchor the ledger entry in git only when this call created it (not on resume)."""
-    path = AUTHORIZATION_LEDGER / f"phase-{phase}-attempt-{int(authorization['attempt']):03d}.json"
-    created = not path.exists()
-    consume_authorization(phase, authorization, run_id, run_root)
-    if created:
-        anchor("authorization_consumed", path)
+    """Consume the attempt and anchor its ledger entry in git (a no-op when already committed)."""
+    path = consume_authorization(phase, authorization, run_id, run_root)
+    anchor("authorization_consumed", path)      # idempotent: re-applied on resume if an earlier commit failed
 
 
 def phase_a_attempts() -> list[dict[str, Any]]:
@@ -540,6 +566,23 @@ def _failed_coding_evidence(fixture: Mapping[str, Any]) -> dict[str, Any]:
             "isolated": True, "compile_pass": False, "tests_pass": False, "test_exit_code": 1, "test_count": 0}
 
 
+def _coding_candidate_error(fixture: Mapping[str, Any], payload: Any) -> str | None:
+    """Run the frozen runner's own pre-subprocess steps in-process. Any exception is reported, never raised."""
+    from g_route1_coding_runner import _parse_output, validate_candidate_ast
+    from g_route1_validators import coding_candidate_source
+
+    try:
+        output = _parse_output(payload)
+        if set(output) != {"path", "old", "new"}:
+            return "coding_output_schema_mismatch"
+        if output["path"] != fixture["input"]["allowed_path"]:
+            return "coding_path_not_allowed"
+        validate_candidate_ast(coding_candidate_source(fixture["input"], output))
+    except Exception as exc:
+        return f"coding_candidate_rejected:{type(exc).__name__}"
+    return None
+
+
 def _host_baseline_ok(fixture: Mapping[str, Any]) -> bool:
     """Run a trivial whitelist-clean candidate on the same host. It fails its tests quickly, so a timeout or any
     exception here means the host, not the model, is the problem."""
@@ -553,7 +596,8 @@ def _host_baseline_ok(fixture: Mapping[str, Any]) -> bool:
 
 
 def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, activity, control, guarded_root,
-             resume, include_table, manifest_extra, on_ready: Callable[[], Any] | None = None) -> dict[str, Any]:
+             resume, include_table, manifest_extra, on_ready: Callable[[], Any] | None = None,
+             anchor=None) -> dict[str, Any]:
     from g_route3_qualification import collect_evaluation, safe_normalize
 
     receipts = verify_model_receipts(model_receipts)
@@ -597,7 +641,7 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
             on_ready()      # the authorization is consumed only once this run exists and holds its lease
         for scheduled in schedule[int(checkpoint["next_position"]) - 1:]:
             if guarded_dependency_digest(include_table=include_table, root=guarded_root) != guarded:
-                store.finish(state="incomplete", reason="guarded_dependency_drift", valid_verdict=False)
+                _close(store, state="incomplete", reason="guarded_dependency_drift", phase=phase, anchor=anchor)
                 raise RuntimeError("guarded_dependency_drift")
             command = control() if control else "continue"
             if command == "pause":
@@ -607,7 +651,7 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
                               units=(counts["completed"], expected, "calls"), metrics=telemetry(scheduled["position"]))
                 return {"state": "paused", "run_id": run_id, "calls_completed": counts["completed"]}
             if command == "cancel":
-                store.finish(state="cancelled", reason="operator_cancelled", valid_verdict=False)
+                _close(store, state="cancelled", reason="operator_cancelled", phase=phase, anchor=anchor)
                 activity.emit("benchmark_cancelled", state="cancelled", stage="finalization",
                               units=(counts["completed"], expected, "calls"))
                 return {"state": "cancelled", "run_id": run_id, "calls_completed": counts["completed"]}
@@ -627,7 +671,7 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
                 store.write_failure({"failure_type": "infrastructure_failure", "reason": reason,
                                      "call_id": scheduled["call_id"], "schedule_position": scheduled["position"],
                                      "belief_effects": "none"})
-                store.finish(state="incomplete", reason=reason, valid_verdict=False)
+                _close(store, state="incomplete", reason=reason, phase=phase, anchor=anchor)
                 activity.emit("benchmark_incomplete", state="incomplete", stage="finalization",
                               units=(counts["completed"], expected, "calls"))
                 return {"state": "incomplete", "reason": reason, "run_id": run_id, "calls_completed": counts["completed"]}
@@ -644,18 +688,24 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
             evidence = None
             if fixture["validator_profile"] == "coding.v1":
                 executable, _ = canonical_coding_payload(fixture, canonical["payload"])
-                try:
+                candidate_error = _coding_candidate_error(fixture, executable)
+                if candidate_error is not None:
+                    # rejected before any subprocess exists: parsing, schema, anchor or whitelist, including
+                    # RecursionError or MemoryError from pathological input. Always the model's failure.
+                    evidence = _failed_coding_evidence(fixture)
+                else:
+                  try:
                     evidence = run_isolated_fixture(fixture, executable)
-                except subprocess.TimeoutExpired:
+                  except subprocess.TimeoutExpired:
                     # a timeout is the model's only if the unchanged source runs in time on this host right now
                     evidence = _failed_coding_evidence(fixture)
                     if not _host_baseline_ok(fixture):
                         infrastructure_failure = infrastructure_failure or "coding_sandbox_host_slow"
-                except MODEL_CAUSED_CODING_ERRORS:
-                    # malformed answer, disallowed code or a candidate that hangs: the model's failure
+                  except MODEL_CAUSED_CODING_ERRORS:
+                    # the candidate passed every pre-subprocess check, then failed in a model-caused way
                     evidence = _failed_coding_evidence(fixture)
-                except Exception as exc:
-                    # the sandbox host failed; never charge that to the model
+                  except Exception as exc:
+                    # the sandbox host failed once the subprocess stage began; never charge that to the model
                     evidence = _failed_coding_evidence(fixture)
                     infrastructure_failure = (infrastructure_failure
                                               or f"coding_sandbox_host_failure:{type(exc).__name__}"[:200])
@@ -689,12 +739,38 @@ def _collect(*, phase: str, provider_call, model_receipts, run_root, run_id, act
             activity.emit("benchmark_call_persisted", state="running", stage="collection",
                           units=(counts["completed"], expected, "calls"), metrics=telemetry(scheduled["position"] + 1))
             if infrastructure_failure:
-                store.finish(state="incomplete", reason=infrastructure_failure, valid_verdict=False)
+                _close(store, state="incomplete", reason=infrastructure_failure, phase=phase, anchor=anchor)
                 activity.emit("benchmark_incomplete", state="incomplete", stage="finalization",
                               units=(counts["completed"], expected, "calls"))
                 return {"state": "incomplete", "reason": infrastructure_failure, "run_id": run_id,
                         "calls_completed": counts["completed"]}
     return {"state": "collected", "run_id": run_id, "store": store, "guarded": guarded, "activity": activity}
+
+
+def _close(store, *, state: str, reason: str, phase: str | None = None, anchor=None) -> None:
+    """End a run without completing it: a sealed closure record, then the manifest, then (authorized) a git anchor.
+    A run with a closure record is never resumable, whatever its unsealed manifest later says."""
+    if store.manifest().get("state") not in TERMINAL:
+        store.write_failure({"failure_type": "run_closed", "state": state, "reason": str(reason)[:500],
+                             "sealed_calls": len(store.call_records()), "belief_effects": "none"})
+        store.finish(state=state, reason=reason, valid_verdict=False)
+    if anchor is not None and phase is not None:
+        path = RUN_ANCHORS / f"phase-{phase}-{store.run_id}-closed.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if not path.exists():
+            path.write_text(json_dumps({"benchmark_id": BENCHMARK_ID, "phase": phase, "run_id": store.run_id,
+                                        "state": state, "reason": str(reason)[:500],
+                                        "sealed_calls": len(store.call_records())}) + "\n",
+                            encoding="utf-8", newline="\n")
+        anchor("run_closed", path)
+
+
+def closure_record(store) -> dict[str, Any] | None:
+    for path in sorted((store.root / "failures").glob("*.json")):
+        row = load_json(path)
+        if row.get("failure_type") == "run_closed":
+            return row
+    return None
 
 
 def _write_anchor(store, phase: str, anchor) -> None:
@@ -710,60 +786,100 @@ def _write_anchor(store, phase: str, anchor) -> None:
     anchor("run_complete", path)
 
 
-def _complete_interrupted_finalization(store, activity, *, phase: str, anchor) -> dict[str, Any] | None:
-    """A run killed after sealing its receipt but before finishing would otherwise deadlock. Finish it."""
+def _emit_complete(activity, expected: int) -> dict[str, Any]:
     try:
-        receipt = store.terminal_receipt()
-    except FileNotFoundError:
-        return None
-    if store.manifest().get("state") in TERMINAL:
-        return None
-    if receipt.get("call_records_sha256") != _call_records_digest(store.call_records()):
-        raise ValueError("interrupted_finalization_receipt_mismatch")
-    store.finish(state="complete", reason="completed_and_scored_finalization_resumed", valid_verdict=True)
-    expected = EXPECTED_CALLS[phase]
-    projection = activity.emit("benchmark_complete", state="complete", stage="finalization",
-                               units=(expected, expected, "calls"))
-    store.seal_terminal_checkpoint(state="complete", expected_calls=expected,
-                                   activity_state=str((projection or {}).get("state") or ""))
-    _write_anchor(store, phase, anchor)
-    return {"state": "complete", "run_id": store.run_id, "calls_completed": len(store.call_records()),
-            "score": store.score_record(), "finalization_resumed": True}
+        projection = activity.emit("benchmark_complete", state="complete", stage="finalization",
+                                   units=(expected, expected, "calls"))
+    except Exception:
+        projection = None      # the activity view may already be complete (a resumed finalization)
+    return dict(projection or {"state": "complete"})
 
 
-def _finish(store, activity, *, phase: str, report: Mapping[str, Any], guarded: str, include_table: bool,
-            guarded_root, anchor=None) -> dict[str, Any]:
+def _finalize(store, activity, *, phase: str, report_fn: Callable[[], Mapping[str, Any]], guarded: str,
+              include_table: bool, guarded_root, anchor=None, resumed: bool = False) -> dict[str, Any]:
+    """Finish a run that holds every call record. Every step is idempotent, so a crash between any two steps
+    is repaired by running this again (through --resume): an existing sealed score must equal the recomputed
+    one, an existing receipt must chain to the records and score, the manifest is finished if it is not yet,
+    the checkpoint seal and the git anchor are no-ops when already done."""
     expected = EXPECTED_CALLS[phase]
-    store.write_score(report)
-    if guarded_dependency_digest(include_table=include_table, root=guarded_root) != guarded:
-        store.finish(state="incomplete", reason="post_run_dependency_drift", valid_verdict=False)
-        raise RuntimeError("post_run_dependency_drift")
     records = store.call_records()
-    store.write_terminal_receipt({
-        "contract_version": "g-route3.terminal-receipt.v2", "run_id": store.run_id, "phase": phase,
-        "state": "complete", "result_state": "complete", "calls_persisted": len(records),
-        "call_records_sha256": _call_records_digest(records),
-        "synthetic_fixture": bool(store.manifest().get("synthetic_fixture")),
-        "execution_freeze_sha256": _freeze_digest(),
-        "authorization_attempt": store.manifest().get("authorization_attempt"),
-        "authorization_sha256": store.manifest().get("authorization_sha256"),
-        "provider_endpoint": store.manifest().get("provider_endpoint"),
-        "model_receipts": store.manifest().get("model_receipts"),
-        "threat_model": THREAT_MODEL,
-        "completed_position": expected, "next_position": expected + 1,
-        "score_record_sha256": store.score_record()["record_sha256"], "guarded_digest": guarded,
-        "mutation_guard": "passed", "production_routing_invoked": False, "belief_effects": "none", "completed": now()})
-    store.finish(state="complete", reason="completed_and_scored", valid_verdict=True)
-    projection = activity.emit("benchmark_complete", state="complete", stage="finalization",
-                               units=(expected, expected, "calls"))
-    store.seal_terminal_checkpoint(state="complete", expected_calls=expected,
-                                   activity_state=str((projection or {}).get("state") or ""))
-    views = verify_terminal_views(store, projection or {}, expected_calls=expected)
+    if len(records) != expected:
+        raise ValueError("finalization_requires_every_call_record")
+    manifest_state = store.manifest().get("state")
+    if manifest_state in TERMINAL and manifest_state != "complete":
+        raise ValueError(f"finalization_run_already_closed:{manifest_state}")
+    if not (store.root / "terminal_receipt.json").is_file():
+        report = dict(report_fn())
+        if (store.root / "score.json").is_file():
+            existing = {k: v for k, v in store.score_record().items() if k != "record_sha256"}
+            if json_digest(existing) != json_digest(report):
+                raise ValueError("finalization_existing_score_differs")
+        else:
+            store.write_score(report)
+        if guarded_dependency_digest(include_table=include_table, root=guarded_root) != guarded:
+            _close(store, state="incomplete", reason="post_run_dependency_drift", phase=phase, anchor=anchor)
+            raise RuntimeError("post_run_dependency_drift")
+        store.write_terminal_receipt({
+            "contract_version": "g-route3.terminal-receipt.v3", "run_id": store.run_id, "phase": phase,
+            "state": "complete", "result_state": "complete", "calls_persisted": len(records),
+            "call_records_sha256": _call_records_digest(records),
+            "synthetic_fixture": bool(store.manifest().get("synthetic_fixture")),
+            "execution_freeze_sha256": _freeze_digest(),
+            "authorization_attempt": store.manifest().get("authorization_attempt"),
+            "authorization_sha256": store.manifest().get("authorization_sha256"),
+            "provider_endpoint": store.manifest().get("provider_endpoint"),
+            "model_receipts": store.manifest().get("model_receipts"),
+            "threat_model": THREAT_MODEL,
+            "completed_position": expected, "next_position": expected + 1,
+            "score_record_sha256": store.score_record()["record_sha256"], "guarded_digest": guarded,
+            "mutation_guard": "passed", "production_routing_invoked": False, "belief_effects": "none",
+            "completed": now()})
+    receipt = store.terminal_receipt()
+    if (receipt.get("call_records_sha256") != _call_records_digest(records)
+            or receipt.get("score_record_sha256") != store.score_record()["record_sha256"]):
+        raise ValueError("finalization_receipt_does_not_chain")
+    if store.manifest().get("state") != "complete":
+        store.finish(state="complete", reason="completed_and_scored", valid_verdict=True)
+    projection = _emit_complete(activity, expected)
+    store.seal_terminal_checkpoint(state="complete", expected_calls=expected, activity_state="complete")
+    views = verify_terminal_views(store, projection, expected_calls=expected)
     if not views["valid"]:
         raise RuntimeError("route_terminal_view_mismatch:" + ",".join(views["reasons"]))
     _write_anchor(store, phase, anchor)
     return {"state": "complete", "run_id": store.run_id, "calls_completed": len(records),
-            "score": report, "terminal_views": views}
+            "score": store.score_record(), "terminal_views": views, "finalization_resumed": resumed}
+
+
+def _reconcile_checkpoint(store) -> None:
+    """A crash between sealing a call record and advancing the checkpoint leaves the checkpoint exactly one
+    record behind. The sealed record is authoritative; advance the checkpoint to match."""
+    raw = load_json(store.checkpoint_path)
+    observed = str(raw.pop("checkpoint_sha256", ""))
+    if observed != json_digest(raw) or raw.get("state") in TERMINAL or raw.get("run_id") != store.run_id:
+        return
+    records = store.call_records()
+    if (records and raw.get("next_position") == len(records) and raw.get("calls_persisted") == len(records) - 1
+            and records[-1].get("schedule_position") == len(records)):
+        store.write_checkpoint(next_position=len(records) + 1, state="paused",
+                               guarded_digest=str(raw.get("guarded_digest") or ""))
+
+
+def _resume_existing(phase: str, run_root, run_id, resume: bool, activity, anchor, guarded_root,
+                     report_fn_for) -> dict[str, Any] | None:
+    """On --resume: refuse a closed run; reconcile the checkpoint; finish any run that already holds every
+    record or is already complete, without contacting the provider again."""
+    if not resume or not run_id:
+        return None
+    store = RouteRunStore(Path(run_root), run_id, create=False)
+    if closure_record(store) is not None:
+        raise ValueError("attempt_was_closed_and_is_not_resumable")
+    _reconcile_checkpoint(store)
+    if len(store.call_records()) != EXPECTED_CALLS[phase] and store.manifest().get("state") != "complete":
+        return None
+    with store.lease():
+        return _finalize(store, activity or NullActivity(), phase=phase, report_fn=report_fn_for(store),
+                         guarded=str(store.manifest().get("guarded_digest") or ""), include_table=(phase == "B"),
+                         guarded_root=guarded_root, anchor=anchor, resumed=True)
 
 
 def _manifest_extra(synthetic: bool, authorization, model_receipts) -> dict[str, Any]:
@@ -776,14 +892,41 @@ def _manifest_extra(synthetic: bool, authorization, model_receipts) -> dict[str,
     return row
 
 
-def _resume_finalization(phase: str, run_root, run_id, resume: bool, activity, anchor) -> dict[str, Any] | None:
-    if not resume or not run_id:
-        return None
+def _phase_a_report_fn(store) -> Callable[[], dict[str, Any]]:
+    def build() -> dict[str, Any]:
+        from g_route3_qualification import attach_semantics, qualify
+        cells = qualify(attach_semantics(store.call_records(), "A"))
+        return {"contract_version": "g-route3.phase-a-score.v1", "phase": "A", "cells": cells,
+                "qualified_cells": sum(c["verdict"] == "qualified" for c in cells),
+                "insufficient_cells": sum(c["verdict"] == "insufficient_evidence" for c in cells),
+                "table_frozen": False, "corpus_b_consulted": False, "belief_effects": "none"}
+    return build
+
+
+def _phase_b_report_fn(store, *, synthetic: bool, phase_a_run_id: str) -> Callable[[], dict[str, Any]]:
+    def build() -> dict[str, Any]:
+        from g_route3_qualification import load_frozen_table
+        from g_route3_validation import score
+        table = load_frozen_table(QUALIFICATION_TABLE_PATH)
+        if table["table_sha256"] != store.manifest().get("qualification_table_sha256"):
+            raise RuntimeError("qualification_table_mutated")
+        return {**score(store.call_records(), table), "synthetic_fixture": bool(synthetic),
+                "phase_b_attempts": attempts_with_outcomes("B"), "phase_a_run_id": phase_a_run_id}
+    return build
+
+
+def _score_and_finalize(store, activity, *, phase: str, report_fn, guarded: str, include_table: bool,
+                        guarded_root, anchor) -> dict[str, Any]:
+    expected = EXPECTED_CALLS[phase]
+    activity.emit("benchmark_scoring", state="running", stage="scoring", units=(expected, expected, "calls"))
     try:
-        store = RouteRunStore(Path(run_root), run_id, create=False)
-    except FileNotFoundError:
-        return None
-    return _complete_interrupted_finalization(store, activity or NullActivity(), phase=phase, anchor=anchor)
+        report = report_fn()
+    except Exception as exc:
+        reason = f"scorer_integrity_failure:{type(exc).__name__}:{exc}"[:500]
+        _close(store, state="failed", reason=reason, phase=phase, anchor=anchor)
+        return {"state": "failed", "reason": reason, "run_id": store.run_id}
+    return _finalize(store, activity, phase=phase, report_fn=lambda: report, guarded=guarded,
+                     include_table=include_table, guarded_root=guarded_root, anchor=anchor)
 
 
 def execute_phase_a(*, provider_call, model_receipts, run_root, run_id: str | None = None, activity=None,
@@ -799,41 +942,27 @@ def execute_phase_a(*, provider_call, model_receipts, run_root, run_id: str | No
         if not phase_a_authorized(authorization, run_id=run_id, run_root=Path(run_root), resume=resume):
             raise PermissionError("g_route3_phase_a_not_authorized")
         on_ready = lambda: _consume_and_anchor("A", authorization or {}, run_id, Path(run_root), anchor)  # noqa: E731
-    finished = _resume_finalization("A", run_root, run_id, resume, activity, anchor)
+    finished = _resume_existing("A", run_root, run_id, resume, activity, anchor, guarded_root,
+                                lambda store: _phase_a_report_fn(store))
     if finished is not None:
         return finished
     got = _collect(phase="A", provider_call=provider_call, model_receipts=model_receipts, run_root=run_root,
                    run_id=run_id, activity=activity, control=control, guarded_root=guarded_root, resume=resume,
                    include_table=False, manifest_extra=_manifest_extra(synthetic_fixture, authorization, model_receipts),
-                   on_ready=on_ready)
+                   on_ready=on_ready, anchor=anchor)
     if got["state"] != "collected":
         return got
-    from g_route3_qualification import attach_semantics, qualify
-
-    store, activity = got["store"], got["activity"]
-    activity.emit("benchmark_scoring", state="running", stage="scoring",
-                  units=(EXPECTED_CALLS["A"], EXPECTED_CALLS["A"], "calls"))
-    try:
-        judged = attach_semantics(store.call_records(), "A")
-        cells = qualify(judged)
-        report = {"contract_version": "g-route3.phase-a-score.v1", "phase": "A", "cells": cells,
-                  "qualified_cells": sum(c["verdict"] == "qualified" for c in cells),
-                  "insufficient_cells": sum(c["verdict"] == "insufficient_evidence" for c in cells),
-                  "table_frozen": False, "corpus_b_consulted": False, "belief_effects": "none"}
-    except Exception as exc:
-        reason = f"scorer_integrity_failure:{type(exc).__name__}:{exc}"[:500]
-        store.write_failure({"failure_type": "scorer_integrity_failure", "reason": reason, "belief_effects": "none"})
-        store.finish(state="failed", reason=reason, valid_verdict=False)
-        return {"state": "failed", "reason": reason, "run_id": run_id}
-    return _finish(store, activity, phase="A", report=report, guarded=got["guarded"], include_table=False,
-                   guarded_root=guarded_root, anchor=anchor)
+    store = got["store"]
+    return _score_and_finalize(store, got["activity"], phase="A", report_fn=_phase_a_report_fn(store),
+                               guarded=got["guarded"], include_table=False, guarded_root=guarded_root, anchor=anchor)
 
 
 def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, phase_a_run_id: str,
                     run_id: str | None = None, activity=None, authorization: Mapping[str, Any] | None = None,
                     synthetic_fixture: bool = False, resume: bool = False,
                     control: Callable[[], str] | None = None, guarded_root=None,
-                    anchor: Callable[[str, Path], Any] | None = None) -> dict[str, Any]:
+                    anchor: Callable[[str, Path], Any] | None = None,
+                    committed: Callable[[Path], bool] | None = None) -> dict[str, Any]:
     if synthetic_fixture:
         _require_declared_synthetic_provider(provider_call)
         try:
@@ -845,6 +974,13 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
             raise PermissionError("synthetic_phase_b_requires_a_synthetic_phase_a")
     else:
         _require_governed_real_path(provider_call, guarded_root, "B", run_root, anchor)
+        if committed is None:
+            raise PermissionError("authorized_phase_b_requires_a_git_commit_check")
+        evidence = [AUTHORIZATION_LEDGER / f"phase-A-attempt-{row['attempt']:03d}.json" for row in ledger_entries("A")]
+        evidence += [RUN_ANCHORS / f"phase-A-{phase_a_run_id}.json", QUALIFICATION_TABLE_PATH]
+        uncommitted = [path.name for path in evidence if not committed(path)]
+        if uncommitted:
+            raise PermissionError("phase_a_evidence_not_committed_in_git:" + ",".join(uncommitted))
     pre = phase_b_preconditions(Path(phase_a_root), phase_a_run_id, allow_synthetic_phase_a=synthetic_fixture)
     if not pre["valid"]:
         raise PermissionError("g_route3_phase_b_blocked:" + ",".join(pre["reasons"]))
@@ -855,7 +991,9 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
                                   run_root=Path(run_root), resume=resume):
             raise PermissionError("g_route3_phase_b_not_authorized")
         on_ready = lambda: _consume_and_anchor("B", authorization or {}, run_id, Path(run_root), anchor)  # noqa: E731
-    finished = _resume_finalization("B", run_root, run_id, resume, activity, anchor)
+    finished = _resume_existing("B", run_root, run_id, resume, activity, anchor, guarded_root,
+                                lambda store: _phase_b_report_fn(store, synthetic=synthetic_fixture,
+                                                                 phase_a_run_id=phase_a_run_id))
     if finished is not None:
         return finished
     got = _collect(phase="B", provider_call=provider_call, model_receipts=model_receipts, run_root=run_root,
@@ -863,29 +1001,14 @@ def execute_phase_b(*, provider_call, model_receipts, run_root, phase_a_root, ph
                    include_table=True, manifest_extra={**_manifest_extra(synthetic_fixture, authorization, model_receipts),
                                                        "qualification_table_sha256": pre["table_sha256"],
                                                        "phase_a_run_id": phase_a_run_id},
-                   on_ready=on_ready)
+                   on_ready=on_ready, anchor=anchor)
     if got["state"] != "collected":
         return got
-    from g_route3_qualification import load_frozen_table
-    from g_route3_validation import score
-
-    store, activity = got["store"], got["activity"]
-    table = load_frozen_table(QUALIFICATION_TABLE_PATH)
-    if table["table_sha256"] != pre["table_sha256"]:
-        store.finish(state="incomplete", reason="qualification_table_mutated", valid_verdict=False)
-        raise RuntimeError("qualification_table_mutated")
-    activity.emit("benchmark_scoring", state="running", stage="scoring",
-                  units=(EXPECTED_CALLS["B"], EXPECTED_CALLS["B"], "calls"))
-    try:
-        report = {**score(store.call_records(), table), "synthetic_fixture": bool(synthetic_fixture),
-                  "phase_b_attempts": attempts_with_outcomes("B"), "phase_a_run_id": phase_a_run_id}
-    except Exception as exc:
-        reason = f"scorer_integrity_failure:{type(exc).__name__}:{exc}"[:500]
-        store.write_failure({"failure_type": "scorer_integrity_failure", "reason": reason, "belief_effects": "none"})
-        store.finish(state="failed", reason=reason, valid_verdict=False)
-        return {"state": "failed", "reason": reason, "run_id": run_id}
-    return _finish(store, activity, phase="B", report=report, guarded=got["guarded"], include_table=True,
-                   guarded_root=guarded_root, anchor=anchor)
+    store = got["store"]
+    return _score_and_finalize(store, got["activity"], phase="B",
+                               report_fn=_phase_b_report_fn(store, synthetic=synthetic_fixture,
+                                                            phase_a_run_id=phase_a_run_id),
+                               guarded=got["guarded"], include_table=True, guarded_root=guarded_root, anchor=anchor)
 
 
 __all__ = ["CONTRACT_VERSION", "BENCHMARK_ID", "GUARDED_PATHS", "TABLE_RELATIVE", "AUTHORIZATION_LEDGER",
@@ -894,4 +1017,5 @@ __all__ = ["CONTRACT_VERSION", "BENCHMARK_ID", "GUARDED_PATHS", "TABLE_RELATIVE"
            "ledger_entries", "verify_model_receipts", "GovernedOllamaProvider", "REAL_PROVIDER_TYPES",
            "attempt_outcome", "attempts_with_outcomes", "abandon_attempt", "RUN_ROOTS", "RUN_ANCHORS",
            "OLLAMA_ENDPOINT", "THREAT_MODEL", "ledger_run_root_mismatches", "sanitize_strings",
+           "clear_orphan_run", "closure_record",
            "phase_b_authorized", "execute_phase_a", "execute_phase_b", "utc_run_id"]
