@@ -83,6 +83,12 @@ first new call exits without writing. Evidence on the fixed code:
     seeded subsets), transport failure and sandbox failure.
   - Also run: torn entries and ledgers, flush failures, environment cases, 18 gap seeds (all 13 interrupt safe
     points) and 9 review seeds.
+- **Confirmation review of round 2:** 0 BLOCKING, 2 MUST-FIX and 8 notes, all fixed. See the confirmation section
+  of `R7_IMPLEMENTATION_REVIEW_ROUND2.md`. Results:
+  - R7 suite: 41 tests pass.
+  - Differential: PASS.
+  - Targeted quick campaign: clean, including 16 new resumed-interrupt seeds for ruling 12.
+  - The full certification campaign reruns on this code.
 
 ## Obligations
 

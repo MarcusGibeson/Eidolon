@@ -376,7 +376,7 @@ class Lifecycle:
             if J.ORPHAN_TEMP.match(name) and f"phase_{phase.lower()}/ledger/{name}" not in tree:
                 data = self.fs.read_bytes(self.ledger_dir(phase) / name)
                 if data is not None:
-                    out[f"phase_{phase.lower()}/ledger/{name}"] = data
+                    out[f"phase_{phase.lower()}/ledger/{name}"] = self._stable(self.ledger_dir(phase) / name, data)
         return out
 
     def _commit(self, additions: dict[str, bytes], message: str, *, include_ledgers: bool = True,
@@ -393,7 +393,7 @@ class Lifecycle:
                     if path not in tree:
                         data = self.fs.read_bytes(disk)
                         if data is not None:
-                            additions[path] = data
+                            additions[path] = self._stable(disk, data)
         if disclosure_phase is not None:
             path, record = self._disclosure_record(disclosure_phase)
             additions[path] = record
@@ -413,7 +413,7 @@ class Lifecycle:
         """Gold-free disclosure rows for every consumed attempt of a phase, under every freeze."""
         ledger = self.ledger(phase)
         rows = []
-        schedule_digests: dict[int, str | None] = {}
+        requests: dict[int, dict[str, str | None]] = {}
         for attempt, consumed in sorted(ledger.consumed.items()):
             run_id = str(consumed.get("run_id"))
             row = {"attempt": attempt, "run_id": run_id, "freeze_binding": consumed.get("freeze_binding"),
@@ -426,13 +426,9 @@ class Lifecycle:
                                   orphan_temps=list(replay.orphan_temps))
                 counts = _counts(replay)
             if closure is not None:
-                prefix = f"closures/{phase}/{attempt}-{run_id}/"
-                committed = {path[len(prefix):]: blob for path, blob in self.tree().items() if path.startswith(prefix)}
                 row.update(outcome="closed_at_ledger", reason=closure.get("reason"),
                            counts="unknown", lower_bounds=counts, lower_bounds_source="individually sealed files",
-                           snapshot_matches_recorded_digest=(
-                               J.digest(sorted(committed.items())) == closure.get("snapshot_digest")
-                               if committed else None))
+                           snapshot_matches_recorded_digest=self._snapshot_check(phase, attempt, run_id, closure))
             elif replay.state == "completed":
                 row.update(outcome="completed", reason="completed_and_scored", counts=counts)
             elif replay.state == "closed":
@@ -444,9 +440,8 @@ class Lifecycle:
             row["raw_output_sha256"] = {str(e["payload"]["position"]): e["payload"].get("raw_output_sha256")
                                         for e in replay.entries if e["kind"] == "call_recorded"}
             row["temporary_file_records"] = self._orphan_temp_records(phase, run_id, replay)
-            first = replay.entries[0] if replay.entries and replay.entries[0]["kind"] == "run_created" else None
-            schedule_digests[attempt] = ((first["payload"].get("guarded_files") or {}).get(
-                f"experiments/G-ROUTE3-candidate/schedule_{phase.lower()}.json") if first else None)
+            requests[attempt] = {str(e["payload"]["position"]): e["payload"].get("request_sha256")
+                                 for e in replay.entries if e["kind"] == "call_started"}
             rows.append(row)
         identity: dict[str, dict[str, Any]] = {}
         for row in rows:
@@ -455,12 +450,32 @@ class Lifecycle:
         for row in rows:
             row["cross_attempt_identity"] = {
                 position: ("undeterminable"
-                           if len({schedule_digests[int(a)] for a in by_attempt}) != 1
-                           or None in {schedule_digests[int(a)] for a in by_attempt}
+                           if len({requests[int(a)].get(position) for a in by_attempt}) != 1
+                           or None in {requests[int(a)].get(position) for a in by_attempt}
                            else len({sha for sha in by_attempt.values()}) == 1)
                 for position, by_attempt in identity.items()
                 if position in row["raw_output_sha256"] and len(by_attempt) > 1}
         return rows
+
+    def _snapshot_check(self, phase: str, attempt: int, run_id: str, closure: Mapping[str, Any]) -> Any:
+        """Does the closure snapshot match its recorded digest (A-N3b, MF-1)? The value is fixed by the disclosure
+        committed with the closure's own boundary and reused from then on, so files that appear later can never
+        change it. Before that commit it is computed from the files as found, which are exactly what that commit
+        adds. A closure that recorded no digest (a torn-acknowledgement closure) says so."""
+        recorded = closure.get("snapshot_digest")
+        if recorded is None:
+            return "no_digest_recorded"
+        tree = self.tree()
+        for path in sorted(p for p in tree if p.startswith(f"disclosure/{phase}/")):
+            try:
+                record = json.loads(self.repo.read_blob(tree[path]).decode("utf-8"))
+            except (ValueError, UnicodeDecodeError, ev.EvidenceError):
+                continue
+            for row in record.get("attempts") or []:
+                if row.get("attempt") == attempt and row.get("run_id") == run_id and \
+                        isinstance(row.get("snapshot_matches_recorded_digest"), bool):
+                    return row["snapshot_matches_recorded_digest"]
+        return _snapshot_digest(self._snapshot(phase, run_id)) == recorded
 
     def _orphan_temp_records(self, phase: str, run_id: str, replay: J.Replay) -> list[dict[str, Any]]:
         """B-O5: sealed call records that survive only in .orphan-tmp files, labelled as such."""
@@ -766,10 +781,11 @@ class Lifecycle:
                     missing = {journal + name: self._stable(directory / name, data)
                                for name, data in files.items() if journal + name not in tree and name in accepted}
                     got = self.read_dir(self.journal_dir(phase, run_id))
-                    extras = {journal + name: self.fs.read_bytes(self.journal_dir(phase, run_id) / name)
+                    extras = {journal + name: self.fs.read_bytes(directory / name)
                               for name in (got[1] if got else []) if J.ORPHAN_TEMP.match(name)
                               and journal + name not in tree}
-                    missing.update({k: v for k, v in extras.items() if v is not None})
+                    missing.update({k: self._stable(directory / k[len(journal):], v)
+                                    for k, v in extras.items() if v is not None})
                     if missing:
                         label = "terminal" if replay.state in ("completed", "closed") else "collection"
                         self._commit(missing, f"{label} {phase} attempt {attempt}", disclosure_phase=phase)
@@ -1022,6 +1038,8 @@ class Lifecycle:
                 {"collected": "scoring_started", "scoring_interrupted": "scored", "scored": "completed"}[state]
             payload = self._derive(phase, run_id, replay, target)
             self._check_against_committed(phase, run_id, target, payload)
+            if self.rt.interrupted():
+                return "interrupted"                               # a signal during the scorer child (N1)
             self._publish_run_entry(phase, run_id, replay, target, payload, acknowledging=bool(replay.tear))
 
     def _derive(self, phase: str, run_id: str, replay: J.Replay, kind: str) -> dict[str, Any]:
@@ -1584,7 +1602,7 @@ def _individually_sealed(files: Mapping[str, bytes]) -> list[dict[str, Any]]:
     for name in sorted(files, key=lambda n: (n[:6], not n.endswith(".json"))):
         match = J.ENTRY_NAME.match(name)
         envelope = J.parse_entry(files[name]) if match else None
-        if envelope is not None and int(match.group(1)) not in chosen:
+        if envelope is not None and envelope["entry"] == int(match.group(1)) and int(match.group(1)) not in chosen:
             chosen[int(match.group(1))] = envelope
     return [chosen[n] for n in sorted(chosen)]
 

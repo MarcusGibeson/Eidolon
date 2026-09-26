@@ -952,11 +952,14 @@ boundaries are computed from replay in J8 step 5.
 - A pending consumption boundary is superseded by the §6 ledger-level closure **only** when the run has no
   valid entry (`absent`, or a tear from entry 1).
 - Any other run that cannot be committed as it replays is an integrity failure (§9.4).
-- Only bytes that replay accepted are committed: parsed and sealed entries, and `.torn` files an accepted entry
-  acknowledges. Each file is read a second time just before its commit, and a disagreement refuses with
+- Of the entry files, only bytes that replay accepted are committed: parsed and sealed entries, and `.torn` files an
+  accepted entry acknowledges. Orphan temporary files, quarantine files and snapshot files are committed as found.
+  Every file is read a second time just before its commit, and a disagreement refuses with
   `…retry_after_verification`.
-- A closure snapshot is committed as found. If its digest differs from the recorded `snapshot_digest`, the
-  disclosure row says so (`snapshot_matches_recorded_digest: false`); the boundary never stays pending for it.
+- A closure snapshot is committed as found. The disclosure committed with the closure's own boundary records
+  whether it matches the recorded `snapshot_digest` (`snapshot_matches_recorded_digest`). Every later disclosure
+  reuses that value, so files that appear later cannot change it. A closure that recorded no digest (a torn
+  acknowledgement) says `no_digest_recorded`. The boundary never stays pending because of a mismatch.
 
 ### 13.4 Verification (every command, J8 step 2)
 
@@ -1106,7 +1109,7 @@ The redirect stub documents the declared behaviour.
 | Table and audit copy published, then committed | An identical rerun does nothing. A torn table is rebuilt before its commit and restored after it. |
 | Disclosure record | Part of its boundary commit, and rebuilt with it |
 | Projection | Rebuilt |
-| Interrupt flag set | Closed through the normal path before `collected`; plain exit after. A failure field takes precedence. |
+| Interrupt flag set | Closed through the normal path before `collected`; plain exit after. A failure field takes precedence. In a resumed attempt before its first new call: plain exit, attempt stays open (ruling 12). |
 | Setup lock | Released by the OS; leftovers removed by the next holder |
 | Restore boundary commit | Pending, completed by J8 step 5 |
 | Ctrl+Break during the sandbox | The worker is shielded; no effect |
@@ -1228,7 +1231,7 @@ freeze are replaced or carried. The replacements are reviewed with the implement
 | The freeze writer refuses once a table exists | **Carried and extended** (§9.3): it refuses once `D` holds a table or a protected or completed attempt, and it refuses any other `D` |
 | Coding execution runs in the runner's own process | An isolated worker in a kill-on-close job, shielded from console signals. The worker runs R6's classification verbatim. The one addition is `sandbox_worker_failure` for the worker process itself. A candidate reaches it only in the case declared in §1.2 (an exception message that exhausts the worker's memory), which R6 also recorded as a host failure (§8). |
 | Provider failure: an exception, a non-empty `result.error`, or a returned-model mismatch closes the attempt | **Carried verbatim** (§8 step 4) |
-| Pause and cancel commands | Removed. An interrupt closes as `operator_interrupt` before `collected` (§7), and there is no paused state. |
+| Pause and cancel commands | Removed. An interrupt closes as `operator_interrupt` before `collected` (§7), except in a resumed attempt before its first new call, where it exits and the attempt stays open (ruling 12). There is no paused state. |
 | `_require_governed_real_path` (governed provider only, no guarded-root override) | **Carried**. The fixed-run-root clause becomes the fixed `D` (§3). |
 | No redirect handling in the adapter | Unchanged. A redirect needs a fake server, which is out of scope (§17). |
 | `_local_only_network` (proxy variables stripped, loopback `NO_PROXY`) | **Carried** (§17) |

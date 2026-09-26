@@ -72,3 +72,34 @@ This is recorded in the design (§7 and §21), in the candidate JSON, and in the
 1. Commit these fixes.
 2. Run the full certification campaign on the fixed code.
 3. Then a fresh confirmation review of the round-2 fixes.
+
+## Confirmation review (2026-09-26)
+
+Two fresh read-only reviewers checked the round-2 fixes at `a05d568`. Neither contacted a provider; both ran their
+experiments only in temporary folders, with stub or synthetic providers.
+
+| Reviewer | Verdict |
+|---|---|
+| A (journal, recovery, evidence, harness) | 0 BLOCKING, 1 MUST-FIX, 4 notes. Confirmed A-N1, A-N2, A-N3a/c, every A-N4 change, F14 and ruling 12, which was reproduced end to end, including the pending-sandbox safe point. Showed that the durable-intent oracle fires. |
+| B (science, authorization, attempts) | 0 BLOCKING, 1 MUST-FIX, 4 notes. Complete-run grading is unchanged; B's own differential passed. Only launch sentences reach the provider, rulings 11 and 12 hold, and every Close remnant is gone. |
+
+| # | Class | Finding | Fix |
+|---|---|---|---|
+| A MF-1 | MUST-FIX | `snapshot_matches_recorded_digest` was wrong in three ways. The committed disclosure said `None`, because it was computed before the snapshot commit. Torn-acknowledgement closures, which record no digest, said `False`. Any later file in the run folder flipped the flag, which after `--freeze-table` would make Phase B refuse permanently. | The flag is decided by the disclosure committed with the closure's own boundary; before that commit it is computed from the files as found, which are exactly what that commit adds. Every later disclosure reuses the committed value. A closure without a recorded digest says `no_digest_recorded`. Design §13.3 updated. Test `test_snapshot_flag_is_fixed_by_the_closure_commit`. |
+| B MF-1 | MUST-FIX | Phase B partial observations reported an infrastructure failure (`execution_not_run`, transport, sandbox) as `correct: false`, and partial routing decisions routed such cases. | Each observation carries `infrastructure_failure`, and `correct` is null when it is set. Cases with any infrastructure-failed tier are excluded from `partial_routing_decisions`, and each decision names its record sources. |
+| A N1 | NOTE | An interrupt during the scorer child still let `scored` be published. | The flag is checked again just before the derived publication. |
+| A N2, B note 3 | NOTE | Coverage: no case for a resumed attempt's pending-sandbox safe point, or for closing after the first new call; no proof the durable-intent oracle fires; orphan clearing never ran under kills; design §19 and §20 did not mention ruling 12. | New unit tests for each. A new campaign section, `resumed_interrupts`, interrupts resumed attempts at every check from a plain and from a coding position: 16 cases pass. Orphan clearing runs under the harness's killable filesystem. §19 and §20 updated. |
+| A N3 | NOTE | Orphan temporary files and quarantine files were committed after a single read. | They are read a second time too. §13.3 says so. |
+| A N4 | NOTE | An individually sealed entry was not checked against its file number. | It must carry its own number. |
+| B note 1 | NOTE | Partial routing decisions had no source label. | Added (as B MF-1). |
+| B note 2 | NOTE | Cross-attempt identity was keyed only on the schedule digest. | Keyed on each position's sealed `request_sha256`, which covers the model, the prompt and the corpus. |
+| B note 4 | NOTE | The freeze writer skipped an unparseable historic freeze version, and its git calls had no timeout. | It refuses (`freeze_history_version_unparseable`). The git calls time out after 120 s. The real history passes. |
+
+Verification after these fixes:
+- R7 suite: 41 tests pass.
+- R6 suite: 80 tests pass, 19 skipped as superseded.
+- Differential: PASS.
+- A targeted quick campaign is clean: clean kills (150), torn ledger, 21 gap seeds, 9 review seeds and 16 resumed-interrupt seeds.
+  - One resumed-interrupt oracle was wrong at first. It required an unchanged journal, but a sandbox run that finishes before the interrupt legitimately adds its execution entries. It was corrected, and all 16 cases pass.
+
+The full certification campaign reruns on this code next.

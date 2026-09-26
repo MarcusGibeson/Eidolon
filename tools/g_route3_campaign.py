@@ -335,6 +335,16 @@ def peek_attempt(world: World) -> tuple[int, str, str | None]:
     return attempt, "closed_at_ledger" if closed else replay.state, ledger.consumed[attempt].get("sentence")
 
 
+def peek_orphans(world: World) -> list[str]:
+    """Run folders with no ledger entry, as found on disk (a pure read, like peek_attempt)."""
+    lc = world.lifecycle(F.RealFs())
+    try:
+        lc.root_id = json.loads((world.D / "root.json").read_bytes().decode("utf-8"))["root_id"]
+        return lc.orphan_runs("A")
+    except Exception:  # noqa: BLE001
+        return []
+
+
 def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, max_steps: int = 24,
                  recursive_kills: int = 0, seed: int = 0, power: bool = False) -> str:
     """Supported commands only: resume while possible; declare when an integrity failure needs it; launch the
@@ -349,6 +359,7 @@ def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, ma
     kills_left = recursive_kills
     verified = False
     force_declare = False
+    clear_orphans = False
     last_refusal = None
     for _ in range(max_steps):
         if fault:
@@ -360,6 +371,12 @@ def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, ma
         else:
             fs = F.RealFs()
         try:
+            if clear_orphans:
+                for run_id in peek_orphans(world):
+                    run_command(world, fs, "clear_orphan", "A", run_id)
+                clear_orphans = False
+                verified = True
+                continue
             attempt, state, consumed_sentence = peek_attempt(world)
             unsettled = state in ("unreadable", "torn_pending", "torn_tail", "integrity_failure", "absent",
                                   "completed")
@@ -413,16 +430,8 @@ def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, ma
                 continue
             if "retry_after_verification" in str(exc):
                 continue                                         # the next command's verification restores it
-            if "orphan_run_folder_exists" in str(exc):          # the operator's supported step
-                clear = world.lifecycle(F.RealFs())
-                clear.open()
-                try:
-                    for run_id in clear.orphan_runs("A"):
-                        clear.close()
-                        run_command(world, F.RealFs(), "clear_orphan", "A", run_id)
-                        clear.open()
-                finally:
-                    clear.close()
+            if "orphan_run_folder_exists" in str(exc):          # the operator's supported step, next step
+                clear_orphans = True
                 continue
             return f"refusal:{str(exc)[:120]}"
     return "no_fixpoint"
@@ -770,6 +779,67 @@ def gap_cases(workdir: Path, template: Path) -> dict:
     return results
 
 
+def resumed_interrupt_cases(workdir: Path, template: Path) -> dict:
+    """Ruling 12 on resumed attempts. The first attempt is killed after a plain call_recorded (collecting) and
+    after the coding call_recorded (awaiting_execution, the pending-sandbox safe point). The resume is then
+    interrupted at its k-th check. Before the first new call it must exit open, having added only the
+    execution entries of a sandbox run that finished before the interrupt;
+    after one it must close as operator_interrupt, or, from collected on, exit with interrupted_after_collection.
+    Either way the attempt must then complete with clean oracles."""
+    results = {"label": "resumed_interrupts", "cases": 0, "outcomes": {}, "problems": []}
+    probe = base_world(template, workdir / "resumed_probe")
+    probe_fs = FaultFs(log_temps=probe.temp_unlinks)
+    run_command(probe, probe_fs, "launch", "A", SENTENCE.format(n=1), 1, False)
+    ops = probe_fs.ops
+    for label, entry in (("collecting", "000003.json"), ("awaiting_execution", "000005.json")):
+        kill = next(i for i, op in enumerate(ops, 1) if ":rename:" in op and "journal" in op and entry in op)
+        for k in range(1, 9):
+            name = f"resumed_{label}_interrupt_at_check_{k}"
+            world = base_world(template, workdir / "resumed_case")
+            try:
+                run_command(world, FaultFs(kill_at=kill, kill_after=True), "launch", "A", SENTENCE.format(n=1), 1,
+                            False)
+            except SimulatedKill:
+                pass
+            run_command(world, F.RealFs(), "prelude")
+            journal = next((world.D / "phase_a" / "runs").iterdir()) / "journal"
+            before, calls_before = sorted(p.name for p in journal.iterdir()), dict(world.counts)
+            lc = world.lifecycle(F.RealFs())
+            seen = {"n": 0}
+
+            def interrupted(seen=seen, k=k):
+                seen["n"] += 1
+                return seen["n"] == k
+            lc.rt.interrupted = interrupted
+            lc.open()
+            try:
+                out = lc.command_resume("A", SENTENCE.format(n=1))
+            finally:
+                lc.close()
+            new_calls = sum(world.counts.values()) - sum(calls_before.values())
+            if out["state"] == "completed":
+                ok = seen["n"] < k                                   # the flag was never raised
+            elif new_calls == 0:
+                # the interrupt itself writes nothing; a sandbox run that finished before it may have added its
+                # own execution entries, and nothing else
+                added = [J.parse_entry((journal / n).read_bytes()) for n in
+                         sorted(set(p.name for p in journal.iterdir()) - set(before))]
+                ok = (out["state"], out["reason"]) == ("open", "interrupted_before_first_new_call") and \
+                    all(e is not None and e["kind"] in ("execution_started", "execution_recorded") for e in added)
+            else:
+                ok = (out["state"], out["reason"]) == ("closed", "operator_interrupt") or \
+                    out["reason"] == "interrupted_after_collection"
+            final = drive_to_end(world)
+            problems = check_oracles(world)
+            passed = ok and final == "completed" and not problems
+            results["cases"] += 1
+            results["outcomes"][name] = "ok" if passed else f"FAILED:{out['state']}:{out.get('reason')}:{final}"
+            if not passed:
+                results["problems"].append({"case": name, "out": out, "new_calls": new_calls, "final": final,
+                                            "problems": problems})
+    return results
+
+
 def review_seeds(workdir: Path, template: Path) -> dict:
     """Seeds from implementation review 1 (A-F12): read corruption of committed entries (A-O3), ledger twins
     (A-O7), declaration then further commands (A-F3), pending ledger closures (A-F4), a failed refs flush (A-O9),
@@ -1014,6 +1084,7 @@ def main(argv: list[str] | None = None) -> int:
                        ("environment", lambda: environment_cases(workdir, template)),
                        ("gap_seeds", lambda: gap_cases(workdir, template)),
                        ("review_seeds", lambda: review_seeds(workdir, template)),
+                       ("resumed_interrupts", lambda: resumed_interrupt_cases(workdir, template)),
                        ("power_loss_subsets", lambda: kill_campaign(workdir, template, power=True, subset_seed=7,
                                                                     stride=stride, label="power_loss_subsets"))):
         if args.only and label not in args.only.split(","):

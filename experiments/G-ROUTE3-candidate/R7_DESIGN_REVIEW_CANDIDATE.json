@@ -12,18 +12,20 @@
     "ruling 12 (§7 interrupts, §21)",
     "§7 table: declare column states ruling 11; binding check at resume (A-N1)",
     "§13.3: only replay-accepted bytes committed after a second read; closure snapshot committed as found and disclosed (A-N2, A-N3)",
-    "§13.4: files under closures/ and orphans/ are unsealed copies (A-N3)"
+    "§13.4: files under closures/ and orphans/ are unsealed copies (A-N3)",
+    "§19, §20: the ruling 12 exception stated (confirmation review B note 3)",
+    "§13.3: snapshot_matches_recorded_digest fixed by the closure's own boundary; second reads of orphan temporary, quarantine and snapshot files (confirmation review A MF-1, N3)"
   ],
-  "design_review_candidate_sha256": "5f9df6791307dac53a37144256e2c235118a49524ba96114d830edc19f35dda1",
+  "design_review_candidate_sha256": "e766153ff1cbb2b69839f07159f4c696fbdd36edd425233946a79fa70a47f3d9",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "f5bb1b9e91d9fb96fe3257b2642d72ccb82e57c76dd5302e0acfbf366c94379c",
+  "document_sha256": "b9841a0fb292e948f9ab1cdcbc74b69a8a2fb4496e366a0b9448a59635bd3a9c",
   "execution_authorization": false,
   "implementation_obligations": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_OBLIGATIONS.md",
   "implementation_obligations_sha256": "d79a9596d6092ce4b165aeb36b35b3b0807c82ed0b6511bbbaa68a8d05c9efa5",
   "implementation_review_round1": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_REVIEW_ROUND1.md",
   "implementation_review_round1_sha256": "109024a660fdbdaec7d15367ba2cd8060e93bbacf83398d969adebabb3bfec29",
   "implementation_review_round2": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_REVIEW_ROUND2.md",
-  "implementation_review_round2_sha256": "a59904120b0b9adcebef7568d5c608f6487c713b46b7d4f6ff2694fcead0d1ab",
+  "implementation_review_round2_sha256": "18724ef2a03549c0224d00aee8e0538d894401c9fd0a160ade3bdba1f2c818e5",
   "implementation_started": false,
   "operator_rulings": {
     "2026-09-24": [

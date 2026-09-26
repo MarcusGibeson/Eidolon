@@ -221,11 +221,13 @@ def partial_results(phase: str, data_root: Path, rows: list[Mapping[str, Any]], 
                 if phase == "A":
                     row["partial_cells"] = platform.run_pinned(qualify, judged)
                 else:
-                    row["partial_routing_decisions"] = _partial_decisions(records, data_root)
+                    row["partial_routing_decisions"] = _partial_decisions(records, data_root, temp_positions)
                     row["partial_observations"] = [
                         {"position": r["schedule_position"], "fixture_id": r["fixture_id"],
                          "model_tier": r["model_tier"],
-                         "correct": bool(r["semantics"]["normalized_semantic_evaluation"]["hard_gate_pass"]),
+                         "infrastructure_failure": r["infrastructure_failure"],
+                         "correct": None if r["infrastructure_failure"] else
+                         bool(r["semantics"]["normalized_semantic_evaluation"]["hard_gate_pass"]),
                          "source": "temporary_file" if r["schedule_position"] in temp_positions else "journal"}
                         for r in judged]
                 row["undeterminable_positions"] = sorted(mismatched)
@@ -244,14 +246,16 @@ def _individually_sealed(files: Mapping[str, bytes]) -> list[dict[str, Any]]:
     for name in sorted(files, key=lambda n: (n[:6], not n.endswith(".json"))):
         match = J.ENTRY_NAME.match(name)
         envelope = J.parse_entry(files[name]) if match else None
-        if envelope is not None and int(match.group(1)) not in chosen:
+        if envelope is not None and envelope["entry"] == int(match.group(1)) and int(match.group(1)) not in chosen:
             chosen[int(match.group(1))] = envelope
     return [chosen[n] for n in sorted(chosen)]
 
 
-def _partial_decisions(records: list[dict[str, Any]], data_root: Path) -> list[dict[str, Any]] | str:
+def _partial_decisions(records: list[dict[str, Any]], data_root: Path, temp_positions: set | frozenset = frozenset()
+                       ) -> list[dict[str, Any]] | str:
     """B-N4: R6's gold-blind routing of the cases whose every tier has a determinable record, pinned, against
-    the frozen table. Cases missing any tier are left out, never routed on a partial view."""
+    the frozen table. Cases missing any tier, or with any tier's record carrying an infrastructure failure, are
+    left out: never routed on a partial view or on an infrastructure outcome. Each decision names its sources."""
     from g_route3_contract import TIER_ORDER
     from g_route3_qualification import load_frozen_table
     from g_route3_validation import decide
@@ -260,11 +264,18 @@ def _partial_decisions(records: list[dict[str, Any]], data_root: Path) -> list[d
         return "no_frozen_table"
     table = platform.run_pinned(load_frozen_table, table_path)
     tiers: dict[str, set] = {}
+    infrastructure: set = set()
+    sources: dict[str, set] = {}
     for record in records:
         tiers.setdefault(record["fixture_id"], set()).add(record["model_tier"])
-    complete = {fixture_id for fixture_id, seen in tiers.items() if seen >= set(TIER_ORDER)}
+        if record["infrastructure_failure"]:
+            infrastructure.add(record["fixture_id"])
+        sources.setdefault(record["fixture_id"], set()).add(
+            "temporary_file" if record["schedule_position"] in temp_positions else "journal")
+    complete = {fixture_id for fixture_id, seen in tiers.items()
+                if seen >= set(TIER_ORDER) and fixture_id not in infrastructure}
     decisions = platform.run_pinned(decide, [r for r in records if r["fixture_id"] in complete], table)
-    return [d for d in decisions if d["fixture_id"] in complete]
+    return [dict(d, sources=sorted(sources[d["fixture_id"]])) for d in decisions if d["fixture_id"] in complete]
 
 
 def _run_created_of(data_root: Path, phase: str, run_id: str) -> dict[str, Any]:

@@ -342,23 +342,24 @@ def _data_roots_in_history(path: Path) -> list[str]:
     except ValueError:
         return []
     git = ["git", "-c", f"safe.directory={ROOT.as_posix()}", "-C", str(ROOT)]
-    log = subprocess.run(git + ["log", "--format=%H", "main", "--", relative], capture_output=True, text=True)
+    log = subprocess.run(git + ["log", "--format=%H", "main", "--", relative], capture_output=True, text=True,
+                         timeout=120)
     if log.returncode != 0:
         raise ValueError("freeze_history_unreadable")                  # refuse rather than check nothing
     roots = []
     for commit in log.stdout.split():
-        shown = subprocess.run(git + ["show", f"{commit}:{relative}"], capture_output=True, text=True)
+        shown = subprocess.run(git + ["show", f"{commit}:{relative}"], capture_output=True, text=True, timeout=120)
         if shown.returncode != 0:
             # a commit that deleted or renamed the file has no version of it; any other failure refuses
             listed = subprocess.run(git + ["ls-tree", "--name-only", commit, "--", relative],
-                                    capture_output=True, text=True)
+                                    capture_output=True, text=True, timeout=120)
             if listed.returncode != 0 or listed.stdout.strip():
                 raise ValueError(f"freeze_history_unreadable:{commit}")
             continue
         try:
             root = json.loads(shown.stdout).get("data_root")
-        except (ValueError, AttributeError):
-            continue
+        except (ValueError, AttributeError) as exc:
+            raise ValueError(f"freeze_history_version_unparseable:{commit}") from exc
         if root:
             roots.append(root)
     return roots

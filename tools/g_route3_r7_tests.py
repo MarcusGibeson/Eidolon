@@ -6,6 +6,7 @@ from __future__ import annotations
 """
 
 import sys
+import json
 import unittest
 from pathlib import Path
 
@@ -472,6 +473,72 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(world.counts, calls_before)
         self.assertEqual(self.K.drive_to_end(world), "completed")
         self.assertEqual(self.K.latest_attempt(world), (1, "completed"))
+
+    def _resume_with(self, world, interrupted):
+        lc = world.lifecycle(self.K.F.RealFs())
+        lc.rt.interrupted = interrupted
+        lc.open()
+        try:
+            return lc.command_resume("A", self.K.SENTENCE.format(n=1))
+        finally:
+            lc.close()
+
+    def test_resume_interrupt_at_pending_sandbox_safe_point_leaves_attempt_open(self) -> None:   # ruling 12
+        world = self.world("resume_sandbox_interrupt")
+        self.killed(world, self.op_index("000005.json"))              # the coding call_recorded
+        self.K.run_command(world, self.K.F.RealFs(), "prelude")
+        journal = next((world.D / "phase_a" / "runs").iterdir()) / "journal"
+        before, calls_before = sorted(p.name for p in journal.iterdir()), dict(world.counts)
+        out = self._resume_with(world, lambda: True)
+        self.assertEqual((out["state"], out["reason"]), ("open", "interrupted_before_first_new_call"))
+        self.assertEqual(sorted(p.name for p in journal.iterdir()), before)     # no sandbox run, nothing written
+        self.assertEqual(world.counts, calls_before)
+        self.assertEqual(self.K.drive_to_end(world), "completed")
+        self.assertEqual(self.K.check_oracles(world), [])
+
+    def test_resumed_attempt_closes_after_its_first_new_call(self) -> None:        # ruling 12, §7
+        world = self.world("resume_after_new_call")
+        self.killed(world, self.op_index("000003.json"))
+        calls_before = sum(world.counts.values())
+        out = self._resume_with(world, lambda: sum(world.counts.values()) > calls_before)
+        self.assertEqual((out["state"], out["reason"]), ("closed", "operator_interrupt"))
+        self.assertEqual(sum(world.counts.values()) - calls_before, 1)
+        self.assertEqual(self.K.check_oracles(world), [])
+
+    def test_durable_intent_oracle_fires(self) -> None:                               # A-N4 oracle proof
+        class ForgetsFlushes(self.K.FaultFs):
+            def _flush_dir(self, path):
+                self.K_real_flush(path)                                 # flush, but keep the bookkeeping pending
+        ForgetsFlushes.K_real_flush = lambda self, path: self.K.F.RealFs._flush_dir(self, path)
+        ForgetsFlushes.K = self.K
+        world = self.world("oracle_fires")
+        self.launch(world, fs=ForgetsFlushes())
+        self.assertTrue(any(v.startswith("send_without_durable_call_started") for v in world.violations))
+        clean = self.world("oracle_quiet")
+        self.launch(clean, fs=self.K.FaultFs())
+        self.assertEqual(clean.violations, [])
+
+    def test_snapshot_flag_is_fixed_by_the_closure_commit(self) -> None:           # MF-1
+        world = self.world("snapshot_flag")
+        self.killed(world, self.op_index("000003.json"))
+        self.K.run_command(world, self.K.F.RealFs(), "declare", "A", 1)
+
+        def flag():
+            lc = world.lifecycle(self.K.F.RealFs())
+            lc.open()
+            try:
+                row = lc.attempts("A")[0]
+                tree = lc.tree()
+                last = sorted(p for p in tree if p.startswith("disclosure/A/"))[-1]
+                committed = json.loads(lc.repo.read_blob(tree[last]).decode("utf-8"))["attempts"][0]
+                return row["snapshot_matches_recorded_digest"], committed["snapshot_matches_recorded_digest"]
+            finally:
+                lc.close()
+        self.assertEqual(flag(), (True, True))
+        run_dir = next((world.D / "phase_a" / "runs").iterdir())
+        (run_dir / "desktop.ini").write_bytes(b"[.ShellClassInfo]\r\n")
+        self.K.run_command(world, self.K.F.RealFs(), "prelude")
+        self.assertEqual(flag(), (True, True))
 
     def test_scorer_marks_request_body_mismatch_and_unexecuted_coding(self) -> None:   # A-N1, B-N2
         import copy
