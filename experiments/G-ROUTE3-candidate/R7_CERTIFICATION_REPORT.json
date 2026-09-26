@@ -1,6 +1,6 @@
 {
-  "campaign_report_sha256": "2f1df96c7f548b6db8ef8efdb1b404597592e0049c6e3462ad6b249d98f4c42c",
-  "code_commit": "1790b01",
+  "campaign_report_sha256": "fa6e613a9e54af92b3f305345c9569836a4edcf21b6fb20375761f8ffd7ebb82",
+  "code_commit": "7a56c24",
   "command": "python -B tools/g_route3_campaign.py --stride 1",
   "differential": {
     "phase_a_mixed": "cells identical",
@@ -13,7 +13,7 @@
       "rerun with a different audit document",
       "rerun with a different attempt"
     ],
-    "result": "PASS",
+    "result": "PASS (rerun on 7a56c24's code)",
     "tool": "tools/g_route3_r7_differential.py"
   },
   "not_covered": [
@@ -28,7 +28,8 @@
     "completed attempts have fact payloads equal to the uninterrupted run",
     "disclosure rows consistent with the ledger and flagged",
     "declared refusals are not counted as passes for kill or damage cases",
-    "interrupt outcomes strict by safe point"
+    "interrupt outcomes strict by safe point",
+    "no provider send without a durable call_started (stub provider checks the unflushed operations)"
   ],
   "provider_generation_calls": 0,
   "recursion_thresholds": {
@@ -39,45 +40,45 @@
   },
   "runs": [
     {
-      "cases": 1010,
+      "cases": 1040,
       "label": "clean_kills",
-      "operations": 505,
+      "operations": 520,
       "outcomes": {
-        "completed": 1010
+        "completed": 1040
       },
       "violations": 0
     },
     {
-      "cases": 1010,
+      "cases": 1040,
       "label": "clean_power_loss",
-      "operations": 505,
+      "operations": 520,
       "outcomes": {
-        "completed": 1010
+        "completed": 1040
       },
       "violations": 0
     },
     {
-      "cases": 562,
+      "cases": 584,
       "label": "transport_failure_kills",
-      "operations": 281,
+      "operations": 292,
       "outcomes": {
-        "stopped_after_3_attempts": 562
+        "stopped_after_3_attempts": 584
       },
       "violations": 0
     },
     {
-      "cases": 464,
+      "cases": 482,
       "label": "sandbox_failure_kills",
-      "operations": 232,
+      "operations": 241,
       "outcomes": {
-        "stopped_after_3_attempts": 464
+        "stopped_after_3_attempts": 482
       },
       "violations": 0
     },
     {
       "cases": 14,
       "label": "torn_entries",
-      "operations": 505,
+      "operations": 520,
       "outcomes": {
         "completed": 14
       },
@@ -86,7 +87,7 @@
     {
       "cases": 1,
       "label": "torn_ledger",
-      "operations": 505,
+      "operations": 520,
       "outcomes": {
         "completed": 1
       },
@@ -95,7 +96,7 @@
     {
       "cases": 31,
       "label": "flush_failures",
-      "operations": 505,
+      "operations": 520,
       "outcomes": {
         "completed": 31
       },
@@ -112,13 +113,16 @@
       "violations": 0
     },
     {
-      "cases": 15,
+      "cases": 18,
       "label": "gap_seeds",
       "outcomes": {
         "concurrent_setup": "ok",
         "damaged_root_json": "ok",
         "interrupt_at_safe_point_1": "ok",
         "interrupt_at_safe_point_10": "ok",
+        "interrupt_at_safe_point_11": "ok",
+        "interrupt_at_safe_point_12": "ok",
+        "interrupt_at_safe_point_13": "ok",
         "interrupt_at_safe_point_2": "ok",
         "interrupt_at_safe_point_3": "ok",
         "interrupt_at_safe_point_4": "ok",
@@ -150,22 +154,22 @@
       "violations": 0
     },
     {
-      "cases": 1010,
+      "cases": 1040,
       "label": "power_loss_subsets",
-      "operations": 505,
+      "operations": 520,
       "outcomes": {
-        "completed": 1010
+        "completed": 1040
       },
       "violations": 0
     }
   ],
-  "schedule": "four calls from schedule A (one coding), stub provider/worker/scorer; kills before and after every numbered operation, recursive kills in recovery, power loss (all unflushed and seeded subsets), damage, flush failures, environment and seeded cases",
-  "seconds": 19144.5,
+  "schedule": "four calls from schedule A (one coding), stub provider/worker/scorer; kills before and after every numbered operation; decisions from a pure status peek, so recovery runs only inside killable commands; recursive kills with a per-operation probability, with power loss when the scenario has it; power loss (all unflushed and seeded subsets), damage, flush failures, environment and seeded cases",
+  "seconds": 23485.7,
   "status": "CERTIFICATION_CAMPAIGN_COMPLETE",
   "tests": {
     "r6_suite": "80 run, 19 skipped as superseded, 0 failed",
-    "r7_quick": "33 passed"
+    "r7_quick": "37 passed"
   },
-  "total_cases": 4129,
+  "total_cases": 4262,
   "violations": 0
 }

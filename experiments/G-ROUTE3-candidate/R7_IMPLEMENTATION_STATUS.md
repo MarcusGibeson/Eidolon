@@ -77,6 +77,12 @@ first new call exits without writing. Evidence on the fixed code:
 - **`tools/g_route3_r7_differential.py` passes** again, with the same identities as after round 1.
 - **The harness** now decides from a pure peek, kills recovery commands with a per-operation probability, applies
   power loss to recursive kills, and flags any send without a durable `call_started`.
+- **Full certification campaign on `7a56c24`** (stride 1, 6.5 hours): 4,262 cases, 0 violations. See
+  `R7_CERTIFICATION_REPORT.json`.
+  - Every kill scenario was run before and after every operation: clean, power loss (all unflushed operations and
+    seeded subsets), transport failure and sandbox failure.
+  - Also run: torn entries and ledgers, flush failures, environment cases, 18 gap seeds (all 13 interrupt safe
+    points) and 9 review seeds.
 
 ## Obligations
 
