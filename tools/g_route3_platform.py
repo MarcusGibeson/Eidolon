@@ -340,7 +340,104 @@ def run_pinned(fn: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
     return outcome.get("value")
 
 
-__all__ = ["WINDOWS", "RECURSION_LIMIT", "PINNED_STACK_BYTES", "LEASE_LOCK_OFFSET", "RETRIES", "RETRY_SECONDS",
+def canonical_sha256(data: bytes) -> str:
+    """The guarded-file digest convention (g_route1_contract.canonical_digest): CRLF and CR normalized to LF."""
+    import hashlib
+    return hashlib.sha256(bytes(data).replace(b"\r\n", b"\n").replace(b"\r", b"\n")).hexdigest()
+
+
+def raw_read(path: Path) -> bytes:
+    """Read the disk directly, never through a sealed view: the drift guard must see what is on disk now."""
+    with open(path, "rb") as handle:
+        return handle.read()
+
+
+# ---------------------------------------------------------------- load-time hashing of repository modules (A-F2)
+
+_LOADED: dict[str, str] = {}
+_HOOK_ROOT: Path | None = None
+
+
+def install_import_hashing(root: Path) -> None:
+    """Hash every repository module's source bytes at the moment they are compiled (never from a later re-read,
+    never from a stale .pyc). Call before importing any repository module other than this one."""
+    global _HOOK_ROOT
+    if _HOOK_ROOT is not None:
+        return
+    import importlib.machinery as machinery
+    _HOOK_ROOT = Path(root).resolve()
+    here = Path(__file__).resolve()
+    _LOADED[here.relative_to(_HOOK_ROOT).as_posix()] = canonical_sha256(raw_read(here))
+
+    class HashingLoader(machinery.SourceFileLoader):
+        def get_code(self, fullname):
+            path = Path(self.get_filename(fullname)).resolve()
+            try:
+                relative = path.relative_to(_HOOK_ROOT).as_posix()
+            except ValueError:
+                return super().get_code(fullname)
+            data = self.get_data(str(path))
+            _LOADED[relative] = canonical_sha256(data)
+            return compile(data, str(path), "exec", dont_inherit=True)
+
+    details = [(machinery.ExtensionFileLoader, machinery.EXTENSION_SUFFIXES),
+               (HashingLoader, machinery.SOURCE_SUFFIXES),
+               (machinery.SourcelessFileLoader, machinery.BYTECODE_SUFFIXES)]
+    sys.path_hooks.insert(0, machinery.FileFinder.path_hook(*details))
+    sys.path_importer_cache.clear()
+
+
+def record_source(path: Path) -> None:
+    """Record a file executed outside the import system (a child's main script), hashed now."""
+    if _HOOK_ROOT is not None:
+        resolved = Path(path).resolve()
+        _LOADED[resolved.relative_to(_HOOK_ROOT).as_posix()] = canonical_sha256(raw_read(resolved))
+
+
+def loaded_source_digests() -> dict[str, str]:
+    """{repository-relative path: canonical sha256} of every repository module compiled in this process."""
+    return dict(_LOADED)
+
+
+# ---------------------------------------------------------------- sealed reads of guarded data files (A-F2, B-O2)
+
+_SEALED: dict[str, bytes] = {}
+_SEAL_INSTALLED = False
+
+
+def seal_reads(files: dict[Path, bytes]) -> None:
+    """Serve these exact, already verified bytes for every later ``Path.read_bytes``/``read_text`` of these paths,
+    so a change on disk after verification can never reach the computation (it is caught by the raw-read guard)."""
+    global _SEAL_INSTALLED
+    for path, data in files.items():
+        _SEALED[str(Path(path).resolve()).lower()] = bytes(data)
+    if _SEAL_INSTALLED:
+        return
+    import pathlib
+    original_bytes, original_text = pathlib.Path.read_bytes, pathlib.Path.read_text
+
+    def read_bytes(self):
+        sealed = _SEALED.get(str(self.resolve()).lower())
+        return sealed if sealed is not None else original_bytes(self)
+
+    def read_text(self, encoding=None, errors=None, *args, **kwargs):
+        sealed = _SEALED.get(str(self.resolve()).lower())
+        if sealed is None:
+            return original_text(self, encoding, errors, *args, **kwargs)
+        import io
+        return io.TextIOWrapper(io.BytesIO(sealed), encoding=encoding, errors=errors).read()
+
+    pathlib.Path.read_bytes = read_bytes
+    pathlib.Path.read_text = read_text
+    _SEAL_INSTALLED = True
+
+
+def unseal_reads() -> None:
+    _SEALED.clear()
+
+
+__all__ = ["WINDOWS", "RECURSION_LIMIT", "canonical_sha256", "raw_read", "install_import_hashing", "record_source",
+           "loaded_source_digests", "seal_reads", "unseal_reads", "PINNED_STACK_BYTES", "LEASE_LOCK_OFFSET", "RETRIES", "RETRY_SECONDS",
            "AlreadyExists", "LeaseBusy", "OsLease", "is_transient", "rename_noreplace", "rename_replace",
            "flush_directory", "write_and_flush", "join_kill_on_close_job", "child_creation_kwargs",
            "pin_recursion_limit", "run_pinned"]

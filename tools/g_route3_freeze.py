@@ -319,6 +319,7 @@ def data_root_refusals(data_root: Path) -> list[str]:
     lc = lifecycle.Lifecycle(runtime)
     lc.open()
     try:
+        lc.prelude()                                  # J8: recover and complete pending boundaries first
         reasons = []
         if "tables/" + lifecycle.TABLE_NAME in lc.tree():
             reasons.append("data_root_holds_a_qualification_table")
@@ -335,14 +336,40 @@ def data_root_refusals(data_root: Path) -> list[str]:
         lc.close()
 
 
+def _data_roots_in_history(path: Path) -> list[str]:
+    """Every data_root named by any version of the freeze file in main's history (B-9, read-only git)."""
+    try:
+        relative = Path(path).resolve().relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return []
+    git = ["git", "-c", f"safe.directory={ROOT.as_posix()}", "-C", str(ROOT)]
+    log = subprocess.run(git + ["log", "--format=%H", "main", "--", relative], capture_output=True, text=True)
+    roots = []
+    for commit in log.stdout.split():
+        shown = subprocess.run(git + ["show", f"{commit}:{relative}"], capture_output=True, text=True)
+        if shown.returncode == 0:
+            try:
+                root = json.loads(shown.stdout).get("data_root")
+            except ValueError:
+                continue
+            if root:
+                roots.append(root)
+    return roots
+
+
 def write_manifest(path: Path = FREEZE_PATH, *, implementation_commit: str | None = None) -> dict[str, Any]:
     # The execution freeze must precede any qualification table. This is checked when the freeze is
     # written, not when it is verified, so a valid freeze stays valid once Phase A has produced a table.
     if (DATA / "QUALIFICATION_TABLE.json").exists():
         raise ValueError("qualification_table_must_not_exist_at_execution_freeze")
     earlier_roots = {prior.get("data_root") for prior in SUPERSEDED if prior.get("data_root")}
+    earlier_roots |= set(_data_roots_in_history(path))
+    if path.exists():
+        existing_root = load_json(path).get("data_root")
+        if existing_root:
+            earlier_roots.add(existing_root)
     if earlier_roots and earlier_roots != {DATA_ROOT}:
-        raise ValueError("data_root_differs_from_earlier_r7_freezes")
+        raise ValueError("data_root_differs_from_earlier_r7_freezes:" + ",".join(sorted(earlier_roots)))
     refusals = data_root_refusals(Path(DATA_ROOT))
     if refusals:
         raise ValueError("freeze_writer_refuses:" + ",".join(refusals))

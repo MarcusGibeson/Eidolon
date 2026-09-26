@@ -712,6 +712,14 @@ It has three kinds:
 
 ### 9.4 Integrity failures, missing journals, orphans
 
+**Declaring a journal untrusted (ruling 11).** `--declare-integrity-failure n` also applies to the latest attempt
+while it is in progress (`created`, `collecting` or `awaiting_execution`), when its journal cannot be trusted
+byte for byte. The runbook requires this after any repair or copy of `D`: declare, never resume. The closure is
+recorded at ledger level as `integrity_failure`, with the observation `journal_declared_untrusted_by_operator`.
+The protection rules below apply, so a finished collection can never be declared away. The next attempt needs
+the distinct sentence (§7.1). This replaces the "close without further calls" sentence that the first
+implementation added and implementation review round 1 blocked under ruling 7.
+
 **Protection.** An attempt is **protected** when any of these holds:
 - it has a committed `completed` entry;
 - **any individually sealed entry** (`NNNNNN.json` only; temporary files are excluded) on disk, in a committed
@@ -1205,7 +1213,7 @@ freeze are replaced or carried. The replacements are reviewed with the implement
 | `authorization_ledger/` files in the checkout | A hash-chained ledger journal per phase in `D`, spanning freezes (§9.1) |
 | Data under each checkout's `data/` | One fixed data root `D` for the experiment (§3) |
 | The freeze writer refuses once a table exists | **Carried and extended** (§9.3): it refuses once `D` holds a table or a protected or completed attempt, and it refuses any other `D` |
-| Coding execution runs in the runner's own process | An isolated worker in a kill-on-close job, shielded from console signals. The worker runs R6's classification verbatim. The one addition is `sandbox_worker_failure` for the worker process itself, which no candidate can reach (§8). |
+| Coding execution runs in the runner's own process | An isolated worker in a kill-on-close job, shielded from console signals. The worker runs R6's classification verbatim. The one addition is `sandbox_worker_failure` for the worker process itself. A candidate reaches it only in the case declared in §1.2 (an exception message that exhausts the worker's memory), which R6 also recorded as a host failure (§8). |
 | Provider failure: an exception, a non-empty `result.error`, or a returned-model mismatch closes the attempt | **Carried verbatim** (§8 step 4) |
 | Pause and cancel commands | Removed. An interrupt closes as `operator_interrupt` before `collected` (§7), and there is no paused state. |
 | `_require_governed_real_path` (governed provider only, no guarded-root override) | **Carried**. The fixed-run-root clause becomes the fixed `D` (§3). |
@@ -1259,6 +1267,14 @@ marked *design note* and is not part of the ruling.
     - Per-call git, high-water cross-checks and mid-run ref handling are dropped.
     - *Design note:* the git history lives in a private repository inside the fixed data root (§13), and every
       command verifies it, not only the table freeze and Phase B.
+
+**2026-09-26, after implementation review round 1**
+
+11. **Declare untrusted.** There is no separate "close" sentence. `--declare-integrity-failure` extends to an
+    in-progress attempt whose journal cannot be trusted, for example after a repair or copy of the data folder.
+    Such a declaration is recorded at ledger level as `integrity_failure`, is refused for protected attempts, and
+    requires the distinct "after integrity failure" sentence for the next attempt. The runbook says: after any
+    repair or copy of the data folder, declare, never resume.
 
 ## 22. Out of scope: grading changes
 

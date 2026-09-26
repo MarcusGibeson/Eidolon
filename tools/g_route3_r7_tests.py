@@ -397,13 +397,16 @@ class LifecycleTests(unittest.TestCase):
         self.K.run_command(world, self.K.F.RealFs(), "clear_orphan", "A", run_id)
         self.assertEqual(self.launch(world)["state"], "completed")
 
-    def test_close_without_further_calls(self) -> None:                     # B-O3
-        world = self.world("close")
+    def test_declare_untrusted_in_progress_attempt(self) -> None:           # ruling 11 (B-O3)
+        world = self.world("untrusted")
         self.killed(world, self.op_index("000003.json"))
         calls_before = dict(world.counts)
-        out = self.K.run_command(world, self.K.F.RealFs(), "close", "A", 1)
-        self.assertEqual((out["state"], out["reason"]), ("closed", "operator_interrupt"))
+        out = self.K.run_command(world, self.K.F.RealFs(), "declare", "A", 1)
+        self.assertEqual((out["state"], out["reason"]), ("closed_at_ledger", "integrity_failure"))
         self.assertEqual(world.counts, calls_before)
+        with self.assertRaisesRegex(self.K.L.Refusal, "distinct_sentence_required"):
+            self.launch(world, n=2)
+        self.assertEqual(self.launch(world, n=2, distinct=True)["state"], "completed")
         self.assertEqual(self.K.check_oracles(world), [])
 
     def test_extra_table_file_after_freeze_is_quarantined(self) -> None:      # A-O4 (verification row)

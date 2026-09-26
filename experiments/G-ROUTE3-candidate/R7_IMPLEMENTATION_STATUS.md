@@ -51,6 +51,23 @@ comparisons can run.
 - **Measured recursion bands** at the pinned budget (C-O2): JSON nesting up to 991, syntax-tree binary chains up to
   2,977 terms. The freeze records them.
 
+## After implementation review round 1
+
+All 3 BLOCKING and 22 MUST-FIX findings are fixed; see `R7_IMPLEMENTATION_REVIEW_ROUND1.md`. Operator ruling 11
+replaced the Close sentence with declaring a journal untrusted. Evidence on the fixed code:
+- **Quick R7 suite:** 33 tests pass. The R6 suite passes: 80 tests, 19 skipped as superseded.
+- **Review seeds:** all 9 pass. They cover read corruption of committed ledger and terminal entries, a ledger twin,
+  a declaration followed by further commands, a pending ledger closure, a failed refs flush, worker module drift,
+  abandon, and a kill at every setup operation.
+- **`tools/g_route3_r7_differential.py` passes** with the real worker and scorer:
+  - Phase A mixed and Phase A qualifying (25 qualified cells): cells identical to R6;
+  - Phase B end to end: table frozen, the rerun behaves as specified, and the cells, routing lookup and Phase B
+    score are identical to R6 (apart from the table digest, which differs by design);
+  - the gate refuses when the table is not on main, when the endpoint differs, and when the freeze differs;
+  - the freeze rerun refuses a different audit document and a different attempt.
+
+The full certification campaign (stride 1, with recursive kills) runs next on this code.
+
 ## Obligations
 
 | # | Status | Where |

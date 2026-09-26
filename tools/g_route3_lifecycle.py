@@ -68,6 +68,8 @@ class Runtime:
     interrupted: Callable[[], bool] = lambda: False
     frozen_artifact_digests: Callable[[], set] = lambda: set()
     table_on_main: Callable[[bytes], bool] = lambda table_bytes: True
+    bodies: Mapping[str, list] | None = None          # precomputed request bodies, bound with the inputs (A-F2)
+    input_digests: Mapping[str, str] = field(default_factory=dict)   # guarded data files the inputs came from
     receipt_wait_seconds: float = RECEIPT_WAIT_SECONDS
     sleep: Callable[[float], None] = lambda seconds: None
     log: list = field(default_factory=list)
@@ -168,6 +170,13 @@ class Lifecycle:
             raise PhaseBlocked(f"evidence_repository_not_intact:{exc}") from exc
         for removed in self.repo.remove_stale_locks():
             self.log(f"removed_stale_git_lock:{removed}")
+        self.fs.flush_dir(self.D / "evidence.git" / "refs" / "heads")     # A-O9: durable before it is trusted
+        for name in self.fs.list_names(self.D / "staging") or []:         # leftovers of killed restores
+            leftover = self.D / "staging" / name
+            if leftover.is_dir():
+                _remove_tree(leftover)
+            else:
+                self.fs.unlink(leftover)
         committed_root = self.repo.read_blob(self.tree()["root.json"])
         self.root_id = json.loads(committed_root.decode("utf-8"))["root_id"]
         del root_bytes                                   # root.json is verified with every committed item
@@ -211,6 +220,14 @@ class Lifecycle:
         if reason:
             replay = J.Replay(state="integrity_failure", reason=reason)
         return replay, files
+
+    def committed(self, disk: Path) -> bool:
+        """Is this file (by its path under D) in the evidence tree? Committed copies always win (§9.1, A-F1)."""
+        try:
+            relative = Path(disk).resolve().relative_to(self.D.resolve()).as_posix()
+        except ValueError:
+            return False
+        return relative in self.tree()
 
     def run_ids(self, phase: str) -> list[str]:
         return [name for name in (self.fs.list_names(self.runs_dir(phase)) or [])
@@ -282,12 +299,15 @@ class Lifecycle:
             for extra in listing:
                 if J.ENTRY_NAME.match(extra) and extra not in names:
                     raise PhaseBlocked(f"extra_entry_in_committed_terminal_journal:{phase}:{run_id}:{extra}")
-        for (phase, run_id), names in committed_runs.items():
-            listing = self.fs.list_names(self.journal_dir(phase, run_id)) or []
-            for extra in listing:
+        twin_dirs = [(self.journal_dir(phase, run_id), f"phase_{phase.lower()}/runs/{run_id}/journal/")
+                     for (phase, run_id) in committed_runs]
+        twin_dirs += [(self.ledger_dir(phase), f"phase_{phase.lower()}/ledger/") for phase in PHASES]
+        for directory, prefix in twin_dirs:
+            for extra in self.fs.list_names(directory) or []:
                 match = J.ENTRY_NAME.match(extra)
-                if match and match.group(2) == "torn" and f"{match.group(1)}.json" in names:
-                    quarantined.update(self._quarantine(self.journal_dir(phase, run_id) / extra))
+                if match and match.group(2) == "torn" and prefix + f"{match.group(1)}.json" in tree \
+                        and prefix + extra not in tree:
+                    quarantined.update(self._quarantine(directory / extra))
         if f"tables/{TABLE_NAME}" in tree:
             for name in self.fs.list_names(self.D / "tables") or []:
                 if f"tables/{name}" not in tree:
@@ -339,6 +359,11 @@ class Lifecycle:
             path = f"phase_{phase.lower()}/ledger/{name}"
             if path not in tree:
                 out[path] = data
+        for name in (got[1] if got else []):
+            if J.ORPHAN_TEMP.match(name) and f"phase_{phase.lower()}/ledger/{name}" not in tree:
+                data = self.fs.read_bytes(self.ledger_dir(phase) / name)
+                if data is not None:
+                    out[f"phase_{phase.lower()}/ledger/{name}"] = data
         return out
 
     def _commit(self, additions: dict[str, bytes], message: str, *, include_ledgers: bool = True,
@@ -380,11 +405,15 @@ class Lifecycle:
             row = {"attempt": attempt, "run_id": run_id, "freeze_binding": consumed.get("freeze_binding"),
                    "operator_confirmation": consumed.get("sentence")}
             closure = ledger.closed_at_ledger.get(attempt)
-            replay, _ = self.run(phase, run_id)
+            replay, files = self.run(phase, run_id)
             counts = _counts(replay)
+            if closure is not None or replay.state == "integrity_failure":
+                sealed = [e for e in (J.parse_entry(d) for n, d in sorted(files.items())) if e is not None]
+                replay = J.Replay(state=replay.state, entries=sealed)
+                counts = _counts(replay)
             if closure is not None:
                 row.update(outcome="closed_at_ledger", reason=closure.get("reason"),
-                           counts="unknown", lower_bounds=counts)
+                           counts="unknown", lower_bounds=counts, lower_bounds_source="individually sealed files")
             elif replay.state == "completed":
                 row.update(outcome="completed", reason="completed_and_scored", counts=counts)
             elif replay.state == "closed":
@@ -459,7 +488,15 @@ class Lifecycle:
         number = max(numbers, default=0) + 1
         previous = ledger.head or J.genesis_seal(phase, self.root_id)
         acks = [{"entry": n, "sha256": sha} for n, sha in ledger.tear] if acknowledging else []
-        envelope, data = J.make_entry(number, kind, f"ledger-{phase}", previous, payload, acknowledges=acks)
+        named = {row["name"] for e in ledger.entries for row in e["orphans"]}
+        orphans = []
+        for name in sorted(set(ledger.orphan_temps) - named):
+            data = self.fs.read_bytes(self.ledger_dir(phase) / name)
+            if data is None:
+                raise fsmod.Unreadable(f"orphan_temp_vanished:{name}")
+            orphans.append({"name": name, "sha256": J.sha256_bytes(data)})
+        envelope, data = J.make_entry(number, kind, f"ledger-{phase}", previous, payload, acknowledges=acks,
+                                      orphans=orphans)
         self.fs.publish(self.ledger_dir(phase) / J.entry_name(number), data, temp_label=f"{number:06d}")
         return envelope
 
@@ -511,6 +548,8 @@ class Lifecycle:
         if ledger.state == "torn_tail":
             return self._rename_torn(directory, ledger.torn_tail)
         if ledger.state == "torn_pending":
+            if any(self.committed(directory / J.entry_name(n)) for n, _ in ledger.tear):
+                raise Refusal("committed_ledger_entry_read_as_torn_retry_after_verification")
             claimed = ledger.head or J.genesis_seal(phase, self.root_id)
             consumed_runs = {row.get("run_id") for row in ledger.consumed.values()}
             claimant = None
@@ -525,6 +564,9 @@ class Lifecycle:
             payload: dict[str, Any] = {}
             if claimant is not None:
                 run_id, envelope = claimant
+                got = self.read_dir(self.journal_dir(phase, run_id))
+                if got is not None and J.sealed_protective(got[0], self.spec(phase)):
+                    raise PhaseBlocked(f"protected_attempt_would_close_at_ledger:{phase}:{run_id}")
                 payload["consumed_and_closed"] = {
                     "attempt": len(ledger.consumed) + 1, "run_id": run_id,
                     "run_created_sha256": envelope["record_sha256"],
@@ -537,6 +579,8 @@ class Lifecycle:
 
     def _handle_pairs_and_temps(self, directory: Path, pairs: list[int], temps: list[str]) -> bool:
         for number in pairs:
+            if self.committed(directory / J.entry_name(number)):
+                raise Refusal("committed_entry_has_a_torn_twin_retry_after_verification")
             self.fs.unlink(directory / J.entry_name(number))
             return True
         for name in temps:
@@ -554,6 +598,8 @@ class Lifecycle:
 
     def _rename_torn(self, directory: Path, number: int) -> bool:
         path = directory / J.entry_name(number)
+        if self.committed(path):
+            raise Refusal(f"committed_entry_read_as_torn_retry_after_verification:{path.name}")
         again = self.fs.read_bytes(path)
         if again is not None and J.parse_entry(again) is not None:
             raise Refusal(f"transient_read_disagreement:{path}")     # A-O3: re-read before renaming
@@ -583,14 +629,16 @@ class Lifecycle:
         replay, files = self.run(phase, run_id)
         if replay.state == "integrity_failure":
             return False
+        if attempt is None:
+            return False                                       # an orphan: only --clear-orphan acts on it
         if self._handle_pairs_and_temps(directory, replay.pair_to_unlink, replay.temps):
             return True
         state = replay.state
-        if attempt is None:
-            return False                                       # an orphan: only --clear-orphan acts on it
         if state == "torn_tail":
             return self._rename_torn(directory, replay.torn_tail)
         if state == "torn_pending":
+            if any(self.committed(directory / J.entry_name(n)) for n, _ in replay.tear):
+                raise Refusal("committed_entry_read_as_torn_retry_after_verification")
             if replay.predicted_class in ("provider", "closure"):
                 self._publish_closed(phase, run_id, replay, files, acknowledging=True)
                 return True
@@ -621,17 +669,18 @@ class Lifecycle:
         return False
 
     def _ledger_close(self, phase: str, attempt: int, run_id: str, reason: str, observed: str) -> None:
-        """Automatic (no call possible) or declared ledger-level closure with its snapshot and commit."""
+        """Automatic (no call possible) or declared ledger-level closure. Only the ledger entry is published here;
+        its snapshot is committed by the pending-boundary step (J8 step 5), never inside recovery (A-F11)."""
         snapshot = self._snapshot(phase, run_id)
         self._publish_ledger_entry(phase, "attempt_closed_at_ledger", {
             "attempt": attempt, "run_id": run_id, "reason": reason, "observed": observed,
             "snapshot_path": f"closures/{phase}/{attempt}-{run_id}/",
-            "snapshot_digest": J.digest(sorted((path, ev.blob_id(data)) for path, data in snapshot.items()))})
-        additions = {f"closures/{phase}/{attempt}-{run_id}/{path}": data for path, data in snapshot.items()}
-        self._commit(additions, f"ledger closure {phase} attempt {attempt}", disclosure_phase=phase)
+            "snapshot_digest": _snapshot_digest(snapshot)})
 
     def _snapshot(self, phase: str, run_id: str) -> dict[str, bytes]:
-        """The run folder's files as found (relative path -> bytes). Unreadable files refuse (§1.3)."""
+        """The run folder's files as found (relative path -> bytes), excluding files already committed under the
+        run's own journal path: one committed copy per file, so the two can never disagree (A-F3). Unreadable
+        files refuse (§1.3)."""
         base = self.runs_dir(phase) / run_id
         out: dict[str, bytes] = {}
         if not base.is_dir():
@@ -639,6 +688,8 @@ class Lifecycle:
         for directory, _dirs, files in __import__("os").walk(base, onerror=_walk_error):
             for name in files:
                 path = Path(directory) / name
+                if self.committed(path):
+                    continue
                 data = self.fs.read_bytes(path)
                 if data is None:
                     continue
@@ -655,12 +706,17 @@ class Lifecycle:
                 if attempt in ledger.closed_at_ledger:
                     closure = ledger.closed_at_ledger[attempt]
                     prefix = f"closures/{phase}/{attempt}-{run_id}/"
-                    ledger_uncommitted = self._uncommitted_ledger(phase)
-                    if ledger_uncommitted or (closure.get("via") == "ledger_torn_acknowledged"
-                                              and not any(p.startswith(prefix) for p in tree)):
-                        snapshot = self._snapshot(phase, run_id)
+                    snapshot = {p: d for p, d in self._snapshot(phase, run_id).items() if prefix + p not in tree}
+                    closure_uncommitted = self._closure_entry_uncommitted(phase, attempt)
+                    if snapshot or closure_uncommitted:
+                        full = self._snapshot(phase, run_id)
+                        committed_part = {p: None for p in tree if p.startswith(prefix)}
+                        recorded = closure.get("snapshot_digest")
+                        if recorded is not None and not committed_part and _snapshot_digest(full) != recorded:
+                            raise PhaseBlocked(f"closure_snapshot_differs_from_its_digest:{phase}:{attempt}")
                         self._commit({prefix + p: d for p, d in snapshot.items()},
                                      f"ledger closure {phase} attempt {attempt}", disclosure_phase=phase)
+                        tree = self.tree()
                     continue
                 replay, files = self.run(phase, run_id)
                 if replay.state in ("integrity_failure", "absent", "torn_tail"):
@@ -687,6 +743,17 @@ class Lifecycle:
                         tree = self.tree()
             if self._uncommitted_ledger(phase):
                 self._commit({}, f"ledger {phase}", disclosure_phase=phase)
+
+    def _closure_entry_uncommitted(self, phase: str, attempt: int) -> bool:
+        tree = self.tree()
+        for envelope in self.ledger(phase).entries:
+            payload = envelope["payload"]
+            closes = (envelope["kind"] == "attempt_closed_at_ledger" and payload.get("attempt") == attempt) or \
+                (envelope["kind"] == "ledger_torn_acknowledged"
+                 and (payload.get("consumed_and_closed") or {}).get("attempt") == attempt)
+            if closes:
+                return f"phase_{phase.lower()}/ledger/{J.entry_name(envelope['entry'])}" not in tree
+        return False
 
     # ------------------------------------------------------------ the J8 prelude
     def prelude(self) -> None:
@@ -755,6 +822,8 @@ class Lifecycle:
         for number, run_id, replay, ledger_closed in rows:
             if replay.state == "completed" or self.committed_completed(phase, run_id):
                 raise Refusal(f"attempt_{number}_completed")
+            if replay.state != "closed" and self.protected(phase, run_id, self.frozen_table_run()):
+                raise PhaseBlocked(f"attempt_{number}_protected_and_not_closed")
             if not ledger_closed and replay.state != "closed":
                 raise Refusal(f"attempt_{number}_not_closed:{replay.state}")
         previous_needs_distinct = bool(rows) and rows[-1][3] and \
@@ -787,6 +856,10 @@ class Lifecycle:
                 raise Refusal("consumption_boundary_not_committed")
             self.guard(phase, run_created)
             if state == "awaiting_execution":
+                if self.rt.interrupted():
+                    self._publish_closed(phase, run_id, replay, files, requested="operator_interrupt")
+                    self._terminal_commit(phase)
+                    return "closed"
                 self._execute(phase, run_id, replay, files)
                 continue
             if self.rt.interrupted():
@@ -796,8 +869,11 @@ class Lifecycle:
             position = replay.position + 1
             scheduled = schedule[position - 1]
             fixture = fixtures[scheduled["fixture_id"]]
-            from g_route3_contract import request_body
-            body = request_body(fixture, scheduled)
+            if self.rt.bodies is not None:
+                body = self.rt.bodies[phase][position - 1]
+            else:
+                from g_route3_contract import request_body
+                body = request_body(fixture, scheduled)
             started = self._publish_run_entry(phase, run_id, replay, "call_started", {
                 "position": position, "call_id": scheduled["call_id"], "request_sha256": J.digest(body),
                 "guarded_digest": run_created.get("guarded_digest")})
@@ -810,6 +886,10 @@ class Lifecycle:
                 self._terminal_commit(phase)
                 return "closed"
             if replay3.state == "awaiting_execution":
+                if self.rt.interrupted():
+                    self._publish_closed(phase, run_id, replay3, files3, requested="operator_interrupt")
+                    self._terminal_commit(phase)
+                    return "closed"
                 self._execute(phase, run_id, replay3, files3)
                 replay3, files3 = self.run(phase, run_id)
                 if replay3.state == "faulted":
@@ -864,19 +944,17 @@ class Lifecycle:
         position = int(recorded["payload"]["position"])
         scheduled = self.rt.schedules[phase][position - 1]
         fixture = self.rt.fixtures[phase][scheduled["fixture_id"]]
-        executable_json = derive_executable(fixture, J.b64_to_text(recorded["payload"]["raw_output_b64"]))
         run_created = replay.entries[0]["payload"]
         self.guard(phase, run_created)
+        executable_json = derive_executable(fixture, J.b64_to_text(recorded["payload"]["raw_output_b64"]))
         self._publish_run_entry(phase, run_id, replay, "execution_started", {
             "position": position, "executable_json": executable_json,
             "executable_sha256": J.sha256_bytes(executable_json.encode("ascii"))})
         try:
             result = dict(self.rt.worker({"phase": phase, "fixture_id": scheduled["fixture_id"],
-                                          "executable_json": executable_json}))
+                                          "fixture": fixture, "executable_json": executable_json}))
             infrastructure = str(result.get("infrastructure_failure") or "")
-            recorded_files = run_created.get("guarded_files") or {}
-            drifted = sorted(path for path, sha in (result.get("module_digests") or {}).items()
-                             if recorded_files.get(path) != sha)
+            drifted = _drifted_modules(result.get("module_digests") or {}, run_created)
             if drifted:
                 infrastructure = "sandbox_worker_failure:guarded_module_drift"
                 result.setdefault("drifted_modules", drifted)
@@ -925,10 +1003,12 @@ class Lifecycle:
             current = self._attempt_of(phase, run_id)
             rows = [row for row in self.attempts(phase) if row["attempt"] < current]
             rows.append({"attempt": current, "run_id": run_id, "outcome": "this_attempt"})
+            run_created = replay.entries[0]["payload"]
             result = self.rt.scorer({"mode": "score_run", "phase": phase, "run_id": run_id,
-                                     "data_root": str(self.D), "attempts": rows})
-            if result.get("error"):
-                raise Refusal(f"scorer_failed:{result['error']}")
+                                     "data_root": str(self.D), "attempts": rows,
+                                     "orphans_cleared": self._orphans_cleared(phase)})
+            self._check_child(result, run_created, "scorer")
+            self.guard(phase, run_created)                                     # B-O2 after the scorer
             return {"report": result["report"]}
         if kind == "completed":
             scored = next(e for e in reversed(replay.entries) if e["kind"] == "scored")
@@ -937,6 +1017,17 @@ class Lifecycle:
                     "freeze_binding": first["payload"].get("freeze_binding"),
                     "guarded_digest": first["payload"].get("guarded_digest"), "calls": self.spec(phase).calls}
         raise Refusal(f"not_derivable:{kind}")
+
+    def _orphans_cleared(self, phase: str) -> list[str]:
+        return sorted({path.split("/")[2] for path in self.tree() if path.startswith(f"orphans/{phase}/")})
+
+    def _check_child(self, result: Mapping[str, Any], run_created: Mapping[str, Any], name: str) -> None:
+        """A child's error or drifted loaded modules make the command refuse (J13), never close."""
+        if result.get("error"):
+            raise Refusal(f"{name}_failed:{result['error']}")
+        drifted = _drifted_modules(result.get("module_digests") or {}, run_created)
+        if drifted:
+            raise Refusal(f"{name}_loaded_drifted_modules:{','.join(drifted)}")
 
     def _check_against_committed(self, phase: str, run_id: str, kind: str, payload: Mapping[str, Any]) -> None:
         tree = self.tree()
@@ -967,6 +1058,12 @@ class Lifecycle:
         self.check_launch_policy(phase, attempt, distinct)
         receipts = self.receipts_or_refuse()
         files = self.rt.guarded_files(phase)
+        stale = sorted(path for path, sha in self.rt.input_digests.items() if files.get(path) != sha)
+        if stale:
+            raise Refusal("in_memory_inputs_differ_from_guarded_files:" + ",".join(stale))
+        drifted = _drifted_modules(platform.loaded_source_digests(), {"guarded_files": files})
+        if drifted:
+            raise Refusal("launcher_loaded_drifted_modules:" + ",".join(drifted))
         ledger = self.ledger(phase)
         if ledger.state not in ("ok", "absent"):
             raise Refusal(f"ledger_not_ready:{ledger.state}")
@@ -993,6 +1090,9 @@ class Lifecycle:
 
     def _run_to_end(self, phase: str, run_id: str) -> dict[str, Any]:
         state = self.collect(phase, run_id)
+        if state in ("collected", "scoring_interrupted", "scored", "torn_pending") and self.rt.interrupted():
+            self.sync()
+            return {"phase": phase, "run_id": run_id, "state": state, "reason": "interrupted_after_collection"}
         if state in ("collected", "scoring_interrupted", "scored", "torn_pending"):
             self.score(phase, run_id)
         replay, _ = self.run(phase, run_id)
@@ -1018,6 +1118,13 @@ class Lifecycle:
             return {"phase": phase, "run_id": run_id, "state": "completed"}
         if replay.state in ("created", "collecting", "awaiting_execution"):
             self.receipts_or_refuse()
+        if phase == "B":
+            phase_a_run = replay.entries[0]["payload"].get("phase_a_run_id")
+            attempt_a = next((a for a, row in self.ledger("A").consumed.items() if row.get("run_id") == phase_a_run),
+                             None)
+            if attempt_a is None:
+                raise Refusal("phase_b_names_an_unknown_phase_a_attempt")
+            self.phase_b_preconditions(attempt_a)
         return self._run_to_end(phase, run_id)
 
     def command_abandon(self, phase: str, attempt: int) -> dict[str, Any]:
@@ -1057,6 +1164,13 @@ class Lifecycle:
         data = self.fs.read_bytes(self.D / "tables" / TABLE_NAME) or b"{}"
         return (json.loads(data.decode("utf-8")).get("source") or {}).get("run_id")
 
+    def frozen_table_run(self) -> str | None:
+        """The Phase A run a frozen table names, if a table is committed (§9.4 protection)."""
+        if f"tables/{TABLE_NAME}" not in self.tree():
+            return None
+        data = self.fs.read_bytes(self.D / "tables" / TABLE_NAME) or b"{}"
+        return (json.loads(data.decode("utf-8")).get("source") or {}).get("run_id")
+
     def command_close(self, phase: str, attempt: int) -> dict[str, Any]:
         """B-O3: close the latest in-progress attempt without any further call or sandbox run, for example after a
         repair or copy of D that cannot be trusted byte for byte. Recorded as operator_interrupt (an optional
@@ -1082,13 +1196,18 @@ class Lifecycle:
             raise Refusal("declare_requires_a_consumed_open_attempt")
         run_id = str(ledger.consumed[attempt].get("run_id"))
         replay, _ = self.run(phase, run_id)
-        if replay.state not in ("integrity_failure", "absent"):
+        rows = self.attempt_table(phase)
+        latest = bool(rows) and rows[-1][0] == attempt
+        untrusted = latest and replay.state in ("created", "collecting", "awaiting_execution")   # ruling 11
+        if replay.state not in ("integrity_failure", "absent") and not untrusted:
             raise Refusal(f"declare_not_permitted_in:{replay.state}")
         if self.protected(phase, run_id, table_run):
             raise PhaseBlocked(f"protected_attempt_integrity_failure:{phase}:{attempt}")
         reason = "journal_missing" if replay.state == "absent" or \
             self.integrity_runs.get((phase, run_id)) == "journal_missing" else "integrity_failure"
-        self._ledger_close(phase, attempt, run_id, reason, replay.reason or replay.state)
+        observed = "journal_declared_untrusted_by_operator" if untrusted else (replay.reason or replay.state)
+        self._ledger_close(phase, attempt, run_id, reason, observed)
+        self.sync()
         return {"phase": phase, "attempt": attempt, "state": "closed_at_ledger", "reason": reason}
 
     def command_clear_orphan(self, phase: str, run_id: str) -> dict[str, Any]:
@@ -1176,6 +1295,8 @@ class Lifecycle:
                 reasons.append("provider_evidence_unreadable")
         cells = self.rt.scorer({"mode": "phase_a_cells", "data_root": str(self.D), "run_id": run_id})
         scored = next(e for e in replay.entries if e["kind"] == "scored")
+        if not cells.get("error") and _drifted_modules(cells.get("module_digests") or {}, run_created):
+            cells = {"error": "scorer_loaded_drifted_modules"}
         if cells.get("error") or cells.get("cells") != scored["payload"]["report"].get("cells"):
             reasons.append("sealed_score_differs_from_call_records:" + str(cells.get("error") or ""))
         if reasons:
@@ -1190,11 +1311,16 @@ class Lifecycle:
             raise Refusal("freeze_table_sentence_binding_not_in_force")
         tables = self.D / "tables"
         table_path, audit_copy = tables / TABLE_NAME, tables / AUDIT_NAME
+        audit_bytes = Path(audit_document).read_bytes()
         if f"tables/{TABLE_NAME}" in self.tree():
             data = self.fs.read_bytes(table_path) or b"{}"
-            return {"table_sha256": json.loads(data.decode("utf-8")).get("table_sha256"), "state": "already_frozen"}
+            frozen = json.loads(data.decode("utf-8"))
+            named = next((row.get("run_id") for a, row in self.ledger("A").consumed.items() if a == attempt), None)
+            if (frozen.get("source") or {}).get("run_id") != named or \
+                    self.fs.read_bytes(audit_copy) != audit_bytes:
+                raise Refusal("a_different_table_is_already_frozen")                      # §7 step 6
+            return {"table_sha256": frozen.get("table_sha256"), "state": "already_frozen"}
         run_id, replay = self.phase_a_checks(attempt)
-        audit_bytes = Path(audit_document).read_bytes()
         if canonical_digest(audit_bytes) in self.rt.frozen_artifact_digests():
             raise Refusal("qualification_audit_document_is_a_frozen_artifact")
         run_created_seal = replay.entries[0]["record_sha256"]
@@ -1218,8 +1344,12 @@ class Lifecycle:
         quarantined: dict[str, bytes] = {}
         if existing_audit is not None and existing_audit != audit_bytes:
             recorded = ((intact_table or {}).get("audit") or {}).get("document_sha256")
-            if recorded is not None and recorded == canonical_digest(existing_audit):
-                raise Refusal("a_different_audit_document_is_already_published")      # intact but different
+            existing_text = existing_audit.decode("utf-8", "replace")
+            names_everything = all(needle in existing_text for needle in (run_id, scored["record_sha256"],
+                                                                           run_created_seal))
+            if (recorded is not None and recorded == canonical_digest(existing_audit)) or \
+                    (recorded is None and names_everything):
+                raise Refusal("a_different_audit_document_is_already_published")      # intact but different (A-F9)
             quarantined.update(self._quarantine(audit_copy))                          # torn (B-O7)
             existing_audit = None
         for name in self.fs.list_names(tables) or []:
@@ -1234,9 +1364,8 @@ class Lifecycle:
                                 "scored_sha256": scored["record_sha256"], "run_created_sha256": run_created_seal,
                                 "terminal_commit": terminal_commit, "freeze_binding": self.rt.freeze_binding(),
                                 "audit_copy": str(audit_copy), "auditor": auditor, "verdict": verdict,
-                                "attempts": self.attempts("A")})
-        if built.get("error"):
-            raise Refusal(f"table_build_failed:{built['error']}")
+                                "attempts": self.attempts("A"), "orphans_cleared": self._orphans_cleared("A")})
+        self._check_child(built, replay.entries[0]["payload"], "table_builder")
         rendered = (json.dumps(built["table"], indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
         if existing_table is not None and existing_table != rendered:
             if intact_table is not None:
@@ -1281,7 +1410,7 @@ class Lifecycle:
         if canonical_digest(self.fs.read_bytes(self.D / "tables" / AUDIT_NAME) or b"") != audit.get("document_sha256"):
             reasons.append("audit_copy_differs_from_table")
         rows = self.rt.scorer({"mode": "attempt_rows", "phase": "A", "data_root": str(self.D),
-                               "attempts": self.attempts("A")})
+                               "reference_run_id": run_id, "attempts": self.attempts("A")})
         if rows.get("error") or json.loads(json.dumps(J.safe_value(rows.get("rows")))) != \
                 (table.get("source") or {}).get("phase_a_attempts"):
             reasons.append("table_attempt_disclosure_differs_from_now")
@@ -1330,15 +1459,40 @@ def standard_guarded_files(data_root: Path, phase: str) -> dict[str, str]:
         path = ROOT / relative
         if not path.is_file():
             raise FileNotFoundError(f"guarded_dependency_missing:{relative}")
-        files[relative] = canonical_digest(path.read_bytes())
-    files["execution_freeze"] = (canonical_digest(EXECUTION_FREEZE_PATH.read_bytes())
+        files[relative] = canonical_digest(platform.raw_read(path))
+    files["execution_freeze"] = (canonical_digest(platform.raw_read(EXECUTION_FREEZE_PATH))
                                  if EXECUTION_FREEZE_PATH.is_file() else "")
     if phase == "B":
         table = Path(data_root) / "tables" / TABLE_NAME
         if not table.is_file():
             raise FileNotFoundError("guarded_dependency_missing:qualification_table")
-        files["D/tables/" + TABLE_NAME] = canonical_digest(table.read_bytes())
+        files["D/tables/" + TABLE_NAME] = canonical_digest(platform.raw_read(table))
     return files
+
+
+def load_bound_inputs() -> tuple[dict, dict, dict, dict]:
+    """The holder's schedules, fixtures and request bodies, computed from guarded data files read once and served
+    sealed while they are built (A-F2). Returns (schedules, fixtures, bodies, {relative path: digest}). Gold is
+    never read here."""
+    from g_route1_contract import ROOT
+    from g_route3_contract import request_body, runtime_fixtures, verify_checked_schedule
+    from g_route3_runner import GUARDED_PATHS
+    sealed, digests = {}, {}
+    for relative in GUARDED_PATHS:
+        if relative.endswith(".py") or "/gold_" in relative:
+            continue
+        data = platform.raw_read(ROOT / relative)
+        sealed[ROOT / relative] = data
+        digests[relative] = platform.canonical_sha256(data)
+    platform.seal_reads(sealed)
+    try:
+        schedules = {phase: verify_checked_schedule(phase) for phase in PHASES}
+        fixtures = {phase: runtime_fixtures(phase) for phase in PHASES}
+        bodies = {phase: [request_body(fixtures[phase][row["fixture_id"]], row) for row in schedules[phase]]
+                  for phase in PHASES}
+    finally:
+        platform.unseal_reads()
+    return schedules, fixtures, bodies, digests
 
 
 def child_env() -> dict[str, str]:
@@ -1396,11 +1550,24 @@ def spawn_scorer(fs) -> Callable[[Mapping[str, Any]], Mapping[str, Any]]:
     return call
 
 
+def _snapshot_digest(snapshot: Mapping[str, bytes]) -> str:
+    return J.digest(sorted((path, ev.blob_id(data)) for path, data in snapshot.items()))
+
+
+def _drifted_modules(loaded: Mapping[str, str], run_created: Mapping[str, Any]) -> list[str]:
+    """Every repository module a process compiled must be guarded and identical to run_created (A-F2, C-O3)."""
+    recorded = run_created.get("guarded_files") or {}
+    return sorted(path for path, sha in loaded.items() if recorded.get(path) != sha)
+
+
 def _counts(replay: J.Replay) -> dict[str, Any]:
     kinds = [e["kind"] for e in replay.entries]
+    recorded = {e["payload"].get("position") for e in replay.entries if e["kind"] == "call_recorded"}
+    in_doubt = [e["payload"].get("position") for e in replay.entries
+                if e["kind"] == "call_started" and e["payload"].get("position") not in recorded]
     return {"calls_started": kinds.count("call_started"), "calls_recorded": kinds.count("call_recorded"),
             "executions_started": kinds.count("execution_started"),
-            "in_doubt_position": replay.position if replay.state == "in_doubt" else None}
+            "in_doubt_position": in_doubt[-1] if in_doubt else None}
 
 
 def _walk_error(exc: OSError) -> None:
@@ -1426,5 +1593,6 @@ def _remove_tree(path: Path) -> None:
 
 
 __all__ = ["CONTRACT_VERSION", "Runtime", "Lifecycle", "Refusal", "PhaseBlocked", "WorkerFailure",
-           "guarded_digest", "standard_guarded_files", "spawn_worker", "spawn_scorer", "child_env",
+           "guarded_digest", "standard_guarded_files", "load_bound_inputs", "spawn_worker", "spawn_scorer",
+           "child_env",
            "R7_MODULES", "TABLE_NAME", "AUDIT_NAME"]

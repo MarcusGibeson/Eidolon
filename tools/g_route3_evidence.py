@@ -111,7 +111,9 @@ class EvidenceRepo:
     def remove_stale_locks(self) -> list[str]:
         """Only the lease holder's children run git here, so any lock the holder finds is stale (§13.2)."""
         removed = []
-        for directory, _dirs, files in os.walk(self.git_dir):
+        def refuse(exc: OSError) -> None:
+            raise EvidenceError(f"evidence_repository_unlistable:{exc}")
+        for directory, _dirs, files in os.walk(self.git_dir, onerror=refuse):
             for name in files:
                 if name.endswith(".lock"):
                     path = Path(directory) / name

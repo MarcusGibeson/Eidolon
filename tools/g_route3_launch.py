@@ -13,7 +13,6 @@ the data root from the execution freeze, and hands everything to ``g_route3_life
     python tools/g_route3_launch.py --resume --sentence "<the sentence consumed for the attempt>"
     python tools/g_route3_launch.py --sentence "Abandon G-ROUTE3 phase <P> attempt <n> after failed preflight"
     python tools/g_route3_launch.py --sentence "Declare G-ROUTE3 phase <P> attempt <n> integrity failure"
-    python tools/g_route3_launch.py --sentence "Close G-ROUTE3 phase <P> attempt <n> without further calls"
     python tools/g_route3_launch.py --sentence "Clear G-ROUTE3 phase <P> orphan run <run_id>"
     python tools/g_route3_launch.py --sentence "Freeze G-ROUTE3 qualification table from phase A attempt <n> of execution <binding>" \\
         --audit-document <path> --auditor <name> --verdict READY
@@ -49,7 +48,6 @@ SENTENCES = {
                            rf"attempt (?P<n>{NUM})(?: after integrity failure of attempt (?P<m>{NUM}))?$"),
     "abandon": re.compile(rf"^Abandon G-ROUTE3 phase (?P<phase>[AB]) attempt (?P<n>{NUM}) after failed preflight$"),
     "declare": re.compile(rf"^Declare G-ROUTE3 phase (?P<phase>[AB]) attempt (?P<n>{NUM}) integrity failure$"),
-    "close": re.compile(rf"^Close G-ROUTE3 phase (?P<phase>[AB]) attempt (?P<n>{NUM}) without further calls$"),
     "clear_orphan": re.compile(r"^Clear G-ROUTE3 phase (?P<phase>[AB]) orphan run (?P<run>[A-Za-z0-9_.-]+)$"),
     "freeze_table": re.compile(rf"^Freeze G-ROUTE3 qualification table from phase A attempt (?P<n>{NUM}) "
                                rf"of execution (?P<binding>{HEX})$"),
@@ -75,8 +73,11 @@ _INTERRUPTED = {"flag": False}
 
 
 def install_interrupt_flag() -> None:
-    """The handler only sets a flag; the lifecycle closes through the normal path at its safe points (§7)."""
+    """The first signal only sets a flag; the lifecycle closes through the normal path at its safe points. A second
+    signal exits at once and leaves the state for the next command to classify (§7)."""
     def handler(signum, frame):  # noqa: ARG001
+        if _INTERRUPTED["flag"]:
+            os._exit(130)
         _INTERRUPTED["flag"] = True
     for name in ("SIGINT", "SIGTERM", "SIGBREAK"):
         if hasattr(signal, name):
@@ -127,6 +128,7 @@ def governed_runtime():
         raise PermissionError("execution_freeze_names_no_absolute_data_root")
     fs = fsmod.RealFs()
     provider = runner.GovernedOllamaProvider()
+    schedules, fixtures, bodies, input_digests = lifecycle.load_bound_inputs()
 
     def freeze_valid() -> bool:
         try:
@@ -144,8 +146,7 @@ def governed_runtime():
         freeze_valid=freeze_valid,
         guarded_files=lambda phase: lifecycle.standard_guarded_files(Path(data_root), phase),
         worker=lifecycle.spawn_worker(fs), scorer=lifecycle.spawn_scorer(fs),
-        schedules={phase: contract.verify_checked_schedule(phase) for phase in ("A", "B")},
-        fixtures={phase: contract.runtime_fixtures(phase) for phase in ("A", "B")},
+        schedules=schedules, fixtures=fixtures, bodies=bodies, input_digests=input_digests,
         synthetic=False, endpoint=runner.OLLAMA_ENDPOINT, interrupted=lambda: _INTERRUPTED["flag"],
         frozen_artifact_digests=lambda: set((manifest.get("artifacts") or {}).values()),
         table_on_main=table_on_main(fs, ROOT), sleep=__import__("time").sleep)
@@ -154,6 +155,8 @@ def governed_runtime():
 def main(argv: list[str] | None = None) -> int:
     platform.join_kill_on_close_job()               # before any child exists (§15)
     platform.pin_recursion_limit()                  # before any pinned thread (§8)
+    platform.install_import_hashing(TOOLS.parent)   # every repository module hashed as it is compiled (A-F2)
+    platform.record_source(Path(__file__))
     local_only_network()
     install_interrupt_flag()
     parser = argparse.ArgumentParser(description="Run one governed G-ROUTE3 R7 command.")
@@ -168,6 +171,8 @@ def main(argv: list[str] | None = None) -> int:
     import g_route3_lifecycle as lifecycle
 
     runtime = governed_runtime()
+    if not runtime.freeze_valid():
+        raise PermissionError("execution_freeze_does_not_verify")
     lc = lifecycle.Lifecycle(runtime)
     if args.export_evidence:
         destination = Path(args.export_evidence).resolve()
@@ -202,8 +207,6 @@ def main(argv: list[str] | None = None) -> int:
             result = lc.command_abandon(fields["phase"], int(fields["n"]))
         elif kind == "declare":
             result = lc.command_declare(fields["phase"], int(fields["n"]))
-        elif kind == "close":
-            result = lc.command_close(fields["phase"], int(fields["n"]))
         elif kind == "clear_orphan":
             result = lc.command_clear_orphan(fields["phase"], fields["run"])
         else:
@@ -219,14 +222,19 @@ def main(argv: list[str] | None = None) -> int:
 
 def run(argv: list[str] | None = None) -> int:
     """Refusals are reported plainly, never as tracebacks: a refusal changes nothing further."""
+    platform.join_kill_on_close_job()               # before any child exists (§15)
+    platform.install_import_hashing(TOOLS.parent)   # before any other repository module is imported (A-F2)
+    platform.record_source(Path(__file__))
+    import g_route3_evidence as evidence
     import g_route3_fs as fsmod
     import g_route3_lifecycle as lifecycle
     try:
         return main(argv)
-    except lifecycle.PhaseBlocked as exc:
-        print(json.dumps({"refused": str(exc), "declared_exception": True}, indent=2))
+    except (lifecycle.PhaseBlocked, evidence.AddOnlyConflict, fsmod.Unreadable) as exc:
+        print(json.dumps({"refused": f"{type(exc).__name__}:{exc}", "declared_exception": True}, indent=2))
         return 3
-    except (lifecycle.Refusal, fsmod.Unreadable, PermissionError, ValueError) as exc:
+    except (lifecycle.Refusal, fsmod.AlreadyExists, fsmod.NotDurable, fsmod.NotPublished, platform.LeaseBusy,
+            evidence.EvidenceError, PermissionError, ValueError) as exc:
         print(json.dumps({"refused": f"{type(exc).__name__}:{exc}", "declared_exception":
                           isinstance(exc, fsmod.Unreadable)}, indent=2))
         return 2

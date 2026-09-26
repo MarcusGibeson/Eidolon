@@ -63,33 +63,16 @@ def classify(fixture: Mapping[str, Any], executable: Any) -> dict[str, Any]:
     return {"evidence": evidence, "candidate_error": candidate_error, "infrastructure_failure": infrastructure_failure}
 
 
-def loaded_module_digests(root: Path) -> dict[str, str]:
-    """sha256 of every module file under the repository root that this process has loaded."""
-    from g_route1_contract import canonical_digest
-    digests = {}
-    for module in list(sys.modules.values()):
-        path = getattr(module, "__file__", None)
-        if not path:
-            continue
-        try:
-            relative = Path(path).resolve().relative_to(root.resolve()).as_posix()
-        except ValueError:
-            continue
-        digests[relative] = canonical_digest(Path(path).read_bytes())
-    return digests
-
-
 def main() -> int:
     platform.pin_recursion_limit()
     platform.join_kill_on_close_job()           # nested in the holder's job; grandchildren die with the worker
+    platform.install_import_hashing(TOOLS.parent)   # hash every repository module as it is compiled (A-F2)
+    platform.record_source(Path(__file__))
     request = json.loads(sys.stdin.buffer.read().decode("utf-8"))
-    from g_route1_contract import ROOT
-    from g_route3_contract import runtime_fixtures
-
-    fixture = runtime_fixtures(request["phase"])[request["fixture_id"]]
+    fixture = request["fixture"]                # the holder's in-memory, digest-bound fixture; never re-read here
     executable = json.loads(request["executable_json"])
     result = platform.run_pinned(classify, fixture, executable)
-    result["module_digests"] = loaded_module_digests(ROOT)
+    result["module_digests"] = platform.loaded_source_digests()
     sys.stdout.buffer.write(json.dumps(result, sort_keys=True, ensure_ascii=True).encode("ascii"))
     return 0
 

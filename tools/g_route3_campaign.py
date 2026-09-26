@@ -171,20 +171,21 @@ class StubProvider:
         self.counts = counts
         self.failures = dict(failures or {})
 
-    def attempt(self) -> int:
-        ledger = self.data_root / "phase_a" / "ledger"
-        consumed = 0
-        for path in sorted(ledger.glob("*.json")) if ledger.is_dir() else []:
-            envelope = J.parse_entry(path.read_bytes())
-            if envelope and (envelope["kind"] == "attempt_consumed" or
-                             (envelope["payload"] or {}).get("consumed_and_closed")):
-                consumed += 1
-        return consumed
+    def active_run(self, call_id: str) -> str:
+        """The run whose journal ends in a durable call_started for this call id (the one being sent)."""
+        runs = self.data_root / "phase_a" / "runs"
+        for run in sorted(runs.iterdir()) if runs.is_dir() else []:
+            entries = sorted((run / "journal").glob("*.json")) if (run / "journal").is_dir() else []
+            if entries:
+                envelope = J.parse_entry(entries[-1].read_bytes())
+                if envelope and envelope["kind"] == "call_started" and envelope["payload"].get("call_id") == call_id:
+                    return run.name
+        return "no_durable_call_started"
 
     def __call__(self, call_id: str, body: Mapping[str, Any]) -> dict[str, Any]:
         import base64
         import hashlib
-        key = (self.attempt(), call_id)
+        key = (self.active_run(call_id), call_id)
         self.counts[key] = self.counts.get(key, 0) + 1
         mode = self.failures.get(call_id, "")
         if mode == "raise":
@@ -206,8 +207,9 @@ def stub_worker(fs, failures: set | None = None) -> Callable:
         if failures and request["fixture_id"] in failures:
             raise L.WorkerFailure("died:1")
         digest = J.sha256_bytes(request["executable_json"].encode("ascii"))
+        drift = {"tools/g_route3_worker.py": "0" * 64} if failures and "module_drift" in failures else {}
         return {"evidence": {"stub": digest}, "candidate_error": None, "infrastructure_failure": "",
-                "module_digests": {}}
+                "module_digests": drift}
     return call
 
 
@@ -292,12 +294,22 @@ def latest_attempt(world: World) -> tuple[int, str]:
         lc.close()
 
 
-def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, max_steps: int = 12) -> str:
+def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, max_steps: int = 16,
+                 recursive_kills: int = 0, seed: int = 0) -> str:
     """Supported commands only: resume while possible; declare when an integrity failure needs it; launch the
-    next attempt after a closure. Returns the final outcome label."""
+    next attempt after a closure. With ``recursive_kills``, the first recovery commands are themselves killed at a
+    seeded operation, recursively (§19). Returns the final outcome label."""
     prefer_distinct = None
+    rng = random.Random(seed)
+    kills_left = recursive_kills
     for _ in range(max_steps):
-        fs = fault() if fault else F.RealFs()
+        if fault:
+            fs = fault()
+        elif kills_left > 0:
+            kills_left -= 1
+            fs = FaultFs(kill_at=rng.randint(1, 160), kill_after=rng.random() < 0.5, log_temps=world.temp_unlinks)
+        else:
+            fs = F.RealFs()
         try:
             attempt, state = latest_attempt(world)
             if attempt == 0:
@@ -329,6 +341,8 @@ def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, ma
             if "distinct_sentence_not_permitted" in str(exc):
                 prefer_distinct = False
                 continue
+            if "retry_after_verification" in str(exc):
+                continue                                         # the next command's verification restores it
             if "orphan_run_folder_exists" in str(exc):          # the operator's supported step
                 clear = world.lifecycle(F.RealFs())
                 clear.open()
@@ -344,8 +358,48 @@ def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, ma
     return "no_fixpoint"
 
 
+REFERENCE_FACTS: list = []
+
+
+def completed_facts(world: World) -> list | None:
+    fs = F.RealFs()
+    lc = world.lifecycle(fs)
+    lc.open()
+    try:
+        for attempt, run_id, replay, closed in lc.attempt_table("A"):
+            if replay.state == "completed":
+                return [(e["kind"], e["payload"].get("position"), e["payload"].get("raw_output_sha256"),
+                         J.digest(e["payload"].get("evidence"))) for e in replay.entries
+                        if e["kind"] in ("call_recorded", "execution_recorded")]
+        return None
+    finally:
+        lc.close()
+
+
 def check_oracles(world: World) -> list[str]:
     problems = []
+    try:
+        facts = completed_facts(world)
+        if facts is not None and REFERENCE_FACTS and facts != REFERENCE_FACTS[0]:
+            problems.append("completed_facts_differ_from_uninterrupted_run")
+        lc = world.lifecycle(F.RealFs())
+        lc.open()
+        try:
+            rows = lc.attempts("A")
+            ledger = lc.ledger("A")
+            if [row["attempt"] for row in rows] != sorted(ledger.consumed):
+                problems.append("disclosure_rows_differ_from_ledger")
+            for row, (attempt, run_id, replay, closed) in zip(rows, lc.attempt_table("A")):
+                expected = "closed_at_ledger" if closed else ("completed" if replay.state == "completed" else
+                                                              "closed" if replay.state == "closed" else None)
+                if expected and row["outcome"] != expected:
+                    problems.append(f"disclosure_outcome_wrong:{attempt}")
+                if row["outcome"] != "completed" and not row["optional_stopping_cannot_be_excluded"]:
+                    problems.append(f"optional_stopping_flag_missing:{attempt}")
+        finally:
+            lc.close()
+    except (L.Refusal, F.Unreadable):
+        pass
     for (attempt, call_id), count in world.counts.items():
         if count > 1:
             problems.append(f"J12_repeat:{attempt}:{call_id}:{count}")
@@ -382,11 +436,13 @@ def reference_outcome(workdir: Path) -> tuple[Path, dict]:
     clean = base_world(template, workdir / "clean")
     outcome = drive_to_end(clean)
     assert outcome == "completed", outcome
+    REFERENCE_FACTS[:] = [completed_facts(clean)]
     return template, {"ops": None}
 
 
 def kill_campaign(workdir: Path, template: Path, *, failures=None, worker_failures=None, power: bool = False,
-                  stride: int = 1, label: str = "kills", subset_seed: int | None = None) -> dict:
+                  stride: int = 1, label: str = "kills", subset_seed: int | None = None,
+                  recursive_kills: int = 2) -> dict:
     """Kill after (and before) every operation of an uninterrupted attempt, then recover to a fixpoint."""
     probe = base_world(template, workdir / "probe", failures=failures, worker_failures=worker_failures)
     fs = FaultFs(log_temps=probe.temp_unlinks)
@@ -407,12 +463,14 @@ def kill_campaign(workdir: Path, template: Path, *, failures=None, worker_failur
                     fs.power_loss(random.Random(subset_seed + index) if subset_seed is not None else None)
             except L.Refusal:
                 pass
-            outcome = drive_to_end(world)
+            outcome = drive_to_end(world, recursive_kills=recursive_kills, seed=index * 2 + int(after))
             results["cases"] += 1
             results["outcomes"][outcome.split(":")[0]] = results["outcomes"].get(outcome.split(":")[0], 0) + 1
             problems = check_oracles(world)
             persistent = bool(failures or worker_failures)
             permitted = outcome == "completed" or (persistent and outcome.startswith("stopped_after_"))
+            if not persistent and outcome == "completed" and len(world.counts) < 4:
+                problems = problems + ["completed_without_every_call"]
             if not permitted or problems:
                 results["problems"].append({"kill": index, "after": after, "outcome": outcome,
                                             "problems": problems, "op": fs.ops[index - 1] if index <= len(fs.ops) else ""})
@@ -449,12 +507,12 @@ def damage_campaign(workdir: Path, template: Path, *, stride: int = 1, ledger: b
         if target is not None:
             data = target.read_bytes()
             target.write_bytes(data[: max(1, len(data) // 2)])
-        outcome = drive_to_end(world)
+        outcome = drive_to_end(world, recursive_kills=1, seed=index)
         results["cases"] += 1
         key = outcome.split(":")[0]
         results["outcomes"][key] = results["outcomes"].get(key, 0) + 1
         problems = check_oracles(world)
-        if key not in ("completed", "declared_refusal") or problems:
+        if key != "completed" or problems:
             results["problems"].append({"kill": index, "outcome": outcome, "problems": problems,
                                         "op": fs.ops[index - 1] if index <= len(fs.ops) else ""})
     return results
@@ -601,7 +659,21 @@ def gap_cases(workdir: Path, template: Path) -> dict:
     record("concurrent_setup", drive_to_end(world) == "completed" and not check_oracles(world), str(outputs))
 
     # an interrupt at every safe point closes as operator_interrupt before collected, or exits after it
-    for point in range(1, 12):
+    probe = base_world(template, workdir / "interrupt_probe")
+    counting = probe.lifecycle(F.RealFs())
+    seen = {"n": 0}
+
+    def count() -> bool:
+        seen["n"] += 1
+        return False
+    counting.rt.interrupted = count
+    counting.open()
+    try:
+        counting.command_launch("A", SENTENCE.format(n=1), 1, False)
+    finally:
+        counting.close()
+    safe_points = seen["n"]
+    for point in range(1, safe_points + 2):
         world = base_world(template, workdir / f"interrupt_{point}")
         lc = world.lifecycle(F.RealFs())
         counter = {"n": 0}
@@ -615,11 +687,228 @@ def gap_cases(workdir: Path, template: Path) -> dict:
             out = lc.command_launch("A", SENTENCE.format(n=1), 1, False)
         finally:
             lc.close()
-        ok = out["state"] == "completed" or (out["state"] == "closed" and out["reason"] == "operator_interrupt")
+        if point > safe_points:
+            ok = out["state"] == "completed"
+        else:
+            ok = (out["state"] == "closed" and out["reason"] == "operator_interrupt") or \
+                (out["state"] in ("collected", "scoring_interrupted", "scored")
+                 and out["reason"] == "interrupted_after_collection")
         final = drive_to_end(world)
         record(f"interrupt_at_safe_point_{point}", ok and final == "completed" and not check_oracles(world),
                f"{out['state']}:{out.get('reason')} then {final}")
     return results
+
+
+def review_seeds(workdir: Path, template: Path) -> dict:
+    """Seeds from implementation review 1 (A-F12): read corruption of committed entries (A-O3), ledger twins
+    (A-O7), declaration then further commands (A-F3), pending ledger closures (A-F4), a failed refs flush (A-O9),
+    worker module drift (C-O3/C-O4), abandon, and a kill during setup."""
+    results = {"label": "review_seeds", "cases": 0, "outcomes": {}, "problems": []}
+
+    def record(name: str, ok: bool, detail: str = "") -> None:
+        results["cases"] += 1
+        results["outcomes"][name] = "ok" if ok else f"FAILED:{detail}"
+        if not ok:
+            results["problems"].append({"case": name, "detail": detail})
+
+    class CorruptAfterFirstRead(FaultFs):
+        """Returns damaged bytes for a target file on every read after the first one in this command."""
+        def __init__(self, needle: str) -> None:
+            super().__init__()
+            self.needle, self.seen = needle, 0
+
+        def _read(self, path):
+            data = super()._read(path)
+            if self.needle in str(path).replace("\\", "/"):
+                self.seen += 1
+                if self.seen > 1:
+                    return data[: len(data) // 2]
+            return data
+
+    def ops_of(world, command, *args):
+        probe = FaultFs()
+        run_command(world, probe, command, *args)
+        return probe.ops
+
+    # A-O3 / exp4: a protected attempt (killed during scoring) and read corruption of its committed ledger entry
+    probe_world = base_world(template, workdir / "probe_rs")
+    ops = ops_of(probe_world, "launch", "A", SENTENCE.format(n=1), 1, False)
+    scorer_op = next(i for i, op in enumerate(ops, 1) if ":child:scorer" in op)
+    for name, needle, command in (("read_corruption_ledger_on_launch2", "phase_a/ledger/000001.json", "launch2"),
+                                  ("read_corruption_completed_on_resume", "journal/000015.json", "resume")):
+        world = base_world(template, workdir / name)
+        if command == "launch2":
+            try:
+                run_command(world, FaultFs(kill_at=scorer_op, kill_after=False), "launch", "A",
+                            SENTENCE.format(n=1), 1, False)
+            except SimulatedKill:
+                pass
+            try:
+                run_command(world, CorruptAfterFirstRead(needle), "launch", "A", SENTENCE.format(n=2), 2, False)
+                outcome = "launched_attempt_2"
+            except (L.Refusal, F.Unreadable) as exc:
+                outcome = f"refused:{str(exc)[:60]}"
+            final = drive_to_end(world)
+            attempt, state = latest_attempt(world)
+            record(name, outcome != "launched_attempt_2" and final == "completed" and attempt == 1
+                   and not check_oracles(world), f"{outcome}; final {final}; latest {attempt}:{state}")
+        else:
+            run_command(world, F.RealFs(), "launch", "A", SENTENCE.format(n=1), 1, False)
+            try:
+                run_command(world, CorruptAfterFirstRead(needle), "resume", "A", SENTENCE.format(n=1))
+            except (L.Refusal, F.Unreadable):
+                pass
+            final = drive_to_end(world)
+            record(name, final == "completed" and latest_attempt(world) == (1, "completed")
+                   and not check_oracles(world), final)
+
+    # A-O7 for ledgers: an identical .torn twin of a committed ledger entry is quarantined
+    world = base_world(template, workdir / "ledger_twin")
+    run_command(world, F.RealFs(), "launch", "A", SENTENCE.format(n=1), 1, False)
+    ledger = world.D / "phase_a" / "ledger"
+    (ledger / "000001.torn").write_bytes((ledger / "000001.json").read_bytes())
+    final = drive_to_end(world)
+    record("ledger_twin", final == "completed" and not (ledger / "000001.torn").exists()
+           and not check_oracles(world), final)
+
+    # A-F3 / exp1: consumption-only 000001 damaged, declared, then more commands must still work
+    world = base_world(template, workdir / "declare_then_more")
+    ops = ops_of(base_world(template, workdir / "probe_d"), "launch", "A", SENTENCE.format(n=1), 1, False)
+    after_consumption = next(i for i, op in enumerate(ops, 1) if ":rename:" in op and "000002.json" in op)
+    try:
+        run_command(world, FaultFs(kill_at=after_consumption, kill_after=False), "launch", "A",
+                    SENTENCE.format(n=1), 1, False)
+    except SimulatedKill:
+        pass
+    run_dir = next((world.D / "phase_a" / "runs").iterdir())
+    (run_dir / "journal" / "000001.json").write_bytes(b"damaged")
+    final = drive_to_end(world)
+    record("declare_then_more_commands", final == "completed" and not check_oracles(world), final)
+
+    # A-F4 / exp2: attempt 2's declaration killed before its commit; the closure is still committed later
+    world = base_world(template, workdir / "pending_closure")
+    for attempt in (1, 2):
+        sentence = SENTENCE.format(n=1) if attempt == 1 else DISTINCT.format(n=2, m=1)
+        index = kill_index(world, "launch", ("A", sentence, attempt, attempt == 2),
+                           lambda op: ":rename:" in op and "journal" in op and "000002.json" in op)
+        try:
+            run_command(world, FaultFs(kill_at=index, kill_after=False), "launch", "A", sentence, attempt,
+                        attempt == 2)
+        except SimulatedKill:
+            pass
+        run_dir = sorted((world.D / "phase_a" / "runs").iterdir(), key=lambda p: p.stat().st_mtime)[-1]
+        (run_dir / "journal" / "000001.json").write_bytes(b"damaged")
+        if attempt == 1:
+            run_command(world, F.RealFs(), "declare", "A", 1)
+        else:
+            index = kill_index(world, "declare", ("A", 2),
+                               lambda op: ":child:" in op, after=lambda op: ":rename:" in op and "ledger" in op)
+            try:
+                run_command(world, FaultFs(kill_at=index, kill_after=False), "declare", "A", 2)
+            except SimulatedKill:
+                pass
+    run_command(world, F.RealFs(), "launch", "A", DISTINCT.format(n=3, m=2), 3, True)
+    lc = world.lifecycle(F.RealFs())
+    lc.open()
+    try:
+        tree = lc.tree()
+        closure_entries = [e for e in lc.ledger("A").entries if e["kind"] == "attempt_closed_at_ledger"]
+        all_committed = all(f"phase_a/ledger/{J.entry_name(e['entry'])}" in tree for e in closure_entries)
+    finally:
+        lc.close()
+    record("pending_ledger_closure", all_committed and len(closure_entries) == 2
+           and not check_oracles(world), f"closures {len(closure_entries)} committed {all_committed}")
+
+    # A-O9: the refs/heads flush fails after update-ref; the next command flushes before trusting the ref
+    world = base_world(template, workdir / "refs_flush")
+    ops = ops_of(base_world(template, workdir / "probe_r"), "launch", "A", SENTENCE.format(n=1), 1, False)
+    refs_flush = next(i for i, op in enumerate(ops, 1) if ":flush_dir:" in op and "refs" in op and "heads" in op)
+    try:
+        run_command(world, FaultFs(flush_fail_at={refs_flush}), "launch", "A", SENTENCE.format(n=1), 1, False)
+    except (F.NotDurable, OSError, L.Refusal):
+        pass
+    final = drive_to_end(world)
+    record("refs_flush_failure", final == "completed" and not check_oracles(world), final)
+
+    # C-O3/C-O4: the worker reports a drifted module; the attempt closes truthfully as infrastructure
+    world = base_world(template, workdir / "module_drift", worker_failures={"module_drift"})
+    out = run_command(world, F.RealFs(), "launch", "A", SENTENCE.format(n=1), 1, False)
+    record("worker_module_drift", out["state"] == "closed" and out["reason"] == "infrastructure_failure"
+           and not check_oracles(world), str(out))
+
+    # abandon: refused while preflight passes; allowed on a persistent receipt mismatch
+    world = base_world(template, workdir / "abandon")
+    ops = ops_of(base_world(template, workdir / "probe_ab"), "launch", "A", SENTENCE.format(n=1), 1, False)
+    mid = next(i for i, op in enumerate(ops, 1) if ":rename:" in op and "000003.json" in op)
+    try:
+        run_command(world, FaultFs(kill_at=mid), "launch", "A", SENTENCE.format(n=1), 1, False)
+    except SimulatedKill:
+        pass
+    try:
+        run_command(world, F.RealFs(), "abandon", "A", 1)
+        refused = False
+    except L.Refusal:
+        refused = True
+    lc = world.lifecycle(F.RealFs())
+    lc.rt.verify_receipts = lambda receipts: {"valid": False, "reasons": ["provider_version_mismatch:x"]}
+    lc.open()
+    try:
+        out = lc.command_abandon("A", 1)
+    finally:
+        lc.close()
+    record("abandon_only_on_failing_preflight", refused and out["state"] == "closed"
+           and not check_oracles(world), str(out))
+
+    # a kill at every operation of setup leaves either no data root or an intact one
+    failures = []
+    setup_ops = FaultFs()
+    target = workdir / "setup_probe"
+    if target.exists():
+        L._remove_tree(target)
+    target.mkdir(parents=True)
+    run_command(World(target), setup_ops, "setup")
+    for index in range(1, setup_ops.count + 1):
+        target = workdir / "setup_kill"
+        if target.exists():
+            L._remove_tree(target)
+        target.mkdir(parents=True)
+        try:
+            run_command(World(target), FaultFs(kill_at=index), "setup")
+        except SimulatedKill:
+            pass
+        world = World(target)
+        if drive_to_end_with_setup(world) != "completed":
+            failures.append(index)
+    record("kill_during_setup", not failures, str(failures[:10]))
+    return results
+
+
+def kill_index(world: World, command: str, args: tuple, match, after=None) -> int:
+    """Probe a copy of the world's current state to find the operation index of the first matching operation
+    (optionally after the last operation matching ``after``) for this command."""
+    shadow = workdir_shadow(world)
+    probe = FaultFs()
+    run_command(shadow, probe, command, *args)
+    start = 0
+    if after is not None:
+        start = max(i for i, op in enumerate(probe.ops, 1) if after(op))
+    return next(i for i, op in enumerate(probe.ops, 1) if i > start and match(op))
+
+
+def workdir_shadow(world: World) -> World:
+    shadow = world.root.parent / (world.root.name + "_shadow")
+    if shadow.exists():
+        L._remove_tree(shadow)
+    shutil.copytree(world.root, shadow)
+    return World(shadow)
+
+
+def drive_to_end_with_setup(world: World) -> str:
+    try:
+        run_command(world, F.RealFs(), "setup")
+    except Exception as exc:  # noqa: BLE001
+        return f"setup_failed:{type(exc).__name__}:{exc}"
+    return drive_to_end(world)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -653,6 +942,7 @@ def main(argv: list[str] | None = None) -> int:
                                                                          stride=1 if stride == 1 else 5)),
                        ("environment", lambda: environment_cases(workdir, template)),
                        ("gap_seeds", lambda: gap_cases(workdir, template)),
+                       ("review_seeds", lambda: review_seeds(workdir, template)),
                        ("power_loss_subsets", lambda: kill_campaign(workdir, template, power=True, subset_seed=7,
                                                                     stride=stride, label="power_loss_subsets"))):
         if args.only and label not in args.only.split(","):

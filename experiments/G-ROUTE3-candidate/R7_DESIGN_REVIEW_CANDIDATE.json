@@ -6,12 +6,18 @@
     "date": "2026-09-25",
     "next": "implement R7 from this document and R7_IMPLEMENTATION_OBLIGATIONS.md; fresh implementation review plus certification crash campaign before any execution freeze"
   },
-  "design_review_candidate_sha256": "25e04af7f9e722c191b61b94f17d6160223e30cebae8ef7cd02432fd403443c3",
+  "design_errata_after_acceptance": [
+    "ruling 11 (§9.4, §21)",
+    "§20 sandbox_worker_failure wording aligned with §1.2 (B-O10)"
+  ],
+  "design_review_candidate_sha256": "0ced2368bb1443f6e1210c0214afb4f77daa47ff8a0a1e4e0e0e816f1ae67bfe",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "417b7fb9f7d8ddd650bcf42e26ec039a7d5a09aae8e1f33454ab47826f182539",
+  "document_sha256": "effc803f9d4351a7014fe704601df629e59842af7e2cc2bee2b3dca02b70938c",
   "execution_authorization": false,
   "implementation_obligations": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_OBLIGATIONS.md",
   "implementation_obligations_sha256": "d79a9596d6092ce4b165aeb36b35b3b0807c82ed0b6511bbbaa68a8d05c9efa5",
+  "implementation_review_round1": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_REVIEW_ROUND1.md",
+  "implementation_review_round1_sha256": "109024a660fdbdaec7d15367ba2cd8060e93bbacf83398d969adebabb3bfec29",
   "implementation_started": false,
   "operator_rulings": {
     "2026-09-24": [
@@ -32,6 +38,9 @@
     ],
     "2026-09-25 (after design review round 7)": [
       "design review gate: safety-gated round. Blocking only: a call sent twice (G1), best-of-N (G3), provider contact without the correct verbatim sentence, a silent scientific or grading change, or a contradiction with operator rulings. Robustness and progress dead-end (G4) findings become required cases for the implementation review and certification crash campaign, which precede any execution freeze."
+    ],
+    "2026-09-26 (after implementation review round 1)": [
+      "declare untrusted: no separate close sentence; --declare-integrity-failure extends to an in-progress attempt whose journal cannot be trusted (e.g. after a repair or copy of the data folder), recorded at ledger level as integrity_failure, refused for protected attempts, next attempt needs the distinct sentence; runbook: after any repair/copy, declare, never resume"
     ]
   },
   "provider_generation_calls": 0,
