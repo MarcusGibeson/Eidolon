@@ -429,5 +429,63 @@ class LifecycleTests(unittest.TestCase):
             self.K.run_command(world, self.K.F.RealFs(), "declare", "A", 1, None)
 
 
+class PlatformTests(unittest.TestCase):
+    def test_a_killed_holder_leaves_no_live_children(self) -> None:                  # §15, §18
+        import subprocess
+        import time
+        holder = subprocess.Popen(
+            [sys.executable, "-B", "-c",
+             "import sys, subprocess, time; sys.path.insert(0, %r); import g_route3_platform as P; "
+             "P.join_kill_on_close_job(); c = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(120)']); "
+             "print(c.pid, flush=True); time.sleep(120)" % str(Path(__file__).resolve().parent)],
+            stdout=subprocess.PIPE, text=True)
+        child = int(holder.stdout.readline().strip())
+        self.assertTrue(_alive(child))
+        holder.kill()
+        holder.wait(timeout=30)
+        holder.stdout.close()
+        deadline = time.time() + 15
+        while _alive(child) and time.time() < deadline:
+            time.sleep(0.2)
+        self.assertFalse(_alive(child))
+
+    def test_near_limit_bands_are_deterministic_across_depths_and_processes(self) -> None:   # C-O1, C-O5
+        import json
+        import subprocess
+        import g_route3_platform as P
+        from g_route3_contract import runtime_fixtures
+        from g_route3_worker import derive_executable
+        P.pin_recursion_limit()
+        fixture = next(f for f in runtime_fixtures("A").values() if f["validator_profile"] == "coding.v1")
+        outputs = []
+        for terms in (2960, 2976, 2990):
+            outputs.append(json.dumps({"path": fixture["input"]["allowed_path"], "old": fixture["input"]["source"],
+                                       "new": "value = " + " + ".join(["1"] * terms) + "\n"}))
+        for depth in (960, 991, 1000):
+            outputs.append("[" * depth + "]" * depth)
+
+        def at_depth(k: int, raw: str) -> str:
+            return derive_executable(fixture, raw) if k == 0 else at_depth(k - 1, raw)
+        here = [at_depth(0, raw) for raw in outputs]
+        deep = [at_depth(300, raw) for raw in outputs]
+        self.assertEqual(here, deep)
+        script = ("import sys, json; sys.path.insert(0, %r); import g_route3_platform as P; P.pin_recursion_limit(); "
+                  "from g_route3_contract import runtime_fixtures; from g_route3_worker import derive_executable, "
+                  "classify; f = [x for x in runtime_fixtures('A').values() if x['validator_profile']=='coding.v1'][0]; "
+                  "outs = json.loads(sys.stdin.read()); exes = [derive_executable(f, o) for o in outs]; "
+                  "print(json.dumps([exes, [P.run_pinned(classify, f, json.loads(e))['candidate_error'] "
+                  "for e in exes]]))" % str(Path(__file__).resolve().parent))
+        results = [subprocess.run([sys.executable, "-B", "-c", script], input=json.dumps(outputs), text=True,
+                                  capture_output=True, check=True).stdout for _ in range(2)]
+        self.assertEqual(results[0], results[1])
+        self.assertEqual(json.loads(results[0])[0], here)
+
+
+def _alive(pid: int) -> bool:
+    import subprocess
+    out = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH"], capture_output=True, text=True).stdout
+    return str(pid) in out
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

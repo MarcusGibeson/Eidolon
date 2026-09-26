@@ -320,6 +320,8 @@ def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, ma
             continue
         except L.PhaseBlocked as exc:
             return f"declared_refusal:{str(exc)[:80]}"
+        except F.Unreadable as exc:
+            return f"declared_refusal:unreadable:{str(exc)[:60]}"
         except L.Refusal as exc:
             if "distinct_sentence_required" in str(exc):
                 prefer_distinct = True
@@ -384,7 +386,7 @@ def reference_outcome(workdir: Path) -> tuple[Path, dict]:
 
 
 def kill_campaign(workdir: Path, template: Path, *, failures=None, worker_failures=None, power: bool = False,
-                  stride: int = 1, label: str = "kills") -> dict:
+                  stride: int = 1, label: str = "kills", subset_seed: int | None = None) -> dict:
     """Kill after (and before) every operation of an uninterrupted attempt, then recover to a fixpoint."""
     probe = base_world(template, workdir / "probe", failures=failures, worker_failures=worker_failures)
     fs = FaultFs(log_temps=probe.temp_unlinks)
@@ -402,7 +404,7 @@ def kill_campaign(workdir: Path, template: Path, *, failures=None, worker_failur
                 run_command(world, fs, "launch", "A", SENTENCE.format(n=1), 1, False)
             except SimulatedKill:
                 if power:
-                    fs.power_loss()
+                    fs.power_loss(random.Random(subset_seed + index) if subset_seed is not None else None)
             except L.Refusal:
                 pass
             outcome = drive_to_end(world)
@@ -535,6 +537,91 @@ def environment_cases(workdir: Path, template: Path) -> dict:
     return results
 
 
+def gap_cases(workdir: Path, template: Path) -> dict:
+    """§19 seeds not covered by the sweeps: unreadable files, a damaged root.json, concurrent first setups,
+    interrupts at every safe point."""
+    results = {"label": "gap_seeds", "cases": 0, "outcomes": {}, "problems": []}
+
+    def record(name: str, ok: bool, detail: str = "") -> None:
+        results["cases"] += 1
+        results["outcomes"][name] = "ok" if ok else f"FAILED:{detail}"
+        if not ok:
+            results["problems"].append({"case": name, "detail": detail})
+
+    # unreadable files: the command refuses (§1.3), then the next command recovers once the file reads again
+    class Unreadable(FaultFs):
+        def __init__(self, needle: str) -> None:
+            super().__init__()
+            self.needle = needle
+
+        def _read(self, path):
+            if self.needle in str(path):
+                raise OSError(1117, "injected_io_device_error")
+            return super()._read(path)
+
+        def _listdir(self, path):
+            if self.needle in str(path) and self.needle.endswith("journal"):
+                raise OSError(1117, "injected_io_device_error")
+            return super()._listdir(path)
+
+    for name, needle in (("unreadable_committed_entry", "000001.json"), ("unreadable_tail_entry", "000009.json"),
+                         ("unlistable_journal", "journal")):
+        world = base_world(template, workdir / name)
+        probe = FaultFs()
+        try:
+            run_command(world, probe, "launch", "A", SENTENCE.format(n=1), 1, False)
+        except Exception:  # noqa: BLE001
+            pass
+        refused = drive_to_end(world, fault=lambda needle=needle: Unreadable(needle), max_steps=2)
+        final = drive_to_end(world)
+        record(name, refused.startswith(("declared_refusal", "completed")) and final == "completed"
+               and not check_oracles(world), f"{refused} then {final}")
+
+    # a damaged root.json is restored from the root commit
+    world = base_world(template, workdir / "root_json")
+    (world.D / "root.json").write_bytes(b"{broken")
+    outcome = drive_to_end(world)
+    record("damaged_root_json", outcome == "completed" and J.parse_entry is not None and
+           json.loads((world.D / "root.json").read_bytes()).get("experiment") == "G-ROUTE3", outcome)
+
+    # two concurrent first setups: exactly one intact data root
+    import subprocess
+    target = workdir / "concurrent"
+    if target.exists():
+        L._remove_tree(target)
+    target.mkdir(parents=True)
+    script = ("import sys; sys.path.insert(0, %r); import g_route3_campaign as K, g_route3_platform as P; "
+              "P.pin_recursion_limit(); from pathlib import Path\n"
+              "try:\n    K.run_command(K.World(Path(%r)), K.F.RealFs(), 'setup'); print('setup')\n"
+              "except Exception as exc:\n    print('refused', type(exc).__name__)") % (str(TOOLS), str(target))
+    procs = [subprocess.Popen([sys.executable, "-B", "-c", script], stdout=subprocess.PIPE, text=True)
+             for _ in range(2)]
+    outputs = [proc.communicate(timeout=300)[0].strip() for proc in procs]
+    world = World(target)
+    record("concurrent_setup", drive_to_end(world) == "completed" and not check_oracles(world), str(outputs))
+
+    # an interrupt at every safe point closes as operator_interrupt before collected, or exits after it
+    for point in range(1, 12):
+        world = base_world(template, workdir / f"interrupt_{point}")
+        lc = world.lifecycle(F.RealFs())
+        counter = {"n": 0}
+
+        def interrupted(counter=counter, point=point):
+            counter["n"] += 1
+            return counter["n"] == point
+        lc.rt.interrupted = interrupted
+        lc.open()
+        try:
+            out = lc.command_launch("A", SENTENCE.format(n=1), 1, False)
+        finally:
+            lc.close()
+        ok = out["state"] == "completed" or (out["state"] == "closed" and out["reason"] == "operator_interrupt")
+        final = drive_to_end(world)
+        record(f"interrupt_at_safe_point_{point}", ok and final == "completed" and not check_oracles(world),
+               f"{out['state']}:{out.get('reason')} then {final}")
+    return results
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--workdir", default=str(Path(os.environ.get("TEMP", "/tmp")) / "g_route3_campaign"))
@@ -564,7 +651,10 @@ def main(argv: list[str] | None = None) -> int:
                        ("torn_ledger", lambda: damage_campaign(workdir, template, ledger=True, label="torn_ledger")),
                        ("flush_failures", lambda: flush_failure_campaign(workdir, template,
                                                                          stride=1 if stride == 1 else 5)),
-                       ("environment", lambda: environment_cases(workdir, template))):
+                       ("environment", lambda: environment_cases(workdir, template)),
+                       ("gap_seeds", lambda: gap_cases(workdir, template)),
+                       ("power_loss_subsets", lambda: kill_campaign(workdir, template, power=True, subset_seed=7,
+                                                                    stride=stride, label="power_loss_subsets"))):
         if args.only and label not in args.only.split(","):
             continue
         result = run()

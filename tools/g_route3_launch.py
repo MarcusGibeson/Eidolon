@@ -217,5 +217,20 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+def run(argv: list[str] | None = None) -> int:
+    """Refusals are reported plainly, never as tracebacks: a refusal changes nothing further."""
+    import g_route3_fs as fsmod
+    import g_route3_lifecycle as lifecycle
+    try:
+        return main(argv)
+    except lifecycle.PhaseBlocked as exc:
+        print(json.dumps({"refused": str(exc), "declared_exception": True}, indent=2))
+        return 3
+    except (lifecycle.Refusal, fsmod.Unreadable, PermissionError, ValueError) as exc:
+        print(json.dumps({"refused": f"{type(exc).__name__}:{exc}", "declared_exception":
+                          isinstance(exc, fsmod.Unreadable)}, indent=2))
+        return 2
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(run())

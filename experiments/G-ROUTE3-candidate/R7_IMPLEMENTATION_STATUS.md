@@ -87,21 +87,29 @@ comparisons can run.
 | C-O5 | Done | One `derive_executable` is shared by the holder and the scorer |
 | C-O6 | Done | Positions whose re-derivation mismatches are disclosed as `undeterminable_positions` |
 
-## Known gaps, to be closed in the certification campaign
+## Also run since the first campaign pass
 
-- The every-operation (stride 1) kill campaigns for the clean, power-loss and transport-failure scenarios. So far
-  they have been sampled at stride 7.
-- The seeded cases not yet run:
-  - an unreadable file of every kind;
-  - a data root owned by Administrators (A-O8);
-  - two concurrent first setups;
-  - a clock step while the lease is held;
-  - real console Ctrl+C and Ctrl+Break during the sandbox;
-  - a holder killed while it has live children;
-  - a damaged `root.json`;
-  - a changed audit copy after the freeze;
-  - interrupts at every safe point;
-  - the near-limit recursion bands through the whole pipeline.
-- The power-loss model reverts all unflushed operations. The seeded-subset (reordering) variant is implemented
-  (`power_loss(rng)`) but has not yet been run.
-- There has been no POSIX run. The governed run executes on Windows.
+These gap seeds were added and pass (`g_route3_campaign.py`, `gap_seeds`):
+- an unreadable committed entry, an unreadable tail entry and an unlistable journal: each refuses, then recovers
+  once the file can be read again;
+- a damaged `root.json`: restored;
+- two concurrent first setups: one intact data root;
+- an interrupt at each of 11 safe points: `operator_interrupt` before `collected`, completion after it.
+
+The quick suite adds two platform tests:
+- a killed holder leaves no live child;
+- the near-limit recursion bands give identical derivations and classifications from different caller depths and in
+  two processes.
+
+The launcher reports refusals plainly: exit code 2, or 3 for a declared exception.
+
+## Known gaps
+
+- **Every-operation sweeps:** the stride-1 kill campaigns for the clean, power-loss (all and subset) and
+  transport-failure scenarios are running for certification. Earlier they were sampled at stride 7.
+- **A-O8:** a data root owned by Administrators has not been run. It needs an elevated account, and the reviewers
+  may confirm it by inspection.
+- **Real console Ctrl+C and Ctrl+Break during the sandbox:** covered only by the design-review probe (the worker
+  and scorer start with `CREATE_NO_WINDOW`). There is no harness case.
+- **Clock step while the lease is held:** not applicable. The OS lock does not depend on time.
+- **No POSIX run.** The governed run executes on Windows.
