@@ -474,9 +474,8 @@ def sealed_protective(files: Mapping[str, bytes], spec: RunSpec) -> bool:
     """§9.4, file by file and independent of the chain: a clean non-coding call_recorded of position N, a clean
     execution_recorded of position N, or any derived entry. Temporary files are excluded (only NNNNNN.json)."""
     for name, data in files.items():
-        match = ENTRY_NAME.match(name)
-        if not match or match.group(2) != "json":
-            continue
+        if not ENTRY_NAME.match(name):
+            continue                          # temporary files are excluded; .json and sealing .torn count
         envelope = parse_entry(data)
         if envelope is None:
             continue

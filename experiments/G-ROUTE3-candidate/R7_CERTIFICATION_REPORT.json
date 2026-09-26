@@ -1,0 +1,97 @@
+{
+  "differential": {
+    "phase_a_mixed_288": "cells identical",
+    "phase_a_qualifying_plan": "cells identical (32 qualified / 40 not qualified)",
+    "phase_b_end_to_end": "phase A cells and routing lookup identical; phase B score identical except table_sha256 (R7 table carries r7_binding)"
+  },
+  "fixed_during_campaign": [
+    "faulted state after a resumed execution refused instead of closing (collect loop)"
+  ],
+  "note": "partial campaign during implementation; the full campaign replaces this file at freeze certification",
+  "provider_generation_calls": 0,
+  "recursion_thresholds": {
+    "ast_binary_chain_terms_max": 2977,
+    "json_nesting_max": 991,
+    "recursion_limit": 1000,
+    "stack_bytes": 67108864
+  },
+  "runs": [
+    {
+      "cases": 144,
+      "label": "clean_kills",
+      "outcomes": {
+        "completed": 142,
+        "refusal_orphan_before_harness_fix": 2
+      },
+      "stride": 7,
+      "violations": 0
+    },
+    {
+      "cases": 144,
+      "label": "clean_power_loss",
+      "outcomes": {
+        "completed": 142,
+        "refusal_orphan_before_harness_fix": 2
+      },
+      "stride": 7,
+      "violations": 0
+    },
+    {
+      "cases": 80,
+      "label": "transport_failure_kills",
+      "outcomes": {
+        "refusal_orphan_before_harness_fix": 2,
+        "stopped_after_3_attempts": 78
+      },
+      "stride": 7,
+      "violations": 0
+    },
+    {
+      "cases": 456,
+      "label": "sandbox_failure_kills",
+      "outcomes": {
+        "stopped_after_3_attempts": 456
+      },
+      "stride": 1,
+      "violations": 0
+    },
+    {
+      "cases": 5,
+      "label": "torn_entries",
+      "outcomes": {
+        "completed": 5
+      },
+      "stride": 3,
+      "violations": 0
+    },
+    {
+      "cases": 1,
+      "label": "torn_ledger",
+      "outcomes": {
+        "completed": 1
+      },
+      "violations": 0
+    },
+    {
+      "cases": 6,
+      "label": "flush_failures",
+      "outcomes": {
+        "completed": 6
+      },
+      "stride": 5,
+      "violations": 0
+    },
+    {
+      "cases": 3,
+      "label": "environment",
+      "outcomes": {
+        "inherited_git_environment": "completed",
+        "stale_git_locks": "completed",
+        "transient_read_errors": "completed"
+      },
+      "violations": 0
+    }
+  ],
+  "schedule": "four calls from schedule A (one coding), stub provider/worker/scorer",
+  "status": "PROVISIONAL"
+}

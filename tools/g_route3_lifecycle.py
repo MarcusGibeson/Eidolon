@@ -288,6 +288,10 @@ class Lifecycle:
                 match = J.ENTRY_NAME.match(extra)
                 if match and match.group(2) == "torn" and f"{match.group(1)}.json" in names:
                     quarantined.update(self._quarantine(self.journal_dir(phase, run_id) / extra))
+        if f"tables/{TABLE_NAME}" in tree:
+            for name in self.fs.list_names(self.D / "tables") or []:
+                if f"tables/{name}" not in tree:
+                    quarantined.update(self._quarantine(self.D / "tables" / name))
         if quarantined:
             self._commit(quarantined, "restore boundary", include_ledgers=False)
 
@@ -344,7 +348,7 @@ class Lifecycle:
             for phase in PHASES:
                 additions.update(self._uncommitted_ledger(phase))
             tree = self.tree()
-            for directory, _dirs, files in __import__("os").walk(self.D / "quarantine"):
+            for directory, _dirs, files in __import__("os").walk(self.D / "quarantine", onerror=_walk_error):
                 for name in files:
                     disk = Path(directory) / name
                     path = disk.resolve().relative_to(self.D.resolve()).as_posix()
@@ -391,6 +395,7 @@ class Lifecycle:
             row["optional_stopping_cannot_be_excluded"] = row["outcome"] != "completed"
             row["raw_output_sha256"] = {str(e["payload"]["position"]): e["payload"].get("raw_output_sha256")
                                         for e in replay.entries if e["kind"] == "call_recorded"}
+            row["temporary_file_records"] = self._orphan_temp_records(phase, run_id, replay)
             rows.append(row)
         identity: dict[str, dict[str, Any]] = {}
         for row in rows:
@@ -402,6 +407,18 @@ class Lifecycle:
                 for position, by_attempt in identity.items()
                 if position in row["raw_output_sha256"] and len(by_attempt) > 1}
         return rows
+
+    def _orphan_temp_records(self, phase: str, run_id: str, replay: J.Replay) -> list[dict[str, Any]]:
+        """B-O5: sealed call records that survive only in .orphan-tmp files, labelled as such."""
+        out = []
+        for name in sorted(replay.orphan_temps):
+            data = self.fs.read_bytes(self.journal_dir(phase, run_id) / name)
+            envelope = J.parse_entry(data) if data else None
+            if envelope is not None and envelope["kind"] == "call_recorded":
+                out.append({"file": name, "position": envelope["payload"].get("position"),
+                            "raw_output_sha256": envelope["payload"].get("raw_output_sha256"),
+                            "source": "temporary_file"})
+        return out
 
     def _disclosure_record(self, phase: str) -> tuple[str, bytes]:
         tree = self.tree()
@@ -619,7 +636,7 @@ class Lifecycle:
         out: dict[str, bytes] = {}
         if not base.is_dir():
             return out
-        for directory, _dirs, files in __import__("os").walk(base):
+        for directory, _dirs, files in __import__("os").walk(base, onerror=_walk_error):
             for name in files:
                 path = Path(directory) / name
                 data = self.fs.read_bytes(path)
@@ -759,6 +776,10 @@ class Lifecycle:
                 return state
             if state == "torn_pending" and replay.predicted_class == "derived":
                 return state
+            if state == "faulted":                              # e.g. a resumed execution whose worker failed
+                self._publish_closed(phase, run_id, replay, files)
+                self._terminal_commit(phase)
+                return "closed"
             if state not in ("created", "collecting", "awaiting_execution"):
                 raise Refusal(f"not_collectable:{state}")
             attempt = self._attempt_of(phase, run_id)
@@ -896,8 +917,10 @@ class Lifecycle:
                     break
                 other, _ = self.run(phase, str(row.get("run_id")))
                 earlier[str(attempt)] = other.head
+            orphans = sorted({path.split("/")[2] for path in self.tree() if path.startswith(f"orphans/{phase}/")})
             return {"fact_prefix_sha256": facts[-1]["record_sha256"],
-                    "disclosure_inputs": {"ledger_head": ledger.head, "earlier_attempt_heads": earlier}}
+                    "disclosure_inputs": {"ledger_head": ledger.head, "earlier_attempt_heads": earlier,
+                                          "orphans_cleared": orphans}}
         if kind == "scored":
             current = self._attempt_of(phase, run_id)
             rows = [row for row in self.attempts(phase) if row["attempt"] < current]
@@ -1033,6 +1056,23 @@ class Lifecycle:
             return None
         data = self.fs.read_bytes(self.D / "tables" / TABLE_NAME) or b"{}"
         return (json.loads(data.decode("utf-8")).get("source") or {}).get("run_id")
+
+    def command_close(self, phase: str, attempt: int) -> dict[str, Any]:
+        """B-O3: close the latest in-progress attempt without any further call or sandbox run, for example after a
+        repair or copy of D that cannot be trusted byte for byte. Recorded as operator_interrupt (an optional
+        stop, disclosed like one)."""
+        self.prelude()
+        rows = self.attempt_table(phase)
+        if not rows or rows[-1][0] != attempt:
+            raise Refusal("close_applies_to_the_latest_attempt_only")
+        _, run_id, replay, ledger_closed = rows[-1]
+        if ledger_closed or replay.state not in ("created", "collecting", "awaiting_execution"):
+            raise Refusal(f"close_not_permitted_in:{replay.state}")
+        _, files = self.run(phase, run_id)
+        self._publish_closed(phase, run_id, replay, files, requested="operator_interrupt",
+                             detail="closed_without_further_calls_by_operator_sentence")
+        self.sync()
+        return {"phase": phase, "run_id": run_id, "state": "closed", "reason": "operator_interrupt"}
 
     def command_declare(self, phase: str, attempt: int, table_run: str | None = None) -> dict[str, Any]:
         self.prelude()
@@ -1363,9 +1403,13 @@ def _counts(replay: J.Replay) -> dict[str, Any]:
             "in_doubt_position": replay.position if replay.state == "in_doubt" else None}
 
 
+def _walk_error(exc: OSError) -> None:
+    raise fsmod.Unreadable(f"unlistable:{getattr(exc, 'filename', '')}:{exc}")
+
+
 def _flush_tree(fs, root: Path) -> None:
     import os
-    for directory, dirs, _files in os.walk(root, topdown=False):
+    for directory, dirs, _files in os.walk(root, topdown=False, onerror=_walk_error):
         fs.flush_dir(Path(directory))
 
 

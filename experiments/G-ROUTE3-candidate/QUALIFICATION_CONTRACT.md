@@ -156,3 +156,58 @@ Internal consistency is not enough. Phase B also checks the table against the se
    Changing it mid-run stops the run `incomplete`.
 
 If Phase A cannot produce a valid table, Phase B cannot launch.
+
+## R7 run lifecycle (governs; supersedes the run-lifecycle clauses above)
+
+From the R7 execution freeze onward, attempts run under the journal/replay lifecycle accepted in
+`R7_LIFECYCLE_DESIGN.md` (design-review candidate `R7_DESIGN_REVIEW_CANDIDATE.json`). Where the text above
+describes the R6 lifecycle, R7 governs. The replaced clauses are listed in §20 of the design:
+- the authorization ledger in the checkout;
+- manifests and five-view agreement;
+- git anchors on the branch;
+- free-text abandon and orphan reasons;
+- hand-removed leases;
+- a mid-run table change closing the run.
+
+The science is unchanged: corpora, gold, validators, prompts, the qualification rule, routing, gates, thresholds
+and denominators.
+
+**Data root.** Every freeze, checkout and command uses one fixed data root, pinned here literally:
+
+    C:\Users\marcu\AppData\Local\Eidolon\research\g_route3
+
+It lies outside every git checkout. It holds:
+- the per-phase ledgers and run journals;
+- the qualification table and its audit copy (`tables/`);
+- the disclosure records;
+- the private evidence repository `evidence.git`.
+
+The freeze records the same path, and the freeze writer refuses any other.
+
+**Entry point.** The only entry point is `tools/g_route3_launch.py` (launcher v4). It accepts exactly the
+sentences in §7.1 of the design:
+- launch Phase A;
+- launch Phase B;
+- the distinct launch after an integrity failure;
+- resume;
+- abandon;
+- declare;
+- clear orphan;
+- close without further calls;
+- freeze table.
+
+Only launch sentences authorize provider generation calls.
+
+**Attempts.** Attempt n+1 requires every earlier attempt of the phase, under any freeze, to be closed or closed at
+ledger level. Launch is refused while a completed or protected attempt exists. Every attempt is disclosed; every
+non-complete attempt carries "optional stopping cannot be excluded".
+
+**R6 behaviour carried verbatim:**
+- the provider-failure rule;
+- the coding classification (run in an isolated worker);
+- the coding input chain;
+- proxy stripping;
+- the gold-blind collection flags;
+- every R6 table and Phase B precondition.
+
+The scorer calls R6's `qualify`, `score` and `build_table` on R6-shaped records.

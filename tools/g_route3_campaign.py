@@ -295,6 +295,7 @@ def latest_attempt(world: World) -> tuple[int, str]:
 def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, max_steps: int = 12) -> str:
     """Supported commands only: resume while possible; declare when an integrity failure needs it; launch the
     next attempt after a closure. Returns the final outcome label."""
+    prefer_distinct = None
     for _ in range(max_steps):
         fs = fault() if fault else F.RealFs()
         try:
@@ -304,7 +305,7 @@ def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, ma
             elif state == "completed":
                 return "completed"
             elif state in ("closed", "closed_at_ledger"):
-                distinct = state == "closed_at_ledger"
+                distinct = (state == "closed_at_ledger") if prefer_distinct is None else prefer_distinct
                 sentence = DISTINCT.format(n=attempt + 1, m=attempt) if distinct else SENTENCE.format(n=attempt + 1)
                 if attempt >= 3:
                     return f"stopped_after_{attempt}_attempts"
@@ -320,7 +321,22 @@ def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, ma
         except L.PhaseBlocked as exc:
             return f"declared_refusal:{str(exc)[:80]}"
         except L.Refusal as exc:
-            if "distinct_sentence" in str(exc):
+            if "distinct_sentence_required" in str(exc):
+                prefer_distinct = True
+                continue
+            if "distinct_sentence_not_permitted" in str(exc):
+                prefer_distinct = False
+                continue
+            if "orphan_run_folder_exists" in str(exc):          # the operator's supported step
+                clear = world.lifecycle(F.RealFs())
+                clear.open()
+                try:
+                    for run_id in clear.orphan_runs("A"):
+                        clear.close()
+                        run_command(world, F.RealFs(), "clear_orphan", "A", run_id)
+                        clear.open()
+                finally:
+                    clear.close()
                 continue
             return f"refusal:{str(exc)[:120]}"
     return "no_fixpoint"
@@ -393,9 +409,129 @@ def kill_campaign(workdir: Path, template: Path, *, failures=None, worker_failur
             results["cases"] += 1
             results["outcomes"][outcome.split(":")[0]] = results["outcomes"].get(outcome.split(":")[0], 0) + 1
             problems = check_oracles(world)
-            if outcome.startswith(("no_fixpoint", "refusal")) or problems:
+            persistent = bool(failures or worker_failures)
+            permitted = outcome == "completed" or (persistent and outcome.startswith("stopped_after_"))
+            if not permitted or problems:
                 results["problems"].append({"kill": index, "after": after, "outcome": outcome,
                                             "problems": problems, "op": fs.ops[index - 1] if index <= len(fs.ops) else ""})
+    return results
+
+
+def _latest_file(directory: Path) -> Path | None:
+    files = sorted(p for p in directory.glob("*.json")) if directory.is_dir() else []
+    return files[-1] if files else None
+
+
+def damage_campaign(workdir: Path, template: Path, *, stride: int = 1, ledger: bool = False,
+                    label: str = "torn_entries") -> dict:
+    """§19 torn entries: kill after a publication's rename, then truncate the entry just published (a device
+    fault), or the ledger's last entry. Recovery must rename it to .torn and close or re-derive truthfully."""
+    probe = base_world(template, workdir / "probe")
+    fs = FaultFs()
+    run_command(probe, fs, "launch", "A", SENTENCE.format(n=1), 1, False)
+    marker = "ledger" if ledger else "journal"
+    renames = [i for i, op in enumerate(fs.ops, 1) if ":rename:" in op and marker in op]
+    results = {"label": label, "operations": len(fs.ops), "cases": 0, "outcomes": {}, "problems": []}
+    for index in renames[::stride]:
+        world = base_world(template, workdir / "case")
+        fs = FaultFs(kill_at=index, kill_after=True, log_temps=world.temp_unlinks)
+        try:
+            run_command(world, fs, "launch", "A", SENTENCE.format(n=1), 1, False)
+        except SimulatedKill:
+            pass
+        if ledger:
+            target = _latest_file(world.D / "phase_a" / "ledger")
+        else:
+            runs = sorted((world.D / "phase_a" / "runs").glob("*/journal"))
+            target = _latest_file(runs[-1]) if runs else None
+        if target is not None:
+            data = target.read_bytes()
+            target.write_bytes(data[: max(1, len(data) // 2)])
+        outcome = drive_to_end(world)
+        results["cases"] += 1
+        key = outcome.split(":")[0]
+        results["outcomes"][key] = results["outcomes"].get(key, 0) + 1
+        problems = check_oracles(world)
+        if key not in ("completed", "declared_refusal") or problems:
+            results["problems"].append({"kill": index, "outcome": outcome, "problems": problems,
+                                        "op": fs.ops[index - 1] if index <= len(fs.ops) else ""})
+    return results
+
+
+def flush_failure_campaign(workdir: Path, template: Path, *, stride: int = 1) -> dict:
+    """§19: a directory flush that fails (after its rename) at every flush point."""
+    probe = base_world(template, workdir / "probe")
+    fs = FaultFs()
+    run_command(probe, fs, "launch", "A", SENTENCE.format(n=1), 1, False)
+    flushes = [i for i, op in enumerate(fs.ops, 1) if ":flush_dir:" in op]
+    results = {"label": "flush_failures", "operations": len(fs.ops), "cases": 0, "outcomes": {}, "problems": []}
+    for index in flushes[::stride]:
+        world = base_world(template, workdir / "case")
+        fs = FaultFs(flush_fail_at={index}, log_temps=world.temp_unlinks)
+        try:
+            run_command(world, fs, "launch", "A", SENTENCE.format(n=1), 1, False)
+        except (F.NotDurable, OSError, L.Refusal):
+            pass
+        outcome = drive_to_end(world)
+        results["cases"] += 1
+        key = outcome.split(":")[0]
+        results["outcomes"][key] = results["outcomes"].get(key, 0) + 1
+        problems = check_oracles(world)
+        if key != "completed" or problems:
+            results["problems"].append({"flush": index, "outcome": outcome, "problems": problems,
+                                        "op": fs.ops[index - 1] if index <= len(fs.ops) else ""})
+    return results
+
+
+def environment_cases(workdir: Path, template: Path) -> dict:
+    """§19 environment seeds: leftover git locks, transient read errors, inherited GIT_* and proxy variables."""
+    results = {"label": "environment", "cases": 0, "outcomes": {}, "problems": []}
+
+    def record(name: str, outcome: str, problems: list) -> None:
+        results["cases"] += 1
+        results["outcomes"][name] = outcome
+        if outcome != "completed" or problems:
+            results["problems"].append({"case": name, "outcome": outcome, "problems": problems})
+
+    world = base_world(template, workdir / "lock")
+    (world.D / "evidence.git" / "index.lock").write_bytes(b"")
+    (world.D / "evidence.git" / "refs" / "heads" / "evidence.lock").write_bytes(b"")
+    record("stale_git_locks", drive_to_end(world), check_oracles(world))
+
+    class Flaky(FaultFs):
+        def __init__(self) -> None:
+            super().__init__()
+            self.failures_left = 5
+
+        def _read(self, path):
+            if self.failures_left > 0 and str(path).endswith(".json"):
+                self.failures_left -= 1
+                raise PermissionError(13, "injected_sharing_violation")
+            return super()._read(path)
+
+    import g_route3_platform as platform_module
+    original = platform_module.is_transient
+    platform_module.is_transient = lambda exc: original(exc) or "injected_sharing_violation" in str(exc)
+    try:
+        world = base_world(template, workdir / "flaky")
+        record("transient_read_errors", drive_to_end(world, fault=Flaky), check_oracles(world))
+    finally:
+        platform_module.is_transient = original
+
+    saved = {name: os.environ.get(name) for name in ("GIT_OBJECT_DIRECTORY", "GIT_CONFIG_PARAMETERS",
+                                                     "GIT_CONFIG_COUNT", "HTTP_PROXY")}
+    os.environ.update({"GIT_OBJECT_DIRECTORY": str(workdir / "elsewhere"),
+                       "GIT_CONFIG_PARAMETERS": "'core.autocrlf'='true'", "GIT_CONFIG_COUNT": "1",
+                       "HTTP_PROXY": "http://127.0.0.1:9"})
+    try:
+        world = base_world(template, workdir / "gitenv")
+        record("inherited_git_environment", drive_to_end(world), check_oracles(world))
+    finally:
+        for name, value in saved.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
     return results
 
 
@@ -404,6 +540,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--workdir", default=str(Path(os.environ.get("TEMP", "/tmp")) / "g_route3_campaign"))
     parser.add_argument("--stride", type=int, default=1)
     parser.add_argument("--quick", action="store_true")
+    parser.add_argument("--only", default="")
     args = parser.parse_args(argv)
     P.pin_recursion_limit()
     workdir = Path(args.workdir)
@@ -416,7 +553,21 @@ def main(argv: list[str] | None = None) -> int:
                           ("clean_power_loss", {"power": True}),
                           ("transport_failure_kills", {"failures": {small_schedule()[0]["A"][2]["call_id"]: "error"}}),
                           ("sandbox_failure_kills", {"worker_failures": {small_schedule()[0]["A"][1]["fixture_id"]}})):
+        if args.only and label not in args.only.split(","):
+            continue
         result = kill_campaign(workdir, template, stride=stride, label=label, **kwargs)
+        report.append(result)
+        print(json.dumps({k: v for k, v in result.items() if k != "problems"}), "problems:", len(result["problems"]))
+        for problem in result["problems"][:5]:
+            print("   ", problem)
+    for label, run in (("torn_entries", lambda: damage_campaign(workdir, template, stride=1 if stride == 1 else 3)),
+                       ("torn_ledger", lambda: damage_campaign(workdir, template, ledger=True, label="torn_ledger")),
+                       ("flush_failures", lambda: flush_failure_campaign(workdir, template,
+                                                                         stride=1 if stride == 1 else 5)),
+                       ("environment", lambda: environment_cases(workdir, template))):
+        if args.only and label not in args.only.split(","):
+            continue
+        result = run()
         report.append(result)
         print(json.dumps({k: v for k, v in result.items() if k != "problems"}), "problems:", len(result["problems"]))
         for problem in result["problems"][:5]:

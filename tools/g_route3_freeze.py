@@ -12,8 +12,9 @@ from g_route1_contract import ROOT, digest_file
 from g_route3_contract import (DATA, EXPECTED_CALLS, EXECUTION_FREEZE_PATH, json_digest, load_corpus, load_gold,
                                load_json, load_model_bindings, load_thresholds, verify_checked_schedule)
 
-CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v6"
-CANDIDATE_ID = "G-ROUTE3-EXECUTION-R6"
+CONTRACT_VERSION = "g-route3.execution-freeze-candidate.v7"
+CANDIDATE_ID = "G-ROUTE3-EXECUTION-R7"
+DATA_ROOT = r"C:\Users\marcu\AppData\Local\Eidolon\research\g_route3"   # pinned literally (B-O9, §3)
 SUPERSEDED = (
     {"candidate_id": "G-ROUTE3-EXECUTION-R1",
      "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R1.json",
@@ -65,6 +66,15 @@ SUPERSEDED = (
                 "before the sandbox subprocess and was charged to infrastructure, stopping Phase A, and several "
                 "crash windows during finalization left an attempt unrecoverable by any supported command"),
      "authorized": False, "provider_generation_calls": 0},
+    {"candidate_id": "G-ROUTE3-EXECUTION-R6",
+     "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R6.json",
+     "literal_sha256": "8d64f703dadeb9787ba64ffd832e0134668cb644ab54de4a06eda8cfc100a085",
+     "binding_sha256": "2e5e8cc72570b6be1dd92b1bebe80d0366b3b1c489fb75a8d1f4404886e062e3",
+     "review_record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND6.md",
+     "reason": ("sixth independent pre-contact review returned FINDINGS: model output could crash sealing, torn "
+                "files and interrupted anchors wedged recovery, and resume could not reopen terminal activity; "
+                "the operator chose to restructure the lifecycle around one journal per run (R7)"),
+     "authorized": False, "provider_generation_calls": 0},
 )
 FREEZE_PATH = EXECUTION_FREEZE_PATH
 ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
@@ -76,6 +86,12 @@ ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
     "EXTERNAL_REVIEW_ROUND3.md", "EXECUTION_FREEZE_CANDIDATE_R3.json",
     "EXTERNAL_REVIEW_ROUND4.md", "EXECUTION_FREEZE_CANDIDATE_R4.json",
     "EXTERNAL_REVIEW_ROUND5.md", "EXECUTION_FREEZE_CANDIDATE_R5.json",
+    "EXTERNAL_REVIEW_ROUND6.md", "EXECUTION_FREEZE_CANDIDATE_R6.json",
+    "R7_LIFECYCLE_DESIGN.md", "R7_DESIGN_REVIEW_CANDIDATE.json", "R7_IMPLEMENTATION_OBLIGATIONS.md",
+    "R7_DESIGN_REVIEW_ROUND1.md", "R7_DESIGN_REVIEW_ROUND2.md", "R7_DESIGN_REVIEW_ROUND3.md",
+    "R7_DESIGN_REVIEW_ROUND4.md", "R7_DESIGN_REVIEW_ROUND5.md", "R7_DESIGN_REVIEW_ROUND6.md",
+    "R7_DESIGN_REVIEW_ROUND7.md", "R7_DESIGN_REVIEW_ROUND8.md", "R7_IMPLEMENTATION_STATUS.md",
+    "R7_CERTIFICATION_REPORT.json",
     "corpus_a.json", "gold_a.json", "corpus_b.json", "gold_b.json", "fixture_design.json",
     "model_bindings.json", "thresholds.json", "schedule_a.json", "schedule_b.json",
     "authoring/author_g3_part1.py", "authoring/author_g3_part2.py", "authoring/author_g3_part3.py",
@@ -92,7 +108,52 @@ ARTIFACTS = tuple(f"experiments/G-ROUTE3-candidate/{name}" for name in (
     "tools/g_route3_contract.py", "tools/g_route3_qualification.py", "tools/g_route3_routing.py",
     "tools/g_route3_validation.py", "tools/g_route3_runner.py", "tools/g_route3_independence.py",
     "tools/g_route3_tests.py", "tools/g_route3_freeze.py",
+    "tools/g_route3_platform.py", "tools/g_route3_fs.py", "tools/g_route3_journal.py", "tools/g_route3_evidence.py",
+    "tools/g_route3_lifecycle.py", "tools/g_route3_worker.py", "tools/g_route3_scorer.py",
+    "tools/g_route3_campaign.py", "tools/g_route3_r7_tests.py",
 )
+
+
+def measure_recursion_thresholds() -> dict[str, int]:
+    """C-O2: the near-limit thresholds at the pinned budget, measured in a fresh pinned thread (§1.2, §8)."""
+    import json as _json
+    import g_route3_platform as platform
+    from g_route1_coding_runner import validate_candidate_ast
+    from g_route1_validators import coding_candidate_source
+    from g_route3_contract import runtime_fixtures
+
+    platform.pin_recursion_limit()
+    fixture = next(f for f in runtime_fixtures("A").values() if f["validator_profile"] == "coding.v1")
+
+    def json_ok(depth: int) -> bool:
+        try:
+            _json.loads("[" * depth + "]" * depth)
+            return True
+        except RecursionError:
+            return False
+
+    def ast_ok(terms: int) -> bool:
+        output = {"path": fixture["input"]["allowed_path"], "old": fixture["input"]["source"],
+                  "new": "value = " + " + ".join(["1"] * terms) + "\n"}
+        try:
+            validate_candidate_ast(coding_candidate_source(fixture["input"], output))
+            return True
+        except RecursionError:
+            return False
+        except Exception:  # noqa: BLE001 - any other rejection is not the recursion band
+            return True
+
+    def highest(check, low: int, high: int) -> int:
+        while low < high:
+            middle = (low + high + 1) // 2
+            if platform.run_pinned(check, middle):
+                low = middle
+            else:
+                high = middle - 1
+        return low
+
+    return {"json_nesting_max": highest(json_ok, 100, 5000), "ast_binary_chain_terms_max": highest(ast_ok, 100, 20000),
+            "recursion_limit": platform.RECURSION_LIMIT, "stack_bytes": platform.PINNED_STACK_BYTES}
 
 
 def literal_sha256(path: Path) -> str:
@@ -165,19 +226,24 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
         "operational_validator_contract": "g-route3.operational-validator.v2",
         "semantic_contract": "g-route3.semantics.v1",
         "conversation_contract": "g-route3.conversation-frame.v3",
-        "runner_contract": "g-route3.runner.v5",
-        "threat_model": ("honest operator with tamper-evident records (operator decision): the code stops accidents, "
-                         "misuse through any supported path and cheap tampering; a deliberate local adversary (a fake "
-                         "model server, a second checkout, a consistent rewrite of sealed files) is out of scope and "
-                         "is countered by the launcher's local git anchor commits"),
-        "launcher": {"contract": "g-route3.launcher.v3", "path": "tools/g_route3_launch.py",
+        "runner_contract": "g-route3.runner.v5 (R6 authorized path superseded; synthetic path kept)",
+        "lifecycle_contract": "g-route3.lifecycle.r7",
+        "data_root": DATA_ROOT,
+        "recursion_thresholds": measure_recursion_thresholds(),
+        "threat_model": ("operator ruling 10: accidents in code, tampering at boundaries. The code guarantees "
+                         "at-most-once and a truthful history against accidents and misuse of supported commands; "
+                         "every attempt's journal is committed to the private evidence repository at its "
+                         "boundaries and verified by every command; tampering with an attempt in progress is a "
+                         "declared residual"),
+        "launcher": {"contract": "g-route3.launcher.v4", "path": "tools/g_route3_launch.py",
                      "provider_endpoint": "http://127.0.0.1:11434 (fixed)",
-                     "git_anchor": "local commit of each consumed ledger entry and each completed run's anchor file",
-                     "authorized_runs_only_through_launcher": True,
-                     "run_roots": {"A": "data/g_route3/phase_a", "B": "data/g_route3/phase_b"}},
-        "attempt_policy": ("numbered attempts, each separately authorized; attempt n+1 only after every earlier "
-                           "attempt of the phase ended incomplete, failed or cancelled; every attempt and its "
-                           "outcome disclosed in the table and the Phase B score"),
+                     "sentences": "R7_LIFECYCLE_DESIGN.md §7.1, plus 'Close G-ROUTE3 phase <P> attempt <n> "
+                                  "without further calls' (B-O3)",
+                     "authorized_runs_only_through_launcher": True, "data_root": DATA_ROOT},
+        "attempt_policy": ("R7 §9.3: numbered attempts, each separately authorized, spanning every freeze; attempt "
+                           "n+1 only after every earlier attempt is closed or closed at ledger level; refused while "
+                           "a completed or protected attempt exists; every attempt disclosed, every non-complete "
+                           "attempt flagged 'optional stopping cannot be excluded'"),
         "semantic_validators_unchanged_from_g_route1": ("research, synthesis, extraction and planning: yes; "
                                                         "conversation: replaced by the disclosed two-line frame "
                                                         "(Answer, Actions taken); "
@@ -233,11 +299,53 @@ def verify_manifest(manifest: Mapping[str, Any], root: Path = ROOT) -> dict[str,
             "independent_audit_verdict": manifest.get("independent_audit_verdict")}
 
 
+def data_root_refusals(data_root: Path) -> list[str]:
+    """R7 §9.3: the freeze writer refuses once D holds a table, or a completed, protected or in-progress attempt.
+    It follows J8 (lease, verification, replay) and refuses on unreadable files (B-O3)."""
+    import g_route3_fs as fsmod
+    import g_route3_lifecycle as lifecycle
+    if not Path(data_root).exists():
+        return []
+
+    def refuse(*_args, **_kwargs):
+        raise PermissionError("freeze_writer_never_contacts_a_provider")
+    from g_route3_contract import runtime_fixtures
+    runtime = lifecycle.Runtime(
+        data_root=Path(data_root), fs=fsmod.RealFs(), provider=refuse, model_receipts=refuse,
+        verify_receipts=lambda receipts: {"valid": False}, freeze_binding=lambda: "", freeze_valid=lambda: False,
+        guarded_files=lambda phase: {}, worker=refuse, scorer=refuse,
+        schedules={phase: verify_checked_schedule(phase) for phase in ("A", "B")},
+        fixtures={phase: runtime_fixtures(phase) for phase in ("A", "B")}, synthetic=False, endpoint="")
+    lc = lifecycle.Lifecycle(runtime)
+    lc.open()
+    try:
+        reasons = []
+        if "tables/" + lifecycle.TABLE_NAME in lc.tree():
+            reasons.append("data_root_holds_a_qualification_table")
+        for phase in ("A", "B"):
+            for attempt, run_id, replay, ledger_closed in lc.attempt_table(phase):
+                if replay.state == "completed" or lc.committed_completed(phase, run_id):
+                    reasons.append(f"data_root_holds_a_completed_attempt:{phase}{attempt}")
+                elif not ledger_closed and replay.state != "closed":
+                    if lc.protected(phase, run_id):
+                        reasons.append(f"data_root_holds_a_protected_attempt:{phase}{attempt}")
+                    reasons.append(f"data_root_holds_an_attempt_in_progress:{phase}{attempt}:{replay.state}")
+        return reasons
+    finally:
+        lc.close()
+
+
 def write_manifest(path: Path = FREEZE_PATH, *, implementation_commit: str | None = None) -> dict[str, Any]:
     # The execution freeze must precede any qualification table. This is checked when the freeze is
     # written, not when it is verified, so a valid freeze stays valid once Phase A has produced a table.
     if (DATA / "QUALIFICATION_TABLE.json").exists():
         raise ValueError("qualification_table_must_not_exist_at_execution_freeze")
+    earlier_roots = {prior.get("data_root") for prior in SUPERSEDED if prior.get("data_root")}
+    if earlier_roots and earlier_roots != {DATA_ROOT}:
+        raise ValueError("data_root_differs_from_earlier_r7_freezes")
+    refusals = data_root_refusals(Path(DATA_ROOT))
+    if refusals:
+        raise ValueError("freeze_writer_refuses:" + ",".join(refusals))
     manifest = build_manifest(implementation_commit=implementation_commit)
     rendered = json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if path.exists() and path.read_text(encoding="utf-8") != rendered:

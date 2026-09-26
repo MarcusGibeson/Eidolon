@@ -639,6 +639,9 @@ class QualificationTests(unittest.TestCase):
                 qualification.freeze_table(other, path)
 
 
+REASON_R7 = "R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py"
+
+
 class PipelineTests(LedgerIsolation, unittest.TestCase):
     """End-to-end through the governed runner with synthetic providers."""
 
@@ -850,6 +853,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                 "one_execution_only": True, "consumed": False,
                 "operator_confirmation": runner.confirmation_string("A", attempt, freeze=digest), **extra}
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_real_authorizations_are_numbered_attempts_recorded_in_a_fixed_ledger(self):
         """The authorized path end to end, with a real-shaped stub provider and a stand-in freeze file."""
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
@@ -923,6 +927,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                                            authorization=auth_b(1), anchor=self.anchor, committed=lambda path: True)
             self.assertFalse(runner.phase_b_authorized(auth_b(2), root_a, "real-a"))     # B is not best-of-N either
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_a_retry_is_allowed_only_after_a_non_complete_attempt_and_both_are_disclosed(self):
         class FlakyProvider(RealShapedProvider):
             def __call__(self, call_id, body):
@@ -950,6 +955,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertTrue(pre["valid"], pre["reasons"])
             self.assertFalse(runner.phase_b_preconditions(root_a, "try-1")["valid"])
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_a_stuck_attempt_can_only_be_abandoned_explicitly(self):
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
             for item in self.real_path(td):
@@ -965,6 +971,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertIn("abandoned_by_operator", runner.phase_a_attempts()[0]["reason"])
             self.assertTrue(runner.phase_a_authorized(self.auth_a(2)))
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_a_synthetic_run_cannot_be_relabelled_as_authorized(self):
         """Round-3 reviewer's probe: resume a finished synthetic run under a real authorization, reseal the receipt."""
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
@@ -992,6 +999,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                                        run_root=Path(td) / "b", phase_a_root=root_a, phase_a_run_id="S",
                                        synthetic_fixture=True)
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_authorized_runs_must_carry_the_providers_own_raw_bodies(self):
         class HollowProvider(RealShapedProvider):
             def __call__(self, call_id, body):
@@ -1018,6 +1026,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                     runner.consume_authorization("A", auth, run_id, root)
             self.assertEqual(len(runner.ledger_entries("A")), 1)
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_launcher_builds_its_own_provider_and_reads_only_the_exact_sentence(self):
         import g_route3_launch as launch
         freeze = "a" * 64
@@ -1136,6 +1145,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertTrue(hostile and not any(r["normalized_operational_validation"]["accepted"] for r in hostile))
             self.assertEqual(runner._provider_evidence_problems(records, "A"), [])
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_the_ledger_is_hash_chained_and_must_agree_with_the_run_root(self):
         """Round-4 reviewer's replay: delete a ledger entry and reuse the attempt-1 sentence."""
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
@@ -1174,6 +1184,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                                    encoding="utf-8")
             self.assertIn("run_anchor_missing_or_different", runner.phase_b_preconditions(root_a, "first")["reasons"])
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_an_interrupted_finalization_is_completed_on_resume_not_deadlocked(self):
         original_finish = RouteRunStore.finish
         crashed = {"n": 0}
@@ -1204,6 +1215,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertTrue(runner.phase_b_preconditions(root_a, "cut")["valid"],
                             runner.phase_b_preconditions(root_a, "cut")["reasons"])
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_a_run_holding_every_record_cannot_be_abandoned(self):
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
             for item in self.real_path(td):
@@ -1287,6 +1299,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
         pre = runner.phase_b_preconditions(root_a, "w")
         self.assertTrue(pre["valid"], pre["reasons"])
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_finalization_recovers_from_a_crash_after_the_score_before_the_receipt(self):
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
             for item in self.real_path(td):
@@ -1295,6 +1308,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertTrue((root_a / "w" / "score.json").is_file())
             self._resume_and_check(td, root_a)
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_finalization_recovers_from_a_crash_after_completion_before_the_anchor(self):
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
             for item in self.real_path(td):
@@ -1304,6 +1318,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertNotIn(("run_complete", "phase-A-w.json"), self.anchors)
             self._resume_and_check(td, root_a)
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_a_checkpoint_one_record_behind_is_reconciled_at_the_end_and_mid_run(self):
         for last in (288, 100):
             with self.subTest(position=last), tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
@@ -1315,6 +1330,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                 self.assertEqual(len(RouteRunStore(root_a, "w", create=False).call_records()), last)
                 self._resume_and_check(td, root_a)
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_a_closed_run_is_never_resumable_even_if_its_manifest_is_edited(self):
         class Failing(RealShapedProvider):
             def __call__(self, call_id, body):
@@ -1356,6 +1372,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertEqual(runner.ledger_run_root_mismatches("A"), [])
             self.assertTrue(runner.phase_a_authorized(self.auth_a(1)))
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_authorized_phase_b_requires_phase_a_evidence_committed_in_git(self):
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
             for item in self.real_path(td):
@@ -1378,6 +1395,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                                            run_id="b", authorization=auth_b, anchor=self.anchor, committed=committed)
             self.assertEqual(runner.ledger_entries("B"), [])
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_a_failed_consumption_anchor_is_reapplied_on_resume(self):
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
             for item in self.real_path(td):
@@ -1397,6 +1415,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                                    resume=True, control=lambda: "pause")
             self.assertIn(("authorization_consumed", "phase-A-attempt-001.json"), self.anchors)
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_launcher_table_freeze_and_local_only_network(self):
         import g_route3_launch as launch
         with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
@@ -1436,6 +1455,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
                 else:
                     os.environ[key] = value
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_the_authorized_provider_endpoint_is_fixed(self):
         self.assertNotIn("endpoint", inspect.signature(runner.GovernedOllamaProvider.__init__).parameters)
         import g_route3_launch as launch
@@ -1443,6 +1463,7 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
         self.assertNotIn("--endpoint", inspect.getsource(launch.main))
         self.assertEqual(runner.OLLAMA_ENDPOINT, "http://127.0.0.1:11434")
 
+    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route3_r7_tests.py and g_route3_campaign.py")
     def test_the_git_anchor_commits_exactly_one_file(self):
         import g_route3_launch as launch
         with tempfile.TemporaryDirectory() as td:
@@ -1477,6 +1498,11 @@ class PipelineTests(LedgerIsolation, unittest.TestCase):
             self.assertEqual(result["state"], "complete")
             self.assertEqual(result["score"]["qualified_cells"], 0)
 
+    def test_r6_authorized_path_refuses_as_superseded(self):
+        with self.assertRaisesRegex(PermissionError, "r6_authorized_path_superseded_by_r7_lifecycle"):
+            runner._require_governed_real_path(object(), None, "A", runner.RUN_ROOTS["A"], lambda *a: None)
+
+    @unittest.skip(REASON_R7)
     def test_authorization_is_required_for_both_phases(self):
         with tempfile.TemporaryDirectory() as td:
             with patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,)), \
@@ -1557,7 +1583,8 @@ class FreezeTests(unittest.TestCase):
                           "aa5db17af6e12aaf1453cdbd1c88940743cb8712882c8a7ccba2a6541bfd52af",
                           "f92fd6e0a628864a7da9a842642ec2e3fd79c81685f9fce3c0a817dbed721397",
                           "3660f60f459ef7a0b3dc1e86bd50aec397d1233e7a235665989ad91195b727b3",
-                          "2e97b75e0b3ce68bd2cd21fd5cbcc69f6133abaa736727b62452d729061fce94"])
+                          "2e97b75e0b3ce68bd2cd21fd5cbcc69f6133abaa736727b62452d729061fce94",
+                          "2e5e8cc72570b6be1dd92b1bebe80d0366b3b1c489fb75a8d1f4404886e062e3"])
         self.assertFalse(any(row["authorized"] for row in manifest["supersedes"]))
 
     def test_superseded_digests_are_independent_of_checkout_line_endings(self):
@@ -1575,7 +1602,7 @@ class FreezeTests(unittest.TestCase):
             "import sys, os, json, tempfile\n"
             "sys.path.insert(0, os.getcwd())\n"
             "import g_route3_runner as r, g_route3_qualification, g_route3_validation, g_route3_routing, g_route3_freeze\n"
-            "import g_route3_launch\n"
+            "import g_route3_launch, g_route3_lifecycle, g_route3_worker, g_route3_scorer\n"
             "r.RouteThreeActivity('closure-probe', phase='A', root=tempfile.mkdtemp())\n"
             "root = os.path.abspath('..')\n"
             "mods = sorted({os.path.relpath(os.path.abspath(m.__file__), root).replace(os.sep, '/')\n"
@@ -1586,7 +1613,9 @@ class FreezeTests(unittest.TestCase):
                              text=True, check=True).stdout.strip().splitlines()[-1]
         modules = set(json.loads(out))
         self.assertIn("conscious_agent/activity.py", modules)
-        self.assertLessEqual(modules, set(runner.GUARDED_PATHS), sorted(modules - set(runner.GUARDED_PATHS)))
+        import g_route3_lifecycle
+        guarded = set(runner.GUARDED_PATHS) | set(g_route3_lifecycle.R7_MODULES)
+        self.assertLessEqual(modules, guarded, sorted(modules - guarded))
         self.assertLessEqual(modules, set(freeze.ARTIFACTS), sorted(modules - set(freeze.ARTIFACTS)))
 
     def test_a_freeze_cannot_be_written_once_a_table_exists(self):

@@ -222,6 +222,14 @@ class JournalReplayTests(unittest.TestCase):
         partial = {name: data for name, data in b.files.items() if name < "000009.json"}
         self.assertFalse(J.sealed_protective(partial, SPEC))
 
+    def test_acknowledges_only_on_closed_and_derived(self) -> None:          # A-O14
+        b = Builder()
+        b.add("run_created", {})
+        b.tear()
+        torn = b.rename_tail_to_torn()
+        b.add("call_started", {"position": 1, "call_id": "c1"}, acks=[{"entry": torn[0], "sha256": torn[1]}])
+        self.assertEqual(b.replay().state, "integrity_failure")
+
     def test_lossless_text(self) -> None:
         text = "a\ud800b\U0001f600"
         encoded, _ = J.text_to_b64(text)
@@ -388,6 +396,29 @@ class LifecycleTests(unittest.TestCase):
             self.launch(world)
         self.K.run_command(world, self.K.F.RealFs(), "clear_orphan", "A", run_id)
         self.assertEqual(self.launch(world)["state"], "completed")
+
+    def test_close_without_further_calls(self) -> None:                     # B-O3
+        world = self.world("close")
+        self.killed(world, self.op_index("000003.json"))
+        calls_before = dict(world.counts)
+        out = self.K.run_command(world, self.K.F.RealFs(), "close", "A", 1)
+        self.assertEqual((out["state"], out["reason"]), ("closed", "operator_interrupt"))
+        self.assertEqual(world.counts, calls_before)
+        self.assertEqual(self.K.check_oracles(world), [])
+
+    def test_extra_table_file_after_freeze_is_quarantined(self) -> None:      # A-O4 (verification row)
+        world = self.world("tables")
+        self.launch(world)
+        lc = world.lifecycle(self.K.F.RealFs())
+        lc.open()
+        try:
+            lc._commit({"tables/QUALIFICATION_TABLE.json": b"{}\n"}, "test table")
+        finally:
+            lc.close()
+        (world.D / "tables" / "QUALIFICATION_TABLE.json").write_bytes(b"{}\n")
+        (world.D / "tables" / "stray.json").write_bytes(b"stray")
+        self.assertEqual(self.K.check_oracles(world), [])
+        self.assertFalse((world.D / "tables" / "stray.json").exists())
 
     def test_protected_attempt_cannot_be_declared(self) -> None:
         world = self.world("protected")

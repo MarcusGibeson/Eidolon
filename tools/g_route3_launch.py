@@ -13,6 +13,7 @@ the data root from the execution freeze, and hands everything to ``g_route3_life
     python tools/g_route3_launch.py --resume --sentence "<the sentence consumed for the attempt>"
     python tools/g_route3_launch.py --sentence "Abandon G-ROUTE3 phase <P> attempt <n> after failed preflight"
     python tools/g_route3_launch.py --sentence "Declare G-ROUTE3 phase <P> attempt <n> integrity failure"
+    python tools/g_route3_launch.py --sentence "Close G-ROUTE3 phase <P> attempt <n> without further calls"
     python tools/g_route3_launch.py --sentence "Clear G-ROUTE3 phase <P> orphan run <run_id>"
     python tools/g_route3_launch.py --sentence "Freeze G-ROUTE3 qualification table from phase A attempt <n> of execution <binding>" \\
         --audit-document <path> --auditor <name> --verdict READY
@@ -48,6 +49,7 @@ SENTENCES = {
                            rf"attempt (?P<n>{NUM})(?: after integrity failure of attempt (?P<m>{NUM}))?$"),
     "abandon": re.compile(rf"^Abandon G-ROUTE3 phase (?P<phase>[AB]) attempt (?P<n>{NUM}) after failed preflight$"),
     "declare": re.compile(rf"^Declare G-ROUTE3 phase (?P<phase>[AB]) attempt (?P<n>{NUM}) integrity failure$"),
+    "close": re.compile(rf"^Close G-ROUTE3 phase (?P<phase>[AB]) attempt (?P<n>{NUM}) without further calls$"),
     "clear_orphan": re.compile(r"^Clear G-ROUTE3 phase (?P<phase>[AB]) orphan run (?P<run>[A-Za-z0-9_.-]+)$"),
     "freeze_table": re.compile(rf"^Freeze G-ROUTE3 qualification table from phase A attempt (?P<n>{NUM}) "
                                rf"of execution (?P<binding>{HEX})$"),
@@ -199,8 +201,9 @@ def main(argv: list[str] | None = None) -> int:
         elif kind == "abandon":
             result = lc.command_abandon(fields["phase"], int(fields["n"]))
         elif kind == "declare":
-            table_run = None
-            result = lc.command_declare(fields["phase"], int(fields["n"]), table_run)
+            result = lc.command_declare(fields["phase"], int(fields["n"]))
+        elif kind == "close":
+            result = lc.command_close(fields["phase"], int(fields["n"]))
         elif kind == "clear_orphan":
             result = lc.command_clear_orphan(fields["phase"], fields["run"])
         else:
