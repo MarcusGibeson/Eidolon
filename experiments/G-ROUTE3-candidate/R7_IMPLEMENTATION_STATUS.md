@@ -68,6 +68,16 @@ replaced the Close sentence with declaring a journal untrusted. Evidence on the 
 
 The full certification campaign (stride 1, with recursive kills) runs next on this code.
 
+## After implementation review round 2
+
+Reviewer A's BLOCKING finding (A-N1: resume never bound its inputs to `run_created`) and all 10 MUST-FIX findings
+are fixed; see `R7_IMPLEMENTATION_REVIEW_ROUND2.md`. Operator ruling 12: in a resumed attempt, Ctrl+C before the
+first new call exits without writing. Evidence on the fixed code:
+- **Quick R7 suite:** 37 tests pass. The R6 suite passes: 80 tests, 19 skipped as superseded.
+- **`tools/g_route3_r7_differential.py` passes** again, with the same identities as after round 1.
+- **The harness** now decides from a pure peek, kills recovery commands with a per-operation probability, applies
+  power loss to recursive kills, and flags any send without a durable `call_started`.
+
 ## Obligations
 
 | # | Status | Where |
@@ -89,7 +99,7 @@ The full certification campaign (stride 1, with recursive kills) runs next on th
 | A-O15 | Done | Disclosure records carry `evidence_head_before` |
 | B-O1 | Done | `scorer.score_run` calls R6's functions verbatim on R6-shaped records |
 | B-O2 | Done | The scorer recomputes the guarded digest (corpus, gold, thresholds, table and code) against `run_created` before reporting |
-| B-O3 | Done, with a sentence **added to §7.1** for the review to confirm | `command_close` and the sentence `Close G-ROUTE3 phase <P> attempt <n> without further calls`. Directory errors count as unreadable. The freeze writer follows J8 (`data_root_refusals`). |
+| B-O3 | Done | Ruling 11: no Close sentence (removed after implementation review round 1); `command_declare` covers an in-progress attempt whose journal cannot be trusted. Directory errors count as unreadable. The freeze writer follows J8 (`data_root_refusals`). |
 | B-O4 | Done | Replay is pure; the fixture-dependent check runs in the scorer after the drift check |
 | B-O5 | Done | Disclosure rows carry `temporary_file_records`, labelled `source: temporary_file` |
 | B-O6 | Done | A coding position whose provider call failed gets R6's `_failed_coding_evidence` in partial cells, as R6 would for an empty output |

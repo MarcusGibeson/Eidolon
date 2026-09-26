@@ -27,6 +27,7 @@ import json
 import os
 import re
 import signal
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -234,7 +235,7 @@ def run(argv: list[str] | None = None) -> int:
         print(json.dumps({"refused": f"{type(exc).__name__}:{exc}", "declared_exception": True}, indent=2))
         return 3
     except (lifecycle.Refusal, fsmod.AlreadyExists, fsmod.NotDurable, fsmod.NotPublished, platform.LeaseBusy,
-            evidence.EvidenceError, PermissionError, ValueError) as exc:
+            evidence.EvidenceError, OSError, ValueError, subprocess.TimeoutExpired) as exc:
         print(json.dumps({"refused": f"{type(exc).__name__}:{exc}", "declared_exception":
                           isinstance(exc, fsmod.Unreadable)}, indent=2))
         return 2

@@ -8,16 +8,22 @@
   },
   "design_errata_after_acceptance": [
     "ruling 11 (§9.4, §21)",
-    "§20 sandbox_worker_failure wording aligned with §1.2 (B-O10)"
+    "§20 sandbox_worker_failure wording aligned with §1.2 (B-O10)",
+    "ruling 12 (§7 interrupts, §21)",
+    "§7 table: declare column states ruling 11; binding check at resume (A-N1)",
+    "§13.3: only replay-accepted bytes committed after a second read; closure snapshot committed as found and disclosed (A-N2, A-N3)",
+    "§13.4: files under closures/ and orphans/ are unsealed copies (A-N3)"
   ],
-  "design_review_candidate_sha256": "0ced2368bb1443f6e1210c0214afb4f77daa47ff8a0a1e4e0e0e816f1ae67bfe",
+  "design_review_candidate_sha256": "5f9df6791307dac53a37144256e2c235118a49524ba96114d830edc19f35dda1",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "effc803f9d4351a7014fe704601df629e59842af7e2cc2bee2b3dca02b70938c",
+  "document_sha256": "f5bb1b9e91d9fb96fe3257b2642d72ccb82e57c76dd5302e0acfbf366c94379c",
   "execution_authorization": false,
   "implementation_obligations": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_OBLIGATIONS.md",
   "implementation_obligations_sha256": "d79a9596d6092ce4b165aeb36b35b3b0807c82ed0b6511bbbaa68a8d05c9efa5",
   "implementation_review_round1": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_REVIEW_ROUND1.md",
   "implementation_review_round1_sha256": "109024a660fdbdaec7d15367ba2cd8060e93bbacf83398d969adebabb3bfec29",
+  "implementation_review_round2": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_REVIEW_ROUND2.md",
+  "implementation_review_round2_sha256": "a59904120b0b9adcebef7568d5c608f6487c713b46b7d4f6ff2694fcead0d1ab",
   "implementation_started": false,
   "operator_rulings": {
     "2026-09-24": [
@@ -41,6 +47,9 @@
     ],
     "2026-09-26 (after implementation review round 1)": [
       "declare untrusted: no separate close sentence; --declare-integrity-failure extends to an in-progress attempt whose journal cannot be trusted (e.g. after a repair or copy of the data folder), recorded at ledger level as integrity_failure, refused for protected attempts, next attempt needs the distinct sentence; runbook: after any repair/copy, declare, never resume"
+    ],
+    "2026-09-26 (after implementation review round 2)": [
+      "resume and Ctrl+C: exit, don't close. In a resumed attempt an interrupt before the first new provider call (including the safe point before a pending sandbox run) exits without writing and the attempt stays open; closing a stalled attempt needs a declaration (ruling 11) or an abandon on a failing preflight; after the first new call, and throughout a fresh launch, interrupts close as operator_interrupt"
     ]
   },
   "provider_generation_calls": 0,

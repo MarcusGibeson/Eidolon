@@ -237,8 +237,7 @@ def build_manifest(*, implementation_commit: str | None = None, root: Path = ROO
                          "declared residual"),
         "launcher": {"contract": "g-route3.launcher.v4", "path": "tools/g_route3_launch.py",
                      "provider_endpoint": "http://127.0.0.1:11434 (fixed)",
-                     "sentences": "R7_LIFECYCLE_DESIGN.md §7.1, plus 'Close G-ROUTE3 phase <P> attempt <n> "
-                                  "without further calls' (B-O3)",
+                     "sentences": "R7_LIFECYCLE_DESIGN.md §7.1 (no Close sentence: ruling 11)",
                      "authorized_runs_only_through_launcher": True, "data_root": DATA_ROOT},
         "attempt_policy": ("R7 §9.3: numbered attempts, each separately authorized, spanning every freeze; attempt "
                            "n+1 only after every earlier attempt is closed or closed at ledger level; refused while "
@@ -344,16 +343,24 @@ def _data_roots_in_history(path: Path) -> list[str]:
         return []
     git = ["git", "-c", f"safe.directory={ROOT.as_posix()}", "-C", str(ROOT)]
     log = subprocess.run(git + ["log", "--format=%H", "main", "--", relative], capture_output=True, text=True)
+    if log.returncode != 0:
+        raise ValueError("freeze_history_unreadable")                  # refuse rather than check nothing
     roots = []
     for commit in log.stdout.split():
         shown = subprocess.run(git + ["show", f"{commit}:{relative}"], capture_output=True, text=True)
-        if shown.returncode == 0:
-            try:
-                root = json.loads(shown.stdout).get("data_root")
-            except ValueError:
-                continue
-            if root:
-                roots.append(root)
+        if shown.returncode != 0:
+            # a commit that deleted or renamed the file has no version of it; any other failure refuses
+            listed = subprocess.run(git + ["ls-tree", "--name-only", commit, "--", relative],
+                                    capture_output=True, text=True)
+            if listed.returncode != 0 or listed.stdout.strip():
+                raise ValueError(f"freeze_history_unreadable:{commit}")
+            continue
+        try:
+            root = json.loads(shown.stdout).get("data_root")
+        except (ValueError, AttributeError):
+            continue
+        if root:
+            roots.append(root)
     return roots
 
 

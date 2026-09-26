@@ -193,8 +193,10 @@ sentences in §7.1 of the design:
 - abandon;
 - declare;
 - clear orphan;
-- close without further calls;
 - freeze table.
+
+There is no separate close sentence (ruling 11): an in-progress attempt whose journal cannot be trusted is
+declared with `--declare-integrity-failure`.
 
 Only launch sentences authorize provider generation calls.
 

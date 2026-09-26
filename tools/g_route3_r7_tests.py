@@ -429,7 +429,82 @@ class LifecycleTests(unittest.TestCase):
         run_dir = next((world.D / "phase_a" / "runs").iterdir())
         (run_dir / "journal" / "000005.json").write_bytes(b"damage")
         with self.assertRaises(self.K.L.PhaseBlocked):
-            self.K.run_command(world, self.K.F.RealFs(), "declare", "A", 1, None)
+            self.K.run_command(world, self.K.F.RealFs(), "declare", "A", 1)
+
+
+    def test_resume_refuses_inputs_differing_from_run_created(self) -> None:     # A-N1, B-N3
+        world = self.world("binding")
+        self.killed(world, self.op_index("000003.json"))
+        calls_before = dict(world.counts)
+        lc = world.lifecycle(self.K.F.RealFs())
+        lc.rt.input_digests = {"experiments/G-ROUTE3-candidate/schedule_a.json": "0" * 64}
+        lc.open()
+        try:
+            with self.assertRaisesRegex(self.K.L.Refusal, "in_memory_inputs_differ_from_run_created"):
+                lc.command_resume("A", self.K.SENTENCE.format(n=1))
+        finally:
+            lc.close()
+        self.assertEqual(world.counts, calls_before)
+        self.assertEqual(self.K.drive_to_end(world), "completed")
+        self.assertEqual(self.K.latest_attempt(world), (1, "completed"))
+
+    def test_resume_interrupt_before_first_new_call_leaves_attempt_open(self) -> None:   # ruling 12
+        world = self.world("resume_interrupt")
+        self.killed(world, self.op_index("000003.json"))
+        lc = world.lifecycle(self.K.F.RealFs())
+        lc.open()
+        try:
+            lc.prelude()
+        finally:
+            lc.close()
+        run_dir = next((world.D / "phase_a" / "runs").iterdir()) / "journal"
+        before = sorted(p.name for p in run_dir.iterdir())
+        calls_before = dict(world.counts)
+        lc = world.lifecycle(self.K.F.RealFs())
+        lc.rt.interrupted = lambda: True
+        lc.open()
+        try:
+            out = lc.command_resume("A", self.K.SENTENCE.format(n=1))
+        finally:
+            lc.close()
+        self.assertEqual((out["state"], out["reason"]), ("open", "interrupted_before_first_new_call"))
+        self.assertEqual(sorted(p.name for p in run_dir.iterdir()), before)
+        self.assertEqual(world.counts, calls_before)
+        self.assertEqual(self.K.drive_to_end(world), "completed")
+        self.assertEqual(self.K.latest_attempt(world), (1, "completed"))
+
+    def test_scorer_marks_request_body_mismatch_and_unexecuted_coding(self) -> None:   # A-N1, B-N2
+        import copy
+        import g_route3_scorer as S
+        world = self.world("scorer_records")
+        out = self.launch(world)
+        journal = world.D / "phase_a" / "runs" / out["run_id"] / "journal"
+        entries = [J.parse_entry(p.read_bytes()) for p in sorted(journal.glob("*.json"))]
+        schedule, fixtures = world.schedule["A"], world.fixtures["A"]
+        records, mismatched = S.rebuild_records(entries, "A", schedule, fixtures, check_executables=False)
+        self.assertEqual((len(records), mismatched), (len(schedule), {}))
+        tampered = copy.deepcopy(entries)
+        first_call = next(e for e in tampered if e["kind"] == "call_started")
+        first_call["payload"]["request_sha256"] = "0" * 64
+        _, mismatched = S.rebuild_records(tampered, "A", schedule, fixtures, check_executables=False)
+        self.assertEqual(mismatched, {int(first_call["payload"]["position"]): "request_body_differs_from_call_started"})
+        coding = next((int(e["payload"]["position"]) for e in entries if e["kind"] == "execution_recorded"), None)
+        if coding is not None:
+            unexecuted = [e for e in entries if not (e["kind"] in ("execution_started", "execution_recorded")
+                                                     and int(e["payload"]["position"]) == coding)]
+            records, _ = S.rebuild_records(unexecuted, "A", schedule, fixtures, check_executables=False)
+            row = next(r for r in records if r["schedule_position"] == coding)
+            self.assertEqual(row["infrastructure_failure"], "execution_not_run")
+
+    def test_individually_sealed_prefers_json_over_torn_twin(self) -> None:          # B-N5
+        import g_route3_lifecycle as L
+        import g_route3_scorer as S
+        b = Builder()
+        b.add("run_created", {})
+        b.add("call_started", {"position": 1, "call_id": "c1"})
+        files = dict(b.files, **{"000002.torn": b.files["000002.json"]})
+        for function in (L._individually_sealed, S._individually_sealed):
+            self.assertEqual([e["entry"] for e in function(files)], [1, 2])
 
 
 class PlatformTests(unittest.TestCase):

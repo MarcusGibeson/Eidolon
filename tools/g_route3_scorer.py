@@ -86,28 +86,39 @@ def read_journal(directory: Path) -> tuple[dict[str, bytes], list[str]]:
 
 
 def rebuild_records(entries: list, phase: str, schedule: list, fixtures: Mapping[str, Any],
-                    *, check_executables: bool) -> tuple[list[dict[str, Any]], list[int]]:
-    """R6-shaped records for every recorded call; positions whose stored executable does not re-derive, or whose
-    call id differs from today's schedule, are returned as mismatched (undeterminable)."""
+                    *, check_executables: bool) -> tuple[list[dict[str, Any]], dict[int, str]]:
+    """R6-shaped records for every recorded call. Positions whose call id differs from today's schedule, whose
+    request body differs from the digest sealed in ``call_started``, or whose stored executable does not re-derive
+    are returned as mismatched (undeterminable), each with its reason."""
     import g_route3_journal as J
     from g_route3_contract import request_body
     from g_route3_qualification import collect_evaluation
     from g_route3_runner import _failed_coding_evidence, sanitize_strings
     from g_route3_worker import derive_executable
 
-    records, mismatched = [], []
+    records: list[dict[str, Any]] = []
+    mismatched: dict[int, str] = {}
     executions = {int(e["payload"]["position"]): e for e in entries if e["kind"] == "execution_recorded"}
     started = {int(e["payload"]["position"]): e for e in entries if e["kind"] == "execution_started"}
+    calls = {int(e["payload"]["position"]): e for e in entries if e["kind"] == "call_started"}
     for entry in entries:
         if entry["kind"] != "call_recorded":
             continue
         payload = entry["payload"]
         position = int(payload["position"])
         if position < 1 or position > len(schedule) or payload.get("call_id") != schedule[position - 1]["call_id"]:
-            mismatched.append(position)
+            mismatched[position] = "call_id_differs_from_schedule"
             continue
         scheduled = schedule[position - 1]
         fixture = fixtures[scheduled["fixture_id"]]
+        body = request_body(fixture, scheduled)
+        call = calls.get(position)
+        if call is None:
+            mismatched[position] = "call_started_missing"
+            continue
+        if call["payload"].get("request_sha256") != J.digest(body):
+            mismatched[position] = "request_body_differs_from_call_started"
+            continue
         raw_text = J.b64_to_text(payload["raw_output_b64"])
         envelope: Any = {}
         try:
@@ -131,12 +142,13 @@ def rebuild_records(entries: list, phase: str, schedule: list, fixtures: Mapping
                 if check_executables and position in started:
                     stored = started[position]["payload"]["executable_json"]
                     if derive_executable(fixture, raw_text) != stored:
-                        mismatched.append(position)
+                        mismatched[position] = "stored_executable_does_not_rederive"
                         continue
+            elif not infrastructure_failure:
+                infrastructure_failure = "execution_not_run"      # B-N2: never graded as a model failure
             if evidence is None:
                 evidence = _failed_coding_evidence(fixture)      # R6: an empty or unexecuted output fails
         evaluation = platform.run_pinned(collect_evaluation, fixture, raw_output, evidence)
-        body = request_body(fixture, scheduled)
         metrics = result["metrics"]
         latency = float(payload.get("latency_seconds") or 0.0)
         records.append({
@@ -159,16 +171,12 @@ def rebuild_records(entries: list, phase: str, schedule: list, fixtures: Mapping
     return records, mismatched
 
 
-def _inputs_match_today(run_created: Mapping[str, Any], today: Mapping[str, str], phase: str) -> bool:
-    """C-O6: an earlier attempt graded against today's schedule, corpus and gold only if they are the same."""
+def _inputs_differing_from_today(run_created: Mapping[str, Any], today: Mapping[str, str]) -> list[str]:
+    """C-O6: an earlier attempt is graded against today's inputs only if every guarded data file (schedules,
+    corpora, gold, thresholds, prompt profiles, model bindings) is the same as in its run_created."""
     recorded = run_created.get("guarded_files") or {}
-    corpus = phase.lower()
-    for relative in (f"experiments/G-ROUTE3-candidate/corpus_{corpus}.json",
-                     f"experiments/G-ROUTE3-candidate/gold_{corpus}.json",
-                     f"experiments/G-ROUTE3-candidate/schedule_{corpus}.json"):
-        if recorded.get(relative) != today.get(relative):
-            return False
-    return True
+    data = sorted(path for path in set(recorded) | set(today) if path.startswith("experiments/"))
+    return [path for path in data if recorded.get(path) != today.get(path)]
 
 
 def partial_results(phase: str, data_root: Path, rows: list[Mapping[str, Any]], schedule, fixtures, today
@@ -183,8 +191,7 @@ def partial_results(phase: str, data_root: Path, rows: list[Mapping[str, Any]], 
         if row.get("outcome") not in ("completed", "this_attempt"):
             directory = data_root / f"phase_{phase.lower()}" / "runs" / str(row["run_id"]) / "journal"
             files, extra = read_journal(directory)
-            entries = [e for e in (J.parse_entry(data) for name, data in sorted(files.items())
-                                   if name.endswith(".json") or name.endswith(".torn")) if e is not None]
+            entries = _individually_sealed(files)                                          # B-N5
             first = next((e for e in entries if e["kind"] == "run_created"), None)
             temp_entries, unparseable = [], []
             for name in sorted(extra):
@@ -197,10 +204,13 @@ def partial_results(phase: str, data_root: Path, rows: list[Mapping[str, Any]], 
                         unparseable.append({"file": name, "sha256": J.sha256_bytes(data)})
             recorded_positions = {int(e["payload"]["position"]) for e in entries if e["kind"] == "call_recorded"}
             temp_entries = [e for e in temp_entries if int(e["payload"]["position"]) not in recorded_positions]
-            if first is None or not _inputs_match_today(first["payload"], today, phase):
+            differing = ["run_created_missing"] if first is None else \
+                _inputs_differing_from_today(first["payload"], today)
+            if differing:
                 positions = sorted(recorded_positions | {int(e["payload"]["position"]) for e in temp_entries})
                 row["undeterminable_positions"] = positions
-                row["undeterminable_reason"] = "schedule_corpus_or_gold_differs_from_today_or_run_created_missing"
+                row["undeterminable_reasons"] = {str(p): "inputs_differ_from_today" for p in positions}
+                row["undeterminable_reason"] = "inputs_differ_from_today:" + ",".join(differing)
                 row["partial_results_source"] = "none"
             else:
                 records, mismatched = rebuild_records(entries + temp_entries, phase, schedule, fixtures,
@@ -211,18 +221,50 @@ def partial_results(phase: str, data_root: Path, rows: list[Mapping[str, Any]], 
                 if phase == "A":
                     row["partial_cells"] = platform.run_pinned(qualify, judged)
                 else:
+                    row["partial_routing_decisions"] = _partial_decisions(records, data_root)
                     row["partial_observations"] = [
                         {"position": r["schedule_position"], "fixture_id": r["fixture_id"],
                          "model_tier": r["model_tier"],
                          "correct": bool(r["semantics"]["normalized_semantic_evaluation"]["hard_gate_pass"]),
                          "source": "temporary_file" if r["schedule_position"] in temp_positions else "journal"}
                         for r in judged]
-                row["undeterminable_positions"] = mismatched
+                row["undeterminable_positions"] = sorted(mismatched)
+                row["undeterminable_reasons"] = {str(p): reason for p, reason in sorted(mismatched.items())}
                 row["partial_results_source"] = "sealed records on disk"
                 row["temporary_file_positions"] = sorted(temp_positions)
             row["unparseable_temporary_files"] = unparseable
         out.append(row)
     return out
+
+
+def _individually_sealed(files: Mapping[str, bytes]) -> list[dict[str, Any]]:
+    """Every entry that seals on its own, one per entry number, preferring n.json over n.torn (B-N5)."""
+    import g_route3_journal as J
+    chosen: dict[int, dict[str, Any]] = {}
+    for name in sorted(files, key=lambda n: (n[:6], not n.endswith(".json"))):
+        match = J.ENTRY_NAME.match(name)
+        envelope = J.parse_entry(files[name]) if match else None
+        if envelope is not None and int(match.group(1)) not in chosen:
+            chosen[int(match.group(1))] = envelope
+    return [chosen[n] for n in sorted(chosen)]
+
+
+def _partial_decisions(records: list[dict[str, Any]], data_root: Path) -> list[dict[str, Any]] | str:
+    """B-N4: R6's gold-blind routing of the cases whose every tier has a determinable record, pinned, against
+    the frozen table. Cases missing any tier are left out, never routed on a partial view."""
+    from g_route3_contract import TIER_ORDER
+    from g_route3_qualification import load_frozen_table
+    from g_route3_validation import decide
+    table_path = data_root / "tables" / "QUALIFICATION_TABLE.json"
+    if not table_path.is_file():
+        return "no_frozen_table"
+    table = platform.run_pinned(load_frozen_table, table_path)
+    tiers: dict[str, set] = {}
+    for record in records:
+        tiers.setdefault(record["fixture_id"], set()).add(record["model_tier"])
+    complete = {fixture_id for fixture_id, seen in tiers.items() if seen >= set(TIER_ORDER)}
+    decisions = platform.run_pinned(decide, [r for r in records if r["fixture_id"] in complete], table)
+    return [d for d in decisions if d["fixture_id"] in complete]
 
 
 def _run_created_of(data_root: Path, phase: str, run_id: str) -> dict[str, Any]:

@@ -447,7 +447,7 @@ after recovery.
 | State after recovery | launch n | `--resume` n | `--abandon` n | `--declare-integrity-failure` n |
 |---|---|---|---|---|
 | No run, attempt n not consumed | Allowed when §9.3 holds: publish `run_created` and make it durable, publish `attempt_consumed`, commit the consumption boundary, then collect, score and complete | refused | refused | refused |
-| `created`, `collecting`, `awaiting_execution` | refused | Drift check, then collect | Allowed only on a failing preflight (§9.3) | refused |
+| `created`, `collecting`, `awaiting_execution` | refused | Drift check and binding check (below), then collect | Allowed only on a failing preflight (§9.3) | Allowed for the latest attempt unless protected: its journal is declared untrusted (ruling 11, §9.4) |
 | `collected`, `scoring_interrupted`, `scored` | refused | Drift check, then score and complete | refused | refused |
 | `torn_pending(T, derived)` | refused | Drift check, then re-derive the entry and publish it after the tear, acknowledging T. If a committed copy of that kind exists, the payloads must be equal; a mismatch is an integrity failure. Then continue scoring and completion. | refused | refused |
 | `completed` | refused | Re-project only | refused | **refused** |
@@ -457,6 +457,12 @@ after recovery.
 
 **Drift.** In any state, drift refuses until the guarded files are restored. The refusal names the paths and
 digests, and it never closes anything.
+
+**Binding at resume.** Before any call, `--resume` compares the inputs the holder built (schedules, fixtures and
+request bodies, from files read once and sealed) and every repository module the launcher compiled with the
+digests in the attempt's `run_created`. Any difference refuses. The scorer also re-checks, for every record, that
+the request body rebuilt from today's inputs has the digest sealed in its `call_started`; a record that differs
+is undeterminable, never graded.
 
 **Scoring.** The scorer runs in an isolated child (§8) with a timeout. If it succeeds, `scored` is published.
 If it fails, the command refuses (J13). The scorer is provider-free and deterministic, so a failure that
@@ -468,7 +474,9 @@ at two safe points:
 - **after each record whose state is not `collected`.**
 
 If the flag is set at either point, the loop publishes `closed(operator_interrupt)` through the normal path and
-exits. If the record at that point carries a failure field, the failure's reason takes precedence. A request already in flight is completed and recorded first. If the flag is set once the state is
+exits. **Exception (ruling 12):** in a resumed attempt, before its first new `call_started`, including the safe
+point before a pending sandbox run, an interrupt exits **without writing** and the attempt stays open. Closing
+a stalled attempt needs `--declare-integrity-failure` (ruling 11) or `--abandon` on a failing preflight. If the record at that point carries a failure field, the failure's reason takes precedence. A request already in flight is completed and recorded first. If the flag is set once the state is
 `collected` or later, the process exits **without writing**, and `--resume` then scores. A second signal, or a
 hard kill, leaves the state for the next command to classify.
 
@@ -944,6 +952,11 @@ boundaries are computed from replay in J8 step 5.
 - A pending consumption boundary is superseded by the §6 ledger-level closure **only** when the run has no
   valid entry (`absent`, or a tear from entry 1).
 - Any other run that cannot be committed as it replays is an integrity failure (§9.4).
+- Only bytes that replay accepted are committed: parsed and sealed entries, and `.torn` files an accepted entry
+  acknowledges. Each file is read a second time just before its commit, and a disagreement refuses with
+  `…retry_after_verification`.
+- A closure snapshot is committed as found. If its digest differs from the recorded `snapshot_digest`, the
+  disclosure row says so (`snapshot_matches_recorded_digest: false`); the boundary never stays pending for it.
 
 ### 13.4 Verification (every command, J8 step 2)
 
@@ -956,7 +969,7 @@ folder are not counted as extra.
 | Identical | Nothing |
 | Missing | Restore |
 | Unreadable after retries | Refuse (§1.3, §4.4) |
-| Differs and is not a sealed entry: `root.json`, audit copy, table, `.torn`, orphan temporary file, snapshot file, disclosure record | Quarantine and restore. The commit is authoritative for unsealed files. |
+| Differs and is not a sealed entry: `root.json`, audit copy, table, `.torn`, orphan temporary file, snapshot file (anything under `closures/` or `orphans/`, whatever its name), disclosure record | Quarantine and restore. The commit is authoritative for unsealed files. |
 | A sealed entry that fails to parse or seal | Quarantine and restore |
 | A sealed entry that parses and seals but differs | Integrity failure (§1.3). Damage cannot produce a valid different seal. |
 | An extra `NNNNNN.*` entry in a terminal-committed journal | Integrity failure (§1.3) |
@@ -1268,13 +1281,17 @@ marked *design note* and is not part of the ruling.
     - *Design note:* the git history lives in a private repository inside the fixed data root (§13), and every
       command verifies it, not only the table freeze and Phase B.
 
-**2026-09-26, after implementation review round 1**
+**2026-09-26, after implementation review rounds 1 and 2**
 
 11. **Declare untrusted.** There is no separate "close" sentence. `--declare-integrity-failure` extends to an
     in-progress attempt whose journal cannot be trusted, for example after a repair or copy of the data folder.
     Such a declaration is recorded at ledger level as `integrity_failure`, is refused for protected attempts, and
     requires the distinct "after integrity failure" sentence for the next attempt. The runbook says: after any
     repair or copy of the data folder, declare, never resume.
+12. **Resume and Ctrl+C: exit, don't close.** In a resumed attempt, an interrupt before the first new provider
+    call (including the safe point before a pending sandbox run) exits without writing, and the attempt stays
+    open. Closing a stalled attempt needs a declaration (ruling 11) or an abandon on a failing preflight. After
+    the first new call, and throughout a fresh launch, interrupts still close as `operator_interrupt` (§7).
 
 ## 22. Out of scope: grading changes
 

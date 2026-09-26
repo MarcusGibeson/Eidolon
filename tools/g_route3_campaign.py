@@ -48,11 +48,15 @@ class FaultFs(F.RealFs):
     """RealFs with numbered operations, kills, power-loss bookkeeping and injected faults."""
 
     def __init__(self, *, kill_at: int | None = None, kill_after: bool = True,
-                 flush_fail_at: set[int] | None = None, log_temps: list | None = None) -> None:
+                 flush_fail_at: set[int] | None = None, log_temps: list | None = None,
+                 kill_probability: float = 0.0, rng: random.Random | None = None, lose_power: bool = False) -> None:
         super().__init__(hook=self._hook, sleep=lambda seconds: None)
         self.count = 0
         self.kill_at = kill_at
         self.kill_after = kill_after
+        self.kill_probability = kill_probability
+        self.rng = rng or random.Random(0)
+        self.lose_power = lose_power
         self.flush_fail_at = flush_fail_at or set()
         self.pending: list[tuple[str, Any]] = []        # unflushed operations, in order
         self.temp_unlinks = log_temps if log_temps is not None else []
@@ -63,6 +67,8 @@ class FaultFs(F.RealFs):
         if not after:
             self.count += 1
             self.ops.append(f"{self.count}:{kind}:{detail[-80:]}")
+            if self.kill_at is None and self.kill_probability and self.rng.random() < self.kill_probability:
+                self.kill_at, self.kill_after = self.count, self.rng.random() < 0.5
             if self.kill_at == self.count and not self.kill_after:
                 raise SimulatedKill(f"before:{kind}")
             if kind == "flush_dir" and self.count in self.flush_fail_at:
@@ -166,10 +172,21 @@ class StubProvider:
 
     synthetic_provider = True
 
-    def __init__(self, data_root: Path, counts: dict, failures: Mapping[str, str] | None = None) -> None:
+    def __init__(self, data_root: Path, counts: dict, failures: Mapping[str, str] | None = None, *,
+                 fs: F.RealFs | None = None, violations: list | None = None) -> None:
         self.data_root = data_root
         self.counts = counts
         self.failures = dict(failures or {})
+        self.fs = fs
+        self.violations = violations if violations is not None else []
+
+    def durable(self, run_id: str) -> bool:
+        """No unflushed operation of this process touches the run's journal folder (§11: intent durable first)."""
+        pending = getattr(self.fs, "pending", None)
+        if not pending:
+            return True
+        journal = (self.data_root / "phase_a" / "runs" / run_id / "journal").resolve()
+        return not any(journal in _touched_dirs(kind, detail) for kind, detail in pending)
 
     def active_run(self, call_id: str) -> str:
         """The run whose journal ends in a durable call_started for this call id (the one being sent)."""
@@ -187,6 +204,8 @@ class StubProvider:
         import hashlib
         key = (self.active_run(call_id), call_id)
         self.counts[key] = self.counts.get(key, 0) + 1
+        if key[0] == "no_durable_call_started" or not self.durable(key[0]):
+            self.violations.append(f"send_without_durable_call_started:{call_id}")
         mode = self.failures.get(call_id, "")
         if mode == "raise":
             raise ConnectionError("stub_provider_down")
@@ -244,6 +263,7 @@ class World:
         self.worker_failures = set(worker_failures or ())
         self.schedule, self.fixtures = small_schedule()
         self.drift = False
+        self.violations: list[str] = []
 
     def lifecycle(self, fs: F.RealFs) -> L.Lifecycle:
         base = L.standard_guarded_files(self.D, "A")
@@ -258,7 +278,8 @@ class World:
                                           if self.fixtures["A"][r["fixture_id"]]["validator_profile"] == "coding.v1"))
         import g_route3_runner as R
         import g_route3_tests as T
-        rt = L.Runtime(data_root=self.D, fs=fs, provider=StubProvider(self.D, self.counts, self.failures),
+        rt = L.Runtime(data_root=self.D, fs=fs, provider=StubProvider(self.D, self.counts, self.failures, fs=fs,
+                                                                      violations=self.violations),
                        model_receipts=lambda: T.receipts(), verify_receipts=R.verify_model_receipts,
                        freeze_binding=lambda: "f" * 64, freeze_valid=lambda: True, guarded_files=guarded,
                        worker=stub_worker(fs, self.worker_failures), scorer=stub_scorer(fs, self.D, spec),
@@ -273,6 +294,9 @@ def run_command(world: World, fs: F.RealFs, command: str, *args) -> Any:
             lc.setup_if_missing()
             return "setup"
         lc.open()
+        if command == "prelude":            # J8 steps 1-5 alone: what a refused command leaves behind
+            lc.prelude()
+            return "prelude"
         method = getattr(lc, "command_" + command)
         return method(*args)
     finally:
@@ -294,25 +318,59 @@ def latest_attempt(world: World) -> tuple[int, str]:
         lc.close()
 
 
-def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, max_steps: int = 16,
-                 recursive_kills: int = 0, seed: int = 0) -> str:
+def peek_attempt(world: World) -> tuple[int, str, str | None]:
+    """A pure status probe: the latest attempt as found on disk. It never verifies, recovers, commits or writes,
+    so every recovery is done by a command the campaign can kill (A-N4). Integrity failures found only by
+    verification or recovery are not visible here; commands report them by refusing."""
+    lc = world.lifecycle(F.RealFs())
+    try:
+        lc.root_id = json.loads((world.D / "root.json").read_bytes().decode("utf-8"))["root_id"]
+        ledger = lc.ledger("A")
+        rows = lc.attempt_table("A")
+    except Exception:  # noqa: BLE001
+        return -1, "unreadable", None
+    if not rows:
+        return 0, "none", None
+    attempt, _, replay, closed = rows[-1]
+    return attempt, "closed_at_ledger" if closed else replay.state, ledger.consumed[attempt].get("sentence")
+
+
+def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, max_steps: int = 24,
+                 recursive_kills: int = 0, seed: int = 0, power: bool = False) -> str:
     """Supported commands only: resume while possible; declare when an integrity failure needs it; launch the
-    next attempt after a closure. With ``recursive_kills``, the first recovery commands are themselves killed at a
-    seeded operation, recursively (§19). Returns the final outcome label."""
+    next attempt after a closure. Decisions come from a pure peek. Until a command has run its J8 steps without
+    being killed, the peek is unverified: a torn, unreadable or failed state, or a completed one, first gets a
+    command's J8 steps alone (``prelude``, what a refused command does); other states are acted on directly, so
+    recovery and action also run in one process. With ``recursive_kills``, the first commands are themselves
+    killed with a per-operation probability, recursively (§19); with ``power``, each such kill also loses the
+    unflushed operations. Returns the final outcome label."""
     prefer_distinct = None
     rng = random.Random(seed)
     kills_left = recursive_kills
+    verified = False
+    force_declare = False
+    last_refusal = None
     for _ in range(max_steps):
         if fault:
             fs = fault()
         elif kills_left > 0:
             kills_left -= 1
-            fs = FaultFs(kill_at=rng.randint(1, 160), kill_after=rng.random() < 0.5, log_temps=world.temp_unlinks)
+            fs = FaultFs(kill_probability=0.02, rng=random.Random(rng.random()), log_temps=world.temp_unlinks,
+                         lose_power=power)
         else:
             fs = F.RealFs()
         try:
-            attempt, state = latest_attempt(world)
-            if attempt == 0:
+            attempt, state, consumed_sentence = peek_attempt(world)
+            unsettled = state in ("unreadable", "torn_pending", "torn_tail", "integrity_failure", "absent",
+                                  "completed")
+            if not verified and unsettled:
+                run_command(world, fs, "prelude")
+                verified = True
+                continue
+            if force_declare or (state in ("integrity_failure", "absent") and verified):
+                force_declare = False
+                run_command(world, fs, "declare", "A", attempt)
+            elif attempt == 0:
                 run_command(world, fs, "launch", "A", SENTENCE.format(n=1), 1, False)
             elif state == "completed":
                 return "completed"
@@ -322,19 +380,31 @@ def drive_to_end(world: World, *, fault: Callable[[], FaultFs] | None = None, ma
                 if attempt >= 3:
                     return f"stopped_after_{attempt}_attempts"
                 run_command(world, fs, "launch", "A", sentence, attempt + 1, distinct)
-            elif state in ("integrity_failure", "absent"):
-                run_command(world, fs, "declare", "A", attempt, None)
             else:
-                run_command(world, fs, "resume", "A", SENTENCE.format(n=attempt))
+                run_command(world, fs, "resume", "A", consumed_sentence or SENTENCE.format(n=attempt))
+            verified = True
+            last_refusal = None
         except SimulatedKill:
-            if isinstance(fs, FaultFs):
-                fs.power_loss() if getattr(fs, "lose_power", False) else None
+            verified = False
+            last_refusal = None                      # a refusal repeated across a kill is progress, not a loop
+            if isinstance(fs, FaultFs) and fs.lose_power:
+                fs.power_loss(random.Random(rng.random()))
             continue
         except L.PhaseBlocked as exc:
             return f"declared_refusal:{str(exc)[:80]}"
         except F.Unreadable as exc:
             return f"declared_refusal:unreadable:{str(exc)[:60]}"
         except L.Refusal as exc:
+            verified = True                          # every refusal below follows the command's J8 steps
+            repeated = str(exc) == last_refusal
+            last_refusal = str(exc)
+            if repeated and "retry_after_verification" not in str(exc):
+                return f"refusal:{str(exc)[:120]}"
+            if "attempt_not_resumable:integrity_failure" in str(exc) or "attempt_not_resumable:absent" in str(exc):
+                force_declare = True                  # found by verification or recovery, not by the peek
+                continue
+            if "attempt_not_resumable" in str(exc) or "attempt_number_must_be" in str(exc):
+                continue                              # the peek predated recovery; peek again
             if "distinct_sentence_required" in str(exc):
                 prefer_distinct = True
                 continue
@@ -400,6 +470,7 @@ def check_oracles(world: World) -> list[str]:
             lc.close()
     except (L.Refusal, F.Unreadable):
         pass
+    problems.extend(world.violations)
     for (attempt, call_id), count in world.counts.items():
         if count > 1:
             problems.append(f"J12_repeat:{attempt}:{call_id}:{count}")
@@ -463,7 +534,7 @@ def kill_campaign(workdir: Path, template: Path, *, failures=None, worker_failur
                     fs.power_loss(random.Random(subset_seed + index) if subset_seed is not None else None)
             except L.Refusal:
                 pass
-            outcome = drive_to_end(world, recursive_kills=recursive_kills, seed=index * 2 + int(after))
+            outcome = drive_to_end(world, recursive_kills=recursive_kills, seed=index * 2 + int(after), power=power)
             results["cases"] += 1
             results["outcomes"][outcome.split(":")[0]] = results["outcomes"].get(outcome.split(":")[0], 0) + 1
             problems = check_oracles(world)
@@ -735,7 +806,7 @@ def review_seeds(workdir: Path, template: Path) -> dict:
     ops = ops_of(probe_world, "launch", "A", SENTENCE.format(n=1), 1, False)
     scorer_op = next(i for i, op in enumerate(ops, 1) if ":child:scorer" in op)
     for name, needle, command in (("read_corruption_ledger_on_launch2", "phase_a/ledger/000001.json", "launch2"),
-                                  ("read_corruption_completed_on_resume", "journal/000015.json", "resume")):
+                                  ("read_corruption_completed_on_resume", "journal/000014.json", "resume")):
         world = base_world(template, workdir / name)
         if command == "launch2":
             try:
