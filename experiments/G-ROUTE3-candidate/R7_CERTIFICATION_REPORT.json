@@ -1,13 +1,35 @@
 {
+  "campaign_report_sha256": "2f1df96c7f548b6db8ef8efdb1b404597592e0049c6e3462ad6b249d98f4c42c",
+  "code_commit": "1790b01",
+  "command": "python -B tools/g_route3_campaign.py --stride 1",
   "differential": {
-    "phase_a_mixed_288": "cells identical",
-    "phase_a_qualifying_plan": "cells identical (32 qualified / 40 not qualified)",
-    "phase_b_end_to_end": "phase A cells and routing lookup identical; phase B score identical except table_sha256 (R7 table carries r7_binding)"
+    "phase_a_mixed": "cells identical",
+    "phase_a_qualifying": "cells identical (25 qualified)",
+    "phase_b": "phase A cells, routing lookup and phase B score identical to R6 (table digest differs by design)",
+    "refusals": [
+      "table not on main",
+      "other endpoint",
+      "other freeze",
+      "rerun with a different audit document",
+      "rerun with a different attempt"
+    ],
+    "result": "PASS",
+    "tool": "tools/g_route3_r7_differential.py"
   },
-  "fixed_during_campaign": [
-    "faulted state after a resumed execution refused instead of closing (collect loop)"
+  "not_covered": [
+    "data root owned by Administrators (needs an elevated account; A-O8 by inspection)",
+    "real console Ctrl+C/Ctrl+Break during the sandbox (design-review probe only)",
+    "POSIX (the governed run executes on Windows)"
   ],
-  "note": "partial campaign during implementation; the full campaign replaces this file at freeze certification",
+  "oracles": [
+    "J12: no schedule position sent twice within one run (keyed by the run holding the durable call_started)",
+    "no temporary file deleted unless identical to its entry",
+    "every committed item verifies at the end",
+    "completed attempts have fact payloads equal to the uninterrupted run",
+    "disclosure rows consistent with the ledger and flagged",
+    "declared refusals are not counted as passes for kill or damage cases",
+    "interrupt outcomes strict by safe point"
+  ],
   "provider_generation_calls": 0,
   "recursion_thresholds": {
     "ast_binary_chain_terms_max": 2977,
@@ -17,68 +39,66 @@
   },
   "runs": [
     {
-      "cases": 144,
+      "cases": 1010,
       "label": "clean_kills",
+      "operations": 505,
       "outcomes": {
-        "completed": 142,
-        "refusal_orphan_before_harness_fix": 2
+        "completed": 1010
       },
-      "stride": 7,
       "violations": 0
     },
     {
-      "cases": 144,
+      "cases": 1010,
       "label": "clean_power_loss",
+      "operations": 505,
       "outcomes": {
-        "completed": 142,
-        "refusal_orphan_before_harness_fix": 2
+        "completed": 1010
       },
-      "stride": 7,
       "violations": 0
     },
     {
-      "cases": 80,
+      "cases": 562,
       "label": "transport_failure_kills",
+      "operations": 281,
       "outcomes": {
-        "refusal_orphan_before_harness_fix": 2,
-        "stopped_after_3_attempts": 78
+        "stopped_after_3_attempts": 562
       },
-      "stride": 7,
       "violations": 0
     },
     {
-      "cases": 456,
+      "cases": 464,
       "label": "sandbox_failure_kills",
+      "operations": 232,
       "outcomes": {
-        "stopped_after_3_attempts": 456
+        "stopped_after_3_attempts": 464
       },
-      "stride": 1,
       "violations": 0
     },
     {
-      "cases": 5,
+      "cases": 14,
       "label": "torn_entries",
+      "operations": 505,
       "outcomes": {
-        "completed": 5
+        "completed": 14
       },
-      "stride": 3,
       "violations": 0
     },
     {
       "cases": 1,
       "label": "torn_ledger",
+      "operations": 505,
       "outcomes": {
         "completed": 1
       },
       "violations": 0
     },
     {
-      "cases": 6,
+      "cases": 31,
       "label": "flush_failures",
+      "operations": 505,
       "outcomes": {
-        "completed": 6
+        "completed": 31
       },
-      "stride": 5,
       "violations": 0
     },
     {
@@ -90,8 +110,62 @@
         "transient_read_errors": "completed"
       },
       "violations": 0
+    },
+    {
+      "cases": 15,
+      "label": "gap_seeds",
+      "outcomes": {
+        "concurrent_setup": "ok",
+        "damaged_root_json": "ok",
+        "interrupt_at_safe_point_1": "ok",
+        "interrupt_at_safe_point_10": "ok",
+        "interrupt_at_safe_point_2": "ok",
+        "interrupt_at_safe_point_3": "ok",
+        "interrupt_at_safe_point_4": "ok",
+        "interrupt_at_safe_point_5": "ok",
+        "interrupt_at_safe_point_6": "ok",
+        "interrupt_at_safe_point_7": "ok",
+        "interrupt_at_safe_point_8": "ok",
+        "interrupt_at_safe_point_9": "ok",
+        "unlistable_journal": "ok",
+        "unreadable_committed_entry": "ok",
+        "unreadable_tail_entry": "ok"
+      },
+      "violations": 0
+    },
+    {
+      "cases": 9,
+      "label": "review_seeds",
+      "outcomes": {
+        "abandon_only_on_failing_preflight": "ok",
+        "declare_then_more_commands": "ok",
+        "kill_during_setup": "ok",
+        "ledger_twin": "ok",
+        "pending_ledger_closure": "ok",
+        "read_corruption_completed_on_resume": "ok",
+        "read_corruption_ledger_on_launch2": "ok",
+        "refs_flush_failure": "ok",
+        "worker_module_drift": "ok"
+      },
+      "violations": 0
+    },
+    {
+      "cases": 1010,
+      "label": "power_loss_subsets",
+      "operations": 505,
+      "outcomes": {
+        "completed": 1010
+      },
+      "violations": 0
     }
   ],
-  "schedule": "four calls from schedule A (one coding), stub provider/worker/scorer",
-  "status": "PROVISIONAL"
+  "schedule": "four calls from schedule A (one coding), stub provider/worker/scorer; kills before and after every numbered operation, recursive kills in recovery, power loss (all unflushed and seeded subsets), damage, flush failures, environment and seeded cases",
+  "seconds": 19144.5,
+  "status": "CERTIFICATION_CAMPAIGN_COMPLETE",
+  "tests": {
+    "r6_suite": "80 run, 19 skipped as superseded, 0 failed",
+    "r7_quick": "33 passed"
+  },
+  "total_cases": 4129,
+  "violations": 0
 }
