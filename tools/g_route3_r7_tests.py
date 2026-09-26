@@ -247,5 +247,156 @@ class LedgerReplayTests(unittest.TestCase):
         self.assertEqual((got.state, sorted(got.consumed), sorted(got.closed_at_ledger)), ("ok", [1, 2], [2]))
 
 
+class LifecycleTests(unittest.TestCase):
+    """The lifecycle on a four-call schedule with stub provider, worker and scorer (fast, deterministic)."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import tempfile
+        import g_route3_campaign as K
+        import g_route3_platform as P
+        P.pin_recursion_limit()
+        cls.K = K
+        cls.work = Path(tempfile.mkdtemp(prefix="g_route3_r7_tests_"))
+        template = cls.work / "template"
+        template.mkdir()
+        K.run_command(K.World(template), K.F.RealFs(), "setup")
+        cls.template = template
+        probe = K.FaultFs()
+        world = K.base_world(template, cls.work / "probe")
+        K.run_command(world, probe, "launch", "A", K.SENTENCE.format(n=1), 1, False)
+        cls.ops = probe.ops
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        import g_route3_lifecycle as L
+        L._remove_tree(cls.work)
+
+    def op_index(self, needle: str, *, after: str | None = None) -> int:
+        start = 0
+        if after is not None:
+            start = next(i for i, op in enumerate(self.ops) if ":rename:" in op and after in op) + 1
+        return next(i for i, op in enumerate(self.ops[start:], start + 1) if needle in op)
+
+    def world(self, name: str, **kwargs):
+        return self.K.base_world(self.template, self.work / name, **kwargs)
+
+    def launch(self, world, n=1, distinct=False, fs=None):
+        K = self.K
+        sentence = K.DISTINCT.format(n=n, m=n - 1) if distinct else K.SENTENCE.format(n=n)
+        return K.run_command(world, fs or K.F.RealFs(), "launch", "A", sentence, n, distinct)
+
+    def killed(self, world, index, after=True):
+        with self.assertRaises(self.K.SimulatedKill):
+            self.launch(world, fs=self.K.FaultFs(kill_at=index, kill_after=after))
+
+    def test_clean_attempt_completes_and_commits(self) -> None:
+        world = self.world("clean")
+        self.assertEqual(self.launch(world)["state"], "completed")
+        self.assertEqual(self.K.check_oracles(world), [])
+        self.assertEqual(max(world.counts.values()), 1)
+
+    def test_transport_failure_closes_truthfully_and_next_attempt_follows(self) -> None:
+        call = self.K.small_schedule()[0]["A"][2]["call_id"]
+        world = self.world("transport", failures={call: "error"})
+        out = self.launch(world)
+        self.assertEqual((out["state"], out["reason"]), ("closed", "transport_failure"))
+        world.failures.clear()
+        with self.assertRaisesRegex(self.K.L.Refusal, "attempt_number_must_be_2"):
+            self.launch(world, n=1)
+        self.assertEqual(self.launch(world, n=2)["state"], "completed")
+
+    def test_provider_exception_closes(self) -> None:
+        call = self.K.small_schedule()[0]["A"][0]["call_id"]
+        world = self.world("raise", failures={call: "raise"})
+        out = self.launch(world)
+        self.assertEqual((out["state"], out["reason"]), ("closed", "transport_failure"))
+
+    def test_worker_failure_is_infrastructure_not_model(self) -> None:
+        fixture = self.K.small_schedule()[0]["A"][1]["fixture_id"]
+        world = self.world("worker", worker_failures={fixture})
+        out = self.launch(world)
+        self.assertEqual((out["state"], out["reason"]), ("closed", "infrastructure_failure"))
+
+    def test_completed_attempt_blocks_further_launches(self) -> None:
+        world = self.world("blocks")
+        self.launch(world)
+        with self.assertRaisesRegex(self.K.L.Refusal, "attempt_1_completed"):
+            self.launch(world, n=2)
+
+    def test_damaged_committed_entry_is_restored(self) -> None:
+        world = self.world("damaged")
+        out = self.launch(world)
+        journal = world.D / "phase_a" / "runs" / out["run_id"] / "journal"
+        original = (journal / "000003.json").read_bytes()
+        (journal / "000003.json").write_bytes(b"garbage")
+        self.assertEqual(self.K.check_oracles(world), [])
+        self.assertEqual((journal / "000003.json").read_bytes(), original)
+
+    def test_changed_sealed_committed_entry_blocks(self) -> None:
+        world = self.world("changed")
+        out = self.launch(world)
+        journal = world.D / "phase_a" / "runs" / out["run_id"] / "journal"
+        envelope = J.parse_entry((journal / "000003.json").read_bytes())
+        payload = dict(envelope["payload"], latency_seconds=99.0)
+        _, data = J.make_entry(envelope["entry"], envelope["kind"], envelope["run_id"],
+                               envelope["previous_entry_sha256"], payload)
+        (journal / "000003.json").write_bytes(data)
+        with self.assertRaises(self.K.L.PhaseBlocked):
+            self.K.run_command(world, self.K.F.RealFs(), "resume", "A", self.K.SENTENCE.format(n=1))
+
+    def test_kill_after_call_started_closes_without_repeat(self) -> None:
+        world = self.world("killcall")
+        self.killed(world, self.op_index("000002.json"))
+        self.assertEqual(self.K.drive_to_end(world), "completed")
+        self.assertEqual(max(world.counts.values()), 1)
+        self.assertEqual(self.K.check_oracles(world), [])
+        attempt, state = self.K.latest_attempt(world)
+        self.assertEqual((attempt, state), (2, "completed"))       # attempt 1 closed as call_outcome_unknown
+
+    def test_drift_refuses_and_does_not_close(self) -> None:
+        world = self.world("drift")
+        self.killed(world, self.op_index("000003.json"))
+        world.drift = True
+        with self.assertRaisesRegex(self.K.L.Refusal, "guarded_dependency_drift"):
+            self.K.run_command(world, self.K.F.RealFs(), "resume", "A", self.K.SENTENCE.format(n=1))
+        world.drift = False
+        self.assertEqual(self.K.drive_to_end(world), "completed")
+        self.assertEqual(self.K.latest_attempt(world), (1, "completed"))
+
+    def test_interrupt_before_collected_closes_as_operator_interrupt(self) -> None:
+        world = self.world("interrupt")
+        lc = world.lifecycle(self.K.F.RealFs())
+        calls = {"n": 0}
+
+        def interrupted():
+            calls["n"] += 1
+            return calls["n"] >= 2
+        lc.rt.interrupted = interrupted
+        lc.open()
+        try:
+            out = lc.command_launch("A", self.K.SENTENCE.format(n=1), 1, False)
+        finally:
+            lc.close()
+        self.assertEqual((out["state"], out["reason"]), ("closed", "operator_interrupt"))
+
+    def test_orphan_is_cleared_and_launch_needs_it_cleared(self) -> None:
+        world = self.world("orphan")
+        self.killed(world, self.op_index("000001.json"))
+        run_id = next(p.name for p in (world.D / "phase_a" / "runs").iterdir())
+        with self.assertRaisesRegex(self.K.L.Refusal, "orphan_run_folder_exists"):
+            self.launch(world)
+        self.K.run_command(world, self.K.F.RealFs(), "clear_orphan", "A", run_id)
+        self.assertEqual(self.launch(world)["state"], "completed")
+
+    def test_protected_attempt_cannot_be_declared(self) -> None:
+        world = self.world("protected")
+        self.killed(world, self.op_index(":child:", after="000011.json"), after=False)
+        run_dir = next((world.D / "phase_a" / "runs").iterdir())
+        (run_dir / "journal" / "000005.json").write_bytes(b"damage")
+        with self.assertRaises(self.K.L.PhaseBlocked):
+            self.K.run_command(world, self.K.F.RealFs(), "declare", "A", 1, None)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

@@ -513,6 +513,9 @@ REAL_PROVIDER_TYPES: tuple[type, ...] = (GovernedOllamaProvider,)
 
 
 def _require_governed_real_path(provider_call, guarded_root, phase: str, run_root, anchor) -> None:
+    # The R7 lifecycle (g_route3_lifecycle via the v4 launcher) is the only authorized path. R6's authorized
+    # execution is superseded and refuses; its synthetic path stays for the R6-versus-R7 differential tests.
+    raise PermissionError("r6_authorized_path_superseded_by_r7_lifecycle")
     if type(provider_call) not in REAL_PROVIDER_TYPES or getattr(provider_call, "synthetic_provider", False):
         raise PermissionError("authorized_path_requires_governed_ollama_provider")
     if guarded_root is not None:

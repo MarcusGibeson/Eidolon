@@ -1,173 +1,215 @@
 from __future__ import annotations
 
-"""The governed entry point for an authorized G-ROUTE3 run.
+"""The governed entry point for G-ROUTE3 under the R7 lifecycle (launcher v4).
 
-This is the only supported way to contact a model for G-ROUTE3. It builds the Ollama provider itself at
-the fixed local endpoint (nothing can be injected or redirected), reads the operator's verbatim
-authorization sentence, derives the authorization from it, uses one fixed run root per phase, never
-overrides the guarded root, and anchors the run in git.
+This is the only supported way to contact a model for G-ROUTE3. Every command is an exact operator sentence
+(design §7.1); none is ever self-issued. The launcher joins a kill-on-close job before anything else, pins the
+recursion limit, strips proxy variables, builds the Ollama provider itself at the fixed loopback endpoint, reads
+the data root from the execution freeze, and hands everything to ``g_route3_lifecycle``.
 
-    python tools/g_route3_launch.py --confirmation "Authorize G-ROUTE3 phase A execution <binding> attempt 1"
-    python tools/g_route3_launch.py --confirmation "Authorize G-ROUTE3 phase B execution <binding> table <table> attempt 1" \\
-        --phase-a-run-id <run id of the complete Phase A attempt>
-    python tools/g_route3_launch.py --confirmation "<the same sentence>" --run-id <id> --resume
-    python tools/g_route3_launch.py --abandon A --reason "<why the attempt can neither finish nor resume>"
-    python tools/g_route3_launch.py --clear-orphan A <run id> --reason "<why the folder has no ledger entry>"
-    python tools/g_route3_launch.py --freeze-table --phase-a-run-id <id> --audit-document <path> \
-        --auditor <name> --verdict READY
+    python tools/g_route3_launch.py --sentence "Authorize G-ROUTE3 phase A execution <binding> attempt <n>"
+    python tools/g_route3_launch.py --sentence "Authorize G-ROUTE3 phase B execution <binding> table <table> attempt <n>" \\
+        --phase-a-attempt <n>
+    python tools/g_route3_launch.py --resume --sentence "<the sentence consumed for the attempt>"
+    python tools/g_route3_launch.py --sentence "Abandon G-ROUTE3 phase <P> attempt <n> after failed preflight"
+    python tools/g_route3_launch.py --sentence "Declare G-ROUTE3 phase <P> attempt <n> integrity failure"
+    python tools/g_route3_launch.py --sentence "Clear G-ROUTE3 phase <P> orphan run <run_id>"
+    python tools/g_route3_launch.py --sentence "Freeze G-ROUTE3 qualification table from phase A attempt <n> of execution <binding>" \\
+        --audit-document <path> --auditor <name> --verdict READY
+    python tools/g_route3_launch.py --export-evidence <path outside the data root>
 
-Resume repairs any interrupted finalization: a run that holds every call record, or is already complete, is
-finished idempotently without contacting the model again. A run that was closed (incomplete, failed,
-cancelled or abandoned) is never resumable; it needs the next numbered attempt.
-
-Before Phase B the launcher requires the Phase A ledger entries, the Phase A run anchor and the frozen table
-to be committed and unmodified in git. Ollama's automatic updates should be disabled until Phase B is done:
-the model receipts pin the provider version, and a changed version fails the preflight closed.
-
-Git anchor. When an authorization is consumed, the launcher commits its ledger entry; when a run
-completes, it commits a small anchor file binding the run to its sealed receipt. Each is a local commit of
-that one file only (`git commit -- <path>`); nothing is pushed. Deleting a ledger entry or rewriting a
-finished run is then visible in git history. This is the procedural half of the declared threat model:
-an honest operator, tamper-evident records.
-
-A stale lease file (`.g-route1-single-job.lease` in the phase run root) remains only if a process was
-killed. Remove it by hand only after confirming that no G-ROUTE3 process is running, and record that in
-the attempt's abandon reason.
+Only launch sentences authorize provider generation calls. ``--resume`` and ``--abandon`` read model receipts,
+which is metadata contact, as in R6.
 """
 
 import argparse
 import json
 import os
-from pathlib import Path
 import re
-import subprocess
+import signal
 import sys
+from pathlib import Path
 from typing import Any
 
-from g_route1_contract import ROOT
-import g_route3_runner as runner
+TOOLS = Path(__file__).resolve().parent
+if str(TOOLS) not in sys.path:
+    sys.path.insert(0, str(TOOLS))
 
-CONTRACT_VERSION = "g-route3.launcher.v3"
+import g_route3_platform as platform  # noqa: E402
+
+CONTRACT_VERSION = "g-route3.launcher.v4"
 PROXY_VARIABLES = ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy")
-_PHASE_A = re.compile(r"^Authorize G-ROUTE3 phase A execution (?P<freeze>[0-9a-f]{64}) attempt (?P<attempt>[1-9][0-9]*)$")
-_PHASE_B = re.compile(r"^Authorize G-ROUTE3 phase B execution (?P<freeze>[0-9a-f]{64}) table (?P<table>[0-9a-f]{64}) "
-                      r"attempt (?P<attempt>[1-9][0-9]*)$")
-ATTRIBUTION = "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+HEX = r"[0-9a-f]{64}"
+NUM = r"[1-9][0-9]*"
+SENTENCES = {
+    "launch_a": re.compile(rf"^Authorize G-ROUTE3 phase A execution (?P<binding>{HEX}) attempt (?P<n>{NUM})"
+                           rf"(?: after integrity failure of attempt (?P<m>{NUM}))?$"),
+    "launch_b": re.compile(rf"^Authorize G-ROUTE3 phase B execution (?P<binding>{HEX}) table (?P<table>{HEX}) "
+                           rf"attempt (?P<n>{NUM})(?: after integrity failure of attempt (?P<m>{NUM}))?$"),
+    "abandon": re.compile(rf"^Abandon G-ROUTE3 phase (?P<phase>[AB]) attempt (?P<n>{NUM}) after failed preflight$"),
+    "declare": re.compile(rf"^Declare G-ROUTE3 phase (?P<phase>[AB]) attempt (?P<n>{NUM}) integrity failure$"),
+    "clear_orphan": re.compile(r"^Clear G-ROUTE3 phase (?P<phase>[AB]) orphan run (?P<run>[A-Za-z0-9_.-]+)$"),
+    "freeze_table": re.compile(rf"^Freeze G-ROUTE3 qualification table from phase A attempt (?P<n>{NUM}) "
+                               rf"of execution (?P<binding>{HEX})$"),
+}
 
 
-def authorization_from_sentence(sentence: str, *, phase_a_run_id: str | None = None) -> dict[str, Any]:
-    """Build the authorization record from the operator's exact sentence. Nothing else is accepted."""
-    for phase, pattern in (("A", _PHASE_A), ("B", _PHASE_B)):
-        match = pattern.match(sentence)
+def parse_sentence(sentence: str) -> tuple[str, dict[str, str]]:
+    for kind, pattern in SENTENCES.items():
+        match = pattern.fullmatch(sentence)
         if match:
-            row = {"benchmark_id": runner.BENCHMARK_ID, "phase": phase,
-                   "execution_freeze_sha256": match.group("freeze"), "attempt": int(match.group("attempt")),
-                   "one_execution_only": True, "consumed": False, "operator_confirmation": sentence}
-            if phase == "B":
-                if not phase_a_run_id:
-                    raise ValueError("phase_b_requires_phase_a_run_id")
-                row.update(qualification_table_sha256=match.group("table"), phase_a_run_id=phase_a_run_id)
-            return row
-    raise ValueError("authorization_sentence_not_recognized")
+            return kind, {key: value for key, value in match.groupdict().items() if value is not None}
+    raise ValueError("sentence_not_recognized")
 
 
-def git_anchor(event: str, path: Path, *, root: Path = ROOT) -> None:
-    """Commit exactly one file, locally. A failure stops the run before it can go further unanchored."""
-    relative = Path(path).resolve().relative_to(Path(root).resolve()).as_posix()
-    git = ["git", "-c", f"safe.directory={Path(root).as_posix()}", "-C", str(root)]
-    subprocess.run(git + ["add", "--", relative], check=True, capture_output=True, text=True)
-    staged = subprocess.run(git + ["diff", "--cached", "--name-only", "--", relative], check=True,
-                            capture_output=True, text=True).stdout.strip()
-    if not staged:
-        return      # already anchored with this exact content (for example on resume)
-    message = f"G-ROUTE3 anchor: {event} {Path(relative).name}\n\n{ATTRIBUTION}\n"
-    subprocess.run(git + ["commit", "-q", "-m", message, "--", relative], check=True, capture_output=True, text=True)
-
-
-def git_is_committed(path: Path, *, root: Path = ROOT) -> bool:
-    """True when the file is tracked and identical to HEAD."""
-    relative = Path(path).resolve().relative_to(Path(root).resolve()).as_posix()
-    git = ["git", "-c", f"safe.directory={Path(root).as_posix()}", "-C", str(root)]
-    tracked = subprocess.run(git + ["ls-files", "--error-unmatch", "--", relative], capture_output=True, text=True)
-    unchanged = subprocess.run(git + ["diff", "--quiet", "HEAD", "--", relative], capture_output=True, text=True)
-    return tracked.returncode == 0 and unchanged.returncode == 0
-
-
-def _local_only_network() -> None:
-    """The endpoint is loopback; make sure no proxy setting can route it anywhere else."""
+def local_only_network() -> None:
+    """R6's _local_only_network, carried (§17)."""
     for name in PROXY_VARIABLES:
         os.environ.pop(name, None)
     os.environ["NO_PROXY"] = os.environ["no_proxy"] = "127.0.0.1,localhost"
 
 
-def freeze_table(phase_a_run_id: str, audit_document: str, auditor: str, verdict: str) -> dict[str, Any]:
-    """The governed table freeze: build the table from the sealed Phase A score, bind the audit document by
-    digest, write it once, anchor it in git, and report the Phase B preconditions."""
-    from g_route1_persistence import RouteRunStore
-    import g_route3_qualification as qualification
-
-    store = RouteRunStore(runner.RUN_ROOTS["A"], phase_a_run_id, create=False)
-    score = store.score_record()
-    audit = qualification.audit_record(Path(audit_document).resolve(), verdict, auditor, run_id=phase_a_run_id,
-                                       score_record_sha256=score["record_sha256"])
-    doc = qualification.build_table(score["cells"], run_id=phase_a_run_id, score_record_sha256=score["record_sha256"],
-                                    execution_freeze_binding=runner._freeze_digest(), audit=audit,
-                                    phase_a_attempts=runner.phase_a_attempts())
-    table_sha = qualification.freeze_table(doc, runner.QUALIFICATION_TABLE_PATH)
-    git_anchor("qualification_table_frozen", runner.QUALIFICATION_TABLE_PATH)
-    return {"table_sha256": table_sha,
-            "phase_b_preconditions": runner.phase_b_preconditions(runner.RUN_ROOTS["A"], phase_a_run_id)}
+_INTERRUPTED = {"flag": False}
 
 
-def launch(sentence: str, *, phase_a_run_id: str | None = None, run_id: str | None = None,
-           resume: bool = False) -> dict[str, Any]:
-    _local_only_network()
-    authorization = authorization_from_sentence(sentence, phase_a_run_id=phase_a_run_id)
-    phase = authorization["phase"]
-    if resume and not run_id:
-        raise ValueError("resume_requires_run_id")
-    run_id = run_id or runner.utc_run_id(phase)
+def install_interrupt_flag() -> None:
+    """The handler only sets a flag; the lifecycle closes through the normal path at its safe points (§7)."""
+    def handler(signum, frame):  # noqa: ARG001
+        _INTERRUPTED["flag"] = True
+    for name in ("SIGINT", "SIGTERM", "SIGBREAK"):
+        if hasattr(signal, name):
+            signal.signal(getattr(signal, name), handler)
+
+
+def checkout_git_env() -> dict[str, str]:
+    env = {"PATH": os.environ.get("PATH", ""), "SYSTEMROOT": os.environ.get("SYSTEMROOT", ""),
+           "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull, "GIT_TERMINAL_PROMPT": "0",
+           "GIT_OPTIONAL_LOCKS": "0"}
+    return env
+
+
+def table_on_main(fs, root: Path) -> Any:
+    """§10.9, read-only: the table at the tip of main has exactly these bytes, with one version in first-parent
+    history."""
+    import g_route3_evidence as ev
+    relative = "experiments/G-ROUTE3-candidate/QUALIFICATION_TABLE.json"
+
+    def check(table_bytes: bytes) -> bool:
+        base = ["git", "-c", f"safe.directory={root.resolve().as_posix()}", "-C", str(root)]
+        tip = fs.run_child(base + ["rev-parse", f"main:{relative}"], env=checkout_git_env(), timeout=120)
+        if tip.returncode != 0 or tip.stdout.decode().strip() != ev.blob_id(table_bytes):
+            return False
+        log = fs.run_child(base + ["log", "--first-parent", "--format=%H", "main", "--", relative],
+                           env=checkout_git_env(), timeout=120)
+        versions = set()
+        for commit in log.stdout.decode().split():
+            blob = fs.run_child(base + ["rev-parse", f"{commit}:{relative}"], env=checkout_git_env(), timeout=120)
+            if blob.returncode == 0:
+                versions.add(blob.stdout.decode().strip())
+        return versions == {ev.blob_id(table_bytes)}
+    return check
+
+
+def governed_runtime():
+    """The only runtime this launcher builds: the governed Ollama provider, the freeze's data root."""
+    import g_route3_contract as contract
+    import g_route3_fs as fsmod
+    import g_route3_lifecycle as lifecycle
+    import g_route3_runner as runner
+    from g_route1_contract import ROOT
+    from g_route3_freeze import verify_manifest
+
+    manifest = contract.load_json(contract.EXECUTION_FREEZE_PATH)
+    data_root = manifest.get("data_root")
+    if not data_root or not Path(data_root).is_absolute():
+        raise PermissionError("execution_freeze_names_no_absolute_data_root")
+    fs = fsmod.RealFs()
     provider = runner.GovernedOllamaProvider()
-    receipts = provider.model_receipts()
-    activity = runner.RouteThreeActivity(run_id, phase=phase, root=runner.RUN_ROOTS[phase].parent / "activity",
-                                         resume=resume)
-    if phase == "A":
-        return runner.execute_phase_a(provider_call=provider, model_receipts=receipts, run_root=runner.RUN_ROOTS["A"],
-                                      run_id=run_id, activity=activity, authorization=authorization, resume=resume,
-                                      anchor=git_anchor)
-    return runner.execute_phase_b(provider_call=provider, model_receipts=receipts, run_root=runner.RUN_ROOTS["B"],
-                                  phase_a_root=runner.RUN_ROOTS["A"], phase_a_run_id=str(phase_a_run_id),
-                                  run_id=run_id, activity=activity, authorization=authorization, resume=resume,
-                                  anchor=git_anchor, committed=git_is_committed)
+
+    def freeze_valid() -> bool:
+        try:
+            current = contract.load_json(contract.EXECUTION_FREEZE_PATH)
+            return (verify_manifest(current)["valid"]
+                    and current.get("status") == "READY_FOR_EXPLICIT_SCIENTIFIC_EXECUTION_AUTHORIZATION"
+                    and current.get("data_root") == data_root)
+        except Exception:  # noqa: BLE001
+            return False
+
+    return lifecycle.Runtime(
+        data_root=Path(data_root), fs=fs, provider=provider, model_receipts=provider.model_receipts,
+        verify_receipts=runner.verify_model_receipts,
+        freeze_binding=lambda: contract.json_digest(contract.load_json(contract.EXECUTION_FREEZE_PATH)),
+        freeze_valid=freeze_valid,
+        guarded_files=lambda phase: lifecycle.standard_guarded_files(Path(data_root), phase),
+        worker=lifecycle.spawn_worker(fs), scorer=lifecycle.spawn_scorer(fs),
+        schedules={phase: contract.verify_checked_schedule(phase) for phase in ("A", "B")},
+        fixtures={phase: contract.runtime_fixtures(phase) for phase in ("A", "B")},
+        synthetic=False, endpoint=runner.OLLAMA_ENDPOINT, interrupted=lambda: _INTERRUPTED["flag"],
+        frozen_artifact_digests=lambda: set((manifest.get("artifacts") or {}).values()),
+        table_on_main=table_on_main(fs, ROOT), sleep=__import__("time").sleep)
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run one authorized G-ROUTE3 phase attempt.")
-    parser.add_argument("--confirmation", help="the operator's verbatim authorization sentence")
-    parser.add_argument("--phase-a-run-id")
-    parser.add_argument("--run-id")
+    platform.join_kill_on_close_job()               # before any child exists (§15)
+    platform.pin_recursion_limit()                  # before any pinned thread (§8)
+    local_only_network()
+    install_interrupt_flag()
+    parser = argparse.ArgumentParser(description="Run one governed G-ROUTE3 R7 command.")
+    parser.add_argument("--sentence")
     parser.add_argument("--resume", action="store_true")
-    parser.add_argument("--abandon", choices=("A", "B"))
-    parser.add_argument("--clear-orphan", nargs=2, metavar=("PHASE", "RUN_ID"))
-    parser.add_argument("--freeze-table", action="store_true")
+    parser.add_argument("--phase-a-attempt", type=int)
     parser.add_argument("--audit-document")
     parser.add_argument("--auditor")
     parser.add_argument("--verdict")
-    parser.add_argument("--reason")
+    parser.add_argument("--export-evidence")
     args = parser.parse_args(argv)
-    if args.abandon:
-        result = runner.abandon_attempt(args.abandon, args.reason or "", anchor=git_anchor)
-    elif args.clear_orphan:
-        result = runner.clear_orphan_run(args.clear_orphan[0], args.clear_orphan[1], args.reason or "",
-                                         anchor=git_anchor)
-    elif args.freeze_table:
-        result = freeze_table(args.phase_a_run_id, args.audit_document, args.auditor, args.verdict)
-    elif args.confirmation:
-        result = launch(args.confirmation, phase_a_run_id=args.phase_a_run_id, run_id=args.run_id,
-                        resume=args.resume)
-        result = {key: value for key, value in result.items() if key != "store"}
-    else:
-        parser.error("--confirmation, --abandon, --clear-orphan or --freeze-table is required")
+    import g_route3_lifecycle as lifecycle
+
+    runtime = governed_runtime()
+    lc = lifecycle.Lifecycle(runtime)
+    if args.export_evidence:
+        destination = Path(args.export_evidence).resolve()
+        if Path(runtime.data_root).resolve() in destination.parents:
+            parser.error("--export-evidence must be outside the data root")
+        print(json.dumps(lc.command_export(destination), indent=2, sort_keys=True))
+        return 0
+    if not args.sentence:
+        parser.error("--sentence is required")
+    kind, fields = parse_sentence(args.sentence)
+    if kind in ("launch_a", "launch_b") and not args.resume:
+        lc.setup_if_missing()
+    lc.open()
+    try:
+        if args.resume:
+            if kind not in ("launch_a", "launch_b"):
+                parser.error("--resume takes the launch sentence consumed for the attempt")
+            result = lc.command_resume("A" if kind == "launch_a" else "B", args.sentence)
+        elif kind in ("launch_a", "launch_b"):
+            n, distinct = int(fields["n"]), "m" in fields
+            if distinct and int(fields["m"]) != n - 1:
+                raise ValueError("distinct_sentence_must_name_attempt_n_minus_1")
+            if fields["binding"] != runtime.freeze_binding():
+                raise PermissionError("sentence_binding_is_not_the_freeze_in_force")
+            if kind == "launch_a":
+                result = lc.command_launch("A", args.sentence, n, distinct)
+            else:
+                if not args.phase_a_attempt:
+                    parser.error("phase B needs --phase-a-attempt")
+                result = lc.command_launch_b(args.sentence, n, distinct, fields["table"], args.phase_a_attempt)
+        elif kind == "abandon":
+            result = lc.command_abandon(fields["phase"], int(fields["n"]))
+        elif kind == "declare":
+            table_run = None
+            result = lc.command_declare(fields["phase"], int(fields["n"]), table_run)
+        elif kind == "clear_orphan":
+            result = lc.command_clear_orphan(fields["phase"], fields["run"])
+        else:
+            if not (args.audit_document and args.auditor and args.verdict):
+                parser.error("--freeze-table sentence needs --audit-document, --auditor and --verdict")
+            result = lc.command_freeze_table(int(fields["n"]), fields["binding"], Path(args.audit_document),
+                                             args.auditor, args.verdict)
+    finally:
+        lc.close()
     print(json.dumps(result, indent=2, sort_keys=True, default=str))
     return 0
 

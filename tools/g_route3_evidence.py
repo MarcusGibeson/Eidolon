@@ -140,7 +140,63 @@ class EvidenceRepo:
         return entries
 
     def read_blob(self, blob: str) -> bytes:
-        return self.git("cat-file", "blob", blob)
+        return self.read_blobs([blob])[blob]
+
+    def read_blobs(self, blobs) -> dict[str, bytes]:
+        """Exact bytes of many blobs with one ``cat-file --batch`` process."""
+        wanted = list(dict.fromkeys(blobs))
+        if not wanted:
+            return {}
+        out = self.git("cat-file", "--batch", input_bytes=("\n".join(wanted) + "\n").encode("ascii"))
+        result, offset = {}, 0
+        for blob in wanted:
+            end = out.index(b"\n", offset)
+            header = out[offset:end].decode("ascii").split(" ")
+            if len(header) != 3 or header[0] != blob or header[1] != "blob":
+                raise EvidenceError(f"evidence_blob_unreadable:{blob}")
+            size = int(header[2])
+            data = out[end + 1:end + 1 + size]
+            if len(data) != size or blob_id(data) != blob:
+                raise EvidenceError(f"evidence_blob_corrupt:{blob}")
+            result[blob] = data
+            offset = end + 1 + size + 1
+        return result
+
+    def write_blobs(self, contents: list[bytes], staging: Path) -> list[str]:
+        """Write many exact blobs with one ``hash-object --stdin-paths`` process via staged copies, checking every
+        returned id against the id computed here."""
+        import os
+        if not contents:
+            return []
+        folder = Path(staging) / f"evidence-{os.getpid()}-{len(contents)}-{blob_id(b''.join(contents))[:12]}"
+        folder.mkdir(parents=True, exist_ok=True)
+        paths = []
+        try:
+            for index, data in enumerate(contents):
+                path = folder / f"{index:06d}"
+                path.write_bytes(data)
+                paths.append(str(path))
+            out = self.git("hash-object", "-w", "--no-filters", "--stdin-paths",
+                           input_bytes=("\n".join(paths) + "\n").encode("utf-8")).decode().split()
+        finally:
+            for path in paths:
+                try:
+                    os.unlink(path)
+                except OSError:
+                    pass
+            try:
+                folder.rmdir()
+            except OSError:
+                pass
+        expected = [blob_id(data) for data in contents]
+        if out != expected:
+            raise EvidenceError("evidence_blob_id_mismatch")
+        return out
+
+    def commit_adding(self, path: str) -> str | None:
+        """The commit that added ``path`` (the history is add-only and linear)."""
+        out = self.git("rev-list", "--reverse", REF, "--", path).decode().split()
+        return out[0] if out else None
 
     def is_ancestor(self, commit: str) -> bool:
         result = self.fs.run_child(["git", "-c", f"safe.directory={self.git_dir.resolve().as_posix()}",
@@ -148,7 +204,7 @@ class EvidenceRepo:
         return result.returncode == 0
 
     # ---- committing (§13.1, §13.2) ----
-    def commit(self, additions: Mapping[str, bytes], message: str) -> str:
+    def commit(self, additions: Mapping[str, bytes], message: str, *, staging: Path | None = None) -> str:
         """Add-only commit of ``additions`` (tree path -> exact bytes). Returns the new head, or the current head
         when every path is already committed with identical bytes. A path committed with different bytes raises
         AddOnlyConflict. The ref update is compare-and-swap, re-read after a reported failure, retried 5 times."""
@@ -171,12 +227,17 @@ class EvidenceRepo:
             if index.exists():
                 self.fs.unlink(index)
             self.git("read-tree", old)
-            lines = []
-            for path, data in new_paths.items():
-                blob = self.git("hash-object", "-w", "--no-filters", "--stdin", input_bytes=data).decode().strip()
-                if blob != blob_id(data):
-                    raise EvidenceError("evidence_blob_id_mismatch")
-                lines.append(f"100644 {blob}\t{path}\n")
+            ordered = list(new_paths.items())
+            if staging is not None:
+                blobs = self.write_blobs([data for _, data in ordered], staging)
+            else:
+                blobs = []
+                for _, data in ordered:
+                    blob = self.git("hash-object", "-w", "--no-filters", "--stdin", input_bytes=data).decode().strip()
+                    if blob != blob_id(data):
+                        raise EvidenceError("evidence_blob_id_mismatch")
+                    blobs.append(blob)
+            lines = [f"100644 {blob}\t{path}\n" for (path, _), blob in zip(ordered, blobs)]
             self.git("update-index", "--add", "--index-info", input_bytes="".join(lines).encode("utf-8"))
             tree = self.git("write-tree").decode().strip()
             commit = self.git("commit-tree", tree, "-p", old, "-m", message).decode().strip()
