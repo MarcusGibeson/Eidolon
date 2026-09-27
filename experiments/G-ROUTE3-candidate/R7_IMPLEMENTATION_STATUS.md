@@ -88,7 +88,7 @@ first new call exits without writing. Evidence on the fixed code:
   - R7 suite: 41 tests pass.
   - Differential: PASS.
   - Targeted quick campaign: clean, including 16 new resumed-interrupt seeds for ruling 12.
-  - The full certification campaign reruns on this code.
+  - Full certification campaign on `e353c9c` (stride 1, 5.9 hours): 4,281 cases, 0 violations, including all 16 resumed-interrupt seeds.
 
 ## Obligations
 

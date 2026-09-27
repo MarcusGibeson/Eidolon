@@ -1,6 +1,6 @@
 {
-  "campaign_report_sha256": "fa6e613a9e54af92b3f305345c9569836a4edcf21b6fb20375761f8ffd7ebb82",
-  "code_commit": "7a56c24",
+  "campaign_report_sha256": "c871f45484743258df0ddd254bd99d3e1fcaad07081e374267af62bd00ad03f6",
+  "code_commit": "e353c9c",
   "command": "python -B tools/g_route3_campaign.py --stride 1",
   "differential": {
     "phase_a_mixed": "cells identical",
@@ -13,7 +13,7 @@
       "rerun with a different audit document",
       "rerun with a different attempt"
     ],
-    "result": "PASS (rerun on 7a56c24's code)",
+    "result": "PASS (rerun on e353c9c's code)",
     "tool": "tools/g_route3_r7_differential.py"
   },
   "not_covered": [
@@ -29,7 +29,8 @@
     "disclosure rows consistent with the ledger and flagged",
     "declared refusals are not counted as passes for kill or damage cases",
     "interrupt outcomes strict by safe point",
-    "no provider send without a durable call_started (stub provider checks the unflushed operations)"
+    "no provider send without a durable call_started (stub provider checks the unflushed operations)",
+    "ruling 12: a resumed attempt interrupted before its first new call exits open, adding nothing but a finished sandbox run's execution entries; after it, closes as operator_interrupt"
   ],
   "provider_generation_calls": 0,
   "recursion_thresholds": {
@@ -113,7 +114,7 @@
       "violations": 0
     },
     {
-      "cases": 18,
+      "cases": 21,
       "label": "gap_seeds",
       "outcomes": {
         "concurrent_setup": "ok",
@@ -123,6 +124,9 @@
         "interrupt_at_safe_point_11": "ok",
         "interrupt_at_safe_point_12": "ok",
         "interrupt_at_safe_point_13": "ok",
+        "interrupt_at_safe_point_14": "ok",
+        "interrupt_at_safe_point_15": "ok",
+        "interrupt_at_safe_point_16": "ok",
         "interrupt_at_safe_point_2": "ok",
         "interrupt_at_safe_point_3": "ok",
         "interrupt_at_safe_point_4": "ok",
@@ -154,6 +158,29 @@
       "violations": 0
     },
     {
+      "cases": 16,
+      "label": "resumed_interrupts",
+      "outcomes": {
+        "resumed_awaiting_execution_interrupt_at_check_1": "ok",
+        "resumed_awaiting_execution_interrupt_at_check_2": "ok",
+        "resumed_awaiting_execution_interrupt_at_check_3": "ok",
+        "resumed_awaiting_execution_interrupt_at_check_4": "ok",
+        "resumed_awaiting_execution_interrupt_at_check_5": "ok",
+        "resumed_awaiting_execution_interrupt_at_check_6": "ok",
+        "resumed_awaiting_execution_interrupt_at_check_7": "ok",
+        "resumed_awaiting_execution_interrupt_at_check_8": "ok",
+        "resumed_collecting_interrupt_at_check_1": "ok",
+        "resumed_collecting_interrupt_at_check_2": "ok",
+        "resumed_collecting_interrupt_at_check_3": "ok",
+        "resumed_collecting_interrupt_at_check_4": "ok",
+        "resumed_collecting_interrupt_at_check_5": "ok",
+        "resumed_collecting_interrupt_at_check_6": "ok",
+        "resumed_collecting_interrupt_at_check_7": "ok",
+        "resumed_collecting_interrupt_at_check_8": "ok"
+      },
+      "violations": 0
+    },
+    {
       "cases": 1040,
       "label": "power_loss_subsets",
       "operations": 520,
@@ -164,12 +191,12 @@
     }
   ],
   "schedule": "four calls from schedule A (one coding), stub provider/worker/scorer; kills before and after every numbered operation; decisions from a pure status peek, so recovery runs only inside killable commands; recursive kills with a per-operation probability, with power loss when the scenario has it; power loss (all unflushed and seeded subsets), damage, flush failures, environment and seeded cases",
-  "seconds": 23485.7,
+  "seconds": 21371.0,
   "status": "CERTIFICATION_CAMPAIGN_COMPLETE",
   "tests": {
     "r6_suite": "80 run, 19 skipped as superseded, 0 failed",
-    "r7_quick": "37 passed"
+    "r7_quick": "41 passed"
   },
-  "total_cases": 4262,
+  "total_cases": 4281,
   "violations": 0
 }
