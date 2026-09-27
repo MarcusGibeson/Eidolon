@@ -13,17 +13,32 @@
     "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R3.json": "dbbb473d26f0f24ef98d2f5b7119ce2d2f4e8c13060bc0c440cb8bfc8e69a536",
     "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R4.json": "555c45b59f1e9892a8482c09bbe9129bc866539749879229cdbe9004388a16bb",
     "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R5.json": "55c40f1633d5c4b2a29ed97218580750e54d07f9eb19979bb5dd0de40ae7e467",
+    "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R6.json": "8d64f703dadeb9787ba64ffd832e0134668cb644ab54de4a06eda8cfc100a085",
     "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND1.md": "cfe852a9cddfcc08f35c23c016b6bfd353cabda8825e980d10b005d9f296c63a",
     "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND2.md": "d2090d87be4de1088922a9fb29cad08790f6f63a393cc02d5002148e61ffa2bc",
     "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND3.md": "5d2f85d736c0906aa521e1ecbbb9753bd648402a4591327709c0366cdbc9915a",
     "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND4.md": "960fafae5b67c5527f53ae81d71e94a23fbda64b8b134900964a0bc494a37ce4",
     "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND5.md": "105f6ff60faaecb0a645c33ecdfbb1838ebd8ebdf70eba89d65c7aef00fd0d68",
+    "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND6.md": "351e64836b2b133348eace8626bfa8fbd2ec54383b6e97af580c7841a8316db7",
     "experiments/G-ROUTE3-candidate/GOLD_DERIVABILITY.md": "3e0ce8725b71a322d5e1d915d0392891617812f68feae20c1e75c36efd3d0615",
     "experiments/G-ROUTE3-candidate/GOLD_DERIVABILITY_DIAGNOSTIC.json": "05f8dfbb066b702536801d48408115e4a54b2ae32e4798eba702c4e85449bc64",
     "experiments/G-ROUTE3-candidate/INDEPENDENCE_REPORT.json": "6f7f36f3226283d20774e3d5ebcf5674ad745481b1e08cc509f8751c767dd9c4",
     "experiments/G-ROUTE3-candidate/INDEPENDENT_AUDIT.md": "8423771366be6e22c3ec6ea236f0a6de8c3c895b7c140b16636a3f67bfc04bb4",
     "experiments/G-ROUTE3-candidate/PRODUCTION_ADAPTER_MAPPING.md": "311b1ac9a7c0b21f83f3bf07b2baaceaf11ce414f450ee603013575ce16076f8",
-    "experiments/G-ROUTE3-candidate/QUALIFICATION_CONTRACT.md": "68c7e9e44c60d2e0b115fdd06105329fee50e5988eee9fd72821f035bca118eb",
+    "experiments/G-ROUTE3-candidate/QUALIFICATION_CONTRACT.md": "6dc8d0e502e8f1e700ca02a8e3dcdaf492bf3b48877604ad98e2aba607295c09",
+    "experiments/G-ROUTE3-candidate/R7_CERTIFICATION_REPORT.json": "a39411a789d1e8f1ceeb47c1e0d14ed650571f57fd2ddb7c41c1b83540029079",
+    "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_CANDIDATE.json": "447ed333f935b59676d0c341b0498dbd4cdb62dfeb1ec92f884e8b1c4777ed2d",
+    "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND1.md": "b97b745527b90672f4f6c3e0183e80099a4964a8bde86ee3d0f6bae8e29e6729",
+    "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND2.md": "bc53bb9f563d44322179488bbed23caa8fd7fa4339ee3b38dea114f2934eb7f8",
+    "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND3.md": "fd71a83229c3b72cfa9c39578bd3284a6151c6ff879e589f684c25eb33c9accd",
+    "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND4.md": "03db961e732d3b11da60a3fb793280efe2f5fa84da354c5877833285d34b9bbc",
+    "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND5.md": "2e00a5da4b33ee7616c2c3073c76f7f7dd80ea6126acec296d2059f44466cfa9",
+    "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND6.md": "bba88424f8bec70a92288cdd58755ac45d02ebc51dd9ce65f092b53457a01929",
+    "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND7.md": "49abb1631de4b7e2446ec0ee579b5279f9d4ac8376c2365c533e370195f553c3",
+    "experiments/G-ROUTE3-candidate/R7_DESIGN_REVIEW_ROUND8.md": "20f379149a7e6fb0fcdd7ff705736da1c99e386b7eb6cf2d9b03044ba4a6516a",
+    "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_OBLIGATIONS.md": "d79a9596d6092ce4b165aeb36b35b3b0807c82ed0b6511bbbaa68a8d05c9efa5",
+    "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_STATUS.md": "2b3a2c93a93c3b80460cc2323dde80760c5d829ee1e1b33c3745c077849c7234",
+    "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md": "b2205851fc1620185dbf42ff5427cd2a6ab2cecbed6bb3334b305d19986037e5",
     "experiments/G-ROUTE3-candidate/ROUTING_POLICY.md": "7a4e6c5466e321d85b7997b74af7273ea7a9e756475239799a0b6671b992bcbc",
     "experiments/G-ROUTE3-candidate/SCORING_CONTRACT.md": "a419b2d802ff73559bc3efe54efd80dff6a60c7a9f967666bd838244e9110578",
     "experiments/G-ROUTE3-candidate/authoring/assemble_g3.py": "0d38fa549ec1ef1fe5fb6360d293a7f895d78e14d426e7d13450d0b2dcb4f920",
@@ -49,29 +64,38 @@
     "tools/g_route1_provider.py": "cab0404337fea4b8be5f29ac8b1a0f69db141e81d9e2fc840350a82c0005329d",
     "tools/g_route1_validators.py": "64ae53f4510828e1ec8275dc1ef1e6d6fd6bc5fa9b2600116ec9afd32643850d",
     "tools/g_route2_normalization.py": "24d263cf98339bed0dff35756f01466e220e7c597665e27ad5d13e96aaf264be",
+    "tools/g_route3_campaign.py": "f4e5dcdf69c62ec0e26943cbd2f2902cee3241e769ec41e3d773cb470b3031a3",
     "tools/g_route3_contract.py": "163f1e8f4ad27248d153da3540fe0b7af4aa7baf8bb32c873284a05a3cf0f43c",
     "tools/g_route3_conversation.py": "eecdc14031543dbc82e7eaf9a31e9c2c09d6e6ca3777407139ab4f1971c89b30",
-    "tools/g_route3_freeze.py": "a487b7d37d87edc489b1be9b77fbefe777d1b4248ddc53dd2db1756165a385a5",
+    "tools/g_route3_evidence.py": "26b333ba143981d48f106dc272692c99800f4d5085db73c1381a633e5938a652",
+    "tools/g_route3_freeze.py": "45a46280e443aa3e91424cfc311ca87e830514b619455ab59b769c7be99c6806",
+    "tools/g_route3_fs.py": "e34bf9ca50e3886319c2e2a19faf394d6b7a2f8081f3ed93219a23286e8d565a",
     "tools/g_route3_independence.py": "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b",
-    "tools/g_route3_launch.py": "301dee3cd7a8fb1a17acee12c6780b187b1b3184e40fc68da35391d829de2228",
+    "tools/g_route3_journal.py": "58436a1aa843db5774a39779eb12941b943ae876b014618a01fd70f388ff8d76",
+    "tools/g_route3_launch.py": "07390d9d2f29d13ae0dd40e87002ad79cdbefef08c0aabf10fdaa6bbefaa5756",
+    "tools/g_route3_lifecycle.py": "fef49bd2b46b6d0b78e1fe0e7c2dbc868a315dcb566edf25d1d3b1ef78ad1594",
     "tools/g_route3_operational.py": "830e023493e7b61999625457ce320d346bae771f8157f579ca1825e82afe02a0",
+    "tools/g_route3_platform.py": "8eca92ac769effb687de3f4707d26dee115ddea1389bcf4a6d12f0c2bc43cbad",
     "tools/g_route3_qualification.py": "7165b075579c74f58c924729c8143d4a0e2d2846b70a182104ae97d77ceee391",
+    "tools/g_route3_r7_tests.py": "21f34566335c6fa1cacd821d5fc2544bca4e9524d3648cf561d47e73e02f3022",
     "tools/g_route3_routing.py": "0357d16ed47ce9ed02280560f889aec9e21d8ffe4adaf2dd900f1595279746e2",
-    "tools/g_route3_runner.py": "1b2c732b8636056517c6000734712c5802c98e28d83233b34737159bdc74b294",
+    "tools/g_route3_runner.py": "52fcadfe08ef73fdbd552268b90b98f56ae0624826d235933d5466e65e68d285",
+    "tools/g_route3_scorer.py": "99964fcdbc9580338e311f35467f20bff40b1e7eb03cc20e2af3137663f2cdaa",
     "tools/g_route3_semantics.py": "ac091116489276d13d643a75f80b0847d5231842af53b54beb3b85548b24741b",
-    "tools/g_route3_tests.py": "c2db41e8c63da6db11d835ab5679315843b8522836d3b491087a05c1c6e7c671",
+    "tools/g_route3_tests.py": "a30e7e651df4c9767087996a31ee894d1f64b246ce9fc48d9547de5f58248f34",
     "tools/g_route3_triggers.py": "d98febfb7b3cf9e801573e54b5f4ae6c06ffbe496194d65b27931d67d324ddec",
-    "tools/g_route3_validation.py": "1331ab1568cfcc45e7a3da43f725268dca45e7c1d12cf0a87e1fd1d615295894"
+    "tools/g_route3_validation.py": "1331ab1568cfcc45e7a3da43f725268dca45e7c1d12cf0a87e1fd1d615295894",
+    "tools/g_route3_worker.py": "e5dd5ea29e2457d41a6fc08c4b71cde879bc3fa50ddaeed5d06b36fd65277e12"
   },
-  "attempt_policy": "numbered attempts, each separately authorized; attempt n+1 only after every earlier attempt of the phase ended incomplete, failed or cancelled; every attempt and its outcome disclosed in the table and the Phase B score",
+  "attempt_policy": "R7 §9.3: numbered attempts, each separately authorized, spanning every freeze; attempt n+1 only after every earlier attempt is closed or closed at ledger level; refused while a completed or protected attempt exists; every attempt disclosed, every non-complete attempt flagged 'optional stopping cannot be excluded'",
   "authorization_artifact_created": false,
   "automatic_escalation_authorized": false,
   "belief_effects": "none",
   "benchmark_execution_authorized": false,
   "benchmark_launches": 0,
   "both_corpora_frozen_before_any_contact": true,
-  "candidate_id": "G-ROUTE3-EXECUTION-R6",
-  "contract_version": "g-route3.execution-freeze-candidate.v6",
+  "candidate_id": "G-ROUTE3-EXECUTION-R7",
+  "contract_version": "g-route3.execution-freeze-candidate.v7",
   "conversation_contract": "g-route3.conversation-frame.v3",
   "corpus_digests": {
     "corpus_a.json": "3c105180239250460e23506690fddfc4143a054c26a44e8f65eca742d631c62d",
@@ -79,11 +103,12 @@
     "gold_a.json": "29415dc831006aa77cdf72c4d21861cf6814373fdf8935701152596774381f6c",
     "gold_b.json": "57fa924ecc8a9591553f59686b5f57762af56ca01f0be963d0acdfcafe53d842"
   },
+  "data_root": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route3",
   "deterministic_tests_passed": true,
   "digest_convention": "sha256; CRLF and CR normalized to LF for source artifacts",
   "evidence_scale": "pilot",
   "execution_freeze": true,
-  "execution_freeze_content_sha256": "a5b16d2e777c08478460b15dbf72a8343f6e789c25083ba3788193241cbec032",
+  "execution_freeze_content_sha256": "1a47f42c7c8055c9d8bfdaa92ba8fe83e7c317465b3f70ee920ce689ad4f67b2",
   "external_review_required_before_authorization": true,
   "external_reviews": [
     {
@@ -115,6 +140,12 @@
       "reviewed_binding": "2e97b75e0b3ce68bd2cd21fd5cbcc69f6133abaa736727b62452d729061fce94",
       "round": 5,
       "verdict": "FINDINGS"
+    },
+    {
+      "record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND6.md",
+      "reviewed_binding": "2e5e8cc72570b6be1dd92b1bebe80d0366b3b1c489fb75a8d1f4404886e062e3",
+      "round": 6,
+      "verdict": "FINDINGS"
     }
   ],
   "generation_configuration": {
@@ -133,21 +164,19 @@
     "stream": false,
     "think": false
   },
-  "implementation_commit": "bd36239fb62da95d21ae1058f4619e60b1e4ccca",
+  "implementation_commit": "d20c689235dee7f60e34df44617422434f2621a3",
   "independence_report_sha256": "6f7f36f3226283d20774e3d5ebcf5674ad745481b1e08cc509f8751c767dd9c4",
   "independent_audit_is_author_self_audit": true,
   "independent_audit_verdict": "READY",
   "launcher": {
     "authorized_runs_only_through_launcher": true,
-    "contract": "g-route3.launcher.v3",
-    "git_anchor": "local commit of each consumed ledger entry and each completed run's anchor file",
+    "contract": "g-route3.launcher.v4",
+    "data_root": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route3",
     "path": "tools/g_route3_launch.py",
     "provider_endpoint": "http://127.0.0.1:11434 (fixed)",
-    "run_roots": {
-      "A": "data/g_route3/phase_a",
-      "B": "data/g_route3/phase_b"
-    }
+    "sentences": "R7_LIFECYCLE_DESIGN.md §7.1 (no Close sentence: ruling 11)"
   },
+  "lifecycle_contract": "g-route3.lifecycle.r7",
   "model_bindings_sha256": "52b14ca35e34487d88627aa9f38af1c08c65ebfa94b0455d8d4883ce3782998e",
   "model_identities": [
     {
@@ -194,11 +223,17 @@
   "provider_generation_authorized": false,
   "provider_generation_calls": 0,
   "qualification_table_exists": false,
+  "recursion_thresholds": {
+    "ast_binary_chain_terms_max": 2977,
+    "json_nesting_max": 991,
+    "recursion_limit": 1000,
+    "stack_bytes": 67108864
+  },
   "research_questions": {
     "primary": "Can a task x risk x model qualification table derived prospectively from one independent qualification corpus safely guide cheapest-qualified model selection and stopping on a separate unseen validation corpus?",
     "secondary": "When a qualified model's individual output fails deterministic validation, can escalation to the next independently qualified tier improve usable admission without creating unsafe stops?"
   },
-  "runner_contract": "g-route3.runner.v5",
+  "runner_contract": "g-route3.runner.v5 (R6 authorized path superseded; synthetic path kept)",
   "semantic_contract": "g-route3.semantics.v1",
   "semantic_validators_unchanged_from_g_route1": "research, synthesis, extraction and planning: yes; conversation: replaced by the disclosed two-line frame (Answer, Actions taken); coding: unchanged except that old is compared with the source ignoring trailing newlines",
   "source_mutation_authorized": false,
@@ -253,9 +288,19 @@
       "provider_generation_calls": 0,
       "reason": "fifth independent pre-contact review returned FINDINGS: a pathological coding candidate raised before the sandbox subprocess and was charged to infrastructure, stopping Phase A, and several crash windows during finalization left an attempt unrecoverable by any supported command",
       "review_record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND5.md"
+    },
+    {
+      "authorized": false,
+      "binding_sha256": "2e5e8cc72570b6be1dd92b1bebe80d0366b3b1c489fb75a8d1f4404886e062e3",
+      "candidate_id": "G-ROUTE3-EXECUTION-R6",
+      "literal_sha256": "8d64f703dadeb9787ba64ffd832e0134668cb644ab54de4a06eda8cfc100a085",
+      "path": "experiments/G-ROUTE3-candidate/EXECUTION_FREEZE_CANDIDATE_R6.json",
+      "provider_generation_calls": 0,
+      "reason": "sixth independent pre-contact review returned FINDINGS: model output could crash sealing, torn files and interrupted anchors wedged recovery, and resume could not reopen terminal activity; the operator chose to restructure the lifecycle around one journal per run (R7)",
+      "review_record": "experiments/G-ROUTE3-candidate/EXTERNAL_REVIEW_ROUND6.md"
     }
   ],
-  "threat_model": "honest operator with tamper-evident records (operator decision): the code stops accidents, misuse through any supported path and cheap tampering; a deliberate local adversary (a fake model server, a second checkout, a consistent rewrite of sealed files) is out of scope and is countered by the launcher's local git anchor commits",
+  "threat_model": "operator ruling 10: accidents in code, tampering at boundaries. The code guarantees at-most-once and a truthful history against accidents and misuse of supported commands; every attempt's journal is committed to the private evidence repository at its boundaries and verified by every command; tampering with an attempt in progress is a declared residual",
   "thresholds_sha256": "6d8d7b8e8b50a1b281273b4276f0017cffdfb32432514adf6f84be0266063d74",
   "trigger_contract": "g-route3.triggers.v1",
   "validator_contract": "g-route1.validators.v1"
