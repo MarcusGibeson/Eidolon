@@ -955,11 +955,14 @@ boundaries are computed from replay in J8 step 5.
 - Of the entry files, only bytes that replay accepted are committed: parsed and sealed entries, and `.torn` files an
   accepted entry acknowledges. Orphan temporary files, quarantine files and snapshot files are committed as found.
   Every file is read a second time just before its commit, and a disagreement refuses with
-  `…retry_after_verification`.
+  `…retry_after_verification`. One exception: the restore boundary of §13.4 commits a quarantined file from the
+  read made just before it is moved; a later change heals at the next verification.
 - A closure snapshot is committed as found. The disclosure committed with the closure's own boundary records
   whether it matches the recorded `snapshot_digest` (`snapshot_matches_recorded_digest`). Every later disclosure
-  reuses that value, so files that appear later cannot change it. A closure that recorded no digest (a torn
-  acknowledgement) says `no_digest_recorded`. The boundary never stays pending because of a mismatch.
+  reuses that value, so files that appear later cannot change it. The flag therefore describes the snapshot the
+  closure's own boundary committed; files committed under `closures/` later are not covered by it. A closure that
+  recorded no digest (a torn acknowledgement) says `no_digest_recorded`. The boundary never stays pending
+  because of a mismatch.
 
 ### 13.4 Verification (every command, J8 step 2)
 

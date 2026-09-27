@@ -103,3 +103,23 @@ Verification after these fixes:
   - One resumed-interrupt oracle was wrong at first. It required an unchanged journal, but a sandbox run that finishes before the interrupt legitimately adds its execution entries. It was corrected, and all 16 cases pass.
 
 The full certification campaign reruns on this code next.
+
+## Final confirmation (2026-09-27)
+
+A fresh read-only reviewer checked the confirmation-round fixes at `212effe` and returned **CLEAN: 0 BLOCKING,
+0 MUST-FIX, 4 notes**. There was no provider contact and all experiments ran in temporary folders. Evidence:
+- R7 suite: 41 tests pass.
+- Differential: PASS.
+- The real freeze history parses (7 versions).
+- A MF-1 was confirmed, including a kill between the closure's ledger entry and its snapshot commit. No earlier disclosure can fix the flag.
+- B MF-1 was confirmed with a synthetic probe.
+- The `resumed_interrupts` oracle rejected three deliberately broken versions of `_interrupt`: "always close", "write call_started before the first call", and "write closed but report open".
+
+The notes are carried as declared residuals. Changing the guarded code for them would void the certification of `e353c9c`, and none affects calls, attempts or grading.
+
+| # | Note | Why it stays |
+|---|---|---|
+| 1 | The restore-boundary commit in `verify_evidence` (`include_ledgers=False`) commits quarantined bytes from the single read made before the rename. | If something outside the lifecycle changes the file between that read and the rename, the next verification re-quarantines and restores it, so it heals itself. §13.3 now names this exception. |
+| 2 | A closure's first disclosure computes its flag from a fresh re-read of the run folder, not from the bytes being committed. | The two differ only if something outside the lifecycle writes between two reads in one command, while the lease excludes other lifecycle processes. |
+| 3 | No unit test covers Phase B `partial_observations` (`correct: null`) or `_partial_decisions` (exclusion, `sources`). | Checked by the reviewer's synthetic probe. Obligation: add the test in the next code change. |
+| 4 | `snapshot_matches_recorded_digest` describes the closure-boundary commit only. Files committed under `closures/` later are not covered by it. | This is the intended meaning; §13.3 now says so. |

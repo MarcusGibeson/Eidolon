@@ -89,6 +89,9 @@ first new call exits without writing. Evidence on the fixed code:
   - Differential: PASS.
   - Targeted quick campaign: clean, including 16 new resumed-interrupt seeds for ruling 12.
   - Full certification campaign on `e353c9c` (stride 1, 5.9 hours): 4,281 cases, 0 violations, including all 16 resumed-interrupt seeds.
+- **Final confirmation review:** CLEAN (0 BLOCKING, 0 MUST-FIX). Its 4 notes are declared residuals in
+  `R7_IMPLEMENTATION_REVIEW_ROUND2.md`. One obligation carries forward: a unit test for Phase B partial
+  observations and decisions, due in the next code change.
 
 ## Obligations
 

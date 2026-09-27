@@ -14,18 +14,24 @@
     "§13.3: only replay-accepted bytes committed after a second read; closure snapshot committed as found and disclosed (A-N2, A-N3)",
     "§13.4: files under closures/ and orphans/ are unsealed copies (A-N3)",
     "§19, §20: the ruling 12 exception stated (confirmation review B note 3)",
-    "§13.3: snapshot_matches_recorded_digest fixed by the closure's own boundary; second reads of orphan temporary, quarantine and snapshot files (confirmation review A MF-1, N3)"
+    "§13.3: snapshot_matches_recorded_digest fixed by the closure's own boundary; second reads of orphan temporary, quarantine and snapshot files (confirmation review A MF-1, N3)",
+    "§13.3: restore-boundary exception to the second read, and the scope of snapshot_matches_recorded_digest (final confirmation notes 1 and 4)"
   ],
-  "design_review_candidate_sha256": "e766153ff1cbb2b69839f07159f4c696fbdd36edd425233946a79fa70a47f3d9",
+  "design_review_candidate_sha256": "0929f722504d306e898f3bb9c7c3a94799b00d0e713c54ac3f2cef05725da458",
   "document": "experiments/G-ROUTE3-candidate/R7_LIFECYCLE_DESIGN.md",
-  "document_sha256": "b9841a0fb292e948f9ab1cdcbc74b69a8a2fb4496e366a0b9448a59635bd3a9c",
+  "document_sha256": "b2205851fc1620185dbf42ff5427cd2a6ab2cecbed6bb3334b305d19986037e5",
   "execution_authorization": false,
   "implementation_obligations": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_OBLIGATIONS.md",
   "implementation_obligations_sha256": "d79a9596d6092ce4b165aeb36b35b3b0807c82ed0b6511bbbaa68a8d05c9efa5",
+  "implementation_review": {
+    "certified_code_commit": "e353c9c",
+    "date": "2026-09-27",
+    "final_confirmation": "CLEAN (0 blocking, 0 must-fix, 4 notes as declared residuals)"
+  },
   "implementation_review_round1": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_REVIEW_ROUND1.md",
   "implementation_review_round1_sha256": "109024a660fdbdaec7d15367ba2cd8060e93bbacf83398d969adebabb3bfec29",
   "implementation_review_round2": "experiments/G-ROUTE3-candidate/R7_IMPLEMENTATION_REVIEW_ROUND2.md",
-  "implementation_review_round2_sha256": "18724ef2a03549c0224d00aee8e0538d894401c9fd0a160ade3bdba1f2c818e5",
+  "implementation_review_round2_sha256": "064bbdae06c8e34ad6b088f4c3d1bc84d0923fd221af1ebb61b0d7c02c709a20",
   "implementation_started": false,
   "operator_rulings": {
     "2026-09-24": [
