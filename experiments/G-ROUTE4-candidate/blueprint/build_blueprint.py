@@ -291,7 +291,7 @@ def checks(slots, g3_entities, g3_lineages):
     check("B′ has 300 eligible (84 conversation + 216 other) and 5 R4 cases; 915 calls",
           len(elig) == 300 and len(conv) == 84 and len(B) == 305 and len(B) * 3 == 915,
           {"eligible": len(elig), "conversation": len(conv), "B": len(B), "calls": len(B) * 3})
-    check("A′ calls = 480", len(A) * 3 * 2 == 480, {"calls": len(A) * 6})
+    check("(arithmetic) A′ calls = 480", len(A) * 3 * 2 == 480, {"calls": len(A) * 6})
     # ids
     ids = [s["fixture_id"] for s in slots]
     check("fixture ids are unique and use the A4-/B4- namespace", len(ids) == len(set(ids)) and all(
@@ -334,8 +334,8 @@ def checks(slots, g3_entities, g3_lineages):
         pos_detail[f"{p}|{risk}"] = counts
         if len(v) >= 4:
             pos_ok &= max(counts) - min(counts) <= 1
-    check("conversation: exactly 4 options; gold positions balanced within 1 in every cell of 4 or more",
-          pos_ok, pos_detail)
+    check("conversation: gold positions balanced within 1 in every cell of 4 or more (the 4-option rule is "
+          "enforced at authoring)", pos_ok, pos_detail)
     # research allocation
     ra, rb = collections.Counter(), collections.Counter()
     sls_ok = True
@@ -373,32 +373,42 @@ def checks(slots, g3_entities, g3_lineages):
     per = collections.Counter()
     for (p, cls, risk), n in rcells.items():
         per[f"{p}|{CLASS_CODE[cls]}"] += n
-    check("reserve: at least 20% of every cell and one per matching feature combination",
-          r_ok, {"total": len(res_slots), "by_phase_class": dict(sorted(per.items()))})
+    check("reserve: at least 20% of every cell", r_ok,
+          {"total": len(res_slots), "by_phase_class": dict(sorted(per.items()))})
+    cover_ok = True
+    for (p, cls, risk), v in cells.items():
+        rs = [s for s in res_slots if (s["phase"], s["task_class"], s["risk"]) == (p, cls, risk)]
+        if p == "A":
+            key = lambda s: (s["family"], tuple(sorted((k, x) for k, x in s["features"].items()
+                                                          if k != "field_types")))
+        else:
+            key = lambda s, c=cls: tuple((k, s["features"][k]) for k in CLASSES[c]["b_matching"])
+        cover_ok &= {key(s) for s in v} <= {key(s) for s in rs}
+    check("reserve: every matching feature combination present in a cell has a reserve", cover_ok, {})
     # sample sizes and floors
     samp = sum(audit_sample.cell_sample_size(len(v)) for (p, _, _), v in cells.items() if p == "B")
     check("audit sample size = 38 (3 per conversation cell, 2 per other eligible cell, 1 per R4 cell)",
           samp == 38, {"sample": samp})
-    check("A′ full treatment: 2 extra adjudicator sessions per A′ fixture (160 for the main corpus)",
+    check("(arithmetic) A′ full treatment: 2 extra adjudicator sessions per A′ fixture (160 for the main corpus)",
           len(A) * 2 == 160, {"extra_sessions": len(A) * 2})
-    check("P1 floors reachable: 300 eligible cases can yield at least 76 stops and 30 qualified starts",
+    check("(arithmetic) P1 floors reachable: 300 eligible cases can yield at least 76 stops and 30 qualified starts",
           len(elig) >= 76 and len(elig) >= 30, {"eligible": len(elig)})
     # entity and lineage capacity
     fixtures_total = len(slots)
     need_names = fixtures_total * 6
     syllables = 18 * 5
     capacity = syllables ** 2 + syllables ** 3
-    check("entity inventory: enough fresh invented names for every fixture (at most 6 per fixture)",
+    check("(arithmetic) entity inventory: enough fresh invented names for every fixture (at most 6 per fixture)",
           capacity >= 50 * need_names, {"fixtures_incl_reserve": fixtures_total, "names_needed_max": need_names,
                                         "bank_capacity": capacity, "g_route3_entities_to_avoid": len(g3_entities)})
     rs = [s for s in slots if CLASS_CODE[s["task_class"]] == "RSRCH"]
     need_lin = len(rs) * 6
-    check("research lineages: enough fresh lineage names (at most 6 per research fixture)",
+    check("(arithmetic) research lineages: enough fresh lineage names (at most 6 per research fixture)",
           capacity >= 50 * need_lin, {"research_fixtures_incl_reserve": len(rs), "lineages_needed_max": need_lin,
                                       "g_route3_lineages_to_avoid": len(g3_lineages)})
     plan = [s for s in slots if CLASS_CODE[s["task_class"]] == "PLAN"]
     verbs, objects = 40, capacity          # a frozen 40-verb list x invented object names from the bank
-    check("planning actions: every action name unique across all planning fixtures (at most 7 per fixture)",
+    check("(arithmetic) planning actions: every action name unique across all planning fixtures (at most 7 per fixture)",
           verbs * objects >= 50 * len(plan) * 7, {"planning_fixtures_incl_reserve": len(plan),
                                                   "action_names_needed_max": len(plan) * 7,
                                                   "capacity": verbs * objects})
@@ -411,13 +421,248 @@ def checks(slots, g3_entities, g3_lineages):
             cross_ok &= flags == {True, False}
     check("research B′: every pattern appears with single_lineage_support both holding and not holding, per cell",
           cross_ok, {})
-    check("O5 by construction: every family's model-facing template text is empty (structure only)",
+    check("(declaration) O5: every family's model-facing template text is recorded as empty (structure only)",
           all(all(t == "" for t in spec["family_template_text"].values()) for spec in CLASSES.values()), {})
+    # extraction: real fine signature (sorted abstract field types, derived count), A′ vs B′ main and reserve
+    ex_ok, ex_detail = True, {}
+    for risk in RISKS:
+        grp = [s for s in slots if CLASS_CODE[s["task_class"]] == "EXTR" and s["risk"] == risk]
+        a_sig = {(tuple(s["features"]["field_types"]), s["features"]["derived_count"]) for s in grp
+                 if s["phase"] == "A"}
+        clash = [s["fixture_id"] for s in grp if s["phase"] == "B"
+                 and (tuple(s["features"]["field_types"]), s["features"]["derived_count"]) in a_sig]
+        ok_types = all(len(s["features"]["field_types"]) == s["features"]["field_count"] for s in grp)
+        ex_detail[risk] = clash
+        ex_ok &= not clash and ok_types
+    check("extraction: planned real fine signature of every B′ main and reserve slot differs from every A′ slot "
+          "in its cell", ex_ok, ex_detail)
+    # research: slots that share (family, sls) with an A′ slot and rely on pattern alone to differ (reported)
+    rel = {}
+    for risk in ELIGIBLE:
+        grp = [s for s in slots if CLASS_CODE[s["task_class"]] == "RSRCH" and s["risk"] == risk]
+        a_fs = {(s["family"], s["features"]["sls"]) for s in grp if s["phase"] == "A" and s["role"] == "main"}
+        rel[risk] = sorted(s["fixture_id"] for s in grp if s["phase"] == "B" and (s["family"], s["features"]["sls"])
+                           in a_fs)
+    check("(reported) research: B′ slots differing from an A′ slot only by pattern (checked on real signatures at "
+          "authoring)", True, {"count": sum(len(v) for v in rel.values()), "slots": rel})
+    # B′ reserves: family with cap headroom, and caps hold under any single replacement
+    head_ok = True
+    for cls in CLASSES:
+        bm = [s for s in slots if s["task_class"] == cls and s["phase"] == "B" and s["role"] == "main"]
+        class_cap = math.floor(0.25 * len(bm))
+        cc = collections.Counter(s["family"] for s in bm)
+        for s in [x for x in slots if x["task_class"] == cls and x["phase"] == "B" and x["role"] == "reserve"
+                  and x["risk"] != "R4"]:
+            cell = [m for m in bm if m["risk"] == s["risk"]]
+            cell_count = collections.Counter(m["family"] for m in cell)
+            head_ok &= s["family"] is not None and cell_count[s["family"]] + 1 <= len(cell) // 3 \
+                and cc[s["family"]] + 1 <= class_cap
+    check("B′ reserves: every reserve has a family with headroom, so any single replacement keeps both caps",
+          head_ok, {})
+    # templates and disclosure sentences
+    tpl = templates()
+    tpl_ok = all(v["assembled_template"].count(v["disclosure_sentence"]) == 1 for v in tpl.values()
+                 if v["disclosure_sentence"])
+    tpl_ok &= tpl["grounded_research_synthesis"]["rule_body"].count(RESEARCH_ANCHOR) == 1
+    tpl_ok &= sha(D8) == "f3c383d92b5ca1cb99008b49864f7330b6515c93f8e795a6c135f1326844ab47"
+    check("templates: each class rule body pinned; each disclosure sentence appears exactly once in its assembled "
+          "template; D8 digest matches", tpl_ok, {cls: {"rule_body_sha256": v["rule_body_sha256"][:16],
+                                                       "assembled_sha256": v["assembled_template_sha256"][:16]}
+                                                 for cls, v in tpl.items()})
     # audit-sample procedure
     st = audit_sample.self_test()
     check("audit-sample procedure self-test (frozen test vector)", st["digest"] == FROZEN_SELF_TEST_DIGEST,
           {"digest": st["digest"]})
     return res
+
+
+
+# ---------------------------------------------------------------- revision 2 of the blueprint (pre-freeze review)
+ABSTRACT_TYPES = ["string", "integer", "number", "boolean", "date_or_time", "enum2", "enum3"]
+EX_REQUIRED = {"EX1": "string", "EX2": "date_or_time", "EX3": "number", "EX4": "boolean", "EX5": "enum2",
+               "EX6": "enum3"}
+
+
+def _multisets(size, required):
+    from itertools import combinations_with_replacement
+    out = [tuple(sorted(c)) for c in combinations_with_replacement(ABSTRACT_TYPES, size) if required in c]
+    return sorted(set(out))
+
+
+def plan_extraction_types(slots):
+    """Plan each extraction slot's abstract field-type multiset so that G-ROUTE3's real fine signature
+    (sorted abstract field types, derived count) of every B′ main and reserve slot differs from every A′ slot's in
+    the same cell. A′ reserves copy their slot's plan. Returns nothing; sets features['field_types']."""
+    cells = collections.defaultdict(list)
+    for s in slots:
+        if CLASS_CODE[s["task_class"]] == "EXTR":
+            cells[(s["risk"])].append(s)
+    for risk, group in sorted(cells.items()):
+        a_main = [s for s in group if s["phase"] == "A" and s["role"] == "main"]
+        used_a = set()
+        for s in a_main:
+            options = _multisets(s["features"]["field_count"], EX_REQUIRED[s["family"]])
+            pick = next(o for o in options if (o, s["features"]["derived_count"]) not in used_a)
+            s["features"]["field_types"] = list(pick)
+            used_a.add((pick, s["features"]["derived_count"]))
+        for s in group:
+            if s["phase"] == "A" and s["role"] == "reserve":
+                twin = next(m for m in a_main if m["family"] == s["family"]
+                            and all(m["features"][k] == s["features"][k] for k in ("field_count", "derived_count")))
+                s["features"]["field_types"] = list(twin["features"]["field_types"])
+        used_b = collections.Counter()
+        for s in [x for x in group if x["phase"] == "B"]:
+            fam = s["family"] or "EX1"
+            options = _multisets(s["features"]["field_count"], EX_REQUIRED[fam])
+            options = [o for o in options if (o, s["features"]["derived_count"]) not in used_a]
+            options.sort(key=lambda o: (used_b[(o, s["features"]["derived_count"])], o))
+            s["features"]["field_types"] = list(options[0])
+            used_b[(options[0], s["features"]["derived_count"])] += 1
+
+
+def assign_b_reserve_families(slots):
+    """Give every B′ reserve slot a family with headroom under both caps, so that replacing any main slot of the
+    cell keeps the class and cell caps; research reserves also avoid A′ structure keys."""
+    by_cls = collections.defaultdict(list)
+    for s in slots:
+        by_cls[s["task_class"]].append(s)
+    for cls, group in by_cls.items():
+        fams = families(cls)
+        b_main = [s for s in group if s["phase"] == "B" and s["role"] == "main"]
+        class_cap = math.floor(0.25 * len(b_main))
+        class_count = collections.Counter(s["family"] for s in b_main)
+        assigned = collections.Counter()
+        for s in [x for x in group if x["phase"] == "B" and x["role"] == "reserve"]:
+            cell_main = [m for m in b_main if m["risk"] == s["risk"]]
+            if s["risk"] == "R4":
+                s["family"] = cell_main[0]["family"]
+                continue
+            cap = len(cell_main) // 3
+            cell_count = collections.Counter(m["family"] for m in cell_main)
+            a_keys = {(m["features"].get("pattern"), m["family"], m["features"].get("sls"))
+                      for m in group if m["phase"] == "A" and m["role"] == "main" and m["risk"] == s["risk"]}
+            ok = [f for f in fams if cell_count[f] + 1 <= cap and class_count[f] + 1 <= class_cap
+                  and (CLASS_CODE[cls] != "RSRCH"
+                       or (s["features"]["pattern"], f, s["features"]["sls"]) not in a_keys)]
+            ok.sort(key=lambda f: (assigned[(s["risk"], f)], cell_count[f], class_count[f], fams.index(f)))
+            s["family"] = ok[0]
+            assigned[(s["risk"], ok[0])] += 1          # spread reserves across every family with headroom
+            s["matching"] = "features; family assigned with cap headroom"
+
+
+def rule_bodies():
+    import os
+    fixtures = []
+    for c in ("a", "b"):
+        fixtures += json.loads((ROOT / f"experiments/G-ROUTE3-candidate/corpus_{c}.json").read_text(
+            encoding="utf-8"))["fixtures"]
+    out = {}
+    for cls in CLASSES:
+        prompts = [f["prompt"] for f in fixtures if f["task_class"] == cls]
+        suffix = os.path.commonprefix([q[::-1] for q in prompts])[::-1]
+        out[cls] = suffix
+    return out
+
+
+D8 = ("Reply with a JSON object whose keys are exactly claims, recommendation and uncertainties: claims is a list "
+      "with exactly one claim object for each input claim, carrying that claim's claim_id; in each claim object, "
+      "status is one of supported, contradicted or unresolved, citations is a list of distinct source_id strings, "
+      "and lineages is a list of distinct lineage-name strings; recommendation is a string; uncertainties is a list "
+      "of distinct code strings.")
+SENTENCES = {
+    "structured_extraction": ("Use JSON numbers for integer and number fields, true or false for boolean fields, "
+                              "strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of "
+                              "the listed values for fields whose type lists values separated by |."),
+    "hierarchical_semantic_synthesis": ("Reply with a JSON object whose keys are exactly statements and conclusion: "
+                                        "statements is a list of statement objects; in each statement object, "
+                                        "observation_ids is a non-empty list of observation id strings, and every "
+                                        "observation id appears in exactly one statement; conclusion is one string "
+                                        "copied from allowed_conclusions."),
+    "reflective_planning": ("Reply with a JSON object whose keys are exactly steps, uncertainties, claims_completed "
+                            "and requested_authority: steps is a list of step objects; in each step object, "
+                            "depends_on and evidence_ids are lists of id strings; uncertainties is a list of code "
+                            "strings; claims_completed is false; requested_authority is an empty list."),
+    "grounded_research_synthesis": D8,
+}
+SENTENCE_STATUS = {"structured_extraction": "approved 2026-09-29", "hierarchical_semantic_synthesis":
+                   "approved 2026-09-29", "reflective_planning": "approved 2026-09-29",
+                   "grounded_research_synthesis": "approved and amended after design review round 3 (D8)"}
+EX_ABSENCE = "Use 'not_provided' when the text says a value has not been provided."
+EX_ABSENCE_STATUS = "PENDING operator approval (G-ROUTE3's own sentence, carried verbatim)"
+RESEARCH_ANCHOR = "Each claim object has exactly the keys claim_id, status, citations and lineages."
+COMPACT = "Keep the reply compact:"
+
+
+def sha(text):
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def assemble(cls, body):
+    sentence = SENTENCES.get(cls)
+    if sentence is None:
+        return body
+    if cls == "grounded_research_synthesis":
+        head, tail = body.split(RESEARCH_ANCHOR)
+        return head + RESEARCH_ANCHOR + " " + sentence + " " + tail.lstrip(" ")
+    if " " + COMPACT in body:
+        head, tail = body.split(" " + COMPACT)
+        return head + " " + sentence + " " + COMPACT + tail
+    return body + " " + sentence
+
+
+def templates():
+    out = {}
+    for cls, body in rule_bodies().items():
+        assembled = "{SUBJECT}" + assemble(cls, body)
+        out[cls] = {"rule_body_source": "longest common suffix of G-ROUTE3's A and B prompts of the class",
+                    "rule_body": body, "rule_body_sha256": sha(body),
+                    "disclosure_sentence": SENTENCES.get(cls), "disclosure_sentence_sha256":
+                    sha(SENTENCES[cls]) if cls in SENTENCES else None,
+                    "disclosure_status": SENTENCE_STATUS.get(cls, "none needed"),
+                    "assembled_template": assembled, "assembled_template_sha256": sha(assembled),
+                    "subject_placeholder": "{SUBJECT} = the fixture-specific opening, written fresh; for extraction "
+                                           "it also carries the derived-field definitions and, where a field can be "
+                                           "absent, the absence sentence"}
+    out["structured_extraction"]["absence_sentence"] = EX_ABSENCE
+    out["structured_extraction"]["absence_sentence_sha256"] = sha(EX_ABSENCE)
+    out["structured_extraction"]["absence_sentence_status"] = EX_ABSENCE_STATUS
+    return out
+
+
+O6_SPEC = {
+    "compared_values": {
+        "ordinary_conversation": ["input.answer_options[*]", "input.<any other list-of-strings field>[*]"],
+        "structured_extraction": ["gold.expected.<field> where the schema type is not an enum (string, date or "
+                                  "time values), uncapped length"],
+        "hierarchical_semantic_synthesis": [],
+        "reflective_planning": ["input.allowed_actions[*].action"],
+        "grounded_research_synthesis": ["input.sources[*].lineage"],
+    },
+    "table_is_authoritative": True,
+    "length_cap": "80 characters applies only to this supplementary comparison, never to the design's own "
+                  "shared-value checks (which run uncapped)",
+    "normalization": "g_route3_conversation.canonical_value (the validator's own canonicalization), then casefold",
+    "exclusions": ["closed-vocabulary sets: allowed_recommendations, allowed_conclusions, allowed_uncertainty_codes "
+                   "and their members, schema type strings, enum members of any a|b schema type, planning "
+                   "uncertainty codes",
+                   "structural ids: values in claim_id, source_id, observation/statement/step/evidence id fields and "
+                   "addresses, only when the value fully matches [A-Z][0-9]+",
+                   "JSON numbers and booleans"],
+    "not_excluded": "dates, clock times, weekday names and number-with-unit strings are compared like any other "
+                    "string (revision 2: the candidate's calendar and unit exclusions are withdrawn, per O6)",
+    "duplicates": "a value counts as shared only across two different fixtures; repeats within one fixture are "
+                  "allowed",
+    "gate": "0 shared values within G-ROUTE4 (main and reserve) and against G-ROUTE3 under the same rule",
+}
+N1_SPEC = {
+    "encoding": "UTF-8 JSON, sorted keys, separators (',', ':')",
+    "grounded_research_synthesis": "g_route1_validators._normalize_research of the gold",
+    "structured_extraction": "the gold expected object",
+    "hierarchical_semantic_synthesis": "{roles map, conclusion}",
+    "reflective_planning": "the gold expected object",
+    "ordinary_conversation": "g_route3_conversation.canonical_value of the gold option, casefolded",
+    "scope": "no two fixtures (G-ROUTE4 main and reserve, and against G-ROUTE3) share a canonical gold",
+}
 
 
 FROZEN_SELF_TEST_DIGEST = "75af7d1ad5d785b40c1a41f15e4d23fa7e987715530e8d9b64f4fec5a4b398c9"
@@ -434,6 +679,8 @@ def build():
     for cls in CLASSES:
         main += b_slots(cls, a_by_cell)
     slots = main + reserve_slots(main)
+    assign_b_reserve_families(slots)
+    plan_extraction_types(slots)
     g3_entities, g3_lineages = g_route3_entity_inventory()
     report = checks(slots, g3_entities, g3_lineages)
     blueprint = {
@@ -449,6 +696,13 @@ def build():
         "counts": {"main_A": 80, "main_B": 305, "reserve": sum(s["role"] == "reserve" for s in slots),
                    "total": len(slots)},
         "g_route3_inventory_to_avoid": {"entities": len(g3_entities), "lineages": len(g3_lineages)},
+        "templates": templates(),
+        "o6_exact_value_spec": O6_SPEC,
+        "n1_canonical_gold": N1_SPEC,
+        "conversation_gold_max_characters": 600,
+        "near_miss_distractor": ("every conversation fixture has exactly one option satisfying all but one "
+                                 "condition (depth 2: correct first step, wrong second); options are pairwise "
+                                 "distinct under canonical_value"),
     }
     return blueprint, report
 
@@ -470,5 +724,5 @@ if __name__ == "__main__":
         lines.append(f"| {'PASS' if c['pass'] else 'FAIL'} | {c['check']} | `{detail}` |")
     (HERE / "FEASIBILITY_REPORT.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     for c in report:
-        print("PASS" if c["pass"] else "FAIL", "-", c["check"])
+        print("PASS" if c["pass"] else "FAIL", "-", c["check"].encode("ascii", "replace").decode("ascii"))
     print("blueprint digest", hashlib.sha256((HERE / "BLUEPRINT.json").read_bytes()).hexdigest())

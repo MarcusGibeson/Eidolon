@@ -20,7 +20,7 @@
    }
   },
   {
-   "check": "A′ calls = 480",
+   "check": "(arithmetic) A′ calls = 480",
    "pass": true,
    "detail": {
     "calls": 480
@@ -146,7 +146,7 @@
    "detail": {}
   },
   {
-   "check": "conversation: exactly 4 options; gold positions balanced within 1 in every cell of 4 or more",
+   "check": "conversation: gold positions balanced within 1 in every cell of 4 or more (the 4-option rule is enforced at authoring)",
    "pass": true,
    "detail": {
     "A|R1": [
@@ -242,7 +242,7 @@
    }
   },
   {
-   "check": "reserve: at least 20% of every cell and one per matching feature combination",
+   "check": "reserve: at least 20% of every cell",
    "pass": true,
    "detail": {
     "total": 199,
@@ -261,6 +261,11 @@
    }
   },
   {
+   "check": "reserve: every matching feature combination present in a cell has a reserve",
+   "pass": true,
+   "detail": {}
+  },
+  {
    "check": "audit sample size = 38 (3 per conversation cell, 2 per other eligible cell, 1 per R4 cell)",
    "pass": true,
    "detail": {
@@ -268,21 +273,21 @@
    }
   },
   {
-   "check": "A′ full treatment: 2 extra adjudicator sessions per A′ fixture (160 for the main corpus)",
+   "check": "(arithmetic) A′ full treatment: 2 extra adjudicator sessions per A′ fixture (160 for the main corpus)",
    "pass": true,
    "detail": {
     "extra_sessions": 160
    }
   },
   {
-   "check": "P1 floors reachable: 300 eligible cases can yield at least 76 stops and 30 qualified starts",
+   "check": "(arithmetic) P1 floors reachable: 300 eligible cases can yield at least 76 stops and 30 qualified starts",
    "pass": true,
    "detail": {
     "eligible": 300
    }
   },
   {
-   "check": "entity inventory: enough fresh invented names for every fixture (at most 6 per fixture)",
+   "check": "(arithmetic) entity inventory: enough fresh invented names for every fixture (at most 6 per fixture)",
    "pass": true,
    "detail": {
     "fixtures_incl_reserve": 584,
@@ -292,7 +297,7 @@
    }
   },
   {
-   "check": "research lineages: enough fresh lineage names (at most 6 per research fixture)",
+   "check": "(arithmetic) research lineages: enough fresh lineage names (at most 6 per research fixture)",
    "pass": true,
    "detail": {
     "research_fixtures_incl_reserve": 136,
@@ -301,7 +306,7 @@
    }
   },
   {
-   "check": "planning actions: every action name unique across all planning fixtures (at most 7 per fixture)",
+   "check": "(arithmetic) planning actions: every action name unique across all planning fixtures (at most 7 per fixture)",
    "pass": true,
    "detail": {
     "planning_fixtures_incl_reserve": 100,
@@ -315,9 +320,92 @@
    "detail": {}
   },
   {
-   "check": "O5 by construction: every family's model-facing template text is empty (structure only)",
+   "check": "(declaration) O5: every family's model-facing template text is recorded as empty (structure only)",
    "pass": true,
    "detail": {}
+  },
+  {
+   "check": "extraction: planned real fine signature of every B′ main and reserve slot differs from every A′ slot in its cell",
+   "pass": true,
+   "detail": {
+    "R1": [],
+    "R2": [],
+    "R3": [],
+    "R4": []
+   }
+  },
+  {
+   "check": "(reported) research: B′ slots differing from an A′ slot only by pattern (checked on real signatures at authoring)",
+   "pass": true,
+   "detail": {
+    "count": 27,
+    "slots": {
+     "R1": [
+      "B4-RSRCH-R1-05",
+      "B4-RSRCH-R1-06",
+      "B4-RSRCH-R1-11",
+      "B4-RSRCH-R1-12",
+      "B4-RSRCH-R1-15",
+      "B4-RSRCH-R1-X03",
+      "B4-RSRCH-R1-X06",
+      "B4-RSRCH-R1-X11",
+      "B4-RSRCH-R1-X14"
+     ],
+     "R2": [
+      "B4-RSRCH-R2-09",
+      "B4-RSRCH-R2-13",
+      "B4-RSRCH-R2-X01",
+      "B4-RSRCH-R2-X02",
+      "B4-RSRCH-R2-X03",
+      "B4-RSRCH-R2-X09"
+     ],
+     "R3": [
+      "B4-RSRCH-R3-01",
+      "B4-RSRCH-R3-07",
+      "B4-RSRCH-R3-09",
+      "B4-RSRCH-R3-10",
+      "B4-RSRCH-R3-11",
+      "B4-RSRCH-R3-16",
+      "B4-RSRCH-R3-X02",
+      "B4-RSRCH-R3-X05",
+      "B4-RSRCH-R3-X08",
+      "B4-RSRCH-R3-X10",
+      "B4-RSRCH-R3-X13",
+      "B4-RSRCH-R3-X14"
+     ]
+    }
+   }
+  },
+  {
+   "check": "B′ reserves: every reserve has a family with headroom, so any single replacement keeps both caps",
+   "pass": true,
+   "detail": {}
+  },
+  {
+   "check": "templates: each class rule body pinned; each disclosure sentence appears exactly once in its assembled template; D8 digest matches",
+   "pass": true,
+   "detail": {
+    "ordinary_conversation": {
+     "rule_body_sha256": "e42859506df6740a",
+     "assembled_sha256": "d42417cd9b6e3390"
+    },
+    "structured_extraction": {
+     "rule_body_sha256": "b33b9c84ddffcf79",
+     "assembled_sha256": "a5bc3999ecaabaaf"
+    },
+    "hierarchical_semantic_synthesis": {
+     "rule_body_sha256": "01798468698c0efa",
+     "assembled_sha256": "f09144bfba1b07bb"
+    },
+    "reflective_planning": {
+     "rule_body_sha256": "16d7fde894051436",
+     "assembled_sha256": "0388c9266517d635"
+    },
+    "grounded_research_synthesis": {
+     "rule_body_sha256": "08cc4eb1d8e025c7",
+     "assembled_sha256": "fc78bf4b7f0de952"
+    }
+   }
   },
   {
    "check": "audit-sample procedure self-test (frozen test vector)",
