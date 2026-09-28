@@ -1,8 +1,8 @@
 # G-ROUTE4 corpus authoring (pre-seal staging)
 
 Authored to the frozen blueprint at commit `1156d06`. Nothing here is sealed or adjudicated, and no model has been
-contacted. **Status: Structured Extraction, Hierarchical Semantic Synthesis, Reflective Planning and Ordinary
-Conversation authored; Research is not started.**
+contacted. **Status: all five classes are authored and pass together; the complete-corpus pre-seal review has not
+started.**
 
 **Not on `main` on purpose.** The seal must be the single commit on `main` whose parent is `1156d06`
 (`BLUEPRINT_FREEZE.json`, `seal_requirement`). Any earlier commit on `main` would break that, so this folder lives only
@@ -23,6 +23,8 @@ on the `g-route4/authoring-staging` branch until the seal. That branch is never 
 | `test_planning_corpus.py` | Plants 19 Planning and supplementary-identifier defects and confirms each fires over the combined pool. |
 | `author_conversation.py` | The 142 Conversation slots, with exactly four options, recomputable family/depth conditions, frozen answer positions, one near miss and all reserves. Replays all 592 earlier names, then assigns ordinals 593–1160. Writes `staging/conversation.json`. |
 | `test_conversation_corpus.py` | Plants 16 Conversation, reserve, O6 and N1 defects and confirms each fires over the four-class pool. |
+| `author_research.py` | The 136 Grounded Research slots, including claim/source ledgers, lineage identity, scope, temporal governance, deterministic status/gold derivation, rationales and reserves. Replays all 1,160 earlier names, then assigns ordinals 1161–1432. Writes `staging/research.json`. |
+| `test_research_corpus.py` | Plants 29 Research, lineage, temporal, scope, reserve and canonical-gold defects and confirms each fires over the complete five-class pool. |
 
 Run:
 
@@ -31,11 +33,13 @@ python -B author_extraction.py
 python -B author_synthesis.py
 python -B author_planning.py
 python -B author_conversation.py
-python -B check_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json staging/conversation.json
+python -B author_research.py
+python -B check_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json staging/conversation.json staging/research.json
 python -B test_check_corpus.py staging/extraction.json
 python -B test_synthesis_corpus.py staging/extraction.json staging/synthesis.json
 python -B test_planning_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json
 python -B test_conversation_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json staging/conversation.json
+python -B test_research_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json staging/conversation.json staging/research.json
 ```
 
 ## Decisions recorded for review
@@ -138,3 +142,35 @@ python -B test_conversation_corpus.py staging/extraction.json staging/synthesis.
 - **Result.** Conversation alone: 142 fixtures, 0 problems. Four-class corpus: 448 fixtures, 0 problems. All 142
   fixtures have four options and one compliant near miss; all 41 reserves match; the Conversation adversarial suite
   catches 16/16 planted defects.
+
+### Grounded Research
+
+- **Frozen shape and balance.** The class contains 136 fixtures: 16 A main, 55 B main, 16 A reserves and 49 B
+  reserves. The frozen P1-P8 allocation is exact, including the two P7/SLS R4 evidence-only fixtures. Across 341
+  claims, statuses are 145 supported, 142 contradicted and 54 unresolved. The uncertainty ledger contains 69
+  single-lineage, 20 unaddressed-claim, 17 conflicting-source and 17 scope-mismatch findings.
+- **Lineage and citation fidelity.** The model-facing records preserve the G-ROUTE3 research schema while an
+  authoring-only semantic ledger independently binds every claim, source, relation, lineage, date and quantitative
+  value. Gold and rationales are recomputed from that ledger. There are 607 source records, 590 cited source
+  bindings, 482 distinct cited-lineage bindings and 499 unique lineages; no lineage crosses a fixture boundary.
+- **Temporal and scope cases.** All 18 P7 cases contain two differently dated, conflicting sources and an explicit
+  later-source rule with both sources cited. All 17 P6 cases bind a narrower source scope to a broader claim and
+  remain unresolved. P3 alternate-subject evidence, P8 below-threshold contradiction direction and support versus
+  same-lineage repetition are independently checked.
+- **Name and identifier continuity.** The author replays and asserts all 1,160 prior names, then assigns two names per
+  Research fixture, ordinals 1161–1432. The frozen US and UK vocabulary digests remain unchanged. G-ROUTE3's frozen
+  identifier checker remains untouched and the supplementary intended screen remains mandatory.
+- **Construction rewrites.** The first P8 construction used one quantitative source and produced six A/B fine-
+  signature clashes with P2. It was replaced prospectively with two independent, mutually consistent below-
+  threshold sources. One remaining P7/P8 signature clash was removed with an equivalent P7 decision-rule wording.
+  A first generic provenance expansion worsened overlap from 8 to 34 failing pairs and was discarded. Record-
+  specific provenance with unique ledger-path values reduced the final Research maximum Jaccard to 0.1510
+  (`B4-RSRCH-R1-07` vs `B4-RSRCH-R4-01`), with zero pairs above 0.20. No frozen slot, family, feature or gold rule was
+  changed.
+- **O5 and pooled obligations.** The Research comparison pool is 152 and its boilerplate threshold is 38, while the
+  largest family has 25 fixtures. All 45 detected boilerplate trigrams are still checked; zero are specific to one
+  family. The complete five-class pool has 584 fixtures, 1,432 invented names, zero O3 entity/identifier overlap,
+  zero O6 exact-value collisions, zero N1 canonical-gold duplicates and zero fine-signature clashes.
+- **Result.** Research alone: 136 fixtures, 0 problems. Five-class corpus: 584 fixtures, 0 problems. All 65 Research
+  reserves match a main slot, and the Research adversarial suite catches 29/29 planted defects. Across every class,
+  all 89/89 planted defects are caught. No model or adjudicator was contacted, and no seal was created.

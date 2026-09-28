@@ -1,11 +1,18 @@
 {
  "classes_checked": [
+  "grounded_research_synthesis",
   "hierarchical_semantic_synthesis",
   "ordinary_conversation",
   "reflective_planning",
   "structured_extraction"
  ],
  "composition": {
+  "grounded_research_synthesis": {
+   "A_main": 16,
+   "A_reserve": 16,
+   "B_main": 55,
+   "B_reserve": 49
+  },
   "hierarchical_semantic_synthesis": {
    "A_main": 16,
    "A_reserve": 16,
@@ -55,6 +62,230 @@
  "absence_field_gold_values": {
   "not_provided": 13,
   "provided": 5
+ },
+ "research": {
+  "families": {
+   "RS1": 23,
+   "RS2": 23,
+   "RS3": 25,
+   "RS4": 21,
+   "RS5": 23,
+   "RS6": 21
+  },
+  "patterns": {
+   "P1": 17,
+   "P2": 17,
+   "P3": 17,
+   "P4": 17,
+   "P5": 17,
+   "P6": 17,
+   "P7": 18,
+   "P8": 16
+  },
+  "single_lineage_support": {
+   "false": 67,
+   "true": 69
+  },
+  "claim_status_balance": {
+   "contradicted": 142,
+   "supported": 145,
+   "unresolved": 54
+  },
+  "uncertainty_balance": {
+   "conflicting_sources": 17,
+   "scope_mismatch": 17,
+   "single_lineage_support": 69,
+   "unaddressed_claim": 20
+  },
+  "cited_source_bindings": 590,
+  "distinct_lineage_bindings": 482,
+  "source_records": 607,
+  "unique_lineages": 499,
+  "cross_fixture_lineage_repeats": 0,
+  "temporal_governing_pairs": 18,
+  "narrower_scope_cases": 17,
+  "reserves_checked": 65,
+  "reserve_mismatches": 0,
+  "cell_patterns": {
+   "A_main_R1": {
+    "P1": 1,
+    "P2": 1,
+    "P3": 1,
+    "P4": 1
+   },
+   "A_main_R2": {
+    "P5": 1,
+    "P6": 1,
+    "P7": 1,
+    "P8": 1
+   },
+   "A_main_R3": {
+    "P1": 1,
+    "P3": 1,
+    "P5": 1,
+    "P7": 1
+   },
+   "A_main_R4": {
+    "P2": 1,
+    "P4": 1,
+    "P6": 1,
+    "P8": 1
+   },
+   "A_reserve_R1": {
+    "P1": 1,
+    "P2": 1,
+    "P3": 1,
+    "P4": 1
+   },
+   "A_reserve_R2": {
+    "P5": 1,
+    "P6": 1,
+    "P7": 1,
+    "P8": 1
+   },
+   "A_reserve_R3": {
+    "P1": 1,
+    "P3": 1,
+    "P5": 1,
+    "P7": 1
+   },
+   "A_reserve_R4": {
+    "P2": 1,
+    "P4": 1,
+    "P6": 1,
+    "P8": 1
+   },
+   "B_main_R1": {
+    "P1": 3,
+    "P2": 3,
+    "P3": 2,
+    "P4": 2,
+    "P5": 2,
+    "P6": 2,
+    "P7": 2,
+    "P8": 2
+   },
+   "B_main_R2": {
+    "P1": 2,
+    "P2": 2,
+    "P3": 3,
+    "P4": 3,
+    "P5": 2,
+    "P6": 2,
+    "P7": 2,
+    "P8": 2
+   },
+   "B_main_R3": {
+    "P1": 2,
+    "P2": 2,
+    "P3": 2,
+    "P4": 2,
+    "P5": 3,
+    "P6": 3,
+    "P7": 2,
+    "P8": 2
+   },
+   "B_main_R4": {
+    "P7": 1
+   },
+   "B_reserve_R1": {
+    "P1": 2,
+    "P2": 2,
+    "P3": 2,
+    "P4": 2,
+    "P5": 2,
+    "P6": 2,
+    "P7": 2,
+    "P8": 2
+   },
+   "B_reserve_R2": {
+    "P1": 2,
+    "P2": 2,
+    "P3": 2,
+    "P4": 2,
+    "P5": 2,
+    "P6": 2,
+    "P7": 2,
+    "P8": 2
+   },
+   "B_reserve_R3": {
+    "P1": 2,
+    "P2": 2,
+    "P3": 2,
+    "P4": 2,
+    "P5": 2,
+    "P6": 2,
+    "P7": 2,
+    "P8": 2
+   },
+   "B_reserve_R4": {
+    "P7": 1
+   }
+  },
+  "cell_sls": {
+   "A_main_R1": {
+    "false": 2,
+    "true": 2
+   },
+   "A_main_R2": {
+    "false": 2,
+    "true": 2
+   },
+   "A_main_R3": {
+    "false": 2,
+    "true": 2
+   },
+   "A_main_R4": {
+    "false": 2,
+    "true": 2
+   },
+   "A_reserve_R1": {
+    "false": 2,
+    "true": 2
+   },
+   "A_reserve_R2": {
+    "false": 2,
+    "true": 2
+   },
+   "A_reserve_R3": {
+    "false": 2,
+    "true": 2
+   },
+   "A_reserve_R4": {
+    "false": 2,
+    "true": 2
+   },
+   "B_main_R1": {
+    "false": 9,
+    "true": 9
+   },
+   "B_main_R2": {
+    "false": 9,
+    "true": 9
+   },
+   "B_main_R3": {
+    "false": 9,
+    "true": 9
+   },
+   "B_main_R4": {
+    "true": 1
+   },
+   "B_reserve_R1": {
+    "false": 8,
+    "true": 8
+   },
+   "B_reserve_R2": {
+    "false": 8,
+    "true": 8
+   },
+   "B_reserve_R3": {
+    "false": 8,
+    "true": 8
+   },
+   "B_reserve_R4": {
+    "true": 1
+   }
+  }
  },
  "conversation": {
   "families": {
@@ -219,6 +450,16 @@
   "fine_signature": "exempt (declared in the design; planning and synthesis)"
  },
  "caps": {
+  "grounded_research_synthesis": {
+   "b_main_family_counts": {
+    "RS1": 9,
+    "RS2": 9,
+    "RS3": 10,
+    "RS4": 9,
+    "RS5": 9,
+    "RS6": 9
+   }
+  },
   "hierarchical_semantic_synthesis": {
    "b_main_family_counts": {
     "SY1": 9,
@@ -262,8 +503,8 @@
  },
  "fine_signature_clashes": 0,
  "o3_entities": {
-  "g4_fixtures": 448,
-  "g4_entities": 1153,
+  "g4_fixtures": 584,
+  "g4_entities": 1425,
   "g3_entities_compared": 21,
   "shared": 0,
   "scope": "all authored G-ROUTE4 fixtures of every class, main and reserve, pairwise and against all G-ROUTE3 A and B fixtures"
@@ -275,11 +516,22 @@
   "note": "the frozen G-ROUTE3 detector's identifier branch never matches (literal backspace bytes); this supplementary screen uses the intended pattern and excludes the design's structural ids"
  },
  "names": {
-  "invented_names": 1160,
+  "invented_names": 1432,
   "max_per_fixture": 5,
   "english_vocabulary_screen": true
  },
  "trigram": {
+  "grounded_research_synthesis": {
+   "pool": 152,
+   "boilerplate_trigrams": 45,
+   "max_jaccard": 0.151,
+   "max_pair": [
+    "B4-RSRCH-R1-07",
+    "B4-RSRCH-R4-01"
+   ],
+   "pairs_over_bound": 0,
+   "o5_single_family_boilerplate": 0
+  },
   "hierarchical_semantic_synthesis": {
    "pool": 116,
    "boilerplate_trigrams": 13,
@@ -329,7 +581,8 @@
   "g4_values_compared_by_class": {
    "structured_extraction": 118,
    "reflective_planning": 615,
-   "ordinary_conversation": 568
+   "ordinary_conversation": 568,
+   "grounded_research_synthesis": 499
   },
   "collisions": 0,
   "pool": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures"

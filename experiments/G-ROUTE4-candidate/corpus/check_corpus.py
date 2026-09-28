@@ -24,6 +24,7 @@ ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / "tools"))
 import g_route3_independence as I  # noqa: E402  (read-only)
+import g_route1_validators as G1V  # noqa: E402  (read-only; N1 canonical research gold)
 from g_route3_operational import validate_operational  # noqa: E402
 from g_route3_semantics import validate_fixture_output  # noqa: E402
 from g_route3_conversation import canonical_value  # noqa: E402
@@ -49,6 +50,116 @@ PLAN_FORBIDDEN = tuple(p.strip() for p in re.search(
 PLAN_FAMILY = {"PL1": (4, 1, 1), "PL2": (3, 2, 0), "PL3": (5, 1, 2), "PL4": (4, 2, 1), "PL5": (3, 1, 1),
                "PL6": (5, 0, 1)}                   # included, excluded, holding codes
 PLAN_FORM = {"before": "must precede", "after": "may start only after"}
+
+RESEARCH_FAMILY = {
+    "RS1": (2, 3), "RS2": (2, 4), "RS3": (3, 4),
+    "RS4": (2, 5), "RS5": (3, 5), "RS6": (3, 6),
+}
+RESEARCH_RELATIONS = {"support", "deny", "narrow", "other_subject", "quantity_deny"}
+RESEARCH_UNCERTAINTIES = [
+    {"code": "single_lineage_support",
+     "condition": "some claim with status supported is supported by exactly one lineage"},
+    {"code": "unaddressed_claim", "condition": "some claim is addressed by no source"},
+    {"code": "conflicting_sources",
+     "condition": "some claim is unresolved because the sources addressing it disagree"},
+    {"code": "scope_mismatch",
+     "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"},
+]
+
+
+def research_claim_text(spec):
+    if spec["kind"] == "scope":
+        return (f"{spec['subject']} provides {spec['service']} at every {spec['site']} during "
+                f"review cycle {spec['cycle']}.")
+    if spec["kind"] == "quantity":
+        return (f"{spec['subject']}'s {spec['asset']} carries at least {spec['threshold']} units during "
+                f"review cycle {spec['cycle']}.")
+    return f"{spec['subject']}'s {spec['asset']} is approved for review cycle {spec['cycle']}."
+
+
+def research_source_statement(source, claims, alternate):
+    spec = claims[int(source["claim_id"][1:]) - 1]
+    relation = source["relation"]
+    if relation == "support":
+        statement = research_claim_text(spec)
+    elif relation == "deny":
+        statement = f"{spec['subject']}'s {spec['asset']} is not approved for review cycle {spec['cycle']}."
+    elif relation == "narrow":
+        statement = (f"{spec['subject']} provides {spec['service']} only at the eastern {spec['site']} during "
+                     f"review cycle {spec['cycle']}, not at every {spec['site']}.")
+    elif relation == "other_subject":
+        other = dict(spec)
+        other["subject"] = alternate
+        statement = research_claim_text(other)
+    elif relation == "quantity_deny":
+        statement = (f"{spec['subject']}'s {spec['asset']} carries {source['actual']} units during review cycle "
+                     f"{spec['cycle']}, below {spec['threshold']} units.")
+    else:
+        raise ValueError(relation)
+    if source.get("date"):
+        statement = f"{source['date']} record: {statement}"
+    return statement
+
+
+def research_source_text(source, claims, alternate, context):
+    statement = research_source_statement(source, claims, alternate)
+    provenance = context["number"] * 1000 + int(source["source_id"][1:]) * 20
+    return (f"{statement} {context['primary']} logged {context['secondary']}'s {context['domain']} record "
+            f"{context['number']} evidence for record {context['number']}-{source['source_id'][1:]}; "
+            f"{context['secondary']} indexed {context['primary']}'s {context['activity']} record "
+            f"{context['number']} note with the {context['instrument']} series {context['number']}. "
+            f"{context['primary']} cross-checked {context['secondary']}'s {context['domain']} record "
+            f"{context['number']} folio against {context['primary']}'s {context['instrument']} record "
+            f"{context['number']} docket for the {context['activity']}. Provenance path: ledger {provenance + 1} "
+            f"joins folio {provenance + 2}, shelf {provenance + 3}, packet {provenance + 4}, "
+            f"index {provenance + 5}, card {provenance + 6}, marker {provenance + 7}, and "
+            f"docket {provenance + 8}.")
+
+
+def research_gold(pattern, claims, sources, recommendations):
+    """Recompute research status, evidence bindings, recommendation and uncertainty codes from the ledger."""
+    results, reasons = [], {}
+    for claim in claims:
+        cid = claim["claim_id"]
+        about = [s for s in sources if s["claim_id"] == cid and s["relation"] != "other_subject"]
+        relations = {s["relation"] for s in about}
+        if not about:
+            status, reason = "unresolved", "unaddressed"
+        elif "support" in relations and "deny" in relations:
+            if pattern == "P7" and cid == "C1":
+                latest = max(about, key=lambda s: s.get("date", ""))
+                status = "supported" if latest["relation"] == "support" else "contradicted"
+                reason = "governing_source"
+            else:
+                status, reason = "unresolved", "conflict"
+        elif relations == {"narrow"}:
+            status, reason = "unresolved", "scope"
+        elif "support" in relations:
+            status, reason = "supported", "direct_support"
+        elif relations & {"deny", "quantity_deny"}:
+            status, reason = "contradicted", "direct_contradiction"
+        else:
+            raise ValueError(f"unrecognized research relation set for {cid}: {relations}")
+        results.append({"claim_id": cid, "status": status,
+                        "citations": [s["source_id"] for s in about],
+                        "lineages": sorted({s["lineage"] for s in about})})
+        reasons[cid] = reason
+    uncertainties = []
+    if any(row["status"] == "supported" and len(row["lineages"]) == 1 for row in results):
+        uncertainties.append("single_lineage_support")
+    if "unaddressed" in reasons.values():
+        uncertainties.append("unaddressed_claim")
+    if "conflict" in reasons.values():
+        uncertainties.append("conflicting_sources")
+    if "scope" in reasons.values():
+        uncertainties.append("scope_mismatch")
+    if pattern in ("P1", "P4"):
+        eligible = results[0]["status"] == "supported" and len(results[0]["lineages"]) >= 2
+    else:
+        eligible = all(row["status"] == "supported" for row in results)
+    expected = {"claims": results, "recommendation": recommendations[0 if eligible else 1],
+                "uncertainties": uncertainties}
+    return expected, reasons
 
 
 CONVERSATION_KEYS = {
@@ -265,6 +376,7 @@ def check(staged, english=None):
     absence_values = collections.Counter()
     plan_stats = collections.defaultdict(collections.Counter)
     conversation_stats = collections.defaultdict(collections.Counter)
+    research_stats = collections.defaultdict(collections.Counter)
     for f in fixtures:
         fid = f["fixture_id"]
         slot, g, d = SLOTS.get(fid), gold_by.get(fid), design_by.get(fid)
@@ -300,7 +412,161 @@ def check(staged, english=None):
             problems.append(f"{fid}: opening ends with a terminal period or whitespace")
         if TEMPLATES[tc]["disclosure_sentence"] and f["prompt"].count(TEMPLATES[tc]["disclosure_sentence"]) != 1:
             problems.append(f"{fid}: class disclosure sentence not present exactly once")
-        if tc == "ordinary_conversation":
+        if tc == "grounded_research_synthesis":
+            inp, expected = f["input"], g["expected"]
+            family, pattern, sls = slot["family"], slot["features"]["pattern"], slot["features"]["sls"]
+            contract = d.get("research_contract") if isinstance(d.get("research_contract"), dict) else {}
+            claims = contract.get("claims") if isinstance(contract.get("claims"), list) else []
+            sources = contract.get("sources") if isinstance(contract.get("sources"), list) else []
+            context = contract.get("context") if isinstance(contract.get("context"), dict) else {}
+            if set(inp) != {"allowed_recommendations", "allowed_uncertainty_codes", "claims",
+                            "decision_rule", "sources"}:
+                problems.append(f"{fid}: research input keys differ from the frozen construct")
+                continue
+            claim_count, source_count = RESEARCH_FAMILY[family]
+            if len(inp.get("claims", [])) != claim_count or len(claims) != claim_count:
+                problems.append(f"{fid}: research claim count differs from family {family}")
+            if len(inp.get("sources", [])) != source_count or len(sources) != source_count:
+                problems.append(f"{fid}: research source count differs from family {family}")
+            claim_ids = [row.get("claim_id") for row in inp.get("claims", []) if isinstance(row, dict)]
+            source_ids = [row.get("source_id") for row in inp.get("sources", []) if isinstance(row, dict)]
+            if claim_ids != [f"C{i}" for i in range(1, claim_count + 1)] or \
+                    any(not isinstance(row, dict) or set(row) != {"claim_id", "text"}
+                        for row in inp.get("claims", [])):
+                problems.append(f"{fid}: research claim identities or keys are invalid")
+            if source_ids != [f"S{i}" for i in range(1, source_count + 1)] or \
+                    any(not isinstance(row, dict) or set(row) != {"source_id", "lineage", "text"}
+                        for row in inp.get("sources", [])):
+                problems.append(f"{fid}: research source identities or keys are invalid")
+            if inp.get("allowed_recommendations") != ["accept_record", "hold_record"]:
+                problems.append(f"{fid}: research recommendations differ from the authored frozen pair")
+            if inp.get("allowed_uncertainty_codes") != RESEARCH_UNCERTAINTIES:
+                problems.append(f"{fid}: research uncertainty code contract differs from the frozen rules")
+            if set(context) != {"number", "domain", "activity", "instrument", "primary", "secondary"} or \
+                    [context.get("primary"), context.get("secondary")] != d.get("invented_names"):
+                problems.append(f"{fid}: research context or invented-name binding is invalid")
+            claim_spec_ids = [row.get("claim_id") for row in claims if isinstance(row, dict)]
+            if claim_spec_ids != [f"C{i}" for i in range(1, claim_count + 1)]:
+                problems.append(f"{fid}: research claim ledger binding is invalid")
+            else:
+                try:
+                    rendered_claims = [{"claim_id": row["claim_id"], "text": research_claim_text(row)}
+                                       for row in claims]
+                except (KeyError, TypeError, ValueError) as exc:
+                    problems.append(f"{fid}: research claim ledger cannot render: {exc}")
+                    rendered_claims = []
+                if rendered_claims != inp.get("claims"):
+                    problems.append(f"{fid}: research claim text differs from its semantic ledger")
+            source_spec_ids = [row.get("source_id") for row in sources if isinstance(row, dict)]
+            allowed_source_keys = ({"source_id", "claim_id", "relation", "lineage"},
+                                   {"source_id", "claim_id", "relation", "lineage", "date"},
+                                   {"source_id", "claim_id", "relation", "lineage", "actual"})
+            malformed_sources = [row for row in sources if not isinstance(row, dict) or set(row) not in allowed_source_keys]
+            if source_spec_ids != [f"S{i}" for i in range(1, source_count + 1)] or malformed_sources:
+                problems.append(f"{fid}: research source ledger identities or keys are invalid")
+            if any(row.get("claim_id") not in set(claim_spec_ids) or row.get("relation") not in RESEARCH_RELATIONS
+                   for row in sources if isinstance(row, dict)):
+                problems.append(f"{fid}: research source ledger has an unknown binding or relation")
+            if claim_spec_ids and source_spec_ids and not malformed_sources and set(context) == \
+                    {"number", "domain", "activity", "instrument", "primary", "secondary"}:
+                try:
+                    rendered_sources = [{"source_id": row["source_id"], "lineage": row["lineage"],
+                                         "text": research_source_text(row, claims, context["secondary"], context)}
+                                        for row in sources]
+                except (KeyError, TypeError, ValueError, IndexError) as exc:
+                    problems.append(f"{fid}: research source ledger cannot render: {exc}")
+                    rendered_sources = []
+                if rendered_sources != inp.get("sources"):
+                    problems.append(f"{fid}: research source text, lineage or binding differs from its semantic ledger")
+
+            focal = [row for row in sources if isinstance(row, dict) and row.get("claim_id") == "C1"]
+            relations = [row.get("relation") for row in focal]
+            if pattern == "P1":
+                pattern_ok = relations == ["support", "support"] and \
+                    len({row.get("lineage") for row in focal}) == 2
+            elif pattern == "P2":
+                pattern_ok = relations == ["deny"]
+            elif pattern == "P3":
+                pattern_ok = relations == ["other_subject"]
+            elif pattern == "P4":
+                pattern_ok = relations[:2] == ["support", "support"] and len(focal) == (2 if sls else 3) and \
+                    focal[0].get("lineage") == focal[1].get("lineage") and \
+                    (sls or focal[2].get("lineage") != focal[0].get("lineage"))
+            elif pattern == "P5":
+                pattern_ok = relations == ["support", "deny"]
+            elif pattern == "P6":
+                pattern_ok = relations == ["narrow"]
+            elif pattern == "P7":
+                pattern_ok = set(relations) == {"support", "deny"} and len(focal) == 2
+            elif pattern == "P8":
+                pattern_ok = relations == ["quantity_deny", "quantity_deny"]
+            else:
+                pattern_ok = False
+            if not pattern_ok:
+                problems.append(f"{fid}: research focal evidence does not realize pattern {pattern}")
+            decision_text = inp.get("decision_rule", "")
+            p7_rule_ok = any(marker in decision_text for marker in (
+                "later-dated source", "later calendar date governs", "chronologically newer source",
+                "most recent date")) and "cited" in decision_text
+            if pattern == "P7":
+                dates = [row.get("date") for row in focal]
+                if not all(isinstance(x, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", x) for x in dates) or \
+                        dates != sorted(dates) or len(set(dates)) != 2 or not p7_rule_ok:
+                    problems.append(f"{fid}: research temporal-governance relation is invalid")
+                research_stats["temporal"]["governing_pairs"] += 1
+            elif any("date" in row for row in sources if isinstance(row, dict)):
+                problems.append(f"{fid}: dated research source appears outside P7")
+            if pattern == "P6":
+                if not claims or claims[0].get("kind") != "scope" or not focal or focal[0].get("relation") != "narrow":
+                    problems.append(f"{fid}: research narrower-scope binding is invalid")
+                research_stats["scope"]["narrower_scope_cases"] += 1
+            elif any(row.get("relation") == "narrow" for row in sources if isinstance(row, dict)):
+                problems.append(f"{fid}: narrower-scope source appears outside P6")
+            if pattern == "P3" and (not focal or context.get("secondary") not in
+                                    research_source_statement(focal[0], claims, context.get("secondary"))):
+                problems.append(f"{fid}: research other-subject source is not bound to the alternate subject")
+            if pattern == "P8":
+                threshold = claims[0].get("threshold") if claims else None
+                if not isinstance(threshold, int) or any(not isinstance(row.get("actual"), int) or
+                                                         row["actual"] >= threshold for row in focal):
+                    problems.append(f"{fid}: research quantitative contradiction does not fall below the threshold")
+            try:
+                recomputed, derived_reasons = research_gold(pattern, claims, sources,
+                                                             inp.get("allowed_recommendations", []))
+            except (KeyError, TypeError, ValueError, IndexError) as exc:
+                problems.append(f"{fid}: research gold cannot be recomputed: {exc}")
+                recomputed, derived_reasons = {}, {}
+            if expected != recomputed:
+                problems.append(f"{fid}: research gold differs from the statuses and evidence recomputed from input")
+            if g.get("reference_output") != expected:
+                problems.append(f"{fid}: research reference_output differs from expected")
+            if contract.get("derived_reasons") != derived_reasons:
+                problems.append(f"{fid}: research rationale ledger differs from recomputed reasons")
+            realized_sls = "single_lineage_support" in recomputed.get("uncertainties", [])
+            if realized_sls is not sls:
+                problems.append(f"{fid}: research single_lineage_support outcome differs from the frozen feature")
+            if pattern in ("P1", "P4"):
+                decision_ok = "C1" in inp.get("decision_rule", "") and "two lineages" in inp.get("decision_rule", "")
+            elif pattern == "P7":
+                decision_ok = p7_rule_ok and any(word in decision_text for word in ("all claims", "every claim",
+                                                                                    "each claim"))
+            else:
+                decision_ok = "every claim" in inp.get("decision_rule", "")
+            if not decision_ok:
+                problems.append(f"{fid}: research decision rule does not express the pattern's frozen decision")
+            if recomputed:
+                research_stats["status"].update(row["status"] for row in recomputed["claims"])
+                research_stats["uncertainties"].update(recomputed["uncertainties"])
+                research_stats["citations"]["cited_source_bindings"] += sum(len(row["citations"])
+                                                                             for row in recomputed["claims"])
+                research_stats["citations"]["distinct_lineage_bindings"] += sum(len(row["lineages"])
+                                                                                  for row in recomputed["claims"])
+            research_stats["families"][family] += 1
+            research_stats["patterns"][pattern] += 1
+            research_stats["sls"][str(sls).lower()] += 1
+            research_stats[f"{slot['phase']}_{slot['role']}_{slot['risk']}_patterns"][pattern] += 1
+            research_stats[f"{slot['phase']}_{slot['role']}_{slot['risk']}_sls"][str(sls).lower()] += 1
+        elif tc == "ordinary_conversation":
             inp, expected = f["input"], g["expected"]
             family, depth = slot["family"], slot["features"]["depth"]
             if set(inp) != CONVERSATION_KEYS[(family, depth)]:
@@ -582,6 +848,73 @@ def check(staged, english=None):
                                                                 for p in mix if mix[p] for t in TYPE_TARGET), 3)
         report["absence_field_gold_values"] = dict(absence_values)
 
+    # ---- Research allocation, balance and reserve matching (blueprint research table and authoring rules)
+    research_fixtures = [f for f in fixtures if f["task_class"] == "grounded_research_synthesis"]
+    if research_fixtures:
+        slots_r = [SLOTS[f["fixture_id"]] for f in research_fixtures]
+        main_a = [s for s in slots_r if s["phase"] == "A" and s["role"] == "main"]
+        main_b = [s for s in slots_r if s["phase"] == "B" and s["role"] == "main"]
+        for risk, expected_patterns in BLUEPRINT["research_allocation"]["A"].items():
+            actual = collections.Counter(s["features"]["pattern"] for s in main_a if s["risk"] == risk)
+            if actual != collections.Counter(expected_patterns):
+                problems.append(f"grounded_research_synthesis {risk}: A′ pattern allocation differs from blueprint")
+            sls_count = sum(s["features"]["sls"] for s in main_a if s["risk"] == risk)
+            if sls_count != 2:
+                problems.append(f"grounded_research_synthesis {risk}: A′ does not contain exactly 2 SLS cases")
+        for risk in ("R1", "R2", "R3"):
+            expected_patterns = list(f"P{i}" for i in range(1, 9)) * 2 + \
+                BLUEPRINT["research_allocation"]["B_extra_beyond_P1_P8_x2"][risk]
+            cell = [s for s in main_b if s["risk"] == risk]
+            actual = collections.Counter(s["features"]["pattern"] for s in cell)
+            if actual != collections.Counter(expected_patterns):
+                problems.append(f"grounded_research_synthesis {risk}: B′ pattern allocation differs from blueprint")
+            if sum(s["features"]["sls"] for s in cell) != 9:
+                problems.append(f"grounded_research_synthesis {risk}: B′ does not contain exactly 9 SLS cases")
+            for pattern in (f"P{i}" for i in range(1, 9)):
+                flags = {s["features"]["sls"] for s in cell if s["features"]["pattern"] == pattern}
+                if flags != {False, True}:
+                    problems.append(f"grounded_research_synthesis {risk} {pattern}: B′ lacks both SLS states")
+        r4 = [s for s in main_b if s["risk"] == "R4"]
+        if len(r4) != 1 or r4[0]["features"] != {"pattern": "P7", "sls": True}:
+            problems.append("grounded_research_synthesis R4: B′ is not the frozen P7/SLS evidence-only case")
+
+        reserves = [s for s in slots_r if s["role"] == "reserve"]
+        unmatched = []
+        for reserve in reserves:
+            matches = [s for s in slots_r if s["phase"] == reserve["phase"] and s["risk"] == reserve["risk"] and
+                       s["role"] == "main" and s["features"] == reserve["features"] and
+                       (reserve["phase"] == "B" or s["family"] == reserve["family"])]
+            if not matches:
+                unmatched.append(reserve["fixture_id"])
+        if unmatched:
+            problems.append(f"grounded_research_synthesis reserves without a matching main slot: {sorted(unmatched)}")
+        lineages = [(f["fixture_id"], row["lineage"]) for f in research_fixtures for row in f["input"]["sources"]]
+        lineage_owners = collections.defaultdict(set)
+        for fid, lineage in lineages:
+            lineage_owners[lineage].add(fid)
+        repeated_across = {lineage: sorted(owners) for lineage, owners in lineage_owners.items()
+                           if len(owners) > 1}
+        if repeated_across:
+            problems.append(f"grounded_research_synthesis lineages repeat across fixtures: {repeated_across}")
+        report["research"] = {
+            "families": dict(sorted(research_stats["families"].items())),
+            "patterns": dict(sorted(research_stats["patterns"].items())),
+            "single_lineage_support": dict(sorted(research_stats["sls"].items())),
+            "claim_status_balance": dict(sorted(research_stats["status"].items())),
+            "uncertainty_balance": dict(sorted(research_stats["uncertainties"].items())),
+            "cited_source_bindings": research_stats["citations"]["cited_source_bindings"],
+            "distinct_lineage_bindings": research_stats["citations"]["distinct_lineage_bindings"],
+            "source_records": sum(len(f["input"]["sources"]) for f in research_fixtures),
+            "unique_lineages": len(lineage_owners), "cross_fixture_lineage_repeats": len(repeated_across),
+            "temporal_governing_pairs": research_stats["temporal"]["governing_pairs"],
+            "narrower_scope_cases": research_stats["scope"]["narrower_scope_cases"],
+            "reserves_checked": len(reserves), "reserve_mismatches": len(unmatched),
+            "cell_patterns": {key.removesuffix("_patterns"): dict(sorted(value.items()))
+                              for key, value in sorted(research_stats.items()) if key.endswith("_patterns")},
+            "cell_sls": {key.removesuffix("_sls"): dict(sorted(value.items()))
+                         for key, value in sorted(research_stats.items()) if key.endswith("_sls")},
+        }
+
     # ---- Conversation balance, reserve matching and authoring-rule summary (blueprint sections 3, 5 and 8)
     conversation_fixtures = [f for f in fixtures if f["task_class"] == "ordinary_conversation"]
     if conversation_fixtures:
@@ -828,6 +1161,12 @@ def check(staged, english=None):
             value = g["expected"]
         elif f["task_class"] == "ordinary_conversation":
             value = canonical_value(g["expected"]["answer"]).casefold()
+        elif f["task_class"] == "grounded_research_synthesis":
+            normalization_reasons = []
+            value = G1V._normalize_research(g["expected"], normalization_reasons)
+            if normalization_reasons:
+                problems.append(f"{f['fixture_id']}: N1 research gold cannot be normalized: "
+                                f"{normalization_reasons}")
         else:
             continue
         canon[json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)].append(
