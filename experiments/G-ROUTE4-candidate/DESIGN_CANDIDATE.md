@@ -1,246 +1,324 @@
-# G-ROUTE4: confirmatory qualification routing (design candidate)
+# G-ROUTE4: qualification routing under a stricter, pre-registered policy (design candidate)
 
-Status: **design candidate only.** Nothing is frozen. No model has been contacted for G-ROUTE4, and no corpus or gold
-exists yet. The execution freeze stays unbuilt until the design review is accepted. Production routing stays
-disabled, and belief effects are `none`.
+Status: **design candidate, revision 2.**
+- Nothing is frozen. No model has been contacted for G-ROUTE4, and no corpus or gold exists yet.
+- Production routing stays disabled whatever the result. Belief effects are `none`.
+- Revision 1 received design review round 1:
+  - Reviewer A: 2 BLOCKING, 10 MUST-FIX.
+  - Reviewer B: 1 BLOCKING, 10 MUST-FIX.
+  - Each finding and how this revision answers it is in `DESIGN_REVIEW_ROUND1.md`.
 
-This draft goes through the same process as G-ROUTE3's R7 design:
-1. two fresh read-only reviewers, under the safety-gated rule;
-2. then implementation, an implementation review and certification;
-3. then a freeze, and the operator's verbatim sentence for each phase.
+**The process, before anything runs:**
+1. This design is accepted by fresh reviewers under the safety-gated rule.
+2. An authoring blueprint is frozen.
+3. The corpora are authored, and their gold is independently adjudicated.
+4. Implementation, then an implementation review and certification.
+5. An execution freeze.
+6. The operator's verbatim sentence for each phase, with an independent audit after each phase.
 
-## Origin, and what this experiment is not
+## Origin, and what this experiment is
 
-G-ROUTE3 closed as **PASS WITH LIMITATIONS (pilot-qualified)** (`experiments/G-ROUTE3-candidate/RESULTS.md`):
-- the primary gates were met on observed rates;
-- unsafe stops were 2 of 22, a pass by less than one case, with a one-sided 95% upper bound of 0.259;
-- the escalation question was not testable;
-- coding and grounded research had no qualified cells.
+G-ROUTE3 closed as **PASS WITH LIMITATIONS (pilot-qualified)** (`experiments/G-ROUTE3-candidate/RESULTS.md`).
+Its targets carried forward are:
+- unsafe-stop confidence;
+- conversation on the small tier;
+- escalation;
+- grounded research.
 
-G-ROUTE4's targets were **chosen from G-ROUTE3's results**, so they generate hypotheses and are declared as such.
-That is why G-ROUTE4 uses entirely fresh corpora and gold, fixed before any contact.
+They were chosen **from G-ROUTE3's results**, so they generate hypotheses and are declared as such.
 
-G-ROUTE4 is **not**:
-- a rescoring, extension or second reading of G-ROUTE3;
-- a reuse of G-ROUTE3's Corpus B as validation data, since it has now been seen;
-- a route to production.
+**G-ROUTE4 tests G-ROUTE4's own routing policy.** That policy differs from G-ROUTE3's in four ways:
+- 8/8 qualification;
+- independently adjudicated gold;
+- the D8 research prompt sentence;
+- no coding class.
 
-G-ROUTE3's corpora may be used only as development material for building fixtures and validators. They are never
-used to tune gold or thresholds against observed model outputs.
+It is **not** a replication of G-ROUTE3, and its evidence is **never pooled or combined** with G-ROUTE3's.
 
-## What is reused
+G-ROUTE3 is closed:
+- it is never rescored, extended or re-read;
+- its corpora are never G-ROUTE4 validation data;
+- every G-ROUTE3 and G-ROUTE1 file stays byte-identical.
 
-The whole R7 laboratory:
-- the one-journal-per-run lifecycle, replay, recovery and the private evidence repository;
-- the attempt ledger and verbatim sentences;
-- the table freeze, independent audits and the certification campaign;
-- the pinned models (qwen2.5:7b, qwen3:14b, qwen3.8:27b) with the G-ROUTE3 generation configuration, and
-  Ollama 0.34.3.
+## Scope
 
-Any code change, such as corpus paths, the coding allowlist or a new gate, goes through an implementation review
-and a certification rerun before the freeze.
+**Task classes:** ordinary conversation, structured extraction, hierarchical semantic synthesis, reflective
+planning, grounded research synthesis. Risk classes R1–R4. R4 stays evidence-only.
+
+**Coding is deferred (revised D6).** The review established two facts:
+- The coding runner (`run_isolated_fixture`) is not a sandbox. It runs model-written code as the user, with no
+  filesystem or network restriction.
+- The AST gate is the real barrier, and it can be bypassed: by rebinding a name (`bool = eval`), a parameter
+  default, a decorator, or an import alias.
+
+A read-only scan of all 85 G-ROUTE3 coding outputs found none of these constructs. The only import was the
+permitted `pathlib`, so the weakness was never used. Widening the allowlist would raise the risk, so coding moves
+to its own later experiment. That experiment needs:
+- a real sandbox: a restricted token, no network, no filesystem access outside a scratch folder;
+- a hardened AST gate that is the primary control, with an exhaustive ruling table and a certification probe per
+  bypass.
+
+The G-ROUTE3 diagnostic (28 of 72 coding outputs denied for pure built-ins such as `len`) is carried to that
+experiment.
 
 ## Questions
 
-**P1: confirmatory routing safety.**
-- **Question:** with a freshly qualified table, is the true unsafe-stop rate at most 0.10, and the true
-  correct-stop rate of qualified-start cases at least 0.60, each at one-sided 95% confidence?
-- **What changes from G-ROUTE3:** its gates judged **observed rates**. G-ROUTE4's gates judge **exact
-  (Clopper-Pearson) bounds**.
+**P1: routing safety, confirmatory for this policy.** On the frozen validation corpus, is the true unsafe-stop rate at
+most 0.10, and the true correct-stop rate of qualified-start cases at least 0.60? Each is judged at one-sided 95%
+confidence, with an exact binomial (Clopper-Pearson) bound.
 
-**P2: conversation on the cheapest tier.**
-- **Question:** is routing safe for ordinary conversation where the small tier qualifies?
-- **Why:** both of G-ROUTE3's unsafe stops were conversation on the small tier: B-CONV-R1-1 and B-CONV-R3-2, each
-  the wrong answer option.
+**P2: conversation on the cheapest tier.** Descriptive (D2): the conversation stratum's unsafe-stop rate and bound,
+with the small tier broken out.
 
-**S1: escalation.**
-- **Question:** when a qualified tier's output fails deterministic validation, does moving to the next qualified
-  tier gain correct stops without unsafe ones?
-- **Why:** G-ROUTE3 produced 1 escalated stop out of the 5 required.
+**S1: escalation.** Pilot, descriptive only (see Gates).
 
-**S2: coding.** Can any tier qualify for coding once the execution allowlist is principled rather than minimal?
+**S3: grounded research.** Can a tier qualify for research on fresh, adjudicated fixtures, and is its failure
+judgment or bookkeeping?
 
-**S3: grounded research.** Why does no tier qualify, and can a tier qualify on a fresh corpus?
+## Diagnostics carried in from G-ROUTE3 (exploratory, read-only; they motivate, never decide)
 
-## Diagnostics from G-ROUTE3 (exploratory, read-only, never a result)
+- **Grounded research:** `RESEARCH_DIAGNOSIS.md`. G-ROUTE3's 41 research mismatches cluster into four patterns:
+  - uncertainty-code bookkeeping (involved in 32; `single_lineage_support` differs in 30);
+  - about-ness and scope (11);
+  - conflict and governing-source rules (11);
+  - output element shape (4 primary, 18 involved).
 
-These were computed on 2026-09-28 from G-ROUTE3's sealed records with the frozen scorer functions. They were read
-directly from the journals, with no lifecycle command and no data-root writes. They motivate the design and
-change nothing in G-ROUTE3.
+  The large tier never misjudged a claim's status or about-ness.
+- **Conversation:** in some fixtures all tiers converged on the same non-gold option. That is the reason for
+  independent gold adjudication.
+- **Coding:** carried to the deferred coding experiment.
 
-**Coding (72 outputs across both phases):**
+## Identity and separation (all new; nothing edited in place)
 
-| Outcome | Outputs |
-|---|---|
-| passed | 12 |
-| compiled, but the focused test failed | 9 |
-| malformed JSON | 7 |
-| syntax errors | 5 |
-| rejected by the candidate validator before execution | 39 |
+- **Code:**
+  - G-ROUTE4 runs from new modules (`tools/g_route4_*`). They carry R7's lifecycle design unchanged in structure
+    (journal and replay over a fixed schedule), with every identity constant parameterized.
+  - G-ROUTE3's modules, G-ROUTE1's modules and every G-ROUTE3 file stay **byte-identical**, so G-ROUTE3's drift
+    checks and reproducibility are untouched.
+  - The research validator is imported unchanged, with no contract change.
+- **Identity constants, all distinct from G-ROUTE3's:**
 
-Of the 39 validator rejections, **28 were denied calls to pure, side-effect-free built-ins or methods**:
-
-| Denied call | Times |
-|---|---|
-| `len` | 11 |
-| `any` | 4 |
-| `append` | 3 |
-| `isinstance` | 2 |
-| `range`, `enumerate`, `find`, `rstrip`, `lstrip`, `isdigit`, `isalnum`, `endswith` | 1 each |
-
-The frozen allowlist (`tools/g_route1_coding_runner.py`) permits only:
-- the call names `bool` and `PurePosixPath`;
-- the attributes `strip`, `lower`, `split`, `join`, `replace` and `startswith`.
-
-The prompt disclosed it, but it forbids ordinary Python.
-
-**Grounded research:** the full per-case diagnosis of the 41 `research_judgment_mismatch` outputs is in
-`RESEARCH_DIAGNOSIS.md` and `RESEARCH_DIAGNOSIS.json`. It corrects this draft's first reading, which blamed
-wrong claim judgments. The mismatches cluster tightly:
-- **Uncertainty-code bookkeeping: involved in 32 of 41, the primary cause in 13.**
-  - `single_lineage_support` differs from gold in 30 of 41.
-  - It is a cross-claim code that holds whenever any supported claim rests on one lineage. Models omit it in
-    that situation, and also list it for unresolved or contradicted claims.
-- **Which sources are "about" a claim, and their scope: primary in 11.** A narrower-scope source is reported as a
-  conflict, a source about another venue or version is cited, or two sources of one lineage are counted twice.
-- **Conflict and governing-source rules: primary in 11.**
-- **Output element shape the prompt does not specify: involved in 18, primary in 4.** In those 4, the substance
-  matches gold exactly.
-
-By tier:
-- **large** never misjudged a claim's status or about-ness. Its failures are bookkeeping, shape, and two readings
-  of a governing source's denial as support.
-- **small** makes genuine claim-level errors.
-
-12 of the 26 false-clean answers are bookkeeping errors.
-
-The earlier count of malformed JSON (13) and element-type mismatches (20) covers all research failures, not only
-the 41.
-
-**Conversation:** some failures converge across tiers. In Corpus A, both mid and large answered A-CONV-R2-2 with the
-same non-gold option in every repeat, and small and mid did the same on A-CONV-R2-1. This does not show the gold
-was wrong, and nothing is regraded. It does show that each fixture's gold should be adjudicated independently
-before freezing.
-
-## Design
-
-**Corpora.** Fresh Corpus A′ (qualification) and Corpus B′ (validation) under G-ROUTE3's derivability rule:
-- every closed label is offered as an allowed set;
-- every enforced ordering is stated;
-- every execution constraint is disclosed.
-
-Added for G-ROUTE4: **independent gold adjudication before contact.** A fresh reviewer, who has not seen the
-fixture's authoring rationale, answers each fixture from its model-facing input alone. Any disagreement with gold
-is resolved or the fixture is dropped, all before the freeze, and every resolution is recorded.
-
-**Coding allowlist (S2). Decided (D6): the stated purity rule.** The allowlist is re-derived from a **stated
-criterion**, not from the list of observed denials:
-- **Allowed:** pure built-ins and methods with no I/O, import, reflection, attribute mutation outside local
-  values, or code execution. For example `len`, `any`, `all`, `isinstance`, `range`, `enumerate`, `min`, `max`,
-  `sorted`, `str`/`int`/`list`/`dict`/`set`/`tuple` constructors, `append` on local lists, and the read-only
-  `str` methods.
-- **Still denied:** `getattr`, `setattr`, `eval`, `exec`, `open`, `__import__`, `type`, `vars`, `globals` and
-  dunder access.
-
-The sandbox (isolated runner, kill-on-close job) remains the containment; the allowlist is defense in depth. The
-criterion, the resulting list and its security argument are frozen and disclosed in every coding prompt. G-ROUTE3's
-coding outputs are **not** re-evaluated under it.
-
-**Qualification (Phase A′).** Same cell structure: 6 task classes × R1–R4 × 3 tiers. Unanimity is retained.
-- **8 observations per cell (D4):** 4 distinct fixtures × 2 repeats. Zero failures in 8 bounds the per-cell
-  failure rate below 0.312, against 0.527 at 4.
-- **Size:** 96 fixtures, 576 calls.
-
-**Validation (Phase B′).**
-- Routing is gold-blind on the frozen A′ table, with G-ROUTE3's routing policy unchanged. The two retained
-  triggers stay; the retired ones stay retired.
-- The size of B′ is set in advance from the gates. G-ROUTE3 produced 0.61 stops per eligible (non-R4) case. P1
-  needs these stop counts:
-
-  | Unsafe stops observed | Stops needed to meet the bound |
+  | Constant | G-ROUTE4 value |
   |---|---|
-  | 0 | 29 |
-  | 1 | 46 |
-  | 2 | 61 |
-  | 3 | 76 |
+  | experiment name (checked when a data root is opened) | `G-ROUTE4` |
+  | data root | `C:\Users\marcu\AppData\Local\Eidolon\research\g_route4` |
+  | genesis string | `g-route4-ledger` |
+  | lease tag, evidence identity, run-id prefixes | `groute4a-`, `groute4b-` |
+  | seed ranges | 47001–47999 (A′), 48001–48999 (B′) |
+  | table path on `main` | `experiments/G-ROUTE4-candidate/QUALIFICATION_TABLE.json` |
 
-- **The unsafe gate is evaluable only with at least 76 stops.** Fewer stops make P1 NOT_TESTABLE, never a pass.
-- **Router-only (D1):** Phase B′ makes only the calls the router consumes. A case with no qualified tier costs
-  0 calls. The false-negative-qualification measure is therefore not available, which is declared.
-- **Size is set by escalation (D3), not by P1:**
-  - the target is about 200 routed attempts, which needs about 300 eligible cases at G-ROUTE3's 0.64 routed
-    attempts per eligible case;
-  - that also gives about 180 expected stops, well above P1's 76;
-  - conversation R1–R3 is oversampled for P2.
-- **R4 (D5):** stays evidence-only, with a minimal deterministic set of R4 cases (one per task class) to exercise
-  that behaviour end to end.
+  The rest of the constants are as listed:
+  - guarded paths and frozen artifacts pointing at `experiments/G-ROUTE4-candidate/`;
+  - expected call counts, fixtures per cell, repeats, thresholds and bound texts.
+- **Sentences:** every command has a `G-ROUTE4` sentence: launch A′ and B′, the distinct launch after an integrity
+  failure, resume, abandon, declare, clear orphan, and freeze table. A G-ROUTE3 sentence, ledger or binding can
+  never authorize anything in G-ROUTE4, and G-ROUTE4's never authorize anything in G-ROUTE3.
+- **Data roots:** each experiment's freeze writer and lifecycle refuse the other's data root.
 
-**Escalation (S1).** Escalation needs a routed attempt rejected in a cell with at least two qualified tiers.
-G-ROUTE3's rate was about 1 in 23 routed attempts:
+## Schedule (fixed before any contact)
 
-| Routed attempts | Expected escalations | P(at least 5) |
-|---|---|---|
-| 115 | 5 | 0.56 |
-| 150 | 6.5 | 0.78 |
-| 200 | 8.7 | 0.94 |
+Both phases use a **fixed, fully enumerated schedule** frozen before contact:
+- every position has its call id, seed and request digest;
+- positions are identical across attempts.
 
-These count escalations, not escalated stops, so the true chances are lower. **Decided (D3):**
-- B′ is sized for about 200 routed attempts, with natural escalations only and no case selection;
-- S1 stays non-gating.
+Phase B′ calls **all three tiers on every case** (revised D1). Routing is computed afterwards, gold-blind, from the
+sealed records by the frozen router, exactly as in G-ROUTE3. So R7's guarantees apply unchanged: no position is
+sent twice, replay is deterministic, attempts are protected, and denominators are defined. The all-tier design
+restores the generalization table, false-negative qualification, and "false-clean caught because the tier is
+unqualified".
 
-**Grounded research (S3). Decided (D7): diagnose, then include.** The diagnosis is done (`RESEARCH_DIAGNOSIS.md`).
-Research joins A′/B′ on fresh, independently adjudicated fixtures, and:
-- **The validator is unchanged:** exact match on claims, recommendation and uncertainties. Nothing is loosened.
-- **Fixtures separate the three failure patterns**, so each can be read directly:
-  - fixtures where every supported claim has at least two lineages (`single_lineage_support` does not hold);
-  - fixtures where it holds only through an uncontroversial claim;
-  - narrower-scope and other-subject sources in separate fixtures;
-  - conflicts both with and without a governing rule.
-- **Descriptive reporting at two levels,** next to the unchanged gate and never gating:
-  - claim-level agreement (status, citations, lineages);
-  - uncertainty-code agreement.
-  A tier's research failures can then be read as judgment or bookkeeping.
-- **The prompt (D8):** it is unchanged except for one pre-registered sentence stating the output element types.
-  The sentence says that `claims` is a list, and that `citations`, `lineages` and `uncertainties` are lists of
-  strings (source ids, lineage names and codes). It is frozen before contact and disclosed in every research
-  prompt. The validator and every judgment rule are untouched.
+**Phase A′ (qualification):** 5 classes × R1–R4 × 4 fixtures = **80 fixtures**, × 3 tiers × 2 repeats = **480 calls**.
 
-A prompt or validator change counts as a protocol change and needs its own pre-registration.
+**Phase B′ (validation), exact composition (D9):**
 
-**Proposed gates** (frozen before contact; judged on bounds):
-- **Primary:** unsafe-stop exact one-sided 95% upper bound at most 0.10, evaluable only with at least 76 stops.
-- **Primary:** correct-stop exact one-sided 95% lower bound at least 0.60, evaluable only with at least 30
-  qualified-start cases.
-- **Primary:** 0 unqualified-tier terminal results, 0 gold leakage events, denominator integrity.
-- **P2 (D2):** reported, not gating. The conversation stratum's unsafe-stop rate and exact 95% upper bound, with
-  the small tier broken out.
-- **S1:** as in G-ROUTE3 (at least 5 escalated stops to evaluate), plus a reported bound.
+| Stratum | Cases per cell | Cells | Cases |
+|---|---|---|---|
+| Ordinary conversation, R1–R3 | 28 | 3 | 84 |
+| Extraction, synthesis, planning, research, R1–R3 | 18 | 12 | 216 |
+| **Eligible total** | | | **300** |
+| R4, one per class (evidence-only, never routed) | 1 | 5 | 5 |
+| **B′ fixtures** | | | **305**, × 3 tiers = **915 calls** |
 
-## Cost
+- **The P1 estimand** is the rate over this pre-registered mix.
+- **Conversation is oversampled.** That is conservative for P1, because G-ROUTE3's unsafe stops were in
+  conversation. An equal-weight-by-task-class rate is reported descriptively.
+- **B′ is never resized,** topped up, extended or pooled, after A′ or after B′. NOT_TESTABLE is a final outcome.
 
-At G-ROUTE3's pace (about 24 s per call on average across tiers):
-- **Phase A′:** 576 calls, about 4 hours.
-- **Phase B′:** router-only, about 200 routing calls, about 1.5–2 hours. Routed calls lean towards the cheaper
-  tiers.
+## Corpora
 
-**Authoring effort.** This is the real cost:
-- about 96 qualification fixtures and about 300 validation fixtures, plus the R4 set;
-- each fixture has gold, a derivability check and independent adjudication.
+**Derivability, extended to output shape (D8 as a criterion).**
+- G-ROUTE3's derivability rule is kept: every closed label is offered as an allowed set, every enforced ordering is
+  stated, and every constraint is disclosed.
+- It is extended to **every output shape a validator enforces, in all five profiles**: container types, element
+  types and key sets.
+- A disclosure audit of each profile's prompt against its validator is frozen with the corpora.
 
-Authoring can be staged by task class.
+**Research prompt (D8), verbatim.**
+- The research prompt is the G-ROUTE3 research rule body, byte-identical; only the subject phrase varies.
+- After the sentence "Each claim object has exactly the keys claim_id, status, citations and lineages.", this
+  sentence is inserted:
 
-## Operator decisions (2026-09-28)
+  > "The reply's claims is a list of claim objects; in each claim object, citations is a list of source_id strings
+  > and lineages is a list of lineage-name strings; uncertainties is a list of code strings."
+
+- A freeze-time test checks the identity and the insertion.
+- The research validator is unchanged, with exact matching. Every judgment rule is unchanged.
+
+**Authoring blueprint, frozen before authoring.**
+- It fixes a per-cell feature allocation for every class.
+- For research:
+  - the eight G-ROUTE3 construct patterns (S1–S8) are allocated identically in A′ and B′, balanced across R1–R4;
+  - whether `single_lineage_support` holds is balanced at 50/50 within every cell.
+- The allocation is derived from the construct, not from G-ROUTE3's failure rates.
+- Research qualification is declared conditional on that mix. S3's construct is declared not comparable with
+  G-ROUTE3's.
+
+**Authoring rules:**
+- no fixture is pretested on any model;
+- no A′ or B′ item is derived from a G-ROUTE3 item whose model outputs were inspected;
+- G-ROUTE3's corpora serve only as development material for validators and templates.
+
+**Contamination and independence.** `CONTAMINATION_ANALYSIS.md` and `INDEPENDENCE_REPORT.json` cover A′↔B′ and
+A′/B′↔G-ROUTE3 A/B. They cover G-ROUTE3's already-seen Corpus B in particular.
+- **Template cap:** no template family exceeds 25% of a class's B′ cases.
+- **Reporting:** per-template and per-cell breakdowns are reported. A cluster-level sensitivity bound, taking
+  fixture families as the unit, is reported without gating.
+- The P1 bounds are declared **conditional on fixtures being exchangeable within the frozen mix**.
+
+**Independent gold adjudication (A′ and B′ alike).**
+- **Adjudicator:** a fresh Claude session, never a pinned model and never Ollama. The model id and version, and the
+  adjudication prompt, are frozen and recorded.
+  - It sees only the model-facing fixture.
+  - It is blind to gold, the authoring rationale, G-ROUTE3 outputs and the diagnosis.
+  - Its answers are **sealed by a committed digest before gold is revealed**.
+- **Disagreements** go to a second, independent adjudicator session. Anything still unresolved goes to the
+  operator, who applies the derivability rule. The author never decides a disagreement.
+- **Fix, keep or drop:**
+  - a fixture is **fixed** only when gold is wrong or the input is ambiguous, with the defect documented;
+  - if the adjudicator erred and gold is confirmed, the fixture is **kept unchanged**;
+  - a fixture is never dropped for being hard;
+  - a fixture that cannot be fixed is replaced from a **pre-authored reserve, in a fixed order**, and the
+    replacement is adjudicated from scratch;
+  - there are at most 2 replacement rounds per slot.
+- **Records:** per-cell fix and drop counts and the adjudicator disagreement rate are disclosed. The records are
+  bound in the execution freeze.
+
+## Qualification (Phase A′)
+
+- **8/8 unanimity (D4):** 4 fixtures × 2 repeats.
+- **Declared:** this is materially stricter than G-ROUTE3's 4/4. At a per-observation pass probability of 0.9,
+  the chance to qualify falls from 0.656 to 0.430; at 0.95, from 0.815 to 0.663.
+- **Every cell reports two bounds:**
+  - the observation-level bound (0 failures in 8 gives 0.312);
+  - the fixture-level bound (0 failures in 4 fixtures gives 0.527).
+- Repeats of one fixture are correlated, so the fixture-level bound is the honest one for new fixtures.
+- G-ROUTE3's rationale for the 0.60 correct-stop threshold ("four out of four") is restated for 8/8.
+- Everything else in G-ROUTE3's qualification contract is carried over: no infrastructure failures, no
+  returned-model mismatches, the exact design, and a READY audit.
+
+## Gates (frozen before contact)
+
+All bounds are exact one-sided Clopper-Pearson bounds at α = 0.05, computed exactly: "upper bound ≤ 0.10" means
+P(X ≤ k | n, 0.10) ≤ 0.05. FAIL means "not shown"; for the unsafe gate, not shown to be at most 0.10.
+
+**Unsafe-stop gate.** n is the number of stops. Coding is out of scope, so every stop can be unsafe.
+
+| Outcome | Condition |
+|---|---|
+| PASS | n ≥ 76 and the upper bound ≤ 0.10 |
+| FAIL | n ≥ 76 and the upper bound > 0.10; **or** n ≥ 10 and the observed rate > 0.10 (G-ROUTE3's failure standard kept); **or** the lower bound > 0.10 at any n |
+| NOT_TESTABLE | otherwise |
+
+**Correct-stop gate.** n is the number of qualified-start cases.
+
+| Outcome | Condition |
+|---|---|
+| PASS | n ≥ 30 and the lower bound ≥ 0.60 |
+| FAIL | n ≥ 30 and the lower bound < 0.60; **or** n ≥ 10 and the observed rate < 0.60; **or** the upper bound < 0.60 at any n |
+| NOT_TESTABLE | otherwise |
+
+**Primary status**, in G-ROUTE3's order:
+1. FAILED_INTEGRITY if integrity fails. Integrity means: 915 recorded B′ calls, 300 eligible and 5 R4 cases
+   decided, 0 unqualified-tier terminal results, 0 gold-leakage events.
+2. FAIL if any gate fails.
+3. NOT_TESTABLE if any gate is not testable.
+4. PASS.
+
+The two gates form an intersection-union test, so no multiplicity adjustment is needed.
+
+**Power (declared).** The table gives P(PASS) for the unsafe gate by true unsafe rate. Each range spans stop rates
+of 0.40–0.73 per eligible case, which is 120–219 stops at 300 cases:
+
+| True unsafe rate | P(PASS) |
+|---|---|
+| 0.02 | 0.99–1.00 |
+| 0.03 | 0.93–1.00 |
+| 0.05 | 0.61–0.86 |
+| 0.07 | 0.26–0.43 |
+
+At G-ROUTE3's point estimate (0.09), P1 is unlikely to pass, and that outcome is reported as it is.
+
+**P2 (descriptive):**
+- The conversation-stratum unsafe-stop count, n and upper bound are reported whenever there is at least one stop,
+  with the small tier broken out.
+- If the small tier does not qualify for conversation under 8/8, P2 reports "no small-tier conversation stops: not
+  observable". That is a declared possible outcome.
+
+**S1 (pilot, descriptive):**
+- It reports escalations, escalated stops, and the correct and unsafe counts among them, with bounds.
+- It reaches **no PASS/FAIL verdict**.
+- The predictive probability of at least 5 escalated stops is about 0.6–0.8. It rests on G-ROUTE3's single observed
+  escalation.
+
+**Research, descriptive, defined in frozen code:**
+- claim-level agreement: the share of claims whose status, citations and lineages all equal gold;
+- uncertainty-code agreement: exact set equality;
+- element-shape failures: a count.
+
+## Phase B′ preconditions (R7 §10, adapted)
+
+- A′ is complete and committed, and it is the only completed A′ attempt.
+- The READY A′ audit exists, and the table has been frozen by the G-ROUTE4 freeze-table sentence.
+- The table is on `main` at the G-ROUTE4 path, byte-identical, with one version.
+- Every table cell has the 8-observation shape.
+- The freeze, the endpoint and the model receipts are verified. Ollama is at the pinned version, re-checked before
+  every launch.
+
+## Order of work and authorization
+
+1. **Design review.** This revision goes to fresh reviewers, with further rounds until accepted.
+2. **Authoring blueprint** frozen.
+3. **Corpora:**
+   - A′ (80 fixtures), B′ (305) and reserves authored;
+   - the derivability and shape-disclosure audit;
+   - blind adjudication;
+   - the contamination and independence reports;
+   - an external review of the corpora.
+4. **Implementation** in new `g_route4_*` modules, then:
+   - an implementation review;
+   - the full certification campaign;
+   - a differential against G-ROUTE3's R7 on synthetic data (identity aside).
+5. **Execution freeze** (G-ROUTE4 binding).
+6. **Phase A′.** Operator sentence, then the independent A′ audit, then the freeze-table sentence, then the table on
+   `main`.
+7. **Phase B′.** Operator sentence, then the independent B′ audit, then the results record.
+
+**Runbook:** reserve uninterrupted windows of about 3.2 hours for A′ and about 6 hours for B′. Stopping closes the
+attempt. Check the Ollama version before each launch.
+
+## Operator decisions
 
 | # | Decision | Chosen |
 |---|---|---|
-| D1 | Phase B′ diagnostic calls | **Router-only**; the false-negative-qualification measure is not available (declared) |
+| D1 | Phase B′ calls | **All three tiers** (revised 2026-09-28 after design review round 1; router-only would need a lifecycle redesign) |
 | D2 | P2 conversation stratum | **Reported with its bound**, not gating |
-| D3 | Escalation | **Size B′ for about 200 routed attempts**; natural escalations only; S1 non-gating |
-| D4 | Qualification scale | **8 observations per cell** (4 fixtures × 2 repeats) |
-| D5 | R4 in Phase B′ | **A minimal deterministic set** |
-| D6 | Coding allowlist | **The stated purity rule**, frozen with its security argument and disclosed in prompts |
-| D7 | Grounded research | **Diagnose, then include** with the unchanged validators. The prompt is unchanged except as D8 amends it. |
-| D8 | Research output element types | **One pre-registered sentence** stating that `claims` is a list and that `citations`, `lineages` and `uncertainties` are lists of strings. It amends D7's "unchanged prompt" for this one point only. It is a prompt change, not a validator change, so exact matching stays. |
+| D3 | Escalation | **Pilot, descriptive only** (revised: B′ is sized by P1 power, D9) |
+| D4 | Qualification scale | **8 observations per cell** (4 fixtures × 2 repeats), with both bounds reported |
+| D5 | R4 in Phase B′ | **One per class** (5), evidence-only |
+| D6 | Coding | **Deferred to its own experiment** with a real sandbox and a hardened gate (revised after design review round 1) |
+| D7 | Grounded research | **Diagnose, then include.** The diagnosis is done; the validator is unchanged |
+| D8 | Research output element types | **The verbatim sentence above**, plus a shape-disclosure audit of all profiles |
+| D9 | Phase B′ size | **300 eligible cases** (84 conversation, 216 other) plus 5 R4 cases: 915 calls |
 
 ## Standing constraints (unchanged)
 
