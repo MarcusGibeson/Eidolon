@@ -94,12 +94,28 @@ The frozen allowlist (`tools/g_route1_coding_runner.py`) permits only:
 
 The prompt disclosed it, but it forbids ordinary Python.
 
-**Grounded research:**
-- the dominant semantic failure is `research_judgment_mismatch` (41 outputs): the claim judgments differ from gold;
-- the other failures are malformed JSON (13) and citation or uncertainty element-type mismatches (20).
+**Grounded research:** the full per-case diagnosis of the 41 `research_judgment_mismatch` outputs is in
+`RESEARCH_DIAGNOSIS.md` and `RESEARCH_DIAGNOSIS.json`. It corrects this draft's first reading, which blamed
+wrong claim judgments. The mismatches cluster tightly:
+- **Uncertainty-code bookkeeping: involved in 32 of 41, the primary cause in 13.**
+  - `single_lineage_support` differs from gold in 30 of 41.
+  - It is a cross-claim code that holds whenever any supported claim rests on one lineage. Models omit it in
+    that situation, and also list it for unresolved or contradicted claims.
+- **Which sources are "about" a claim, and their scope: primary in 11.** A narrower-scope source is reported as a
+  conflict, a source about another venue or version is cited, or two sources of one lineage are counted twice.
+- **Conflict and governing-source rules: primary in 11.**
+- **Output element shape the prompt does not specify: involved in 18, primary in 4.** In those 4, the substance
+  matches gold exactly.
 
-The false-clean answers are well-formed but wrongly judged. This is a reasoning or grounding failure, not a format
-failure.
+By tier:
+- **large** never misjudged a claim's status or about-ness. Its failures are bookkeeping, shape, and two readings
+  of a governing source's denial as support.
+- **small** makes genuine claim-level errors.
+
+12 of the 26 false-clean answers are bookkeeping errors.
+
+The earlier count of malformed JSON (13) and element-type mismatches (20) covers all research failures, not only
+the 41.
 
 **Conversation:** some failures converge across tiers. In Corpus A, both mid and large answered A-CONV-R2-2 with the
 same non-gold option in every repeat, and small and mid did the same on A-CONV-R2-1. This does not show the gold
@@ -172,11 +188,19 @@ These count escalations, not escalated stops, so the true chances are lower. **D
 - B′ is sized for about 200 routed attempts, with natural escalations only and no case selection;
 - S1 stays non-gating.
 
-**Grounded research (S3). Decided (D7): diagnose, then include.**
-1. First, a read-only diagnosis of G-ROUTE3's 41 judgment mismatches, which classifies each as misjudged status,
-   misread source or possible fixture ambiguity.
-2. Research then joins A′/B′ with the unchanged prompt and validators, on fresh, independently adjudicated
-   fixtures.
+**Grounded research (S3). Decided (D7): diagnose, then include.** The diagnosis is done (`RESEARCH_DIAGNOSIS.md`).
+Research joins A′/B′ on fresh, independently adjudicated fixtures, and:
+- **The validator is unchanged:** exact match on claims, recommendation and uncertainties. Nothing is loosened.
+- **Fixtures separate the three failure patterns**, so each can be read directly:
+  - fixtures where every supported claim has at least two lineages (`single_lineage_support` does not hold);
+  - fixtures where it holds only through an uncontroversial claim;
+  - narrower-scope and other-subject sources in separate fixtures;
+  - conflicts both with and without a governing rule.
+- **Descriptive reporting at two levels,** next to the unchanged gate and never gating:
+  - claim-level agreement (status, citations, lineages);
+  - uncertainty-code agreement.
+  A tier's research failures can then be read as judgment or bookkeeping.
+- **The prompt:** unchanged under D7, unless the operator adopts D8 below.
 
 A prompt or validator change counts as a protocol change and needs its own pre-registration.
 
@@ -213,6 +237,7 @@ Authoring can be staged by task class.
 | D5 | R4 in Phase B′ | **A minimal deterministic set** |
 | D6 | Coding allowlist | **The stated purity rule**, frozen with its security argument and disclosed in prompts |
 | D7 | Grounded research | **Diagnose, then include** with the unchanged prompt and validators |
+| D8 | Research output element types | **Open.** The diagnosis found the prompt names the keys of a claim object, but never states that `claims` is a list, or that `citations`, `lineages` and `uncertainties` are lists of strings. 4 outputs failed on shape alone and 14 others were confounded by it. Options: keep the prompt unchanged (consistent with D7), or add a pre-registered sentence stating the element types. That is a prompt change, not a validator change, and touches no judgment. |
 
 ## Standing constraints (unchanged)
 
