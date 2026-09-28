@@ -1,6 +1,12 @@
 # G-ROUTE4: qualification routing under a stricter, pre-registered policy (design candidate)
 
-Status: **design candidate, revision 6.**
+Status: **ACCEPTED (safety-gated, operator decision D11), revision 6, 2026-09-29.**
+- **Final round:** both fresh reviewers found 0 BLOCKING. Reviewer A found 6 MUST-FIX; Reviewer B found 3.
+- **Their MUST-FIX items** are the binding obligations O1–O9 in `G-ROUTE4_OBLIGATIONS.md`, verified at the corpus
+  review and the implementation review.
+- **`G-ROUTE4_OBLIGATIONS.md` overrides any conflicting wording in this document.** One example is the
+  audit-sample rule (O1), which replaces the "audit-sample seed" in the order of work, step 2.
+- **Record:** `DESIGN_REVIEW_ROUND6.md`.
 - Nothing is frozen. No model has been contacted for G-ROUTE4, and no corpus or gold exists yet.
 - Production routing stays disabled whatever the result. Belief effects are `none`.
 - Review so far:
@@ -12,6 +18,7 @@ Status: **design candidate, revision 6.**
   | 3 | revision 3 | 0 BLOCKING, 6 MUST-FIX | 0 BLOCKING, 9 MUST-FIX | `DESIGN_REVIEW_ROUND3.md` |
   | 4 | revision 4 | 0 BLOCKING, 4 MUST-FIX | 0 BLOCKING, 4 MUST-FIX | `DESIGN_REVIEW_ROUND4.md` |
   | 5 | revision 5 | 0 BLOCKING, 5 MUST-FIX | 0 BLOCKING, 3 MUST-FIX | `DESIGN_REVIEW_ROUND5.md` |
+  | 6, final | revision 6 | 0 BLOCKING, 6 MUST-FIX | 0 BLOCKING, 3 MUST-FIX | `DESIGN_REVIEW_ROUND6.md`: accepted |
 
   This revision answers every round-5 finding.
 
@@ -639,7 +646,7 @@ R7 §10 items 1–11 apply unchanged, except:
 
 ## Order of work and authorization
 
-1. **Design review** until accepted. This is revision 5.
+1. **Design review.** Done: revision 6 accepted under D11 (see `DESIGN_REVIEW_ROUND6.md`).
 2. **Authoring blueprint** frozen: per-cell features and their crossing, families and their template texts, caps,
    the reserve composition, and the audit-sample seed. The shape-disclosure audit runs on the templates, and its
    sentences are frozen. Independence feasibility is checked, reserve included.
