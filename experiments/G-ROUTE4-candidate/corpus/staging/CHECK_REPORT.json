@@ -1,7 +1,22 @@
 {
  "classes_checked": [
+  "hierarchical_semantic_synthesis",
   "structured_extraction"
  ],
+ "composition": {
+  "hierarchical_semantic_synthesis": {
+   "A_main": 16,
+   "A_reserve": 16,
+   "B_main": 55,
+   "B_reserve": 13
+  },
+  "structured_extraction": {
+   "A_main": 16,
+   "A_reserve": 16,
+   "B_main": 55,
+   "B_reserve": 19
+  }
+ },
  "extraction_type_mix_realized": {
   "A": {
    "integer": 0.25,
@@ -28,6 +43,16 @@
   "provided": 5
  },
  "caps": {
+  "hierarchical_semantic_synthesis": {
+   "b_main_family_counts": {
+    "SY1": 9,
+    "SY2": 9,
+    "SY3": 9,
+    "SY4": 10,
+    "SY5": 9,
+    "SY6": 9
+   }
+  },
   "structured_extraction": {
    "b_main_family_counts": {
     "EX1": 9,
@@ -41,18 +66,29 @@
  },
  "fine_signature_clashes": 0,
  "o3_entities": {
-  "g4_fixtures": 106,
-  "g4_entities": 89,
+  "g4_fixtures": 206,
+  "g4_entities": 485,
   "g3_entities_compared": 21,
   "shared": 0,
   "scope": "all authored G-ROUTE4 fixtures of every class, main and reserve, pairwise and against all G-ROUTE3 A and B fixtures"
  },
  "names": {
-  "invented_names": 96,
-  "max_per_fixture": 4,
+  "invented_names": 492,
+  "max_per_fixture": 5,
   "english_vocabulary_screen": true
  },
  "trigram": {
+  "hierarchical_semantic_synthesis": {
+   "pool": 116,
+   "boilerplate_trigrams": 13,
+   "max_jaccard": 0.1929,
+   "max_pair": [
+    "B4-SYNTH-R3-10",
+    "A4-SYNTH-R4-X04"
+   ],
+   "pairs_over_bound": 0,
+   "o5_single_family_boilerplate": 0
+  },
   "structured_extraction": {
    "pool": 122,
    "boilerplate_trigrams": 6,

@@ -38,6 +38,10 @@ PINNED = [t["rule_body"] for t in TEMPLATES.values()] + \
     [t["disclosure_sentence"] for t in TEMPLATES.values() if t["disclosure_sentence"]] + [ABSENCE]
 FAMILY_TYPE = {"EX1": "string", "EX2": "date_or_time", "EX3": "number", "EX4": "boolean", "EX5": "enum2",
                "EX6": "enum3"}
+SYNTHESIS_CONCLUSION = {
+    "SY1": "cause_established", "SY2": "cause_unresolved", "SY3": "insufficient_evidence",
+    "SY4": "decision_reserved", "SY5": "constraint_breached", "SY6": "behavior_by_design",
+}
 TYPE_TARGET = {"integer": 0.242, "boolean": 0.212, "string": 0.197, "enum2": 0.121, "date_or_time": 0.106,
                "number": 0.106, "enum3": 0.015}
 CLASS_CAP = {"ordinary_conversation": 21}           # blueprint §4; every other class 13
@@ -115,6 +119,12 @@ def check(staged, english=None):
         problems.append("duplicate fixture ids")
     classes = sorted({f["task_class"] for f in fixtures})
     report["classes_checked"] = classes
+    report["composition"] = {
+        tc: dict(sorted(collections.Counter(
+            f"{SLOTS[f['fixture_id']]['phase']}_{SLOTS[f['fixture_id']]['role']}"
+            for f in fixtures if f["task_class"] == tc
+        ).items())) for tc in classes
+    }
     for tc in classes:
         want = sorted(fid for fid, s in SLOTS.items() if s["task_class"] == tc)
         have = sorted(f["fixture_id"] for f in fixtures if f["task_class"] == tc)
@@ -150,8 +160,10 @@ def check(staged, english=None):
         if set(f) != {"consequence_risk", "fixture_id", "input", "prompt", "task_class", "title",
                       "validator_profile"}:
             problems.append(f"{fid}: fixture keys differ from G-ROUTE3's fixture shape")
-        if g.get("reference_output") != g.get("expected") or not str(g.get("rationale", "")).strip():
-            problems.append(f"{fid}: reference_output differs from expected, or no rationale")
+        if not str(g.get("rationale", "")).strip():
+            problems.append(f"{fid}: no rationale")
+        if tc == "structured_extraction" and g.get("reference_output") != g.get("expected"):
+            problems.append(f"{fid}: extraction reference_output differs from expected")
         if tc == "structured_extraction" and set(g["expected"]) != set(f["input"]["schema"]):
             problems.append(f"{fid}: gold keys differ from the schema keys")
             continue
@@ -230,8 +242,63 @@ def check(staged, english=None):
             for k in d["derived_keys"]:
                 if str(schema[k]) == "string" and str(g["expected"][k]) not in f["input"]["text"]:
                     problems.append(f"{fid}: derived string {k} not found verbatim in the text")
+        elif tc == "hierarchical_semantic_synthesis":
+            inp, expected, reference = f["input"], g["expected"], g["reference_output"]
+            if set(inp) != {"allowed_conclusions", "conclusion_rule", "observations"}:
+                problems.append(f"{fid}: synthesis input keys differ from the frozen construct")
+                continue
+            observations = inp["observations"] if isinstance(inp.get("observations"), list) else []
+            ids = [str(row.get("id")) for row in observations if isinstance(row, dict)]
+            roles = {str(row.get("id")): str(row.get("role")) for row in observations if isinstance(row, dict)}
+            texts = {str(row.get("id")): str(row.get("text")) for row in observations if isinstance(row, dict)}
+            band = slot["features"]["obs_band"]
+            if len(observations) not in ({3, 4} if band == "small" else {5, 6}):
+                problems.append(f"{fid}: synthesis observation count {len(observations)} differs from {band} band")
+            if len(ids) != len(set(ids)) or any(set(row) != {"id", "role", "text"} for row in observations):
+                problems.append(f"{fid}: synthesis observations have duplicate ids or wrong keys")
+            counts = collections.Counter(roles.values())
+            mergeable = sorted(n for n in counts.values() if n > 1)
+            wanted_merge = slot["features"]["mergeable_pair"] == "yes"
+            if wanted_merge != (mergeable == [2]):
+                problems.append(f"{fid}: realized mergeable roles {mergeable} differ from plan")
+            if set(expected) != {"conclusion", "required_terms", "roles"}:
+                problems.append(f"{fid}: synthesis expected keys differ from G-ROUTE3 gold shape")
+            if expected.get("roles") != roles or set(expected.get("required_terms", {})) != set(ids):
+                problems.append(f"{fid}: synthesis gold roles or required-term bindings differ from observations")
+            if expected.get("conclusion") not in inp.get("allowed_conclusions", []):
+                problems.append(f"{fid}: synthesis conclusion is not allowed")
+            if expected.get("conclusion") != SYNTHESIS_CONCLUSION.get(slot["family"]):
+                problems.append(f"{fid}: synthesis conclusion differs from family semantics")
+            for oid, terms in expected.get("required_terms", {}).items():
+                if not isinstance(terms, list) or not terms or not all(str(term).casefold() in texts.get(oid, "").casefold()
+                                                                      for term in terms):
+                    problems.append(f"{fid}: required terms for {oid} are empty or not grounded")
+            statements = reference.get("statements") if isinstance(reference, dict) else None
+            if not isinstance(statements, list) or reference.get("conclusion") != expected.get("conclusion"):
+                problems.append(f"{fid}: synthesis reference output has wrong shape or conclusion")
+                statements = []
+            covered, merged = [], []
+            for row in statements:
+                if not isinstance(row, dict) or set(row) != {"statement_id", "role", "observation_ids", "text"}:
+                    problems.append(f"{fid}: synthesis reference statement has wrong keys")
+                    continue
+                bound = row["observation_ids"] if isinstance(row["observation_ids"], list) else []
+                covered.extend(bound)
+                bound_roles = {roles.get(str(oid)) for oid in bound}
+                if None in bound_roles or len(bound_roles) != 1 or row["role"] not in bound_roles:
+                    problems.append(f"{fid}: synthesis reference statement has mixed or incorrect roles")
+                if not all(texts.get(str(oid), "") in str(row["text"]) for oid in bound):
+                    problems.append(f"{fid}: synthesis reference statement does not preserve verbatim text")
+                if len(bound) > 1:
+                    merged.append(sorted(bound))
+            if sorted(covered) != sorted(ids) or len(covered) != len(set(covered)):
+                problems.append(f"{fid}: synthesis reference coverage is incomplete or duplicated")
+            expected_merged = [sorted(oid for oid, role in roles.items() if role == repeated)
+                               for repeated, n in counts.items() if n == 2]
+            if sorted(merged) != sorted(expected_merged):
+                problems.append(f"{fid}: synthesis reference merge does not match planned pair")
         # the frozen validators must accept the gold, operationally and semantically
-        ref = json.dumps(g["expected"])
+        ref = json.dumps(g["reference_output"])
         op = validate_operational(f, ref)
         if not op["accepted"]:
             problems.append(f"{fid}: operational validator rejects gold: {op.get('reasons')}")
@@ -322,7 +389,8 @@ def check(staged, english=None):
             problems.append(f"{f['fixture_id']}: detected entities not declared as invented: {sorted(undeclared)}")
         if len(d["invented_names"]) + len(d["identifiers"]) > 6:
             problems.append(f"{f['fixture_id']}: more than 6 new names and identifiers")
-        missing_ids = set(IDENT.findall(f["input"]["text"])) - set(d["identifiers"])
+        input_text = f["input"].get("text", "") if isinstance(f.get("input"), dict) else ""
+        missing_ids = set(IDENT.findall(input_text)) - set(d["identifiers"])
         if missing_ids:
             problems.append(f"{f['fixture_id']}: identifiers in the text not declared: {sorted(missing_ids)}")
         for n in d["invented_names"]:
@@ -399,13 +467,19 @@ def check(staged, english=None):
     report["o6"] = {"g4_values_compared_by_class": dict(compared), "collisions": len(collisions),
                     "pool": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures"}
 
-    # ---- N1 canonical gold uniqueness (extraction: the expected object)
+    # ---- N1 canonical gold uniqueness
     canon = collections.defaultdict(list)
     for f, g, src in pool:
         if f["task_class"] == "structured_extraction":
-            canon[json.dumps(g["expected"], sort_keys=True, separators=(",", ":"), ensure_ascii=False)].append(
-                f["fixture_id"])
-    dup = [w for w in canon.values() if len(w) > 1]
+            value = g["expected"]
+        elif f["task_class"] == "hierarchical_semantic_synthesis":
+            value = {"roles": g["expected"]["roles"], "conclusion": g["expected"]["conclusion"]}
+        else:
+            continue
+        canon[json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)].append(
+            (src, f["fixture_id"]))
+    dup = [[fid for _, fid in owners] for owners in canon.values()
+           if len(owners) > 1 and any(src == "G4" for src, _ in owners)]
     for w in dup:
         problems.append(f"N1 identical canonical gold: {w}")
     report["n1_duplicates"] = len(dup)
