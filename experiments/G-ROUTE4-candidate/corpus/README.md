@@ -1,11 +1,12 @@
 # G-ROUTE4 corpus authoring (pre-seal staging)
 
 Authored to the frozen blueprint at commit `1156d06`. Nothing here is sealed or adjudicated, and no model has been
-contacted. **Status: Structured Extraction and Hierarchical Semantic Synthesis authored; the other three classes are not started.**
+contacted. **Status: Structured Extraction, Hierarchical Semantic Synthesis and Reflective Planning authored;
+Conversation and Research are not started.**
 
-**Not committed on purpose.** The seal must be the single commit on `main` whose parent is `1156d06`
-(`BLUEPRINT_FREEZE.json`, `seal_requirement`). Any earlier commit on `main` would break that, so this folder stays in
-the working tree until the seal.
+**Not on `main` on purpose.** The seal must be the single commit on `main` whose parent is `1156d06`
+(`BLUEPRINT_FREEZE.json`, `seal_requirement`). Any earlier commit on `main` would break that, so this folder lives only
+on the `g-route4/authoring-staging` branch until the seal. That branch is never merged.
 
 ## Files
 
@@ -18,15 +19,19 @@ the working tree until the seal.
 | `check_corpus.py` | Every text-dependent rule of blueprint §3, §4, §6, §7 and §13. Writes `staging/CHECK_REPORT.json`. |
 | `test_check_corpus.py` | Plants one defect per rule and confirms the checker catches each (16 of 16). |
 | `test_synthesis_corpus.py` | Plants nine Synthesis-specific defects and confirms every new check fires over the combined pool. |
+| `author_planning.py` | The 100 planning slots: 100 fresh scenarios (30 R1, 30 R2, 30 R3, 10 R4), each cut to its slot's frozen family counts. Gold is computed from the prefix rule, the precedence chain, the addresses and the holding codes. Replays all 492 earlier names, then assigns ordinals 493–592. Writes `staging/planning.json`. |
+| `test_planning_corpus.py` | Plants 19 Planning and supplementary-identifier defects and confirms each fires over the combined pool. |
 
 Run:
 
 ```
 python -B author_extraction.py
 python -B author_synthesis.py
-python -B check_corpus.py staging/extraction.json staging/synthesis.json
+python -B author_planning.py
+python -B check_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json
 python -B test_check_corpus.py staging/extraction.json
 python -B test_synthesis_corpus.py staging/extraction.json staging/synthesis.json
+python -B test_planning_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json
 ```
 
 ## Decisions recorded for review
@@ -64,3 +69,44 @@ python -B test_synthesis_corpus.py staging/extraction.json staging/synthesis.jso
   to three; sector-specific scenario replacements reduced it to one. `B4-SYNTH-R2-18` then received a fresh
   discrepancy-note rendering, preserving SY2, `mergeable_pair=no` and `obs_band=small`. The final combined maximum
   is 0.1929 with zero pairs above 0.20.
+
+### Planning
+
+- **Finding: G-ROUTE3's frozen identifier detector is dead code.** In `tools/g_route3_independence.py`, line 57
+  wraps the identifier pattern in literal backspace bytes (`\x08`). It therefore never matches, and only
+  capitalized-name detection works. G-ROUTE3's own "0 shared identifiers" and the Extraction staging report's
+  identifier claim both rested on it. The frozen tool is untouched. `check_corpus.py` adds a separately reported
+  **supplementary** screen with the evident intended pattern (`\b…\b`), excluding the design's structural ids. It
+  finds 17 G-ROUTE4 and 11 G-ROUTE3 identifiers, with 0 shared. How the forked detector handles this is an operator
+  decision before the fork and seal.
+- **Metadata fix from that screen.** `B4-EXTR-R2-15` had declared its identifier as `KV-3390.`, with a trailing
+  period. It now declares `KV-3390`, and no fixture or gold byte changed.
+- **Name continuity.** The script replays and asserts all 492 Extraction and Synthesis draws, then assigns one name
+  per planning fixture (ordinals 493–592).
+- **PL5 reading.** "One action addresses two evidence items" is realized strictly: exactly one allowed action has
+  exactly two addresses, and every other action has one. The existential reading ("some action addresses two")
+  would hold in every family and make PL5 indistinguishable. To keep the marker unique, every other family has at
+  least two multi-address actions, and both properties are checked.
+- **Construction conventions (checked, not frozen rules).**
+  - Evidence F1 is a context fact, followed by the precedences and then the unknown statements. Precedences are in
+    chain order, except PL4, which lists them out of order as frozen.
+  - Offered uncertainty codes are max(2, holding + 1), so at least one code never holds.
+  - Evidence ids stay single-digit structural ids.
+- **No frozen 40-verb list.** The blueprint's capacity arithmetic (`build_blueprint.py`) mentions "a frozen 40-verb
+  list × invented object names", but no such list is frozen anywhere. Actions are plain snake_case English. All 515
+  are unique across G-ROUTE4 and against G-ROUTE3, which is checked both by the §4 action rule and by O6.
+- **O5 stays vacuous for Planning.** The pool is 116 and the threshold is 29, while the largest planning family has
+  19 fixtures. The checker reports the 34 boilerplate trigrams, none of which is specific to one family.
+- **Similarity replacements.** Three drafts were too close in substance to a G-ROUTE3 planning item, and one had an
+  excluded action that echoed one. All were changed with each slot's family and precedence form preserved:
+
+  | Slot | Draft | G-ROUTE3 item it resembled | Replacement |
+  |---|---|---|---|
+  | B4-PLAN-R3-11 | authentication log archive (size, verified copy, delete excluded) | A-PLAN-R2-1 invoice archive migration | staff photo consent refresh |
+  | B4-PLAN-R3-18 | app key inventory (owners and scopes, rotate excluded) | A-PLAN-R3-2 admin password change | claims office clear-desk sweep |
+  | A4-PLAN-R2-04 | expense consolidation with category coding | A-PLAN-R2-2 budget spreadsheet categories | category step and code reworded |
+  | B4-PLAN-R3-01 | contractor offboarding with `wipe_contractor_laptop` excluded | A-PLAN-R3-1 remote wipe | excluded action changed to `disable_contractor_logins` |
+- **Wording fix.** 33 plural uncertainty subjects (for example "the exhibitor rules") were made singular, so every
+  condition "evidence says … is unknown" and every matching evidence sentence is grammatical.
+- **Result.** Planning alone: 100 fixtures, 0 problems, maximum Jaccard 0.0619. Combined corpus: 306 fixtures, 0
+  problems. Adversarial suites: 19/19 (Planning), 16/16 (Extraction), 9/9 (Synthesis).

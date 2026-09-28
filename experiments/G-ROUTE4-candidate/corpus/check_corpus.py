@@ -42,11 +42,51 @@ SYNTHESIS_CONCLUSION = {
     "SY1": "cause_established", "SY2": "cause_unresolved", "SY3": "insufficient_evidence",
     "SY4": "decision_reserved", "SY5": "constraint_breached", "SY6": "behavior_by_design",
 }
+# Planning: forbidden prefixes are read from the frozen rule body itself; family counts from blueprint §2.
+PLAN_FORBIDDEN = tuple(p.strip() for p in re.search(
+    r"except those whose name begins with one of: ([a-z, ]+)\.",
+    TEMPLATES["reflective_planning"]["rule_body"]).group(1).split(","))
+PLAN_FAMILY = {"PL1": (4, 1, 1), "PL2": (3, 2, 0), "PL3": (5, 1, 2), "PL4": (4, 2, 1), "PL5": (3, 1, 1),
+               "PL6": (5, 0, 1)}                   # included, excluded, holding codes
+PLAN_FORM = {"before": "must precede", "after": "may start only after"}
+
+
+def plan_sentence(form, before, after):
+    if form == "before":
+        return f"{before[0].upper() + before[1:]} must precede {after}."
+    return f"{after[0].upper() + after[1:]} may start only after {before}."
+
+
 TYPE_TARGET = {"integer": 0.242, "boolean": 0.212, "string": 0.197, "enum2": 0.121, "date_or_time": 0.106,
                "number": 0.106, "enum3": 0.015}
 CLASS_CAP = {"ordinary_conversation": 21}           # blueprint §4; every other class 13
 CELL_CAP = {"ordinary_conversation": 9}             # every other class 6
 IDENT = re.compile(r"([A-Z]{1,5}-?\d[\w.-]*)")
+# Supplementary identifier screen. G-ROUTE3's frozen detector wraps its identifier pattern in literal backspace
+# bytes (tools/g_route3_independence.py line 57), so its identifier branch never matches. This screen uses the
+# evident intended pattern, is reported separately, and never replaces the frozen detector.
+IDENT_INTENDED = re.compile(r"\b([A-Z]{1,5}-?\d[\w.-]*)\b")
+STRUCTURAL_KEYS = {"id", "source_id", "claim_id", "statement_id", "addresses", "citations", "observation_ids",
+                   "evidence_ids", "depends_on", "label", "option_label"}
+
+
+def structural_ids(value, key=None):
+    """Values of the design's structural-id fields that fully match [A-Z][0-9]+ (excluded by the design)."""
+    out = set()
+    if isinstance(value, dict):
+        for k, v in value.items():
+            out |= structural_ids(v, k)
+    elif isinstance(value, list):
+        for v in value:
+            out |= structural_ids(v, key)
+    elif isinstance(value, str) and key in STRUCTURAL_KEYS and re.fullmatch(r"[A-Z][0-9]+", value):
+        out.add(value)
+    return out
+
+
+def intended_identifiers(fixture, text):
+    skip = structural_ids(fixture.get("input", {}))
+    return {m for m in IDENT_INTENDED.findall(text) if not re.fullmatch(r"[A-Z]\d", m) and m not in skip}
 
 
 def sha(text: str) -> str:
@@ -145,6 +185,7 @@ def check(staged, english=None):
     # ---- per-fixture structure
     type_counts = {"A": collections.Counter(), "B": collections.Counter()}
     absence_values = collections.Counter()
+    plan_stats = collections.defaultdict(collections.Counter)
     for f in fixtures:
         fid = f["fixture_id"]
         slot, g, d = SLOTS.get(fid), gold_by.get(fid), design_by.get(fid)
@@ -297,6 +338,99 @@ def check(staged, english=None):
                                for repeated, n in counts.items() if n == 2]
             if sorted(merged) != sorted(expected_merged):
                 problems.append(f"{fid}: synthesis reference merge does not match planned pair")
+        elif tc == "reflective_planning":
+            inp, expected = f["input"], g["expected"]
+            family, form = slot["family"], slot["features"]["precedence_form"]
+            if set(inp) != {"allowed_actions", "allowed_uncertainty_codes", "authority", "evidence", "objective"} \
+                    or inp.get("authority") != "planning_only":
+                problems.append(f"{fid}: planning input keys or authority differ from the frozen construct")
+                continue
+            if g.get("reference_output") != expected:
+                problems.append(f"{fid}: planning reference_output differs from expected")
+            if not isinstance(inp["objective"], str) or inp["objective"] not in opening:
+                problems.append(f"{fid}: planning objective is not stated in the opening")
+            evidence = {row["id"]: row["text"] for row in inp["evidence"]}
+            eids = [row["id"] for row in inp["evidence"]]
+            if len(set(eids)) != len(eids) or any(not re.fullmatch(r"F[1-9]", e) for e in eids):
+                problems.append(f"{fid}: planning evidence ids are not distinct single-digit structural ids")
+            actions = [row["action"] for row in inp["allowed_actions"]]
+            addr = {row["action"]: list(row["addresses"]) for row in inp["allowed_actions"]}
+            if len(set(actions)) != len(actions) or any(not re.fullmatch(r"[a-z][a-z0-9_]*", a) for a in actions):
+                problems.append(f"{fid}: planning action names repeat or are not snake_case")
+            if any(e not in evidence for a in addr for e in addr[a]):
+                problems.append(f"{fid}: planning address cites unknown evidence")
+            included = [a for a in actions if not a.startswith(PLAN_FORBIDDEN)]
+            excluded = [a for a in actions if a.startswith(PLAN_FORBIDDEN)]
+            n_in, n_ex, n_hold = PLAN_FAMILY[family]
+            if (len(included), len(excluded)) != (n_in, n_ex):
+                problems.append(f"{fid}: planning included/excluded counts {len(included)}/{len(excluded)} differ "
+                                f"from family {family} ({n_in}/{n_ex})")
+            if sorted(excluded) != sorted(d.get("excluded_actions", [])):
+                problems.append(f"{fid}: declared excluded actions differ from the forbidden-prefix rule")
+            # precedences: every pair stated in the slot's form, verbatim; none in the other form
+            pairs, gerunds = d.get("precedence_pairs", []), d.get("gerunds", {})
+            if set(gerunds) != set(included):
+                problems.append(f"{fid}: planning gerund map does not cover exactly the included actions")
+            for x, y, eid in pairs:
+                if x not in gerunds or y not in gerunds or \
+                        evidence.get(eid) != plan_sentence(form, gerunds[x], gerunds[y]):
+                    problems.append(f"{fid}: precedence {x} -> {y} is not stated in the '{form}' form at {eid}")
+            other = PLAN_FORM["after" if form == "before" else "before"]
+            if any(other in t for t in evidence.values()):
+                problems.append(f"{fid}: evidence uses the other precedence form ('{other}')")
+            if sum(PLAN_FORM[form] in t for t in evidence.values()) != len(pairs):
+                problems.append(f"{fid}: precedence statements in evidence differ from the declared pairs")
+            succ = {x: y for x, y, _ in pairs}
+            starts = [a for a in included if a not in succ.values()]
+            order = []
+            if len(starts) == 1 and len(succ) == len(pairs):
+                a = starts[0]
+                while a is not None and a not in order:
+                    order.append(a)
+                    a = succ.get(a)
+            if sorted(order) != sorted(included) or len(order) != len(included):
+                problems.append(f"{fid}: stated precedences do not give a unique total order of the included actions")
+            listed = [eids.index(eid) for _, _, eid in pairs if eid in eids]
+            if family == "PL4" and listed == sorted(listed):
+                problems.append(f"{fid}: PL4 precedences are not listed out of order")
+            if family != "PL4" and listed != sorted(listed):
+                problems.append(f"{fid}: precedences listed out of order outside PL4")
+            multi = [a for a in actions if len(addr[a]) > 1]
+            if family == "PL5" and not (len(multi) == 1 and len(addr[multi[0]]) == 2 and
+                                         all(len(addr[a]) == 1 for a in actions if a not in multi)):
+                problems.append(f"{fid}: PL5 needs exactly one action addressing two evidence items, others one")
+            if family != "PL5" and len(multi) == 1:
+                problems.append(f"{fid}: exactly one multi-address action outside PL5 (PL5's marker)")
+            # uncertainty codes: holding iff the evidence says the condition's subject is unknown
+            codes, holding, bad = inp["allowed_uncertainty_codes"], [], False
+            things = []
+            for row in codes:
+                m = re.fullmatch(r"evidence says (.+) is unknown", str(row.get("condition", "")))
+                if not m or set(row) != {"code", "condition"}:
+                    bad = True
+                    continue
+                things.append(m.group(1).casefold())
+                if any(f"{m.group(1)} is unknown".casefold() in t.casefold() for t in evidence.values()):
+                    holding.append(row["code"])
+            if bad:
+                problems.append(f"{fid}: planning uncertainty code without a parsable condition")
+            if len(holding) != n_hold or len(codes) <= len(holding):
+                problems.append(f"{fid}: {len(holding)} holding of {len(codes)} codes; family {family} needs "
+                                f"{n_hold} holding and at least one non-holding")
+            stray = [t for t in evidence.values() if " is unknown" in t
+                     and not any(f"{th} is unknown" in t.casefold() for th in things)]
+            if stray:
+                problems.append(f"{fid}: evidence states an unknown that no offered code covers")
+            recomputed = {
+                "claims_completed": False, "requested_authority": [],
+                "steps": [{"action": a, "depends_on": [] if i == 0 else [f"P{i}"],
+                           "evidence_ids": sorted(addr[a]), "id": f"P{i + 1}"} for i, a in enumerate(order)],
+                "uncertainties": sorted(holding)}
+            if expected != recomputed:
+                problems.append(f"{fid}: planning gold differs from the gold recomputed from input and the rule body")
+            plan_stats[family]["fixtures"] += 1
+            plan_stats[family]["multi_address_actions_" + str(len(multi))] += 1
+            plan_stats["forms"][form] += 1
         # the frozen validators must accept the gold, operationally and semantically
         ref = json.dumps(g["reference_output"])
         op = validate_operational(f, ref)
@@ -318,6 +452,26 @@ def check(staged, english=None):
         report["extraction_type_mix_max_deviation"] = round(max(abs(mix[p][t] - TYPE_TARGET[t])
                                                                 for p in mix if mix[p] for t in TYPE_TARGET), 3)
         report["absence_field_gold_values"] = dict(absence_values)
+
+    # ---- planning action names unique across every planning fixture (blueprint §4), and against G-ROUTE3's
+    plan_rows = [(f, "G4") for f in fixtures if f["task_class"] == "reflective_planning"]
+    if plan_rows:
+        plan_rows += [(f, "G3") for f, _ in g3_fixtures() if f["task_class"] == "reflective_planning"]
+        action_owners = collections.defaultdict(set)
+        for f, src in plan_rows:
+            for row in f["input"]["allowed_actions"]:
+                action_owners[row["action"]].add((src, f["fixture_id"]))
+        repeated = {a: sorted(fid for _, fid in w) for a, w in action_owners.items()
+                    if len({fid for _, fid in w}) > 1 and any(s == "G4" for s, _ in w)}
+        for a, w in sorted(repeated.items()):
+            problems.append(f"planning action name {a!r} repeated across fixtures: {w}")
+        report["planning"] = {
+            "families": {fam: dict(c) for fam, c in sorted(plan_stats.items()) if fam != "forms"},
+            "precedence_forms": dict(plan_stats["forms"]),
+            "g4_action_names": sum(1 for a, w in action_owners.items() if any(s == "G4" for s, _ in w)),
+            "repeated_action_names": len(repeated),
+            "forbidden_prefixes": list(PLAN_FORBIDDEN),
+            "fine_signature": "exempt (declared in the design; planning and synthesis)"}
 
     # ---- caps (blueprint §4)
     for tc in classes:
@@ -376,6 +530,27 @@ def check(staged, english=None):
                              "g3_entities_compared": len({x for f, _ in g3 for x in ents[f["fixture_id"]]}),
                              "shared": len(shared), "scope": "all authored G-ROUTE4 fixtures of every class, "
                              "main and reserve, pairwise and against all G-ROUTE3 A and B fixtures"}
+    # supplementary identifier screen (see IDENT_INTENDED): 0 shared, and every G-ROUTE4 identifier declared
+    id_owners = collections.defaultdict(set)
+    for f, _, src in pool:
+        found = intended_identifiers(f, content[id(f)])
+        for x in found:
+            id_owners[x].add((src, f["fixture_id"]))
+        if src == "G4":
+            undeclared_ids = found - set(design_by[f["fixture_id"]]["identifiers"])
+            if undeclared_ids:
+                problems.append(f"{f['fixture_id']}: identifiers not declared (supplementary screen): "
+                                f"{sorted(undeclared_ids)}")
+    shared_ids = {x: sorted(fid for _, fid in w) for x, w in id_owners.items()
+                  if len({fid for _, fid in w}) > 1 and any(src == "G4" for src, _ in w)}
+    for x, w in sorted(shared_ids.items()):
+        problems.append(f"O3 supplementary: shared identifier {x!r}: {w}")
+    report["o3_identifiers_supplementary"] = {
+        "g4_identifiers": len({x for x, w in id_owners.items() if any(s == "G4" for s, _ in w)}),
+        "g3_identifiers": len({x for x, w in id_owners.items() if any(s == "G3" for s, _ in w)}),
+        "shared": len(shared_ids),
+        "note": "the frozen G-ROUTE3 detector's identifier branch never matches (literal backspace bytes); this "
+                "supplementary screen uses the intended pattern and excludes the design's structural ids"}
     # declared names: every detected entity is declared; cap 6; screens
     all_names = collections.Counter()
     g3_names = {x.casefold() for f, _ in g3 for x in ents[f["fixture_id"]]}
@@ -390,7 +565,7 @@ def check(staged, english=None):
         if len(d["invented_names"]) + len(d["identifiers"]) > 6:
             problems.append(f"{f['fixture_id']}: more than 6 new names and identifiers")
         input_text = f["input"].get("text", "") if isinstance(f.get("input"), dict) else ""
-        missing_ids = set(IDENT.findall(input_text)) - set(d["identifiers"])
+        missing_ids = {i.rstrip(".") for i in IDENT.findall(input_text)} - set(d["identifiers"])
         if missing_ids:
             problems.append(f"{f['fixture_id']}: identifiers in the text not declared: {sorted(missing_ids)}")
         for n in d["invented_names"]:
@@ -474,6 +649,8 @@ def check(staged, english=None):
             value = g["expected"]
         elif f["task_class"] == "hierarchical_semantic_synthesis":
             value = {"roles": g["expected"]["roles"], "conclusion": g["expected"]["conclusion"]}
+        elif f["task_class"] == "reflective_planning":
+            value = g["expected"]
         else:
             continue
         canon[json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)].append(

@@ -1089,7 +1089,7 @@ def build():
                        "family": slot["family"], "features": slot["features"],
                        "derived_keys": [d.split(" is ", 1)[0] for d in spec["defs"]],
                        "absence_sentence": spec["absence"], "invented_names": names,
-                       "identifiers": sorted(set(IDENT.findall(text)))})
+                       "identifiers": sorted({i.rstrip(".") for i in IDENT.findall(text)})})
     missing = sorted(set(SLOTS) - {f["fixture_id"] for f in fixtures})
     return {"schema_version": "g-route4.authoring-staging.v1", "task_class": "structured_extraction",
             "blueprint_commit": "1156d06", "status": "authored, not sealed, not adjudicated",

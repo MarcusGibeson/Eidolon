@@ -1,10 +1,17 @@
 {
  "classes_checked": [
   "hierarchical_semantic_synthesis",
+  "reflective_planning",
   "structured_extraction"
  ],
  "composition": {
   "hierarchical_semantic_synthesis": {
+   "A_main": 16,
+   "A_reserve": 16,
+   "B_main": 55,
+   "B_reserve": 13
+  },
+  "reflective_planning": {
    "A_main": 16,
    "A_reserve": 16,
    "B_main": 55,
@@ -42,6 +49,56 @@
   "not_provided": 13,
   "provided": 5
  },
+ "planning": {
+  "families": {
+   "PL1": {
+    "fixtures": 19,
+    "multi_address_actions_4": 19
+   },
+   "PL2": {
+    "fixtures": 17,
+    "multi_address_actions_2": 17
+   },
+   "PL3": {
+    "fixtures": 17,
+    "multi_address_actions_5": 17
+   },
+   "PL4": {
+    "fixtures": 15,
+    "multi_address_actions_4": 15
+   },
+   "PL5": {
+    "fixtures": 17,
+    "multi_address_actions_1": 17
+   },
+   "PL6": {
+    "fixtures": 15,
+    "multi_address_actions_5": 15
+   }
+  },
+  "precedence_forms": {
+   "before": 51,
+   "after": 49
+  },
+  "g4_action_names": 515,
+  "repeated_action_names": 0,
+  "forbidden_prefixes": [
+   "adopt",
+   "apply",
+   "approve",
+   "delete",
+   "deploy",
+   "disable",
+   "execute",
+   "pay",
+   "release",
+   "remove",
+   "rotate",
+   "transfer",
+   "wipe"
+  ],
+  "fine_signature": "exempt (declared in the design; planning and synthesis)"
+ },
  "caps": {
   "hierarchical_semantic_synthesis": {
    "b_main_family_counts": {
@@ -51,6 +108,16 @@
     "SY4": 10,
     "SY5": 9,
     "SY6": 9
+   }
+  },
+  "reflective_planning": {
+   "b_main_family_counts": {
+    "PL1": 10,
+    "PL2": 9,
+    "PL3": 9,
+    "PL4": 9,
+    "PL5": 9,
+    "PL6": 9
    }
   },
   "structured_extraction": {
@@ -66,14 +133,20 @@
  },
  "fine_signature_clashes": 0,
  "o3_entities": {
-  "g4_fixtures": 206,
-  "g4_entities": 485,
+  "g4_fixtures": 306,
+  "g4_entities": 585,
   "g3_entities_compared": 21,
   "shared": 0,
   "scope": "all authored G-ROUTE4 fixtures of every class, main and reserve, pairwise and against all G-ROUTE3 A and B fixtures"
  },
+ "o3_identifiers_supplementary": {
+  "g4_identifiers": 17,
+  "g3_identifiers": 11,
+  "shared": 0,
+  "note": "the frozen G-ROUTE3 detector's identifier branch never matches (literal backspace bytes); this supplementary screen uses the intended pattern and excludes the design's structural ids"
+ },
  "names": {
-  "invented_names": 492,
+  "invented_names": 592,
   "max_per_fixture": 5,
   "english_vocabulary_screen": true
  },
@@ -85,6 +158,17 @@
    "max_pair": [
     "B4-SYNTH-R3-10",
     "A4-SYNTH-R4-X04"
+   ],
+   "pairs_over_bound": 0,
+   "o5_single_family_boilerplate": 0
+  },
+  "reflective_planning": {
+   "pool": 116,
+   "boilerplate_trigrams": 34,
+   "max_jaccard": 0.0619,
+   "max_pair": [
+    "B4-PLAN-R1-07",
+    "A4-PLAN-R1-X03"
    ],
    "pairs_over_bound": 0,
    "o5_single_family_boilerplate": 0
@@ -103,7 +187,8 @@
  },
  "o6": {
   "g4_values_compared_by_class": {
-   "structured_extraction": 118
+   "structured_extraction": 118,
+   "reflective_planning": 615
   },
   "collisions": 0,
   "pool": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures"
