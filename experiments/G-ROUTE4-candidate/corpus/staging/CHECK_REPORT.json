@@ -1,0 +1,93 @@
+{
+ "classes_checked": [
+  "structured_extraction"
+ ],
+ "extraction_type_mix_realized": {
+  "A": {
+   "integer": 0.25,
+   "boolean": 0.188,
+   "string": 0.156,
+   "enum2": 0.125,
+   "date_or_time": 0.109,
+   "number": 0.141,
+   "enum3": 0.031
+  },
+  "B": {
+   "integer": 0.234,
+   "boolean": 0.216,
+   "string": 0.186,
+   "enum2": 0.117,
+   "date_or_time": 0.103,
+   "number": 0.093,
+   "enum3": 0.052
+  }
+ },
+ "extraction_type_mix_max_deviation": 0.041,
+ "absence_field_gold_values": {
+  "not_provided": 13,
+  "provided": 5
+ },
+ "caps": {
+  "structured_extraction": {
+   "b_main_family_counts": {
+    "EX1": 9,
+    "EX2": 9,
+    "EX3": 9,
+    "EX4": 9,
+    "EX5": 9,
+    "EX6": 10
+   }
+  }
+ },
+ "fine_signature_clashes": 0,
+ "o3_entities": {
+  "g4_fixtures": 106,
+  "g4_entities": 89,
+  "g3_entities_compared": 21,
+  "shared": 0,
+  "scope": "all authored G-ROUTE4 fixtures of every class, main and reserve, pairwise and against all G-ROUTE3 A and B fixtures"
+ },
+ "names": {
+  "invented_names": 96,
+  "max_per_fixture": 4,
+  "english_vocabulary_screen": true
+ },
+ "trigram": {
+  "structured_extraction": {
+   "pool": 122,
+   "boilerplate_trigrams": 6,
+   "max_jaccard": 0.1224,
+   "max_pair": [
+    "A4-EXTR-R4-03",
+    "A4-EXTR-R4-X03"
+   ],
+   "pairs_over_bound": 0,
+   "o5_single_family_boilerplate": 0
+  }
+ },
+ "o6": {
+  "g4_values_compared_by_class": {
+   "structured_extraction": 118
+  },
+  "collisions": 0,
+  "pool": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures"
+ },
+ "n1_duplicates": 0,
+ "english_vocabulary": {
+  "sources": [
+   {
+    "file": "~\\.vscode\\extensions\\streetsidesoftware.code-spell-checker-4.9.3\\node_modules\\@cspell\\dict-en_us\\en_US.trie.gz",
+    "sha256": "b2f9dfd3524d766f3b484381944b7f69e61eb295645524adb3c481a8e9bb003d",
+    "ascii_words": 221332
+   },
+   {
+    "file": "~\\.vscode\\extensions\\streetsidesoftware.code-spell-checker-4.9.3\\node_modules\\@cspell\\dict-en-gb-mit\\en_GB.trie.gz",
+    "sha256": "36d07d76f764ed2e3299c5bca2621de125eea32d24f78d5d92498361a6292922",
+    "ascii_words": 298522
+   }
+  ],
+  "lowercase_words": 359358
+ },
+ "problems": [],
+ "passed": true
+}
