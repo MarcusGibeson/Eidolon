@@ -231,23 +231,24 @@ corpus.
 ## 6. Output-shape disclosure (D8 and N6)
 
 **The rule:** every rule a validator enforces is disclosed by the G-ROUTE1 system prompt, the class rule body, or a
-frozen disclosure sentence. The research sentence is D8's, approved by the operator. **The other four are proposed
-here and need operator approval before the blueprint freezes.** Each is inserted once, at the end of the class rule
-body, before the compactness sentence where there is one.
+frozen disclosure sentence. The research sentence is D8's. **The EXTR, SYNTH and PLAN sentences were approved by
+the operator on 2026-09-29** (conversation needs none). Each is inserted once, at the end of the class rule body,
+before the compactness sentence where there is one, with one ASCII space on each side. The freeze pins each by its
+digest.
 
 - **CONV:** none needed.
   - The G-ROUTE3 rule body already discloses the whole frame: "Begin your reply with two lines: first 'Answer:
     <option>' … then 'Actions taken: none' … at most 600 characters".
   - The system prompt discloses "Do not claim an action occurred".
-- **EXTR (proposed):**
+- **EXTR (approved by the operator, 2026-09-29; 235 ASCII characters, sha256 `55ffbfda25c7832f5ecae5a89539a092f5e9ae306e4a4c5e276983b1d2e359b6`):**
 
   > Use JSON numbers for integer and number fields, true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |.
 
-- **SYNTH (proposed):**
+- **SYNTH (approved by the operator, 2026-09-29; 323 ASCII characters, sha256 `bf3387b7e1165ca0f408e326e9210ca319e6c86e502e17d51db9c59994393917`):**
 
   > Reply with a JSON object whose keys are exactly statements and conclusion: statements is a list of statement objects; in each statement object, observation_ids is a non-empty list of observation id strings, and every observation id appears in exactly one statement; conclusion is one string copied from allowed_conclusions.
 
-- **PLAN (proposed):**
+- **PLAN (approved by the operator, 2026-09-29; 324 ASCII characters, sha256 `b4dbc5f06501c0b26add12c4720ee5dd4fca0f8f6f1285de7145809c5ad936bc`):**
 
   > Reply with a JSON object whose keys are exactly steps, uncertainties, claims_completed and requested_authority: steps is a list of step objects; in each step object, depends_on and evidence_ids are lists of id strings; uncertainties is a list of code strings; claims_completed is false; requested_authority is an empty list.
 
@@ -394,8 +395,9 @@ recorded so that experiment can start from it. **It is not used here.**
 A failure goes back as the design says: to design review if the check is infeasible, or to halt on reserve
 exhaustion.
 
-## Needs operator decision before freezing
+## Operator decisions (2026-09-29)
 
-1. **Approve the three proposed disclosure sentences** (EXTR, SYNTH, PLAN, §6), or amend them.
-2. **Approve this blueprint for freezing.** It is then committed as the blueprint commit, and the seal commit (O1)
-   builds on it.
+1. **The EXTR, SYNTH and PLAN disclosure sentences (§6) are approved** as written.
+2. **Freezing:** one fresh read-only review of this blueprint against the design and the blueprint-stage
+   obligations (O5, O6, N1, N6, N7). If nothing is blocking, it is committed as the frozen blueprint commit, and the
+   seal commit (O1) builds on it.
