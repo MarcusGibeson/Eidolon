@@ -24,8 +24,8 @@ ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / "tools"))
 import g_route3_independence as I  # noqa: E402  (read-only)
-from g_route1_operational import validate_operational  # noqa: E402
-from g_route1_validators import validate_fixture_output  # noqa: E402
+from g_route3_operational import validate_operational  # noqa: E402
+from g_route3_semantics import validate_fixture_output  # noqa: E402
 from g_route3_conversation import canonical_value  # noqa: E402
 
 BP_DIR = ROOT / "experiments/G-ROUTE4-candidate/blueprint"
@@ -49,6 +49,84 @@ PLAN_FORBIDDEN = tuple(p.strip() for p in re.search(
 PLAN_FAMILY = {"PL1": (4, 1, 1), "PL2": (3, 2, 0), "PL3": (5, 1, 2), "PL4": (4, 2, 1), "PL5": (3, 1, 1),
                "PL6": (5, 0, 1)}                   # included, excluded, holding codes
 PLAN_FORM = {"before": "must precede", "after": "may start only after"}
+
+
+CONVERSATION_KEYS = {
+    ("CV1", 1): {"answer_options", "candidates", "message"},
+    ("CV1", 2): {"answer_options", "candidates", "maximum", "message", "minimum"},
+    ("CV2", 1): {"answer_options", "candidates", "duration_cap", "message", "target_minute"},
+    ("CV2", 2): {"answer_options", "candidates", "checkpoint_minute", "message", "target_minute"},
+    ("CV3", 1): {"answer_options", "candidates", "message", "source_cap", "target_converted"},
+    ("CV3", 2): {"answer_options", "candidates", "message", "target_converted", "target_net"},
+    ("CV4", 1): {"answer_options", "candidates", "message", "target_count", "target_secondary", "threshold"},
+    ("CV4", 2): {"answer_options", "candidates", "message", "target_count", "target_secondary", "threshold"},
+    ("CV5", 1): {"answer_options", "candidates", "message", "min_sample", "threshold"},
+    ("CV5", 2): {"adjustment", "answer_options", "candidates", "final_threshold", "message", "raw_threshold"},
+    ("CV6", 1): {"answer_options", "candidates", "message"},
+    ("CV6", 2): {"answer_options", "candidates", "message", "required_priority"},
+}
+
+
+def conversation_conditions(family, depth, inp):
+    """Independently recompute the two authoring conditions for every Conversation candidate."""
+    candidates = inp.get("candidates")
+    if not isinstance(candidates, list) or len(candidates) != 4 or not all(isinstance(c, dict) for c in candidates):
+        return [], ["candidates are not four objects"]
+    expected_fields = {
+        ("CV1", 1): {"condition_one", "condition_two"}, ("CV1", 2): {"adjustment", "base"},
+        ("CV2", 1): {"duration", "start"}, ("CV2", 2): {"first_leg", "second_leg", "start"},
+        ("CV3", 1): {"amount", "factor"}, ("CV3", 2): {"amount", "factor", "reserve"},
+        ("CV4", 1): {"values"}, ("CV4", 2): {"values"},
+        ("CV5", 1): {"denominator", "numerator", "sample_size"},
+        ("CV5", 2): {"denominator", "numerator"},
+        ("CV6", 1): {"exception_applies", "general_allowed", "priority"},
+        ("CV6", 2): {"exception_applies", "general_allowed", "priority"},
+    }[(family, depth)]
+    errors, results = [], []
+    for i, row in enumerate(candidates):
+        if set(row) != expected_fields:
+            errors.append(f"candidate {i + 1} keys differ from the family/depth construct")
+            continue
+        try:
+            if family == "CV1" and depth == 1:
+                pair = (row["condition_one"] is True, row["condition_two"] is True)
+            elif family == "CV1":
+                pair = (row["base"] >= inp["minimum"], row["base"] + row["adjustment"] <= inp["maximum"])
+            elif family == "CV2" and depth == 1:
+                arrival = row["start"] + row["duration"]
+                pair = (arrival == inp["target_minute"], row["duration"] <= inp["duration_cap"])
+            elif family == "CV2":
+                first = row["start"] + row["first_leg"]
+                pair = (first == inp["checkpoint_minute"], first + row["second_leg"] == inp["target_minute"])
+            elif family == "CV3" and depth == 1:
+                converted = row["amount"] * row["factor"]
+                pair = (converted == inp["target_converted"], row["amount"] <= inp["source_cap"])
+            elif family == "CV3":
+                converted = row["amount"] * row["factor"]
+                pair = (converted == inp["target_converted"], converted - row["reserve"] == inp["target_net"])
+            elif family == "CV4":
+                values = row["values"]
+                if not isinstance(values, list) or not values:
+                    raise TypeError("values must be a non-empty list")
+                qualifying = [v for v in values if v >= inp["threshold"]]
+                secondary = len(values) - len(qualifying) if depth == 1 else sum(qualifying)
+                pair = (len(qualifying) == inp["target_count"], secondary == inp["target_secondary"])
+            elif family == "CV5" and depth == 1:
+                percentage = 100 * row["numerator"] / row["denominator"]
+                pair = (percentage >= inp["threshold"], row["sample_size"] >= inp["min_sample"])
+            elif family == "CV5":
+                percentage = 100 * row["numerator"] / row["denominator"]
+                pair = (percentage >= inp["raw_threshold"],
+                        percentage - inp["adjustment"] >= inp["final_threshold"])
+            elif family == "CV6" and depth == 1:
+                pair = (row["general_allowed"] is True, row["exception_applies"] is False)
+            else:
+                pair = (row["general_allowed"] is True and row["priority"] >= inp["required_priority"],
+                        row["exception_applies"] is False)
+            results.append(pair)
+        except (KeyError, TypeError, ValueError, ZeroDivisionError) as exc:
+            errors.append(f"candidate {i + 1} cannot be evaluated: {exc}")
+    return results, errors
 
 
 def plan_sentence(form, before, after):
@@ -186,6 +264,7 @@ def check(staged, english=None):
     type_counts = {"A": collections.Counter(), "B": collections.Counter()}
     absence_values = collections.Counter()
     plan_stats = collections.defaultdict(collections.Counter)
+    conversation_stats = collections.defaultdict(collections.Counter)
     for f in fixtures:
         fid = f["fixture_id"]
         slot, g, d = SLOTS.get(fid), gold_by.get(fid), design_by.get(fid)
@@ -221,7 +300,57 @@ def check(staged, english=None):
             problems.append(f"{fid}: opening ends with a terminal period or whitespace")
         if TEMPLATES[tc]["disclosure_sentence"] and f["prompt"].count(TEMPLATES[tc]["disclosure_sentence"]) != 1:
             problems.append(f"{fid}: class disclosure sentence not present exactly once")
-        if tc == "structured_extraction":
+        if tc == "ordinary_conversation":
+            inp, expected = f["input"], g["expected"]
+            family, depth = slot["family"], slot["features"]["depth"]
+            if set(inp) != CONVERSATION_KEYS[(family, depth)]:
+                problems.append(f"{fid}: conversation input keys differ from the family/depth construct")
+                continue
+            options = inp.get("answer_options")
+            if not isinstance(options, list) or len(options) != 4:
+                problems.append(f"{fid}: conversation must have exactly 4 answer options")
+                options = options if isinstance(options, list) else []
+            canonical = [canonical_value(v) for v in options]
+            if len(canonical) != len(set(canonical)):
+                problems.append(f"{fid}: conversation options are not pairwise distinct under canonical_value")
+            if set(expected) != {"answer", "max_characters"} or expected.get("max_characters") != 600:
+                problems.append(f"{fid}: conversation gold keys or max_characters differ from the frozen contract")
+            position = slot["features"]["gold_position"] - 1
+            if position >= len(options) or expected.get("answer") != options[position]:
+                problems.append(f"{fid}: conversation gold answer is not at the frozen position")
+            if options != d.get("invented_names"):
+                problems.append(f"{fid}: conversation options differ from the declared global name draws")
+            results, errors = conversation_conditions(family, depth, inp)
+            for error in errors:
+                problems.append(f"{fid}: conversation {error}")
+            if len(results) == 4:
+                gold_positions = [i for i, pair in enumerate(results) if pair == (True, True)]
+                near_positions = [i for i, pair in enumerate(results) if pair == (True, False)]
+                far_positions = [i for i, pair in enumerate(results) if pair == (False, False)]
+                if gold_positions != [position]:
+                    problems.append(f"{fid}: conversation recomputed gold positions {gold_positions} differ from "
+                                    f"the frozen position {position}")
+                if len(near_positions) != 1 or len(far_positions) != 2 or any(pair == (False, True)
+                                                                             for pair in results):
+                    problems.append(f"{fid}: conversation needs exactly one first-condition-only near miss and "
+                                    "two zero-condition distractors")
+                near_option = options[near_positions[0]] if len(near_positions) == 1 else None
+                if d.get("near_miss_option") != near_option:
+                    problems.append(f"{fid}: declared near-miss option differs from the recomputed near miss")
+            if not isinstance(g.get("reference_output"), str):
+                problems.append(f"{fid}: conversation reference output is not text")
+            else:
+                expected_prefix = f"Answer: {expected.get('answer')}\nActions taken: none\n"
+                if not g["reference_output"].startswith(expected_prefix):
+                    problems.append(f"{fid}: conversation reference does not use the exact disclosed frame")
+            conversation_stats["families"][family] += 1
+            conversation_stats["depth"][str(depth)] += 1
+            conversation_stats[f"{slot['phase']}_{slot['role']}_positions"][str(position + 1)] += 1
+            conversation_stats["near_miss"]["compliant"] += int(len(results) == 4 and
+                                                                   results.count((True, False)) == 1 and
+                                                                   results.count((False, False)) == 2 and
+                                                                   results.count((True, True)) == 1)
+        elif tc == "structured_extraction":
             schema = f["input"]["schema"]
             types = sorted(abstract_type(str(t)) for t in schema.values())
             plan = sorted(slot["features"]["field_types"])
@@ -432,7 +561,7 @@ def check(staged, english=None):
             plan_stats[family]["multi_address_actions_" + str(len(multi))] += 1
             plan_stats["forms"][form] += 1
         # the frozen validators must accept the gold, operationally and semantically
-        ref = json.dumps(g["reference_output"])
+        ref = g["reference_output"] if isinstance(g["reference_output"], str) else json.dumps(g["reference_output"])
         op = validate_operational(f, ref)
         if not op["accepted"]:
             problems.append(f"{fid}: operational validator rejects gold: {op.get('reasons')}")
@@ -452,6 +581,52 @@ def check(staged, english=None):
         report["extraction_type_mix_max_deviation"] = round(max(abs(mix[p][t] - TYPE_TARGET[t])
                                                                 for p in mix if mix[p] for t in TYPE_TARGET), 3)
         report["absence_field_gold_values"] = dict(absence_values)
+
+    # ---- Conversation balance, reserve matching and authoring-rule summary (blueprint sections 3, 5 and 8)
+    conversation_fixtures = [f for f in fixtures if f["task_class"] == "ordinary_conversation"]
+    if conversation_fixtures:
+        positions = collections.defaultdict(collections.Counter)
+        for f in conversation_fixtures:
+            slot = SLOTS[f["fixture_id"]]
+            answer = gold_by[f["fixture_id"]]["expected"]["answer"]
+            try:
+                position = f["input"]["answer_options"].index(answer) + 1
+            except (KeyError, ValueError):
+                continue
+            positions[(slot["phase"], slot["role"], slot["risk"])][position] += 1
+        for risk in ("R1", "R2", "R3", "R4"):
+            if positions[("A", "main", risk)] != collections.Counter({1: 1, 2: 1, 3: 1, 4: 1}):
+                problems.append(f"ordinary_conversation {risk}: A main gold positions are not 1/1/1/1")
+        for risk in ("R1", "R2", "R3"):
+            if positions[("B", "main", risk)] != collections.Counter({1: 7, 2: 7, 3: 7, 4: 7}):
+                problems.append(f"ordinary_conversation {risk}: B main gold positions are not 7/7/7/7")
+        if positions[("B", "main", "R4")] != collections.Counter({1: 1}):
+            problems.append("ordinary_conversation R4: B main gold position is not the frozen position 1")
+
+        authored_slots = [SLOTS[f["fixture_id"]] for f in conversation_fixtures]
+        reserves = [s for s in authored_slots if s["role"] == "reserve"]
+        unmatched = []
+        for reserve in reserves:
+            matches = [s for s in authored_slots if s["phase"] == reserve["phase"] and
+                       s["risk"] == reserve["risk"] and s["role"] == "main" and
+                       s["features"] == reserve["features"] and
+                       (reserve["phase"] == "B" or s["family"] == reserve["family"])]
+            if not matches:
+                unmatched.append(reserve["fixture_id"])
+        if unmatched:
+            problems.append(f"ordinary_conversation reserves without a matching main slot: {sorted(unmatched)}")
+        report["conversation"] = {
+            "families": dict(sorted(conversation_stats["families"].items())),
+            "depth": dict(sorted(conversation_stats["depth"].items())),
+            "option_count": 4,
+            "fixtures_with_four_options": sum(len(f["input"].get("answer_options", [])) == 4
+                                              for f in conversation_fixtures),
+            "gold_positions": {"|".join(key): dict(sorted(value.items()))
+                               for key, value in sorted(positions.items())},
+            "near_miss_compliant": conversation_stats["near_miss"]["compliant"],
+            "reserves_checked": len(reserves), "reserve_mismatches": len(unmatched),
+            "fine_signature": "none (declared in the design; conversation relies on reasoning-pattern review)",
+        }
 
     # ---- planning action names unique across every planning fixture (blueprint §4), and against G-ROUTE3's
     plan_rows = [(f, "G4") for f in fixtures if f["task_class"] == "reflective_planning"]
@@ -651,6 +826,8 @@ def check(staged, english=None):
             value = {"roles": g["expected"]["roles"], "conclusion": g["expected"]["conclusion"]}
         elif f["task_class"] == "reflective_planning":
             value = g["expected"]
+        elif f["task_class"] == "ordinary_conversation":
+            value = canonical_value(g["expected"]["answer"]).casefold()
         else:
             continue
         canon[json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)].append(

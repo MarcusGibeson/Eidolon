@@ -1,8 +1,8 @@
 # G-ROUTE4 corpus authoring (pre-seal staging)
 
 Authored to the frozen blueprint at commit `1156d06`. Nothing here is sealed or adjudicated, and no model has been
-contacted. **Status: Structured Extraction, Hierarchical Semantic Synthesis and Reflective Planning authored;
-Conversation and Research are not started.**
+contacted. **Status: Structured Extraction, Hierarchical Semantic Synthesis, Reflective Planning and Ordinary
+Conversation authored; Research is not started.**
 
 **Not on `main` on purpose.** The seal must be the single commit on `main` whose parent is `1156d06`
 (`BLUEPRINT_FREEZE.json`, `seal_requirement`). Any earlier commit on `main` would break that, so this folder lives only
@@ -21,6 +21,8 @@ on the `g-route4/authoring-staging` branch until the seal. That branch is never 
 | `test_synthesis_corpus.py` | Plants nine Synthesis-specific defects and confirms every new check fires over the combined pool. |
 | `author_planning.py` | The 100 planning slots: 100 fresh scenarios (30 R1, 30 R2, 30 R3, 10 R4), each cut to its slot's frozen family counts. Gold is computed from the prefix rule, the precedence chain, the addresses and the holding codes. Replays all 492 earlier names, then assigns ordinals 493–592. Writes `staging/planning.json`. |
 | `test_planning_corpus.py` | Plants 19 Planning and supplementary-identifier defects and confirms each fires over the combined pool. |
+| `author_conversation.py` | The 142 Conversation slots, with exactly four options, recomputable family/depth conditions, frozen answer positions, one near miss and all reserves. Replays all 592 earlier names, then assigns ordinals 593–1160. Writes `staging/conversation.json`. |
+| `test_conversation_corpus.py` | Plants 16 Conversation, reserve, O6 and N1 defects and confirms each fires over the four-class pool. |
 
 Run:
 
@@ -28,10 +30,12 @@ Run:
 python -B author_extraction.py
 python -B author_synthesis.py
 python -B author_planning.py
-python -B check_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json
+python -B author_conversation.py
+python -B check_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json staging/conversation.json
 python -B test_check_corpus.py staging/extraction.json
 python -B test_synthesis_corpus.py staging/extraction.json staging/synthesis.json
 python -B test_planning_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json
+python -B test_conversation_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json staging/conversation.json
 ```
 
 ## Decisions recorded for review
@@ -110,3 +114,27 @@ python -B test_planning_corpus.py staging/extraction.json staging/synthesis.json
   condition "evidence says … is unknown" and every matching evidence sentence is grammatical.
 - **Result.** Planning alone: 100 fixtures, 0 problems, maximum Jaccard 0.0619. Combined corpus: 306 fixtures, 0
   problems. Adversarial suites: 19/19 (Planning), 16/16 (Extraction), 9/9 (Synthesis).
+
+### Conversation
+
+- **Frozen shape.** Every fixture has four invented-name options. The checker independently recomputes two
+  conditions from the supplied candidate data: exactly one option satisfies both, exactly one satisfies only the
+  first, and two satisfy neither. At depth 2 the near miss therefore completes the first step correctly and fails
+  the second. Gold position, the declared near miss, the 600-character contract and the disclosed frame are checked.
+- **Name continuity.** The author replays and asserts all 592 prior names, then assigns four names per Conversation
+  fixture, ordinals 593–1160. The frozen US and UK vocabulary digests are unchanged.
+- **Validator routing.** The authoring checker now calls G-ROUTE3's frozen operational and semantic wrappers. Those
+  wrappers implement the disclosed Conversation frame and delegate every other profile to the unchanged G-ROUTE1
+  validators. No validator source or accepted sentence changed.
+- **Identifier handling.** G-ROUTE3's historical backspace-regex defect remains untouched. The separately named
+  supplementary G-ROUTE4 screen remains required and reports zero shared identifiers.
+- **O5 remains non-triggerable for a Conversation-only family.** The class pool is 158, so boilerplate requires 40
+  occurrences, while the largest family has 24 fixtures. All 63 detected boilerplate trigrams are still checked;
+  zero are specific to one family.
+- **Similarity replacements.** The first compact numeric rendering failed 265 pairwise Jaccard checks. Adding
+  fixture-specific provenance context reduced this to 16 and then one. `B4-CONV-R3-X04` received one final fresh
+  provenance sentence while preserving CV6, depth 2, position 4 and its reserve match. The final maximum is 0.1953
+  (`B4-CONV-R1-28` vs `A4-CONV-R3-X04`), with zero pairs above 0.20.
+- **Result.** Conversation alone: 142 fixtures, 0 problems. Four-class corpus: 448 fixtures, 0 problems. All 142
+  fixtures have four options and one compliant near miss; all 41 reserves match; the Conversation adversarial suite
+  catches 16/16 planted defects.

@@ -1,6 +1,7 @@
 {
  "classes_checked": [
   "hierarchical_semantic_synthesis",
+  "ordinary_conversation",
   "reflective_planning",
   "structured_extraction"
  ],
@@ -10,6 +11,12 @@
    "A_reserve": 16,
    "B_main": 55,
    "B_reserve": 13
+  },
+  "ordinary_conversation": {
+   "A_main": 16,
+   "A_reserve": 16,
+   "B_main": 85,
+   "B_reserve": 25
   },
   "reflective_planning": {
    "A_main": 16,
@@ -48,6 +55,118 @@
  "absence_field_gold_values": {
   "not_provided": 13,
   "provided": 5
+ },
+ "conversation": {
+  "families": {
+   "CV1": 24,
+   "CV2": 24,
+   "CV3": 24,
+   "CV4": 22,
+   "CV5": 24,
+   "CV6": 24
+  },
+  "depth": {
+   "1": 76,
+   "2": 66
+  },
+  "option_count": 4,
+  "fixtures_with_four_options": 142,
+  "gold_positions": {
+   "A|main|R1": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1
+   },
+   "A|main|R2": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1
+   },
+   "A|main|R3": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1
+   },
+   "A|main|R4": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1
+   },
+   "A|reserve|R1": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1
+   },
+   "A|reserve|R2": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1
+   },
+   "A|reserve|R3": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1
+   },
+   "A|reserve|R4": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1
+   },
+   "B|main|R1": {
+    "1": 7,
+    "2": 7,
+    "3": 7,
+    "4": 7
+   },
+   "B|main|R2": {
+    "1": 7,
+    "2": 7,
+    "3": 7,
+    "4": 7
+   },
+   "B|main|R3": {
+    "1": 7,
+    "2": 7,
+    "3": 7,
+    "4": 7
+   },
+   "B|main|R4": {
+    "1": 1
+   },
+   "B|reserve|R1": {
+    "1": 2,
+    "2": 2,
+    "3": 2,
+    "4": 2
+   },
+   "B|reserve|R2": {
+    "1": 2,
+    "2": 2,
+    "3": 2,
+    "4": 2
+   },
+   "B|reserve|R3": {
+    "1": 2,
+    "2": 2,
+    "3": 2,
+    "4": 2
+   },
+   "B|reserve|R4": {
+    "1": 1
+   }
+  },
+  "near_miss_compliant": 142,
+  "reserves_checked": 41,
+  "reserve_mismatches": 0,
+  "fine_signature": "none (declared in the design; conversation relies on reasoning-pattern review)"
  },
  "planning": {
   "families": {
@@ -110,6 +229,16 @@
     "SY6": 9
    }
   },
+  "ordinary_conversation": {
+   "b_main_family_counts": {
+    "CV1": 14,
+    "CV2": 14,
+    "CV3": 14,
+    "CV4": 14,
+    "CV5": 14,
+    "CV6": 15
+   }
+  },
   "reflective_planning": {
    "b_main_family_counts": {
     "PL1": 10,
@@ -133,8 +262,8 @@
  },
  "fine_signature_clashes": 0,
  "o3_entities": {
-  "g4_fixtures": 306,
-  "g4_entities": 585,
+  "g4_fixtures": 448,
+  "g4_entities": 1153,
   "g3_entities_compared": 21,
   "shared": 0,
   "scope": "all authored G-ROUTE4 fixtures of every class, main and reserve, pairwise and against all G-ROUTE3 A and B fixtures"
@@ -146,7 +275,7 @@
   "note": "the frozen G-ROUTE3 detector's identifier branch never matches (literal backspace bytes); this supplementary screen uses the intended pattern and excludes the design's structural ids"
  },
  "names": {
-  "invented_names": 592,
+  "invented_names": 1160,
   "max_per_fixture": 5,
   "english_vocabulary_screen": true
  },
@@ -158,6 +287,17 @@
    "max_pair": [
     "B4-SYNTH-R3-10",
     "A4-SYNTH-R4-X04"
+   ],
+   "pairs_over_bound": 0,
+   "o5_single_family_boilerplate": 0
+  },
+  "ordinary_conversation": {
+   "pool": 158,
+   "boilerplate_trigrams": 63,
+   "max_jaccard": 0.1953,
+   "max_pair": [
+    "B4-CONV-R1-28",
+    "A4-CONV-R3-X04"
    ],
    "pairs_over_bound": 0,
    "o5_single_family_boilerplate": 0
@@ -188,7 +328,8 @@
  "o6": {
   "g4_values_compared_by_class": {
    "structured_extraction": 118,
-   "reflective_planning": 615
+   "reflective_planning": 615,
+   "ordinary_conversation": 568
   },
   "collisions": 0,
   "pool": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures"
