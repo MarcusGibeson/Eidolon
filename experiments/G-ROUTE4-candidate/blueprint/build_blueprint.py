@@ -588,7 +588,7 @@ SENTENCE_STATUS = {"structured_extraction": "approved 2026-09-29", "hierarchical
                    "approved 2026-09-29", "reflective_planning": "approved 2026-09-29",
                    "grounded_research_synthesis": "approved and amended after design review round 3 (D8)"}
 EX_ABSENCE = "Use 'not_provided' when the text says a value has not been provided."
-EX_ABSENCE_STATUS = "PENDING operator approval (G-ROUTE3's own sentence, carried verbatim)"
+EX_ABSENCE_STATUS = "approved 2026-09-29 (G-ROUTE3's own sentence, carried verbatim)"
 RESEARCH_ANCHOR = "Each claim object has exactly the keys claim_id, status, citations and lineages."
 COMPACT = "Keep the reply compact:"
 

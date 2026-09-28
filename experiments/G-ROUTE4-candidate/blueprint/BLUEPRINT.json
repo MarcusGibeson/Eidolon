@@ -8037,7 +8037,7 @@
   "structured_extraction": {
    "absence_sentence": "Use 'not_provided' when the text says a value has not been provided.",
    "absence_sentence_sha256": "d8b760630cea0af5d2612fa208bd4afc46f7d17646ab4343129a79ec6781f6d8",
-   "absence_sentence_status": "PENDING operator approval (G-ROUTE3's own sentence, carried verbatim)",
+   "absence_sentence_status": "approved 2026-09-29 (G-ROUTE3's own sentence, carried verbatim)",
    "assembled_template": "{SUBJECT}. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for integer and number fields, true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.",
    "assembled_template_sha256": "a5bc3999ecaabaaf4b113744aff5f8ed25a03a388df4c148adbbb34f3644f6ac",
    "disclosure_sentence": "Use JSON numbers for integer and number fields, true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |.",
