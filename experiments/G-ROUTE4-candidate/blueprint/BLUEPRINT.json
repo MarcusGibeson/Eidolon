@@ -1,0 +1,7324 @@
+{
+ "classes": {
+  "grounded_research_synthesis": {
+   "b_matching": [
+    "pattern",
+    "sls"
+   ],
+   "construct": "Judge each claim against the sources by the ordered status rules, cite exactly the sources about it with their lineages, recommend by the decision_rule, and list every uncertainty code whose condition holds.",
+   "families": {
+    "RS1": "2 claims, 3 sources",
+    "RS2": "2 claims, 4 sources",
+    "RS3": "3 claims, 4 sources",
+    "RS4": "2 claims, 5 sources",
+    "RS5": "3 claims, 5 sources",
+    "RS6": "3 claims, 6 sources"
+   },
+   "family_template_text": {
+    "RS1": "",
+    "RS2": "",
+    "RS3": "",
+    "RS4": "",
+    "RS5": "",
+    "RS6": ""
+   },
+   "features": {
+    "pattern": "P1-P8 (the design's allocation table)",
+    "sls": "whether single_lineage_support holds (true/false)"
+   },
+   "patterns": {
+    "P1": "positive lineage count rule",
+    "P2": "direct contradiction",
+    "P3": "other subject, unaddressed",
+    "P4": "same-lineage repetition",
+    "P5": "conflict unresolved",
+    "P6": "narrower scope",
+    "P7": "conflict settled by rule",
+    "P8": "quantitative contradiction"
+   },
+   "profile": "research.v1"
+  },
+  "hierarchical_semantic_synthesis": {
+   "b_matching": [
+    "mergeable_pair",
+    "obs_band"
+   ],
+   "construct": "Cover every observation exactly once with its original role, merging only same-role observations, and choose the conclusion from allowed_conclusions by the conclusion_rule.",
+   "families": {
+    "SY1": "a finding directly states the cause (cause established)",
+    "SY2": "a proposed cause is disputed by counterevidence (cause unresolved)",
+    "SY3": "a single finding is insufficient for the claimed trend (insufficient evidence)",
+    "SY4": "the decision is reserved to a named role (authority boundary)",
+    "SY5": "a stated constraint or limit is breached",
+    "SY6": "a policy or configuration explains the observed behaviour"
+   },
+   "family_template_text": {
+    "SY1": "",
+    "SY2": "",
+    "SY3": "",
+    "SY4": "",
+    "SY5": "",
+    "SY6": ""
+   },
+   "features": {
+    "mergeable_pair": "yes/no: whether two observations share a role and must merge",
+    "obs_band": "small = 3-4 observations, large = 5-6"
+   },
+   "profile": "synthesis.v1"
+  },
+  "ordinary_conversation": {
+   "b_matching": [
+    "gold_position",
+    "depth"
+   ],
+   "construct": "Answer a user's question by choosing the single option, among exactly 4 listed options, that follows from the supplied facts through a small computation or condition. Reply in the disclosed two-line frame (Answer: <option> / Actions taken: none), with no tools and no action claimed.",
+   "families": {
+    "CV1": "two-condition filter over supplied items (both conditions must hold)",
+    "CV2": "date or clock-time arithmetic (differences, additions, expiry)",
+    "CV3": "unit conversion followed by a comparison or maximum",
+    "CV4": "conditional count or aggregation over supplied items",
+    "CV5": "percentage, rate or threshold comparison",
+    "CV6": "a general rule with a stated exception or precedence (the exception decides)"
+   },
+   "family_template_text": {
+    "CV1": "",
+    "CV2": "",
+    "CV3": "",
+    "CV4": "",
+    "CV5": "",
+    "CV6": ""
+   },
+   "features": {
+    "depth": "1 = one reasoning step, 2 = two chained steps",
+    "gold_position": "1-4, position of the gold option among the 4 options"
+   },
+   "profile": "conversation.v1"
+  },
+  "reflective_planning": {
+   "b_matching": [
+    "precedence_form"
+   ],
+   "construct": "Plan without claiming completion: include every allowed action except those with a forbidden name prefix, order them by the precedences stated in the evidence, cite each action's addresses, list every uncertainty code whose condition holds, set claims_completed false and request no authority.",
+   "families": {
+    "PL1": "4 included, 1 excluded, 1 holding code (G-ROUTE3's construct)",
+    "PL2": "3 included, 2 excluded, 0 holding codes",
+    "PL3": "5 included, 1 excluded, 2 holding codes",
+    "PL4": "4 included, 2 excluded, 1 holding code; precedences listed out of order in the evidence",
+    "PL5": "3 included, 1 excluded, 1 holding code; one action addresses two evidence items",
+    "PL6": "5 included, 0 excluded, 1 holding code"
+   },
+   "family_template_text": {
+    "PL1": "",
+    "PL2": "",
+    "PL3": "",
+    "PL4": "",
+    "PL5": "",
+    "PL6": ""
+   },
+   "features": {
+    "precedence_form": "before = 'X must precede Y' / after = 'Y may start only after X'"
+   },
+   "profile": "planning.v1"
+  },
+  "structured_extraction": {
+   "b_matching": [
+    "field_count",
+    "derived_count"
+   ],
+   "construct": "Return one JSON object whose keys exactly match a supplied schema, copying values verbatim where the text states them, deriving the fields the prompt defines, and giving the schema's unknown value where the text explicitly says a value is not stated.",
+   "families": {
+    "EX1": "verbatim identifiers, names and spans",
+    "EX2": "date or time arithmetic into a derived field",
+    "EX3": "numeric aggregation (sum, product, share) into a derived field",
+    "EX4": "threshold or compliance gate into a boolean or enum field",
+    "EX5": "explicit absence represented by the schema's unknown value",
+    "EX6": "conjunctive multi-condition gate (all conditions must hold)"
+   },
+   "family_template_text": {
+    "EX1": "",
+    "EX2": "",
+    "EX3": "",
+    "EX4": "",
+    "EX5": "",
+    "EX6": ""
+   },
+   "features": {
+    "derived_count": "1 or 2 derived fields",
+    "field_count": "3, 4 or 5 schema fields"
+   },
+   "profile": "extraction.v1"
+  }
+ },
+ "counts": {
+  "main_A": 80,
+  "main_B": 305,
+  "reserve": 199,
+  "total": 584
+ },
+ "design": "experiments/G-ROUTE4-candidate/DESIGN_CANDIDATE.md revision 6 (accepted, D11)",
+ "g_route3_inventory_to_avoid": {
+  "entities": 28,
+  "lineages": 38
+ },
+ "obligations": "experiments/G-ROUTE4-candidate/G-ROUTE4_OBLIGATIONS.md",
+ "research_allocation": {
+  "A": {
+   "R1": [
+    "P1",
+    "P2",
+    "P3",
+    "P4"
+   ],
+   "R2": [
+    "P5",
+    "P6",
+    "P7",
+    "P8"
+   ],
+   "R3": [
+    "P1",
+    "P3",
+    "P5",
+    "P7"
+   ],
+   "R4": [
+    "P2",
+    "P4",
+    "P6",
+    "P8"
+   ]
+  },
+  "B_extra_beyond_P1_P8_x2": {
+   "R1": [
+    "P1",
+    "P2"
+   ],
+   "R2": [
+    "P3",
+    "P4"
+   ],
+   "R3": [
+    "P5",
+    "P6"
+   ]
+  },
+  "R4": "P7, sls true"
+ },
+ "risk_meaning": {
+  "R1": "everyday personal or hobby matters; a wrong answer is easily noticed and cheaply undone",
+  "R2": "money, orders, bookings or workplace administration; a wrong answer costs money or time but is reversible",
+  "R3": "security, privacy, compliance or access; a wrong answer can expose data or grant access",
+  "R4": "physical safety, legal retention or irreversible operations; evidence-only, never routed"
+ },
+ "schema_version": "g-route4.authoring-blueprint.v1",
+ "slots": [
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "A4-CONV-R1-01",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "A4-CONV-R1-02",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "A4-CONV-R1-03",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "A4-CONV-R1-04",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "A4-CONV-R2-01",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "A4-CONV-R2-02",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "A4-CONV-R2-03",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "A4-CONV-R2-04",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "A4-CONV-R3-01",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "A4-CONV-R3-02",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "A4-CONV-R3-03",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "A4-CONV-R3-04",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "A4-CONV-R4-01",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "A4-CONV-R4-02",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "A4-CONV-R4-03",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "A4-CONV-R4-04",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R1-01",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "A4-EXTR-R1-02",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "A4-EXTR-R1-03",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R1-04",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R2-01",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "A4-EXTR-R2-02",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "A4-EXTR-R2-03",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R2-04",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R3-01",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "A4-EXTR-R3-02",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "A4-EXTR-R3-03",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R3-04",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R4-01",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "A4-EXTR-R4-02",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "A4-EXTR-R4-03",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R4-04",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R1-01",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R1-02",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R1-03",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R1-04",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R2-01",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R2-02",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R2-03",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R2-04",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R3-01",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R3-02",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R3-03",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R3-04",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R4-01",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R4-02",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R4-03",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R4-04",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R1-01",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R1-02",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R1-03",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R1-04",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R2-01",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R2-02",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R2-03",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R2-04",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R3-01",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R3-02",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R3-03",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R3-04",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R4-01",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R4-02",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R4-03",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R4-04",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R1-01",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P2",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R1-02",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P3",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R1-03",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R1-04",
+   "phase": "A",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R2-01",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R2-02",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R2-03",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R2-04",
+   "phase": "A",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R3-01",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P3",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R3-02",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R3-03",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P7",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R3-04",
+   "phase": "A",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P2",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R4-01",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R4-02",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R4-03",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R4-04",
+   "phase": "A",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R1-01",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R1-02",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R1-03",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R1-04",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R1-05",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R1-06",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R1-07",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R1-08",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R1-09",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R1-10",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R1-11",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R1-12",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R1-13",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R1-14",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R1-15",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R1-16",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R1-17",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R1-18",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R1-19",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R1-20",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R1-21",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R1-22",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R1-23",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R1-24",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R1-25",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R1-26",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R1-27",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R1-28",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R2-01",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R2-02",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R2-03",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R2-04",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R2-05",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R2-06",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R2-07",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R2-08",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R2-09",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R2-10",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R2-11",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R2-12",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R2-13",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R2-14",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R2-15",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R2-16",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R2-17",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R2-18",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R2-19",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R2-20",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R2-21",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R2-22",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R2-23",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R2-24",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R2-25",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R2-26",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R2-27",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R2-28",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R3-01",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R3-02",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R3-03",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R3-04",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R3-05",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R3-06",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R3-07",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R3-08",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R3-09",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R3-10",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R3-11",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R3-12",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R3-13",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R3-14",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R3-15",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R3-16",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R3-17",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R3-18",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R3-19",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R3-20",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R3-21",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R3-22",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R3-23",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R3-24",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R3-25",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R3-26",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R3-27",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R3-28",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R4-01",
+   "phase": "B",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R1-01",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R1-02",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R1-03",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R1-04",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R1-05",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R1-06",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R1-07",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R1-08",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R1-09",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R1-10",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R1-11",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R1-12",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R1-13",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R1-14",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R1-15",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R1-16",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R1-17",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R1-18",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R2-01",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R2-02",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R2-03",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R2-04",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R2-05",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R2-06",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R2-07",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R2-08",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R2-09",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R2-10",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R2-11",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R2-12",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R2-13",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R2-14",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R2-15",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R2-16",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R2-17",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R2-18",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R3-01",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R3-02",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R3-03",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R3-04",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R3-05",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R3-06",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R3-07",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R3-08",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R3-09",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R3-10",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R3-11",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R3-12",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R3-13",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R3-14",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R3-15",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R3-16",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R3-17",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R3-18",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R4-01",
+   "phase": "B",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-01",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-02",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-03",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-04",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-05",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-06",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-07",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-08",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-09",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-10",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-11",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-12",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-13",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-14",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-15",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-16",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-17",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-18",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-01",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-02",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-03",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-04",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-05",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-06",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-07",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-08",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-09",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-10",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-11",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-12",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-13",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-14",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-15",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-16",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-17",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-18",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-01",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-02",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-03",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-04",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-05",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-06",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-07",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-08",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-09",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-10",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-11",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-12",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-13",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-14",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-15",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-16",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-17",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-18",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R4-01",
+   "phase": "B",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-01",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-02",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-03",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-04",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-05",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-06",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-07",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-08",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-09",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-10",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-11",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-12",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-13",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-14",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-15",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-16",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-17",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-18",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-01",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-02",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-03",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-04",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-05",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-06",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-07",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-08",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-09",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-10",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-11",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-12",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-13",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-14",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-15",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-16",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-17",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-18",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-01",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-02",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-03",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-04",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-05",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-06",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-07",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-08",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-09",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-10",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-11",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-12",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-13",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-14",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-15",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-16",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-17",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-18",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R4-01",
+   "phase": "B",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-01",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P2",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-02",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P3",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-03",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-04",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-05",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-06",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-07",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-08",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P1",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-09",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P2",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-10",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P3",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-11",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P4",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-12",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P5",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-13",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-14",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P7",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-15",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P8",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-16",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-17",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P2",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-18",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-01",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P2",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-02",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P3",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-03",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-04",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-05",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-06",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-07",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-08",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P1",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-09",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P2",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-10",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P3",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-11",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P4",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-12",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P5",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-13",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-14",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P7",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-15",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P8",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-16",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P3",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-17",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-18",
+   "phase": "B",
+   "risk": "R2",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-01",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P2",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-02",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P3",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-03",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-04",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-05",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-06",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-07",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-08",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P1",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-09",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P2",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-10",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P3",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-11",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P4",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-12",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P5",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-13",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-14",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P7",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-15",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P8",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-16",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-17",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-18",
+   "phase": "B",
+   "risk": "R3",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R4-01",
+   "phase": "B",
+   "risk": "R4",
+   "role": "main",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R1-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P2",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R1-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P3",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R1-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R1-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R2-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R2-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R2-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R2-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R3-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS4",
+   "features": {
+    "pattern": "P3",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R3-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R3-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS6",
+   "features": {
+    "pattern": "P7",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R3-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS1",
+   "features": {
+    "pattern": "P2",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R4-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS3",
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R4-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS5",
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "fixture_id": "A4-RSRCH-R4-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "RS2",
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "A4-RSRCH-R4-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R1-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R1-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R1-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R1-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R2-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R2-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R2-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R2-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R3-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY4",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R3-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R3-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY6",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R3-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R4-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY3",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "A4-SYNTH-R4-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY5",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R4-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "SY2",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "A4-SYNTH-R4-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "A4-CONV-R1-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "A4-CONV-R1-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "A4-CONV-R1-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "A4-CONV-R1-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "A4-CONV-R2-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "A4-CONV-R2-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "A4-CONV-R2-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "A4-CONV-R2-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "A4-CONV-R3-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV4",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "A4-CONV-R3-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "A4-CONV-R3-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV6",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "A4-CONV-R3-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV1",
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "A4-CONV-R4-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV3",
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "A4-CONV-R4-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV5",
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "A4-CONV-R4-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "A4-CONV-R4-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R1-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R1-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R1-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R1-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R2-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R2-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R2-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R2-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R3-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL4",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R3-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R3-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL6",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R3-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL1",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R4-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL3",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R4-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL5",
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "A4-PLAN-R4-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "PL2",
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "A4-PLAN-R4-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R1-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "A4-EXTR-R1-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "A4-EXTR-R1-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R1-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R2-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "A4-EXTR-R2-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "A4-EXTR-R2-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R2-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R3-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX4",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "A4-EXTR-R3-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "A4-EXTR-R3-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R3-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX1",
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R4-X01",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX3",
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "A4-EXTR-R4-X02",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX5",
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "A4-EXTR-R4-X03",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX2",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "A4-EXTR-R4-X04",
+   "matching": "family+features",
+   "phase": "A",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P2",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P3",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-X05",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-X06",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-X07",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-X08",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P1",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-X09",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P2",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-X10",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P3",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-X11",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P4",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-X12",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P5",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-X13",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-X14",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P7",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R1-X15",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P8",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R1-X16",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P2",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P3",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-X05",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-X06",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-X07",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-X08",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P1",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-X09",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P2",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-X10",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P3",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-X11",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P4",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-X12",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P5",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-X13",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-X14",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P7",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R2-X15",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P8",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R2-X16",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P1",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P2",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P3",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-X05",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-X06",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-X07",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P8",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-X08",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P1",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-X09",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P2",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-X10",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P3",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-X11",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P4",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-X12",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P5",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-X13",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-X14",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P7",
+    "sls": false
+   },
+   "fixture_id": "B4-RSRCH-R3-X15",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P8",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R3-X16",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "pattern": "P7",
+    "sls": true
+   },
+   "fixture_id": "B4-RSRCH-R4-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "grounded_research_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R1-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R1-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R2-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R2-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "fixture_id": "B4-SYNTH-R3-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R3-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "fixture_id": "B4-SYNTH-R4-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "hierarchical_semantic_synthesis"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R1-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R1-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R1-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R1-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R1-X05",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R1-X06",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R1-X07",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R1-X08",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R2-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R2-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R2-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R2-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R2-X05",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R2-X06",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R2-X07",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R2-X08",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R3-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R3-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R3-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R3-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R3-X05",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 2
+   },
+   "fixture_id": "B4-CONV-R3-X06",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 3
+   },
+   "fixture_id": "B4-CONV-R3-X07",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "fixture_id": "B4-CONV-R3-X08",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "depth": 2,
+    "gold_position": 1
+   },
+   "fixture_id": "B4-CONV-R4-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "ordinary_conversation"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R1-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R1-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R2-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R2-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R3-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "after"
+   },
+   "fixture_id": "B4-PLAN-R3-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "precedence_form": "before"
+   },
+   "fixture_id": "B4-PLAN-R4-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "reflective_planning"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R1-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R1-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R1-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R1-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R1-X05",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R1-X06",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R1",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R2-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R2-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R2-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R2-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R2-X05",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R2-X06",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R2",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 1,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R3-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 3
+   },
+   "fixture_id": "B4-EXTR-R3-X02",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 1,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R3-X03",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R3-X04",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 1,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R3-X05",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 5
+   },
+   "fixture_id": "B4-EXTR-R3-X06",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R3",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": null,
+   "features": {
+    "derived_count": 2,
+    "field_count": 4
+   },
+   "fixture_id": "B4-EXTR-R4-X01",
+   "matching": "features; caps re-checked",
+   "phase": "B",
+   "risk": "R4",
+   "role": "reserve",
+   "task_class": "structured_extraction"
+  }
+ ],
+ "status": "CANDIDATE (not frozen)"
+}

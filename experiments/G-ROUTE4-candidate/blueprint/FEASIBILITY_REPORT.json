@@ -1,0 +1,330 @@
+{
+ "schema_version": "g-route4.blueprint-feasibility.v1",
+ "all_pass": true,
+ "checks": [
+  {
+   "check": "A′ has 80 fixtures in 20 cells of 4",
+   "pass": true,
+   "detail": {
+    "A": 80
+   }
+  },
+  {
+   "check": "B′ has 300 eligible (84 conversation + 216 other) and 5 R4 cases; 915 calls",
+   "pass": true,
+   "detail": {
+    "eligible": 300,
+    "conversation": 84,
+    "B": 305,
+    "calls": 915
+   }
+  },
+  {
+   "check": "A′ calls = 480",
+   "pass": true,
+   "detail": {
+    "calls": 480
+   }
+  },
+  {
+   "check": "fixture ids are unique and use the A4-/B4- namespace",
+   "pass": true,
+   "detail": {
+    "slots": 584
+   }
+  },
+  {
+   "check": "class cap: no family above 25% of a class's B′ cases (R4 counted); at least 5 families",
+   "pass": true,
+   "detail": {
+    "ordinary_conversation": {
+     "B_cases": 85,
+     "max_family": 15,
+     "limit": 21,
+     "families": 6
+    },
+    "structured_extraction": {
+     "B_cases": 55,
+     "max_family": 10,
+     "limit": 13,
+     "families": 6
+    },
+    "hierarchical_semantic_synthesis": {
+     "B_cases": 55,
+     "max_family": 10,
+     "limit": 13,
+     "families": 6
+    },
+    "reflective_planning": {
+     "B_cases": 55,
+     "max_family": 10,
+     "limit": 13,
+     "families": 6
+    },
+    "grounded_research_synthesis": {
+     "B_cases": 55,
+     "max_family": 11,
+     "limit": 13,
+     "families": 6
+    }
+   }
+  },
+  {
+   "check": "cell cap: no family above one third of an eligible B′ cell",
+   "pass": true,
+   "detail": {
+    "CONV|R1": [
+     5,
+     9
+    ],
+    "CONV|R2": [
+     5,
+     9
+    ],
+    "CONV|R3": [
+     5,
+     9
+    ],
+    "EXTR|R1": [
+     3,
+     6
+    ],
+    "EXTR|R2": [
+     3,
+     6
+    ],
+    "EXTR|R3": [
+     3,
+     6
+    ],
+    "SYNTH|R1": [
+     3,
+     6
+    ],
+    "SYNTH|R2": [
+     3,
+     6
+    ],
+    "SYNTH|R3": [
+     3,
+     6
+    ],
+    "PLAN|R1": [
+     3,
+     6
+    ],
+    "PLAN|R2": [
+     3,
+     6
+    ],
+    "PLAN|R3": [
+     3,
+     6
+    ],
+    "RSRCH|R1": [
+     6,
+     6
+    ],
+    "RSRCH|R2": [
+     5,
+     6
+    ],
+    "RSRCH|R3": [
+     6,
+     6
+    ]
+   }
+  },
+  {
+   "check": "A′ cells: 4 fixtures from 4 different families",
+   "pass": true,
+   "detail": {}
+  },
+  {
+   "check": "class-level family coverage: every family appears in both A′ and B′",
+   "pass": true,
+   "detail": {}
+  },
+  {
+   "check": "conversation: exactly 4 options; gold positions balanced within 1 in every cell of 4 or more",
+   "pass": true,
+   "detail": {
+    "A|R1": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "A|R2": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "A|R3": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "A|R4": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "B|R1": [
+     7,
+     7,
+     7,
+     7
+    ],
+    "B|R2": [
+     7,
+     7,
+     7,
+     7
+    ],
+    "B|R3": [
+     7,
+     7,
+     7,
+     7
+    ],
+    "B|R4": [
+     1,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "check": "research: A′ cells match the design table with 2 of 4 single_lineage_support; B′ cells 9 of 18",
+   "pass": true,
+   "detail": {
+    "A_pattern_counts": {
+     "P1": 2,
+     "P2": 2,
+     "P3": 2,
+     "P4": 2,
+     "P5": 2,
+     "P6": 2,
+     "P7": 2,
+     "P8": 2
+    }
+   }
+  },
+  {
+   "check": "research: eligible B′ pattern counts P1-P6 = 7, P7-P8 = 6",
+   "pass": true,
+   "detail": {
+    "P1": 7,
+    "P2": 7,
+    "P3": 7,
+    "P4": 7,
+    "P5": 7,
+    "P6": 7,
+    "P7": 6,
+    "P8": 6
+   }
+  },
+  {
+   "check": "planned structure keys: no B′ slot repeats an A′ slot's key in the same cell (extraction, research)",
+   "pass": true,
+   "detail": {
+    "EXTR|R1": [],
+    "EXTR|R2": [],
+    "EXTR|R3": [],
+    "RSRCH|R1": [],
+    "RSRCH|R2": [],
+    "RSRCH|R3": []
+   }
+  },
+  {
+   "check": "reserve: at least 20% of every cell and one per matching feature combination",
+   "pass": true,
+   "detail": {
+    "total": 199,
+    "by_phase_class": {
+     "A|CONV": 16,
+     "A|EXTR": 16,
+     "A|PLAN": 16,
+     "A|RSRCH": 16,
+     "A|SYNTH": 16,
+     "B|CONV": 25,
+     "B|EXTR": 19,
+     "B|PLAN": 13,
+     "B|RSRCH": 49,
+     "B|SYNTH": 13
+    }
+   }
+  },
+  {
+   "check": "audit sample size = 38 (3 per conversation cell, 2 per other eligible cell, 1 per R4 cell)",
+   "pass": true,
+   "detail": {
+    "sample": 38
+   }
+  },
+  {
+   "check": "A′ full treatment: 2 extra adjudicator sessions per A′ fixture (160 for the main corpus)",
+   "pass": true,
+   "detail": {
+    "extra_sessions": 160
+   }
+  },
+  {
+   "check": "P1 floors reachable: 300 eligible cases can yield at least 76 stops and 30 qualified starts",
+   "pass": true,
+   "detail": {
+    "eligible": 300
+   }
+  },
+  {
+   "check": "entity inventory: enough fresh invented names for every fixture (at most 6 per fixture)",
+   "pass": true,
+   "detail": {
+    "fixtures_incl_reserve": 584,
+    "names_needed_max": 3504,
+    "bank_capacity": 737100,
+    "g_route3_entities_to_avoid": 28
+   }
+  },
+  {
+   "check": "research lineages: enough fresh lineage names (at most 6 per research fixture)",
+   "pass": true,
+   "detail": {
+    "research_fixtures_incl_reserve": 136,
+    "lineages_needed_max": 816,
+    "g_route3_lineages_to_avoid": 38
+   }
+  },
+  {
+   "check": "planning actions: every action name unique across all planning fixtures (at most 7 per fixture)",
+   "pass": true,
+   "detail": {
+    "planning_fixtures_incl_reserve": 100,
+    "action_names_needed_max": 700,
+    "capacity": 29484000
+   }
+  },
+  {
+   "check": "research B′: every pattern appears with single_lineage_support both holding and not holding, per cell",
+   "pass": true,
+   "detail": {}
+  },
+  {
+   "check": "O5 by construction: every family's model-facing template text is empty (structure only)",
+   "pass": true,
+   "detail": {}
+  },
+  {
+   "check": "audit-sample procedure self-test (frozen test vector)",
+   "pass": true,
+   "detail": {
+    "digest": "75af7d1ad5d785b40c1a41f15e4d23fa7e987715530e8d9b64f4fec5a4b398c9"
+   }
+  }
+ ]
+}
