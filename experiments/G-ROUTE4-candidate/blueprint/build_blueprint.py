@@ -812,7 +812,7 @@ def build():
     report = checks(slots, g3_entities, g3_lineages)
     blueprint = {
         "schema_version": "g-route4.authoring-blueprint.v1",
-        "status": "CANDIDATE (not frozen)",
+        "status": "FROZEN 2026-09-29 (blueprint commit; the O1 seal commit must have this commit as its parent)",
         "design": "experiments/G-ROUTE4-candidate/DESIGN_CANDIDATE.md revision 6 (accepted, D11)",
         "obligations": "experiments/G-ROUTE4-candidate/G-ROUTE4_OBLIGATIONS.md",
         "risk_meaning": RISK_MEANING,

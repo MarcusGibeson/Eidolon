@@ -1,0 +1,109 @@
+{
+ "audit_sample": {
+  "procedure": "experiments/G-ROUTE4-candidate/blueprint/audit_sample.py",
+  "rule": "sha256(ascii(seal_commit_id) + ':' + ascii(fixture_id)); ceil(0.10 * B′ cell size) smallest per cell; computed only after the single seal commit is pushed; committed before the first adjudication",
+  "self_test_digest": "75af7d1ad5d785b40c1a41f15e4d23fa7e987715530e8d9b64f4fec5a4b398c9",
+  "total": 38
+ },
+ "blueprint_revision": 4,
+ "design": {
+  "accepted": "D11",
+  "path": "experiments/G-ROUTE4-candidate/DESIGN_CANDIDATE.md",
+  "revision": 6,
+  "sha256": "0d20e43dc063f04328d049a66ce0b3e0d5644c8b1f31016495e82a53c26973ea"
+ },
+ "digest_basis": "sha256 of each file's bytes as stored in git, with LF line endings (the git blob content); a Windows checkout with core.autocrlf may show CRLF, so verify against `git show HEAD:<path>` or with CRLF normalized to LF",
+ "extraction_absence_sentence_sha256": "d8b760630cea0af5d2612fa208bd4afc46f7d17646ab4343129a79ec6781f6d8",
+ "feasibility": {
+  "all_pass": true,
+  "checks": 31
+ },
+ "files": {
+  "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json": "80e3455e4f5d94dd4281e62def0182cdd95f3fe909883150fbf251c81fea3e4b",
+  "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT_CANDIDATE.md": "61a7221e1c823bd2a8eac3bda590545dbe72c7bea635584ac7711c141642afa7",
+  "experiments/G-ROUTE4-candidate/blueprint/FEASIBILITY_REPORT.json": "ae152d00de29c6560eedbd1794c9b33be4242199a5b615f7da6e8243fbff1815",
+  "experiments/G-ROUTE4-candidate/blueprint/FEASIBILITY_REPORT.md": "f7caaf076e0b54f7d3bbe7b932ae659353eee81b9944e4c3e8aa68e276374c4a",
+  "experiments/G-ROUTE4-candidate/blueprint/audit_sample.py": "8e5afc8478c913150fd9d4ac9564a829ae857e74d005ca4371d2b76937767524",
+  "experiments/G-ROUTE4-candidate/blueprint/build_blueprint.py": "cb8b8ec9012a983bcb720ee31d01a8c6152d201e83cfae41677ff92c071f3753"
+ },
+ "frozen_on": "2026-09-29",
+ "not_done": [
+  "fixture authoring",
+  "seal",
+  "audit sample",
+  "adjudication",
+  "implementation",
+  "model contact"
+ ],
+ "obligations": {
+  "path": "experiments/G-ROUTE4-candidate/G-ROUTE4_OBLIGATIONS.md",
+  "sha256": "fd4ce5ed26b6765f6c775ddcc23b37e5f7baa614352ea8588bba7cda6698ece9"
+ },
+ "operator_decisions": [
+  "EXTR, SYNTH and PLAN disclosure sentences approved (2026-09-29)",
+  "extraction absence sentence approved (2026-09-29)",
+  "EXTR sentence amended: integers without a decimal point (2026-09-29)",
+  "freeze path: confirmation review, then freeze (2026-09-29)"
+ ],
+ "pre_freeze_reviews": [
+  {
+   "answered_by": "revision 2",
+   "blocking": 1,
+   "must_fix": 6,
+   "reviewed": "candidate revision 1"
+  },
+  {
+   "answered_by": "revision 3",
+   "blocking": 2,
+   "must_fix": 5,
+   "reviewed": "candidate revision 2"
+  },
+  {
+   "answered_by": "revision 4 (frozen)",
+   "blocking": 0,
+   "must_fix": 3,
+   "reviewed": "candidate revision 3"
+  }
+ ],
+ "schema_version": "g-route4.blueprint-freeze.v1",
+ "seal_requirement": "the O1 seal commit is the single commit on main whose parent is the commit adding this manifest",
+ "slots": {
+  "main_A": 80,
+  "main_B": 305,
+  "reserve": 199,
+  "total": 584
+ },
+ "status": "FROZEN",
+ "templates": {
+  "grounded_research_synthesis": {
+   "assembled_template_sha256": "fc78bf4b7f0de952967b114332e990d45ce4c636184bf0afda35162f148881cc",
+   "disclosure_sentence_sha256": "f3c383d92b5ca1cb99008b49864f7330b6515c93f8e795a6c135f1326844ab47",
+   "disclosure_status": "approved and amended after design review round 3 (D8)",
+   "rule_body_sha256": "08cc4eb1d8e025c797fd8ca8b21dd7a6cf9db45ec458cdc69853ec29f46d5194"
+  },
+  "hierarchical_semantic_synthesis": {
+   "assembled_template_sha256": "f09144bfba1b07bbf2c8e36d36e989ede814271eb74d9e85cfb5e2ae9624eb1d",
+   "disclosure_sentence_sha256": "bf3387b7e1165ca0f408e326e9210ca319e6c86e502e17d51db9c59994393917",
+   "disclosure_status": "approved 2026-09-29",
+   "rule_body_sha256": "01798468698c0efae3d6ef993f9dbb6568a76c4e44916802a1841282c74c9c54"
+  },
+  "ordinary_conversation": {
+   "assembled_template_sha256": "d42417cd9b6e33900836ddf58f6d1975b4fc030e9a7d762a3f0c6ba80ca383bb",
+   "disclosure_sentence_sha256": null,
+   "disclosure_status": "none needed",
+   "rule_body_sha256": "e42859506df6740af37319648515bb559182e0ebb1248bc3482f1b4d50c909c1"
+  },
+  "reflective_planning": {
+   "assembled_template_sha256": "0388c9266517d63589543767b7d7e9bbe1b9e9876d041cf9e871c3247f86cbd4",
+   "disclosure_sentence_sha256": "b4dbc5f06501c0b26add12c4720ee5dd4fca0f8f6f1285de7145809c5ad936bc",
+   "disclosure_status": "approved 2026-09-29",
+   "rule_body_sha256": "16d7fde894051436eacf58c6e15985f01492a27427fea9d3e86734318f89dcb9"
+  },
+  "structured_extraction": {
+   "assembled_template_sha256": "ef41104bde4915eba10a5ff1705383cf0b3d72e613fd7af87f72f5b06d2d5579",
+   "disclosure_sentence_sha256": "2d62848e72c42c00be38bbbe927730b322f846e919c015276b1aa7643ef57bf6",
+   "disclosure_status": "approved 2026-09-29; amended by the operator 2026-09-29 (integers without a decimal point)",
+   "rule_body_sha256": "b33b9c84ddffcf798dde5441ed7072b2f703d70c591a8555df00bbd55c5cb1dd"
+  }
+ }
+}
