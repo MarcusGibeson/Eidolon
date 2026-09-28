@@ -1,6 +1,6 @@
 # G-ROUTE4: qualification routing under a stricter, pre-registered policy (design candidate)
 
-Status: **design candidate, revision 5.**
+Status: **design candidate, revision 6.**
 - Nothing is frozen. No model has been contacted for G-ROUTE4, and no corpus or gold exists yet.
 - Production routing stays disabled whatever the result. Belief effects are `none`.
 - Review so far:
@@ -11,8 +11,9 @@ Status: **design candidate, revision 5.**
   | 2 | revision 2 | 0 BLOCKING, 6 MUST-FIX | 0 BLOCKING, 11 MUST-FIX | `DESIGN_REVIEW_ROUND2.md` |
   | 3 | revision 3 | 0 BLOCKING, 6 MUST-FIX | 0 BLOCKING, 9 MUST-FIX | `DESIGN_REVIEW_ROUND3.md` |
   | 4 | revision 4 | 0 BLOCKING, 4 MUST-FIX | 0 BLOCKING, 4 MUST-FIX | `DESIGN_REVIEW_ROUND4.md` |
+  | 5 | revision 5 | 0 BLOCKING, 5 MUST-FIX | 0 BLOCKING, 3 MUST-FIX | `DESIGN_REVIEW_ROUND5.md` |
 
-  This revision answers every round-4 finding.
+  This revision answers every round-5 finding.
 
 **Before anything runs:**
 1. Design acceptance.
@@ -107,12 +108,13 @@ or bookkeeping?
   `verify_model_receipts`, `sanitize_strings` and the guarded paths. It imports neither `g_route1_coding_runner` nor
   `g_route1_persistence`.
 - **Closure rule:** an imported-unchanged module imports only imported-unchanged modules, the standard library, and
-  `requests` (lazily, in `g_route1_provider`). This is checked by a test over the import graph. The `requests`
-  version is recorded in the freeze.
+  `requests` (lazily, in `g_route1_provider`). This is checked by a test over the import graph. The versions of
+  `requests` and its loaded dependencies (`urllib3`, `idna`, `charset_normalizer`, `certifi`) are recorded in the
+  freeze.
 - **Bindings equality:** a test asserts that `bindings`, `generation_configuration` and `provider_version` are
   equal across G-ROUTE1's, G-ROUTE3's and G-ROUTE4's bindings files.
-- **Guarded list:** every transitively loaded repository module, the prompt profiles, and G-ROUTE4's corpora, gold,
-  schedules, thresholds, bindings and freeze.
+- **Guarded list:** every transitively loaded repository module, G-ROUTE1's `prompt_profiles.json` and
+  `model_bindings.json`, and G-ROUTE4's corpora, gold, schedules, thresholds, bindings and freeze.
 - **Module rule:** no `g_route3_*` module other than the five imported unchanged is ever loaded by a G-ROUTE4
   process, and neither is `g_route1_coding_runner`. This is checked through the digests of every loaded module.
 - **Forked grading or routing code carries a proof of equality.** A differential on shared records shows its
@@ -123,8 +125,14 @@ or bookkeeping?
   on one frozen allowlist (`G3_REFERENCE_ALLOWLIST`). The allowlist holds:
   - the imported-unchanged module paths;
   - the carried contract ids, referenced by attribute;
-  - the named read-only references to G-ROUTE3 in the data-root refusal test, the prompt identity test, the
-    contamination check and the differential;
+  - named read-only references to G-ROUTE3, each by its test or module name:
+    - the data-root refusal test (a static AST read of `g_route3_freeze`, or a subprocess, never an import);
+    - the prompt identity test;
+    - the contamination and independence checks;
+    - the three-way bindings equality test;
+    - the seed-disjointness test;
+    - the module-rule test and the certification probes that name the forbidden `g_route3_*` modules;
+    - both differentials (lifecycle and grading);
   - provenance comment lines of the form `# forked from g_route3_<module>`, allowed per line.
 
   The grep cannot see numeric or camel-case identity (for example the seed bases, or `RouteThree`). A schedule test
@@ -236,9 +244,14 @@ deterministic, attempts are protected, and denominators are defined.
 
 **Output-shape disclosure (D8; wording approved and amended by the operator, 2026-09-28).**
 - **Research prompt:** the G-ROUTE3 research rule body, byte-identical; only the subject phrase varies.
-- **Inserted sentence:** exactly once. The research template is assembled as: the G-ROUTE3 rule body up to and
-  including `Each claim object has exactly the keys claim_id, status, citations and lineages.`, then one ASCII
-  space, then the sentence, then one ASCII space, then the remainder of the rule body (`Keep the reply compact…`).
+- **Inserted sentence:** exactly once. The research template is assembled from three parts, joined by exactly
+  one ASCII space on each side of the sentence:
+  - the G-ROUTE3 rule body up to and including `Each claim object has exactly the keys claim_id, status, citations
+    and lineages.`;
+  - the sentence;
+  - `Keep the reply compact: output beyond about 350 tokens is cut off.`, with the rule body's leading space
+    stripped.
+
   The digest of the whole template, with its subject placeholder, is frozen. The sentence is 454 ASCII characters,
   sha256 `f3c383d92b5ca1cb99008b49864f7330b6515c93f8e795a6c135f1326844ab47`:
 
@@ -317,30 +330,46 @@ These are relabelled P1–P8 here to avoid a clash with source ids such as `S1`.
 
 **Independence standard.** G-ROUTE3's measured standard is the floor, computed by the forked `independence` module.
 - **Tokenizer:** G-ROUTE3's own, on lowercased text: `[a-z0-9][a-z0-9_.\-%:]*`.
-- **Boilerplate:** G-ROUTE3's own frequency rule. Any word trigram present in at least 25% of a class's fixtures is
-  boilerplate, computed over the pooled G-ROUTE4 and G-ROUTE3 fixtures of that class. G-ROUTE3's shared rule keys,
-  the frozen rule bodies, and the D8 and disclosure sentences are also removed.
+- **One pool for every check.** For each class, the pool is fixed once: all sealed G-ROUTE4 fixtures (main corpus
+  and reserve), plus G-ROUTE3's A and B fixtures of that class. The pre-seal check, every re-check after a fix or
+  replacement, and the final check all use this same pool.
+- **Boilerplate:** G-ROUTE3's own frequency rule. Any word trigram present in at least 25% of the pool's fixtures of
+  a class is boilerplate. G-ROUTE3's shared rule keys, the frozen rule bodies, and the D8 and disclosure sentences
+  are also removed.
+  - All removal is by **trigram set**, never by substring, so no junction trigrams arise.
+  - **Declared blind spot:** a trigram present in all 16 of G-ROUTE3's fixtures of a class becomes boilerplate once
+    a few G-ROUTE4 fixtures copy it. The cross-experiment check cannot see that trigram.
 - **Text overlap:** word-trigram Jaccard at most 0.20 after that removal, between any two G-ROUTE4 fixtures, and
   between any G-ROUTE4 fixture and any G-ROUTE3 fixture (A or B).
-- **Family templates (declared loosening):**
-  - Each family's template text is frozen in the blueprint, and is at most 30% of any fixture's tokens.
-  - Removal is by trigram set, never by substring.
-  - Jaccard is reported both with and without template removal.
-  - **Same-family pairs are gated on the unremoved value, at most 0.50.** This keeps the check from passing by
-    construction where near-duplicates would occur.
+- **Family templates count as content.** No template text is removed, and every pair, same-family pairs
+  included, must meet the 0.20 limit. Templates are therefore written lean, and feasibility is checked at the
+  blueprint step. This replaces revision 5's template-removal loosening, so none remains.
 - **Nothing shared:** 0 shared entities, identifiers, free-text extraction values, planning actions or source
   lineages, within G-ROUTE4 and against G-ROUTE3.
-  - **Declared exclusions:** closed-vocabulary values offered to the model as allowed sets (extraction enums, a
-    family's allowed action set), and structural ids matching `[A-Z][0-9]+` (such as `S10` and `C10`). These are
-    construct vocabulary, not entities.
+  - **Detector:** the forked module keeps G-ROUTE3's detector and its exemption lists (`_COMMON`,
+    `_WEEKDAYS_MONTHS`, `SHARED_RULE_TOKENS`, `SHARED_RULE_KEYS`), frozen byte-identical and never extended.
+  - **Declared change:** its lowercase vocabulary is computed over the pool.
+  - **Declared blind spots:** sentence-initial words, and values at the start of JSON strings. A supplementary exact
+    comparison of structured input values covers the latter.
+  - **Declared exclusions:**
+    - closed-vocabulary values offered to the model as allowed sets (extraction enums, a family's allowed action
+      set);
+    - structural ids matching `[A-Z][0-9]+`, **only** in structural-id fields: source, claim, observation,
+      statement, step and evidence ids, and option labels. These are construct vocabulary, not entities.
+- **No identical gold:** no two fixtures (G-ROUTE4 main corpus and reserve, and against G-ROUTE3) have identical
+  canonical gold. This closes the combination of the action-set exclusion with the planning and synthesis signature
+  exemption.
 - **Gold structure:**
   - In research, extraction and conversation, no fine gold-answer signature (G-ROUTE3's definitions) is repeated
     between A′ and B′ in the same cell.
   - Planning and synthesis have small signature spaces. G-ROUTE3 already exempted planning (as a single-template
     class), and G-ROUTE4 exempts both. This is a **declared loosening**; the alternative would force a systematic
     difference in answer shape between A′ and B′.
-- **Conversation answer positions (redefined):** in every cell of each corpus, the per-position counts of the gold
-  answer's position among the options differ by at most 1. Replacements preserve this.
+- **Conversation answer positions (redefined):**
+  - every G-ROUTE4 conversation fixture offers exactly 4 options. This is declared: G-ROUTE3 mixed 3 and 4.
+  - In every cell of each corpus, the counts of the gold answer at positions 1–4 differ by at most 1.
+  - Gold position is a blueprint feature, and a reserve-matching feature for conversation, so replacements preserve
+    the balance.
 - **Declared loosening:** pattern labels **are** shared between A′ and B′ in research, and so are coarse
   signatures. G-ROUTE3 forbade both within a cell. The reason is that 8/8 needs 4 fixtures per cell, and R1 measures
   generalization within the construct.
@@ -361,10 +390,14 @@ These are relabelled P1–P8 here to avoid a clash with source ids such as `S1`.
 2. **Before the seal:** the mechanical independence checks and the caps pass, over the main corpus and the
    reserve, pairwise.
 3. **Seal.** Corpus, gold, rationales and the reserve are committed by digest before the first adjudication.
-   - **The reserve** holds one fixture per distinct blueprint feature combination present in each cell (family
-     excluded; caps are checked per replacement instead), and at least 20% of the cell.
+   - **The reserve** holds one fixture per distinct blueprint feature combination present in each cell, and at
+     least 20% of the cell. For conversation, gold position is one of the features.
+   - **Family:** A′ reserves share their slot's family, which keeps A′ family distinctness. In B′, family is excluded
+     from matching, and caps are checked per replacement instead.
    - **Declared reserve size:** every A′ cell needs 4 (100%), and a B′ research cell up to 16. That is about 200
      reserve fixtures in total; the exact total is fixed by the blueprint.
+   - **Declared halt risk:** B′ cells repeat feature combinations (for example P1–P8 × 2). A second replacement for
+     the same combination can exhaust its reserve and halt.
    - After the seal, gold changes only through a recorded fix.
 4. **Sessions.** One fixture per fresh Claude session, never a pinned model and never Ollama. The model id and
    version and the frozen prompt are recorded.
@@ -374,8 +407,11 @@ These are relabelled P1–P8 here to avoid a clash with source ids such as `S1`.
    - **"No answer"** means a session error with no final message. It is retried once, and a second no-answer
      counts as a disagreement.
 5. **Disagreement** means the answer fails the frozen semantic validator against gold.
-6. **Decision.** If the first adjudicator agrees, the fixture is kept. If it disagrees, **two further fresh blind
-   adjudicators** answer:
+6. **Decision.**
+   - **Every A′ fixture** gets the full treatment: three blind adjudicators, kept only if all three agree,
+     otherwise the operator. A′ gold errors directly corrupt 8/8 qualification. That is about 160 extra sessions.
+   - **A B′ fixture:** if the first adjudicator agrees, the fixture is kept. If it disagrees, **two further fresh
+     blind adjudicators** answer:
    - **both agree:** keep;
    - **otherwise:** the operator decides, against the derivability rule only, with a written reason. The operator
      is not blind; this is declared.
@@ -387,8 +423,9 @@ These are relabelled P1–P8 here to avoid a clash with source ids such as `S1`.
 8. **Replacements** are taken from the reserve matching the slot's blueprint features, in a fixed order, and
    adjudicated from scratch. There are at most 2 rounds per slot.
    - **Re-checking:** after every fix or replacement, before its re-adjudication, the mechanical independence
-     checks and caps are re-run. They are re-run once more on the final corpus before the freeze. A failure moves
-     to the next matching reserve, or halts as in step 9.
+     checks and caps are re-run. They are re-run once more on the final corpus before the freeze.
+   - **A fix that fails re-checking** becomes a replacement, and counts toward the 2-round cap. A replacement that
+     fails moves to the next matching reserve, or halts as in step 9.
 9. **Halt.** If the round cap is hit, or the matching reserve is exhausted, authoring **halts before the freeze**.
    The corpus is never shrunk, and D9 never changes.
    - More reserve needs a recorded operator decision.
@@ -396,18 +433,23 @@ These are relabelled P1–P8 here to avoid a clash with source ids such as `S1`.
      sealed, adjudicated from scratch, and disclosed.
 10. **Review-driven changes.** A change driven by the corpus review goes through a fix (counted as the fixture's one
     fix) or a replacement, with re-adjudication.
-11. **Symmetric audit of agreed fixtures.**
-    - Before adjudication starts, a random sample is pre-registered: 10% of each corpus part, rounded up, drawn with
-      a frozen seed.
-    - These are fixtures the first adjudicator will likely agree with. Each sampled fixture that the first
-      adjudicator agrees with still goes through the two further blind adjudicators and the operator, with the
-      same outcomes.
-    - This checks agreed items with the same rigour as disputed ones.
+11. **Symmetric audit of agreed B′ fixtures.**
+    - **The sample is stratified by cell:** 10% of each B′ cell, rounded up. That is 3 per conversation cell, 2 per
+      other eligible cell, and 1 per R4 cell.
+    - **Commit, then reveal:** the members are the fixtures with the smallest sha256 of (seal commit id + fixture
+      id), so they cannot be known while authoring.
+    - Each sampled fixture that the first adjudicator agrees with still goes through the two further blind
+      adjudicators and the operator.
+    - A replacement inherits its slot's sampled status. An unused reserve fixture is not sampled.
+    - **Consequence (pre-registered):** if any sampled agreed fixture is fixed or replaced, every fixture of that B′
+      cell gets the full treatment.
 12. **Declared residual filter.** Only fixtures that a Claude adjudicator disputes, or that the sample catches, are
     scrutinized, so the corpus may drift toward items a frontier model can solve. This is declared.
     - Every fixed or replaced fixture is flagged.
-    - The P1 counts and bounds, and the research metrics, are reported on the **untouched subset** beside the full
-      set. That is descriptive and never gating.
+    - The P1 counts and bounds, and the research metrics, are reported beside the full set on two subsets,
+      descriptive and never gating:
+      - the **untouched subset**, declared to be the most filtered;
+      - the **disputed-but-kept-unchanged subset**, which shows the direction of the filter.
 13. **Records.** Per-cell fix and replacement counts, disagreement rates and the audit-sample outcomes are
     disclosed, and bound in the freeze.
 
@@ -539,7 +581,8 @@ basis. G-ROUTE3's generalization labels are not used.
 
 - Denominators: 915 and 305.
 - The thresholds schema:
-  - `observations_required` 8, `fixtures_per_cell` 4, `repeats` 2;
+  - `observations_required` 8, `distinct_fixtures_required` 4, `repeats_per_fixture` 2,
+    `operational_acceptances_required` 8 and `semantic_passes_required` 8. These are the keys `qualify()` reads.
   - floors of 76, 30 and 10;
   - the exact bound forms.
 - The B′ loader checks the D9 per-cell composition (28, 18 or 1) and the `A4-`/`B4-` prefixes.
@@ -558,23 +601,39 @@ R7 §10 items 1–11 apply unchanged, except:
 - **A lifecycle differential.** A shared 4-position non-coding synthetic schedule runs through G-ROUTE3's R7 and
   through the G-ROUTE4 fork, with a **shared stub scorer**.
   - The G-ROUTE3 side runs in a separate subprocess, so no G-ROUTE4 process loads its modules.
-  - **Both sides receive identical injected inputs:** freeze binding, guarded-file map, receipts and provider stub.
+  - **Both sides receive identical injected inputs:**
+    - the freeze binding, guarded-file map, receipts and provider stub;
+    - `Runtime.bodies`, so request digests match;
+    - if import hashing is on, the guarded map is the union of both sides' modules.
+  - The run is declared fault-free, so no quarantine or orphan-temporary tokens arise.
+  - It covers Phase A, the table freeze and Phase B.
   - **Normalization before comparison:**
     - mask **only** random tokens (`root_id`, run tokens);
     - substitute identity strings, per the identity table;
     - **recompute** every derived digest from its substituted preimage, never mask it. That covers the sentence and
       authorization digests, schedule digests, guarded digests, entry and ledger seals, and evidence commit
       authors and messages.
+    - **Rebuild the git object chain in order:** blob, then tree, then commit, with the fixed date
+      `1700000000 +0000` and the substituted identity and message. Git blob, tree and commit ids are derived
+      digests, including `evidence_head_before` in disclosure records and every `*_commit` payload field (such as
+      `phase_a_terminal_commit`). Each later blob embeds the recomputed id.
     - compare the journal entry sequences, the ledger payloads and the evidence **trees**, not commit ids.
   - Zero residual differences are allowed.
   - The derived `scored`/`completed` payloads come from the shared stub, so they compare equal too.
 - **A record-level grading differential.** This is the proof that forked grading equals G-ROUTE3's where the rules
   coincide.
-  - Shared synthetic records run through G-ROUTE3's scorer and through G-ROUTE4's, in separate processes. They
-    include correct, wrong, fenced, malformed, non-hashable, lone-surrogate, CRLF and empty outputs.
-  - Per record, it requires equal normalization, operational and semantic results, and equal routing and
-    escalation decisions against the same table.
-  - Cell verdicts, which differ by design (8/8 against 4/4), are covered by the oracle.
+  - **Entry points under test** are the forked G-ROUTE4 functions, against their G-ROUTE3 originals:
+    `qualification.collect_evaluation`, `safe_normalize`, `sealable`, `attach_semantics`, `validation.decide` and
+    `scorer.rebuild_records`. They run in separate processes.
+  - **Injection:** in each process, `indexed_fixture_gold` and `runtime_fixtures` are replaced by the same
+    synthetic fixtures and gold, with ids mapped through the identity table. The records include correct, wrong,
+    fenced, malformed, non-hashable, lone-surrogate, CRLF and empty outputs.
+  - **The same table** is one `routing_lookup` over the 20 shared `task|risk` keys, applied at the `decide` level and
+    never through `verify_table`.
+  - **Required equal, per record:** normalization, operational results, semantic results, and routing and
+    escalation decisions.
+  - Aggregate `score` denominators and cell verdicts differ by design (305/915 against 48/144; 8/8 against 4/4).
+    They are covered by the oracle.
 - **An independently written oracle** covers the rules that differ by design: 8/8 qualification, the three-way
   gates, and the exact bounds including the lower bound. It is checked over every (n, k) with n ≤ 400.
 
