@@ -117,8 +117,8 @@ Added for G-ROUTE4: **independent gold adjudication before contact.** A fresh re
 fixture's authoring rationale, answers each fixture from its model-facing input alone. Any disagreement with gold
 is resolved or the fixture is dropped, all before the freeze, and every resolution is recorded.
 
-**Coding allowlist (S2).** The allowlist is re-derived from a **stated criterion**, not from the list of observed
-denials:
+**Coding allowlist (S2). Decided (D6): the stated purity rule.** The allowlist is re-derived from a **stated
+criterion**, not from the list of observed denials:
 - **Allowed:** pure built-ins and methods with no I/O, import, reflection, attribute mutation outside local
   values, or code execution. For example `len`, `any`, `all`, `isinstance`, `range`, `enumerate`, `min`, `max`,
   `sorted`, `str`/`int`/`list`/`dict`/`set`/`tuple` constructors, `append` on local lists, and the read-only
@@ -131,9 +131,9 @@ criterion, the resulting list and its security argument are frozen and disclosed
 coding outputs are **not** re-evaluated under it.
 
 **Qualification (Phase A′).** Same cell structure: 6 task classes × R1–R4 × 3 tiers. Unanimity is retained.
-Observations per cell are an open decision (D4):
-- 4, as in G-ROUTE3 (0/4 gives an upper bound of 0.527);
-- or 8 (0/8 gives 0.312).
+- **8 observations per cell (D4):** 4 distinct fixtures × 2 repeats. Zero failures in 8 bounds the per-cell
+  failure rate below 0.312, against 0.527 at 4.
+- **Size:** 96 fixtures, 576 calls.
 
 **Validation (Phase B′).**
 - Routing is gold-blind on the frozen A′ table, with G-ROUTE3's routing policy unchanged. The two retained
@@ -149,9 +149,15 @@ Observations per cell are an open decision (D4):
   | 3 | 76 |
 
 - **The unsafe gate is evaluable only with at least 76 stops.** Fewer stops make P1 NOT_TESTABLE, never a pass.
-  At G-ROUTE3's rate this needs about 125 eligible cases; the plan is about 150, with conversation R1–R3
-  oversampled for P2.
-- R4 stays evidence-only, with a small set of R4 cases to exercise that behaviour deterministically (D5).
+- **Router-only (D1):** Phase B′ makes only the calls the router consumes. A case with no qualified tier costs
+  0 calls. The false-negative-qualification measure is therefore not available, which is declared.
+- **Size is set by escalation (D3), not by P1:**
+  - the target is about 200 routed attempts, which needs about 300 eligible cases at G-ROUTE3's 0.64 routed
+    attempts per eligible case;
+  - that also gives about 180 expected stops, well above P1's 76;
+  - conversation R1–R3 is oversampled for P2.
+- **R4 (D5):** stays evidence-only, with a minimal deterministic set of R4 cases (one per task class) to exercise
+  that behaviour end to end.
 
 **Escalation (S1).** Escalation needs a routed attempt rejected in a cell with at least two qualified tiers.
 G-ROUTE3's rate was about 1 in 23 routed attempts:
@@ -162,19 +168,15 @@ G-ROUTE3's rate was about 1 in 23 routed attempts:
 | 150 | 6.5 | 0.78 |
 | 200 | 8.7 | 0.94 |
 
-These count escalations, not escalated stops, so the true chances are lower. Two options (D3):
-- size B′ for about 200 routed attempts;
-- or add a separately analysed, pre-registered format-stress stratum. That raises the rejection rate by
-  construction, never by choosing cases expected to fail.
+These count escalations, not escalated stops, so the true chances are lower. **Decided (D3):**
+- B′ is sized for about 200 routed attempts, with natural escalations only and no case selection;
+- S1 stays non-gating.
 
-S1 stays non-gating unless the operator decides otherwise.
-
-**Grounded research (S3).**
+**Grounded research (S3). Decided (D7): diagnose, then include.**
 1. First, a read-only diagnosis of G-ROUTE3's 41 judgment mismatches, which classifies each as misjudged status,
    misread source or possible fixture ambiguity.
-2. Then the operator decides (D7) between:
-   - including research in A′/B′ with the unchanged prompt and validators on fresh fixtures;
-   - or deferring research to its own experiment.
+2. Research then joins A′/B′ with the unchanged prompt and validators, on fresh, independently adjudicated
+   fixtures.
 
 A prompt or validator change counts as a protocol change and needs its own pre-registration.
 
@@ -183,29 +185,34 @@ A prompt or validator change counts as a protocol change and needs its own pre-r
 - **Primary:** correct-stop exact one-sided 95% lower bound at least 0.60, evaluable only with at least 30
   qualified-start cases.
 - **Primary:** 0 unqualified-tier terminal results, 0 gold leakage events, denominator integrity.
-- **P2 (D2):** a reported conversation-stratum unsafe bound, gating only if the operator decides so before the
-  freeze.
+- **P2 (D2):** reported, not gating. The conversation stratum's unsafe-stop rate and exact 95% upper bound, with
+  the small tier broken out.
 - **S1:** as in G-ROUTE3 (at least 5 escalated stops to evaluate), plus a reported bound.
 
 ## Cost
 
 At G-ROUTE3's pace (about 24 s per call on average across tiers):
-- **Phase A′:** 288 calls at 4 observations per cell (about 2 hours); 576 at 8 (about 4 hours).
-- **Phase B′:** about 150 eligible cases.
-  - **Router-only** (D1): about 160–210 routing calls, about 1.5 hours.
-  - **With G-ROUTE3's all-tier diagnostics:** about 470 calls, about 3 hours.
+- **Phase A′:** 576 calls, about 4 hours.
+- **Phase B′:** router-only, about 200 routing calls, about 1.5–2 hours. Routed calls lean towards the cheaper
+  tiers.
 
-## Open decisions for the operator (before the design review freezes them)
+**Authoring effort.** This is the real cost:
+- about 96 qualification fixtures and about 300 validation fixtures, plus the R4 set;
+- each fixture has gold, a derivability check and independent adjudication.
 
-| # | Decision | Options |
+Authoring can be staged by task class.
+
+## Operator decisions (2026-09-28)
+
+| # | Decision | Chosen |
 |---|---|---|
-| D1 | Phase B′ diagnostic calls | router-only (cheaper; loses the false-negative-qualification measure) · or all three tiers, as in G-ROUTE3 |
-| D2 | P2 conversation stratum | reported only · or gating |
-| D3 | Escalation | size for about 200 routed attempts · or a pre-registered format-stress stratum · or report descriptively only |
-| D4 | Qualification scale | 4 observations per cell · or 8 |
-| D5 | R4 in Phase B′ | a minimal deterministic set · or excluded |
-| D6 | Coding allowlist | approve the stated criterion · or keep G-ROUTE3's list (coding is then expected to stay unqualified) |
-| D7 | Grounded research | include in A′/B′ after the diagnosis · or defer to its own experiment |
+| D1 | Phase B′ diagnostic calls | **Router-only**; the false-negative-qualification measure is not available (declared) |
+| D2 | P2 conversation stratum | **Reported with its bound**, not gating |
+| D3 | Escalation | **Size B′ for about 200 routed attempts**; natural escalations only; S1 non-gating |
+| D4 | Qualification scale | **8 observations per cell** (4 fixtures × 2 repeats) |
+| D5 | R4 in Phase B′ | **A minimal deterministic set** |
+| D6 | Coding allowlist | **The stated purity rule**, frozen with its security argument and disclosed in prompts |
+| D7 | Grounded research | **Diagnose, then include** with the unchanged prompt and validators |
 
 ## Standing constraints (unchanged)
 
