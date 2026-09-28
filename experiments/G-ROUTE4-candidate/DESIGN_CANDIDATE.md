@@ -684,6 +684,7 @@ Production routing stays disabled whatever the result.
 | D8 | Output-shape disclosure | **The verbatim research sentence (sha256 `f3c383d9…ab47`); all classes audited; gaps closed in fixture prompts.** Approved after round 2; the wording was amended and re-approved after round 3 to add "exactly one … carrying that claim's claim_id" and "distinct code strings" |
 | D9 | Phase B′ size | **300 eligible cases** plus 5 R4 cases: 915 calls |
 | D10 | Adjudication authorization | **The operator starts each batch in chat;** every session is logged and sealed |
+| D11 | Design review conclusion | **One final round on revision 6 (2026-09-29).** If neither reviewer finds anything BLOCKING, the design is accepted under the safety-gated rule. Any remaining MUST-FIX items become written obligations (`G-ROUTE4_OBLIGATIONS.md`), verified at the blueprint and corpus review and at the implementation review, as with R7 |
 
 ## Standing constraints (unchanged)
 
