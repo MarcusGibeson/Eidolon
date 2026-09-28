@@ -148,18 +148,19 @@ def families(cls):
 
 def a_slots(cls):
     code, fams, out = CLASS_CODE[cls], families(cls), []
-    for risk in RISKS:
+    for r_index, risk in enumerate(RISKS):
         chosen = [fams[i - 1] for i in A_FAMILY_ROTATION[risk]]
         for n, fam in enumerate(chosen, 1):
             feats = {}
+            m = n + r_index                          # rotate features with the cell (no family-feature lock)
             if code == "CONV":
-                feats = {"gold_position": n, "depth": 1 + (n + 1) % 2}
+                feats = {"gold_position": n, "depth": 1 + m % 2}
             elif code == "EXTR":
-                feats = {"field_count": 3 + (n - 1) % 3, "derived_count": 1 + (n - 1) % 2}
+                feats = {"field_count": 3 + m % 3, "derived_count": 1 + m % 2}
             elif code == "SYNTH":
-                feats = {"mergeable_pair": "yes" if n % 2 else "no", "obs_band": "small" if n <= 2 else "large"}
+                feats = {"mergeable_pair": "yes" if m % 2 else "no", "obs_band": "small" if (m // 2) % 2 else "large"}
             elif code == "PLAN":
-                feats = {"precedence_form": "before" if n % 2 else "after"}
+                feats = {"precedence_form": "before" if m % 2 else "after"}
             else:
                 feats = {"pattern": RESEARCH_A[risk][n - 1], "sls": n in (1, 3)}
             out.append({"fixture_id": fid("A", code, risk, n), "phase": "A", "role": "main", "task_class": cls,
@@ -204,18 +205,24 @@ def b_slots(cls, a_by_cell):
             patterns = [f"P{k}" for k in range(1, 9)] * 2 + RESEARCH_B_EXTRA[risk]
             sls_seq = [True, False] * 4 + [False, True] * 4 + [True, False]   # each pattern once with, once without
             a_keys = {(s["features"]["pattern"], s["family"], s["features"]["sls"]) for s in a_by_cell[(cls, risk)]}
-            fam_cycle = list(fam_seq)
-            feat_seq, fams_out = [], []
-            for i, (pat, sls) in enumerate(zip(patterns, sls_seq)):
-                for j in range(len(fam_cycle)):
-                    fam = fam_cycle[(i + j) % len(fam_cycle)]
-                    if (pat, fam, sls) not in a_keys:
-                        break
-                fams_out.append(fam)
-                fam_cycle.remove(fam)
-                fam_cycle.append(fam)
-                feat_seq.append({"pattern": pat, "sls": sls})
-            fam_seq = fams_out
+            fams_all = families(cls)
+            quota = {f: 3 for f in fams_all}          # 18 = 6 families x 3
+
+            def place(i, chosen):
+                if i == len(patterns):
+                    return chosen
+                pat, sls = patterns[i], sls_seq[i]
+                order = sorted(fams_all, key=lambda f: (-quota[f], (fams_all.index(f) - i) % len(fams_all)))
+                for fam in order:
+                    if quota[fam] and (pat, fam, sls) not in a_keys:
+                        quota[fam] -= 1
+                        got = place(i + 1, chosen + [fam])
+                        if got:
+                            return got
+                        quota[fam] += 1
+                return None
+            fam_seq = place(0, [])
+            feat_seq = [{"pattern": pat, "sls": sls} for pat, sls in zip(patterns, sls_seq)]
         for n, (fam, feats) in enumerate(zip(fam_seq, feat_seq), 1):
             out.append({"fixture_id": fid("B", code, risk, n), "phase": "B", "role": "main", "task_class": cls,
                         "risk": risk, "family": fam, "features": feats})
@@ -262,7 +269,7 @@ def g_route3_entity_inventory():
         fixtures += json.loads((ROOT / f"experiments/G-ROUTE3-candidate/corpus_{c}.json").read_text(
             encoding="utf-8"))["fixtures"]
     texts = [I._content(f) for f in fixtures]
-    vocab = {w for t in texts for w in I._WORD.findall(t) if w.islower()}
+    vocab = set(I._WORD.findall(" ".join(texts).lower()))
     ents = set()
     for t in texts:
         ents |= I._named_entities(t, vocab)
@@ -436,6 +443,46 @@ def checks(slots, g3_entities, g3_lineages):
         ex_ok &= not clash and ok_types
     check("extraction: planned real fine signature of every B′ main and reserve slot differs from every A′ slot "
           "in its cell", ex_ok, ex_detail)
+    # extraction: declared target mix and per-slot rules (NEW-B1)
+    ex_slots = [s for s in slots if CLASS_CODE[s["task_class"]] == "EXTR"]
+    rules_ok = all(_allowed(tuple(s["features"]["field_types"]), s["family"]) for s in ex_slots)
+    mixes = {}
+    for phase in ("A", "B"):
+        c = collections.Counter(x for s in ex_slots if s["phase"] == phase and s["role"] == "main"
+                                for x in s["features"]["field_types"])
+        tot = sum(c.values())
+        mixes[phase] = {k: round(c[k] / tot, 3) for k in TARGET_MIX}
+    mix_ok = all(abs(mixes[p][k] - v) <= 0.08 for p in mixes for k, v in TARGET_MIX.items())
+    check("extraction: every slot meets the per-slot type rules; A′ and B′ type mixes each within 0.08 of the "
+          "declared target mix (G-ROUTE3's realized mix)", rules_ok and mix_ok,
+          {"target": TARGET_MIX, "A": mixes["A"], "B": mixes["B"]})
+    # families even within 1 in every eligible B′ cell (all classes)
+    even_ok, even_detail = True, {}
+    for (p, cls, risk), v in cells.items():
+        if p != "B" or risk == "R4":
+            continue
+        c = collections.Counter(s["family"] for s in v)
+        counts = [c.get(f, 0) for f in CLASSES[cls]["families"]]
+        even_detail[f"{CLASS_CODE[cls]}|{risk}"] = counts
+        even_ok &= max(counts) - min(counts) <= 1
+    check("families as even as possible (within 1) in every eligible B′ cell", even_ok, even_detail)
+    # B′ reserves: every family receives some reserve across the class (spread)
+    spread_ok = True
+    for cls in CLASSES:
+        got = {s["family"] for s in slots if s["task_class"] == cls and s["phase"] == "B" and s["role"] == "reserve"}
+        spread_ok &= got == set(CLASSES[cls]["families"])
+    check("B′ reserves: every family receives reserve fixtures somewhere in its class", spread_ok, {})
+    # A′: no family tied to a single value of a varying feature (reported)
+    locked = []
+    for cls in CLASSES:
+        for fam in CLASSES[cls]["families"]:
+            occ = [s for s in A if s["task_class"] == cls and s["family"] == fam]
+            for feat in ("depth", "obs_band", "mergeable_pair", "precedence_form", "derived_count"):
+                vals = {s["features"].get(feat) for s in occ if feat in s["features"]}
+                if len(occ) >= 2 and len(vals) == 1 and None not in vals:
+                    locked.append(f"{fam}:{feat}")
+    check("(reported) A′: families tied to a single feature value across their occurrences", True,
+          {"count": len(locked), "locked": locked})
     # research: slots that share (family, sls) with an A′ slot and rely on pattern alone to differ (reported)
     rel = {}
     for risk in ELIGIBLE:
@@ -464,9 +511,15 @@ def checks(slots, g3_entities, g3_lineages):
     tpl_ok = all(v["assembled_template"].count(v["disclosure_sentence"]) == 1 for v in tpl.values()
                  if v["disclosure_sentence"])
     tpl_ok &= tpl["grounded_research_synthesis"]["rule_body"].count(RESEARCH_ANCHOR) == 1
-    tpl_ok &= sha(D8) == "f3c383d92b5ca1cb99008b49864f7330b6515c93f8e795a6c135f1326844ab47"
+    expected_digests = {
+        "grounded_research_synthesis": "f3c383d92b5ca1cb99008b49864f7330b6515c93f8e795a6c135f1326844ab47",
+        "structured_extraction": "2d62848e72c42c00be38bbbe927730b322f846e919c015276b1aa7643ef57bf6",
+        "hierarchical_semantic_synthesis": "bf3387b7e1165ca0f408e326e9210ca319e6c86e502e17d51db9c59994393917",
+        "reflective_planning": "b4dbc5f06501c0b26add12c4720ee5dd4fca0f8f6f1285de7145809c5ad936bc"}
+    tpl_ok &= all(sha(SENTENCES[c]) == d for c, d in expected_digests.items())
+    tpl_ok &= sha(EX_ABSENCE) == "d8b760630cea0af5d2612fa208bd4afc46f7d17646ab4343129a79ec6781f6d8"
     check("templates: each class rule body pinned; each disclosure sentence appears exactly once in its assembled "
-          "template; D8 digest matches", tpl_ok, {cls: {"rule_body_sha256": v["rule_body_sha256"][:16],
+          "template; all five approved sentence digests match", tpl_ok, {cls: {"rule_body_sha256": v["rule_body_sha256"][:16],
                                                        "assembled_sha256": v["assembled_template_sha256"][:16]}
                                                  for cls, v in tpl.items()})
     # audit-sample procedure
@@ -489,7 +542,66 @@ def _multisets(size, required):
     return sorted(set(out))
 
 
+TARGET_MIX = {"integer": 0.242, "boolean": 0.212, "string": 0.197, "enum2": 0.121, "date_or_time": 0.106,
+              "number": 0.106, "enum3": 0.015}          # G-ROUTE3's realized extraction mix (66 fields, 16 fixtures)
+
+
+def _allowed(ms, fam):
+    c = collections.Counter(ms)
+    max_bool = 2 if fam in ("EX4", "EX6") else 1
+    return (EX_REQUIRED[fam] in c and c["boolean"] <= max_bool and (c["string"] + c["date_or_time"]) >= 1
+            and max(c.values()) <= 2)
+
+
 def plan_extraction_types(slots):
+    """Plan each extraction slot's abstract field-type multiset against the declared target mix (G-ROUTE3's
+    realized extraction mix), under per-slot rules (the family's required type; at most 1 boolean, 2 for EX4/EX6;
+    at least one verbatim string or date/time; no type more than twice), so that G-ROUTE3's real fine signature
+    (sorted abstract field types, derived count) of every B′ main and reserve slot differs from every A′ slot's in
+    the same cell. Greedy on the running deviation from the target mix; deterministic."""
+    running = collections.Counter()
+
+    def score(ms):
+        tot = sum(running.values()) + len(ms)
+        c = running + collections.Counter(ms)
+        return sum(abs(c[k] / tot - v) for k, v in TARGET_MIX.items())
+
+    def choose(size, fam, forbidden, reuse):
+        options = [o for o in _multisets(size, EX_REQUIRED[fam]) if _allowed(o, fam)]
+        options = [o for o in options if o not in forbidden]
+        options.sort(key=lambda o: (reuse[o], round(score(o), 9), o))
+        return options[0]
+
+    cells = collections.defaultdict(list)
+    for s in slots:
+        if CLASS_CODE[s["task_class"]] == "EXTR":
+            cells[s["risk"]].append(s)
+    for risk, group in sorted(cells.items()):
+        a_main = [s for s in group if s["phase"] == "A" and s["role"] == "main"]
+        used_a = set()
+        for s in a_main:
+            d = s["features"]["derived_count"]
+            pick = choose(s["features"]["field_count"], s["family"],
+                          {o for (o, dd) in used_a if dd == d}, collections.Counter())
+            s["features"]["field_types"] = list(pick)
+            used_a.add((pick, d))
+            running.update(pick)
+        for s in group:
+            if s["phase"] == "A" and s["role"] == "reserve":
+                twin = next(m for m in a_main if m["family"] == s["family"]
+                            and all(m["features"][k] == s["features"][k] for k in ("field_count", "derived_count")))
+                s["features"]["field_types"] = list(twin["features"]["field_types"])
+        reuse = collections.Counter()
+        for s in [x for x in group if x["phase"] == "B"]:
+            d = s["features"]["derived_count"]
+            pick = choose(s["features"]["field_count"], s["family"] or "EX1",
+                          {o for (o, dd) in used_a if dd == d}, reuse)
+            s["features"]["field_types"] = list(pick)
+            reuse[pick] += 1
+            running.update(pick)
+
+
+def _old_plan_extraction_types(slots):
     """Plan each extraction slot's abstract field-type multiset so that G-ROUTE3's real fine signature
     (sorted abstract field types, derived count) of every B′ main and reserve slot differs from every A′ slot's in
     the same cell. A′ reserves copy their slot's plan. Returns nothing; sets features['field_types']."""
@@ -532,6 +644,7 @@ def assign_b_reserve_families(slots):
         class_cap = math.floor(0.25 * len(b_main))
         class_count = collections.Counter(s["family"] for s in b_main)
         assigned = collections.Counter()
+        class_reserved = collections.Counter()
         for s in [x for x in group if x["phase"] == "B" and x["role"] == "reserve"]:
             cell_main = [m for m in b_main if m["risk"] == s["risk"]]
             if s["risk"] == "R4":
@@ -544,9 +657,12 @@ def assign_b_reserve_families(slots):
             ok = [f for f in fams if cell_count[f] + 1 <= cap and class_count[f] + 1 <= class_cap
                   and (CLASS_CODE[cls] != "RSRCH"
                        or (s["features"]["pattern"], f, s["features"]["sls"]) not in a_keys)]
-            ok.sort(key=lambda f: (assigned[(s["risk"], f)], cell_count[f], class_count[f], fams.index(f)))
+            offset = 2 * ELIGIBLE.index(s["risk"])
+            ok.sort(key=lambda f: (assigned[(s["risk"], f)], class_reserved[f], cell_count[f],
+                                   (fams.index(f) - offset) % len(fams)))
             s["family"] = ok[0]
             assigned[(s["risk"], ok[0])] += 1          # spread reserves across every family with headroom
+            class_reserved[ok[0]] += 1
             s["matching"] = "features; family assigned with cap headroom"
 
 
@@ -570,9 +686,10 @@ D8 = ("Reply with a JSON object whose keys are exactly claims, recommendation an
       "and lineages is a list of distinct lineage-name strings; recommendation is a string; uncertainties is a list "
       "of distinct code strings.")
 SENTENCES = {
-    "structured_extraction": ("Use JSON numbers for integer and number fields, true or false for boolean fields, "
-                              "strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of "
-                              "the listed values for fields whose type lists values separated by |."),
+    "structured_extraction": ("Use JSON numbers for number fields, whole numbers written without a decimal point "
+                              "for integer fields (5, not 5.0), true or false for boolean fields, strings written as "
+                              "YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for "
+                              "fields whose type lists values separated by |."),
     "hierarchical_semantic_synthesis": ("Reply with a JSON object whose keys are exactly statements and conclusion: "
                                         "statements is a list of statement objects; in each statement object, "
                                         "observation_ids is a non-empty list of observation id strings, and every "
@@ -584,7 +701,7 @@ SENTENCES = {
                             "strings; claims_completed is false; requested_authority is an empty list."),
     "grounded_research_synthesis": D8,
 }
-SENTENCE_STATUS = {"structured_extraction": "approved 2026-09-29", "hierarchical_semantic_synthesis":
+SENTENCE_STATUS = {"structured_extraction": "approved 2026-09-29; amended by the operator 2026-09-29 (integers without a decimal point)", "hierarchical_semantic_synthesis":
                    "approved 2026-09-29", "reflective_planning": "approved 2026-09-29",
                    "grounded_research_synthesis": "approved and amended after design review round 3 (D8)"}
 EX_ABSENCE = "Use 'not_provided' when the text says a value has not been provided."
@@ -631,17 +748,18 @@ def templates():
 
 O6_SPEC = {
     "compared_values": {
-        "ordinary_conversation": ["input.answer_options[*]", "input.<any other list-of-strings field>[*]"],
+        "ordinary_conversation": ["every string leaf of input except input.message (including answer_options and "
+                                  "every string inside list-of-string and list-of-object fields)"],
         "structured_extraction": ["gold.expected.<field> where the schema type is not an enum (string, date or "
                                   "time values), uncapped length"],
         "hierarchical_semantic_synthesis": [],
-        "reflective_planning": ["input.allowed_actions[*].action"],
+        "reflective_planning": ["input.allowed_actions[*].action", "input.objective"],
         "grounded_research_synthesis": ["input.sources[*].lineage"],
     },
     "table_is_authoritative": True,
-    "length_cap": "80 characters applies only to this supplementary comparison, never to the design's own "
-                  "shared-value checks (which run uncapped)",
-    "normalization": "g_route3_conversation.canonical_value (the validator's own canonicalization), then casefold",
+    "length_cap": "none: every compared value is compared at full length (revision 3)",
+    "normalization": "g_route3_conversation.canonical_value, then casefold; canonical_value strips wrappers and "
+                     "trailing punctuation, so its collisions are a superset of casefold-and-strip (stricter than O6)",
     "exclusions": ["closed-vocabulary sets: allowed_recommendations, allowed_conclusions, allowed_uncertainty_codes "
                    "and their members, schema type strings, enum members of any a|b schema type, planning "
                    "uncertainty codes",
@@ -652,7 +770,9 @@ O6_SPEC = {
                     "string (revision 2: the candidate's calendar and unit exclusions are withdrawn, per O6)",
     "duplicates": "a value counts as shared only across two different fixtures; repeats within one fixture are "
                   "allowed",
-    "gate": "0 shared values within G-ROUTE4 (main and reserve) and against G-ROUTE3 under the same rule",
+    "gate": "0 shared values within G-ROUTE4 (main and reserve) and against G-ROUTE3 under the same rule; "
+            "duplicates between two G-ROUTE3 fixtures are not counted",
+    "report": "per class: the compared paths, the number of values compared, and every collision",
 }
 N1_SPEC = {
     "encoding": "UTF-8 JSON, sorted keys, separators (',', ':')",
@@ -700,6 +820,25 @@ def build():
         "o6_exact_value_spec": O6_SPEC,
         "n1_canonical_gold": N1_SPEC,
         "conversation_gold_max_characters": 600,
+        "extraction_derived_count_definition": (
+            "G-ROUTE3's measure: the number of schema keys k for which the text 'k is ' occurs in the fixture prompt. "
+            "Authoring rule: each derived field is defined by exactly one sentence of the form '<key> is ...', and no "
+            "other '<key> is ' text occurs in the prompt, so the measure equals the real count. Before the seal, "
+            "every fixture's realized abstract field types and derived count must equal its slot's plan "
+            "(reserves included); a mismatch is an authoring defect."),
+        "opening_constraints": {
+            "ordinary_conversation": "the opening ends without a terminal period (the rule body begins '. You have')",
+            "structured_extraction": ("the opening is: subject sentence, then derived-field definitions, then (only "
+                                      "where a field is typed provided|not_provided) the absence sentence; its last "
+                                      "sentence ends without a terminal period (the rule body begins '. Copy'). The "
+                                      "absence sentence, with its period, appears exactly once in the assembled "
+                                      "prompt; where it is last, the rule body's '.' is its period"),
+            "hierarchical_semantic_synthesis": "the opening leads into ' observations.' (e.g. 'Synthesize the sensor')",
+            "reflective_planning": "the opening leads into ' without claiming any step is done.'",
+            "grounded_research_synthesis": "the opening is 'Assess the claims about <subject>', leading into ' against the sources.'",
+        },
+        "pinned_text_trigram_removal": ("the five rule bodies, the four class disclosure sentences (EXTR, SYNTH, PLAN, "
+                                        "D8) and the extraction absence sentence, each removed by trigram set"),
         "near_miss_distractor": ("every conversation fixture has exactly one option satisfying all but one "
                                  "condition (depth 2: correct first step, wrong second); options are pairwise "
                                  "distinct under canonical_value"),

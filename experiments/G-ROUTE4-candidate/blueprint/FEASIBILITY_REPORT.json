@@ -63,7 +63,7 @@
     },
     "grounded_research_synthesis": {
      "B_cases": 55,
-     "max_family": 11,
+     "max_family": 10,
      "limit": 13,
      "families": 6
     }
@@ -122,15 +122,15 @@
      6
     ],
     "RSRCH|R1": [
-     6,
+     3,
      6
     ],
     "RSRCH|R2": [
-     5,
+     3,
      6
     ],
     "RSRCH|R3": [
-     6,
+     3,
      6
     ]
    }
@@ -293,7 +293,7 @@
     "fixtures_incl_reserve": 584,
     "names_needed_max": 3504,
     "bank_capacity": 737100,
-    "g_route3_entities_to_avoid": 28
+    "g_route3_entities_to_avoid": 2
    }
   },
   {
@@ -335,43 +335,225 @@
    }
   },
   {
+   "check": "extraction: every slot meets the per-slot type rules; A′ and B′ type mixes each within 0.08 of the declared target mix (G-ROUTE3's realized mix)",
+   "pass": true,
+   "detail": {
+    "target": {
+     "integer": 0.242,
+     "boolean": 0.212,
+     "string": 0.197,
+     "enum2": 0.121,
+     "date_or_time": 0.106,
+     "number": 0.106,
+     "enum3": 0.015
+    },
+    "A": {
+     "integer": 0.25,
+     "boolean": 0.188,
+     "string": 0.156,
+     "enum2": 0.125,
+     "date_or_time": 0.109,
+     "number": 0.141,
+     "enum3": 0.031
+    },
+    "B": {
+     "integer": 0.233,
+     "boolean": 0.219,
+     "string": 0.181,
+     "enum2": 0.112,
+     "date_or_time": 0.116,
+     "number": 0.088,
+     "enum3": 0.051
+    }
+   }
+  },
+  {
+   "check": "families as even as possible (within 1) in every eligible B′ cell",
+   "pass": true,
+   "detail": {
+    "CONV|R1": [
+     5,
+     5,
+     5,
+     5,
+     4,
+     4
+    ],
+    "CONV|R2": [
+     4,
+     4,
+     5,
+     5,
+     5,
+     5
+    ],
+    "CONV|R3": [
+     5,
+     5,
+     4,
+     4,
+     5,
+     5
+    ],
+    "EXTR|R1": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "EXTR|R2": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "EXTR|R3": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "SYNTH|R1": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "SYNTH|R2": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "SYNTH|R3": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "PLAN|R1": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "PLAN|R2": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "PLAN|R3": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "RSRCH|R1": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "RSRCH|R2": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "RSRCH|R3": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ]
+   }
+  },
+  {
+   "check": "B′ reserves: every family receives reserve fixtures somewhere in its class",
+   "pass": true,
+   "detail": {}
+  },
+  {
+   "check": "(reported) A′: families tied to a single feature value across their occurrences",
+   "pass": true,
+   "detail": {
+    "count": 11,
+    "locked": [
+     "CV3:depth",
+     "CV4:depth",
+     "EX3:derived_count",
+     "EX4:derived_count",
+     "SY1:obs_band",
+     "SY3:mergeable_pair",
+     "SY4:obs_band",
+     "SY4:mergeable_pair",
+     "SY6:obs_band",
+     "PL3:precedence_form",
+     "PL4:precedence_form"
+    ]
+   }
+  },
+  {
    "check": "(reported) research: B′ slots differing from an A′ slot only by pattern (checked on real signatures at authoring)",
    "pass": true,
    "detail": {
-    "count": 27,
+    "count": 25,
     "slots": {
      "R1": [
-      "B4-RSRCH-R1-05",
-      "B4-RSRCH-R1-06",
-      "B4-RSRCH-R1-11",
-      "B4-RSRCH-R1-12",
-      "B4-RSRCH-R1-15",
-      "B4-RSRCH-R1-X03",
-      "B4-RSRCH-R1-X06",
-      "B4-RSRCH-R1-X11",
-      "B4-RSRCH-R1-X14"
+      "B4-RSRCH-R1-07",
+      "B4-RSRCH-R1-08",
+      "B4-RSRCH-R1-X07",
+      "B4-RSRCH-R1-X08"
      ],
      "R2": [
-      "B4-RSRCH-R2-09",
-      "B4-RSRCH-R2-13",
+      "B4-RSRCH-R2-01",
+      "B4-RSRCH-R2-02",
+      "B4-RSRCH-R2-10",
+      "B4-RSRCH-R2-11",
+      "B4-RSRCH-R2-12",
+      "B4-RSRCH-R2-17",
+      "B4-RSRCH-R2-18",
       "B4-RSRCH-R2-X01",
       "B4-RSRCH-R2-X02",
-      "B4-RSRCH-R2-X03",
-      "B4-RSRCH-R2-X09"
+      "B4-RSRCH-R2-X05",
+      "B4-RSRCH-R2-X06",
+      "B4-RSRCH-R2-X07",
+      "B4-RSRCH-R2-X08"
      ],
      "R3": [
-      "B4-RSRCH-R3-01",
-      "B4-RSRCH-R3-07",
-      "B4-RSRCH-R3-09",
-      "B4-RSRCH-R3-10",
-      "B4-RSRCH-R3-11",
-      "B4-RSRCH-R3-16",
+      "B4-RSRCH-R3-03",
+      "B4-RSRCH-R3-04",
+      "B4-RSRCH-R3-X01",
       "B4-RSRCH-R3-X02",
       "B4-RSRCH-R3-X05",
-      "B4-RSRCH-R3-X08",
-      "B4-RSRCH-R3-X10",
-      "B4-RSRCH-R3-X13",
-      "B4-RSRCH-R3-X14"
+      "B4-RSRCH-R3-X06",
+      "B4-RSRCH-R3-X07",
+      "B4-RSRCH-R3-X08"
      ]
     }
    }
@@ -382,7 +564,7 @@
    "detail": {}
   },
   {
-   "check": "templates: each class rule body pinned; each disclosure sentence appears exactly once in its assembled template; D8 digest matches",
+   "check": "templates: each class rule body pinned; each disclosure sentence appears exactly once in its assembled template; all five approved sentence digests match",
    "pass": true,
    "detail": {
     "ordinary_conversation": {
@@ -391,7 +573,7 @@
     },
     "structured_extraction": {
      "rule_body_sha256": "b33b9c84ddffcf79",
-     "assembled_sha256": "a5bc3999ecaabaaf"
+     "assembled_sha256": "ef41104bde4915eb"
     },
     "hierarchical_semantic_synthesis": {
      "rule_body_sha256": "01798468698c0efa",

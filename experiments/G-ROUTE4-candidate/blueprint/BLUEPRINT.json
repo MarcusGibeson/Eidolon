@@ -157,8 +157,9 @@
   "total": 584
  },
  "design": "experiments/G-ROUTE4-candidate/DESIGN_CANDIDATE.md revision 6 (accepted, D11)",
+ "extraction_derived_count_definition": "G-ROUTE3's measure: the number of schema keys k for which the text 'k is ' occurs in the fixture prompt. Authoring rule: each derived field is defined by exactly one sentence of the form '<key> is ...', and no other '<key> is ' text occurs in the prompt, so the measure equals the real count. Before the seal, every fixture's realized abstract field types and derived count must equal its slot's plan (reserves included); a mismatch is an authoring defect.",
  "g_route3_inventory_to_avoid": {
-  "entities": 28,
+  "entities": 2,
   "lineages": 38
  },
  "n1_canonical_gold": {
@@ -178,11 +179,11 @@
    ],
    "hierarchical_semantic_synthesis": [],
    "ordinary_conversation": [
-    "input.answer_options[*]",
-    "input.<any other list-of-strings field>[*]"
+    "every string leaf of input except input.message (including answer_options and every string inside list-of-string and list-of-object fields)"
    ],
    "reflective_planning": [
-    "input.allowed_actions[*].action"
+    "input.allowed_actions[*].action",
+    "input.objective"
    ],
    "structured_extraction": [
     "gold.expected.<field> where the schema type is not an enum (string, date or time values), uncapped length"
@@ -194,13 +195,22 @@
    "structural ids: values in claim_id, source_id, observation/statement/step/evidence id fields and addresses, only when the value fully matches [A-Z][0-9]+",
    "JSON numbers and booleans"
   ],
-  "gate": "0 shared values within G-ROUTE4 (main and reserve) and against G-ROUTE3 under the same rule",
-  "length_cap": "80 characters applies only to this supplementary comparison, never to the design's own shared-value checks (which run uncapped)",
-  "normalization": "g_route3_conversation.canonical_value (the validator's own canonicalization), then casefold",
+  "gate": "0 shared values within G-ROUTE4 (main and reserve) and against G-ROUTE3 under the same rule; duplicates between two G-ROUTE3 fixtures are not counted",
+  "length_cap": "none: every compared value is compared at full length (revision 3)",
+  "normalization": "g_route3_conversation.canonical_value, then casefold; canonical_value strips wrappers and trailing punctuation, so its collisions are a superset of casefold-and-strip (stricter than O6)",
   "not_excluded": "dates, clock times, weekday names and number-with-unit strings are compared like any other string (revision 2: the candidate's calendar and unit exclusions are withdrawn, per O6)",
+  "report": "per class: the compared paths, the number of values compared, and every collision",
   "table_is_authoritative": true
  },
  "obligations": "experiments/G-ROUTE4-candidate/G-ROUTE4_OBLIGATIONS.md",
+ "opening_constraints": {
+  "grounded_research_synthesis": "the opening is 'Assess the claims about <subject>', leading into ' against the sources.'",
+  "hierarchical_semantic_synthesis": "the opening leads into ' observations.' (e.g. 'Synthesize the sensor')",
+  "ordinary_conversation": "the opening ends without a terminal period (the rule body begins '. You have')",
+  "reflective_planning": "the opening leads into ' without claiming any step is done.'",
+  "structured_extraction": "the opening is: subject sentence, then derived-field definitions, then (only where a field is typed provided|not_provided) the absence sentence; its last sentence ends without a terminal period (the rule body begins '. Copy'). The absence sentence, with its period, appears exactly once in the assembled prompt; where it is last, the rule body's '.' is its period"
+ },
+ "pinned_text_trigram_removal": "the five rule bodies, the four class disclosure sentences (EXTR, SYNTH, PLAN, D8) and the extraction absence sentence, each removed by trigram set",
  "research_allocation": {
   "A": {
    "R1": [
@@ -255,7 +265,7 @@
   {
    "family": "CV1",
    "features": {
-    "depth": 1,
+    "depth": 2,
     "gold_position": 1
    },
    "fixture_id": "A4-CONV-R1-01",
@@ -267,7 +277,7 @@
   {
    "family": "CV2",
    "features": {
-    "depth": 2,
+    "depth": 1,
     "gold_position": 2
    },
    "fixture_id": "A4-CONV-R1-02",
@@ -279,7 +289,7 @@
   {
    "family": "CV3",
    "features": {
-    "depth": 1,
+    "depth": 2,
     "gold_position": 3
    },
    "fixture_id": "A4-CONV-R1-03",
@@ -291,7 +301,7 @@
   {
    "family": "CV4",
    "features": {
-    "depth": 2,
+    "depth": 1,
     "gold_position": 4
    },
    "fixture_id": "A4-CONV-R1-04",
@@ -351,7 +361,7 @@
   {
    "family": "CV3",
    "features": {
-    "depth": 1,
+    "depth": 2,
     "gold_position": 1
    },
    "fixture_id": "A4-CONV-R3-01",
@@ -363,7 +373,7 @@
   {
    "family": "CV4",
    "features": {
-    "depth": 2,
+    "depth": 1,
     "gold_position": 2
    },
    "fixture_id": "A4-CONV-R3-02",
@@ -375,7 +385,7 @@
   {
    "family": "CV5",
    "features": {
-    "depth": 1,
+    "depth": 2,
     "gold_position": 3
    },
    "fixture_id": "A4-CONV-R3-03",
@@ -387,7 +397,7 @@
   {
    "family": "CV6",
    "features": {
-    "depth": 2,
+    "depth": 1,
     "gold_position": 4
    },
    "fixture_id": "A4-CONV-R3-04",
@@ -447,11 +457,12 @@
   {
    "family": "EX1",
    "features": {
-    "derived_count": 1,
-    "field_count": 3,
+    "derived_count": 2,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
+     "enum2",
+     "integer",
      "string"
     ]
    },
@@ -464,13 +475,14 @@
   {
    "family": "EX2",
    "features": {
-    "derived_count": 2,
-    "field_count": 4,
+    "derived_count": 1,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R1-02",
@@ -482,14 +494,12 @@
   {
    "family": "EX3",
    "features": {
-    "derived_count": 1,
-    "field_count": 5,
+    "derived_count": 2,
+    "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "number"
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R1-03",
@@ -501,12 +511,13 @@
   {
    "family": "EX4",
    "features": {
-    "derived_count": 2,
-    "field_count": 3,
+    "derived_count": 1,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean"
+     "date_or_time",
+     "enum2",
+     "integer"
     ]
    },
    "fixture_id": "A4-EXTR-R1-04",
@@ -519,11 +530,13 @@
    "family": "EX5",
    "features": {
     "derived_count": 1,
-    "field_count": 3,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "enum2"
+     "date_or_time",
+     "enum2",
+     "integer",
+     "number"
     ]
    },
    "fixture_id": "A4-EXTR-R2-01",
@@ -536,12 +549,11 @@
    "family": "EX6",
    "features": {
     "derived_count": 2,
-    "field_count": 4,
+    "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
+     "enum3",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R2-02",
@@ -554,12 +566,11 @@
    "family": "EX1",
    "features": {
     "derived_count": 1,
-    "field_count": 5,
+    "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
+     "integer",
+     "integer",
+     "number",
      "string"
     ]
    },
@@ -573,11 +584,13 @@
    "family": "EX2",
    "features": {
     "derived_count": 2,
-    "field_count": 3,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "enum2",
+     "integer",
+     "number"
     ]
    },
    "fixture_id": "A4-EXTR-R2-04",
@@ -589,12 +602,12 @@
   {
    "family": "EX3",
    "features": {
-    "derived_count": 1,
+    "derived_count": 2,
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "number"
+     "number",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R3-01",
@@ -606,13 +619,13 @@
   {
    "family": "EX4",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean"
+     "date_or_time",
+     "enum2",
+     "integer"
     ]
    },
    "fixture_id": "A4-EXTR-R3-02",
@@ -624,14 +637,14 @@
   {
    "family": "EX5",
    "features": {
-    "derived_count": 1,
+    "derived_count": 2,
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R3-03",
@@ -643,12 +656,12 @@
   {
    "family": "EX6",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
-     "enum3"
+     "enum3",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R3-04",
@@ -661,10 +674,11 @@
    "family": "EX1",
    "features": {
     "derived_count": 1,
-    "field_count": 3,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
+     "integer",
+     "integer",
      "string"
     ]
    },
@@ -678,11 +692,12 @@
    "family": "EX3",
    "features": {
     "derived_count": 2,
-    "field_count": 4,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
+     "date_or_time",
+     "enum2",
+     "integer",
      "number"
     ]
    },
@@ -696,13 +711,11 @@
    "family": "EX5",
    "features": {
     "derived_count": 1,
-    "field_count": 5,
+    "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R4-03",
@@ -715,11 +728,12 @@
    "family": "EX2",
    "features": {
     "derived_count": 2,
-    "field_count": 3,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "number",
+     "number"
     ]
    },
    "fixture_id": "A4-EXTR-R4-04",
@@ -732,7 +746,7 @@
    "family": "SY1",
    "features": {
     "mergeable_pair": "yes",
-    "obs_band": "small"
+    "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R1-01",
    "phase": "A",
@@ -756,7 +770,7 @@
    "family": "SY3",
    "features": {
     "mergeable_pair": "yes",
-    "obs_band": "large"
+    "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R1-03",
    "phase": "A",
@@ -779,7 +793,7 @@
   {
    "family": "SY5",
    "features": {
-    "mergeable_pair": "yes",
+    "mergeable_pair": "no",
     "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R2-01",
@@ -791,7 +805,7 @@
   {
    "family": "SY6",
    "features": {
-    "mergeable_pair": "no",
+    "mergeable_pair": "yes",
     "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R2-02",
@@ -803,7 +817,7 @@
   {
    "family": "SY1",
    "features": {
-    "mergeable_pair": "yes",
+    "mergeable_pair": "no",
     "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R2-03",
@@ -815,7 +829,7 @@
   {
    "family": "SY2",
    "features": {
-    "mergeable_pair": "no",
+    "mergeable_pair": "yes",
     "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R2-04",
@@ -840,7 +854,7 @@
    "family": "SY4",
    "features": {
     "mergeable_pair": "no",
-    "obs_band": "small"
+    "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R3-02",
    "phase": "A",
@@ -864,7 +878,7 @@
    "family": "SY6",
    "features": {
     "mergeable_pair": "no",
-    "obs_band": "large"
+    "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R3-04",
    "phase": "A",
@@ -875,8 +889,8 @@
   {
    "family": "SY1",
    "features": {
-    "mergeable_pair": "yes",
-    "obs_band": "small"
+    "mergeable_pair": "no",
+    "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R4-01",
    "phase": "A",
@@ -887,8 +901,8 @@
   {
    "family": "SY3",
    "features": {
-    "mergeable_pair": "no",
-    "obs_band": "small"
+    "mergeable_pair": "yes",
+    "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R4-02",
    "phase": "A",
@@ -899,8 +913,8 @@
   {
    "family": "SY5",
    "features": {
-    "mergeable_pair": "yes",
-    "obs_band": "large"
+    "mergeable_pair": "no",
+    "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R4-03",
    "phase": "A",
@@ -911,8 +925,8 @@
   {
    "family": "SY2",
    "features": {
-    "mergeable_pair": "no",
-    "obs_band": "large"
+    "mergeable_pair": "yes",
+    "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R4-04",
    "phase": "A",
@@ -967,7 +981,7 @@
   {
    "family": "PL5",
    "features": {
-    "precedence_form": "before"
+    "precedence_form": "after"
    },
    "fixture_id": "A4-PLAN-R2-01",
    "phase": "A",
@@ -978,7 +992,7 @@
   {
    "family": "PL6",
    "features": {
-    "precedence_form": "after"
+    "precedence_form": "before"
    },
    "fixture_id": "A4-PLAN-R2-02",
    "phase": "A",
@@ -989,7 +1003,7 @@
   {
    "family": "PL1",
    "features": {
-    "precedence_form": "before"
+    "precedence_form": "after"
    },
    "fixture_id": "A4-PLAN-R2-03",
    "phase": "A",
@@ -1000,7 +1014,7 @@
   {
    "family": "PL2",
    "features": {
-    "precedence_form": "after"
+    "precedence_form": "before"
    },
    "fixture_id": "A4-PLAN-R2-04",
    "phase": "A",
@@ -1055,7 +1069,7 @@
   {
    "family": "PL1",
    "features": {
-    "precedence_form": "before"
+    "precedence_form": "after"
    },
    "fixture_id": "A4-PLAN-R4-01",
    "phase": "A",
@@ -1066,7 +1080,7 @@
   {
    "family": "PL3",
    "features": {
-    "precedence_form": "after"
+    "precedence_form": "before"
    },
    "fixture_id": "A4-PLAN-R4-02",
    "phase": "A",
@@ -1077,7 +1091,7 @@
   {
    "family": "PL5",
    "features": {
-    "precedence_form": "before"
+    "precedence_form": "after"
    },
    "fixture_id": "A4-PLAN-R4-03",
    "phase": "A",
@@ -1088,7 +1102,7 @@
   {
    "family": "PL2",
    "features": {
-    "precedence_form": "after"
+    "precedence_form": "before"
    },
    "fixture_id": "A4-PLAN-R4-04",
    "phase": "A",
@@ -2311,11 +2325,11 @@
   {
    "family": "EX1",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
+     "integer",
      "string"
     ]
    },
@@ -2328,12 +2342,11 @@
   {
    "family": "EX1",
    "features": {
-    "derived_count": 1,
-    "field_count": 4,
+    "derived_count": 2,
+    "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
+     "enum2",
      "string"
     ]
    },
@@ -2346,12 +2359,12 @@
   {
    "family": "EX1",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
+     "date_or_time",
+     "integer",
+     "number",
      "string"
     ]
    },
@@ -2364,14 +2377,13 @@
   {
    "family": "EX2",
    "features": {
-    "derived_count": 1,
-    "field_count": 5,
+    "derived_count": 2,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "enum2",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R1-04",
@@ -2387,10 +2399,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-05",
@@ -2406,8 +2418,8 @@
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R1-06",
@@ -2419,12 +2431,13 @@
   {
    "family": "EX3",
    "features": {
-    "derived_count": 2,
-    "field_count": 3,
+    "derived_count": 1,
+    "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "number"
+     "enum2",
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-07",
@@ -2436,13 +2449,13 @@
   {
    "family": "EX3",
    "features": {
-    "derived_count": 1,
+    "derived_count": 2,
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "number"
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-08",
@@ -2454,13 +2467,14 @@
   {
    "family": "EX3",
    "features": {
-    "derived_count": 2,
-    "field_count": 4,
+    "derived_count": 1,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "number"
+     "enum2",
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-09",
@@ -2472,14 +2486,14 @@
   {
    "family": "EX4",
    "features": {
-    "derived_count": 1,
+    "derived_count": 2,
     "field_count": 5,
     "field_types": [
      "boolean",
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean"
+     "enum3",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-10",
@@ -2491,14 +2505,12 @@
   {
    "family": "EX4",
    "features": {
-    "derived_count": 2,
-    "field_count": 5,
+    "derived_count": 1,
+    "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean"
+     "date_or_time",
+     "enum2"
     ]
    },
    "fixture_id": "B4-EXTR-R1-11",
@@ -2510,12 +2522,12 @@
   {
    "family": "EX4",
    "features": {
-    "derived_count": 1,
+    "derived_count": 2,
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean"
+     "string",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-12",
@@ -2527,12 +2539,13 @@
   {
    "family": "EX5",
    "features": {
-    "derived_count": 2,
-    "field_count": 3,
+    "derived_count": 1,
+    "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-13",
@@ -2544,13 +2557,13 @@
   {
    "family": "EX5",
    "features": {
-    "derived_count": 1,
+    "derived_count": 2,
     "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "date_or_time",
+     "enum2",
+     "integer",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R1-14",
@@ -2562,13 +2575,14 @@
   {
    "family": "EX5",
    "features": {
-    "derived_count": 2,
-    "field_count": 4,
+    "derived_count": 1,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "date_or_time",
+     "enum2",
+     "integer",
+     "number"
     ]
    },
    "fixture_id": "B4-EXTR-R1-15",
@@ -2580,36 +2594,17 @@
   {
    "family": "EX6",
    "features": {
-    "derived_count": 1,
-    "field_count": 5,
-    "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
-    ]
-   },
-   "fixture_id": "B4-EXTR-R1-16",
-   "phase": "B",
-   "risk": "R1",
-   "role": "main",
-   "task_class": "structured_extraction"
-  },
-  {
-   "family": "EX6",
-   "features": {
     "derived_count": 2,
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
+     "enum3",
+     "integer",
+     "string",
+     "string"
     ]
    },
-   "fixture_id": "B4-EXTR-R1-17",
+   "fixture_id": "B4-EXTR-R1-16",
    "phase": "B",
    "risk": "R1",
    "role": "main",
@@ -2622,7 +2617,24 @@
     "field_count": 3,
     "field_types": [
      "boolean",
+     "enum3",
+     "string"
+    ]
+   },
+   "fixture_id": "B4-EXTR-R1-17",
+   "phase": "B",
+   "risk": "R1",
+   "role": "main",
+   "task_class": "structured_extraction"
+  },
+  {
+   "family": "EX6",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3,
+    "field_types": [
      "boolean",
+     "date_or_time",
      "enum3"
     ]
    },
@@ -2639,8 +2651,8 @@
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "number"
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-01",
@@ -2656,7 +2668,7 @@
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
+     "date_or_time",
      "number"
     ]
    },
@@ -2673,9 +2685,9 @@
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "number"
+     "enum2",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-03",
@@ -2691,9 +2703,9 @@
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean"
+     "enum2",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-04",
@@ -2709,10 +2721,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean"
+     "date_or_time",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-05",
@@ -2728,10 +2740,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean"
+     "date_or_time",
+     "enum2",
+     "integer",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R2-06",
@@ -2743,12 +2755,12 @@
   {
    "family": "EX5",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-07",
@@ -2760,13 +2772,12 @@
   {
    "family": "EX5",
    "features": {
-    "derived_count": 1,
-    "field_count": 4,
+    "derived_count": 2,
+    "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-08",
@@ -2778,13 +2789,13 @@
   {
    "family": "EX5",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "date_or_time",
+     "enum2",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R2-09",
@@ -2796,14 +2807,13 @@
   {
    "family": "EX6",
    "features": {
-    "derived_count": 1,
-    "field_count": 5,
+    "derived_count": 2,
+    "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
+     "enum3",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-10",
@@ -2815,14 +2825,14 @@
   {
    "family": "EX6",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 5,
     "field_types": [
      "boolean",
      "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
+     "date_or_time",
+     "enum3",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R2-11",
@@ -2834,12 +2844,14 @@
   {
    "family": "EX6",
    "features": {
-    "derived_count": 1,
-    "field_count": 3,
+    "derived_count": 2,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "enum3"
+     "enum3",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-12",
@@ -2851,11 +2863,11 @@
   {
    "family": "EX1",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
+     "integer",
+     "number",
      "string"
     ]
    },
@@ -2868,12 +2880,11 @@
   {
    "family": "EX1",
    "features": {
-    "derived_count": 1,
-    "field_count": 4,
+    "derived_count": 2,
+    "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
+     "date_or_time",
      "string"
     ]
    },
@@ -2890,8 +2901,8 @@
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
+     "enum2",
+     "string",
      "string"
     ]
    },
@@ -2908,10 +2919,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "integer",
+     "integer",
+     "number"
     ]
    },
    "fixture_id": "B4-EXTR-R2-16",
@@ -2923,14 +2934,12 @@
   {
    "family": "EX2",
    "features": {
-    "derived_count": 2,
-    "field_count": 5,
+    "derived_count": 1,
+    "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "enum2",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R2-17",
@@ -2942,12 +2951,12 @@
   {
    "family": "EX2",
    "features": {
-    "derived_count": 1,
+    "derived_count": 2,
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R2-18",
@@ -2963,7 +2972,7 @@
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
+     "date_or_time",
      "enum2"
     ]
    },
@@ -2980,8 +2989,8 @@
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-02",
@@ -2996,10 +3005,10 @@
     "derived_count": 1,
     "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-03",
@@ -3015,9 +3024,9 @@
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
+     "date_or_time",
+     "enum3",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R3-04",
@@ -3033,10 +3042,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
+     "enum3",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-05",
@@ -3052,10 +3061,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
+     "date_or_time",
+     "enum3",
+     "integer",
+     "number"
     ]
    },
    "fixture_id": "B4-EXTR-R3-06",
@@ -3071,7 +3080,7 @@
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
+     "integer",
      "string"
     ]
    },
@@ -3088,7 +3097,7 @@
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
+     "date_or_time",
      "string"
     ]
    },
@@ -3105,8 +3114,8 @@
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
+     "enum2",
+     "integer",
      "string"
     ]
    },
@@ -3122,10 +3131,10 @@
     "derived_count": 2,
     "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "enum2",
+     "integer",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R3-10",
@@ -3141,10 +3150,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "integer",
+     "number",
+     "number"
     ]
    },
    "fixture_id": "B4-EXTR-R3-11",
@@ -3160,10 +3169,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "enum2",
+     "integer",
+     "number"
     ]
    },
    "fixture_id": "B4-EXTR-R3-12",
@@ -3175,12 +3184,12 @@
   {
    "family": "EX3",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "number"
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-13",
@@ -3196,9 +3205,9 @@
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "number"
+     "enum2",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-14",
@@ -3214,9 +3223,9 @@
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "number"
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-15",
@@ -3232,10 +3241,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean"
+     "enum2",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-16",
@@ -3251,10 +3260,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean"
+     "date_or_time",
+     "integer",
+     "integer",
+     "number"
     ]
    },
    "fixture_id": "B4-EXTR-R3-17",
@@ -3270,8 +3279,8 @@
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean"
+     "string",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-18",
@@ -3287,9 +3296,9 @@
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
+     "enum3",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R4-01",
@@ -4576,7 +4585,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS3",
    "features": {
     "pattern": "P2",
     "sls": false
@@ -4588,7 +4597,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS4",
    "features": {
     "pattern": "P3",
     "sls": true
@@ -4600,7 +4609,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS5",
    "features": {
     "pattern": "P4",
     "sls": false
@@ -4612,7 +4621,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS6",
    "features": {
     "pattern": "P5",
     "sls": true
@@ -4624,7 +4633,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS1",
    "features": {
     "pattern": "P6",
     "sls": false
@@ -4636,7 +4645,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS1",
    "features": {
     "pattern": "P7",
     "sls": true
@@ -4648,7 +4657,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS2",
    "features": {
     "pattern": "P8",
     "sls": false
@@ -4660,7 +4669,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS3",
    "features": {
     "pattern": "P1",
     "sls": false
@@ -4672,7 +4681,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS4",
    "features": {
     "pattern": "P2",
     "sls": true
@@ -4684,7 +4693,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS5",
    "features": {
     "pattern": "P3",
     "sls": false
@@ -4696,7 +4705,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS6",
    "features": {
     "pattern": "P4",
     "sls": true
@@ -4708,7 +4717,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS1",
    "features": {
     "pattern": "P5",
     "sls": false
@@ -4720,7 +4729,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS2",
    "features": {
     "pattern": "P6",
     "sls": true
@@ -4732,7 +4741,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS3",
    "features": {
     "pattern": "P7",
     "sls": false
@@ -4744,7 +4753,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS4",
    "features": {
     "pattern": "P8",
     "sls": true
@@ -4756,7 +4765,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS5",
    "features": {
     "pattern": "P1",
     "sls": true
@@ -4768,7 +4777,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS6",
    "features": {
     "pattern": "P2",
     "sls": false
@@ -4780,7 +4789,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS1",
    "features": {
     "pattern": "P1",
     "sls": true
@@ -4792,7 +4801,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS2",
    "features": {
     "pattern": "P2",
     "sls": false
@@ -4804,7 +4813,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS3",
    "features": {
     "pattern": "P3",
     "sls": true
@@ -4816,7 +4825,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS4",
    "features": {
     "pattern": "P4",
     "sls": false
@@ -4840,7 +4849,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS5",
    "features": {
     "pattern": "P6",
     "sls": false
@@ -4852,7 +4861,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS2",
    "features": {
     "pattern": "P7",
     "sls": true
@@ -4864,7 +4873,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS3",
    "features": {
     "pattern": "P8",
     "sls": false
@@ -4876,7 +4885,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS4",
    "features": {
     "pattern": "P1",
     "sls": false
@@ -4888,7 +4897,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS5",
    "features": {
     "pattern": "P2",
     "sls": true
@@ -4900,7 +4909,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS6",
    "features": {
     "pattern": "P3",
     "sls": false
@@ -4912,7 +4921,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS1",
    "features": {
     "pattern": "P4",
     "sls": true
@@ -4924,7 +4933,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS1",
    "features": {
     "pattern": "P5",
     "sls": false
@@ -4948,7 +4957,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS3",
    "features": {
     "pattern": "P7",
     "sls": false
@@ -4960,7 +4969,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS4",
    "features": {
     "pattern": "P8",
     "sls": true
@@ -4972,7 +4981,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS5",
    "features": {
     "pattern": "P3",
     "sls": true
@@ -4984,7 +4993,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS6",
    "features": {
     "pattern": "P4",
     "sls": false
@@ -4996,7 +5005,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS1",
    "features": {
     "pattern": "P1",
     "sls": true
@@ -5008,7 +5017,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS2",
    "features": {
     "pattern": "P2",
     "sls": false
@@ -5020,7 +5029,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS3",
    "features": {
     "pattern": "P3",
     "sls": true
@@ -5032,7 +5041,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS4",
    "features": {
     "pattern": "P4",
     "sls": false
@@ -5044,7 +5053,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS6",
    "features": {
     "pattern": "P5",
     "sls": true
@@ -5056,7 +5065,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS5",
    "features": {
     "pattern": "P6",
     "sls": false
@@ -5068,7 +5077,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS1",
    "features": {
     "pattern": "P7",
     "sls": true
@@ -5080,7 +5089,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS2",
    "features": {
     "pattern": "P8",
     "sls": false
@@ -5092,7 +5101,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS3",
    "features": {
     "pattern": "P1",
     "sls": false
@@ -5104,7 +5113,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS4",
    "features": {
     "pattern": "P2",
     "sls": true
@@ -5116,7 +5125,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS5",
    "features": {
     "pattern": "P3",
     "sls": false
@@ -5128,7 +5137,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS6",
    "features": {
     "pattern": "P4",
     "sls": true
@@ -5140,7 +5149,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS1",
    "features": {
     "pattern": "P5",
     "sls": false
@@ -5152,7 +5161,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS2",
    "features": {
     "pattern": "P6",
     "sls": true
@@ -5164,7 +5173,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS3",
    "features": {
     "pattern": "P7",
     "sls": false
@@ -5176,7 +5185,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS4",
    "features": {
     "pattern": "P8",
     "sls": true
@@ -5188,7 +5197,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS6",
    "features": {
     "pattern": "P5",
     "sls": true
@@ -5200,7 +5209,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS5",
    "features": {
     "pattern": "P6",
     "sls": false
@@ -5435,7 +5444,7 @@
    "family": "SY1",
    "features": {
     "mergeable_pair": "yes",
-    "obs_band": "small"
+    "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R1-X01",
    "matching": "family+features",
@@ -5461,7 +5470,7 @@
    "family": "SY3",
    "features": {
     "mergeable_pair": "yes",
-    "obs_band": "large"
+    "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R1-X03",
    "matching": "family+features",
@@ -5486,7 +5495,7 @@
   {
    "family": "SY5",
    "features": {
-    "mergeable_pair": "yes",
+    "mergeable_pair": "no",
     "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R2-X01",
@@ -5499,7 +5508,7 @@
   {
    "family": "SY6",
    "features": {
-    "mergeable_pair": "no",
+    "mergeable_pair": "yes",
     "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R2-X02",
@@ -5512,7 +5521,7 @@
   {
    "family": "SY1",
    "features": {
-    "mergeable_pair": "yes",
+    "mergeable_pair": "no",
     "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R2-X03",
@@ -5525,7 +5534,7 @@
   {
    "family": "SY2",
    "features": {
-    "mergeable_pair": "no",
+    "mergeable_pair": "yes",
     "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R2-X04",
@@ -5552,7 +5561,7 @@
    "family": "SY4",
    "features": {
     "mergeable_pair": "no",
-    "obs_band": "small"
+    "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R3-X02",
    "matching": "family+features",
@@ -5578,7 +5587,7 @@
    "family": "SY6",
    "features": {
     "mergeable_pair": "no",
-    "obs_band": "large"
+    "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R3-X04",
    "matching": "family+features",
@@ -5590,8 +5599,8 @@
   {
    "family": "SY1",
    "features": {
-    "mergeable_pair": "yes",
-    "obs_band": "small"
+    "mergeable_pair": "no",
+    "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R4-X01",
    "matching": "family+features",
@@ -5603,8 +5612,8 @@
   {
    "family": "SY3",
    "features": {
-    "mergeable_pair": "no",
-    "obs_band": "small"
+    "mergeable_pair": "yes",
+    "obs_band": "large"
    },
    "fixture_id": "A4-SYNTH-R4-X02",
    "matching": "family+features",
@@ -5616,8 +5625,8 @@
   {
    "family": "SY5",
    "features": {
-    "mergeable_pair": "yes",
-    "obs_band": "large"
+    "mergeable_pair": "no",
+    "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R4-X03",
    "matching": "family+features",
@@ -5629,8 +5638,8 @@
   {
    "family": "SY2",
    "features": {
-    "mergeable_pair": "no",
-    "obs_band": "large"
+    "mergeable_pair": "yes",
+    "obs_band": "small"
    },
    "fixture_id": "A4-SYNTH-R4-X04",
    "matching": "family+features",
@@ -5642,7 +5651,7 @@
   {
    "family": "CV1",
    "features": {
-    "depth": 1,
+    "depth": 2,
     "gold_position": 1
    },
    "fixture_id": "A4-CONV-R1-X01",
@@ -5655,7 +5664,7 @@
   {
    "family": "CV2",
    "features": {
-    "depth": 2,
+    "depth": 1,
     "gold_position": 2
    },
    "fixture_id": "A4-CONV-R1-X02",
@@ -5668,7 +5677,7 @@
   {
    "family": "CV3",
    "features": {
-    "depth": 1,
+    "depth": 2,
     "gold_position": 3
    },
    "fixture_id": "A4-CONV-R1-X03",
@@ -5681,7 +5690,7 @@
   {
    "family": "CV4",
    "features": {
-    "depth": 2,
+    "depth": 1,
     "gold_position": 4
    },
    "fixture_id": "A4-CONV-R1-X04",
@@ -5746,7 +5755,7 @@
   {
    "family": "CV3",
    "features": {
-    "depth": 1,
+    "depth": 2,
     "gold_position": 1
    },
    "fixture_id": "A4-CONV-R3-X01",
@@ -5759,7 +5768,7 @@
   {
    "family": "CV4",
    "features": {
-    "depth": 2,
+    "depth": 1,
     "gold_position": 2
    },
    "fixture_id": "A4-CONV-R3-X02",
@@ -5772,7 +5781,7 @@
   {
    "family": "CV5",
    "features": {
-    "depth": 1,
+    "depth": 2,
     "gold_position": 3
    },
    "fixture_id": "A4-CONV-R3-X03",
@@ -5785,7 +5794,7 @@
   {
    "family": "CV6",
    "features": {
-    "depth": 2,
+    "depth": 1,
     "gold_position": 4
    },
    "fixture_id": "A4-CONV-R3-X04",
@@ -5898,7 +5907,7 @@
   {
    "family": "PL5",
    "features": {
-    "precedence_form": "before"
+    "precedence_form": "after"
    },
    "fixture_id": "A4-PLAN-R2-X01",
    "matching": "family+features",
@@ -5910,7 +5919,7 @@
   {
    "family": "PL6",
    "features": {
-    "precedence_form": "after"
+    "precedence_form": "before"
    },
    "fixture_id": "A4-PLAN-R2-X02",
    "matching": "family+features",
@@ -5922,7 +5931,7 @@
   {
    "family": "PL1",
    "features": {
-    "precedence_form": "before"
+    "precedence_form": "after"
    },
    "fixture_id": "A4-PLAN-R2-X03",
    "matching": "family+features",
@@ -5934,7 +5943,7 @@
   {
    "family": "PL2",
    "features": {
-    "precedence_form": "after"
+    "precedence_form": "before"
    },
    "fixture_id": "A4-PLAN-R2-X04",
    "matching": "family+features",
@@ -5994,7 +6003,7 @@
   {
    "family": "PL1",
    "features": {
-    "precedence_form": "before"
+    "precedence_form": "after"
    },
    "fixture_id": "A4-PLAN-R4-X01",
    "matching": "family+features",
@@ -6006,7 +6015,7 @@
   {
    "family": "PL3",
    "features": {
-    "precedence_form": "after"
+    "precedence_form": "before"
    },
    "fixture_id": "A4-PLAN-R4-X02",
    "matching": "family+features",
@@ -6018,7 +6027,7 @@
   {
    "family": "PL5",
    "features": {
-    "precedence_form": "before"
+    "precedence_form": "after"
    },
    "fixture_id": "A4-PLAN-R4-X03",
    "matching": "family+features",
@@ -6030,7 +6039,7 @@
   {
    "family": "PL2",
    "features": {
-    "precedence_form": "after"
+    "precedence_form": "before"
    },
    "fixture_id": "A4-PLAN-R4-X04",
    "matching": "family+features",
@@ -6042,11 +6051,12 @@
   {
    "family": "EX1",
    "features": {
-    "derived_count": 1,
-    "field_count": 3,
+    "derived_count": 2,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
+     "enum2",
+     "integer",
      "string"
     ]
    },
@@ -6060,13 +6070,14 @@
   {
    "family": "EX2",
    "features": {
-    "derived_count": 2,
-    "field_count": 4,
+    "derived_count": 1,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R1-X02",
@@ -6079,14 +6090,12 @@
   {
    "family": "EX3",
    "features": {
-    "derived_count": 1,
-    "field_count": 5,
+    "derived_count": 2,
+    "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "number"
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R1-X03",
@@ -6099,12 +6108,13 @@
   {
    "family": "EX4",
    "features": {
-    "derived_count": 2,
-    "field_count": 3,
+    "derived_count": 1,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean"
+     "date_or_time",
+     "enum2",
+     "integer"
     ]
    },
    "fixture_id": "A4-EXTR-R1-X04",
@@ -6118,11 +6128,13 @@
    "family": "EX5",
    "features": {
     "derived_count": 1,
-    "field_count": 3,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "enum2"
+     "date_or_time",
+     "enum2",
+     "integer",
+     "number"
     ]
    },
    "fixture_id": "A4-EXTR-R2-X01",
@@ -6136,12 +6148,11 @@
    "family": "EX6",
    "features": {
     "derived_count": 2,
-    "field_count": 4,
+    "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "enum3"
+     "enum3",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R2-X02",
@@ -6155,12 +6166,11 @@
    "family": "EX1",
    "features": {
     "derived_count": 1,
-    "field_count": 5,
+    "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
+     "integer",
+     "integer",
+     "number",
      "string"
     ]
    },
@@ -6175,11 +6185,13 @@
    "family": "EX2",
    "features": {
     "derived_count": 2,
-    "field_count": 3,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "enum2",
+     "integer",
+     "number"
     ]
    },
    "fixture_id": "A4-EXTR-R2-X04",
@@ -6192,12 +6204,12 @@
   {
    "family": "EX3",
    "features": {
-    "derived_count": 1,
+    "derived_count": 2,
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "number"
+     "number",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R3-X01",
@@ -6210,13 +6222,13 @@
   {
    "family": "EX4",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean"
+     "date_or_time",
+     "enum2",
+     "integer"
     ]
    },
    "fixture_id": "A4-EXTR-R3-X02",
@@ -6229,14 +6241,14 @@
   {
    "family": "EX5",
    "features": {
-    "derived_count": 1,
+    "derived_count": 2,
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R3-X03",
@@ -6249,12 +6261,12 @@
   {
    "family": "EX6",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
-     "enum3"
+     "enum3",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R3-X04",
@@ -6268,10 +6280,11 @@
    "family": "EX1",
    "features": {
     "derived_count": 1,
-    "field_count": 3,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
+     "integer",
+     "integer",
      "string"
     ]
    },
@@ -6286,11 +6299,12 @@
    "family": "EX3",
    "features": {
     "derived_count": 2,
-    "field_count": 4,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
+     "date_or_time",
+     "enum2",
+     "integer",
      "number"
     ]
    },
@@ -6305,13 +6319,11 @@
    "family": "EX5",
    "features": {
     "derived_count": 1,
-    "field_count": 5,
+    "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "A4-EXTR-R4-X03",
@@ -6325,11 +6337,12 @@
    "family": "EX2",
    "features": {
     "derived_count": 2,
-    "field_count": 3,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "number",
+     "number"
     ]
    },
    "fixture_id": "A4-EXTR-R4-X04",
@@ -6340,7 +6353,7 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "RS4",
+   "family": "RS2",
    "features": {
     "pattern": "P1",
     "sls": true
@@ -6353,7 +6366,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS1",
    "features": {
     "pattern": "P2",
     "sls": false
@@ -6366,7 +6379,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS4",
    "features": {
     "pattern": "P3",
     "sls": true
@@ -6405,7 +6418,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS6",
    "features": {
     "pattern": "P6",
     "sls": false
@@ -6418,7 +6431,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS1",
    "features": {
     "pattern": "P7",
     "sls": true
@@ -6431,7 +6444,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS2",
    "features": {
     "pattern": "P8",
     "sls": false
@@ -6457,7 +6470,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS4",
    "features": {
     "pattern": "P2",
     "sls": true
@@ -6470,7 +6483,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS5",
    "features": {
     "pattern": "P3",
     "sls": false
@@ -6509,7 +6522,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS2",
    "features": {
     "pattern": "P6",
     "sls": true
@@ -6522,7 +6535,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS3",
    "features": {
     "pattern": "P7",
     "sls": false
@@ -6561,7 +6574,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS6",
    "features": {
     "pattern": "P2",
     "sls": false
@@ -6574,7 +6587,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS3",
    "features": {
     "pattern": "P3",
     "sls": true
@@ -6587,7 +6600,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS4",
    "features": {
     "pattern": "P4",
     "sls": false
@@ -6600,7 +6613,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS1",
    "features": {
     "pattern": "P5",
     "sls": true
@@ -6613,7 +6626,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS2",
    "features": {
     "pattern": "P6",
     "sls": false
@@ -6626,7 +6639,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS5",
    "features": {
     "pattern": "P7",
     "sls": true
@@ -6639,7 +6652,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS6",
    "features": {
     "pattern": "P8",
     "sls": false
@@ -6652,7 +6665,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS3",
    "features": {
     "pattern": "P1",
     "sls": false
@@ -6665,7 +6678,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS4",
    "features": {
     "pattern": "P2",
     "sls": true
@@ -6678,7 +6691,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS1",
    "features": {
     "pattern": "P3",
     "sls": false
@@ -6691,7 +6704,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS2",
    "features": {
     "pattern": "P4",
     "sls": true
@@ -6717,7 +6730,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS6",
    "features": {
     "pattern": "P6",
     "sls": true
@@ -6730,7 +6743,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS1",
+   "family": "RS3",
    "features": {
     "pattern": "P7",
     "sls": false
@@ -6743,7 +6756,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS4",
    "features": {
     "pattern": "P8",
     "sls": true
@@ -6756,7 +6769,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS5",
    "features": {
     "pattern": "P1",
     "sls": true
@@ -6769,7 +6782,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS6",
    "features": {
     "pattern": "P2",
     "sls": false
@@ -6782,7 +6795,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS1",
    "features": {
     "pattern": "P3",
     "sls": true
@@ -6795,7 +6808,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS2",
    "features": {
     "pattern": "P4",
     "sls": false
@@ -6821,7 +6834,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS4",
    "features": {
     "pattern": "P6",
     "sls": false
@@ -6834,7 +6847,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS4",
+   "family": "RS5",
    "features": {
     "pattern": "P7",
     "sls": true
@@ -6860,7 +6873,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS1",
    "features": {
     "pattern": "P1",
     "sls": false
@@ -6873,7 +6886,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS2",
    "features": {
     "pattern": "P2",
     "sls": true
@@ -6886,7 +6899,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS2",
+   "family": "RS3",
    "features": {
     "pattern": "P3",
     "sls": false
@@ -6912,7 +6925,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS6",
+   "family": "RS5",
    "features": {
     "pattern": "P5",
     "sls": false
@@ -6925,7 +6938,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS5",
+   "family": "RS6",
    "features": {
     "pattern": "P6",
     "sls": true
@@ -6938,7 +6951,7 @@
    "task_class": "grounded_research_synthesis"
   },
   {
-   "family": "RS3",
+   "family": "RS1",
    "features": {
     "pattern": "P7",
     "sls": false
@@ -7016,7 +7029,7 @@
    "task_class": "hierarchical_semantic_synthesis"
   },
   {
-   "family": "SY5",
+   "family": "SY4",
    "features": {
     "mergeable_pair": "no",
     "obs_band": "large"
@@ -7029,7 +7042,7 @@
    "task_class": "hierarchical_semantic_synthesis"
   },
   {
-   "family": "SY1",
+   "family": "SY5",
    "features": {
     "mergeable_pair": "yes",
     "obs_band": "small"
@@ -7042,7 +7055,7 @@
    "task_class": "hierarchical_semantic_synthesis"
   },
   {
-   "family": "SY2",
+   "family": "SY6",
    "features": {
     "mergeable_pair": "no",
     "obs_band": "small"
@@ -7068,7 +7081,7 @@
    "task_class": "hierarchical_semantic_synthesis"
   },
   {
-   "family": "SY5",
+   "family": "SY4",
    "features": {
     "mergeable_pair": "no",
     "obs_band": "large"
@@ -7081,7 +7094,7 @@
    "task_class": "hierarchical_semantic_synthesis"
   },
   {
-   "family": "SY1",
+   "family": "SY5",
    "features": {
     "mergeable_pair": "yes",
     "obs_band": "small"
@@ -7094,7 +7107,7 @@
    "task_class": "hierarchical_semantic_synthesis"
   },
   {
-   "family": "SY2",
+   "family": "SY6",
    "features": {
     "mergeable_pair": "no",
     "obs_band": "small"
@@ -7107,7 +7120,7 @@
    "task_class": "hierarchical_semantic_synthesis"
   },
   {
-   "family": "SY3",
+   "family": "SY1",
    "features": {
     "mergeable_pair": "yes",
     "obs_band": "large"
@@ -7120,7 +7133,7 @@
    "task_class": "hierarchical_semantic_synthesis"
   },
   {
-   "family": "SY5",
+   "family": "SY2",
    "features": {
     "mergeable_pair": "no",
     "obs_band": "large"
@@ -7380,7 +7393,7 @@
    "task_class": "ordinary_conversation"
   },
   {
-   "family": "CV1",
+   "family": "CV5",
    "features": {
     "depth": 1,
     "gold_position": 3
@@ -7393,7 +7406,7 @@
    "task_class": "ordinary_conversation"
   },
   {
-   "family": "CV2",
+   "family": "CV6",
    "features": {
     "depth": 1,
     "gold_position": 4
@@ -7406,7 +7419,7 @@
    "task_class": "ordinary_conversation"
   },
   {
-   "family": "CV5",
+   "family": "CV1",
    "features": {
     "depth": 2,
     "gold_position": 1
@@ -7419,7 +7432,7 @@
    "task_class": "ordinary_conversation"
   },
   {
-   "family": "CV6",
+   "family": "CV2",
    "features": {
     "depth": 2,
     "gold_position": 2
@@ -7471,7 +7484,7 @@
    "task_class": "ordinary_conversation"
   },
   {
-   "family": "PL2",
+   "family": "PL1",
    "features": {
     "precedence_form": "before"
    },
@@ -7483,7 +7496,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL3",
+   "family": "PL2",
    "features": {
     "precedence_form": "after"
    },
@@ -7495,7 +7508,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL4",
+   "family": "PL3",
    "features": {
     "precedence_form": "before"
    },
@@ -7507,7 +7520,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL5",
+   "family": "PL4",
    "features": {
     "precedence_form": "after"
    },
@@ -7519,7 +7532,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL2",
+   "family": "PL5",
    "features": {
     "precedence_form": "before"
    },
@@ -7531,7 +7544,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL3",
+   "family": "PL6",
    "features": {
     "precedence_form": "after"
    },
@@ -7543,7 +7556,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL4",
+   "family": "PL3",
    "features": {
     "precedence_form": "before"
    },
@@ -7555,7 +7568,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL5",
+   "family": "PL4",
    "features": {
     "precedence_form": "after"
    },
@@ -7567,7 +7580,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL2",
+   "family": "PL5",
    "features": {
     "precedence_form": "before"
    },
@@ -7579,7 +7592,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL3",
+   "family": "PL6",
    "features": {
     "precedence_form": "after"
    },
@@ -7591,7 +7604,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL4",
+   "family": "PL1",
    "features": {
     "precedence_form": "before"
    },
@@ -7603,7 +7616,7 @@
    "task_class": "reflective_planning"
   },
   {
-   "family": "PL5",
+   "family": "PL2",
    "features": {
     "precedence_form": "after"
    },
@@ -7629,11 +7642,11 @@
   {
    "family": "EX1",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 3,
     "field_types": [
-     "boolean",
-     "date_or_time",
+     "integer",
+     "integer",
      "string"
     ]
    },
@@ -7647,13 +7660,12 @@
   {
    "family": "EX2",
    "features": {
-    "derived_count": 1,
-    "field_count": 4,
+    "derived_count": 2,
+    "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "number"
     ]
    },
    "fixture_id": "B4-EXTR-R1-X02",
@@ -7666,13 +7678,13 @@
   {
    "family": "EX3",
    "features": {
-    "derived_count": 2,
+    "derived_count": 1,
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time",
-     "number"
+     "enum2",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-X03",
@@ -7685,14 +7697,13 @@
   {
    "family": "EX4",
    "features": {
-    "derived_count": 1,
-    "field_count": 5,
+    "derived_count": 2,
+    "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-X04",
@@ -7709,10 +7720,10 @@
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-X05",
@@ -7726,11 +7737,13 @@
    "family": "EX6",
    "features": {
     "derived_count": 1,
-    "field_count": 3,
+    "field_count": 5,
     "field_types": [
      "boolean",
-     "date_or_time",
-     "enum3"
+     "enum2",
+     "enum3",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R1-X06",
@@ -7741,13 +7754,13 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX1",
+   "family": "EX3",
    "features": {
     "derived_count": 1,
     "field_count": 3,
     "field_types": [
-     "boolean",
-     "boolean",
+     "enum2",
+     "number",
      "string"
     ]
    },
@@ -7759,14 +7772,14 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX2",
+   "family": "EX4",
    "features": {
     "derived_count": 2,
     "field_count": 3,
     "field_types": [
      "boolean",
-     "date_or_time",
-     "date_or_time"
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-X02",
@@ -7777,15 +7790,15 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX3",
+   "family": "EX5",
    "features": {
     "derived_count": 1,
     "field_count": 4,
     "field_types": [
-     "boolean",
-     "boolean",
-     "date_or_time",
-     "number"
+     "enum2",
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-X03",
@@ -7796,15 +7809,15 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX4",
+   "family": "EX6",
    "features": {
     "derived_count": 2,
     "field_count": 4,
     "field_types": [
      "boolean",
      "boolean",
-     "boolean",
-     "date_or_time"
+     "enum3",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-X04",
@@ -7815,16 +7828,16 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX5",
+   "family": "EX1",
    "features": {
     "derived_count": 1,
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "enum2",
+     "integer",
+     "integer",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R2-X05",
@@ -7835,16 +7848,16 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX6",
+   "family": "EX2",
    "features": {
     "derived_count": 2,
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
      "date_or_time",
-     "enum3"
+     "integer",
+     "number",
+     "number"
     ]
    },
    "fixture_id": "B4-EXTR-R2-X06",
@@ -7855,13 +7868,13 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX1",
+   "family": "EX5",
    "features": {
     "derived_count": 1,
     "field_count": 3,
     "field_types": [
-     "boolean",
-     "date_or_time",
+     "enum2",
+     "integer",
      "string"
     ]
    },
@@ -7873,14 +7886,14 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX2",
+   "family": "EX6",
    "features": {
     "derived_count": 2,
     "field_count": 3,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time"
+     "date_or_time",
+     "enum3"
     ]
    },
    "fixture_id": "B4-EXTR-R3-X02",
@@ -7891,15 +7904,15 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX3",
+   "family": "EX1",
    "features": {
     "derived_count": 1,
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time",
-     "number"
+     "enum2",
+     "string",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-X03",
@@ -7910,15 +7923,15 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX4",
+   "family": "EX2",
    "features": {
     "derived_count": 2,
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "enum2"
+     "date_or_time",
+     "integer",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R3-X04",
@@ -7929,16 +7942,16 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX5",
+   "family": "EX3",
    "features": {
     "derived_count": 1,
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
-     "date_or_time",
-     "enum2"
+     "enum2",
+     "integer",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R3-X05",
@@ -7949,16 +7962,16 @@
    "task_class": "structured_extraction"
   },
   {
-   "family": "EX6",
+   "family": "EX4",
    "features": {
     "derived_count": 2,
     "field_count": 5,
     "field_types": [
      "boolean",
-     "boolean",
-     "boolean",
      "date_or_time",
-     "enum3"
+     "enum2",
+     "integer",
+     "integer"
     ]
    },
    "fixture_id": "B4-EXTR-R3-X06",
@@ -7975,9 +7988,9 @@
     "field_count": 4,
     "field_types": [
      "boolean",
-     "boolean",
-     "date_or_time",
-     "enum3"
+     "enum3",
+     "number",
+     "string"
     ]
    },
    "fixture_id": "B4-EXTR-R4-X01",
@@ -8038,11 +8051,11 @@
    "absence_sentence": "Use 'not_provided' when the text says a value has not been provided.",
    "absence_sentence_sha256": "d8b760630cea0af5d2612fa208bd4afc46f7d17646ab4343129a79ec6781f6d8",
    "absence_sentence_status": "approved 2026-09-29 (G-ROUTE3's own sentence, carried verbatim)",
-   "assembled_template": "{SUBJECT}. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for integer and number fields, true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.",
-   "assembled_template_sha256": "a5bc3999ecaabaaf4b113744aff5f8ed25a03a388df4c148adbbb34f3644f6ac",
-   "disclosure_sentence": "Use JSON numbers for integer and number fields, true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |.",
-   "disclosure_sentence_sha256": "55ffbfda25c7832f5ecae5a89539a092f5e9ae306e4a4c5e276983b1d2e359b6",
-   "disclosure_status": "approved 2026-09-29",
+   "assembled_template": "{SUBJECT}. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "assembled_template_sha256": "ef41104bde4915eba10a5ff1705383cf0b3d72e613fd7af87f72f5b06d2d5579",
+   "disclosure_sentence": "Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |.",
+   "disclosure_sentence_sha256": "2d62848e72c42c00be38bbbe927730b322f846e919c015276b1aa7643ef57bf6",
+   "disclosure_status": "approved 2026-09-29; amended by the operator 2026-09-29 (integers without a decimal point)",
    "rule_body": ". Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Keep the reply compact: output beyond about 350 tokens is cut off.",
    "rule_body_sha256": "b33b9c84ddffcf798dde5441ed7072b2f703d70c591a8555df00bbd55c5cb1dd",
    "rule_body_source": "longest common suffix of G-ROUTE3's A and B prompts of the class",
