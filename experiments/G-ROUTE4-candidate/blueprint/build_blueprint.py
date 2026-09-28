@@ -269,7 +269,8 @@ def g_route3_entity_inventory():
         fixtures += json.loads((ROOT / f"experiments/G-ROUTE3-candidate/corpus_{c}.json").read_text(
             encoding="utf-8"))["fixtures"]
     texts = [I._content(f) for f in fixtures]
-    vocab = set(I._WORD.findall(" ".join(texts).lower()))
+    import re as _re                                  # G-ROUTE3's own rule (g_route3_independence.audit)
+    vocab = {w for t in texts for w in _re.findall(r"(?<![A-Za-z])[a-z]+", t)}
     ents = set()
     for t in texts:
         ents |= I._named_entities(t, vocab)
@@ -760,11 +761,17 @@ O6_SPEC = {
     "length_cap": "none: every compared value is compared at full length (revision 3)",
     "normalization": "g_route3_conversation.canonical_value, then casefold; canonical_value strips wrappers and "
                      "trailing punctuation, so its collisions are a superset of casefold-and-strip (stricter than O6)",
-    "exclusions": ["closed-vocabulary sets: allowed_recommendations, allowed_conclusions, allowed_uncertainty_codes "
-                   "and their members, schema type strings, enum members of any a|b schema type, planning "
-                   "uncertainty codes",
-                   "structural ids: values in claim_id, source_id, observation/statement/step/evidence id fields and "
-                   "addresses, only when the value fully matches [A-Z][0-9]+",
+    "pool": "all compared values of all five classes are pooled (as O3 pools entities): a value shared between "
+            "any two fixtures of any classes, within G-ROUTE4 or against any G-ROUTE3 fixture, counts",
+    "exclusion_scope": "path-scoped, never value-scoped: an exclusion removes a field (path) from comparison; a "
+                       "compared value that happens to equal an excluded word elsewhere is still compared",
+    "exclusions": ["closed-vocabulary fields: allowed_recommendations, allowed_conclusions, allowed_uncertainty_codes, "
+                   "schema type strings, extraction gold fields whose schema type is an enum, planning uncertainty "
+                   "codes; none of these is among the compared paths, so for the listed paths this exclusion is "
+                   "vacuous except for enum-typed extraction gold fields",
+                   "structural-id fields exactly as the design lists them (source, claim, observation, statement, step "
+                   "and evidence ids, and option labels), only when the value fully matches [A-Z][0-9]+; none is "
+                   "among the compared paths, so this exclusion is vacuous",
                    "JSON numbers and booleans"],
     "not_excluded": "dates, clock times, weekday names and number-with-unit strings are compared like any other "
                     "string (revision 2: the candidate's calendar and unit exclusions are withdrawn, per O6)",

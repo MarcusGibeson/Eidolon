@@ -293,7 +293,7 @@
     "fixtures_incl_reserve": 584,
     "names_needed_max": 3504,
     "bank_capacity": 737100,
-    "g_route3_entities_to_avoid": 2
+    "g_route3_entities_to_avoid": 16
    }
   },
   {
