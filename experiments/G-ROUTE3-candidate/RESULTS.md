@@ -1,5 +1,9 @@
 # G-ROUTE3 results
 
+**Status: CLOSED. PASS WITH LIMITATIONS (pilot-qualified).** Closed by the operator on 2026-09-28. The recorded
+result stands as it is. G-ROUTE3 is not extended, rescored or re-read; any follow-up is a new, separately
+pre-registered experiment (G-ROUTE4). The table is not authorized for production routing.
+
 Recorded 2026-09-28. Both phases ran under the R7 lifecycle, execution freeze `G-ROUTE3-EXECUTION-R7` (binding
 `0bfbe6b1ba92c52f5d45cc0935b3684375ac5c0ab8b929ed85a2ca06e2643465`). They used Ollama 0.34.3 at the fixed loopback
 endpoint, with the pinned models qwen2.5:7b (small), qwen3:14b (mid) and qwen3.8:27b (large). Every attempt was
@@ -109,6 +113,36 @@ had none.
 - The escalation question remains open.
 - Phase A attempt 1 was stopped by the operator. Its outputs match attempt 2's, but optional stopping cannot be
   excluded, and it is disclosed.
+
+## Closure and carried-forward findings
+
+G-ROUTE3 is closed as **PASS WITH LIMITATIONS (pilot-qualified)**:
+- It gives meaningful prospective evidence that qualification-based routing works at pilot scale.
+- It is not sufficient evidence for production deployment.
+
+Where the table has no qualified model (coding, grounded research), the correct behaviour is that it authorizes
+nothing.
+
+Carried forward to G-ROUTE4, as a new experiment:
+1. **Unsafe-stop confidence.** Showing a true unsafe rate of at most 0.10 with one-sided 95% confidence needs a
+   pre-sized number of stops, fixed in advance:
+
+   | Unsafe stops observed | Stops needed |
+   |---|---|
+   | 0 | 29 |
+   | 1 | 46 |
+   | 2 | 61 |
+   | 3 | 76 |
+
+   G-ROUTE3 had 22.
+2. **Conversation on the small tier.** Both unsafe stops were here, so it is the first validation target.
+3. **Escalation.** It remains untested (1 escalated stop out of the 5 required). It needs a pre-registered corpus
+   that produces escalations without selecting cases by expected failure.
+4. **Coding.** The audit found most rejected coding answers used calls outside the allowlist the prompt
+   discloses, which excludes built-ins such as `len`. "No qualified coding model" may partly measure that
+   allowlist. Diagnosing it, and any allowlist change, is a protocol change and belongs to G-ROUTE4.
+5. **Grounded research.** It fails mainly by false-clean: answers that pass the operational checks but are
+   semantically wrong. The diagnosis concerns grounding as well as capability.
 
 ## Not done
 
