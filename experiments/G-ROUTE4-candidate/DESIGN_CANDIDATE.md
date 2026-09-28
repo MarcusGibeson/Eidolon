@@ -200,7 +200,10 @@ Research joins A′/B′ on fresh, independently adjudicated fixtures, and:
   - claim-level agreement (status, citations, lineages);
   - uncertainty-code agreement.
   A tier's research failures can then be read as judgment or bookkeeping.
-- **The prompt:** unchanged under D7, unless the operator adopts D8 below.
+- **The prompt (D8):** it is unchanged except for one pre-registered sentence stating the output element types.
+  The sentence says that `claims` is a list, and that `citations`, `lineages` and `uncertainties` are lists of
+  strings (source ids, lineage names and codes). It is frozen before contact and disclosed in every research
+  prompt. The validator and every judgment rule are untouched.
 
 A prompt or validator change counts as a protocol change and needs its own pre-registration.
 
@@ -236,8 +239,8 @@ Authoring can be staged by task class.
 | D4 | Qualification scale | **8 observations per cell** (4 fixtures × 2 repeats) |
 | D5 | R4 in Phase B′ | **A minimal deterministic set** |
 | D6 | Coding allowlist | **The stated purity rule**, frozen with its security argument and disclosed in prompts |
-| D7 | Grounded research | **Diagnose, then include** with the unchanged prompt and validators |
-| D8 | Research output element types | **Open.** The diagnosis found the prompt names the keys of a claim object, but never states that `claims` is a list, or that `citations`, `lineages` and `uncertainties` are lists of strings. 4 outputs failed on shape alone and 14 others were confounded by it. Options: keep the prompt unchanged (consistent with D7), or add a pre-registered sentence stating the element types. That is a prompt change, not a validator change, and touches no judgment. |
+| D7 | Grounded research | **Diagnose, then include** with the unchanged validators. The prompt is unchanged except as D8 amends it. |
+| D8 | Research output element types | **One pre-registered sentence** stating that `claims` is a list and that `citations`, `lineages` and `uncertainties` are lists of strings. It amends D7's "unchanged prompt" for this one point only. It is a prompt change, not a validator change, so exact matching stays. |
 
 ## Standing constraints (unchanged)
 
