@@ -1,0 +1,556 @@
+{
+ "schema_version": "g-route4.operator-decisions.v1",
+ "run_id": "g4adj-bmain-20260929T155837Z",
+ "decided_by": "operator (Marcus Gibeson)",
+ "date": "2026-09-29",
+ "basis": "the frozen derivability rule only; review evidence in ADJUDICATION_REPORT.json and the sealed raw answers",
+ "counts": {
+  "gold right -> keep": 34,
+  "input ambiguous -> fix input": 14
+ },
+ "full_cell_consequence": "not triggered: none of the four sampled first-adjudicator-agreed fixtures (B4-PLAN-R3-13, B4-RSRCH-R1-09, B4-RSRCH-R2-13, B4-RSRCH-R4-01) is fixed or replaced; all four are kept",
+ "decisions": [
+  {
+   "fixture_id": "B4-EXTR-R1-15",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-EXTR-R3-13",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-04",
+   "sampled": true,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-PLAN-R3-13",
+   "sampled": true,
+   "verdicts": [
+    true,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-01",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-02",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-03",
+   "sampled": true,
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-06",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Narrower-scope source (P6) is worded with the exclusionary 'only', which reads as a contradiction of the universal claim rather than as a narrower scope; the frozen P6 gold (C1 unresolved, scope_mismatch) is therefore not uniquely derivable. All adjudicator answers marked C1 contradicted.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-07",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-09",
+   "sampled": true,
+   "verdicts": [
+    true,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-11",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-13",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-14",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Narrower-scope source (P6) is worded with the exclusionary 'only', which reads as a contradiction of the universal claim rather than as a narrower scope; the frozen P6 gold (C1 unresolved, scope_mismatch) is therefore not uniquely derivable. All adjudicator answers marked C1 contradicted.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-15",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-16",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-17",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-18",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-01",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-03",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-04",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-06",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Narrower-scope source (P6) is worded with the exclusionary 'only', which reads as a contradiction of the universal claim rather than as a narrower scope; the frozen P6 gold (C1 unresolved, scope_mismatch) is therefore not uniquely derivable. All adjudicator answers marked C1 contradicted.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-11",
+   "sampled": true,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-12",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-13",
+   "sampled": true,
+   "verdicts": [
+    true,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-14",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Narrower-scope source (P6) is worded with the exclusionary 'only', which reads as a contradiction of the universal claim rather than as a narrower scope; the frozen P6 gold (C1 unresolved, scope_mismatch) is therefore not uniquely derivable. All adjudicator answers marked C1 contradicted.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-17",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-03",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-04",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "P4 support paraphrase S3 ('strips names from submitted answers') does not establish anonymity, so C1 reads as supported by one lineage and the frozen gold (two lineages, grant_access, no single_lineage_support) is not uniquely derivable. All three adjudicators chose deny_access with single_lineage_support.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-05",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-06",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Narrower-scope source (P6) is worded with the exclusionary 'only', which reads as a contradiction of the universal claim rather than as a narrower scope; the frozen P6 gold (C1 unresolved, scope_mismatch) is therefore not uniquely derivable. All adjudicator answers marked C1 contradicted.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-07",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-10",
+   "sampled": true,
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-11",
+   "sampled": true,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-14",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Narrower-scope source (P6) is worded with the exclusionary 'only', which reads as a contradiction of the universal claim rather than as a narrower scope; the frozen P6 gold (C1 unresolved, scope_mismatch) is therefore not uniquely derivable. All adjudicator answers marked C1 contradicted.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-15",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-18",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Narrower-scope source (P6) is worded with the exclusionary 'only', which reads as a contradiction of the universal claim rather than as a narrower scope; the frozen P6 gold (C1 unresolved, scope_mismatch) is therefore not uniquely derivable. All adjudicator answers marked C1 contradicted.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R4-01",
+   "sampled": true,
+   "verdicts": [
+    true,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-01",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "SY1: the frozen rule and the frozen family definition say 'a finding directly states the cause', but the causal statement is under role 'diagnosis' and no 'finding' states the cause; the frozen gold (cause_established) is therefore not uniquely derivable. 16 of the 18 answers across the six SY1 fixtures chose insufficient_evidence.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-03",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "SY1: the frozen rule and the frozen family definition say 'a finding directly states the cause', but the causal statement is under role 'diagnosis' and no 'finding' states the cause; the frozen gold (cause_established) is therefore not uniquely derivable. 16 of the 18 answers across the six SY1 fixtures chose insufficient_evidence.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-14",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-06",
+   "sampled": true,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-13",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "SY1: the frozen rule and the frozen family definition say 'a finding directly states the cause', but the causal statement is under role 'diagnosis' and no 'finding' states the cause; the frozen gold (cause_established) is therefore not uniquely derivable. 16 of the 18 answers across the six SY1 fixtures chose insufficient_evidence.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-14",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "SY1: the frozen rule and the frozen family definition say 'a finding directly states the cause', but the causal statement is under role 'diagnosis' and no 'finding' states the cause; the frozen gold (cause_established) is therefore not uniquely derivable. 16 of the 18 answers across the six SY1 fixtures chose insufficient_evidence.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-18",
+   "sampled": true,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-03",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-07",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "SY1: the frozen rule and the frozen family definition say 'a finding directly states the cause', but the causal statement is under role 'diagnosis' and no 'finding' states the cause; the frozen gold (cause_established) is therefore not uniquely derivable. 16 of the 18 answers across the six SY1 fixtures chose insufficient_evidence.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-09",
+   "sampled": false,
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "SY1: the frozen rule and the frozen family definition say 'a finding directly states the cause', but the causal statement is under role 'diagnosis' and no 'finding' states the cause; the frozen gold (cause_established) is therefore not uniquely derivable. 16 of the 18 answers across the six SY1 fixtures chose insufficient_evidence.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the frozen B′ procedure; if it fails, the frozen replacement procedure applies"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-11",
+   "sampled": false,
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is a code-fenced JSON answer whose content equals gold (diagnostic comparison only; the recorded verdicts stand as disagreements). The adjudicators derived the gold; the fixture is sound."
+  }
+ ]
+}
