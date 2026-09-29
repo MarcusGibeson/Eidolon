@@ -1,0 +1,2010 @@
+{
+ "schema_version": "g-route4.adjudication-answers.v1",
+ "phase": 2,
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "journal_sha256": "d77dd7b9a427976e3ab7d00fbf02bf5a51e39b7bc0ef2b466aeb00462371594e",
+ "journal_records": 968,
+ "schedule_sha256": "275369bf124dc2c8a397a6374b6aa3e8ffa34b65207e8f5e1212c4c92ffa2a44",
+ "slots": [
+  {
+   "fixture_id": "B4-EXTR-R1-13",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "a3b70ec1a1ea4f2aecd15bbbe969dcb99228d511a6cfd4cafe8e1f1c8ac87525",
+     "request_sha256": "4dd85603316063fb32e96d78c5e019f7b9f3780ee8f2220462994081f3e31da6",
+     "request_id": "req_011CfY2Tt5tAH2shcABKy8ja",
+     "message_id": "msg_011CfY2TuP232EptMehUMYma",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "63cb6ddc3e61ac4dac5f98ee8e8550824d69524f512dcfb1ff541bc588f6dddc"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "63cb6ddc3e61ac4dac5f98ee8e8550824d69524f512dcfb1ff541bc588f6dddc"
+  },
+  {
+   "fixture_id": "B4-EXTR-R1-13",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d1d76b40dfe6f50817d72fd5dce840b9d75097aadb0311eac96cfbe128df27d0",
+     "request_sha256": "4dd85603316063fb32e96d78c5e019f7b9f3780ee8f2220462994081f3e31da6",
+     "request_id": "req_011CfY2Tt7sJ3SbikHBcfayV",
+     "message_id": "msg_011CfY2TvmsB2MLrk4iJ6kNu",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "63cb6ddc3e61ac4dac5f98ee8e8550824d69524f512dcfb1ff541bc588f6dddc"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "63cb6ddc3e61ac4dac5f98ee8e8550824d69524f512dcfb1ff541bc588f6dddc"
+  },
+  {
+   "fixture_id": "B4-EXTR-R1-15",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "7f158f09c5c2103302414e4730b920fa88999eaa171877fc9100b42e177bc56e",
+     "request_sha256": "7d26b59beb0b9ecb9a25eb17ff3eca2c65986f7414564e8f9b7dbccc54bcef30",
+     "request_id": "req_011CfY2U3dcMwjahKngXezpg",
+     "message_id": "msg_011CfY2U4A7oBLbvYKuiR5G7",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "eab891d3a75a779367baa5ffcdc2e6556cb4fc3950b4a119db14e93193f954b8"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "eab891d3a75a779367baa5ffcdc2e6556cb4fc3950b4a119db14e93193f954b8"
+  },
+  {
+   "fixture_id": "B4-EXTR-R1-15",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "560025f7bf4e025073ee7ee359143552a224188a2890fd7152afca10606ff201",
+     "request_sha256": "7d26b59beb0b9ecb9a25eb17ff3eca2c65986f7414564e8f9b7dbccc54bcef30",
+     "request_id": "req_011CfY2U4k5kU8Kyss3eDaMD",
+     "message_id": "msg_011CfY2U58QtqMC6xZHNKsBV",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "b42868656f206ba26587a6838d701bcd92d01a7dd0196fcc80b9a7bd36e12173"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "b42868656f206ba26587a6838d701bcd92d01a7dd0196fcc80b9a7bd36e12173"
+  },
+  {
+   "fixture_id": "B4-EXTR-R3-13",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "ce4f9b1531cf81af32f30dae692b81fb7b196f7b9143d2286bbe432881931b02",
+     "request_sha256": "573c1e46ce60888bf1fd202be8f2f2d753b37ed27a925f866eec39c5b07f61df",
+     "request_id": "req_011CfY2UA7YPNaxLH2syARzg",
+     "message_id": "msg_011CfY2UAcJkjHXm1hZ4Emys",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "15d226a7f52ac887a78f95b1797ef99b58f7146c750a870d3fa07c9c540848e3"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "15d226a7f52ac887a78f95b1797ef99b58f7146c750a870d3fa07c9c540848e3"
+  },
+  {
+   "fixture_id": "B4-EXTR-R3-13",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "55245c2170091ea28571da79963782dff73765aa53c4441e748302cb013b45d6",
+     "request_sha256": "573c1e46ce60888bf1fd202be8f2f2d753b37ed27a925f866eec39c5b07f61df",
+     "request_id": "req_011CfY2UE8eKTgQyHwk7QUfo",
+     "message_id": "msg_011CfY2UEdeuqcMdeYLrAQMX",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "58273ae1d6911b41637e5677dc7b4040d01c507fc2357f8a7cca4c7f688dc607"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "58273ae1d6911b41637e5677dc7b4040d01c507fc2357f8a7cca4c7f688dc607"
+  },
+  {
+   "fixture_id": "B4-PLAN-R1-10",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "4a1627f314fd855ed60117dd9690491af46e93576f42487bb31edfab0e9c15c0",
+     "request_sha256": "b2b47c45607e1b702e6ae86bb6d0c646e1c5605f9d48d5ed7c130ff19835443e",
+     "request_id": "req_011CfY2UK5o5bRRc32cHFgmD",
+     "message_id": "msg_011CfY2ULFF7gD37pVbQJTJp",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "88061a457054fb26327d039058559cac78792faac94379ff237bed2626e3991c"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "88061a457054fb26327d039058559cac78792faac94379ff237bed2626e3991c"
+  },
+  {
+   "fixture_id": "B4-PLAN-R1-10",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d3d8f8360fcb07623078cda540e4fd52b5d3073261aaa47044206799dfef1408",
+     "request_sha256": "b2b47c45607e1b702e6ae86bb6d0c646e1c5605f9d48d5ed7c130ff19835443e",
+     "request_id": "req_011CfY2ULdJrzHUqDNC5iDcw",
+     "message_id": "msg_011CfY2UM8a4VtRcdRUYyG8v",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "88061a457054fb26327d039058559cac78792faac94379ff237bed2626e3991c"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "88061a457054fb26327d039058559cac78792faac94379ff237bed2626e3991c"
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-09",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "02f98dbc036110f107134381d5e031df677d7f937a842e15caacace0b7c066bc",
+     "request_sha256": "1cc689e2d536e209817a3e2333452f57d9025eaadfac190cc6cdbeb9befa1bba",
+     "request_id": "req_011CfY2UckBLmFMvjwDGiANP",
+     "message_id": "msg_011CfY2UdWaAamjaRkubmYwE",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "c4808b2b9d7e0337bd6c85c0d4096a01666c9ee661de4161f5ae40b7311c0c48"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "c4808b2b9d7e0337bd6c85c0d4096a01666c9ee661de4161f5ae40b7311c0c48"
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-09",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "631d4e9170625076e9b745e75a06bd4ff1932fe386a74dd7403a4f8c32d3be17",
+     "request_sha256": "1cc689e2d536e209817a3e2333452f57d9025eaadfac190cc6cdbeb9befa1bba",
+     "request_id": "req_011CfY2Ug9KHa638zcMuxySq",
+     "message_id": "msg_011CfY2UgdLv2X9TUEZXWQzD",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "c4808b2b9d7e0337bd6c85c0d4096a01666c9ee661de4161f5ae40b7311c0c48"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "c4808b2b9d7e0337bd6c85c0d4096a01666c9ee661de4161f5ae40b7311c0c48"
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-11",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "4070a0c0c2152ca9d6676344b7579f56ed2460affd38432dbf4e8da16fb4fb3a",
+     "request_sha256": "b2d8b05683933cf6d95b0cdc5c73ccece5d830a904d9fa1c81714825266df722",
+     "request_id": "req_011CfY2UogVxVWLevXQ6UGYj",
+     "message_id": "msg_011CfY2UpEEdhpCy8HpQ2u1m",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "a940a65676c44037e445e48714b6a2d2408b683ce3fae3c5b5b76f55d6392e66"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "a940a65676c44037e445e48714b6a2d2408b683ce3fae3c5b5b76f55d6392e66"
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-11",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d1f3d1afa1ee92207b8c7dd5e6a2d9f5ff06616aca3327107d080fb0d8521d5e",
+     "request_sha256": "b2d8b05683933cf6d95b0cdc5c73ccece5d830a904d9fa1c81714825266df722",
+     "request_id": "req_011CfY2Uui9B3WDowTKzng7T",
+     "message_id": "msg_011CfY2UvDfE1Dhth15kqHHW",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "a940a65676c44037e445e48714b6a2d2408b683ce3fae3c5b5b76f55d6392e66"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "a940a65676c44037e445e48714b6a2d2408b683ce3fae3c5b5b76f55d6392e66"
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-14",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "57373ec6adda21afdce7ea81e557dc55d4b9049231dc6444244416138c8d8e2c",
+     "request_sha256": "179d5c6f6f0253681d4f8d0e62b2219ad179076152c9a0605d17c55fe537b422",
+     "request_id": "req_011CfY2V3gsBR3aRNw1caoKZ",
+     "message_id": "msg_011CfY2V4APkWvPx59Q4nU8j",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "904a0b9c3f7d14a77816b8222fd5289e2957cd756c7abcc8194c6c45ef54cdd9"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "904a0b9c3f7d14a77816b8222fd5289e2957cd756c7abcc8194c6c45ef54cdd9"
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-14",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "509cb3452d96fdf77910d98287bf1b094d3e11041433965b2618be873657e9ad",
+     "request_sha256": "179d5c6f6f0253681d4f8d0e62b2219ad179076152c9a0605d17c55fe537b422",
+     "request_id": "req_011CfY2VBxweRmr2MgxLqPnT",
+     "message_id": "msg_011CfY2VCPFGA2PHyna7pqWb",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "904a0b9c3f7d14a77816b8222fd5289e2957cd756c7abcc8194c6c45ef54cdd9"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "904a0b9c3f7d14a77816b8222fd5289e2957cd756c7abcc8194c6c45ef54cdd9"
+  },
+  {
+   "fixture_id": "B4-PLAN-R3-04",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "f924c88bfb286595c9ae87507a1d5b5647a1c7a192e6ffe7113bfa4d30bf8082",
+     "request_sha256": "a790197b325e18d717c27963bc397902dc96444789ee0e74536e4155e12c3ead",
+     "request_id": "req_011CfY2VK7Z8j2WpZ37coYSq",
+     "message_id": "msg_011CfY2VKabFSyNUe3SM6k6W",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "e9d0e323a8accbbaec01d9a50ad8d4fed0316934bf4955a22f3b70d162924eaa"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "e9d0e323a8accbbaec01d9a50ad8d4fed0316934bf4955a22f3b70d162924eaa"
+  },
+  {
+   "fixture_id": "B4-PLAN-R3-04",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "f2a0ec4100332388f8c94689d374cf1b33d43dcc2440ec60a5ae50b0f9caa0da",
+     "request_sha256": "a790197b325e18d717c27963bc397902dc96444789ee0e74536e4155e12c3ead",
+     "request_id": "req_011CfY2VQbi7Tm64QDBNKu2A",
+     "message_id": "msg_011CfY2VQzGoyhexF5bAgr3n",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "e9d0e323a8accbbaec01d9a50ad8d4fed0316934bf4955a22f3b70d162924eaa"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "e9d0e323a8accbbaec01d9a50ad8d4fed0316934bf4955a22f3b70d162924eaa"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-01",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "c078fb6b42a107f7c19b3bdc8b29249c3643ec9c0fccc7b915421e615df4c4fa",
+     "request_sha256": "57a2696c968f21d6360f961b802e57bd484e9c98ea4ee09d6d08022c18317f26",
+     "request_id": "req_011CfY2VgTT1EV7tWWJ7FGm7",
+     "message_id": "msg_011CfY2VgyDJzKxCqVEcDNfu",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "b018a5112eef613c319cb74a92c86bbcc55608151e8106813908bd861e03c54f"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "b018a5112eef613c319cb74a92c86bbcc55608151e8106813908bd861e03c54f"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-01",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "25a628c47975e367ee7f4850f10a0aceb0cf09fca7cb4efb084fe66eeddeb38d",
+     "request_sha256": "57a2696c968f21d6360f961b802e57bd484e9c98ea4ee09d6d08022c18317f26",
+     "request_id": "req_011CfY2ViJKgB9rAgRW6hg7S",
+     "message_id": "msg_011CfY2ViqZoHLAgA8oCf1e3",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "c430c69d699b25cadda22c6e54e0302f7a96779ba1fa99a5e1bb9ce149c1d1b8"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "c430c69d699b25cadda22c6e54e0302f7a96779ba1fa99a5e1bb9ce149c1d1b8"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-02",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "5eb81f0ff3c53e544652377615563803b4009fb14f33beecb914eb41f06feb1c",
+     "request_sha256": "2eb290c1e98d216da6c5647f9e7b48b292024bd1eb77656474d9a66286acbdb9",
+     "request_id": "req_011CfY2VvJ99Cu8bG6Lg2SCC",
+     "message_id": "msg_011CfY2Vvv753q3nzcpVwUaQ",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "06ff9e8e86cf0961aa5993bafe98bc8ea757c7f2ed5cdca55401f2a842631b84"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "06ff9e8e86cf0961aa5993bafe98bc8ea757c7f2ed5cdca55401f2a842631b84"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-02",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "34b87e4bd4ed426555bad9ceec58683091ccfaf629c113347f14965232525283",
+     "request_sha256": "2eb290c1e98d216da6c5647f9e7b48b292024bd1eb77656474d9a66286acbdb9",
+     "request_id": "req_011CfY2Vvyp9Yu1JGUbaNkUa",
+     "message_id": "msg_011CfY2VwXKQ6XHHud16YQXb",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "06ff9e8e86cf0961aa5993bafe98bc8ea757c7f2ed5cdca55401f2a842631b84"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "06ff9e8e86cf0961aa5993bafe98bc8ea757c7f2ed5cdca55401f2a842631b84"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-04",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d02915283a01cf30992eb094a2c53907998138adba7ce1cb8a498d193e2891e1",
+     "request_sha256": "d2378b3a04a56947d565be295e6b81beb6f14fdacccf55c1e959a50c999d1a49",
+     "request_id": "req_011CfY2WEUHDveP2JNFvWo7U",
+     "message_id": "msg_011CfY2WEy3niofSYbAwKjHs",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "c40248674b6a1221b013c1938cc79d9206b2a553fd16940d92394085ecc5c628"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "c40248674b6a1221b013c1938cc79d9206b2a553fd16940d92394085ecc5c628"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-04",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "966073c7da380580735d2bea35d3580062cbda7f30218b22f359604eb3bb3816",
+     "request_sha256": "d2378b3a04a56947d565be295e6b81beb6f14fdacccf55c1e959a50c999d1a49",
+     "request_id": "req_011CfY2WFwawAjfUhvxrmygN",
+     "message_id": "msg_011CfY2WGSbgZCRUP1zXV7Np",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "c40248674b6a1221b013c1938cc79d9206b2a553fd16940d92394085ecc5c628"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "c40248674b6a1221b013c1938cc79d9206b2a553fd16940d92394085ecc5c628"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-06",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "efd6ca81921f47ecd78069662ac02d07fb03a23b48d7ca450bca8772caa23a77",
+     "request_sha256": "e024f5cafbbcedbcd55dcf678ebf2e429e088e33c0fc655ea7cb7d45b716accd",
+     "request_id": "req_011CfY2Wn26KANoRUDJmRSsV",
+     "message_id": "msg_011CfY2Wof53QpSjhQf1MVZZ",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "f76598cea933e12764f75661337d4316b31cafc54319cb6d88907b9ed87a84a4"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "f76598cea933e12764f75661337d4316b31cafc54319cb6d88907b9ed87a84a4"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-06",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "2afe7922ff981985bf8105ce72199143388a0813577ceb9b74e037e796fb0e9b",
+     "request_sha256": "e024f5cafbbcedbcd55dcf678ebf2e429e088e33c0fc655ea7cb7d45b716accd",
+     "request_id": "req_011CfY2WpxCiwPCSn7XjiBun",
+     "message_id": "msg_011CfY2WqREoV4mFxDwH8WGk",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "f76598cea933e12764f75661337d4316b31cafc54319cb6d88907b9ed87a84a4"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "f76598cea933e12764f75661337d4316b31cafc54319cb6d88907b9ed87a84a4"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-07",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "f535ab47c1ae309c9930df7895dbf48d981191cb2906f9ac52d508810d2cc6ef",
+     "request_sha256": "591e8284f24dd4cb7e7ffd5c9637ac1a116ecd66deaefe7ee0f0d3abec53a08e",
+     "request_id": "req_011CfY2X9nn1TPUEKLVEUxTS",
+     "message_id": "msg_011CfY2XAHYQyMmPHiwM44Sc",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "e1d69e2c59fe749453c24fe8c0db4011baa0b924113d7b9c17d34459fabb0d7a"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "e1d69e2c59fe749453c24fe8c0db4011baa0b924113d7b9c17d34459fabb0d7a"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-07",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "8244c4c6be98f6c7dc0610a77b07767efdb1ddc5a7ee0d35c5d98681deafaa34",
+     "request_sha256": "591e8284f24dd4cb7e7ffd5c9637ac1a116ecd66deaefe7ee0f0d3abec53a08e",
+     "request_id": "req_011CfY2XDTnePSBb3BgsYVPo",
+     "message_id": "msg_011CfY2XDxZUbia2HQe7SJYA",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "e1d69e2c59fe749453c24fe8c0db4011baa0b924113d7b9c17d34459fabb0d7a"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "e1d69e2c59fe749453c24fe8c0db4011baa0b924113d7b9c17d34459fabb0d7a"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-10",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "fa70da61a3b6543a702788bda148d6651eb5216da92831c0575379dd04ac3473",
+     "request_sha256": "6a7c70d49963d31f095b16c0c79b29d8a8182b7822d12038ba25a6b33e23f73f",
+     "request_id": "req_011CfY2XXHqmqGhtQ4GppUT4",
+     "message_id": "msg_011CfY2XXq6ZCaWsVAsizXS9",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "dc71e6c3261aacd6cd871285d803265e00357e2d5a4534456e4dcac146a2ffed"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "dc71e6c3261aacd6cd871285d803265e00357e2d5a4534456e4dcac146a2ffed"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-10",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "0408db00592b236302b83f61734d0d653ac0520e397e62b8365e203f2cc8fa7b",
+     "request_sha256": "6a7c70d49963d31f095b16c0c79b29d8a8182b7822d12038ba25a6b33e23f73f",
+     "request_id": "req_011CfY2XYewx9yqyQAMtRyTw",
+     "message_id": "msg_011CfY2XZHQ985TF3fVM7cn6",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "dc71e6c3261aacd6cd871285d803265e00357e2d5a4534456e4dcac146a2ffed"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "dc71e6c3261aacd6cd871285d803265e00357e2d5a4534456e4dcac146a2ffed"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-11",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "32671bf91836acbf3889bfe49cfb7b34028f9325b0c8605681cfbe13b623863c",
+     "request_sha256": "4c7921903d6dc7ba038dff67a4a1253852605551ec53d2820f70c3594ff51e25",
+     "request_id": "req_011CfY2Xrmcn4pc5NB4XEvuz",
+     "message_id": "msg_011CfY2XsFPiiRs4EUJzhbUj",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "df059f84c1fb83e3f55958e0fc52fa0190a6f164acca1d2cb34f994e62631472"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "df059f84c1fb83e3f55958e0fc52fa0190a6f164acca1d2cb34f994e62631472"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-11",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "645a674edd1958e5e46330d5ea68a388353f1805da130dbe435f3bf5f0051fdf",
+     "request_sha256": "4c7921903d6dc7ba038dff67a4a1253852605551ec53d2820f70c3594ff51e25",
+     "request_id": "req_011CfY2XustrsW36FfaXfbfw",
+     "message_id": "msg_011CfY2XvPQZgpU7aJkScQVe",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "db474a6d2df6234d05755b79c999b2125b92d87208526356d255e8abc967c52a"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "db474a6d2df6234d05755b79c999b2125b92d87208526356d255e8abc967c52a"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-13",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "2a3c9e9777613c2153433f051170032440509eff8ce3145437df11a991e25eba",
+     "request_sha256": "5ae256d229496d7c6f44b16b8d8283f188e623893ab3ca72613ce3cbd790d249",
+     "request_id": "req_011CfY2YHBoiG1QF3QpgrhpD",
+     "message_id": "msg_011CfY2YHZdW6r7RWi3KBuDR",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "9d2fc107b255267b9e16443be79795b65b9c595bfdcd15f4e2fc69d59b9f78a5"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "9d2fc107b255267b9e16443be79795b65b9c595bfdcd15f4e2fc69d59b9f78a5"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-13",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "0150444f3e19f13f3f1f3bf9fd7a5ea6ad9b91ac6a4925bace4057b425e1e650",
+     "request_sha256": "5ae256d229496d7c6f44b16b8d8283f188e623893ab3ca72613ce3cbd790d249",
+     "request_id": "req_011CfY2YL5gVrv2XoHAsYqD7",
+     "message_id": "msg_011CfY2YLvHxWzpetV5rd6HG",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "55c35ad66db1e4f57b42684aeaf894708195b5da828135fbdc8497288f5db3ea"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "55c35ad66db1e4f57b42684aeaf894708195b5da828135fbdc8497288f5db3ea"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-14",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "57131bcc32961f92bfa96ed9d5511eef0843c8c0967930c931a8916b2413b26e",
+     "request_sha256": "8b0a0456d51b28c19bd24701b0ebd75403edc151ba090f97e9a42e9a8ff9bb57",
+     "request_id": "req_011CfY2YcXPvq7GFiiAtrnsw",
+     "message_id": "msg_011CfY2Yd1QzAcxaZsSRwS8k",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "821d8dd891598efaa7c744adcc9ecdfd2fc5563c78eeeee790b4c95ffb1eb83f"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "821d8dd891598efaa7c744adcc9ecdfd2fc5563c78eeeee790b4c95ffb1eb83f"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-14",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d7dc0d64a397e37889b45815fe5355572c7644da9972f13183cbb75ffed56166",
+     "request_sha256": "8b0a0456d51b28c19bd24701b0ebd75403edc151ba090f97e9a42e9a8ff9bb57",
+     "request_id": "req_011CfY2Yf4CLLjZ1pWKR1hFq",
+     "message_id": "msg_011CfY2YfTkeKEihjYjuXVmQ",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "821d8dd891598efaa7c744adcc9ecdfd2fc5563c78eeeee790b4c95ffb1eb83f"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "821d8dd891598efaa7c744adcc9ecdfd2fc5563c78eeeee790b4c95ffb1eb83f"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-15",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "01ec56dca71795fd31cace9bef4612f7f9a01b6df603d6b9391d3b0bd7f0908f",
+     "request_sha256": "e595568dc0444e81bcc59972ab7cfd2a16287067c509f86176dfbfcff42c56f0",
+     "request_id": "req_011CfY2Yqefv1U6DNCUiLJsU",
+     "message_id": "msg_011CfY2Yr7hr8Hh2LaVSW3Rr",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "b49ddf536b3b6b4ccbbdc32c9fe9b954d06e8f5cd66a114daf67883a5e3487c8"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "b49ddf536b3b6b4ccbbdc32c9fe9b954d06e8f5cd66a114daf67883a5e3487c8"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-15",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "14b99a6697d5c418c30a9839474ffcd61cb8c1c73770348d663cc766368f88d7",
+     "request_sha256": "e595568dc0444e81bcc59972ab7cfd2a16287067c509f86176dfbfcff42c56f0",
+     "request_id": "req_011CfY2Yt8zfPiHar1vxGLCi",
+     "message_id": "msg_011CfY2YtfzrxmDuTJspg9ie",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "c49a9c71386ff7406e03c3c611611c1e45d0640f8e913509be851eef508923cf"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "c49a9c71386ff7406e03c3c611611c1e45d0640f8e913509be851eef508923cf"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-16",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "03373cbfbcb311777e4b383dd0447257acc87a88ff6d0c4b64cdbfcede122087",
+     "request_sha256": "9c7be260244afba5b334063bad430691b99d62a3e1a7e3d1c45d6b270100a408",
+     "request_id": "req_011CfY2ZCHeUwqRVJCyTTegq",
+     "message_id": "msg_011CfY2ZCpQJqcG8rwBKrAoo",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "82047c1df534ba23edbb15e51daf0b4efa34ce8ff8cadec18a74fa0c80ff52a7"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "82047c1df534ba23edbb15e51daf0b4efa34ce8ff8cadec18a74fa0c80ff52a7"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-16",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "42ef60107feedacd1de893ba76ddaaa2f76f530e885e99ba2022c46f0c3b4cd2",
+     "request_sha256": "9c7be260244afba5b334063bad430691b99d62a3e1a7e3d1c45d6b270100a408",
+     "request_id": "req_011CfY2ZFQv9YbT3E27WTnBc",
+     "message_id": "msg_011CfY2ZFvSH6zL9yJkQ2J8y",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "82047c1df534ba23edbb15e51daf0b4efa34ce8ff8cadec18a74fa0c80ff52a7"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "82047c1df534ba23edbb15e51daf0b4efa34ce8ff8cadec18a74fa0c80ff52a7"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-17",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "3a3f0fe419041443a80df88844c2d571f5b9c91327ceca59b0461435646c1d3a",
+     "request_sha256": "086decfca3de8345d0dd30d53d0245e04a39f96201877bfe227cfb7108d35ea3",
+     "request_id": "req_011CfY2ZbMirQQaY1MiaPWK6",
+     "message_id": "msg_011CfY2ZboG9r2NR4UBrDbXH",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "312c1b073dd3d418ba2c36e5c5c1f65cb651b0eef8b98e43e8c00f1e811dad1b"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "312c1b073dd3d418ba2c36e5c5c1f65cb651b0eef8b98e43e8c00f1e811dad1b"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-17",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "179919272cc2b6b5f4da3210402a45f80ea4ad33719ab1ec1b8cc92ac9bb9cdb",
+     "request_sha256": "086decfca3de8345d0dd30d53d0245e04a39f96201877bfe227cfb7108d35ea3",
+     "request_id": "req_011CfY2ZgHdy1ijnuzHZ1RqL",
+     "message_id": "msg_011CfY2ZgnecQabzEp7qN3NZ",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "5cbba34d1f48dc38aebddfafe8d4cb79c63829e1e78c3f1e042064b906ae8568"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "5cbba34d1f48dc38aebddfafe8d4cb79c63829e1e78c3f1e042064b906ae8568"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-18",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "bd1db802943ce1ed24ae9bc51394888bd07f93427a3ce9ff36ce1e1fde1834a1",
+     "request_sha256": "2667b5aaa01bbcbb4c8561e17736d78676fba8a7be04bf2a30fa9409e0c96faa",
+     "request_id": "req_011CfY2ZyuJ5hVd4PF8vKJFC",
+     "message_id": "msg_011CfY2ZzS3GM66Lhe9qQgrU",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "535f97bad652c5541bf383bde28698ced18f4620cd4ba8a3b97bd6a65efb8a61"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "535f97bad652c5541bf383bde28698ced18f4620cd4ba8a3b97bd6a65efb8a61"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-18",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "bbd93694b504ab14c32a95baf4f459efff41238e68e9c65baa54a71127c55f0a",
+     "request_sha256": "2667b5aaa01bbcbb4c8561e17736d78676fba8a7be04bf2a30fa9409e0c96faa",
+     "request_id": "req_011CfY2a3S7ztTkXyHLYNE7M",
+     "message_id": "msg_011CfY2a3sRMJ11Z1Cc3aSLz",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "9caefce9545cacf1aefbba04101bb77cb877318e170efe25d2c62c2e391e744b"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "9caefce9545cacf1aefbba04101bb77cb877318e170efe25d2c62c2e391e744b"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-01",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "4579f94f42b60d5bfd99d618716c3bcc503c73ecfdf689ee67af3ea1bf4a76b6",
+     "request_sha256": "7c552ae667f3f6b574b11497c8bf1e7df3263a9ecffc34ce85515c1a9666f6e2",
+     "request_id": "req_011CfY2aGbtUJ2WXE5w8H1PM",
+     "message_id": "msg_011CfY2aH3BNVVCrKmqoow2P",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "de264d3c2e5107de98f662ddb2196a008c92aba80157f04170ae08802b5d9a27"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "de264d3c2e5107de98f662ddb2196a008c92aba80157f04170ae08802b5d9a27"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-01",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "732f90292723614c3e7be98c2f5c847efad5b301b50be977f9e2bf6d5f30889f",
+     "request_sha256": "7c552ae667f3f6b574b11497c8bf1e7df3263a9ecffc34ce85515c1a9666f6e2",
+     "request_id": "req_011CfY2aQe5aaYyVQbxKtuhU",
+     "message_id": "msg_011CfY2aR8MdMmBpJYvM7Rwy",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "7a1d71f2624080c9950cb6485606db6c7caf6d4714e77a7257233879f87be27b"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "7a1d71f2624080c9950cb6485606db6c7caf6d4714e77a7257233879f87be27b"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-03",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "05eee06460429ed33bbb465448bb47f2f6c941dcd9d4c55f41b32b5b445194c6",
+     "request_sha256": "7683574022f650bff28ce5531002104e6f22ba4326febc8dd4e3b98752cee894",
+     "request_id": "req_011CfY2advXsx6zeFxtRs1na",
+     "message_id": "msg_011CfY2aeRYdECDNn5Mw4Wzf",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "3015d3afbf7c61ae07fe05f8e085039c86d034f82c46fb346e09e1f02f875d5b"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "3015d3afbf7c61ae07fe05f8e085039c86d034f82c46fb346e09e1f02f875d5b"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-03",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "690a2fe604f96862deca9f12ac21ecf79d9fd4fd82fa0eb6b5ad00edbd2a05d8",
+     "request_sha256": "7683574022f650bff28ce5531002104e6f22ba4326febc8dd4e3b98752cee894",
+     "request_id": "req_011CfY2akomq83Matat6VEBR",
+     "message_id": "msg_011CfY2amDqTXK4dK6bMseEA",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "3015d3afbf7c61ae07fe05f8e085039c86d034f82c46fb346e09e1f02f875d5b"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "3015d3afbf7c61ae07fe05f8e085039c86d034f82c46fb346e09e1f02f875d5b"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-04",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "75f935c52975242530e226334bf3691437087e3d87a4ca74122a8ddfe94344be",
+     "request_sha256": "650339aa73059cf6565dd677db46114f0bcbfb886e5c1eb6b98a324b130ae5ae",
+     "request_id": "req_011CfY2ayhRQohEe2wXrgcDP",
+     "message_id": "msg_011CfY2azATHFtKgM9XeerYb",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "d2e48508c2750d7fdf54bc2c154802f0d161d94d985b41a53e88df87e75f9877"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "d2e48508c2750d7fdf54bc2c154802f0d161d94d985b41a53e88df87e75f9877"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-04",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "9fb0a3dc553bae4299a525cc2c52f1fac71a4351d1ab55b8213f56dea5be67f4",
+     "request_sha256": "650339aa73059cf6565dd677db46114f0bcbfb886e5c1eb6b98a324b130ae5ae",
+     "request_id": "req_011CfY2b5UBu8dEPwqaiFJai",
+     "message_id": "msg_011CfY2b5wxkLLQydPpFCSCM",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "41daeef2c8300822257ef7db9f75a0040205be42a1640c2d8cc5899379ac4892"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "41daeef2c8300822257ef7db9f75a0040205be42a1640c2d8cc5899379ac4892"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-05",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "0df2c92e64ed0f072d880aa3b8ec64d3a77f05c1a0994aa4a2b5d148e5175779",
+     "request_sha256": "04b77c485220c8eee54e9415ed4299b50416c507f26eb8ca2664440166f5193f",
+     "request_id": "req_011CfY2bLMdmFAUwoxGBx1Mv",
+     "message_id": "msg_011CfY2bLttF94JTfquH3aC4",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "301bc04406f0bccb9c5ceff8e89765405be3ea960c79a57d44e4a786dfc1b413"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "301bc04406f0bccb9c5ceff8e89765405be3ea960c79a57d44e4a786dfc1b413"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-05",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "6288e6e429371121be7baa021338f94a793beb5fc077d1a6cacb4f20579db0ca",
+     "request_sha256": "04b77c485220c8eee54e9415ed4299b50416c507f26eb8ca2664440166f5193f",
+     "request_id": "req_011CfY2bPdLcKPFnA5RfYE4M",
+     "message_id": "msg_011CfY2bQ8MJRczJKTV691HW",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "301bc04406f0bccb9c5ceff8e89765405be3ea960c79a57d44e4a786dfc1b413"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "301bc04406f0bccb9c5ceff8e89765405be3ea960c79a57d44e4a786dfc1b413"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-06",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "37781a9a3e4f3184ed30a105ed652c7c035184b086e11911ae8fb0defbd2b443",
+     "request_sha256": "3e9bd280088bd60b2b7474e3970ddd5d438fafd81e4e2e6805cde6278d9c69b5",
+     "request_id": "req_011CfY2bftt5ZJaChmegJknD",
+     "message_id": "msg_011CfY2bgRPHTMfHGTPNt5wB",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "88b68af05f23afd4c3c784313619c415159efef88d77af2f4dfac64f7359736d"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "88b68af05f23afd4c3c784313619c415159efef88d77af2f4dfac64f7359736d"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-06",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "2ad75c934e1eaf5f61ac1aeeb1445f7d8d307ba3023c1a9005c534cb73f06665",
+     "request_sha256": "3e9bd280088bd60b2b7474e3970ddd5d438fafd81e4e2e6805cde6278d9c69b5",
+     "request_id": "req_011CfY2bkKHRV2av1JXKAFJo",
+     "message_id": "msg_011CfY2bkqJDcZe3rvdgG2Wx",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "88b68af05f23afd4c3c784313619c415159efef88d77af2f4dfac64f7359736d"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "88b68af05f23afd4c3c784313619c415159efef88d77af2f4dfac64f7359736d"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-12",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "82e3d5d6a1bb3f2f2389428ac8f0594b31834c391774c2b9381ab1bb4d190cae",
+     "request_sha256": "f4a595dc4f8cbddabf74b583a6d0ca8d06a3b175c508d55e5d5b387866359c1d",
+     "request_id": "req_011CfY2c2LhEyknDWn4kkMZz",
+     "message_id": "msg_011CfY2c2py8rDbkGXEuGYGn",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "8b7c72043b8e649530f191dc69b0ef906965b1cbce506d24212d8a6f7cb0d7e4"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "8b7c72043b8e649530f191dc69b0ef906965b1cbce506d24212d8a6f7cb0d7e4"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-12",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "8d0439db769b7749eecba599b0027b50ac518e9d9203321c11b453e33e66213f",
+     "request_sha256": "f4a595dc4f8cbddabf74b583a6d0ca8d06a3b175c508d55e5d5b387866359c1d",
+     "request_id": "req_011CfY2c5mpP2XiCy9V4yTmx",
+     "message_id": "msg_011CfY2c6KJt6GowEHE2QWBQ",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "f53e5e174e579f9cd87075892748675ae69b9b1b9d85d0bb41dfd020759848a2"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "f53e5e174e579f9cd87075892748675ae69b9b1b9d85d0bb41dfd020759848a2"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-14",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "21e158ab24a7559bd4a2b311fed0f5342da53650e05a82e724d20da97889b156",
+     "request_sha256": "d90f07fabad2b1652db9ec742e3eaaf0ce520de23bbe759215c5949b28c316f6",
+     "request_id": "req_011CfY2cEZeq3R4eYgq2d6Qj",
+     "message_id": "msg_011CfY2cF4g8vtFBdz8ihRTu",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "90b619cc1f9857470dd7b63a60a4b503eee0c9e0eef0542eb2b6d3fa923b7b46"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "90b619cc1f9857470dd7b63a60a4b503eee0c9e0eef0542eb2b6d3fa923b7b46"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-14",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "b0ecf1cbe6bd132fd1c482e69c4269bce3ed25a2c900e9663184261961db2dd3",
+     "request_sha256": "d90f07fabad2b1652db9ec742e3eaaf0ce520de23bbe759215c5949b28c316f6",
+     "request_id": "req_011CfY2cJcjWxthbgcHKbGVq",
+     "message_id": "msg_011CfY2cKAER1r9qxPdvN95D",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "a6741b44d276371261033882378163e8c0a1f9e0eb444284303f4c518339f84b"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "a6741b44d276371261033882378163e8c0a1f9e0eb444284303f4c518339f84b"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-17",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "7fc1c9384433307db04a9a6df4f2175ad14df4eff1cec93c0e8bfa80ce255ae6",
+     "request_sha256": "f103ff9cdabe94cd74b66db266552fc0e10cd6d7d02aa5567640158fc53db99a",
+     "request_id": "req_011CfY2ccTHSoDzHSxzQdd9G",
+     "message_id": "msg_011CfY2ccwJriQL1yKz8B5po",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "c28a299778812cf9b4b0690e8b48eb984845e6385c18c7437c578727a659d4cc"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "c28a299778812cf9b4b0690e8b48eb984845e6385c18c7437c578727a659d4cc"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-17",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "744556e827a3c3d2c0d0cb27094e656998735b4f204eb406f4387a984dd1f835",
+     "request_sha256": "f103ff9cdabe94cd74b66db266552fc0e10cd6d7d02aa5567640158fc53db99a",
+     "request_id": "req_011CfY2cigqFQujxMwD9KmWA",
+     "message_id": "msg_011CfY2cjBMwbFtq45GY3xJU",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "088e4d85b5278c6093f22b9b10edae3f3199c8d3a1d40fee4367234ac9b903a8"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "088e4d85b5278c6093f22b9b10edae3f3199c8d3a1d40fee4367234ac9b903a8"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-03",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "de2ca615a92be4e8445f1ccc39b999e2fcb31b71bde856db5366aae5e5f3b1be",
+     "request_sha256": "2aa408d190f62ef53b3afb18e8f79b4bebe4593a840c8a0e6028d60b5b81fc6b",
+     "request_id": "req_011CfY2cwNpnV3dfvksKUeHP",
+     "message_id": "msg_011CfY2cxfTx8rKkESZYh1ci",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "dedc947fb8983a965837f63fdeed6ca1dda0cfd2d7c334be37e561ea04fbaee0"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "dedc947fb8983a965837f63fdeed6ca1dda0cfd2d7c334be37e561ea04fbaee0"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-03",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "a733178ff2fb794234007088671272e9ef1358fe3ad5e23463bbba4f4897e57a",
+     "request_sha256": "2aa408d190f62ef53b3afb18e8f79b4bebe4593a840c8a0e6028d60b5b81fc6b",
+     "request_id": "req_011CfY2d4qY6eZQV7sYdFrZr",
+     "message_id": "msg_011CfY2d5Q2E968WhcS462LV",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "dedc947fb8983a965837f63fdeed6ca1dda0cfd2d7c334be37e561ea04fbaee0"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "dedc947fb8983a965837f63fdeed6ca1dda0cfd2d7c334be37e561ea04fbaee0"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-04",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "b0037fa00a03dab0384dfcb5ca640085f12dd47ff451ad132b88114d9bf66426",
+     "request_sha256": "3494f3673439712dd0556414858504e61e6a617a42c39854f788f9081e477382",
+     "request_id": "req_011CfY2dK63XxGKg4PQLn9Hp",
+     "message_id": "msg_011CfY2dKaJxFgJ6KzHGL78j",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "fb279f955577a789ddcb72298c5ba755c5c31f2bb3312254b76c46c730f2223b"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "fb279f955577a789ddcb72298c5ba755c5c31f2bb3312254b76c46c730f2223b"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-04",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "04c34d1224a17b32e26552d7577d0bb70146531864fa9ec229ea3e738a22e694",
+     "request_sha256": "3494f3673439712dd0556414858504e61e6a617a42c39854f788f9081e477382",
+     "request_id": "req_011CfY2dR6wfPfF3swvNgxJj",
+     "message_id": "msg_011CfY2dRbiBc4inqpvx1u6Q",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "74dc53c87569b15e5c055caf096c2346da9d4439a0db95afb7d267fd28c759bd"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "74dc53c87569b15e5c055caf096c2346da9d4439a0db95afb7d267fd28c759bd"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-05",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "5c560bd114053f996a637e940aeb35e41af36c4fa998ec2554069cb7215a6d35",
+     "request_sha256": "c0489db0b4354b2d5f8798205f9ef0d338b54ec85af9c608f5a3f0c4030bd5a3",
+     "request_id": "req_011CfY2dhAafHmwiEPpuHefD",
+     "message_id": "msg_011CfY2dhcdJVf5iHvafZ8GL",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "e6dc42afdd0ff6736a502f70ed56782c9d064d525d3305884cbce92a6b79f9e9"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "e6dc42afdd0ff6736a502f70ed56782c9d064d525d3305884cbce92a6b79f9e9"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-05",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "8d40982d3d1c600141f4fad9c3f19301928fe9a2b291f96a064658a841ce736b",
+     "request_sha256": "c0489db0b4354b2d5f8798205f9ef0d338b54ec85af9c608f5a3f0c4030bd5a3",
+     "request_id": "req_011CfY2dsvVTCejXoqC2Du2L",
+     "message_id": "msg_011CfY2dtSVWSsRZ8mjN3J81",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "e6dc42afdd0ff6736a502f70ed56782c9d064d525d3305884cbce92a6b79f9e9"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "e6dc42afdd0ff6736a502f70ed56782c9d064d525d3305884cbce92a6b79f9e9"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-06",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "6a3af5b97ef87a0542f639250dc445074b04fec2e8d045b26ea24be23cc61bba",
+     "request_sha256": "c3f5e2508e6c6e9511a4444653c1e6ef9980ba2793cbf27a156b4331ebb9a48f",
+     "request_id": "req_011CfY2e6H8nnEHVgHVpD2kb",
+     "message_id": "msg_011CfY2e6kQvegjd1F1HpFTa",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "8ef0c8714e3ac81242fdf6105a144a868c5de0dab4824236d46ae6b15b54311c"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "8ef0c8714e3ac81242fdf6105a144a868c5de0dab4824236d46ae6b15b54311c"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-06",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "8307ac5b681a8d299c0f4820fc4980accb67d3cb29979277d131e409b44659ea",
+     "request_sha256": "c3f5e2508e6c6e9511a4444653c1e6ef9980ba2793cbf27a156b4331ebb9a48f",
+     "request_id": "req_011CfY2eL1PNE5QjN2eEjEk3",
+     "message_id": "msg_011CfY2eLUfQBHUskvP8pSSE",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "610e0fa6ec86d6a8be9f8a28a375e44fdc573205cfcdca537746803d9736bbe6"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "610e0fa6ec86d6a8be9f8a28a375e44fdc573205cfcdca537746803d9736bbe6"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-07",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "f3352396b4c73b04d9bf10d0405c9798de6bf2e87b3ea1405a31fa1c17bc716b",
+     "request_sha256": "aabf80c1d1d02c10728c590ace9f522c652c835164479cb0b14e7f75dec6cea3",
+     "request_id": "req_011CfY2eTFCndtEc4UbHBz3s",
+     "message_id": "msg_011CfY2eTkDXUc9vqwRGJN6u",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "b5b46d5d5c312f46047f224268c4c0ed84387f43f1877929ce69fa79fe0968d2"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "b5b46d5d5c312f46047f224268c4c0ed84387f43f1877929ce69fa79fe0968d2"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-07",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "53627409d814b4c822f1c0ed7d4ef465bb72f9319186a55ca57c2387494f249d",
+     "request_sha256": "aabf80c1d1d02c10728c590ace9f522c652c835164479cb0b14e7f75dec6cea3",
+     "request_id": "req_011CfY2edDjQmmSZEYrHNg6s",
+     "message_id": "msg_011CfY2edjEmJtAbHYPa4rga",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "65dbbc4bb93d0dc0dc233f6391c5bcfb32e6a98b16ca70e9527531f2e51e1d80"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "65dbbc4bb93d0dc0dc233f6391c5bcfb32e6a98b16ca70e9527531f2e51e1d80"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-08",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "b02e76859a8cb3a9545b1ae8d10e36ee617a2455b138f67fa835f08ff237edee",
+     "request_sha256": "02c94112dc1267d843a1b295806b3bc1d3f344b3efe5f8b149e3a8fe8c0ce9f3",
+     "request_id": "req_011CfY2eimr52X1WWcS1MNoJ",
+     "message_id": "msg_011CfY2ejHs7FxN7pupHkfWx",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "927ffb9ec33ac664b85b84a51fe01b413ca95f5bc970820fad026bd96f58df74"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "927ffb9ec33ac664b85b84a51fe01b413ca95f5bc970820fad026bd96f58df74"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-08",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "4cbe5c0000074f837070dcac1293feec1f5d3f440223c0e86f7500aeea5e84c7",
+     "request_sha256": "02c94112dc1267d843a1b295806b3bc1d3f344b3efe5f8b149e3a8fe8c0ce9f3",
+     "request_id": "req_011CfY2eytCCLmKU9KKvcBGK",
+     "message_id": "msg_011CfY2ezSgCsUCVF7zZdhJa",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "927ffb9ec33ac664b85b84a51fe01b413ca95f5bc970820fad026bd96f58df74"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "927ffb9ec33ac664b85b84a51fe01b413ca95f5bc970820fad026bd96f58df74"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-09",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "901e984570f70adbf1a70a6d5aaddc611bff60db58d5579d1607a1aeb23cd97e",
+     "request_sha256": "cdb751c343faacbe2a82f1883c6c8b43b8bdca3781bbe9c2c2c3ec8f7c0d38c8",
+     "request_id": "req_011CfY2f23REWmA3dMzm6bFL",
+     "message_id": "msg_011CfY2f2buaBpnKZ6tgdZjo",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "86ad4e64b21c4c6f198c027bbc0061f088db988861f6a798fa63f22b92619da2"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "86ad4e64b21c4c6f198c027bbc0061f088db988861f6a798fa63f22b92619da2"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-09",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "eead9bb60cfbed93c57c4f8a13368b36e19c3e54cd4377d2405c90454362477c",
+     "request_sha256": "cdb751c343faacbe2a82f1883c6c8b43b8bdca3781bbe9c2c2c3ec8f7c0d38c8",
+     "request_id": "req_011CfY2fGiyA2N27fRRrbADH",
+     "message_id": "msg_011CfY2fHEUxUZTnDNbsi4VG",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "86ad4e64b21c4c6f198c027bbc0061f088db988861f6a798fa63f22b92619da2"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "86ad4e64b21c4c6f198c027bbc0061f088db988861f6a798fa63f22b92619da2"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-14",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "9b5422386a14fd4727c585ab8304355c4223f4028d41a9bddd491658a4e03377",
+     "request_sha256": "3b125ea16f21fcad010b3c31abc6301dc995e9be551d18be5524b95241a4e107",
+     "request_id": "req_011CfY2fPgB9iKjS9nQ36A4K",
+     "message_id": "msg_011CfY2fQBwGQVr6yPCLbxUE",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "14d7bb17797de92fc11594603e5f9e7b0c6d58622a6217a941901b1fdbd8ad63"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "14d7bb17797de92fc11594603e5f9e7b0c6d58622a6217a941901b1fdbd8ad63"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-14",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "c55a87e8fbd590a251e77ed98e3bc3f8946b36a01b6501444aefad77c28e17f0",
+     "request_sha256": "3b125ea16f21fcad010b3c31abc6301dc995e9be551d18be5524b95241a4e107",
+     "request_id": "req_011CfY2fXoKfDSnYq3rpKUJW",
+     "message_id": "msg_011CfY2fYBeFeMW51MNybhzc",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "14d7bb17797de92fc11594603e5f9e7b0c6d58622a6217a941901b1fdbd8ad63"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "14d7bb17797de92fc11594603e5f9e7b0c6d58622a6217a941901b1fdbd8ad63"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-15",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "ba1e9978adca32c235b6574aeab40f4746f07d77219909f7cf216d2ab07e0a51",
+     "request_sha256": "01007b807910641a26db78dc532462bd7ff0f66ba059353c100295974699fe49",
+     "request_id": "req_011CfY2fgsXaP4538jjeFwyT",
+     "message_id": "msg_011CfY2fhKZwjeZ16xroxAFL",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "f1449552a898017b35d675556826c3955aa0308337585f8f993523e3490ceaa6"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "f1449552a898017b35d675556826c3955aa0308337585f8f993523e3490ceaa6"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-15",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "262f22ecf880510aa6e72e3cee3e701df29c523d98deac7c20fdd263f4ee4530",
+     "request_sha256": "01007b807910641a26db78dc532462bd7ff0f66ba059353c100295974699fe49",
+     "request_id": "req_011CfY2fvULb8g7V9fr76cGy",
+     "message_id": "msg_011CfY2fvxc1YZTTkT3B6vYy",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "f1449552a898017b35d675556826c3955aa0308337585f8f993523e3490ceaa6"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "f1449552a898017b35d675556826c3955aa0308337585f8f993523e3490ceaa6"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-18",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "16bb4a95387673e67dbb6400ab3d557ca6b095e9ff1e5b5d0916ea0a1b6aa09a",
+     "request_sha256": "c7ddf328a117f9e91b634c5a4eb89084bedcb2a248974dfb346feaa595f63b54",
+     "request_id": "req_011CfY2g4Sp6NPszPAZTFjDP",
+     "message_id": "msg_011CfY2g4wqBaNmJM8y86wAB",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "eeec2fd5551107ce4e0f43d292603715192ef4d34775a2d136e2f180b4dd0cd6"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "eeec2fd5551107ce4e0f43d292603715192ef4d34775a2d136e2f180b4dd0cd6"
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-18",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "b2a6e89dd60b79876dd65b3c9ef3b79e72abb8c87f813a4f4c673f7c97638470",
+     "request_sha256": "c7ddf328a117f9e91b634c5a4eb89084bedcb2a248974dfb346feaa595f63b54",
+     "request_id": "req_011CfY2gJUfcRG9VuvfPmhoy",
+     "message_id": "msg_011CfY2gJxS5QcBM4N2HszBW",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "f3b942bbe1b692582de69e9679bd9bf65dbd45e50fa8461cbcb84272da5f05e9"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "f3b942bbe1b692582de69e9679bd9bf65dbd45e50fa8461cbcb84272da5f05e9"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-01",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "c69447ef2c20f0108b6152a7a791aa897930916df8f6c39caad3251d11eb4ff6",
+     "request_sha256": "5267290cfe86193a64cf218e6cbb5f66ae27ad43bf9fef072ce02aca8c52f44e",
+     "request_id": "req_011CfY2gea9RWbcuzGiJCHWt",
+     "message_id": "msg_011CfY2gf1SvnqgVJLixh1Nz",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "a155579762b8051d5a44e7c9a6c0064711589774d0ffc5856cf380ba2b8b9445"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "a155579762b8051d5a44e7c9a6c0064711589774d0ffc5856cf380ba2b8b9445"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-01",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d60a01354f42fb7016f24317ff706a3e4fdf2a3697bb401d35f44abd96a9001f",
+     "request_sha256": "5267290cfe86193a64cf218e6cbb5f66ae27ad43bf9fef072ce02aca8c52f44e",
+     "request_id": "req_011CfY2gz5eneqDJjmUw4pGZ",
+     "message_id": "msg_011CfY2gze9Wnriyjuy44bXX",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "1c3ea067d009ac4afcb7e08c2cdbca3dfaa1c63a2aa459cc994ce99e0e913fdf"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "1c3ea067d009ac4afcb7e08c2cdbca3dfaa1c63a2aa459cc994ce99e0e913fdf"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-03",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "bf093a688ca16bd6c8e80887f6d4628ba6785545a995c71bce081013f6fffe0d",
+     "request_sha256": "a6ed5dcb82c0c226417a938189110eecf24b87df8c8187d4fce82187d88b584f",
+     "request_id": "req_011CfY2h36EQpjx9CbRehXG5",
+     "message_id": "msg_011CfY2h3V448DXEyAjTGZBA",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "91cc975f6ccdc4cb1d2a07c5519128f4bde9e1e89239dde1e1f7e0250c7dc7ae"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "91cc975f6ccdc4cb1d2a07c5519128f4bde9e1e89239dde1e1f7e0250c7dc7ae"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-03",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "caa24060f8b84caeeaf1e2ce763f6f3a8ac21640fdc2cfb75ab888221a0d48bd",
+     "request_sha256": "a6ed5dcb82c0c226417a938189110eecf24b87df8c8187d4fce82187d88b584f",
+     "request_id": "req_011CfY2hURUp92ydQpXV35as",
+     "message_id": "msg_011CfY2hVHpdCLbw4Gqy87tZ",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "91cc975f6ccdc4cb1d2a07c5519128f4bde9e1e89239dde1e1f7e0250c7dc7ae"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "91cc975f6ccdc4cb1d2a07c5519128f4bde9e1e89239dde1e1f7e0250c7dc7ae"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-14",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d62302db7627104e1efe0457e8ff9c66c1709d4d64603d6d155e910f0f026e16",
+     "request_sha256": "6d696e43652b3390e0e470b3c06ff88e18ddf01aa8b445041d4479143b1cc3d8",
+     "request_id": "req_011CfY2hdcdKAziitVvzm84h",
+     "message_id": "msg_011CfY2heD6hB8u6E81oV8CH",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "43442aeda2d7316ca1574afa345335a56e4842993e8a69c935f1a838bc6a83dd"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "43442aeda2d7316ca1574afa345335a56e4842993e8a69c935f1a838bc6a83dd"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-14",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "667c42ff12df34ceab27433a866d9d3dfd6501289bb2f0eebd9cbc8f8be2e49f",
+     "request_sha256": "6d696e43652b3390e0e470b3c06ff88e18ddf01aa8b445041d4479143b1cc3d8",
+     "request_id": "req_011CfY2hqzGBtCC5d1zMfrAL",
+     "message_id": "msg_011CfY2hrXWmE1JPbizCPwiw",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "9a89b4e266550deaf439250fa9dbc8e058d1fd5aad9e84815a92abe5aa77745c"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "9a89b4e266550deaf439250fa9dbc8e058d1fd5aad9e84815a92abe5aa77745c"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-01",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "b3d8dbc7f62de03952b6889771cf1e6a0f1f912ccef8a9afb3cdda45195c7dea",
+     "request_sha256": "17898bf67ffcd7b7e534432dcc94e6e9ab8782cba8f7067a24460b8a16cfca31",
+     "request_id": "req_011CfY2hvGVRnZcJD4nqVH5B",
+     "message_id": "msg_011CfY2hvnzFLo1sXnV8BQiv",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "b863b3fdd13143a1cb3902166798804c6cb6d4a24321e7b5100c50f8416f2976"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "b863b3fdd13143a1cb3902166798804c6cb6d4a24321e7b5100c50f8416f2976"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-01",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "fcba7ebed81a5c11019dd744d9d9cf2289002a1f94dbe68fa3da5841e4f57a11",
+     "request_sha256": "17898bf67ffcd7b7e534432dcc94e6e9ab8782cba8f7067a24460b8a16cfca31",
+     "request_id": "req_011CfY2i55pJaKzn61qALEf7",
+     "message_id": "msg_011CfY2i5baGnDSRgoKtLRFP",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "b863b3fdd13143a1cb3902166798804c6cb6d4a24321e7b5100c50f8416f2976"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "b863b3fdd13143a1cb3902166798804c6cb6d4a24321e7b5100c50f8416f2976"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-03",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "ae9674240861c83979e07859d544f5e5df3e01ace9219971e0a3dbc6bacbccd6",
+     "request_sha256": "28c8eba8653df7c6dcd63dee840c690b4207ca45ce425f32f3b0cefa04d7272d",
+     "request_id": "req_011CfY2iFab6VSFiuhAyc4BG",
+     "message_id": "msg_011CfY2iG47ph4cvL849HbZ7",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "58abdab4fdd758855953c80979f57374370f50a8c1cc96737c28edec084b72fd"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "58abdab4fdd758855953c80979f57374370f50a8c1cc96737c28edec084b72fd"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-03",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d22563fed2292d21de3c712abb2b14340580a9d3189a03333f3876ed958be1f8",
+     "request_sha256": "28c8eba8653df7c6dcd63dee840c690b4207ca45ce425f32f3b0cefa04d7272d",
+     "request_id": "req_011CfY2iN23UbcxHJdEFpZBf",
+     "message_id": "msg_011CfY2iNcGV974QUiLrB21H",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "58abdab4fdd758855953c80979f57374370f50a8c1cc96737c28edec084b72fd"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "58abdab4fdd758855953c80979f57374370f50a8c1cc96737c28edec084b72fd"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-13",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d00de6770135dc78c65b3a0a305ccb24fdec93c457ac79a9aa69152b8d5400b7",
+     "request_sha256": "b982869e2bad5f7c9ad08af5b308be3e245fb7e684f28a19f925b10162dd2951",
+     "request_id": "req_011CfY2iaA3Li3EHY11WVMkF",
+     "message_id": "msg_011CfY2iakmQdTNo2K4sijBZ",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "639b62973ddfdab7005d2c56eaa2e1d7bc23fc52bfd7245a811f93c72970dbff"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "639b62973ddfdab7005d2c56eaa2e1d7bc23fc52bfd7245a811f93c72970dbff"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-13",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "9e720f351380ef298c1b4a07f31f1d6d3d243c0cbe184962265125cc435cba6b",
+     "request_sha256": "b982869e2bad5f7c9ad08af5b308be3e245fb7e684f28a19f925b10162dd2951",
+     "request_id": "req_011CfY2igjS8CXVnMqu4FvQD",
+     "message_id": "msg_011CfY2ihBU885LULrei69si",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "639b62973ddfdab7005d2c56eaa2e1d7bc23fc52bfd7245a811f93c72970dbff"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "639b62973ddfdab7005d2c56eaa2e1d7bc23fc52bfd7245a811f93c72970dbff"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-14",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "d88372d0165a62b108a2729f69df34209bd03873a9d9cbf72ceb72d8305f8f05",
+     "request_sha256": "6edff3b7df9c889c0da1cc28f65928e8d530cbdaab77232e0ef436483a9769d1",
+     "request_id": "req_011CfY2ixj6kfEvRsifbjzHF",
+     "message_id": "msg_011CfY2iyRXjnMzJVqKMAE4N",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "d752fc6a09f52960ff4f346e69b1b15af831d220067b2631d327dfe5265632c2"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "d752fc6a09f52960ff4f346e69b1b15af831d220067b2631d327dfe5265632c2"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-14",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "01e1355146a06619877b63da10a614ef454a905486a0b228e2dd18977c268373",
+     "request_sha256": "6edff3b7df9c889c0da1cc28f65928e8d530cbdaab77232e0ef436483a9769d1",
+     "request_id": "req_011CfY2j3b3pNqoBWAfpbCHr",
+     "message_id": "msg_011CfY2j48npadSSfwGDuknA",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "73235a2eb36945b914e0ac46b1862992e57461009c5ac42f5bd19dd721065542"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "73235a2eb36945b914e0ac46b1862992e57461009c5ac42f5bd19dd721065542"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-03",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "dd5e5e828fa80f19fac974c0174cebef78c2ffbd10b3fa201757a3b74ce442f8",
+     "request_sha256": "b23695d92843684c93c290c39221ba92052c4bc19afca5de386efa2df1568c1c",
+     "request_id": "req_011CfY2jNKRqHVKwrQmStdbH",
+     "message_id": "msg_011CfY2jNsRKSXVRcsFRJz2d",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "13ea2024e2eaa3e6fa8e6e777d0df517a9b8a047a3a0ae7ec4fe7dd86482d79e"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "13ea2024e2eaa3e6fa8e6e777d0df517a9b8a047a3a0ae7ec4fe7dd86482d79e"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-03",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "822fd485a597c50c5fdba89a90080b7ef392200de8561445be2ebd6f0a31ee75",
+     "request_sha256": "b23695d92843684c93c290c39221ba92052c4bc19afca5de386efa2df1568c1c",
+     "request_id": "req_011CfY2jS9cjjmeL6zcvcmKk",
+     "message_id": "msg_011CfY2jSg7NzCFJrggZfsQY",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "e3331aaaf1389b686da78043f56e7a3751fb244b765a449eafadac79412c9330"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "e3331aaaf1389b686da78043f56e7a3751fb244b765a449eafadac79412c9330"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-07",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "ecfe67f62dc211d70375d0895572876c7a52fb48258f61d50ea0a217b329223c",
+     "request_sha256": "ddc1a4b76002f87fd657b5505229de29783474846979972512935fbd7fce0a17",
+     "request_id": "req_011CfY2jnoLMSBAuPwQ9NtGm",
+     "message_id": "msg_011CfY2joUWmC2STX5pj441E",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "f479c84f83b1de440edd30fd14139ba1e48fbbe2ff403e71b220e5cc9880e1e5"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "f479c84f83b1de440edd30fd14139ba1e48fbbe2ff403e71b220e5cc9880e1e5"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-07",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "160a270f7a6d4a6fe70b43250268bb5af066148f5182934ac128aaab516ab492",
+     "request_sha256": "ddc1a4b76002f87fd657b5505229de29783474846979972512935fbd7fce0a17",
+     "request_id": "req_011CfY2jyPaMikfiTLugcPhB",
+     "message_id": "msg_011CfY2jygBHxr5G8x9T2vN7",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "8d7d040179a3ef943f18eb8ce361e737e5b4cbb9a5b0e7988a7bbfefc3180fdc"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "8d7d040179a3ef943f18eb8ce361e737e5b4cbb9a5b0e7988a7bbfefc3180fdc"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-09",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "82cf1f2bc2c717a88482cefe109057e9de8ab43f41e10bc61fc2e4ae19997877",
+     "request_sha256": "be49a5d3e6e9497ee08a6ad7ff61e4ec461d91c139cfda3ec76efca2da0d6b0f",
+     "request_id": "req_011CfY2kKmAkQkW1Nunvm4zw",
+     "message_id": "msg_011CfY2kLFBwMZRkzLAiqba4",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "2c0e7451d7742e330fd4b2d78eb12bcd90e53aeb72e4ba4eaf3d745d7d430d46"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "2c0e7451d7742e330fd4b2d78eb12bcd90e53aeb72e4ba4eaf3d745d7d430d46"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-09",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "93947e06bb58b19ca4c54025b3676c27feb947056ccb38a1bf0034528bdb05b6",
+     "request_sha256": "be49a5d3e6e9497ee08a6ad7ff61e4ec461d91c139cfda3ec76efca2da0d6b0f",
+     "request_id": "req_011CfY2kMSNV6StQhvvnJvwF",
+     "message_id": "msg_011CfY2kMwe7xVtcvwE48Ho6",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "2c0e7451d7742e330fd4b2d78eb12bcd90e53aeb72e4ba4eaf3d745d7d430d46"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "2c0e7451d7742e330fd4b2d78eb12bcd90e53aeb72e4ba4eaf3d745d7d430d46"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-11",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "34bb1570dd3601114c793f6238d1832fe1b4a5b8dded92ecf1ffaa46039d8661",
+     "request_sha256": "650c0357419df33fdab1b9b74e40c0f6ce71969b6b1a4582aee7ccaa4f4ec554",
+     "request_id": "req_011CfY2kbh7v3bVaBwzY1ptB",
+     "message_id": "msg_011CfY2kcTFv5VrHXGQbdpfA",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "b548133b24ec4ec8cb72ce952d84b509e2d08e75fa516bacc42cea01e405fa51"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "b548133b24ec4ec8cb72ce952d84b509e2d08e75fa516bacc42cea01e405fa51"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-11",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "raw_body_sha256": "13fa15f5f9af85024f33bb187243eea9d07d5d2437907c2608f18b65c0365a5b",
+     "request_sha256": "650c0357419df33fdab1b9b74e40c0f6ce71969b6b1a4582aee7ccaa4f4ec554",
+     "request_id": "req_011CfY2kdt5yW2bezERimPD4",
+     "message_id": "msg_011CfY2keMMnR86mwbTGtKUi",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "3388dd5fbb7758a33d2b33db45e6292213fbd8d5b3a4a043b9ffe1cf86c3c2cb"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "3388dd5fbb7758a33d2b33db45e6292213fbd8d5b3a4a043b9ffe1cf86c3c2cb"
+  }
+ ]
+}
