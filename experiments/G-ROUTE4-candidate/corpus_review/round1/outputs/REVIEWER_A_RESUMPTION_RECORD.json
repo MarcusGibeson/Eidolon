@@ -1,0 +1,43 @@
+{
+ "schema_version": "g-route4.corpus-review-resumption.v1",
+ "round": 1,
+ "reviewer": "A",
+ "operator_decision": "1(a): resume the same session (corpus_review/round1/OPERATOR_RULINGS_R1.json)",
+ "interrupted_at_utc": "2026-09-29T21:35:54.179Z",
+ "resume_message_verbatim": [
+  "The coordinator sent a message while you were working:\nResume your Reviewer A review: your session was interrupted by a provider rate limit, which has now reset. The operator gives only these three additional instructions; your brief is otherwise unchanged.\n\n1. Continue reviewing commit 97afe8a.\n2. Return the completed report as your final hand-back message, because repository and report file writes are unavailable to you.\n3. Do not inspect corpus_review/round1/outputs/ or any newly created Reviewer B material.\n\nAddress this before completing your current task."
+ ],
+ "resumed_segment_utc": [
+  "2026-09-29T23:28:27.693Z",
+  "2026-09-29T23:32:34.752Z"
+ ],
+ "resumed_segment_models": {
+  "claude-opus-5-5": 19
+ },
+ "resumed_segment_tool_calls": 7,
+ "resume_instruction_check": {
+  "forbidden_path_markers": [
+   "corpus_review/round1/outputs",
+   "corpus_review\\round1\\outputs",
+   "reviewer_B",
+   "errata",
+   "OPERATOR_RULINGS",
+   "BATCH_START_PROVENANCE",
+   "b7ac00f",
+   "ae62dba",
+   "REVIEWER_B"
+  ],
+  "tool_calls_touching_them": []
+ },
+ "derivations_unchanged_since_interruption": {
+  "files": 6,
+  "changed_or_missing": {}
+ },
+ "transcript_sha256": "107649304797b1c026d39f9b3690e11550e41d889083ba4e700e92c221279ca1",
+ "transcript_records": 333,
+ "report_file": "outputs/REVIEWER_A_REPORT.md",
+ "report_sha256_exact_bytes": "8219822cb9104b106281d22033f7c34335fa0bce88e17fe2bb527c662535b5f5",
+ "report_chars": 13595,
+ "verdict_line": "VERDICT: FINDINGS — BLOCKING 0, MUST-FIX 3, NOTE 8",
+ "reviewed_commit": "97afe8a93def2c1eb572e38f567f68ab5cb53b4b"
+}
