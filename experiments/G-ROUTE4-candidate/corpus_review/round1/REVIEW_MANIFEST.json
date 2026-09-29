@@ -1,0 +1,72 @@
+{
+ "schema_version": "g-route4.corpus-review-manifest.v1",
+ "design_step": "order of work 3.7: the external corpus review (two fresh reviewers, safety-gated rule; accepted at 0 BLOCKING with every MUST-FIX resolved; changes through fixes or replacements with re-adjudication)",
+ "package_built_at_parent_commit": "990857764f973359a3b653666b151ce5547ee7ca",
+ "final_main_corpus": {
+  "a_main_model_facing_sha256": "bc1938b754f4566f482df5369b8ee02f92297018d6ada02eab8e91e40709a4ec",
+  "a_main_gold_sha256": "696ff00fd3074aef808c93300684fa3c7d82395636cf3722875d9babc65842b2",
+  "b_main_model_facing_sha256": "111f95c65fc3708ac187ca3315de6f71ef58f32626bd4992a1d4d532405a3c30",
+  "b_main_gold_sha256": "aa297b4dba84a524601d02f11f37dd34d30f1e094e642b8b1928ff726bcb0e96",
+  "fixed_fixtures": [
+   "A4-EXTR-R1-03",
+   "A4-RSRCH-R2-01",
+   "A4-RSRCH-R2-02",
+   "A4-RSRCH-R4-03",
+   "A4-SYNTH-R2-03",
+   "A4-SYNTH-R4-01",
+   "B4-RSRCH-R1-06",
+   "B4-RSRCH-R1-14",
+   "B4-RSRCH-R2-06",
+   "B4-RSRCH-R2-14",
+   "B4-RSRCH-R3-04",
+   "B4-RSRCH-R3-06",
+   "B4-RSRCH-R3-14",
+   "B4-RSRCH-R3-18",
+   "B4-SYNTH-R1-01",
+   "B4-SYNTH-R1-03",
+   "B4-SYNTH-R2-13",
+   "B4-SYNTH-R2-14",
+   "B4-SYNTH-R3-07",
+   "B4-SYNTH-R3-09"
+  ],
+  "replaced": [],
+  "package_files_lf_sha256": {
+   "FINAL_MAIN_MODEL_FACING.json": "3613d4fb26c32c0af99caf398f4a861977c15d81a2794594c9540dda71587b49",
+   "FINAL_MAIN_GOLD.json": "f073d227fdedcf9eb0a6ae96763fdb5500a6e025870294db9eff468e3b8d8ecb"
+  }
+ },
+ "reserves_unchanged_sha256": {
+  "reserve_corpus_a": "5f6962f928d6b03de4b3dd5339139394030e6d171cc46871f646f4606e3d04aa",
+  "reserve_corpus_b": "eb7051a67b3157ea952df54189261c7e0f5d4c71684a974f009f230ef1b85a0a"
+ },
+ "seal": {
+  "commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+  "tag": "g-route4-seal",
+  "tag_object": "86ff773cf1dacd7d2e3a75cc9907ae436f739787",
+  "audit_sample_commit": "29f5a477693d703699af62f9fc0e0945c9c66be2",
+  "blueprint_commit": "1156d0645b1b113b91c65e4a485b7f75ffa10061",
+  "seal_manifest_lf_sha256": "98306eeb37f16da6f0991b17ece9e49abb428e2eb28cedc2a2cdd8baf1cd3a01"
+ },
+ "o2": {
+  "sealed_config_sha256": "1658b9a2a32fa176c8ca679d5407725b17379902610869fc3cdc91d03df88029",
+  "amended_config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+  "amendment_record": "adjudication/O2_AMENDMENT_2026-09-29.md"
+ },
+ "reports_lf_sha256": {
+  "INDEPENDENCE_REPORT.json": "59a4a224d510beeb995c9981b91bb423773b57450f2404ec9dc7c826191949d4",
+  "CONTAMINATION_ANALYSIS.md": "a938b6c2206fe0f32f8ffb395a8b748b6982ed4ac3312d1fd165ab02db02631e",
+  "adjudication/A_MAIN_CLOSURE.json": "1eb6f3fb2aa660a67493102b75bd9343758b422c00c4894e09819eecf244f022",
+  "adjudication/B_MAIN_CLOSURE.json": "863f1aa8708eafa614245473de697f6535c70410d66f2545fd09b41ae33ef42d",
+  "adjudication/fixes/LATENT_DEFECTS.md": "6d14cd795ab846b148f451992e7f1f4a140a76e40d22fb3dd5e310a7db055569",
+  "adjudication/fixes/round1_amain/LATENT_DEFECTS_ADDENDUM.md": "6df6c8f61520c89728e2cd95734803da4cf07bf5fe6c778f3cf8c398af120091"
+ },
+ "checker": {
+  "check_corpus_commit": "dd8193bfcf1db05c752635dc4f8911a58098c97b",
+  "check_corpus_lf_sha256": "b3f6500b4b39a80c214811b429d382b26fda0ae3cad73916788c379eb16e91af",
+  "frozen_g3_detector_lf_sha256": "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b"
+ },
+ "briefs_lf_sha256": {
+  "REVIEWER_A_BRIEF.md": "827cce9ff357200239ef59696fae3fb73163631d1306c5d0e12486f7880c0c21",
+  "REVIEWER_B_BRIEF.md": "b2760b0c709b52285a6fe25e6ca0b03cb6fbdfdb0a6721049f540ffacf3b5338"
+ }
+}
