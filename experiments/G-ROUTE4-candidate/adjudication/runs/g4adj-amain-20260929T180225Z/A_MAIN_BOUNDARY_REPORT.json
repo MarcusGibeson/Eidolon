@@ -1,0 +1,226 @@
+{
+ "schema_version": "g-route4.a-main-boundary.v1",
+ "run_id": "g4adj-amain-20260929T180225Z",
+ "batch": "A′ main",
+ "status": "AT OPERATOR-DECISION BOUNDARY: 26 fixtures await operator decisions; nothing decided or applied",
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "model": "claude-opus-5-5",
+ "harness_commits": {
+  "a_mode": "160dea16e39d64ddb4382840dfbb87c8cd0772a7",
+  "reclassification (resume)": "f0c441087d00ad64a98fb26f67dd04fa5a804907"
+ },
+ "contact": {
+  "fixtures": 80,
+  "slots": 240,
+  "invocations": 241,
+  "final_messages": 240,
+  "provider_rejections": 1,
+  "rejection": "A4-PLAN-R1-03 slot 3 invocation 1: HTTP 400, credit balance exhausted; operator decision (option b) reclassified it as a no-answer; its single frozen retry (invocation 2) bound",
+  "in_doubt": 0,
+  "refusals": 3
+ },
+ "answers": {
+  "commit": "c05a8292c611052c78167ee67b3ddc060e4370df",
+  "sha256": "8ade4366d6139bc2012d9adec212123ff952dcfef2866c5c99ec9fc1102159f4"
+ },
+ "scores": {
+  "commit": "bd74331fd76cba2dd6f2f5fd49a2d01404466619",
+  "sha256": "686d3d93b0d711d97ca8333c1ac35e77602cf8ee9cfb49cf359f1af31450588a",
+  "agree": 188,
+  "disagree": 52
+ },
+ "decisions": {
+  "keep": 54,
+  "operator": 26
+ },
+ "escalations": {
+  "format_only": [
+   "A4-EXTR-R4-01",
+   "A4-EXTR-R4-04",
+   "A4-PLAN-R1-01",
+   "A4-PLAN-R1-03",
+   "A4-PLAN-R2-03",
+   "A4-RSRCH-R1-01",
+   "A4-RSRCH-R1-02",
+   "A4-RSRCH-R1-03",
+   "A4-RSRCH-R1-04",
+   "A4-RSRCH-R2-03",
+   "A4-RSRCH-R2-04",
+   "A4-RSRCH-R3-01",
+   "A4-RSRCH-R3-02",
+   "A4-RSRCH-R3-04",
+   "A4-RSRCH-R4-01",
+   "A4-RSRCH-R4-02",
+   "A4-RSRCH-R4-04",
+   "A4-SYNTH-R1-01",
+   "A4-SYNTH-R2-04"
+  ],
+  "substantive": [
+   "A4-EXTR-R1-03",
+   "A4-PLAN-R3-04",
+   "A4-RSRCH-R2-01",
+   "A4-RSRCH-R2-02",
+   "A4-RSRCH-R4-03",
+   "A4-SYNTH-R2-03",
+   "A4-SYNTH-R4-01"
+  ],
+  "per_slot_causes": {
+   "A4-EXTR-R1-03": {
+    "1": "content:value_mismatch:venue",
+    "2": "fence+content",
+    "3": "content:value_mismatch:venue"
+   },
+   "A4-EXTR-R4-01": {
+    "2": "fence",
+    "3": "fence"
+   },
+   "A4-EXTR-R4-04": {
+    "1": "fence",
+    "2": "fence"
+   },
+   "A4-PLAN-R1-01": {
+    "2": "fence"
+   },
+   "A4-PLAN-R1-03": {
+    "2": "fence",
+    "3": "fence"
+   },
+   "A4-PLAN-R2-03": {
+    "3": "fence"
+   },
+   "A4-PLAN-R3-04": {
+    "1": "malformed (not a fence)",
+    "2": "malformed (not a fence)",
+    "3": "malformed (not a fence)"
+   },
+   "A4-RSRCH-R1-01": {
+    "1": "fence",
+    "2": "fence",
+    "3": "fence"
+   },
+   "A4-RSRCH-R1-02": {
+    "1": "fence"
+   },
+   "A4-RSRCH-R1-03": {
+    "2": "fence",
+    "3": "fence"
+   },
+   "A4-RSRCH-R1-04": {
+    "1": "fence",
+    "2": "fence",
+    "3": "fence"
+   },
+   "A4-RSRCH-R2-01": {
+    "1": "fence+content"
+   },
+   "A4-RSRCH-R2-02": {
+    "1": "fence+content",
+    "2": "fence+content",
+    "3": "content:research_judgment_mismatch"
+   },
+   "A4-RSRCH-R2-03": {
+    "1": "fence",
+    "3": "fence"
+   },
+   "A4-RSRCH-R2-04": {
+    "3": "fence"
+   },
+   "A4-RSRCH-R3-01": {
+    "3": "fence"
+   },
+   "A4-RSRCH-R3-02": {
+    "1": "fence",
+    "2": "fence",
+    "3": "fence"
+   },
+   "A4-RSRCH-R3-04": {
+    "1": "fence"
+   },
+   "A4-RSRCH-R4-01": {
+    "1": "fence"
+   },
+   "A4-RSRCH-R4-02": {
+    "1": "fence",
+    "2": "fence",
+    "3": "fence"
+   },
+   "A4-RSRCH-R4-03": {
+    "1": "fence+content",
+    "2": "fence+content",
+    "3": "fence+content"
+   },
+   "A4-RSRCH-R4-04": {
+    "1": "fence",
+    "3": "fence"
+   },
+   "A4-SYNTH-R1-01": {
+    "3": "fence"
+   },
+   "A4-SYNTH-R2-03": {
+    "1": "content:conclusion_mismatch",
+    "2": "fence+content"
+   },
+   "A4-SYNTH-R2-04": {
+    "1": "fence",
+    "3": "fence"
+   },
+   "A4-SYNTH-R4-01": {
+    "1": "content:conclusion_mismatch",
+    "2": "content:conclusion_mismatch",
+    "3": "content:conclusion_mismatch"
+   }
+  }
+ },
+ "latent_defect_fixtures": {
+  "A4-RSRCH-R2-02": {
+   "defect": "P6 'only'",
+   "decision": "operator",
+   "verdicts": [
+    false,
+    false,
+    false
+   ]
+  },
+  "A4-RSRCH-R4-03": {
+   "defect": "P6 'only'",
+   "decision": "operator",
+   "verdicts": [
+    false,
+    false,
+    false
+   ]
+  },
+  "A4-SYNTH-R1-01": {
+   "defect": "SY1 diagnosis",
+   "decision": "operator",
+   "verdicts": [
+    true,
+    true,
+    false
+   ]
+  },
+  "A4-SYNTH-R2-03": {
+   "defect": "SY1 diagnosis",
+   "decision": "operator",
+   "verdicts": [
+    false,
+    false,
+    true
+   ]
+  },
+  "A4-SYNTH-R4-01": {
+   "defect": "SY1 diagnosis",
+   "decision": "operator",
+   "verdicts": [
+    false,
+    false,
+    false
+   ]
+  }
+ },
+ "notes": {
+  "A4-PLAN-R3-04": "all three answers are provider safety refusals (stop_reason refusal, category cyber, 0 output tokens); a refusal binds and scores as a disagreement; server-side fallback is disabled",
+  "A4-EXTR-R1-03": "all three answers give venue 'school fair in Dalihi'; gold is 'Dalihi'",
+  "A4-RSRCH-R2-01": "adjudicator 1 marked C2 unresolved (gold supported) and added scope_mismatch; adjudicators 2 and 3 agree with gold"
+ }
+}

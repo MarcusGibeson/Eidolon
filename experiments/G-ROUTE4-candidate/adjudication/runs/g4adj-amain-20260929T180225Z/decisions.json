@@ -1,0 +1,482 @@
+{
+ "A4-CONV-R1-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R1-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R1-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R1-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R2-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R2-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R2-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R2-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R3-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R3-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R3-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R3-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R4-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R4-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R4-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-CONV-R4-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R1-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R1-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R1-03": {
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-EXTR-R1-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R2-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R2-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R2-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R2-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R3-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R3-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R3-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R3-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R4-01": {
+  "a1": true,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-EXTR-R4-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R4-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-EXTR-R4-04": {
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator"
+ },
+ "A4-PLAN-R1-01": {
+  "a1": true,
+  "a2": false,
+  "a3": true,
+  "decision": "operator"
+ },
+ "A4-PLAN-R1-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R1-03": {
+  "a1": true,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-PLAN-R1-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R2-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R2-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R2-03": {
+  "a1": true,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-PLAN-R2-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R3-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R3-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R3-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R3-04": {
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-PLAN-R4-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R4-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R4-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-PLAN-R4-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-RSRCH-R1-01": {
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R1-02": {
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R1-03": {
+  "a1": true,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R1-04": {
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R2-01": {
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R2-02": {
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R2-03": {
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R2-04": {
+  "a1": true,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R3-01": {
+  "a1": true,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R3-02": {
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R3-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-RSRCH-R3-04": {
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R4-01": {
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R4-02": {
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R4-03": {
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R4-04": {
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-SYNTH-R1-01": {
+  "a1": true,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-SYNTH-R1-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R1-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R1-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R2-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R2-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R2-03": {
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator"
+ },
+ "A4-SYNTH-R2-04": {
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-SYNTH-R3-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R3-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R3-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R3-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R4-01": {
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-SYNTH-R4-02": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R4-03": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ },
+ "A4-SYNTH-R4-04": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ }
+}
