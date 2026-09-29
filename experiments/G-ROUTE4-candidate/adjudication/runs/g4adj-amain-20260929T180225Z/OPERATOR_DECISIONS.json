@@ -1,0 +1,280 @@
+{
+ "schema_version": "g-route4.operator-decisions.v1",
+ "run_id": "g4adj-amain-20260929T180225Z",
+ "batch": "A′ main",
+ "decided_by": "operator (Marcus Gibeson)",
+ "date": "2026-09-29",
+ "basis": "the frozen derivability rule only (design step 6); review evidence in A_MAIN_BOUNDARY_REPORT.json and the sealed raw answers",
+ "counts": {
+  "gold right -> keep": 20,
+  "input ambiguous -> fix input": 6
+ },
+ "decisions": [
+  {
+   "fixture_id": "A4-EXTR-R1-03",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "The schema field 'venue' is undefined; for 'the bake stall at the school fair in Dalihi' the venue can reasonably be 'school fair in Dalihi', 'school fair' or 'Dalihi', so the gold 'Dalihi' is not uniquely derivable. All three answers extracted 'school fair in Dalihi'.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the full A′ treatment (three adjudicators); kept only if all three agree, otherwise back to the operator before any replacement"
+  },
+  {
+   "fixture_id": "A4-EXTR-R4-01",
+   "verdicts": [
+    true,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-EXTR-R4-04",
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-PLAN-R1-01",
+   "verdicts": [
+    true,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-PLAN-R1-03",
+   "verdicts": [
+    true,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-PLAN-R2-03",
+   "verdicts": [
+    true,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-PLAN-R3-04",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The sealed fixture and gold are uniquely derivable (the four 'may start only after' precedences give one order, no action carries a forbidden prefix, only F6 states an unknown) and pass the frozen validators; the three provider safety refusals (category cyber, no output) provide no evidence against fixture or gold validity."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R1-01",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R1-02",
+   "verdicts": [
+    false,
+    true,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R1-03",
+   "verdicts": [
+    true,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R1-04",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-01",
+   "verdicts": [
+    false,
+    true,
+    true
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "The only support for C2 ('collects parcels every Saturday'), S3 and its reissue S5, says parcels 'can be picked up ... at the weekend', which establishes neither Saturday nor every week, so gold C2 'supported' is not uniquely derivable. Adjudicator 1 marked C2 unresolved.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the full A′ treatment (three adjudicators); kept only if all three agree, otherwise back to the operator before any replacement"
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-02",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Known latent P6 defect: the narrower-scope source S1 says 'operates only in the harbour district'; 'only' reads as a contradiction of 'covers every district', so the P6 gold (C1 unresolved, scope_mismatch) is not uniquely derivable. All six answers marked C1 contradicted.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the full A′ treatment (three adjudicators); kept only if all three agree, otherwise back to the operator before any replacement"
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-03",
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-04",
+   "verdicts": [
+    true,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R3-01",
+   "verdicts": [
+    true,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R3-02",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R3-04",
+   "verdicts": [
+    false,
+    true,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R4-01",
+   "verdicts": [
+    false,
+    true,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R4-02",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-RSRCH-R4-03",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Known latent P6 defect: S1 says 'protect only the ground floor'; 'only' reads as a contradiction of 'every floor', so the P6 gold is not uniquely derivable. All answers marked C1 contradicted.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the full A′ treatment (three adjudicators); kept only if all three agree, otherwise back to the operator before any replacement"
+  },
+  {
+   "fixture_id": "A4-RSRCH-R4-04",
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-SYNTH-R1-01",
+   "verdicts": [
+    true,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-SYNTH-R2-03",
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Known latent SY1 defect: the causal statement is under role 'diagnosis' while the frozen rule requires that a finding states the cause; two of three answers chose insufficient_evidence.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the full A′ treatment (three adjudicators); kept only if all three agree, otherwise back to the operator before any replacement"
+  },
+  {
+   "fixture_id": "A4-SYNTH-R2-04",
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "Every disagreement is code-fenced JSON whose semantic content matches gold (diagnostic comparison only; the recorded verdicts stand as disagreements)."
+  },
+  {
+   "fixture_id": "A4-SYNTH-R4-01",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "input ambiguous -> fix input",
+   "defect": "Known latent SY1 defect: the causal statement is under role 'diagnosis' while the frozen rule requires that a finding states the cause; all three answers chose insufficient_evidence.",
+   "fix_counts_as": "the fixture's one fix; re-checked, then re-adjudicated from scratch with the full A′ treatment (three adjudicators); kept only if all three agree, otherwise back to the operator before any replacement"
+  }
+ ]
+}
