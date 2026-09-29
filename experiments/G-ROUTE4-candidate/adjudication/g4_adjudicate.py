@@ -427,7 +427,27 @@ class Runner:
                 inv["result"] = rec
             else:
                 entry["in_doubt"] = True
+        # operator reclassifications (recorded decisions; the original result record is never rewritten)
+        for rec in self.journal.records:
+            if rec["type"] != "operator_reclassification":
+                continue
+            parts = state.get((rec["fixture_id"], rec["slot"]), {}).get("invocations", {}).get(rec["invocation"], {})
+            result = parts.get("result")
+            if result and result["kind"] == rec["from"]:
+                parts["result"] = dict(result, kind=rec["to"], recorded_kind=rec["from"], reclassified_seq=rec["seq"])
         return state
+
+    def reclassify(self, fid, slot, invocation, decision, to="no_answer"):
+        """Record an operator decision that a provider rejection counts as a no-answer (the frozen single retry)."""
+        if to != "no_answer":
+            raise StopBatch("binding", "only request_rejected -> no_answer may be recorded")
+        parts = self.slots().get((fid, slot), {}).get("invocations", {}).get(invocation, {})
+        result = parts.get("result")
+        if not result or result["kind"] != "request_rejected" or result.get("recorded_kind"):
+            raise StopBatch("binding", f"{fid} slot {slot} invocation {invocation} is not an unreclassified provider rejection")
+        return self.journal.append({"type": "operator_reclassification", "fixture_id": fid, "slot": slot,
+                                    "invocation": invocation, "from": "request_rejected", "to": to,
+                                    "decision": decision, "config_sha256": self.cfg["config_sha256"]})
 
     def slot_outcome(self, entry):
         if entry["in_doubt"]:
@@ -582,6 +602,7 @@ def answers(runner, schedule, phase):
         for inv, parts in sorted(entry["invocations"].items()):
             r = parts.get("result") or {}
             invocations.append({"invocation": inv, "kind": r.get("kind", "in_doubt"), "status": r.get("status"),
+                                "recorded_kind": r.get("recorded_kind"),
                                 "raw_body_sha256": r.get("raw_body_sha256"),
                                 "request_sha256": parts["intent"]["request_sha256"],
                                 "request_id": (r.get("headers") or {}).get("request-id"),
@@ -675,7 +696,11 @@ def decide(score_rows, fixture_ids, sample_ids):
 # ---------------------------------------------------------------- CLI
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("command", choices=["verify", "schedule", "run", "seal-answers", "score", "decide", "resolve"])
+    ap.add_argument("command", choices=["verify", "schedule", "run", "seal-answers", "score", "decide", "resolve",
+                                        "reclassify"])
+    ap.add_argument("--fixture")
+    ap.add_argument("--slot", type=int)
+    ap.add_argument("--invocation", type=int)
     ap.add_argument("--run-id")
     ap.add_argument("--phase", type=int, choices=[1, 2])
     ap.add_argument("--workers", type=int, default=2)
@@ -713,6 +738,11 @@ def main(argv=None):
     if args.command == "resolve":
         runner = Runner(run_dir, cfg, None, fixtures)
         runner.journal.append({"type": "operator_resolution", "resolves": args.stop_seq, "decision": args.decision})
+        return 0
+    if args.command == "reclassify":
+        runner = Runner(run_dir, cfg, None, fixtures)
+        rec = runner.reclassify(args.fixture, args.slot, args.invocation, args.decision)
+        print(json.dumps({"recorded": rec["seq"], "type": rec["type"]}))
         return 0
     if args.command == "run":
         bound = [Path(__file__), HERE / "o2_amendment.py", HERE / "adjudicator_config_amended.json"]

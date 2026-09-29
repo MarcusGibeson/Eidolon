@@ -440,6 +440,38 @@ def main():
           da[ids_a[2]]["decision"] == "keep" and
           [r for r in sc["slots"] if r["agree"] is False][0]["operational_reasons"] == ["malformed_json"])
 
+    # ---- operator reclassification of a provider rejection as a no-answer (the frozen single retry)
+    billing = (400, {"request-id": "req_x"}, b'{"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low"}}')
+    for second, expect in (((200, {}, message(correct(f2))), "bound"), ((503, {}, b"{}"), "no_answer_twice")):
+        tmp = fresh()
+        p = FakeProvider({(f2, 1): [billing, second]})
+        r = runner(tmp, p)
+        try:
+            r.run([(f2, 1)], 1)
+        except H.StopBatch:
+            pass
+        blocked_before = outcome(r, f2, 1) == "stopped"
+        r.journal.append({"type": "operator_resolution", "resolves": r.unresolved_stops()[0]["seq"], "decision": "test"})
+        r.reclassify(f2, 1, 1, "test: billing rejection counts as a no-answer")
+        try:
+            runner(tmp, p).run([(f2, 1)], 1)
+            err = None
+        except H.StopBatch as exc:
+            err = exc
+        r = runner(tmp, p)
+        inv1 = r.slots()[(f2, 1)]["invocations"][1]["result"]
+        raw_rec = [x for x in r.journal.records if x["type"] == "result" and x["invocation"] == 1][0]
+        check(f"reclassified rejection: one retry only, then {expect}",
+              blocked_before and outcome(r, f2, 1) == expect and len(p.calls) == 2 and inv1["kind"] == "no_answer" and
+              inv1["recorded_kind"] == "request_rejected" and raw_rec["kind"] == "request_rejected" and
+              (err is None) == (expect == "bound"))
+    try:
+        r.reclassify(f2, 1, 2, "test")
+        refused = False
+    except H.StopBatch:
+        refused = True
+    check("reclassification is refused for anything but an unreclassified provider rejection", refused)
+
     failed = [n for n, ok in RESULTS if not ok]
     print(f"{len(RESULTS) - len(failed)} of {len(RESULTS)} offline harness checks passed")
     return 1 if failed else 0
