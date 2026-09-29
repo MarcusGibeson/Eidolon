@@ -1,0 +1,81 @@
+{
+ "schema_version": "g-route4.operator-decisions.v1",
+ "run_id": "g4adj-amain-fix1-20260929T185315Z",
+ "batch": "A′ main",
+ "round": 1,
+ "decided_by": "operator (Marcus Gibeson)",
+ "date": "2026-09-29",
+ "rule": "frozen step 6 within the step-7 re-adjudication of a fixed fixture: the operator decides, against the derivability rule only",
+ "basis": "made only at the permitted human decision stage, after diagnostic inspection of the already-sealed responses (answers commit 3b56ce7ffbcc5f0dd8d05a64da815964366600af, sha256 15a2768748c0174fd0593a887facad5a84a961e4c18af6666e58439b8e5e56b8; scores commit f437429fb9178d17d976278b1538dc23e298ac56, sha256 7af4a7cf5e1c8f98483bd2b53efc2c20fa95561c55708c7624558d3644327da4)",
+ "verdicts_unchanged": "the recorded adjudication verdicts are not reinterpreted or altered; every malformed-JSON output remains recorded as a disagreement in scores_phase1.json and decisions.json",
+ "decisions": [
+  {
+   "fixture_id": "A4-EXTR-R1-03",
+   "verdicts": [
+    true,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The declared one-time fixture repair resolved the substantive defect. All three adjudicators' answer content now agrees with the fixed gold. Any remaining disagreement is caused solely by code-fenced JSON / malformed serialization, not by a semantic disagreement with the gold.",
+   "replaced": false
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-01",
+   "verdicts": [
+    true,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The declared one-time fixture repair resolved the substantive defect. All three adjudicators' answer content now agrees with the fixed gold. Any remaining disagreement is caused solely by code-fenced JSON / malformed serialization, not by a semantic disagreement with the gold.",
+   "replaced": false
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-02",
+   "verdicts": [
+    true,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The declared one-time fixture repair resolved the substantive defect. All three adjudicators' answer content now agrees with the fixed gold. Any remaining disagreement is caused solely by code-fenced JSON / malformed serialization, not by a semantic disagreement with the gold.",
+   "replaced": false
+  },
+  {
+   "fixture_id": "A4-RSRCH-R4-03",
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The declared one-time fixture repair resolved the substantive defect. All three adjudicators' answer content now agrees with the fixed gold. Any remaining disagreement is caused solely by code-fenced JSON / malformed serialization, not by a semantic disagreement with the gold.",
+   "replaced": false
+  },
+  {
+   "fixture_id": "A4-SYNTH-R2-03",
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The declared one-time fixture repair resolved the substantive defect. All three adjudicators' answer content now agrees with the fixed gold. Any remaining disagreement is caused solely by code-fenced JSON / malformed serialization, not by a semantic disagreement with the gold.",
+   "replaced": false
+  }
+ ],
+ "kept_automatically": [
+  {
+   "fixture_id": "A4-SYNTH-R4-01",
+   "verdicts": [
+    true,
+    true,
+    true
+   ],
+   "outcome": "keep (all three adjudicators agree)"
+  }
+ ],
+ "round_result": "6/6 KEEP (1 by the frozen rule, 5 by operator decision); 0 replaced; A′ fix round closed",
+ "full_cell_consequence": "not applicable: the audit sample covers B′ cells only; no A′ fixture is sampled"
+}
