@@ -277,6 +277,35 @@ def conversation_cv3_without_conversion(staged):
     f["input"]["message"] = " ".join(u["text"] for u in d["message_units"])
 
 
+def research_lineage_repeats_word(staged):
+    f, _, d = locate(staged, document(staged, "grounded_research_synthesis")["design"][0]["fixture_id"])
+    old = d["research_contract"]["sources"][0]["lineage"]
+    new = old + "-" + old.split("-")[-1]
+    d["research_contract"]["sources"][0]["lineage"] = new
+    f["input"]["sources"][0]["lineage"] = new
+
+
+def research_lineage_wrong_topic(staged):
+    f, _, d = locate(staged, document(staged, "grounded_research_synthesis")["design"][0]["fixture_id"])
+    used = {source["lineage"] for row in document(staged, "grounded_research_synthesis")["fixtures"]
+            for source in row["input"]["sources"]}
+    wrong = next(name for name in C.RT.lineage_options("performance") if name not in used)
+    d["research_contract"]["sources"][0]["lineage"] = wrong
+    f["input"]["sources"][0]["lineage"] = wrong
+
+
+def conversation_cv3_huge_tiny_unit(staged):
+    f, _, d = locate(staged, "B4-CONV-R2-03")
+    for unit in d["message_units"]:
+        for fact in unit["facts"]:
+            if fact["attr"] in {"need", "vol"}:
+                old = fact["surface"]
+                fact["value"] *= 10
+                fact["surface"] = C.conversation_surface(fact["value"], fact["fmt"])
+                unit["text"] = unit["text"].replace(old, fact["surface"], 1)
+    f["input"]["message"] = " ".join(unit["text"] for unit in d["message_units"])
+
+
 def conversation_cv2_counter_not_clock(staged):
     conv = document(staged, "ordinary_conversation")
     row = next(r for r in conv["design"] if r["family"] == "CV2" and
@@ -341,6 +370,9 @@ CASES = [
     (declared_signature_tampered, "declared canonical signature differs", None),
     (conversation_flag_fact, "may not be a pre-evaluated flag", None),
     (conversation_cv3_without_conversion, "CV3 states every quantity in one unit (no conversion)", None),
+    (research_lineage_repeats_word, "repeats an issuer or channel word", None),
+    (research_lineage_wrong_topic, "does not match its source topic", None),
+    (conversation_cv3_huge_tiny_unit, "CV3 uses an implausibly large value in a tiny unit", None),
     (conversation_cv2_counter_not_clock, "is not a real clock/date expression", None),
     (o3_gate_pattern_changed, "O3 identifier gate pattern differs from its pinned digest", None),
     (frozen_checker_digest_changed, "frozen G-ROUTE3 independence checker changed", None),

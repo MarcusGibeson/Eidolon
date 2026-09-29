@@ -723,9 +723,14 @@ def check(staged, english=None):
                 if (kind_ == "reissue") != bool(s.get("reissue")) or \
                         bool(s.get("reissue")) != (s["lineage"] in seen_lineages and kind_ != "date"):
                     problems.append(f"{fid}: research source {sid} reissue marking differs from its lineage history")
-                if not re.fullmatch("(" + "|".join(RT.LINEAGE_REGIONS) + ")-(" + "|".join(RT.LINEAGE_ISSUERS) +
-                                    ")-(" + "|".join(RT.LINEAGE_CHANNELS) + ")", s["lineage"]):
-                    problems.append(f"{fid}: research lineage {s['lineage']!r} is not a region-issuer-channel name")
+                lineage = s["lineage"]
+                if RT.lineage_has_repeated_word(lineage):
+                    problems.append(f"{fid}: research lineage {lineage!r} repeats an issuer or channel word")
+                if not any(lineage in RT.lineage_options(category) for category in RT.LINEAGE_COMPATIBILITY):
+                    problems.append(f"{fid}: research lineage {lineage!r} is not an allowed publisher/channel name")
+                elif topics.get(s["claim_id"]) is not None and not RT.lineage_matches_topic(
+                        lineage, slot["risk"], claim["kind"], topics[s["claim_id"]]):
+                    problems.append(f"{fid}: research lineage {lineage!r} does not match its source topic")
                 seen_lineages.add(s["lineage"])
             wording = collections.defaultdict(set)
             for s in sources:
@@ -880,6 +885,9 @@ def check(staged, english=None):
                     for fact in u.get("facts") or []:
                         if fact.get("fmt", [None])[0] == "m":
                             dims[fact["fmt"][1]].add(fact["fmt"][2])
+                            if fact["fmt"][2] in {"g", "ml"} and fact["value"] >= 5000:
+                                problems.append(f"{fid}: CV3 uses an implausibly large value in a tiny unit "
+                                                f"({fact['surface']}); express a natural-scale scenario")
                 if not any(len(v) > 1 for v in dims.values()):
                     problems.append(f"{fid}: CV3 states every quantity in one unit (no conversion)")
             results = []

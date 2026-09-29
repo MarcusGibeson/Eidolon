@@ -232,8 +232,33 @@ byte-identical (only their staging metadata now names the committed name stream)
 - **O5.** Pool 152 (boilerplate at 38) and largest family 25, so O5 cannot trigger; 27 boilerplate trigrams checked,
   none specific to one family.
 - **Result.** 136 fixtures, 0 problems; maximum Jaccard 0.1788 (`A4-RSRCH-R3-02` vs `B4-RSRCH-R3-X11`), identical on
-  task-relevant text; gold replies at most 179 tokens; all 65 reserves match; 0 frozen and 0 canonical signature
+  task-relevant text; gold replies at most 182 tokens; all 65 reserves match; 0 frozen and 0 canonical signature
   clashes.
+
+### Naturalness repair after checkpoint 122d9bf
+
+- **Research publisher names.** Every Research fixture received new publisher identities: `A4-RSRCH-R1-01` through
+  `A4-RSRCH-R4-04`, `B4-RSRCH-R1-01` through `B4-RSRCH-R4-01`, `A4-RSRCH-R1-X01` through `A4-RSRCH-R4-X04`, and
+  `B4-RSRCH-R1-X01` through `B4-RSRCH-R4-X01` (all 136 Research fixture IDs in `staging/research.json`).
+  `research_topics.py` now binds each authored topic to an explicit publisher category and permitted
+  issuer/channel pairs. Passenger, freight, parking, craft, performance, heritage, site-safety and equipment-safety
+  subjects have distinct pools. Publisher names are drawn without replacement from those pools. For example,
+  a repair-cafe source previously attributed to `north-parish-council-bulletin` now comes from
+  `north-repair-association-newsletter`. The checker rejects duplicated words such as
+  `moorland-business-journal-journal`, wrong-topic publishers, and cross-fixture lineage reuse. The gold files
+  necessarily carry the new lineage strings; status, citations, supporting-lineage counts, recommendations,
+  uncertainties, source prose, pattern assignments and frozen slots are unchanged.
+- **Eight CV3 scenarios.** `A4-CONV-R3-01`, `B4-CONV-R2-01`, `B4-CONV-R2-03`, `B4-CONV-R2-04`,
+  `B4-CONV-R3-21`, `B4-CONV-R3-23`, `A4-CONV-R3-X01`, and `B4-CONV-R2-X03` now use ordinary packaging,
+  vial, flask or storage quantities. The former paper-box case claimed a box held `21000 g` of paper while weighing
+  less than its contents; it now compares `2.5 kg` of paper with boxes holding `2100-2900 g`, and explicitly weighs
+  each box when empty. A `12000 ml` crate insert became a `140 ml` stopper allowance across a set of sample vials.
+  All eight still require a real conversion, have one near miss and preserve the frozen answer positions and gold.
+  The CV3 checker rejects values of at least 5000 grams or milliliters in these small-unit facts; the repair suite
+  proves this catches a scaled-up `21000 g` case even when its answer logic is unchanged.
+- **Verification.** All five classes regenerate deterministically and pass individually and together (584 fixtures,
+  0 problems). The prior 89 planted defects remain caught, and the repair suite catches 41/41 including the three
+  new naturalness defects. The pre-seal review is separate from these mechanical checks.
 
 ### Complete corpus
 

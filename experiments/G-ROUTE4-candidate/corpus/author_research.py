@@ -77,15 +77,26 @@ TEMPORAL_RULES = [
 
 class Lineages:
     def __init__(self, avoid):
-        combos = [f"{r}-{i}-{c}" for c in RT.LINEAGE_CHANNELS for i in RT.LINEAGE_ISSUERS for r in RT.LINEAGE_REGIONS]
-        # spread consecutive draws across regions, issuers and channels
-        self.pool = [x for k, x in sorted(enumerate(combos), key=lambda kv: (kv[0] * 7919) % len(combos))
-                     if x not in avoid]
-        self.i = 0
+        self.used = set(avoid)
+        self.pools = {}
+        self.positions = {}
+        for category in RT.LINEAGE_COMPATIBILITY:
+            choices = RT.lineage_options(category)
+            assert len(choices) == len(set(choices))
+            assert all(not RT.lineage_has_repeated_word(name) for name in choices)
+            self.pools[category] = [name for _, name in sorted(
+                enumerate(choices), key=lambda pair: (pair[0] * 7919) % len(choices))]
+            self.positions[category] = 0
 
-    def take(self):
-        self.i += 1
-        return self.pool[self.i - 1]
+    def take(self, category):
+        choices = self.pools[category]
+        while self.positions[category] < len(choices):
+            name = choices[self.positions[category]]
+            self.positions[category] += 1
+            if name not in self.used:
+                self.used.add(name)
+                return name
+        raise AssertionError(("publisher pool exhausted", category))
 
 
 def derive_gold(pattern, claims, sources, recommendations):
@@ -393,10 +404,11 @@ def build():
         key_to_lineage, seen_keys, variant_of = {}, set(), {}
         base_year = 2040 + number % 20
         for i, s in enumerate(ledger):
-            if s["lineage_key"] not in key_to_lineage:
-                key_to_lineage[s["lineage_key"]] = lineage_bank.take()
-            s["lineage"] = key_to_lineage[s["lineage_key"]]
             claim = claims[int(s["claim_id"][1:]) - 1]
+            if s["lineage_key"] not in key_to_lineage:
+                key_to_lineage[s["lineage_key"]] = lineage_bank.take(
+                    RT.topic_category(risk, claim["kind"], claim["topic"]))
+            s["lineage"] = key_to_lineage[s["lineage_key"]]
             topic, subject = claim["topic"], claim["subject"]
             # each lineage keeps one paraphrase per (claim, relation); a second lineage gets the other one, and a
             # reissue repeats its own publisher's wording

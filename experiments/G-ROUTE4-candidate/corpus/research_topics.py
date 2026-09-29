@@ -386,12 +386,127 @@ RECOMMENDATIONS = {
 
 LINEAGE_REGIONS = ["north", "south", "east", "west", "coastal", "upland", "valley", "central", "harbour", "riverside",
                    "lowland", "moorland"]
-LINEAGE_ISSUERS = ["parish-council", "trade-gazette", "consumer-panel", "ratepayers-forum", "visitor-board",
-                   "residents-association", "chamber-register", "inspection-office", "safety-board", "arts-trust",
-                   "transport-office", "health-board", "school-network", "sports-league", "business-journal",
-                   "audit-office", "standards-panel", "hobby-magazine", "community-radio", "civic-society",
-                   "tenants-union", "licensing-office", "insurers-bureau", "records-office", "ombudsman-office"]
-LINEAGE_CHANNELS = ["bulletin", "register", "notice-board", "annual-report", "press-office", "newsletter",
-                    "website", "inspection-log", "journal", "review-page", "podcast-notes", "minutes"]
+
+# Authoring-only compatibility contract. Each position corresponds to a topic above. A publisher may report on
+# the subject of its assigned category; the channel must also suit that publisher. The model sees only the resulting
+# lineage name, never these classifications.
+TOPIC_CATEGORIES = {
+    "standard": {
+        "R1": ["passenger", "sport", "community", "performance", "food", "travel", "sport", "civic", "craft", "sport",
+               "heritage", "retail", "travel", "sport", "environment", "performance", "performance", "repair", "civic", "sport"],
+        "R2": ["travel", "passenger", "trade", "facilities", "finance", "vehicle", "facilities", "food",
+               "freight", "performance", "trade", "facilities", "passenger", "finance", "retail", "trade",
+               "facilities", "education", "employment", "parking"],
+        "R3": ["technology", "technology", "health", "technology", "privacy", "privacy", "finance", "education",
+               "technology", "technology", "technology", "site_safety", "privacy", "technology", "technology",
+               "technology", "privacy", "technology", "privacy", "privacy"],
+        "R4": ["site_safety", "equipment_safety", "site_safety", "site_safety", "equipment_safety",
+               "equipment_safety", "site_safety", "equipment_safety", "site_safety", "site_safety",
+               "site_safety", "aquatic_safety"],
+    },
+    "scope": {
+        "R1": ["passenger", "civic", "sport", "performance", "food", "travel"],
+        "R2": ["freight", "trade", "facilities", "retail", "trade", "facilities"],
+        "R3": ["technology", "privacy", "technology", "privacy", "technology", "site_safety"],
+        "R4": ["site_safety"] * 3,
+    },
+    "quantity": {
+        "R1": ["facilities", "passenger", "passenger", "travel"],
+        "R2": ["food", "technology", "passenger", "trade"],
+        "R3": ["technology", "technology", "technology", "privacy"],
+        "R4": ["equipment_safety"] * 3,
+    },
+}
+
+LINEAGE_COMPATIBILITY = {
+    "passenger": [("transport-office", "bulletin"), ("passenger-council", "report"),
+                  ("public-transport-inspectorate", "register")],
+    "freight": [("freight-office", "bulletin"), ("delivery-association", "newsletter"),
+                ("logistics-inspectorate", "register")],
+    "vehicle": [("vehicle-hire-association", "newsletter"), ("rental-standards-office", "report"),
+                ("motor-services-inspectorate", "register")],
+    "parking": [("parking-office", "bulletin"), ("car-park-association", "newsletter"),
+                ("parking-services-inspectorate", "register")],
+    "sport": [("sports-association", "bulletin"), ("recreation-council", "newsletter"),
+              ("leisure-inspectorate", "report")],
+    "community": [("community-council", "minutes"), ("allotment-association", "newsletter"),
+                  ("civic-panel", "bulletin")],
+    "performance": [("performing-arts-council", "programme"), ("theatre-trust", "newsletter"),
+                    ("performance-panel", "report")],
+    "craft": [("crafts-association", "newsletter"), ("studio-services-office", "bulletin"),
+              ("ceramics-panel", "report")],
+    "heritage": [("museum-council", "programme"), ("heritage-trust", "newsletter"),
+                 ("collections-panel", "report")],
+    "food": [("food-standards-office", "report"), ("catering-association", "newsletter"),
+             ("hospitality-inspectorate", "register")],
+    "travel": [("visitor-office", "bulletin"), ("tourism-council", "newsletter"),
+               ("accommodation-inspectorate", "report")],
+    "civic": [("municipal-council", "minutes"), ("public-services-office", "bulletin"),
+              ("local-facilities-panel", "report")],
+    "retail": [("retail-association", "newsletter"), ("consumer-panel", "report"),
+               ("market-inspectorate", "register")],
+    "environment": [("wildlife-trust", "bulletin"), ("conservation-office", "report"),
+                    ("nature-reserve-panel", "newsletter")],
+    "repair": [("repair-association", "newsletter"), ("electrical-safety-office", "report"),
+               ("workshop-inspectorate", "register")],
+    "trade": [("trade-association", "bulletin"), ("commercial-inspectorate", "report"),
+              ("supplier-council", "register")],
+    "facilities": [("facilities-office", "bulletin"), ("building-inspectorate", "report"),
+                   ("property-services-panel", "register")],
+    "finance": [("financial-standards-office", "report"), ("accountancy-association", "newsletter"),
+                ("payment-inspectorate", "register")],
+    "education": [("education-office", "bulletin"), ("school-association", "newsletter"),
+                  ("training-inspectorate", "report")],
+    "employment": [("employment-office", "bulletin"), ("recruitment-association", "newsletter"),
+                   ("workforce-inspectorate", "report")],
+    "technology": [("digital-services-office", "technical-note"), ("software-assurance-panel", "report"),
+                   ("systems-inspectorate", "register")],
+    "privacy": [("data-protection-office", "bulletin"), ("privacy-assurance-panel", "report"),
+                ("records-inspectorate", "register")],
+    "health": [("health-services-office", "bulletin"), ("clinical-inspectorate", "report"),
+               ("patient-safety-panel", "register")],
+    "site_safety": [("site-safety-inspectorate", "inspection-log"), ("building-safety-office", "report"),
+                    ("workplace-assurance-panel", "register")],
+    "equipment_safety": [("equipment-inspectorate", "inspection-log"), ("engineering-standards-panel", "test-report"),
+                         ("plant-assurance-office", "register")],
+    "aquatic_safety": [("pool-safety-inspectorate", "inspection-log"), ("lifeguard-association", "report"),
+                       ("aquatic-services-office", "register")],
+}
+
+LINEAGE_CHANNEL_VARIANTS = {
+    "bulletin": ("bulletin", "notice", "website"),
+    "report": ("report", "briefing", "website"),
+    "register": ("register", "record", "website"),
+    "newsletter": ("newsletter", "notice", "website"),
+    "minutes": ("minutes", "notice", "website"),
+    "programme": ("programme", "listing", "website"),
+    "technical-note": ("technical-note", "specification", "website"),
+    "inspection-log": ("inspection-log", "certificate", "test-record"),
+    "test-report": ("test-report", "certificate", "test-record"),
+}
+
+
+def lineage_options(category):
+    return [f"{region}-{issuer}-{channel}"
+            for region in LINEAGE_REGIONS
+            for issuer, primary_channel in LINEAGE_COMPATIBILITY[category]
+            for channel in LINEAGE_CHANNEL_VARIANTS[primary_channel]]
+
+
+def topic_category(risk, kind, topic):
+    pool = {"standard": STANDARD, "scope": SCOPE, "quantity": QUANTITY}[kind][risk]
+    categories = TOPIC_CATEGORIES[kind][risk]
+    assert len(pool) == len(categories), (kind, risk)
+    return categories[pool.index(tuple(topic))]
+
+
+def lineage_matches_topic(lineage, risk, kind, topic):
+    category = topic_category(risk, kind, topic)
+    return lineage in lineage_options(category)
+
+
+def lineage_has_repeated_word(lineage):
+    words = lineage.split("-")
+    return len(words) != len(set(words))
 DATE_PREFIXES = ["{D} notice: ", "Update dated {D}: ", "Posted on {D}: ", "Revised {D}: ", "Entry for {D}: "]
 REISSUE_PREFIXES = ["Reissued by the same publisher: ", "Repeated in a later edition: ", "Reposted from the same source: "]

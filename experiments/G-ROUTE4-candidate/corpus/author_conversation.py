@@ -315,10 +315,10 @@ C("CV2", 2, "Tell me which van route delivers the samples in time, using only th
 C("CV3", 2, "Tell me which shredding bag option handles all the old personnel files, using only the capacities in my "
   "message", "Shredding bag capacity",
   "We have to send off at least {need} of old personnel files, and {net} must still fit once each option's reserved "
-  "space for signed receipts is taken out.",
-  "{name} provides {count} bags of {size} each and keeps {waste} of that for receipts.",
-  need=60000, net=55000, sizes=[8000, 12000, 15000], wgrain=500,
-  f={"need": ("m", "mass", "kg"), "net": ("m", "mass", "kg"), "count": N_, "size": ("m", "mass", "kg"),
+  "capacity for protective liners is taken out.",
+  "{name} provides {count} bags rated for {size} each and reserves {waste} of their combined capacity for liners.",
+  need=6000, net=5500, sizes=[800, 1200, 1500], wgrain=50,
+  f={"need": ("m", "mass", "kg"), "net": ("m", "mass", "kg"), "count": N_, "size": ("m", "mass", "g"),
      "waste": ("m", "mass", "g")})
 # 10 CV4 d1 R3
 C("CV4", 1, "Tell me which backup schedule passes our audit rule, using only the nightly results in my message",
@@ -548,12 +548,12 @@ C("CV6", 1, "Tell me which choir member can have the solo slot, using only the r
   G=12, Ex=42, today=d("2046-10-18"), spread=4, gspread=15,
   f={"G": N_, "Ex": N_, "today": DATE, "g": N_, "last": DATE})
 # 45 CV3 d1 R2
-C("CV3", 1, "Tell me which coffee urn to order for the conference, using only the product details in my message",
-  "Conference coffee urn",
-  "The urn has to hold at least {need} and weigh no more than {max} when empty for the lift.",
-  "The {name} urn holds {vol} and weighs {wt} empty.",
-  need=12000, max=9000, grain1=500, grain2=250,
-  f={"need": ("m", "volume", "l"), "max": ("m", "mass", "kg"), "vol": ("m", "volume", "l"),
+C("CV3", 1, "Tell me which insulated coffee flask to bring to the conference, using only the product details in my message",
+  "Conference coffee flask",
+  "The flask has to hold at least {need} and weigh no more than {max} when empty for my bag.",
+  "The {name} flask holds {vol} and weighs {wt} empty.",
+  need=1200, max=900, grain1=50, grain2=25,
+  f={"need": ("m", "volume", "l"), "max": ("m", "mass", "kg"), "vol": ("m", "volume", "ml"),
      "wt": ("m", "mass", "g")})
 # 46 CV3 d1 R2
 C("CV3", 1, "Tell me which display board to order for the trade stand, using only the board details in my message",
@@ -566,18 +566,18 @@ C("CV3", 1, "Tell me which display board to order for the trade stand, using onl
 # 47 CV3 d1 R2
 C("CV3", 1, "Tell me which printer paper box to order, using only the box details in my message",
   "Printer paper box",
-  "The box has to contain at least {need} of paper for the quarter and weigh no more than {max} for the stairs.",
-  "{name}'s box contains {vol} of paper and weighs {wt}.",
-  need=25000, max=20000, grain1=1000, grain2=500,
+  "I need a storage box with at least {need} of paper, but the empty box must weigh no more than {max} for shelving.",
+  "{name}'s box holds {vol} of paper and weighs {wt} when empty.",
+  need=2500, max=500, grain1=100, grain2=25,
   f={"need": ("m", "mass", "kg"), "max": ("m", "mass", "kg"), "vol": ("m", "mass", "g"),
      "wt": ("m", "mass", "kg")})
 # 48 CV3 d1 R2
 C("CV3", 1, "Tell me which cleaning concentrate to reorder, using only the container details in my message",
   "Cleaning concentrate reorder",
-  "Each container must hold at least {need} and weigh at most {max} full so the porters can carry it.",
+  "Each hand-spray bottle must hold at least {need} and weigh at most {max} full for the cleaning cart.",
   "The {name} container holds {vol} and weighs {wt} full.",
-  need=5000, max=6000, grain1=250, grain2=250,
-  f={"need": ("m", "volume", "l"), "max": ("m", "mass", "kg"), "vol": ("m", "volume", "cl"),
+  need=500, max=750, grain1=25, grain2=25,
+  f={"need": ("m", "volume", "l"), "max": ("m", "mass", "kg"), "vol": ("m", "volume", "ml"),
      "wt": ("m", "mass", "g")})
 # 49 CV3 d2 R2
 C("CV3", 2, "Tell me which skirting board order covers the office refit, using only the board lengths in my message",
@@ -872,12 +872,12 @@ C("CV2", 1, "Tell me which penetration test slot fits the freeze, using only the
   "The {name} slot starts at {dep} and lasts {dur}.",
   E=t("19:00"), T=t("23:20"), dur=(120, 220), early=(15, 45), f={"E": TIME, "T": TIME, "dep": TIME, "dur": MIN})
 # 93 CV3 d2 R3
-C("CV3", 2, "Tell me which archive crate order holds all the case files, using only the crate sizes in my message",
-  "Archive crate order",
-  "We must buy at least {need} of crate space and keep {net} usable after the space each supplier's lid inserts take.",
-  "{name} sells {count} crates of {size} and its lid inserts take about {waste}.",
-  need=160000, net=150000, sizes=[20000, 40000, 50000], wgrain=500,
-  f={"need": ("m", "volume", "l"), "net": ("m", "volume", "l"), "count": N_, "size": ("m", "volume", "l"),
+C("CV3", 2, "Tell me which specimen vial order holds all the samples, using only the vial sizes in my message",
+  "Specimen vial order",
+  "We need at least {need} of vial capacity and {net} usable after the space taken by each supplier's stoppers.",
+  "{name} sells {count} vials of {size} and its stoppers take about {waste} across the set.",
+  need=1600, net=1500, sizes=[200, 400, 500], wgrain=10,
+  f={"need": ("m", "volume", "l"), "net": ("m", "volume", "l"), "count": N_, "size": ("m", "volume", "ml"),
      "waste": ("m", "volume", "ml")})
 # 94 CV3 d2 R3
 C("CV3", 2, "Tell me which cabinet order fits the paper records, using only the drawer sizes in my message",
@@ -888,12 +888,12 @@ C("CV3", 2, "Tell me which cabinet order fits the paper records, using only the 
   f={"need": ("m", "length", "m"), "net": ("m", "length", "m"), "count": N_, "size": ("m", "length", "cm"),
      "waste": ("m", "length", "cm")})
 # 95 CV3 d2 R3
-C("CV3", 2, "Tell me which sealed evidence box order is enough, using only the box sizes in my message",
-  "Evidence box order",
-  "Evidence handling needs at least {need} of box volume, with {net} usable after the padding each supplier adds.",
-  "{name} sends {count} boxes of {size}, with about {waste} taken up by padding.",
-  need=40000, net=37000, sizes=[2500, 4000, 5000], wgrain=500,
-  f={"need": ("m", "volume", "l"), "net": ("m", "volume", "l"), "count": N_, "size": ("m", "volume", "l"),
+C("CV3", 2, "Tell me which sealed evidence vial order is enough, using only the vial sizes in my message",
+  "Evidence vial order",
+  "Evidence handling needs at least {need} of vial volume, with {net} usable after the inserts each supplier adds.",
+  "{name} sends {count} vials of {size}, with about {waste} taken up by inserts across the set.",
+  need=4000, net=3700, sizes=[250, 400, 500], wgrain=50,
+  f={"need": ("m", "volume", "l"), "net": ("m", "volume", "l"), "count": N_, "size": ("m", "volume", "ml"),
      "waste": ("m", "volume", "ml")})
 # 96 CV3 d2 R3
 C("CV3", 2, "Tell me which disinfectant order covers the clinic audit period, using only the bottle sizes in my "
@@ -992,8 +992,9 @@ C("CV2", 2, "Tell me which courier plan gets the signed contract back in time, u
 C("CV3", 2, "Tell me which confidential waste sack order is enough, using only the sack sizes in my message",
   "Confidential waste sacks",
   "We must collect at least {need} of confidential paper, with {net} still fitting after the weight each firm keeps "
-  "for its tamper seals.", "{name} supplies {count} sacks rated at {size} and allows {waste} for seals.",
-  need=45000, net=42000, sizes=[5000, 7500, 10000], wgrain=500,
+  "for protective liners.", "{name} supplies {count} sacks rated at {size} and reserves {waste} of their combined "
+  "capacity for liners.",
+  need=4500, net=4200, sizes=[500, 750, 1000], wgrain=50, max_waste=750,
   f={"need": ("m", "mass", "kg"), "net": ("m", "mass", "kg"), "count": N_, "size": ("m", "mass", "kg"),
      "waste": ("m", "mass", "g")})
 # 111 CV4 d1 R3
@@ -1107,11 +1108,11 @@ C("CV2", 1, "Tell me which catering delivery slot works for the board meeting, u
   "{name} can arrive at {dep} and needs {dur} to set up.",
   E=t("07:30"), T=t("08:40"), dur=(25, 50), f={"E": TIME, "T": TIME, "dep": TIME, "dur": MIN})
 # 128 CV3 d1 R2
-C("CV3", 1, "Tell me which water cooler bottle to order, using only the bottle details in my message",
-  "Water cooler bottle",
-  "The bottle must hold at least {need} and weigh at most {max} full for the office trolley.",
-  "{name}'s bottle holds {vol} and weighs {wt} full.",
-  need=18000, max=20000, grain1=500, grain2=250,
+C("CV3", 1, "Tell me which travel water flask to order, using only the flask details in my message",
+  "Travel water flask",
+  "The flask must hold at least {need} and weigh at most {max} full for my bag.",
+  "{name}'s flask holds {vol} and weighs {wt} full.",
+  need=1800, max=2000, grain1=50, grain2=25,
   f={"need": ("m", "volume", "l"), "max": ("m", "mass", "kg"), "vol": ("m", "volume", "l"),
      "wt": ("m", "mass", "g")})
 # 129 CV4 d1 R2
@@ -1249,7 +1250,8 @@ def build():
         for _ in range(200):
             cons, rows = generate(fam, depth, spec, rng)
             if [conditions(fam, depth, cons, o) for o in rows] == WANT and \
-                    len({json.dumps(o, sort_keys=True) for o in rows}) == 4:
+                    len({json.dumps(o, sort_keys=True) for o in rows}) == 4 and \
+                    ("max_waste" not in spec or all(row["waste"] <= spec["max_waste"] for row in rows)):
                 break
         else:
             raise AssertionError(("generation failed", fid))

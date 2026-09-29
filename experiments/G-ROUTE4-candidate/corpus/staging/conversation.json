@@ -222,7 +222,7 @@
      "Sufulo",
      "Ruburu"
     ],
-    "message": "We have to send off at least 60 kg of old personnel files, and 55 kg must still fit once each option's reserved space for signed receipts is taken out. Dagagu provides 4 bags of 15 kg each and keeps 1500 g of that for receipts. Bibesa provides 5 bags of 12 kg each and keeps 6500 g of that for receipts. Sufulo provides 7 bags of 8 kg each and keeps 2000 g of that for receipts. Ruburu provides 6 bags of 8 kg each and keeps 1500 g of that for receipts."
+    "message": "We have to send off at least 6 kg of old personnel files, and 5.5 kg must still fit once each option's reserved capacity for protective liners is taken out. Dagagu provides 4 bags rated for 1500 g each and reserves 150 g of their combined capacity for liners. Bibesa provides 5 bags rated for 1200 g each and reserves 650 g of their combined capacity for liners. Sufulo provides 7 bags rated for 800 g each and reserves 200 g of their combined capacity for liners. Ruburu provides 6 bags rated for 800 g each and reserves 150 g of their combined capacity for liners."
    },
    "prompt": "Tell me which shredding bag option handles all the old personnel files, using only the capacities in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
    "task_class": "ordinary_conversation",
@@ -834,11 +834,11 @@
      "Pebiza",
      "Yeliko"
     ],
-    "message": "The urn has to hold at least 12 l and weigh no more than 9 kg when empty for the lift. The Junulu urn holds 12.5 l and weighs 8750 g empty. The Gute urn holds 14.5 l and weighs 9250 g empty. The Pebiza urn holds 10 l and weighs 10250 g empty. The Yeliko urn holds 11.5 l and weighs 10750 g empty."
+    "message": "The flask has to hold at least 1.2 l and weigh no more than 0.9 kg when empty for my bag. The Junulu flask holds 1250 ml and weighs 875 g empty. The Gute flask holds 1450 ml and weighs 925 g empty. The Pebiza flask holds 1000 ml and weighs 1025 g empty. The Yeliko flask holds 1150 ml and weighs 1075 g empty."
    },
-   "prompt": "Tell me which coffee urn to order for the conference, using only the product details in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+   "prompt": "Tell me which insulated coffee flask to bring to the conference, using only the product details in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
    "task_class": "ordinary_conversation",
-   "title": "Conference coffee urn",
+   "title": "Conference coffee flask",
    "validator_profile": "conversation.v1"
   },
   {
@@ -868,7 +868,7 @@
      "Riyoyi",
      "Pugane"
     ],
-    "message": "The box has to contain at least 25 kg of paper for the quarter and weigh no more than 20 kg for the stairs. Siwoge's box contains 21000 g of paper and weighs 22 kg. Gimuni's box contains 21000 g of paper and weighs 23 kg. Riyoyi's box contains 28000 g of paper and weighs 20 kg. Pugane's box contains 29000 g of paper and weighs 20.5 kg."
+    "message": "I need a storage box with at least 2.5 kg of paper, but the empty box must weigh no more than 0.5 kg for shelving. Siwoge's box holds 2100 g of paper and weighs 0.6 kg when empty. Gimuni's box holds 2100 g of paper and weighs 0.65 kg when empty. Riyoyi's box holds 2800 g of paper and weighs 0.5 kg when empty. Pugane's box holds 2900 g of paper and weighs 0.525 kg when empty."
    },
    "prompt": "Tell me which printer paper box to order, using only the box details in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
    "task_class": "ordinary_conversation",
@@ -885,7 +885,7 @@
      "Tidaji",
      "Muvali"
     ],
-    "message": "Each container must hold at least 5 l and weigh at most 6 kg full so the porters can carry it. The Desuho container holds 625 cl and weighs 7250 g full. The Fuheso container holds 475 cl and weighs 6750 g full. The Tidaji container holds 375 cl and weighs 8500 g full. The Muvali container holds 600 cl and weighs 6000 g full."
+    "message": "Each hand-spray bottle must hold at least 0.5 l and weigh at most 0.75 kg full for the cleaning cart. The Desuho container holds 625 ml and weighs 875 g full. The Fuheso container holds 475 ml and weighs 825 g full. The Tidaji container holds 375 ml and weighs 1000 g full. The Muvali container holds 600 ml and weighs 750 g full."
    },
    "prompt": "Tell me which cleaning concentrate to reorder, using only the container details in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
    "task_class": "ordinary_conversation",
@@ -1650,11 +1650,11 @@
      "Sawo",
      "Venoya"
     ],
-    "message": "We must buy at least 160 l of crate space and keep 150 l usable after the space each supplier's lid inserts take. Vulodi sells 8 crates of 20 l and its lid inserts take about 2000 ml. Ronija sells 8 crates of 20 l and its lid inserts take about 12000 ml. Sawo sells 7 crates of 20 l and its lid inserts take about 2000 ml. Venoya sells 6 crates of 20 l and its lid inserts take about 2000 ml."
+    "message": "We need at least 1.6 l of vial capacity and 1.5 l usable after the space taken by each supplier's stoppers. Vulodi sells 8 vials of 200 ml and its stoppers take about 20 ml across the set. Ronija sells 8 vials of 200 ml and its stoppers take about 140 ml across the set. Sawo sells 7 vials of 200 ml and its stoppers take about 40 ml across the set. Venoya sells 6 vials of 200 ml and its stoppers take about 40 ml across the set."
    },
-   "prompt": "Tell me which archive crate order holds all the case files, using only the crate sizes in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+   "prompt": "Tell me which specimen vial order holds all the samples, using only the vial sizes in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
    "task_class": "ordinary_conversation",
-   "title": "Archive crate order",
+   "title": "Specimen vial order",
    "validator_profile": "conversation.v1"
   },
   {
@@ -1684,11 +1684,11 @@
      "Wikimu",
      "Buvaje"
     ],
-    "message": "Evidence handling needs at least 40 l of box volume, with 37 l usable after the padding each supplier adds. Gigane sends 15 boxes of 2.5 l, with about 2000 ml taken up by padding. Wuzase sends 15 boxes of 2.5 l, with about 1000 ml taken up by padding. Wikimu sends 9 boxes of 5 l, with about 6500 ml taken up by padding. Buvaje sends 16 boxes of 2.5 l, with about 5000 ml taken up by padding."
+    "message": "Evidence handling needs at least 4 l of vial volume, with 3.7 l usable after the inserts each supplier adds. Gigane sends 15 vials of 250 ml, with about 200 ml taken up by inserts across the set. Wuzase sends 15 vials of 250 ml, with about 100 ml taken up by inserts across the set. Wikimu sends 9 vials of 500 ml, with about 650 ml taken up by inserts across the set. Buvaje sends 16 vials of 250 ml, with about 500 ml taken up by inserts across the set."
    },
-   "prompt": "Tell me which sealed evidence box order is enough, using only the box sizes in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+   "prompt": "Tell me which sealed evidence vial order is enough, using only the vial sizes in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
    "task_class": "ordinary_conversation",
-   "title": "Evidence box order",
+   "title": "Evidence vial order",
    "validator_profile": "conversation.v1"
   },
   {
@@ -1939,7 +1939,7 @@
      "Gobade",
      "Vokuse"
     ],
-    "message": "We must collect at least 45 kg of confidential paper, with 42 kg still fitting after the weight each firm keeps for its tamper seals. Tedoje supplies 6 sacks rated at 7.5 kg and allows 2500 g for seals. Nojunu supplies 8 sacks rated at 5 kg and allows 1000 g for seals. Gobade supplies 7 sacks rated at 5 kg and allows 1500 g for seals. Vokuse supplies 6 sacks rated at 10 kg and allows 19500 g for seals."
+    "message": "We must collect at least 4.5 kg of confidential paper, with 4.2 kg still fitting after the weight each firm keeps for protective liners. Tedoje supplies 10 sacks rated at 0.5 kg and reserves 300 g of their combined capacity for liners. Nojunu supplies 8 sacks rated at 0.5 kg and reserves 150 g of their combined capacity for liners. Gobade supplies 7 sacks rated at 0.5 kg and reserves 200 g of their combined capacity for liners. Vokuse supplies 9 sacks rated at 0.5 kg and reserves 350 g of their combined capacity for liners."
    },
    "prompt": "Tell me which confidential waste sack order is enough, using only the sack sizes in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
    "task_class": "ordinary_conversation",
@@ -2245,11 +2245,11 @@
      "Perinu",
      "Febane"
     ],
-    "message": "The bottle must hold at least 18 l and weigh at most 20 kg full for the office trolley. Sutise's bottle holds 17 l and weighs 21000 g full. Yira's bottle holds 17 l and weighs 22250 g full. Perinu's bottle holds 18 l and weighs 19000 g full. Febane's bottle holds 19 l and weighs 20750 g full."
+    "message": "The flask must hold at least 1.8 l and weigh at most 2 kg full for my bag. Sutise's flask holds 1.7 l and weighs 2100 g full. Yira's flask holds 1.7 l and weighs 2225 g full. Perinu's flask holds 1.8 l and weighs 1900 g full. Febane's flask holds 1.9 l and weighs 2075 g full."
    },
-   "prompt": "Tell me which water cooler bottle to order, using only the bottle details in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+   "prompt": "Tell me which travel water flask to order, using only the flask details in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
    "task_class": "ordinary_conversation",
-   "title": "Water cooler bottle",
+   "title": "Travel water flask",
    "validator_profile": "conversation.v1"
   },
   {
@@ -5117,33 +5117,33 @@
    "near_miss_option": "Bibesa",
    "message_units": [
     {
-     "text": "We have to send off at least 60 kg of old personnel files, and 55 kg must still fit once each option's reserved space for signed receipts is taken out.",
+     "text": "We have to send off at least 6 kg of old personnel files, and 5.5 kg must still fit once each option's reserved capacity for protective liners is taken out.",
      "option": null,
      "facts": [
       {
        "attr": "need",
-       "value": 60000,
+       "value": 6000,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "60 kg"
+       "surface": "6 kg"
       },
       {
        "attr": "net",
-       "value": 55000,
+       "value": 5500,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "55 kg"
+       "surface": "5.5 kg"
       }
      ]
     },
     {
-     "text": "Dagagu provides 4 bags of 15 kg each and keeps 1500 g of that for receipts.",
+     "text": "Dagagu provides 4 bags rated for 1500 g each and reserves 150 g of their combined capacity for liners.",
      "option": "Dagagu",
      "facts": [
       {
@@ -5157,16 +5157,6 @@
       },
       {
        "attr": "size",
-       "value": 15000,
-       "fmt": [
-        "m",
-        "mass",
-        "kg"
-       ],
-       "surface": "15 kg"
-      },
-      {
-       "attr": "waste",
        "value": 1500,
        "fmt": [
         "m",
@@ -5174,11 +5164,21 @@
         "g"
        ],
        "surface": "1500 g"
+      },
+      {
+       "attr": "waste",
+       "value": 150,
+       "fmt": [
+        "m",
+        "mass",
+        "g"
+       ],
+       "surface": "150 g"
       }
      ]
     },
     {
-     "text": "Bibesa provides 5 bags of 12 kg each and keeps 6500 g of that for receipts.",
+     "text": "Bibesa provides 5 bags rated for 1200 g each and reserves 650 g of their combined capacity for liners.",
      "option": "Bibesa",
      "facts": [
       {
@@ -5192,28 +5192,28 @@
       },
       {
        "attr": "size",
-       "value": 12000,
-       "fmt": [
-        "m",
-        "mass",
-        "kg"
-       ],
-       "surface": "12 kg"
-      },
-      {
-       "attr": "waste",
-       "value": 6500,
+       "value": 1200,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "6500 g"
+       "surface": "1200 g"
+      },
+      {
+       "attr": "waste",
+       "value": 650,
+       "fmt": [
+        "m",
+        "mass",
+        "g"
+       ],
+       "surface": "650 g"
       }
      ]
     },
     {
-     "text": "Sufulo provides 7 bags of 8 kg each and keeps 2000 g of that for receipts.",
+     "text": "Sufulo provides 7 bags rated for 800 g each and reserves 200 g of their combined capacity for liners.",
      "option": "Sufulo",
      "facts": [
       {
@@ -5227,28 +5227,28 @@
       },
       {
        "attr": "size",
-       "value": 8000,
-       "fmt": [
-        "m",
-        "mass",
-        "kg"
-       ],
-       "surface": "8 kg"
-      },
-      {
-       "attr": "waste",
-       "value": 2000,
+       "value": 800,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "2000 g"
+       "surface": "800 g"
+      },
+      {
+       "attr": "waste",
+       "value": 200,
+       "fmt": [
+        "m",
+        "mass",
+        "g"
+       ],
+       "surface": "200 g"
       }
      ]
     },
     {
-     "text": "Ruburu provides 6 bags of 8 kg each and keeps 1500 g of that for receipts.",
+     "text": "Ruburu provides 6 bags rated for 800 g each and reserves 150 g of their combined capacity for liners.",
      "option": "Ruburu",
      "facts": [
       {
@@ -5262,23 +5262,23 @@
       },
       {
        "attr": "size",
-       "value": 8000,
-       "fmt": [
-        "m",
-        "mass",
-        "kg"
-       ],
-       "surface": "8 kg"
-      },
-      {
-       "attr": "waste",
-       "value": 1500,
+       "value": 800,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "1500 g"
+       "surface": "800 g"
+      },
+      {
+       "attr": "waste",
+       "value": 150,
+       "fmt": [
+        "m",
+        "mass",
+        "g"
+       ],
+       "surface": "150 g"
       }
      ]
     }
@@ -10803,132 +10803,132 @@
    "near_miss_option": "Gute",
    "message_units": [
     {
-     "text": "The urn has to hold at least 12 l and weigh no more than 9 kg when empty for the lift.",
+     "text": "The flask has to hold at least 1.2 l and weigh no more than 0.9 kg when empty for my bag.",
      "option": null,
      "facts": [
       {
        "attr": "need",
-       "value": 12000,
+       "value": 1200,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "12 l"
+       "surface": "1.2 l"
       },
       {
        "attr": "max",
-       "value": 9000,
+       "value": 900,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "9 kg"
+       "surface": "0.9 kg"
       }
      ]
     },
     {
-     "text": "The Junulu urn holds 12.5 l and weighs 8750 g empty.",
+     "text": "The Junulu flask holds 1250 ml and weighs 875 g empty.",
      "option": "Junulu",
      "facts": [
       {
        "attr": "vol",
-       "value": 12500,
+       "value": 1250,
        "fmt": [
         "m",
         "volume",
-        "l"
+        "ml"
        ],
-       "surface": "12.5 l"
+       "surface": "1250 ml"
       },
       {
        "attr": "wt",
-       "value": 8750,
+       "value": 875,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "8750 g"
+       "surface": "875 g"
       }
      ]
     },
     {
-     "text": "The Gute urn holds 14.5 l and weighs 9250 g empty.",
+     "text": "The Gute flask holds 1450 ml and weighs 925 g empty.",
      "option": "Gute",
      "facts": [
       {
        "attr": "vol",
-       "value": 14500,
+       "value": 1450,
        "fmt": [
         "m",
         "volume",
-        "l"
+        "ml"
        ],
-       "surface": "14.5 l"
+       "surface": "1450 ml"
       },
       {
        "attr": "wt",
-       "value": 9250,
+       "value": 925,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "9250 g"
+       "surface": "925 g"
       }
      ]
     },
     {
-     "text": "The Pebiza urn holds 10 l and weighs 10250 g empty.",
+     "text": "The Pebiza flask holds 1000 ml and weighs 1025 g empty.",
      "option": "Pebiza",
      "facts": [
       {
        "attr": "vol",
-       "value": 10000,
+       "value": 1000,
        "fmt": [
         "m",
         "volume",
-        "l"
+        "ml"
        ],
-       "surface": "10 l"
+       "surface": "1000 ml"
       },
       {
        "attr": "wt",
-       "value": 10250,
+       "value": 1025,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "10250 g"
+       "surface": "1025 g"
       }
      ]
     },
     {
-     "text": "The Yeliko urn holds 11.5 l and weighs 10750 g empty.",
+     "text": "The Yeliko flask holds 1150 ml and weighs 1075 g empty.",
      "option": "Yeliko",
      "facts": [
       {
        "attr": "vol",
-       "value": 11500,
+       "value": 1150,
        "fmt": [
         "m",
         "volume",
-        "l"
+        "ml"
        ],
-       "surface": "11.5 l"
+       "surface": "1150 ml"
       },
       {
        "attr": "wt",
-       "value": 10750,
+       "value": 1075,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "10750 g"
+       "surface": "1075 g"
       }
      ]
     }
@@ -11113,132 +11113,132 @@
    "near_miss_option": "Pugane",
    "message_units": [
     {
-     "text": "The box has to contain at least 25 kg of paper for the quarter and weigh no more than 20 kg for the stairs.",
+     "text": "I need a storage box with at least 2.5 kg of paper, but the empty box must weigh no more than 0.5 kg for shelving.",
      "option": null,
      "facts": [
       {
        "attr": "need",
-       "value": 25000,
+       "value": 2500,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "25 kg"
+       "surface": "2.5 kg"
       },
       {
        "attr": "max",
-       "value": 20000,
+       "value": 500,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "20 kg"
+       "surface": "0.5 kg"
       }
      ]
     },
     {
-     "text": "Siwoge's box contains 21000 g of paper and weighs 22 kg.",
+     "text": "Siwoge's box holds 2100 g of paper and weighs 0.6 kg when empty.",
      "option": "Siwoge",
      "facts": [
       {
        "attr": "vol",
-       "value": 21000,
+       "value": 2100,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "21000 g"
+       "surface": "2100 g"
       },
       {
        "attr": "wt",
-       "value": 22000,
+       "value": 600,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "22 kg"
+       "surface": "0.6 kg"
       }
      ]
     },
     {
-     "text": "Gimuni's box contains 21000 g of paper and weighs 23 kg.",
+     "text": "Gimuni's box holds 2100 g of paper and weighs 0.65 kg when empty.",
      "option": "Gimuni",
      "facts": [
       {
        "attr": "vol",
-       "value": 21000,
+       "value": 2100,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "21000 g"
+       "surface": "2100 g"
       },
       {
        "attr": "wt",
-       "value": 23000,
+       "value": 650,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "23 kg"
+       "surface": "0.65 kg"
       }
      ]
     },
     {
-     "text": "Riyoyi's box contains 28000 g of paper and weighs 20 kg.",
+     "text": "Riyoyi's box holds 2800 g of paper and weighs 0.5 kg when empty.",
      "option": "Riyoyi",
      "facts": [
       {
        "attr": "vol",
-       "value": 28000,
+       "value": 2800,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "28000 g"
+       "surface": "2800 g"
       },
       {
        "attr": "wt",
-       "value": 20000,
+       "value": 500,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "20 kg"
+       "surface": "0.5 kg"
       }
      ]
     },
     {
-     "text": "Pugane's box contains 29000 g of paper and weighs 20.5 kg.",
+     "text": "Pugane's box holds 2900 g of paper and weighs 0.525 kg when empty.",
      "option": "Pugane",
      "facts": [
       {
        "attr": "vol",
-       "value": 29000,
+       "value": 2900,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "29000 g"
+       "surface": "2900 g"
       },
       {
        "attr": "wt",
-       "value": 20500,
+       "value": 525,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "20.5 kg"
+       "surface": "0.525 kg"
       }
      ]
     }
@@ -11268,132 +11268,132 @@
    "near_miss_option": "Desuho",
    "message_units": [
     {
-     "text": "Each container must hold at least 5 l and weigh at most 6 kg full so the porters can carry it.",
+     "text": "Each hand-spray bottle must hold at least 0.5 l and weigh at most 0.75 kg full for the cleaning cart.",
      "option": null,
      "facts": [
       {
        "attr": "need",
-       "value": 5000,
+       "value": 500,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "5 l"
+       "surface": "0.5 l"
       },
       {
        "attr": "max",
-       "value": 6000,
+       "value": 750,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "6 kg"
+       "surface": "0.75 kg"
       }
      ]
     },
     {
-     "text": "The Desuho container holds 625 cl and weighs 7250 g full.",
+     "text": "The Desuho container holds 625 ml and weighs 875 g full.",
      "option": "Desuho",
      "facts": [
       {
        "attr": "vol",
-       "value": 6250,
+       "value": 625,
        "fmt": [
         "m",
         "volume",
-        "cl"
+        "ml"
        ],
-       "surface": "625 cl"
+       "surface": "625 ml"
       },
       {
        "attr": "wt",
-       "value": 7250,
+       "value": 875,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "7250 g"
+       "surface": "875 g"
       }
      ]
     },
     {
-     "text": "The Fuheso container holds 475 cl and weighs 6750 g full.",
+     "text": "The Fuheso container holds 475 ml and weighs 825 g full.",
      "option": "Fuheso",
      "facts": [
       {
        "attr": "vol",
-       "value": 4750,
+       "value": 475,
        "fmt": [
         "m",
         "volume",
-        "cl"
+        "ml"
        ],
-       "surface": "475 cl"
+       "surface": "475 ml"
       },
       {
        "attr": "wt",
-       "value": 6750,
+       "value": 825,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "6750 g"
+       "surface": "825 g"
       }
      ]
     },
     {
-     "text": "The Tidaji container holds 375 cl and weighs 8500 g full.",
+     "text": "The Tidaji container holds 375 ml and weighs 1000 g full.",
      "option": "Tidaji",
      "facts": [
       {
        "attr": "vol",
-       "value": 3750,
+       "value": 375,
        "fmt": [
         "m",
         "volume",
-        "cl"
+        "ml"
        ],
-       "surface": "375 cl"
+       "surface": "375 ml"
       },
       {
        "attr": "wt",
-       "value": 8500,
+       "value": 1000,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "8500 g"
+       "surface": "1000 g"
       }
      ]
     },
     {
-     "text": "The Muvali container holds 600 cl and weighs 6000 g full.",
+     "text": "The Muvali container holds 600 ml and weighs 750 g full.",
      "option": "Muvali",
      "facts": [
       {
        "attr": "vol",
-       "value": 6000,
+       "value": 600,
        "fmt": [
         "m",
         "volume",
-        "cl"
+        "ml"
        ],
-       "surface": "600 cl"
+       "surface": "600 ml"
       },
       {
        "attr": "wt",
-       "value": 6000,
+       "value": 750,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "6000 g"
+       "surface": "750 g"
       }
      ]
     }
@@ -18394,33 +18394,33 @@
    "near_miss_option": "Ronija",
    "message_units": [
     {
-     "text": "We must buy at least 160 l of crate space and keep 150 l usable after the space each supplier's lid inserts take.",
+     "text": "We need at least 1.6 l of vial capacity and 1.5 l usable after the space taken by each supplier's stoppers.",
      "option": null,
      "facts": [
       {
        "attr": "need",
-       "value": 160000,
+       "value": 1600,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "160 l"
+       "surface": "1.6 l"
       },
       {
        "attr": "net",
-       "value": 150000,
+       "value": 1500,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "150 l"
+       "surface": "1.5 l"
       }
      ]
     },
     {
-     "text": "Vulodi sells 8 crates of 20 l and its lid inserts take about 2000 ml.",
+     "text": "Vulodi sells 8 vials of 200 ml and its stoppers take about 20 ml across the set.",
      "option": "Vulodi",
      "facts": [
       {
@@ -18434,28 +18434,28 @@
       },
       {
        "attr": "size",
-       "value": 20000,
-       "fmt": [
-        "m",
-        "volume",
-        "l"
-       ],
-       "surface": "20 l"
-      },
-      {
-       "attr": "waste",
-       "value": 2000,
+       "value": 200,
        "fmt": [
         "m",
         "volume",
         "ml"
        ],
-       "surface": "2000 ml"
+       "surface": "200 ml"
+      },
+      {
+       "attr": "waste",
+       "value": 20,
+       "fmt": [
+        "m",
+        "volume",
+        "ml"
+       ],
+       "surface": "20 ml"
       }
      ]
     },
     {
-     "text": "Ronija sells 8 crates of 20 l and its lid inserts take about 12000 ml.",
+     "text": "Ronija sells 8 vials of 200 ml and its stoppers take about 140 ml across the set.",
      "option": "Ronija",
      "facts": [
       {
@@ -18469,28 +18469,28 @@
       },
       {
        "attr": "size",
-       "value": 20000,
-       "fmt": [
-        "m",
-        "volume",
-        "l"
-       ],
-       "surface": "20 l"
-      },
-      {
-       "attr": "waste",
-       "value": 12000,
+       "value": 200,
        "fmt": [
         "m",
         "volume",
         "ml"
        ],
-       "surface": "12000 ml"
+       "surface": "200 ml"
+      },
+      {
+       "attr": "waste",
+       "value": 140,
+       "fmt": [
+        "m",
+        "volume",
+        "ml"
+       ],
+       "surface": "140 ml"
       }
      ]
     },
     {
-     "text": "Sawo sells 7 crates of 20 l and its lid inserts take about 2000 ml.",
+     "text": "Sawo sells 7 vials of 200 ml and its stoppers take about 40 ml across the set.",
      "option": "Sawo",
      "facts": [
       {
@@ -18504,28 +18504,28 @@
       },
       {
        "attr": "size",
-       "value": 20000,
-       "fmt": [
-        "m",
-        "volume",
-        "l"
-       ],
-       "surface": "20 l"
-      },
-      {
-       "attr": "waste",
-       "value": 2000,
+       "value": 200,
        "fmt": [
         "m",
         "volume",
         "ml"
        ],
-       "surface": "2000 ml"
+       "surface": "200 ml"
+      },
+      {
+       "attr": "waste",
+       "value": 40,
+       "fmt": [
+        "m",
+        "volume",
+        "ml"
+       ],
+       "surface": "40 ml"
       }
      ]
     },
     {
-     "text": "Venoya sells 6 crates of 20 l and its lid inserts take about 2000 ml.",
+     "text": "Venoya sells 6 vials of 200 ml and its stoppers take about 40 ml across the set.",
      "option": "Venoya",
      "facts": [
       {
@@ -18539,23 +18539,23 @@
       },
       {
        "attr": "size",
-       "value": 20000,
-       "fmt": [
-        "m",
-        "volume",
-        "l"
-       ],
-       "surface": "20 l"
-      },
-      {
-       "attr": "waste",
-       "value": 2000,
+       "value": 200,
        "fmt": [
         "m",
         "volume",
         "ml"
        ],
-       "surface": "2000 ml"
+       "surface": "200 ml"
+      },
+      {
+       "attr": "waste",
+       "value": 40,
+       "fmt": [
+        "m",
+        "volume",
+        "ml"
+       ],
+       "surface": "40 ml"
       }
      ]
     }
@@ -18776,33 +18776,33 @@
    "near_miss_option": "Buvaje",
    "message_units": [
     {
-     "text": "Evidence handling needs at least 40 l of box volume, with 37 l usable after the padding each supplier adds.",
+     "text": "Evidence handling needs at least 4 l of vial volume, with 3.7 l usable after the inserts each supplier adds.",
      "option": null,
      "facts": [
       {
        "attr": "need",
-       "value": 40000,
+       "value": 4000,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "40 l"
+       "surface": "4 l"
       },
       {
        "attr": "net",
-       "value": 37000,
+       "value": 3700,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "37 l"
+       "surface": "3.7 l"
       }
      ]
     },
     {
-     "text": "Gigane sends 15 boxes of 2.5 l, with about 2000 ml taken up by padding.",
+     "text": "Gigane sends 15 vials of 250 ml, with about 200 ml taken up by inserts across the set.",
      "option": "Gigane",
      "facts": [
       {
@@ -18816,28 +18816,28 @@
       },
       {
        "attr": "size",
-       "value": 2500,
-       "fmt": [
-        "m",
-        "volume",
-        "l"
-       ],
-       "surface": "2.5 l"
-      },
-      {
-       "attr": "waste",
-       "value": 2000,
+       "value": 250,
        "fmt": [
         "m",
         "volume",
         "ml"
        ],
-       "surface": "2000 ml"
+       "surface": "250 ml"
+      },
+      {
+       "attr": "waste",
+       "value": 200,
+       "fmt": [
+        "m",
+        "volume",
+        "ml"
+       ],
+       "surface": "200 ml"
       }
      ]
     },
     {
-     "text": "Wuzase sends 15 boxes of 2.5 l, with about 1000 ml taken up by padding.",
+     "text": "Wuzase sends 15 vials of 250 ml, with about 100 ml taken up by inserts across the set.",
      "option": "Wuzase",
      "facts": [
       {
@@ -18851,28 +18851,28 @@
       },
       {
        "attr": "size",
-       "value": 2500,
-       "fmt": [
-        "m",
-        "volume",
-        "l"
-       ],
-       "surface": "2.5 l"
-      },
-      {
-       "attr": "waste",
-       "value": 1000,
+       "value": 250,
        "fmt": [
         "m",
         "volume",
         "ml"
        ],
-       "surface": "1000 ml"
+       "surface": "250 ml"
+      },
+      {
+       "attr": "waste",
+       "value": 100,
+       "fmt": [
+        "m",
+        "volume",
+        "ml"
+       ],
+       "surface": "100 ml"
       }
      ]
     },
     {
-     "text": "Wikimu sends 9 boxes of 5 l, with about 6500 ml taken up by padding.",
+     "text": "Wikimu sends 9 vials of 500 ml, with about 650 ml taken up by inserts across the set.",
      "option": "Wikimu",
      "facts": [
       {
@@ -18886,28 +18886,28 @@
       },
       {
        "attr": "size",
-       "value": 5000,
-       "fmt": [
-        "m",
-        "volume",
-        "l"
-       ],
-       "surface": "5 l"
-      },
-      {
-       "attr": "waste",
-       "value": 6500,
+       "value": 500,
        "fmt": [
         "m",
         "volume",
         "ml"
        ],
-       "surface": "6500 ml"
+       "surface": "500 ml"
+      },
+      {
+       "attr": "waste",
+       "value": 650,
+       "fmt": [
+        "m",
+        "volume",
+        "ml"
+       ],
+       "surface": "650 ml"
       }
      ]
     },
     {
-     "text": "Buvaje sends 16 boxes of 2.5 l, with about 5000 ml taken up by padding.",
+     "text": "Buvaje sends 16 vials of 250 ml, with about 500 ml taken up by inserts across the set.",
      "option": "Buvaje",
      "facts": [
       {
@@ -18921,23 +18921,23 @@
       },
       {
        "attr": "size",
-       "value": 2500,
-       "fmt": [
-        "m",
-        "volume",
-        "l"
-       ],
-       "surface": "2.5 l"
-      },
-      {
-       "attr": "waste",
-       "value": 5000,
+       "value": 250,
        "fmt": [
         "m",
         "volume",
         "ml"
        ],
-       "surface": "5000 ml"
+       "surface": "250 ml"
+      },
+      {
+       "attr": "waste",
+       "value": 500,
+       "fmt": [
+        "m",
+        "volume",
+        "ml"
+       ],
+       "surface": "500 ml"
       }
      ]
     }
@@ -21229,68 +21229,68 @@
    "near_miss_option": "Vokuse",
    "message_units": [
     {
-     "text": "We must collect at least 45 kg of confidential paper, with 42 kg still fitting after the weight each firm keeps for its tamper seals.",
+     "text": "We must collect at least 4.5 kg of confidential paper, with 4.2 kg still fitting after the weight each firm keeps for protective liners.",
      "option": null,
      "facts": [
       {
        "attr": "need",
-       "value": 45000,
+       "value": 4500,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "45 kg"
+       "surface": "4.5 kg"
       },
       {
        "attr": "net",
-       "value": 42000,
+       "value": 4200,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "42 kg"
+       "surface": "4.2 kg"
       }
      ]
     },
     {
-     "text": "Tedoje supplies 6 sacks rated at 7.5 kg and allows 2500 g for seals.",
+     "text": "Tedoje supplies 10 sacks rated at 0.5 kg and reserves 300 g of their combined capacity for liners.",
      "option": "Tedoje",
      "facts": [
       {
        "attr": "count",
-       "value": 6,
+       "value": 10,
        "fmt": [
         "n",
         ""
        ],
-       "surface": "6"
+       "surface": "10"
       },
       {
        "attr": "size",
-       "value": 7500,
+       "value": 500,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "7.5 kg"
+       "surface": "0.5 kg"
       },
       {
        "attr": "waste",
-       "value": 2500,
+       "value": 300,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "2500 g"
+       "surface": "300 g"
       }
      ]
     },
     {
-     "text": "Nojunu supplies 8 sacks rated at 5 kg and allows 1000 g for seals.",
+     "text": "Nojunu supplies 8 sacks rated at 0.5 kg and reserves 150 g of their combined capacity for liners.",
      "option": "Nojunu",
      "facts": [
       {
@@ -21304,28 +21304,28 @@
       },
       {
        "attr": "size",
-       "value": 5000,
+       "value": 500,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "5 kg"
+       "surface": "0.5 kg"
       },
       {
        "attr": "waste",
-       "value": 1000,
+       "value": 150,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "1000 g"
+       "surface": "150 g"
       }
      ]
     },
     {
-     "text": "Gobade supplies 7 sacks rated at 5 kg and allows 1500 g for seals.",
+     "text": "Gobade supplies 7 sacks rated at 0.5 kg and reserves 200 g of their combined capacity for liners.",
      "option": "Gobade",
      "facts": [
       {
@@ -21339,58 +21339,58 @@
       },
       {
        "attr": "size",
-       "value": 5000,
+       "value": 500,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "5 kg"
+       "surface": "0.5 kg"
       },
       {
        "attr": "waste",
-       "value": 1500,
+       "value": 200,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "1500 g"
+       "surface": "200 g"
       }
      ]
     },
     {
-     "text": "Vokuse supplies 6 sacks rated at 10 kg and allows 19500 g for seals.",
+     "text": "Vokuse supplies 9 sacks rated at 0.5 kg and reserves 350 g of their combined capacity for liners.",
      "option": "Vokuse",
      "facts": [
       {
        "attr": "count",
-       "value": 6,
+       "value": 9,
        "fmt": [
         "n",
         ""
        ],
-       "surface": "6"
+       "surface": "9"
       },
       {
        "attr": "size",
-       "value": 10000,
+       "value": 500,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "10 kg"
+       "surface": "0.5 kg"
       },
       {
        "attr": "waste",
-       "value": 19500,
+       "value": 350,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "19500 g"
+       "surface": "350 g"
       }
      ]
     }
@@ -24002,132 +24002,132 @@
    "near_miss_option": "Febane",
    "message_units": [
     {
-     "text": "The bottle must hold at least 18 l and weigh at most 20 kg full for the office trolley.",
+     "text": "The flask must hold at least 1.8 l and weigh at most 2 kg full for my bag.",
      "option": null,
      "facts": [
       {
        "attr": "need",
-       "value": 18000,
+       "value": 1800,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "18 l"
+       "surface": "1.8 l"
       },
       {
        "attr": "max",
-       "value": 20000,
+       "value": 2000,
        "fmt": [
         "m",
         "mass",
         "kg"
        ],
-       "surface": "20 kg"
+       "surface": "2 kg"
       }
      ]
     },
     {
-     "text": "Sutise's bottle holds 17 l and weighs 21000 g full.",
+     "text": "Sutise's flask holds 1.7 l and weighs 2100 g full.",
      "option": "Sutise",
      "facts": [
       {
        "attr": "vol",
-       "value": 17000,
+       "value": 1700,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "17 l"
+       "surface": "1.7 l"
       },
       {
        "attr": "wt",
-       "value": 21000,
+       "value": 2100,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "21000 g"
+       "surface": "2100 g"
       }
      ]
     },
     {
-     "text": "Yira's bottle holds 17 l and weighs 22250 g full.",
+     "text": "Yira's flask holds 1.7 l and weighs 2225 g full.",
      "option": "Yira",
      "facts": [
       {
        "attr": "vol",
-       "value": 17000,
+       "value": 1700,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "17 l"
+       "surface": "1.7 l"
       },
       {
        "attr": "wt",
-       "value": 22250,
+       "value": 2225,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "22250 g"
+       "surface": "2225 g"
       }
      ]
     },
     {
-     "text": "Perinu's bottle holds 18 l and weighs 19000 g full.",
+     "text": "Perinu's flask holds 1.8 l and weighs 1900 g full.",
      "option": "Perinu",
      "facts": [
       {
        "attr": "vol",
-       "value": 18000,
+       "value": 1800,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "18 l"
+       "surface": "1.8 l"
       },
       {
        "attr": "wt",
-       "value": 19000,
+       "value": 1900,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "19000 g"
+       "surface": "1900 g"
       }
      ]
     },
     {
-     "text": "Febane's bottle holds 19 l and weighs 20750 g full.",
+     "text": "Febane's flask holds 1.9 l and weighs 2075 g full.",
      "option": "Febane",
      "facts": [
       {
        "attr": "vol",
-       "value": 19000,
+       "value": 1900,
        "fmt": [
         "m",
         "volume",
         "l"
        ],
-       "surface": "19 l"
+       "surface": "1.9 l"
       },
       {
        "attr": "wt",
-       "value": 20750,
+       "value": 2075,
        "fmt": [
         "m",
         "mass",
         "g"
        ],
-       "surface": "20750 g"
+       "surface": "2075 g"
       }
      ]
     }

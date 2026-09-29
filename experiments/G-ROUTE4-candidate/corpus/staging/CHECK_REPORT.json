@@ -509,9 +509,9 @@
   "output_cap_num_predict": 350,
   "by_class": {
    "grounded_research_synthesis": {
-    "median": 130.5,
-    "max": 179,
-    "pretty_printed_max_diagnostic": 241
+    "median": 131.5,
+    "max": 182,
+    "pretty_printed_max_diagnostic": 244
    },
    "hierarchical_semantic_synthesis": {
     "median": 164.0,
