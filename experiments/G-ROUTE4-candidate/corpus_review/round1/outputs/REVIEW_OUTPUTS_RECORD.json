@@ -1,0 +1,105 @@
+{
+ "schema_version": "g-route4.corpus-review-outputs.v1",
+ "round": 1,
+ "review_package_commit": "97afe8a93def2c1eb572e38f567f68ab5cb53b4b",
+ "launched": "2026-09-29T21:17Z, both in parallel, as background sub-sessions of the operator's Claude Code session; each prompt pointed only to its committed brief and the brief's LF sha256",
+ "reviewers": {
+  "A": {
+   "session_type": "general-purpose",
+   "description": "G-ROUTE4 corpus review A",
+   "fresh_session": true,
+   "spawn_depth": 1,
+   "models": {
+    "claude-opus-5-5": 133,
+    "<synthetic>": 1
+   },
+   "first_record_utc": "2026-09-29T21:17:11.254Z",
+   "last_record_utc": "2026-09-29T21:35:54.179Z",
+   "tool_calls": {
+    "Bash": 48,
+    "Read": 16,
+    "Write": 8,
+    "Grep": 1
+   },
+   "transcript_sha256": "173cb477d72c7672b5d8210abef1563c59933e59d940c47902557212d042e2a0",
+   "transcript_records": 297,
+   "terminal_api_errors": [
+    "You've hit your session limit · resets 6:50pm (America/New_York)"
+   ],
+   "status": "NO REPORT: the session ended on the provider error above before its review was complete",
+   "text_outputs_verbatim": [
+    "I'll start by verifying the brief's digest.",
+    "Digest matches. Reading the brief in full.",
+    "Digest matches. Setting up: HEAD, manifest, guard, scratch folder.",
+    "Now conversation, the last class.",
+    "Step 1 complete (385 derived and sealed by digest). Now opening gold for the comparison.",
+    "0 differences from gold across all 385, and every gold reference output passes the frozen validators. Now probing for grader traps.",
+    "You've hit your session limit · resets 6:50pm (America/New_York)"
+   ],
+   "scratch_inventory_sha256": {
+    "compare.py": "429fae3d4911c6b4c5539fae7fc756783e93ddd797cc10f30f241b1561538357",
+    "compare_out.txt": "2fa9d6471751f9b7cdc23567963aad3a1f8cd857d570a7f7239916af8b52b498",
+    "constructs.py": "21cf0e1bd0205c4245c6e4636c33412b483534c56932813a3c16ade1dfbbfb9e",
+    "constructs_out.txt": "f21759e0585aecfdea0183dd8f25133f333f381bd528a154925f18ce8f81cf61",
+    "derivations/conversation.json": "01c90de8b3b28734925485542d20e6abb62c3f4fba2988aa52a3be2033288a80",
+    "derivations/DERIVATIONS_SEALED.sha256": "b7bc1a855c898e943ce5116efbb7e2f3e951d1dccfa0d6e49d300f2c2490db4c",
+    "derivations/extraction.json": "f0e401d7dc90bdb974c76456fbe38648290ba1a90c8ec320f4280bb6f8bff0d2",
+    "derivations/planning.json": "aee15f2ef7b86b9f4a39ff24d4950c87f9eb2849aaf0beb73250150dcb23285f",
+    "derivations/research.json": "b2d7db7b64890a139afc5db6ebf62fbdf02733e47f412f8394916364f142ef97",
+    "derivations/synthesis.json": "8857e50915f654013aef6a095282b69c53a930a7764967a387769540e2e8a7e4",
+    "derive_conversation.py": "047a289cbf5cd87e7b6812be3225a562122c87fd8ea4f5f53573dfb5bd4fa4d3",
+    "derive_extraction.py": "0635d03f0d9ee1a9b3378b41cc020374623c668174d8da041a82fa54787a883f",
+    "derive_planning.py": "1359f02e98f8ef629619b46cecccd9e1ddc1bcd54ae3caa057f7c0cc3be181b7",
+    "derive_research.py": "c0dd9e3bd7089a00a6fc00bb4495e5f231ae51726961a7e48228895c1d27b891",
+    "derive_synthesis.py": "a93ee425c69b8020e2b1093bdf7a65b9a7fd0813701610cf2e7b7c7197f488f6",
+    "fixes_check.py": "ccc47c4f6201567c16e1a2a1780d6ffa02473be3530f72671e96183cf728545f",
+    "head.tar": "c5381b018d02db1d0ebfe72c1a5425aeb06b6db88af9f35c67991a732c4a88f4",
+    "plan_view.py": "c74ce2a733035abd939a1da7d2b7bbd099f17d2190a43bcc840a05e7ca4f260a",
+    "probe.py": "9217bfd634c7e4699a80a18e360873a727ac23d6c02b8ba571f13222238877bf",
+    "probe_out.txt": "40c2aa4d8ad52dbc66b070eede819cadb6aa82439a2e015548edbed73dbf15b4",
+    "regrade.py": "bd8597850303b2119a43b337441ddc302dffaefe8c4cfa176ef611371d3d5665",
+    "regrade_out.txt": "a24ac789dc6c3ffa078b24abaf08d67cd87da0c38c78f00035928eb852c9d1d6",
+    "render.py": "147f11c80ce2e369cf76a906f343370e482b9d039e67f4d994ff8908cbe96dc7",
+    "verify_manifest.py": "14a1ce8bff8ff27759be02ebfc0000e7493f3f9c499d161830a05e32667b8352",
+    "views/conv_compact.txt": "58e4235cb0b9fa4909698e9665380141c8cd9d63836807e32e828cfc8bd0b27e",
+    "views/conversation.v1.txt": "eed3c131b9c14b290dd9fdf857325b5a24e73003b64956663ca146b44ed67bf7",
+    "views/extraction.v1.txt": "cbb67e59db03b73fd60f41e53bbe79b211ea4fc9d65eeb913c13a6796724ac11",
+    "views/plan_compact.txt": "8b1b5269b8cb456bde31d2f35876415e8cd4238a155ab988db83fff4fa562fc2",
+    "views/planning.v1.txt": "1dcd60d1040d9471c7ab6a4652015c2804d064506fca4af40ae9377088464c9f",
+    "views/research.v1.txt": "29347a5be7a1665b1c72bf67c8c09fb52bee00fbb6dbad0bcb84e000da82fba2",
+    "views/rsrch_compact.txt": "2ca1ca29f7e47bc4670b034cd90f3e43ce54b7af5f7b61f356372972b64260ca",
+    "views/synth_compact.txt": "809bfbb3e6c5d48b2cb07bcacc29cf43f12c28cb4d0fef0133f1a4c043df8e4f",
+    "views/synthesis.v1.txt": "ab129322d37beea821a6afa1c2c3ac864fd934e64fd9cd78f074553b63e777f8"
+   },
+   "scratch_note": "inventoried by digest only (the exported repository copy under export/ is omitted); not opened, not used"
+  },
+  "B": {
+   "session_type": "general-purpose",
+   "description": "G-ROUTE4 corpus review B",
+   "fresh_session": true,
+   "spawn_depth": 1,
+   "models": {
+    "claude-opus-5-5": 167,
+    "<synthetic>": 1
+   },
+   "first_record_utc": "2026-09-29T21:17:11.262Z",
+   "last_record_utc": "2026-09-29T21:36:50.508Z",
+   "tool_calls": {
+    "Bash": 66,
+    "Read": 9,
+    "Write": 1,
+    "SubagentHandback": 1
+   },
+   "transcript_sha256": "097c4bc1d4053ef95caa73b9d3235f7ba0b001428388e1171ed90b196acb9666",
+   "transcript_records": 337,
+   "terminal_api_errors": [
+    "You've hit your session limit · resets 6:50pm (America/New_York)"
+   ],
+   "status": "REPORT DELIVERED (via the sub-session hand-back; the report-file write was refused by the harness), then the session ended on the provider error above",
+   "report_file": "outputs/REVIEWER_B_REPORT.md",
+   "report_sha256_exact_bytes": "0eba8701a8cec21df82f846c7faacbba92a78f405abbff88d0b29cb2fe9f3320",
+   "report_chars": 20568,
+   "verdict_line": "VERDICT: FINDINGS — BLOCKING 0, MUST-FIX 2, NOTE 8"
+  }
+ }
+}
