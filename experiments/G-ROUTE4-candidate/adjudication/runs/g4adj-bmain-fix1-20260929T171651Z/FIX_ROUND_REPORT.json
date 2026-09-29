@@ -1,0 +1,124 @@
+{
+ "schema_version": "g-route4.fix-round-report.v1",
+ "run_id": "g4adj-bmain-fix1-20260929T171651Z",
+ "round": 1,
+ "fix_commit": "28718001d8e47194a93e444c771ec1167c040c28",
+ "decisions_commit": "6818c50c9d20c7796d2c2cfc95cc51a8fe89f0b5",
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "model": "claude-opus-5-5",
+ "sessions": 26,
+ "exactly_once": true,
+ "no_answer_retries": 0,
+ "in_doubt": 0,
+ "phase1": {
+  "answers_commit": "7efc5985a835c7733c7388d6a0882ee25124ba8c",
+  "agree": 8,
+  "disagree": 6
+ },
+ "phase2": {
+  "answers_commit": "66f21a54a3af0232fd9d1ebfbc2f34dd32d92f7f",
+  "scores_commit": "08bdccf949a59abe131c95069ea3fc9855d6ea7f",
+  "agree": 7,
+  "disagree": 5
+ },
+ "outcomes": {
+  "B4-RSRCH-R1-06": {
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "result": "keep"
+  },
+  "B4-RSRCH-R1-14": {
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "result": "keep"
+  },
+  "B4-RSRCH-R2-06": {
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "result": "not keep: operator decision required (frozen rule 6 within the rule-7 re-adjudication)"
+  },
+  "B4-RSRCH-R2-14": {
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "result": "not keep: operator decision required (frozen rule 6 within the rule-7 re-adjudication)"
+  },
+  "B4-RSRCH-R3-04": {
+   "a1": false,
+   "a2": true,
+   "a3": true,
+   "result": "keep"
+  },
+  "B4-RSRCH-R3-06": {
+   "a1": false,
+   "a2": true,
+   "a3": true,
+   "result": "keep"
+  },
+  "B4-RSRCH-R3-14": {
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "result": "not keep: operator decision required (frozen rule 6 within the rule-7 re-adjudication)"
+  },
+  "B4-RSRCH-R3-18": {
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "result": "not keep: operator decision required (frozen rule 6 within the rule-7 re-adjudication)"
+  },
+  "B4-SYNTH-R1-01": {
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "result": "keep"
+  },
+  "B4-SYNTH-R1-03": {
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "result": "keep"
+  },
+  "B4-SYNTH-R2-13": {
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "result": "keep"
+  },
+  "B4-SYNTH-R2-14": {
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "result": "keep"
+  },
+  "B4-SYNTH-R3-07": {
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "result": "keep"
+  },
+  "B4-SYNTH-R3-09": {
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "result": "keep"
+  }
+ },
+ "disagreement_cause": "every fix-round disagreement is malformed_json (code-fenced JSON); diagnostically, the fenced content of all 11 matches the fixed gold. Verdicts are unchanged.",
+ "pending_operator": [
+  "B4-RSRCH-R2-06",
+  "B4-RSRCH-R2-14",
+  "B4-RSRCH-R3-14",
+  "B4-RSRCH-R3-18"
+ ],
+ "if_not_kept": "the fixture has used its one fix, so it is 'failing again' and is replaced from the matching reserve (round 2 of 2); the single matching reserve for each carries the same P6 'only' defect (see fixes/LATENT_DEFECTS.md)",
+ "matching_reserves": {
+  "B4-RSRCH-R2-06": "B4-RSRCH-R2-X06",
+  "B4-RSRCH-R2-14": "B4-RSRCH-R2-X14",
+  "B4-RSRCH-R3-14": "B4-RSRCH-R3-X14",
+  "B4-RSRCH-R3-18": "B4-RSRCH-R3-X06"
+ }
+}

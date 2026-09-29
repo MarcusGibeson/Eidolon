@@ -1,0 +1,114 @@
+{
+ "B4-RSRCH-R1-06": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R1-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R2-06": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-14": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-04": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-RSRCH-R3-06": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-RSRCH-R3-14": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-18": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R1-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-03": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-13": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ }
+}
