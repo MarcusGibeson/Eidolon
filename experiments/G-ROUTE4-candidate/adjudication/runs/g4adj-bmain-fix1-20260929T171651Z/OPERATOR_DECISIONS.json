@@ -1,0 +1,55 @@
+{
+ "schema_version": "g-route4.operator-decisions.v1",
+ "run_id": "g4adj-bmain-fix1-20260929T171651Z",
+ "round": 1,
+ "decided_by": "operator (Marcus Gibeson)",
+ "date": "2026-09-29",
+ "rule": "frozen step 6 within the step-7 re-adjudication of a fixed fixture: the operator decides, against the derivability rule only",
+ "decisions": [
+  {
+   "fixture_id": "B4-RSRCH-R2-06",
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The fixture has already used its one permitted input fix; all applicable re-checks passed (0 problems over the 584-fixture pool); every remaining adjudicator disagreement is format-only code-fenced JSON whose semantic content matches the fixed gold (diagnostic comparison only; the recorded verdicts stand as disagreements). Not replaced.",
+   "replaced": false
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-14",
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The fixture has already used its one permitted input fix; all applicable re-checks passed (0 problems over the 584-fixture pool); every remaining adjudicator disagreement is format-only code-fenced JSON whose semantic content matches the fixed gold (diagnostic comparison only; the recorded verdicts stand as disagreements). Not replaced.",
+   "replaced": false
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-14",
+   "verdicts": [
+    false,
+    false,
+    false
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The fixture has already used its one permitted input fix; all applicable re-checks passed (0 problems over the 584-fixture pool); every remaining adjudicator disagreement is format-only code-fenced JSON whose semantic content matches the fixed gold (diagnostic comparison only; the recorded verdicts stand as disagreements). Not replaced.",
+   "replaced": false
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-18",
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The fixture has already used its one permitted input fix; all applicable re-checks passed (0 problems over the 584-fixture pool); every remaining adjudicator disagreement is format-only code-fenced JSON whose semantic content matches the fixed gold (diagnostic comparison only; the recorded verdicts stand as disagreements). Not replaced.",
+   "replaced": false
+  }
+ ],
+ "full_cell_consequence": "not triggered: none of the four is an audit-sample fixture"
+}
