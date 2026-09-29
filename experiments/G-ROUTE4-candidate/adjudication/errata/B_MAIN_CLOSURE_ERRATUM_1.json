@@ -1,0 +1,58 @@
+{
+ "schema_version": "g-route4.erratum.v1",
+ "erratum": 1,
+ "corrects": {
+  "file": "adjudication/B_MAIN_CLOSURE.json",
+  "lf_sha256": "863f1aa8708eafa614245473de697f6535c70410d66f2545fd09b41ae33ef42d",
+  "commit": "f07b1a2fa211ec2c4109117e2b5f1b5c742df7e2",
+  "field": "disagreements.batch.by_cause",
+  "unchanged": "the closed file itself is not edited"
+ },
+ "authority": "operator ruling on external corpus review round 1 finding B2 (MUST-FIX), 2026-09-29: issue a separately bound erratum; do not edit the closed artifact",
+ "as_stated": {
+  "format (code fence)": 107,
+  "content": 24
+ },
+ "corrected": {
+  "slots": 131,
+  "fenced_format_only": 91,
+  "fenced_with_a_content_disagreement": 16,
+  "content_only": 24,
+  "involving_content_total": 40
+ },
+ "fenced_with_a_content_disagreement_slots": [
+  "B4-RSRCH-R1-06 slot 1",
+  "B4-RSRCH-R1-14 slot 1",
+  "B4-RSRCH-R2-14 slot 1",
+  "B4-RSRCH-R3-04 slot 1",
+  "B4-RSRCH-R3-14 slot 1",
+  "B4-SYNTH-R1-01 slot 1",
+  "B4-SYNTH-R3-07 slot 1",
+  "B4-SYNTH-R3-09 slot 1",
+  "B4-RSRCH-R2-06 slot 2",
+  "B4-RSRCH-R2-06 slot 3",
+  "B4-RSRCH-R2-14 slot 3",
+  "B4-RSRCH-R3-04 slot 2",
+  "B4-RSRCH-R3-06 slot 2",
+  "B4-RSRCH-R3-14 slot 2",
+  "B4-RSRCH-R3-14 slot 3",
+  "B4-SYNTH-R2-14 slot 2"
+ ],
+ "fenced_with_a_content_disagreement_fixtures": [
+  "B4-RSRCH-R1-06",
+  "B4-RSRCH-R1-14",
+  "B4-RSRCH-R2-06",
+  "B4-RSRCH-R2-14",
+  "B4-RSRCH-R3-04",
+  "B4-RSRCH-R3-06",
+  "B4-RSRCH-R3-14",
+  "B4-SYNTH-R1-01",
+  "B4-SYNTH-R2-14",
+  "B4-SYNTH-R3-07",
+  "B4-SYNTH-R3-09"
+ ],
+ "all_within_the_14_fixed_fixtures": true,
+ "method": "diagnostic only: strip the one outer code fence of each fenced binding answer (binding text re-verified by digest) and re-run the frozen validate_operational and validate_fixture_output against the sealed gold_b.json, which scored the batch. Recorded verdicts are unchanged.",
+ "also_affects": "B_MAIN_CLOSURE.json residual_limitations[0] ('107 of 131 disagreeing answers were fenced ... the fenced content matched gold in every format-only case') is accurate as worded; only the by_cause partition understated content disagreements (40, not 24)",
+ "bind_in": "the final external-review closure and freeze records"
+}

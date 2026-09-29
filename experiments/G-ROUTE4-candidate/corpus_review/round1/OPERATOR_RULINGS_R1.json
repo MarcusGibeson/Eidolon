@@ -1,0 +1,91 @@
+{
+ "schema_version": "g-route4.corpus-review-rulings.v1",
+ "round": 1,
+ "decided_by": "operator (Marcus Gibeson)",
+ "date": "2026-09-29",
+ "reviewer_B_report": {
+  "file": "corpus_review/round1/outputs/REVIEWER_B_REPORT.md",
+  "sha256_exact_bytes": "0eba8701a8cec21df82f846c7faacbba92a78f405abbff88d0b29cb2fe9f3320"
+ },
+ "operator_messages_verbatim": {
+  "step_3_7_authorization": {
+   "transcript_record_uuid": "8f796fd1-2f4a-4e66-a002-79a7f606a2a8",
+   "utc": "2026-09-29T21:12:45.035Z",
+   "text_sha256": "999f25bfb05de9768bfcb7ffbfa923303c4596751adc147eddfcd19552dd1702",
+   "text": "Proceed with G-ROUTE4 design step 3.7 only: the external corpus review.\n\nCurrent checkpoint:\n\n- A′ adjudication is closed at 80/80 KEEP.\n- B′ adjudication and closure are already complete.\n- \"INDEPENDENCE_REPORT.json\" is VALID with 0 problems.\n- \"CONTAMINATION_ANALYSIS.md\" passes.\n- \"A_MAIN_CLOSURE.json\" is complete.\n- Reporting commit: \"990857764f973359a3b653666b151ce5547ee7ca\".\n- No Phase A′ or Phase B′ execution has started.\n- No qualification table exists.\n- No G-ROUTE4 execution modules, campaign directory, or data root exist.\n- \"main\", \"g-route4/seal\", and \"g-route4-seal\" must remain unchanged.\n\nAuthorize the external corpus review required by frozen design step 3.7.\n\nRequirements:\n\n1. Use exactly two fresh reviewers as required by the frozen procedure.\n   \n   - Reviewers must be independent fresh sessions.\n   - They must receive only the materials permitted by the frozen review design.\n   - Preserve reviewer blindness and provenance requirements exactly.\n   - Do not expose hidden gold, adjudication information, or other material unless the frozen review procedure explicitly requires it.\n\n2. Bind the review to the final corpus:\n   \n   - sealed corpus plus all 20 authorized fixes,\n   - current final-corpus digests,\n   - current contamination and independence reports,\n   - amended O2 configuration \"7691126e…\",\n   - and the applicable frozen blueprint/checker artifacts.\n\n3. Ensure reviewers explicitly examine all frozen external-review criteria, including O2 and all known disclosures.\n\n4. Make the following known issues visible only to the extent required by the frozen reviewer procedure and disclosure rules:\n   \n   - four kept main-corpus fixtures carrying the known SY1 defect:\n     - A4-SYNTH-R1-01\n     - B4-SYNTH-R1-02\n     - B4-SYNTH-R2-15\n     - B4-SYNTH-R3-08\n   - 15 unused reserves with known defects,\n   - the latent-defect disclosures already recorded,\n   - the fact that adjudication used amended O2 config \"7691126e…\".\n\nDo not prejudge these issues for the reviewers and do not repair anything before review.\n\n5. Preserve each reviewer output exactly before comparing or acting on it.\n   \n   - No retries unless the frozen procedure explicitly permits them.\n   - No silent output repair.\n   - No replacing reviewer judgments because they are inconvenient.\n   - Record session/provider/model/config bindings and journal integrity as required.\n\n6. Apply the frozen review disposition rules exactly.\n   \n   - Acceptance requires 0 BLOCKING findings.\n   - Every MUST-FIX must be resolved before external corpus review can close.\n   - If a fixture change is required, use only the frozen fix/replacement procedure.\n   - Any changed or replaced fixture must receive whatever re-checking and re-adjudication the frozen procedure requires.\n   - Do not loosen gold, criteria, thresholds, or review rules to obtain acceptance.\n\n7. If either reviewer produces a BLOCKING or MUST-FIX finding:\n   \n   - stop at the proper decision point,\n   - preserve the finding,\n   - identify the exact fixture/artifact and frozen remedy available,\n   - and return it to me before making any discretionary operator decision.\n\n8. If both reviews satisfy the frozen acceptance criteria with no unresolved MUST-FIX findings:\n   \n   - generate the required external-review closure artifact(s),\n   - run the offline integrity and provenance checks,\n   - commit and push only the authorized review artifacts,\n   - and determine the next allowed step.\n\nDo not begin:\n\n- G-ROUTE4 execution-code implementation,\n- implementation review,\n- certification,\n- differential testing,\n- execution freeze,\n- Phase A′,\n- Phase B′,\n- or qualification-table construction.\n\nReturn:\n\n- reviewer identities/session bindings,\n- each reviewer’s findings,\n- BLOCKING/MUST-FIX/advisory counts,\n- any disagreements between reviewers,\n- disposition of every finding,\n- whether external corpus review is accepted or remains open,\n- all artifact paths and digests,\n- commit hash if applicable,\n- integrity status,\n- and the exact next allowed step.\n\nDo not proceed beyond the external corpus review closure or required operator decision point."
+  },
+  "rulings": {
+   "transcript_record_uuid": "85866ca7-a752-4cfc-8bfe-ba281d11dde6",
+   "utc": "2026-09-29T23:24:01.248Z",
+   "text_sha256": "e4b86cfa96ee037308d85ebcbac93d24de8063e26631002d6fcba4944081cc9f",
+   "text": "Proceed with the following rulings.\n\nDecision 1 — Reviewer A: choose (a), resume the same session.\n\nResume the existing Reviewer A session rather than starting a fresh reviewer. Its independent derivation of the 385 fixtures was already completed and sealed before the provider rate limit interrupted the review, so preserving that session retains the existing independent judgment rather than discarding and regenerating it.\n\nGive Reviewer A only these additional instructions:\n\n1. Continue reviewing commit \"97afe8a\".\n2. Return the completed report as the final hand-back message because repository file writes are unavailable.\n3. Do not inspect \"corpus_review/round1/outputs/\" or any newly created Reviewer B material.\n\nDo not otherwise change the original review brief, reveal Reviewer B’s findings, or rerun/reseed Reviewer A’s completed derivation.\n\nB1 ruling — step 7 interpretation\n\nMy ruling is that step 7 does not require automatic replacement merely because a fixed fixture's re-adjudication result does not literally end in \"keep\".\n\nThe controlling question is whether re-adjudication establishes an unresolved defect in the fixture/gold pair. If the remaining disagreement is caused only by a fenced/non-admissible adjudicator answer and the corrected fixture and gold remain independently defensible under the frozen procedure, the fixture may be retained.\n\nApply that interpretation consistently to the 4 B′ and 5 A′ retained fixtures. No re-adjudication is required.\n\nThe record must explicitly disclose the timing difference:\n\n- A′ declared this interpretation before its fix-round disposition.\n- B′ did not settle this interpretation until after its fix-round results and reserve-defect information were known.\n\nDo not rewrite that history. Add an annotation/decision record clarifying the B′ wording such as \"not keep\" / \"did not end in keep\" under this ruling.\n\nB2 ruling — issue an erratum\n\nDo not edit the closed \"B_MAIN_CLOSURE.json\".\n\nCreate a separately bound erratum correcting its characterization of the 107 fenced disagreements.\n\nThe correct disclosure is:\n\n- 91 format-only fenced disagreements\n- 16 fenced disagreements that also contain a content disagreement\n- 24 content-only disagreements\n- therefore 40 total disagreements involving content\n\nPreserve the original closed artifact unchanged and bind the erratum to it in the final review/freeze records.\n\nB3 — record the disclosure now\n\nAdd a one-line historical disclosure to the O2 amendment record stating that the single HTTP 400 billing rejection was classified by explicit operator ruling as a no-answer despite the literal wording of the amended classification rule, and record that the resumed run segment used a different harness commit.\n\nDo not reinterpret or rerun the historical result.\n\nB5 — carry forward, no disposition yet\n\nDo not modify \"A4-PLAN-R3-04\", its gold, or its historical adjudication.\n\nExplicitly carry Reviewer B’s concern forward into the external-review reconciliation and require it to be considered under step 10 after Reviewer A reports. The three adjudicator refusals are insufficient by themselves to authorize a post hoc gold change.\n\nAlso make these final-freeze conditions:\n\n- B7: the final independence re-check using the forked module must reproduce the sealed values.\n- B8: bind the B′ fix-round per-cell counts in the final freeze records.\n\nPreserve B9 as an existing disclosure.\n\nFor B10, if the original in-chat batch-start records can be bound without reconstructing or interpreting them, include them as provenance. Do not create synthetic replacements if the original records are unavailable.\n\nAfter making only the permitted documentation/provenance changes above, resume Reviewer A. Do not close round 1 until Reviewer A's report has been preserved and the two reviewer reports have been reconciled, including any disagreements and all MUST-FIX findings."
+  }
+ },
+ "dispositions": {
+  "reviewer_A": "Decision 1 (a): resume the same session; it is given only three instructions (continue reviewing 97afe8a; return the completed report as the final hand-back message; do not inspect corpus_review/round1/outputs/ or any newly created Reviewer B material). The brief is otherwise unchanged; its completed derivation is not re-run or re-seeded.",
+  "B1": {
+   "class": "MUST-FIX",
+   "status": "RESOLVED by operator ruling",
+   "ruling": "step 7 does not require automatic replacement merely because a fixed fixture's re-adjudication does not literally end in 'keep'; the controlling question is whether re-adjudication establishes an unresolved defect in the fixture/gold pair. Applied to the 4 B′ and 5 A′ retained fixtures; no re-adjudication.",
+   "record": "adjudication/errata/STEP7_RULING_ANNOTATION.md (annotates the historical 'not keep' / 'did not end in keep' wording; the history is not rewritten; the timing difference is disclosed)"
+  },
+  "B2": {
+   "class": "MUST-FIX",
+   "status": "RESOLVED by erratum",
+   "record": "adjudication/errata/B_MAIN_CLOSURE_ERRATUM_1.json",
+   "erratum_lf_sha256": "67fc63af2d729316206c644fe50d2b0a938a5151780db2c0f57b6dca194ad5cf",
+   "corrected": {
+    "slots": 131,
+    "fenced_format_only": 91,
+    "fenced_with_a_content_disagreement": 16,
+    "content_only": 24,
+    "involving_content_total": 40
+   },
+   "closed_artifact_unchanged": {
+    "file": "adjudication/B_MAIN_CLOSURE.json",
+    "lf_sha256": "863f1aa8708eafa614245473de697f6535c70410d66f2545fd09b41ae33ef42d"
+   },
+   "bind_in": "the final external-review closure and freeze records"
+  },
+  "B3": {
+   "class": "NOTE",
+   "status": "DISCLOSED now",
+   "record": "adjudication/O2_AMENDMENT_2026-09-29.md (appended historical disclosure); the historical result is not reinterpreted or re-run"
+  },
+  "B4": {
+   "class": "NOTE",
+   "status": "no action (reviewer proposed none)"
+  },
+  "B5": {
+   "class": "NOTE",
+   "status": "CARRIED FORWARD, no disposition yet",
+   "fixture": "A4-PLAN-R3-04",
+   "ruling": "not modified (fixture, gold, historical adjudication); to be considered under design step 10 in the round-1 reconciliation after Reviewer A reports; the three adjudicator refusals are insufficient by themselves to authorize a post hoc gold change"
+  },
+  "B6": {
+   "class": "NOTE",
+   "status": "no action (reviewer proposed none)"
+  },
+  "B7": {
+   "class": "NOTE",
+   "status": "FREEZE CONDITION",
+   "condition": "the final independence re-check using the forked module must reproduce the sealed values (INDEPENDENCE_REPORT.json)"
+  },
+  "B8": {
+   "class": "NOTE",
+   "status": "FREEZE CONDITION",
+   "condition": "bind the B′ fix-round per-cell counts in the final freeze records"
+  },
+  "B9": {
+   "class": "NOTE",
+   "status": "preserved as an existing disclosure"
+  },
+  "B10": {
+   "class": "NOTE",
+   "status": "PROVENANCE BOUND",
+   "record": "corpus_review/round1/BATCH_START_PROVENANCE.json (the original in-chat operator messages of the adjudication period, verbatim, bound per transcript record; no synthetic replacement)",
+   "record_lf_sha256": "2d3523601e9f95e5c6ee558b09ce8f93c4f5191635faa55bbb0629474505a6b7"
+  }
+ },
+ "round_status": "OPEN: round 1 does not close until Reviewer A's report is preserved and the two reports are reconciled, including any disagreements and all MUST-FIX findings"
+}

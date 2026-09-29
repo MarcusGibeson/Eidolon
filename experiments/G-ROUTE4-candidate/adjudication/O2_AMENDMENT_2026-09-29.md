@@ -44,3 +44,5 @@ design's rule that nothing changes after provider contact is not engaged: this a
 sealed configuration by `o2_amendment.py`, with digest
 `7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516`. Every adjudication request and result records
 that digest.
+
+**Historical disclosure (added 2026-09-29, operator ruling on corpus-review finding B3).** In the A′ batch `g4adj-amain-20260929T180225Z`, the single HTTP 400 billing rejection (A4-PLAN-R1-03 slot 3, invocation 1) was classified by explicit operator ruling as a no-answer (journal seq 214–215), despite the literal wording of the amended classification rule (any other 400 is `request_rejected`: the batch stops, not retried); its single frozen retry bound. The resumed run segment used harness commit `f0c441087d00ad64a98fb26f67dd04fa5a804907`, not the `run_start` harness commit `160dea16e39d64ddb4382840dfbb87c8cd0772a7`. The historical result is not reinterpreted or re-run.

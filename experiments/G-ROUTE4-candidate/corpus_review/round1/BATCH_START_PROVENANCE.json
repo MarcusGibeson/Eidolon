@@ -1,0 +1,168 @@
+{
+ "schema_version": "g-route4.batch-start-provenance.v1",
+ "finding": "Reviewer B, B10 (NOTE): the operator's in-chat batch starts are not in the repository records",
+ "rule": "every genuine operator message in the session transcript between the audit-sample commit and the last adjudication journal record, bound verbatim; each filed against the run whose first journal record it precedes, or the run whose journal span contains it. No selection, reconstruction or interpretation.",
+ "transcript": {
+  "session_id": "ee541c8c-4d7b-4754-92ec-54959f6c39f3",
+  "note": "the transcript is still being appended to, so it is bound per record (uuid and text digest), not as a whole file"
+ },
+ "window_utc": [
+  "2026-09-29T05:47:07Z",
+  "2026-09-29T18:53:59Z"
+ ],
+ "runs_first_and_last_journal_record_utc": {
+  "g4adj-bmain-20260929T155837Z": [
+   "2026-09-29T15:58:39Z",
+   "2026-09-29T16:16:51Z"
+  ],
+  "g4adj-bmain-fix1-20260929T171651Z": [
+   "2026-09-29T17:16:53Z",
+   "2026-09-29T17:18:30Z"
+  ],
+  "g4adj-amain-20260929T180225Z": [
+   "2026-09-29T18:02:27Z",
+   "2026-09-29T18:20:21Z"
+  ],
+  "g4adj-amain-fix1-20260929T185315Z": [
+   "2026-09-29T18:53:17Z",
+   "2026-09-29T18:53:59Z"
+  ]
+ },
+ "messages": [
+  {
+   "transcript_record_uuid": "5807edcf-810a-4604-bfc6-cf47b4666110",
+   "utc": "2026-09-29T12:38:02.307Z",
+   "text_sha256": "7321a494469faab1a3d27eeb62efb9b8743bee698d730b07ce88e2cf6fc324f0",
+   "chars": 2334,
+   "precedes_run": "g4adj-bmain-20260929T155837Z",
+   "during_run": null,
+   "text": "\n\n<pasted_content id=\"157d\">\nThis is a good seal result, with one governance step still outstanding before adjudication.\nThe important distinction is:\nThe seal itself is valid and already frozen: `50e6b46994299ffd71c97aa3f81f30637efaba1c`\nThe audit sample is valid and derived afterward: `29f5a477693d703699af62f9fc0e0945c9c66be2`\nBut `main` still points to the pre-seal parent: `1156d064...`\nBecause the frozen requirement specifically says the seal is the single commit on `main` whose parent is `1156d06`, I would not begin adjudication yet. We should satisfy that literally rather than deciding that “it’s on another branch but spiritually on main” is close enough. We have already learned what spiritual compliance with test protocols gets us.\nThe clean next operation is:\nFast-forward `main` to the seal commit `50e6b469...` only.\nDo not fast-forward `main` through the audit-sample child. That preserves the intended structure:\n\n```\n1156d06  frozen blueprint\n   │\n   ▼\n50e6b469  SEAL  ← main\n   │\n   ▼\n29f5a477  audit sample\n              ↑\n       g-route4/seal\n```\n\nThat gives us exactly what the rule appears to require:\n\n* seal is the direct child of `1156d06`;\n* seal is now on `main`;\n* audit sample remains post-seal;\n* audit sample doesn't alter the sealed corpus;\n* seal hash doesn't change;\n* audit sample hash doesn't change;\n* no model contact has occurred.\n\nI also don't see the authoring checkpoint `8d890b2` being another child of `1156d06` as a problem for the stated rule, because it isn't a seal and isn't on `main`. It should remain disclosed, as Claude already did. The important part is that there is exactly one designated seal commit on the governed mainline.\nOnce `main → 50e6b469` is pushed and independently verified, I'd record one final seal activation / mainline verification confirming:\nlocal main = remote main = seal commit\nseal parent = `1156d06`\naudit sample remains child of seal and byte-identical\nno seal contents changed\nno model contact occurred\nThen we're genuinely ready for the next phase:\nstart the frozen adjudication process using the 38-fixture audit sample and frozen O2 configuration.\nSo we're essentially there. This is no longer scientific repair. It's one last branch-pointer/governance operation before we finally let a model touch the experiment.\n</pasted_content id=\"157d\">\n"
+  },
+  {
+   "transcript_record_uuid": "6d7a7cca-9ab1-4b98-8324-31584ffb84fd",
+   "utc": "2026-09-29T12:40:36.210Z",
+   "text_sha256": "d5068b61c04063e94de5bd29a42f1d57d3aa8d35008edcab9a8e75278357f328",
+   "chars": 1006,
+   "precedes_run": "g4adj-bmain-20260929T155837Z",
+   "during_run": null,
+   "text": "\n\n<pasted_content id=\"157d\">\nUse the annotated tag.\nThat preserves the exact governed structure:\n`main` → seal\n`g-route4/seal` → audit sample\ntag → seal activation record\nNo branch moves, no new child on `main`, no changing the audit-sample branch tip just to record paperwork. Cleaner, simpler, less opportunity for Git to invent a new religion.\nI’d use something like:\n`g-route4-seal`\nand have the annotation record:\n\n* seal commit `50e6b469...`\n* seal parent `1156d064...`\n* manifest digest `98306eeb...`\n* O2 digest `1658b9a2...`\n* audit-sample commit `29f5a477...`\n* audit-sample digest `166f1f44...`\n* confirmation that local/remote `main` equal the seal\n* confirmation that `g-route4/seal` remains the audit-sample child\n* confirmation that no adjudicator/model contact occurred before activation\n\nThen push the tag and verify it from a fresh fetch.\nAfter that, yes, the next step is the frozen adjudication. No more prep layer between us and actually starting G-ROUTE4.\n</pasted_content id=\"157d\">\n"
+  },
+  {
+   "transcript_record_uuid": "10b42dd6-dd1f-43d5-9977-8b8f1e71ddd4",
+   "utc": "2026-09-29T15:32:00.549Z",
+   "text_sha256": "87e43a7070218217c0336163dee15b53dbb9161344aadf6256f4b59eba703b24",
+   "chars": 4454,
+   "precedes_run": "g4adj-bmain-20260929T155837Z",
+   "during_run": null,
+   "text": "\n\n<pasted_content id=\"157d\">\nStart the frozen G-ROUTE4 O2 adjudication now.\nThis is the first model-contact stage of G-ROUTE4. The corpus, seal, audit sample, and O2 configuration are frozen. Do not alter them based on anything the adjudicator says.\nFrozen state\n\n* `main` / seal commit: `50e6b46994299ffd71c97aa3f81f30637efaba1c`\n* Seal parent: `1156d0645b1b113b91c65e4a485b7f75ffa10061`\n* Activation tag: `g-route4-seal`\n* Audit-sample commit: `29f5a477693d703699af62f9fc0e0945c9c66be2`\n* Audit sample: 38 fixtures\n* Audit-sample digest: `166f1f44c111a07fd4daee5fd3f12115d02285f3076ad16489b972d674bbd29e`\n* Frozen O2 model: `claude-opus-5-5`\n* Frozen O2 channel: Messages API\n* Frozen O2 configuration digest: `1658b9a2a32fa176c8ca679d5407725b17379902610869fc3cdc91d03df88029`\n\nBefore contacting the adjudicator, verify all of those bindings directly from the pushed seal and audit-sample commits. If any digest, commit, configuration, sample membership, or rendering does not match, stop without model contact and report the mismatch.\nAdjudication rules\nUse the frozen O2 configuration exactly.\n\n* Use `claude-opus-5-5`.\n* Use the Messages API channel.\n* Use the frozen adjudicator prompt and frozen input rendering byte-for-byte.\n* Use the frozen settings exactly.\n* Fresh independent session for every fixture.\n* No tools.\n* Do not expose gold, rationales, dispositions, authoring metadata, reserve information, expected labels, or audit annotations to the adjudicator.\n* The first logged substantive answer is binding.\n* Apply only the retry behavior explicitly permitted by the frozen protocol. Do not silently re-run an answer because it looks wrong, malformed, surprising, or inconvenient.\n* Do not choose among multiple responses.\n* Do not repair model output by contacting the model again unless the frozen protocol explicitly permits it.\n* Never substitute a different model or channel.\n\nWrite-ahead and integrity\nBefore each model request, persist whatever frozen lifecycle record is required to establish that the fixture is about to be contacted.\nAfter each response:\n\n* preserve the raw response exactly;\n* record the request/response binding and model receipt required by the protocol;\n* validate structure using the frozen adjudication validator;\n* preserve failures honestly;\n* do not overwrite or discard malformed, incorrect, or incomplete answers;\n* do not inspect later outcomes to decide whether an earlier fixture should be retried.\n\nIf provider state becomes ambiguous, a response may have been received without being durably recorded, or any integrity condition prevents proving exactly-once contact, stop the adjudication rather than repeating the call.\nScope\nAdjudicate only the 38 frozen audit-sample fixtures.\nDo not:\n\n* adjudicate the rest of the 584-fixture corpus;\n* use reserves;\n* author or replace fixtures;\n* alter the audit sample;\n* modify gold;\n* modify the seal;\n* modify O2;\n* change validators or thresholds;\n* start G-ROUTE4 execution;\n* start Phase A′ or Phase B′ model runs;\n* implement routing changes.\n\nAfter all 38 adjudications\nOnce all permitted adjudication sessions are complete:\n\n1. validate that every frozen sample fixture received exactly the permitted contact history;\n2. verify no non-sample fixture was contacted;\n3. score/review the adjudication using only the frozen procedure;\n4. report any fixture requiring human/adjudication escalation exactly as the protocol specifies;\n5. do not change the corpus in response to an adjudicator disagreement;\n6. do not reinterpret a failed adjudication as a pass.\n\nFinal report\nReport:\n\n* adjudication run identifier;\n* seal commit and sample commit actually used;\n* O2 configuration digest actually used;\n* model and channel;\n* number of fixtures scheduled;\n* number contacted;\n* number with valid first responses;\n* any permitted no-answer retries;\n* malformed/invalid responses;\n* any integrity interruptions;\n* adjudication agreement/disagreement results required by the frozen protocol;\n* every fixture escalated or flagged;\n* whether the audit/adjudication stage passes its frozen acceptance requirements;\n* exact artifact locations and digests;\n* confirmation that the seal, sample, gold, and thresholds were unchanged;\n* confirmation that no fixture outside the 38-item sample was contacted.\n\nThen stop.\nDo not continue into the full G-ROUTE4 experimental execution until Marcus explicitly authorizes the next stage.\n</pasted_content id=\"157d\">\n"
+  },
+  {
+   "transcript_record_uuid": "41c676a1-88dd-42da-b4e8-d34c9964d629",
+   "utc": "2026-09-29T15:38:50.022Z",
+   "text_sha256": "fec7ee1ef5d2f0eaa97b89388a67307ce017584c5daff00d397a4a1eead8143c",
+   "chars": 32,
+   "precedes_run": "g4adj-bmain-20260929T155837Z",
+   "during_run": null,
+   "text": "why do i need anthropic api key?"
+  },
+  {
+   "transcript_record_uuid": "89abacef-d7f2-43ee-ac82-e9470be5df7f",
+   "utc": "2026-09-29T15:40:36.905Z",
+   "text_sha256": "21a97397d2d151401d4c35d6162d242ae4fe3765b450044c3406c178ad31b7cd",
+   "chars": 31,
+   "precedes_run": "g4adj-bmain-20260929T155837Z",
+   "during_run": null,
+   "text": "how much will this cost in api?"
+  },
+  {
+   "transcript_record_uuid": "2551de89-b925-430f-a0e4-de63216c65e3",
+   "utc": "2026-09-29T15:42:03.015Z",
+   "text_sha256": "1bd017830443c0b0227d0bf2efe6aaa14ad0a0712bcc28180a087abfeca5b70a",
+   "chars": 27,
+   "precedes_run": "g4adj-bmain-20260929T155837Z",
+   "during_run": null,
+   "text": "where do i put the api key?"
+  },
+  {
+   "transcript_record_uuid": "56791029-42cd-4f76-a364-66947bc682e3",
+   "utc": "2026-09-29T15:45:02.260Z",
+   "text_sha256": "874434595556a036ff6ea2284ddddb917f85edc78a7b3ed0d03cc2db78c4972d",
+   "chars": 2613,
+   "precedes_run": "g4adj-bmain-20260929T155837Z",
+   "during_run": null,
+   "text": "\n\n<pasted_content id=\"157d\">\nUse the frozen protocol literally and proceed with the B′ main batch of 305 fixtures. Do not create a sample-only batch or record a deviation.\nBefore any model contact:\n\n1. Verify `ANTHROPIC_API_KEY` is present without printing or logging its value.\n2. Check Anthropic’s current published Messages API documentation for compatibility of the frozen O2 configuration, specifically:\n   * model id `claude-opus-5-5`;\n   * `temperature: 0`;\n   * thinking disabled;\n   * all other frozen request settings.\n3. If the published API contract shows any frozen O2 setting is invalid or incompatible, stop before contact and report the exact mismatch. Do not silently substitute another setting or model.\n\nBuild the adjudication harness on a new branch from audit-sample commit `29f5a477693d703699af62f9fc0e0945c9c66be2`.\nRequirements:\n\n* Do not move `main` or `g-route4/seal`.\n* Implement the frozen B′ adjudication procedure exactly.\n* Test the harness completely offline against a fake provider before contacting Anthropic.\n* Enforce write-ahead exactly-once lifecycle handling.\n* Fresh blind session for every adjudicator slot.\n* No tools.\n* First substantive response binds.\n* Only the frozen no-answer retry is permitted.\n* Never retry because an answer is wrong, malformed, surprising, or disagrees with gold.\n* Persist raw responses before any comparison.\n* Commit the required answer digest(s) before comparison with gold, exactly as the frozen design requires.\n* Never expose gold, rationales, dispositions, audit membership, or authoring metadata to the adjudicator.\n\nRun B′ main: 305 fixtures.\nEvery fixture receives adjudicator 1.\nThe frozen 38-fixture audit sample always receives adjudicators 2 and 3 as required by N4, regardless of adjudicator-1 agreement.\nAny non-sampled fixture that meets the frozen disagreement condition also receives adjudicators 2 and 3 according to the frozen procedure.\nDo not use reserves, alter fixtures, change gold, modify thresholds, or begin Phase A′/B′ experimental execution beyond this adjudication stage.\nBefore launch, report:\n\n* harness branch and commit;\n* offline fake-provider test results;\n* API compatibility result;\n* exact number of scheduled first-adjudicator slots;\n* 38 audit fixtures bound to their required additional slots;\n* minimum expected contact count;\n* confirmation that the key was detected but never printed.\n\nThen launch only if every pre-contact gate passes.\nIf provider behavior, credentials, request compatibility, or lifecycle integrity becomes ambiguous, stop rather than improvising.\n</pasted_content id=\"157d\">\n"
+  },
+  {
+   "transcript_record_uuid": "4db2113b-6359-4231-931d-ff5b22c7f224",
+   "utc": "2026-09-29T15:48:18.811Z",
+   "text_sha256": "63cd8440399e54b77e104bd970ca249c77ac6f2d52abbba287790a991582df52",
+   "chars": 2486,
+   "precedes_run": "g4adj-bmain-20260929T155837Z",
+   "during_run": null,
+   "text": "\n\n<pasted_content id=\"157d\">\nUse the recommended O2 amendment and keep `claude-opus-5-5`.\nRecord a dated post-seal adjudication amendment before any model contact.\nThe amendment must:\n\n* preserve the sealed O2 configuration and digest `1658b9a2…` unchanged as the historical frozen configuration;\n* explicitly state that current Anthropic API requirements make two sealed request parameters invalid for `claude-opus-5-5`;\n* record the provider-documentation evidence and date checked;\n* create a new amended adjudication-config digest;\n* bind every adjudication request and result to that amended digest;\n* not modify or rewrite the seal.\n\nAmended request settings\n\n* Model: `claude-opus-5-5`\n* Channel: Messages API\n* Thinking: omit the parameter; adaptive thinking is provider-required\n* Temperature: omit the parameter; non-default temperature is unsupported\n* Effort: high, explicitly frozen\n* Maximum output tokens: 32,000\n* Tools: none\n* Server-side model fallback: explicitly disabled\n* Fresh session for every adjudicator slot\n* All existing frozen prompt, rendering, blindness, retry, and lifecycle rules remain unchanged\n\nBinding-answer rule\nThe binding answer is the concatenated text content of the first final assistant message returned for that adjudicator slot.\nA refusal, malformed final answer, or truncated final answer still binds and is scored under the frozen procedure. Do not retry it merely because it is unusable or disagrees with gold. Only the already-frozen no-answer retry is permitted.\nBecause no adjudication has occurred yet, no fixture requires re-adjudication.\nBefore model contact:\n\n1. write and commit the amendment on the new adjudication branch based on the audit-sample commit;\n2. compute and report the amended O2 digest;\n3. build the adjudication harness;\n4. test it offline against a fake provider, including successful response, refusal, malformed answer, truncation, no-answer retry, provider error, crash-before-send, crash-after-send-before-record, and exactly-once recovery cases;\n5. verify the API key is loaded without printing or logging it;\n6. verify all 305 B′ first-adjudicator slots and the mandatory additional slots for the 38 audit fixtures are correctly scheduled;\n7. report the minimum expected contact count;\n8. stop before launch if any frozen rule conflicts with this amendment.\n\nIf all gates pass, provide the pre-launch report and then begin the B′ adjudication batch as previously authorized.\n</pasted_content id=\"157d\">\n"
+  },
+  {
+   "transcript_record_uuid": "cba7ae45-3579-480f-b906-92b0160c07d2",
+   "utc": "2026-09-29T16:56:38.901Z",
+   "text_sha256": "e0f1fee6b85d7899e85af22c65fee81345be9c3bb414151057a1add99bf9f47a",
+   "chars": 1957,
+   "precedes_run": "g4adj-bmain-fix1-20260929T171651Z",
+   "during_run": null,
+   "text": "Use this:\n\n> Continue G-ROUTE4 from the completed B′ main adjudication run on branch g-route4/adjudication.\n\nDo not start A′ adjudication, Phase A′, Phase B′, qualification-table construction, or any new provider/model calls.\n\nYour task is to help me resolve the 48 escalated B′ fixtures under the frozen adjudication rules.\n\nFor each escalated fixture:\n\nread the sealed fixture, sealed gold, rationale, all available adjudicator verdicts, and sealed raw answers;\n\ndistinguish format-only disagreement from actual semantic/content disagreement;\n\ndo not unwrap, rescore, or reinterpret code-fenced JSON as a valid validator pass;\n\nevaluate only the frozen derivability question: whether the sealed gold is uniquely justified by the fixture as written;\n\npresent one of the three allowed operator outcomes:\n\n1. gold right → keep fixture;\n\n\n2. gold wrong → fix gold;\n\n\n3. input ambiguous → fix input;\n\n\n\ngive a short evidence-based reason for each recommendation;\n\ndo not change any fixture, gold, rationale, validator, threshold, or corpus file without my explicit per-fixture approval.\n\n\nTriage the 48 into two groups first:\n\nformat-only escalations;\n\nsubstantive content escalations.\n\n\nReview the substantive-content group first, since those are the cases most likely to need an actual operator decision. Then review the format-only group.\n\nPay special attention to these four audit-sample fixtures:\n\nB4-PLAN-R3-13\n\nB4-RSRCH-R1-09\n\nB4-RSRCH-R2-13\n\nB4-RSRCH-R4-01\n\n\nFor each of those, explicitly state whether choosing gold wrong or input ambiguous would trigger the frozen full-cell consequence.\n\nBefore making any changes, produce a review table with:\n\nfixture ID;\n\nclass / risk;\n\nwhether disagreement is format-only or substantive;\n\nadjudicator verdict summary;\n\nyour recommended operator outcome;\n\nreason;\n\nwhether a full-cell consequence would be triggered.\n\n\nStop after presenting the review table and wait for my decisions. Do not apply any fixes yet.\n"
+  },
+  {
+   "transcript_record_uuid": "7300b6db-f322-41d4-9ff9-be263fa2ce42",
+   "utc": "2026-09-29T17:10:53.220Z",
+   "text_sha256": "49ef5a60b4656419bb6f6ea26751e252f57b45d123e1688c05246a596e1daf27",
+   "chars": 1896,
+   "precedes_run": "g4adj-bmain-fix1-20260929T171651Z",
+   "during_run": null,
+   "text": "Approve the grouped operator decisions from your read-only review.\n34 format-only escalations: record gold right → keep for all 34 exactly as listed in your review. Do not modify their fixtures, gold, rationales, or validator results.\n14 substantive escalations: record input ambiguous → fix input for all 14 exactly as listed.\nApply only the minimum fixture-side repair needed to restore the frozen intended construct:\nFor the seven Research P6 cases, replace the exclusionary only wording with non-exclusionary narrower-scope wording that preserves P6 as unresolved / scope_mismatch.\nFor the six Synthesis SY1 cases, move the causal statement into a finding observation as required by the frozen SY1 rule, while preserving the slot’s other frozen observation-band, role, mergeability, family, and feature requirements.\nFor B4-RSRCH-R3-04, replace the weak anonymity paraphrase with one that plainly establishes anonymity while preserving the frozen P4 two-lineage feature.\nFor each repaired fixture:\npreserve every unaffected frozen feature;\nrerun all applicable structural, cap, independence, O6, and fixture checks;\ntreat this as the fixture’s one allowed fix;\nre-adjudicate it from scratch exactly as the frozen protocol requires;\nif that fix fails re-checking or re-adjudication, follow the frozen replacement procedure rather than improvising another repair.\nDo not modify any of the 34 kept fixtures.\nAlso produce a separate known-latent-defects report for the analogous defects already identified in uncontacted A′ fixtures and reserves, plus the three B′ SY1 fixtures that passed through. Do not alter any of those yet. State what the frozen protocol permits for each category before taking action.\nDo not start Phase A′, Phase B′, qualification-table construction, or unrelated model calls.\nWhen the 14 repairs and required re-adjudications are complete, report their outcomes and stop"
+  },
+  {
+   "transcript_record_uuid": "f6a06751-6b4c-469c-b2ca-954114f56148",
+   "utc": "2026-09-29T17:50:22.433Z",
+   "text_sha256": "066457c6c765258e3a33125b08c702bfd0f6f737b0cd8e51505c9cc0159c9d09",
+   "chars": 1170,
+   "precedes_run": "g4adj-amain-20260929T180225Z",
+   "during_run": null,
+   "text": "Approve gold right → keep for all four remaining fixed-fixture escalations:\nB4-RSRCH-R2-06\nB4-RSRCH-R2-14\nB4-RSRCH-R3-14\nB4-RSRCH-R3-18\nBasis: each fixture has already used its one permitted input fix, all applicable re-checks passed, and every remaining adjudicator disagreement is format-only code-fenced JSON whose semantic content matches the fixed gold. Do not replace any of these fixtures.\nRecord the operator decisions with that rationale and close the B′ main adjudication batch.\nThen produce a final B′ adjudication closure report containing:\ntotal B′ fixtures;\nnumber kept directly;\nnumber fixed and then kept;\nnumber replaced, if any;\nnumber unresolved, if any;\nnumber of provider sessions and retries;\nany sampled/full-cell consequences triggered;\nall known residual limitations, including the code-fence behavior and the latent-defect categories already documented.\nDo not modify the sealed corpus, gold, validators, blueprint, audit sample, or thresholds.\nDo not start A′ adjudication, Phase A′, Phase B′, qualification-table construction, or any other model calls.\nStop after the B′ adjudication stage is formally closed and report the exact commit hash."
+  },
+  {
+   "transcript_record_uuid": "850fdc4d-c026-4536-aec9-117c0d2b2e44",
+   "utc": "2026-09-29T17:59:22.158Z",
+   "text_sha256": "67eea9608338b6fd691bcdb11ff31820dca7dd0bb0245a0054f4c3f13bf9fe2e",
+   "chars": 2320,
+   "precedes_run": "g4adj-amain-20260929T180225Z",
+   "during_run": null,
+   "text": "Continue G-ROUTE4 from the formally closed B′ main adjudication stage at commit f07b1a2fa211ec2c4109117e2b5f1b5c742df7e2 on branch g-route4/adjudication.\nThe B′ stage is closed: 305/305 fixtures kept, 14 with recorded fixes, 0 replaced, 0 unresolved. Do not reopen or rescore B′.\nYour next task is A′ adjudication only.\nRequirements:\nUse the sealed A′ corpus exactly as frozen, with no pre-editing of known latent defects.\nPreserve the sealed corpus, gold, validators, blueprint, audit sample, thresholds, and seal tag.\nUse the same amended O2 adjudication configuration and the same committed exactly-once harness/integrity rules already used for B′.\nEvery A′ fixture must receive the full frozen adjudication treatment required by the design.\nCommit and push every adjudicator answer set before comparing it with gold.\nDo not unwrap or reinterpret code-fenced JSON as a valid validator pass. Diagnostic comparison of fenced content is allowed only to distinguish format disagreement from semantic disagreement, exactly as in B′.\nDo not silently repair the known latent P6 or SY1 defects before adjudication. Let them surface under the frozen rules.\nIf a fixture escalates, stop at the point where the frozen protocol requires my operator decision. Do not choose gold right, gold wrong, or input ambiguous on my behalf.\nIf a fixture is approved for an input fix later, apply only its one permitted minimal fix, rerun all frozen checks, and re-adjudicate from scratch.\nDo not start the G-ROUTE4 Phase A′ qualification run, build a qualification table, start Phase B′, or make any unrelated provider/model calls.\nBefore the first A′ provider call, verify and report:\ncurrent branch and commit;\nseal and blueprint bindings;\nA′ fixture count and schedule;\nadjudicator configuration digest;\nharness/test status;\nthat no B′ artifact is being reopened or modified.\nThen run the A′ adjudication batch.\nWhen the batch reaches an operator-decision boundary, report:\ntotal A′ fixtures;\ntotal adjudicator sessions;\ndirect keeps;\nescalations;\nformat-only disagreements;\nsubstantive disagreements;\nany known latent-defect fixtures that surfaced;\nany integrity/retry issues;\nexact commits/digests for sealed answers and scores.\nStop there and wait for my decisions.\nDo not proceed into experimental qualification or routing execution."
+  },
+  {
+   "transcript_record_uuid": "763289fb-2541-4866-af27-511e851103e3",
+   "utc": "2026-09-29T18:12:55.174Z",
+   "text_sha256": "62b75b7c54e72685735978470ff92693bcabfbb05424d131183cabf654210634",
+   "chars": 15,
+   "precedes_run": null,
+   "during_run": "g4adj-amain-20260929T180225Z",
+   "text": "reloaded, and B"
+  },
+  {
+   "transcript_record_uuid": "561b6e32-d0a6-45c8-a02a-77551f6eaf16",
+   "utc": "2026-09-29T18:41:14.853Z",
+   "text_sha256": "8aecea3b1b96c674e9fea6ed2bed75d76ab50d2586bea50cceca69584ffff5fc",
+   "chars": 2369,
+   "precedes_run": "g4adj-amain-fix1-20260929T185315Z",
+   "during_run": null,
+   "text": "Continue from the A′ adjudication operator-decision boundary at commit 58a7c2449a99d3d5d8520fabbba890f489473dfe.\nThis is a read-only review only. Do not modify any fixture, gold, rationale, validator, score, decision record, or corpus artifact. Do not make any provider/model calls.\nReview all 26 escalated A′ fixtures under the frozen operator-decision rule.\nFirst divide them into:\nformat-only disagreements;\nknown latent-defect disagreements;\ngenuinely new substantive disagreements.\nFor code-fenced answers, you may compare the fenced content with gold diagnostically, exactly as was done in B′, but do not rescore or treat the fenced answer as validator-valid.\nFor each escalation, determine only whether the sealed gold is uniquely derivable from the fixture as written. Recommend one of the frozen operator outcomes:\ngold right → keep\ngold wrong → fix gold\ninput ambiguous → fix input\nPay special attention to the 7 substantive cases:\nKnown latent defects\nA4-RSRCH-R2-02\nA4-RSRCH-R4-03\nA4-SYNTH-R2-03\nA4-SYNTH-R4-01\nCompare these against the already-resolved B′ P6 and SY1 defects, but do not assume the same decision without verifying the actual sealed fixture.\nNew substantive cases\nA4-PLAN-R3-04\nA4-EXTR-R1-03\nA4-RSRCH-R2-01\nFor A4-PLAN-R3-04, distinguish provider refusal from fixture/gold validity. A safety refusal by itself is not evidence that the gold is wrong or the input ambiguous. Review the sealed fixture and gold directly under the derivability rule.\nFor A4-EXTR-R1-03, inspect the exact field definition and source text and determine whether the expected venue should uniquely be Dalihi, school fair in Dalihi, or whether the fixture permits more than one reasonable extraction.\nFor A4-RSRCH-R2-01, identify precisely why adjudicator 1 claimed scope_mismatch, compare that to the source wording and frozen research rule, and determine whether gold supported remains uniquely justified.\nProduce a table for all 26 containing:\nfixture ID;\nclass/risk;\ndisagreement type;\nadjudicator verdict summary;\nrecommended operator outcome;\nconcise reason;\nwhether a fix would consume the fixture’s one allowed fix;\nany replacement or downstream consequence if applicable.\nAlso state separately whether the 19 format-only fixtures can all safely receive the same gold right → keep group decision.\nStop after the review table. Do not apply any decision or fix."
+  },
+  {
+   "transcript_record_uuid": "aa3a8df6-7b89-4b2c-af1d-e34333aff84c",
+   "utc": "2026-09-29T18:48:59.744Z",
+   "text_sha256": "b6c458463586aee8d0a914ccaf043f7df4b656dbdd5c55946b05ec33b8cfe793",
+   "chars": 2818,
+   "precedes_run": "g4adj-amain-fix1-20260929T185315Z",
+   "during_run": null,
+   "text": "Approve the A′ operator decisions from your read-only review.\n\nRecord `gold right → keep` for these 20 fixtures:\n\n- all 19 format-only escalations exactly as listed in your review;\n- `A4-PLAN-R3-04`.\n\nBasis:\n- for the 19 format-only cases, every disagreement is code-fenced JSON whose semantic content matches gold;\n- for `A4-PLAN-R3-04`, the sealed fixture and gold are uniquely derivable and pass the frozen validators, while the three provider safety refusals provide no evidence against fixture or gold validity.\n\nRecord `input ambiguous → fix input` for these 6 fixtures:\n\n- `A4-RSRCH-R2-02`\n- `A4-RSRCH-R4-03`\n- `A4-SYNTH-R2-03`\n- `A4-SYNTH-R4-01`\n- `A4-EXTR-R1-03`\n- `A4-RSRCH-R2-01`\n\nApply only the minimal repairs established in the review:\n\n- For `A4-RSRCH-R2-02` and `A4-RSRCH-R4-03`, remove the exclusionary `only` wording while preserving the intended P6 narrower-scope construct and all unaffected frozen features.\n- For `A4-SYNTH-R2-03` and `A4-SYNTH-R4-01`, relabel the causal observation as the required `finding`, with the corresponding symptom observation relabelled as needed so the frozen observation count, roles, mergeability, family and feature constraints remain satisfied. Update derived gold roles only; do not change the conclusion or required terms.\n- For `A4-EXTR-R1-03`, rename the undefined field `venue` to `town`, preserving the gold value `Dalihi`, field count, type structure, derived-field count and all other frozen features.\n- For `A4-RSRCH-R2-01`, minimally rewrite the supporting source wording so it actually supports the claim that collection occurs every Saturday, and update the matching reissue consistently while preserving all other frozen research features.\n\nFor each of the six fixes:\n1. bind the fix to the sealed fixture and gold digests;\n2. preserve every unaffected frozen feature;\n3. rerun all applicable structural, independence, O6, cap and fixture checks;\n4. treat this as the fixture’s one allowed fix;\n5. re-adjudicate from scratch using the full frozen A′ treatment of three adjudicators;\n6. commit and push all adjudicator answers before comparing them with gold;\n7. if all three agree, keep the fixture;\n8. if they do not all agree, return to me for an operator decision before any replacement.\n\nDo not alter any of the 20 kept fixtures.\n\nPreserve the known-latent-defect disclosures, including the newly noted weak courier paraphrase in `B4-RSRCH-R2-X04`. Do not edit reserves proactively.\n\nDo not begin qualification-table construction, Phase A′, Phase B′, or any unrelated provider calls.\n\nWhen the six fix rounds finish, report:\n- validation results for each fix;\n- all adjudicator outcomes;\n- which fixtures kept automatically;\n- which, if any, return for operator decision;\n- session/retry/integrity counts;\n- exact commits and digests.\n\nStop there."
+  }
+ ]
+}
