@@ -1,0 +1,99 @@
+{
+ "schema_version": "g-route4.fix-round-report.v1",
+ "batch": "A′ main",
+ "round": 1,
+ "run_id": "g4adj-amain-fix1-20260929T185315Z",
+ "fix_commit": "8774a57a4bfc8d9f0f214d05253c016795385d43",
+ "decisions_commit": "8dc222fd6fd395f9ece3d4114298dfbb6cce85e9",
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "model": "claude-opus-5-5",
+ "fix_check": {
+  "report": "fixes/round1_amain/FIX_CHECK_REPORT.json",
+  "problems": 0,
+  "pool": "584 fixtures with 20 fixes applied (14 B′ + 6 A′)"
+ },
+ "contact": {
+  "sessions": 18,
+  "final_messages": 18,
+  "no_answer_retries": 0,
+  "in_doubt": 0,
+  "stops": 0,
+  "refusals": 0
+ },
+ "answers": {
+  "commit": "3b56ce7ffbcc5f0dd8d05a64da815964366600af",
+  "sha256": "15a2768748c0174fd0593a887facad5a84a961e4c18af6666e58439b8e5e56b8"
+ },
+ "scores": {
+  "commit": "f437429fb9178d17d976278b1538dc23e298ac56",
+  "sha256": "7af4a7cf5e1c8f98483bd2b53efc2c20fa95561c55708c7624558d3644327da4",
+  "agree": 10,
+  "disagree": 8
+ },
+ "outcomes": {
+  "A4-EXTR-R1-03": {
+   "verdicts": [
+    true,
+    true,
+    false
+   ],
+   "result": "operator decision required (not all three agree)"
+  },
+  "A4-RSRCH-R2-01": {
+   "verdicts": [
+    true,
+    false,
+    false
+   ],
+   "result": "operator decision required (not all three agree)"
+  },
+  "A4-RSRCH-R2-02": {
+   "verdicts": [
+    true,
+    true,
+    false
+   ],
+   "result": "operator decision required (not all three agree)"
+  },
+  "A4-RSRCH-R4-03": {
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "result": "operator decision required (not all three agree)"
+  },
+  "A4-SYNTH-R2-03": {
+   "verdicts": [
+    false,
+    true,
+    false
+   ],
+   "result": "operator decision required (not all three agree)"
+  },
+  "A4-SYNTH-R4-01": {
+   "verdicts": [
+    true,
+    true,
+    true
+   ],
+   "result": "keep"
+  }
+ },
+ "disagreement_cause": "all 8 disagreements are malformed_json (code-fenced JSON); diagnostically, the fenced content of all 8 matches the fixed gold. Verdicts unchanged.",
+ "pending_operator": [
+  "A4-EXTR-R1-03",
+  "A4-RSRCH-R2-01",
+  "A4-RSRCH-R2-02",
+  "A4-RSRCH-R4-03",
+  "A4-SYNTH-R2-03"
+ ],
+ "if_not_kept": "each has used its one fix; not keep would mean replacement from the matching A′ reserve. For A4-RSRCH-R2-02, A4-RSRCH-R4-03 and A4-SYNTH-R2-03 that reserve carries the same latent defect; for A4-EXTR-R1-03 (A4-EXTR-R1-X03) and A4-RSRCH-R2-01 (A4-RSRCH-R2-X01) no defect is known.",
+ "matching_reserves": {
+  "A4-EXTR-R1-03": "A4-EXTR-R1-X03",
+  "A4-RSRCH-R2-01": "A4-RSRCH-R2-X01",
+  "A4-RSRCH-R2-02": "A4-RSRCH-R2-X02",
+  "A4-RSRCH-R4-03": "A4-RSRCH-R4-X03",
+  "A4-SYNTH-R2-03": "A4-SYNTH-R2-X03"
+ }
+}

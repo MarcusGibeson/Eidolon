@@ -1,0 +1,38 @@
+{
+ "A4-EXTR-R1-03": {
+  "a1": true,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R2-01": {
+  "a1": true,
+  "a2": false,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R2-02": {
+  "a1": true,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-RSRCH-R4-03": {
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-SYNTH-R2-03": {
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator"
+ },
+ "A4-SYNTH-R4-01": {
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep"
+ }
+}
