@@ -1,0 +1,2 @@
+# raw provider responses and run records are kept byte-exact (no line-ending conversion)
+* -text
