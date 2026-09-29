@@ -1,0 +1,756 @@
+{
+ "schema_version": "g-route4.adjudication-report.v1",
+ "run_id": "g4adj-bmain-20260929T155837Z",
+ "batch": "B′ main (305 fixtures)",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "audit_sample_commit": "29f5a477693d703699af62f9fc0e0945c9c66be2",
+ "amendment_commit": "94c11ddfaffca3186abb9436abfacc18a855da0b",
+ "harness_commit": "f2923cc07903dad88541a1f6b57b24f327c6cabd",
+ "o2": {
+  "model": "claude-opus-5-5",
+  "channel": "Anthropic Messages API",
+  "amended_config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+  "sealed_config_sha256": "1658b9a2a32fa176c8ca679d5407725b17379902610869fc3cdc91d03df88029"
+ },
+ "contact": {
+  "fixtures_scheduled": 305,
+  "sessions_scheduled": 481,
+  "sessions_contacted": 481,
+  "invocations": 481,
+  "no_answer_retries": 0,
+  "in_doubt": 0,
+  "integrity_stops": 0,
+  "final_messages": 481,
+  "stop_reasons": {
+   "end_turn": 481
+  },
+  "non_b_main_fixtures_contacted": 0,
+  "reserves_contacted": 0,
+  "models_api_preflight": 1
+ },
+ "phase1": {
+  "slots": 381,
+  "agree": 307,
+  "disagree": 74,
+  "answers_sealed_commit": "c935886b940042fcc373ce3bc1fe2b53a891a36f",
+  "answers_sha256": "d10e334a638abfcab0a34754d39a3966942a0ce74f18e1e5e373c3c0fd9dc6fc"
+ },
+ "phase2": {
+  "slots": 100,
+  "agree": 43,
+  "disagree": 57,
+  "answers_sealed_commit": "262d8d77c5b1fdf76df7222f558f2de7ccb1a41c",
+  "answers_sha256": "9ccb3a32dc75f07c284b28f571003e0a8b435619840c06e70df1948544eae559"
+ },
+ "disagreeing_slots_by_cause": {
+  "malformed_json": 107,
+  "content": 24
+ },
+ "decisions": {
+  "keep": 257,
+  "operator": 48
+ },
+ "kept_with_flag": [
+  "B4-EXTR-R1-13",
+  "B4-PLAN-R1-10",
+  "B4-PLAN-R2-09",
+  "B4-PLAN-R2-11",
+  "B4-PLAN-R2-14",
+  "B4-PLAN-R3-04",
+  "B4-PLAN-R4-01",
+  "B4-RSRCH-R1-04",
+  "B4-RSRCH-R1-10",
+  "B4-RSRCH-R2-05",
+  "B4-RSRCH-R3-08",
+  "B4-RSRCH-R3-09",
+  "B4-SYNTH-R2-01",
+  "B4-SYNTH-R2-03"
+ ],
+ "operator_escalations": {
+  "B4-EXTR-R1-15": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-EXTR-R3-13": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-PLAN-R2-04": {
+   "sampled": true,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-PLAN-R3-13": {
+   "sampled": true,
+   "a1": true,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-01": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-02": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-03": {
+   "sampled": true,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-06": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": [
+     "research_judgment_mismatch"
+    ],
+    "slot3": [
+     "research_judgment_mismatch"
+    ]
+   }
+  },
+  "B4-RSRCH-R1-07": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-09": {
+   "sampled": true,
+   "a1": true,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-11": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-13": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-14": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": [
+     "research_judgment_mismatch"
+    ],
+    "slot3": [
+     "research_judgment_mismatch"
+    ]
+   }
+  },
+  "B4-RSRCH-R1-15": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-16": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-17": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R1-18": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R2-01": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R2-03": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R2-04": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R2-06": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": [
+     "research_judgment_mismatch"
+    ],
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R2-11": {
+   "sampled": true,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R2-12": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R2-13": {
+   "sampled": true,
+   "a1": true,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R2-14": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": [
+     "research_judgment_mismatch"
+    ],
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R2-17": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R3-03": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R3-04": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": [
+     "research_judgment_mismatch"
+    ]
+   }
+  },
+  "B4-RSRCH-R3-05": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R3-06": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": [
+     "research_judgment_mismatch"
+    ],
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": [
+     "research_judgment_mismatch"
+    ]
+   }
+  },
+  "B4-RSRCH-R3-07": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R3-10": {
+   "sampled": true,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R3-11": {
+   "sampled": true,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R3-14": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R3-15": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-RSRCH-R3-18": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": [
+     "research_judgment_mismatch"
+    ],
+    "slot2": [
+     "research_judgment_mismatch"
+    ],
+    "slot3": [
+     "research_judgment_mismatch"
+    ]
+   }
+  },
+  "B4-RSRCH-R4-01": {
+   "sampled": true,
+   "a1": true,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-SYNTH-R1-01": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": [
+     "conclusion_mismatch"
+    ]
+   }
+  },
+  "B4-SYNTH-R1-03": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": [
+     "conclusion_mismatch"
+    ],
+    "slot2": [
+     "conclusion_mismatch"
+    ],
+    "slot3": [
+     "conclusion_mismatch"
+    ]
+   }
+  },
+  "B4-SYNTH-R1-14": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-SYNTH-R2-06": {
+   "sampled": true,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-SYNTH-R2-13": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": [
+     "conclusion_mismatch"
+    ],
+    "slot2": [
+     "conclusion_mismatch"
+    ],
+    "slot3": [
+     "conclusion_mismatch"
+    ]
+   }
+  },
+  "B4-SYNTH-R2-14": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": [
+     "conclusion_mismatch"
+    ],
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": [
+     "conclusion_mismatch"
+    ]
+   }
+  },
+  "B4-SYNTH-R2-18": {
+   "sampled": true,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-SYNTH-R3-03": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)"
+   }
+  },
+  "B4-SYNTH-R3-07": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": "malformed_json (code-fenced JSON)",
+    "slot3": [
+     "conclusion_mismatch"
+    ]
+   }
+  },
+  "B4-SYNTH-R3-09": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot2": [
+     "conclusion_mismatch"
+    ],
+    "slot3": [
+     "conclusion_mismatch"
+    ]
+   }
+  },
+  "B4-SYNTH-R3-11": {
+   "sampled": false,
+   "a1": false,
+   "a2": true,
+   "a3": false,
+   "decision": "operator",
+   "flag": null,
+   "disagreements": {
+    "slot1": "malformed_json (code-fenced JSON)",
+    "slot3": "malformed_json (code-fenced JSON)"
+   }
+  }
+ },
+ "sampled": {
+  "fixtures": 38,
+  "decisions": {
+   "keep": 27,
+   "operator": 11
+  },
+  "cells_with_any_disagreement": [
+   "B4-PLAN-R2",
+   "B4-PLAN-R3",
+   "B4-PLAN-R4",
+   "B4-RSRCH-R1",
+   "B4-RSRCH-R2",
+   "B4-RSRCH-R3",
+   "B4-RSRCH-R4",
+   "B4-SYNTH-R2"
+  ],
+  "agreed_fixtures_escalated": [
+   "B4-PLAN-R3-13",
+   "B4-RSRCH-R1-09",
+   "B4-RSRCH-R2-13",
+   "B4-RSRCH-R4-01"
+  ],
+  "pre_registered_consequence": "if any of these sampled agreed fixtures is fixed or replaced, every fixture of its B′ cell gets the full treatment",
+  "cells_at_risk_of_consequence": [
+   "B4-PLAN-R3",
+   "B4-RSRCH-R1",
+   "B4-RSRCH-R2",
+   "B4-RSRCH-R4"
+  ]
+ },
+ "acceptance": "NOT YET ACCEPTED: 48 fixtures await operator decisions (gold wrong -> fix gold; input ambiguous -> fix input; gold right -> keep), against the derivability rule only, each with a written reason. No decision has been made or applied.",
+ "unchanged": "sealed corpus, gold, rationales, audit sample, blueprint, validators and thresholds are unchanged since the seal; no fixture was altered, replaced or re-run",
+ "files_sha256": {
+  "journal.jsonl": "d77dd7b9a427976e3ab7d00fbf02bf5a51e39b7bc0ef2b466aeb00462371594e",
+  "answers_phase1.json": "d10e334a638abfcab0a34754d39a3966942a0ce74f18e1e5e373c3c0fd9dc6fc",
+  "answers_phase2.json": "9ccb3a32dc75f07c284b28f571003e0a8b435619840c06e70df1948544eae559",
+  "scores_phase1.json": "efa3202d3a926dff01665e64fa47191a1a00099f5f50d959b0cf944f00f71a98",
+  "scores_phase2.json": "d3e15edee16a0ef4e02bbf50fc3b1371eec5bbf9c9c4a8dd53cc7ee91d376025",
+  "decisions.json": "1468a1f8dfa554bc0a24eea0e04439ffb9dc907852364042b58fe0c5a3bfd2ad"
+ }
+}

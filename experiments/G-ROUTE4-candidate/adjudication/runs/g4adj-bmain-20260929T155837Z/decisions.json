@@ -1,0 +1,2442 @@
+{
+ "B4-CONV-R1-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-03": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-04": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-06": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-13": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-16": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-19": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-20": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-21": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-22": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-23": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-24": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-25": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-26": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-27": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R1-28": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-02": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-03": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-04": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-06": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-13": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-16": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-19": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-20": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-21": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-22": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-23": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-24": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-25": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-26": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-27": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-28": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-03": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-04": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-06": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-13": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-19": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-20": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-21": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-22": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-23": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-24": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-25": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-26": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-27": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R3-28": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R4-01": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-03": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-04": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-05": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-06": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-13": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-EXTR-R1-14": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-15": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-EXTR-R1-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R1-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-01": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-03": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-04": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-05": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-06": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-13": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R2-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-03": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-04": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-06": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-07": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-13": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-EXTR-R3-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R3-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-EXTR-R4-01": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-03": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-04": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-06": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-07": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-10": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-PLAN-R1-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-13": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R1-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-03": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-04": {
+  "sampled": true,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-PLAN-R2-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-06": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-09": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-PLAN-R2-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-11": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-PLAN-R2-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-13": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-14": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-PLAN-R2-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R2-18": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-02": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-03": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-04": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-PLAN-R3-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-06": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-13": {
+  "sampled": true,
+  "a1": true,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-PLAN-R3-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R3-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-PLAN-R4-01": {
+  "sampled": true,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-RSRCH-R1-01": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-02": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-03": {
+  "sampled": true,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-04": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-RSRCH-R1-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R1-06": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-07": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R1-09": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-10": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-RSRCH-R1-11": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R1-13": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-14": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-15": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-16": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-17": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R1-18": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-01": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R2-03": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-04": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-05": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-RSRCH-R2-06": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R2-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R2-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R2-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R2-11": {
+  "sampled": true,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-12": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-13": {
+  "sampled": true,
+  "a1": true,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-14": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R2-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R2-17": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R2-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R3-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R3-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R3-03": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-04": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-05": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-06": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-07": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-08": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-RSRCH-R3-09": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-RSRCH-R3-10": {
+  "sampled": true,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-11": {
+  "sampled": true,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R3-13": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R3-14": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-15": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R3-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R3-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-RSRCH-R3-18": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-RSRCH-R4-01": {
+  "sampled": true,
+  "a1": true,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R1-01": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R1-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-03": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R1-04": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-06": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-13": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-14": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R1-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-16": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-01": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-SYNTH-R2-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-03": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": "first adjudicator disagreed; two further agreed"
+ },
+ "B4-SYNTH-R2-04": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-06": {
+  "sampled": true,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R2-07": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-09": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-11": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-13": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R2-14": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R2-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-16": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-18": {
+  "sampled": true,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R3-01": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-03": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R3-04": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-05": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-06": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-07": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R3-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-09": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R3-10": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-11": {
+  "sampled": false,
+  "a1": false,
+  "a2": true,
+  "a3": false,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R3-12": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-13": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-14": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-15": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-16": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-17": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R3-18": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R4-01": {
+  "sampled": true,
+  "a1": true,
+  "a2": true,
+  "a3": true,
+  "decision": "keep",
+  "flag": null
+ }
+}
