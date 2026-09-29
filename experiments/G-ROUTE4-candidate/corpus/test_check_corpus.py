@@ -38,6 +38,7 @@ def m_undeclared(s):
 
 
 def m_english_name(s):
+    # an English word can only enter as a name by leaving the committed, dictionary-screened stream
     f, g, d = by_id(s, "B4-EXTR-R1-01")
     old = d["invented_names"][0]
     f["input"]["text"] = f["input"]["text"].replace(old, "Banana")
@@ -129,7 +130,7 @@ def m_cap(s):
 
 CASES = {
     m_shared_entity: "O3 shared named entity", m_undeclared: "not declared as invented",
-    m_english_name: "is an English word", m_jaccard: "trigram Jaccard", m_o6_g3: "O6 shared value",
+    m_english_name: "not the committed stream slice", m_jaccard: "trigram Jaccard", m_o6_g3: "O6 shared value",
     m_o6_g4: "O6 shared value", m_derived: "derived measure", m_suffix: "is a suffix of key",
     m_integer_float: "integer field", m_period: "terminal period", m_absence_missing: "absence sentence count",
     m_types: "field types", m_signature: "fine signature repeated", m_n1: "N1 identical canonical gold",
@@ -138,16 +139,14 @@ CASES = {
 
 if __name__ == "__main__":
     base = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-    from english_vocabulary import english_vocabulary
-    english, _ = english_vocabulary()
-    clean, _ = C.check([base], english)
+    clean, _ = C.check([base])
     assert not clean, None if not clean else clean
     print("clean corpus: 0 problems")
     failed = 0
     for fn, expect in CASES.items():
         s = copy.deepcopy(base)
         fn(s)
-        problems, _ = C.check([s], english)
+        problems, _ = C.check([s])
         hit = [p for p in problems if expect in p]
         print(("FIRES " if hit else "MISSED"), fn.__name__, "->", hit[0] if hit else problems[:3])
         failed += not hit

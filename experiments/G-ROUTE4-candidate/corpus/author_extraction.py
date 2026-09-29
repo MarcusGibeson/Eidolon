@@ -26,8 +26,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / "tools"))
-from english_vocabulary import english_vocabulary  # noqa: E402
-from names import NameBank  # noqa: E402
+from name_stream import NameStream  # noqa: E402
 
 BLUEPRINT = json.loads((ROOT / "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json").read_text(encoding="utf-8"))
 EXTR = BLUEPRINT["templates"]["structured_extraction"]
@@ -1053,11 +1052,7 @@ def _fill(value, names):
 
 
 def build():
-    english, provenance = english_vocabulary()
-    sys.path.insert(0, str(ROOT / "experiments/G-ROUTE4-candidate/blueprint"))
-    import build_blueprint as B  # noqa: E402  read-only: G-ROUTE3's entity and lineage inventory
-    g3_entities, g3_lineages = B.g_route3_entity_inventory()
-    bank = NameBank(english, set(g3_entities) | set(g3_lineages))
+    bank = NameStream()          # the committed name stream (name_stream.json); fails closed if absent
     body = TEMPLATE[len("{SUBJECT}"):]
     fixtures, gold, design = [], [], []
     order = {fid: i for i, fid in enumerate(SLOTS)}
@@ -1068,7 +1063,7 @@ def build():
                  *[v for v in spec["expected"].values() if isinstance(v, str)]]
         need = sorted({int(m) for t in texts for m in PLACEHOLDER.findall(t)})
         assert need == list(range(len(need))), (fid, need)
-        names = [bank.take() for _ in need]
+        names = bank.take(len(need))
         sentences = [spec["subject"], *spec["defs"]] + ([ABSENCE[:-1]] if spec["absence"] else [])
         opening = ". ".join(_fill(s, names) for s in sentences)
         prompt = TEMPLATE.replace("{SUBJECT}", opening)
@@ -1093,7 +1088,7 @@ def build():
     missing = sorted(set(SLOTS) - {f["fixture_id"] for f in fixtures})
     return {"schema_version": "g-route4.authoring-staging.v1", "task_class": "structured_extraction",
             "blueprint_commit": "1156d06", "status": "authored, not sealed, not adjudicated",
-            "english_vocabulary": provenance, "missing_slots": missing,
+            "name_stream": bank.provenance(), "missing_slots": missing,
             "fixtures": fixtures, "gold": gold, "design": design}
 
 

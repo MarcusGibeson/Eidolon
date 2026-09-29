@@ -1,15 +1,25 @@
-"""Author the 136 frozen G-ROUTE4 Grounded Research slots.
+"""Author the 136 frozen G-ROUTE4 Grounded Research slots (pre-seal repair revision).
 
-Deterministic corpus authoring only, to the frozen blueprint at commit 1156d06. The script replays every name
-already assigned to Extraction, Synthesis, Planning and Conversation, then continues the same global stream. It
-contacts no model or adjudicator and creates no seal.
+Deterministic corpus authoring only, to the frozen blueprint at commit 1156d06. It contacts no model or adjudicator
+and creates no seal.
 
-The model-facing records keep G-ROUTE3's research.v1 shape. A separate authoring ledger records each claim/source
-binding, relation, scope and temporal role so check_corpus.py can reconstruct the gold without trusting it.
+Repair revision (after the complete-corpus pre-seal review):
+- claims are natural statements from per-risk topic libraries (research_topics.py); every source is an independent
+  paraphrase, never the claim sentence and never the claim with "not" inserted; there is no provenance padding;
+- P8 sources report a value only, never the threshold or the comparison, so the contradiction must be inferred;
+- lineages are meaningful publisher names (region-issuer-channel), unique across the corpus; a repeated lineage is
+  written as a reissue from the same publisher;
+- P7: dated sources disagree and the later-dated source governs; wherever single_lineage_support must be false the
+  later source denies, so the code's truth is the same whether lineages are counted as cited or as supporting;
+- the opening follows the frozen constraint "Assess the claims about <subject>";
+- fine signatures are compared on the canonical decision kind, so rewording a rule can never hide a repeated gold
+  structure between A′ and B′ in a cell; filler composition is chosen to keep every cell clash-free;
+- the invented-name stream is unchanged (two names per fixture, replayed from name_stream.json).
 
     python -B author_research.py
 """
 
+import datetime as dt
 import json
 import sys
 from pathlib import Path
@@ -18,20 +28,13 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / "tools"))
-from english_vocabulary import english_vocabulary  # noqa: E402
-from names import NameBank  # noqa: E402
+from name_stream import NameStream  # noqa: E402
+import research_topics as RT  # noqa: E402
 
-BLUEPRINT = json.loads((ROOT / "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json").read_text(
-    encoding="utf-8"))
+BLUEPRINT = json.loads((ROOT / "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json").read_text(encoding="utf-8"))
 TEMPLATE = BLUEPRINT["templates"]["grounded_research_synthesis"]["assembled_template"]
 SLOTS = [s for s in BLUEPRINT["slots"] if s["task_class"] == "grounded_research_synthesis"]
-PRIOR_NAMES = ("extraction", "synthesis", "planning", "conversation")
-PRIOR = [json.loads((HERE / f"staging/{name}.json").read_text(encoding="utf-8")) for name in PRIOR_NAMES]
-
-FAMILY_SHAPE = {
-    "RS1": (2, 3), "RS2": (2, 4), "RS3": (3, 4),
-    "RS4": (2, 5), "RS5": (3, 5), "RS6": (3, 6),
-}
+FAMILY_SHAPE = {"RS1": (2, 3), "RS2": (2, 4), "RS3": (3, 4), "RS4": (2, 5), "RS5": (3, 5), "RS6": (3, 6)}
 UNCERTAINTY_CODES = [
     {"code": "single_lineage_support",
      "condition": "some claim with status supported is supported by exactly one lineage"},
@@ -41,179 +44,51 @@ UNCERTAINTY_CODES = [
     {"code": "scope_mismatch",
      "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"},
 ]
-
-DOMAINS = [
-    "archive room", "boat shed", "canal office", "dairy hall", "engine house", "field station",
-    "grain store", "harbour office", "island workshop", "joinery room", "kiln house", "lamp depot",
-    "museum store", "nursery office", "observatory annex", "packing house", "quarry office", "rail shed",
-    "seed room", "tram workshop", "upland store", "visitor office", "weaving hall", "yard office",
+DECISION_KIND = {"P1": "focal_two_lineages", "P4": "focal_two_lineages", "P7": "temporal_all_supported"}
+FOCAL_RULES = [
+    "Recommend '{pos}' only if C1 is supported by at least two lineages; otherwise '{neg}'.",
+    "Recommend '{pos}' only when C1 has support from two or more lineages; otherwise '{neg}'.",
+    "Choose '{pos}' only if at least two lineages support C1; otherwise '{neg}'.",
+    "Pick '{pos}' only if two or more independent lineages support C1; otherwise '{neg}'.",
+    "Recommend '{pos}' if C1 is backed by at least two lineages, and '{neg}' otherwise.",
 ]
-ASSETS = [
-    "access ledger", "batch register", "cooling permit", "dispatch board", "equipment certificate",
-    "filter schedule", "gate record", "humidity report", "inspection permit", "junction register",
-    "kiln certificate", "loading record", "mooring permit", "nutrient report", "opening licence",
-    "packing certificate", "quality register", "rinse permit", "storage licence", "tool certificate",
-    "usage register", "visitor permit", "water report", "yearly licence",
+ALL_RULES = [
+    "Recommend '{pos}' only if every claim is supported; otherwise '{neg}'.",
+    "Recommend '{pos}' only when all claims are supported; otherwise '{neg}'.",
+    "Choose '{pos}' only if each claim is supported; otherwise '{neg}'.",
+    "Pick '{pos}' only when no claim is left unsupported; otherwise '{neg}'.",
+    "Recommend '{pos}' if all of the claims are supported, and '{neg}' otherwise.",
 ]
-ACTIVITIES = [
-    "annual inspection", "batch handover", "compliance review", "dispatch audit", "equipment survey",
-    "filter inspection", "gate review", "harbour audit", "intake survey", "junction check", "kiln review",
-    "loading audit", "mooring survey", "nursery review", "opening check", "packing audit", "quality survey",
-    "rinse review", "storage audit", "tool survey", "usage review", "visitor check", "water audit",
-    "year-end review",
+TEMPORAL_RULES = [
+    "When dated sources disagree about the same claim, the later-dated source governs and all addressing sources "
+    "are cited. Recommend '{pos}' only if every claim is then supported; otherwise '{neg}'.",
+    "If dated sources conflict on a claim, the source with the later date decides it, and every addressing source is "
+    "still cited. Recommend '{pos}' only when all claims are then supported; otherwise '{neg}'.",
+    "A conflict between dated sources is settled by the more recent one, with all addressing sources cited. Choose "
+    "'{pos}' only if each claim is then supported; otherwise '{neg}'.",
+    "Where two dated sources contradict each other on one claim, the newer of the two decides it; cite both. "
+    "Pick '{pos}' only if no claim is left unsupported after that; otherwise '{neg}'.",
+    "Dated sources that disagree are resolved in favour of the most recent date, and every source about the claim "
+    "is cited. Recommend '{pos}' if all claims end up supported, and '{neg}' otherwise.",
+    "For claims with conflicting dated sources, trust the one dated later while citing all of them. Recommend "
+    "'{pos}' only when every claim comes out supported; otherwise '{neg}'.",
 ]
-INSTRUMENTS = [
-    "amber gauge", "brass counter", "ceramic probe", "dial recorder", "enamel scale", "fibre sampler",
-    "glass meter", "hinged ruler", "ink register", "jute marker", "kiln clock", "linen chart",
-    "manual counter", "nickel gauge", "oak tablet", "paper recorder", "quartz scale", "reed marker",
-    "steel probe", "timber gauge", "umber chart", "vellum register", "wax counter", "yarn scale",
-]
 
 
-def replay_names(bank):
-    replayed = []
-    for staged in PRIOR:
-        for row in staged["design"]:
-            for expected in row["invented_names"]:
-                actual = bank.take()
-                assert actual == expected, (row["fixture_id"], actual, expected)
-                replayed.append(actual)
-    return replayed
+class Lineages:
+    def __init__(self, avoid):
+        combos = [f"{r}-{i}-{c}" for c in RT.LINEAGE_CHANNELS for i in RT.LINEAGE_ISSUERS for r in RT.LINEAGE_REGIONS]
+        # spread consecutive draws across regions, issuers and channels
+        self.pool = [x for k, x in sorted(enumerate(combos), key=lambda kv: (kv[0] * 7919) % len(combos))
+                     if x not in avoid]
+        self.i = 0
+
+    def take(self):
+        self.i += 1
+        return self.pool[self.i - 1]
 
 
-def claim_text(spec):
-    if spec["kind"] == "scope":
-        return (f"{spec['subject']} provides {spec['service']} at every {spec['site']} during "
-                f"review cycle {spec['cycle']}.")
-    if spec["kind"] == "quantity":
-        return (f"{spec['subject']}'s {spec['asset']} carries at least {spec['threshold']} units during "
-                f"review cycle {spec['cycle']}.")
-    return (f"{spec['subject']}'s {spec['asset']} is approved for review cycle {spec['cycle']}.")
-
-
-def denied_text(spec):
-    assert spec["kind"] == "standard"
-    return f"{spec['subject']}'s {spec['asset']} is not approved for review cycle {spec['cycle']}."
-
-
-def source_statement(source, claims, alternate):
-    spec = claims[int(source["claim_id"][1:]) - 1]
-    relation = source["relation"]
-    if relation == "support":
-        statement = claim_text(spec)
-    elif relation == "deny":
-        statement = denied_text(spec)
-    elif relation == "narrow":
-        statement = (f"{spec['subject']} provides {spec['service']} only at the eastern {spec['site']} during "
-                     f"review cycle {spec['cycle']}, not at every {spec['site']}.")
-    elif relation == "other_subject":
-        other = dict(spec)
-        other["subject"] = alternate
-        statement = claim_text(other)
-    elif relation == "quantity_deny":
-        statement = (f"{spec['subject']}'s {spec['asset']} carries {source['actual']} units during review cycle "
-                     f"{spec['cycle']}, below {spec['threshold']} units.")
-    else:
-        raise ValueError(relation)
-    if source.get("date"):
-        statement = f"{source['date']} record: {statement}"
-    return statement
-
-
-def source_text(source, claims, alternate, context):
-    statement = source_statement(source, claims, alternate)
-    provenance = context["number"] * 1000 + int(source["source_id"][1:]) * 20
-    return (f"{statement} {context['primary']} logged {context['secondary']}'s {context['domain']} record "
-            f"{context['number']} evidence for "
-            f"record {context['number']}-{source['source_id'][1:]}; {context['secondary']} indexed "
-            f"{context['primary']}'s {context['activity']} record {context['number']} note with the "
-            f"{context['instrument']} series {context['number']}. {context['primary']} cross-checked "
-            f"{context['secondary']}'s {context['domain']} record {context['number']} folio against "
-            f"{context['primary']}'s {context['instrument']} record {context['number']} docket for the "
-            f"{context['activity']}. Provenance path: ledger {provenance + 1} joins folio {provenance + 2}, "
-            f"shelf {provenance + 3}, packet {provenance + 4}, index {provenance + 5}, card {provenance + 6}, "
-            f"marker {provenance + 7}, and docket {provenance + 8}.")
-
-
-def make_claims(number, pattern, primary, secondary, count):
-    claims = []
-    for index in range(1, count + 1):
-        subject = primary if index % 2 else secondary
-        asset = ASSETS[(number * 5 + index * 7) % len(ASSETS)]
-        spec = {"claim_id": f"C{index}", "kind": "standard", "subject": subject, "asset": asset,
-                "cycle": 3000 + number * 7 + index}
-        claims.append(spec)
-    if pattern == "P6":
-        claims[0] = {"claim_id": "C1", "kind": "scope", "subject": primary,
-                     "service": f"calibration service {number}", "site": f"depot sector {number}",
-                     "cycle": 3000 + number * 7 + 1}
-    elif pattern == "P8":
-        claims[0] = {"claim_id": "C1", "kind": "quantity", "subject": primary,
-                     "asset": ASSETS[(number * 5 + 7) % len(ASSETS)], "threshold": 80 + number * 3,
-                     "cycle": 3000 + number * 7 + 1}
-    return claims
-
-
-def make_sources(number, pattern, sls, claims, source_count):
-    """Construct exact pattern evidence, then fill the family source count without changing the SLS flag."""
-    def lineage(index):
-        return f"route-four-research-{number:04d}-lineage-{index:02d}"
-
-    rows = []
-    if pattern == "P1":
-        rows = [{"claim_id": "C1", "relation": "support", "lineage": lineage(1)},
-                {"claim_id": "C1", "relation": "support", "lineage": lineage(2)}]
-    elif pattern == "P2":
-        rows = [{"claim_id": "C1", "relation": "deny", "lineage": lineage(1)}]
-    elif pattern == "P3":
-        rows = [{"claim_id": "C1", "relation": "other_subject", "lineage": lineage(1)}]
-    elif pattern == "P4":
-        rows = [{"claim_id": "C1", "relation": "support", "lineage": lineage(1)},
-                {"claim_id": "C1", "relation": "support", "lineage": lineage(1)}]
-        if not sls:
-            rows.append({"claim_id": "C1", "relation": "support", "lineage": lineage(2)})
-    elif pattern == "P5":
-        rows = [{"claim_id": "C1", "relation": "support", "lineage": lineage(1)},
-                {"claim_id": "C1", "relation": "deny", "lineage": lineage(2)}]
-    elif pattern == "P6":
-        rows = [{"claim_id": "C1", "relation": "narrow", "lineage": lineage(1)}]
-    elif pattern == "P7":
-        older, newer = 2040 + number, 2041 + number
-        first, second = (("deny", "support") if number % 2 else ("support", "deny"))
-        rows = [{"claim_id": "C1", "relation": first, "lineage": lineage(1),
-                 "date": f"{older}-03-01"},
-                {"claim_id": "C1", "relation": second, "lineage": lineage(2),
-                 "date": f"{newer}-03-01"}]
-    elif pattern == "P8":
-        rows = [{"claim_id": "C1", "relation": "quantity_deny", "lineage": lineage(1),
-                 "actual": claims[0]["threshold"] - 9},
-                {"claim_id": "C1", "relation": "quantity_deny", "lineage": lineage(2),
-                 "actual": claims[0]["threshold"] - 11}]
-    else:
-        raise ValueError(pattern)
-
-    remaining = source_count - len(rows)
-    fillers = [c["claim_id"] for c in claims[1:]]
-    cursor = 0
-    while remaining and fillers:
-        claim_id = fillers[cursor % len(fillers)]
-        existing = [r for r in rows if r["claim_id"] == claim_id]
-        if sls:
-            relation = "support"
-            lin = existing[0]["lineage"] if existing else lineage(len(rows) + 1)
-        else:
-            relation = "deny"
-            lin = lineage(len(rows) + 1)
-        rows.append({"claim_id": claim_id, "relation": relation, "lineage": lin})
-        remaining -= 1
-        cursor += 1
-    assert remaining == 0, (pattern, sls, len(claims), source_count)
-    for index, row in enumerate(rows, 1):
-        row["source_id"] = f"S{index}"
-    return rows
-
-
-def derive_gold(pattern, claims, sources, positive="accept_record", negative="hold_record"):
+def derive_gold(pattern, claims, sources, recommendations):
     results, reasons = [], {}
     for claim in claims:
         cid = claim["claim_id"]
@@ -232,12 +107,9 @@ def derive_gold(pattern, claims, sources, positive="accept_record", negative="ho
             status, reason = "unresolved", "scope"
         elif "support" in relations:
             status, reason = "supported", "direct_support"
-        elif relations & {"deny", "quantity_deny"}:
-            status, reason = "contradicted", "direct_contradiction"
         else:
-            raise AssertionError((cid, relations))
-        results.append({"claim_id": cid, "status": status,
-                        "citations": [s["source_id"] for s in about],
+            status, reason = "contradicted", "direct_contradiction"
+        results.append({"claim_id": cid, "status": status, "citations": [s["source_id"] for s in about],
                         "lineages": sorted({s["lineage"] for s in about})})
         reasons[cid] = reason
     uncertainties = []
@@ -250,105 +122,353 @@ def derive_gold(pattern, claims, sources, positive="accept_record", negative="ho
     if "scope" in reasons.values():
         uncertainties.append("scope_mismatch")
     if pattern in ("P1", "P4"):
-        focal = results[0]
-        eligible = focal["status"] == "supported" and len(focal["lineages"]) >= 2
+        eligible = results[0]["status"] == "supported" and len(results[0]["lineages"]) >= 2
     else:
-        eligible = all(row["status"] == "supported" for row in results)
-    return {"claims": results, "recommendation": positive if eligible else negative,
+        eligible = all(r["status"] == "supported" for r in results)
+    return {"claims": results, "recommendation": recommendations[0 if eligible else 1],
             "uncertainties": uncertainties}, reasons
 
 
-def build():
-    english, provenance = english_vocabulary()
-    assert all(provenance == staged["english_vocabulary"] for staged in PRIOR)
-    sys.path.insert(0, str(ROOT / "experiments/G-ROUTE4-candidate/blueprint"))
-    import build_blueprint as B  # noqa: E402
-    g3_entities, g3_lineages = B.g_route3_entity_inventory()
-    bank = NameBank(english, set(g3_entities) | set(g3_lineages))
-    replayed = replay_names(bank)
-    assert PRIOR[-1]["name_sequence"]["last_conversation_ordinal"] == len(replayed)
+def sls_supporting_reading(claims, sources, expected):
+    """single_lineage_support counting only the lineages of sources that support the claim."""
+    for row in expected["claims"]:
+        if row["status"] != "supported":
+            continue
+        supporting = {s["lineage"] for s in sources if s["claim_id"] == row["claim_id"] and s["relation"] == "support"}
+        if len(supporting) == 1:
+            return True
+    return False
 
+
+DECISION_CLASS = {"focal_two_lineages": "focal_c1_two_lineages", "all_supported": "every_claim_supported",
+                  "temporal_all_supported": "every_claim_supported"}
+
+
+def canonical_signature(expected, n_sources, kind, recommendations):
+    """The checker's canonical research signature (JSON form): the decision enters only as its decision class, so
+    neither rewording nor a temporal clause (which only settles a status) can hide a repeated gold structure."""
+    return json.dumps(["research", sorted([c["status"], len(c["citations"]), len(c["lineages"])]
+                                          for c in expected["claims"]),
+                       recommendations.index(expected["recommendation"]), list(expected["uncertainties"]),
+                       n_sources, DECISION_CLASS[kind]])
+
+
+def focal_sources(pattern, sls, number, variant):
+    """(claim_id, relation, lineage_key, extra) rows for C1; lineage_key groups rows sharing a lineage."""
+    if pattern == "P1":
+        return [("C1", "support", "a", {}), ("C1", "support", "b", {})]
+    if pattern == "P2":
+        return [("C1", "deny", "a", {})]
+    if pattern == "P3":
+        return [("C1", "other_subject", "a", {})]
+    if pattern == "P4":
+        rows = [("C1", "support", "a", {}), ("C1", "support", "a", {})]
+        return rows if sls else rows + [("C1", "support", "b", {})]
+    if pattern == "P5":
+        return [("C1", "support", "a", {}), ("C1", "deny", "b", {})]
+    if pattern == "P6":
+        return [("C1", "narrow", "a", {})]
+    if pattern == "P7":
+        # the later source governs; it denies wherever sls must be false, and alternates otherwise
+        later_supports = sls and (number + variant) % 2 == 0
+        older, newer = ("deny", "support") if later_supports else ("support", "deny")
+        return [("C1", older, "a", {"when": "older"}), ("C1", newer, "b", {"when": "newer"})]
+    if pattern == "P8":
+        return [("C1", "quantity_deny", "a", {"q": 0}), ("C1", "quantity_deny", "b", {"q": 1})]
+    raise ValueError(pattern)
+
+
+def filler_plans(sls, fillers, remaining):
+    """Candidate filler compositions: lists of (claim_id, relation, lineage_key) for the remaining sources."""
+    plans = []
+    if not fillers or remaining == 0:
+        return [[]]
+    if sls:
+        # (a) every filler supported, each by a single lineage (repeats reuse that lineage)
+        plan, k = [], 0
+        while len(plan) < remaining:
+            cid = fillers[k % len(fillers)]
+            plan.append((cid, "support", f"f{cid}"))
+            k += 1
+        plans.append(plan)
+        # (b) first filler single-lineage support, the others contradicted by fresh lineages
+        plan = [(fillers[0], "support", f"f{fillers[0]}")]
+        k = 1
+        while len(plan) < remaining:
+            cid = fillers[k % len(fillers)] if len(fillers) > 1 else fillers[0]
+            plan.append((cid, "support" if cid == fillers[0] else "deny",
+                         f"f{cid}" if cid == fillers[0] else f"g{len(plan)}"))
+            k += 1
+        plans.append(plan)
+        # (c) last filler single-lineage support, first contradicted
+        if len(fillers) > 1:
+            plan, k = [], 0
+            while len(plan) < remaining:
+                cid = fillers[k % len(fillers)]
+                plan.append((cid, "support", f"f{cid}") if cid == fillers[-1] else (cid, "deny", f"g{len(plan)}"))
+                k += 1
+            plans.append(plan)
+    else:
+        # (a) every filler contradicted by fresh lineages
+        plan, k = [], 0
+        while len(plan) < remaining:
+            cid = fillers[k % len(fillers)]
+            plan.append((cid, "deny", f"g{len(plan)}"))
+            k += 1
+        plans.append(plan)
+        # (b) first filler supported by two independent lineages, the rest contradicted
+        if remaining >= 2:
+            plan = [(fillers[0], "support", "s1"), (fillers[0], "support", "s2")]
+            k = 1
+            while len(plan) < remaining:
+                cid = fillers[k % len(fillers)] if len(fillers) > 1 else fillers[0]
+                plan.append((cid, "deny", f"g{len(plan)}") if cid != fillers[0] else (cid, "support", f"s{len(plan)}"))
+                k += 1
+            plans.append(plan)
+        # (c) contradicted, but one filler denied twice by the same publisher (a reissued denial)
+        if remaining >= 2:
+            plan = [(fillers[0], "deny", "r1"), (fillers[0], "deny", "r1")]
+            k = 1
+            while len(plan) < remaining:
+                cid = fillers[k % len(fillers)] if len(fillers) > 1 else fillers[0]
+                plan.append((cid, "deny", f"g{len(plan)}"))
+                k += 1
+            plans.append(plan)
+    return plans
+
+
+def extra_plans(fillers, remaining):
+    """Further filler compositions, tried after filler_plans: each filler claim gets a count of sources and a
+    treatment (supported or contradicted, by one lineage or by two), with any extra sources written as reissues of
+    the claim's first lineage. Sources are interleaved claim by claim. At most two lineages per claim and relation."""
+    import itertools
+    if not fillers or remaining == 0:
+        return []
+
+    def splits(total, parts):
+        if parts == 1:
+            yield (total,)
+            return
+        for first in range(1, total - parts + 2):
+            for rest in splits(total - first, parts - 1):
+                yield (first,) + rest
+
+    treatments = [("support", 1), ("deny", 1), ("support", 2), ("deny", 2)]
+    plans = []
+    for counts in splits(remaining, len(fillers)):
+        for combo in itertools.product(treatments, repeat=len(fillers)):
+            per_claim = []
+            for cid, n, (relation, lineages) in zip(fillers, counts, combo):
+                if lineages > n:
+                    break
+                prefix = "p" if relation == "support" else "q"
+                keys = [f"{prefix}{cid}{'ab'[min(i, lineages - 1)]}" for i in range(n)]
+                per_claim.append([(cid, relation, key) for key in keys])
+            else:
+                plan = []
+                for i in range(max(counts)):
+                    plan += [rows[i] for rows in per_claim if i < len(rows)]
+                plans.append(plan)
+    return plans
+
+
+def cap(text):
+    return text[0].upper() + text[1:]
+
+
+def build():
+    stream = NameStream()
+    stream.skip_through("ordinary_conversation")
+    first_ordinal = stream.position + 1
+    sys.path.insert(0, str(ROOT / "experiments/G-ROUTE4-candidate/blueprint"))
+    import build_blueprint as B  # noqa: E402  read-only G-ROUTE3 inventory
+    _, g3_lineages = B.g_route3_entity_inventory()
+    lineage_bank = Lineages(set(g3_lineages))
     body = TEMPLATE[len("{SUBJECT}"):]
+    cursor = {k: 0 for k in ("std", "scope", "qty")}
+    cursor_by_risk = {}
+    signatures = {}
     fixtures, gold, design = [], [], []
-    drawn = 0
     for number, slot in enumerate(SLOTS, 1):
-        fid, family = slot["fixture_id"], slot["family"]
+        fid, family, risk = slot["fixture_id"], slot["family"], slot["risk"]
         pattern, sls = slot["features"]["pattern"], slot["features"]["sls"]
-        claim_count, source_count = FAMILY_SHAPE[family]
-        primary, secondary = bank.take(), bank.take()
-        first_ordinal = len(replayed) + drawn + 1
-        drawn += 2
-        domain = DOMAINS[(number - 1) % len(DOMAINS)]
-        activity = ACTIVITIES[(number * 7) % len(ACTIVITIES)]
-        instrument = INSTRUMENTS[(number * 11) % len(INSTRUMENTS)]
-        claims = make_claims(number, pattern, primary, secondary, claim_count)
-        source_specs = make_sources(number, pattern, sls, claims, source_count)
-        context = {"number": number, "domain": domain, "activity": activity, "instrument": instrument,
-                   "primary": primary, "secondary": secondary}
-        input_claims = [{"claim_id": c["claim_id"], "text": claim_text(c)} for c in claims]
-        input_sources = [{"source_id": s["source_id"], "lineage": s["lineage"],
-                          "text": source_text(s, claims, secondary, context)} for s in source_specs]
-        if pattern in ("P1", "P4"):
-            decision = (f"Recommend 'accept_record' only if C1 in {primary}'s record is supported by at least two "
-                        "lineages; otherwise 'hold_record'.")
-        elif pattern == "P7":
-            governing = (
-                f"When dated sources in {primary}'s record disagree about the same claim, the later-dated source "
-                f"governs and all addressing sources are cited. Recommend 'accept_record' only if {secondary}'s "
-                "check leaves every claim supported after that rule; otherwise 'hold_record'.",
-                f"For {primary}'s record, if dated sources conflict on one claim, the source carrying the later "
-                f"calendar date governs and both are cited. Recommend 'accept_record' only if {secondary}'s review "
-                "then finds all claims supported; otherwise 'hold_record'.",
-                f"In {primary}'s record, a disagreement between dated sources is settled by the chronologically "
-                f"newer source while every addressing source is cited. Recommend 'accept_record' only if "
-                f"{secondary}'s check then leaves each claim supported; otherwise 'hold_record'.",
-                f"For the record kept by {primary}, sources that disagree on a claim are governed by the source "
-                f"with the most recent date, with both cited. Recommend 'accept_record' only if {secondary}'s "
-                "review consequently marks every claim supported; otherwise 'hold_record'.",
-            )
-            decision = governing[number % len(governing)]
-        else:
-            decision = (f"Recommend 'accept_record' only if every claim in {primary}'s record is supported; "
-                        "otherwise 'hold_record'.")
-        expected, reasons = derive_gold(pattern, claims, source_specs)
-        realized_sls = "single_lineage_support" in expected["uncertainties"]
-        assert realized_sls is sls, (fid, sls, expected)
-        opening = f"Assess evidence record {number} for {primary} at the {domain}"
+        n_claims, n_sources = FAMILY_SHAPE[family]
+        primary, secondary = stream.take(2)
+        rc = cursor_by_risk.setdefault(risk, {"scope": 0, "qty": 0, "rec": number % 3,
+                                              "usage": [0] * len(RT.STANDARD[risk]), "pairs": set(),
+                                              "focal": set()})
+        std_pool, scope_pool, qty_pool = RT.STANDARD[risk], RT.SCOPE[risk], RT.QUANTITY[risk]
+        # greedy topic design: least-used topics first, and no two fixtures of a risk class share a topic pair,
+        # so any two fixtures share at most one standard topic. A focal claim cited by two or more sources
+        # (P1, P4, P5, P7) uses both paraphrases of its topic, so each such topic is focal in one fixture only.
+        need = n_claims - (1 if pattern in ("P6", "P8") else 0)
+        multi_focal = pattern in ("P1", "P4", "P5", "P7")
+        picked = []
+        for slot_i in range(need):
+            order = sorted(range(len(std_pool)), key=lambda k: (rc["usage"][k], (k * 7 + number) % len(std_pool)))
+            if slot_i == 0 and multi_focal:
+                order = [k for k in order if k not in rc["focal"]] or order
+            fresh = [k for k in order if k not in picked and
+                     all((min(k, p), max(k, p)) not in rc["pairs"] for p in picked)]
+            k = (fresh or [k for k in order if k not in picked])[0]
+            picked.append(k)
+        if multi_focal:
+            rc["focal"].add(picked[0])
+        for a in picked:
+            rc["usage"][a] += 1
+            for b in picked:
+                if a < b:
+                    rc["pairs"].add((a, b))
+        picked_iter = iter(picked)
+
+        def next_std():
+            k = next(picked_iter)
+            return std_pool[k]
+
+        claims = []
+        for index in range(1, n_claims + 1):
+            subject = primary if index % 2 else secondary
+            if index == 1 and pattern == "P6":
+                topic = scope_pool[rc["scope"] % len(scope_pool)]
+                rc["scope"] += 1
+                claims.append({"claim_id": "C1", "kind": "scope", "subject": subject, "topic": topic,
+                               "text": topic[0].replace("{S}", subject)})
+            elif index == 1 and pattern == "P8":
+                topic = qty_pool[rc["qty"] % len(qty_pool)]
+                rc["qty"] += 1
+                threshold = 20 + (number * 37) % 180
+                claims.append({"claim_id": "C1", "kind": "quantity", "subject": subject, "topic": topic,
+                               "threshold": threshold,
+                               "text": topic[0].replace("{S}", subject).replace("{T}", str(threshold))})
+            else:
+                topic = next_std()
+                claims.append({"claim_id": f"C{index}", "kind": "standard", "subject": subject, "topic": topic,
+                               "text": topic[0].replace("{S}", subject)})
+        pairs = RT.RECOMMENDATIONS[risk]
+        rc.setdefault("rec_use", [0] * len(pairs))
+        choice = min(range(len(pairs)), key=lambda k: (rc["rec_use"][k], (k * 5 + number) % len(pairs)))
+        rc["rec_use"][choice] += 1
+        pos, neg = pairs[choice]
+        recommendations = [pos, neg]
+        kind = DECISION_KIND.get(pattern, "all_supported")
+        fillers = [c["claim_id"] for c in claims[1:]]
+
+        chosen = None
+        for variant in range(4):
+            focal = focal_sources(pattern, sls, number, variant)
+            for plan in filler_plans(sls, fillers, n_sources - len(focal)) +                     extra_plans(fillers, n_sources - len(focal)):
+                rows = focal + [(c, rel, key, {}) for c, rel, key in plan]
+                ledger = [{"source_id": f"S{i}", "claim_id": c, "relation": rel, "lineage_key": key, **extra}
+                          for i, (c, rel, key, extra) in enumerate(rows, 1)]
+                # independent publishers never share wording: each topic has two paraphrases per relation, so at
+                # most two distinct lineages may state the same relation about the same claim
+                groups = {}
+                for s in ledger:
+                    if s["relation"] in ("support", "deny"):
+                        groups.setdefault((s["claim_id"], s["relation"]), set()).add(s["lineage_key"])
+                if any(len(keys) > 2 for keys in groups.values()):
+                    continue
+                probe = [dict(s, lineage=s["lineage_key"],
+                              **({"date": "1" if s["when"] == "newer" else "0"} if s.get("when") else {}))
+                         for s in ledger]
+                expected, _ = derive_gold(pattern, claims, probe, recommendations)
+                cited = "single_lineage_support" in expected["uncertainties"]
+                supporting = sls_supporting_reading(claims, probe, expected)
+                if cited != sls or supporting != sls:
+                    continue
+                sig = canonical_signature(expected, n_sources, kind, recommendations)
+                opposite = signatures.get((risk, "B" if slot["phase"] == "A" else "A"), set())
+                if sig in opposite:
+                    continue
+                chosen = (ledger, sig)
+                break
+            if chosen:
+                break
+        if chosen is None:
+            raise AssertionError(("no clash-free, unambiguous composition", fid))
+        ledger, sig = chosen
+        signatures.setdefault((risk, slot["phase"]), set()).add(sig)
+
+        # concrete lineages, dates and texts
+        key_to_lineage, seen_keys, variant_of = {}, set(), {}
+        base_year = 2040 + number % 20
+        for i, s in enumerate(ledger):
+            if s["lineage_key"] not in key_to_lineage:
+                key_to_lineage[s["lineage_key"]] = lineage_bank.take()
+            s["lineage"] = key_to_lineage[s["lineage_key"]]
+            claim = claims[int(s["claim_id"][1:]) - 1]
+            topic, subject = claim["topic"], claim["subject"]
+            # each lineage keeps one paraphrase per (claim, relation); a second lineage gets the other one, and a
+            # reissue repeats its own publisher's wording
+            group = (s["claim_id"], s["relation"])
+            used = variant_of.setdefault(group, {})
+            if s["lineage_key"] not in used:
+                used[s["lineage_key"]] = (1 + (number + int(s["claim_id"][1:])) % 2) if not used else                     3 - next(iter(used.values()))
+            alt = used[s["lineage_key"]]
+            if s["relation"] == "support":
+                text = topic[alt].replace("{S}", subject)
+            elif s["relation"] == "deny":
+                text = topic[2 + alt].replace("{S}", subject)
+            elif s["relation"] == "other_subject":
+                other = secondary if subject == primary else primary
+                s["alternate_subject"] = other
+                text = topic[alt].replace("{S}", other)
+            elif s["relation"] == "narrow":
+                text = topic[1].replace("{S}", subject)
+            elif s["relation"] == "quantity_deny":
+                value = claim["threshold"] - (3 + number % 9) - s["q"] * (2 + number % 5)
+                s["value"] = value
+                text = topic[1 + s["q"]].replace("{S}", subject).replace("{V}", str(value))
+            else:
+                raise ValueError(s["relation"])
+            if s.get("when"):
+                year = base_year + (1 if s["when"] == "newer" else 0)
+                date = dt.date(year, 1 + (number * 5 + i) % 12, 1 + (number * 11 + i) % 27).isoformat()
+                s["date"] = date
+                text = RT.DATE_PREFIXES[(number + i) % len(RT.DATE_PREFIXES)].replace("{D}", date) + text
+            if s["lineage_key"] in seen_keys and not s.get("when"):
+                text = RT.REISSUE_PREFIXES[(number + i) % len(RT.REISSUE_PREFIXES)] + text
+                s["reissue"] = True
+            seen_keys.add(s["lineage_key"])
+            s["text"] = text
+            del s["lineage_key"]
+        expected, reasons = derive_gold(pattern, claims, ledger, recommendations)
+        assert ("single_lineage_support" in expected["uncertainties"]) is sls, fid
+        rules = FOCAL_RULES if pattern in ("P1", "P4") else TEMPORAL_RULES if pattern == "P7" else ALL_RULES
+        use = rc.setdefault(f"rule_use_{kind}", [0] * len(rules))
+        pick = min(range(len(rules)), key=lambda k: (use[k], (k * 3 + number) % len(rules)))
+        use[pick] += 1
+        rule = rules[pick]
+        decision = rule.replace("{pos}", pos).replace("{neg}", neg)
+        opening = f"Assess the claims about {primary} and {secondary}"
         prompt = TEMPLATE.replace("{SUBJECT}", opening)
         assert prompt == opening + body
-        inp = {
-            "allowed_recommendations": ["accept_record", "hold_record"],
-            "allowed_uncertainty_codes": UNCERTAINTY_CODES,
-            "claims": input_claims,
-            "decision_rule": decision,
-            "sources": input_sources,
-        }
-        rationale = ("; ".join(f"{row['claim_id']} is {row['status']} ({reasons[row['claim_id']]}) and cites "
-                               f"{','.join(row['citations']) or 'no source'} across "
-                               f"{len(row['lineages'])} lineage(s)" for row in expected["claims"]) +
-                     f". The decision rule yields {expected['recommendation']}; uncertainty codes are "
-                     f"{expected['uncertainties'] or []}.")
-        fixtures.append({
-            "consequence_risk": slot["risk"], "fixture_id": fid, "input": inp, "prompt": prompt,
-            "task_class": "grounded_research_synthesis",
-            "title": f"Evidence assessment {number} for {primary} at the {domain}",
-            "validator_profile": "research.v1",
-        })
-        gold.append({"expected": expected, "fixture_id": fid, "rationale": rationale,
-                     "reference_output": expected})
+        inp = {"allowed_recommendations": recommendations, "allowed_uncertainty_codes": UNCERTAINTY_CODES,
+               "claims": [{"claim_id": c["claim_id"], "text": c["text"]} for c in claims],
+               "decision_rule": decision,
+               "sources": [{"source_id": s["source_id"], "lineage": s["lineage"], "text": s["text"]} for s in ledger]}
+        rationale = ("; ".join(f"{row['claim_id']} is {row['status']} ({reasons[row['claim_id']]}), citing "
+                               f"{', '.join(row['citations']) or 'no source'} across {len(row['lineages'])} lineage(s)"
+                               for row in expected["claims"]) +
+                     f". The decision rule gives {expected['recommendation']}; holding codes: "
+                     f"{', '.join(expected['uncertainties']) or 'none'}.")
+        fixtures.append({"consequence_risk": risk, "fixture_id": fid, "input": inp, "prompt": prompt,
+                         "task_class": "grounded_research_synthesis",
+                         "title": f"Claims about {primary} and {secondary}", "validator_profile": "research.v1"})
+        gold.append({"expected": expected, "fixture_id": fid, "rationale": rationale, "reference_output": expected})
         design.append({
-            "fixture_id": fid, "phase": slot["phase"], "role": slot["role"], "risk": slot["risk"],
-            "family": family, "features": slot["features"], "invented_names": [primary, secondary],
-            "identifiers": [], "global_name_ordinals": [first_ordinal, first_ordinal + 1],
-            "research_contract": {"context": context, "claims": claims, "sources": source_specs,
-                                  "derived_reasons": reasons},
-        })
+            "fixture_id": fid, "phase": slot["phase"], "role": slot["role"], "risk": risk, "family": family,
+            "features": slot["features"], "invented_names": [primary, secondary], "identifiers": [],
+            "global_name_ordinals": [stream.position - 1, stream.position],
+            "research_contract": {
+                "claims": [{k: v for k, v in c.items() if k != "topic"} for c in claims],
+                "sources": ledger, "decision": {"kind": kind, "positive": pos, "negative": neg},
+                "derived_reasons": reasons, "canonical_signature": json.loads(sig)}})
     return {
-        "schema_version": "g-route4.authoring-staging.v1", "task_class": "grounded_research_synthesis",
+        "schema_version": "g-route4.authoring-staging.v2", "task_class": "grounded_research_synthesis",
         "blueprint_commit": "1156d06", "status": "authored, not sealed, not adjudicated",
-        "english_vocabulary": provenance,
-        "name_sequence": {"names_replayed": len(replayed), "first_research_ordinal": len(replayed) + 1,
-                          "last_research_ordinal": len(replayed) + drawn},
+        "name_stream": stream.provenance(),
+        "name_sequence": {"first_research_ordinal": first_ordinal, "last_research_ordinal": stream.position},
         "missing_slots": sorted({s["fixture_id"] for s in SLOTS} - {f["fixture_id"] for f in fixtures}),
         "fixtures": fixtures, "gold": gold, "design": design,
     }

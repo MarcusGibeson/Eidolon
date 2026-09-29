@@ -1,4 +1,4 @@
-"""Adversarial checks for the Planning authoring rules (and the supplementary identifier screen), run over
+"""Adversarial checks for the Planning authoring rules (and the O3 identifier gate), run over
 Extraction + Synthesis + Planning together. Each case plants one defect and must be caught by its own message.
 
     python -B test_planning_corpus.py staging/extraction.json staging/synthesis.json staging/planning.json
@@ -12,7 +12,6 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import check_corpus as C  # noqa: E402
-from english_vocabulary import english_vocabulary  # noqa: E402
 
 
 def locate(staged, fid):
@@ -193,23 +192,22 @@ CASES = {
     claims_completed_true: "planning gold differs from the gold recomputed",
     objective_not_in_opening: "objective is not stated in the opening",
     stray_unknown: "evidence states an unknown that no offered code covers",
-    shared_identifier: "O3 supplementary: shared identifier",
-    undeclared_identifier: "identifiers not declared (supplementary screen)",
+    shared_identifier: "O3 identifier gate: shared identifier",
+    undeclared_identifier: "identifiers not declared (O3 identifier gate)",
     planning_n1_duplicate: "N1 identical canonical gold",
 }
 
 
 if __name__ == "__main__":
     staged = [json.loads(Path(path).read_text(encoding="utf-8")) for path in sys.argv[1:]]
-    english, _ = english_vocabulary()
-    clean, _ = C.check(staged, english)
+    clean, _ = C.check(staged)
     assert not clean, clean
     print("clean combined corpus: 0 problems")
     missed = 0
     for mutation, expected in CASES.items():
         candidate = copy.deepcopy(staged)
         mutation(candidate)
-        problems, _ = C.check(candidate, english)
+        problems, _ = C.check(candidate)
         hits = [problem for problem in problems if expected in problem]
         print(("FIRES " if hits else "MISSED"), mutation.__name__, "->", hits[0] if hits else problems[:3])
         missed += not hits

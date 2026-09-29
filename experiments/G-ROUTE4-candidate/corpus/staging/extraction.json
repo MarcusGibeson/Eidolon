@@ -3,20 +3,72 @@
  "task_class": "structured_extraction",
  "blueprint_commit": "1156d06",
  "status": "authored, not sealed, not adjudicated",
- "english_vocabulary": {
-  "sources": [
-   {
-    "file": "~\\.vscode\\extensions\\streetsidesoftware.code-spell-checker-4.9.3\\node_modules\\@cspell\\dict-en_us\\en_US.trie.gz",
-    "sha256": "b2f9dfd3524d766f3b484381944b7f69e61eb295645524adb3c481a8e9bb003d",
-    "ascii_words": 221332
+ "name_stream": {
+  "artifact": "name_stream.json",
+  "stream_sha256": "0b73b101d00a558cbbf2f5ae61cdf2cbb07c04400901aafaf85413b04e092230",
+  "names": 1432,
+  "screen": {
+   "syllable_bank": "18 consonants x 5 vowels, 2-3 syllables, seed 'G-ROUTE4 names' (names.py)",
+   "english_sources": [
+    {
+     "file": "~\\.vscode\\extensions\\streetsidesoftware.code-spell-checker-4.9.3\\node_modules\\@cspell\\dict-en_us\\en_US.trie.gz",
+     "sha256": "b2f9dfd3524d766f3b484381944b7f69e61eb295645524adb3c481a8e9bb003d",
+     "ascii_words": 221332
+    },
+    {
+     "file": "~\\.vscode\\extensions\\streetsidesoftware.code-spell-checker-4.9.3\\node_modules\\@cspell\\dict-en-gb-mit\\en_GB.trie.gz",
+     "sha256": "36d07d76f764ed2e3299c5bca2621de125eea32d24f78d5d92498361a6292922",
+     "ascii_words": 298522
+    }
+   ],
+   "decoded_lowercase_words": 359358,
+   "decoded_word_set_sha256": "c3337231bf3c2eacbdc6d8434022c9d5c53cae30ca811f87cdab203c343f89ec",
+   "g3_avoid": {
+    "entities": 16,
+    "lineages": 38
    },
-   {
-    "file": "~\\.vscode\\extensions\\streetsidesoftware.code-spell-checker-4.9.3\\node_modules\\@cspell\\dict-en-gb-mit\\en_GB.trie.gz",
-    "sha256": "36d07d76f764ed2e3299c5bca2621de125eea32d24f78d5d92498361a6292922",
-    "ascii_words": 298522
-   }
-  ],
-  "lowercase_words": 359358
+   "candidates_examined": 1556,
+   "english_rejections": [
+    "belize",
+    "bora",
+    "fife",
+    "fuji",
+    "hade",
+    "hame",
+    "here",
+    "jehu",
+    "kaye",
+    "lari",
+    "laze",
+    "luke",
+    "mere",
+    "meta",
+    "milo",
+    "miro",
+    "nadu",
+    "nebo",
+    "nelu",
+    "nola",
+    "nora",
+    "nude",
+    "nuke",
+    "pali",
+    "polo",
+    "puru",
+    "raki",
+    "rani",
+    "sata",
+    "sene",
+    "side",
+    "toke",
+    "vade",
+    "vero",
+    "vibe",
+    "wade",
+    "zibo"
+   ],
+   "procedure": "build_name_stream.py --verify re-derives this stream from the same dictionaries; name_stream.replay_without_dictionary re-derives it from names.py, G-ROUTE3's inventory and english_rejections alone, with no dictionary"
+  }
  },
  "missing_slots": [],
  "fixtures": [

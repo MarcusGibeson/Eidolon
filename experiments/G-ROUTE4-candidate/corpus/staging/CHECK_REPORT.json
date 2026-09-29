@@ -87,8 +87,8 @@
    "true": 69
   },
   "claim_status_balance": {
-   "contradicted": 142,
-   "supported": 145,
+   "contradicted": 140,
+   "supported": 147,
    "unresolved": 54
   },
   "uncertainty_balance": {
@@ -98,9 +98,9 @@
    "unaddressed_claim": 20
   },
   "cited_source_bindings": 590,
-  "distinct_lineage_bindings": 482,
+  "distinct_lineage_bindings": 459,
   "source_records": 607,
-  "unique_lineages": 499,
+  "unique_lineages": 476,
   "cross_fixture_lineage_repeats": 0,
   "temporal_governing_pairs": 18,
   "narrower_scope_cases": 17,
@@ -397,7 +397,8 @@
   "near_miss_compliant": 142,
   "reserves_checked": 41,
   "reserve_mismatches": 0,
-  "fine_signature": "none (declared in the design; conversation relies on reasoning-pattern review)"
+  "fine_signature": "none (declared in the design; conversation relies on reasoning-pattern review)",
+  "ledger": "message = request unit + one unit per option; every unit carries recomputed facts"
  },
  "planning": {
   "families": {
@@ -502,54 +503,97 @@
   }
  },
  "fine_signature_clashes": 0,
+ "reply_length": {
+  "measure": "cl100k_base sha256 223921b76ee99bde995b7ff738513eef100fb51d18c93597a113bcffe865b2a7",
+  "bound": 250,
+  "output_cap_num_predict": 350,
+  "by_class": {
+   "grounded_research_synthesis": {
+    "median": 130.5,
+    "max": 179,
+    "pretty_printed_max_diagnostic": 241
+   },
+   "hierarchical_semantic_synthesis": {
+    "median": 164.0,
+    "max": 231,
+    "pretty_printed_max_diagnostic": 297
+   },
+   "ordinary_conversation": {
+    "median": 40.0,
+    "max": 43,
+    "pretty_printed_max_diagnostic": 43
+   },
+   "reflective_planning": {
+    "median": 173.0,
+    "max": 227,
+    "pretty_printed_max_diagnostic": 326
+   },
+   "structured_extraction": {
+    "median": 32.0,
+    "max": 49,
+    "pretty_printed_max_diagnostic": 60
+   }
+  }
+ },
+ "canonical_signature_clashes": 0,
  "o3_entities": {
   "g4_fixtures": 584,
-  "g4_entities": 1425,
-  "g3_entities_compared": 21,
+  "g4_entities": 697,
+  "g3_entities_compared": 20,
   "shared": 0,
   "scope": "all authored G-ROUTE4 fixtures of every class, main and reserve, pairwise and against all G-ROUTE3 A and B fixtures"
  },
- "o3_identifiers_supplementary": {
+ "o3_identifier_gate": {
   "g4_identifiers": 17,
   "g3_identifiers": 11,
   "shared": 0,
-  "note": "the frozen G-ROUTE3 detector's identifier branch never matches (literal backspace bytes); this supplementary screen uses the intended pattern and excludes the design's structural ids"
+  "pattern_sha256": "a3773a982c16579d94cede99539e0b9cacca1347f96774759a84bbb7788adaae",
+  "frozen_checker_sha256": "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b",
+  "status": "binding prospective O3 identifier gate for G-ROUTE4; the frozen G-ROUTE3 detector is unchanged and G-ROUTE3 is not rescored"
  },
  "names": {
-  "invented_names": 1432,
-  "max_per_fixture": 5,
-  "english_vocabulary_screen": true
+  "invented_names_used": 1036,
+  "stream_draws": 1432,
+  "max_per_fixture": 4,
+  "english_screen": "committed name stream (screened at build against the recorded dictionary digests); replayed here with no dictionary",
+  "dictionary_free_replay": {
+   "names": 1432,
+   "candidates_examined": 1556,
+   "english_rejections": 37,
+   "stream_sha256": "0b73b101d00a558cbbf2f5ae61cdf2cbb07c04400901aafaf85413b04e092230"
+  },
+  "extra_english_screen_run": false
  },
  "trigram": {
   "grounded_research_synthesis": {
    "pool": 152,
-   "boilerplate_trigrams": 45,
-   "max_jaccard": 0.151,
+   "boilerplate_trigrams": 27,
+   "max_jaccard": 0.1788,
    "max_pair": [
-    "B4-RSRCH-R1-07",
-    "B4-RSRCH-R4-01"
+    "A4-RSRCH-R3-02",
+    "B4-RSRCH-R3-X11"
    ],
    "pairs_over_bound": 0,
    "o5_single_family_boilerplate": 0
   },
   "hierarchical_semantic_synthesis": {
    "pool": 116,
-   "boilerplate_trigrams": 13,
-   "max_jaccard": 0.1929,
+   "boilerplate_trigrams": 11,
+   "max_jaccard": 0.0764,
    "max_pair": [
-    "B4-SYNTH-R3-10",
-    "A4-SYNTH-R4-X04"
+    "B4-SYNTH-R3-16",
+    "B4-SYNTH-R4-X01"
    ],
    "pairs_over_bound": 0,
    "o5_single_family_boilerplate": 0
   },
   "ordinary_conversation": {
    "pool": 158,
-   "boilerplate_trigrams": 63,
-   "max_jaccard": 0.1953,
+   "boilerplate_trigrams": 7,
+   "max_jaccard": 0.0976,
    "max_pair": [
-    "B4-CONV-R1-28",
-    "A4-CONV-R3-X04"
+    "B4-CONV-R2-15",
+    "A4-CONV-R3-X03"
    ],
    "pairs_over_bound": 0,
    "o5_single_family_boilerplate": 0
@@ -577,32 +621,69 @@
    "o5_single_family_boilerplate": 0
   }
  },
+ "trigram_task_relevant": {
+  "grounded_research_synthesis": {
+   "pool": 152,
+   "boilerplate_trigrams": 27,
+   "max_jaccard": 0.1788,
+   "max_pair": [
+    "A4-RSRCH-R3-02",
+    "B4-RSRCH-R3-X11"
+   ],
+   "pairs_over_bound": 0
+  },
+  "hierarchical_semantic_synthesis": {
+   "pool": 116,
+   "boilerplate_trigrams": 11,
+   "max_jaccard": 0.0764,
+   "max_pair": [
+    "B4-SYNTH-R3-16",
+    "B4-SYNTH-R4-X01"
+   ],
+   "pairs_over_bound": 0
+  },
+  "ordinary_conversation": {
+   "pool": 158,
+   "boilerplate_trigrams": 7,
+   "max_jaccard": 0.0976,
+   "max_pair": [
+    "B4-CONV-R2-15",
+    "A4-CONV-R3-X03"
+   ],
+   "pairs_over_bound": 0
+  },
+  "reflective_planning": {
+   "pool": 116,
+   "boilerplate_trigrams": 34,
+   "max_jaccard": 0.0619,
+   "max_pair": [
+    "B4-PLAN-R1-07",
+    "A4-PLAN-R1-X03"
+   ],
+   "pairs_over_bound": 0
+  },
+  "structured_extraction": {
+   "pool": 122,
+   "boilerplate_trigrams": 6,
+   "max_jaccard": 0.1224,
+   "max_pair": [
+    "A4-EXTR-R4-03",
+    "A4-EXTR-R4-X03"
+   ],
+   "pairs_over_bound": 0
+  }
+ },
  "o6": {
   "g4_values_compared_by_class": {
    "structured_extraction": 118,
    "reflective_planning": 615,
    "ordinary_conversation": 568,
-   "grounded_research_synthesis": 499
+   "grounded_research_synthesis": 476
   },
   "collisions": 0,
   "pool": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures"
  },
  "n1_duplicates": 0,
- "english_vocabulary": {
-  "sources": [
-   {
-    "file": "~\\.vscode\\extensions\\streetsidesoftware.code-spell-checker-4.9.3\\node_modules\\@cspell\\dict-en_us\\en_US.trie.gz",
-    "sha256": "b2f9dfd3524d766f3b484381944b7f69e61eb295645524adb3c481a8e9bb003d",
-    "ascii_words": 221332
-   },
-   {
-    "file": "~\\.vscode\\extensions\\streetsidesoftware.code-spell-checker-4.9.3\\node_modules\\@cspell\\dict-en-gb-mit\\en_GB.trie.gz",
-    "sha256": "36d07d76f764ed2e3299c5bca2621de125eea32d24f78d5d92498361a6292922",
-    "ascii_words": 298522
-   }
-  ],
-  "lowercase_words": 359358
- },
  "problems": [],
  "passed": true
 }

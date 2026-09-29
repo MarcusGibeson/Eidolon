@@ -14,7 +14,6 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import check_corpus as C  # noqa: E402
-from english_vocabulary import english_vocabulary  # noqa: E402
 
 
 def research_document(staged):
@@ -41,6 +40,17 @@ def first(staged, pattern, sls=None, role=None):
 
 def source_spec(design, source_id):
     return next(row for row in design["research_contract"]["sources"] if row["source_id"] == source_id)
+
+
+def set_source_text(fixture, design, source_id, text):
+    """Rewrite one source consistently in the ledger and the model-facing input (one defect only)."""
+    source_spec(design, source_id)["text"] = text
+    next(row for row in fixture["input"]["sources"] if row["source_id"] == source_id)["text"] = text
+
+
+def support_paraphrase(fixture, design, claim_id):
+    claim = next(c for c in design["research_contract"]["claims"] if c["claim_id"] == claim_id)
+    return C.research_topic(fixture["consequence_risk"], claim)[1].replace("{S}", claim["subject"])
 
 
 def wrong_input_shape(staged):
@@ -72,7 +82,7 @@ def bad_source_identity(staged):
 
 def wrong_recommendations(staged):
     fixture, _, _ = first(staged, "P6")
-    fixture["input"]["allowed_recommendations"] = ["hold_record", "accept_record"]
+    fixture["input"]["allowed_recommendations"] = list(reversed(fixture["input"]["allowed_recommendations"]))
 
 
 def wrong_uncertainty_contract(staged):
@@ -123,10 +133,10 @@ def p2_wrong_direction(staged):
 
 def p3_wrong_subject(staged):
     fixture, _, design = first(staged, "P3")
-    source_spec(design, "S1")["relation"] = "support"
-    fixture["input"]["sources"][0]["text"] = C.research_source_text(
-        source_spec(design, "S1"), design["research_contract"]["claims"],
-        design["research_contract"]["context"]["secondary"], design["research_contract"]["context"])
+    spec = source_spec(design, "S1")
+    spec["relation"] = "support"
+    del spec["alternate_subject"]
+    set_source_text(fixture, design, "S1", support_paraphrase(fixture, design, "C1"))
 
 
 def p4_loses_same_lineage(staged):
@@ -152,9 +162,10 @@ def p7_bad_temporal_order(staged):
 
 
 def p8_not_below_threshold(staged):
-    _, _, design = first(staged, "P8")
-    design["research_contract"]["sources"][0]["actual"] = \
-        design["research_contract"]["claims"][0]["threshold"]
+    fixture, _, design = first(staged, "P8")
+    spec, threshold = source_spec(design, "S1"), design["research_contract"]["claims"][0]["threshold"]
+    set_source_text(fixture, design, "S1", spec["text"].replace(str(spec["value"]), str(threshold)))
+    spec["value"] = threshold
 
 
 def wrong_gold(staged):
@@ -173,13 +184,21 @@ def wrong_rationale(staged):
 
 
 def wrong_sls_feature(staged):
-    fixture, _, design = first(staged, "P1", False)
-    contract = design["research_contract"]
-    spec = next(row for row in contract["sources"] if row["claim_id"] != "C1")
-    spec["relation"] = "support"
-    rendered = next(row for row in fixture["input"]["sources"] if row["source_id"] == spec["source_id"])
-    rendered["text"] = C.research_source_text(
-        spec, contract["claims"], contract["context"]["secondary"], contract["context"])
+    # a non-SLS fixture whose filler claim is denied by a single source: flip that source to a supporting
+    # paraphrase, so the claim becomes supported by exactly one lineage
+    for row in research_document(staged)["design"]:
+        if row["features"]["sls"]:
+            continue
+        sources = row["research_contract"]["sources"]
+        for claim in row["research_contract"]["claims"][1:]:
+            about = [s for s in sources if s["claim_id"] == claim["claim_id"]]
+            if len(about) == 1 and about[0]["relation"] == "deny":
+                fixture, _, design = locate(staged, row["fixture_id"])
+                spec = source_spec(design, about[0]["source_id"])
+                spec["relation"] = "support"
+                set_source_text(fixture, design, spec["source_id"], support_paraphrase(fixture, design, claim["claim_id"]))
+                return
+    raise KeyError("no single-denial filler claim")
 
 
 def wrong_decision_rule(staged):
@@ -219,14 +238,14 @@ CASES = {
     wrong_source_count: "research source count differs from family",
     bad_claim_identity: "research claim identities or keys are invalid",
     bad_source_identity: "research source identities or keys are invalid",
-    wrong_recommendations: "research recommendations differ from the authored frozen pair",
+    wrong_recommendations: "research recommendation pair is invalid or differs from the decision ledger",
     wrong_uncertainty_contract: "research uncertainty code contract differs from the frozen rules",
-    broken_name_binding: "research context or invented-name binding is invalid",
+    broken_name_binding: "research opening or invented-name binding is invalid",
     broken_claim_ledger: "research claim ledger binding is invalid",
     claim_text_drift: "research claim text differs from its semantic ledger",
     malformed_source_ledger: "research source ledger identities or keys are invalid",
     unknown_source_relation: "research source ledger has an unknown binding or relation",
-    source_text_drift: "research source text, lineage or binding differs from its semantic ledger",
+    source_text_drift: "research source text or lineage differs from its semantic ledger",
     p1_loses_independence: "research focal evidence does not realize pattern P1",
     p2_wrong_direction: "research focal evidence does not realize pattern P2",
     p3_wrong_subject: "research focal evidence does not realize pattern P3",
@@ -248,15 +267,14 @@ CASES = {
 
 if __name__ == "__main__":
     staged = [json.loads(Path(path).read_text(encoding="utf-8")) for path in sys.argv[1:]]
-    english, _ = english_vocabulary()
-    clean, _ = C.check(staged, english)
+    clean, _ = C.check(staged)
     assert not clean, clean
     print("clean five-class corpus: 0 problems")
     missed = 0
     for mutation, expected in CASES.items():
         candidate = copy.deepcopy(staged)
         mutation(candidate)
-        problems, _ = C.check(candidate, english)
+        problems, _ = C.check(candidate)
         hits = [problem for problem in problems if expected in problem]
         print(("FIRES " if hits else "MISSED"), mutation.__name__, "->", hits[0] if hits else problems[:3])
         missed += not hits

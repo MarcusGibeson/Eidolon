@@ -8,15 +8,29 @@ It uses G-ROUTE3's own tokenizer, entity detector and content function (read-onl
 G-ROUTE3 validators, so the checks are the ones the design names. The pool is fixed per the design: all authored
 G-ROUTE4 fixtures (main and reserve) plus G-ROUTE3's A and B fixtures.
 
+Pre-seal repair gates (in addition to the frozen ones): every free-text sentence of Conversation, Research and
+Synthesis is bound to the authoring ledger, one sentence per unit within a padding cap, and overlap is also measured
+on that task-relevant text; gold replies fit the output cap with headroom (pinned tokenizer, never downloaded);
+Synthesis required terms are substantive and not satisfiable from scaffolding; Research sources are the authored
+paraphrases (never the claim or its literal negation), P8 sources state no threshold or comparison, the
+single_lineage_support code has one truth under both lineage readings, and decision rules are compared by their
+normalized clause kind; invented names come from the committed stream, replayed with no dictionary.
+
     python -B check_corpus.py staging/extraction.json [...]   # writes staging/CHECK_REPORT.json; exit 1 on failure
 """
 
+import base64
 import collections
+import copy
+import datetime
 import hashlib
 import json
-import math
+import os
 import re
+import statistics
 import sys
+import tempfile
+from decimal import Decimal
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -28,6 +42,8 @@ import g_route1_validators as G1V  # noqa: E402  (read-only; N1 canonical resear
 from g_route3_operational import validate_operational  # noqa: E402
 from g_route3_semantics import validate_fixture_output  # noqa: E402
 from g_route3_conversation import canonical_value  # noqa: E402
+import name_stream as NS  # noqa: E402
+import research_topics as RT  # noqa: E402
 
 BP_DIR = ROOT / "experiments/G-ROUTE4-candidate/blueprint"
 BLUEPRINT = json.loads((BP_DIR / "BLUEPRINT.json").read_text(encoding="utf-8"))
@@ -67,53 +83,64 @@ RESEARCH_UNCERTAINTIES = [
 ]
 
 
-def research_claim_text(spec):
-    if spec["kind"] == "scope":
-        return (f"{spec['subject']} provides {spec['service']} at every {spec['site']} during "
-                f"review cycle {spec['cycle']}.")
-    if spec["kind"] == "quantity":
-        return (f"{spec['subject']}'s {spec['asset']} carries at least {spec['threshold']} units during "
-                f"review cycle {spec['cycle']}.")
-    return f"{spec['subject']}'s {spec['asset']} is approved for review cycle {spec['cycle']}."
+RESEARCH_DECISION_KIND = {"P1": "focal_two_lineages", "P4": "focal_two_lineages", "P7": "temporal_all_supported"}
+RESEARCH_SOURCE_KEYS = {"source_id", "claim_id", "relation", "lineage", "text"}
+RESEARCH_SOURCE_OPTIONAL = {"when", "date", "q", "value", "alternate_subject", "reissue"}
+# P8 sources report a value only: none of these words may appear (they would state the comparison for the model)
+COMPARISON_WORDS = {"below", "under", "less", "fewer", "short", "than", "threshold", "least", "exceed", "exceeds",
+                    "exceeded", "falls", "fall", "required", "requirement", "claim", "claimed", "insufficient",
+                    "enough", "not", "only", "above", "over", "more", "target"}
+NEGATION_WORDS = {"not", "no", "never", "does", "do", "did", "doesn't", "don't", "didn't", "isn't", "aren't", "cannot",
+                  "can't", "won't", "is", "are", "was", "were"}
+# per-sentence padding caps on task units (G-ROUTE3's longest comparable unit in brackets): conversation request
+# 34 words and option 21 [G-ROUTE3 message 75 words]; research claim 12 [12] and source 19 [19]; synthesis
+# observation 18 [17]. The caps leave headroom and stop filler from being folded into a bound sentence.
+UNIT_WORD_CAP = {"conversation_request": 40, "conversation_option": 28, "research_claim": 16, "research_source": 26,
+                 "synthesis_observation": 22}
+# required_terms must be substantive observation content, never task scaffolding
+SCAFFOLD_WORDS = {"observation", "observations", "filed", "file", "record", "records", "note", "notes", "statement",
+                  "statements", "finding", "role", "evidence", "logged", "entry", "report", "reported"}
 
 
-def research_source_statement(source, claims, alternate):
-    spec = claims[int(source["claim_id"][1:]) - 1]
-    relation = source["relation"]
-    if relation == "support":
-        statement = research_claim_text(spec)
-    elif relation == "deny":
-        statement = f"{spec['subject']}'s {spec['asset']} is not approved for review cycle {spec['cycle']}."
-    elif relation == "narrow":
-        statement = (f"{spec['subject']} provides {spec['service']} only at the eastern {spec['site']} during "
-                     f"review cycle {spec['cycle']}, not at every {spec['site']}.")
-    elif relation == "other_subject":
-        other = dict(spec)
-        other["subject"] = alternate
-        statement = research_claim_text(other)
-    elif relation == "quantity_deny":
-        statement = (f"{spec['subject']}'s {spec['asset']} carries {source['actual']} units during review cycle "
-                     f"{spec['cycle']}, below {spec['threshold']} units.")
-    else:
-        raise ValueError(relation)
-    if source.get("date"):
-        statement = f"{source['date']} record: {statement}"
-    return statement
+def words(text):
+    return re.findall(r"[a-z0-9']+", text.casefold())
 
 
-def research_source_text(source, claims, alternate, context):
-    statement = research_source_statement(source, claims, alternate)
-    provenance = context["number"] * 1000 + int(source["source_id"][1:]) * 20
-    return (f"{statement} {context['primary']} logged {context['secondary']}'s {context['domain']} record "
-            f"{context['number']} evidence for record {context['number']}-{source['source_id'][1:]}; "
-            f"{context['secondary']} indexed {context['primary']}'s {context['activity']} record "
-            f"{context['number']} note with the {context['instrument']} series {context['number']}. "
-            f"{context['primary']} cross-checked {context['secondary']}'s {context['domain']} record "
-            f"{context['number']} folio against {context['primary']}'s {context['instrument']} record "
-            f"{context['number']} docket for the {context['activity']}. Provenance path: ledger {provenance + 1} "
-            f"joins folio {provenance + 2}, shelf {provenance + 3}, packet {provenance + 4}, "
-            f"index {provenance + 5}, card {provenance + 6}, marker {provenance + 7}, and "
-            f"docket {provenance + 8}.")
+def sentence_count(text):
+    """Sentences in a unit: terminal punctuation followed by a space and a capital, plus the final one."""
+    body = text.strip()
+    return len(re.findall(r"[.!?](?=\s+[A-Z])", body)) + (1 if body else 0)
+
+
+def _stem(word):
+    return word[:-1] if len(word) > 3 and word.endswith("s") and not word.endswith("ss") else word
+
+
+def literal_variant(source_body, claim_text):
+    """True when a source is the claim sentence itself, or the claim with negation words inserted or removed."""
+    a = [_stem(w) for w in words(source_body) if w not in NEGATION_WORDS]
+    b = [_stem(w) for w in words(claim_text) if w not in NEGATION_WORDS]
+    return a == b
+
+
+def classify_decision(text, positive, negative):
+    """Normalize a research decision rule to its canonical clause kind, or None when it is not exactly one kind.
+    Rewording (synonyms, clause order, quoting) cannot change the kind, so it cannot hide a repeated structure."""
+    norm = text.casefold().replace(f"'{positive}'".casefold(), " zzposrec ").replace(f"'{negative}'".casefold(),
+                                                                                    " zznegrec ")
+    norm = " ".join(re.sub(r"[^a-z0-9 ]", " ", norm).split())
+    if norm.split().count("zzposrec") != 1 or norm.split().count("zznegrec") != 1:
+        return None
+    temporal = any(m in norm for m in ("later dated", "later date", "more recent", "newer", "most recent",
+                                       "dated later")) and any(m in norm for m in ("cite", "cited", "citing"))
+    focal = "c1" in norm and any(m in norm for m in ("two lineages", "two or more", "2 lineages")) and "lineage" in norm
+    every = any(m in norm for m in ("every claim", "all claims", "each claim", "all of the claims",
+                                    "no claim is left unsupported"))
+    kinds = [k for k, flag in (("temporal_all_supported", temporal and every), ("focal_two_lineages", focal),
+                               ("all_supported", every and not temporal)) if flag]
+    if temporal and not every:
+        return None
+    return kinds[0] if len(kinds) == 1 else None
 
 
 def research_gold(pattern, claims, sources, recommendations):
@@ -162,82 +189,194 @@ def research_gold(pattern, claims, sources, recommendations):
     return expected, reasons
 
 
-CONVERSATION_KEYS = {
-    ("CV1", 1): {"answer_options", "candidates", "message"},
-    ("CV1", 2): {"answer_options", "candidates", "maximum", "message", "minimum"},
-    ("CV2", 1): {"answer_options", "candidates", "duration_cap", "message", "target_minute"},
-    ("CV2", 2): {"answer_options", "candidates", "checkpoint_minute", "message", "target_minute"},
-    ("CV3", 1): {"answer_options", "candidates", "message", "source_cap", "target_converted"},
-    ("CV3", 2): {"answer_options", "candidates", "message", "target_converted", "target_net"},
-    ("CV4", 1): {"answer_options", "candidates", "message", "target_count", "target_secondary", "threshold"},
-    ("CV4", 2): {"answer_options", "candidates", "message", "target_count", "target_secondary", "threshold"},
-    ("CV5", 1): {"answer_options", "candidates", "message", "min_sample", "threshold"},
-    ("CV5", 2): {"adjustment", "answer_options", "candidates", "final_threshold", "message", "raw_threshold"},
-    ("CV6", 1): {"answer_options", "candidates", "message"},
-    ("CV6", 2): {"answer_options", "candidates", "message", "required_priority"},
-}
-
-
-def conversation_conditions(family, depth, inp):
-    """Independently recompute the two authoring conditions for every Conversation candidate."""
-    candidates = inp.get("candidates")
-    if not isinstance(candidates, list) or len(candidates) != 4 or not all(isinstance(c, dict) for c in candidates):
-        return [], ["candidates are not four objects"]
-    expected_fields = {
-        ("CV1", 1): {"condition_one", "condition_two"}, ("CV1", 2): {"adjustment", "base"},
-        ("CV2", 1): {"duration", "start"}, ("CV2", 2): {"first_leg", "second_leg", "start"},
-        ("CV3", 1): {"amount", "factor"}, ("CV3", 2): {"amount", "factor", "reserve"},
-        ("CV4", 1): {"values"}, ("CV4", 2): {"values"},
-        ("CV5", 1): {"denominator", "numerator", "sample_size"},
-        ("CV5", 2): {"denominator", "numerator"},
-        ("CV6", 1): {"exception_applies", "general_allowed", "priority"},
-        ("CV6", 2): {"exception_applies", "general_allowed", "priority"},
-    }[(family, depth)]
-    errors, results = [], []
-    for i, row in enumerate(candidates):
-        if set(row) != expected_fields:
-            errors.append(f"candidate {i + 1} keys differ from the family/depth construct")
+def sls_supporting_reading(sources, expected):
+    """single_lineage_support when only the lineages of SUPPORTING sources are counted (the other reading of the
+    code's condition). A fixture is ambiguous if this differs from the cited-lineage reading used by the gold."""
+    for row in expected["claims"]:
+        if row["status"] != "supported":
             continue
-        try:
-            if family == "CV1" and depth == 1:
-                pair = (row["condition_one"] is True, row["condition_two"] is True)
-            elif family == "CV1":
-                pair = (row["base"] >= inp["minimum"], row["base"] + row["adjustment"] <= inp["maximum"])
-            elif family == "CV2" and depth == 1:
-                arrival = row["start"] + row["duration"]
-                pair = (arrival == inp["target_minute"], row["duration"] <= inp["duration_cap"])
-            elif family == "CV2":
-                first = row["start"] + row["first_leg"]
-                pair = (first == inp["checkpoint_minute"], first + row["second_leg"] == inp["target_minute"])
-            elif family == "CV3" and depth == 1:
-                converted = row["amount"] * row["factor"]
-                pair = (converted == inp["target_converted"], row["amount"] <= inp["source_cap"])
-            elif family == "CV3":
-                converted = row["amount"] * row["factor"]
-                pair = (converted == inp["target_converted"], converted - row["reserve"] == inp["target_net"])
-            elif family == "CV4":
-                values = row["values"]
-                if not isinstance(values, list) or not values:
-                    raise TypeError("values must be a non-empty list")
-                qualifying = [v for v in values if v >= inp["threshold"]]
-                secondary = len(values) - len(qualifying) if depth == 1 else sum(qualifying)
-                pair = (len(qualifying) == inp["target_count"], secondary == inp["target_secondary"])
-            elif family == "CV5" and depth == 1:
-                percentage = 100 * row["numerator"] / row["denominator"]
-                pair = (percentage >= inp["threshold"], row["sample_size"] >= inp["min_sample"])
-            elif family == "CV5":
-                percentage = 100 * row["numerator"] / row["denominator"]
-                pair = (percentage >= inp["raw_threshold"],
-                        percentage - inp["adjustment"] >= inp["final_threshold"])
-            elif family == "CV6" and depth == 1:
-                pair = (row["general_allowed"] is True, row["exception_applies"] is False)
-            else:
-                pair = (row["general_allowed"] is True and row["priority"] >= inp["required_priority"],
-                        row["exception_applies"] is False)
-            results.append(pair)
-        except (KeyError, TypeError, ValueError, ZeroDivisionError) as exc:
-            errors.append(f"candidate {i + 1} cannot be evaluated: {exc}")
-    return results, errors
+        supporting = {s["lineage"] for s in sources if s["claim_id"] == row["claim_id"] and s["relation"] == "support"}
+        if len(supporting) == 1:
+            return True
+    return False
+
+
+# The decision enters the canonical signature only as what it decides on: C1's lineage count, or every claim's
+# status. The temporal clause only settles C1's status, which the statuses already record, so a temporal rule and
+# a plain all-supported rule are the same decision class (this is stricter than comparing clause kinds).
+DECISION_CLASS = {"focal_two_lineages": "focal_c1_two_lineages", "all_supported": "every_claim_supported",
+                  "temporal_all_supported": "every_claim_supported"}
+
+
+def research_canonical_signature(expected, n_sources, kind, recommendations):
+    return ["research", sorted([c["status"], len(c["citations"]), len(c["lineages"])] for c in expected["claims"]),
+            recommendations.index(expected["recommendation"]), list(expected["uncertainties"]), n_sources,
+            DECISION_CLASS.get(kind)]
+
+
+def research_topic(risk, claim):
+    """The authored topic row whose claim renders to this claim's text (research_topics.py is the semantic ledger
+    of which paraphrase states which relation)."""
+    if claim.get("kind") == "scope":
+        pool = RT.SCOPE[risk]
+        render = lambda row: row[0].replace("{S}", claim["subject"])  # noqa: E731
+    elif claim.get("kind") == "quantity":
+        pool = RT.QUANTITY[risk]
+        render = lambda row: row[0].replace("{S}", claim["subject"]).replace("{T}", str(claim.get("threshold")))  # noqa: E731
+    else:
+        pool = RT.STANDARD[risk]
+        render = lambda row: row[0].replace("{S}", claim["subject"])  # noqa: E731
+    rows = [row for row in pool if render(row) == claim.get("text")]
+    return rows[0] if len(rows) == 1 else None
+
+
+def research_allowed_bodies(topic, claim, source):
+    relation, subject = source["relation"], claim["subject"]
+    if topic is None:
+        return set()
+    if claim.get("kind") == "scope":
+        return {topic[1].replace("{S}", subject)} if relation == "narrow" else set()
+    if claim.get("kind") == "quantity":
+        if relation != "quantity_deny" or source.get("q") not in (0, 1):
+            return set()
+        return {topic[1 + source["q"]].replace("{S}", subject).replace("{V}", str(source.get("value")))}
+    if relation == "support":
+        return {topic[1].replace("{S}", subject), topic[2].replace("{S}", subject)}
+    if relation == "deny":
+        return {topic[3].replace("{S}", subject), topic[4].replace("{S}", subject)}
+    if relation == "other_subject":
+        other = str(source.get("alternate_subject"))
+        return {topic[1].replace("{S}", other), topic[2].replace("{S}", other)}
+    return set()
+
+
+def split_source_prefix(text):
+    """(prefix kind, date, body): a dated-notice prefix, a reissue prefix, or none."""
+    for pattern in RT.DATE_PREFIXES:
+        head = pattern.split("{D}")
+        m = re.match(re.escape(head[0]) + r"(\d{4}-\d{2}-\d{2})" + re.escape(head[1]), text)
+        if m:
+            return "date", m.group(1), text[m.end():]
+    for prefix in RT.REISSUE_PREFIXES:
+        if text.startswith(prefix):
+            return "reissue", None, text[len(prefix):]
+    return None, None, text
+
+
+# ---------------------------------------------------------------- Conversation: facts re-derived independently
+CONV_UNIT = {"volume": {"ml": 1, "cl": 10, "l": 1000}, "mass": {"g": 1, "kg": 1000, "t": 1000000},
+             "length": {"mm": 1, "cm": 10, "m": 1000}}
+CONVERSATION_ATTRS = {                       # (request attributes, per-option attributes) per family and depth
+    ("CV1", 1): ({"A", "B"}, {"a", "b"}), ("CV1", 2): ({"A", "B"}, {"a1", "a2", "b1", "b2"}),
+    ("CV2", 1): ({"E", "T"}, {"dep", "dur"}), ("CV2", 2): ({"X", "Y"}, {"dep", "leg1", "leg2"}),
+    ("CV3", 1): ({"need", "max"}, {"vol", "wt"}), ("CV3", 2): ({"need", "net"}, {"count", "size", "waste"}),
+    ("CV4", 1): ({"thr", "K", "L"}, {"items"}), ("CV4", 2): ({"thr", "K", "S"}, {"items"}),
+    ("CV5", 1): ({"P", "N"}, {"ratio"}), ("CV5", 2): ({"B1", "tax", "B2"}, {"price", "disc"}),
+    ("CV6", 1): ({"G", "Ex", "today"}, {"g", "last"}), ("CV6", 2): ({"G", "Ex", "today"}, {"g1", "g2", "last"}),
+}
+# realism: CV2 facts are clock times or dates, CV3 facts are measured quantities with a unit conversion,
+# CV6 facts are calendar dates; nothing anywhere is a pre-evaluated flag
+CONVERSATION_FORMS = {"CV2": {"E": "td", "T": "td", "X": "td", "Y": "td", "dep": "td"},
+                      "CV3": {"need": "m", "max": "m", "vol": "m", "wt": "m", "size": "m", "waste": "m"},
+                      "CV6": {"today": "d", "last": "d"}}
+
+
+def _fnum(v):
+    d = Decimal(str(v)).normalize()
+    return format(d, "f") if d != d.to_integral_value() else str(int(d))
+
+
+def conversation_surface(value, fmt):
+    kind = fmt[0]
+    if isinstance(value, bool):
+        raise TypeError("a fact may not be a pre-evaluated flag")
+    if kind == "n":
+        return f"{_fnum(value)}{fmt[1]}"
+    if kind == "t":
+        return f"{value // 60:02d}:{value % 60:02d}"
+    if kind == "d":
+        return datetime.date.fromordinal(value).isoformat()
+    if kind == "m":
+        return f"{_fnum(Decimal(value) / CONV_UNIT[fmt[1]][fmt[2]])} {fmt[2]}"
+    if kind == "l":
+        items = [_fnum(v) for v in value]
+        return (", ".join(items[:-1]) + " and " + items[-1]) + fmt[1]
+    if kind == "r":
+        return f"{value[0]} of {value[1]}{fmt[1]}"
+    raise ValueError(kind)
+
+
+def conversation_conditions(family, depth, c, o):
+    """Independently recompute the two authoring conditions for one option from the stated facts."""
+    if family == "CV1":
+        if depth == 1:
+            return o["a"] >= c["A"], o["b"] <= c["B"]
+        return o["a1"] * o["a2"] >= c["A"], o["b1"] + o["b2"] <= c["B"]
+    if family == "CV2":
+        if depth == 1:
+            return o["dep"] >= c["E"], o["dep"] + o["dur"] <= c["T"]
+        return o["dep"] + o["leg1"] <= c["X"], o["dep"] + o["leg1"] + o["leg2"] <= c["Y"]
+    if family == "CV3":
+        if depth == 1:
+            return o["vol"] >= c["need"], o["wt"] <= c["max"]
+        total = o["count"] * o["size"]
+        return total >= c["need"], total - o["waste"] >= c["net"]
+    if family == "CV4":
+        high = [v for v in o["items"] if v >= c["thr"]]
+        if depth == 1:
+            return len(high) >= c["K"], len(o["items"]) - len(high) <= c["L"]
+        return len(high) >= c["K"], sum(high) >= c["S"]
+    if family == "CV5":
+        if depth == 1:
+            x, y = o["ratio"]
+            return 100 * x >= c["P"] * y, y >= c["N"]
+        sale = Decimal(o["price"]) * (100 - o["disc"]) / 100
+        return sale <= c["B1"], sale * (100 + c["tax"]) / 100 <= c["B2"]
+    if family == "CV6":
+        gap = c["today"] - o["last"]
+        if depth == 1:
+            return o["g"] >= c["G"], gap >= c["Ex"]
+        return o["g1"] + o["g2"] >= c["G"], gap >= c["Ex"]
+    raise ValueError(family)
+
+
+# ---------------------------------------------------------------- reply length (G-ROUTE1 model binding num_predict)
+REPLY_CAP_TOKENS = 350                 # experiments/G-ROUTE1-candidate/model_bindings.json num_predict
+REPLY_TOKEN_BOUND = 250                # >= 100 tokens (29%) of headroom under the cap
+CL100K_URL = "https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken"
+CL100K_SHA256 = "223921b76ee99bde995b7ff738513eef100fb51d18c93597a113bcffe865b2a7"
+
+
+def pinned_tokenizer():
+    """cl100k_base, loaded ONLY from the local tiktoken cache and only if its sha256 is the pinned digest; never
+    downloaded. Returns (encode, description) or (None, reason). Without it the gate falls back to UTF-8 bytes,
+    a strict upper bound on any byte-level BPE token count, so the fallback can only fail more, never less."""
+    try:
+        import tiktoken
+        from tiktoken_ext.openai_public import ENDOFTEXT, FIM_PREFIX, FIM_MIDDLE, FIM_SUFFIX, ENDOFPROMPT
+    except ImportError as exc:
+        return None, f"tiktoken unavailable ({exc})"
+    cache = Path(os.environ.get("TIKTOKEN_CACHE_DIR") or Path(tempfile.gettempdir()) / "data-gym-cache")
+    path = cache / hashlib.sha1(CL100K_URL.encode()).hexdigest()
+    if not path.is_file():
+        return None, "pinned cl100k_base file not in the local cache (never downloaded)"
+    data = path.read_bytes()
+    if hashlib.sha256(data).hexdigest() != CL100K_SHA256:
+        return None, "local cl100k_base file digest differs from the pinned digest"
+    ranks = {base64.b64decode(token): int(rank) for token, rank in (line.split() for line in data.splitlines() if line)}
+    pat = r"""'(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}++|\p{N}{1,3}+| ?[^\s\p{L}\p{N}]++[\r\n]*+|\s++$|\s*[\r\n]|\s+(?!\S)|\s"""
+    enc = tiktoken.Encoding(name="cl100k_base_pinned", pat_str=pat, mergeable_ranks=ranks,
+                            special_tokens={ENDOFTEXT: 100257, FIM_PREFIX: 100258, FIM_MIDDLE: 100259,
+                                            FIM_SUFFIX: 100260, ENDOFPROMPT: 100276})
+    return (lambda text: len(enc.encode(text, disallowed_special=()))), f"cl100k_base sha256 {CL100K_SHA256}"
+
+
+def reply_text(reference, pretty=False):
+    if isinstance(reference, str):
+        return reference
+    if pretty:
+        return "```json\n" + json.dumps(reference, ensure_ascii=False, indent=2) + "\n```"
+    return json.dumps(reference, ensure_ascii=False)
 
 
 def plan_sentence(form, before, after):
@@ -255,6 +394,8 @@ IDENT = re.compile(r"([A-Z]{1,5}-?\d[\w.-]*)")
 # bytes (tools/g_route3_independence.py line 57), so its identifier branch never matches. This screen uses the
 # evident intended pattern, is reported separately, and never replaces the frozen detector.
 IDENT_INTENDED = re.compile(r"\b([A-Z]{1,5}-?\d[\w.-]*)\b")
+IDENT_GATE_PATTERN_SHA256 = "a3773a982c16579d94cede99539e0b9cacca1347f96774759a84bbb7788adaae"
+FROZEN_G3_INDEPENDENCE_SHA256 = "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b"
 STRUCTURAL_KEYS = {"id", "source_id", "claim_id", "statement_id", "addresses", "citations", "observation_ids",
                    "evidence_ids", "depends_on", "label", "option_label"}
 
@@ -338,11 +479,74 @@ def o6_values(fixture, gold):
     return vals
 
 
+def task_relevant_fixture(fixture, units):
+    """The fixture with every free-text sentence that is not bound to the authoring ledger removed."""
+    if units is None:
+        return fixture
+    out, keep = copy.deepcopy(fixture), set(units)
+    inp = out["input"]
+    if fixture["task_class"] == "ordinary_conversation":
+        inp["message"] = " ".join(units)
+    elif fixture["task_class"] == "hierarchical_semantic_synthesis":
+        inp["observations"] = [o for o in inp.get("observations", []) if o.get("text") in keep]
+    elif fixture["task_class"] == "grounded_research_synthesis":
+        inp["claims"] = [c for c in inp.get("claims", []) if c.get("text") in keep]
+        inp["sources"] = [s for s in inp.get("sources", []) if s.get("text") in keep]
+    return out
+
+
+def jaccard_pass(pool, content, classes, problems, label, o5=True):
+    pin = set()
+    for text in PINNED:
+        pin |= I._trigrams(text)
+    by_class = collections.defaultdict(list)
+    for f, g, src in pool:
+        by_class[f["task_class"]].append((f["fixture_id"], src, I._trigrams(content[id(f)]) - pin))
+    out = {}
+    for tc in classes:
+        rows = by_class[tc]
+        freq = collections.Counter(tg for _, _, s in rows for tg in s)
+        boiler = {tg for tg, n in freq.items() if n >= I.BOILERPLATE_SHARE * len(rows)}
+        sets = [(fid, src, s - boiler) for fid, src, s in rows]
+        best, over = (0.0, "", ""), 0
+        for i in range(len(sets)):
+            for j in range(i + 1, len(sets)):
+                a, b = sets[i], sets[j]
+                if a[1] == "G3" and b[1] == "G3":
+                    continue
+                u = a[2] | b[2]
+                jac = len(a[2] & b[2]) / len(u) if u else 0.0
+                if jac > best[0]:
+                    best = (jac, a[0], b[0])
+                if jac > I.MAX_CROSS_CORPUS_TRIGRAM_JACCARD:
+                    over += 1
+                    problems.append(f"{label} {jac:.3f} > 0.20: {a[0]} vs {b[0]}")
+        single = []
+        if o5:
+            # O5: no boilerplate trigram specific to a single family
+            fam_of = {fid: SLOTS[fid]["family"] for fid, src, _ in rows if src == "G4"}
+            for tg in boiler:
+                fams = {fam_of[fid] for fid, src, s in rows if src == "G4" and tg in s}
+                if len(fams) == 1:
+                    single.append((" ".join(tg), fams.pop()))
+            for tg, fam in single:
+                problems.append(f"O5: boilerplate trigram '{tg}' is specific to family {fam}")
+        out[tc] = {"pool": len(rows), "boilerplate_trigrams": len(boiler), "max_jaccard": round(best[0], 4),
+                   "max_pair": best[1:], "pairs_over_bound": over}
+        if o5:
+            out[tc]["o5_single_family_boilerplate"] = len(single)
+    return out
+
+
 def check(staged, english=None):
+    """english: an optional extra English word set to screen names against (the committed stream is always used)."""
     problems, report = [], collections.OrderedDict()
     fixtures = [f for s in staged for f in s["fixtures"]]
     gold_by = {g["fixture_id"]: g for s in staged for g in s["gold"]}
     design_by = {d["fixture_id"]: d for s in staged for d in s["design"]}
+    design_order = {s["task_class"]: s["design"] for s in staged if "task_class" in s}
+    task_units = {}                        # fixture id -> its ledger-bound free-text sentences
+    research_signatures = collections.defaultdict(list)
     ids = [f["fixture_id"] for f in fixtures]
     if len(set(ids)) != len(ids):
         problems.append("duplicate fixture ids")
@@ -414,11 +618,12 @@ def check(staged, english=None):
             problems.append(f"{fid}: class disclosure sentence not present exactly once")
         if tc == "grounded_research_synthesis":
             inp, expected = f["input"], g["expected"]
-            family, pattern, sls = slot["family"], slot["features"]["pattern"], slot["features"]["sls"]
+            family, pattern, sls, risk = slot["family"], slot["features"]["pattern"], slot["features"]["sls"], slot["risk"]
             contract = d.get("research_contract") if isinstance(d.get("research_contract"), dict) else {}
             claims = contract.get("claims") if isinstance(contract.get("claims"), list) else []
             sources = contract.get("sources") if isinstance(contract.get("sources"), list) else []
-            context = contract.get("context") if isinstance(contract.get("context"), dict) else {}
+            decision = contract.get("decision") if isinstance(contract.get("decision"), dict) else {}
+            names = d.get("invented_names") or []
             if set(inp) != {"allowed_recommendations", "allowed_uncertainty_codes", "claims",
                             "decision_rule", "sources"}:
                 problems.append(f"{fid}: research input keys differ from the frozen construct")
@@ -428,167 +633,261 @@ def check(staged, english=None):
                 problems.append(f"{fid}: research claim count differs from family {family}")
             if len(inp.get("sources", [])) != source_count or len(sources) != source_count:
                 problems.append(f"{fid}: research source count differs from family {family}")
-            claim_ids = [row.get("claim_id") for row in inp.get("claims", []) if isinstance(row, dict)]
-            source_ids = [row.get("source_id") for row in inp.get("sources", []) if isinstance(row, dict)]
-            if claim_ids != [f"C{i}" for i in range(1, claim_count + 1)] or \
-                    any(not isinstance(row, dict) or set(row) != {"claim_id", "text"}
-                        for row in inp.get("claims", [])):
+            if any(not isinstance(row, dict) or set(row) != {"claim_id", "text"} for row in inp.get("claims", [])) \
+                    or [row.get("claim_id") for row in inp.get("claims", [])] != \
+                    [f"C{i}" for i in range(1, claim_count + 1)]:
                 problems.append(f"{fid}: research claim identities or keys are invalid")
-            if source_ids != [f"S{i}" for i in range(1, source_count + 1)] or \
-                    any(not isinstance(row, dict) or set(row) != {"source_id", "lineage", "text"}
-                        for row in inp.get("sources", [])):
+            if any(not isinstance(row, dict) or set(row) != {"source_id", "lineage", "text"}
+                   for row in inp.get("sources", [])) or [row.get("source_id") for row in inp.get("sources", [])] != \
+                    [f"S{i}" for i in range(1, source_count + 1)]:
                 problems.append(f"{fid}: research source identities or keys are invalid")
-            if inp.get("allowed_recommendations") != ["accept_record", "hold_record"]:
-                problems.append(f"{fid}: research recommendations differ from the authored frozen pair")
             if inp.get("allowed_uncertainty_codes") != RESEARCH_UNCERTAINTIES:
                 problems.append(f"{fid}: research uncertainty code contract differs from the frozen rules")
-            if set(context) != {"number", "domain", "activity", "instrument", "primary", "secondary"} or \
-                    [context.get("primary"), context.get("secondary")] != d.get("invented_names"):
-                problems.append(f"{fid}: research context or invented-name binding is invalid")
-            claim_spec_ids = [row.get("claim_id") for row in claims if isinstance(row, dict)]
-            if claim_spec_ids != [f"C{i}" for i in range(1, claim_count + 1)]:
+            # the opening follows the frozen constraint "Assess the claims about <subject>"
+            if len(names) != 2 or opening != f"Assess the claims about {names[0]} and {names[1]}":
+                problems.append(f"{fid}: research opening or invented-name binding is invalid (frozen constraint "
+                                "'Assess the claims about <subject>')")
+            # recommendations: a fixture-specific snake_case pair, bound to the decision ledger
+            recommendations = inp.get("allowed_recommendations")
+            if not (isinstance(recommendations, list) and len(recommendations) == 2 and
+                    len(set(recommendations)) == 2 and
+                    all(isinstance(x, str) and re.fullmatch(r"[a-z]+(_[a-z]+)*", x) for x in recommendations)) or \
+                    [decision.get("positive"), decision.get("negative")] != recommendations:
+                problems.append(f"{fid}: research recommendation pair is invalid or differs from the decision ledger")
+                recommendations = ["?", "??"]
+            # claims: the ledger renders the input exactly, and every claim names its subject
+            if [c.get("claim_id") if isinstance(c, dict) else None for c in claims] != \
+                    [f"C{i}" for i in range(1, claim_count + 1)]:
                 problems.append(f"{fid}: research claim ledger binding is invalid")
-            else:
-                try:
-                    rendered_claims = [{"claim_id": row["claim_id"], "text": research_claim_text(row)}
-                                       for row in claims]
-                except (KeyError, TypeError, ValueError) as exc:
-                    problems.append(f"{fid}: research claim ledger cannot render: {exc}")
-                    rendered_claims = []
-                if rendered_claims != inp.get("claims"):
-                    problems.append(f"{fid}: research claim text differs from its semantic ledger")
-            source_spec_ids = [row.get("source_id") for row in sources if isinstance(row, dict)]
-            allowed_source_keys = ({"source_id", "claim_id", "relation", "lineage"},
-                                   {"source_id", "claim_id", "relation", "lineage", "date"},
-                                   {"source_id", "claim_id", "relation", "lineage", "actual"})
-            malformed_sources = [row for row in sources if not isinstance(row, dict) or set(row) not in allowed_source_keys]
-            if source_spec_ids != [f"S{i}" for i in range(1, source_count + 1)] or malformed_sources:
+            if [{"claim_id": c.get("claim_id"), "text": c.get("text")} for c in claims if isinstance(c, dict)] != \
+                    inp.get("claims"):
+                problems.append(f"{fid}: research claim text differs from its semantic ledger")
+            topics = {}
+            for c in claims:
+                if not isinstance(c, dict) or c.get("subject") not in names or \
+                        str(c.get("subject")) not in str(c.get("text")):
+                    problems.append(f"{fid}: research claim {c.get('claim_id') if isinstance(c, dict) else c} does "
+                                    "not name one of the fixture's subjects")
+                    continue
+                if len(words(c["text"])) > UNIT_WORD_CAP["research_claim"] or sentence_count(c["text"]) != 1:
+                    problems.append(f"{fid}: research claim {c['claim_id']} is not one sentence within the cap")
+                topics[c["claim_id"]] = research_topic(risk, c)
+                if topics[c["claim_id"]] is None:
+                    problems.append(f"{fid}: research claim {c['claim_id']} is not an authored topic claim")
+            if (claims[:1] and claims[0].get("kind")) != {"P6": "scope", "P8": "quantity"}.get(pattern, "standard") or \
+                    any(c.get("kind") != "standard" for c in claims[1:] if isinstance(c, dict)):
+                problems.append(f"{fid}: research claim kinds do not realize pattern {pattern}")
+            # sources: ledger renders the input; text is the authored paraphrase for its relation
+            malformed = [s for s in sources if not isinstance(s, dict) or not RESEARCH_SOURCE_KEYS <= set(s) or
+                         not set(s) <= RESEARCH_SOURCE_KEYS | RESEARCH_SOURCE_OPTIONAL]
+            if malformed or [s.get("source_id") for s in sources] != [f"S{i}" for i in range(1, source_count + 1)]:
                 problems.append(f"{fid}: research source ledger identities or keys are invalid")
-            if any(row.get("claim_id") not in set(claim_spec_ids) or row.get("relation") not in RESEARCH_RELATIONS
-                   for row in sources if isinstance(row, dict)):
+                continue
+            if any(s.get("relation") not in RESEARCH_RELATIONS or s.get("claim_id") not in topics for s in sources):
                 problems.append(f"{fid}: research source ledger has an unknown binding or relation")
-            if claim_spec_ids and source_spec_ids and not malformed_sources and set(context) == \
-                    {"number", "domain", "activity", "instrument", "primary", "secondary"}:
-                try:
-                    rendered_sources = [{"source_id": row["source_id"], "lineage": row["lineage"],
-                                         "text": research_source_text(row, claims, context["secondary"], context)}
-                                        for row in sources]
-                except (KeyError, TypeError, ValueError, IndexError) as exc:
-                    problems.append(f"{fid}: research source ledger cannot render: {exc}")
-                    rendered_sources = []
-                if rendered_sources != inp.get("sources"):
-                    problems.append(f"{fid}: research source text, lineage or binding differs from its semantic ledger")
-
-            focal = [row for row in sources if isinstance(row, dict) and row.get("claim_id") == "C1"]
-            relations = [row.get("relation") for row in focal]
+                continue
+            if [{"source_id": s["source_id"], "lineage": s["lineage"], "text": s["text"]} for s in sources] != \
+                    inp.get("sources"):
+                problems.append(f"{fid}: research source text or lineage differs from its semantic ledger")
+            seen_lineages = set()
+            for s in sources:
+                sid, claim = s["source_id"], claims[int(s["claim_id"][1:]) - 1]
+                kind_, date, body = split_source_prefix(s["text"])
+                if len(words(s["text"])) > UNIT_WORD_CAP["research_source"] or sentence_count(body) != 1:
+                    problems.append(f"{fid}: research source {sid} is not one sentence within the cap (filler)")
+                if body not in research_allowed_bodies(topics.get(s["claim_id"]), claim, s):
+                    problems.append(f"{fid}: research source {sid} text is not the authored paraphrase for its "
+                                    f"relation {s['relation']}")
+                for c in claims:
+                    if s["text"] == c.get("text") or literal_variant(body, str(c.get("text"))):
+                        problems.append(f"{fid}: research source {sid} is the claim sentence or its literal negation")
+                if s["relation"] == "other_subject":
+                    other = s.get("alternate_subject")
+                    if other not in names or other == claim["subject"] or other not in body or claim["subject"] in body:
+                        problems.append(f"{fid}: research other-subject source {sid} does not name the alternate "
+                                        "subject alone")
+                elif claim["subject"] not in body:
+                    problems.append(f"{fid}: research source {sid} does not name its claim's subject")
+                if s["relation"] == "quantity_deny":
+                    threshold, value = claim.get("threshold"), s.get("value")
+                    if not isinstance(threshold, int) or not isinstance(value, int) or value >= threshold or \
+                            str(value) not in re.findall(r"\d+", body) or str(threshold) in re.findall(r"\d+", body) \
+                            or set(words(body)) & COMPARISON_WORDS:
+                        problems.append(f"{fid}: research quantitative contradiction does not fall below the threshold, "
+                                        f"or source {sid} states the threshold or a comparison")
+                if pattern == "P7" and s["claim_id"] == "C1":
+                    if kind_ != "date" or date != s.get("date") or s.get("when") not in ("older", "newer"):
+                        problems.append(f"{fid}: research temporal source {sid} is not a dated notice")
+                elif kind_ == "date" or "date" in s or "when" in s:
+                    problems.append(f"{fid}: dated research source {sid} appears outside P7's focal pair")
+                if (kind_ == "reissue") != bool(s.get("reissue")) or \
+                        bool(s.get("reissue")) != (s["lineage"] in seen_lineages and kind_ != "date"):
+                    problems.append(f"{fid}: research source {sid} reissue marking differs from its lineage history")
+                if not re.fullmatch("(" + "|".join(RT.LINEAGE_REGIONS) + ")-(" + "|".join(RT.LINEAGE_ISSUERS) +
+                                    ")-(" + "|".join(RT.LINEAGE_CHANNELS) + ")", s["lineage"]):
+                    problems.append(f"{fid}: research lineage {s['lineage']!r} is not a region-issuer-channel name")
+                seen_lineages.add(s["lineage"])
+            wording = collections.defaultdict(set)
+            for s in sources:
+                wording[(s["claim_id"], s["relation"], split_source_prefix(s["text"])[2])].add(s["lineage"])
+            if any(len(lineages) > 1 for lineages in wording.values()):
+                problems.append(f"{fid}: research sources from different lineages share identical wording "
+                                "(independent publishers do not copy each other)")
+            focal = [row for row in sources if row["claim_id"] == "C1"]
+            relations = [row["relation"] for row in focal]
             if pattern == "P1":
-                pattern_ok = relations == ["support", "support"] and \
-                    len({row.get("lineage") for row in focal}) == 2
+                pattern_ok = relations == ["support", "support"] and len({row["lineage"] for row in focal}) == 2
             elif pattern == "P2":
                 pattern_ok = relations == ["deny"]
             elif pattern == "P3":
                 pattern_ok = relations == ["other_subject"]
             elif pattern == "P4":
                 pattern_ok = relations[:2] == ["support", "support"] and len(focal) == (2 if sls else 3) and \
-                    focal[0].get("lineage") == focal[1].get("lineage") and \
-                    (sls or focal[2].get("lineage") != focal[0].get("lineage"))
+                    focal[0]["lineage"] == focal[1]["lineage"] and \
+                    (sls or focal[2]["lineage"] != focal[0]["lineage"])
             elif pattern == "P5":
                 pattern_ok = relations == ["support", "deny"]
             elif pattern == "P6":
                 pattern_ok = relations == ["narrow"]
             elif pattern == "P7":
+                dates = [row.get("date") for row in focal]
                 pattern_ok = set(relations) == {"support", "deny"} and len(focal) == 2
+                if not (all(isinstance(x, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", x) for x in dates) and
+                        dates == sorted(dates) and len(set(dates)) == 2 and
+                        [row.get("when") for row in focal] == ["older", "newer"]):
+                    problems.append(f"{fid}: research temporal-governance relation is invalid")
             elif pattern == "P8":
-                pattern_ok = relations == ["quantity_deny", "quantity_deny"]
+                pattern_ok = relations == ["quantity_deny", "quantity_deny"] and \
+                    len({row["lineage"] for row in focal}) == 2
             else:
                 pattern_ok = False
             if not pattern_ok:
                 problems.append(f"{fid}: research focal evidence does not realize pattern {pattern}")
-            decision_text = inp.get("decision_rule", "")
-            p7_rule_ok = any(marker in decision_text for marker in (
-                "later-dated source", "later calendar date governs", "chronologically newer source",
-                "most recent date")) and "cited" in decision_text
-            if pattern == "P7":
-                dates = [row.get("date") for row in focal]
-                if not all(isinstance(x, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", x) for x in dates) or \
-                        dates != sorted(dates) or len(set(dates)) != 2 or not p7_rule_ok:
-                    problems.append(f"{fid}: research temporal-governance relation is invalid")
-                research_stats["temporal"]["governing_pairs"] += 1
-            elif any("date" in row for row in sources if isinstance(row, dict)):
-                problems.append(f"{fid}: dated research source appears outside P7")
-            if pattern == "P6":
-                if not claims or claims[0].get("kind") != "scope" or not focal or focal[0].get("relation") != "narrow":
-                    problems.append(f"{fid}: research narrower-scope binding is invalid")
-                research_stats["scope"]["narrower_scope_cases"] += 1
-            elif any(row.get("relation") == "narrow" for row in sources if isinstance(row, dict)):
+            if pattern == "P6" and (not claims or claims[0].get("kind") != "scope"):
+                problems.append(f"{fid}: research narrower-scope binding is invalid")
+            if pattern != "P6" and any(row["relation"] == "narrow" for row in sources):
                 problems.append(f"{fid}: narrower-scope source appears outside P6")
-            if pattern == "P3" and (not focal or context.get("secondary") not in
-                                    research_source_statement(focal[0], claims, context.get("secondary"))):
-                problems.append(f"{fid}: research other-subject source is not bound to the alternate subject")
-            if pattern == "P8":
-                threshold = claims[0].get("threshold") if claims else None
-                if not isinstance(threshold, int) or any(not isinstance(row.get("actual"), int) or
-                                                         row["actual"] >= threshold for row in focal):
-                    problems.append(f"{fid}: research quantitative contradiction does not fall below the threshold")
+            if pattern == "P7":
+                research_stats["temporal"]["governing_pairs"] += 1
+            if pattern == "P6":
+                research_stats["scope"]["narrower_scope_cases"] += 1
+            # gold, rationale ledger, both readings of single_lineage_support, and the decision clause kind
             try:
-                recomputed, derived_reasons = research_gold(pattern, claims, sources,
-                                                             inp.get("allowed_recommendations", []))
+                recomputed, derived_reasons = research_gold(pattern, claims, sources, recommendations)
             except (KeyError, TypeError, ValueError, IndexError) as exc:
                 problems.append(f"{fid}: research gold cannot be recomputed: {exc}")
-                recomputed, derived_reasons = {}, {}
+                continue
             if expected != recomputed:
                 problems.append(f"{fid}: research gold differs from the statuses and evidence recomputed from input")
             if g.get("reference_output") != expected:
                 problems.append(f"{fid}: research reference_output differs from expected")
             if contract.get("derived_reasons") != derived_reasons:
                 problems.append(f"{fid}: research rationale ledger differs from recomputed reasons")
-            realized_sls = "single_lineage_support" in recomputed.get("uncertainties", [])
-            if realized_sls is not sls:
+            cited_sls = "single_lineage_support" in recomputed["uncertainties"]
+            if cited_sls is not sls:
                 problems.append(f"{fid}: research single_lineage_support outcome differs from the frozen feature")
-            if pattern in ("P1", "P4"):
-                decision_ok = "C1" in inp.get("decision_rule", "") and "two lineages" in inp.get("decision_rule", "")
-            elif pattern == "P7":
-                decision_ok = p7_rule_ok and any(word in decision_text for word in ("all claims", "every claim",
-                                                                                    "each claim"))
-            else:
-                decision_ok = "every claim" in inp.get("decision_rule", "")
-            if not decision_ok:
-                problems.append(f"{fid}: research decision rule does not express the pattern's frozen decision")
-            if recomputed:
-                research_stats["status"].update(row["status"] for row in recomputed["claims"])
-                research_stats["uncertainties"].update(recomputed["uncertainties"])
-                research_stats["citations"]["cited_source_bindings"] += sum(len(row["citations"])
-                                                                             for row in recomputed["claims"])
-                research_stats["citations"]["distinct_lineage_bindings"] += sum(len(row["lineages"])
-                                                                                  for row in recomputed["claims"])
+            if sls_supporting_reading(sources, recomputed) is not cited_sls:
+                problems.append(f"{fid}: single_lineage_support is ambiguous: counting supporting lineages gives a "
+                                "different answer from counting cited lineages")
+            kind = classify_decision(inp.get("decision_rule", ""), *recommendations)
+            if kind is None or kind != RESEARCH_DECISION_KIND.get(pattern, "all_supported") or \
+                    decision.get("kind") != kind:
+                problems.append(f"{fid}: research decision rule does not express the pattern's frozen decision "
+                                f"(normalized clause kind: {kind})")
+            signature = research_canonical_signature(recomputed, source_count, kind, recommendations)
+            if contract.get("canonical_signature") != signature:
+                problems.append(f"{fid}: declared canonical signature differs from the recomputed one")
+            research_signatures[(risk, slot["phase"])].append((fid, json.dumps(signature)))
+            research_stats["status"].update(row["status"] for row in recomputed["claims"])
+            research_stats["uncertainties"].update(recomputed["uncertainties"])
+            research_stats["citations"]["cited_source_bindings"] += sum(len(row["citations"])
+                                                                         for row in recomputed["claims"])
+            research_stats["citations"]["distinct_lineage_bindings"] += sum(len(row["lineages"])
+                                                                              for row in recomputed["claims"])
             research_stats["families"][family] += 1
             research_stats["patterns"][pattern] += 1
             research_stats["sls"][str(sls).lower()] += 1
             research_stats[f"{slot['phase']}_{slot['role']}_{slot['risk']}_patterns"][pattern] += 1
             research_stats[f"{slot['phase']}_{slot['role']}_{slot['risk']}_sls"][str(sls).lower()] += 1
+            task_units[fid] = [c["text"] for c in claims] + [s["text"] for s in sources]
         elif tc == "ordinary_conversation":
             inp, expected = f["input"], g["expected"]
             family, depth = slot["family"], slot["features"]["depth"]
-            if set(inp) != CONVERSATION_KEYS[(family, depth)]:
-                problems.append(f"{fid}: conversation input keys differ from the family/depth construct")
+            if set(inp) != {"answer_options", "message"}:
+                problems.append(f"{fid}: conversation input keys are not exactly answer_options and message")
                 continue
             options = inp.get("answer_options")
             if not isinstance(options, list) or len(options) != 4:
                 problems.append(f"{fid}: conversation must have exactly 4 answer options")
-                options = options if isinstance(options, list) else []
+                continue
             canonical = [canonical_value(v) for v in options]
             if len(canonical) != len(set(canonical)):
                 problems.append(f"{fid}: conversation options are not pairwise distinct under canonical_value")
             if set(expected) != {"answer", "max_characters"} or expected.get("max_characters") != 600:
                 problems.append(f"{fid}: conversation gold keys or max_characters differ from the frozen contract")
             position = slot["features"]["gold_position"] - 1
-            if position >= len(options) or expected.get("answer") != options[position]:
+            if expected.get("answer") != options[position]:
                 problems.append(f"{fid}: conversation gold answer is not at the frozen position")
             if options != d.get("invented_names"):
                 problems.append(f"{fid}: conversation options differ from the declared global name draws")
-            results, errors = conversation_conditions(family, depth, inp)
-            for error in errors:
-                problems.append(f"{fid}: conversation {error}")
+            units = d.get("message_units")
+            if not isinstance(units, list) or len(units) != 5 or \
+                    [u.get("option") if isinstance(u, dict) else "?" for u in units] != [None] + options:
+                problems.append(f"{fid}: conversation ledger is not one request unit and one unit per option")
+                continue
+            if inp["message"] != " ".join(str(u.get("text")) for u in units):
+                problems.append(f"{fid}: conversation message is not exactly its ledger units (unbound text)")
+            request_attrs, option_attrs = CONVERSATION_ATTRS[(family, depth)]
+            forms = CONVERSATION_FORMS.get(family, {})
+            values, bad_unit = [], False
+            for u in units:
+                facts = u.get("facts")
+                text = str(u.get("text"))
+                label = "request" if u["option"] is None else f"option {u['option']}"
+                if not isinstance(facts, list) or not facts:
+                    problems.append(f"{fid}: conversation {label} sentence carries no fact the answer depends on")
+                    bad_unit = True
+                    continue
+                if sentence_count(text) != 1 or len(words(text)) > UNIT_WORD_CAP[
+                        "conversation_request" if u["option"] is None else "conversation_option"]:
+                    problems.append(f"{fid}: conversation {label} is not one sentence within the cap (filler)")
+                if u["option"] is not None and u["option"] not in text:
+                    problems.append(f"{fid}: conversation {label} sentence does not name its option")
+                row = {}
+                for fact in facts:
+                    try:
+                        rendered = conversation_surface(fact["value"], fact["fmt"])
+                    except (KeyError, TypeError, ValueError, IndexError, OverflowError) as exc:
+                        problems.append(f"{fid}: conversation {label} fact cannot be rendered: {exc}")
+                        bad_unit = True
+                        continue
+                    if rendered != fact.get("surface") or rendered not in text:
+                        problems.append(f"{fid}: conversation {label} fact {fact.get('attr')} is not stated as "
+                                        f"{rendered!r} in its sentence")
+                        bad_unit = True
+                    want_form = forms.get(fact.get("attr"))
+                    if want_form and fact["fmt"][0] not in want_form:
+                        problems.append(f"{fid}: conversation {label} fact {fact.get('attr')} is not a real "
+                                        f"{'clock/date' if 'd' in want_form else 'unit'} expression")
+                    row[fact.get("attr")] = fact["value"]
+                if set(row) != (request_attrs if u["option"] is None else option_attrs):
+                    problems.append(f"{fid}: conversation {label} facts differ from the family/depth construct")
+                    bad_unit = True
+                values.append(row)
+            if family == "CV3":
+                dims = collections.defaultdict(set)
+                for u in units:
+                    for fact in u.get("facts") or []:
+                        if fact.get("fmt", [None])[0] == "m":
+                            dims[fact["fmt"][1]].add(fact["fmt"][2])
+                if not any(len(v) > 1 for v in dims.values()):
+                    problems.append(f"{fid}: CV3 states every quantity in one unit (no conversion)")
+            results = []
+            if not bad_unit:
+                try:
+                    results = [conversation_conditions(family, depth, values[0], o) for o in values[1:]]
+                except (KeyError, TypeError, ValueError, ZeroDivisionError, ArithmeticError) as exc:
+                    problems.append(f"{fid}: conversation conditions cannot be recomputed: {exc}")
             if len(results) == 4:
                 gold_positions = [i for i, pair in enumerate(results) if pair == (True, True)]
                 near_positions = [i for i, pair in enumerate(results) if pair == (True, False)]
@@ -596,8 +895,7 @@ def check(staged, english=None):
                 if gold_positions != [position]:
                     problems.append(f"{fid}: conversation recomputed gold positions {gold_positions} differ from "
                                     f"the frozen position {position}")
-                if len(near_positions) != 1 or len(far_positions) != 2 or any(pair == (False, True)
-                                                                             for pair in results):
+                if len(near_positions) != 1 or len(far_positions) != 2:
                     problems.append(f"{fid}: conversation needs exactly one first-condition-only near miss and "
                                     "two zero-condition distractors")
                 near_option = options[near_positions[0]] if len(near_positions) == 1 else None
@@ -605,17 +903,15 @@ def check(staged, english=None):
                     problems.append(f"{fid}: declared near-miss option differs from the recomputed near miss")
             if not isinstance(g.get("reference_output"), str):
                 problems.append(f"{fid}: conversation reference output is not text")
-            else:
-                expected_prefix = f"Answer: {expected.get('answer')}\nActions taken: none\n"
-                if not g["reference_output"].startswith(expected_prefix):
-                    problems.append(f"{fid}: conversation reference does not use the exact disclosed frame")
+            elif not g["reference_output"].startswith(f"Answer: {expected.get('answer')}\nActions taken: none\n"):
+                problems.append(f"{fid}: conversation reference does not use the exact disclosed frame")
             conversation_stats["families"][family] += 1
             conversation_stats["depth"][str(depth)] += 1
-            conversation_stats[f"{slot['phase']}_{slot['role']}_positions"][str(position + 1)] += 1
             conversation_stats["near_miss"]["compliant"] += int(len(results) == 4 and
-                                                                   results.count((True, False)) == 1 and
-                                                                   results.count((False, False)) == 2 and
-                                                                   results.count((True, True)) == 1)
+                                                                 results.count((True, False)) == 1 and
+                                                                 results.count((False, False)) == 2 and
+                                                                 results.count((True, True)) == 1)
+            task_units[fid] = [str(u.get("text")) for u in units if u.get("facts")]
         elif tc == "structured_extraction":
             schema = f["input"]["schema"]
             types = sorted(abstract_type(str(t)) for t in schema.values())
@@ -733,6 +1029,26 @@ def check(staged, english=None):
                                for repeated, n in counts.items() if n == 2]
             if sorted(merged) != sorted(expected_merged):
                 problems.append(f"{fid}: synthesis reference merge does not match planned pair")
+            scaffold = " ".join([f["title"], f["prompt"], str(inp.get("conclusion_rule", "")),
+                                 " ".join(map(str, inp.get("allowed_conclusions", [])))] +
+                                [f"{r.replace('_', ' ')} {r} {o}" for o, r in roles.items()]).casefold()
+            for oid in ids:
+                text = texts.get(oid, "")
+                if sentence_count(text) != 1 or len(words(text)) > UNIT_WORD_CAP["synthesis_observation"]:
+                    problems.append(f"{fid}: synthesis observation {oid} is not one sentence within the cap (filler)")
+                terms = [str(x) for x in (expected.get("required_terms", {}).get(oid) or [])]
+                others = " ".join(v for k, v in texts.items() if k != oid).casefold()
+                weak = [x for x in terms if not (any(w not in SCAFFOLD_WORDS for w in re.findall(r"[a-z]{3,}", x.casefold()))
+                                                 or len(re.sub(r"\D", "", x)) >= 2)]
+                copied = [x for x in terms if x.casefold() in scaffold]
+                if weak or copied:
+                    problems.append(f"{fid}: synthesis required terms for {oid} are not substantive observation "
+                                    f"content (weak {weak}, satisfiable from scaffolding {copied})")
+                if terms and all(x.casefold() in others for x in terms):
+                    problems.append(f"{fid}: synthesis required terms for {oid} all occur in other observations")
+            if d.get("invented_names"):
+                problems.append(f"{fid}: synthesis declares invented names; its stream draws are unused_stream_draws")
+            task_units[fid] = [texts[o] for o in ids if expected.get("required_terms", {}).get(o)]
         elif tc == "reflective_planning":
             inp, expected = f["input"], g["expected"]
             family, form = slot["family"], slot["features"]["precedence_form"]
@@ -959,6 +1275,7 @@ def check(staged, english=None):
             "near_miss_compliant": conversation_stats["near_miss"]["compliant"],
             "reserves_checked": len(reserves), "reserve_mismatches": len(unmatched),
             "fine_signature": "none (declared in the design; conversation relies on reasoning-pattern review)",
+        "ledger": "message = request unit + one unit per option; every unit carries recomputed facts",
         }
 
     # ---- planning action names unique across every planning fixture (blueprint §4), and against G-ROUTE3's
@@ -1002,13 +1319,46 @@ def check(staged, english=None):
     by_cell = collections.defaultdict(lambda: {"A": [], "B": []})
     for f in fixtures:
         if f["validator_profile"] in ("extraction.v1", "research.v1"):
-            s = I.structural_signature(f, gold_by[f["fixture_id"]]["expected"])
+            try:
+                s = I.structural_signature(f, gold_by[f["fixture_id"]]["expected"])
+            except (KeyError, TypeError, ValueError, IndexError, AttributeError) as exc:
+                problems.append(f"{f['fixture_id']}: fine signature cannot be computed from its gold ({exc})")
+                continue
             by_cell[(f["task_class"], f["consequence_risk"])][SLOTS[f["fixture_id"]]["phase"]].append(
                 (f["fixture_id"], s))
     clashes = [(a, b) for parts in by_cell.values() for a, sa in parts["A"] for b, sb in parts["B"] if sa == sb]
     for a, b in clashes:
         problems.append(f"fine signature repeated between A′ and B′ in a cell: {a} vs {b}")
     report["fine_signature_clashes"] = len(clashes)
+
+    # ---- reply length: every gold reply fits the model's output cap with comfortable headroom
+    encode, tokenizer = pinned_tokenizer()
+    measure = encode or (lambda text: len(text.encode("utf-8")))
+    lengths, pretty_lengths = collections.defaultdict(list), collections.defaultdict(list)
+    for f in fixtures:
+        reference = gold_by[f["fixture_id"]]["reference_output"]
+        n = measure(reply_text(reference))
+        lengths[f["task_class"]].append(n)
+        pretty_lengths[f["task_class"]].append(measure(reply_text(reference, pretty=True)))
+        if n > REPLY_TOKEN_BOUND:
+            problems.append(f"{f['fixture_id']}: gold reply is {n} {'tokens' if encode else 'bytes'}, over the "
+                            f"{REPLY_TOKEN_BOUND} bound ({REPLY_CAP_TOKENS}-token output cap)")
+    report["reply_length"] = {
+        "measure": tokenizer if encode else f"UTF-8 bytes (strict upper bound; {tokenizer})",
+        "bound": REPLY_TOKEN_BOUND, "output_cap_num_predict": REPLY_CAP_TOKENS,
+        "by_class": {tc: {"median": statistics.median(v), "max": max(v),
+                          "pretty_printed_max_diagnostic": max(pretty_lengths[tc])}
+                     for tc, v in sorted(lengths.items())}}
+
+    # ---- canonical research signature: the decision clause is normalized to its kind, so equivalent rewordings
+    # of a rule cannot hide a repeated gold structure between A′ and B′ in a cell (the frozen signature compares
+    # raw rule text, reported above and kept)
+    canonical_clashes = [(a, b) for (risk, phase), rows in sorted(research_signatures.items()) if phase == "A"
+                         for a, sa in rows for b, sb in research_signatures.get((risk, "B"), []) if sa == sb]
+    for a, b in canonical_clashes:
+        problems.append(f"canonical research signature (normalized decision clause) repeated between A′ and B′: "
+                        f"{a} vs {b}")
+    report["canonical_signature_clashes"] = len(canonical_clashes)
 
     # ---- pool
     g3 = g3_fixtures()
@@ -1038,7 +1388,15 @@ def check(staged, english=None):
                              "g3_entities_compared": len({x for f, _ in g3 for x in ents[f["fixture_id"]]}),
                              "shared": len(shared), "scope": "all authored G-ROUTE4 fixtures of every class, "
                              "main and reserve, pairwise and against all G-ROUTE3 A and B fixtures"}
-    # supplementary identifier screen (see IDENT_INTENDED): 0 shared, and every G-ROUTE4 identifier declared
+    # O3 identifier gate (binding for G-ROUTE4; see O3_IDENTIFIER_DECISION.md). The frozen detector stays
+    # byte-identical and is still run above; this pinned supplementary gate is the prospective identifier gate.
+    # line endings normalized to LF, so the digest does not depend on a checkout's core.autocrlf
+    frozen_digest = hashlib.sha256((ROOT / "tools/g_route3_independence.py").read_bytes()
+                                   .replace(b"\r\n", b"\n")).hexdigest()
+    if frozen_digest != FROZEN_G3_INDEPENDENCE_SHA256:
+        problems.append(f"frozen G-ROUTE3 independence checker changed (sha256 {frozen_digest})")
+    if sha(IDENT_INTENDED.pattern) != IDENT_GATE_PATTERN_SHA256:
+        problems.append("O3 identifier gate pattern differs from its pinned digest")
     id_owners = collections.defaultdict(set)
     for f, _, src in pool:
         found = intended_identifiers(f, content[id(f)])
@@ -1047,19 +1405,44 @@ def check(staged, english=None):
         if src == "G4":
             undeclared_ids = found - set(design_by[f["fixture_id"]]["identifiers"])
             if undeclared_ids:
-                problems.append(f"{f['fixture_id']}: identifiers not declared (supplementary screen): "
+                problems.append(f"{f['fixture_id']}: identifiers not declared (O3 identifier gate): "
                                 f"{sorted(undeclared_ids)}")
     shared_ids = {x: sorted(fid for _, fid in w) for x, w in id_owners.items()
                   if len({fid for _, fid in w}) > 1 and any(src == "G4" for src, _ in w)}
     for x, w in sorted(shared_ids.items()):
-        problems.append(f"O3 supplementary: shared identifier {x!r}: {w}")
-    report["o3_identifiers_supplementary"] = {
+        problems.append(f"O3 identifier gate: shared identifier {x!r}: {w}")
+    report["o3_identifier_gate"] = {
         "g4_identifiers": len({x for x, w in id_owners.items() if any(s == "G4" for s, _ in w)}),
         "g3_identifiers": len({x for x, w in id_owners.items() if any(s == "G3" for s, _ in w)}),
-        "shared": len(shared_ids),
-        "note": "the frozen G-ROUTE3 detector's identifier branch never matches (literal backspace bytes); this "
-                "supplementary screen uses the intended pattern and excludes the design's structural ids"}
-    # declared names: every detected entity is declared; cap 6; screens
+        "shared": len(shared_ids), "pattern_sha256": IDENT_GATE_PATTERN_SHA256,
+        "frozen_checker_sha256": FROZEN_G3_INDEPENDENCE_SHA256,
+        "status": "binding prospective O3 identifier gate for G-ROUTE4; the frozen G-ROUTE3 detector is unchanged "
+                  "and G-ROUTE3 is not rescored"}
+
+    # ---- invented names: the committed stream, replayed without any dictionary; contiguous per-class slices;
+    # every declared name used in the fixture; unique; screened against the pool and G-ROUTE3
+    stream_ok = False
+    try:
+        stream_data = NS.load_artifact()
+        replay = NS.replay_without_dictionary(stream_data)
+        stream_ok = True
+    except NS.NameStreamUnavailable as exc:
+        problems.append(f"name stream: {exc}")
+        replay = None
+    if stream_ok:
+        offset = 0
+        for tc in NS.CLASS_ORDER:
+            count = stream_data["class_draws"][tc]
+            if tc in design_order:
+                drawn = [x for dd in design_order[tc] for x in dd["invented_names"] + dd.get("unused_stream_draws", [])]
+                if drawn != stream_data["names"][offset:offset + count]:
+                    problems.append(f"{tc}: declared name draws are not the committed stream slice")
+                for dd in design_order[tc]:
+                    span = dd.get("global_name_ordinals")
+                    own = dd["invented_names"] + dd.get("unused_stream_draws", [])
+                    if span is not None and stream_data["names"][span[0] - 1:span[1]] != own:
+                        problems.append(f"{dd['fixture_id']}: global_name_ordinals do not point at its draws")
+            offset += count
     all_names = collections.Counter()
     g3_names = {x.casefold() for f, _ in g3 for x in ents[f["fixture_id"]]}
     g3_lineages = {s["lineage"].casefold() for f, _ in g3 for s in f["input"].get("sources", [])
@@ -1072,11 +1455,15 @@ def check(staged, english=None):
             problems.append(f"{f['fixture_id']}: detected entities not declared as invented: {sorted(undeclared)}")
         if len(d["invented_names"]) + len(d["identifiers"]) > 6:
             problems.append(f"{f['fixture_id']}: more than 6 new names and identifiers")
+        facing = json.dumps({k: f[k] for k in ("title", "prompt", "input")}, ensure_ascii=False)
+        unused = [n for n in d["invented_names"] if n not in facing]
+        if unused:
+            problems.append(f"{f['fixture_id']}: declared invented names do not occur in the fixture: {unused}")
         input_text = f["input"].get("text", "") if isinstance(f.get("input"), dict) else ""
         missing_ids = {i.rstrip(".") for i in IDENT.findall(input_text)} - set(d["identifiers"])
         if missing_ids:
             problems.append(f"{f['fixture_id']}: identifiers in the text not declared: {sorted(missing_ids)}")
-        for n in d["invented_names"]:
+        for n in d["invented_names"] + d.get("unused_stream_draws", []):
             all_names[n] += 1
             low = n.lower()
             if english is not None and low in english:
@@ -1088,50 +1475,25 @@ def check(staged, english=None):
     for n, k in all_names.items():
         if k > 1:
             problems.append(f"invented name {n} used in {k} fixtures")
-    report["names"] = {"invented_names": sum(all_names.values()),
+    report["names"] = {"invented_names_used": sum(len(design_by[f["fixture_id"]]["invented_names"]) for f in fixtures),
+                       "stream_draws": sum(all_names.values()),
                        "max_per_fixture": max((len(design_by[f["fixture_id"]]["invented_names"]) +
                                                len(design_by[f["fixture_id"]]["identifiers"]) for f in fixtures),
                                               default=0),
-                       "english_vocabulary_screen": english is not None}
+                       "english_screen": "committed name stream (screened at build against the recorded "
+                                         "dictionary digests); replayed here with no dictionary",
+                       "dictionary_free_replay": replay,
+                       "extra_english_screen_run": english is not None}
 
-    # ---- trigram Jaccard per class pool, after pinned-text removal and the 25%-frequency boilerplate rule
-    pin = set()
-    for text in PINNED:
-        pin |= I._trigrams(text)
-    by_class = collections.defaultdict(list)
-    for f, g, src in pool:
-        by_class[f["task_class"]].append((f["fixture_id"], src, I._trigrams(content[id(f)]) - pin))
-    report["trigram"] = {}
-    for tc in classes:
-        rows = by_class[tc]
-        freq = collections.Counter(tg for _, _, s in rows for tg in s)
-        boiler = {tg for tg, n in freq.items() if n >= I.BOILERPLATE_SHARE * len(rows)}
-        sets = [(fid, src, s - boiler) for fid, src, s in rows]
-        best, over = (0.0, "", ""), 0
-        for i in range(len(sets)):
-            for j in range(i + 1, len(sets)):
-                a, b = sets[i], sets[j]
-                if a[1] == "G3" and b[1] == "G3":
-                    continue
-                u = a[2] | b[2]
-                jac = len(a[2] & b[2]) / len(u) if u else 0.0
-                if jac > best[0]:
-                    best = (jac, a[0], b[0])
-                if jac > I.MAX_CROSS_CORPUS_TRIGRAM_JACCARD:
-                    over += 1
-                    problems.append(f"trigram Jaccard {jac:.3f} > 0.20: {a[0]} vs {b[0]}")
-        # O5: no boilerplate trigram specific to a single family
-        fam_of = {fid: SLOTS[fid]["family"] for fid, src, _ in rows if src == "G4"}
-        single = []
-        for tg in boiler:
-            fams = {fam_of[fid] for fid, src, s in rows if src == "G4" and tg in s}
-            if len(fams) == 1:
-                single.append((" ".join(tg), fams.pop()))
-        for tg, fam in single:
-            problems.append(f"O5: boilerplate trigram '{tg}' is specific to family {fam}")
-        report["trigram"][tc] = {"pool": len(rows), "boilerplate_trigrams": len(boiler),
-                                 "max_jaccard": round(best[0], 4), "max_pair": best[1:], "pairs_over_bound": over,
-                                 "o5_single_family_boilerplate": len(single)}
+    # ---- trigram Jaccard per class pool, after pinned-text removal and the 25%-frequency boilerplate rule.
+    # Run twice: on the full fixture content (the frozen metric) and on task-relevant content only (every free-text
+    # sentence bound to the authoring ledger; unbound sentences are removed, and are failures in their own right).
+    relevant = {f["fixture_id"]: I._content(task_relevant_fixture(f, task_units.get(f["fixture_id"])))
+                for f in fixtures}
+    report["trigram"] = jaccard_pass(pool, content, classes, problems, "trigram Jaccard")
+    report["trigram_task_relevant"] = jaccard_pass(
+        pool, {id(f): (relevant[f["fixture_id"]] if src == "G4" else content[id(f)]) for f, _, src in pool},
+        classes, problems, "task-relevant trigram Jaccard", o5=False)
 
     # ---- O6 exact values, pooled across all classes and against G-ROUTE3 (G3-G3 duplicates not counted)
     owners6 = collections.defaultdict(set)
@@ -1181,16 +1543,13 @@ def check(staged, english=None):
 
 if __name__ == "__main__":
     staged = [json.loads(Path(p).read_text(encoding="utf-8")) for p in sys.argv[1:]]
-    from english_vocabulary import english_vocabulary
-    english, provenance = english_vocabulary()
-    problems, report = check(staged, english)
-    report["english_vocabulary"] = provenance
+    problems, report = check(staged)            # no dictionary: names are verified against the committed stream
     report["problems"] = problems
     report["passed"] = not problems
     out = HERE / "staging" / "CHECK_REPORT.json"
     out.write_text(json.dumps(report, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     for k, v in report.items():
-        if k not in ("problems", "english_vocabulary"):
+        if k != "problems":
             print(k, json.dumps(v, ensure_ascii=False))
     for p in problems:
         print("FAIL", p)

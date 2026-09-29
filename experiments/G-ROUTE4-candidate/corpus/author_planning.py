@@ -29,8 +29,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / "tools"))
-from english_vocabulary import english_vocabulary  # noqa: E402
-from names import NameBank  # noqa: E402
+from name_stream import NameStream  # noqa: E402
 
 BLUEPRINT = json.loads((ROOT / "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json").read_text(encoding="utf-8"))
 TEMPLATE = BLUEPRINT["templates"]["reflective_planning"]["assembled_template"]
@@ -879,20 +878,15 @@ def replay_names(bank):
     replayed = []
     for staged in (EXTRACTION, SYNTHESIS):
         for row in staged["design"]:
-            for expected in row["invented_names"]:
-                actual = bank.take()
+            for expected in row["invented_names"] + row.get("unused_stream_draws", []):
+                actual = bank.take()[0]
                 assert actual == expected, (row["fixture_id"], actual, expected)
                 replayed.append(actual)
     return replayed
 
 
 def build():
-    english, provenance = english_vocabulary()
-    assert provenance == EXTRACTION["english_vocabulary"] == SYNTHESIS["english_vocabulary"]
-    sys.path.insert(0, str(ROOT / "experiments/G-ROUTE4-candidate/blueprint"))
-    import build_blueprint as B  # noqa: E402  read-only G-ROUTE3 inventory
-    g3_entities, g3_lineages = B.g_route3_entity_inventory()
-    bank = NameBank(english, set(g3_entities) | set(g3_lineages))
+    bank = NameStream()          # the committed name stream (name_stream.json); fails closed if absent
     replayed = replay_names(bank)
     assert SYNTHESIS["name_sequence"]["last_synthesis_ordinal"] == len(replayed)
     body = TEMPLATE[len("{SUBJECT}"):]
@@ -903,7 +897,7 @@ def build():
         fid, family, form = slot["fixture_id"], slot["family"], slot["features"]["precedence_form"]
         sc = queues[slot["risk"]].pop(0)
         n_in, n_ex, n_hold = FAMILY[family]
-        name = bank.take()
+        name = bank.take()[0]
         ordinal = len(replayed) + drawn + 1
         drawn += 1
         fill = (lambda t: t.replace("@0", name))
@@ -988,7 +982,7 @@ def build():
     return {
         "schema_version": "g-route4.authoring-staging.v1", "task_class": "reflective_planning",
         "blueprint_commit": "1156d06", "status": "authored, not sealed, not adjudicated",
-        "english_vocabulary": provenance,
+        "name_stream": bank.provenance(),
         "name_sequence": {"names_replayed": len(replayed), "first_planning_ordinal": len(replayed) + 1,
                           "last_planning_ordinal": len(replayed) + drawn},
         "missing_slots": sorted({s["fixture_id"] for s in SLOTS} - {f["fixture_id"] for f in fixtures}),

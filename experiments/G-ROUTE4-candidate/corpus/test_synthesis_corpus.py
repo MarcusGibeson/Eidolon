@@ -8,7 +8,6 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import check_corpus as C  # noqa: E402
-from english_vocabulary import english_vocabulary  # noqa: E402
 
 
 def locate(staged, fid):
@@ -92,15 +91,14 @@ CASES = {
 
 if __name__ == "__main__":
     staged = [json.loads(Path(path).read_text(encoding="utf-8")) for path in sys.argv[1:]]
-    english, _ = english_vocabulary()
-    clean, _ = C.check(staged, english)
+    clean, _ = C.check(staged)
     assert not clean, clean
     print("clean combined corpus: 0 problems")
     missed = 0
     for mutation, expected in CASES.items():
         candidate = copy.deepcopy(staged)
         mutation(candidate)
-        problems, _ = C.check(candidate, english)
+        problems, _ = C.check(candidate)
         hits = [problem for problem in problems if expected in problem]
         print(("FIRES " if hits else "MISSED"), mutation.__name__, "->", hits[0] if hits else problems[:3])
         missed += not hits
