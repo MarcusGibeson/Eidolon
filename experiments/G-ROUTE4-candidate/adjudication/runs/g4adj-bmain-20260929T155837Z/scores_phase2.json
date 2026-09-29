@@ -1,0 +1,1101 @@
+{
+ "schema_version": "g-route4.adjudication-scores.v1",
+ "phase": 2,
+ "answers_commit": "262d8d77c5b1fdf76df7222f558f2de7ccb1a41c",
+ "answers_sha256": "9ccb3a32dc75f07c284b28f571003e0a8b435619840c06e70df1948544eae559",
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "slots": [
+  {
+   "fixture_id": "B4-EXTR-R1-13",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-EXTR-R1-13",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-EXTR-R1-15",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-EXTR-R1-15",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-EXTR-R3-13",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-EXTR-R3-13",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-PLAN-R1-10",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-PLAN-R1-10",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-09",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-09",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-11",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-11",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-14",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-PLAN-R2-14",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-PLAN-R3-04",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-PLAN-R3-04",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-01",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-01",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-02",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-02",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-04",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-04",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-06",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "research_judgment_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-06",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "research_judgment_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-07",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-07",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-10",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-10",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-11",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-11",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-13",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-13",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-14",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "research_judgment_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-14",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "research_judgment_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-15",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-15",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-16",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-16",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-17",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-17",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-18",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-18",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-01",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-01",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-03",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-03",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-04",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-04",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-05",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-05",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-06",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-06",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-12",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-12",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-14",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "research_judgment_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-14",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-17",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-17",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-03",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-03",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-04",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-04",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "research_judgment_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-05",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-05",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-06",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-06",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "research_judgment_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-07",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-07",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-08",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-08",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-09",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-09",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-14",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-14",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-15",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-15",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-18",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "research_judgment_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-18",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "research_judgment_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-01",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "conclusion_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-01",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-03",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "conclusion_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-03",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "conclusion_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-14",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-14",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-01",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-01",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-03",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-03",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-13",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "conclusion_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-13",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "conclusion_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-14",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-14",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "conclusion_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-03",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-03",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-07",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-07",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "conclusion_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-09",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "conclusion_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-09",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": [
+    "conclusion_mismatch"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-11",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-11",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  }
+ ]
+}
