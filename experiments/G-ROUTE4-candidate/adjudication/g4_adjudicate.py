@@ -120,6 +120,27 @@ def model_facing_b(fixes_dir=None):
     return fixtures
 
 
+def model_facing_a():
+    fixtures = json.loads((SEALED / "corpus_a.json").read_text(encoding="utf-8"))["fixtures"]
+    return {f["fixture_id"]: f for f in fixtures}
+
+
+def a_schedule(fixture_ids):
+    """A′ (design step 6): every fixture gets the full treatment, three blind adjudicators, in one phase."""
+    return [(fid, s) for fid in sorted(fixture_ids) for s in (1, 2, 3)]
+
+
+def decide_a(score_rows, fixture_ids):
+    """A′ (design step 6): kept only if all three adjudicators agree, otherwise the operator decides."""
+    by = {(r["fixture_id"], r["slot"]): r["agree"] for r in score_rows}
+    out = {}
+    for fid in sorted(fixture_ids):
+        a = [by.get((fid, s)) for s in (1, 2, 3)]
+        decision = "incomplete" if None in a else ("keep" if all(a) else "operator")
+        out[fid] = {"a1": a[0], "a2": a[1], "a3": a[2], "decision": decision}
+    return out
+
+
 def fixed_fixtures(fixes_dir):
     """The committed round-N fixed B′ fixtures (model-facing only), each bound to its recorded digests."""
     fixes_dir = Path(fixes_dir)
@@ -220,7 +241,15 @@ def verify_bindings(repo=ROOT):
         ref = render_prompt(fixture)
         if r != {"system": ref["system"], "user": ref["prompt"]}:
             raise StopBatch("binding", f"{fid}: frozen-template rendering differs from the models' rendering")
-    out.update({"b_main_fixtures": len(fixtures), "audit_sample": len(sample), "sealed_config": O2.SEALED_CONFIG_SHA256,
+    a_fixtures = model_facing_a()
+    for fid, fixture in a_fixtures.items():
+        r = render(fixture, cfg)
+        ref = render_prompt(fixture)
+        if r != {"system": ref["system"], "user": ref["prompt"]}:
+            raise StopBatch("binding", f"{fid}: frozen-template rendering differs from the models' rendering")
+    if len(a_fixtures) != 80 or any(not f.startswith("A4-") or "-X" in f for f in a_fixtures):
+        raise StopBatch("binding", "sealed A′ main corpus is not the 80 A′ main fixtures")
+    out.update({"a_main_fixtures": len(a_fixtures), "b_main_fixtures": len(fixtures), "audit_sample": len(sample), "sealed_config": O2.SEALED_CONFIG_SHA256,
                 "amended_config": cfg["config_sha256"], "manifest": MANIFEST_SHA256, "sample_digest": SAMPLE_DIGEST})
     return out
 
@@ -653,17 +682,26 @@ def main(argv=None):
     ap.add_argument("--stop-seq", type=int)
     ap.add_argument("--decision")
     ap.add_argument("--fixes-dir", help="re-adjudicate exactly the committed fixed fixtures in this directory")
+    ap.add_argument("--batch", choices=["b-main", "a-main"], default="b-main")
     args = ap.parse_args(argv)
     cfg = amended_config()
     fixes_dir = (ROOT / args.fixes_dir) if args.fixes_dir else None
-    fixtures = model_facing_b(fixes_dir)
-    sample = audit_sample()
+    a_batch = args.batch == "a-main"
+    if a_batch and (fixes_dir is not None or args.phase == 2):
+        raise SystemExit("the A′ batch is one phase of three adjudicators per fixture; fix rounds are not wired for A′ yet")
+    fixtures = model_facing_a() if a_batch else model_facing_b(fixes_dir)
+    sample = [] if a_batch else audit_sample()
     if fixes_dir is not None:                        # a fix round covers exactly the fixed fixtures, same procedure
         scope = sorted(fixed_fixtures(fixes_dir))
         sample = [f for f in sample if f in scope]
         fixtures = {fid: fixtures[fid] for fid in scope}
     if args.command == "verify":
         print(json.dumps(verify_bindings(), indent=1))
+        return 0
+    if args.command == "schedule" and a_batch:
+        s = a_schedule(fixtures)
+        print(json.dumps({"batch": "A′ main", "fixtures": len(fixtures), "slots": len(s),
+                          "slots_per_fixture": 3, "schedule_sha256": sha256(canonical(s))}, indent=1))
         return 0
     if args.command == "schedule":
         s1 = phase1_schedule(fixtures, sample)
@@ -691,7 +729,7 @@ def main(argv=None):
                                    "request_id": headers.get("request-id"), "body_sha256": sha256(body)})
             if status != 200 or json.loads(body.decode("utf-8")).get("id") != cfg["request"]["body_template"]["model"]:
                 raise StopBatch("credential", f"Models API preflight returned HTTP {status}")
-            runner.journal.append({"type": "run_start", "config_sha256": cfg["config_sha256"],
+            runner.journal.append({"type": "run_start", "config_sha256": cfg["config_sha256"], "batch": args.batch,
                                    "fixes": None if fixes_dir is None else {
                                        "dir": fixes_dir.relative_to(ROOT).as_posix(),
                                        "corpus_fixed_sha256": lf_sha256(fixes_dir / "corpus_fixed.json"),
@@ -702,7 +740,9 @@ def main(argv=None):
                                    "seal_commit": O2.SEAL_COMMIT, "audit_sample_commit": O2.AUDIT_SAMPLE_COMMIT,
                                    "sealed_config_sha256": O2.SEALED_CONFIG_SHA256, "manifest_sha256": MANIFEST_SHA256,
                                    "sample_digest": SAMPLE_DIGEST})
-        if args.phase == 1:
+        if a_batch:
+            schedule = a_schedule(fixtures)
+        elif args.phase == 1:
             schedule = phase1_schedule(fixtures, sample)
         else:
             scores1 = json.loads((run_dir / "scores_phase1.json").read_text(encoding="utf-8"))
@@ -713,7 +753,9 @@ def main(argv=None):
         return 0
     runner = Runner(run_dir, cfg, None, fixtures)
     if args.command == "seal-answers":
-        if args.phase == 1:
+        if a_batch:
+            schedule = a_schedule(fixtures)
+        elif args.phase == 1:
             schedule = phase1_schedule(fixtures, sample)
         else:
             schedule = phase2_schedule(json.loads((run_dir / "scores_phase1.json").read_text(encoding="utf-8")), sample)
@@ -723,7 +765,8 @@ def main(argv=None):
                           "sha256": sha256((run_dir / f"answers_phase{args.phase}.json").read_bytes())}))
         return 0
     if args.command == "score":
-        doc = score(runner, run_dir / f"answers_phase{args.phase}.json", fixes_dir=fixes_dir)
+        doc = score(runner, run_dir / f"answers_phase{args.phase}.json", fixes_dir=fixes_dir,
+                    **({"gold_path": SEALED / "gold_a.json"} if a_batch else {}))
         fsync_write(run_dir / f"scores_phase{args.phase}.json", (json.dumps(doc, indent=1, ensure_ascii=False) + "\n").encode("utf-8"))
         print(json.dumps({"scored": len(doc["slots"]), "agree": sum(1 for r in doc["slots"] if r["agree"]),
                           "disagree": sum(1 for r in doc["slots"] if r["agree"] is False),
@@ -736,7 +779,7 @@ def main(argv=None):
             if path.exists():
                 require_committed(path)
                 rows += json.loads(path.read_text(encoding="utf-8"))["slots"]
-        decisions = decide(rows, fixtures, sample)
+        decisions = decide_a(rows, fixtures) if a_batch else decide(rows, fixtures, sample)
         fsync_write(run_dir / "decisions.json", (json.dumps(decisions, indent=1, ensure_ascii=False) + "\n").encode("utf-8"))
         print(json.dumps(dict(sorted(collections.Counter(d["decision"] for d in decisions.values()).items()))))
         return 0

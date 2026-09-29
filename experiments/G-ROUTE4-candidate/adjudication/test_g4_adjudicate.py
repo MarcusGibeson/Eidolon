@@ -393,6 +393,53 @@ def main():
         check("fix round schedule: adjudicator 1 for each of the 14 fixed fixtures (none is sampled)",
               sched == [(f, 1) for f in scope] and not set(scope) & set(SAMPLE))
 
+    # ---- A′ batch: three adjudicators for every fixture, kept only if all three agree
+    A = H.model_facing_a()
+    GOLD_A = {g["fixture_id"]: g for g in json.loads((H.SEALED / "gold_a.json").read_text(encoding="utf-8"))["items"]}
+    sa = H.a_schedule(A)
+    check("A′ schedule: the 80 A′ main fixtures, slots 1, 2 and 3 each (240), nothing else",
+          len(A) == 80 and len(sa) == 240 and sorted({f for f, _ in sa}) == sorted(A) and
+          all(sorted(s for f2, s in sa if f2 == f) == [1, 2, 3] for f in A) and not set(A) & set(FIXTURES))
+    d = H.decide_a([{"fixture_id": "X", "slot": s, "agree": True} for s in (1, 2, 3)] +
+                   [{"fixture_id": "Y", "slot": 1, "agree": True}, {"fixture_id": "Y", "slot": 2, "agree": False},
+                    {"fixture_id": "Y", "slot": 3, "agree": True}] +
+                   [{"fixture_id": "Z", "slot": 1, "agree": True}, {"fixture_id": "Z", "slot": 2, "agree": None},
+                    {"fixture_id": "Z", "slot": 3, "agree": True}], ["X", "Y", "Z"])
+    check("A′ decision rule: all three agree -> keep; any disagreement -> operator; no verdict -> incomplete",
+          d["X"]["decision"] == "keep" and d["Y"]["decision"] == "operator" and d["Z"]["decision"] == "incomplete")
+    repo = fresh()
+    subprocess.run(["git", "init", "-q", str(repo)], check=True)
+    subprocess.run(["git", "-C", str(repo), "config", "user.email", "t@t"], check=True)
+    subprocess.run(["git", "-C", str(repo), "config", "user.name", "t"], check=True)
+    ids_a = sorted(f for f in A if A[f]["task_class"] != "ordinary_conversation")[:3]   # JSON-answer classes
+    subset_a = {i: A[i] for i in ids_a}
+    ref_a = lambda fid: GOLD_A[fid]["reference_output"] if isinstance(GOLD_A[fid]["reference_output"], str) \
+        else json.dumps(GOLD_A[fid]["reference_output"])
+
+    class FakeA(FakeProvider):
+        def send(self, body):
+            req = json.loads(body.decode("utf-8"))
+            fid = next(f for f, fx in subset_a.items() if H.render(fx, CFG)["user"] == req["messages"][0]["content"])
+            slot = self.current_slot(fid)
+            self.calls.append((fid, slot))
+            if (fid, slot) == (ids_a[1], 2):
+                return 200, {}, message("```json\n" + ref_a(fid) + "\n```")
+            return 200, {}, message(ref_a(fid))
+    pa = FakeA()
+    ra = runner(repo / "run", pa, fixtures=subset_a)
+    sched_a = H.a_schedule(subset_a)
+    ra.run(sched_a, 1)
+    ap = repo / "run" / "answers_phase1.json"
+    ap.write_text(json.dumps(H.answers(ra, sched_a, 1), indent=1) + "\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(repo), "add", "-A"], check=True)
+    subprocess.run(["git", "-C", str(repo), "commit", "-qm", "seal A answers"], check=True)
+    sc = H.score(ra, ap, repo=repo, gold_path=H.SEALED / "gold_a.json")
+    da = H.decide_a(sc["slots"], subset_a)
+    check("A′ end to end: 9 sessions; a fenced answer is a disagreement and sends its fixture to the operator",
+          len(pa.calls) == 9 and da[ids_a[0]]["decision"] == "keep" and da[ids_a[1]]["decision"] == "operator" and
+          da[ids_a[2]]["decision"] == "keep" and
+          [r for r in sc["slots"] if r["agree"] is False][0]["operational_reasons"] == ["malformed_json"])
+
     failed = [n for n, ok in RESULTS if not ok]
     print(f"{len(RESULTS) - len(failed)} of {len(RESULTS)} offline harness checks passed")
     return 1 if failed else 0
