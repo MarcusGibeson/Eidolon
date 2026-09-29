@@ -355,6 +355,44 @@ def main():
           len(full) == 381 and sum(1 for _, s in full if s == 1) == 305 and len(set(f for f, s in full if s == 1)) == 305
           and sorted(extra) == SAMPLE and all(v == [2, 3] for v in extra.values()) and len(extra) == 38)
 
+    # ---- fix rounds: the overlay replaces exactly the fixed fixtures, bound to their recorded digests
+    fixes_dir = HERE / "fixes" / "round1_bmain"
+    if fixes_dir.exists():
+        fixed = H.fixed_fixtures(fixes_dir)
+        record = {r["fixture_id"]: r for r in json.loads((fixes_dir / "FIX_RECORD.json").read_text(encoding="utf-8"))["fixes"]}
+        overlay = H.model_facing_b(fixes_dir)
+        check("fix overlay: 14 fixed fixtures replace exactly their sealed versions",
+              len(fixed) == 14 and all(overlay[f] == fixed[f] for f in fixed) and
+              all(overlay[f] == FIXTURES[f] for f in FIXTURES if f not in fixed))
+        p6 = "B4-RSRCH-R1-06"
+        body = H.request_body(fixed[p6], CFG).decode("utf-8")
+        check("fix overlay: the request carries the fixed text and not the sealed one",
+              "covers the town routes." in body and "covers the town routes only" not in body)
+        tmpfix = fresh()
+        for n in ("corpus_fixed.json", "gold_fixed.json", "ledger_fixed.json", "FIX_RECORD.json"):
+            shutil.copy(fixes_dir / n, tmpfix / n)
+        doc = json.loads((tmpfix / "corpus_fixed.json").read_text(encoding="utf-8"))
+        doc["fixtures"][0]["title"] += " (tampered)"
+        (tmpfix / "corpus_fixed.json").write_text(json.dumps(doc), encoding="utf-8")
+        try:
+            H.fixed_fixtures(tmpfix)
+            refused = False
+        except H.StopBatch as exc:
+            refused = exc.kind == "binding"
+        check("fix overlay: a fixed fixture that differs from its recorded digest is refused", refused)
+        gold_fixed = H.gold_path_overlay(fixes_dir)
+        sy1 = "B4-SYNTH-R2-14"
+        from g_route3_semantics import validate_fixture_output
+        new_ok = validate_fixture_output(fixed[sy1], gold_fixed[sy1], json.dumps(gold_fixed[sy1]["reference_output"]))
+        old_ok = validate_fixture_output(fixed[sy1], gold_fixed[sy1], json.dumps(GOLD[sy1]["reference_output"]))
+        check("fix overlay: scoring uses the fixed gold (fixed reference agrees; sealed-role reference does not)",
+              new_ok.get("hard_gate_pass") and not old_ok.get("hard_gate_pass") and
+              gold_fixed[sy1] != GOLD[sy1] and record[sy1]["fixed_sha256"]["gold"] == H.sha256(H.canonical(gold_fixed[sy1])))
+        scope = sorted(fixed)
+        sched = H.phase1_schedule(scope, [f for f in SAMPLE if f in scope])
+        check("fix round schedule: adjudicator 1 for each of the 14 fixed fixtures (none is sampled)",
+              sched == [(f, 1) for f in scope] and not set(scope) & set(SAMPLE))
+
     failed = [n for n, ok in RESULTS if not ok]
     print(f"{len(RESULTS) - len(failed)} of {len(RESULTS)} offline harness checks passed")
     return 1 if failed else 0

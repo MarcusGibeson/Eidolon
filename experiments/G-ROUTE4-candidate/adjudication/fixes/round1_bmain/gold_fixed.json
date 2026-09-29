@@ -1,0 +1,952 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "B′ main",
+ "round": 1,
+ "decisions_run": "g4adj-bmain-20260929T155837Z",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "items": [
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-public-transport-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "central-nature-reserve-panel-website",
+       "west-nature-reserve-panel-notice"
+      ]
+     }
+    ],
+    "recommendation": "wait",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-06",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3 across 2 lineage(s). The decision rule gives wait; holding codes: scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-public-transport-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "central-nature-reserve-panel-website",
+       "west-nature-reserve-panel-notice"
+      ]
+     }
+    ],
+    "recommendation": "wait",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-public-services-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "central-collections-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "wait",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-14",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3, S4 across 1 lineage(s). The decision rule gives wait; holding codes: single_lineage_support, scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-public-services-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "central-collections-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "wait",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "moorland-commercial-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "moorland-visitor-office-bulletin",
+       "valley-accommodation-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-facilities-office-bulletin",
+       "valley-property-services-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "hold_order",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-06",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S4 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S3, S5 across 2 lineage(s). The decision rule gives hold_order; holding codes: scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "moorland-commercial-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "moorland-visitor-office-bulletin",
+       "valley-accommodation-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-facilities-office-bulletin",
+       "valley-property-services-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "hold_order",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "east-building-inspectorate-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "lowland-building-inspectorate-report"
+      ]
+     }
+    ],
+    "recommendation": "hold_order",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-14",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3, S4 across 1 lineage(s). The decision rule gives hold_order; holding codes: single_lineage_support, scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "east-building-inspectorate-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "lowland-building-inspectorate-report"
+      ]
+     }
+    ],
+    "recommendation": "hold_order",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "central-data-protection-office-website",
+       "moorland-privacy-assurance-panel-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "lowland-software-assurance-panel-report",
+       "valley-digital-services-office-website"
+      ]
+     }
+    ],
+    "recommendation": "grant_access",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R3-04",
+   "rationale": "C1 is supported (direct_support), citing S1, S2, S3 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S4, S5 across 2 lineage(s). The decision rule gives grant_access; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "central-data-protection-office-website",
+       "moorland-privacy-assurance-panel-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "lowland-software-assurance-panel-report",
+       "valley-digital-services-office-website"
+      ]
+     }
+    ],
+    "recommendation": "grant_access",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "south-systems-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "east-payment-inspectorate-record",
+       "valley-payment-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-data-protection-office-bulletin",
+       "valley-records-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "revise_policy",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-06",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S4 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S3, S5 across 2 lineage(s). The decision rule gives revise_policy; holding codes: scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "south-systems-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "east-payment-inspectorate-record",
+       "valley-payment-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-data-protection-office-bulletin",
+       "valley-records-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "revise_policy",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "valley-data-protection-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "moorland-patient-safety-panel-register"
+      ]
+     }
+    ],
+    "recommendation": "revise_policy",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-14",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3, S4 across 1 lineage(s). The decision rule gives revise_policy; holding codes: single_lineage_support, scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "valley-data-protection-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "moorland-patient-safety-panel-register"
+      ]
+     }
+    ],
+    "recommendation": "revise_policy",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-software-assurance-panel-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "central-digital-services-office-technical-note",
+       "west-digital-services-office-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "east-systems-inspectorate-website",
+       "moorland-digital-services-office-specification"
+      ]
+     }
+    ],
+    "recommendation": "hold_rollout",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-18",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S4 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S3, S5 across 2 lineage(s). The decision rule gives hold_rollout; holding codes: scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-software-assurance-panel-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "central-digital-services-office-technical-note",
+       "west-digital-services-office-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "east-systems-inspectorate-website",
+       "moorland-digital-services-office-specification"
+      ]
+     }
+    ],
+    "recommendation": "hold_rollout",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O171": [
+      "three mornings"
+     ],
+     "O172": [
+      "holds air"
+     ],
+     "O173": [
+      "thorn"
+     ],
+     "O174": [
+      "inner tube"
+     ]
+    },
+    "roles": {
+     "O171": "symptom",
+     "O172": "symptom",
+     "O173": "finding",
+     "O174": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R1-01",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S171",
+      "role": "symptom",
+      "observation_ids": [
+       "O171",
+       "O172"
+      ],
+      "text": "My rear tyre has gone flat three mornings running. It holds air every evening when I lock the bike up."
+     },
+     {
+      "statement_id": "S173",
+      "role": "finding",
+      "observation_ids": [
+       "O173"
+      ],
+      "text": "The shop found a thorn in the tyre casing that caused the repeated punctures."
+     },
+     {
+      "statement_id": "S174",
+      "role": "next_step",
+      "observation_ids": [
+       "O174"
+      ],
+      "text": "Fit a new inner tube once the casing is clear."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O191": [
+      "milky"
+     ],
+     "O192": [
+      "gasping"
+     ],
+     "O193": [
+      "bacteria crash"
+     ],
+     "O194": [
+      "neon tetras"
+     ],
+     "O195": [
+      "old sponge"
+     ]
+    },
+    "roles": {
+     "O191": "symptom",
+     "O192": "symptom",
+     "O193": "finding",
+     "O194": "impact",
+     "O195": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R1-03",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S191",
+      "role": "symptom",
+      "observation_ids": [
+       "O191",
+       "O192"
+      ],
+      "text": "The tank water turned milky two days after cleaning. The fish are gasping near the surface."
+     },
+     {
+      "statement_id": "S193",
+      "role": "finding",
+      "observation_ids": [
+       "O193"
+      ],
+      "text": "A water test shows the cloudiness comes from a bacteria crash caused by the new filter sponge."
+     },
+     {
+      "statement_id": "S194",
+      "role": "impact",
+      "observation_ids": [
+       "O194"
+      ],
+      "text": "Two neon tetras have died since Sunday."
+     },
+     {
+      "statement_id": "S195",
+      "role": "next_step",
+      "observation_ids": [
+       "O195"
+      ],
+      "text": "Put the old sponge back beside the new one."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O471": [
+      "every payment"
+     ],
+     "O472": [
+      "cash sales"
+     ],
+     "O473": [
+      "unpaid fee"
+     ],
+     "O474": [
+      "reinstate"
+     ]
+    },
+    "roles": {
+     "O471": "symptom",
+     "O472": "symptom",
+     "O473": "finding",
+     "O474": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R2-13",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S471",
+      "role": "symptom",
+      "observation_ids": [
+       "O471",
+       "O472"
+      ],
+      "text": "The cafe card terminal declined every payment after lunch. Cash sales carried on normally."
+     },
+     {
+      "statement_id": "S473",
+      "role": "finding",
+      "observation_ids": [
+       "O473"
+      ],
+      "text": "The payment provider says the terminal declined cards because our merchant account was suspended over an unpaid fee."
+     },
+     {
+      "statement_id": "S474",
+      "role": "next_step",
+      "observation_ids": [
+       "O474"
+      ],
+      "text": "Clear the balance and ask the provider to reinstate the account."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O481": [
+      "due on Monday"
+     ],
+     "O482": [
+      "unit number",
+      "parcel"
+     ],
+     "O483": [
+      "saved delivery address"
+     ]
+    },
+    "roles": {
+     "O481": "symptom",
+     "O482": "finding",
+     "O483": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R2-14",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S481",
+      "role": "symptom",
+      "observation_ids": [
+       "O481"
+      ],
+      "text": "The stationery order due on Monday never arrived."
+     },
+     {
+      "statement_id": "S482",
+      "role": "finding",
+      "observation_ids": [
+       "O482"
+      ],
+      "text": "The courier says the parcel was returned because the unit number was missing from the address."
+     },
+     {
+      "statement_id": "S483",
+      "role": "next_step",
+      "observation_ids": [
+       "O483"
+      ],
+      "text": "Correct the saved delivery address before reordering."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O591": [
+      "twelve laptops"
+     ],
+     "O592": [
+      "driver update"
+     ],
+     "O593": [
+      "5.1",
+      "advisory"
+     ],
+     "O594": [
+      "six hours"
+     ],
+     "O595": [
+      "earlier driver"
+     ]
+    },
+    "roles": {
+     "O591": "symptom",
+     "O592": "symptom",
+     "O593": "finding",
+     "O594": "impact",
+     "O595": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R3-07",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S591",
+      "role": "symptom",
+      "observation_ids": [
+       "O591",
+       "O592"
+      ],
+      "text": "Twelve laptops reported disk encryption as switched off overnight. All of them had installed the same driver update."
+     },
+     {
+      "statement_id": "S593",
+      "role": "finding",
+      "observation_ids": [
+       "O593"
+      ],
+      "text": "The vendor advisory states that driver version 5.1 pauses encryption, which caused the alerts."
+     },
+     {
+      "statement_id": "S594",
+      "role": "impact",
+      "observation_ids": [
+       "O594"
+      ],
+      "text": "Those laptops held unencrypted data for about six hours."
+     },
+     {
+      "statement_id": "S595",
+      "role": "next_step",
+      "observation_ids": [
+       "O595"
+      ],
+      "text": "Roll the affected laptops back to the earlier driver."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O611": [
+      "found unlocked"
+     ],
+     "O612": [
+      "disturbed"
+     ],
+     "O613": [
+      "power cut"
+     ]
+    },
+    "roles": {
+     "O611": "symptom",
+     "O612": "symptom",
+     "O613": "finding"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R3-09",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S611",
+      "role": "symptom",
+      "observation_ids": [
+       "O611",
+       "O612"
+      ],
+      "text": "The records room door was found unlocked on Saturday. Nothing inside appears to have been disturbed."
+     },
+     {
+      "statement_id": "S613",
+      "role": "finding",
+      "observation_ids": [
+       "O613"
+      ],
+      "text": "The access log shows the door stayed open because the lock failed to re-engage after a power cut."
+     }
+    ]
+   }
+  }
+ ]
+}

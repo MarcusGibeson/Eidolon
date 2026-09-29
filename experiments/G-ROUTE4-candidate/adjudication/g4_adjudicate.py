@@ -113,9 +113,37 @@ def amended_config():
     return cfg
 
 
-def model_facing_b():
-    fixtures = json.loads((SEALED / "corpus_b.json").read_text(encoding="utf-8"))["fixtures"]
-    return {f["fixture_id"]: f for f in fixtures}
+def model_facing_b(fixes_dir=None):
+    fixtures = {f["fixture_id"]: f for f in json.loads((SEALED / "corpus_b.json").read_text(encoding="utf-8"))["fixtures"]}
+    if fixes_dir is not None:
+        fixtures.update(fixed_fixtures(fixes_dir))
+    return fixtures
+
+
+def fixed_fixtures(fixes_dir):
+    """The committed round-N fixed B′ fixtures (model-facing only), each bound to its recorded digests."""
+    fixes_dir = Path(fixes_dir)
+    sealed = {f["fixture_id"]: f for f in json.loads((SEALED / "corpus_b.json").read_text(encoding="utf-8"))["fixtures"]}
+    fixed = {f["fixture_id"]: f for f in json.loads((fixes_dir / "corpus_fixed.json").read_text(encoding="utf-8"))["fixtures"]}
+    record = {r["fixture_id"]: r for r in json.loads((fixes_dir / "FIX_RECORD.json").read_text(encoding="utf-8"))["fixes"]}
+    if set(fixed) != set(record) or not set(fixed) <= set(sealed):
+        raise StopBatch("binding", "fixed fixtures and fix record differ, or a fixed fixture is not a B′ main fixture")
+    for fid, f in fixed.items():
+        if sha256(canonical(sealed[fid])) != record[fid]["sealed_sha256"]["fixture"] or                 sha256(canonical(f)) != record[fid]["fixed_sha256"]["fixture"]:
+            raise StopBatch("binding", f"{fid}: fixed fixture is not bound to its recorded sealed and fixed digests")
+    return fixed
+
+
+def gold_path_overlay(fixes_dir):
+    """Scoring gold: sealed B′ gold, with the recorded fixed gold for fixed fixtures."""
+    gold = {g["fixture_id"]: g for g in json.loads((SEALED / "gold_b.json").read_text(encoding="utf-8"))["items"]}
+    if fixes_dir is not None:
+        record = {r["fixture_id"]: r for r in json.loads((Path(fixes_dir) / "FIX_RECORD.json").read_text(encoding="utf-8"))["fixes"]}
+        for g in json.loads((Path(fixes_dir) / "gold_fixed.json").read_text(encoding="utf-8"))["items"]:
+            if sha256(canonical(g)) != record[g["fixture_id"]]["fixed_sha256"]["gold"]:
+                raise StopBatch("binding", f"{g['fixture_id']}: fixed gold is not bound to its recorded digest")
+            gold[g["fixture_id"]] = g
+    return gold
 
 
 def audit_sample():
@@ -549,12 +577,15 @@ def require_committed(path, repo=ROOT):
     return git("log", "-1", "--format=%H", "--", rel, cwd=repo).stdout.strip()
 
 
-def score(runner, answers_path, repo=ROOT, gold_path=SEALED / "gold_b.json"):
+def score(runner, answers_path, repo=ROOT, gold_path=SEALED / "gold_b.json", fixes_dir=None):
     commit = require_committed(answers_path, repo)
     sealed_answers = json.loads(Path(answers_path).read_text(encoding="utf-8"))
     from g_route3_operational import validate_operational
     from g_route3_semantics import validate_fixture_output
-    gold = {g["fixture_id"]: g for g in json.loads(Path(gold_path).read_text(encoding="utf-8"))["items"]}
+    if fixes_dir is not None:
+        gold = gold_path_overlay(fixes_dir)
+    else:
+        gold = {g["fixture_id"]: g for g in json.loads(Path(gold_path).read_text(encoding="utf-8"))["items"]}
     rows = []
     for row in sealed_answers["slots"]:
         fid, slot = row["fixture_id"], row["slot"]
@@ -621,10 +652,16 @@ def main(argv=None):
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--stop-seq", type=int)
     ap.add_argument("--decision")
+    ap.add_argument("--fixes-dir", help="re-adjudicate exactly the committed fixed fixtures in this directory")
     args = ap.parse_args(argv)
     cfg = amended_config()
-    fixtures = model_facing_b()
+    fixes_dir = (ROOT / args.fixes_dir) if args.fixes_dir else None
+    fixtures = model_facing_b(fixes_dir)
     sample = audit_sample()
+    if fixes_dir is not None:                        # a fix round covers exactly the fixed fixtures, same procedure
+        scope = sorted(fixed_fixtures(fixes_dir))
+        sample = [f for f in sample if f in scope]
+        fixtures = {fid: fixtures[fid] for fid in scope}
     if args.command == "verify":
         print(json.dumps(verify_bindings(), indent=1))
         return 0
@@ -640,8 +677,11 @@ def main(argv=None):
         runner.journal.append({"type": "operator_resolution", "resolves": args.stop_seq, "decision": args.decision})
         return 0
     if args.command == "run":
-        for path in (Path(__file__), HERE / "o2_amendment.py", HERE / "adjudicator_config_amended.json"):
-            require_committed(path)                  # a run binds to a committed harness and amendment
+        bound = [Path(__file__), HERE / "o2_amendment.py", HERE / "adjudicator_config_amended.json"]
+        if fixes_dir is not None:
+            bound += [fixes_dir / n for n in ("corpus_fixed.json", "gold_fixed.json", "ledger_fixed.json", "FIX_RECORD.json")]
+        for path in bound:
+            require_committed(path)                  # a run binds to a committed harness, amendment and fix record
         verify_bindings()
         provider = AnthropicProvider(cfg)
         runner = Runner(run_dir, cfg, provider, fixtures, workers=args.workers)
@@ -652,6 +692,12 @@ def main(argv=None):
             if status != 200 or json.loads(body.decode("utf-8")).get("id") != cfg["request"]["body_template"]["model"]:
                 raise StopBatch("credential", f"Models API preflight returned HTTP {status}")
             runner.journal.append({"type": "run_start", "config_sha256": cfg["config_sha256"],
+                                   "fixes": None if fixes_dir is None else {
+                                       "dir": fixes_dir.relative_to(ROOT).as_posix(),
+                                       "corpus_fixed_sha256": lf_sha256(fixes_dir / "corpus_fixed.json"),
+                                       "fix_record_sha256": lf_sha256(fixes_dir / "FIX_RECORD.json"),
+                                       "fixtures": sorted(fixtures),
+                                       "purpose": "re-adjudication from scratch after the fixture's one fix"},
                                    "harness_sha256": lf_sha256(__file__), "harness_commit": git("rev-parse", "HEAD").stdout.strip(),
                                    "seal_commit": O2.SEAL_COMMIT, "audit_sample_commit": O2.AUDIT_SAMPLE_COMMIT,
                                    "sealed_config_sha256": O2.SEALED_CONFIG_SHA256, "manifest_sha256": MANIFEST_SHA256,
@@ -677,7 +723,7 @@ def main(argv=None):
                           "sha256": sha256((run_dir / f"answers_phase{args.phase}.json").read_bytes())}))
         return 0
     if args.command == "score":
-        doc = score(runner, run_dir / f"answers_phase{args.phase}.json")
+        doc = score(runner, run_dir / f"answers_phase{args.phase}.json", fixes_dir=fixes_dir)
         fsync_write(run_dir / f"scores_phase{args.phase}.json", (json.dumps(doc, indent=1, ensure_ascii=False) + "\n").encode("utf-8"))
         print(json.dumps({"scored": len(doc["slots"]), "agree": sum(1 for r in doc["slots"] if r["agree"]),
                           "disagree": sum(1 for r in doc["slots"] if r["agree"] is False),

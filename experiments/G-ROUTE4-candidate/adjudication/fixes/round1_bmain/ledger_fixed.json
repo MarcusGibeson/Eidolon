@@ -1,0 +1,994 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "B′ main",
+ "round": 1,
+ "decisions_run": "g4adj-bmain-20260929T155837Z",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "items": [
+  {
+   "fixture_id": "B4-RSRCH-R1-06",
+   "phase": "B",
+   "role": "main",
+   "risk": "R1",
+   "family": "RS1",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "invented_names": [
+    "Gojedo",
+    "Gafu"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1203,
+    1204
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "scope",
+      "subject": "Gojedo",
+      "text": "Gojedo's bus pass is valid on every route in the county."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Gafu",
+      "text": "Gafu's bird hide is open all year."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "narrow",
+      "lineage": "central-public-transport-inspectorate-website",
+      "text": "Gojedo's bus pass covers the town routes."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "central-nature-reserve-panel-website",
+      "text": "Gafu's bird hide closes for the whole winter."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "west-nature-reserve-panel-notice",
+      "text": "Gafu's bird hide is shut from October to March."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "sign_up",
+     "negative": "wait"
+    },
+    "derived_reasons": {
+     "C1": "scope",
+     "C2": "direct_contradiction"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "contradicted",
+       2,
+       2
+      ],
+      [
+       "unresolved",
+       1,
+       1
+      ]
+     ],
+     1,
+     [
+      "scope_mismatch"
+     ],
+     3,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "B4-RSRCH-R1-14",
+   "phase": "B",
+   "role": "main",
+   "risk": "R1",
+   "family": "RS2",
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "invented_names": [
+    "Badipa",
+    "Pevesi"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1219,
+    1220
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "scope",
+      "subject": "Badipa",
+      "text": "Badipa's library opens every day of the week."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Pevesi",
+      "text": "Pevesi's museum is free on the first Sunday of the month."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "narrow",
+      "lineage": "central-public-services-office-website",
+      "text": "Badipa's library opens on weekdays."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "central-collections-panel-website",
+      "text": "Entry to Pevesi's museum costs nothing on the first Sunday of each month."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "central-collections-panel-website",
+      "reissue": true,
+      "text": "Reposted from the same source: Entry to Pevesi's museum costs nothing on the first Sunday of each month."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "central-collections-panel-website",
+      "reissue": true,
+      "text": "Reissued by the same publisher: Entry to Pevesi's museum costs nothing on the first Sunday of each month."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "sign_up",
+     "negative": "wait"
+    },
+    "derived_reasons": {
+     "C1": "scope",
+     "C2": "direct_support"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "supported",
+       3,
+       1
+      ],
+      [
+       "unresolved",
+       1,
+       1
+      ]
+     ],
+     1,
+     [
+      "single_lineage_support",
+      "scope_mismatch"
+     ],
+     4,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-06",
+   "phase": "B",
+   "role": "main",
+   "risk": "R2",
+   "family": "RS5",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "invented_names": [
+    "Wanidu",
+    "Batuwu"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1239,
+    1240
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "scope",
+      "subject": "Wanidu",
+      "text": "Wanidu's discount applies to all of its product lines."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Batuwu",
+      "text": "Batuwu's hotel includes breakfast in the room rate."
+     },
+     {
+      "claim_id": "C3",
+      "kind": "standard",
+      "subject": "Wanidu",
+      "text": "Wanidu's office cleaners work at weekends."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "narrow",
+      "lineage": "moorland-commercial-inspectorate-report",
+      "text": "Wanidu's discount applies to office furniture."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "moorland-visitor-office-bulletin",
+      "text": "Batuwu's hotel charges for breakfast separately."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C3",
+      "relation": "deny",
+      "lineage": "moorland-facilities-office-bulletin",
+      "text": "Wanidu's office cleaning service is closed at weekends."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "valley-accommodation-inspectorate-website",
+      "text": "Breakfast is an extra at Batuwu's hotel."
+     },
+     {
+      "source_id": "S5",
+      "claim_id": "C3",
+      "relation": "deny",
+      "lineage": "valley-property-services-panel-website",
+      "text": "Wanidu's cleaners work weekdays only."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "place_order",
+     "negative": "hold_order"
+    },
+    "derived_reasons": {
+     "C1": "scope",
+     "C2": "direct_contradiction",
+     "C3": "direct_contradiction"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "contradicted",
+       2,
+       2
+      ],
+      [
+       "contradicted",
+       2,
+       2
+      ],
+      [
+       "unresolved",
+       1,
+       1
+      ]
+     ],
+     1,
+     [
+      "scope_mismatch"
+     ],
+     5,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-14",
+   "phase": "B",
+   "role": "main",
+   "risk": "R2",
+   "family": "RS2",
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "invented_names": [
+    "Mupafe",
+    "Nehaki"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1255,
+    1256
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "scope",
+      "subject": "Mupafe",
+      "text": "Mupafe's helpline answers calls on every day of the year."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Nehaki",
+      "text": "Nehaki's event hire firm supplies marquees."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "narrow",
+      "lineage": "east-building-inspectorate-briefing",
+      "text": "Mupafe's helpline answers calls on working days."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "lowland-building-inspectorate-report",
+      "text": "Nehaki's event hire firm puts up marquees for parties."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "lowland-building-inspectorate-report",
+      "reissue": true,
+      "text": "Reposted from the same source: Nehaki's event hire firm puts up marquees for parties."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "lowland-building-inspectorate-report",
+      "reissue": true,
+      "text": "Reissued by the same publisher: Nehaki's event hire firm puts up marquees for parties."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "place_order",
+     "negative": "hold_order"
+    },
+    "derived_reasons": {
+     "C1": "scope",
+     "C2": "direct_support"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "supported",
+       3,
+       1
+      ],
+      [
+       "unresolved",
+       1,
+       1
+      ]
+     ],
+     1,
+     [
+      "single_lineage_support",
+      "scope_mismatch"
+     ],
+     4,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-04",
+   "phase": "B",
+   "role": "main",
+   "risk": "R3",
+   "family": "RS4",
+   "features": {
+    "pattern": "P4",
+    "sls": false
+   },
+   "invented_names": [
+    "Roke",
+    "Yewubi"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1271,
+    1272
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "standard",
+      "subject": "Roke",
+      "text": "Roke's survey tool anonymises responses."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Yewubi",
+      "text": "Yewubi's file service records every download in an audit log."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "support",
+      "lineage": "moorland-privacy-assurance-panel-report",
+      "text": "Responses collected by Roke's survey tool are anonymous."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C1",
+      "relation": "support",
+      "lineage": "moorland-privacy-assurance-panel-report",
+      "reissue": true,
+      "text": "Reissued by the same publisher: Responses collected by Roke's survey tool are anonymous."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C1",
+      "relation": "support",
+      "lineage": "central-data-protection-office-website",
+      "text": "Roke's survey tool keeps every response anonymous."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "lowland-software-assurance-panel-report",
+      "text": "Yewubi's file service keeps no record of downloads."
+     },
+     {
+      "source_id": "S5",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "valley-digital-services-office-website",
+      "text": "Downloads from Yewubi's file service leave no audit entry."
+     }
+    ],
+    "decision": {
+     "kind": "focal_two_lineages",
+     "positive": "grant_access",
+     "negative": "deny_access"
+    },
+    "derived_reasons": {
+     "C1": "direct_support",
+     "C2": "direct_contradiction"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "contradicted",
+       2,
+       2
+      ],
+      [
+       "supported",
+       3,
+       2
+      ]
+     ],
+     0,
+     [],
+     5,
+     "focal_c1_two_lineages"
+    ]
+   }
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-06",
+   "phase": "B",
+   "role": "main",
+   "risk": "R3",
+   "family": "RS5",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "invented_names": [
+    "Jevuju",
+    "Vugi"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1275,
+    1276
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "scope",
+      "subject": "Jevuju",
+      "text": "Jevuju's encryption covers every laptop and phone."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Vugi",
+      "text": "Vugi's payroll system encrypts bank details at rest."
+     },
+     {
+      "claim_id": "C3",
+      "kind": "standard",
+      "subject": "Jevuju",
+      "text": "Jevuju's survey tool anonymises responses."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "narrow",
+      "lineage": "south-systems-inspectorate-record",
+      "text": "Jevuju's encryption covers the laptops."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "valley-payment-inspectorate-website",
+      "text": "Vugi's payroll system stores bank details in plain text."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C3",
+      "relation": "deny",
+      "lineage": "moorland-data-protection-office-bulletin",
+      "text": "Replies to Jevuju's surveys are linked to named accounts."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "east-payment-inspectorate-record",
+      "text": "Account numbers in Vugi's payroll database are unencrypted."
+     },
+     {
+      "source_id": "S5",
+      "claim_id": "C3",
+      "relation": "deny",
+      "lineage": "valley-records-inspectorate-website",
+      "text": "Jevuju's survey tool stores each answer with the respondent's email."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "publish_policy",
+     "negative": "revise_policy"
+    },
+    "derived_reasons": {
+     "C1": "scope",
+     "C2": "direct_contradiction",
+     "C3": "direct_contradiction"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "contradicted",
+       2,
+       2
+      ],
+      [
+       "contradicted",
+       2,
+       2
+      ],
+      [
+       "unresolved",
+       1,
+       1
+      ]
+     ],
+     1,
+     [
+      "scope_mismatch"
+     ],
+     5,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-14",
+   "phase": "B",
+   "role": "main",
+   "risk": "R3",
+   "family": "RS2",
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "invented_names": [
+    "Tosepe",
+    "Teliku"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1291,
+    1292
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "scope",
+      "subject": "Tosepe",
+      "text": "Tosepe's privacy notice applies to all of its apps."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Teliku",
+      "text": "Teliku's clinic deletes appointment records after two years."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "narrow",
+      "lineage": "valley-data-protection-office-website",
+      "text": "Tosepe's privacy notice applies to the booking app."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "moorland-patient-safety-panel-register",
+      "text": "Teliku's clinic erases appointment histories once they are two years old."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "moorland-patient-safety-panel-register",
+      "reissue": true,
+      "text": "Reposted from the same source: Teliku's clinic erases appointment histories once they are two years old."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "moorland-patient-safety-panel-register",
+      "reissue": true,
+      "text": "Reissued by the same publisher: Teliku's clinic erases appointment histories once they are two years old."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "publish_policy",
+     "negative": "revise_policy"
+    },
+    "derived_reasons": {
+     "C1": "scope",
+     "C2": "direct_support"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "supported",
+       3,
+       1
+      ],
+      [
+       "unresolved",
+       1,
+       1
+      ]
+     ],
+     1,
+     [
+      "single_lineage_support",
+      "scope_mismatch"
+     ],
+     4,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-18",
+   "phase": "B",
+   "role": "main",
+   "risk": "R3",
+   "family": "RS5",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "invented_names": [
+    "Jule",
+    "Pagehu"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1299,
+    1300
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "scope",
+      "subject": "Jule",
+      "text": "Jule's audit logging is on for every server."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Pagehu",
+      "text": "Pagehu's email service scans attachments for malware."
+     },
+     {
+      "claim_id": "C3",
+      "kind": "standard",
+      "subject": "Jule",
+      "text": "Jule's messaging app supports end-to-end encryption."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "narrow",
+      "lineage": "central-software-assurance-panel-report",
+      "text": "Jule's audit logging is on for the payroll servers."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "west-digital-services-office-website",
+      "text": "Pagehu's email service delivers attachments without scanning them."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C3",
+      "relation": "deny",
+      "lineage": "moorland-digital-services-office-specification",
+      "text": "Jule's app has no end-to-end encryption."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "central-digital-services-office-technical-note",
+      "text": "Pagehu's mail service has no attachment scanning."
+     },
+     {
+      "source_id": "S5",
+      "claim_id": "C3",
+      "relation": "deny",
+      "lineage": "east-systems-inspectorate-website",
+      "text": "Jule's messaging app can read users' messages on its servers."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "enable_service",
+     "negative": "hold_rollout"
+    },
+    "derived_reasons": {
+     "C1": "scope",
+     "C2": "direct_contradiction",
+     "C3": "direct_contradiction"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "contradicted",
+       2,
+       2
+      ],
+      [
+       "contradicted",
+       2,
+       2
+      ],
+      [
+       "unresolved",
+       1,
+       1
+      ]
+     ],
+     1,
+     [
+      "scope_mismatch"
+     ],
+     5,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-01",
+   "phase": "B",
+   "role": "main",
+   "risk": "R1",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Fiposu",
+    "Lozete",
+    "Fupale"
+   ],
+   "global_name_ordinals": [
+    161,
+    163
+   ],
+   "merged_role": [
+    "symptom"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-03",
+   "phase": "B",
+   "role": "main",
+   "risk": "R1",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Gowubi",
+    "Miyiya",
+    "Zodi",
+    "Siguba",
+    "Dohazu"
+   ],
+   "global_name_ordinals": [
+    167,
+    171
+   ],
+   "merged_role": [
+    "symptom"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-13",
+   "phase": "B",
+   "role": "main",
+   "risk": "R2",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Wujosa",
+    "Tevi",
+    "Vuwivi"
+   ],
+   "global_name_ordinals": [
+    279,
+    281
+   ],
+   "merged_role": [
+    "symptom"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-14",
+   "phase": "B",
+   "role": "main",
+   "risk": "R2",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Gunari",
+    "Bumuku",
+    "Kugiku"
+   ],
+   "global_name_ordinals": [
+    282,
+    284
+   ],
+   "merged_role": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-07",
+   "phase": "B",
+   "role": "main",
+   "risk": "R3",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Dohore",
+    "Nefa",
+    "Wibeso",
+    "Sipeno",
+    "Gisovi"
+   ],
+   "global_name_ordinals": [
+    323,
+    327
+   ],
+   "merged_role": [
+    "symptom"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-09",
+   "phase": "B",
+   "role": "main",
+   "risk": "R3",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "small"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Kajami",
+    "Hobu",
+    "Yadoro"
+   ],
+   "global_name_ordinals": [
+    333,
+    335
+   ],
+   "merged_role": [
+    "symptom"
+   ]
+  }
+ ]
+}
