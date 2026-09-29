@@ -1,0 +1,272 @@
+{
+ "schema_version": "g-route4.audit-sample.v1",
+ "obligation": "O1",
+ "seal_commit_id": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "seal_parent": "1156d0645b1b113b91c65e4a485b7f75ffa10061",
+ "seal_pushed_to": "origin refs/heads/g-route4/seal (pushed and verified before this sample was computed)",
+ "procedure": {
+  "path": "experiments/G-ROUTE4-candidate/blueprint/audit_sample.py",
+  "sha256": "8e5afc8478c913150fd9d4ac9564a829ae857e74d005ca4371d2b76937767524",
+  "self_test_digest": "75af7d1ad5d785b40c1a41f15e4d23fa7e987715530e8d9b64f4fec5a4b398c9",
+  "invocation": "python -B experiments/G-ROUTE4-candidate/blueprint/audit_sample.py <seal_commit_id> experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json",
+  "rule": "sha256(ascii(seal_commit_id) + ':' + ascii(fixture_id)); per B′ main cell, the ceil(0.10 * cell size) smallest keys"
+ },
+ "cells": {
+  "grounded_research_synthesis|R1": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-RSRCH-R1-03",
+    "B4-RSRCH-R1-09"
+   ]
+  },
+  "grounded_research_synthesis|R2": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-RSRCH-R2-11",
+    "B4-RSRCH-R2-13"
+   ]
+  },
+  "grounded_research_synthesis|R3": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-RSRCH-R3-10",
+    "B4-RSRCH-R3-11"
+   ]
+  },
+  "grounded_research_synthesis|R4": {
+   "size": 1,
+   "k": 1,
+   "sampled": [
+    "B4-RSRCH-R4-01"
+   ]
+  },
+  "hierarchical_semantic_synthesis|R1": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-SYNTH-R1-06",
+    "B4-SYNTH-R1-16"
+   ]
+  },
+  "hierarchical_semantic_synthesis|R2": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-SYNTH-R2-06",
+    "B4-SYNTH-R2-18"
+   ]
+  },
+  "hierarchical_semantic_synthesis|R3": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-SYNTH-R3-13",
+    "B4-SYNTH-R3-16"
+   ]
+  },
+  "hierarchical_semantic_synthesis|R4": {
+   "size": 1,
+   "k": 1,
+   "sampled": [
+    "B4-SYNTH-R4-01"
+   ]
+  },
+  "ordinary_conversation|R1": {
+   "size": 28,
+   "k": 3,
+   "sampled": [
+    "B4-CONV-R1-03",
+    "B4-CONV-R1-16",
+    "B4-CONV-R1-24"
+   ]
+  },
+  "ordinary_conversation|R2": {
+   "size": 28,
+   "k": 3,
+   "sampled": [
+    "B4-CONV-R2-02",
+    "B4-CONV-R2-16",
+    "B4-CONV-R2-20"
+   ]
+  },
+  "ordinary_conversation|R3": {
+   "size": 28,
+   "k": 3,
+   "sampled": [
+    "B4-CONV-R3-06",
+    "B4-CONV-R3-20",
+    "B4-CONV-R3-23"
+   ]
+  },
+  "ordinary_conversation|R4": {
+   "size": 1,
+   "k": 1,
+   "sampled": [
+    "B4-CONV-R4-01"
+   ]
+  },
+  "reflective_planning|R1": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-PLAN-R1-04",
+    "B4-PLAN-R1-07"
+   ]
+  },
+  "reflective_planning|R2": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-PLAN-R2-04",
+    "B4-PLAN-R2-18"
+   ]
+  },
+  "reflective_planning|R3": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-PLAN-R3-02",
+    "B4-PLAN-R3-13"
+   ]
+  },
+  "reflective_planning|R4": {
+   "size": 1,
+   "k": 1,
+   "sampled": [
+    "B4-PLAN-R4-01"
+   ]
+  },
+  "structured_extraction|R1": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-EXTR-R1-05",
+    "B4-EXTR-R1-14"
+   ]
+  },
+  "structured_extraction|R2": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-EXTR-R2-01",
+    "B4-EXTR-R2-05"
+   ]
+  },
+  "structured_extraction|R3": {
+   "size": 18,
+   "k": 2,
+   "sampled": [
+    "B4-EXTR-R3-06",
+    "B4-EXTR-R3-07"
+   ]
+  },
+  "structured_extraction|R4": {
+   "size": 1,
+   "k": 1,
+   "sampled": [
+    "B4-EXTR-R4-01"
+   ]
+  }
+ },
+ "sample": {
+  "grounded_research_synthesis|R1": [
+   "B4-RSRCH-R1-03",
+   "B4-RSRCH-R1-09"
+  ],
+  "grounded_research_synthesis|R2": [
+   "B4-RSRCH-R2-11",
+   "B4-RSRCH-R2-13"
+  ],
+  "grounded_research_synthesis|R3": [
+   "B4-RSRCH-R3-10",
+   "B4-RSRCH-R3-11"
+  ],
+  "grounded_research_synthesis|R4": [
+   "B4-RSRCH-R4-01"
+  ],
+  "hierarchical_semantic_synthesis|R1": [
+   "B4-SYNTH-R1-06",
+   "B4-SYNTH-R1-16"
+  ],
+  "hierarchical_semantic_synthesis|R2": [
+   "B4-SYNTH-R2-06",
+   "B4-SYNTH-R2-18"
+  ],
+  "hierarchical_semantic_synthesis|R3": [
+   "B4-SYNTH-R3-13",
+   "B4-SYNTH-R3-16"
+  ],
+  "hierarchical_semantic_synthesis|R4": [
+   "B4-SYNTH-R4-01"
+  ],
+  "ordinary_conversation|R1": [
+   "B4-CONV-R1-03",
+   "B4-CONV-R1-16",
+   "B4-CONV-R1-24"
+  ],
+  "ordinary_conversation|R2": [
+   "B4-CONV-R2-02",
+   "B4-CONV-R2-16",
+   "B4-CONV-R2-20"
+  ],
+  "ordinary_conversation|R3": [
+   "B4-CONV-R3-06",
+   "B4-CONV-R3-20",
+   "B4-CONV-R3-23"
+  ],
+  "ordinary_conversation|R4": [
+   "B4-CONV-R4-01"
+  ],
+  "reflective_planning|R1": [
+   "B4-PLAN-R1-04",
+   "B4-PLAN-R1-07"
+  ],
+  "reflective_planning|R2": [
+   "B4-PLAN-R2-04",
+   "B4-PLAN-R2-18"
+  ],
+  "reflective_planning|R3": [
+   "B4-PLAN-R3-02",
+   "B4-PLAN-R3-13"
+  ],
+  "reflective_planning|R4": [
+   "B4-PLAN-R4-01"
+  ],
+  "structured_extraction|R1": [
+   "B4-EXTR-R1-05",
+   "B4-EXTR-R1-14"
+  ],
+  "structured_extraction|R2": [
+   "B4-EXTR-R2-01",
+   "B4-EXTR-R2-05"
+  ],
+  "structured_extraction|R3": [
+   "B4-EXTR-R3-06",
+   "B4-EXTR-R3-07"
+  ],
+  "structured_extraction|R4": [
+   "B4-EXTR-R4-01"
+  ]
+ },
+ "total": 38,
+ "sample_digest": "166f1f44c111a07fd4daee5fd3f12115d02285f3076ad16489b972d674bbd29e",
+ "sample_digest_basis": "sha256 of json.dumps(sample, sort_keys=True), ASCII (the frozen self-test's basis)",
+ "reserves": "never sampled directly; a replacement inherits its slot's sampled flag",
+ "reflog_disclosure": {
+  "refs/heads/g-route4/seal": [
+   "50e6b46 refs/heads/g-route4/seal@{2026-09-29 01:44:36 -0400}: "
+  ],
+  "HEAD (last 5, worktree at the staging checkpoint; unchanged by the seal)": [
+   "dd8193b HEAD@{2026-09-28 23:34:51 -0400}: commit: Repair G-ROUTE4 research lineage and CV3 naturalness",
+   "122d9bf HEAD@{2026-09-28 22:36:49 -0400}: commit: G-ROUTE4 authoring staging: pre-seal corpus repair",
+   "14e4e06 HEAD@{2026-09-28 18:47:58 -0400}: commit: G-ROUTE4 authoring staging: Grounded Research corpus",
+   "9b169a9 HEAD@{2026-09-28 18:23:07 -0400}: commit: G-ROUTE4 authoring staging: Conversation corpus",
+   "db77f4c HEAD@{2026-09-28 17:44:20 -0400}: commit: G-ROUTE4 authoring staging: Reflective Planning corpus"
+  ],
+  "note": "the seal commit was created once with git commit-tree from the validated tree; no other seal candidate commit was created"
+ },
+ "status": "committed after the seal and before any adjudication session; no adjudicator or model has been contacted"
+}
