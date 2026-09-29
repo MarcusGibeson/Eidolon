@@ -1,0 +1,137 @@
+{
+ "schema_version": "g-route4.adjudication-scores.v1",
+ "phase": 2,
+ "answers_commit": "66f21a54a3af0232fd9d1ebfbc2f34dd32d92f7f",
+ "answers_sha256": "7701c507bc2cfec67a6dae510c1cbce0c8513123856d585c3faba60c51aa5ce5",
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "slots": [
+  {
+   "fixture_id": "B4-RSRCH-R2-06",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-06",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-14",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R2-14",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-04",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-04",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-06",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-06",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-14",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-14",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-18",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-RSRCH-R3-18",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  }
+ ]
+}
