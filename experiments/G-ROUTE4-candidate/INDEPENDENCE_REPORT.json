@@ -1,0 +1,1954 @@
+{
+ "schema_version": "g-route4.independence-report.v1",
+ "design_step": "order of work 3.6: the contamination and independence reports, over the final corpus",
+ "valid": true,
+ "problems": [],
+ "binding": {
+  "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+  "blueprint_commit": "1156d0645b1b113b91c65e4a485b7f75ffa10061",
+  "audit_sample_commit": "29f5a477693d703699af62f9fc0e0945c9c66be2",
+  "generated_at_parent_commit": "c70d6f6ce6a532df3afc95f7ad27b89129e776f8",
+  "sealed_files_lf_sha256": {
+   "corpus_a.json": "44eac7feca2476a7bf8e8210e5742cd70cf27077e69f9cf7cf5e9b3c2f2f21ea",
+   "corpus_b.json": "f309acff9eb18282475ac4a927dac97af87b879a07acfd218e9804b421191d32",
+   "reserve_corpus_a.json": "eda3ae0c437e466aca733ba1dc52dd5ad6b018f101f5a8904e80412b87cb130c",
+   "reserve_corpus_b.json": "83ab5422f4f38bc8c71efcad7fa60b8d50087a89c1645af4de3a14542cf57abf",
+   "gold_a.json": "6e0b66e60a444fa426dae36517160c2189f27f92d827d4acb9d35331b3144dd8",
+   "gold_b.json": "4284c4aba297afb819975ce7a7bc576c5086ae35594bdc87ffe5a7dc60bfb6bf",
+   "reserve_gold_a.json": "4f80f879b1ebf141d913f8bb70a431bd6c0285c571465200150bfc6f651f50ba",
+   "reserve_gold_b.json": "5315bbbae28b7fe6034fae965a73fa207982c58f7ba655b87dc9193c5f6b04d8",
+   "authoring_ledger.json": "71793e9ed0142d29ec2bf99822b123daa003255f18300f1fc953aaa12e781dae"
+  },
+  "seal_manifest_lf_sha256": "98306eeb37f16da6f0991b17ece9e49abb428e2eb28cedc2a2cdd8baf1cd3a01",
+  "fixes": {
+   "B′ round 1": {
+    "commit": "28718001d8e47194a93e444c771ec1167c040c28",
+    "fixtures": [
+     "B4-RSRCH-R1-06",
+     "B4-RSRCH-R1-14",
+     "B4-RSRCH-R2-06",
+     "B4-RSRCH-R2-14",
+     "B4-RSRCH-R3-04",
+     "B4-RSRCH-R3-06",
+     "B4-RSRCH-R3-14",
+     "B4-RSRCH-R3-18",
+     "B4-SYNTH-R1-01",
+     "B4-SYNTH-R1-03",
+     "B4-SYNTH-R2-13",
+     "B4-SYNTH-R2-14",
+     "B4-SYNTH-R3-07",
+     "B4-SYNTH-R3-09"
+    ],
+    "fix_record_lf_sha256": "d4f81a8e3b439b070fa49e81a344a8e28bbe2640faf29de1a6b0e8e8d5f1f7a2"
+   },
+   "A′ round 1": {
+    "commit": "8774a57a4bfc8d9f0f214d05253c016795385d43",
+    "fixtures": [
+     "A4-EXTR-R1-03",
+     "A4-RSRCH-R2-01",
+     "A4-RSRCH-R2-02",
+     "A4-RSRCH-R4-03",
+     "A4-SYNTH-R2-03",
+     "A4-SYNTH-R4-01"
+    ],
+    "fix_record_lf_sha256": "661b75ce861ef545e9ccf21d7ecc6960a29ee8f2e7d8fd37124f9dffa7803677"
+   }
+  },
+  "replacements": 0,
+  "final_pool": {
+   "corpus_a.json": {
+    "records": 80,
+    "fixed_records": [
+     "A4-EXTR-R1-03",
+     "A4-RSRCH-R2-01",
+     "A4-RSRCH-R2-02",
+     "A4-RSRCH-R4-03",
+     "A4-SYNTH-R2-03",
+     "A4-SYNTH-R4-01"
+    ],
+    "canonical_sha256": "bc1938b754f4566f482df5369b8ee02f92297018d6ada02eab8e91e40709a4ec"
+   },
+   "corpus_b.json": {
+    "records": 305,
+    "fixed_records": [
+     "B4-RSRCH-R1-06",
+     "B4-RSRCH-R1-14",
+     "B4-RSRCH-R2-06",
+     "B4-RSRCH-R2-14",
+     "B4-RSRCH-R3-04",
+     "B4-RSRCH-R3-06",
+     "B4-RSRCH-R3-14",
+     "B4-RSRCH-R3-18",
+     "B4-SYNTH-R1-01",
+     "B4-SYNTH-R1-03",
+     "B4-SYNTH-R2-13",
+     "B4-SYNTH-R2-14",
+     "B4-SYNTH-R3-07",
+     "B4-SYNTH-R3-09"
+    ],
+    "canonical_sha256": "111f95c65fc3708ac187ca3315de6f71ef58f32626bd4992a1d4d532405a3c30"
+   },
+   "reserve_corpus_a.json": {
+    "records": 80,
+    "fixed_records": [],
+    "canonical_sha256": "5f6962f928d6b03de4b3dd5339139394030e6d171cc46871f646f4606e3d04aa"
+   },
+   "reserve_corpus_b.json": {
+    "records": 119,
+    "fixed_records": [],
+    "canonical_sha256": "eb7051a67b3157ea952df54189261c7e0f5d4c71684a974f009f230ef1b85a0a"
+   },
+   "gold_a.json": {
+    "records": 80,
+    "fixed_records": [
+     "A4-EXTR-R1-03",
+     "A4-RSRCH-R2-01",
+     "A4-RSRCH-R2-02",
+     "A4-RSRCH-R4-03",
+     "A4-SYNTH-R2-03",
+     "A4-SYNTH-R4-01"
+    ],
+    "canonical_sha256": "696ff00fd3074aef808c93300684fa3c7d82395636cf3722875d9babc65842b2"
+   },
+   "gold_b.json": {
+    "records": 305,
+    "fixed_records": [
+     "B4-RSRCH-R1-06",
+     "B4-RSRCH-R1-14",
+     "B4-RSRCH-R2-06",
+     "B4-RSRCH-R2-14",
+     "B4-RSRCH-R3-04",
+     "B4-RSRCH-R3-06",
+     "B4-RSRCH-R3-14",
+     "B4-RSRCH-R3-18",
+     "B4-SYNTH-R1-01",
+     "B4-SYNTH-R1-03",
+     "B4-SYNTH-R2-13",
+     "B4-SYNTH-R2-14",
+     "B4-SYNTH-R3-07",
+     "B4-SYNTH-R3-09"
+    ],
+    "canonical_sha256": "aa297b4dba84a524601d02f11f37dd34d30f1e094e642b8b1928ff726bcb0e96"
+   },
+   "reserve_gold_a.json": {
+    "records": 80,
+    "fixed_records": [],
+    "canonical_sha256": "609295b831038a2559a9d634f2eb685c71a484d4d61699d90c97e8a5a5d54e38"
+   },
+   "reserve_gold_b.json": {
+    "records": 119,
+    "fixed_records": [],
+    "canonical_sha256": "1fff76b64f37ddc08c1bb020f305a2f44b7d17c92316fea6017fc3d4efb77617"
+   },
+   "authoring_ledger.json": {
+    "records": 584,
+    "fixed_records": [
+     "A4-EXTR-R1-03",
+     "A4-RSRCH-R2-01",
+     "A4-RSRCH-R2-02",
+     "A4-RSRCH-R4-03",
+     "A4-SYNTH-R2-03",
+     "A4-SYNTH-R4-01",
+     "B4-RSRCH-R1-06",
+     "B4-RSRCH-R1-14",
+     "B4-RSRCH-R2-06",
+     "B4-RSRCH-R2-14",
+     "B4-RSRCH-R3-04",
+     "B4-RSRCH-R3-06",
+     "B4-RSRCH-R3-14",
+     "B4-RSRCH-R3-18",
+     "B4-SYNTH-R1-01",
+     "B4-SYNTH-R1-03",
+     "B4-SYNTH-R2-13",
+     "B4-SYNTH-R2-14",
+     "B4-SYNTH-R3-07",
+     "B4-SYNTH-R3-09"
+    ],
+    "canonical_sha256": "40510299e9b74785851963584bab2c3ed58666fab8159982d6bd7ebd8ba14da4"
+   }
+  },
+  "tool": {
+   "name": "check_corpus.py (authoring-stage independence tool, blueprint §4)",
+   "source_commit": "dd8193bfcf1db05c752635dc4f8911a58098c97b",
+   "check_corpus_lf_sha256": "b3f6500b4b39a80c214811b429d382b26fda0ae3cad73916788c379eb16e91af",
+   "frozen_g3_detector": {
+    "path": "tools/g_route3_independence.py",
+    "lf_sha256": "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b"
+   },
+   "o3_identifier_gate_pattern_sha256": "a3773a982c16579d94cede99539e0b9cacca1347f96774759a84bbb7788adaae",
+   "overlay_scripts_lf_sha256": {
+    "build_fixes.py": "12d2e9c8db7c180f8978082e5fcec4cf99f5352f06ec0a913b21fe33f6918782",
+    "build_fixes_amain.py": "e4c6bca32119d0f5bfb59d3474216170bc8b9be2eb1ec3e136a66799618c96aa",
+    "check_fixes.py": "2312d2ec503d8490dfc219f1a39416cd385ba72505db4826d8a2952f3eb578fd",
+    "check_fixes_amain.py": "8eee14a7dd8b09b5a7329a519d5484f19683950c33046ad3df421d19edfec59a"
+   },
+   "this_script_lf_sha256": "2e2c96dcd6350bf0c8953b1134abd7521e81e0fa2df42d1d434750c2cb9add7e",
+   "note": "the stage-4 forked module g_route4_independence does not exist yet (implementation is order-of-work step 4); N9, its byte-identity test, is verified at IR"
+  },
+  "g_route3_files_unchanged": {
+   "experiments/G-ROUTE3-candidate/corpus_a.json": {
+    "head_lf_sha256": "3c105180239250460e23506690fddfc4143a054c26a44e8f65eca742d631c62d",
+    "staging_lf_sha256": "3c105180239250460e23506690fddfc4143a054c26a44e8f65eca742d631c62d"
+   },
+   "experiments/G-ROUTE3-candidate/corpus_b.json": {
+    "head_lf_sha256": "702c1901e187021497b3c334f99b3bbdb768d550760eb9c02f299d77f3ecbf97",
+    "staging_lf_sha256": "702c1901e187021497b3c334f99b3bbdb768d550760eb9c02f299d77f3ecbf97"
+   },
+   "experiments/G-ROUTE3-candidate/gold_a.json": {
+    "head_lf_sha256": "29415dc831006aa77cdf72c4d21861cf6814373fdf8935701152596774381f6c",
+    "staging_lf_sha256": "29415dc831006aa77cdf72c4d21861cf6814373fdf8935701152596774381f6c"
+   },
+   "experiments/G-ROUTE3-candidate/gold_b.json": {
+    "head_lf_sha256": "57fa924ecc8a9591553f59686b5f57762af56ca01f0be963d0acdfcafe53d842",
+    "staging_lf_sha256": "57fa924ecc8a9591553f59686b5f57762af56ca01f0be963d0acdfcafe53d842"
+   },
+   "tools/g_route3_independence.py": {
+    "head_lf_sha256": "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b",
+    "staging_lf_sha256": "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b"
+   }
+  }
+ },
+ "bounds": {
+  "max_trigram_jaccard": 0.2,
+  "boilerplate_share": 0.25,
+  "shared_entities_identifiers_values_lineages_actions": 0,
+  "identical_canonical_gold": 0,
+  "fine_signature_repeats_A_B_same_cell": 0,
+  "conversation_gold_position_spread_per_cell": 1
+ },
+ "scope": {
+  "pool": "one pool per class: all 584 G-ROUTE4 fixtures (A′ and B′, main and reserve) with the 20 fixes overlaid (N7: a fixed text replaces its old text; boilerplate recomputed over the whole pool), plus G-ROUTE3's A and B fixtures of the class; G-ROUTE3 pairs among themselves are not compared",
+  "o3": "all authored G-ROUTE4 fixtures of every class, main and reserve, pairwise and against all G-ROUTE3 A and B fixtures; lowercase vocabulary per class pool only",
+  "o4_conversation": "no signature (conversation relies on the family rules, the answer-position balance, the no-identical-gold rule and the corpus review)",
+  "fine_signature": "research and extraction, A′ against B′ within a cell; planning and synthesis exempt (declared loosening); conversation no signature",
+  "o6": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures",
+  "o6_fields": {
+   "ordinary_conversation": "every input field except the message",
+   "structured_extraction": "gold values of free-text (non-enum) string fields",
+   "reflective_planning": "allowed action names and the objective",
+   "grounded_research_synthesis": "source lineages"
+  },
+  "o6_normalization": "canonical_value, casefold, strip; closed-vocabulary sets and structural-id fields excluded"
+ },
+ "result_final": {
+  "classes_checked": [
+   "grounded_research_synthesis",
+   "hierarchical_semantic_synthesis",
+   "ordinary_conversation",
+   "reflective_planning",
+   "structured_extraction"
+  ],
+  "composition": {
+   "grounded_research_synthesis": {
+    "A_main": 16,
+    "A_reserve": 16,
+    "B_main": 55,
+    "B_reserve": 49
+   },
+   "hierarchical_semantic_synthesis": {
+    "A_main": 16,
+    "A_reserve": 16,
+    "B_main": 55,
+    "B_reserve": 13
+   },
+   "ordinary_conversation": {
+    "A_main": 16,
+    "A_reserve": 16,
+    "B_main": 85,
+    "B_reserve": 25
+   },
+   "reflective_planning": {
+    "A_main": 16,
+    "A_reserve": 16,
+    "B_main": 55,
+    "B_reserve": 13
+   },
+   "structured_extraction": {
+    "A_main": 16,
+    "A_reserve": 16,
+    "B_main": 55,
+    "B_reserve": 19
+   }
+  },
+  "extraction_type_mix_realized": {
+   "A": {
+    "integer": 0.25,
+    "boolean": 0.188,
+    "string": 0.156,
+    "enum2": 0.125,
+    "date_or_time": 0.109,
+    "number": 0.141,
+    "enum3": 0.031
+   },
+   "B": {
+    "integer": 0.234,
+    "boolean": 0.216,
+    "string": 0.186,
+    "enum2": 0.117,
+    "date_or_time": 0.103,
+    "number": 0.093,
+    "enum3": 0.052
+   }
+  },
+  "extraction_type_mix_max_deviation": 0.041,
+  "absence_field_gold_values": {
+   "not_provided": 13,
+   "provided": 5
+  },
+  "research": {
+   "families": {
+    "RS1": 23,
+    "RS2": 23,
+    "RS3": 25,
+    "RS4": 21,
+    "RS5": 23,
+    "RS6": 21
+   },
+   "patterns": {
+    "P1": 17,
+    "P2": 17,
+    "P3": 17,
+    "P4": 17,
+    "P5": 17,
+    "P6": 17,
+    "P7": 18,
+    "P8": 16
+   },
+   "single_lineage_support": {
+    "false": 67,
+    "true": 69
+   },
+   "claim_status_balance": {
+    "contradicted": 140,
+    "supported": 147,
+    "unresolved": 54
+   },
+   "uncertainty_balance": {
+    "conflicting_sources": 17,
+    "scope_mismatch": 17,
+    "single_lineage_support": 69,
+    "unaddressed_claim": 20
+   },
+   "cited_source_bindings": 590,
+   "distinct_lineage_bindings": 459,
+   "source_records": 607,
+   "unique_lineages": 476,
+   "cross_fixture_lineage_repeats": 0,
+   "temporal_governing_pairs": 18,
+   "narrower_scope_cases": 17,
+   "reserves_checked": 65,
+   "reserve_mismatches": 0,
+   "cell_patterns": {
+    "A_main_R1": {
+     "P1": 1,
+     "P2": 1,
+     "P3": 1,
+     "P4": 1
+    },
+    "A_main_R2": {
+     "P5": 1,
+     "P6": 1,
+     "P7": 1,
+     "P8": 1
+    },
+    "A_main_R3": {
+     "P1": 1,
+     "P3": 1,
+     "P5": 1,
+     "P7": 1
+    },
+    "A_main_R4": {
+     "P2": 1,
+     "P4": 1,
+     "P6": 1,
+     "P8": 1
+    },
+    "A_reserve_R1": {
+     "P1": 1,
+     "P2": 1,
+     "P3": 1,
+     "P4": 1
+    },
+    "A_reserve_R2": {
+     "P5": 1,
+     "P6": 1,
+     "P7": 1,
+     "P8": 1
+    },
+    "A_reserve_R3": {
+     "P1": 1,
+     "P3": 1,
+     "P5": 1,
+     "P7": 1
+    },
+    "A_reserve_R4": {
+     "P2": 1,
+     "P4": 1,
+     "P6": 1,
+     "P8": 1
+    },
+    "B_main_R1": {
+     "P1": 3,
+     "P2": 3,
+     "P3": 2,
+     "P4": 2,
+     "P5": 2,
+     "P6": 2,
+     "P7": 2,
+     "P8": 2
+    },
+    "B_main_R2": {
+     "P1": 2,
+     "P2": 2,
+     "P3": 3,
+     "P4": 3,
+     "P5": 2,
+     "P6": 2,
+     "P7": 2,
+     "P8": 2
+    },
+    "B_main_R3": {
+     "P1": 2,
+     "P2": 2,
+     "P3": 2,
+     "P4": 2,
+     "P5": 3,
+     "P6": 3,
+     "P7": 2,
+     "P8": 2
+    },
+    "B_main_R4": {
+     "P7": 1
+    },
+    "B_reserve_R1": {
+     "P1": 2,
+     "P2": 2,
+     "P3": 2,
+     "P4": 2,
+     "P5": 2,
+     "P6": 2,
+     "P7": 2,
+     "P8": 2
+    },
+    "B_reserve_R2": {
+     "P1": 2,
+     "P2": 2,
+     "P3": 2,
+     "P4": 2,
+     "P5": 2,
+     "P6": 2,
+     "P7": 2,
+     "P8": 2
+    },
+    "B_reserve_R3": {
+     "P1": 2,
+     "P2": 2,
+     "P3": 2,
+     "P4": 2,
+     "P5": 2,
+     "P6": 2,
+     "P7": 2,
+     "P8": 2
+    },
+    "B_reserve_R4": {
+     "P7": 1
+    }
+   },
+   "cell_sls": {
+    "A_main_R1": {
+     "false": 2,
+     "true": 2
+    },
+    "A_main_R2": {
+     "false": 2,
+     "true": 2
+    },
+    "A_main_R3": {
+     "false": 2,
+     "true": 2
+    },
+    "A_main_R4": {
+     "false": 2,
+     "true": 2
+    },
+    "A_reserve_R1": {
+     "false": 2,
+     "true": 2
+    },
+    "A_reserve_R2": {
+     "false": 2,
+     "true": 2
+    },
+    "A_reserve_R3": {
+     "false": 2,
+     "true": 2
+    },
+    "A_reserve_R4": {
+     "false": 2,
+     "true": 2
+    },
+    "B_main_R1": {
+     "false": 9,
+     "true": 9
+    },
+    "B_main_R2": {
+     "false": 9,
+     "true": 9
+    },
+    "B_main_R3": {
+     "false": 9,
+     "true": 9
+    },
+    "B_main_R4": {
+     "true": 1
+    },
+    "B_reserve_R1": {
+     "false": 8,
+     "true": 8
+    },
+    "B_reserve_R2": {
+     "false": 8,
+     "true": 8
+    },
+    "B_reserve_R3": {
+     "false": 8,
+     "true": 8
+    },
+    "B_reserve_R4": {
+     "true": 1
+    }
+   }
+  },
+  "conversation": {
+   "families": {
+    "CV1": 24,
+    "CV2": 24,
+    "CV3": 24,
+    "CV4": 22,
+    "CV5": 24,
+    "CV6": 24
+   },
+   "depth": {
+    "1": 76,
+    "2": 66
+   },
+   "option_count": 4,
+   "fixtures_with_four_options": 142,
+   "gold_positions": {
+    "A|main|R1": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|main|R2": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|main|R3": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|main|R4": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R1": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R2": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R3": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R4": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "B|main|R1": {
+     "1": 7,
+     "2": 7,
+     "3": 7,
+     "4": 7
+    },
+    "B|main|R2": {
+     "1": 7,
+     "2": 7,
+     "3": 7,
+     "4": 7
+    },
+    "B|main|R3": {
+     "1": 7,
+     "2": 7,
+     "3": 7,
+     "4": 7
+    },
+    "B|main|R4": {
+     "1": 1
+    },
+    "B|reserve|R1": {
+     "1": 2,
+     "2": 2,
+     "3": 2,
+     "4": 2
+    },
+    "B|reserve|R2": {
+     "1": 2,
+     "2": 2,
+     "3": 2,
+     "4": 2
+    },
+    "B|reserve|R3": {
+     "1": 2,
+     "2": 2,
+     "3": 2,
+     "4": 2
+    },
+    "B|reserve|R4": {
+     "1": 1
+    }
+   },
+   "near_miss_compliant": 142,
+   "reserves_checked": 41,
+   "reserve_mismatches": 0,
+   "fine_signature": "none (declared in the design; conversation relies on reasoning-pattern review)",
+   "ledger": "message = request unit + one unit per option; every unit carries recomputed facts"
+  },
+  "planning": {
+   "families": {
+    "PL1": {
+     "fixtures": 19,
+     "multi_address_actions_4": 19
+    },
+    "PL2": {
+     "fixtures": 17,
+     "multi_address_actions_2": 17
+    },
+    "PL3": {
+     "fixtures": 17,
+     "multi_address_actions_5": 17
+    },
+    "PL4": {
+     "fixtures": 15,
+     "multi_address_actions_4": 15
+    },
+    "PL5": {
+     "fixtures": 17,
+     "multi_address_actions_1": 17
+    },
+    "PL6": {
+     "fixtures": 15,
+     "multi_address_actions_5": 15
+    }
+   },
+   "precedence_forms": {
+    "before": 51,
+    "after": 49
+   },
+   "g4_action_names": 515,
+   "repeated_action_names": 0,
+   "forbidden_prefixes": [
+    "adopt",
+    "apply",
+    "approve",
+    "delete",
+    "deploy",
+    "disable",
+    "execute",
+    "pay",
+    "release",
+    "remove",
+    "rotate",
+    "transfer",
+    "wipe"
+   ],
+   "fine_signature": "exempt (declared in the design; planning and synthesis)"
+  },
+  "caps": {
+   "grounded_research_synthesis": {
+    "b_main_family_counts": {
+     "RS1": 9,
+     "RS2": 9,
+     "RS3": 10,
+     "RS4": 9,
+     "RS5": 9,
+     "RS6": 9
+    }
+   },
+   "hierarchical_semantic_synthesis": {
+    "b_main_family_counts": {
+     "SY1": 9,
+     "SY2": 9,
+     "SY3": 9,
+     "SY4": 10,
+     "SY5": 9,
+     "SY6": 9
+    }
+   },
+   "ordinary_conversation": {
+    "b_main_family_counts": {
+     "CV1": 14,
+     "CV2": 14,
+     "CV3": 14,
+     "CV4": 14,
+     "CV5": 14,
+     "CV6": 15
+    }
+   },
+   "reflective_planning": {
+    "b_main_family_counts": {
+     "PL1": 10,
+     "PL2": 9,
+     "PL3": 9,
+     "PL4": 9,
+     "PL5": 9,
+     "PL6": 9
+    }
+   },
+   "structured_extraction": {
+    "b_main_family_counts": {
+     "EX1": 9,
+     "EX2": 9,
+     "EX3": 9,
+     "EX4": 9,
+     "EX5": 9,
+     "EX6": 10
+    }
+   }
+  },
+  "fine_signature_clashes": 0,
+  "reply_length": {
+   "measure": "cl100k_base sha256 223921b76ee99bde995b7ff738513eef100fb51d18c93597a113bcffe865b2a7",
+   "bound": 250,
+   "output_cap_num_predict": 350,
+   "by_class": {
+    "grounded_research_synthesis": {
+     "median": 131.5,
+     "max": 182,
+     "pretty_printed_max_diagnostic": 244
+    },
+    "hierarchical_semantic_synthesis": {
+     "median": 164.0,
+     "max": 231,
+     "pretty_printed_max_diagnostic": 297
+    },
+    "ordinary_conversation": {
+     "median": 40.0,
+     "max": 43,
+     "pretty_printed_max_diagnostic": 43
+    },
+    "reflective_planning": {
+     "median": 173.0,
+     "max": 227,
+     "pretty_printed_max_diagnostic": 326
+    },
+    "structured_extraction": {
+     "median": 32.0,
+     "max": 49,
+     "pretty_printed_max_diagnostic": 60
+    }
+   }
+  },
+  "canonical_signature_clashes": 0,
+  "o3_entities": {
+   "g4_fixtures": 584,
+   "g4_entities": 697,
+   "g3_entities_compared": 20,
+   "shared": 0,
+   "scope": "all authored G-ROUTE4 fixtures of every class, main and reserve, pairwise and against all G-ROUTE3 A and B fixtures"
+  },
+  "o3_identifier_gate": {
+   "g4_identifiers": 17,
+   "g3_identifiers": 11,
+   "shared": 0,
+   "pattern_sha256": "a3773a982c16579d94cede99539e0b9cacca1347f96774759a84bbb7788adaae",
+   "frozen_checker_sha256": "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b",
+   "status": "binding prospective O3 identifier gate for G-ROUTE4; the frozen G-ROUTE3 detector is unchanged and G-ROUTE3 is not rescored"
+  },
+  "names": {
+   "invented_names_used": 1036,
+   "stream_draws": 1432,
+   "max_per_fixture": 4,
+   "english_screen": "committed name stream (screened at build against the recorded dictionary digests); replayed here with no dictionary",
+   "dictionary_free_replay": {
+    "names": 1432,
+    "candidates_examined": 1556,
+    "english_rejections": 37,
+    "stream_sha256": "0b73b101d00a558cbbf2f5ae61cdf2cbb07c04400901aafaf85413b04e092230"
+   },
+   "extra_english_screen_run": false
+  },
+  "trigram": {
+   "grounded_research_synthesis": {
+    "pool": 152,
+    "boilerplate_trigrams": 27,
+    "max_jaccard": 0.1788,
+    "max_pair": [
+     "A4-RSRCH-R3-02",
+     "B4-RSRCH-R3-X11"
+    ],
+    "pairs_over_bound": 0,
+    "o5_single_family_boilerplate": 0
+   },
+   "hierarchical_semantic_synthesis": {
+    "pool": 116,
+    "boilerplate_trigrams": 11,
+    "max_jaccard": 0.0764,
+    "max_pair": [
+     "B4-SYNTH-R3-16",
+     "B4-SYNTH-R4-X01"
+    ],
+    "pairs_over_bound": 0,
+    "o5_single_family_boilerplate": 0
+   },
+   "ordinary_conversation": {
+    "pool": 158,
+    "boilerplate_trigrams": 7,
+    "max_jaccard": 0.0976,
+    "max_pair": [
+     "B4-CONV-R2-15",
+     "A4-CONV-R3-X03"
+    ],
+    "pairs_over_bound": 0,
+    "o5_single_family_boilerplate": 0
+   },
+   "reflective_planning": {
+    "pool": 116,
+    "boilerplate_trigrams": 34,
+    "max_jaccard": 0.0619,
+    "max_pair": [
+     "B4-PLAN-R1-07",
+     "A4-PLAN-R1-X03"
+    ],
+    "pairs_over_bound": 0,
+    "o5_single_family_boilerplate": 0
+   },
+   "structured_extraction": {
+    "pool": 122,
+    "boilerplate_trigrams": 6,
+    "max_jaccard": 0.1224,
+    "max_pair": [
+     "A4-EXTR-R4-03",
+     "A4-EXTR-R4-X03"
+    ],
+    "pairs_over_bound": 0,
+    "o5_single_family_boilerplate": 0
+   }
+  },
+  "trigram_task_relevant": {
+   "grounded_research_synthesis": {
+    "pool": 152,
+    "boilerplate_trigrams": 27,
+    "max_jaccard": 0.1788,
+    "max_pair": [
+     "A4-RSRCH-R3-02",
+     "B4-RSRCH-R3-X11"
+    ],
+    "pairs_over_bound": 0
+   },
+   "hierarchical_semantic_synthesis": {
+    "pool": 116,
+    "boilerplate_trigrams": 11,
+    "max_jaccard": 0.0764,
+    "max_pair": [
+     "B4-SYNTH-R3-16",
+     "B4-SYNTH-R4-X01"
+    ],
+    "pairs_over_bound": 0
+   },
+   "ordinary_conversation": {
+    "pool": 158,
+    "boilerplate_trigrams": 7,
+    "max_jaccard": 0.0976,
+    "max_pair": [
+     "B4-CONV-R2-15",
+     "A4-CONV-R3-X03"
+    ],
+    "pairs_over_bound": 0
+   },
+   "reflective_planning": {
+    "pool": 116,
+    "boilerplate_trigrams": 34,
+    "max_jaccard": 0.0619,
+    "max_pair": [
+     "B4-PLAN-R1-07",
+     "A4-PLAN-R1-X03"
+    ],
+    "pairs_over_bound": 0
+   },
+   "structured_extraction": {
+    "pool": 122,
+    "boilerplate_trigrams": 6,
+    "max_jaccard": 0.1224,
+    "max_pair": [
+     "A4-EXTR-R4-03",
+     "A4-EXTR-R4-X03"
+    ],
+    "pairs_over_bound": 0
+   }
+  },
+  "o6": {
+   "g4_values_compared_by_class": {
+    "structured_extraction": 118,
+    "reflective_planning": 615,
+    "ordinary_conversation": 568,
+    "grounded_research_synthesis": 476
+   },
+   "collisions": 0,
+   "pool": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures"
+  },
+  "n1_duplicates": 0
+ },
+ "sealed_baseline": {
+  "problems": 0,
+  "passed": true,
+  "note": "the sealed corpus alone (no fixes), same tool and pool: the pre-existing structure"
+ },
+ "fix_text_exemption_proof": {
+  "declared_fix_sources": [
+   "A4-RSRCH-R2-01 S3",
+   "A4-RSRCH-R2-01 S5",
+   "A4-RSRCH-R2-02 S1",
+   "A4-RSRCH-R4-03 S1",
+   "B4-RSRCH-R1-06 S1",
+   "B4-RSRCH-R1-14 S1",
+   "B4-RSRCH-R2-06 S1",
+   "B4-RSRCH-R2-14 S1",
+   "B4-RSRCH-R3-04 S3",
+   "B4-RSRCH-R3-06 S1",
+   "B4-RSRCH-R3-14 S1",
+   "B4-RSRCH-R3-18 S1"
+  ],
+  "problems_with_exemption_disabled": 12,
+  "flagged": [
+   "A4-RSRCH-R2-01: research source S3 text is not the authored paraphrase for its relation support",
+   "A4-RSRCH-R2-01: research source S5 text is not the authored paraphrase for its relation support",
+   "A4-RSRCH-R2-02: research source S1 text is not the authored paraphrase for its relation narrow",
+   "A4-RSRCH-R4-03: research source S1 text is not the authored paraphrase for its relation narrow",
+   "B4-RSRCH-R1-06: research source S1 text is not the authored paraphrase for its relation narrow",
+   "B4-RSRCH-R1-14: research source S1 text is not the authored paraphrase for its relation narrow",
+   "B4-RSRCH-R2-06: research source S1 text is not the authored paraphrase for its relation narrow",
+   "B4-RSRCH-R2-14: research source S1 text is not the authored paraphrase for its relation narrow",
+   "B4-RSRCH-R3-04: research source S3 text is not the authored paraphrase for its relation support",
+   "B4-RSRCH-R3-06: research source S1 text is not the authored paraphrase for its relation narrow",
+   "B4-RSRCH-R3-14: research source S1 text is not the authored paraphrase for its relation narrow",
+   "B4-RSRCH-R3-18: research source S1 text is not the authored paraphrase for its relation narrow"
+  ],
+  "flagged_exactly_the_declared_research_fixtures": true
+ },
+ "sealed_vs_final": {
+  "n1_duplicates": {
+   "sealed": 0,
+   "final": 0
+  },
+  "fine_signature_clashes": {
+   "sealed": 0,
+   "final": 0
+  },
+  "canonical_signature_clashes": {
+   "sealed": 0,
+   "final": 0
+  },
+  "o3_entities": {
+   "g4_entities": {
+    "sealed": 697,
+    "final": 697
+   },
+   "shared": {
+    "sealed": 0,
+    "final": 0
+   }
+  },
+  "o3_identifier_gate": {
+   "g4_identifiers": {
+    "sealed": 17,
+    "final": 17
+   },
+   "shared": {
+    "sealed": 0,
+    "final": 0
+   }
+  },
+  "o6": {
+   "sealed": {
+    "g4_values_compared_by_class": {
+     "structured_extraction": 118,
+     "reflective_planning": 615,
+     "ordinary_conversation": 568,
+     "grounded_research_synthesis": 476
+    },
+    "collisions": 0,
+    "pool": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures"
+   },
+   "final": {
+    "g4_values_compared_by_class": {
+     "structured_extraction": 118,
+     "reflective_planning": 615,
+     "ordinary_conversation": 568,
+     "grounded_research_synthesis": 476
+    },
+    "collisions": 0,
+    "pool": "all classes pooled; G-ROUTE4 main and reserve plus all G-ROUTE3 A and B fixtures"
+   }
+  },
+  "trigram": {
+   "grounded_research_synthesis": {
+    "boilerplate_trigrams": {
+     "sealed": 27,
+     "final": 27
+    },
+    "max_jaccard": {
+     "sealed": 0.1788,
+     "final": 0.1788
+    },
+    "max_pair": {
+     "sealed": [
+      "A4-RSRCH-R3-02",
+      "B4-RSRCH-R3-X11"
+     ],
+     "final": [
+      "A4-RSRCH-R3-02",
+      "B4-RSRCH-R3-X11"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   },
+   "hierarchical_semantic_synthesis": {
+    "boilerplate_trigrams": {
+     "sealed": 11,
+     "final": 11
+    },
+    "max_jaccard": {
+     "sealed": 0.0764,
+     "final": 0.0764
+    },
+    "max_pair": {
+     "sealed": [
+      "B4-SYNTH-R3-16",
+      "B4-SYNTH-R4-X01"
+     ],
+     "final": [
+      "B4-SYNTH-R3-16",
+      "B4-SYNTH-R4-X01"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   },
+   "ordinary_conversation": {
+    "boilerplate_trigrams": {
+     "sealed": 7,
+     "final": 7
+    },
+    "max_jaccard": {
+     "sealed": 0.0976,
+     "final": 0.0976
+    },
+    "max_pair": {
+     "sealed": [
+      "B4-CONV-R2-15",
+      "A4-CONV-R3-X03"
+     ],
+     "final": [
+      "B4-CONV-R2-15",
+      "A4-CONV-R3-X03"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   },
+   "reflective_planning": {
+    "boilerplate_trigrams": {
+     "sealed": 34,
+     "final": 34
+    },
+    "max_jaccard": {
+     "sealed": 0.0619,
+     "final": 0.0619
+    },
+    "max_pair": {
+     "sealed": [
+      "B4-PLAN-R1-07",
+      "A4-PLAN-R1-X03"
+     ],
+     "final": [
+      "B4-PLAN-R1-07",
+      "A4-PLAN-R1-X03"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   },
+   "structured_extraction": {
+    "boilerplate_trigrams": {
+     "sealed": 6,
+     "final": 6
+    },
+    "max_jaccard": {
+     "sealed": 0.1224,
+     "final": 0.1224
+    },
+    "max_pair": {
+     "sealed": [
+      "A4-EXTR-R4-03",
+      "A4-EXTR-R4-X03"
+     ],
+     "final": [
+      "A4-EXTR-R4-03",
+      "A4-EXTR-R4-X03"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   }
+  },
+  "trigram_task_relevant": {
+   "grounded_research_synthesis": {
+    "boilerplate_trigrams": {
+     "sealed": 27,
+     "final": 27
+    },
+    "max_jaccard": {
+     "sealed": 0.1788,
+     "final": 0.1788
+    },
+    "max_pair": {
+     "sealed": [
+      "A4-RSRCH-R3-02",
+      "B4-RSRCH-R3-X11"
+     ],
+     "final": [
+      "A4-RSRCH-R3-02",
+      "B4-RSRCH-R3-X11"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   },
+   "hierarchical_semantic_synthesis": {
+    "boilerplate_trigrams": {
+     "sealed": 11,
+     "final": 11
+    },
+    "max_jaccard": {
+     "sealed": 0.0764,
+     "final": 0.0764
+    },
+    "max_pair": {
+     "sealed": [
+      "B4-SYNTH-R3-16",
+      "B4-SYNTH-R4-X01"
+     ],
+     "final": [
+      "B4-SYNTH-R3-16",
+      "B4-SYNTH-R4-X01"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   },
+   "ordinary_conversation": {
+    "boilerplate_trigrams": {
+     "sealed": 7,
+     "final": 7
+    },
+    "max_jaccard": {
+     "sealed": 0.0976,
+     "final": 0.0976
+    },
+    "max_pair": {
+     "sealed": [
+      "B4-CONV-R2-15",
+      "A4-CONV-R3-X03"
+     ],
+     "final": [
+      "B4-CONV-R2-15",
+      "A4-CONV-R3-X03"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   },
+   "reflective_planning": {
+    "boilerplate_trigrams": {
+     "sealed": 34,
+     "final": 34
+    },
+    "max_jaccard": {
+     "sealed": 0.0619,
+     "final": 0.0619
+    },
+    "max_pair": {
+     "sealed": [
+      "B4-PLAN-R1-07",
+      "A4-PLAN-R1-X03"
+     ],
+     "final": [
+      "B4-PLAN-R1-07",
+      "A4-PLAN-R1-X03"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   },
+   "structured_extraction": {
+    "boilerplate_trigrams": {
+     "sealed": 6,
+     "final": 6
+    },
+    "max_jaccard": {
+     "sealed": 0.1224,
+     "final": 0.1224
+    },
+    "max_pair": {
+     "sealed": [
+      "A4-EXTR-R4-03",
+      "A4-EXTR-R4-X03"
+     ],
+     "final": [
+      "A4-EXTR-R4-03",
+      "A4-EXTR-R4-X03"
+     ]
+    },
+    "pairs_over_bound": {
+     "sealed": 0,
+     "final": 0
+    }
+   }
+  }
+ },
+ "fix_effects": {
+  "A4-EXTR-R1-03": {
+   "round": "A′ round 1",
+   "task_class": "structured_extraction",
+   "defect": "extraction field 'venue' undefined; several extractions were reasonable ('school fair in Dalihi', 'school fair', 'Dalihi')",
+   "max_jaccard_sealed_text": {
+    "value": 0.0275,
+    "partner": "B4-EXTR-R1-01"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0275,
+    "partner": "B4-EXTR-R1-01"
+   },
+   "sealed_sha256": {
+    "fixture": "c54d8eca29ba5ca2f9e7e84f92009fcccda5b394a12bbe08cfee5eabcbbbb280",
+    "gold": "ebfe8e8580ec38e82f176db642820d98c4b94f720bf81001be3f7faf24508a57",
+    "ledger": "39157d4d08605abad4ff14ca07c50f7f040e5716155033e132e7f58c60892908"
+   },
+   "fixed_sha256": {
+    "fixture": "6e2feccf2704bf824ecb1f2888050b12c37445a4a0ae76c76ed7a3ead1fa8986",
+    "gold": "0c01626fd8474d7a65bec0a55bcf98873b7dcaa85d35204a4a534a8c923a126c",
+    "ledger": "39157d4d08605abad4ff14ca07c50f7f040e5716155033e132e7f58c60892908"
+   }
+  },
+  "A4-RSRCH-R2-01": {
+   "round": "A′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "support paraphrase ('can be picked up ... at the weekend') did not establish collection every Saturday",
+   "max_jaccard_sealed_text": {
+    "value": 0.0974,
+    "partner": "B4-RSRCH-R2-11"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0995,
+    "partner": "B4-RSRCH-R2-11"
+   },
+   "sealed_sha256": {
+    "fixture": "de449624b659aee445af7e407b20582478fec475755983f755175ae39199c1b6",
+    "gold": "42ab41b75554e0df3724abefe58bfc00bdb675c1d6a6099d3eae10ebf23e0ece",
+    "ledger": "2a030636f2ced1c9490ec89785d96658a8d5c98350a84218f7a8e59fbaf3796c"
+   },
+   "fixed_sha256": {
+    "fixture": "d791198e76c7e3c2af961d1f21d57bd21ec5399af4abc06de40cacdf954d9e8e",
+    "gold": "42ab41b75554e0df3724abefe58bfc00bdb675c1d6a6099d3eae10ebf23e0ece",
+    "ledger": "f02b9d99fc735044fa554fcdb999d64e9a5be20ce2205cfe9db4be736f71a47f"
+   }
+  },
+  "A4-RSRCH-R2-02": {
+   "round": "A′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "max_jaccard_sealed_text": {
+    "value": 0.1116,
+    "partner": "B4-RSRCH-R2-18"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.1121,
+    "partner": "B4-RSRCH-R2-18"
+   },
+   "sealed_sha256": {
+    "fixture": "025362eaa7bfd43858fc8941702b30ced1135dacd59f728e2a947e19a1102d98",
+    "gold": "b3ecc235be7b1aaf2d840375b49ba15403b038caf68a373a869646d356563e8b",
+    "ledger": "a8093860b78d03a910f346e2595b4a56eece51b0d4b9cb75a4c9bf15c4fa810e"
+   },
+   "fixed_sha256": {
+    "fixture": "2320ea20120aae21f53b2e18f262b0d10f54f1f1f40a7230c728eeacbe0f6646",
+    "gold": "b3ecc235be7b1aaf2d840375b49ba15403b038caf68a373a869646d356563e8b",
+    "ledger": "1b6c6125b7884f87ecbecb404463ac0631d1dcbf1ebcc6f245083a62ab0a8ab0"
+   }
+  },
+  "A4-RSRCH-R4-03": {
+   "round": "A′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "max_jaccard_sealed_text": {
+    "value": 0.0492,
+    "partner": "A4-RSRCH-R4-X03"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0495,
+    "partner": "A4-RSRCH-R4-X03"
+   },
+   "sealed_sha256": {
+    "fixture": "fb72e1685e51d27557937f56477e90eb2932bd5451d86f0f801a6c70409fb7d5",
+    "gold": "c6bc3c5f6eca8b60b61215a3c35261e2ba3ec4f923ee5612f6306e90cb40ca70",
+    "ledger": "6e0dad4762088c646641c354fafb183637ed03c4a3328530054b845a17cdbfc1"
+   },
+   "fixed_sha256": {
+    "fixture": "173ec90f8e93eb81fdb1946c4dc4905c1dc63bce68ca40391ede2e0672573902",
+    "gold": "c6bc3c5f6eca8b60b61215a3c35261e2ba3ec4f923ee5612f6306e90cb40ca70",
+    "ledger": "93a2f22469079fab483ea2c5e0e765cae29e91432ab9611429f923a663ebc0e8"
+   }
+  },
+  "A4-SYNTH-R2-03": {
+   "round": "A′ round 1",
+   "task_class": "hierarchical_semantic_synthesis",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "max_jaccard_sealed_text": {
+    "value": 0.0397,
+    "partner": "B4-SYNTH-R3-08"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0261,
+    "partner": "B4-SYNTH-R3-08"
+   },
+   "sealed_sha256": {
+    "fixture": "10daa4fe2b50c5c3c87663583878c3044008159712f6eaeeac81b8603d9f66b6",
+    "gold": "a60e028ae67650009dd692da3377bffc9067a4b7a3c2c206077a6afac08f00dc",
+    "ledger": "b30137797956a2cad9e99cf28a5a6230fa4ce00bad1c6021b59c0dceb8deb619"
+   },
+   "fixed_sha256": {
+    "fixture": "c5a25e375d0fc818c61ab86c254163ad8aa1ba5f684463521c3accc138485265",
+    "gold": "fe36dfb55ca56a51930e8595fe81f56dccb5a68054cd3696ade4e8419f8f34a0",
+    "ledger": "b30137797956a2cad9e99cf28a5a6230fa4ce00bad1c6021b59c0dceb8deb619"
+   }
+  },
+  "A4-SYNTH-R4-01": {
+   "round": "A′ round 1",
+   "task_class": "hierarchical_semantic_synthesis",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "max_jaccard_sealed_text": {
+    "value": 0.039,
+    "partner": "A4-SYNTH-R4-X01"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0192,
+    "partner": "A4-SYNTH-R4-X01"
+   },
+   "sealed_sha256": {
+    "fixture": "7c0e29a2cc728810982020f5a63bd9bfeeb41f602ca71b27536ce85176a7fe6b",
+    "gold": "2451f1681014e4e7ba5702ca23505172530e93025777c6776647012a9b018179",
+    "ledger": "18ea9d2f37a9772522067454243111a1aa9105825d7303f9e6c3aaa376ebed37"
+   },
+   "fixed_sha256": {
+    "fixture": "f257f6bddb5897758e2478bf79366f7ff6167dc83e2d994a3e5531760b27580f",
+    "gold": "cc7aafe23859c74d8de468efd57295211502eb410f79b27c6780b3437430a14c",
+    "ledger": "18ea9d2f37a9772522067454243111a1aa9105825d7303f9e6c3aaa376ebed37"
+   }
+  },
+  "B4-RSRCH-R1-06": {
+   "round": "B′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "max_jaccard_sealed_text": {
+    "value": 0.1118,
+    "partner": "B4-RSRCH-R1-X06"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.1124,
+    "partner": "B4-RSRCH-R1-X06"
+   },
+   "sealed_sha256": {
+    "fixture": "449909387b9bfd77ac951dfaa0ca82860f703a58249717302364684df052e161",
+    "gold": "1e08bcb4e36034ac7b0c2081221eb93f03d5c4af54439512b6578cf3e740fa7b",
+    "ledger": "1ae1e13bb2117792a00d03ae3036eecd7fca0ebe50e705eca18da356fb2e3759"
+   },
+   "fixed_sha256": {
+    "fixture": "c311ce00ffe4d6df183eaa10892a786e7601dd60e576b2c509f140a98f9d0a2a",
+    "gold": "1e08bcb4e36034ac7b0c2081221eb93f03d5c4af54439512b6578cf3e740fa7b",
+    "ledger": "7fa4002e823ec3465b8078196ee5d79a9102bfdec6066897eafc156bcfdcea69"
+   }
+  },
+  "B4-RSRCH-R1-14": {
+   "round": "B′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "max_jaccard_sealed_text": {
+    "value": 0.1773,
+    "partner": "B4-RSRCH-R1-03"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.1786,
+    "partner": "B4-RSRCH-R1-03"
+   },
+   "sealed_sha256": {
+    "fixture": "61acf41198f81cf415fd3b8a285dfd9dcdfc00792c5241c45f1d069ee9954b8d",
+    "gold": "81549b088ff27dd8147ebf6e9b6ed1234eb41033da7e8b3033ffbad149bd7ccc",
+    "ledger": "87d225a05cc2493e61c0d505b0da533f6f737c719c1e2fb546bb41b5a0d202bb"
+   },
+   "fixed_sha256": {
+    "fixture": "6f6e1e008fbfb34f47c6a7b253d34e6ffe9bca58a3ecfc94309007e51cdc2dd0",
+    "gold": "81549b088ff27dd8147ebf6e9b6ed1234eb41033da7e8b3033ffbad149bd7ccc",
+    "ledger": "7d5344b8c610086e5662ef519790ffac5b3ed48a07964f9810e4069480d27690"
+   }
+  },
+  "B4-RSRCH-R2-06": {
+   "round": "B′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "max_jaccard_sealed_text": {
+    "value": 0.0798,
+    "partner": "B4-RSRCH-R2-X01"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0806,
+    "partner": "B4-RSRCH-R2-X01"
+   },
+   "sealed_sha256": {
+    "fixture": "b318962eb95c3d227fea1497fccf938d9dd9f1d1aac871fab622e11c5e52ba99",
+    "gold": "9fdcea9a5303465af7f4dd930e770d97e5c3d10a3cb2fc761e00b773ddbe5227",
+    "ledger": "6a003b0906ec610b3406a65977d48d9b98bf445cef89ddee6d31af49f6a1d5d7"
+   },
+   "fixed_sha256": {
+    "fixture": "90db59e437ec9c1f1ab7dcd4738cb1f19775399ef63180b31bb92d85190c7640",
+    "gold": "9fdcea9a5303465af7f4dd930e770d97e5c3d10a3cb2fc761e00b773ddbe5227",
+    "ledger": "16a2f137b37abcca8e8cef0194059cbef81353d595f1435550bb60fb3019a5ff"
+   }
+  },
+  "B4-RSRCH-R2-14": {
+   "round": "B′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "max_jaccard_sealed_text": {
+    "value": 0.1575,
+    "partner": "A4-RSRCH-R2-04"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.1597,
+    "partner": "A4-RSRCH-R2-04"
+   },
+   "sealed_sha256": {
+    "fixture": "ef21d4e522d0eb3672c61f2dd310714608defb65d603a4fdb4b3db3beae11b69",
+    "gold": "1a408c3af70d7afa937a2766f547c61ee74b34864439c87205d2b9f19180fdce",
+    "ledger": "0c7d73b84594a412612ed3ee9851e7aa40f52673873e886ef52cba6006ef2c87"
+   },
+   "fixed_sha256": {
+    "fixture": "f264ebfc2f72589286c49bd328d444fcc8a41a2471cdff5fb1c1eae9be362936",
+    "gold": "1a408c3af70d7afa937a2766f547c61ee74b34864439c87205d2b9f19180fdce",
+    "ledger": "16dbfbf572ae0654d175204508d8de02ab083b9b720100df1dfc577d1b66e397"
+   }
+  },
+  "B4-RSRCH-R3-04": {
+   "round": "B′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P4 support paraphrase did not establish anonymity (read as one supporting lineage)",
+   "max_jaccard_sealed_text": {
+    "value": 0.1058,
+    "partner": "B4-RSRCH-R3-X01"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.1064,
+    "partner": "B4-RSRCH-R3-X01"
+   },
+   "sealed_sha256": {
+    "fixture": "f9b5a3f8cfa9863158314fd557bb11a67406fed7a2039fa5407c0d47e1f4d666",
+    "gold": "d28b93c0cfe2e2b74f230228dcceaa5983c9f0ff6fca56e02edcc2e9edb253e0",
+    "ledger": "060c1ad179363b930a8b95b4c2972847d8ada21928fa89f8170e0c8d13142599"
+   },
+   "fixed_sha256": {
+    "fixture": "72a82e6f0a05d672fca6d6a6bf2af3bf382cda0309e08b6404b103df3b7114ec",
+    "gold": "d28b93c0cfe2e2b74f230228dcceaa5983c9f0ff6fca56e02edcc2e9edb253e0",
+    "ledger": "f3dd621ded997dec7e9c32e127e5548d50a3cae3afd9c6d79d61f7475738fd31"
+   }
+  },
+  "B4-RSRCH-R3-06": {
+   "round": "B′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "max_jaccard_sealed_text": {
+    "value": 0.0971,
+    "partner": "B4-RSRCH-R3-X02"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0976,
+    "partner": "B4-RSRCH-R3-X02"
+   },
+   "sealed_sha256": {
+    "fixture": "676680d7448939ab17b550e5ca363b3e420e857382780010061fe5f5f3230106",
+    "gold": "cb5a71538ccc27a9f2b0c6d792c55ded81f073cb4fe79fd7c03694440f8aee9e",
+    "ledger": "b8b03a960c1898db5e076a9dbeeaf51a39249feb2d48c5afc14802d006f0335c"
+   },
+   "fixed_sha256": {
+    "fixture": "caca607483a7f47f778df3dfaad248371dad739fb5479925cd09f48700383e47",
+    "gold": "cb5a71538ccc27a9f2b0c6d792c55ded81f073cb4fe79fd7c03694440f8aee9e",
+    "ledger": "85aadaa6c6e802816b0a73f5af4b0d614fa233e9a17d64631dc953cea71821ca"
+   }
+  },
+  "B4-RSRCH-R3-14": {
+   "round": "B′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "max_jaccard_sealed_text": {
+    "value": 0.0884,
+    "partner": "A4-RSRCH-R3-02"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0897,
+    "partner": "A4-RSRCH-R3-02"
+   },
+   "sealed_sha256": {
+    "fixture": "4b45ab04c552745c80a0e8cabd9ee195f2e3a72abbffcb4f1f94afa46adab29b",
+    "gold": "5bf0c5a54c15447f9301221ee89879ae89b50bfa8c3f181b348e3d22d44fc0df",
+    "ledger": "6d47b0c504e7610a090d0b280ea2c1e73fda52529e887e58efbf9ef1d0cd5d05"
+   },
+   "fixed_sha256": {
+    "fixture": "a8ac0dd05068d4fb6a4d3e64238bba9f74252a916684439ef41a305781251137",
+    "gold": "5bf0c5a54c15447f9301221ee89879ae89b50bfa8c3f181b348e3d22d44fc0df",
+    "ledger": "7af635e93a47e52cbba532b5d695479fe0123b85d3121fbda8de9550379854ce"
+   }
+  },
+  "B4-RSRCH-R3-18": {
+   "round": "B′ round 1",
+   "task_class": "grounded_research_synthesis",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "max_jaccard_sealed_text": {
+    "value": 0.0828,
+    "partner": "B4-RSRCH-R3-10"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0838,
+    "partner": "B4-RSRCH-R3-10"
+   },
+   "sealed_sha256": {
+    "fixture": "c6f1928d377d2fa82f23af3992f42195589c169b2c0a2db3cb801752ed0c5787",
+    "gold": "c2179ad39fae696d43faf010d1665ca658734445c22d7c6428c702ae9a1fad45",
+    "ledger": "6e8ef6ffa03d10ccae402c09aca1ccc65692aca1c9a2d9f6e9f3af767ac0a951"
+   },
+   "fixed_sha256": {
+    "fixture": "d392b4315ed356f0039b05cc9810f82b279a83091d7332d2ef0ef79430520fd3",
+    "gold": "c2179ad39fae696d43faf010d1665ca658734445c22d7c6428c702ae9a1fad45",
+    "ledger": "4026a5ef80c2e65bc52f63673d5b9519a4192007003dbbbe4c646a9a7156530a"
+   }
+  },
+  "B4-SYNTH-R1-01": {
+   "round": "B′ round 1",
+   "task_class": "hierarchical_semantic_synthesis",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "max_jaccard_sealed_text": {
+    "value": 0.0278,
+    "partner": "A4-SYNTH-R1-01"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0148,
+    "partner": "B4-SYNTH-R3-15"
+   },
+   "sealed_sha256": {
+    "fixture": "790a953b517410f89f04b48b100ae0c756951a3203b66350ad5a1aad6083b06a",
+    "gold": "e8996a57a9f5af6c9f33c87b682e56119523a845cdcff415b2107ec4b62d994f",
+    "ledger": "546b842ae7fc96100a9c06e4887e834bac912d47cf802f02783dbd4b3c4bd87e"
+   },
+   "fixed_sha256": {
+    "fixture": "c85042cc7f395b9d88b5dc0982491663043e55276645d0cf51631c85a3a7b610",
+    "gold": "f0795e264c000f4392c1f6027e0e255e5a5e20483fc2be1b51073c47e5b765d9",
+    "ledger": "4c9121fccb2e090a15d7afd670be5b873ced842fd78d6922d39159e39faf993f"
+   }
+  },
+  "B4-SYNTH-R1-03": {
+   "round": "B′ round 1",
+   "task_class": "hierarchical_semantic_synthesis",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "max_jaccard_sealed_text": {
+    "value": 0.0152,
+    "partner": "A4-SYNTH-R1-03"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0205,
+    "partner": "B4-SYNTH-R1-15"
+   },
+   "sealed_sha256": {
+    "fixture": "e604127f9b7812eca514a4b314c71d68057f875c80e12878ce90e2d246cd1ce8",
+    "gold": "4540c6d2b6b53019829e8bc57355ac5a2d92e91eb7f31d8dcd7ebae1c756e579",
+    "ledger": "84090a2226c5cd277f1f7d51d2e58fb3453bda201ca4ce8df93e3900db5565d6"
+   },
+   "fixed_sha256": {
+    "fixture": "f0c9581bc4b7dcff9772664a28880d3747edd983b0d42b846690556e3a979920",
+    "gold": "a820b8dd8489c5b69de635cf74e74342d5257edff0fd13570c104d396c1d8317",
+    "ledger": "861bbab7f8dfc252c3631e1c0c97ed0f0bc4a69c75854e053f3560c4801ec106"
+   }
+  },
+  "B4-SYNTH-R2-13": {
+   "round": "B′ round 1",
+   "task_class": "hierarchical_semantic_synthesis",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "max_jaccard_sealed_text": {
+    "value": 0.0294,
+    "partner": "A4-SYNTH-R1-X01"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0179,
+    "partner": "B4-SYNTH-R2-14"
+   },
+   "sealed_sha256": {
+    "fixture": "32330c49664b3f631b48662673c1408090045e0fc8e40fe27398f2d58ec2ec62",
+    "gold": "cf094b468e2cffc74c5aeba8fcdf0803667736aa195fa50c2cc464c393ff629b",
+    "ledger": "9ae89b6c20e014c77e8d9e8ce3468a4a5f74decec54bd70f761c67f61809b470"
+   },
+   "fixed_sha256": {
+    "fixture": "eb72445e908925aa65c265f72d946dddbd552b9924fad8d95e68784b471800a0",
+    "gold": "09413b70dd33e69b2899e50f68cd5e067d309f5f5fc058a525e5e37e8a410a11",
+    "ledger": "ef9b4f02472ccd63cf5b005763a545af8adfaa814dd91654f31f06446f66554a"
+   }
+  },
+  "B4-SYNTH-R2-14": {
+   "round": "B′ round 1",
+   "task_class": "hierarchical_semantic_synthesis",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "max_jaccard_sealed_text": {
+    "value": 0.0211,
+    "partner": "B4-SYNTH-R1-X01"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0196,
+    "partner": "B4-SYNTH-R3-09"
+   },
+   "sealed_sha256": {
+    "fixture": "1bf824aabed7b626b6e63b3ab6347746c7e3c6be5024b7ce4bc3a262afb58844",
+    "gold": "05990b3fe20eb4a465293582d5b125a250e849bd704504afa4646805883eda0c",
+    "ledger": "ef3283d04aad343450f0fd4faa83ce63291530f1d03aa8d0d9a23d27d5400a8a"
+   },
+   "fixed_sha256": {
+    "fixture": "8179be6650d48978d9eef7558af833dd52281c1a761459abd13614c5ec565b56",
+    "gold": "7f31d6ad6f2eac46c66aef8748d98fe3307727af7de7d4e105823be9bff13f22",
+    "ledger": "ef3283d04aad343450f0fd4faa83ce63291530f1d03aa8d0d9a23d27d5400a8a"
+   }
+  },
+  "B4-SYNTH-R3-07": {
+   "round": "B′ round 1",
+   "task_class": "hierarchical_semantic_synthesis",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "max_jaccard_sealed_text": {
+    "value": 0.0221,
+    "partner": "A4-SYNTH-R3-01"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0147,
+    "partner": "A4-SYNTH-R3-01"
+   },
+   "sealed_sha256": {
+    "fixture": "a9f3e0da5501669e042b9a22fc35319fbfbe82dd71c2b36a8021e322e5e68920",
+    "gold": "ed4d405f2018bfc8c1900aa78e7e1b1053d9aa5e0a27a4b1f8dd7b944c5b2afd",
+    "ledger": "eebf84ec791a8277a25cf520731d41f180616d17ebee03053e95a55509deee4e"
+   },
+   "fixed_sha256": {
+    "fixture": "90433309bd2aa005b12dab579309e49bf295a507a96d45c3bdc58c931c7abbe9",
+    "gold": "b42a2d796547cba1dd421da9ff9f29cbc16303efd564e583b2737844ad62aeb9",
+    "ledger": "ae994d4dc11f3333ec926a4279c05c4c3de3257946806a7f7cb1145131a2d81b"
+   }
+  },
+  "B4-SYNTH-R3-09": {
+   "round": "B′ round 1",
+   "task_class": "hierarchical_semantic_synthesis",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "max_jaccard_sealed_text": {
+    "value": 0.0229,
+    "partner": "A4-SYNTH-R2-X03"
+   },
+   "max_jaccard_fixed_text": {
+    "value": 0.0196,
+    "partner": "B4-SYNTH-R2-14"
+   },
+   "sealed_sha256": {
+    "fixture": "2e5b71f8ad92032029cb87ec4a08644938ab8a229bf474715acab4afea5826b9",
+    "gold": "5f15c36aaf0eafa2878c9db2156f519e8fc81b5b1c8daab66ac86232b60c4cc2",
+    "ledger": "923c004bc49b55b22414c9ac0b4ffada20ca536ca92f1e6ea5afd69a0558568d"
+   },
+   "fixed_sha256": {
+    "fixture": "f56e230e134de6e01d5e1ce1e807d8db327b70173d09b9b1d6a6bfcbf9143e85",
+    "gold": "fdb998358de105def1f91d26579d27eb1323eb30c561b0285c56091ff2fe2707",
+    "ledger": "fe1d8b6f1b7b8a653d39eea8360e7d6ac906b8beedc1f74e163449ce7d7e381e"
+   }
+  }
+ },
+ "n8_same_family_a_b_max_jaccard_per_cell": {
+  "grounded_research_synthesis|R1": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0955,
+   "max_pair": [
+    "A4-RSRCH-R1-03",
+    "B4-RSRCH-R1-09"
+   ],
+   "family": "RS3"
+  },
+  "grounded_research_synthesis|R2": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.1597,
+   "max_pair": [
+    "A4-RSRCH-R2-04",
+    "B4-RSRCH-R2-14"
+   ],
+   "family": "RS2"
+  },
+  "grounded_research_synthesis|R3": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0581,
+   "max_pair": [
+    "A4-RSRCH-R3-02",
+    "B4-RSRCH-R3-10"
+   ],
+   "family": "RS4"
+  },
+  "grounded_research_synthesis|R4": {
+   "same_family_pairs": 1,
+   "max_jaccard": 0.0,
+   "max_pair": [
+    "A4-RSRCH-R4-02",
+    "B4-RSRCH-R4-01"
+   ],
+   "family": "RS3"
+  },
+  "hierarchical_semantic_synthesis|R1": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0449,
+   "max_pair": [
+    "A4-SYNTH-R1-04",
+    "B4-SYNTH-R1-12"
+   ],
+   "family": "SY4"
+  },
+  "hierarchical_semantic_synthesis|R2": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0241,
+   "max_pair": [
+    "A4-SYNTH-R2-03",
+    "B4-SYNTH-R2-15"
+   ],
+   "family": "SY1"
+  },
+  "hierarchical_semantic_synthesis|R3": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0455,
+   "max_pair": [
+    "A4-SYNTH-R3-02",
+    "B4-SYNTH-R3-16"
+   ],
+   "family": "SY4"
+  },
+  "hierarchical_semantic_synthesis|R4": {
+   "same_family_pairs": 0,
+   "max_jaccard": null,
+   "max_pair": null,
+   "family": null
+  },
+  "ordinary_conversation|R1": {
+   "same_family_pairs": 20,
+   "max_jaccard": 0.0412,
+   "max_pair": [
+    "A4-CONV-R1-04",
+    "B4-CONV-R1-17"
+   ],
+   "family": "CV4"
+  },
+  "ordinary_conversation|R2": {
+   "same_family_pairs": 18,
+   "max_jaccard": 0.0508,
+   "max_pair": [
+    "A4-CONV-R2-02",
+    "B4-CONV-R2-16"
+   ],
+   "family": "CV6"
+  },
+  "ordinary_conversation|R3": {
+   "same_family_pairs": 18,
+   "max_jaccard": 0.0429,
+   "max_pair": [
+    "A4-CONV-R3-03",
+    "B4-CONV-R3-05"
+   ],
+   "family": "CV5"
+  },
+  "ordinary_conversation|R4": {
+   "same_family_pairs": 0,
+   "max_jaccard": null,
+   "max_pair": null,
+   "family": null
+  },
+  "reflective_planning|R1": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0514,
+   "max_pair": [
+    "A4-PLAN-R1-03",
+    "B4-PLAN-R1-07"
+   ],
+   "family": "PL3"
+  },
+  "reflective_planning|R2": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0324,
+   "max_pair": [
+    "A4-PLAN-R2-02",
+    "B4-PLAN-R2-11"
+   ],
+   "family": "PL6"
+  },
+  "reflective_planning|R3": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0594,
+   "max_pair": [
+    "A4-PLAN-R3-01",
+    "B4-PLAN-R3-13"
+   ],
+   "family": "PL3"
+  },
+  "reflective_planning|R4": {
+   "same_family_pairs": 1,
+   "max_jaccard": 0.0,
+   "max_pair": [
+    "A4-PLAN-R4-01",
+    "B4-PLAN-R4-01"
+   ],
+   "family": "PL1"
+  },
+  "structured_extraction|R1": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0182,
+   "max_pair": [
+    "A4-EXTR-R1-04",
+    "B4-EXTR-R1-10"
+   ],
+   "family": "EX4"
+  },
+  "structured_extraction|R2": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0495,
+   "max_pair": [
+    "A4-EXTR-R2-01",
+    "B4-EXTR-R2-09"
+   ],
+   "family": "EX5"
+  },
+  "structured_extraction|R3": {
+   "same_family_pairs": 12,
+   "max_jaccard": 0.0351,
+   "max_pair": [
+    "A4-EXTR-R3-03",
+    "B4-EXTR-R3-03"
+   ],
+   "family": "EX5"
+  },
+  "structured_extraction|R4": {
+   "same_family_pairs": 0,
+   "max_jaccard": null,
+   "max_pair": null,
+   "family": null
+  }
+ },
+ "o5": {
+  "grounded_research_synthesis": {
+   "frozen_family_template_texts": {
+    "RS1": "",
+    "RS2": "",
+    "RS3": "",
+    "RS4": "",
+    "RS5": "",
+    "RS6": ""
+   },
+   "boilerplate_trigrams_in_family_templates": [],
+   "single_family_boilerplate_trigrams": 0
+  },
+  "hierarchical_semantic_synthesis": {
+   "frozen_family_template_texts": {
+    "SY1": "",
+    "SY2": "",
+    "SY3": "",
+    "SY4": "",
+    "SY5": "",
+    "SY6": ""
+   },
+   "boilerplate_trigrams_in_family_templates": [],
+   "single_family_boilerplate_trigrams": 0
+  },
+  "ordinary_conversation": {
+   "frozen_family_template_texts": {
+    "CV1": "",
+    "CV2": "",
+    "CV3": "",
+    "CV4": "",
+    "CV5": "",
+    "CV6": ""
+   },
+   "boilerplate_trigrams_in_family_templates": [],
+   "single_family_boilerplate_trigrams": 0
+  },
+  "reflective_planning": {
+   "frozen_family_template_texts": {
+    "PL1": "",
+    "PL2": "",
+    "PL3": "",
+    "PL4": "",
+    "PL5": "",
+    "PL6": ""
+   },
+   "boilerplate_trigrams_in_family_templates": [],
+   "single_family_boilerplate_trigrams": 0
+  },
+  "structured_extraction": {
+   "frozen_family_template_texts": {
+    "EX1": "",
+    "EX2": "",
+    "EX3": "",
+    "EX4": "",
+    "EX5": "",
+    "EX6": ""
+   },
+   "boilerplate_trigrams_in_family_templates": [],
+   "single_family_boilerplate_trigrams": 0
+  }
+ }
+}
