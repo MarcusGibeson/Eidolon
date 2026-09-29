@@ -1,0 +1,268 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "A′ main",
+ "round": 1,
+ "decisions_run": "g4adj-amain-20260929T180225Z",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "fixes": [
+  {
+   "fixture_id": "A4-EXTR-R1-03",
+   "round": 1,
+   "fix": "input ambiguous -> fix input",
+   "defect": "extraction field 'venue' undefined; several extractions were reasonable ('school fair in Dalihi', 'school fair', 'Dalihi')",
+   "sealed_sha256": {
+    "fixture": "c54d8eca29ba5ca2f9e7e84f92009fcccda5b394a12bbe08cfee5eabcbbbb280",
+    "gold": "ebfe8e8580ec38e82f176db642820d98c4b94f720bf81001be3f7faf24508a57",
+    "ledger": "39157d4d08605abad4ff14ca07c50f7f040e5716155033e132e7f58c60892908"
+   },
+   "fixed_sha256": {
+    "fixture": "6e2feccf2704bf824ecb1f2888050b12c37445a4a0ae76c76ed7a3ead1fa8986",
+    "gold": "0c01626fd8474d7a65bec0a55bcf98873b7dcaa85d35204a4a534a8c923a126c",
+    "ledger": "39157d4d08605abad4ff14ca07c50f7f040e5716155033e132e7f58c60892908"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.schema.venue",
+      "from": "venue",
+      "to": "town"
+     }
+    ],
+    "gold": [
+     {
+      "path": "expected.venue",
+      "from": "venue",
+      "to": "town"
+     },
+     {
+      "path": "reference_output.venue",
+      "from": "venue",
+      "to": "town"
+     }
+    ],
+    "ledger": []
+   },
+   "gold_note": "the gold key follows the renamed schema key; the value 'Dalihi' is unchanged"
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-01",
+   "round": 1,
+   "fix": "input ambiguous -> fix input",
+   "defect": "support paraphrase ('can be picked up ... at the weekend') did not establish collection every Saturday",
+   "sealed_sha256": {
+    "fixture": "de449624b659aee445af7e407b20582478fec475755983f755175ae39199c1b6",
+    "gold": "42ab41b75554e0df3724abefe58bfc00bdb675c1d6a6099d3eae10ebf23e0ece",
+    "ledger": "2a030636f2ced1c9490ec89785d96658a8d5c98350a84218f7a8e59fbaf3796c"
+   },
+   "fixed_sha256": {
+    "fixture": "d791198e76c7e3c2af961d1f21d57bd21ec5399af4abc06de40cacdf954d9e8e",
+    "gold": "42ab41b75554e0df3724abefe58bfc00bdb675c1d6a6099d3eae10ebf23e0ece",
+    "ledger": "f02b9d99fc735044fa554fcdb999d64e9a5be20ce2205cfe9db4be736f71a47f"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.sources[2].text",
+      "from": "Parcels can be picked up by Foweye's courier at the weekend.",
+      "to": "Every Saturday, Foweye's courier picks up parcels."
+     },
+     {
+      "path": "input.sources[4].text",
+      "from": "Reissued by the same publisher: Parcels can be picked up by Foweye's courier at the weekend.",
+      "to": "Reissued by the same publisher: Every Saturday, Foweye's courier picks up parcels."
+     }
+    ],
+    "gold": [],
+    "ledger": [
+     {
+      "path": "research_contract.sources[2].text",
+      "from": "Parcels can be picked up by Foweye's courier at the weekend.",
+      "to": "Every Saturday, Foweye's courier picks up parcels."
+     },
+     {
+      "path": "research_contract.sources[4].text",
+      "from": "Reissued by the same publisher: Parcels can be picked up by Foweye's courier at the weekend.",
+      "to": "Reissued by the same publisher: Every Saturday, Foweye's courier picks up parcels."
+     }
+    ]
+   },
+   "gold_note": null
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-02",
+   "round": 1,
+   "fix": "input ambiguous -> fix input",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "sealed_sha256": {
+    "fixture": "025362eaa7bfd43858fc8941702b30ced1135dacd59f728e2a947e19a1102d98",
+    "gold": "b3ecc235be7b1aaf2d840375b49ba15403b038caf68a373a869646d356563e8b",
+    "ledger": "a8093860b78d03a910f346e2595b4a56eece51b0d4b9cb75a4c9bf15c4fa810e"
+   },
+   "fixed_sha256": {
+    "fixture": "2320ea20120aae21f53b2e18f262b0d10f54f1f1f40a7230c728eeacbe0f6646",
+    "gold": "b3ecc235be7b1aaf2d840375b49ba15403b038caf68a373a869646d356563e8b",
+    "ledger": "1b6c6125b7884f87ecbecb404463ac0631d1dcbf1ebcc6f245083a62ab0a8ab0"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.sources[0].text",
+      "from": "Hayusu's delivery service operates only in the harbour district.",
+      "to": "Hayusu's delivery service operates in the harbour district."
+     }
+    ],
+    "gold": [],
+    "ledger": [
+     {
+      "path": "research_contract.sources[0].text",
+      "from": "Hayusu's delivery service operates only in the harbour district.",
+      "to": "Hayusu's delivery service operates in the harbour district."
+     }
+    ]
+   },
+   "gold_note": null
+  },
+  {
+   "fixture_id": "A4-RSRCH-R4-03",
+   "round": 1,
+   "fix": "input ambiguous -> fix input",
+   "defect": "P6 narrower-scope source worded with the exclusionary 'only' (reads as a contradiction, not a narrower scope)",
+   "sealed_sha256": {
+    "fixture": "fb72e1685e51d27557937f56477e90eb2932bd5451d86f0f801a6c70409fb7d5",
+    "gold": "c6bc3c5f6eca8b60b61215a3c35261e2ba3ec4f923ee5612f6306e90cb40ca70",
+    "ledger": "6e0dad4762088c646641c354fafb183637ed03c4a3328530054b845a17cdbfc1"
+   },
+   "fixed_sha256": {
+    "fixture": "173ec90f8e93eb81fdb1946c4dc4905c1dc63bce68ca40391ede2e0672573902",
+    "gold": "c6bc3c5f6eca8b60b61215a3c35261e2ba3ec4f923ee5612f6306e90cb40ca70",
+    "ledger": "93a2f22469079fab483ea2c5e0e765cae29e91432ab9611429f923a663ebc0e8"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.sources[0].text",
+      "from": "Vamodu's sprinklers protect only the ground floor.",
+      "to": "Vamodu's sprinklers protect the ground floor."
+     }
+    ],
+    "gold": [],
+    "ledger": [
+     {
+      "path": "research_contract.sources[0].text",
+      "from": "Vamodu's sprinklers protect only the ground floor.",
+      "to": "Vamodu's sprinklers protect the ground floor."
+     }
+    ]
+   },
+   "gold_note": null
+  },
+  {
+   "fixture_id": "A4-SYNTH-R2-03",
+   "round": 1,
+   "fix": "input ambiguous -> fix input",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "sealed_sha256": {
+    "fixture": "10daa4fe2b50c5c3c87663583878c3044008159712f6eaeeac81b8603d9f66b6",
+    "gold": "a60e028ae67650009dd692da3377bffc9067a4b7a3c2c206077a6afac08f00dc",
+    "ledger": "b30137797956a2cad9e99cf28a5a6230fa4ce00bad1c6021b59c0dceb8deb619"
+   },
+   "fixed_sha256": {
+    "fixture": "c5a25e375d0fc818c61ab86c254163ad8aa1ba5f684463521c3accc138485265",
+    "gold": "fe36dfb55ca56a51930e8595fe81f56dccb5a68054cd3696ade4e8419f8f34a0",
+    "ledger": "b30137797956a2cad9e99cf28a5a6230fa4ce00bad1c6021b59c0dceb8deb619"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.observations[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "input.observations[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "gold": [
+     {
+      "path": "expected.roles.O71",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "expected.roles.O72",
+      "from": "diagnosis",
+      "to": "finding"
+     },
+     {
+      "path": "reference_output.statements[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "reference_output.statements[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "ledger": []
+   },
+   "gold_note": "gold roles and reference-statement roles follow the relabelled input roles; the conclusion, required terms, ids and merges are unchanged"
+  },
+  {
+   "fixture_id": "A4-SYNTH-R4-01",
+   "round": 1,
+   "fix": "input ambiguous -> fix input",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause",
+   "sealed_sha256": {
+    "fixture": "7c0e29a2cc728810982020f5a63bd9bfeeb41f602ca71b27536ce85176a7fe6b",
+    "gold": "2451f1681014e4e7ba5702ca23505172530e93025777c6776647012a9b018179",
+    "ledger": "18ea9d2f37a9772522067454243111a1aa9105825d7303f9e6c3aaa376ebed37"
+   },
+   "fixed_sha256": {
+    "fixture": "f257f6bddb5897758e2478bf79366f7ff6167dc83e2d994a3e5531760b27580f",
+    "gold": "cc7aafe23859c74d8de468efd57295211502eb410f79b27c6780b3437430a14c",
+    "ledger": "18ea9d2f37a9772522067454243111a1aa9105825d7303f9e6c3aaa376ebed37"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.observations[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "input.observations[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "gold": [
+     {
+      "path": "expected.roles.O131",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "expected.roles.O132",
+      "from": "diagnosis",
+      "to": "finding"
+     },
+     {
+      "path": "reference_output.statements[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "reference_output.statements[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "ledger": []
+   },
+   "gold_note": "gold roles and reference-statement roles follow the relabelled input roles; the conclusion, required terms, ids and merges are unchanged"
+  }
+ ]
+}

@@ -120,9 +120,11 @@ def model_facing_b(fixes_dir=None):
     return fixtures
 
 
-def model_facing_a():
-    fixtures = json.loads((SEALED / "corpus_a.json").read_text(encoding="utf-8"))["fixtures"]
-    return {f["fixture_id"]: f for f in fixtures}
+def model_facing_a(fixes_dir=None):
+    fixtures = {f["fixture_id"]: f for f in json.loads((SEALED / "corpus_a.json").read_text(encoding="utf-8"))["fixtures"]}
+    if fixes_dir is not None:
+        fixtures.update(fixed_fixtures(fixes_dir, corpus="corpus_a.json"))
+    return fixtures
 
 
 def a_schedule(fixture_ids):
@@ -141,23 +143,23 @@ def decide_a(score_rows, fixture_ids):
     return out
 
 
-def fixed_fixtures(fixes_dir):
-    """The committed round-N fixed B′ fixtures (model-facing only), each bound to its recorded digests."""
+def fixed_fixtures(fixes_dir, corpus="corpus_b.json"):
+    """The committed round-N fixed fixtures of one batch (model-facing only), each bound to its recorded digests."""
     fixes_dir = Path(fixes_dir)
-    sealed = {f["fixture_id"]: f for f in json.loads((SEALED / "corpus_b.json").read_text(encoding="utf-8"))["fixtures"]}
+    sealed = {f["fixture_id"]: f for f in json.loads((SEALED / corpus).read_text(encoding="utf-8"))["fixtures"]}
     fixed = {f["fixture_id"]: f for f in json.loads((fixes_dir / "corpus_fixed.json").read_text(encoding="utf-8"))["fixtures"]}
     record = {r["fixture_id"]: r for r in json.loads((fixes_dir / "FIX_RECORD.json").read_text(encoding="utf-8"))["fixes"]}
     if set(fixed) != set(record) or not set(fixed) <= set(sealed):
-        raise StopBatch("binding", "fixed fixtures and fix record differ, or a fixed fixture is not a B′ main fixture")
+        raise StopBatch("binding", f"fixed fixtures and fix record differ, or a fixed fixture is not in {corpus}")
     for fid, f in fixed.items():
         if sha256(canonical(sealed[fid])) != record[fid]["sealed_sha256"]["fixture"] or                 sha256(canonical(f)) != record[fid]["fixed_sha256"]["fixture"]:
             raise StopBatch("binding", f"{fid}: fixed fixture is not bound to its recorded sealed and fixed digests")
     return fixed
 
 
-def gold_path_overlay(fixes_dir):
-    """Scoring gold: sealed B′ gold, with the recorded fixed gold for fixed fixtures."""
-    gold = {g["fixture_id"]: g for g in json.loads((SEALED / "gold_b.json").read_text(encoding="utf-8"))["items"]}
+def gold_path_overlay(fixes_dir, gold_file="gold_b.json"):
+    """Scoring gold: the batch's sealed gold, with the recorded fixed gold for fixed fixtures."""
+    gold = {g["fixture_id"]: g for g in json.loads((SEALED / gold_file).read_text(encoding="utf-8"))["items"]}
     if fixes_dir is not None:
         record = {r["fixture_id"]: r for r in json.loads((Path(fixes_dir) / "FIX_RECORD.json").read_text(encoding="utf-8"))["fixes"]}
         for g in json.loads((Path(fixes_dir) / "gold_fixed.json").read_text(encoding="utf-8"))["items"]:
@@ -633,7 +635,7 @@ def score(runner, answers_path, repo=ROOT, gold_path=SEALED / "gold_b.json", fix
     from g_route3_operational import validate_operational
     from g_route3_semantics import validate_fixture_output
     if fixes_dir is not None:
-        gold = gold_path_overlay(fixes_dir)
+        gold = gold_path_overlay(fixes_dir, Path(gold_path).name)
     else:
         gold = {g["fixture_id"]: g for g in json.loads(Path(gold_path).read_text(encoding="utf-8"))["items"]}
     rows = []
@@ -712,12 +714,12 @@ def main(argv=None):
     cfg = amended_config()
     fixes_dir = (ROOT / args.fixes_dir) if args.fixes_dir else None
     a_batch = args.batch == "a-main"
-    if a_batch and (fixes_dir is not None or args.phase == 2):
-        raise SystemExit("the A′ batch is one phase of three adjudicators per fixture; fix rounds are not wired for A′ yet")
-    fixtures = model_facing_a() if a_batch else model_facing_b(fixes_dir)
+    if a_batch and args.phase == 2:
+        raise SystemExit("the A′ batch (and an A′ fix round) is one phase of three adjudicators per fixture")
+    fixtures = model_facing_a(fixes_dir) if a_batch else model_facing_b(fixes_dir)
     sample = [] if a_batch else audit_sample()
     if fixes_dir is not None:                        # a fix round covers exactly the fixed fixtures, same procedure
-        scope = sorted(fixed_fixtures(fixes_dir))
+        scope = sorted(fixed_fixtures(fixes_dir, corpus="corpus_a.json" if a_batch else "corpus_b.json"))
         sample = [f for f in sample if f in scope]
         fixtures = {fid: fixtures[fid] for fid in scope}
     if args.command == "verify":

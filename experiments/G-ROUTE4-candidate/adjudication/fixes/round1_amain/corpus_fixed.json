@@ -1,0 +1,338 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "A′ main",
+ "round": 1,
+ "decisions_run": "g4adj-amain-20260929T180225Z",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "fixtures": [
+  {
+   "consequence_risk": "R1",
+   "fixture_id": "A4-EXTR-R1-03",
+   "input": {
+    "schema": {
+     "town": "string",
+     "items_sold": "integer",
+     "takings": "number"
+    },
+    "text": "The bake stall at the school fair in Dalihi sold 18 lemon bars at 2.4 each and 12 brownies at 3.25 each."
+   },
+   "prompt": "Extract the bake stall takings. items_sold is the total number of lemon bars and brownies sold. takings is the money taken from both products together. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "structured_extraction",
+   "title": "School fair bake stall",
+   "validator_profile": "extraction.v1"
+  },
+  {
+   "consequence_risk": "R2",
+   "fixture_id": "A4-RSRCH-R2-01",
+   "input": {
+    "allowed_recommendations": [
+     "proceed",
+     "pause_purchase"
+    ],
+    "allowed_uncertainty_codes": [
+     {
+      "code": "single_lineage_support",
+      "condition": "some claim with status supported is supported by exactly one lineage"
+     },
+     {
+      "code": "unaddressed_claim",
+      "condition": "some claim is addressed by no source"
+     },
+     {
+      "code": "conflicting_sources",
+      "condition": "some claim is unresolved because the sources addressing it disagree"
+     },
+     {
+      "code": "scope_mismatch",
+      "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+     }
+    ],
+    "claims": [
+     {
+      "claim_id": "C1",
+      "text": "Pononu's car hire includes unlimited mileage."
+     },
+     {
+      "claim_id": "C2",
+      "text": "Foweye's courier collects parcels every Saturday."
+     },
+     {
+      "claim_id": "C3",
+      "text": "Pononu's coworking space includes locker hire."
+     }
+    ],
+    "decision_rule": "Recommend 'proceed' only if every claim is supported; otherwise 'pause_purchase'.",
+    "sources": [
+     {
+      "source_id": "S1",
+      "lineage": "north-vehicle-hire-association-newsletter",
+      "text": "Hire cars from Pononu come with no mileage cap."
+     },
+     {
+      "source_id": "S2",
+      "lineage": "central-motor-services-inspectorate-website",
+      "text": "Pononu's car hire charges for every kilometre over two hundred."
+     },
+     {
+      "source_id": "S3",
+      "lineage": "north-freight-office-bulletin",
+      "text": "Every Saturday, Foweye's courier picks up parcels."
+     },
+     {
+      "source_id": "S4",
+      "lineage": "north-facilities-office-bulletin",
+      "text": "Lockers come with membership at Pononu's coworking space."
+     },
+     {
+      "source_id": "S5",
+      "lineage": "north-freight-office-bulletin",
+      "text": "Reissued by the same publisher: Every Saturday, Foweye's courier picks up parcels."
+     }
+    ]
+   },
+   "prompt": "Assess the claims about Pononu and Foweye against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Reply with a JSON object whose keys are exactly claims, recommendation and uncertainties: claims is a list with exactly one claim object for each input claim, carrying that claim's claim_id; in each claim object, status is one of supported, contradicted or unresolved, citations is a list of distinct source_id strings, and lineages is a list of distinct lineage-name strings; recommendation is a string; uncertainties is a list of distinct code strings. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "grounded_research_synthesis",
+   "title": "Claims about Pononu and Foweye",
+   "validator_profile": "research.v1"
+  },
+  {
+   "consequence_risk": "R2",
+   "fixture_id": "A4-RSRCH-R2-02",
+   "input": {
+    "allowed_recommendations": [
+     "book_venue",
+     "keep_searching"
+    ],
+    "allowed_uncertainty_codes": [
+     {
+      "code": "single_lineage_support",
+      "condition": "some claim with status supported is supported by exactly one lineage"
+     },
+     {
+      "code": "unaddressed_claim",
+      "condition": "some claim is addressed by no source"
+     },
+     {
+      "code": "conflicting_sources",
+      "condition": "some claim is unresolved because the sources addressing it disagree"
+     },
+     {
+      "code": "scope_mismatch",
+      "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+     }
+    ],
+    "claims": [
+     {
+      "claim_id": "C1",
+      "text": "Hayusu's delivery service covers every district of the city."
+     },
+     {
+      "claim_id": "C2",
+      "text": "Tijapi's printers deliver orders the next working day."
+     },
+     {
+      "claim_id": "C3",
+      "text": "Hayusu's furniture shop assembles items on delivery."
+     }
+    ],
+    "decision_rule": "Pick 'book_venue' only when no claim is left unsupported; otherwise 'keep_searching'.",
+    "sources": [
+     {
+      "source_id": "S1",
+      "lineage": "central-logistics-inspectorate-website",
+      "text": "Hayusu's delivery service operates in the harbour district."
+     },
+     {
+      "source_id": "S2",
+      "lineage": "north-trade-association-bulletin",
+      "text": "Tijapi's printers need five working days to deliver."
+     },
+     {
+      "source_id": "S3",
+      "lineage": "north-trade-association-bulletin",
+      "text": "Reposted from the same source: Tijapi's printers need five working days to deliver."
+     },
+     {
+      "source_id": "S4",
+      "lineage": "central-market-inspectorate-website",
+      "text": "Hayusu's shop does not offer assembly on delivery."
+     },
+     {
+      "source_id": "S5",
+      "lineage": "central-supplier-council-website",
+      "text": "Orders from Tijapi's printers arrive within a week at the earliest."
+     },
+     {
+      "source_id": "S6",
+      "lineage": "west-market-inspectorate-record",
+      "text": "Hayusu's furniture arrives flat-packed for customers to build."
+     }
+    ]
+   },
+   "prompt": "Assess the claims about Hayusu and Tijapi against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Reply with a JSON object whose keys are exactly claims, recommendation and uncertainties: claims is a list with exactly one claim object for each input claim, carrying that claim's claim_id; in each claim object, status is one of supported, contradicted or unresolved, citations is a list of distinct source_id strings, and lineages is a list of distinct lineage-name strings; recommendation is a string; uncertainties is a list of distinct code strings. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "grounded_research_synthesis",
+   "title": "Claims about Hayusu and Tijapi",
+   "validator_profile": "research.v1"
+  },
+  {
+   "consequence_risk": "R4",
+   "fixture_id": "A4-RSRCH-R4-03",
+   "input": {
+    "allowed_recommendations": [
+     "clear_for_use",
+     "keep_closed"
+    ],
+    "allowed_uncertainty_codes": [
+     {
+      "code": "single_lineage_support",
+      "condition": "some claim with status supported is supported by exactly one lineage"
+     },
+     {
+      "code": "unaddressed_claim",
+      "condition": "some claim is addressed by no source"
+     },
+     {
+      "code": "conflicting_sources",
+      "condition": "some claim is unresolved because the sources addressing it disagree"
+     },
+     {
+      "code": "scope_mismatch",
+      "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+     }
+    ],
+    "claims": [
+     {
+      "claim_id": "C1",
+      "text": "Vamodu's sprinklers protect every floor of the building."
+     },
+     {
+      "claim_id": "C2",
+      "text": "Zaba's boiler room has a working carbon monoxide alarm."
+     },
+     {
+      "claim_id": "C3",
+      "text": "Vamodu's fire alarm is tested every week."
+     }
+    ],
+    "decision_rule": "Recommend 'clear_for_use' only if every claim is supported; otherwise 'keep_closed'.",
+    "sources": [
+     {
+      "source_id": "S1",
+      "lineage": "west-building-safety-office-briefing",
+      "text": "Vamodu's sprinklers protect the ground floor."
+     },
+     {
+      "source_id": "S2",
+      "lineage": "moorland-building-safety-office-report",
+      "text": "Zaba's boiler room is fitted with a tested carbon monoxide detector."
+     },
+     {
+      "source_id": "S3",
+      "lineage": "central-site-safety-inspectorate-test-record",
+      "text": "Vamodu's fire alarm gets a weekly test."
+     },
+     {
+      "source_id": "S4",
+      "lineage": "moorland-building-safety-office-report",
+      "text": "Reissued by the same publisher: Zaba's boiler room is fitted with a tested carbon monoxide detector."
+     },
+     {
+      "source_id": "S5",
+      "lineage": "central-site-safety-inspectorate-test-record",
+      "text": "Repeated in a later edition: Vamodu's fire alarm gets a weekly test."
+     }
+    ]
+   },
+   "prompt": "Assess the claims about Vamodu and Zaba against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Reply with a JSON object whose keys are exactly claims, recommendation and uncertainties: claims is a list with exactly one claim object for each input claim, carrying that claim's claim_id; in each claim object, status is one of supported, contradicted or unresolved, citations is a list of distinct source_id strings, and lineages is a list of distinct lineage-name strings; recommendation is a string; uncertainties is a list of distinct code strings. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "grounded_research_synthesis",
+   "title": "Claims about Vamodu and Zaba",
+   "validator_profile": "research.v1"
+  },
+  {
+   "consequence_risk": "R2",
+   "fixture_id": "A4-SYNTH-R2-03",
+   "input": {
+    "allowed_conclusions": [
+     "cause_established",
+     "cause_unresolved",
+     "insufficient_evidence"
+    ],
+    "conclusion_rule": "Choose cause_established when a finding directly states the cause and nothing disputes it; choose cause_unresolved when counterevidence disputes a proposed cause; otherwise choose insufficient_evidence.",
+    "observations": [
+     {
+      "id": "O71",
+      "role": "symptom",
+      "text": "The payroll export to the bank failed on the 25th."
+     },
+     {
+      "id": "O72",
+      "role": "finding",
+      "text": "The bank's rejection notice says the export failed because the signing certificate had expired."
+     },
+     {
+      "id": "O73",
+      "role": "impact",
+      "text": "Forty staff payments arrived one day late."
+     },
+     {
+      "id": "O74",
+      "role": "next_step",
+      "text": "Renew the certificate and resend the payment file."
+     },
+     {
+      "id": "O75",
+      "role": "verification",
+      "text": "A test file signed with a fresh certificate was accepted."
+     }
+    ]
+   },
+   "prompt": "Synthesize the payroll export observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Reply with a JSON object whose keys are exactly statements and conclusion: statements is a list of statement objects; in each statement object, observation_ids is a non-empty list of observation id strings, and every observation id appears in exactly one statement; conclusion is one string copied from allowed_conclusions. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "hierarchical_semantic_synthesis",
+   "title": "Rejected payroll export",
+   "validator_profile": "synthesis.v1"
+  },
+  {
+   "consequence_risk": "R4",
+   "fixture_id": "A4-SYNTH-R4-01",
+   "input": {
+    "allowed_conclusions": [
+     "cause_established",
+     "cause_unresolved",
+     "insufficient_evidence"
+    ],
+    "conclusion_rule": "Choose cause_established when a finding directly states the cause and nothing disputes it; choose cause_unresolved when counterevidence disputes a proposed cause; otherwise choose insufficient_evidence.",
+    "observations": [
+     {
+      "id": "O131",
+      "role": "symptom",
+      "text": "A forklift rolled forward on the loading ramp this morning."
+     },
+     {
+      "id": "O132",
+      "role": "finding",
+      "text": "The service report says it rolled because the handbrake cable had snapped."
+     },
+     {
+      "id": "O133",
+      "role": "impact",
+      "text": "A pallet of glass jars was crushed but nobody was hurt."
+     },
+     {
+      "id": "O134",
+      "role": "next_step",
+      "text": "Keep the forklift tagged out until the repair is signed off."
+     },
+     {
+      "id": "O135",
+      "role": "verification",
+      "text": "The truck held firm on the slope after a trial cable swap."
+     }
+    ]
+   },
+   "prompt": "Synthesize the forklift roll-away observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Reply with a JSON object whose keys are exactly statements and conclusion: statements is a list of statement objects; in each statement object, observation_ids is a non-empty list of observation id strings, and every observation id appears in exactly one statement; conclusion is one string copied from allowed_conclusions. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "hierarchical_semantic_synthesis",
+   "title": "Forklift roll-away",
+   "validator_profile": "synthesis.v1"
+  }
+ ]
+}

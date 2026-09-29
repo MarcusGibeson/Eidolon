@@ -1,0 +1,439 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "A′ main",
+ "round": 1,
+ "decisions_run": "g4adj-amain-20260929T180225Z",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "items": [
+  {
+   "expected": {
+    "town": "Dalihi",
+    "items_sold": 30,
+    "takings": 82.2
+   },
+   "fixture_id": "A4-EXTR-R1-03",
+   "rationale": "18 + 12 = 30 items; 18 x 2.4 + 12 x 3.25 = 82.2.",
+   "reference_output": {
+    "town": "Dalihi",
+    "items_sold": 30,
+    "takings": 82.2
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-motor-services-inspectorate-website",
+       "north-vehicle-hire-association-newsletter"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "north-freight-office-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "north-facilities-office-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "pause_purchase",
+    "uncertainties": [
+     "single_lineage_support",
+     "conflicting_sources"
+    ]
+   },
+   "fixture_id": "A4-RSRCH-R2-01",
+   "rationale": "C1 is unresolved (conflict), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S5 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives pause_purchase; holding codes: single_lineage_support, conflicting_sources.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-motor-services-inspectorate-website",
+       "north-vehicle-hire-association-newsletter"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "north-freight-office-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "north-facilities-office-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "pause_purchase",
+    "uncertainties": [
+     "single_lineage_support",
+     "conflicting_sources"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-logistics-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "central-supplier-council-website",
+       "north-trade-association-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "central-market-inspectorate-website",
+       "west-market-inspectorate-record"
+      ]
+     }
+    ],
+    "recommendation": "keep_searching",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "A4-RSRCH-R2-02",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3, S5 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S4, S6 across 2 lineage(s). The decision rule gives keep_searching; holding codes: scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-logistics-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "central-supplier-council-website",
+       "north-trade-association-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "central-market-inspectorate-website",
+       "west-market-inspectorate-record"
+      ]
+     }
+    ],
+    "recommendation": "keep_searching",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "west-building-safety-office-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "moorland-building-safety-office-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "central-site-safety-inspectorate-test-record"
+      ]
+     }
+    ],
+    "recommendation": "keep_closed",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "A4-RSRCH-R4-03",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S4 across 1 lineage(s); C3 is supported (direct_support), citing S3, S5 across 1 lineage(s). The decision rule gives keep_closed; holding codes: single_lineage_support, scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "west-building-safety-office-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "moorland-building-safety-office-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "central-site-safety-inspectorate-test-record"
+      ]
+     }
+    ],
+    "recommendation": "keep_closed",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O71": [
+      "25th"
+     ],
+     "O72": [
+      "signing certificate"
+     ],
+     "O73": [
+      "forty"
+     ],
+     "O74": [
+      "resend"
+     ],
+     "O75": [
+      "accepted"
+     ]
+    },
+    "roles": {
+     "O71": "symptom",
+     "O72": "finding",
+     "O73": "impact",
+     "O74": "next_step",
+     "O75": "verification"
+    }
+   },
+   "fixture_id": "A4-SYNTH-R2-03",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S71",
+      "role": "symptom",
+      "observation_ids": [
+       "O71"
+      ],
+      "text": "The payroll export to the bank failed on the 25th."
+     },
+     {
+      "statement_id": "S72",
+      "role": "finding",
+      "observation_ids": [
+       "O72"
+      ],
+      "text": "The bank's rejection notice says the export failed because the signing certificate had expired."
+     },
+     {
+      "statement_id": "S73",
+      "role": "impact",
+      "observation_ids": [
+       "O73"
+      ],
+      "text": "Forty staff payments arrived one day late."
+     },
+     {
+      "statement_id": "S74",
+      "role": "next_step",
+      "observation_ids": [
+       "O74"
+      ],
+      "text": "Renew the certificate and resend the payment file."
+     },
+     {
+      "statement_id": "S75",
+      "role": "verification",
+      "observation_ids": [
+       "O75"
+      ],
+      "text": "A test file signed with a fresh certificate was accepted."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O131": [
+      "loading ramp"
+     ],
+     "O132": [
+      "handbrake cable"
+     ],
+     "O133": [
+      "glass jars"
+     ],
+     "O134": [
+      "tagged out"
+     ],
+     "O135": [
+      "held firm"
+     ]
+    },
+    "roles": {
+     "O131": "symptom",
+     "O132": "finding",
+     "O133": "impact",
+     "O134": "next_step",
+     "O135": "verification"
+    }
+   },
+   "fixture_id": "A4-SYNTH-R4-01",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S131",
+      "role": "symptom",
+      "observation_ids": [
+       "O131"
+      ],
+      "text": "A forklift rolled forward on the loading ramp this morning."
+     },
+     {
+      "statement_id": "S132",
+      "role": "finding",
+      "observation_ids": [
+       "O132"
+      ],
+      "text": "The service report says it rolled because the handbrake cable had snapped."
+     },
+     {
+      "statement_id": "S133",
+      "role": "impact",
+      "observation_ids": [
+       "O133"
+      ],
+      "text": "A pallet of glass jars was crushed but nobody was hurt."
+     },
+     {
+      "statement_id": "S134",
+      "role": "next_step",
+      "observation_ids": [
+       "O134"
+      ],
+      "text": "Keep the forklift tagged out until the repair is signed off."
+     },
+     {
+      "statement_id": "S135",
+      "role": "verification",
+      "observation_ids": [
+       "O135"
+      ],
+      "text": "The truck held firm on the slope after a trial cable swap."
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,442 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "A′ main",
+ "round": 1,
+ "decisions_run": "g4adj-amain-20260929T180225Z",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "items": [
+  {
+   "fixture_id": "A4-EXTR-R1-03",
+   "phase": "A",
+   "role": "main",
+   "risk": "R1",
+   "family": "EX3",
+   "features": {
+    "derived_count": 2,
+    "field_count": 3,
+    "field_types": [
+     "integer",
+     "number",
+     "string"
+    ]
+   },
+   "derived_keys": [
+    "items_sold",
+    "takings"
+   ],
+   "absence_sentence": false,
+   "invented_names": [
+    "Dalihi"
+   ],
+   "identifiers": []
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-01",
+   "phase": "A",
+   "role": "main",
+   "risk": "R2",
+   "family": "RS5",
+   "features": {
+    "pattern": "P5",
+    "sls": true
+   },
+   "invented_names": [
+    "Pononu",
+    "Foweye"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1169,
+    1170
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "standard",
+      "subject": "Pononu",
+      "text": "Pononu's car hire includes unlimited mileage."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Foweye",
+      "text": "Foweye's courier collects parcels every Saturday."
+     },
+     {
+      "claim_id": "C3",
+      "kind": "standard",
+      "subject": "Pononu",
+      "text": "Pononu's coworking space includes locker hire."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "support",
+      "lineage": "north-vehicle-hire-association-newsletter",
+      "text": "Hire cars from Pononu come with no mileage cap."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C1",
+      "relation": "deny",
+      "lineage": "central-motor-services-inspectorate-website",
+      "text": "Pononu's car hire charges for every kilometre over two hundred."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "north-freight-office-bulletin",
+      "text": "Every Saturday, Foweye's courier picks up parcels."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C3",
+      "relation": "support",
+      "lineage": "north-facilities-office-bulletin",
+      "text": "Lockers come with membership at Pononu's coworking space."
+     },
+     {
+      "source_id": "S5",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "north-freight-office-bulletin",
+      "reissue": true,
+      "text": "Reissued by the same publisher: Every Saturday, Foweye's courier picks up parcels."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "proceed",
+     "negative": "pause_purchase"
+    },
+    "derived_reasons": {
+     "C1": "conflict",
+     "C2": "direct_support",
+     "C3": "direct_support"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "supported",
+       1,
+       1
+      ],
+      [
+       "supported",
+       2,
+       1
+      ],
+      [
+       "unresolved",
+       2,
+       2
+      ]
+     ],
+     1,
+     [
+      "single_lineage_support",
+      "conflicting_sources"
+     ],
+     5,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "A4-RSRCH-R2-02",
+   "phase": "A",
+   "role": "main",
+   "risk": "R2",
+   "family": "RS6",
+   "features": {
+    "pattern": "P6",
+    "sls": false
+   },
+   "invented_names": [
+    "Hayusu",
+    "Tijapi"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1171,
+    1172
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "scope",
+      "subject": "Hayusu",
+      "text": "Hayusu's delivery service covers every district of the city."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Tijapi",
+      "text": "Tijapi's printers deliver orders the next working day."
+     },
+     {
+      "claim_id": "C3",
+      "kind": "standard",
+      "subject": "Hayusu",
+      "text": "Hayusu's furniture shop assembles items on delivery."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "narrow",
+      "lineage": "central-logistics-inspectorate-website",
+      "text": "Hayusu's delivery service operates in the harbour district."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "north-trade-association-bulletin",
+      "text": "Tijapi's printers need five working days to deliver."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "north-trade-association-bulletin",
+      "reissue": true,
+      "text": "Reposted from the same source: Tijapi's printers need five working days to deliver."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C3",
+      "relation": "deny",
+      "lineage": "central-market-inspectorate-website",
+      "text": "Hayusu's shop does not offer assembly on delivery."
+     },
+     {
+      "source_id": "S5",
+      "claim_id": "C2",
+      "relation": "deny",
+      "lineage": "central-supplier-council-website",
+      "text": "Orders from Tijapi's printers arrive within a week at the earliest."
+     },
+     {
+      "source_id": "S6",
+      "claim_id": "C3",
+      "relation": "deny",
+      "lineage": "west-market-inspectorate-record",
+      "text": "Hayusu's furniture arrives flat-packed for customers to build."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "book_venue",
+     "negative": "keep_searching"
+    },
+    "derived_reasons": {
+     "C1": "scope",
+     "C2": "direct_contradiction",
+     "C3": "direct_contradiction"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "contradicted",
+       2,
+       2
+      ],
+      [
+       "contradicted",
+       3,
+       2
+      ],
+      [
+       "unresolved",
+       1,
+       1
+      ]
+     ],
+     1,
+     [
+      "scope_mismatch"
+     ],
+     6,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "A4-RSRCH-R4-03",
+   "phase": "A",
+   "role": "main",
+   "risk": "R4",
+   "family": "RS5",
+   "features": {
+    "pattern": "P6",
+    "sls": true
+   },
+   "invented_names": [
+    "Vamodu",
+    "Zaba"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    1189,
+    1190
+   ],
+   "research_contract": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "kind": "scope",
+      "subject": "Vamodu",
+      "text": "Vamodu's sprinklers protect every floor of the building."
+     },
+     {
+      "claim_id": "C2",
+      "kind": "standard",
+      "subject": "Zaba",
+      "text": "Zaba's boiler room has a working carbon monoxide alarm."
+     },
+     {
+      "claim_id": "C3",
+      "kind": "standard",
+      "subject": "Vamodu",
+      "text": "Vamodu's fire alarm is tested every week."
+     }
+    ],
+    "sources": [
+     {
+      "source_id": "S1",
+      "claim_id": "C1",
+      "relation": "narrow",
+      "lineage": "west-building-safety-office-briefing",
+      "text": "Vamodu's sprinklers protect the ground floor."
+     },
+     {
+      "source_id": "S2",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "moorland-building-safety-office-report",
+      "text": "Zaba's boiler room is fitted with a tested carbon monoxide detector."
+     },
+     {
+      "source_id": "S3",
+      "claim_id": "C3",
+      "relation": "support",
+      "lineage": "central-site-safety-inspectorate-test-record",
+      "text": "Vamodu's fire alarm gets a weekly test."
+     },
+     {
+      "source_id": "S4",
+      "claim_id": "C2",
+      "relation": "support",
+      "lineage": "moorland-building-safety-office-report",
+      "reissue": true,
+      "text": "Reissued by the same publisher: Zaba's boiler room is fitted with a tested carbon monoxide detector."
+     },
+     {
+      "source_id": "S5",
+      "claim_id": "C3",
+      "relation": "support",
+      "lineage": "central-site-safety-inspectorate-test-record",
+      "reissue": true,
+      "text": "Repeated in a later edition: Vamodu's fire alarm gets a weekly test."
+     }
+    ],
+    "decision": {
+     "kind": "all_supported",
+     "positive": "clear_for_use",
+     "negative": "keep_closed"
+    },
+    "derived_reasons": {
+     "C1": "scope",
+     "C2": "direct_support",
+     "C3": "direct_support"
+    },
+    "canonical_signature": [
+     "research",
+     [
+      [
+       "supported",
+       2,
+       1
+      ],
+      [
+       "supported",
+       2,
+       1
+      ],
+      [
+       "unresolved",
+       1,
+       1
+      ]
+     ],
+     1,
+     [
+      "single_lineage_support",
+      "scope_mismatch"
+     ],
+     5,
+     "every_claim_supported"
+    ]
+   }
+  },
+  {
+   "fixture_id": "A4-SYNTH-R2-03",
+   "phase": "A",
+   "role": "main",
+   "risk": "R2",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Gorayi",
+    "Tuzi",
+    "Bahesi",
+    "Letuwo",
+    "Numaji"
+   ],
+   "global_name_ordinals": [
+    119,
+    123
+   ],
+   "merged_role": []
+  },
+  {
+   "fixture_id": "A4-SYNTH-R4-01",
+   "phase": "A",
+   "role": "main",
+   "risk": "R4",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Milowu",
+    "Wunozi",
+    "Jidido",
+    "Lamoze",
+    "Jiha"
+   ],
+   "global_name_ordinals": [
+    145,
+    149
+   ],
+   "merged_role": []
+  }
+ ]
+}

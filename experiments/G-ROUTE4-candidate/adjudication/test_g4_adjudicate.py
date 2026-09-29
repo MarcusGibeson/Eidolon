@@ -472,6 +472,30 @@ def main():
         refused = True
     check("reclassification is refused for anything but an unreclassified provider rejection", refused)
 
+    # ---- A′ fix rounds: the overlay replaces exactly the fixed A′ fixtures; scoring uses the fixed A′ gold
+    fixes_a = HERE / "fixes" / "round1_amain"
+    if fixes_a.exists():
+        fixed_a = H.fixed_fixtures(fixes_a, corpus="corpus_a.json")
+        over_a = H.model_facing_a(fixes_a)
+        check("A′ fix overlay: 6 fixed fixtures replace exactly their sealed versions",
+              len(fixed_a) == 6 and all(over_a[f] == fixed_a[f] for f in fixed_a) and
+              all(over_a[f] == A[f] for f in A if f not in fixed_a))
+        try:
+            H.fixed_fixtures(fixes_a, corpus="corpus_b.json")
+            wrong_batch = False
+        except H.StopBatch:
+            wrong_batch = True
+        check("A′ fixes are refused as B′ fixes", wrong_batch)
+        gold_a2 = H.gold_path_overlay(fixes_a, "gold_a.json")
+        ex = "A4-EXTR-R1-03"
+        from g_route3_semantics import validate_fixture_output
+        ok_new = validate_fixture_output(fixed_a[ex], gold_a2[ex], json.dumps(gold_a2[ex]["reference_output"]))
+        check("A′ fix scoring uses the fixed gold (renamed field 'town' = 'Dalihi')",
+              ok_new.get("hard_gate_pass") and gold_a2[ex]["expected"]["town"] == "Dalihi" and "venue" not in gold_a2[ex]["expected"]
+              and '"town":"string"' in H.render(fixed_a[ex], CFG)["user"] and '"venue"' not in H.render(fixed_a[ex], CFG)["user"])
+        check("A′ fix round schedule: three adjudicators for each of the 6 fixed fixtures",
+              H.a_schedule(fixed_a) == [(f, s) for f in sorted(fixed_a) for s in (1, 2, 3)])
+
     failed = [n for n, ok in RESULTS if not ok]
     print(f"{len(RESULTS) - len(failed)} of {len(RESULTS)} offline harness checks passed")
     return 1 if failed else 0
