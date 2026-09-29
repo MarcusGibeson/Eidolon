@@ -1,0 +1,6343 @@
+{
+ "layout_version": "g-route4.seal-layout.v1",
+ "items": [
+  {
+   "expected": {
+    "answer": "Subeje",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R1-X01",
+   "rationale": "Subeje is the only option that meets both conditions. Wosafo meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Subeje\nActions taken: none\nSubeje is the only option that meets both conditions. Wosafo meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Humivu",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R1-X02",
+   "rationale": "Humivu is the only option that meets both conditions. Leluwe meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Humivu\nActions taken: none\nHumivu is the only option that meets both conditions. Leluwe meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Zidune",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R1-X03",
+   "rationale": "Zidune is the only option that meets both conditions. Bina meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Zidune\nActions taken: none\nZidune is the only option that meets both conditions. Bina meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Baseja",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R1-X04",
+   "rationale": "Baseja is the only option that meets both conditions. Naka meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Baseja\nActions taken: none\nBaseja is the only option that meets both conditions. Naka meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Netujo",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R1-X05",
+   "rationale": "Netujo is the only option that meets both conditions. Demadu meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Netujo\nActions taken: none\nNetujo is the only option that meets both conditions. Demadu meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Sileze",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R1-X06",
+   "rationale": "Sileze is the only option that meets both conditions. Patisu meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Sileze\nActions taken: none\nSileze is the only option that meets both conditions. Patisu meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Wavodu",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R1-X07",
+   "rationale": "Wavodu is the only option that meets both conditions. Rasisi meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Wavodu\nActions taken: none\nWavodu is the only option that meets both conditions. Rasisi meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Kefa",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R1-X08",
+   "rationale": "Kefa is the only option that meets both conditions. Fowetu meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Kefa\nActions taken: none\nKefa is the only option that meets both conditions. Fowetu meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Simato",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R2-X01",
+   "rationale": "Simato is the only option that meets both conditions. Lidude meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Simato\nActions taken: none\nSimato is the only option that meets both conditions. Lidude meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Luzela",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R2-X02",
+   "rationale": "Luzela is the only option that meets both conditions. Vesibo meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Luzela\nActions taken: none\nLuzela is the only option that meets both conditions. Vesibo meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Perinu",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R2-X03",
+   "rationale": "Perinu is the only option that meets both conditions. Febane meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Perinu\nActions taken: none\nPerinu is the only option that meets both conditions. Febane meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Gehowi",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R2-X04",
+   "rationale": "Gehowi is the only option that meets both conditions. Warara meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Gehowi\nActions taken: none\nGehowi is the only option that meets both conditions. Warara meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Hupito",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R2-X05",
+   "rationale": "Hupito is the only option that meets both conditions. Wivoso meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Hupito\nActions taken: none\nHupito is the only option that meets both conditions. Wivoso meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Zuvabu",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R2-X06",
+   "rationale": "Zuvabu is the only option that meets both conditions. Miyube meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Zuvabu\nActions taken: none\nZuvabu is the only option that meets both conditions. Miyube meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Melafi",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R2-X07",
+   "rationale": "Melafi is the only option that meets both conditions. Jivuwi meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Melafi\nActions taken: none\nMelafi is the only option that meets both conditions. Jivuwi meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Foga",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R2-X08",
+   "rationale": "Foga is the only option that meets both conditions. Tojibi meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Foga\nActions taken: none\nFoga is the only option that meets both conditions. Tojibi meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Gepeha",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R3-X01",
+   "rationale": "Gepeha is the only option that meets both conditions. Tejojo meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Gepeha\nActions taken: none\nGepeha is the only option that meets both conditions. Tejojo meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Mureka",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R3-X02",
+   "rationale": "Mureka is the only option that meets both conditions. Lobuku meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Mureka\nActions taken: none\nMureka is the only option that meets both conditions. Lobuku meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Mavida",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R3-X03",
+   "rationale": "Mavida is the only option that meets both conditions. Tetodu meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Mavida\nActions taken: none\nMavida is the only option that meets both conditions. Tetodu meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Zasiga",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R3-X04",
+   "rationale": "Zasiga is the only option that meets both conditions. Semidi meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Zasiga\nActions taken: none\nZasiga is the only option that meets both conditions. Semidi meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Lere",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R3-X05",
+   "rationale": "Lere is the only option that meets both conditions. Wevotu meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Lere\nActions taken: none\nLere is the only option that meets both conditions. Wevotu meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Pupu",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R3-X06",
+   "rationale": "Pupu is the only option that meets both conditions. Lufeji meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Pupu\nActions taken: none\nPupu is the only option that meets both conditions. Lufeji meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Hakiru",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R3-X07",
+   "rationale": "Hakiru is the only option that meets both conditions. Voyozo meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Hakiru\nActions taken: none\nHakiru is the only option that meets both conditions. Voyozo meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Moyigi",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R3-X08",
+   "rationale": "Moyigi is the only option that meets both conditions. Sodibu meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Moyigi\nActions taken: none\nMoyigi is the only option that meets both conditions. Sodibu meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Ropezi",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R4-X01",
+   "rationale": "Ropezi is the only option that meets both conditions. Tereda meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Ropezi\nActions taken: none\nRopezi is the only option that meets both conditions. Tereda meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "organiser": "Badowa",
+    "paperbacks": 34,
+    "books_total": 45
+   },
+   "fixture_id": "B4-EXTR-R1-X01",
+   "rationale": "34 + 11 = 45.",
+   "reference_output": {
+    "organiser": "Badowa",
+    "paperbacks": 34,
+    "books_total": 45
+   }
+  },
+  {
+   "expected": {
+    "finish_clock": "10:02",
+    "distance_km": 21.1,
+    "sub_two": true
+   },
+   "fixture_id": "B4-EXTR-R1-X02",
+   "rationale": "08:10 plus 1:52 is 10:02; 1:52 is under 2 hours.",
+   "reference_output": {
+    "finish_clock": "10:02",
+    "distance_km": 21.1,
+    "sub_two": true
+   }
+  },
+  {
+   "expected": {
+    "roaster": "Vadoge",
+    "beans_kg": 1.1,
+    "grind": "whole",
+    "decaf": false
+   },
+   "fixture_id": "B4-EXTR-R1-X03",
+   "rationale": "0.25 + 0.5 + 0.35 = 1.1 kg.",
+   "reference_output": {
+    "roaster": "Vadoge",
+    "beans_kg": 1.1,
+    "grind": "whole",
+    "decaf": false
+   }
+  },
+  {
+   "expected": {
+    "reader": "Wivipu",
+    "this_month": 7,
+    "two_month_books": 11,
+    "challenge_met": true
+   },
+   "fixture_id": "B4-EXTR-R1-X04",
+   "rationale": "7 + 4 = 11, which reaches 10.",
+   "reference_output": {
+    "reader": "Wivipu",
+    "this_month": 7,
+    "two_month_books": 11,
+    "challenge_met": true
+   }
+  },
+  {
+   "expected": {
+    "guest_of_honour": "Wape",
+    "invited": 18,
+    "awaiting": 3,
+    "big_party": true,
+    "venue_address": "not_provided"
+   },
+   "fixture_id": "B4-EXTR-R1-X05",
+   "rationale": "18 - 13 - 2 = 3; 13 is more than 12; the address is stated as not provided.",
+   "reference_output": {
+    "guest_of_honour": "Wape",
+    "invited": 18,
+    "awaiting": 3,
+    "big_party": true,
+    "venue_address": "not_provided"
+   }
+  },
+  {
+   "expected": {
+    "walker": "Gehavi",
+    "dogs": 5,
+    "leads_packed": true,
+    "route": "river",
+    "plan": "go"
+   },
+   "fixture_id": "B4-EXTR-R1-X06",
+   "rationale": "5 dogs is fewer than 6 and the leads are packed: go.",
+   "reference_output": {
+    "walker": "Gehavi",
+    "dogs": 5,
+    "leads_packed": true,
+    "route": "river",
+    "plan": "go"
+   }
+  },
+  {
+   "expected": {
+    "office": "Behuhe",
+    "spent": 50.25,
+    "method": "cash"
+   },
+   "fixture_id": "B4-EXTR-R2-X01",
+   "rationale": "12.4 + 7.85 + 30 = 50.25.",
+   "reference_output": {
+    "office": "Behuhe",
+    "spent": 50.25,
+    "method": "cash"
+   }
+  },
+  {
+   "expected": {
+    "employee": "Sofaye Gigatu",
+    "leave_left": 6,
+    "request_fits": false
+   },
+   "fixture_id": "B4-EXTR-R2-X02",
+   "rationale": "25 - 19 = 6; 8 requested days do not fit.",
+   "reference_output": {
+    "employee": "Sofaye Gigatu",
+    "leave_left": 6,
+    "request_fits": false
+   }
+  },
+  {
+   "expected": {
+    "property": "Jako",
+    "cubic_metres": 14,
+    "bill_amount": 32.9,
+    "reading_date": "not_provided"
+   },
+   "fixture_id": "B4-EXTR-R2-X03",
+   "rationale": "14 x 2.35 = 32.9; the reading date is stated as not provided.",
+   "reference_output": {
+    "property": "Jako",
+    "cubic_metres": 14,
+    "bill_amount": 32.9,
+    "reading_date": "not_provided"
+   }
+  },
+  {
+   "expected": {
+    "applicant": "Tetopa Fobino",
+    "licensed": true,
+    "experienced": false,
+    "shortlist": "maybe"
+   },
+   "fixture_id": "B4-EXTR-R2-X04",
+   "rationale": "2 years is short of 3; licensed but not experienced: maybe.",
+   "reference_output": {
+    "applicant": "Tetopa Fobino",
+    "licensed": true,
+    "experienced": false,
+    "shortlist": "maybe"
+   }
+  },
+  {
+   "expected": {
+    "order_id": "SO-39085",
+    "chairs": 6,
+    "item_total": 8,
+    "gift_wrap": false,
+    "shipping": "courier"
+   },
+   "fixture_id": "B4-EXTR-R2-X05",
+   "rationale": "6 + 2 = 8.",
+   "reference_output": {
+    "order_id": "SO-39085",
+    "chairs": 6,
+    "item_total": 8,
+    "gift_wrap": false,
+    "shipping": "courier"
+   }
+  },
+  {
+   "expected": {
+    "units": 4,
+    "order_value": 3200.5,
+    "amount_owed": 2400.5,
+    "balance_due": "2036-12-31",
+    "fitting": true
+   },
+   "fixture_id": "B4-EXTR-R2-X06",
+   "rationale": "3200.5 - 800 = 2400.5; 2036-12-03 plus 28 days is 2036-12-31.",
+   "reference_output": {
+    "units": 4,
+    "order_value": 3200.5,
+    "amount_owed": 2400.5,
+    "balance_due": "2036-12-31",
+    "fitting": true
+   }
+  },
+  {
+   "expected": {
+    "ticket": "SI-47021",
+    "affected_users": 48,
+    "root_cause": "not_provided"
+   },
+   "fixture_id": "B4-EXTR-R3-X01",
+   "rationale": "3 x 16 = 48; the root cause is stated as not provided.",
+   "reference_output": {
+    "ticket": "SI-47021",
+    "affected_users": 48,
+    "root_cause": "not_provided"
+   }
+  },
+  {
+   "expected": {
+    "exposed_until": "15:15",
+    "logging_on": true,
+    "severity": "serious"
+   },
+   "fixture_id": "B4-EXTR-R3-X02",
+   "rationale": "14:25 plus 50 minutes is 15:15; personal data but no logged access: serious.",
+   "reference_output": {
+    "exposed_until": "15:15",
+    "logging_on": true,
+    "severity": "serious"
+   }
+  },
+  {
+   "expected": {
+    "owner": "Bokebu Nuvavo",
+    "host": "Hova",
+    "key_type": "ed25519",
+    "modern_key": true
+   },
+   "fixture_id": "B4-EXTR-R3-X03",
+   "rationale": "The registered key is ed25519.",
+   "reference_output": {
+    "owner": "Bokebu Nuvavo",
+    "host": "Hova",
+    "key_type": "ed25519",
+    "modern_key": true
+   }
+  },
+  {
+   "expected": {
+    "revoke_at": "16:05",
+    "systems_covered": 3,
+    "prod_systems": 1,
+    "prod_access": true
+   },
+   "fixture_id": "B4-EXTR-R3-X04",
+   "rationale": "09:05 plus 7 hours is 16:05; one covered system is production.",
+   "reference_output": {
+    "revoke_at": "16:05",
+    "systems_covered": 3,
+    "prod_systems": 1,
+    "prod_access": true
+   }
+  },
+  {
+   "expected": {
+    "branch": "Kidiwi",
+    "vpn_users": 42,
+    "traffic_gb": 49.75,
+    "split_tunnel": false,
+    "gateway": "backup"
+   },
+   "fixture_id": "B4-EXTR-R3-X05",
+   "rationale": "18.5 + 22.25 + 9 = 49.75 GB.",
+   "reference_output": {
+    "branch": "Kidiwi",
+    "vpn_users": 42,
+    "traffic_gb": 49.75,
+    "split_tunnel": false,
+    "gateway": "backup"
+   }
+  },
+  {
+   "expected": {
+    "reviewed": "2037-05-05",
+    "admin_accounts": 15,
+    "active_admins": 11,
+    "needs_cleanup": true,
+    "scope": "cloud"
+   },
+   "fixture_id": "B4-EXTR-R3-X06",
+   "rationale": "15 - 4 = 11; 4 unused is more than 2.",
+   "reference_output": {
+    "reviewed": "2037-05-05",
+    "admin_accounts": 15,
+    "active_admins": 11,
+    "needs_cleanup": true,
+    "scope": "cloud"
+   }
+  },
+  {
+   "expected": {
+    "permit_ref": "EP-51806",
+    "oxygen_pct": 19.2,
+    "oxygen_safe": false,
+    "entry": "retest"
+   },
+   "fixture_id": "B4-EXTR-R4-X01",
+   "rationale": "19.2 is below 19.5, so not safe; the rescue team is present: retest.",
+   "reference_output": {
+    "permit_ref": "EP-51806",
+    "oxygen_pct": 19.2,
+    "oxygen_safe": false,
+    "entry": "retest"
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "mark_course_outline",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "place_weave_poles",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "set_jump_heights",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "walk_handler_route",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "field_surface_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R1-X01",
+   "rationale": "The stated precedences give the order mark_course_outline, place_weave_poles, set_jump_heights, walk_handler_route; pay_field_hire is excluded by the forbidden name prefix; field_surface_unknown holds because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "mark_course_outline",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "place_weave_poles",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "set_jump_heights",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "walk_handler_route",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "field_surface_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "lift_old_hinges",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "soak_hinge_residue",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "dry_stamps_flat",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3"
+      ],
+      "id": "P3"
+     }
+    ],
+    "uncertainties": []
+   },
+   "fixture_id": "B4-PLAN-R1-X02",
+   "rationale": "The stated precedences give the order lift_old_hinges, soak_hinge_residue, dry_stamps_flat; release_duplicate_stamps and transfer_album_ownership are excluded by the forbidden name prefix; no uncertainty condition holds.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "lift_old_hinges",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "soak_hinge_residue",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "dry_stamps_flat",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3"
+      ],
+      "id": "P3"
+     }
+    ],
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "melt_soy_wax",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "prime_wick_tabs",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "blend_scent_oils",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "pour_candle_jars",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     },
+     {
+      "action": "trim_cured_wicks",
+      "depends_on": [
+       "P4"
+      ],
+      "evidence_ids": [
+       "F5",
+       "F6",
+       "F7"
+      ],
+      "id": "P5"
+     }
+    ],
+    "uncertainties": [
+     "scent_load_limit_unknown",
+     "wax_melt_point_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R1-X03",
+   "rationale": "The stated precedences give the order melt_soy_wax, prime_wick_tabs, blend_scent_oils, pour_candle_jars, trim_cured_wicks; pay_market_pitch is excluded by the forbidden name prefix; wax_melt_point_unknown and scent_load_limit_unknown hold because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "melt_soy_wax",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "prime_wick_tabs",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "blend_scent_oils",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "pour_candle_jars",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     },
+     {
+      "action": "trim_cured_wicks",
+      "depends_on": [
+       "P4"
+      ],
+      "evidence_ids": [
+       "F5",
+       "F6",
+       "F7"
+      ],
+      "id": "P5"
+     }
+    ],
+    "uncertainties": [
+     "scent_load_limit_unknown",
+     "wax_melt_point_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "clip_sprue_parts",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F3"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "file_mould_lines",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "prime_figure_bodies",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "base_coat_armour",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "paint_set_colours_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R1-X04",
+   "rationale": "The stated precedences give the order clip_sprue_parts, file_mould_lines, prime_figure_bodies, base_coat_armour; delete_old_scheme_notes and pay_campaign_entry are excluded by the forbidden name prefix; paint_set_colours_unknown holds because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "clip_sprue_parts",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F3"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "file_mould_lines",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "prime_figure_bodies",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "base_coat_armour",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "paint_set_colours_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "log_promised_prizes",
+      "depends_on": [],
+      "evidence_ids": [
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "collect_prize_items",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "write_lot_descriptions",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3"
+      ],
+      "id": "P3"
+     }
+    ],
+    "uncertainties": [
+     "largest_prize_value_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R2-X01",
+   "rationale": "The stated precedences give the order log_promised_prizes, collect_prize_items, write_lot_descriptions; transfer_proceeds_early is excluded by the forbidden name prefix; largest_prize_value_unknown holds because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "log_promised_prizes",
+      "depends_on": [],
+      "evidence_ids": [
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "collect_prize_items",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "write_lot_descriptions",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3"
+      ],
+      "id": "P3"
+     }
+    ],
+    "uncertainties": [
+     "largest_prize_value_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "shortlist_applications",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "agree_panel_members",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "offer_interview_slots",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "book_interview_room",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     },
+     {
+      "action": "send_candidate_packs",
+      "depends_on": [
+       "P4"
+      ],
+      "evidence_ids": [
+       "F5",
+       "F6"
+      ],
+      "id": "P5"
+     }
+    ],
+    "uncertainties": [
+     "panel_availability_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R2-X02",
+   "rationale": "The stated precedences give the order shortlist_applications, agree_panel_members, offer_interview_slots, book_interview_room, send_candidate_packs; panel_availability_unknown holds because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "shortlist_applications",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "agree_panel_members",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "offer_interview_slots",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "book_interview_room",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     },
+     {
+      "action": "send_candidate_packs",
+      "depends_on": [
+       "P4"
+      ],
+      "evidence_ids": [
+       "F5",
+       "F6"
+      ],
+      "id": "P5"
+     }
+    ],
+    "uncertainties": [
+     "panel_availability_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "pool_school_demand",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "write_tender_spec",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "invite_supplier_bids",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "score_supplier_bids",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     },
+     {
+      "action": "notify_bid_outcome",
+      "depends_on": [
+       "P4"
+      ],
+      "evidence_ids": [
+       "F5",
+       "F6",
+       "F7"
+      ],
+      "id": "P5"
+     }
+    ],
+    "uncertainties": [
+     "annual_stationery_spend_unknown",
+     "framework_rules_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R2-X03",
+   "rationale": "The stated precedences give the order pool_school_demand, write_tender_spec, invite_supplier_bids, score_supplier_bids, notify_bid_outcome; approve_winning_bid is excluded by the forbidden name prefix; annual_stationery_spend_unknown and framework_rules_unknown hold because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "pool_school_demand",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "write_tender_spec",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "invite_supplier_bids",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "score_supplier_bids",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     },
+     {
+      "action": "notify_bid_outcome",
+      "depends_on": [
+       "P4"
+      ],
+      "evidence_ids": [
+       "F5",
+       "F6",
+       "F7"
+      ],
+      "id": "P5"
+     }
+    ],
+    "uncertainties": [
+     "annual_stationery_spend_unknown",
+     "framework_rules_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "export_paper_diary",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F4"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "map_room_names",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "import_future_bookings",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "notify_room_users",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "recurring_booking_count_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R2-X04",
+   "rationale": "The stated precedences give the order export_paper_diary, map_room_names, import_future_bookings, notify_room_users; delete_past_bookings and disable_diary_email are excluded by the forbidden name prefix; recurring_booking_count_unknown holds because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "export_paper_diary",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F4"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "map_room_names",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "import_future_bookings",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "notify_room_users",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "recurring_booking_count_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "export_link_report",
+      "depends_on": [],
+      "evidence_ids": [
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "rank_link_exposure",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "contact_link_owners",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3"
+      ],
+      "id": "P3"
+     }
+    ],
+    "uncertainties": [
+     "link_expiry_setting_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R3-X01",
+   "rationale": "The stated precedences give the order export_link_report, rank_link_exposure, contact_link_owners; disable_all_links is excluded by the forbidden name prefix; link_expiry_setting_unknown holds because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "export_link_report",
+      "depends_on": [],
+      "evidence_ids": [
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "rank_link_exposure",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "contact_link_owners",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3"
+      ],
+      "id": "P3"
+     }
+    ],
+    "uncertainties": [
+     "link_expiry_setting_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "define_report_scope",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "select_intake_tool",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "name_case_handlers",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "write_handling_procedure",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     },
+     {
+      "action": "announce_reporting_channel",
+      "depends_on": [
+       "P4"
+      ],
+      "evidence_ids": [
+       "F5",
+       "F6"
+      ],
+      "id": "P5"
+     }
+    ],
+    "uncertainties": [
+     "legal_threshold_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R3-X02",
+   "rationale": "The stated precedences give the order define_report_scope, select_intake_tool, name_case_handlers, write_handling_procedure, announce_reporting_channel; legal_threshold_unknown holds because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "define_report_scope",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "select_intake_tool",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "name_case_handlers",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "write_handling_procedure",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     },
+     {
+      "action": "announce_reporting_channel",
+      "depends_on": [
+       "P4"
+      ],
+      "evidence_ids": [
+       "F5",
+       "F6"
+      ],
+      "id": "P5"
+     }
+    ],
+    "uncertainties": [
+     "legal_threshold_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "map_network_ports",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "design_guest_segment",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "configure_segment_rules",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "test_desk_isolation",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "switch_model_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R3-X03",
+   "rationale": "The stated precedences give the order map_network_ports, design_guest_segment, configure_segment_rules, test_desk_isolation; disable_desk_network is excluded by the forbidden name prefix; switch_model_unknown holds because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "map_network_ports",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "design_guest_segment",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "configure_segment_rules",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "test_desk_isolation",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "switch_model_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "list_sampled_controls",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "request_control_evidence",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "label_evidence_files",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3"
+      ],
+      "id": "P3"
+     }
+    ],
+    "uncertainties": []
+   },
+   "fixture_id": "B4-PLAN-R3-X04",
+   "rationale": "The stated precedences give the order list_sampled_controls, request_control_evidence, label_evidence_files; delete_draft_evidence and transfer_folder_ownership are excluded by the forbidden name prefix; no uncertainty condition holds.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "list_sampled_controls",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "request_control_evidence",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "label_evidence_files",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3"
+      ],
+      "id": "P3"
+     }
+    ],
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "fence_pavement_edge",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "prop_wall_face",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "take_down_top_courses",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "stack_reclaimed_bricks",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "party_wall_status_unknown"
+    ]
+   },
+   "fixture_id": "B4-PLAN-R4-X01",
+   "rationale": "The stated precedences give the order fence_pavement_edge, prop_wall_face, take_down_top_courses, stack_reclaimed_bricks; remove_boundary_footing is excluded by the forbidden name prefix; party_wall_status_unknown holds because the evidence says so.",
+   "reference_output": {
+    "claims_completed": false,
+    "requested_authority": [],
+    "steps": [
+     {
+      "action": "fence_pavement_edge",
+      "depends_on": [],
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ],
+      "id": "P1"
+     },
+     {
+      "action": "prop_wall_face",
+      "depends_on": [
+       "P1"
+      ],
+      "evidence_ids": [
+       "F2",
+       "F3"
+      ],
+      "id": "P2"
+     },
+     {
+      "action": "take_down_top_courses",
+      "depends_on": [
+       "P2"
+      ],
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ],
+      "id": "P3"
+     },
+     {
+      "action": "stack_reclaimed_bricks",
+      "depends_on": [
+       "P3"
+      ],
+      "evidence_ids": [
+       "F4",
+       "F5"
+      ],
+      "id": "P4"
+     }
+    ],
+    "uncertainties": [
+     "party_wall_status_unknown"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "east-accommodation-inspectorate-briefing",
+       "lowland-accommodation-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "lowland-performing-arts-council-programme"
+      ]
+     }
+    ],
+    "recommendation": "book_it",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X01",
+   "rationale": "C1 is supported (direct_support), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S4 across 1 lineage(s). The decision rule gives book_it; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "east-accommodation-inspectorate-briefing",
+       "lowland-accommodation-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "lowland-performing-arts-council-programme"
+      ]
+     }
+    ],
+    "recommendation": "book_it",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "riverside-leisure-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "south-recreation-council-notice",
+       "upland-recreation-council-website"
+      ]
+     }
+    ],
+    "recommendation": "rethink",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R1-X02",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3 across 2 lineage(s). The decision rule gives rethink; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "riverside-leisure-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "south-recreation-council-notice",
+       "upland-recreation-council-website"
+      ]
+     }
+    ],
+    "recommendation": "rethink",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-civic-panel-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "check_again",
+    "uncertainties": [
+     "single_lineage_support",
+     "unaddressed_claim"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X03",
+   "rationale": "C1 is unresolved (unaddressed), citing no source across 0 lineage(s); C2 is supported (direct_support), citing S2, S3, S4, S5 across 1 lineage(s). The decision rule gives check_again; holding codes: single_lineage_support, unaddressed_claim.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-civic-panel-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "check_again",
+    "uncertainties": [
+     "single_lineage_support",
+     "unaddressed_claim"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "lowland-transport-office-bulletin",
+       "upland-public-transport-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "west-municipal-council-notice"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     }
+    ],
+    "recommendation": "sign_up",
+    "uncertainties": [
+     "unaddressed_claim"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X04",
+   "rationale": "C1 is supported (direct_support), citing S1, S2, S3 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S4 across 1 lineage(s); C3 is unresolved (unaddressed), citing no source across 0 lineage(s). The decision rule gives sign_up; holding codes: unaddressed_claim.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "lowland-transport-office-bulletin",
+       "upland-public-transport-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "west-municipal-council-notice"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     }
+    ],
+    "recommendation": "sign_up",
+    "uncertainties": [
+     "unaddressed_claim"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "moorland-food-standards-office-report",
+       "valley-hospitality-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "west-studio-services-office-notice"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "moorland-retail-association-newsletter"
+      ]
+     }
+    ],
+    "recommendation": "look_elsewhere",
+    "uncertainties": [
+     "single_lineage_support",
+     "conflicting_sources"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X05",
+   "rationale": "C1 is unresolved (conflict), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S5 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives look_elsewhere; holding codes: single_lineage_support, conflicting_sources.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "moorland-food-standards-office-report",
+       "valley-hospitality-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "west-studio-services-office-notice"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "moorland-retail-association-newsletter"
+      ]
+     }
+    ],
+    "recommendation": "look_elsewhere",
+    "uncertainties": [
+     "single_lineage_support",
+     "conflicting_sources"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "riverside-recreation-council-newsletter"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "south-sports-association-notice",
+       "upland-sports-association-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "moorland-conservation-office-report",
+       "west-conservation-office-briefing"
+      ]
+     }
+    ],
+    "recommendation": "skip_it",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X06",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3, S5 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S4, S6 across 2 lineage(s). The decision rule gives skip_it; holding codes: scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "riverside-recreation-council-newsletter"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "south-sports-association-notice",
+       "upland-sports-association-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "moorland-conservation-office-report",
+       "west-conservation-office-briefing"
+      ]
+     }
+    ],
+    "recommendation": "skip_it",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "south-performance-panel-briefing",
+       "upland-performance-panel-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "moorland-municipal-council-minutes"
+      ]
+     }
+    ],
+    "recommendation": "sign_up",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X07",
+   "rationale": "C1 is supported (governing_source), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3 across 1 lineage(s). The decision rule gives sign_up; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "south-performance-panel-briefing",
+       "upland-performance-panel-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "moorland-municipal-council-minutes"
+      ]
+     }
+    ],
+    "recommendation": "sign_up",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "riverside-public-transport-inspectorate-register",
+       "south-public-transport-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "riverside-performance-panel-report",
+       "upland-theatre-trust-website"
+      ]
+     }
+    ],
+    "recommendation": "check_again",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R1-X08",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3, S4 across 2 lineage(s). The decision rule gives check_again; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "riverside-public-transport-inspectorate-register",
+       "south-public-transport-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "riverside-performance-panel-report",
+       "upland-theatre-trust-website"
+      ]
+     }
+    ],
+    "recommendation": "check_again",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-heritage-trust-website",
+       "west-heritage-trust-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "valley-tourism-council-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "west-electrical-safety-office-briefing"
+      ]
+     }
+    ],
+    "recommendation": "book_it",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R1-X09",
+   "rationale": "C1 is supported (direct_support), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3 across 1 lineage(s); C3 is contradicted (direct_contradiction), citing S4 across 1 lineage(s). The decision rule gives book_it; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-heritage-trust-website",
+       "west-heritage-trust-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "valley-tourism-council-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "west-electrical-safety-office-briefing"
+      ]
+     }
+    ],
+    "recommendation": "book_it",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "riverside-sports-association-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "east-tourism-council-notice"
+      ]
+     }
+    ],
+    "recommendation": "rethink",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X10",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3, S4, S5 across 1 lineage(s). The decision rule gives rethink; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "riverside-sports-association-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "east-tourism-council-notice"
+      ]
+     }
+    ],
+    "recommendation": "rethink",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "riverside-theatre-trust-newsletter",
+       "south-theatre-trust-notice"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "east-hospitality-inspectorate-record",
+       "lowland-hospitality-inspectorate-register"
+      ]
+     }
+    ],
+    "recommendation": "pass_for_now",
+    "uncertainties": [
+     "unaddressed_claim"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X11",
+   "rationale": "C1 is unresolved (unaddressed), citing no source across 0 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S4 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S3, S5 across 2 lineage(s). The decision rule gives pass_for_now; holding codes: unaddressed_claim.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "riverside-theatre-trust-newsletter",
+       "south-theatre-trust-notice"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "east-hospitality-inspectorate-record",
+       "lowland-hospitality-inspectorate-register"
+      ]
+     }
+    ],
+    "recommendation": "pass_for_now",
+    "uncertainties": [
+     "unaddressed_claim"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "north-leisure-inspectorate-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "upland-performing-arts-council-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "harbour-leisure-inspectorate-report"
+      ]
+     }
+    ],
+    "recommendation": "hold_off",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X12",
+   "rationale": "C1 is supported (direct_support), citing S1, S2 across 1 lineage(s); C2 is supported (direct_support), citing S3, S5 across 1 lineage(s); C3 is supported (direct_support), citing S4, S6 across 1 lineage(s). The decision rule gives hold_off; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "north-leisure-inspectorate-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "upland-performing-arts-council-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "harbour-leisure-inspectorate-report"
+      ]
+     }
+    ],
+    "recommendation": "hold_off",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-allotment-association-website",
+       "west-allotment-association-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "upland-passenger-council-website"
+      ]
+     }
+    ],
+    "recommendation": "look_elsewhere",
+    "uncertainties": [
+     "conflicting_sources"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X13",
+   "rationale": "C1 is unresolved (conflict), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3 across 1 lineage(s). The decision rule gives look_elsewhere; holding codes: conflicting_sources.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-allotment-association-website",
+       "west-allotment-association-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "upland-passenger-council-website"
+      ]
+     }
+    ],
+    "recommendation": "look_elsewhere",
+    "uncertainties": [
+     "conflicting_sources"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "south-performing-arts-council-listing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "moorland-electrical-safety-office-report"
+      ]
+     }
+    ],
+    "recommendation": "skip_it",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X14",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3, S4 across 1 lineage(s). The decision rule gives skip_it; holding codes: single_lineage_support, scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "south-performing-arts-council-listing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "moorland-electrical-safety-office-report"
+      ]
+     }
+    ],
+    "recommendation": "skip_it",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-wildlife-trust-website",
+       "west-wildlife-trust-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "coastal-recreation-council-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "valley-local-facilities-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "wait",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R1-X15",
+   "rationale": "C1 is contradicted (governing_source), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3 across 1 lineage(s); C3 is contradicted (direct_contradiction), citing S4 across 1 lineage(s). The decision rule gives wait; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-wildlife-trust-website",
+       "west-wildlife-trust-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "coastal-recreation-council-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "valley-local-facilities-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "wait",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "lowland-tourism-council-newsletter",
+       "valley-visitor-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "valley-market-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "check_again",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R1-X16",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S4, S5 across 1 lineage(s). The decision rule gives check_again; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "lowland-tourism-council-newsletter",
+       "valley-visitor-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "valley-market-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "check_again",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "east-visitor-office-notice",
+       "lowland-visitor-office-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "south-property-services-panel-record"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "west-education-office-notice"
+      ]
+     }
+    ],
+    "recommendation": "place_order",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X01",
+   "rationale": "C1 is supported (direct_support), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S5 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives place_order; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "east-visitor-office-notice",
+       "lowland-visitor-office-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "south-property-services-panel-record"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "west-education-office-notice"
+      ]
+     }
+    ],
+    "recommendation": "place_order",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-rental-standards-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "east-market-inspectorate-record",
+       "lowland-market-inspectorate-register"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "moorland-education-office-bulletin",
+       "valley-training-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "defer_supplier",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R2-X02",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3, S5 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S4, S6 across 2 lineage(s). The decision rule gives defer_supplier; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-rental-standards-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "east-market-inspectorate-record",
+       "lowland-market-inspectorate-register"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "moorland-education-office-bulletin",
+       "valley-training-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "defer_supplier",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "riverside-property-services-panel-register"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "upland-building-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "review_account",
+    "uncertainties": [
+     "single_lineage_support",
+     "unaddressed_claim"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X03",
+   "rationale": "C1 is unresolved (unaddressed), citing no source across 0 lineage(s); C2 is supported (direct_support), citing S2, S4 across 1 lineage(s); C3 is supported (direct_support), citing S3 across 1 lineage(s). The decision rule gives review_account; holding codes: single_lineage_support, unaddressed_claim.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "riverside-property-services-panel-register"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "upland-building-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "review_account",
+    "uncertainties": [
+     "single_lineage_support",
+     "unaddressed_claim"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "central-delivery-association-website",
+       "west-delivery-association-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "central-car-park-association-website",
+       "west-car-park-association-notice"
+      ]
+     }
+    ],
+    "recommendation": "sign_contract",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R2-X04",
+   "rationale": "C1 is supported (direct_support), citing S1, S2, S3 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S4, S5 across 2 lineage(s). The decision rule gives sign_contract; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "central-delivery-association-website",
+       "west-delivery-association-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "central-car-park-association-website",
+       "west-car-park-association-notice"
+      ]
+     }
+    ],
+    "recommendation": "sign_contract",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "riverside-building-inspectorate-report",
+       "south-building-inspectorate-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "upland-accommodation-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "ask_questions",
+    "uncertainties": [
+     "single_lineage_support",
+     "conflicting_sources"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X05",
+   "rationale": "C1 is unresolved (conflict), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3 across 1 lineage(s). The decision rule gives ask_questions; holding codes: single_lineage_support, conflicting_sources.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "riverside-building-inspectorate-report",
+       "south-building-inspectorate-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "upland-accommodation-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "ask_questions",
+    "uncertainties": [
+     "single_lineage_support",
+     "conflicting_sources"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "lowland-trade-association-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "east-accountancy-association-notice",
+       "lowland-accountancy-association-newsletter"
+      ]
+     }
+    ],
+    "recommendation": "pause_purchase",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X06",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3, S4 across 2 lineage(s). The decision rule gives pause_purchase; holding codes: scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "lowland-trade-association-bulletin"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "east-accountancy-association-notice",
+       "lowland-accountancy-association-newsletter"
+      ]
+     }
+    ],
+    "recommendation": "pause_purchase",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "coastal-performance-panel-website",
+       "riverside-performing-arts-council-programme"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "upland-supplier-council-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "south-passenger-council-briefing"
+      ]
+     }
+    ],
+    "recommendation": "book_venue",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X07",
+   "rationale": "C1 is supported (governing_source), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S5 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives book_venue; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "coastal-performance-panel-website",
+       "riverside-performing-arts-council-programme"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "upland-supplier-council-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "south-passenger-council-briefing"
+      ]
+     }
+    ],
+    "recommendation": "book_venue",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "east-catering-association-notice",
+       "valley-catering-association-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "lowland-catering-association-newsletter",
+       "valley-food-standards-office-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "south-facilities-office-notice",
+       "upland-facilities-office-website"
+      ]
+     }
+    ],
+    "recommendation": "seek_other_quotes",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R2-X08",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3, S5 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S4, S6 across 2 lineage(s). The decision rule gives seek_other_quotes; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "east-catering-association-notice",
+       "valley-catering-association-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "lowland-catering-association-newsletter",
+       "valley-food-standards-office-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "south-facilities-office-notice",
+       "upland-facilities-office-website"
+      ]
+     }
+    ],
+    "recommendation": "seek_other_quotes",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "moorland-recruitment-association-newsletter",
+       "west-recruitment-association-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "riverside-passenger-council-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "east-food-standards-office-briefing"
+      ]
+     }
+    ],
+    "recommendation": "place_order",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R2-X09",
+   "rationale": "C1 is supported (direct_support), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3 across 1 lineage(s); C3 is contradicted (direct_contradiction), citing S4 across 1 lineage(s). The decision rule gives place_order; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "moorland-recruitment-association-newsletter",
+       "west-recruitment-association-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "riverside-passenger-council-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "east-food-standards-office-briefing"
+      ]
+     }
+    ],
+    "recommendation": "place_order",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "valley-financial-standards-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "south-supplier-council-record"
+      ]
+     }
+    ],
+    "recommendation": "defer_supplier",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X10",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3, S4, S5 across 1 lineage(s). The decision rule gives defer_supplier; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "valley-financial-standards-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "south-supplier-council-record"
+      ]
+     }
+    ],
+    "recommendation": "defer_supplier",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "riverside-supplier-council-register",
+       "upland-commercial-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "review_account",
+    "uncertainties": [
+     "unaddressed_claim"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X11",
+   "rationale": "C1 is unresolved (unaddressed), citing no source across 0 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3 across 2 lineage(s). The decision rule gives review_account; holding codes: unaddressed_claim.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "riverside-supplier-council-register",
+       "upland-commercial-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "review_account",
+    "uncertainties": [
+     "unaddressed_claim"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "valley-consumer-panel-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "upland-transport-office-website"
+      ]
+     }
+    ],
+    "recommendation": "request_details",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X12",
+   "rationale": "C1 is supported (direct_support), citing S1, S2 across 1 lineage(s); C2 is supported (direct_support), citing S3, S4 across 1 lineage(s). The decision rule gives request_details; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "valley-consumer-panel-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "upland-transport-office-website"
+      ]
+     }
+    ],
+    "recommendation": "request_details",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "lowland-food-standards-office-report",
+       "upland-hospitality-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "riverside-transport-office-bulletin",
+       "south-transport-office-notice"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "riverside-facilities-office-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "ask_questions",
+    "uncertainties": [
+     "conflicting_sources"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X13",
+   "rationale": "C1 is unresolved (conflict), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3, S5 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S4 across 1 lineage(s). The decision rule gives ask_questions; holding codes: conflicting_sources.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "lowland-food-standards-office-report",
+       "upland-hospitality-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "riverside-transport-office-bulletin",
+       "south-transport-office-notice"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "riverside-facilities-office-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "ask_questions",
+    "uncertainties": [
+     "conflicting_sources"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "coastal-property-services-panel-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "north-performance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "south-commercial-inspectorate-briefing"
+      ]
+     }
+    ],
+    "recommendation": "pause_purchase",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X14",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S4, S6 across 1 lineage(s); C3 is supported (direct_support), citing S3, S5 across 1 lineage(s). The decision rule gives pause_purchase; holding codes: single_lineage_support, scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "coastal-property-services-panel-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "north-performance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "south-commercial-inspectorate-briefing"
+      ]
+     }
+    ],
+    "recommendation": "pause_purchase",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "harbour-property-services-panel-register",
+       "north-property-services-panel-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "east-financial-standards-office-briefing"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "lowland-financial-standards-office-report"
+      ]
+     }
+    ],
+    "recommendation": "keep_searching",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R2-X15",
+   "rationale": "C1 is contradicted (governing_source), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3 across 1 lineage(s); C3 is contradicted (direct_contradiction), citing S4 across 1 lineage(s). The decision rule gives keep_searching; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "harbour-property-services-panel-register",
+       "north-property-services-panel-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "east-financial-standards-office-briefing"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "lowland-financial-standards-office-report"
+      ]
+     }
+    ],
+    "recommendation": "keep_searching",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "lowland-digital-services-office-specification",
+       "valley-digital-services-office-technical-note"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "coastal-building-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "seek_other_quotes",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R2-X16",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S4, S5 across 1 lineage(s). The decision rule gives seek_other_quotes; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "lowland-digital-services-office-specification",
+       "valley-digital-services-office-technical-note"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "coastal-building-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "seek_other_quotes",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "riverside-systems-inspectorate-record",
+       "south-systems-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "upland-systems-inspectorate-register"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "south-software-assurance-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "grant_access",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X01",
+   "rationale": "C1 is supported (direct_support), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S5 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives grant_access; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "riverside-systems-inspectorate-record",
+       "south-systems-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "upland-systems-inspectorate-register"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "south-software-assurance-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "grant_access",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "riverside-software-assurance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "south-payment-inspectorate-record",
+       "upland-payment-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "south-data-protection-office-notice",
+       "upland-data-protection-office-website"
+      ]
+     }
+    ],
+    "recommendation": "open_finding",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R3-X02",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3, S5 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S4, S6 across 2 lineage(s). The decision rule gives open_finding; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "riverside-software-assurance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "south-payment-inspectorate-record",
+       "upland-payment-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "south-data-protection-office-notice",
+       "upland-data-protection-office-website"
+      ]
+     }
+    ],
+    "recommendation": "open_finding",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "riverside-data-protection-office-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "keep_evaluating",
+    "uncertainties": [
+     "single_lineage_support",
+     "unaddressed_claim"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X03",
+   "rationale": "C1 is unresolved (unaddressed), citing no source across 0 lineage(s); C2 is supported (direct_support), citing S2, S3 across 1 lineage(s). The decision rule gives keep_evaluating; holding codes: single_lineage_support, unaddressed_claim.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "riverside-data-protection-office-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "keep_evaluating",
+    "uncertainties": [
+     "single_lineage_support",
+     "unaddressed_claim"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "coastal-records-inspectorate-website",
+       "north-records-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "south-digital-services-office-website"
+      ]
+     }
+    ],
+    "recommendation": "enable_service",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R3-X04",
+   "rationale": "C1 is supported (direct_support), citing S1, S2, S3 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S4 across 1 lineage(s). The decision rule gives enable_service; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2",
+       "S3"
+      ],
+      "lineages": [
+       "coastal-records-inspectorate-website",
+       "north-records-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "south-digital-services-office-website"
+      ]
+     }
+    ],
+    "recommendation": "enable_service",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-clinical-inspectorate-website",
+       "west-clinical-inspectorate-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "riverside-digital-services-office-specification"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "upland-digital-services-office-technical-note"
+      ]
+     }
+    ],
+    "recommendation": "escalate_review",
+    "uncertainties": [
+     "single_lineage_support",
+     "conflicting_sources"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X05",
+   "rationale": "C1 is unresolved (conflict), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives escalate_review; holding codes: single_lineage_support, conflicting_sources.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-clinical-inspectorate-website",
+       "west-clinical-inspectorate-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "riverside-digital-services-office-specification"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "upland-digital-services-office-technical-note"
+      ]
+     }
+    ],
+    "recommendation": "escalate_review",
+    "uncertainties": [
+     "single_lineage_support",
+     "conflicting_sources"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "harbour-records-inspectorate-register"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "coastal-privacy-assurance-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "raise_risk",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X06",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3, S4, S5 across 1 lineage(s). The decision rule gives raise_risk; holding codes: scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "harbour-records-inspectorate-register"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "coastal-privacy-assurance-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "raise_risk",
+    "uncertainties": [
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "riverside-workplace-assurance-panel-register",
+       "south-workplace-assurance-panel-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "north-privacy-assurance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "north-systems-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "enable_service",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X07",
+   "rationale": "C1 is supported (governing_source), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S5 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives enable_service; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "riverside-workplace-assurance-panel-register",
+       "south-workplace-assurance-panel-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "north-privacy-assurance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "north-systems-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "enable_service",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "coastal-systems-inspectorate-register",
+       "harbour-systems-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "coastal-data-protection-office-website",
+       "harbour-privacy-assurance-panel-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S5"
+      ],
+      "lineages": [
+       "north-software-assurance-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "keep_evaluating",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R3-X08",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3, S4, S6 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S5 across 1 lineage(s). The decision rule gives keep_evaluating; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "coastal-systems-inspectorate-register",
+       "harbour-systems-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "coastal-data-protection-office-website",
+       "harbour-privacy-assurance-panel-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S5"
+      ],
+      "lineages": [
+       "north-software-assurance-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "keep_evaluating",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "coastal-software-assurance-panel-report",
+       "harbour-software-assurance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "east-training-inspectorate-briefing"
+      ]
+     }
+    ],
+    "recommendation": "grant_access",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R3-X09",
+   "rationale": "C1 is supported (direct_support), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3 across 1 lineage(s). The decision rule gives grant_access; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "coastal-software-assurance-panel-report",
+       "harbour-software-assurance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "east-training-inspectorate-briefing"
+      ]
+     }
+    ],
+    "recommendation": "grant_access",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "north-digital-services-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "harbour-digital-services-office-specification"
+      ]
+     }
+    ],
+    "recommendation": "open_finding",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X10",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3, S4 across 1 lineage(s). The decision rule gives open_finding; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "north-digital-services-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "harbour-digital-services-office-specification"
+      ]
+     }
+    ],
+    "recommendation": "open_finding",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "north-data-protection-office-notice",
+       "west-records-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "harbour-data-protection-office-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "revise_policy",
+    "uncertainties": [
+     "unaddressed_claim"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X11",
+   "rationale": "C1 is unresolved (unaddressed), citing no source across 0 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S4 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S3 across 1 lineage(s). The decision rule gives revise_policy; holding codes: unaddressed_claim.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [],
+      "lineages": []
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S2",
+       "S4"
+      ],
+      "lineages": [
+       "north-data-protection-office-notice",
+       "west-records-inspectorate-website"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "harbour-data-protection-office-bulletin"
+      ]
+     }
+    ],
+    "recommendation": "revise_policy",
+    "uncertainties": [
+     "unaddressed_claim"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "lowland-training-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-records-inspectorate-record"
+      ]
+     }
+    ],
+    "recommendation": "reject_vendor",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X12",
+   "rationale": "C1 is supported (direct_support), citing S1, S2 across 1 lineage(s); C2 is supported (direct_support), citing S3, S4, S5 across 1 lineage(s). The decision rule gives reject_vendor; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "lowland-training-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-records-inspectorate-record"
+      ]
+     }
+    ],
+    "recommendation": "reject_vendor",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-records-inspectorate-register",
+       "west-privacy-assurance-panel-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "central-health-services-office-website",
+       "moorland-clinical-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "moorland-systems-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "escalate_review",
+    "uncertainties": [
+     "conflicting_sources"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X13",
+   "rationale": "C1 is unresolved (conflict), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3, S5 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S4 across 1 lineage(s). The decision rule gives escalate_review; holding codes: conflicting_sources.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-records-inspectorate-register",
+       "west-privacy-assurance-panel-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "central-health-services-office-website",
+       "moorland-clinical-inspectorate-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "contradicted",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "moorland-systems-inspectorate-website"
+      ]
+     }
+    ],
+    "recommendation": "escalate_review",
+    "uncertainties": [
+     "conflicting_sources"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-systems-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "west-systems-inspectorate-register"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-software-assurance-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "raise_risk",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X14",
+   "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S4, S6 across 1 lineage(s); C3 is supported (direct_support), citing S3, S5 across 1 lineage(s). The decision rule gives raise_risk; holding codes: single_lineage_support, scope_mismatch.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "unresolved",
+      "citations": [
+       "S1"
+      ],
+      "lineages": [
+       "central-systems-inspectorate-record"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S2",
+       "S4",
+       "S6"
+      ],
+      "lineages": [
+       "west-systems-inspectorate-register"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S5"
+      ],
+      "lineages": [
+       "moorland-software-assurance-panel-website"
+      ]
+     }
+    ],
+    "recommendation": "raise_risk",
+    "uncertainties": [
+     "single_lineage_support",
+     "scope_mismatch"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-privacy-assurance-panel-report",
+       "moorland-privacy-assurance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "west-data-protection-office-website"
+      ]
+     }
+    ],
+    "recommendation": "hold_rollout",
+    "uncertainties": []
+   },
+   "fixture_id": "B4-RSRCH-R3-X15",
+   "rationale": "C1 is contradicted (governing_source), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3 across 1 lineage(s). The decision rule gives hold_rollout; holding codes: none.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-privacy-assurance-panel-report",
+       "moorland-privacy-assurance-panel-briefing"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "contradicted",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "west-data-protection-office-website"
+      ]
+     }
+    ],
+    "recommendation": "hold_rollout",
+    "uncertainties": []
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-data-protection-office-bulletin",
+       "moorland-data-protection-office-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "central-software-assurance-panel-briefing"
+      ]
+     }
+    ],
+    "recommendation": "keep_evaluating",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R3-X16",
+   "rationale": "C1 is contradicted (direct_contradiction), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S4 across 1 lineage(s). The decision rule gives keep_evaluating; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "contradicted",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "central-data-protection-office-bulletin",
+       "moorland-data-protection-office-notice"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3",
+       "S4"
+      ],
+      "lineages": [
+       "central-software-assurance-panel-briefing"
+      ]
+     }
+    ],
+    "recommendation": "keep_evaluating",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "south-building-safety-office-briefing",
+       "upland-building-safety-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "riverside-building-safety-office-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "central-aquatic-services-office-website"
+      ]
+     }
+    ],
+    "recommendation": "reopen_area",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   },
+   "fixture_id": "B4-RSRCH-R4-X01",
+   "rationale": "C1 is supported (governing_source), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives reopen_area; holding codes: single_lineage_support.",
+   "reference_output": {
+    "claims": [
+     {
+      "claim_id": "C1",
+      "status": "supported",
+      "citations": [
+       "S1",
+       "S2"
+      ],
+      "lineages": [
+       "south-building-safety-office-briefing",
+       "upland-building-safety-office-website"
+      ]
+     },
+     {
+      "claim_id": "C2",
+      "status": "supported",
+      "citations": [
+       "S3"
+      ],
+      "lineages": [
+       "riverside-building-safety-office-report"
+      ]
+     },
+     {
+      "claim_id": "C3",
+      "status": "supported",
+      "citations": [
+       "S4"
+      ],
+      "lineages": [
+       "central-aquatic-services-office-website"
+      ]
+     }
+    ],
+    "recommendation": "reopen_area",
+    "uncertainties": [
+     "single_lineage_support"
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O881": [
+      "recording visitors"
+     ],
+     "O882": [
+      "online"
+     ],
+     "O883": [
+      "storage card"
+     ]
+    },
+    "roles": {
+     "O881": "finding",
+     "O882": "finding",
+     "O883": "diagnosis"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R1-X01",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S881",
+      "role": "finding",
+      "observation_ids": [
+       "O881",
+       "O882"
+      ],
+      "text": "The video doorbell stopped recording visitors last night. Its app still shows the device as online."
+     },
+     {
+      "statement_id": "S883",
+      "role": "diagnosis",
+      "observation_ids": [
+       "O883"
+      ],
+      "text": "The app's event log says recording stopped because the storage card is full."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_unresolved",
+    "required_terms": {
+     "O891": [
+      "stayed cold"
+     ],
+     "O892": [
+      "dry leaves"
+     ],
+     "O893": [
+      "steaming"
+     ]
+    },
+    "roles": {
+     "O891": "finding",
+     "O892": "hypothesis",
+     "O893": "counterevidence"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R1-X02",
+   "rationale": "Counterevidence disputes the proposed cause, so causality remains unresolved.",
+   "reference_output": {
+    "conclusion": "cause_unresolved",
+    "statements": [
+     {
+      "statement_id": "S891",
+      "role": "finding",
+      "observation_ids": [
+       "O891"
+      ],
+      "text": "The compost heap has stayed cold for a month."
+     },
+     {
+      "statement_id": "S892",
+      "role": "hypothesis",
+      "observation_ids": [
+       "O892"
+      ],
+      "text": "Too many dry leaves may be slowing it down."
+     },
+     {
+      "statement_id": "S893",
+      "role": "counterevidence",
+      "observation_ids": [
+       "O893"
+      ],
+      "text": "A second heap with the same leaf mix is steaming hot."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "insufficient_evidence",
+    "required_terms": {
+     "O901": [
+      "half her meals"
+     ],
+     "O902": [
+      "playing"
+     ],
+     "O903": [
+      "food brand"
+     ],
+     "O904": [
+      "weighed"
+     ],
+     "O905": [
+      "old food back"
+     ]
+    },
+    "roles": {
+     "O901": "finding",
+     "O902": "finding",
+     "O903": "hypothesis",
+     "O904": "limitation",
+     "O905": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R1-X03",
+   "rationale": "A cause is only proposed; nothing establishes or disputes it.",
+   "reference_output": {
+    "conclusion": "insufficient_evidence",
+    "statements": [
+     {
+      "statement_id": "S901",
+      "role": "finding",
+      "observation_ids": [
+       "O901",
+       "O902"
+      ],
+      "text": "Our cat has left half her meals for three days. She is still drinking and playing normally."
+     },
+     {
+      "statement_id": "S903",
+      "role": "hypothesis",
+      "observation_ids": [
+       "O903"
+      ],
+      "text": "The new food brand may not suit her."
+     },
+     {
+      "statement_id": "S904",
+      "role": "limitation",
+      "observation_ids": [
+       "O904"
+      ],
+      "text": "We have not weighed her since the change."
+     },
+     {
+      "statement_id": "S905",
+      "role": "next_step",
+      "observation_ids": [
+       "O905"
+      ],
+      "text": "Mix some of the old food back in and watch her appetite."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "decision_reserved",
+    "required_terms": {
+     "O911": [
+      "summer party"
+     ],
+     "O912": [
+      "highways officer"
+     ],
+     "O913": [
+      "bus diversion"
+     ],
+     "O914": [
+      "association secretary"
+     ],
+     "O915": [
+      "party plan"
+     ]
+    },
+    "roles": {
+     "O911": "request",
+     "O912": "authority_boundary",
+     "O913": "finding",
+     "O914": "context",
+     "O915": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R1-X04",
+   "rationale": "The evidence reserves the decision to a named role other than the current reviewer.",
+   "reference_output": {
+    "conclusion": "decision_reserved",
+    "statements": [
+     {
+      "statement_id": "S911",
+      "role": "request",
+      "observation_ids": [
+       "O911"
+      ],
+      "text": "Residents asked to close the street for a summer party."
+     },
+     {
+      "statement_id": "S912",
+      "role": "authority_boundary",
+      "observation_ids": [
+       "O912"
+      ],
+      "text": "Road closures need a permit from the council's highways officer."
+     },
+     {
+      "statement_id": "S913",
+      "role": "finding",
+      "observation_ids": [
+       "O913"
+      ],
+      "text": "The street is a bus diversion route on weekends."
+     },
+     {
+      "statement_id": "S914",
+      "role": "context",
+      "observation_ids": [
+       "O914"
+      ],
+      "text": "The reviewer is the residents' association secretary."
+     },
+     {
+      "statement_id": "S915",
+      "role": "next_step",
+      "observation_ids": [
+       "O915"
+      ],
+      "text": "Send the party plan to the permit office."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "constraint_breached",
+    "required_terms": {
+     "O921": [
+      "140"
+     ],
+     "O922": [
+      "198"
+     ],
+     "O923": [
+      "two streets away"
+     ]
+    },
+    "roles": {
+     "O921": "design_constraint",
+     "O922": "finding",
+     "O923": "finding"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R2-X01",
+   "rationale": "A measured finding exceeds the stated constraint.",
+   "reference_output": {
+    "conclusion": "constraint_breached",
+    "statements": [
+     {
+      "statement_id": "S921",
+      "role": "design_constraint",
+      "observation_ids": [
+       "O921"
+      ],
+      "text": "Travel policy caps hotel rates at 140 a night."
+     },
+     {
+      "statement_id": "S922",
+      "role": "finding",
+      "observation_ids": [
+       "O922",
+       "O923"
+      ],
+      "text": "The sales team booked rooms at 198 a night for the fair. Cheaper rooms were available two streets away."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "behavior_by_design",
+    "required_terms": {
+     "O931": [
+      "edited"
+     ],
+     "O932": [
+      "pay run"
+     ],
+     "O933": [
+      "corrections"
+     ]
+    },
+    "roles": {
+     "O931": "finding",
+     "O932": "design_constraint",
+     "O933": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R2-X02",
+   "rationale": "A stated policy or configuration accounts for the observed behavior.",
+   "reference_output": {
+    "conclusion": "behavior_by_design",
+    "statements": [
+     {
+      "statement_id": "S931",
+      "role": "finding",
+      "observation_ids": [
+       "O931"
+      ],
+      "text": "Timesheets cannot be edited after Tuesday noon."
+     },
+     {
+      "statement_id": "S932",
+      "role": "design_constraint",
+      "observation_ids": [
+       "O932"
+      ],
+      "text": "Payroll settings lock each week's timesheets once the pay run starts."
+     },
+     {
+      "statement_id": "S933",
+      "role": "next_step",
+      "observation_ids": [
+       "O933"
+      ],
+      "text": "Remind staff to submit corrections by Monday evening."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "insufficient_evidence",
+    "required_terms": {
+     "O941": [
+      "twelve gym members"
+     ],
+     "O942": [
+      "nine of them"
+     ],
+     "O943": [
+      "introductory discount"
+     ],
+     "O944": [
+      "exit form"
+     ],
+     "O945": [
+      "reason field"
+     ]
+    },
+    "roles": {
+     "O941": "finding",
+     "O942": "finding",
+     "O943": "hypothesis",
+     "O944": "limitation",
+     "O945": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R2-X03",
+   "rationale": "A cause is only proposed; nothing establishes or disputes it.",
+   "reference_output": {
+    "conclusion": "insufficient_evidence",
+    "statements": [
+     {
+      "statement_id": "S941",
+      "role": "finding",
+      "observation_ids": [
+       "O941",
+       "O942"
+      ],
+      "text": "Twelve gym members cancelled in the first week of the month. Nine of them had joined in January."
+     },
+     {
+      "statement_id": "S943",
+      "role": "hypothesis",
+      "observation_ids": [
+       "O943"
+      ],
+      "text": "An introductory discount ending may be driving the cancellations."
+     },
+     {
+      "statement_id": "S944",
+      "role": "limitation",
+      "observation_ids": [
+       "O944"
+      ],
+      "text": "The exit form does not ask for a reason."
+     },
+     {
+      "statement_id": "S945",
+      "role": "next_step",
+      "observation_ids": [
+       "O945"
+      ],
+      "text": "Add a reason field to the cancellation form."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "decision_reserved",
+    "required_terms": {
+     "O951": [
+      "15%"
+     ],
+     "O952": [
+      "commercial director"
+     ],
+     "O953": [
+      "profitable"
+     ],
+     "O954": [
+      "account coordinator"
+     ],
+     "O955": [
+      "account history"
+     ]
+    },
+    "roles": {
+     "O951": "request",
+     "O952": "authority_boundary",
+     "O953": "finding",
+     "O954": "context",
+     "O955": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R2-X04",
+   "rationale": "The evidence reserves the decision to a named role other than the current reviewer.",
+   "reference_output": {
+    "conclusion": "decision_reserved",
+    "statements": [
+     {
+      "statement_id": "S951",
+      "role": "request",
+      "observation_ids": [
+       "O951"
+      ],
+      "text": "A long-standing client asked for a 15% discount on renewal."
+     },
+     {
+      "statement_id": "S952",
+      "role": "authority_boundary",
+      "observation_ids": [
+       "O952"
+      ],
+      "text": "Discounts above 10% can only be granted by the commercial director."
+     },
+     {
+      "statement_id": "S953",
+      "role": "finding",
+      "observation_ids": [
+       "O953"
+      ],
+      "text": "The client's account has been profitable for five years."
+     },
+     {
+      "statement_id": "S954",
+      "role": "context",
+      "observation_ids": [
+       "O954"
+      ],
+      "text": "The reviewer is the client's account coordinator."
+     },
+     {
+      "statement_id": "S955",
+      "role": "next_step",
+      "observation_ids": [
+       "O955"
+      ],
+      "text": "Put the discount request forward with the account history."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "constraint_breached",
+    "required_terms": {
+     "O961": [
+      "every year"
+     ],
+     "O962": [
+      "three years ago"
+     ],
+     "O963": [
+      "scheduled"
+     ]
+    },
+    "roles": {
+     "O961": "design_constraint",
+     "O962": "finding",
+     "O963": "finding"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R3-X01",
+   "rationale": "A measured finding exceeds the stated constraint.",
+   "reference_output": {
+    "conclusion": "constraint_breached",
+    "statements": [
+     {
+      "statement_id": "S961",
+      "role": "design_constraint",
+      "observation_ids": [
+       "O961"
+      ],
+      "text": "Encryption keys for the payment database must be replaced every year."
+     },
+     {
+      "statement_id": "S962",
+      "role": "finding",
+      "observation_ids": [
+       "O962",
+       "O963"
+      ],
+      "text": "The current payment key was created three years ago. No replacement key has been scheduled."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "behavior_by_design",
+    "required_terms": {
+     "O971": [
+      "without input"
+     ],
+     "O972": [
+      "public areas"
+     ],
+     "O973": [
+      "intentional"
+     ]
+    },
+    "roles": {
+     "O971": "finding",
+     "O972": "design_constraint",
+     "O973": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R3-X02",
+   "rationale": "A stated policy or configuration accounts for the observed behavior.",
+   "reference_output": {
+    "conclusion": "behavior_by_design",
+    "statements": [
+     {
+      "statement_id": "S971",
+      "role": "finding",
+      "observation_ids": [
+       "O971"
+      ],
+      "text": "Reception screens lock after two minutes without input."
+     },
+     {
+      "statement_id": "S972",
+      "role": "design_constraint",
+      "observation_ids": [
+       "O972"
+      ],
+      "text": "Screens facing public areas are configured for a two-minute lock."
+     },
+     {
+      "statement_id": "S973",
+      "role": "next_step",
+      "observation_ids": [
+       "O973"
+      ],
+      "text": "Tell reception staff the lock is intentional."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O981": [
+      "public file site"
+     ],
+     "O982": [
+      "exported"
+     ],
+     "O983": [
+      "sharing log"
+     ],
+     "O984": [
+      "2,300"
+     ],
+     "O985": [
+      "regulator"
+     ]
+    },
+    "roles": {
+     "O981": "finding",
+     "O982": "finding",
+     "O983": "diagnosis",
+     "O984": "impact",
+     "O985": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R3-X03",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S981",
+      "role": "finding",
+      "observation_ids": [
+       "O981",
+       "O982"
+      ],
+      "text": "A spreadsheet of customer phone numbers appeared on a public file site. The file name matches one exported from our sales system last month."
+     },
+     {
+      "statement_id": "S983",
+      "role": "diagnosis",
+      "observation_ids": [
+       "O983"
+      ],
+      "text": "The sharing log shows the leak happened because a staff member set the file's link to public access."
+     },
+     {
+      "statement_id": "S984",
+      "role": "impact",
+      "observation_ids": [
+       "O984"
+      ],
+      "text": "About 2,300 customers are affected."
+     },
+     {
+      "statement_id": "S985",
+      "role": "next_step",
+      "observation_ids": [
+       "O985"
+      ],
+      "text": "Disable the link and notify the privacy regulator."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_unresolved",
+    "required_terms": {
+     "O991": [
+      "dropping"
+     ],
+     "O992": [
+      "licence"
+     ],
+     "O993": [
+      "four users"
+     ],
+     "O994": [
+      "overwritten"
+     ],
+     "O995": [
+      "each evening"
+     ]
+    },
+    "roles": {
+     "O991": "finding",
+     "O992": "hypothesis",
+     "O993": "counterevidence",
+     "O994": "limitation",
+     "O995": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R3-X04",
+   "rationale": "Counterevidence disputes the proposed cause, so causality remains unresolved.",
+   "reference_output": {
+    "conclusion": "cause_unresolved",
+    "statements": [
+     {
+      "statement_id": "S991",
+      "role": "finding",
+      "observation_ids": [
+       "O991"
+      ],
+      "text": "Remote staff report the VPN dropping every afternoon."
+     },
+     {
+      "statement_id": "S992",
+      "role": "hypothesis",
+      "observation_ids": [
+       "O992"
+      ],
+      "text": "The VPN licence may be capping concurrent users."
+     },
+     {
+      "statement_id": "S993",
+      "role": "counterevidence",
+      "observation_ids": [
+       "O993"
+      ],
+      "text": "Drops happen even when only four users are connected."
+     },
+     {
+      "statement_id": "S994",
+      "role": "limitation",
+      "observation_ids": [
+       "O994"
+      ],
+      "text": "The appliance logs are overwritten daily."
+     },
+     {
+      "statement_id": "S995",
+      "role": "next_step",
+      "observation_ids": [
+       "O995"
+      ],
+      "text": "Export the logs each evening for a week."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "decision_reserved",
+    "required_terms": {
+     "O1001": [
+      "contractor wants to enter"
+     ],
+     "O1002": [
+      "low oxygen"
+     ],
+     "O1003": [
+      "ventilation fan"
+     ],
+     "O1004": [
+      "permit issuer"
+     ],
+     "O1005": [
+      "grounds keeper"
+     ],
+     "O1006": [
+      "gas readings"
+     ]
+    },
+    "roles": {
+     "O1001": "request",
+     "O1002": "finding",
+     "O1003": "finding",
+     "O1004": "authority_boundary",
+     "O1005": "context",
+     "O1006": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R4-X01",
+   "rationale": "The evidence reserves the decision to a named role other than the current reviewer.",
+   "reference_output": {
+    "conclusion": "decision_reserved",
+    "statements": [
+     {
+      "statement_id": "S1001",
+      "role": "request",
+      "observation_ids": [
+       "O1001"
+      ],
+      "text": "A contractor wants to enter the pumping station wet well today."
+     },
+     {
+      "statement_id": "S1002",
+      "role": "finding",
+      "observation_ids": [
+       "O1002",
+       "O1003"
+      ],
+      "text": "The gas monitor shows low oxygen near the hatch. The ventilation fan has not been run this morning."
+     },
+     {
+      "statement_id": "S1004",
+      "role": "authority_boundary",
+      "observation_ids": [
+       "O1004"
+      ],
+      "text": "Confined space entry can only be authorised by the permit issuer."
+     },
+     {
+      "statement_id": "S1005",
+      "role": "context",
+      "observation_ids": [
+       "O1005"
+      ],
+      "text": "The reviewer on this request is the station's grounds keeper."
+     },
+     {
+      "statement_id": "S1006",
+      "role": "next_step",
+      "observation_ids": [
+       "O1006"
+      ],
+      "text": "Refer the entry request on with the gas readings."
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,51 @@
+{
+ "gate": "O3 identifier gate (G-ROUTE4, prospective, binding)",
+ "decision_record": "O3_IDENTIFIER_DECISION.md",
+ "pattern": "\\b([A-Z]{1,5}-?\\d[\\w.-]*)\\b",
+ "pattern_sha256": "a3773a982c16579d94cede99539e0b9cacca1347f96774759a84bbb7788adaae",
+ "excluded": {
+  "a single capital followed by one digit": "[A-Z]\\d",
+  "structural ids in structural fields": {
+   "form": "[A-Z][0-9]+",
+   "fields": [
+    "addresses",
+    "citations",
+    "claim_id",
+    "depends_on",
+    "evidence_ids",
+    "id",
+    "label",
+    "observation_ids",
+    "option_label",
+    "source_id",
+    "statement_id"
+   ]
+  }
+ },
+ "requires": [
+  "0 identifiers shared between two G-ROUTE4 fixtures or with any G-ROUTE3 A or B fixture",
+  "every identifier found in a G-ROUTE4 fixture is declared in its design record"
+ ],
+ "frozen_g3_checker": {
+  "path": "tools/g_route3_independence.py",
+  "sha256": "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b",
+  "status": "byte-identical, unmodified"
+ },
+ "implementation": {
+  "path_at_staging_commit": "experiments/G-ROUTE4-candidate/corpus/check_corpus.py",
+  "sha256": "b3f6500b4b39a80c214811b429d382b26fda0ae3cad73916788c379eb16e91af",
+  "functions": [
+   "structural_ids",
+   "intended_identifiers"
+  ]
+ },
+ "result_at_seal": {
+  "g4_identifiers": 17,
+  "g3_identifiers": 11,
+  "shared": 0,
+  "pattern_sha256": "a3773a982c16579d94cede99539e0b9cacca1347f96774759a84bbb7788adaae",
+  "frozen_checker_sha256": "177aa18abc21057d94b1b34c94f7a05960248f0dd29a6d98763660c445b4509b",
+  "status": "binding prospective O3 identifier gate for G-ROUTE4; the frozen G-ROUTE3 detector is unchanged and G-ROUTE3 is not rescored"
+ },
+ "g_route3": "not rescored or reinterpreted"
+}
