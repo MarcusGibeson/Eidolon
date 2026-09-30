@@ -1,0 +1,101 @@
+{
+ "schema_version": "g-route4.corpus-review-closure.v1",
+ "round": 1,
+ "design_step": "order of work 3.7: the external corpus review",
+ "status": "CLOSED",
+ "closed_on": "2026-09-30",
+ "closed_at_parent_commit": "41b690c99185a5e197d358a86e4a1ff96073406e",
+ "operator_ruling_verbatim": {
+  "transcript_record_uuid": "d2591e2a-eb78-4e69-a235-04fa870ae5c1",
+  "utc": "2026-09-30T00:38:14.197Z",
+  "text_sha256": "76c68e636ae280ccf149c3c7e550583221a5ea73de167af7be4af31a31f9afbc",
+  "text": "Choose (a): close external corpus review round 1 on the pinned-tool re-check.\n\nRecord the following ruling.\n\nThe round-1 corpus review may close now because all review-stage requirements that can exist under the frozen ordering have been satisfied:\n\n- all repaired fixtures completed the required re-adjudication;\n- every MUST-FIX finding from Reviewers A and B is resolved;\n- required disclosures and errata are recorded and bound;\n- the complete 26-fix corpus passes the frozen checks;\n- the pinned independence tool that produced the frozen values reproduces all required values with 0 violations;\n- the historical and sealed artifacts remain unchanged except for the explicitly authorized O2 disclosure append.\n\nThe forked-module re-check is not a corpus-review closure prerequisite because \"g_route4_independence\" does not yet exist and, under the frozen design, is created during the subsequent implementation stage.\n\nDo not implement the module merely to close round 1, and do not reverse the frozen ordering.\n\nInstead, carry B7 forward unchanged as a mandatory freeze condition:\n\n«After \"g_route4_independence\" is implemented from the frozen design, the final pre-freeze independence re-check using that forked module must reproduce the required frozen values and satisfy the same bounds. Failure of that check blocks freeze and cannot be waived by the successful pinned-tool result.»\n\nThe successful pinned-tool reproduction is evidence that the reviewed 26-fix corpus currently satisfies the frozen independence requirements. It is not a substitute for the later forked-module qualification.\n\nClose external corpus review round 1 and bind this ruling into the closure record.\n\nThe next stage is implementation under frozen design step 4. Do not begin implementation until separately authorized.\n\nPreserve all current integrity boundaries:\n\n- no modification of sealed historical artifacts;\n- no movement of \"main\", \"g-route4/seal\", or the frozen tag as part of review closure;\n- no reinterpretation of completed adjudication;\n- no weakening of B7 or any other freeze criterion."
+ },
+ "review_stage_conditions": {
+  "repaired fixtures completed re-adjudication": "CLOSED: 6 of 6 kept, 0 replaced",
+  "every MUST-FIX from Reviewers A and B resolved": "A1, A2, A3 (fixed and re-adjudicated, all kept); B1 (step-7 ruling and annotation); B2 (erratum 1)",
+  "disclosures and errata recorded and bound": "A4-PLAN-R3-04, A4, A5; B3 (O2 disclosure), B9; B10 provenance; errata 1 and 2 to B_MAIN_CLOSURE.json",
+  "the 26-fix corpus passes the frozen checks": "584 fixtures, 26 fixes, 0 problems",
+  "pinned independence tool reproduces the frozen values": "63 values reproduced; bounds met; 0 problems",
+  "historical and sealed artifacts unchanged": "except the authorized O2 disclosure append (B3)"
+ },
+ "forked_module_recheck": {
+  "status": "NOT a corpus-review closure prerequisite (operator ruling): g_route4_independence does not exist and, under the frozen design, is created in the implementation stage",
+  "pinned_tool_result_role": "evidence that the reviewed 26-fix corpus currently satisfies the frozen independence requirements; not a substitute for the later forked-module qualification"
+ },
+ "freeze_conditions_carried_forward": {
+  "B7": {
+   "condition_verbatim": "After \"g_route4_independence\" is implemented from the frozen design, the final pre-freeze independence re-check using that forked module must reproduce the required frozen values and satisfy the same bounds. Failure of that check blocks freeze and cannot be waived by the successful pinned-tool result.",
+   "status": "OPEN, mandatory; blocks the freeze if it fails; not waivable by the pinned-tool result"
+  },
+  "B8": {
+   "condition": "bind the B′ fix-round per-cell counts in the final freeze records",
+   "status": "counts bound in adjudication/B_MAIN_CLOSURE_ADDENDUM_CR1.json; to be bound in the freeze records"
+  }
+ },
+ "outcome": {
+  "blocking": 0,
+  "must_fix": {
+   "reviewer_A": 3,
+   "reviewer_B": 2,
+   "resolved": 5
+  },
+  "fixtures_fixed_in_review": [
+   "A4-SYNTH-R1-01",
+   "B4-CONV-R1-08",
+   "B4-CONV-R2-28",
+   "B4-SYNTH-R1-02",
+   "B4-SYNTH-R2-15",
+   "B4-SYNTH-R3-08"
+  ],
+  "replaced": 0,
+  "reserves_drawn": 0
+ },
+ "final_corpus": {
+  "fixes": 26,
+  "a_main": "9272070be34c821ff9df2aa74c997ce3dbd8ba7059b134b4f999c25be7e5df28",
+  "a_main_gold": "55b006c2bd438d8862c3321aa932c45cb8570776510e132e4eacca32ac268e9a",
+  "b_main": "a27c7638c53117de606e4b8289d382036968f1fbabc4e6a6d922146d3541872d",
+  "b_main_gold": "8c134f610740f86fad645504065bdbcd83a29a8bf74683d3745fafc9c2a1beea"
+ },
+ "records_lf_sha256": {
+  "corpus_review/round1/outputs/REVIEWER_A_REPORT.md": "8219822cb9104b106281d22033f7c34335fa0bce88e17fe2bb527c662535b5f5",
+  "corpus_review/round1/outputs/REVIEWER_B_REPORT.md": "0eba8701a8cec21df82f846c7faacbba92a78f405abbff88d0b29cb2fe9f3320",
+  "corpus_review/round1/outputs/REVIEW_OUTPUTS_RECORD.json": "72859e98056cdfae346cca3c50f04f08f2bf935e1f16e9aaad135aa9ef6808cf",
+  "corpus_review/round1/outputs/REVIEWER_A_RESUMPTION_RECORD.json": "f0864c174f82adf6c06db2f028228e3ec0ed4fa83542b3f49493999feead7bef",
+  "corpus_review/round1/REVIEW_MANIFEST.json": "f4c44e8bf08bafca64caabd582f329c824e08f3c7a7f074320bd398616fc06b1",
+  "corpus_review/round1/REVIEWER_A_BRIEF.md": "827cce9ff357200239ef59696fae3fb73163631d1306c5d0e12486f7880c0c21",
+  "corpus_review/round1/REVIEWER_B_BRIEF.md": "b2760b0c709b52285a6fe25e6ca0b03cb6fbdfdb0a6721049f540ffacf3b5338",
+  "corpus_review/round1/OPERATOR_RULINGS_R1.json": "5da3af683e55adb85d630ab519f876802cb7819bf8f4645654779dd236565f77",
+  "corpus_review/round1/BATCH_START_PROVENANCE.json": "2d3523601e9f95e5c6ee558b09ce8f93c4f5191635faa55bbb0629474505a6b7",
+  "corpus_review/round1/RECONCILIATION_R1.md": "0c77f2b03fba4188ffe22e87275c462b63621c1ff211d91240694f7214fef539",
+  "corpus_review/round1/OPERATOR_DISPOSITIONS_R1.json": "9a42c58ea8b28f4078846670e89d5c9c49d001f501919a8c2d39cbe2679a4de0",
+  "corpus_review/round1/REMEDIATION_BOUNDARY_R1.json": "8879eedc7048ac15fcb6843994e738ceb3f728c3cb947cbdc124277b495486d0",
+  "corpus_review/round1/REMEDIATION_CLOSURE_R1.json": "353a917779aea3e85917965206a0e6c67a2d9b8f711e8c6362a49c4a8280e581",
+  "corpus_review/round1/RECONCILIATION_R1_FINAL.md": "7305dcae483e80bc0bee2703349471a0be1eade6d067ec82ce372719313628a0"
+ },
+ "successors_and_errata_lf_sha256": {
+  "INDEPENDENCE_REPORT_CR1.json": "23828827ac0e36663b7db3217308910ca4e4323314c6eb97504bbd84a410893c",
+  "CONTAMINATION_ANALYSIS_CR1.md": "8158107f89476d1dddb797f99c31843874adb5eea505a4deff27542c840c7001",
+  "adjudication/A_MAIN_CLOSURE_ADDENDUM_CR1.json": "08561c8429d7fe73ceda737a4d232790846348c3138ba39200a6b901bee787ec",
+  "adjudication/B_MAIN_CLOSURE_ADDENDUM_CR1.json": "9ad124e2e66c35537a09e9f137c0e0b8d17ec747f11494bac5c025543a725236",
+  "adjudication/fixes/cr1_bmain/FIX_CHECK_REPORT.json": "9472fd763b144b01f510c50b168f30e2ed95a49cc1e527357e09e11f75ced784",
+  "adjudication/errata/B_MAIN_CLOSURE_ERRATUM_1.json": "67fc63af2d729316206c644fe50d2b0a938a5151780db2c0f57b6dca194ad5cf",
+  "adjudication/errata/B_MAIN_CLOSURE_ERRATUM_2.json": "b3dae88ceda1ffac45884daaf301edc8bb083c2e1aa74bc6c867d01dc09b97dc",
+  "adjudication/errata/STEP7_RULING_ANNOTATION.md": "7a599104253d5f14e627640d00838e81b4f880c662e77440cd0cd08199bf4c8d",
+  "adjudication/O2_AMENDMENT_2026-09-29.md": "61945398d94299b89061d6031643925120289f31b95c4502e5f93ca24a866f8a"
+ },
+ "historical_unchanged_lf_sha256": {
+  "INDEPENDENCE_REPORT.json": "59a4a224d510beeb995c9981b91bb423773b57450f2404ec9dc7c826191949d4",
+  "CONTAMINATION_ANALYSIS.md": "a938b6c2206fe0f32f8ffb395a8b748b6982ed4ac3312d1fd165ab02db02631e",
+  "adjudication/A_MAIN_CLOSURE.json": "1eb6f3fb2aa660a67493102b75bd9343758b422c00c4894e09819eecf244f022",
+  "adjudication/B_MAIN_CLOSURE.json": "863f1aa8708eafa614245473de697f6535c70410d66f2545fd09b41ae33ef42d"
+ },
+ "integrity_boundaries": [
+  "no sealed or historical artifact modified (except the authorized O2 disclosure append)",
+  "main, g-route4/seal and the tag g-route4-seal not moved",
+  "no completed adjudication reinterpreted",
+  "no freeze criterion weakened"
+ ],
+ "next_stage": "implementation under frozen design step 4; not begun; requires separate operator authorization"
+}
