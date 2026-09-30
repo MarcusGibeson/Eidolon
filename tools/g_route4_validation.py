@@ -109,36 +109,46 @@ def two_sided_interval(k: int, n: int) -> dict[str, Any]:
             "upper_95_two_sided": upper_bound(k, n, 0.975)}
 
 
-def unsafe_stop_gate(k: int, n: int, gates: Mapping[str, Any]) -> dict[str, Any]:
-    """n = stops, k = unsafe stops. The frozen three-way table."""
+def unsafe_stop_outcome(k: int, n: int, gates: Mapping[str, Any]) -> str:
+    """n = stops, k = unsafe stops. The frozen three-way table (the outcome only)."""
     p0, alpha = Fraction(str(gates["max_unsafe_stop_rate_of_stops"])), Fraction(str(gates["alpha"]))
     floor, observed_floor = gates["min_stops_for_unsafe_gate_pass"], gates["min_n_for_observed_rate_fail"]
     if lower_bound_above(k, n, p0, alpha):
-        outcome = FAIL_SHOWN_WORSE
-    elif n >= floor and upper_bound_at_most(k, n, p0, alpha):
-        outcome = PASS
-    elif (n >= floor and not upper_bound_at_most(k, n, p0, alpha)) or (n >= observed_floor and Fraction(k, n) > p0):
-        outcome = FAIL_NOT_SHOWN
-    else:
-        outcome = NOT_TESTABLE
-    return {"outcome": outcome, "k": k, "n": n, "observed": round(k / n, 6) if n else None,
-            "lower_95": lower_bound(k, n), "upper_95": upper_bound(k, n), "bound": str(p0), "floor": floor}
+        return FAIL_SHOWN_WORSE
+    if n >= floor and upper_bound_at_most(k, n, p0, alpha):
+        return PASS
+    if (n >= floor and not upper_bound_at_most(k, n, p0, alpha)) or (n >= observed_floor and Fraction(k, n) > p0):
+        return FAIL_NOT_SHOWN
+    return NOT_TESTABLE
 
 
-def correct_stop_gate(x: int, n: int, gates: Mapping[str, Any]) -> dict[str, Any]:
-    """n = qualified-start cases, x = correct stops. The frozen three-way table."""
+def correct_stop_outcome(x: int, n: int, gates: Mapping[str, Any]) -> str:
+    """n = qualified-start cases, x = correct stops. The frozen three-way table (the outcome only)."""
     p0, alpha = Fraction(str(gates["min_correct_stop_rate_of_qualified_start_cases"])), Fraction(str(gates["alpha"]))
     floor, observed_floor = gates["min_qualified_start_cases_for_correct_gate_pass"], gates["min_n_for_observed_rate_fail"]
     if upper_bound_below(x, n, p0, alpha):
-        outcome = FAIL_SHOWN_WORSE
-    elif n >= floor and lower_bound_at_least(x, n, p0, alpha):
-        outcome = PASS
-    elif (n >= floor and not lower_bound_at_least(x, n, p0, alpha)) or (n >= observed_floor and Fraction(x, n) < p0):
-        outcome = FAIL_NOT_SHOWN
-    else:
-        outcome = NOT_TESTABLE
-    return {"outcome": outcome, "k": x, "n": n, "observed": round(x / n, 6) if n else None,
-            "lower_95": lower_bound(x, n), "upper_95": upper_bound(x, n), "bound": str(p0), "floor": floor}
+        return FAIL_SHOWN_WORSE
+    if n >= floor and lower_bound_at_least(x, n, p0, alpha):
+        return PASS
+    if (n >= floor and not lower_bound_at_least(x, n, p0, alpha)) or (n >= observed_floor and Fraction(x, n) < p0):
+        return FAIL_NOT_SHOWN
+    return NOT_TESTABLE
+
+
+def unsafe_stop_gate(k: int, n: int, gates: Mapping[str, Any]) -> dict[str, Any]:
+    """The unsafe-stop gate result: its outcome, with k, n and both reported bounds."""
+    return {"outcome": unsafe_stop_outcome(k, n, gates), "k": k, "n": n, "observed": round(k / n, 6) if n else None,
+            "lower_95": lower_bound(k, n), "upper_95": upper_bound(k, n),
+            "bound": str(Fraction(str(gates["max_unsafe_stop_rate_of_stops"]))),
+            "floor": gates["min_stops_for_unsafe_gate_pass"]}
+
+
+def correct_stop_gate(x: int, n: int, gates: Mapping[str, Any]) -> dict[str, Any]:
+    """The correct-stop gate result: its outcome, with k, n and both reported bounds."""
+    return {"outcome": correct_stop_outcome(x, n, gates), "k": x, "n": n, "observed": round(x / n, 6) if n else None,
+            "lower_95": lower_bound(x, n), "upper_95": upper_bound(x, n),
+            "bound": str(Fraction(str(gates["min_correct_stop_rate_of_qualified_start_cases"]))),
+            "floor": gates["min_qualified_start_cases_for_correct_gate_pass"]}
 
 
 # ---------------------------------------------------------------- routing, research metrics and scoring
@@ -349,6 +359,7 @@ def generalization(judged: list[Mapping[str, Any]], table: Mapping[str, Any]) ->
 
 
 __all__ = ["CONTRACT_VERSION", "PASS", "FAIL_SHOWN_WORSE", "FAIL_NOT_SHOWN", "NOT_TESTABLE", "decide", "score",
-           "generalization", "research_metrics", "unsafe_stop_gate", "correct_stop_gate", "upper_bound_at_most",
+           "generalization", "research_metrics", "unsafe_stop_gate", "correct_stop_gate", "unsafe_stop_outcome",
+           "correct_stop_outcome", "upper_bound_at_most",
            "lower_bound_above", "lower_bound_at_least", "upper_bound_below", "lower_bound", "upper_bound",
            "two_sided_interval"]

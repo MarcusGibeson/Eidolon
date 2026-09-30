@@ -717,7 +717,8 @@ class DesignTests(unittest.TestCase):
 
         read = set()
         for module, names in (("g_route4_qualification.py", ("qualify",)),
-                              ("g_route4_validation.py", ("score", "unsafe_stop_gate", "correct_stop_gate")),
+                              ("g_route4_validation.py", ("score", "unsafe_stop_gate", "correct_stop_gate", "unsafe_stop_outcome",
+                                                         "correct_stop_outcome")),
                               ("g_route4_contract.py", ("load_thresholds",))):
             tree = ast.parse((TOOLS / module).read_text(encoding="utf-8"))
             for fn in (n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in names):
