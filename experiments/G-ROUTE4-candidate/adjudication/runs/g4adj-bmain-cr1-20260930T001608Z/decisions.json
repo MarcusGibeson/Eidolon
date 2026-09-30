@@ -1,0 +1,42 @@
+{
+ "B4-CONV-R1-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-CONV-R2-28": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R1-02": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ },
+ "B4-SYNTH-R2-15": {
+  "sampled": false,
+  "a1": false,
+  "a2": false,
+  "a3": true,
+  "decision": "operator",
+  "flag": null
+ },
+ "B4-SYNTH-R3-08": {
+  "sampled": false,
+  "a1": true,
+  "a2": null,
+  "a3": null,
+  "decision": "keep",
+  "flag": null
+ }
+}
