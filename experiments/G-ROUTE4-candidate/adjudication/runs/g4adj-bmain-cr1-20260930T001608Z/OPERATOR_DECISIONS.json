@@ -1,0 +1,31 @@
+{
+ "schema_version": "g-route4.operator-decisions.v1",
+ "run_id": "g4adj-bmain-cr1-20260930T001608Z",
+ "round": "cr1 (corpus review round 1 remediation)",
+ "decided_by": "operator (Marcus Gibeson)",
+ "date": "2026-09-30",
+ "rule": "frozen step 6 within the step-7 re-adjudication of a fixed fixture, read under the operator's B1 step-7 ruling (adjudication/errata/STEP7_RULING_ANNOTATION.md)",
+ "operator_message_verbatim": {
+  "transcript_record_uuid": "25710cad-f2fc-4f16-9025-cf317ad6a307",
+  "utc": "2026-09-30T00:23:08.412Z",
+  "text_sha256": "5747a9b63bcf476402d52d83f23bbddec8bf67d2afac29c459a065de590900cb",
+  "text": "Disposition: KEEP \"B4-SYNTH-R2-15\".\n\nApply the previously recorded B1 step-7 ruling.\n\nThe fixture has completed its authorized fix and re-adjudication. Two adjudicator outputs disagreed only because they were code-fenced / malformed for the frozen output-shape rule. The diagnostic check established that, after stripping the fences, both answers pass the frozen validators against the fixed gold conclusion \"cause_established\".\n\nNo substantive fixture defect, gold defect, or semantic disagreement has been established.\n\nTherefore retain \"B4-SYNTH-R2-15\" and record that it did not reach automatic keep under the historical B′ decision rule, but is retained by explicit operator disposition under the B1 ruling because the remaining disagreements are fenced/non-admissible answers and the repaired fixture and gold remain defensible.\n\nDo not replace it with \"B4-SYNTH-R2-X03\".\n\nProceed with the remaining round-1 closure work:\n\n1. Record the remediation-round closure and bind this disposition.\n2. Regenerate the downstream records as successor artifacts for the complete 26-fix corpus, without modifying the closed historical artifacts.\n3. Regenerate the A′ and B′ closure addenda, independence report, contamination analysis, fix checks, and external-review reconciliation as applicable.\n4. Run the required final independence re-check using the forked module and require reproduction of the frozen values.\n5. Verify all MUST-FIX findings from both reviewers are resolved and all required disclosures and errata are bound.\n6. Confirm the sealed corpus, blueprint, audit sample, historical closures, and unrelated G-ROUTE1/G-ROUTE3 material remain unchanged.\n\nRound 1 may close only if all regenerated checks pass and the final independence re-check satisfies the frozen requirements. If any regenerated result introduces a new defect or fails a frozen condition, stop at that boundary rather than weakening or reinterpreting the criterion."
+ },
+ "decisions": [
+  {
+   "fixture_id": "B4-SYNTH-R2-15",
+   "verdicts": [
+    false,
+    false,
+    true
+   ],
+   "outcome": "gold right -> keep",
+   "reason": "The fixture completed its authorized fix and re-adjudication. Two adjudicator outputs disagreed only because they were code-fenced (malformed for the frozen output-shape rule); after stripping the fences both pass the frozen validators against the fixed gold conclusion 'cause_established' (diagnostic only). No substantive fixture defect, gold defect or semantic disagreement is established.",
+   "status_note": "did not reach automatic keep under the historical B′ decision rule; retained by explicit operator disposition under the B1 ruling, because the remaining disagreements are fenced (non-admissible) answers and the repaired fixture and gold remain defensible",
+   "replaced": false,
+   "not_used_reserve": "B4-SYNTH-R2-X03"
+  }
+ ],
+ "verdicts_unchanged": "the recorded verdicts are unchanged; both fenced answers remain disagreements",
+ "full_cell_consequence": "not applicable: B4-SYNTH-R2-15 is not an audit-sample fixture"
+}
