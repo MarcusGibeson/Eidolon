@@ -3,6 +3,8 @@
 Writes, into experiments/G-ROUTE4-candidate/ (the design's artifact folder):
 - corpus_a.json / corpus_b.json: model-facing fixtures of A′ main (80) and B′ main (305), in sealed order;
 - gold_a.json / gold_b.json: their gold (evaluator-only);
+- fixture_families.json: the template family of every A′ and B′ fixture, from the frozen blueprint (descriptive
+  reporting only);
 - model_bindings.json: G-ROUTE3's bindings, generation configuration and provider version, unchanged, under renamed
   ids (design "Scope": g-route4.model-bindings.v1, G-ROUTE4-MODEL-BINDINGS-R1).
 
@@ -85,6 +87,15 @@ def main():
                     "provenance": provenance}
         out[f"corpus_{lower}.json"] = write(CAND / f"corpus_{lower}.json", corpus_doc)
         out[f"gold_{lower}.json"] = write(CAND / f"gold_{lower}.json", gold_doc)
+    blueprint = load(CAND / "blueprint/BLUEPRINT.json")
+    main_ids = {f["fixture_id"] for name in ("corpus_a.json", "corpus_b.json") for f in load(G4I.SEALED / name)["fixtures"]}
+    families = {s["fixture_id"]: s["family"] for s in blueprint["slots"] if s["fixture_id"] in main_ids}
+    assert set(families) == main_ids
+    out["fixture_families.json"] = write(CAND / "fixture_families.json", {
+        "schema_version": "g-route4.fixture-families.v1", "families": dict(sorted(families.items())),
+        "source": "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json (frozen at 1156d06), slots[].family",
+        "blueprint_lf_sha256": G4I.lf_sha256(CAND / "blueprint/BLUEPRINT.json"),
+        "use": "descriptive per-family reporting only (design 'Descriptive reporting'); never model-facing"})
     g3 = load(ROOT / "experiments/G-ROUTE3-candidate/model_bindings.json")
     bindings = {"schema_version": "g-route4.model-bindings.v1", "binding_id": "G-ROUTE4-MODEL-BINDINGS-R1",
                 "provider": g3["provider"], "provider_version": g3["provider_version"],

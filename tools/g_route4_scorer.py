@@ -67,9 +67,9 @@ def run_spec(phase: str):
     from g_route4_contract import runtime_fixtures, verify_checked_schedule
     schedule = verify_checked_schedule(phase)
     fixtures = runtime_fixtures(phase)
-    spec = J.RunSpec(call_ids=tuple(row["call_id"] for row in schedule),
-                     coding=frozenset(int(row["position"]) for row in schedule
-                                      if fixtures[row["fixture_id"]]["validator_profile"] == "coding.v1"))
+    if any(f["validator_profile"] == "coding.v1" for f in fixtures.values()):
+        raise ValueError("coding_fixture_refused")                   # coding is deferred (D6)
+    spec = J.RunSpec(call_ids=tuple(row["call_id"] for row in schedule), coding=frozenset())
     return spec, schedule, fixtures
 
 
@@ -86,21 +86,21 @@ def read_journal(directory: Path) -> tuple[dict[str, bytes], list[str]]:
     return files, extra
 
 
-def rebuild_records(entries: list, phase: str, schedule: list, fixtures: Mapping[str, Any],
-                    *, check_executables: bool) -> tuple[list[dict[str, Any]], dict[int, str]]:
-    """R6-shaped records for every recorded call. Positions whose call id differs from today's schedule, whose
-    request body differs from the digest sealed in ``call_started``, or whose stored executable does not re-derive
-    are returned as mismatched (undeterminable), each with its reason."""
+def rebuild_records(entries: list, phase: str, schedule: list, fixtures: Mapping[str, Any]
+                    ) -> tuple[list[dict[str, Any]], dict[int, str]]:
+    """Records for every recorded call. Positions whose call id differs from today's schedule, or whose request body
+    differs from the digest sealed in ``call_started``, are returned as mismatched (undeterminable), each with its
+    reason. Coding is excluded: any execution entry is refused (an integrity failure)."""
     import g_route4_journal as J
     from g_route4_contract import request_body
     from g_route4_qualification import collect_evaluation
-    from g_route4_runner import _failed_coding_evidence, sanitize_strings
-    from g_route3_worker import derive_executable
+    from g_route4_runner import sanitize_strings
 
     records: list[dict[str, Any]] = []
     mismatched: dict[int, str] = {}
-    executions = {int(e["payload"]["position"]): e for e in entries if e["kind"] == "execution_recorded"}
-    started = {int(e["payload"]["position"]): e for e in entries if e["kind"] == "execution_started"}
+    for entry in entries:
+        if entry["kind"] in ("execution_started", "execution_recorded"):
+            mismatched[int(entry["payload"].get("position") or 0)] = "execution_entry_forbidden"
     calls = {int(e["payload"]["position"]): e for e in entries if e["kind"] == "call_started"}
     for entry in entries:
         if entry["kind"] != "call_recorded":
@@ -133,23 +133,7 @@ def rebuild_records(entries: list, phase: str, schedule: list, fixtures: Mapping
         strings_sanitized = result != original
         raw_output = result["raw_output"]
         infrastructure_failure = str(payload.get("transport_failure") or "")
-        evidence = None
-        if fixture["validator_profile"] == "coding.v1":
-            execution = executions.get(position)
-            if execution is not None:
-                evidence = execution["payload"].get("evidence")
-                infrastructure_failure = infrastructure_failure or str(
-                    execution["payload"].get("infrastructure_failure") or "")
-                if check_executables and position in started:
-                    stored = started[position]["payload"]["executable_json"]
-                    if derive_executable(fixture, raw_text) != stored:
-                        mismatched[position] = "stored_executable_does_not_rederive"
-                        continue
-            elif not infrastructure_failure:
-                infrastructure_failure = "execution_not_run"      # B-N2: never graded as a model failure
-            if evidence is None:
-                evidence = _failed_coding_evidence(fixture)      # R6: an empty or unexecuted output fails
-        evaluation = platform.run_pinned(collect_evaluation, fixture, raw_output, evidence)
+        evaluation = platform.run_pinned(collect_evaluation, fixture, raw_output)
         metrics = result["metrics"]
         latency = float(payload.get("latency_seconds") or 0.0)
         records.append({
@@ -159,7 +143,7 @@ def rebuild_records(entries: list, phase: str, schedule: list, fixtures: Mapping
             "raw_provider_body_b64": str(payload.get("raw_body_b64") or ""),
             "raw_provider_body_sha256": str(payload.get("raw_body_sha256") or ""),
             "raw_provider_envelope": result["envelope"], "raw_output": raw_output,
-            **evaluation, "coding_execution_evidence": evidence,
+            **evaluation,
             "infrastructure_failure": infrastructure_failure,
             "requested_model": scheduled["model"], "returned_model": payload.get("returned_model"),
             "provider_contacted": bool(payload.get("provider_contacted")), "provider_metrics": metrics,
@@ -214,8 +198,7 @@ def partial_results(phase: str, data_root: Path, rows: list[Mapping[str, Any]], 
                 row["undeterminable_reason"] = "inputs_differ_from_today:" + ",".join(differing)
                 row["partial_results_source"] = "none"
             else:
-                records, mismatched = rebuild_records(entries + temp_entries, phase, schedule, fixtures,
-                                                      check_executables=True)
+                records, mismatched = rebuild_records(entries + temp_entries, phase, schedule, fixtures)
                 temp_positions = {int(e["payload"]["position"]) for e in temp_entries}
                 records = [r for r in records if r["schedule_position"] not in mismatched]
                 judged = platform.run_pinned(attach_semantics, records, phase)
@@ -300,26 +283,33 @@ def score_run(request: Mapping[str, Any]) -> dict[str, Any]:
     replay = J.replay_run(files, spec, extra_names=extra)
     if replay.state not in ("scoring_interrupted", "torn_pending"):
         return {"error": f"scorer_state:{replay.state}"}
-    records, mismatched = rebuild_records(replay.entries, phase, schedule, fixtures, check_executables=True)
+    records, mismatched = rebuild_records(replay.entries, phase, schedule, fixtures)
     if mismatched:
-        return {"error": f"stored_executable_or_call_differs:{mismatched}"}           # C-O5
+        return {"error": f"call_differs_or_execution_entry:{mismatched}"}             # C-O5
     if len(records) != spec.calls:
         return {"error": "scorer_requires_every_record"}
     rows = partial_results(phase, data_root, list(request.get("attempts") or []), schedule, fixtures, guarded)
     orphans = list(request.get("orphans_cleared") or [])
     if phase == "A":
-        cells = platform.run_pinned(qualify, platform.run_pinned(attach_semantics, records, "A"))
+        from g_route4_contract import indexed_fixture_gold
+        from g_route4_validation import research_metrics
+        judged = platform.run_pinned(attach_semantics, records, "A")
+        cells = platform.run_pinned(qualify, judged)
+        gold_a = {fid: gold for fid, (_, gold) in indexed_fixture_gold("A").items()}
         report = {"contract_version": "g-route4.phase-a-score.v1", "phase": "A", "cells": cells,
+                  "research_metrics_a_descriptive": platform.run_pinned(research_metrics, judged, gold_a),
                   "qualified_cells": sum(c["verdict"] == "qualified" for c in cells),
                   "insufficient_cells": sum(c["verdict"] == "insufficient_evidence" for c in cells),
                   "table_frozen": False, "corpus_b_consulted": False, "belief_effects": "none",
                   "attempt_disclosure": rows, "orphans_cleared": orphans}
     else:
+        from g_route4_contract import load_fixture_families
         from g_route4_validation import score
         table = platform.run_pinned(load_frozen_table, data_root / "tables" / "QUALIFICATION_TABLE.json")
         if table["table_sha256"] != run_created.get("table_sha256"):
             return {"error": "qualification_table_mutated"}
-        report = {**platform.run_pinned(score, records, table), "synthetic_fixture": bool(run_created.get("synthetic")),
+        report = {**platform.run_pinned(score, records, table, families=load_fixture_families()),
+                  "synthetic_fixture": bool(run_created.get("synthetic")),
                   "phase_b_attempts": rows, "phase_a_run_id": run_created.get("phase_a_run_id"),
                   "orphans_cleared": orphans}
     recheck_inputs(guarded, data_root)                                                 # B-O2 after
@@ -338,9 +328,9 @@ def phase_a_cells(request: Mapping[str, Any]) -> dict[str, Any]:
     replay = J.replay_run(files, spec, extra_names=extra)
     if replay.state != "completed":
         return {"error": f"phase_a_state:{replay.state}"}
-    records, mismatched = rebuild_records(replay.entries, "A", schedule, fixtures, check_executables=True)
+    records, mismatched = rebuild_records(replay.entries, "A", schedule, fixtures)
     if mismatched:
-        return {"error": f"stored_executable_or_call_differs:{mismatched}"}
+        return {"error": f"call_differs_or_execution_entry:{mismatched}"}
     cells = platform.run_pinned(qualify, platform.run_pinned(attach_semantics, records, "A"))
     recheck_inputs(run_created["guarded_files"], data_root)
     return {"cells": cells}

@@ -20,6 +20,7 @@ DATA = ROOT / "experiments" / "G-ROUTE4-candidate"
 PROMPT_PROFILES_PATH = ROOT / "experiments" / "G-ROUTE1-candidate" / "prompt_profiles.json"
 MODEL_BINDINGS_PATH = DATA / "model_bindings.json"
 THRESHOLDS_PATH = DATA / "thresholds.json"
+FIXTURE_FAMILIES_PATH = DATA / "fixture_families.json"      # template family per fixture (descriptive reports only)
 EXECUTION_FREEZE_PATH = DATA / "EXECUTION_FREEZE_CANDIDATE.json"
 QUALIFICATION_TABLE_PATH = DATA / "QUALIFICATION_TABLE.json"
 
@@ -160,6 +161,18 @@ def load_thresholds(path: str | Path = THRESHOLDS_PATH) -> dict[str, Any]:
     if qualification.get("observations_required") != A_FIXTURES_PER_CELL * REPEATS["A"]:
         raise ValueError("qualification_denominator_mismatch")
     return payload
+
+
+def load_fixture_families(path: str | Path = FIXTURE_FAMILIES_PATH) -> dict[str, str]:
+    """Template family of every A′ and B′ fixture, from the frozen blueprint. Used only by descriptive reporting."""
+    payload = dict(load_json(path))
+    if payload.get("schema_version") != "g-route4.fixture-families.v1":
+        raise ValueError("fixture_families_schema_mismatch")
+    families = dict(payload.get("families") or {})
+    expected = {row["fixture_id"] for corpus in CORPORA for row in load_corpus(corpus)["fixtures"]}
+    if set(families) != expected:
+        raise ValueError("fixture_families_coverage_mismatch")
+    return families
 
 
 @dataclass(frozen=True)
