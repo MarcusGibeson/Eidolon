@@ -1,0 +1,259 @@
+{
+ "schema_version": "g-route4.fork-record.v1",
+ "table": [
+  [
+   "G-ROUTE3-candidate",
+   "G-ROUTE4-candidate"
+  ],
+  [
+   "G-ROUTE3",
+   "G-ROUTE4"
+  ],
+  [
+   "g-route3",
+   "g-route4"
+  ],
+  [
+   "GROUTE3",
+   "GROUTE4"
+  ],
+  [
+   "groute3",
+   "groute4"
+  ],
+  [
+   "g_route3",
+   "g_route4"
+  ],
+  [
+   "RouteThree",
+   "RouteFour"
+  ]
+ ],
+ "kept_unchanged": [
+  "g_route3_conversation",
+  "g_route3_semantics",
+  "g_route3_operational",
+  "g_route3_triggers",
+  "g_route3_routing",
+  "g-route3.conversation-frame.v3",
+  "g-route3.semantics.v1",
+  "g-route3.operational-validator.v2",
+  "g-route3.triggers.v1",
+  "g-route3.routing.v1",
+  "g_route3_worker",
+  "g_route3_r7_differential"
+ ],
+ "modules": {
+  "platform": {
+   "source": "tools/g_route3_platform.py",
+   "source_lf_sha256": "8eca92ac769effb687de3f4707d26dee115ddea1389bcf4a6d12f0c2bc43cbad",
+   "mechanical_fork_lf_sha256": "79a46187fac9e762958f830856af9fb7b79bc81ed8de3a25ac7bfb16d8fae092",
+   "substitutions": {
+    "G-ROUTE3-candidate": 0,
+    "G-ROUTE3": 3,
+    "g-route3": 1,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 0,
+    "RouteThree": 0
+   }
+  },
+  "fs": {
+   "source": "tools/g_route3_fs.py",
+   "source_lf_sha256": "e34bf9ca50e3886319c2e2a19faf394d6b7a2f8081f3ed93219a23286e8d565a",
+   "mechanical_fork_lf_sha256": "9ffeac5335561452164b634dfbfbaca8ccc1f21915ba251b586242a3cc277cd3",
+   "substitutions": {
+    "G-ROUTE3-candidate": 0,
+    "G-ROUTE3": 0,
+    "g-route3": 0,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 2,
+    "RouteThree": 0
+   }
+  },
+  "contract": {
+   "source": "tools/g_route3_contract.py",
+   "source_lf_sha256": "163f1e8f4ad27248d153da3540fe0b7af4aa7baf8bb32c873284a05a3cf0f43c",
+   "mechanical_fork_lf_sha256": "878de6e6962fc289eaf83147055e2fab2e08c86627185a51fb0509322e3e3deb",
+   "substitutions": {
+    "G-ROUTE3-candidate": 1,
+    "G-ROUTE3": 6,
+    "g-route3": 6,
+    "GROUTE3": 1,
+    "groute3": 0,
+    "g_route3": 0,
+    "RouteThree": 0
+   }
+  },
+  "qualification": {
+   "source": "tools/g_route3_qualification.py",
+   "source_lf_sha256": "7165b075579c74f58c924729c8143d4a0e2d2846b70a182104ae97d77ceee391",
+   "mechanical_fork_lf_sha256": "0abd0ffff7eadf5a751cb4845c122ed47fe1046e85ce4c2616a1e0dcf686675d",
+   "substitutions": {
+    "G-ROUTE3-candidate": 0,
+    "G-ROUTE3": 1,
+    "g-route3": 2,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 3,
+    "RouteThree": 0
+   }
+  },
+  "validation": {
+   "source": "tools/g_route3_validation.py",
+   "source_lf_sha256": "1331ab1568cfcc45e7a3da43f725268dca45e7c1d12cf0a87e1fd1d615295894",
+   "mechanical_fork_lf_sha256": "68679f496cab6f9f7cb2b7bb697995be2ef5d24820a1f76f31b5d20362a0ee52",
+   "substitutions": {
+    "G-ROUTE3-candidate": 0,
+    "G-ROUTE3": 0,
+    "g-route3": 1,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 2,
+    "RouteThree": 0
+   }
+  },
+  "scorer": {
+   "source": "tools/g_route3_scorer.py",
+   "source_lf_sha256": "99964fcdbc9580338e311f35467f20bff40b1e7eb03cc20e2af3137663f2cdaa",
+   "mechanical_fork_lf_sha256": "e2093bbe73aa2934be997ed093e84592a9947d80413271964ba7465b0e696036",
+   "substitutions": {
+    "G-ROUTE3-candidate": 1,
+    "G-ROUTE3": 1,
+    "g-route3": 1,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 23,
+    "RouteThree": 0
+   }
+  },
+  "lifecycle": {
+   "source": "tools/g_route3_lifecycle.py",
+   "source_lf_sha256": "fef49bd2b46b6d0b78e1fe0e7c2dbc868a315dcb566edf25d1d3b1ef78ad1594",
+   "mechanical_fork_lf_sha256": "78f6cfbb2db06ed0b66a27adea5198922d12d09cb94a61616af150dfa3417980",
+   "substitutions": {
+    "G-ROUTE3-candidate": 0,
+    "G-ROUTE3": 2,
+    "g-route3": 2,
+    "GROUTE3": 0,
+    "groute3": 1,
+    "g_route3": 20,
+    "RouteThree": 0
+   }
+  },
+  "journal": {
+   "source": "tools/g_route3_journal.py",
+   "source_lf_sha256": "58436a1aa843db5774a39779eb12941b943ae876b014618a01fd70f388ff8d76",
+   "mechanical_fork_lf_sha256": "3696e16dc1cdc96aa852672e8ce7d27707326a59743f5e5b58c7018fc63bc72a",
+   "substitutions": {
+    "G-ROUTE3-candidate": 0,
+    "G-ROUTE3": 1,
+    "g-route3": 1,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 1,
+    "RouteThree": 0
+   }
+  },
+  "evidence": {
+   "source": "tools/g_route3_evidence.py",
+   "source_lf_sha256": "26b333ba143981d48f106dc272692c99800f4d5085db73c1381a633e5938a652",
+   "mechanical_fork_lf_sha256": "0b2fb87608c9f40bfa48b89609564b684422c1d7e98d8d7d3f23226e762d847c",
+   "substitutions": {
+    "G-ROUTE3-candidate": 0,
+    "G-ROUTE3": 4,
+    "g-route3": 4,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 0,
+    "RouteThree": 0
+   }
+  },
+  "launch": {
+   "source": "tools/g_route3_launch.py",
+   "source_lf_sha256": "07390d9d2f29d13ae0dd40e87002ad79cdbefef08c0aabf10fdaa6bbefaa5756",
+   "mechanical_fork_lf_sha256": "927b5135dc49c3cae207c0ea2c4c5c65fdecf2d2980aa9048379f2b3c3b4b31f",
+   "substitutions": {
+    "G-ROUTE3-candidate": 1,
+    "G-ROUTE3": 15,
+    "g-route3": 1,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 20,
+    "RouteThree": 0
+   }
+  },
+  "freeze": {
+   "source": "tools/g_route3_freeze.py",
+   "source_lf_sha256": "45a46280e443aa3e91424cfc311ca87e830514b619455ab59b769c7be99c6806",
+   "mechanical_fork_lf_sha256": "7353f495fd66b2d49986e6b42ed27a08614df32728d6cc3a583569e869718c48",
+   "substitutions": {
+    "G-ROUTE3-candidate": 14,
+    "G-ROUTE3": 13,
+    "g-route3": 4,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 24,
+    "RouteThree": 0
+   }
+  },
+  "runner": {
+   "source": "tools/g_route3_runner.py",
+   "source_lf_sha256": "52fcadfe08ef73fdbd552268b90b98f56ae0624826d235933d5466e65e68d285",
+   "mechanical_fork_lf_sha256": "71f569f31a2bc865b087759b19e0959fe968d4aaf598971447cbc3dbe11aa653",
+   "substitutions": {
+    "G-ROUTE3-candidate": 9,
+    "G-ROUTE3": 5,
+    "g-route3": 3,
+    "GROUTE3": 0,
+    "groute3": 1,
+    "g_route3": 20,
+    "RouteThree": 2
+   }
+  },
+  "campaign": {
+   "source": "tools/g_route3_campaign.py",
+   "source_lf_sha256": "f4e5dcdf69c62ec0e26943cbd2f2902cee3241e769ec41e3d773cb470b3031a3",
+   "mechanical_fork_lf_sha256": "91ce1780eac1997b9e95bc8087a6ed04b96cbd0f1f2f090d4f59d6b0787205b4",
+   "substitutions": {
+    "G-ROUTE3-candidate": 0,
+    "G-ROUTE3": 3,
+    "g-route3": 0,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 12,
+    "RouteThree": 0
+   }
+  },
+  "tests": {
+   "source": "tools/g_route3_tests.py",
+   "source_lf_sha256": "a30e7e651df4c9767087996a31ee894d1f64b246ce9fc48d9547de5f58248f34",
+   "mechanical_fork_lf_sha256": "300562987af5482f8c4d372ced602ca290980dd10ed16f595aa7a1a91b7de459",
+   "substitutions": {
+    "G-ROUTE3-candidate": 0,
+    "G-ROUTE3": 17,
+    "g-route3": 0,
+    "GROUTE3": 3,
+    "groute3": 0,
+    "g_route3": 58,
+    "RouteThree": 1
+   }
+  },
+  "r7_tests": {
+   "source": "tools/g_route3_r7_tests.py",
+   "source_lf_sha256": "21f34566335c6fa1cacd821d5fc2544bca4e9524d3648cf561d47e73e02f3022",
+   "mechanical_fork_lf_sha256": "da31843f67a23dad5120c01806470a5dc9093df4b10b726f2ed96db6e6146ba2",
+   "substitutions": {
+    "G-ROUTE3-candidate": 1,
+    "G-ROUTE3": 0,
+    "g-route3": 0,
+    "GROUTE3": 0,
+    "groute3": 0,
+    "g_route3": 15,
+    "RouteThree": 0
+   }
+  }
+ }
+}
