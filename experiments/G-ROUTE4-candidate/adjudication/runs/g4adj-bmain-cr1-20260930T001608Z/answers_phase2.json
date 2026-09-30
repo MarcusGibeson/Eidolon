@@ -1,0 +1,52 @@
+{
+ "schema_version": "g-route4.adjudication-answers.v1",
+ "phase": 2,
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "journal_sha256": "437477bdea14ca6a265ee8402e4762e285403d1b16d84062e9f651ae0e5fd3bd",
+ "journal_records": 20,
+ "schedule_sha256": "dfe910672fb1d0bec25caea0c68a095dbe6639a55f7e20a7643dffd4858effe7",
+ "slots": [
+  {
+   "fixture_id": "B4-SYNTH-R2-15",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "recorded_kind": null,
+     "raw_body_sha256": "2f3f690387f20f0f1b5f30d6c3a5e4c0f43bb6bbed5683f7f48f69b458ecb720",
+     "request_sha256": "9276e8c63300cc08a49da49735b293ad666bbac34b6fb6a33f4e7a0d51bb92db",
+     "request_id": "req_011CfYfNBKrn2aYjocxs4a5X",
+     "message_id": "msg_011CfYfNCurWjSKpastpCa3j",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "1e9f05703d0f6dcee7d73272a728bf86eb70d0bf4115ab6b248a6a85903b8f48"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "1e9f05703d0f6dcee7d73272a728bf86eb70d0bf4115ab6b248a6a85903b8f48"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-15",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "recorded_kind": null,
+     "raw_body_sha256": "0fe87f1688e41628ccb623e43636ad79df0481f676413181d05335dd8658cf66",
+     "request_sha256": "9276e8c63300cc08a49da49735b293ad666bbac34b6fb6a33f4e7a0d51bb92db",
+     "request_id": "req_011CfYfNBJsABpiJFJzpU13x",
+     "message_id": "msg_011CfYfNBuM15vQ5fdZKjmGM",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "3531148ab30b8e10e1959ce6d627870f4632421071a7ab9a9395d201e6fafd55"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "3531148ab30b8e10e1959ce6d627870f4632421071a7ab9a9395d201e6fafd55"
+  }
+ ]
+}
