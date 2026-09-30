@@ -128,6 +128,9 @@ def governed_runtime():
     data_root = manifest.get("data_root")
     if not data_root or not Path(data_root).is_absolute():
         raise PermissionError("execution_freeze_names_no_absolute_data_root")
+    from g_route4_freeze import DATA_ROOT
+    if data_root != DATA_ROOT:                          # the literal pinned path (design "Data roots")
+        raise PermissionError("execution_freeze_data_root_is_not_the_pinned_literal")
     fs = fsmod.RealFs()
     provider = runner.GovernedOllamaProvider()
     schedules, fixtures, bodies, input_digests = lifecycle.load_bound_inputs()

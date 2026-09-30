@@ -24,6 +24,7 @@ import g_route4_journal as J
 import g_route4_platform as platform
 
 CONTRACT_VERSION = "g-route4.lifecycle.r7"
+EXPERIMENT = "G-ROUTE4"                                  # the experiment name committed in root.json
 PHASES = ("A", "B")
 TABLE_NAME = "QUALIFICATION_TABLE.json"
 AUDIT_NAME = "QUALIFICATION_AUDIT_DOCUMENT"
@@ -123,8 +124,22 @@ class Lifecycle:
             pass            # the log is non-authoritative (J10)
 
     # ------------------------------------------------------------ setup (§3.1) and opening (J8 steps 1-2)
+    def check_experiment_readonly(self) -> None:
+        """Design "Data roots": before setup, the lease or any write, a data root that already holds a root.json
+        must name this experiment. Read-only; a root of another experiment is refused, never touched."""
+        path = self.D / "root.json"
+        if not path.is_file():
+            return
+        try:
+            experiment = json.loads(path.read_bytes().decode("utf-8")).get("experiment")
+        except (OSError, ValueError, UnicodeDecodeError, AttributeError) as exc:
+            raise Refusal("data_root_experiment_unreadable") from exc
+        if experiment != EXPERIMENT:
+            raise Refusal(f"data_root_belongs_to_another_experiment:{experiment}")
+
     def setup_if_missing(self) -> None:
         """Atomic setup of D under the setup lock, only when D does not exist (or is empty)."""
+        self.check_experiment_readonly()
         parent = self.D.parent
         self.fs.ensure_dir(parent)
         setup_lock = platform.OsLease(parent / (self.D.name + ".setup.lock"))
@@ -142,7 +157,7 @@ class Lifecycle:
             ev.EvidenceRepo.check_git_version(self.fs)
             build = parent / f"{self.D.name}.setup-{fsmod.token()}"
             self.fs.ensure_dir(build)
-            root = {"experiment": "G-ROUTE4", "root_id": secrets.token_hex(16)}
+            root = {"experiment": EXPERIMENT, "root_id": secrets.token_hex(16)}
             root_bytes = J.canonical_bytes(root) + b"\n"
             self.fs.publish(build / "root.json", root_bytes, temp_label="root")
             for sub in ("staging", "quarantine", "tables", "disclosure/phase_a", "disclosure/phase_b",
@@ -160,6 +175,7 @@ class Lifecycle:
         """J8 steps 1-2: the lease, the repository health check, stale git locks, then verification."""
         if self.fs.list_names(self.D) is None:
             raise Refusal("data_root_missing")
+        self.check_experiment_readonly()                 # before the lease (design "Data roots")
         self.lease.acquire({"command": "g-route4-r7", "pid": __import__("os").getpid()})
         root_bytes = self.fs.read_bytes(self.D / "root.json")
         try:
@@ -176,7 +192,11 @@ class Lifecycle:
             else:
                 self.fs.unlink(leftover)
         committed_root = self.repo.read_blob(self.tree()["root.json"])
-        self.root_id = json.loads(committed_root.decode("utf-8"))["root_id"]
+        committed = json.loads(committed_root.decode("utf-8"))
+        if committed.get("experiment") != EXPERIMENT:     # again after the lease (design "Data roots")
+            self.lease.release()
+            raise Refusal(f"data_root_belongs_to_another_experiment:{committed.get('experiment')}")
+        self.root_id = committed["root_id"]
         del root_bytes                                   # root.json is verified with every committed item
         self.verify_evidence()
 
