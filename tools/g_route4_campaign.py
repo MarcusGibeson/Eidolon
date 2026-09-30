@@ -18,6 +18,13 @@ temporary file is deleted unless identical to its entry; the end state is comple
 the uninterrupted run), or closed with a permitted reason followed by a next attempt that completes, or a declared
 refusal; and every committed item still verifies.
 
+Adapted for G-ROUTE4 (design "Coding exclusion in the R7 fork"): the base synthetic schedule is 4 non-coding
+positions; the sandbox-failure sweep, Ctrl+C during the sandbox, worker module drift and the resumed
+awaiting_execution interrupt are dropped (there is no worker); added are probes that an injected execution entry is an
+integrity failure, that no forbidden module (the coding runner, the persistence module, the worker, or any prior
+module other than the five imported unchanged) is ever loaded, and a resumed-interrupt kill point at position N-1
+certifying interrupted_after_collection. Every other section is kept.
+
     python tools/g_route4_campaign.py [--quick]
 """
 
@@ -157,12 +164,12 @@ def _touched_dirs(kind: str, detail: Any) -> set[Path]:
 # ---------------------------------------------------------------- the small schedule and stubs
 
 def small_schedule() -> tuple[dict, dict]:
+    """The base synthetic schedule: the first 4 positions of the frozen A′ schedule, all non-coding."""
     import g_route4_contract as C
     fixtures = {phase: C.runtime_fixtures(phase) for phase in "AB"}
     rows = C.verify_checked_schedule("A")
-    coding = next(r for r in rows if fixtures["A"][r["fixture_id"]]["validator_profile"] == "coding.v1")
-    plain = [r for r in rows if fixtures["A"][r["fixture_id"]]["validator_profile"] != "coding.v1"][:3]
-    chosen = [plain[0], coding, plain[1], plain[2]]
+    chosen = rows[:4]
+    assert all(fixtures["A"][r["fixture_id"]]["validator_profile"] != "coding.v1" for r in chosen)
     schedule = {"A": [dict(row, position=index + 1) for index, row in enumerate(chosen)],
                 "B": C.verify_checked_schedule("B")[:4]}
     return schedule, fixtures
@@ -220,19 +227,6 @@ class StubProvider:
                 "provider_contacted": True, "error": "HTTPError:500" if mode == "error" else ""}
 
 
-def stub_worker(fs, failures: set | None = None) -> Callable:
-    def call(request: Mapping[str, Any]) -> Mapping[str, Any]:
-        fs.hook("child", "worker")
-        fs.hook("after_child", "worker")
-        if failures and request["fixture_id"] in failures:
-            raise L.WorkerFailure("died:1")
-        digest = J.sha256_bytes(request["executable_json"].encode("ascii"))
-        drift = {"tools/g_route3_worker.py": "0" * 64} if failures and "module_drift" in failures else {}
-        return {"evidence": {"stub": digest}, "candidate_error": None, "infrastructure_failure": "",
-                "module_digests": drift}
-    return call
-
-
 def stub_scorer(fs, data_root: Path, spec: J.RunSpec) -> Callable:
     def call(request: Mapping[str, Any]) -> Mapping[str, Any]:
         fs.hook("child", "scorer")
@@ -254,14 +248,12 @@ DISTINCT = SENTENCE + " after integrity failure of attempt {m}"
 class World:
     """One data root, its counters and a way to build a fresh Lifecycle (a fresh process)."""
 
-    def __init__(self, root: Path, *, failures: Mapping[str, str] | None = None,
-                 worker_failures: set | None = None) -> None:
+    def __init__(self, root: Path, *, failures: Mapping[str, str] | None = None) -> None:
         self.root = root
         self.D = root / "D"
         self.counts: dict = {}
         self.temp_unlinks: list = []
         self.failures = dict(failures or {})
-        self.worker_failures = set(worker_failures or ())
         self.schedule, self.fixtures = small_schedule()
         self.drift = False
         self.violations: list[str] = []
@@ -272,18 +264,16 @@ class World:
         def guarded(phase: str) -> dict:
             files = dict(base)
             if self.drift:
-                files["tools/g_route3_worker.py"] = "0" * 64
+                files["tools/g_route4_journal.py"] = "0" * 64
             return files
-        spec = J.RunSpec(call_ids=tuple(r["call_id"] for r in self.schedule["A"]),
-                         coding=frozenset(r["position"] for r in self.schedule["A"]
-                                          if self.fixtures["A"][r["fixture_id"]]["validator_profile"] == "coding.v1"))
+        spec = J.RunSpec(call_ids=tuple(r["call_id"] for r in self.schedule["A"]), coding=frozenset())
         import g_route4_runner as R
         import g_route4_tests as T
         rt = L.Runtime(data_root=self.D, fs=fs, provider=StubProvider(self.D, self.counts, self.failures, fs=fs,
                                                                       violations=self.violations),
                        model_receipts=lambda: T.receipts(), verify_receipts=R.verify_model_receipts,
                        freeze_binding=lambda: "f" * 64, freeze_valid=lambda: True, guarded_files=guarded,
-                       worker=stub_worker(fs, self.worker_failures), scorer=stub_scorer(fs, self.D, spec),
+                       scorer=stub_scorer(fs, self.D, spec),
                        schedules=self.schedule, fixtures=self.fixtures, synthetic=True, endpoint="synthetic")
         return L.Lifecycle(rt)
 
@@ -521,11 +511,11 @@ def reference_outcome(workdir: Path) -> tuple[Path, dict]:
     return template, {"ops": None}
 
 
-def kill_campaign(workdir: Path, template: Path, *, failures=None, worker_failures=None, power: bool = False,
+def kill_campaign(workdir: Path, template: Path, *, failures=None, power: bool = False,
                   stride: int = 1, label: str = "kills", subset_seed: int | None = None,
                   recursive_kills: int = 2) -> dict:
     """Kill after (and before) every operation of an uninterrupted attempt, then recover to a fixpoint."""
-    probe = base_world(template, workdir / "probe", failures=failures, worker_failures=worker_failures)
+    probe = base_world(template, workdir / "probe", failures=failures)
     fs = FaultFs(log_temps=probe.temp_unlinks)
     try:
         run_command(probe, fs, "launch", "A", SENTENCE.format(n=1), 1, False)
@@ -535,7 +525,7 @@ def kill_campaign(workdir: Path, template: Path, *, failures=None, worker_failur
     results = {"label": label, "operations": total, "cases": 0, "outcomes": {}, "problems": []}
     for index in range(1, total + 1, stride):
         for after in (True, False):
-            world = base_world(template, workdir / "case", failures=failures, worker_failures=worker_failures)
+            world = base_world(template, workdir / "case", failures=failures)
             fs = FaultFs(kill_at=index, kill_after=after, log_temps=world.temp_unlinks)
             try:
                 run_command(world, fs, "launch", "A", SENTENCE.format(n=1), 1, False)
@@ -548,7 +538,7 @@ def kill_campaign(workdir: Path, template: Path, *, failures=None, worker_failur
             results["cases"] += 1
             results["outcomes"][outcome.split(":")[0]] = results["outcomes"].get(outcome.split(":")[0], 0) + 1
             problems = check_oracles(world)
-            persistent = bool(failures or worker_failures)
+            persistent = bool(failures)
             permitted = outcome == "completed" or (persistent and outcome.startswith("stopped_after_"))
             if not persistent and outcome == "completed" and len(world.counts) < 4:
                 problems = problems + ["completed_without_every_call"]
@@ -781,18 +771,20 @@ def gap_cases(workdir: Path, template: Path) -> dict:
 
 
 def resumed_interrupt_cases(workdir: Path, template: Path) -> dict:
-    """Ruling 12 on resumed attempts. The first attempt is killed after a plain call_recorded (collecting) and
-    after the coding call_recorded (awaiting_execution, the pending-sandbox safe point). The resume is then
-    interrupted at its k-th check. Before the first new call it must exit open, having added only the
-    execution entries of a sandbox run that finished before the interrupt;
-    after one it must close as operator_interrupt, or, from collected on, exit with interrupted_after_collection.
-    Either way the attempt must then complete with clean oracles."""
-    results = {"label": "resumed_interrupts", "cases": 0, "outcomes": {}, "problems": []}
+    """Ruling 12 on resumed attempts. The first attempt is killed after the call_recorded of position 1
+    (collecting) and after the call_recorded of position N-1 (the last new call of the resume then collects). The
+    resume is interrupted at its k-th check. Before the first new call it must exit open having added nothing; after
+    one it must close as operator_interrupt, or, from collected on, exit with interrupted_after_collection. The
+    N-1 case must certify interrupted_after_collection at least once. Either way the attempt must then complete
+    with clean oracles."""
+    results = {"label": "resumed_interrupts", "cases": 0, "outcomes": {}, "problems": [],
+               "interrupted_after_collection_certified": False}
     probe = base_world(template, workdir / "resumed_probe")
     probe_fs = FaultFs(log_temps=probe.temp_unlinks)
     run_command(probe, probe_fs, "launch", "A", SENTENCE.format(n=1), 1, False)
     ops = probe_fs.ops
-    for label, entry in (("collecting", "000003.json"), ("awaiting_execution", "000005.json")):
+    last_new = len(probe.schedule["A"]) - 1
+    for label, entry in (("collecting", "000003.json"), ("position_n_minus_1", J.entry_name(2 * last_new + 1))):
         kill = next(i for i, op in enumerate(ops, 1) if ":rename:" in op and "journal" in op and entry in op)
         for k in range(1, 9):
             name = f"resumed_{label}_interrupt_at_check_{k}"
@@ -821,12 +813,9 @@ def resumed_interrupt_cases(workdir: Path, template: Path) -> dict:
             if out["state"] == "completed":
                 ok = seen["n"] < k                                   # the flag was never raised
             elif new_calls == 0:
-                # the interrupt itself writes nothing; a sandbox run that finished before it may have added its
-                # own execution entries, and nothing else
-                added = [J.parse_entry((journal / n).read_bytes()) for n in
-                         sorted(set(p.name for p in journal.iterdir()) - set(before))]
-                ok = (out["state"], out["reason"]) == ("open", "interrupted_before_first_new_call") and \
-                    all(e is not None and e["kind"] in ("execution_started", "execution_recorded") for e in added)
+                # the interrupt itself writes nothing (there is no sandbox run in this fork)
+                added = sorted(set(p.name for p in journal.iterdir()) - set(before))
+                ok = (out["state"], out["reason"]) == ("open", "interrupted_before_first_new_call") and not added
             else:
                 ok = (out["state"], out["reason"]) == ("closed", "operator_interrupt") or \
                     out["reason"] == "interrupted_after_collection"
@@ -835,16 +824,21 @@ def resumed_interrupt_cases(workdir: Path, template: Path) -> dict:
             passed = ok and final == "completed" and not problems
             results["cases"] += 1
             results["outcomes"][name] = "ok" if passed else f"FAILED:{out['state']}:{out.get('reason')}:{final}"
+            if passed and label == "position_n_minus_1" and out.get("reason") == "interrupted_after_collection":
+                results["interrupted_after_collection_certified"] = True
             if not passed:
                 results["problems"].append({"case": name, "out": out, "new_calls": new_calls, "final": final,
                                             "problems": problems})
+    if not results["interrupted_after_collection_certified"]:
+        results["problems"].append({"case": "position_n_minus_1", "detail": "interrupted_after_collection never certified"})
     return results
 
 
 def review_seeds(workdir: Path, template: Path) -> dict:
     """Seeds from implementation review 1 (A-F12): read corruption of committed entries (A-O3), ledger twins
     (A-O7), declaration then further commands (A-F3), pending ledger closures (A-F4), a failed refs flush (A-O9),
-    worker module drift (C-O3/C-O4), abandon, and a kill during setup."""
+    abandon, and a kill during setup; and the coding-exclusion probes (an injected execution entry is an integrity
+    failure; no forbidden module is ever loaded)."""
     results = {"label": "review_seeds", "cases": 0, "outcomes": {}, "problems": []}
 
     def record(name: str, ok: bool, detail: str = "") -> None:
@@ -972,11 +966,48 @@ def review_seeds(workdir: Path, template: Path) -> dict:
     final = drive_to_end(world)
     record("refs_flush_failure", final == "completed" and not check_oracles(world), final)
 
-    # C-O3/C-O4: the worker reports a drifted module; the attempt closes truthfully as infrastructure
-    world = base_world(template, workdir / "module_drift", worker_failures={"module_drift"})
-    out = run_command(world, F.RealFs(), "launch", "A", SENTENCE.format(n=1), 1, False)
-    record("worker_module_drift", out["state"] == "closed" and out["reason"] == "infrastructure_failure"
-           and not check_oracles(world), str(out))
+    # coding exclusion: an injected execution entry is an integrity failure, and no call follows it
+    world = base_world(template, workdir / "execution_entry")
+    ops = ops_of(base_world(template, workdir / "probe_ex"), "launch", "A", SENTENCE.format(n=1), 1, False)
+    kill = next(i for i, op in enumerate(ops, 1) if ":rename:" in op and "journal" in op and "000003.json" in op)
+    try:
+        run_command(world, FaultFs(kill_at=kill, kill_after=True), "launch", "A", SENTENCE.format(n=1), 1, False)
+    except SimulatedKill:
+        pass
+    run_id = next((world.D / "phase_a" / "runs").iterdir()).name
+    lc = world.lifecycle(F.RealFs())
+    lc.open()
+    try:
+        replay, _ = lc.run("A", run_id)
+        lc._publish_run_entry("A", run_id, replay, "execution_started",
+                              {"position": replay.position, "executable_json": "{}",
+                               "executable_sha256": J.sha256_bytes(b"{}")})
+        spec = lc.spec("A")
+    finally:
+        lc.close()
+    journal = world.D / "phase_a" / "runs" / run_id / "journal"
+    injected = J.replay_run({p.name: p.read_bytes() for p in journal.iterdir() if J.ENTRY_NAME.match(p.name)}, spec)
+    calls_before = sum(world.counts.values())
+    try:
+        after = run_command(world, F.RealFs(), "resume", "A", SENTENCE.format(n=1))
+    except (L.Refusal, L.PhaseBlocked) as exc:
+        after = {"state": "refused", "reason": str(exc)}
+    record("injected_execution_entry_is_integrity_failure",
+           injected.state == "integrity_failure" and "execution_kind_forbidden" in injected.reason
+           and sum(world.counts.values()) == calls_before, f"{injected.state}:{injected.reason}:{after}")
+
+    # the module rule: no forbidden module is ever loaded by the G-ROUTE4 runtime modules
+    import subprocess
+    probe_code = ("import sys; sys.path.insert(0, r'%s'); import g_route4_launch, g_route4_lifecycle, g_route4_scorer, "
+                  "g_route4_journal, g_route4_runner, g_route4_validation, g_route4_qualification, g_route4_freeze; "
+                  "print('\n'.join(sorted(sys.modules)))" % str(TOOLS))
+    loaded = subprocess.run([sys.executable, "-B", "-c", probe_code], capture_output=True, text=True, timeout=120)
+    allowed_prior = {"g_route3_conversation", "g_route3_semantics", "g_route3_operational", "g_route3_triggers",
+                     "g_route3_routing"}
+    forbidden = sorted(m for m in loaded.stdout.split() if (m.startswith("g_route3_") and m not in allowed_prior)
+                       or m in ("g_route1_coding_runner", "g_route1_persistence"))
+    record("module_rule_no_forbidden_module_loaded", loaded.returncode == 0 and not forbidden,
+           f"rc={loaded.returncode} forbidden={forbidden} {loaded.stderr[-300:]}")
 
     # abandon: refused while preflight passes; allowed on a persistent receipt mismatch
     world = base_world(template, workdir / "abandon")
@@ -1069,8 +1100,7 @@ def main(argv: list[str] | None = None) -> int:
     started = time.time()
     for label, kwargs in (("clean_kills", {}),
                           ("clean_power_loss", {"power": True}),
-                          ("transport_failure_kills", {"failures": {small_schedule()[0]["A"][2]["call_id"]: "error"}}),
-                          ("sandbox_failure_kills", {"worker_failures": {small_schedule()[0]["A"][1]["fixture_id"]}})):
+                          ("transport_failure_kills", {"failures": {small_schedule()[0]["A"][2]["call_id"]: "error"}})):
         if args.only and label not in args.only.split(","):
             continue
         result = kill_campaign(workdir, template, stride=stride, label=label, **kwargs)
