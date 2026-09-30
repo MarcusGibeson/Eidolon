@@ -1,0 +1,1245 @@
+{
+ "schema_version": "g-route4.b7-recheck.v1",
+ "condition": "B7",
+ "condition_verbatim": "After \"g_route4_independence\" is implemented from the frozen design, the final pre-freeze independence re-check using that forked module must reproduce the required frozen values and satisfy the same bounds. Failure of that check blocks freeze and cannot be waived by the successful pinned-tool result.",
+ "result": "FAIL",
+ "blocks_freeze": true,
+ "forked_module": {
+  "path": "tools/g_route4_independence.py",
+  "contract_version": "g-route4.independence.v1",
+  "lf_sha256": "d6c4d0528f27c3e80b1e4cdb437a53af0fc7430ad90f223abdf7fc8b422871b0"
+ },
+ "generated_at_parent_commit": "30b488a3434f69ffb1edb9b46533e4ecc1e19eba",
+ "corpus": {
+  "fixes_applied": {
+   "round1_bmain": [
+    "B4-RSRCH-R1-06",
+    "B4-RSRCH-R1-14",
+    "B4-RSRCH-R2-06",
+    "B4-RSRCH-R2-14",
+    "B4-RSRCH-R3-04",
+    "B4-RSRCH-R3-06",
+    "B4-RSRCH-R3-14",
+    "B4-RSRCH-R3-18",
+    "B4-SYNTH-R1-01",
+    "B4-SYNTH-R1-03",
+    "B4-SYNTH-R2-13",
+    "B4-SYNTH-R2-14",
+    "B4-SYNTH-R3-07",
+    "B4-SYNTH-R3-09"
+   ],
+   "round1_amain": [
+    "A4-EXTR-R1-03",
+    "A4-RSRCH-R2-01",
+    "A4-RSRCH-R2-02",
+    "A4-RSRCH-R4-03",
+    "A4-SYNTH-R2-03",
+    "A4-SYNTH-R4-01"
+   ],
+   "cr1_amain": [
+    "A4-SYNTH-R1-01"
+   ],
+   "cr1_bmain": [
+    "B4-CONV-R1-08",
+    "B4-CONV-R2-28",
+    "B4-SYNTH-R1-02",
+    "B4-SYNTH-R2-15",
+    "B4-SYNTH-R3-08"
+   ]
+  },
+  "fixes": 26,
+  "pool": {
+   "g4_fixtures": 584,
+   "prior_fixtures": 96
+  }
+ },
+ "frozen_values_source": {
+  "INDEPENDENCE_REPORT.json": "59a4a224d510beeb995c9981b91bb423773b57450f2404ec9dc7c826191949d4",
+  "INDEPENDENCE_REPORT_CR1.json (N8 for the 26-fix corpus)": "23828827ac0e36663b7db3217308910ca4e4323314c6eb97504bbd84a410893c"
+ },
+ "compared": 156,
+ "differing": [
+  "conversation.gold_positions",
+  "o3_entities.g3_entities_compared",
+  "o3_entities.g4_entities"
+ ],
+ "comparisons": {
+  "trigram.grounded_research_synthesis.pool": {
+   "frozen": 152,
+   "forked": 152,
+   "equal": true
+  },
+  "trigram.grounded_research_synthesis.boilerplate_trigrams": {
+   "frozen": 27,
+   "forked": 27,
+   "equal": true
+  },
+  "trigram.grounded_research_synthesis.max_jaccard": {
+   "frozen": 0.1788,
+   "forked": 0.1788,
+   "equal": true
+  },
+  "trigram.grounded_research_synthesis.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram.grounded_research_synthesis.max_pair": {
+   "frozen": [
+    "A4-RSRCH-R3-02",
+    "B4-RSRCH-R3-X11"
+   ],
+   "forked": [
+    "A4-RSRCH-R3-02",
+    "B4-RSRCH-R3-X11"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "trigram.hierarchical_semantic_synthesis.pool": {
+   "frozen": 116,
+   "forked": 116,
+   "equal": true
+  },
+  "trigram.hierarchical_semantic_synthesis.boilerplate_trigrams": {
+   "frozen": 11,
+   "forked": 11,
+   "equal": true
+  },
+  "trigram.hierarchical_semantic_synthesis.max_jaccard": {
+   "frozen": 0.0764,
+   "forked": 0.0764,
+   "equal": true
+  },
+  "trigram.hierarchical_semantic_synthesis.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram.hierarchical_semantic_synthesis.max_pair": {
+   "frozen": [
+    "B4-SYNTH-R3-16",
+    "B4-SYNTH-R4-X01"
+   ],
+   "forked": [
+    "B4-SYNTH-R3-16",
+    "B4-SYNTH-R4-X01"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "trigram.ordinary_conversation.pool": {
+   "frozen": 158,
+   "forked": 158,
+   "equal": true
+  },
+  "trigram.ordinary_conversation.boilerplate_trigrams": {
+   "frozen": 7,
+   "forked": 7,
+   "equal": true
+  },
+  "trigram.ordinary_conversation.max_jaccard": {
+   "frozen": 0.0976,
+   "forked": 0.0976,
+   "equal": true
+  },
+  "trigram.ordinary_conversation.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram.ordinary_conversation.max_pair": {
+   "frozen": [
+    "B4-CONV-R2-15",
+    "A4-CONV-R3-X03"
+   ],
+   "forked": [
+    "A4-CONV-R3-X03",
+    "B4-CONV-R2-15"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "trigram.reflective_planning.pool": {
+   "frozen": 116,
+   "forked": 116,
+   "equal": true
+  },
+  "trigram.reflective_planning.boilerplate_trigrams": {
+   "frozen": 34,
+   "forked": 34,
+   "equal": true
+  },
+  "trigram.reflective_planning.max_jaccard": {
+   "frozen": 0.0619,
+   "forked": 0.0619,
+   "equal": true
+  },
+  "trigram.reflective_planning.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram.reflective_planning.max_pair": {
+   "frozen": [
+    "B4-PLAN-R1-07",
+    "A4-PLAN-R1-X03"
+   ],
+   "forked": [
+    "A4-PLAN-R1-X03",
+    "B4-PLAN-R1-07"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "trigram.structured_extraction.pool": {
+   "frozen": 122,
+   "forked": 122,
+   "equal": true
+  },
+  "trigram.structured_extraction.boilerplate_trigrams": {
+   "frozen": 6,
+   "forked": 6,
+   "equal": true
+  },
+  "trigram.structured_extraction.max_jaccard": {
+   "frozen": 0.1224,
+   "forked": 0.1224,
+   "equal": true
+  },
+  "trigram.structured_extraction.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram.structured_extraction.max_pair": {
+   "frozen": [
+    "A4-EXTR-R4-03",
+    "A4-EXTR-R4-X03"
+   ],
+   "forked": [
+    "A4-EXTR-R4-03",
+    "A4-EXTR-R4-X03"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "o5.grounded_research_synthesis.single_family_boilerplate": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "o5.grounded_research_synthesis.boilerplate_in_family_templates": {
+   "frozen": [],
+   "forked": [],
+   "equal": true
+  },
+  "o5.hierarchical_semantic_synthesis.single_family_boilerplate": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "o5.hierarchical_semantic_synthesis.boilerplate_in_family_templates": {
+   "frozen": [],
+   "forked": [],
+   "equal": true
+  },
+  "o5.ordinary_conversation.single_family_boilerplate": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "o5.ordinary_conversation.boilerplate_in_family_templates": {
+   "frozen": [],
+   "forked": [],
+   "equal": true
+  },
+  "o5.reflective_planning.single_family_boilerplate": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "o5.reflective_planning.boilerplate_in_family_templates": {
+   "frozen": [],
+   "forked": [],
+   "equal": true
+  },
+  "o5.structured_extraction.single_family_boilerplate": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "o5.structured_extraction.boilerplate_in_family_templates": {
+   "frozen": [],
+   "forked": [],
+   "equal": true
+  },
+  "trigram_task_relevant.grounded_research_synthesis.pool": {
+   "frozen": 152,
+   "forked": 152,
+   "equal": true
+  },
+  "trigram_task_relevant.grounded_research_synthesis.boilerplate_trigrams": {
+   "frozen": 27,
+   "forked": 27,
+   "equal": true
+  },
+  "trigram_task_relevant.grounded_research_synthesis.max_jaccard": {
+   "frozen": 0.1788,
+   "forked": 0.1788,
+   "equal": true
+  },
+  "trigram_task_relevant.grounded_research_synthesis.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram_task_relevant.grounded_research_synthesis.max_pair": {
+   "frozen": [
+    "A4-RSRCH-R3-02",
+    "B4-RSRCH-R3-X11"
+   ],
+   "forked": [
+    "A4-RSRCH-R3-02",
+    "B4-RSRCH-R3-X11"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "trigram_task_relevant.hierarchical_semantic_synthesis.pool": {
+   "frozen": 116,
+   "forked": 116,
+   "equal": true
+  },
+  "trigram_task_relevant.hierarchical_semantic_synthesis.boilerplate_trigrams": {
+   "frozen": 11,
+   "forked": 11,
+   "equal": true
+  },
+  "trigram_task_relevant.hierarchical_semantic_synthesis.max_jaccard": {
+   "frozen": 0.0764,
+   "forked": 0.0764,
+   "equal": true
+  },
+  "trigram_task_relevant.hierarchical_semantic_synthesis.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram_task_relevant.hierarchical_semantic_synthesis.max_pair": {
+   "frozen": [
+    "B4-SYNTH-R3-16",
+    "B4-SYNTH-R4-X01"
+   ],
+   "forked": [
+    "B4-SYNTH-R3-16",
+    "B4-SYNTH-R4-X01"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "trigram_task_relevant.ordinary_conversation.pool": {
+   "frozen": 158,
+   "forked": 158,
+   "equal": true
+  },
+  "trigram_task_relevant.ordinary_conversation.boilerplate_trigrams": {
+   "frozen": 7,
+   "forked": 7,
+   "equal": true
+  },
+  "trigram_task_relevant.ordinary_conversation.max_jaccard": {
+   "frozen": 0.0976,
+   "forked": 0.0976,
+   "equal": true
+  },
+  "trigram_task_relevant.ordinary_conversation.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram_task_relevant.ordinary_conversation.max_pair": {
+   "frozen": [
+    "B4-CONV-R2-15",
+    "A4-CONV-R3-X03"
+   ],
+   "forked": [
+    "A4-CONV-R3-X03",
+    "B4-CONV-R2-15"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "trigram_task_relevant.reflective_planning.pool": {
+   "frozen": 116,
+   "forked": 116,
+   "equal": true
+  },
+  "trigram_task_relevant.reflective_planning.boilerplate_trigrams": {
+   "frozen": 34,
+   "forked": 34,
+   "equal": true
+  },
+  "trigram_task_relevant.reflective_planning.max_jaccard": {
+   "frozen": 0.0619,
+   "forked": 0.0619,
+   "equal": true
+  },
+  "trigram_task_relevant.reflective_planning.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram_task_relevant.reflective_planning.max_pair": {
+   "frozen": [
+    "B4-PLAN-R1-07",
+    "A4-PLAN-R1-X03"
+   ],
+   "forked": [
+    "A4-PLAN-R1-X03",
+    "B4-PLAN-R1-07"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "trigram_task_relevant.structured_extraction.pool": {
+   "frozen": 122,
+   "forked": 122,
+   "equal": true
+  },
+  "trigram_task_relevant.structured_extraction.boilerplate_trigrams": {
+   "frozen": 6,
+   "forked": 6,
+   "equal": true
+  },
+  "trigram_task_relevant.structured_extraction.max_jaccard": {
+   "frozen": 0.1224,
+   "forked": 0.1224,
+   "equal": true
+  },
+  "trigram_task_relevant.structured_extraction.pairs_over_bound": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "trigram_task_relevant.structured_extraction.max_pair": {
+   "frozen": [
+    "A4-EXTR-R4-03",
+    "A4-EXTR-R4-X03"
+   ],
+   "forked": [
+    "A4-EXTR-R4-03",
+    "A4-EXTR-R4-X03"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "o3_entities.g4_fixtures": {
+   "frozen": 584,
+   "forked": 584,
+   "equal": true
+  },
+  "o3_entities.g4_entities": {
+   "frozen": 697,
+   "forked": 1139,
+   "equal": false
+  },
+  "o3_entities.g3_entities_compared": {
+   "frozen": 20,
+   "forked": 32,
+   "equal": false
+  },
+  "o3_entities.shared": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "o3_identifier_gate.g4_identifiers": {
+   "frozen": 17,
+   "forked": 17,
+   "equal": true
+  },
+  "o3_identifier_gate.g3_identifiers": {
+   "frozen": 11,
+   "forked": 11,
+   "equal": true
+  },
+  "o3_identifier_gate.shared": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "o3_identifier_gate.pattern_sha256": {
+   "frozen": "a3773a982c16579d94cede99539e0b9cacca1347f96774759a84bbb7788adaae",
+   "forked": "a3773a982c16579d94cede99539e0b9cacca1347f96774759a84bbb7788adaae",
+   "equal": true
+  },
+  "o6.g4_values_compared_by_class": {
+   "frozen": {
+    "structured_extraction": 118,
+    "reflective_planning": 615,
+    "ordinary_conversation": 568,
+    "grounded_research_synthesis": 476
+   },
+   "forked": {
+    "ordinary_conversation": 568,
+    "structured_extraction": 118,
+    "reflective_planning": 615,
+    "grounded_research_synthesis": 476
+   },
+   "equal": true
+  },
+  "o6.collisions": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "n1_duplicates": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "fine_signature_clashes": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "canonical_signature_clashes": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "research.unique_lineages": {
+   "frozen": 476,
+   "forked": 476,
+   "equal": true
+  },
+  "research.cross_fixture_lineage_repeats": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "planning.g4_action_names": {
+   "frozen": 515,
+   "forked": 515,
+   "equal": true
+  },
+  "planning.repeated_action_names": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "conversation.fixtures_with_four_options": {
+   "frozen": 142,
+   "forked": 142,
+   "equal": true
+  },
+  "conversation.gold_positions": {
+   "frozen": {
+    "A|main|R1": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|main|R2": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|main|R3": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|main|R4": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R1": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R2": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R3": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R4": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "B|main|R1": {
+     "1": 7,
+     "2": 7,
+     "3": 7,
+     "4": 7
+    },
+    "B|main|R2": {
+     "1": 7,
+     "2": 7,
+     "3": 7,
+     "4": 7
+    },
+    "B|main|R3": {
+     "1": 7,
+     "2": 7,
+     "3": 7,
+     "4": 7
+    },
+    "B|main|R4": {
+     "1": 1
+    },
+    "B|reserve|R1": {
+     "1": 2,
+     "2": 2,
+     "3": 2,
+     "4": 2
+    },
+    "B|reserve|R2": {
+     "1": 2,
+     "2": 2,
+     "3": 2,
+     "4": 2
+    },
+    "B|reserve|R3": {
+     "1": 2,
+     "2": 2,
+     "3": 2,
+     "4": 2
+    },
+    "B|reserve|R4": {
+     "1": 1
+    }
+   },
+   "forked": {
+    "A|main|R1": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|main|R2": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|main|R3": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|main|R4": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R1": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R2": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R3": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "A|reserve|R4": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "B|main|R1": {
+     "1": 7,
+     "2": 7,
+     "3": 7,
+     "4": 7
+    },
+    "B|main|R2": {
+     "1": 7,
+     "2": 7,
+     "3": 7,
+     "4": 7
+    },
+    "B|main|R3": {
+     "1": 7,
+     "2": 7,
+     "3": 7,
+     "4": 7
+    },
+    "B|main|R4": {
+     "1": 1
+    },
+    "B|reserve|R1": {
+     "1": 2,
+     "2": 2,
+     "3": 2,
+     "4": 2
+    },
+    "B|reserve|R2": {
+     "1": 2,
+     "2": 2,
+     "3": 2,
+     "4": 2
+    },
+    "B|reserve|R3": {
+     "1": 2,
+     "2": 2,
+     "3": 2,
+     "4": 2
+    },
+    "B|reserve|R4": {
+     "1": 1
+    }
+   },
+   "equal": false
+  },
+  "n8.grounded_research_synthesis|R1.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R1.max_jaccard": {
+   "frozen": 0.0955,
+   "forked": 0.0955,
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R1.family": {
+   "frozen": "RS3",
+   "forked": "RS3",
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R1.max_pair": {
+   "frozen": [
+    "A4-RSRCH-R1-03",
+    "B4-RSRCH-R1-09"
+   ],
+   "forked": [
+    "A4-RSRCH-R1-03",
+    "B4-RSRCH-R1-09"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.grounded_research_synthesis|R2.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R2.max_jaccard": {
+   "frozen": 0.1597,
+   "forked": 0.1597,
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R2.family": {
+   "frozen": "RS2",
+   "forked": "RS2",
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R2.max_pair": {
+   "frozen": [
+    "A4-RSRCH-R2-04",
+    "B4-RSRCH-R2-14"
+   ],
+   "forked": [
+    "A4-RSRCH-R2-04",
+    "B4-RSRCH-R2-14"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.grounded_research_synthesis|R3.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R3.max_jaccard": {
+   "frozen": 0.0581,
+   "forked": 0.0581,
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R3.family": {
+   "frozen": "RS4",
+   "forked": "RS4",
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R3.max_pair": {
+   "frozen": [
+    "A4-RSRCH-R3-02",
+    "B4-RSRCH-R3-10"
+   ],
+   "forked": [
+    "A4-RSRCH-R3-02",
+    "B4-RSRCH-R3-10"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.grounded_research_synthesis|R4.same_family_pairs": {
+   "frozen": 1,
+   "forked": 1,
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R4.max_jaccard": {
+   "frozen": 0.0,
+   "forked": 0.0,
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R4.family": {
+   "frozen": "RS3",
+   "forked": "RS3",
+   "equal": true
+  },
+  "n8.grounded_research_synthesis|R4.max_pair": {
+   "frozen": [
+    "A4-RSRCH-R4-02",
+    "B4-RSRCH-R4-01"
+   ],
+   "forked": [
+    "A4-RSRCH-R4-02",
+    "B4-RSRCH-R4-01"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.hierarchical_semantic_synthesis|R1.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R1.max_jaccard": {
+   "frozen": 0.0449,
+   "forked": 0.0449,
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R1.family": {
+   "frozen": "SY4",
+   "forked": "SY4",
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R1.max_pair": {
+   "frozen": [
+    "A4-SYNTH-R1-04",
+    "B4-SYNTH-R1-12"
+   ],
+   "forked": [
+    "A4-SYNTH-R1-04",
+    "B4-SYNTH-R1-12"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.hierarchical_semantic_synthesis|R2.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R2.max_jaccard": {
+   "frozen": 0.0305,
+   "forked": 0.0305,
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R2.family": {
+   "frozen": "SY1",
+   "forked": "SY1",
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R2.max_pair": {
+   "frozen": [
+    "A4-SYNTH-R2-03",
+    "B4-SYNTH-R2-15"
+   ],
+   "forked": [
+    "A4-SYNTH-R2-03",
+    "B4-SYNTH-R2-15"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.hierarchical_semantic_synthesis|R3.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R3.max_jaccard": {
+   "frozen": 0.0455,
+   "forked": 0.0455,
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R3.family": {
+   "frozen": "SY4",
+   "forked": "SY4",
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R3.max_pair": {
+   "frozen": [
+    "A4-SYNTH-R3-02",
+    "B4-SYNTH-R3-16"
+   ],
+   "forked": [
+    "A4-SYNTH-R3-02",
+    "B4-SYNTH-R3-16"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.hierarchical_semantic_synthesis|R4.same_family_pairs": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R4.max_jaccard": {
+   "frozen": null,
+   "forked": null,
+   "equal": true
+  },
+  "n8.hierarchical_semantic_synthesis|R4.family": {
+   "frozen": null,
+   "forked": null,
+   "equal": true
+  },
+  "n8.ordinary_conversation|R1.same_family_pairs": {
+   "frozen": 20,
+   "forked": 20,
+   "equal": true
+  },
+  "n8.ordinary_conversation|R1.max_jaccard": {
+   "frozen": 0.0412,
+   "forked": 0.0412,
+   "equal": true
+  },
+  "n8.ordinary_conversation|R1.family": {
+   "frozen": "CV4",
+   "forked": "CV4",
+   "equal": true
+  },
+  "n8.ordinary_conversation|R1.max_pair": {
+   "frozen": [
+    "A4-CONV-R1-04",
+    "B4-CONV-R1-17"
+   ],
+   "forked": [
+    "A4-CONV-R1-04",
+    "B4-CONV-R1-17"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.ordinary_conversation|R2.same_family_pairs": {
+   "frozen": 18,
+   "forked": 18,
+   "equal": true
+  },
+  "n8.ordinary_conversation|R2.max_jaccard": {
+   "frozen": 0.0508,
+   "forked": 0.0508,
+   "equal": true
+  },
+  "n8.ordinary_conversation|R2.family": {
+   "frozen": "CV6",
+   "forked": "CV6",
+   "equal": true
+  },
+  "n8.ordinary_conversation|R2.max_pair": {
+   "frozen": [
+    "A4-CONV-R2-02",
+    "B4-CONV-R2-16"
+   ],
+   "forked": [
+    "A4-CONV-R2-02",
+    "B4-CONV-R2-16"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.ordinary_conversation|R3.same_family_pairs": {
+   "frozen": 18,
+   "forked": 18,
+   "equal": true
+  },
+  "n8.ordinary_conversation|R3.max_jaccard": {
+   "frozen": 0.0429,
+   "forked": 0.0429,
+   "equal": true
+  },
+  "n8.ordinary_conversation|R3.family": {
+   "frozen": "CV5",
+   "forked": "CV5",
+   "equal": true
+  },
+  "n8.ordinary_conversation|R3.max_pair": {
+   "frozen": [
+    "A4-CONV-R3-03",
+    "B4-CONV-R3-05"
+   ],
+   "forked": [
+    "A4-CONV-R3-03",
+    "B4-CONV-R3-05"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.ordinary_conversation|R4.same_family_pairs": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "n8.ordinary_conversation|R4.max_jaccard": {
+   "frozen": null,
+   "forked": null,
+   "equal": true
+  },
+  "n8.ordinary_conversation|R4.family": {
+   "frozen": null,
+   "forked": null,
+   "equal": true
+  },
+  "n8.reflective_planning|R1.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.reflective_planning|R1.max_jaccard": {
+   "frozen": 0.0514,
+   "forked": 0.0514,
+   "equal": true
+  },
+  "n8.reflective_planning|R1.family": {
+   "frozen": "PL3",
+   "forked": "PL3",
+   "equal": true
+  },
+  "n8.reflective_planning|R1.max_pair": {
+   "frozen": [
+    "A4-PLAN-R1-03",
+    "B4-PLAN-R1-07"
+   ],
+   "forked": [
+    "A4-PLAN-R1-03",
+    "B4-PLAN-R1-07"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.reflective_planning|R2.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.reflective_planning|R2.max_jaccard": {
+   "frozen": 0.0324,
+   "forked": 0.0324,
+   "equal": true
+  },
+  "n8.reflective_planning|R2.family": {
+   "frozen": "PL6",
+   "forked": "PL6",
+   "equal": true
+  },
+  "n8.reflective_planning|R2.max_pair": {
+   "frozen": [
+    "A4-PLAN-R2-02",
+    "B4-PLAN-R2-11"
+   ],
+   "forked": [
+    "A4-PLAN-R2-02",
+    "B4-PLAN-R2-11"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.reflective_planning|R3.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.reflective_planning|R3.max_jaccard": {
+   "frozen": 0.0594,
+   "forked": 0.0594,
+   "equal": true
+  },
+  "n8.reflective_planning|R3.family": {
+   "frozen": "PL3",
+   "forked": "PL3",
+   "equal": true
+  },
+  "n8.reflective_planning|R3.max_pair": {
+   "frozen": [
+    "A4-PLAN-R3-01",
+    "B4-PLAN-R3-13"
+   ],
+   "forked": [
+    "A4-PLAN-R3-01",
+    "B4-PLAN-R3-13"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.reflective_planning|R4.same_family_pairs": {
+   "frozen": 1,
+   "forked": 1,
+   "equal": true
+  },
+  "n8.reflective_planning|R4.max_jaccard": {
+   "frozen": 0.0,
+   "forked": 0.0,
+   "equal": true
+  },
+  "n8.reflective_planning|R4.family": {
+   "frozen": "PL1",
+   "forked": "PL1",
+   "equal": true
+  },
+  "n8.reflective_planning|R4.max_pair": {
+   "frozen": [
+    "A4-PLAN-R4-01",
+    "B4-PLAN-R4-01"
+   ],
+   "forked": [
+    "A4-PLAN-R4-01",
+    "B4-PLAN-R4-01"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.structured_extraction|R1.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.structured_extraction|R1.max_jaccard": {
+   "frozen": 0.0182,
+   "forked": 0.0182,
+   "equal": true
+  },
+  "n8.structured_extraction|R1.family": {
+   "frozen": "EX4",
+   "forked": "EX4",
+   "equal": true
+  },
+  "n8.structured_extraction|R1.max_pair": {
+   "frozen": [
+    "A4-EXTR-R1-04",
+    "B4-EXTR-R1-10"
+   ],
+   "forked": [
+    "A4-EXTR-R1-04",
+    "B4-EXTR-R1-10"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.structured_extraction|R2.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.structured_extraction|R2.max_jaccard": {
+   "frozen": 0.0495,
+   "forked": 0.0495,
+   "equal": true
+  },
+  "n8.structured_extraction|R2.family": {
+   "frozen": "EX5",
+   "forked": "EX5",
+   "equal": true
+  },
+  "n8.structured_extraction|R2.max_pair": {
+   "frozen": [
+    "A4-EXTR-R2-01",
+    "B4-EXTR-R2-09"
+   ],
+   "forked": [
+    "A4-EXTR-R2-01",
+    "B4-EXTR-R2-09"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.structured_extraction|R3.same_family_pairs": {
+   "frozen": 12,
+   "forked": 12,
+   "equal": true
+  },
+  "n8.structured_extraction|R3.max_jaccard": {
+   "frozen": 0.0351,
+   "forked": 0.0351,
+   "equal": true
+  },
+  "n8.structured_extraction|R3.family": {
+   "frozen": "EX5",
+   "forked": "EX5",
+   "equal": true
+  },
+  "n8.structured_extraction|R3.max_pair": {
+   "frozen": [
+    "A4-EXTR-R3-03",
+    "B4-EXTR-R3-03"
+   ],
+   "forked": [
+    "A4-EXTR-R3-03",
+    "B4-EXTR-R3-03"
+   ],
+   "equal": true,
+   "compared_as": "unordered pair"
+  },
+  "n8.structured_extraction|R4.same_family_pairs": {
+   "frozen": 0,
+   "forked": 0,
+   "equal": true
+  },
+  "n8.structured_extraction|R4.max_jaccard": {
+   "frozen": null,
+   "forked": null,
+   "equal": true
+  },
+  "n8.structured_extraction|R4.family": {
+   "frozen": null,
+   "forked": null,
+   "equal": true
+  }
+ },
+ "bounds": {
+  "trigram_pairs_over_0.20": 0,
+  "task_relevant_pairs_over_0.20": 0,
+  "o3_shared_entities": 0,
+  "o3_shared_identifiers": 0,
+  "o6_collisions": 0,
+  "n1_duplicates": 0,
+  "fine_signature_clashes": 0,
+  "canonical_signature_clashes": 0,
+  "lineage_repeats": 0,
+  "repeated_planning_actions": 0,
+  "o5_single_family_boilerplate": 0
+ },
+ "bounds_met": true,
+ "forked_findings": [],
+ "declared": "a maximum pair is compared as an unordered pair; all other values exactly"
+}
