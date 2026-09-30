@@ -1,0 +1,74 @@
+{
+  "schema_version": "g-route4.prospective-certification-test-repair.v1",
+  "recorded_at_utc": "2026-09-30T20:04:29Z",
+  "branch": "g-route4/implementation",
+  "baseline_commit": "e14dac47628f2a9c5e912f95fb61ee51618684df",
+  "reviewed_implementation_checkpoint": "09859b9529511d8dee31eca71c8a7d751fdc7511",
+  "historical_failed_certification": {
+    "run_id": "groute4-cert-20260930T133008Z-09859b9",
+    "status": "FAILED",
+    "preserved_without_rewrite_or_rescore": true,
+    "failure_receipt": "experiments/G-ROUTE4-candidate/implementation/certification_runs/groute4-cert-20260930T133008Z-09859b9/CERTIFICATION_FAILURE_REPORT.json",
+    "failure_receipt_sha256": "ad371fda529aa8e97e0e1745f0de4d32e996dd3b021dba03c75163bb42d70951",
+    "raw_campaign": "experiments/G-ROUTE4-candidate/implementation/certification_runs/groute4-cert-20260930T133008Z-09859b9/CAMPAIGN_RAW_REPORT.json",
+    "raw_campaign_sha256": "ef5629b65a7c56e6d92c4ee20fb1d66505081cfad52c604e16b31777bb67fae7",
+    "official_differential": "experiments/G-ROUTE4-candidate/implementation/DIFFERENTIAL_REPORT.json",
+    "official_differential_sha256": "89aabbfa6e3317cefd695533fc01f32aff1913099729c68d67649c52c9cd23de"
+  },
+  "repair_scope": {
+    "stale_test": "g_route4_tests.FreezeTests.test_no_freeze_before_the_later_step_4_records",
+    "failure": "The test expected freeze construction to fail because IMPLEMENTATION_REVIEW.json was missing after implementation review had already completed successfully.",
+    "runtime_behavior": "Freeze construction correctly accepted the present READY_FOR_CERTIFICATION implementation review and advanced to the next prerequisite, where it refused because CERTIFICATION_REPORT.json is absent.",
+    "old_assertion_semantics": "Require FileNotFoundError text to contain IMPLEMENTATION_REVIEW.",
+    "new_assertion_semantics": "Require the implementation review verdict to be READY_FOR_CERTIFICATION, require FileNotFoundError text to contain CERTIFICATION_REPORT.json and not IMPLEMENTATION_REVIEW.json, and require that no execution-freeze artifact exists before or after the refusal.",
+    "files_changed": [
+      "tools/g_route4_tests.py",
+      "experiments/G-ROUTE4-candidate/implementation/certification_repairs/PROSPECTIVE_TEST_REPAIR_E14DAC4.json"
+    ],
+    "runtime_or_freeze_behavior_changed": false,
+    "corpus_gold_threshold_design_or_obligations_changed": false
+  },
+  "runtime_integrity": {
+    "freeze_module": "tools/g_route4_freeze.py",
+    "baseline_git_blob": "12791cd85e9b64b7adc5b554e1cb636e46ce550c",
+    "current_git_blob": "12791cd85e9b64b7adc5b554e1cb636e46ce550c",
+    "byte_identical": true,
+    "changed_paths_before_record_creation": [
+      "tools/g_route4_tests.py"
+    ],
+    "governed_runtime_changes": []
+  },
+  "stage_state": {
+    "implementation_review_present": true,
+    "implementation_review_verdict": "READY_FOR_CERTIFICATION",
+    "certification_report_present": false,
+    "execution_freeze_present": false,
+    "new_official_certification_started": false,
+    "scientific_or_model_execution_started": false,
+    "provider_calls": 0
+  },
+  "deterministic_verification": {
+    "focused_test": {
+      "command": "python -B -m unittest g_route4_tests.FreezeTests.test_no_freeze_before_the_later_step_4_records -v",
+      "result": "PASS",
+      "tests": 1,
+      "failures": 0,
+      "runtime_seconds": 0.008
+    },
+    "implementation_suite": {
+      "command": "python -B g_route4_tests.py",
+      "result": "PASS",
+      "tests": 47,
+      "failures": 0,
+      "runtime_seconds": 6.135
+    },
+    "lifecycle_suite": {
+      "command": "python -B g_route4_r7_tests.py",
+      "result": "PASS",
+      "tests": 52,
+      "failures": 0,
+      "runtime_seconds": 133.744
+    }
+  },
+  "verdict": "READY_FOR_NEW_CERTIFICATION_AUTHORIZATION"
+}

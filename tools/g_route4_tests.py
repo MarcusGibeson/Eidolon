@@ -586,8 +586,18 @@ class FreezeTests(unittest.TestCase):
         self.assertEqual(freeze.DATA_ROOT, r"C:\Users\marcu\AppData\Local\Eidolon\research\g_route4")
 
     def test_no_freeze_before_the_later_step_4_records(self):
-        with self.assertRaisesRegex(FileNotFoundError, "IMPLEMENTATION_REVIEW"):
+        review_path = CAND / "implementation" / "IMPLEMENTATION_REVIEW.json"
+        review = contract.load_json(review_path)
+        self.assertEqual(review["verdict"], "READY_FOR_CERTIFICATION")
+        self.assertFalse(freeze.FREEZE_PATH.exists())
+
+        with self.assertRaises(FileNotFoundError) as caught:
             freeze.build_manifest(implementation_commit="0" * 40)
+
+        message = str(caught.exception)
+        self.assertIn("CERTIFICATION_REPORT.json", message)
+        self.assertNotIn("IMPLEMENTATION_REVIEW.json", message)
+        self.assertFalse(freeze.FREEZE_PATH.exists())
 
     def test_freeze_conditions_b7_and_b8_are_bound(self):
         self.assertEqual(freeze.b7_condition()["result"], "PASS")
