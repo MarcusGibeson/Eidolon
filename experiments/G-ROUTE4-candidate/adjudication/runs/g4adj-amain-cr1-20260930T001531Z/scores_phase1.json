@@ -1,0 +1,36 @@
+{
+ "schema_version": "g-route4.adjudication-scores.v1",
+ "phase": 1,
+ "answers_commit": "6feae0c859dbec981f8083a5269c5da4e946e5a1",
+ "answers_sha256": "31ab8977dadfc3a45d1ed439e78dec9d29ad723a0d456a61aa549803c9fd4dba",
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "slots": [
+  {
+   "fixture_id": "A4-SYNTH-R1-01",
+   "slot": 1,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "A4-SYNTH-R1-01",
+   "slot": 2,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "A4-SYNTH-R1-01",
+   "slot": 3,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  }
+ ]
+}

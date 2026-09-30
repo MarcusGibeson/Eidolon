@@ -1,0 +1,58 @@
+{
+ "schema_version": "g-route4.adjudication-scores.v1",
+ "phase": 1,
+ "answers_commit": "a31bed87bacad5089c646abd15d90dc0b47b830a",
+ "answers_sha256": "d9949182cd2ab2d68cd63d18a9a5b1e5853d1c8e2f7b982c8630e8f007884e19",
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "slots": [
+  {
+   "fixture_id": "B4-CONV-R1-08",
+   "slot": 1,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-CONV-R2-28",
+   "slot": 1,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-02",
+   "slot": 1,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-15",
+   "slot": 1,
+   "outcome": "bound",
+   "agree": false,
+   "stop_reason": "end_turn",
+   "operational_reasons": [
+    "malformed_json"
+   ],
+   "semantic_reasons": [
+    "malformed_json"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-08",
+   "slot": 1,
+   "outcome": "bound",
+   "agree": true,
+   "stop_reason": "end_turn",
+   "operational_reasons": [],
+   "semantic_reasons": []
+  }
+ ]
+}
