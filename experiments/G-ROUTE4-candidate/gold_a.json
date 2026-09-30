@@ -1,0 +1,4344 @@
+{
+  "adjudication": "gold adjudicated per design step 6-13; see adjudication/A_MAIN_CLOSURE.json and its addendum",
+  "ambiguity_count": 0,
+  "corpus_id": "G-ROUTE4-CORPUS-A",
+  "final_gold_sha256": "55b006c2bd438d8862c3321aa932c45cb8570776510e132e4eacca32ac268e9a",
+  "gold_id": "G-ROUTE4-GOLD-A",
+  "item_count": 80,
+  "items": [
+    {
+      "expected": {
+        "answer": "Jidigo",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R1-01",
+      "rationale": "Jidigo is the only option that meets both conditions. Vajefo meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Jidigo\nActions taken: none\nJidigo is the only option that meets both conditions. Vajefo meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Palavi",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R1-02",
+      "rationale": "Palavi is the only option that meets both conditions. Koru meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Palavi\nActions taken: none\nPalavi is the only option that meets both conditions. Koru meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Bojono",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R1-03",
+      "rationale": "Bojono is the only option that meets both conditions. Nijope meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Bojono\nActions taken: none\nBojono is the only option that meets both conditions. Nijope meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Dudafa",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R1-04",
+      "rationale": "Dudafa is the only option that meets both conditions. Gitilo meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Dudafa\nActions taken: none\nDudafa is the only option that meets both conditions. Gitilo meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Hiwi",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R2-01",
+      "rationale": "Hiwi is the only option that meets both conditions. Ruvapi meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Hiwi\nActions taken: none\nHiwi is the only option that meets both conditions. Ruvapi meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Depi",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R2-02",
+      "rationale": "Depi is the only option that meets both conditions. Pewajo meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Depi\nActions taken: none\nDepi is the only option that meets both conditions. Pewajo meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Habu",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R2-03",
+      "rationale": "Habu is the only option that meets both conditions. Yipoge meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Habu\nActions taken: none\nHabu is the only option that meets both conditions. Yipoge meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Wifu",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R2-04",
+      "rationale": "Wifu is the only option that meets both conditions. Mevata meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Wifu\nActions taken: none\nWifu is the only option that meets both conditions. Mevata meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Dagagu",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R3-01",
+      "rationale": "Dagagu is the only option that meets both conditions. Bibesa meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Dagagu\nActions taken: none\nDagagu is the only option that meets both conditions. Bibesa meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Dezose",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R3-02",
+      "rationale": "Dezose is the only option that meets both conditions. Teleho meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Dezose\nActions taken: none\nDezose is the only option that meets both conditions. Teleho meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Kikuku",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R3-03",
+      "rationale": "Kikuku is the only option that meets both conditions. Melelu meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Kikuku\nActions taken: none\nKikuku is the only option that meets both conditions. Melelu meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Yulijo",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R3-04",
+      "rationale": "Yulijo is the only option that meets both conditions. Nimisa meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Yulijo\nActions taken: none\nYulijo is the only option that meets both conditions. Nimisa meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Rubosi",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R4-01",
+      "rationale": "Rubosi is the only option that meets both conditions. Bido meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Rubosi\nActions taken: none\nRubosi is the only option that meets both conditions. Bido meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Newipa",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R4-02",
+      "rationale": "Newipa is the only option that meets both conditions. Kafa meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Newipa\nActions taken: none\nNewipa is the only option that meets both conditions. Kafa meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Lirimi",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R4-03",
+      "rationale": "Lirimi is the only option that meets both conditions. Runode meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Lirimi\nActions taken: none\nLirimi is the only option that meets both conditions. Runode meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "answer": "Kijofu",
+        "max_characters": 600
+      },
+      "fixture_id": "A4-CONV-R4-04",
+      "rationale": "Kijofu is the only option that meets both conditions. Fukayo meets the first condition but fails the second; the other two fail both.",
+      "reference_output": "Answer: Kijofu\nActions taken: none\nKijofu is the only option that meets both conditions. Fukayo meets the first condition but fails the second; the other two fail both."
+    },
+    {
+      "expected": {
+        "laps_total": 21,
+        "loco_number": "LN-6042",
+        "power": "diesel",
+        "service_due": true
+      },
+      "fixture_id": "A4-EXTR-R1-01",
+      "rationale": "8 + 13 = 21 laps, which reaches 20.",
+      "reference_output": {
+        "laps_total": 21,
+        "loco_number": "LN-6042",
+        "power": "diesel",
+        "service_due": true
+      }
+    },
+    {
+      "expected": {
+        "expected_sprout": "2031-03-20",
+        "lid_on": true,
+        "seeds_sown": 24,
+        "tray_litres": 1.5,
+        "variety": "Wogali"
+      },
+      "fixture_id": "A4-EXTR-R1-02",
+      "rationale": "2031-03-09 plus 11 days is 2031-03-20.",
+      "reference_output": {
+        "expected_sprout": "2031-03-20",
+        "lid_on": true,
+        "seeds_sown": 24,
+        "tray_litres": 1.5,
+        "variety": "Wogali"
+      }
+    },
+    {
+      "expected": {
+        "items_sold": 30,
+        "takings": 82.2,
+        "town": "Dalihi"
+      },
+      "fixture_id": "A4-EXTR-R1-03",
+      "rationale": "18 + 12 = 30 items; 18 x 2.4 + 12 x 3.25 = 82.2.",
+      "reference_output": {
+        "items_sold": 30,
+        "takings": 82.2,
+        "town": "Dalihi"
+      }
+    },
+    {
+      "expected": {
+        "filter_action": "rinsed",
+        "needs_change": false,
+        "nitrate_ppm": 35,
+        "tested_on": "2029-11-14"
+      },
+      "fixture_id": "A4-EXTR-R1-04",
+      "rationale": "35 ppm is not above 40 ppm, so no water change is needed; the sponge was rinsed.",
+      "reference_output": {
+        "filter_action": "rinsed",
+        "needs_change": false,
+        "nitrate_ppm": 35,
+        "tested_on": "2029-11-14"
+      }
+    },
+    {
+      "expected": {
+        "breakfast": true,
+        "check_in": "2033-05-21",
+        "confirmation": "not_provided",
+        "nights": 3,
+        "room_total": 427.5
+      },
+      "fixture_id": "A4-EXTR-R2-01",
+      "rationale": "3 x 142.5 = 427.5; the confirmation number is stated as not provided.",
+      "reference_output": {
+        "breakfast": true,
+        "check_in": "2033-05-21",
+        "confirmation": "not_provided",
+        "nights": 3,
+        "room_total": 427.5
+      }
+    },
+    {
+      "expected": {
+        "late_forms": true,
+        "onboarding": "chase",
+        "supplier": "Mova"
+      },
+      "fixture_id": "A4-EXTR-R2-02",
+      "rationale": "14 days is more than 10; only the tax form is on file, so the outcome is chase.",
+      "reference_output": {
+        "late_forms": true,
+        "onboarding": "chase",
+        "supplier": "Mova"
+      }
+    },
+    {
+      "expected": {
+        "cartons": 40,
+        "paper_cost": 950,
+        "po_number": "PO-66190",
+        "toner_count": 6
+      },
+      "fixture_id": "A4-EXTR-R2-03",
+      "rationale": "40 x 23.75 = 950.",
+      "reference_output": {
+        "cartons": 40,
+        "paper_cost": 950,
+        "po_number": "PO-66190",
+        "toner_count": 6
+      }
+    },
+    {
+      "expected": {
+        "due_back": "2036-08-08",
+        "fuel_policy": "full",
+        "insured": false,
+        "rental_cost": 233.4,
+        "rental_days": 6
+      },
+      "fixture_id": "A4-EXTR-R2-04",
+      "rationale": "2036-08-02 plus 6 days is 2036-08-08; 6 x 38.9 = 233.4.",
+      "reference_output": {
+        "due_back": "2036-08-08",
+        "fuel_policy": "full",
+        "insured": false,
+        "rental_cost": 233.4,
+        "rental_days": 6
+      }
+    },
+    {
+      "expected": {
+        "cluster": "Muvaja",
+        "quarter_gb": 35.75,
+        "within_quota": true
+      },
+      "fixture_id": "A4-EXTR-R3-01",
+      "rationale": "12.5 + 9.25 + 14 = 35.75 GB, within the 40 GB quota.",
+      "reference_output": {
+        "cluster": "Muvaja",
+        "quarter_gb": 35.75,
+        "within_quota": true
+      }
+    },
+    {
+      "expected": {
+        "disk": "encrypted",
+        "hours_to_wipe": 31,
+        "reported_on": "2030-02-17",
+        "wipe_late": true
+      },
+      "fixture_id": "A4-EXTR-R3-02",
+      "rationale": "31 hours is more than 24, so the wipe was late.",
+      "reference_output": {
+        "disk": "encrypted",
+        "hours_to_wipe": 31,
+        "reported_on": "2030-02-17",
+        "wipe_late": true
+      }
+    },
+    {
+      "expected": {
+        "account_ref": "not_provided",
+        "attachments": 3,
+        "days_remaining": 18,
+        "requester": "Popeyi Kopaje",
+        "urgent": true
+      },
+      "fixture_id": "A4-EXTR-R3-03",
+      "rationale": "30 - 12 = 18 days remain, fewer than 20; the account reference is stated as not provided.",
+      "reference_output": {
+        "account_ref": "not_provided",
+        "attachments": 3,
+        "days_remaining": 18,
+        "requester": "Popeyi Kopaje",
+        "urgent": true
+      }
+    },
+    {
+      "expected": {
+        "access_decision": "pending",
+        "contractor": "Namo Virira",
+        "requested_days": 45
+      },
+      "fixture_id": "A4-EXTR-R3-04",
+      "rationale": "The manager signed but the induction is not done, so the decision is pending.",
+      "reference_output": {
+        "access_decision": "pending",
+        "contractor": "Namo Virira",
+        "requested_days": 45
+      }
+    },
+    {
+      "expected": {
+        "beam_count": 3,
+        "plan_id": "LP-7054",
+        "total_load_kg": 2460,
+        "zone_marked": true
+      },
+      "fixture_id": "A4-EXTR-R4-01",
+      "rationale": "3 x 820 = 2460 kg.",
+      "reference_output": {
+        "beam_count": 3,
+        "plan_id": "LP-7054",
+        "total_load_kg": 2460,
+        "zone_marked": true
+      }
+    },
+    {
+      "expected": {
+        "bund": "steel",
+        "drums": 4,
+        "exceeds_limit": true,
+        "inspected_on": "2034-10-03",
+        "stored_litres": 215.75
+      },
+      "fixture_id": "A4-EXTR-R4-02",
+      "rationale": "55.5 + 60 + 48.25 + 52 = 215.75 litres, above the 200 litre limit.",
+      "reference_output": {
+        "bund": "steel",
+        "drums": 4,
+        "exceeds_limit": true,
+        "inspected_on": "2034-10-03",
+        "stored_litres": 215.75
+      }
+    },
+    {
+      "expected": {
+        "certificate": "not_provided",
+        "keep_until_year": 2036,
+        "source_site": "Bijeku"
+      },
+      "fixture_id": "A4-EXTR-R4-03",
+      "rationale": "2029 + 7 = 2036; the certificate number is stated as not provided.",
+      "reference_output": {
+        "certificate": "not_provided",
+        "keep_until_year": 2036,
+        "source_site": "Bijeku"
+      }
+    },
+    {
+      "expected": {
+        "margin_bar": 3.5,
+        "next_due": "2033-05-31",
+        "relief_valve": true,
+        "test_bar": 11.5
+      },
+      "fixture_id": "A4-EXTR-R4-04",
+      "rationale": "11.5 - 8 = 3.5 bar; 2032-04-26 plus 400 days is 2033-05-31.",
+      "reference_output": {
+        "margin_bar": 3.5,
+        "next_due": "2033-05-31",
+        "relief_valve": true,
+        "test_bar": 11.5
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "strip_cabin_varnish",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "sand_cabin_panels",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "seal_panel_grain",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "brush_topcoat_layers",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "topcoat_cure_time_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R1-01",
+      "rationale": "The stated precedences give the order strip_cabin_varnish, sand_cabin_panels, seal_panel_grain, brush_topcoat_layers; remove_old_portholes is excluded by the forbidden name prefix; topcoat_cure_time_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "strip_cabin_varnish",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "sand_cabin_panels",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "seal_panel_grain",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "brush_topcoat_layers",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "topcoat_cure_time_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "clean_hive_floors",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "check_queen_cells",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "add_honey_supers",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": []
+      },
+      "fixture_id": "A4-PLAN-R1-02",
+      "rationale": "The stated precedences give the order clean_hive_floors, check_queen_cells, add_honey_supers; wipe_varroa_records and transfer_weak_colonies are excluded by the forbidden name prefix; no uncertainty condition holds.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "clean_hive_floors",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "check_queen_cells",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "add_honey_supers",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": []
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "inspect_rocket_fins",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "pack_recovery_chutes",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "fit_motor_igniters",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "clear_launch_perimeter",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "brief_spectator_line",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6",
+              "F7"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "forecast_wind_speed_unknown",
+          "landowner_hours_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R1-03",
+      "rationale": "The stated precedences give the order inspect_rocket_fins, pack_recovery_chutes, fit_motor_igniters, clear_launch_perimeter, brief_spectator_line; execute_night_launch is excluded by the forbidden name prefix; forecast_wind_speed_unknown and landowner_hours_unknown hold because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "inspect_rocket_fins",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "pack_recovery_chutes",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "fit_motor_igniters",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "clear_launch_perimeter",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "brief_spectator_line",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6",
+              "F7"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "forecast_wind_speed_unknown",
+          "landowner_hours_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "rinse_live_rock",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F4"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "fill_with_saltwater",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "start_return_pump",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "seed_nitrifying_bacteria",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "target_salinity_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R1-04",
+      "rationale": "The stated precedences give the order rinse_live_rock, fill_with_saltwater, start_return_pump, seed_nitrifying_bacteria; adopt_rescue_clownfish and release_hermit_crabs are excluded by the forbidden name prefix; target_salinity_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "rinse_live_rock",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F4"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "fill_with_saltwater",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "start_return_pump",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "seed_nitrifying_bacteria",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "target_salinity_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "gather_dietary_forms",
+            "depends_on": [],
+            "evidence_ids": [
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "shortlist_caterers",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "request_menu_quotes",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": [
+          "final_guest_count_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R2-01",
+      "rationale": "The stated precedences give the order gather_dietary_forms, shortlist_caterers, request_menu_quotes; pay_caterer_deposit is excluded by the forbidden name prefix; final_guest_count_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "gather_dietary_forms",
+            "depends_on": [],
+            "evidence_ids": [
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "shortlist_caterers",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "request_menu_quotes",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": [
+          "final_guest_count_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "map_new_seating",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "tag_desk_contents",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "book_moving_crew",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "relocate_desk_units",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "test_desk_phone_lines",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "lift_access_hours_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R2-02",
+      "rationale": "The stated precedences give the order map_new_seating, tag_desk_contents, book_moving_crew, relocate_desk_units, test_desk_phone_lines; lift_access_hours_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "map_new_seating",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "tag_desk_contents",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "book_moving_crew",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "relocate_desk_units",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "test_desk_phone_lines",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "lift_access_hours_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "pull_delivery_notes",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "compare_invoice_lines",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "draft_dispute_letter",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "send_dispute_letter",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "supplier_credit_terms_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R2-03",
+      "rationale": "The stated precedences give the order pull_delivery_notes, compare_invoice_lines, draft_dispute_letter, send_dispute_letter; pay_disputed_invoice is excluded by the forbidden name prefix; supplier_credit_terms_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "pull_delivery_notes",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "compare_invoice_lines",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "draft_dispute_letter",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "send_dispute_letter",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "supplier_credit_terms_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "collect_staff_reports",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "match_card_statements",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "flag_missing_receipts",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": []
+      },
+      "fixture_id": "A4-PLAN-R2-04",
+      "rationale": "The stated precedences give the order collect_staff_reports, match_card_statements, flag_missing_receipts; approve_mileage_claims and transfer_quarter_balance are excluded by the forbidden name prefix; no uncertainty condition holds.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "collect_staff_reports",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "match_card_statements",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "flag_missing_receipts",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": []
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "sample_visitor_logs",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "count_unreturned_badges",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "interview_reception_staff",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "draft_badge_findings",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "agree_fix_owners",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6",
+              "F7"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "badge_stock_unknown",
+          "visitor_log_retention_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R3-01",
+      "rationale": "The stated precedences give the order sample_visitor_logs, count_unreturned_badges, interview_reception_staff, draft_badge_findings, agree_fix_owners; delete_old_visitor_logs is excluded by the forbidden name prefix; visitor_log_retention_unknown and badge_stock_unknown hold because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "sample_visitor_logs",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "count_unreturned_badges",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "interview_reception_staff",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "draft_badge_findings",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "agree_fix_owners",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6",
+              "F7"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "badge_stock_unknown",
+          "visitor_log_retention_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "verify_requester_identity",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F4"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "locate_camera_footage",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "blur_other_faces",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "log_redaction_steps",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "footage_time_window_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R3-02",
+      "rationale": "The stated precedences give the order verify_requester_identity, locate_camera_footage, blur_other_faces, log_redaction_steps; release_raw_footage and delete_overwritten_clips are excluded by the forbidden name prefix; footage_time_window_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "verify_requester_identity",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F4"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "locate_camera_footage",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "blur_other_faces",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "log_redaction_steps",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "footage_time_window_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "export_permission_report",
+            "depends_on": [],
+            "evidence_ids": [
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "name_folder_owners",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "review_open_links",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": [
+          "external_share_count_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R3-03",
+      "rationale": "The stated precedences give the order export_permission_report, name_folder_owners, review_open_links; remove_everyone_group is excluded by the forbidden name prefix; external_share_count_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "export_permission_report",
+            "depends_on": [],
+            "evidence_ids": [
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "name_folder_owners",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "review_open_links",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": [
+          "external_share_count_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "agree_simulation_scope",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "write_lure_email",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "whitelist_test_sender",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "schedule_send_window",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "summarise_click_results",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "staff_consent_position_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R3-04",
+      "rationale": "The stated precedences give the order agree_simulation_scope, write_lure_email, whitelist_test_sender, schedule_send_window, summarise_click_results; staff_consent_position_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "agree_simulation_scope",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "write_lure_email",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "whitelist_test_sender",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "schedule_send_window",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "summarise_click_results",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "staff_consent_position_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "fence_drop_zone",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "strip_top_boards",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "lower_tube_bundles",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "stack_fittings_by_type",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "day_wind_forecast_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R4-01",
+      "rationale": "The stated precedences give the order fence_drop_zone, strip_top_boards, lower_tube_bundles, stack_fittings_by_type; remove_tie_anchors is excluded by the forbidden name prefix; day_wind_forecast_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "fence_drop_zone",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "strip_top_boards",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "lower_tube_bundles",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "stack_fittings_by_type",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "day_wind_forecast_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "photograph_bottle_labels",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "test_unknown_contents",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "segregate_by_hazard",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "pack_waste_drums",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "book_licensed_collection",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6",
+              "F7"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "bottle_contents_unknown",
+          "collection_date_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R4-02",
+      "rationale": "The stated precedences give the order photograph_bottle_labels, test_unknown_contents, segregate_by_hazard, pack_waste_drums, book_licensed_collection; pay_disposal_invoice is excluded by the forbidden name prefix; bottle_contents_unknown and collection_date_unknown hold because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "photograph_bottle_labels",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "test_unknown_contents",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "segregate_by_hazard",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3",
+              "F4"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "pack_waste_drums",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F4",
+              "F5"
+            ],
+            "id": "P4"
+          },
+          {
+            "action": "book_licensed_collection",
+            "depends_on": [
+              "P4"
+            ],
+            "evidence_ids": [
+              "F5",
+              "F6",
+              "F7"
+            ],
+            "id": "P5"
+          }
+        ],
+        "uncertainties": [
+          "bottle_contents_unknown",
+          "collection_date_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "survey_bat_roosts",
+            "depends_on": [],
+            "evidence_ids": [
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "close_nearby_footpath",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "rig_lowering_lines",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": [
+          "preservation_status_unknown"
+        ]
+      },
+      "fixture_id": "A4-PLAN-R4-03",
+      "rationale": "The stated precedences give the order survey_bat_roosts, close_nearby_footpath, rig_lowering_lines; remove_protected_nest is excluded by the forbidden name prefix; preservation_status_unknown holds because the evidence says so.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "survey_bat_roosts",
+            "depends_on": [],
+            "evidence_ids": [
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "close_nearby_footpath",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "rig_lowering_lines",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": [
+          "preservation_status_unknown"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "pull_building_plans",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "brief_survey_firm",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "seal_sampled_rooms",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": []
+      },
+      "fixture_id": "A4-PLAN-R4-04",
+      "rationale": "The stated precedences give the order pull_building_plans, brief_survey_firm, seal_sampled_rooms; remove_textured_ceilings and deploy_renovation_crew are excluded by the forbidden name prefix; no uncertainty condition holds.",
+      "reference_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "pull_building_plans",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "brief_survey_firm",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "seal_sampled_rooms",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": []
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-workshop-inspectorate-website",
+              "north-repair-association-newsletter"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S3"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-transport-office-bulletin"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "plan_the_trip",
+        "uncertainties": [
+          "single_lineage_support"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R1-01",
+      "rationale": "C1 is supported (direct_support), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3 across 1 lineage(s). The decision rule gives plan_the_trip; holding codes: single_lineage_support.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-workshop-inspectorate-website",
+              "north-repair-association-newsletter"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S3"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-transport-office-bulletin"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "plan_the_trip",
+        "uncertainties": [
+          "single_lineage_support"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "north-wildlife-trust-bulletin"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S2",
+              "S3",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-performance-panel-website",
+              "north-performing-arts-council-programme"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "pass_for_now",
+        "uncertainties": []
+      },
+      "fixture_id": "A4-RSRCH-R1-02",
+      "rationale": "C1 is contradicted (direct_contradiction), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3, S4 across 2 lineage(s). The decision rule gives pass_for_now; holding codes: none.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "north-wildlife-trust-bulletin"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S2",
+              "S3",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-performance-panel-website",
+              "north-performing-arts-council-programme"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "pass_for_now",
+        "uncertainties": []
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [],
+            "claim_id": "C1",
+            "lineages": [],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S2",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-sports-association-bulletin"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S3"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-leisure-inspectorate-website"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "hold_off",
+        "uncertainties": [
+          "single_lineage_support",
+          "unaddressed_claim"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R1-03",
+      "rationale": "C1 is unresolved (unaddressed), citing no source across 0 lineage(s); C2 is supported (direct_support), citing S2, S4 across 1 lineage(s); C3 is supported (direct_support), citing S3 across 1 lineage(s). The decision rule gives hold_off; holding codes: single_lineage_support, unaddressed_claim.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [],
+            "claim_id": "C1",
+            "lineages": [],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S2",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-sports-association-bulletin"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S3"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-leisure-inspectorate-website"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "hold_off",
+        "uncertainties": [
+          "single_lineage_support",
+          "unaddressed_claim"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2",
+              "S3"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-ceramics-panel-website",
+              "north-crafts-association-newsletter"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-accommodation-inspectorate-website",
+              "north-visitor-office-bulletin"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "join_now",
+        "uncertainties": []
+      },
+      "fixture_id": "A4-RSRCH-R1-04",
+      "rationale": "C1 is supported (direct_support), citing S1, S2, S3 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S4, S5 across 2 lineage(s). The decision rule gives join_now; holding codes: none.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2",
+              "S3"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-ceramics-panel-website",
+              "north-crafts-association-newsletter"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-accommodation-inspectorate-website",
+              "north-visitor-office-bulletin"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "join_now",
+        "uncertainties": []
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-motor-services-inspectorate-website",
+              "north-vehicle-hire-association-newsletter"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-freight-office-bulletin"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "north-facilities-office-bulletin"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "pause_purchase",
+        "uncertainties": [
+          "single_lineage_support",
+          "conflicting_sources"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R2-01",
+      "rationale": "C1 is unresolved (conflict), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S5 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives pause_purchase; holding codes: single_lineage_support, conflicting_sources.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-motor-services-inspectorate-website",
+              "north-vehicle-hire-association-newsletter"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-freight-office-bulletin"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "north-facilities-office-bulletin"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "pause_purchase",
+        "uncertainties": [
+          "single_lineage_support",
+          "conflicting_sources"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-logistics-inspectorate-website"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S2",
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-supplier-council-website",
+              "north-trade-association-bulletin"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S4",
+              "S6"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-market-inspectorate-website",
+              "west-market-inspectorate-record"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "keep_searching",
+        "uncertainties": [
+          "scope_mismatch"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R2-02",
+      "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3, S5 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S4, S6 across 2 lineage(s). The decision rule gives keep_searching; holding codes: scope_mismatch.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-logistics-inspectorate-website"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S2",
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-supplier-council-website",
+              "north-trade-association-bulletin"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S4",
+              "S6"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-market-inspectorate-website",
+              "west-market-inspectorate-record"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "keep_searching",
+        "uncertainties": [
+          "scope_mismatch"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-parking-services-inspectorate-website",
+              "north-parking-office-bulletin"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S3"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-education-office-bulletin"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "seek_other_quotes",
+        "uncertainties": [
+          "single_lineage_support"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R2-03",
+      "rationale": "C1 is contradicted (governing_source), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3 across 1 lineage(s). The decision rule gives seek_other_quotes; holding codes: single_lineage_support.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-parking-services-inspectorate-website",
+              "north-parking-office-bulletin"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S3"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-education-office-bulletin"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "seek_other_quotes",
+        "uncertainties": [
+          "single_lineage_support"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-hospitality-inspectorate-website",
+              "north-food-standards-office-report"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S3",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-property-services-panel-website",
+              "west-property-services-panel-record"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "hold_order",
+        "uncertainties": []
+      },
+      "fixture_id": "A4-RSRCH-R2-04",
+      "rationale": "C1 is contradicted (direct_contradiction), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3, S4 across 2 lineage(s). The decision rule gives hold_order; holding codes: none.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-hospitality-inspectorate-website",
+              "north-food-standards-office-report"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S3",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-property-services-panel-website",
+              "west-property-services-panel-record"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "hold_order",
+        "uncertainties": []
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-systems-inspectorate-website",
+              "north-digital-services-office-technical-note"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S3"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-data-protection-office-bulletin"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-records-inspectorate-website"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "mark_compliant",
+        "uncertainties": [
+          "single_lineage_support"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R3-01",
+      "rationale": "C1 is supported (direct_support), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives mark_compliant; holding codes: single_lineage_support.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-systems-inspectorate-website",
+              "north-digital-services-office-technical-note"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S3"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-data-protection-office-bulletin"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-records-inspectorate-website"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "mark_compliant",
+        "uncertainties": [
+          "single_lineage_support"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [],
+            "claim_id": "C1",
+            "lineages": [],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S2",
+              "S3",
+              "S4",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-health-services-office-bulletin"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "revise_policy",
+        "uncertainties": [
+          "unaddressed_claim"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R3-02",
+      "rationale": "C1 is unresolved (unaddressed), citing no source across 0 lineage(s); C2 is contradicted (direct_contradiction), citing S2, S3, S4, S5 across 1 lineage(s). The decision rule gives revise_policy; holding codes: unaddressed_claim.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [],
+            "claim_id": "C1",
+            "lineages": [],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S2",
+              "S3",
+              "S4",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "north-health-services-office-bulletin"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "revise_policy",
+        "uncertainties": [
+          "unaddressed_claim"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-training-inspectorate-website",
+              "west-training-inspectorate-briefing"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "west-records-inspectorate-record"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "moorland-systems-inspectorate-register"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "reject_vendor",
+        "uncertainties": [
+          "single_lineage_support",
+          "conflicting_sources"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R3-03",
+      "rationale": "C1 is unresolved (conflict), citing S1, S2 across 2 lineage(s); C2 is supported (direct_support), citing S3, S5 across 1 lineage(s); C3 is supported (direct_support), citing S4 across 1 lineage(s). The decision rule gives reject_vendor; holding codes: single_lineage_support, conflicting_sources.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-training-inspectorate-website",
+              "west-training-inspectorate-briefing"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "west-records-inspectorate-record"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "moorland-systems-inspectorate-register"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "reject_vendor",
+        "uncertainties": [
+          "single_lineage_support",
+          "conflicting_sources"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-privacy-assurance-panel-website",
+              "moorland-records-inspectorate-register"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-workplace-assurance-panel-website",
+              "north-site-safety-inspectorate-inspection-log"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S4",
+              "S6"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-software-assurance-panel-website",
+              "west-software-assurance-panel-briefing"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "escalate_review",
+        "uncertainties": []
+      },
+      "fixture_id": "A4-RSRCH-R3-04",
+      "rationale": "C1 is contradicted (governing_source), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3, S5 across 2 lineage(s); C3 is contradicted (direct_contradiction), citing S4, S6 across 2 lineage(s). The decision rule gives escalate_review; holding codes: none.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-privacy-assurance-panel-website",
+              "moorland-records-inspectorate-register"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-workplace-assurance-panel-website",
+              "north-site-safety-inspectorate-inspection-log"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S4",
+              "S6"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-software-assurance-panel-website",
+              "west-software-assurance-panel-briefing"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "escalate_review",
+        "uncertainties": []
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "north-equipment-inspectorate-inspection-log"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S2",
+              "S3"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "west-workplace-assurance-panel-record"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "stop_work",
+        "uncertainties": [
+          "single_lineage_support"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R4-01",
+      "rationale": "C1 is contradicted (direct_contradiction), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S3 across 1 lineage(s). The decision rule gives stop_work; holding codes: single_lineage_support.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "north-equipment-inspectorate-inspection-log"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S2",
+              "S3"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "west-workplace-assurance-panel-record"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "stop_work",
+        "uncertainties": [
+          "single_lineage_support"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2",
+              "S3"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-building-safety-office-website",
+              "moorland-workplace-assurance-panel-register"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-plant-assurance-office-website"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [],
+            "claim_id": "C3",
+            "lineages": [],
+            "status": "unresolved"
+          }
+        ],
+        "recommendation": "certify_site",
+        "uncertainties": [
+          "unaddressed_claim"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R4-02",
+      "rationale": "C1 is supported (direct_support), citing S1, S2, S3 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S4 across 1 lineage(s); C3 is unresolved (unaddressed), citing no source across 0 lineage(s). The decision rule gives certify_site; holding codes: unaddressed_claim.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2",
+              "S3"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "central-building-safety-office-website",
+              "moorland-workplace-assurance-panel-register"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "central-plant-assurance-office-website"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [],
+            "claim_id": "C3",
+            "lineages": [],
+            "status": "unresolved"
+          }
+        ],
+        "recommendation": "certify_site",
+        "uncertainties": [
+          "unaddressed_claim"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "west-building-safety-office-briefing"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S2",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "moorland-building-safety-office-report"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-site-safety-inspectorate-test-record"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "keep_closed",
+        "uncertainties": [
+          "single_lineage_support",
+          "scope_mismatch"
+        ]
+      },
+      "fixture_id": "A4-RSRCH-R4-03",
+      "rationale": "C1 is unresolved (scope), citing S1 across 1 lineage(s); C2 is supported (direct_support), citing S2, S4 across 1 lineage(s); C3 is supported (direct_support), citing S3, S5 across 1 lineage(s). The decision rule gives keep_closed; holding codes: single_lineage_support, scope_mismatch.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "west-building-safety-office-briefing"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "citations": [
+              "S2",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "moorland-building-safety-office-report"
+            ],
+            "status": "supported"
+          },
+          {
+            "citations": [
+              "S3",
+              "S5"
+            ],
+            "claim_id": "C3",
+            "lineages": [
+              "central-site-safety-inspectorate-test-record"
+            ],
+            "status": "supported"
+          }
+        ],
+        "recommendation": "keep_closed",
+        "uncertainties": [
+          "single_lineage_support",
+          "scope_mismatch"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "moorland-plant-assurance-office-register",
+              "west-plant-assurance-office-record"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S3",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "moorland-site-safety-inspectorate-inspection-log",
+              "west-site-safety-inspectorate-certificate"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "halt_lift",
+        "uncertainties": []
+      },
+      "fixture_id": "A4-RSRCH-R4-04",
+      "rationale": "C1 is contradicted (direct_contradiction), citing S1, S2 across 2 lineage(s); C2 is contradicted (direct_contradiction), citing S3, S4 across 2 lineage(s). The decision rule gives halt_lift; holding codes: none.",
+      "reference_output": {
+        "claims": [
+          {
+            "citations": [
+              "S1",
+              "S2"
+            ],
+            "claim_id": "C1",
+            "lineages": [
+              "moorland-plant-assurance-office-register",
+              "west-plant-assurance-office-record"
+            ],
+            "status": "contradicted"
+          },
+          {
+            "citations": [
+              "S3",
+              "S4"
+            ],
+            "claim_id": "C2",
+            "lineages": [
+              "moorland-site-safety-inspectorate-inspection-log",
+              "west-site-safety-inspectorate-certificate"
+            ],
+            "status": "contradicted"
+          }
+        ],
+        "recommendation": "halt_lift",
+        "uncertainties": []
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "cause_established",
+        "required_terms": {
+          "O11": [
+            "02:30",
+            "frostiest"
+          ],
+          "O12": [
+            "seedlings",
+            "lower bench"
+          ],
+          "O13": [
+            "thermal fuse"
+          ],
+          "O14": [
+            "tonight"
+          ],
+          "O15": [
+            "full heat",
+            "spare"
+          ]
+        },
+        "roles": {
+          "O11": "symptom",
+          "O12": "symptom",
+          "O13": "finding",
+          "O14": "next_step",
+          "O15": "verification"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R1-01",
+      "rationale": "A finding directly states the cause and no observation disputes it.",
+      "reference_output": {
+        "conclusion": "cause_established",
+        "statements": [
+          {
+            "observation_ids": [
+              "O11",
+              "O12"
+            ],
+            "role": "symptom",
+            "statement_id": "S11",
+            "text": "The greenhouse heater went cold at 02:30 on the frostiest night. Seedlings on the lower bench showed frost damage by morning."
+          },
+          {
+            "observation_ids": [
+              "O13"
+            ],
+            "role": "finding",
+            "statement_id": "S13",
+            "text": "The electrician found the heater stopped because its thermal fuse blew."
+          },
+          {
+            "observation_ids": [
+              "O14"
+            ],
+            "role": "next_step",
+            "statement_id": "S14",
+            "text": "Fit a replacement fuse before tonight's forecast frost."
+          },
+          {
+            "observation_ids": [
+              "O15"
+            ],
+            "role": "verification",
+            "statement_id": "S15",
+            "text": "A spare fuse brought the element back to full heat on the bench."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "cause_unresolved",
+        "required_terms": {
+          "O21": [
+            "come out flat"
+          ],
+          "O22": [
+            "rye"
+          ],
+          "O23": [
+            "previous flour"
+          ],
+          "O24": [
+            "starter"
+          ]
+        },
+        "roles": {
+          "O21": "finding",
+          "O22": "hypothesis",
+          "O23": "counterevidence",
+          "O24": "next_step"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R1-02",
+      "rationale": "Counterevidence disputes the proposed cause, so causality remains unresolved.",
+      "reference_output": {
+        "conclusion": "cause_unresolved",
+        "statements": [
+          {
+            "observation_ids": [
+              "O21"
+            ],
+            "role": "finding",
+            "statement_id": "S21",
+            "text": "My sourdough loaves have come out flat for a week."
+          },
+          {
+            "observation_ids": [
+              "O22"
+            ],
+            "role": "hypothesis",
+            "statement_id": "S22",
+            "text": "The new rye flour might be too weak to hold the rise."
+          },
+          {
+            "observation_ids": [
+              "O23"
+            ],
+            "role": "counterevidence",
+            "statement_id": "S23",
+            "text": "A loaf baked with the previous flour came out just as flat."
+          },
+          {
+            "observation_ids": [
+              "O24"
+            ],
+            "role": "next_step",
+            "statement_id": "S24",
+            "text": "Check the starter's activity before blaming the flour."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "insufficient_evidence",
+        "required_terms": {
+          "O31": [
+            "heatwave",
+            "four days"
+          ],
+          "O32": [
+            "fish",
+            "feeding"
+          ],
+          "O33": [
+            "algae"
+          ],
+          "O34": [
+            "water test"
+          ]
+        },
+        "roles": {
+          "O31": "finding",
+          "O32": "finding",
+          "O33": "hypothesis",
+          "O34": "limitation"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R1-03",
+      "rationale": "A cause is only proposed; nothing establishes or disputes it.",
+      "reference_output": {
+        "conclusion": "insufficient_evidence",
+        "statements": [
+          {
+            "observation_ids": [
+              "O31",
+              "O32"
+            ],
+            "role": "finding",
+            "statement_id": "S31",
+            "text": "The garden pond turned green within four days of the heatwave. The fish are still feeding normally each evening."
+          },
+          {
+            "observation_ids": [
+              "O33"
+            ],
+            "role": "hypothesis",
+            "statement_id": "S33",
+            "text": "Extra sunlight on the pond may be feeding an algae bloom."
+          },
+          {
+            "observation_ids": [
+              "O34"
+            ],
+            "role": "limitation",
+            "statement_id": "S34",
+            "text": "No water test has been taken since spring."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "decision_reserved",
+        "required_terms": {
+          "O41": [
+            "plot holder"
+          ],
+          "O42": [
+            "shed approvals"
+          ],
+          "O43": [
+            "boundary hedge"
+          ],
+          "O44": [
+            "water rota"
+          ],
+          "O45": [
+            "sketch"
+          ]
+        },
+        "roles": {
+          "O41": "request",
+          "O42": "authority_boundary",
+          "O43": "finding",
+          "O44": "context",
+          "O45": "next_step"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R1-04",
+      "rationale": "The evidence reserves the decision to a named role other than the current reviewer.",
+      "reference_output": {
+        "conclusion": "decision_reserved",
+        "statements": [
+          {
+            "observation_ids": [
+              "O41"
+            ],
+            "role": "request",
+            "statement_id": "S41",
+            "text": "A plot holder asked to put a second shed on plot 14."
+          },
+          {
+            "observation_ids": [
+              "O42"
+            ],
+            "role": "authority_boundary",
+            "statement_id": "S42",
+            "text": "Allotment rules reserve shed approvals to the site committee chair."
+          },
+          {
+            "observation_ids": [
+              "O43"
+            ],
+            "role": "finding",
+            "statement_id": "S43",
+            "text": "Plot 14 already has one shed beside the boundary hedge."
+          },
+          {
+            "observation_ids": [
+              "O44"
+            ],
+            "role": "context",
+            "statement_id": "S44",
+            "text": "The reviewer handling this note is the site's water rota volunteer."
+          },
+          {
+            "observation_ids": [
+              "O45"
+            ],
+            "role": "next_step",
+            "statement_id": "S45",
+            "text": "Pass the request and a plot sketch to the committee chair."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "constraint_breached",
+        "required_terms": {
+          "O51": [
+            "180"
+          ],
+          "O52": [
+            "236"
+          ],
+          "O53": [
+            "office manager"
+          ]
+        },
+        "roles": {
+          "O51": "design_constraint",
+          "O52": "finding",
+          "O53": "next_step"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R2-01",
+      "rationale": "A measured finding exceeds the stated constraint.",
+      "reference_output": {
+        "conclusion": "constraint_breached",
+        "statements": [
+          {
+            "observation_ids": [
+              "O51"
+            ],
+            "role": "design_constraint",
+            "statement_id": "S51",
+            "text": "The team lunch budget is capped at 180 per month."
+          },
+          {
+            "observation_ids": [
+              "O52"
+            ],
+            "role": "finding",
+            "statement_id": "S52",
+            "text": "This month's lunch receipts total 236."
+          },
+          {
+            "observation_ids": [
+              "O53"
+            ],
+            "role": "next_step",
+            "statement_id": "S53",
+            "text": "Flag the overspend to the office manager."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "behavior_by_design",
+        "required_terms": {
+          "O61": [
+            "three extra days"
+          ],
+          "O62": [
+            "smaller invoices"
+          ],
+          "O63": [
+            "second signature"
+          ],
+          "O64": [
+            "vendors"
+          ]
+        },
+        "roles": {
+          "O61": "finding",
+          "O62": "finding",
+          "O63": "design_constraint",
+          "O64": "next_step"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R2-02",
+      "rationale": "A stated policy or configuration accounts for the observed behavior.",
+      "reference_output": {
+        "conclusion": "behavior_by_design",
+        "statements": [
+          {
+            "observation_ids": [
+              "O61",
+              "O62"
+            ],
+            "role": "finding",
+            "statement_id": "S61",
+            "text": "Supplier invoices above 5,000 sat unpaid for three extra days. Smaller invoices from the same batch were paid on time."
+          },
+          {
+            "observation_ids": [
+              "O63"
+            ],
+            "role": "design_constraint",
+            "statement_id": "S63",
+            "text": "The payments policy requires a second signature for invoices above 5,000."
+          },
+          {
+            "observation_ids": [
+              "O64"
+            ],
+            "role": "next_step",
+            "statement_id": "S64",
+            "text": "Warn vendors to expect extra approval time on large bills."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "cause_established",
+        "required_terms": {
+          "O71": [
+            "25th"
+          ],
+          "O72": [
+            "signing certificate"
+          ],
+          "O73": [
+            "forty"
+          ],
+          "O74": [
+            "resend"
+          ],
+          "O75": [
+            "accepted"
+          ]
+        },
+        "roles": {
+          "O71": "symptom",
+          "O72": "finding",
+          "O73": "impact",
+          "O74": "next_step",
+          "O75": "verification"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R2-03",
+      "rationale": "A finding directly states the cause and no observation disputes it.",
+      "reference_output": {
+        "conclusion": "cause_established",
+        "statements": [
+          {
+            "observation_ids": [
+              "O71"
+            ],
+            "role": "symptom",
+            "statement_id": "S71",
+            "text": "The payroll export to the bank failed on the 25th."
+          },
+          {
+            "observation_ids": [
+              "O72"
+            ],
+            "role": "finding",
+            "statement_id": "S72",
+            "text": "The bank's rejection notice says the export failed because the signing certificate had expired."
+          },
+          {
+            "observation_ids": [
+              "O73"
+            ],
+            "role": "impact",
+            "statement_id": "S73",
+            "text": "Forty staff payments arrived one day late."
+          },
+          {
+            "observation_ids": [
+              "O74"
+            ],
+            "role": "next_step",
+            "statement_id": "S74",
+            "text": "Renew the certificate and resend the payment file."
+          },
+          {
+            "observation_ids": [
+              "O75"
+            ],
+            "role": "verification",
+            "statement_id": "S75",
+            "text": "A test file signed with a fresh certificate was accepted."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "cause_unresolved",
+        "required_terms": {
+          "O81": [
+            "doubled"
+          ],
+          "O82": [
+            "cracked shades"
+          ],
+          "O83": [
+            "courier"
+          ],
+          "O84": [
+            "collected in person"
+          ],
+          "O85": [
+            "factory"
+          ],
+          "O86": [
+            "photos"
+          ]
+        },
+        "roles": {
+          "O81": "finding",
+          "O82": "finding",
+          "O83": "hypothesis",
+          "O84": "counterevidence",
+          "O85": "next_step",
+          "O86": "limitation"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R2-04",
+      "rationale": "Counterevidence disputes the proposed cause, so causality remains unresolved.",
+      "reference_output": {
+        "conclusion": "cause_unresolved",
+        "statements": [
+          {
+            "observation_ids": [
+              "O81",
+              "O82"
+            ],
+            "role": "finding",
+            "statement_id": "S81",
+            "text": "Customer returns of desk lamps doubled in March. Most returned lamps were logged as arriving with cracked shades."
+          },
+          {
+            "observation_ids": [
+              "O83"
+            ],
+            "role": "hypothesis",
+            "statement_id": "S83",
+            "text": "The new courier may be handling lamp parcels roughly."
+          },
+          {
+            "observation_ids": [
+              "O84"
+            ],
+            "role": "counterevidence",
+            "statement_id": "S84",
+            "text": "Lamps collected in person by customers showed the same cracks."
+          },
+          {
+            "observation_ids": [
+              "O85"
+            ],
+            "role": "next_step",
+            "statement_id": "S85",
+            "text": "Inspect sealed boxes straight from the factory."
+          },
+          {
+            "observation_ids": [
+              "O86"
+            ],
+            "role": "limitation",
+            "statement_id": "S86",
+            "text": "Only returns sent with photos were counted."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "insufficient_evidence",
+        "required_terms": {
+          "O91": [
+            "three staff"
+          ],
+          "O92": [
+            "overseas"
+          ],
+          "O93": [
+            "hobby forum"
+          ],
+          "O94": [
+            "two days"
+          ]
+        },
+        "roles": {
+          "O91": "finding",
+          "O92": "finding",
+          "O93": "hypothesis",
+          "O94": "limitation"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R3-01",
+      "rationale": "A cause is only proposed; nothing establishes or disputes it.",
+      "reference_output": {
+        "conclusion": "insufficient_evidence",
+        "statements": [
+          {
+            "observation_ids": [
+              "O91",
+              "O92"
+            ],
+            "role": "finding",
+            "statement_id": "S91",
+            "text": "Three staff received an unusual sign-in warning on Monday. All three warnings traced to the same overseas location."
+          },
+          {
+            "observation_ids": [
+              "O93"
+            ],
+            "role": "hypothesis",
+            "statement_id": "S93",
+            "text": "A shared password might have leaked from an old hobby forum."
+          },
+          {
+            "observation_ids": [
+              "O94"
+            ],
+            "role": "limitation",
+            "statement_id": "S94",
+            "text": "The security log keeps only two days of history."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "decision_reserved",
+        "required_terms": {
+          "O101": [
+            "move-out inspection"
+          ],
+          "O102": [
+            "personal records"
+          ],
+          "O103": [
+            "neighbour's car"
+          ],
+          "O104": [
+            "maintenance desk"
+          ],
+          "O105": [
+            "photo set"
+          ]
+        },
+        "roles": {
+          "O101": "request",
+          "O102": "authority_boundary",
+          "O103": "finding",
+          "O104": "context",
+          "O105": "next_step"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R3-02",
+      "rationale": "The evidence reserves the decision to a named role other than the current reviewer.",
+      "reference_output": {
+        "conclusion": "decision_reserved",
+        "statements": [
+          {
+            "observation_ids": [
+              "O101"
+            ],
+            "role": "request",
+            "statement_id": "S101",
+            "text": "A former tenant asked for copies of their move-out inspection photos."
+          },
+          {
+            "observation_ids": [
+              "O102"
+            ],
+            "role": "authority_boundary",
+            "statement_id": "S102",
+            "text": "Only the data protection officer may release personal records."
+          },
+          {
+            "observation_ids": [
+              "O103"
+            ],
+            "role": "finding",
+            "statement_id": "S103",
+            "text": "The photos show the tenant's belongings and a neighbour's car."
+          },
+          {
+            "observation_ids": [
+              "O104"
+            ],
+            "role": "context",
+            "statement_id": "S104",
+            "text": "The person reviewing the request works on the maintenance desk."
+          },
+          {
+            "observation_ids": [
+              "O105"
+            ],
+            "role": "next_step",
+            "statement_id": "S105",
+            "text": "Send the request and the photo set to the data protection officer."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "constraint_breached",
+        "required_terms": {
+          "O111": [
+            "twice a day"
+          ],
+          "O112": [
+            "nine times"
+          ],
+          "O113": [
+            "two different people"
+          ],
+          "O114": [
+            "payroll database"
+          ],
+          "O115": [
+            "suspend"
+          ]
+        },
+        "roles": {
+          "O111": "design_constraint",
+          "O112": "finding",
+          "O113": "finding",
+          "O114": "impact",
+          "O115": "next_step"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R3-03",
+      "rationale": "A measured finding exceeds the stated constraint.",
+      "reference_output": {
+        "conclusion": "constraint_breached",
+        "statements": [
+          {
+            "observation_ids": [
+              "O111"
+            ],
+            "role": "design_constraint",
+            "statement_id": "S111",
+            "text": "Security policy lets each badge open the server room at most twice a day."
+          },
+          {
+            "observation_ids": [
+              "O112",
+              "O113"
+            ],
+            "role": "finding",
+            "statement_id": "S112",
+            "text": "One contractor badge opened the server room nine times on Thursday. Door footage shows that badge carried by two different people."
+          },
+          {
+            "observation_ids": [
+              "O114"
+            ],
+            "role": "impact",
+            "statement_id": "S114",
+            "text": "The room holds the payroll database servers."
+          },
+          {
+            "observation_ids": [
+              "O115"
+            ],
+            "role": "next_step",
+            "statement_id": "S115",
+            "text": "Suspend the badge pending a security interview."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "behavior_by_design",
+        "required_terms": {
+          "O121": [
+            "next morning"
+          ],
+          "O122": [
+            "identity check"
+          ],
+          "O123": [
+            "reset request page"
+          ]
+        },
+        "roles": {
+          "O121": "finding",
+          "O122": "design_constraint",
+          "O123": "next_step"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R3-04",
+      "rationale": "A stated policy or configuration accounts for the observed behavior.",
+      "reference_output": {
+        "conclusion": "behavior_by_design",
+        "statements": [
+          {
+            "observation_ids": [
+              "O121"
+            ],
+            "role": "finding",
+            "statement_id": "S121",
+            "text": "Password resets requested in the evening wait until the next morning."
+          },
+          {
+            "observation_ids": [
+              "O122"
+            ],
+            "role": "design_constraint",
+            "statement_id": "S122",
+            "text": "The helpdesk runbook holds out-of-hours resets until an identity check can be done by phone."
+          },
+          {
+            "observation_ids": [
+              "O123"
+            ],
+            "role": "next_step",
+            "statement_id": "S123",
+            "text": "Add the overnight wait to the reset request page."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "cause_established",
+        "required_terms": {
+          "O131": [
+            "loading ramp"
+          ],
+          "O132": [
+            "handbrake cable"
+          ],
+          "O133": [
+            "glass jars"
+          ],
+          "O134": [
+            "tagged out"
+          ],
+          "O135": [
+            "held firm"
+          ]
+        },
+        "roles": {
+          "O131": "symptom",
+          "O132": "finding",
+          "O133": "impact",
+          "O134": "next_step",
+          "O135": "verification"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R4-01",
+      "rationale": "A finding directly states the cause and no observation disputes it.",
+      "reference_output": {
+        "conclusion": "cause_established",
+        "statements": [
+          {
+            "observation_ids": [
+              "O131"
+            ],
+            "role": "symptom",
+            "statement_id": "S131",
+            "text": "A forklift rolled forward on the loading ramp this morning."
+          },
+          {
+            "observation_ids": [
+              "O132"
+            ],
+            "role": "finding",
+            "statement_id": "S132",
+            "text": "The service report says it rolled because the handbrake cable had snapped."
+          },
+          {
+            "observation_ids": [
+              "O133"
+            ],
+            "role": "impact",
+            "statement_id": "S133",
+            "text": "A pallet of glass jars was crushed but nobody was hurt."
+          },
+          {
+            "observation_ids": [
+              "O134"
+            ],
+            "role": "next_step",
+            "statement_id": "S134",
+            "text": "Keep the forklift tagged out until the repair is signed off."
+          },
+          {
+            "observation_ids": [
+              "O135"
+            ],
+            "role": "verification",
+            "statement_id": "S135",
+            "text": "The truck held firm on the slope after a trial cable swap."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "insufficient_evidence",
+        "required_terms": {
+          "O141": [
+            "two degrees"
+          ],
+          "O142": [
+            "base plates"
+          ],
+          "O143": [
+            "settling"
+          ],
+          "O144": [
+            "measured"
+          ],
+          "O145": [
+            "plumb"
+          ]
+        },
+        "roles": {
+          "O141": "finding",
+          "O142": "finding",
+          "O143": "hypothesis",
+          "O144": "limitation",
+          "O145": "next_step"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R4-02",
+      "rationale": "A cause is only proposed; nothing establishes or disputes it.",
+      "reference_output": {
+        "conclusion": "insufficient_evidence",
+        "statements": [
+          {
+            "observation_ids": [
+              "O141",
+              "O142"
+            ],
+            "role": "finding",
+            "statement_id": "S141",
+            "text": "The east scaffold tower leans about two degrees toward the road. Two base plates rest on soft gravel after last week's rain."
+          },
+          {
+            "observation_ids": [
+              "O143"
+            ],
+            "role": "hypothesis",
+            "statement_id": "S143",
+            "text": "Settling ground may be causing the lean."
+          },
+          {
+            "observation_ids": [
+              "O144"
+            ],
+            "role": "limitation",
+            "statement_id": "S144",
+            "text": "Nobody has measured the lean since it was first noticed."
+          },
+          {
+            "observation_ids": [
+              "O145"
+            ],
+            "role": "next_step",
+            "statement_id": "S145",
+            "text": "Take daily plumb readings before deciding on repairs."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "constraint_breached",
+        "required_terms": {
+          "O151": [
+            "35 c"
+          ],
+          "O152": [
+            "47 c"
+          ],
+          "O153": [
+            "fan"
+          ]
+        },
+        "roles": {
+          "O151": "design_constraint",
+          "O152": "finding",
+          "O153": "next_step"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R4-03",
+      "rationale": "A measured finding exceeds the stated constraint.",
+      "reference_output": {
+        "conclusion": "constraint_breached",
+        "statements": [
+          {
+            "observation_ids": [
+              "O151"
+            ],
+            "role": "design_constraint",
+            "statement_id": "S151",
+            "text": "Battery charging cabinets must stay below 35 C."
+          },
+          {
+            "observation_ids": [
+              "O152"
+            ],
+            "role": "finding",
+            "statement_id": "S152",
+            "text": "The charging cabinet reached 47 C during the afternoon."
+          },
+          {
+            "observation_ids": [
+              "O153"
+            ],
+            "role": "next_step",
+            "statement_id": "S153",
+            "text": "Stop charging in that cabinet until its fan is checked."
+          }
+        ]
+      }
+    },
+    {
+      "expected": {
+        "conclusion": "cause_unresolved",
+        "required_terms": {
+          "O161": [
+            "lost pressure"
+          ],
+          "O162": [
+            "start-up"
+          ],
+          "O163": [
+            "expansion vessel"
+          ],
+          "O164": [
+            "held its charge"
+          ]
+        },
+        "roles": {
+          "O161": "finding",
+          "O162": "finding",
+          "O163": "hypothesis",
+          "O164": "counterevidence"
+        }
+      },
+      "fixture_id": "A4-SYNTH-R4-04",
+      "rationale": "Counterevidence disputes the proposed cause, so causality remains unresolved.",
+      "reference_output": {
+        "conclusion": "cause_unresolved",
+        "statements": [
+          {
+            "observation_ids": [
+              "O161",
+              "O162"
+            ],
+            "role": "finding",
+            "statement_id": "S161",
+            "text": "The school boiler lost pressure twice this week. Each drop came within an hour of the morning start-up."
+          },
+          {
+            "observation_ids": [
+              "O163"
+            ],
+            "role": "hypothesis",
+            "statement_id": "S163",
+            "text": "A leaking expansion vessel may be the cause."
+          },
+          {
+            "observation_ids": [
+              "O164"
+            ],
+            "role": "counterevidence",
+            "statement_id": "S164",
+            "text": "The vessel held its charge in yesterday's pressure test."
+          }
+        ]
+      }
+    }
+  ],
+  "model_input": false,
+  "provenance": {
+    "builder": "experiments/G-ROUTE4-candidate/implementation/build_execution_inputs.py",
+    "corpus_review_closure": "experiments/G-ROUTE4-candidate/corpus_review/round1/CORPUS_REVIEW_R1_CLOSURE.json",
+    "corpus_review_closure_commit": "30b488a3434f69ffb1edb9b46533e4ecc1e19eba",
+    "fix_records_lf_sha256": {
+      "cr1_amain": "31ebc828c138e22d9a4bf535fb8ab6cd57b3983317aadab89d230d65cc09a89f",
+      "cr1_bmain": "e9dad640733f1b1d0881c73a8e7cdf4424b7b195425f72115e84e5d9199d0d10",
+      "round1_amain": "661b75ce861ef545e9ccf21d7ecc6960a29ee8f2e7d8fd37124f9dffa7803677",
+      "round1_bmain": "d4f81a8e3b439b070fa49e81a344a8e28bbe2640faf29de1a6b0e8e8d5f1f7a2"
+    },
+    "fixes_applied": {
+      "cr1_amain": [
+        "A4-SYNTH-R1-01"
+      ],
+      "cr1_bmain": [
+        "B4-CONV-R1-08",
+        "B4-CONV-R2-28",
+        "B4-SYNTH-R1-02",
+        "B4-SYNTH-R2-15",
+        "B4-SYNTH-R3-08"
+      ],
+      "round1_amain": [
+        "A4-EXTR-R1-03",
+        "A4-RSRCH-R2-01",
+        "A4-RSRCH-R2-02",
+        "A4-RSRCH-R4-03",
+        "A4-SYNTH-R2-03",
+        "A4-SYNTH-R4-01"
+      ],
+      "round1_bmain": [
+        "B4-RSRCH-R1-06",
+        "B4-RSRCH-R1-14",
+        "B4-RSRCH-R2-06",
+        "B4-RSRCH-R2-14",
+        "B4-RSRCH-R3-04",
+        "B4-RSRCH-R3-06",
+        "B4-RSRCH-R3-14",
+        "B4-RSRCH-R3-18",
+        "B4-SYNTH-R1-01",
+        "B4-SYNTH-R1-03",
+        "B4-SYNTH-R2-13",
+        "B4-SYNTH-R2-14",
+        "B4-SYNTH-R3-07",
+        "B4-SYNTH-R3-09"
+      ]
+    },
+    "replacements": 0,
+    "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c"
+  },
+  "schema_version": "g-route4.gold.v1"
+}

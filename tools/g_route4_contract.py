@@ -1,7 +1,7 @@
 # forked from g_route3_contract
 from __future__ import annotations
 
-"""Identities, loaders, schedules and bindings for G-ROUTE4.
+"""Identities, loaders, schedules and bindings for G-ROUTE4 (design "Schedule", "Scoring shapes in the fork", D9).
 
 Two corpora are kept apart by construction. Model-facing fixtures and evaluator-only
 gold are separate files, gold is loaded only by the scorers and only for the corpus
@@ -24,16 +24,27 @@ EXECUTION_FREEZE_PATH = DATA / "EXECUTION_FREEZE_CANDIDATE.json"
 QUALIFICATION_TABLE_PATH = DATA / "QUALIFICATION_TABLE.json"
 
 CORPORA = ("A", "B")
+# Coding is deferred (D6): the loader refuses any coding task class or coding.v1 profile.
 TASK_CLASSES = ("ordinary_conversation", "structured_extraction", "grounded_research_synthesis",
-                "hierarchical_semantic_synthesis", "coding_generation_repair", "reflective_planning")
+                "hierarchical_semantic_synthesis", "reflective_planning")
+FORBIDDEN_TASK_CLASSES = ("coding_generation_repair",)
+FORBIDDEN_PROFILES = ("coding.v1",)
 RISK_CLASSES = ("R1", "R2", "R3", "R4")
 TIER_ORDER = ("small", "mid", "large")
-FIXTURES_PER_CELL = 2
-EXPECTED_FIXTURES = 48
+FIXTURE_PREFIX = {"A": "A4-", "B": "B4-"}
+# A′: 5 classes x R1-R4 x 4 fixtures. B′ (D9): 28 per conversation cell R1-R3, 18 per other eligible cell, 1 per R4 cell.
+A_FIXTURES_PER_CELL = 4
+B_CELL_SIZES = {**{("ordinary_conversation", r): 28 for r in ("R1", "R2", "R3")},
+                **{(t, r): 18 for t in TASK_CLASSES if t != "ordinary_conversation" for r in ("R1", "R2", "R3")},
+                **{(t, "R4"): 1 for t in TASK_CLASSES}}
+CELL_SIZES = {"A": {(t, r): A_FIXTURES_PER_CELL for t in TASK_CLASSES for r in RISK_CLASSES}, "B": B_CELL_SIZES}
+EXPECTED_FIXTURES_BY_CORPUS = {corpus: sum(sizes.values()) for corpus, sizes in CELL_SIZES.items()}   # 80, 305
 REPEATS = {"A": 2, "B": 1}
-SEED_BASE = {"A": 43000, "B": 44000}
+# seed = base + fixture_index x 10 + repeat (zero-based index, one-based repeat): A′ 470001-470792, B′ 480001-483041
+SEED_BASE = {"A": 470000, "B": 480000}
 SCHEDULE_SALT = {"A": "G-ROUTE4-A", "B": "G-ROUTE4-B"}
-EXPECTED_CALLS = {corpus: EXPECTED_FIXTURES * len(TIER_ORDER) * REPEATS[corpus] for corpus in CORPORA}
+EXPECTED_CALLS = {corpus: EXPECTED_FIXTURES_BY_CORPUS[corpus] * len(TIER_ORDER) * REPEATS[corpus]
+                  for corpus in CORPORA}                                                               # 480, 915
 
 
 def corpus_path(corpus: str) -> Path:
@@ -75,21 +86,23 @@ def load_corpus(corpus: str) -> dict[str, Any]:
         raise ValueError("corpus_identity_mismatch")
     if payload.get("model_input_contains_gold") is not False:
         raise ValueError("corpus_gold_exposure")
-    if len(fixtures) != EXPECTED_FIXTURES:
+    if len(fixtures) != EXPECTED_FIXTURES_BY_CORPUS[corpus]:
         raise ValueError("corpus_fixture_count_mismatch")
     ids = [str(row.get("fixture_id") or "") for row in fixtures]
-    if len(set(ids)) != EXPECTED_FIXTURES or any(not item.startswith(corpus + "-") for item in ids):
+    if len(set(ids)) != len(ids) or any(not item.startswith(FIXTURE_PREFIX[corpus]) for item in ids):
         raise ValueError("corpus_namespace_violation")
     required = {"fixture_id", "task_class", "consequence_risk", "title", "validator_profile", "prompt", "input"}
     cells: dict[tuple[str, str], int] = {}
     for row in fixtures:
         if set(row) != required:
             raise ValueError(f"corpus_fixture_schema_mismatch:{row.get('fixture_id')}")
+        if row["task_class"] in FORBIDDEN_TASK_CLASSES or row["validator_profile"] in FORBIDDEN_PROFILES:
+            raise ValueError(f"corpus_coding_fixture_refused:{row['fixture_id']}")
         if row["task_class"] not in TASK_CLASSES or row["consequence_risk"] not in RISK_CLASSES:
             raise ValueError(f"corpus_class_mismatch:{row['fixture_id']}")
         key = (row["task_class"], row["consequence_risk"])
         cells[key] = cells.get(key, 0) + 1
-    if len(cells) != 24 or set(cells.values()) != {FIXTURES_PER_CELL}:
+    if cells != CELL_SIZES[corpus]:
         raise ValueError("corpus_cell_balance_mismatch")
     return payload
 
@@ -102,7 +115,7 @@ def load_gold(corpus: str) -> dict[str, Any]:
     if payload.get("model_input") is not False:
         raise ValueError("gold_marked_as_model_input")
     items = list(payload.get("items") or [])
-    if len(items) != EXPECTED_FIXTURES or any(not str(row.get("fixture_id")).startswith(corpus + "-") for row in items):
+    if len(items) != EXPECTED_FIXTURES_BY_CORPUS[corpus] or             any(not str(row.get("fixture_id")).startswith(FIXTURE_PREFIX[corpus]) for row in items):
         raise ValueError("gold_namespace_violation")
     return payload
 
@@ -144,7 +157,7 @@ def load_thresholds(path: str | Path = THRESHOLDS_PATH) -> dict[str, Any]:
     qualification = payload.get("qualification") or {}
     if qualification.get("vacuous_pass_allowed") is not False or qualification.get("missing_data_may_qualify") is not False:
         raise ValueError("vacuous_or_missing_data_qualification_enabled")
-    if qualification.get("observations_required") != FIXTURES_PER_CELL * REPEATS["A"]:
+    if qualification.get("observations_required") != A_FIXTURES_PER_CELL * REPEATS["A"]:
         raise ValueError("qualification_denominator_mismatch")
     return payload
 
@@ -208,7 +221,7 @@ def validate_schedule(corpus: str, rows: list[Mapping[str, Any]]) -> None:
         raise ValueError("schedule_duplicate_call_id")
     if [row["position"] for row in rows] != list(range(1, len(rows) + 1)):
         raise ValueError("schedule_position_mismatch")
-    if any(row["corpus"] != corpus or not str(row["fixture_id"]).startswith(corpus + "-") for row in rows):
+    if any(row["corpus"] != corpus or not str(row["fixture_id"]).startswith(FIXTURE_PREFIX[corpus]) for row in rows):
         raise ValueError("schedule_corpus_mixing")
     fixtures = [row["fixture_id"] for row in load_corpus(corpus)["fixtures"]]
     expected = {(fid, tier, repeat) for fid in fixtures for tier in TIER_ORDER
