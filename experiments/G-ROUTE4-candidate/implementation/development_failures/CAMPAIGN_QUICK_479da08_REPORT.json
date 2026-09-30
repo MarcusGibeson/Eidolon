@@ -1,0 +1,153 @@
+[
+  {
+    "label": "clean_kills",
+    "operations": 456,
+    "cases": 132,
+    "outcomes": {
+      "completed": 132
+    },
+    "problems": []
+  },
+  {
+    "label": "clean_power_loss",
+    "operations": 456,
+    "cases": 132,
+    "outcomes": {
+      "completed": 132
+    },
+    "problems": []
+  },
+  {
+    "label": "transport_failure_kills",
+    "operations": 250,
+    "cases": 72,
+    "outcomes": {
+      "stopped_after_3_attempts": 72
+    },
+    "problems": []
+  },
+  {
+    "label": "torn_entries",
+    "operations": 456,
+    "cases": 4,
+    "outcomes": {
+      "completed": 4
+    },
+    "problems": []
+  },
+  {
+    "label": "torn_ledger",
+    "operations": 456,
+    "cases": 1,
+    "outcomes": {
+      "completed": 1
+    },
+    "problems": []
+  },
+  {
+    "label": "flush_failures",
+    "operations": 456,
+    "cases": 6,
+    "outcomes": {
+      "completed": 6
+    },
+    "problems": []
+  },
+  {
+    "label": "environment",
+    "cases": 3,
+    "outcomes": {
+      "stale_git_locks": "completed",
+      "transient_read_errors": "completed",
+      "inherited_git_environment": "completed"
+    },
+    "problems": []
+  },
+  {
+    "label": "gap_seeds",
+    "cases": 20,
+    "outcomes": {
+      "unreadable_committed_entry": "ok",
+      "unreadable_tail_entry": "ok",
+      "unlistable_journal": "ok",
+      "damaged_root_json": "FAILED:refusal:data_root_experiment_unreadable",
+      "concurrent_setup": "ok",
+      "interrupt_at_safe_point_1": "ok",
+      "interrupt_at_safe_point_2": "ok",
+      "interrupt_at_safe_point_3": "ok",
+      "interrupt_at_safe_point_4": "ok",
+      "interrupt_at_safe_point_5": "ok",
+      "interrupt_at_safe_point_6": "ok",
+      "interrupt_at_safe_point_7": "ok",
+      "interrupt_at_safe_point_8": "ok",
+      "interrupt_at_safe_point_9": "ok",
+      "interrupt_at_safe_point_10": "ok",
+      "interrupt_at_safe_point_11": "ok",
+      "interrupt_at_safe_point_12": "ok",
+      "interrupt_at_safe_point_13": "ok",
+      "interrupt_at_safe_point_14": "ok",
+      "interrupt_at_safe_point_15": "ok"
+    },
+    "problems": [
+      {
+        "case": "damaged_root_json",
+        "detail": "refusal:data_root_experiment_unreadable"
+      }
+    ]
+  },
+  {
+    "label": "review_seeds",
+    "cases": 10,
+    "outcomes": {
+      "read_corruption_ledger_on_launch2": "ok",
+      "read_corruption_completed_on_resume": "ok",
+      "ledger_twin": "ok",
+      "declare_then_more_commands": "ok",
+      "pending_ledger_closure": "ok",
+      "refs_flush_failure": "ok",
+      "injected_execution_entry_is_integrity_failure": "ok",
+      "module_rule_no_forbidden_module_loaded": "FAILED:rc=1 forbidden=[]                                                                                                                                                                                                                                             ^\nSyntaxError: unterminated string literal (detected at line 1)\n",
+      "abandon_only_on_failing_preflight": "ok",
+      "kill_during_setup": "ok"
+    },
+    "problems": [
+      {
+        "case": "module_rule_no_forbidden_module_loaded",
+        "detail": "rc=1 forbidden=[]                                                                                                                                                                                                                                             ^\nSyntaxError: unterminated string literal (detected at line 1)\n"
+      }
+    ]
+  },
+  {
+    "label": "resumed_interrupts",
+    "cases": 16,
+    "outcomes": {
+      "resumed_collecting_interrupt_at_check_1": "ok",
+      "resumed_collecting_interrupt_at_check_2": "ok",
+      "resumed_collecting_interrupt_at_check_3": "ok",
+      "resumed_collecting_interrupt_at_check_4": "ok",
+      "resumed_collecting_interrupt_at_check_5": "ok",
+      "resumed_collecting_interrupt_at_check_6": "ok",
+      "resumed_collecting_interrupt_at_check_7": "ok",
+      "resumed_collecting_interrupt_at_check_8": "ok",
+      "resumed_position_n_minus_1_interrupt_at_check_1": "ok",
+      "resumed_position_n_minus_1_interrupt_at_check_2": "ok",
+      "resumed_position_n_minus_1_interrupt_at_check_3": "ok",
+      "resumed_position_n_minus_1_interrupt_at_check_4": "ok",
+      "resumed_position_n_minus_1_interrupt_at_check_5": "ok",
+      "resumed_position_n_minus_1_interrupt_at_check_6": "ok",
+      "resumed_position_n_minus_1_interrupt_at_check_7": "ok",
+      "resumed_position_n_minus_1_interrupt_at_check_8": "ok"
+    },
+    "problems": [],
+    "interrupted_after_collection_certified": true
+  },
+  {
+    "label": "power_loss_subsets",
+    "operations": 456,
+    "cases": 132,
+    "outcomes": {
+      "completed": 132
+    },
+    "problems": []
+  }
+]
