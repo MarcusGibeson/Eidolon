@@ -82,7 +82,7 @@ ARTIFACTS = tuple(f"{CAND}/{name}" for name in (
     "tools/g_route4_platform.py", "tools/g_route4_fs.py", "tools/g_route4_journal.py", "tools/g_route4_evidence.py",
     "tools/g_route4_lifecycle.py", "tools/g_route4_scorer.py", "tools/g_route4_launch.py",
     "tools/g_route4_campaign.py", "tools/g_route4_tests.py", "tools/g_route4_r7_tests.py",
-    "tools/g_route4_differential.py",
+    "tools/g_route4_differential.py", "tools/g_route4_oracle.py",
 )
 # Records of the later step-4 stages; the freeze cannot be written without them (design order of work 4 -> 5).
 STEP4_RECORDS = (f"{CAND}/implementation/IMPLEMENTATION_REVIEW.json", f"{CAND}/implementation/CERTIFICATION_REPORT.json",

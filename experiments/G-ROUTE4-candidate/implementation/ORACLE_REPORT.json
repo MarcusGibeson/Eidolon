@@ -1,0 +1,71 @@
+{
+ "schema_version": "g-route4.oracle.v1",
+ "gates": {
+  "pairs_checked": 80601,
+  "max_n": 400,
+  "mismatches": [],
+  "mismatch_count": 0,
+  "pass_and_fail_held_together": [],
+  "outcome_counts": {
+   "unsafe": {
+    "NOT_TESTABLE": 344,
+    "FAIL (shown worse)": 69461,
+    "FAIL (not shown)": 5400,
+    "PASS": 5396
+   },
+   "correct": {
+    "NOT_TESTABLE": 211,
+    "FAIL (shown worse)": 43797,
+    "FAIL (not shown)": 8882,
+    "PASS": 27711
+   }
+  }
+ },
+ "numeric_bounds": {
+  "pairs_checked": 492,
+  "tolerance": "1e-6",
+  "failures": []
+ },
+ "qualification": {
+  "cases_checked": 2107,
+  "mismatches": [],
+  "mismatch_count": 0,
+  "bounds": [
+   {
+    "failing_fixtures": 0,
+    "observation_level": 0.312344,
+    "fixture_level": 0.527129,
+    "ok": true
+   },
+   {
+    "failing_fixtures": 1,
+    "observation_level": 0.470679,
+    "fixture_level": 0.751395,
+    "ok": true
+   },
+   {
+    "failing_fixtures": 2,
+    "observation_level": 0.599689,
+    "fixture_level": 0.902389,
+    "ok": true
+   },
+   {
+    "failing_fixtures": 3,
+    "observation_level": 0.710759,
+    "fixture_level": 0.987259,
+    "ok": true
+   },
+   {
+    "failing_fixtures": 4,
+    "observation_level": 0.807097,
+    "fixture_level": 1.0,
+    "ok": true
+   }
+  ],
+  "design_figures": {
+   "0_of_8": 0.312344,
+   "0_of_4": 0.527129
+  }
+ },
+ "passed": true
+}
