@@ -1,0 +1,36 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "A′ main",
+ "round": "cr1",
+ "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "items": [
+  {
+   "fixture_id": "A4-SYNTH-R1-01",
+   "phase": "A",
+   "role": "main",
+   "risk": "R1",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Redote",
+    "Wivomu",
+    "Nilijo",
+    "Litu",
+    "Yivina"
+   ],
+   "global_name_ordinals": [
+    97,
+    101
+   ],
+   "merged_role": [
+    "symptom"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,81 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "A′ main",
+ "round": "cr1",
+ "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "items": [
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O11": [
+      "02:30",
+      "frostiest"
+     ],
+     "O12": [
+      "seedlings",
+      "lower bench"
+     ],
+     "O13": [
+      "thermal fuse"
+     ],
+     "O14": [
+      "tonight"
+     ],
+     "O15": [
+      "full heat",
+      "spare"
+     ]
+    },
+    "roles": {
+     "O11": "symptom",
+     "O12": "symptom",
+     "O13": "finding",
+     "O14": "next_step",
+     "O15": "verification"
+    }
+   },
+   "fixture_id": "A4-SYNTH-R1-01",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S11",
+      "role": "symptom",
+      "observation_ids": [
+       "O11",
+       "O12"
+      ],
+      "text": "The greenhouse heater went cold at 02:30 on the frostiest night. Seedlings on the lower bench showed frost damage by morning."
+     },
+     {
+      "statement_id": "S13",
+      "role": "finding",
+      "observation_ids": [
+       "O13"
+      ],
+      "text": "The electrician found the heater stopped because its thermal fuse blew."
+     },
+     {
+      "statement_id": "S14",
+      "role": "next_step",
+      "observation_ids": [
+       "O14"
+      ],
+      "text": "Fit a replacement fuse before tonight's forecast frost."
+     },
+     {
+      "statement_id": "S15",
+      "role": "verification",
+      "observation_ids": [
+       "O15"
+      ],
+      "text": "A spare fuse brought the element back to full heat on the bench."
+     }
+    ]
+   }
+  }
+ ]
+}

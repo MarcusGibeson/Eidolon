@@ -1,0 +1,176 @@
+{
+ "schema_version": "g-route4.corpus-review-dispositions.v1",
+ "round": 1,
+ "decided_by": "operator (Marcus Gibeson)",
+ "date": "2026-09-29 (message timestamp 2026-09-30T00:09Z)",
+ "reviewer_A_report": {
+  "file": "corpus_review/round1/outputs/REVIEWER_A_REPORT.md",
+  "sha256_exact_bytes": "8219822cb9104b106281d22033f7c34335fa0bce88e17fe2bb527c662535b5f5"
+ },
+ "reconciliation": {
+  "file": "corpus_review/round1/RECONCILIATION_R1.md",
+  "lf_sha256": "0c77f2b03fba4188ffe22e87275c462b63621c1ff211d91240694f7214fef539"
+ },
+ "operator_message_verbatim": {
+  "transcript_record_uuid": "295e4a23-ca3c-4565-a1e6-52ad5618f3a6",
+  "utc": "2026-09-30T00:09:58.237Z",
+  "text_sha256": "9f370c658c25264c01cd10c9ff9090ec8d8d8058dc85c26673042a2bf7d2616c",
+  "text": "Proceed with the following round-1 dispositions.\n\nA1 — FIX\n\nFix all four affected SY1 fixtures:\n\n- \"A4-SYNTH-R1-01\"\n- \"B4-SYNTH-R1-02\"\n- \"B4-SYNTH-R2-15\"\n- \"B4-SYNTH-R3-08\"\n\nApply the same semantic role-label correction already used for the eight previously repaired SY1 fixtures.\n\nDo not replace these fixtures.\n\nThe correction should be minimal and should change only the defective \"diagnosis\" / finding-cause role labeling. Preserve the fixture's intended reasoning, answer, difficulty and all unrelated content.\n\nFor the A′ fixture, follow the frozen A′ re-adjudication procedure with 3 adjudicators. For the B′ fixtures, follow the frozen B′ remediation/re-adjudication procedure.\n\nA2 — FIX\n\nFix \"B4-CONV-R1-08\".\n\nMake the dispatch timing unambiguous so that the intended qualifying option is uniquely derivable.\n\nUse a minimal wording change. Preserve the intended answer and all unrelated fixture content.\n\nThen run the frozen B′ re-adjudication procedure.\n\nDo not use reserve \"B4-CONV-R1-X08\" unless the repaired fixture subsequently fails the frozen remediation procedure.\n\nA3 — FIX\n\nFix \"B4-CONV-R2-28\".\n\nRemove the inclusive/exclusive day-count ambiguity. Prefer explicitly establishing the relevant end date rather than introducing a broader counting convention unless the frozen fixture structure requires otherwise.\n\nUse a minimal wording change and preserve the intended answer and unrelated content.\n\nThen run the frozen B′ re-adjudication procedure.\n\nDo not use reserve \"B4-CONV-R2-X04\" unless the repaired fixture subsequently fails the frozen remediation procedure.\n\nAuthorization\n\nI authorize the new adjudicator sessions required solely for the A1, A2 and A3 remediation above.\n\nUse the existing frozen O2 adjudication procedure and configuration applicable to each corpus.\n\nDo not alter:\n\n- gold except through an independently triggered frozen escalation path;\n- adjudication rules;\n- thresholds;\n- validator behavior;\n- fixture-selection rules;\n- independence measures;\n- success criteria.\n\nRecord the new sessions as remediation sessions with complete provenance and bind them to the exact pre-adjudication repaired fixtures.\n\nDo not reinterpret previous adjudication results.\n\nA4-PLAN-R3-04\n\nDisposition: KEEP WITH DISCLOSURE.\n\nDo not modify the fixture or gold.\n\nThe three adjudicator refusals are retained as a disclosed limitation of its historical adjudication. Reviewer A independently derived the reference answer and matched gold, and neither reviewer identified a derivability defect.\n\nThe refusals alone do not justify a fixture or gold change.\n\nReviewer A note A4\n\nRecord as a disclosure.\n\nState that the A′ corpus does not exercise research P4 in the case where reposts are the only support, while B′ does.\n\nTreat this as a documented coverage limitation. Do not add or modify fixtures during this review solely to eliminate it.\n\nReviewer A note A5\n\nRecord as a disclosure.\n\nState that synthesis families SY4–SY6 have a constant conclusion within each family.\n\nTreat this as corpus-structure information relevant to interpretation of results, not as an automatic defect or authorization to modify the corpus.\n\nReviewer A note A10\n\nIssue a second erratum for \"B_MAIN_CLOSURE.json\".\n\nDo not edit the closed file.\n\nThe erratum should state that the closure's reference to \"14 reserves\" is incorrect and that the correct count is \"15 reserves\".\n\nBind the erratum to the unchanged closure artifact by digest and derive the correct reserve count mechanically from the bound records.\n\nAfter the A1–A3 repairs are made, preserve exact before/after fixture text and digests before any adjudicator call.\n\nAfter re-adjudication, apply the frozen remediation disposition rules exactly as written. If any repaired fixture fails in a way requiring replacement, stop and return that case to me before replacing it unless the already-frozen procedure explicitly makes replacement automatic.\n\nOnce A1–A3 are resolved, regenerate every downstream artifact whose inputs changed, including the applicable closure reports, independence checks, fix checks and external-review reconciliation.\n\nDo not modify sealed historical artifacts. Bind corrections, remediation records and regenerated downstream outputs through provenance instead.\n\nRound 1 may close only after the repaired fixtures have completed re-adjudication, all MUST-FIX findings are resolved, the new disclosures/erratum are recorded, and the final independence re-check reproduces the required frozen values."
+ },
+ "dispositions": {
+  "A1": {
+   "class": "MUST-FIX",
+   "disposition": "FIX (no replacement)",
+   "fixtures": [
+    "A4-SYNTH-R1-01",
+    "B4-SYNTH-R1-02",
+    "B4-SYNTH-R2-15",
+    "B4-SYNTH-R3-08"
+   ],
+   "procedure": "the recorded SY1 role relabel; A′: three adjudicators (kept only if all three agree, otherwise the operator); B′: the frozen B′ procedure"
+  },
+  "A2": {
+   "class": "MUST-FIX",
+   "disposition": "FIX",
+   "fixtures": [
+    "B4-CONV-R1-08"
+   ],
+   "procedure": "frozen B′ procedure; reserve B4-CONV-R1-X08 only if the repaired fixture fails the frozen remediation procedure"
+  },
+  "A3": {
+   "class": "MUST-FIX",
+   "disposition": "FIX",
+   "fixtures": [
+    "B4-CONV-R2-28"
+   ],
+   "procedure": "frozen B′ procedure; reserve B4-CONV-R2-X04 only if the repaired fixture fails the frozen remediation procedure",
+   "wording_note": "the operator preferred stating the end date explicitly unless the frozen fixture structure requires otherwise. It does: the CV2 depth-1 construct binds the start date and the duration as facts and computes start + days against the deadline (the checker requires exactly those facts); a stated end date would pre-evaluate that computation. The fix therefore defines the end relative to the start ('finishes ... N days later'), which fixes the end date by addition, without a counting convention."
+  },
+  "A4-PLAN-R3-04": {
+   "source": "Reviewer B B5 / Reviewer A A7",
+   "disposition": "KEEP WITH DISCLOSURE",
+   "disclosure": "The three adjudicator refusals are retained as a disclosed limitation of its historical adjudication. Reviewer A independently derived the reference answer and matched gold, and neither reviewer identified a derivability defect. The refusals alone do not justify a fixture or gold change.",
+   "unchanged": "fixture, gold and historical adjudication"
+  },
+  "A4": {
+   "class": "NOTE",
+   "disposition": "DISCLOSURE (documented coverage limitation)",
+   "disclosure": "The A′ corpus does not exercise research P4 in the case where reposts are the only support, while B′ does (B4-RSRCH-R1-12, B4-RSRCH-R2-12, B4-RSRCH-R3-12). No fixture is added or modified to eliminate it."
+  },
+  "A5": {
+   "class": "NOTE",
+   "disposition": "DISCLOSURE (corpus-structure information for interpreting results)",
+   "disclosure": "Synthesis families SY4, SY5 and SY6 have a constant conclusion within each family (decision_reserved, constraint_breached and behavior_by_design respectively). This is not a defect and does not authorize a corpus change."
+  },
+  "A10": {
+   "class": "NOTE",
+   "disposition": "ERRATUM 2",
+   "record": "adjudication/errata/B_MAIN_CLOSURE_ERRATUM_2.json",
+   "erratum_lf_sha256": "b3dae88ceda1ffac45884daaf301edc8bb083c2e1aa74bc6c867d01dc09b97dc"
+  },
+  "A6, A8, A9, A11": {
+   "class": "NOTE",
+   "disposition": "no action"
+  }
+ },
+ "review_driven_fixes": {
+  "cr1_amain": {
+   "dir": "adjudication/fixes/cr1_amain",
+   "fix_record_lf_sha256": "31ebc828c138e22d9a4bf535fb8ab6cd57b3983317aadab89d230d65cc09a89f",
+   "corpus_fixed_lf_sha256": "1c051edb49800e15fc913c627dac868442f0ea22d2bad48bc0340a75689c467c",
+   "fixtures": {
+    "A4-SYNTH-R1-01": {
+     "finding": "A1",
+     "sealed_sha256": {
+      "fixture": "c5b0792ae43e75c1ca0a7fb13b811b6df5d9521f375c5f703ef1285816fd26e2",
+      "gold": "ffbafa60d66b04698478bfcbab3c5172af9d9b37af2c22fb65062e1d35e4df9b",
+      "ledger": "4e9b133a56c3ee60af1db757070d97fe50fbd0f3eb0993c84cf5762242d05bdb"
+     },
+     "fixed_sha256": {
+      "fixture": "118f6d09d05e11b3ce5c8328270a86d91bc970375d508ac0a64a6ebdc1a037eb",
+      "gold": "e9c750e83930c70c7205a184e2c11ed54c4a67ff7dafdef09049f3d49fe7f307",
+      "ledger": "33cfa805866171152fe9b4496bc64f6706e66b3983706e114809dfc1bb406c7b"
+     }
+    }
+   }
+  },
+  "cr1_bmain": {
+   "dir": "adjudication/fixes/cr1_bmain",
+   "fix_record_lf_sha256": "e9dad640733f1b1d0881c73a8e7cdf4424b7b195425f72115e84e5d9199d0d10",
+   "corpus_fixed_lf_sha256": "b10ff6c42431ba5c238b0fdc956172e38747e2ccced0d5fb63cb0314974171b8",
+   "fixtures": {
+    "B4-CONV-R1-08": {
+     "finding": "A2",
+     "sealed_sha256": {
+      "fixture": "0f14ce7ded1aad6c15db6918d565413f6159850d23cb31ff813fb219fa3647a1",
+      "gold": "2d90f30b0f4d6703941610afecc1475411f586922c6409c39ae65288dd205b6a",
+      "ledger": "279a9924bb5ec0059107c4c376eef231cfcfd0b738a2f037d3e2ee8ae6b74259"
+     },
+     "fixed_sha256": {
+      "fixture": "5af9d27b00cd47040e67ee375780a81fdd5fb475e001aa04083e5f0bbf278455",
+      "gold": "2d90f30b0f4d6703941610afecc1475411f586922c6409c39ae65288dd205b6a",
+      "ledger": "9c589188373e58b02b7e12120443d099a5831f8b27591aac4c82963bc3eaf291"
+     }
+    },
+    "B4-CONV-R2-28": {
+     "finding": "A3",
+     "sealed_sha256": {
+      "fixture": "e14f180d707be6d0fa65306766c5114217ec88e3227b73a8ff94035bef6275d8",
+      "gold": "bdaac82d1668466ce05de32a634121fdc5b69f97bf4cf073d5097ad959a22be4",
+      "ledger": "e908fddd9bef7fb7e86761d25c85dbd5cb187fd31a6add1ce70ff711afe62d7e"
+     },
+     "fixed_sha256": {
+      "fixture": "2a81766800ddc85a6e0884d8496b0f0fb480f6bd7f051e161869f01389a70bec",
+      "gold": "bdaac82d1668466ce05de32a634121fdc5b69f97bf4cf073d5097ad959a22be4",
+      "ledger": "6cfface741d3459f33620d0760fcea05a56fad0ceb9e689f6f691bc920fb9353"
+     }
+    },
+    "B4-SYNTH-R1-02": {
+     "finding": "A1",
+     "sealed_sha256": {
+      "fixture": "443abae5a69d451138f02e25d8cf40ad69a2867b7886acdd455902549890a71d",
+      "gold": "54bd83871a67ebc138d127f8b5c396ca84616d7fd0adba54451ea663f9d38968",
+      "ledger": "4c532efcea6ddc30eee022983a285d7dd1b44826c558764ab8ff798df3c37590"
+     },
+     "fixed_sha256": {
+      "fixture": "1cc6a74641b56705a2173ed87f1a5d865078965df22d8f76a2cdbe19f46d3a27",
+      "gold": "048ec8d1ba44bc2932c21e7a43aa0130fa7c665756c6062a592c8a69316fd9d1",
+      "ledger": "4c532efcea6ddc30eee022983a285d7dd1b44826c558764ab8ff798df3c37590"
+     }
+    },
+    "B4-SYNTH-R2-15": {
+     "finding": "A1",
+     "sealed_sha256": {
+      "fixture": "134ad0a157f5aaf8dde52f9c343601c6a4aca152d68f23de1c75d4932131c7a8",
+      "gold": "7467a4245bbabc66fb9fa5e32c77b7e2d8dd126658ce2c577c25dcf7b5ef91e2",
+      "ledger": "7261e9a050880789879cf8cc9bb46c5276b05fad8bfbe51556ab873c9054eef0"
+     },
+     "fixed_sha256": {
+      "fixture": "0fe7aba3328c90c7646be11c48862723ae6e89582880a6e7f58f8a7c11cf61e4",
+      "gold": "9ba0d63c241267f643f2cccb0621a0efbaef04f8e0e33a171afd7ff6d482a866",
+      "ledger": "7a81b4ed6611ce92e79202ed086ba9d73f6059eef12bdc2bf0b18cc50f897bb1"
+     }
+    },
+    "B4-SYNTH-R3-08": {
+     "finding": "A1",
+     "sealed_sha256": {
+      "fixture": "ef9d977d221ea2362cf51e2242795a977c462b8ae776c707ef94dbccd26b2dbd",
+      "gold": "49d6e1b75b654d757b6752e457651ebeca5e46f2f4aaf5a2e87b525931290383",
+      "ledger": "55f17cfffb7673efde4736184954e8ee48f2a23af6e94b6eaab04bd1c1793776"
+     },
+     "fixed_sha256": {
+      "fixture": "81b60fbcd573b50f57445bbcfd54c287b7ae8692cdbf86e1135623534903b48b",
+      "gold": "640dfbad9298f9557b0d6dd8e532b85eacdc4db3087676b5e8a39e4509d9cf0d",
+      "ledger": "55f17cfffb7673efde4736184954e8ee48f2a23af6e94b6eaab04bd1c1793776"
+     }
+    }
+   }
+  },
+  "fix_check": {
+   "file": "adjudication/fixes/cr1_bmain/FIX_CHECK_REPORT.json",
+   "lf_sha256": "9472fd763b144b01f510c50b168f30e2ed95a49cc1e527357e09e11f75ced784"
+  }
+ },
+ "authorization": "remediation adjudicator sessions for A1-A3 only, under the existing frozen O2 procedure and amended configuration 7691126e…; recorded as remediation sessions, bound to the committed pre-adjudication fixed fixtures (the run journal binds the fix record digests)",
+ "round_status": "OPEN until the repaired fixtures complete re-adjudication, every MUST-FIX is resolved, the disclosures and errata are recorded, and the final independence re-check reproduces the required values"
+}

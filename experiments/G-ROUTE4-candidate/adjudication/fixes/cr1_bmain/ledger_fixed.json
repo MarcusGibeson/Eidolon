@@ -1,0 +1,398 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "B′ main",
+ "round": "cr1",
+ "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "items": [
+  {
+   "fixture_id": "B4-CONV-R1-08",
+   "phase": "B",
+   "role": "main",
+   "risk": "R1",
+   "family": "CV2",
+   "features": {
+    "depth": 2,
+    "gold_position": 4
+   },
+   "invented_names": [
+    "Nonobo",
+    "Yaravu",
+    "Lazeke",
+    "Yulofu"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    685,
+    688
+   ],
+   "near_miss_option": "Nonobo",
+   "message_units": [
+    {
+     "text": "The parcel has to be dispatched by 2045-11-20 and delivered no later than 2045-11-26.",
+     "option": null,
+     "facts": [
+      {
+       "attr": "X",
+       "value": 746880,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2045-11-20"
+      },
+      {
+       "attr": "Y",
+       "value": 746886,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2045-11-26"
+      }
+     ]
+    },
+    {
+     "text": "Nonobo starts packing on 2045-11-18, dispatches 2 days later and then delivers 7 days after dispatch.",
+     "option": "Nonobo",
+     "facts": [
+      {
+       "attr": "dep",
+       "value": 746878,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2045-11-18"
+      },
+      {
+       "attr": "leg1",
+       "value": 2,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "2 days"
+      },
+      {
+       "attr": "leg2",
+       "value": 7,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "7 days"
+      }
+     ]
+    },
+    {
+     "text": "Yaravu starts packing on 2045-11-19, dispatches 2 days later and then delivers 7 days after dispatch.",
+     "option": "Yaravu",
+     "facts": [
+      {
+       "attr": "dep",
+       "value": 746879,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2045-11-19"
+      },
+      {
+       "attr": "leg1",
+       "value": 2,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "2 days"
+      },
+      {
+       "attr": "leg2",
+       "value": 7,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "7 days"
+      }
+     ]
+    },
+    {
+     "text": "Lazeke starts packing on 2045-11-19, dispatches 3 days later and then delivers 7 days after dispatch.",
+     "option": "Lazeke",
+     "facts": [
+      {
+       "attr": "dep",
+       "value": 746879,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2045-11-19"
+      },
+      {
+       "attr": "leg1",
+       "value": 3,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "3 days"
+      },
+      {
+       "attr": "leg2",
+       "value": 7,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "7 days"
+      }
+     ]
+    },
+    {
+     "text": "Yulofu starts packing on 2045-11-16, dispatches 3 days later and then delivers 7 days after dispatch.",
+     "option": "Yulofu",
+     "facts": [
+      {
+       "attr": "dep",
+       "value": 746876,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2045-11-16"
+      },
+      {
+       "attr": "leg1",
+       "value": 3,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "3 days"
+      },
+      {
+       "attr": "leg2",
+       "value": 7,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "7 days"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "fixture_id": "B4-CONV-R2-28",
+   "phase": "B",
+   "role": "main",
+   "risk": "R2",
+   "family": "CV2",
+   "features": {
+    "depth": 1,
+    "gold_position": 4
+   },
+   "invented_names": [
+    "Wapodi",
+    "Kekoje",
+    "Vivile",
+    "Vuboyi"
+   ],
+   "identifiers": [],
+   "global_name_ordinals": [
+    877,
+    880
+   ],
+   "near_miss_option": "Wapodi",
+   "message_units": [
+    {
+     "text": "The keys are handed over on 2046-02-02, and everything must be in place by 2046-02-13 for the opening.",
+     "option": null,
+     "facts": [
+      {
+       "attr": "E",
+       "value": 746954,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2046-02-02"
+      },
+      {
+       "attr": "T",
+       "value": 746965,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2046-02-13"
+      }
+     ]
+    },
+    {
+     "text": "Wapodi can start on 2046-02-03 and finishes delivering and assembling 11 days later.",
+     "option": "Wapodi",
+     "facts": [
+      {
+       "attr": "dep",
+       "value": 746955,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2046-02-03"
+      },
+      {
+       "attr": "dur",
+       "value": 11,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "11 days"
+      }
+     ]
+    },
+    {
+     "text": "Kekoje can start on 2046-02-01 and finishes delivering and assembling 21 days later.",
+     "option": "Kekoje",
+     "facts": [
+      {
+       "attr": "dep",
+       "value": 746953,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2046-02-01"
+      },
+      {
+       "attr": "dur",
+       "value": 21,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "21 days"
+      }
+     ]
+    },
+    {
+     "text": "Vivile can start on 2046-01-30 and finishes delivering and assembling 24 days later.",
+     "option": "Vivile",
+     "facts": [
+      {
+       "attr": "dep",
+       "value": 746951,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2046-01-30"
+      },
+      {
+       "attr": "dur",
+       "value": 24,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "24 days"
+      }
+     ]
+    },
+    {
+     "text": "Vuboyi can start on 2046-02-04 and finishes delivering and assembling 4 days later.",
+     "option": "Vuboyi",
+     "facts": [
+      {
+       "attr": "dep",
+       "value": 746956,
+       "fmt": [
+        "d"
+       ],
+       "surface": "2046-02-04"
+      },
+      {
+       "attr": "dur",
+       "value": 4,
+       "fmt": [
+        "n",
+        " days"
+       ],
+       "surface": "4 days"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-02",
+   "phase": "B",
+   "role": "main",
+   "risk": "R1",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "small"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Nesa",
+    "Dihohi",
+    "Vayoda"
+   ],
+   "global_name_ordinals": [
+    164,
+    166
+   ],
+   "merged_role": []
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-15",
+   "phase": "B",
+   "role": "main",
+   "risk": "R2",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "yes",
+    "obs_band": "large"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Gavi",
+    "Kenofa",
+    "Mekide",
+    "Bupate",
+    "Wemaru"
+   ],
+   "global_name_ordinals": [
+    285,
+    289
+   ],
+   "merged_role": [
+    "symptom"
+   ]
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-08",
+   "phase": "B",
+   "role": "main",
+   "risk": "R3",
+   "family": "SY1",
+   "features": {
+    "mergeable_pair": "no",
+    "obs_band": "large"
+   },
+   "invented_names": [],
+   "identifiers": [],
+   "unused_stream_draws": [
+    "Dohuhi",
+    "Gopu",
+    "Yibewu",
+    "Miyuzo",
+    "Yeyoku"
+   ],
+   "global_name_ordinals": [
+    328,
+    332
+   ],
+   "merged_role": []
+  }
+ ]
+}

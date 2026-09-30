@@ -1,0 +1,62 @@
+{
+ "schema_version": "g-route4.erratum.v1",
+ "erratum": 2,
+ "corrects": {
+  "file": "adjudication/B_MAIN_CLOSURE.json",
+  "lf_sha256": "863f1aa8708eafa614245473de697f6535c70410d66f2545fd09b41ae33ef42d",
+  "commit": "f07b1a2fa211ec2c4109117e2b5f1b5c742df7e2",
+  "field": "residual_limitations",
+  "stated_text": "Known latent defects in 22 unfixed fixtures (fixes/LATENT_DEFECTS.md): P6 'only' wording, SY1 cause under 'diagnosis', and one weak anonymity paraphrase, in 5 uncontacted A′ main fixtures, 14 reserves and 3 kept B′ SY1 fixtures (B4-SYNTH-R1-02, R2-15, R3-08). None has been altered; the frozen protocol permits change only through A′ adjudication, replacement draws or the external corpus review.",
+  "unchanged": "the closed file itself is not edited"
+ },
+ "authority": "operator disposition on external corpus review round 1 note A10 (Reviewer A), 2026-09-29: issue a second erratum; do not edit the closed artifact",
+ "correction": {
+  "as_stated": "14 reserves",
+  "correct": "15 reserves"
+ },
+ "derivation": {
+  "reserve_ids_per_report": {
+   "fixes/LATENT_DEFECTS.md": [
+    "A4-RSRCH-R2-X02",
+    "A4-RSRCH-R4-X03",
+    "A4-SYNTH-R1-X01",
+    "A4-SYNTH-R2-X03",
+    "A4-SYNTH-R4-X01",
+    "B4-RSRCH-R1-X06",
+    "B4-RSRCH-R1-X14",
+    "B4-RSRCH-R2-X06",
+    "B4-RSRCH-R2-X14",
+    "B4-RSRCH-R3-X03",
+    "B4-RSRCH-R3-X06",
+    "B4-RSRCH-R3-X14",
+    "B4-SYNTH-R1-X01",
+    "B4-SYNTH-R3-X03"
+   ],
+   "fixes/round1_amain/LATENT_DEFECTS_ADDENDUM.md": [
+    "B4-RSRCH-R2-X04"
+   ]
+  },
+  "reserves": [
+   "A4-RSRCH-R2-X02",
+   "A4-RSRCH-R4-X03",
+   "A4-SYNTH-R1-X01",
+   "A4-SYNTH-R2-X03",
+   "A4-SYNTH-R4-X01",
+   "B4-RSRCH-R1-X06",
+   "B4-RSRCH-R1-X14",
+   "B4-RSRCH-R2-X04",
+   "B4-RSRCH-R2-X06",
+   "B4-RSRCH-R2-X14",
+   "B4-RSRCH-R3-X03",
+   "B4-RSRCH-R3-X06",
+   "B4-RSRCH-R3-X14",
+   "B4-SYNTH-R1-X01",
+   "B4-SYNTH-R3-X03"
+  ],
+  "count": 15,
+  "all_in_sealed_reserve_corpora": true,
+  "equals_A_MAIN_CLOSURE_latent_defects_in_unused_reserves_unfixed": true
+ },
+ "note": "the 15th reserve (B4-RSRCH-R2-X04, weak weekend paraphrase) was identified after the B′ closure, in fixes/round1_amain/LATENT_DEFECTS_ADDENDUM.md; the other counts in the stated sentence describe the state at the B′ closure",
+ "bind_in": "the final external-review closure and freeze records"
+}

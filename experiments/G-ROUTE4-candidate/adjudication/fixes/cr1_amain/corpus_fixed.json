@@ -1,0 +1,52 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "A′ main",
+ "round": "cr1",
+ "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "fixtures": [
+  {
+   "consequence_risk": "R1",
+   "fixture_id": "A4-SYNTH-R1-01",
+   "input": {
+    "allowed_conclusions": [
+     "cause_established",
+     "cause_unresolved",
+     "insufficient_evidence"
+    ],
+    "conclusion_rule": "Choose cause_established when a finding directly states the cause and nothing disputes it; choose cause_unresolved when counterevidence disputes a proposed cause; otherwise choose insufficient_evidence.",
+    "observations": [
+     {
+      "id": "O11",
+      "role": "symptom",
+      "text": "The greenhouse heater went cold at 02:30 on the frostiest night."
+     },
+     {
+      "id": "O12",
+      "role": "symptom",
+      "text": "Seedlings on the lower bench showed frost damage by morning."
+     },
+     {
+      "id": "O13",
+      "role": "finding",
+      "text": "The electrician found the heater stopped because its thermal fuse blew."
+     },
+     {
+      "id": "O14",
+      "role": "next_step",
+      "text": "Fit a replacement fuse before tonight's forecast frost."
+     },
+     {
+      "id": "O15",
+      "role": "verification",
+      "text": "A spare fuse brought the element back to full heat on the bench."
+     }
+    ]
+   },
+   "prompt": "Synthesize the greenhouse heater observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Reply with a JSON object whose keys are exactly statements and conclusion: statements is a list of statement objects; in each statement object, observation_ids is a non-empty list of observation id strings, and every observation id appears in exactly one statement; conclusion is one string copied from allowed_conclusions. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "hierarchical_semantic_synthesis",
+   "title": "Greenhouse heater outage",
+   "validator_profile": "synthesis.v1"
+  }
+ ]
+}

@@ -1,0 +1,167 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "B′ main",
+ "round": "cr1",
+ "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "fixtures": [
+  {
+   "consequence_risk": "R1",
+   "fixture_id": "B4-CONV-R1-08",
+   "input": {
+    "answer_options": [
+     "Nonobo",
+     "Yaravu",
+     "Lazeke",
+     "Yulofu"
+    ],
+    "message": "The parcel has to be dispatched by 2045-11-20 and delivered no later than 2045-11-26. Nonobo starts packing on 2045-11-18, dispatches 2 days later and then delivers 7 days after dispatch. Yaravu starts packing on 2045-11-19, dispatches 2 days later and then delivers 7 days after dispatch. Lazeke starts packing on 2045-11-19, dispatches 3 days later and then delivers 7 days after dispatch. Yulofu starts packing on 2045-11-16, dispatches 3 days later and then delivers 7 days after dispatch."
+   },
+   "prompt": "Tell me which parcel service gets the gift there before the birthday, using only the dates in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+   "task_class": "ordinary_conversation",
+   "title": "Birthday gift delivery",
+   "validator_profile": "conversation.v1"
+  },
+  {
+   "consequence_risk": "R2",
+   "fixture_id": "B4-CONV-R2-28",
+   "input": {
+    "answer_options": [
+     "Wapodi",
+     "Kekoje",
+     "Vivile",
+     "Vuboyi"
+    ],
+    "message": "The keys are handed over on 2046-02-02, and everything must be in place by 2046-02-13 for the opening. Wapodi can start on 2046-02-03 and finishes delivering and assembling 11 days later. Kekoje can start on 2046-02-01 and finishes delivering and assembling 21 days later. Vivile can start on 2046-01-30 and finishes delivering and assembling 24 days later. Vuboyi can start on 2046-02-04 and finishes delivering and assembling 4 days later."
+   },
+   "prompt": "Tell me which furniture delivery window works for the new office, using only the dates in my message. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+   "task_class": "ordinary_conversation",
+   "title": "Office furniture delivery",
+   "validator_profile": "conversation.v1"
+  },
+  {
+   "consequence_risk": "R1",
+   "fixture_id": "B4-SYNTH-R1-02",
+   "input": {
+    "allowed_conclusions": [
+     "cause_established",
+     "cause_unresolved",
+     "insufficient_evidence"
+    ],
+    "conclusion_rule": "Choose cause_established when a finding directly states the cause and nothing disputes it; choose cause_unresolved when counterevidence disputes a proposed cause; otherwise choose insufficient_evidence.",
+    "observations": [
+     {
+      "id": "O181",
+      "role": "symptom",
+      "text": "The hallway smoke alarm chirps every forty seconds."
+     },
+     {
+      "id": "O182",
+      "role": "finding",
+      "text": "Its display reads low battery, which the manual says causes the chirp."
+     },
+     {
+      "id": "O183",
+      "role": "next_step",
+      "text": "Swap in a fresh nine-volt cell today."
+     }
+    ]
+   },
+   "prompt": "Synthesize the hallway smoke alarm observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Reply with a JSON object whose keys are exactly statements and conclusion: statements is a list of statement objects; in each statement object, observation_ids is a non-empty list of observation id strings, and every observation id appears in exactly one statement; conclusion is one string copied from allowed_conclusions. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "hierarchical_semantic_synthesis",
+   "title": "Chirping smoke alarm",
+   "validator_profile": "synthesis.v1"
+  },
+  {
+   "consequence_risk": "R2",
+   "fixture_id": "B4-SYNTH-R2-15",
+   "input": {
+    "allowed_conclusions": [
+     "cause_established",
+     "cause_unresolved",
+     "insufficient_evidence"
+    ],
+    "conclusion_rule": "Choose cause_established when a finding directly states the cause and nothing disputes it; choose cause_unresolved when counterevidence disputes a proposed cause; otherwise choose insufficient_evidence.",
+    "observations": [
+     {
+      "id": "O491",
+      "role": "symptom",
+      "text": "Seven employees were paid twice in the March run."
+     },
+     {
+      "id": "O492",
+      "role": "symptom",
+      "text": "Each extra payment matched their normal net salary."
+     },
+     {
+      "id": "O493",
+      "role": "finding",
+      "text": "The payroll log shows the duplicates happened because the payment file was resubmitted after a timeout."
+     },
+     {
+      "id": "O494",
+      "role": "impact",
+      "text": "The business account went overdrawn for two days."
+     },
+     {
+      "id": "O495",
+      "role": "next_step",
+      "text": "Request recall of the extra payments through the bank."
+     },
+     {
+      "id": "O496",
+      "role": "verification",
+      "text": "The bank confirmed only one file should have been accepted."
+     }
+    ]
+   },
+   "prompt": "Synthesize the duplicate salary payments observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Reply with a JSON object whose keys are exactly statements and conclusion: statements is a list of statement objects; in each statement object, observation_ids is a non-empty list of observation id strings, and every observation id appears in exactly one statement; conclusion is one string copied from allowed_conclusions. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "hierarchical_semantic_synthesis",
+   "title": "Duplicate salary payments",
+   "validator_profile": "synthesis.v1"
+  },
+  {
+   "consequence_risk": "R3",
+   "fixture_id": "B4-SYNTH-R3-08",
+   "input": {
+    "allowed_conclusions": [
+     "cause_established",
+     "cause_unresolved",
+     "insufficient_evidence"
+    ],
+    "conclusion_rule": "Choose cause_established when a finding directly states the cause and nothing disputes it; choose cause_unresolved when counterevidence disputes a proposed cause; otherwise choose insufficient_evidence.",
+    "observations": [
+     {
+      "id": "O601",
+      "role": "symptom",
+      "text": "Visitors saw a security warning on the booking site this morning."
+     },
+     {
+      "id": "O602",
+      "role": "finding",
+      "text": "The certificate report shows the warning appeared because the site certificate expired at midnight."
+     },
+     {
+      "id": "O603",
+      "role": "impact",
+      "text": "Online bookings stopped for about four hours."
+     },
+     {
+      "id": "O604",
+      "role": "next_step",
+      "text": "Install the renewed certificate and switch on auto-renewal."
+     },
+     {
+      "id": "O605",
+      "role": "verification",
+      "text": "A test browser loaded the site cleanly after the swap."
+     }
+    ]
+   },
+   "prompt": "Synthesize the booking site certificate observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Reply with a JSON object whose keys are exactly statements and conclusion: statements is a list of statement objects; in each statement object, observation_ids is a non-empty list of observation id strings, and every observation id appears in exactly one statement; conclusion is one string copied from allowed_conclusions. Keep the reply compact: output beyond about 350 tokens is cut off.",
+   "task_class": "hierarchical_semantic_synthesis",
+   "title": "Booking site security warning",
+   "validator_profile": "synthesis.v1"
+  }
+ ]
+}

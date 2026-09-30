@@ -1,0 +1,81 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "A′ main",
+ "round": "cr1",
+ "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "fixes": [
+  {
+   "fixture_id": "A4-SYNTH-R1-01",
+   "round": "cr1",
+   "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+   "finding": "A1",
+   "fix": "input ambiguous -> fix input (design step 10: the fixture's one fix)",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause (the disclosed latent defect)",
+   "sealed_sha256": {
+    "fixture": "c5b0792ae43e75c1ca0a7fb13b811b6df5d9521f375c5f703ef1285816fd26e2",
+    "gold": "ffbafa60d66b04698478bfcbab3c5172af9d9b37af2c22fb65062e1d35e4df9b",
+    "ledger": "4e9b133a56c3ee60af1db757070d97fe50fbd0f3eb0993c84cf5762242d05bdb"
+   },
+   "fixed_sha256": {
+    "fixture": "118f6d09d05e11b3ce5c8328270a86d91bc970375d508ac0a64a6ebdc1a037eb",
+    "gold": "e9c750e83930c70c7205a184e2c11ed54c4a67ff7dafdef09049f3d49fe7f307",
+    "ledger": "33cfa805866171152fe9b4496bc64f6706e66b3983706e114809dfc1bb406c7b"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.observations[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "input.observations[1].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "input.observations[2].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "gold": [
+     {
+      "path": "expected.roles.O11",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "expected.roles.O12",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "expected.roles.O13",
+      "from": "diagnosis",
+      "to": "finding"
+     },
+     {
+      "path": "reference_output.statements[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "reference_output.statements[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "ledger": [
+     {
+      "path": "merged_role[0]",
+      "from": "finding",
+      "to": "symptom"
+     }
+    ]
+   },
+   "gold_note": "gold roles and reference-statement roles follow the relabelled input roles; the conclusion, required terms, ids and merges are unchanged"
+  }
+ ]
+}

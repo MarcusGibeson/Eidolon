@@ -1,0 +1,236 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "B′ main",
+ "round": "cr1",
+ "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "items": [
+  {
+   "expected": {
+    "answer": "Yulofu",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R1-08",
+   "rationale": "Yulofu is the only option that meets both conditions. Nonobo meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Yulofu\nActions taken: none\nYulofu is the only option that meets both conditions. Nonobo meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "answer": "Vuboyi",
+    "max_characters": 600
+   },
+   "fixture_id": "B4-CONV-R2-28",
+   "rationale": "Vuboyi is the only option that meets both conditions. Wapodi meets the first condition but fails the second; the other two fail both.",
+   "reference_output": "Answer: Vuboyi\nActions taken: none\nVuboyi is the only option that meets both conditions. Wapodi meets the first condition but fails the second; the other two fail both."
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O181": [
+      "forty seconds"
+     ],
+     "O182": [
+      "low battery"
+     ],
+     "O183": [
+      "nine-volt"
+     ]
+    },
+    "roles": {
+     "O181": "symptom",
+     "O182": "finding",
+     "O183": "next_step"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R1-02",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S181",
+      "role": "symptom",
+      "observation_ids": [
+       "O181"
+      ],
+      "text": "The hallway smoke alarm chirps every forty seconds."
+     },
+     {
+      "statement_id": "S182",
+      "role": "finding",
+      "observation_ids": [
+       "O182"
+      ],
+      "text": "Its display reads low battery, which the manual says causes the chirp."
+     },
+     {
+      "statement_id": "S183",
+      "role": "next_step",
+      "observation_ids": [
+       "O183"
+      ],
+      "text": "Swap in a fresh nine-volt cell today."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O491": [
+      "seven employees"
+     ],
+     "O492": [
+      "net salary"
+     ],
+     "O493": [
+      "timeout"
+     ],
+     "O494": [
+      "overdrawn"
+     ],
+     "O495": [
+      "recall"
+     ],
+     "O496": [
+      "only one file"
+     ]
+    },
+    "roles": {
+     "O491": "symptom",
+     "O492": "symptom",
+     "O493": "finding",
+     "O494": "impact",
+     "O495": "next_step",
+     "O496": "verification"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R2-15",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S491",
+      "role": "symptom",
+      "observation_ids": [
+       "O491",
+       "O492"
+      ],
+      "text": "Seven employees were paid twice in the March run. Each extra payment matched their normal net salary."
+     },
+     {
+      "statement_id": "S493",
+      "role": "finding",
+      "observation_ids": [
+       "O493"
+      ],
+      "text": "The payroll log shows the duplicates happened because the payment file was resubmitted after a timeout."
+     },
+     {
+      "statement_id": "S494",
+      "role": "impact",
+      "observation_ids": [
+       "O494"
+      ],
+      "text": "The business account went overdrawn for two days."
+     },
+     {
+      "statement_id": "S495",
+      "role": "next_step",
+      "observation_ids": [
+       "O495"
+      ],
+      "text": "Request recall of the extra payments through the bank."
+     },
+     {
+      "statement_id": "S496",
+      "role": "verification",
+      "observation_ids": [
+       "O496"
+      ],
+      "text": "The bank confirmed only one file should have been accepted."
+     }
+    ]
+   }
+  },
+  {
+   "expected": {
+    "conclusion": "cause_established",
+    "required_terms": {
+     "O601": [
+      "visitors saw a security warning"
+     ],
+     "O602": [
+      "midnight"
+     ],
+     "O603": [
+      "four hours"
+     ],
+     "O604": [
+      "auto-renewal"
+     ],
+     "O605": [
+      "test browser"
+     ]
+    },
+    "roles": {
+     "O601": "symptom",
+     "O602": "finding",
+     "O603": "impact",
+     "O604": "next_step",
+     "O605": "verification"
+    }
+   },
+   "fixture_id": "B4-SYNTH-R3-08",
+   "rationale": "A finding directly states the cause and no observation disputes it.",
+   "reference_output": {
+    "conclusion": "cause_established",
+    "statements": [
+     {
+      "statement_id": "S601",
+      "role": "symptom",
+      "observation_ids": [
+       "O601"
+      ],
+      "text": "Visitors saw a security warning on the booking site this morning."
+     },
+     {
+      "statement_id": "S602",
+      "role": "finding",
+      "observation_ids": [
+       "O602"
+      ],
+      "text": "The certificate report shows the warning appeared because the site certificate expired at midnight."
+     },
+     {
+      "statement_id": "S603",
+      "role": "impact",
+      "observation_ids": [
+       "O603"
+      ],
+      "text": "Online bookings stopped for about four hours."
+     },
+     {
+      "statement_id": "S604",
+      "role": "next_step",
+      "observation_ids": [
+       "O604"
+      ],
+      "text": "Install the renewed certificate and switch on auto-renewal."
+     },
+     {
+      "statement_id": "S605",
+      "role": "verification",
+      "observation_ids": [
+       "O605"
+      ],
+      "text": "A test browser loaded the site cleanly after the swap."
+     }
+    ]
+   }
+  }
+ ]
+}

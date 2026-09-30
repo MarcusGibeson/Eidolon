@@ -1,0 +1,295 @@
+{
+ "schema_version": "g-route4.fixes.v1",
+ "batch": "B′ main",
+ "round": "cr1",
+ "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+ "seal_commit": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+ "fixes": [
+  {
+   "fixture_id": "B4-CONV-R1-08",
+   "round": "cr1",
+   "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+   "finding": "A2",
+   "fix": "input ambiguous -> fix input (design step 10: the fixture's one fix)",
+   "defect": "'dispatches on <date> after N days of packing': read literally the stated date is the dispatch date and all four options qualify; counting days inclusively also changes the answer",
+   "sealed_sha256": {
+    "fixture": "0f14ce7ded1aad6c15db6918d565413f6159850d23cb31ff813fb219fa3647a1",
+    "gold": "2d90f30b0f4d6703941610afecc1475411f586922c6409c39ae65288dd205b6a",
+    "ledger": "279a9924bb5ec0059107c4c376eef231cfcfd0b738a2f037d3e2ee8ae6b74259"
+   },
+   "fixed_sha256": {
+    "fixture": "5af9d27b00cd47040e67ee375780a81fdd5fb475e001aa04083e5f0bbf278455",
+    "gold": "2d90f30b0f4d6703941610afecc1475411f586922c6409c39ae65288dd205b6a",
+    "ledger": "9c589188373e58b02b7e12120443d099a5831f8b27591aac4c82963bc3eaf291"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.message",
+      "from": "The parcel has to be dispatched by 2045-11-20 and delivered no later than 2045-11-26. Nonobo dispatches on 2045-11-18 after 2 days of packing and then takes 7 days in transit. Yaravu dispatches on 2045-11-19 after 2 days of packing and then takes 7 days in transit. Lazeke dispatches on 2045-11-19 after 3 days of packing and then takes 7 days in transit. Yulofu dispatches on 2045-11-16 after 3 days of packing and then takes 7 days in transit.",
+      "to": "The parcel has to be dispatched by 2045-11-20 and delivered no later than 2045-11-26. Nonobo starts packing on 2045-11-18, dispatches 2 days later and then delivers 7 days after dispatch. Yaravu starts packing on 2045-11-19, dispatches 2 days later and then delivers 7 days after dispatch. Lazeke starts packing on 2045-11-19, dispatches 3 days later and then delivers 7 days after dispatch. Yulofu starts packing on 2045-11-16, dispatches 3 days later and then delivers 7 days after dispatch."
+     }
+    ],
+    "gold": [],
+    "ledger": [
+     {
+      "path": "message_units[1].text",
+      "from": "Nonobo dispatches on 2045-11-18 after 2 days of packing and then takes 7 days in transit.",
+      "to": "Nonobo starts packing on 2045-11-18, dispatches 2 days later and then delivers 7 days after dispatch."
+     },
+     {
+      "path": "message_units[2].text",
+      "from": "Yaravu dispatches on 2045-11-19 after 2 days of packing and then takes 7 days in transit.",
+      "to": "Yaravu starts packing on 2045-11-19, dispatches 2 days later and then delivers 7 days after dispatch."
+     },
+     {
+      "path": "message_units[3].text",
+      "from": "Lazeke dispatches on 2045-11-19 after 3 days of packing and then takes 7 days in transit.",
+      "to": "Lazeke starts packing on 2045-11-19, dispatches 3 days later and then delivers 7 days after dispatch."
+     },
+     {
+      "path": "message_units[4].text",
+      "from": "Yulofu dispatches on 2045-11-16 after 3 days of packing and then takes 7 days in transit.",
+      "to": "Yulofu starts packing on 2045-11-16, dispatches 3 days later and then delivers 7 days after dispatch."
+     }
+    ]
+   },
+   "gold_note": "gold (answer and reference output) unchanged; every bound fact and surface unchanged"
+  },
+  {
+   "fixture_id": "B4-CONV-R2-28",
+   "round": "cr1",
+   "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+   "finding": "A3",
+   "fix": "input ambiguous -> fix input (design step 10: the fixture's one fix)",
+   "defect": "'can start on <date> and needs N days': counting the start day as day 1 makes the near miss finish on time, so two options qualify",
+   "sealed_sha256": {
+    "fixture": "e14f180d707be6d0fa65306766c5114217ec88e3227b73a8ff94035bef6275d8",
+    "gold": "bdaac82d1668466ce05de32a634121fdc5b69f97bf4cf073d5097ad959a22be4",
+    "ledger": "e908fddd9bef7fb7e86761d25c85dbd5cb187fd31a6add1ce70ff711afe62d7e"
+   },
+   "fixed_sha256": {
+    "fixture": "2a81766800ddc85a6e0884d8496b0f0fb480f6bd7f051e161869f01389a70bec",
+    "gold": "bdaac82d1668466ce05de32a634121fdc5b69f97bf4cf073d5097ad959a22be4",
+    "ledger": "6cfface741d3459f33620d0760fcea05a56fad0ceb9e689f6f691bc920fb9353"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.message",
+      "from": "The keys are handed over on 2046-02-02, and everything must be in place by 2046-02-13 for the opening. Wapodi can start on 2046-02-03 and needs 11 days to deliver and assemble. Kekoje can start on 2046-02-01 and needs 21 days to deliver and assemble. Vivile can start on 2046-01-30 and needs 24 days to deliver and assemble. Vuboyi can start on 2046-02-04 and needs 4 days to deliver and assemble.",
+      "to": "The keys are handed over on 2046-02-02, and everything must be in place by 2046-02-13 for the opening. Wapodi can start on 2046-02-03 and finishes delivering and assembling 11 days later. Kekoje can start on 2046-02-01 and finishes delivering and assembling 21 days later. Vivile can start on 2046-01-30 and finishes delivering and assembling 24 days later. Vuboyi can start on 2046-02-04 and finishes delivering and assembling 4 days later."
+     }
+    ],
+    "gold": [],
+    "ledger": [
+     {
+      "path": "message_units[1].text",
+      "from": "Wapodi can start on 2046-02-03 and needs 11 days to deliver and assemble.",
+      "to": "Wapodi can start on 2046-02-03 and finishes delivering and assembling 11 days later."
+     },
+     {
+      "path": "message_units[2].text",
+      "from": "Kekoje can start on 2046-02-01 and needs 21 days to deliver and assemble.",
+      "to": "Kekoje can start on 2046-02-01 and finishes delivering and assembling 21 days later."
+     },
+     {
+      "path": "message_units[3].text",
+      "from": "Vivile can start on 2046-01-30 and needs 24 days to deliver and assemble.",
+      "to": "Vivile can start on 2046-01-30 and finishes delivering and assembling 24 days later."
+     },
+     {
+      "path": "message_units[4].text",
+      "from": "Vuboyi can start on 2046-02-04 and needs 4 days to deliver and assemble.",
+      "to": "Vuboyi can start on 2046-02-04 and finishes delivering and assembling 4 days later."
+     }
+    ]
+   },
+   "gold_note": "gold (answer and reference output) unchanged; every bound fact and surface unchanged"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R1-02",
+   "round": "cr1",
+   "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+   "finding": "A1",
+   "fix": "input ambiguous -> fix input (design step 10: the fixture's one fix)",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause (the disclosed latent defect)",
+   "sealed_sha256": {
+    "fixture": "443abae5a69d451138f02e25d8cf40ad69a2867b7886acdd455902549890a71d",
+    "gold": "54bd83871a67ebc138d127f8b5c396ca84616d7fd0adba54451ea663f9d38968",
+    "ledger": "4c532efcea6ddc30eee022983a285d7dd1b44826c558764ab8ff798df3c37590"
+   },
+   "fixed_sha256": {
+    "fixture": "1cc6a74641b56705a2173ed87f1a5d865078965df22d8f76a2cdbe19f46d3a27",
+    "gold": "048ec8d1ba44bc2932c21e7a43aa0130fa7c665756c6062a592c8a69316fd9d1",
+    "ledger": "4c532efcea6ddc30eee022983a285d7dd1b44826c558764ab8ff798df3c37590"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.observations[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "input.observations[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "gold": [
+     {
+      "path": "expected.roles.O181",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "expected.roles.O182",
+      "from": "diagnosis",
+      "to": "finding"
+     },
+     {
+      "path": "reference_output.statements[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "reference_output.statements[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "ledger": []
+   },
+   "gold_note": "gold roles and reference-statement roles follow the relabelled input roles; the conclusion, required terms, ids and merges are unchanged"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R2-15",
+   "round": "cr1",
+   "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+   "finding": "A1",
+   "fix": "input ambiguous -> fix input (design step 10: the fixture's one fix)",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause (the disclosed latent defect)",
+   "sealed_sha256": {
+    "fixture": "134ad0a157f5aaf8dde52f9c343601c6a4aca152d68f23de1c75d4932131c7a8",
+    "gold": "7467a4245bbabc66fb9fa5e32c77b7e2d8dd126658ce2c577c25dcf7b5ef91e2",
+    "ledger": "7261e9a050880789879cf8cc9bb46c5276b05fad8bfbe51556ab873c9054eef0"
+   },
+   "fixed_sha256": {
+    "fixture": "0fe7aba3328c90c7646be11c48862723ae6e89582880a6e7f58f8a7c11cf61e4",
+    "gold": "9ba0d63c241267f643f2cccb0621a0efbaef04f8e0e33a171afd7ff6d482a866",
+    "ledger": "7a81b4ed6611ce92e79202ed086ba9d73f6059eef12bdc2bf0b18cc50f897bb1"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.observations[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "input.observations[1].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "input.observations[2].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "gold": [
+     {
+      "path": "expected.roles.O491",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "expected.roles.O492",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "expected.roles.O493",
+      "from": "diagnosis",
+      "to": "finding"
+     },
+     {
+      "path": "reference_output.statements[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "reference_output.statements[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "ledger": [
+     {
+      "path": "merged_role[0]",
+      "from": "finding",
+      "to": "symptom"
+     }
+    ]
+   },
+   "gold_note": "gold roles and reference-statement roles follow the relabelled input roles; the conclusion, required terms, ids and merges are unchanged"
+  },
+  {
+   "fixture_id": "B4-SYNTH-R3-08",
+   "round": "cr1",
+   "trigger": "external corpus review round 1 (reviewer A findings A1-A3); operator dispositions 2026-09-29: FIX",
+   "finding": "A1",
+   "fix": "input ambiguous -> fix input (design step 10: the fixture's one fix)",
+   "defect": "SY1 causal statement under role 'diagnosis'; the frozen rule requires that a finding states the cause (the disclosed latent defect)",
+   "sealed_sha256": {
+    "fixture": "ef9d977d221ea2362cf51e2242795a977c462b8ae776c707ef94dbccd26b2dbd",
+    "gold": "49d6e1b75b654d757b6752e457651ebeca5e46f2f4aaf5a2e87b525931290383",
+    "ledger": "55f17cfffb7673efde4736184954e8ee48f2a23af6e94b6eaab04bd1c1793776"
+   },
+   "fixed_sha256": {
+    "fixture": "81b60fbcd573b50f57445bbcfd54c287b7ae8692cdbf86e1135623534903b48b",
+    "gold": "640dfbad9298f9557b0d6dd8e532b85eacdc4db3087676b5e8a39e4509d9cf0d",
+    "ledger": "55f17cfffb7673efde4736184954e8ee48f2a23af6e94b6eaab04bd1c1793776"
+   },
+   "changes": {
+    "fixture": [
+     {
+      "path": "input.observations[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "input.observations[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "gold": [
+     {
+      "path": "expected.roles.O601",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "expected.roles.O602",
+      "from": "diagnosis",
+      "to": "finding"
+     },
+     {
+      "path": "reference_output.statements[0].role",
+      "from": "finding",
+      "to": "symptom"
+     },
+     {
+      "path": "reference_output.statements[1].role",
+      "from": "diagnosis",
+      "to": "finding"
+     }
+    ],
+    "ledger": []
+   },
+   "gold_note": "gold roles and reference-statement roles follow the relabelled input roles; the conclusion, required terms, ids and merges are unchanged"
+  }
+ ]
+}
