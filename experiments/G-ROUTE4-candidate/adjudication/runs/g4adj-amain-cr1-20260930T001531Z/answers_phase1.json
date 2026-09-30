@@ -1,0 +1,73 @@
+{
+ "schema_version": "g-route4.adjudication-answers.v1",
+ "phase": 1,
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "journal_sha256": "40a735a6c8c5f90180746d1b66d1df27158095219fd5621c88887eaaddca76b9",
+ "journal_records": 10,
+ "schedule_sha256": "56b77d73ded8f9425e7a8f797a03c13eacd15ee6777d344fa3d8db1536d3b2ee",
+ "slots": [
+  {
+   "fixture_id": "A4-SYNTH-R1-01",
+   "slot": 1,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "recorded_kind": null,
+     "raw_body_sha256": "5d3658c60f9a7e859479fb04072b83196fd1f00fc120f7833e3fd14b27347218",
+     "request_sha256": "d9b3e3714036d2f5b2c27ae7554dfc55cf2a94ea232df215f6b37fb0cab306fa",
+     "request_id": "req_011CfYfGFTjYC4AW34QbNeiD",
+     "message_id": "msg_011CfYfGGHbZ4h42CE4xrKK2",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "19c9af2e198c01ba2c4d38f3351a9986ef251a375e9353e40286e35abb2aae2a"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "19c9af2e198c01ba2c4d38f3351a9986ef251a375e9353e40286e35abb2aae2a"
+  },
+  {
+   "fixture_id": "A4-SYNTH-R1-01",
+   "slot": 2,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "recorded_kind": null,
+     "raw_body_sha256": "95ad291351a8aa4e22708e29ff4f1ccc0fe9dd2c96e4dfb7b3f8d64926407a22",
+     "request_sha256": "d9b3e3714036d2f5b2c27ae7554dfc55cf2a94ea232df215f6b37fb0cab306fa",
+     "request_id": "req_011CfYfGFtnJwYLkKZogdr5f",
+     "message_id": "msg_011CfYfGGNogumUNZWouWFnK",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "19c9af2e198c01ba2c4d38f3351a9986ef251a375e9353e40286e35abb2aae2a"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "19c9af2e198c01ba2c4d38f3351a9986ef251a375e9353e40286e35abb2aae2a"
+  },
+  {
+   "fixture_id": "A4-SYNTH-R1-01",
+   "slot": 3,
+   "outcome": "bound",
+   "invocations": [
+    {
+     "invocation": 1,
+     "kind": "final_message",
+     "status": 200,
+     "recorded_kind": null,
+     "raw_body_sha256": "b57223611f9212f5df8dd894f8e7249f3d89076d85486f3f60886514950d2025",
+     "request_sha256": "d9b3e3714036d2f5b2c27ae7554dfc55cf2a94ea232df215f6b37fb0cab306fa",
+     "request_id": "req_011CfYfGZxDrx6d5zWKbc6sf",
+     "message_id": "msg_011CfYfGaPH8rFyLyHnh7fkf",
+     "stop_reason": "end_turn",
+     "binding_text_sha256": "19c9af2e198c01ba2c4d38f3351a9986ef251a375e9353e40286e35abb2aae2a"
+    }
+   ],
+   "binding_invocation": 1,
+   "binding_text_sha256": "19c9af2e198c01ba2c4d38f3351a9986ef251a375e9353e40286e35abb2aae2a"
+  }
+ ]
+}
