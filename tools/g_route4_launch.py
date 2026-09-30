@@ -56,12 +56,59 @@ SENTENCES = {
 }
 
 
+RUN_ID = re.compile(r"groute4(?P<phase>[ab])-[0-9]{3,}-[0-9a-f]{16}")
+
+
 def parse_sentence(sentence: str) -> tuple[str, dict[str, str]]:
     for kind, pattern in SENTENCES.items():
         match = pattern.fullmatch(sentence)
         if match:
             return kind, {key: value for key, value in match.groupdict().items() if value is not None}
     raise ValueError("sentence_not_recognized")
+
+
+def check_sentence_meaning(kind: str, fields: dict[str, str], freeze_binding: str) -> None:
+    """O9, the meanings the launcher enforces before any lifecycle command: a launch sentence's <binding> is the
+    freeze in force (also on --resume, the optional resume check) and its "after integrity failure of attempt m"
+    names m = n-1; a Clear sentence's phase letter is the run id's. The lifecycle enforces the rest: <table> equals
+    the frozen table in D/tables, the plain and distinct forms as R7 section 9 rules, resume byte-identical to the
+    consumed sentence, and the freeze-table sentence's binding."""
+    if kind in ("launch_a", "launch_b"):
+        if "m" in fields and int(fields["m"]) != int(fields["n"]) - 1:
+            raise ValueError("distinct_sentence_must_name_attempt_n_minus_1")
+        if fields["binding"] != freeze_binding:
+            raise PermissionError("sentence_binding_is_not_the_freeze_in_force")
+    elif kind == "clear_orphan":
+        match = RUN_ID.fullmatch(fields["run"])
+        if match is None or match["phase"] != fields["phase"].lower():
+            raise ValueError("orphan_run_phase_letter_differs_from_the_sentence")
+
+
+def dispatch(lc: Any, sentence: str, *, resume: bool = False, phase_a_attempt: int | None = None,
+             audit_document: str | None = None, auditor: str | None = None, verdict: str | None = None) -> Any:
+    """One governed command for one operator sentence, on an open lifecycle. Only launch sentences reach a command
+    that generates (launch, Phase B launch, resume)."""
+    kind, fields = parse_sentence(sentence)
+    check_sentence_meaning(kind, fields, lc.rt.freeze_binding())
+    if resume:
+        if kind not in ("launch_a", "launch_b"):
+            raise ValueError("resume_takes_the_launch_sentence_consumed_for_the_attempt")
+        return lc.command_resume("A" if kind == "launch_a" else "B", sentence)
+    if kind == "launch_a":
+        return lc.command_launch("A", sentence, int(fields["n"]), "m" in fields)
+    if kind == "launch_b":
+        if not phase_a_attempt:
+            raise ValueError("phase_b_needs_phase_a_attempt")
+        return lc.command_launch_b(sentence, int(fields["n"]), "m" in fields, fields["table"], phase_a_attempt)
+    if kind == "abandon":
+        return lc.command_abandon(fields["phase"], int(fields["n"]))
+    if kind == "declare":
+        return lc.command_declare(fields["phase"], int(fields["n"]))
+    if kind == "clear_orphan":
+        return lc.command_clear_orphan(fields["phase"], fields["run"])
+    if not (audit_document and auditor and verdict):
+        raise ValueError("freeze_table_needs_audit_document_auditor_and_verdict")
+    return lc.command_freeze_table(int(fields["n"]), fields["binding"], Path(audit_document), auditor, verdict)
 
 
 def local_only_network() -> None:
@@ -188,37 +235,13 @@ def main(argv: list[str] | None = None) -> int:
     if not args.sentence:
         parser.error("--sentence is required")
     kind, fields = parse_sentence(args.sentence)
+    check_sentence_meaning(kind, fields, runtime.freeze_binding())
     if kind in ("launch_a", "launch_b") and not args.resume:
         lc.setup_if_missing()
     lc.open()
     try:
-        if args.resume:
-            if kind not in ("launch_a", "launch_b"):
-                parser.error("--resume takes the launch sentence consumed for the attempt")
-            result = lc.command_resume("A" if kind == "launch_a" else "B", args.sentence)
-        elif kind in ("launch_a", "launch_b"):
-            n, distinct = int(fields["n"]), "m" in fields
-            if distinct and int(fields["m"]) != n - 1:
-                raise ValueError("distinct_sentence_must_name_attempt_n_minus_1")
-            if fields["binding"] != runtime.freeze_binding():
-                raise PermissionError("sentence_binding_is_not_the_freeze_in_force")
-            if kind == "launch_a":
-                result = lc.command_launch("A", args.sentence, n, distinct)
-            else:
-                if not args.phase_a_attempt:
-                    parser.error("phase B needs --phase-a-attempt")
-                result = lc.command_launch_b(args.sentence, n, distinct, fields["table"], args.phase_a_attempt)
-        elif kind == "abandon":
-            result = lc.command_abandon(fields["phase"], int(fields["n"]))
-        elif kind == "declare":
-            result = lc.command_declare(fields["phase"], int(fields["n"]))
-        elif kind == "clear_orphan":
-            result = lc.command_clear_orphan(fields["phase"], fields["run"])
-        else:
-            if not (args.audit_document and args.auditor and args.verdict):
-                parser.error("--freeze-table sentence needs --audit-document, --auditor and --verdict")
-            result = lc.command_freeze_table(int(fields["n"]), fields["binding"], Path(args.audit_document),
-                                             args.auditor, args.verdict)
+        result = dispatch(lc, args.sentence, resume=args.resume, phase_a_attempt=args.phase_a_attempt,
+                          audit_document=args.audit_document, auditor=args.auditor, verdict=args.verdict)
     finally:
         lc.close()
     print(json.dumps(result, indent=2, sort_keys=True, default=str))

@@ -561,6 +561,131 @@ class LifecycleTests(unittest.TestCase):
             self.assertEqual([e["entry"] for e in function(files)], [1, 2])
 
 
+class SentenceMeaningTests(unittest.TestCase):
+    """O9: every sentence meaning the launcher enforces is certified by a refusal case, through the launcher's own
+    dispatch on a synthetic lifecycle (the four-call schedule, stub provider and scorer)."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import tempfile
+        import g_route4_campaign as K
+        import g_route4_launch as LA
+        import g_route4_platform as P
+        P.pin_recursion_limit()
+        cls.K, cls.LA = K, LA
+        cls.work = Path(tempfile.mkdtemp(prefix="g_route4_o9_tests_"))
+        cls.template = cls.work / "template"
+        cls.template.mkdir()
+        K.run_command(K.World(cls.template), K.F.RealFs(), "setup")
+        probe = K.FaultFs()
+        K.run_command(K.base_world(cls.template, cls.work / "probe"), probe, "launch", "A", K.SENTENCE.format(n=1),
+                      1, False)
+        cls.kill_index = next(i for i, op in enumerate(probe.ops, 1) if "000003.json" in op)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        import g_route4_lifecycle as L
+        L._remove_tree(cls.work)
+
+    def world(self, name: str):
+        return self.K.base_world(self.template, self.work / name)
+
+    def dispatch(self, world, sentence: str, **kwargs):
+        lc = world.lifecycle(self.K.F.RealFs())
+        lc.open()
+        try:
+            return self.LA.dispatch(lc, sentence, **kwargs)
+        finally:
+            lc.close()
+
+    def refused(self, world, sentence: str, reason: str, **kwargs) -> None:
+        calls = dict(world.counts)
+        with self.assertRaisesRegex(Exception, reason):
+            self.dispatch(world, sentence, **kwargs)
+        self.assertEqual(dict(world.counts), calls)                 # a refusal generates nothing
+
+    def test_binding_must_be_the_freeze_in_force(self) -> None:
+        world = self.world("binding")
+        self.refused(world, "Authorize G-ROUTE4 phase A execution " + "e" * 64 + " attempt 1",
+                     "sentence_binding_is_not_the_freeze_in_force")
+        self.assertEqual(self.dispatch(world, self.K.SENTENCE.format(n=1))["state"], "completed")
+
+    def test_resume_binding_must_be_the_freeze_in_force(self) -> None:       # the optional resume check
+        world = self.world("resume_binding")
+        self.refused(world, "Authorize G-ROUTE4 phase A execution " + "e" * 64 + " attempt 1",
+                     "sentence_binding_is_not_the_freeze_in_force", resume=True)
+
+    def test_table_must_be_the_frozen_table(self) -> None:
+        # a real table freeze needs the differential's Phase A, freeze and Phase B driver; its stubs patch module
+        # attributes, so it runs in its own process
+        import subprocess
+        code = ("import sys, json; sys.path.insert(0, %r); import g_route4_differential as D; "
+                "print(json.dumps(D.table_sentence_probe()))" % str(Path(__file__).resolve().parent))
+        done = subprocess.run([sys.executable, "-B", "-c", code], capture_output=True, text=True, timeout=600)
+        self.assertEqual(done.returncode, 0, done.stderr[-2000:])
+        out = json.loads(done.stdout.strip().splitlines()[-1])
+        self.assertIn("sentence_table_digest_differs_from_frozen_table", out["refusal"] or "")
+        self.assertEqual(out["phase_b_runs_after_refusal"], [])
+        self.assertEqual(out["then"], "completed")
+
+    def test_after_integrity_failure_must_name_n_minus_1(self) -> None:
+        world = self.world("m")
+        self.refused(world, self.K.SENTENCE.format(n=2) + " after integrity failure of attempt 2",
+                     "distinct_sentence_must_name_attempt_n_minus_1")
+        self.refused(world, self.K.SENTENCE.format(n=3) + " after integrity failure of attempt 1",
+                     "distinct_sentence_must_name_attempt_n_minus_1")
+
+    def test_plain_and_distinct_forms_are_exclusive(self) -> None:
+        # R7 section 9: after an integrity failure only the distinct form, otherwise only the plain form
+        world = self.world("forms_failure")
+        with self.assertRaises(self.K.SimulatedKill):
+            self.K.run_command(world, self.K.FaultFs(kill_at=self.kill_index, kill_after=True), "launch", "A",
+                               self.K.SENTENCE.format(n=1), 1, False)
+        self.K.run_command(world, self.K.F.RealFs(), "declare", "A", 1)
+        self.refused(world, self.K.SENTENCE.format(n=2), "distinct_sentence_required")
+        self.assertEqual(self.dispatch(world, self.K.DISTINCT.format(n=2, m=1))["state"], "completed")
+        world = self.world("forms_plain")
+        lc = world.lifecycle(self.K.F.RealFs())
+        polls = {"n": 0}
+
+        def interrupted():
+            polls["n"] += 1
+            return polls["n"] >= 2
+        lc.rt.interrupted = interrupted
+        lc.open()
+        try:
+            self.assertEqual(lc.command_launch("A", self.K.SENTENCE.format(n=1), 1, False)["state"], "closed")
+        finally:
+            lc.close()
+        self.refused(world, self.K.DISTINCT.format(n=2, m=1), "distinct_sentence_not_permitted")
+        self.refused(world, self.K.SENTENCE.format(n=3), "attempt_number_must_be_2")
+
+    def test_resume_must_be_byte_identical(self) -> None:
+        world = self.world("resume")
+        self.K.run_command(world, self.K.F.RealFs(), "launch", "A", self.K.SENTENCE.format(n=1), 1, False)
+        self.refused(world, self.K.SENTENCE.format(n=1) + " ", "sentence_not_recognized", resume=True)
+        self.refused(world, self.K.DISTINCT.format(n=1, m=1), "distinct_sentence_must_name_attempt_n_minus_1",
+                     resume=True)
+        self.refused(world, self.K.SENTENCE.format(n=2), "resume_sentence_must_equal_the_consumed_sentence",
+                     resume=True)
+
+    def test_only_launch_sentences_authorize_generation(self) -> None:
+        world = self.world("only_launch")
+        for sentence in ("Declare G-ROUTE4 phase A attempt 1 integrity failure",
+                         "Abandon G-ROUTE4 phase A attempt 1 after failed preflight",
+                         "Freeze G-ROUTE4 qualification table from phase A attempt 1 of execution " + "f" * 64):
+            self.refused(world, sentence, "resume_takes_the_launch_sentence_consumed_for_the_attempt", resume=True)
+        self.refused(world, "Declare G-ROUTE4 phase A attempt 1 integrity failure", "declare_requires_a_consumed")
+
+    def test_clear_orphan_phase_letter_must_match_the_run_id(self) -> None:
+        world = self.world("orphan_letter")
+        self.refused(world, "Clear G-ROUTE4 phase A orphan run groute4b-001-" + "0" * 16,
+                     "orphan_run_phase_letter_differs_from_the_sentence")
+        self.refused(world, "Clear G-ROUTE4 phase B orphan run groute4a-001-" + "0" * 16,
+                     "orphan_run_phase_letter_differs_from_the_sentence")
+        self.refused(world, "Clear G-ROUTE4 phase A orphan run groute4a-001-" + "0" * 16, "not_an_orphan_run")
+
+
 class PlatformTests(unittest.TestCase):
     def test_a_killed_holder_leaves_no_live_children(self) -> None:                  # §15, §18
         import subprocess

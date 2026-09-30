@@ -388,13 +388,12 @@ def _shared_stub_scorer(J, contract, specs):
     return call
 
 
-def lifecycle_side(side: str, payload: str) -> dict[str, Any]:
-    """Drive setup, Phase A, the table freeze and Phase B on one side, with the shared inputs, then dump the evidence
-    repository's commit chain (every committed file of the data root). Runs in its own process."""
+def _drive_to_frozen_table(side: str, inputs: dict[str, Any]) -> dict[str, Any]:
+    """Setup, Phase A and the table freeze on one side, with the shared inputs and the O7 stubs. Runs in its own
+    process (the stubs patch module attributes)."""
     import tempfile
     prefix = PRIOR_PREFIX if side == "prior" else FORK_PREFIX
     experiment = "G-ROUTE3" if side == "prior" else "G-ROUTE4"
-    inputs = _decode(payload)
     J = __import__(f"{prefix}_journal")
     L = __import__(f"{prefix}_lifecycle")
     F = __import__(f"{prefix}_fs")
@@ -447,7 +446,17 @@ def lifecycle_side(side: str, payload: str) -> dict[str, Any]:
     audit.write_bytes((f"READY audit of {out_a['run_id']} scored {scored['record_sha256']} "
                        f"run_created {entries[0]['record_sha256']}\n").encode("utf-8"))
     frozen = command("command_freeze_table", 1, binding, audit, "differential", "READY")
-    sentence_b = f"Authorize {experiment} phase B execution {binding} table {frozen['table_sha256']} attempt 1"
+    return {"L": L, "runtime": runtime, "command": command, "D": D, "prefix": prefix, "experiment": experiment,
+            "binding": binding, "out_a": out_a, "frozen": frozen}
+
+
+def lifecycle_side(side: str, payload: str) -> dict[str, Any]:
+    """Drive setup, Phase A, the table freeze and Phase B on one side, with the shared inputs, then dump the evidence
+    repository's commit chain (every committed file of the data root). Runs in its own process."""
+    state = _drive_to_frozen_table(side, _decode(payload))
+    L, runtime, command, prefix = state["L"], state["runtime"], state["command"], state["prefix"]
+    out_a, frozen, binding = state["out_a"], state["frozen"], state["binding"]
+    sentence_b = f"Authorize {state['experiment']} phase B execution {binding} table {frozen['table_sha256']} attempt 1"
     out_b = command("command_launch_b", sentence_b, 1, False, frozen["table_sha256"], 1)
     # dump the evidence repository's commit chain
     lc = L.Lifecycle(runtime)
@@ -467,6 +476,34 @@ def lifecycle_side(side: str, payload: str) -> dict[str, Any]:
         lc.close()
     return {"side": side, "states": {"A": out_a["state"], "table": frozen["state"], "B": out_b["state"]},
             "chain": chain, "blobs": {b: base64.b64encode(contents[b]).decode("ascii") for b in blobs}}
+
+
+def table_sentence_probe() -> dict[str, Any]:
+    """O9 certification of <table> (fork only; run in its own process): after a real table freeze, a Phase B sentence
+    naming another table digest is refused by the launcher's dispatch and creates no Phase B run; the sentence naming
+    the frozen table then completes through the same dispatch."""
+    import g_route4_launch as LA
+    state = _drive_to_frozen_table("fork", lifecycle_inputs())
+    L, runtime, binding = state["L"], state["runtime"], state["binding"]
+    frozen = state["frozen"]["table_sha256"]
+    other = "d" * 64 if frozen != "d" * 64 else "e" * 64
+
+    def dispatch(sentence):
+        lc = L.Lifecycle(runtime)
+        lc.open()
+        try:
+            return LA.dispatch(lc, sentence, phase_a_attempt=1)
+        finally:
+            lc.close()
+    runs = state["D"] / "phase_b" / "runs"
+    try:
+        dispatch(f"Authorize G-ROUTE4 phase B execution {binding} table {other} attempt 1")
+        refusal = None
+    except Exception as exc:  # noqa: BLE001
+        refusal = f"{type(exc).__name__}:{exc}"
+    runs_after_refusal = sorted(q.name for q in runs.iterdir()) if runs.is_dir() else []
+    out = dispatch(f"Authorize G-ROUTE4 phase B execution {binding} table {frozen} attempt 1")
+    return {"refusal": refusal, "phase_b_runs_after_refusal": runs_after_refusal, "then": out["state"]}
 
 
 # identity substitutions applied to the prior side (design "Identity constants"; the fork side is the reference)
