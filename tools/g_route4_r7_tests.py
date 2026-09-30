@@ -741,22 +741,22 @@ class DataRootIdentityTests(unittest.TestCase):
 
     def test_committed_name_of_another_experiment_is_refused_before_setup_and_lease(self) -> None:
         world = self.K.base_world(self.template, self.work / "other_committed")
-        self.recommit_root_json(world, "G-ROUTE3")
+        self.recommit_root_json(world, "OTHER-EXPERIMENT")
         for setup in (True, False):
-            self.assert_refused_untouched(world, "data_root_belongs_to_another_experiment:G-ROUTE3", setup)
+            self.assert_refused_untouched(world, "data_root_belongs_to_another_experiment:OTHER-EXPERIMENT", setup)
 
     def test_committed_name_governs_over_the_working_file(self) -> None:
         world = self.K.base_world(self.template, self.work / "working_says_g4")
-        self.recommit_root_json(world, "G-ROUTE3")          # the working root.json still names G-ROUTE4
-        self.assert_refused_untouched(world, "data_root_belongs_to_another_experiment:G-ROUTE3", False)
+        self.recommit_root_json(world, "OTHER-EXPERIMENT")          # the working root.json still names this experiment
+        self.assert_refused_untouched(world, "data_root_belongs_to_another_experiment:OTHER-EXPERIMENT", False)
 
     def test_working_root_json_without_a_repository_is_checked(self) -> None:
         import g_route4_lifecycle as L
         other = self.work / "working_only" / "D"
         other.mkdir(parents=True)
-        (other / "root.json").write_bytes(json.dumps({"experiment": "G-ROUTE3", "root_id": "x"}).encode())
+        (other / "root.json").write_bytes(json.dumps({"experiment": "OTHER-EXPERIMENT", "root_id": "x"}).encode())
         world = self.K.World(other.parent)
-        self.assert_refused_untouched(world, "data_root_belongs_to_another_experiment:G-ROUTE3", True)
+        self.assert_refused_untouched(world, "data_root_belongs_to_another_experiment:OTHER-EXPERIMENT", True)
         (other / "root.json").write_bytes(b"{broken")
         self.assert_refused_untouched(world, "data_root_experiment_unreadable", True)
         L._remove_tree(other.parent)
