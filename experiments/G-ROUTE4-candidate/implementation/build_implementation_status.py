@@ -83,6 +83,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--transcript", required=True)
     parser.add_argument("--campaign-report", required=True)
+    parser.add_argument("--campaign-commit", required=True)
     args = parser.parse_args()
     if git("status", "--porcelain", "--untracked-files=no"):
         raise SystemExit("the working tree has uncommitted changes; build the status from a committed head")
@@ -111,6 +112,8 @@ def main() -> int:
     scratch.unlink()
     lifecycle = diff_report["lifecycle"]
     campaign = json.loads(Path(args.campaign_report).read_text(encoding="utf-8"))
+    campaign_commit = git("rev-parse", args.campaign_commit)
+    tools_changed_since_campaign = git("diff", "--name-only", campaign_commit, "HEAD", "--", "tools").split()
     b7 = json.loads((HERE / "B7_INDEPENDENCE_RECHECK.json").read_text(encoding="utf-8"))
     oracle = json.loads((HERE / "ORACLE_REPORT.json").read_text(encoding="utf-8"))
 
@@ -139,6 +142,9 @@ def main() -> int:
             "B8_counts_bound": {"record": f"{REL}/adjudication/B_MAIN_CLOSURE_ADDENDUM_CR1.json",
                                 "carried_by": "g_route4_freeze.b8_condition (checked when the manifest is written)"},
             "deterministic_suites": suites,
+            "preserved_development_failures": sorted(
+                f"{REL}/implementation/{q.relative_to(HERE).as_posix()}"
+                for d in ("b7_failures", "development_failures") for q in (HERE / d).iterdir()),
             "oracle": {"record": f"{REL}/implementation/ORACLE_REPORT.json",
                        "lf_sha256": lf_sha256(HERE / "ORACLE_REPORT.json"), "passed": oracle.get("passed")},
             "differential_development_run": {
@@ -151,7 +157,8 @@ def main() -> int:
                 "note": "development run; the official differential record (DIFFERENTIAL_REPORT.json) is produced "
                         "at CERT, after the implementation review"},
             "certification_campaign_development_run": {
-                "mode": "--quick", "report_sha256": hashlib.sha256(Path(args.campaign_report).read_bytes()).hexdigest(),
+                "mode": "--quick", "run_at_commit": campaign_commit,
+                "tools_changed_since": tools_changed_since_campaign, "report_sha256": hashlib.sha256(Path(args.campaign_report).read_bytes()).hexdigest(),
                 "sections": {r.get("label", str(i)): len(r.get("problems", [])) for i, r in enumerate(campaign)},
                 "problems_total": sum(len(r.get("problems", [])) for r in campaign),
                 "note": "development run (quick stride); the official certification record "
@@ -176,6 +183,7 @@ def main() -> int:
     ok = (all(v["identical"] for v in unchanged.values()) and not outside and not modified_existing
           and all(s["exit_code"] == 0 for s in suites.values()) and differential.returncode == 0
           and status["checks"]["certification_campaign_development_run"]["problems_total"] == 0
+          and not tools_changed_since_campaign
           and b7.get("result") == "PASS" and b7.get("bounds_met") is True and not b7.get("differing")
           and status["checks"]["B7_forked_module_recheck"]["module_unchanged_since_b7"]
           and oracle.get("passed") is True)
