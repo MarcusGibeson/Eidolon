@@ -1,0 +1,255 @@
+{
+ "schema_version": "g-route4.implementation-status.v1",
+ "design_step": "4 (implementation), at the boundary before the implementation review",
+ "built_at_commit": "d4db6e6da2007f063aabc694607afbe387ab91ec",
+ "base_commit": "30b488a3434f69ffb1edb9b46533e4ecc1e19eba",
+ "operator_authorization": {
+  "transcript_record_uuid": "1754d597-8593-4d32-ba87-d5791b6da63d",
+  "utc": "2026-09-30T00:41:42.477Z",
+  "text_sha256": "3860221a64dc4e1c97028029c8957514f190aea66e45ced78fdfdb6188dee590",
+  "text": "I authorize implementation under the frozen G-ROUTE4 design step 4.\n\nProceed from the closed external corpus review round 1 at commit \"30b488a3434f69ffb1edb9b46533e4ecc1e19eba\".\n\nTreat the reviewed 26-fix corpus, its gold, the round-1 closure, the adjudication records, the successor reports, the frozen blueprint and the seal as authoritative inputs.\n\nImplementation must remain subordinate to the frozen design. Do not change the reviewed corpus, gold, thresholds, success criteria, adjudication outcomes, review findings, independence definitions or frozen methodology merely to make implementation pass.\n\nImplement the step-4 infrastructure required by the frozen design, including \"g_route4_independence\" and its deterministic checks, with explicit provenance back to the reviewed/frozen inputs.\n\nPreserve these boundaries:\n\n- do not move or rewrite \"main\", \"g-route4/seal\", or \"g-route4-seal\";\n- do not modify sealed or historical review artifacts;\n- do not reinterpret completed adjudication;\n- do not weaken any frozen threshold or qualification condition;\n- do not begin live/model campaign execution unless the frozen design explicitly makes it part of this implementation stage and all implementation prerequisites have passed;\n- preserve failure artifacts and stop at any boundary requiring operator disposition.\n\nB7 is mandatory during this stage:\n\nAfter \"g_route4_independence\" is implemented, run the required final pre-freeze independence re-check with that forked module against the reviewed 26-fix corpus.\n\nIt must reproduce the frozen values and satisfy the same bounds.\n\nThe earlier pinned-tool reproduction does not waive or substitute for B7. If the forked-module result differs materially, violates a bound, or cannot reproduce the required frozen values, stop and preserve the failure rather than changing the criterion.\n\nAlso carry B8 into the eventual freeze records by binding the B′ fix-round per-cell counts already preserved in the closure addendum.\n\nBefore any freeze decision, run the deterministic implementation checks required by the frozen design and verify that the implementation has not altered the reviewed inputs or historical records.\n\nProceed with implementation now. Do not freeze or begin the next campaign merely because implementation completes; stop at the next operator-decision boundary defined by the frozen procedure."
+ },
+ "modules_lf_sha256": {
+  "g_route4_campaign.py": "e97e462dd532e683ee36c92d4c4784a2d96477baa1c454e5fac2435dc81447c6",
+  "g_route4_contract.py": "a1d1de6c77abb9d8240c521b1afda891dbf9b32641df7d84b4f44a442767b45e",
+  "g_route4_differential.py": "93fc4dd00594918363c9d6ad3e7ed3a4e8a8f07cb1b10a04982e7d0740d485a1",
+  "g_route4_evidence.py": "0b2fb87608c9f40bfa48b89609564b684422c1d7e98d8d7d3f23226e762d847c",
+  "g_route4_freeze.py": "a76c094d1d4baa11044c095f44f14b94e208419166166017c6d4419e7cfee69b",
+  "g_route4_fs.py": "9ffeac5335561452164b634dfbfbaca8ccc1f21915ba251b586242a3cc277cd3",
+  "g_route4_independence.py": "f5bb1265cf30af301ff47efa168d49eb069bf32bd778d17e5185db48c430ef09",
+  "g_route4_journal.py": "3b6e569e86494282987c6be43b414ed467598f9de0a0a5c435f70ce3721cf9d4",
+  "g_route4_launch.py": "b68eefe3b0617cb5c77e9a7b17071574b6da715cbd7c9f0a34e167f28715a8e9",
+  "g_route4_lifecycle.py": "eec13853d7f93f673536416365d8d68f43974ae9b9d24fa1921b10971f606f5d",
+  "g_route4_oracle.py": "83e06436cd513d97bbe8c0f8a78a6573ef21d4ee6cbff7557804de542302c7d7",
+  "g_route4_platform.py": "79a46187fac9e762958f830856af9fb7b79bc81ed8de3a25ac7bfb16d8fae092",
+  "g_route4_qualification.py": "0a3d1a6d81ff50edcad5881f463a9c12e6ffb0bcc03e7336dfc4498390033915",
+  "g_route4_r7_tests.py": "708c9c46906f64094ee44443de5a566291b29448516333ec63e00bc31f715caa",
+  "g_route4_runner.py": "ea517fc02d22151e245592c7c05d60a09d6e8f1647534986550dd8f369187f9d",
+  "g_route4_scorer.py": "317d3b7c5812a8952889d4a864914456a98c1a0803a945fd14bf3645b01dc53a",
+  "g_route4_tests.py": "7623f4864aabec8c6d7f6c0768e19e748e44c4b2d3d6237c5e58d7d840a94e92",
+  "g_route4_validation.py": "a96baa787d50014ba74314f539d7c91c2dcd7ee26de4a0684fa96e6f5f2e54fa"
+ },
+ "fork_record": {
+  "file": "experiments/G-ROUTE4-candidate/implementation/FORK_RECORD.json",
+  "lf_sha256": "e4a7c8d0ca4b536e9c9e2a84c7db281bf936da711e6e37d52e7327face7e8be4"
+ },
+ "execution_inputs": {
+  "built_by": "experiments/G-ROUTE4-candidate/implementation/build_execution_inputs.py",
+  "from": [
+   "experiments/G-ROUTE4-candidate/corpus_review/round1/FINAL_MAIN_MODEL_FACING.json",
+   "experiments/G-ROUTE4-candidate/corpus_review/round1/FINAL_MAIN_GOLD.json"
+  ],
+  "lf_sha256": {
+   "corpus_a.json": "a1d36688f5945ecb695d19a9df68e0a90fdede9c6aa50211a09a230282649513",
+   "gold_a.json": "31c61142b103ea0652d3973267cc07ba826089fcd0082a844d6de439a9cc44b5",
+   "corpus_b.json": "deede9676fa68e26b6a3220efc580ba0345751282ff4a6f1236a8cf83a763d02",
+   "gold_b.json": "8c353289eacb75e71d0f9326d0d435600fb017cd125000c01bd94fb0509292ca",
+   "fixture_families.json": "9253baaa3c9fa2522bfb8104a72f884d2f4c6255dba101ead9ff66ef9e603127",
+   "model_bindings.json": "e87e26c40f014a8d58e242082384db382b0b4942902e6d9bd387f24d68859e36",
+   "schedule_a.json": "5c02ef043b8891327a815a6a99aa80aa6caa9687ec7d0260d9bc622c6d68662d",
+   "schedule_b.json": "7e3fba26bc3d0857a925e87278d11711d308c11823f536605e8c796807b9649a",
+   "thresholds.json": "c40447418a5b1b3fb7dab0990e01336a4297427f3cc74a3329369596993c8f06"
+  }
+ },
+ "checks": {
+  "B7_forked_module_recheck": {
+   "record": "experiments/G-ROUTE4-candidate/implementation/B7_INDEPENDENCE_RECHECK.json",
+   "lf_sha256": "90d00bf1e8651958e9dc2439d3ab73d45445baa329f11dccbbacd44c3fce4683",
+   "result": "PASS",
+   "compared": 156,
+   "differing": [],
+   "bounds_met": true,
+   "module_lf_sha256_in_record": "f5bb1265cf30af301ff47efa168d49eb069bf32bd778d17e5185db48c430ef09",
+   "module_unchanged_since_b7": true,
+   "preserved_failure": "experiments/G-ROUTE4-candidate/implementation/b7_failures/B7_RUN1_FAIL.json"
+  },
+  "B8_counts_bound": {
+   "record": "experiments/G-ROUTE4-candidate/adjudication/B_MAIN_CLOSURE_ADDENDUM_CR1.json",
+   "carried_by": "g_route4_freeze.b8_condition (checked when the manifest is written)"
+  },
+  "deterministic_suites": {
+   "g_route4_tests": {
+    "command": "python -B g_route4_tests.py",
+    "exit_code": 0,
+    "tests_run": 47,
+    "last_line": "OK"
+   },
+   "g_route4_r7_tests": {
+    "command": "python -B g_route4_r7_tests.py",
+    "exit_code": 0,
+    "tests_run": 52,
+    "last_line": "OK"
+   }
+  },
+  "preserved_development_failures": [
+   "experiments/G-ROUTE4-candidate/implementation/b7_failures/B7_RUN1_FAIL.json",
+   "experiments/G-ROUTE4-candidate/implementation/b7_failures/README.md",
+   "experiments/G-ROUTE4-candidate/implementation/development_failures/CAMPAIGN_QUICK_479da08.log",
+   "experiments/G-ROUTE4-candidate/implementation/development_failures/CAMPAIGN_QUICK_479da08_REPORT.json",
+   "experiments/G-ROUTE4-candidate/implementation/development_failures/README.md"
+  ],
+  "oracle": {
+   "record": "experiments/G-ROUTE4-candidate/implementation/ORACLE_REPORT.json",
+   "lf_sha256": "6949ad572aa96d00a81a332d207f21d3dfb9f296106d9a42f87f0c01ec3d4de0",
+   "passed": true
+  },
+  "differential_development_run": {
+   "exit_code": 0,
+   "passed": true,
+   "grading": {
+    "difference_count": 0,
+    "passed": true
+   },
+   "grading_sensitivity": {
+    "perturbed_outputs": 1,
+    "differences_found": 3,
+    "passed": true
+   },
+   "lifecycle": {
+    "states": {
+     "prior": {
+      "A": "completed",
+      "table": "frozen",
+      "B": "completed"
+     },
+     "fork": {
+      "A": "completed",
+      "table": "frozen",
+      "B": "completed"
+     }
+    },
+    "commits_compared": 8,
+    "files_compared": 142,
+    "difference_count": 0,
+    "sensitivity": {
+     "perturbed_files": 1,
+     "differences_found": 107
+    },
+    "o7_undisposed": [],
+    "passed": true
+   },
+   "note": "development run; the official differential record (DIFFERENTIAL_REPORT.json) is produced at CERT, after the implementation review"
+  },
+  "certification_campaign_development_run": {
+   "mode": "--quick",
+   "run_at_commit": "c9716bbd4735e6db11ba6aed577fbf6258e9701f",
+   "tools_changed_since": [],
+   "report_sha256": "a9ffe55644afda710d270ce3e816ffca20db60e2682f47d89934093abf316271",
+   "sections": {
+    "clean_kills": 0,
+    "clean_power_loss": 0,
+    "transport_failure_kills": 0,
+    "torn_entries": 0,
+    "torn_ledger": 0,
+    "flush_failures": 0,
+    "environment": 0,
+    "gap_seeds": 0,
+    "review_seeds": 0,
+    "resumed_interrupts": 0,
+    "power_loss_subsets": 0
+   },
+   "problems_total": 0,
+   "note": "development run (quick stride); the official certification record (CERTIFICATION_REPORT.json) is produced at CERT, after the implementation review"
+  }
+ },
+ "integrity": {
+  "unchanged": {
+   "experiments/G-ROUTE4-candidate/adjudication": {
+    "against": "30b488a",
+    "identical": true
+   },
+   "experiments/G-ROUTE4-candidate/corpus_review": {
+    "against": "30b488a",
+    "identical": true
+   },
+   "experiments/G-ROUTE4-candidate/DESIGN_CANDIDATE.md": {
+    "against": "30b488a",
+    "identical": true
+   },
+   "experiments/G-ROUTE4-candidate/G-ROUTE4_OBLIGATIONS.md": {
+    "against": "30b488a",
+    "identical": true
+   },
+   "experiments/G-ROUTE1-candidate": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "experiments/G-ROUTE3-candidate": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route1_contract.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route1_validators.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route1_operational.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route1_provider.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route1_execution_contract.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route1_freeze.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route2_normalization.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route3_conversation.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route3_semantics.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route3_operational.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route3_triggers.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   },
+   "tools/g_route3_routing.py": {
+    "against": "g-route4/seal",
+    "identical": true
+   }
+  },
+  "changes_outside_implementation_paths": [],
+  "existing_files_modified_outside_g_route4_modules": [],
+  "protected_refs": {
+   "refs/heads/main": "50e6b46994299ffd71c97aa3f81f30637efaba1c",
+   "refs/heads/g-route4/seal": "29f5a477693d703699af62f9fc0e0945c9c66be2",
+   "refs/tags/g-route4-seal": "86ff773cf1dacd7d2e3a75cc9907ae436f739787"
+  }
+ },
+ "obligations_for_ir_and_cert": {
+  "O7": "lifecycle differential lists every module-bound call with its disposition (development run: 0 undisposed, 0 residual differences); verified at CERT",
+  "O8": "g_route4_tests.DesignTests (thresholds keys equal to the keys read, by static reading); IR",
+  "O9": "g_route4_r7_tests.SentenceMeaningTests (a refusal case for each meaning); IR, CERT",
+  "N2": "experiments/G-ROUTE4-candidate/implementation/RESULTS_TEMPLATE.md (projection label); IR",
+  "N9": "g_route4_tests test_n9_the_carried_core_is_byte_identical_to_the_prior_module, named in G3_REFERENCE_ALLOWLIST; IR"
+ },
+ "not_done": [
+  "implementation review (fresh reviewers)",
+  "official certification campaign and differential (CERT)",
+  "execution freeze (step 5)",
+  "Phase A′",
+  "Phase B′",
+  "any provider or model call"
+ ],
+ "next_boundary": "the implementation review (design step 4) needs fresh reviewers, started by the operator; nothing further proceeds without that authorization",
+ "all_checks_passed": true
+}
