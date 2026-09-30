@@ -1,0 +1,55 @@
+{
+  "schema_version": "g-route4.implementation-review.v1",
+  "reviewed_implementation_commit": "b675ccb2a76c8e10221f34006ebb6544ec9b16db",
+  "review_scope": "Fresh implementation review after preservation of the clean development campaign report; no official certification, freeze, or model execution",
+  "prior_review_issue": "The clean 11-section development campaign was summarized but its source report was not preserved in the implementation checkpoint.",
+  "prior_review_issue_resolved": true,
+  "development_campaign": {
+    "role": "development-only quick campaign; not official certification",
+    "run_commit": "c9716bbd4735e6db11ba6aed577fbf6258e9701f",
+    "report": "experiments/G-ROUTE4-candidate/implementation/development_runs/CAMPAIGN_QUICK_C9716BB_REPORT.json",
+    "literal_report_sha256": "a9ffe55644afda710d270ce3e816ffca20db60e2682f47d89934093abf316271",
+    "provenance": "experiments/G-ROUTE4-candidate/implementation/development_runs/CAMPAIGN_QUICK_C9716BB_PROVENANCE.md",
+    "literal_provenance_sha256": "839af35b0e999ef023c8faf7f0ef214cd4565ba7d99c3e22813d42f8ef83f0fa",
+    "launch_terminal_and_status_builder_transcript_lines": [13120, 13156, 13183],
+    "sections": 11,
+    "problems": 0,
+    "tools_changed_between_run_and_review": [],
+    "verified": true
+  },
+  "fresh_checks": {
+    "g_route4_tests": "47/47 passed",
+    "g_route4_r7_tests": "52/52 passed",
+    "B7": "156 values compared, 0 differing, bounds met, 0 forked findings",
+    "B8": "Two digest-bound B-prime fix rounds with 6 and 5 per-cell entries",
+    "grading_differential": "75 records, 15 decisions, 45 rebuilt records, 0 differences; deliberate perturbation detected 3 differences",
+    "lifecycle_differential": "Both sides completed A/table/B; 8 commits and 142 files compared, 0 differences, O7 undisposed empty; deliberate perturbation detected 107 differences",
+    "campaign_report": "Literal hash matches the prior status; exactly the 11 expected sections; each problems list empty; launch, terminal, and status-builder transcript evidence verified"
+  },
+  "individual_verdicts": {
+    "O8": "PASS",
+    "O9": "PASS",
+    "N2": "PASS",
+    "N9": "PASS",
+    "coding_exclusion": "PASS",
+    "data_root_isolation": "PASS",
+    "B7": "PASS",
+    "B8": "PASS",
+    "oracle_independence": "PASS_WITH_FRESH_RERUN_LIMITATION",
+    "grading_differential": "PASS",
+    "lifecycle_differential": "PASS",
+    "development_campaign_integrity": "PASS",
+    "historical_frozen_artifact_integrity": "PASS"
+  },
+  "blocking_findings": [],
+  "must_fix_before_certification": [],
+  "non_blocking_notes": [
+    "The O8 AST test names its current threshold-consuming functions; update that test if threshold reads move to a new helper.",
+    "The saved independent-oracle report covers 80601 pairs; the earlier fresh review reran a bounded subset rather than all pairs.",
+    "The official full certification and official differential reports do not yet exist. Development-only checks do not substitute for them."
+  ],
+  "provider_generation_calls_during_review": 0,
+  "official_certification_started": false,
+  "execution_freeze_created": false,
+  "verdict": "READY_FOR_CERTIFICATION"
+}
