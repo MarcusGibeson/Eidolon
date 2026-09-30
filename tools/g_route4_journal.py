@@ -19,6 +19,7 @@ ENTRY_NAME = re.compile(r"^(\d{6})\.(json|torn)$")
 TEMP_NAME = re.compile(r"^\.tmp-(\d{6})-[0-9a-f]+$")
 ORPHAN_TEMP = re.compile(r"^\.orphan-tmp-\d{6}-[0-9a-f]+$")
 
+EXECUTION_KINDS = ("execution_started", "execution_recorded")      # forbidden in G-ROUTE4 (coding excluded)
 RUN_KINDS = ("run_created", "call_started", "call_recorded", "execution_started", "execution_recorded",
              "scoring_started", "scored", "completed", "closed")
 DERIVED_KINDS = ("scoring_started", "scored", "completed")
@@ -116,9 +117,14 @@ def parse_entry(data: bytes) -> dict[str, Any] | None:
 
 @dataclass(frozen=True)
 class RunSpec:
-    """What replay needs to know about the fixed schedule: call ids by position and which positions are coding."""
+    """What replay needs to know about the fixed schedule: call ids by position. Coding is excluded (design "Coding
+    exclusion in the R7 fork"): ``coding`` must be empty, so the coding replay states are unreachable."""
     call_ids: tuple[str, ...]
     coding: frozenset[int]
+
+    def __post_init__(self) -> None:
+        if self.coding:
+            raise ValueError("coding_positions_forbidden")
 
     @property
     def calls(self) -> int:
@@ -230,6 +236,8 @@ class _RunGrammar:
         kind, payload = entry["kind"], entry["payload"]
         if kind not in RUN_KINDS:
             raise ValueError(f"unknown_kind:{kind}")
+        if kind in EXECUTION_KINDS:                 # R7 §5 R3 in this fork: an integrity failure
+            raise ValueError(f"execution_kind_forbidden:{kind}")
         if self.run_id is None:
             self.run_id = entry["run_id"]
         elif entry["run_id"] != self.run_id:

@@ -28,9 +28,8 @@ PHASES = ("A", "B")
 TABLE_NAME = "QUALIFICATION_TABLE.json"
 AUDIT_NAME = "QUALIFICATION_AUDIT_DOCUMENT"
 R7_MODULES = ("tools/g_route4_platform.py", "tools/g_route4_fs.py", "tools/g_route4_journal.py",
-              "tools/g_route4_evidence.py", "tools/g_route4_lifecycle.py", "tools/g_route3_worker.py",
+              "tools/g_route4_evidence.py", "tools/g_route4_lifecycle.py",
               "tools/g_route4_scorer.py", "tools/g_route4_launch.py")
-WORKER_TIMEOUT_SECONDS = 180
 SCORER_TIMEOUT_SECONDS = 1800
 RECEIPT_WAIT_SECONDS = 600
 
@@ -60,7 +59,6 @@ class Runtime:
     freeze_binding: Callable[[], str]
     freeze_valid: Callable[[], bool]
     guarded_files: Callable[[str], dict]        # phase -> {relative path: sha256}
-    worker: Callable[[Mapping[str, Any]], Mapping[str, Any]]
     scorer: Callable[[Mapping[str, Any]], Mapping[str, Any]]
     schedules: Mapping[str, list]
     fixtures: Mapping[str, Mapping[str, Any]]
@@ -111,10 +109,9 @@ class Lifecycle:
         if phase not in self._specs:
             schedule = self.rt.schedules[phase]
             fixtures = self.rt.fixtures[phase]
-            self._specs[phase] = J.RunSpec(
-                call_ids=tuple(row["call_id"] for row in schedule),
-                coding=frozenset(int(row["position"]) for row in schedule
-                                 if fixtures[row["fixture_id"]]["validator_profile"] == "coding.v1"))
+            if any(fixtures[row["fixture_id"]]["validator_profile"] == "coding.v1" for row in schedule):
+                raise Refusal("coding_fixture_refused")         # coding is deferred (D6); there is no worker
+            self._specs[phase] = J.RunSpec(call_ids=tuple(row["call_id"] for row in schedule), coding=frozenset())
         return self._specs[phase]
 
     def log(self, message: str) -> None:
@@ -699,11 +696,6 @@ class Lifecycle:
         if state == "in_doubt":
             self._publish_closed(phase, run_id, replay, files)
             return True
-        if state == "execution_in_doubt":
-            self._publish_run_entry(phase, run_id, replay, "execution_recorded",
-                                    {"position": replay.position, "evidence": None, "candidate_error": None,
-                                     "infrastructure_failure": "execution_interrupted", "module_digests": {}})
-            return True
         if state == "faulted":
             self._publish_closed(phase, run_id, replay, files)
             return True
@@ -906,21 +898,16 @@ class Lifecycle:
                 return state
             if state == "torn_pending" and replay.predicted_class == "derived":
                 return state
-            if state == "faulted":                              # e.g. a resumed execution whose worker failed
+            if state == "faulted":
                 self._publish_closed(phase, run_id, replay, files)
                 self._terminal_commit(phase)
                 return "closed"
-            if state not in ("created", "collecting", "awaiting_execution"):
+            if state not in ("created", "collecting"):
                 raise Refusal(f"not_collectable:{state}")
             attempt = self._attempt_of(phase, run_id)
             if not self._consumption_committed(phase, attempt, run_id):
                 raise Refusal("consumption_boundary_not_committed")
             self.guard(phase, run_created)
-            if state == "awaiting_execution":
-                if self.rt.interrupted():
-                    return self._interrupt(phase, run_id, replay, files, resumed, new_calls)
-                self._execute(phase, run_id, replay, files)
-                continue
             if self.rt.interrupted():
                 return self._interrupt(phase, run_id, replay, files, resumed, new_calls)
             position = replay.position + 1
@@ -943,15 +930,6 @@ class Lifecycle:
                 self._publish_closed(phase, run_id, replay3, files3)
                 self._terminal_commit(phase)
                 return "closed"
-            if replay3.state == "awaiting_execution":
-                if self.rt.interrupted():
-                    return self._interrupt(phase, run_id, replay3, files3, resumed, new_calls)
-                self._execute(phase, run_id, replay3, files3)
-                replay3, files3 = self.run(phase, run_id)
-                if replay3.state == "faulted":
-                    self._publish_closed(phase, run_id, replay3, files3)
-                    self._terminal_commit(phase)
-                    return "closed"
             if replay3.state == "collected":
                 self.sync()                                         # A-O10: collection boundary now
                 return "collected"
@@ -990,35 +968,6 @@ class Lifecycle:
                 "latency_seconds": float(result.get("latency_seconds") or 0.0),
                 "provider_contacted": bool(result.get("provider_contacted")), "error": str(result.get("error") or ""),
                 "transport_failure": failure}
-
-    def _execute(self, phase: str, run_id: str, replay: J.Replay, files: Mapping[str, bytes]) -> None:
-        """Derive (holder), write-ahead execution_started, run the worker once, record (§8 step 5)."""
-        from g_route3_worker import derive_executable
-        recorded = replay.last
-        position = int(recorded["payload"]["position"])
-        scheduled = self.rt.schedules[phase][position - 1]
-        fixture = self.rt.fixtures[phase][scheduled["fixture_id"]]
-        run_created = replay.entries[0]["payload"]
-        self.guard(phase, run_created)
-        executable_json = derive_executable(fixture, J.b64_to_text(recorded["payload"]["raw_output_b64"]))
-        self._publish_run_entry(phase, run_id, replay, "execution_started", {
-            "position": position, "executable_json": executable_json,
-            "executable_sha256": J.sha256_bytes(executable_json.encode("ascii"))})
-        try:
-            result = dict(self.rt.worker({"phase": phase, "fixture_id": scheduled["fixture_id"],
-                                          "fixture": fixture, "executable_json": executable_json}))
-            infrastructure = str(result.get("infrastructure_failure") or "")
-            drifted = _drifted_modules(result.get("module_digests") or {}, run_created)
-            if drifted:
-                infrastructure = "sandbox_worker_failure:guarded_module_drift"
-                result.setdefault("drifted_modules", drifted)
-        except WorkerFailure as exc:
-            result = {"evidence": None, "candidate_error": None}
-            infrastructure = f"sandbox_worker_failure:{exc}"[:200]
-        replay2, _ = self.run(phase, run_id)
-        self._publish_run_entry(phase, run_id, replay2, "execution_recorded", {
-            "position": position, "evidence": result.get("evidence"), "candidate_error": result.get("candidate_error"),
-            "infrastructure_failure": infrastructure, "module_digests": result.get("module_digests") or {}})
 
     # ------------------------------------------------------------ scoring (§7, §4.3)
     def score(self, phase: str, run_id: str) -> str | None:
@@ -1487,10 +1436,6 @@ class Lifecycle:
             self.lease.release()
 
 
-class WorkerFailure(RuntimeError):
-    """The worker process itself failed (died, timed out, console control or signal): §8 worker-level failure."""
-
-
 TOOLS = Path(__file__).resolve().parent
 CONSOLE_CONTROL_EXITS = {0xC000013A, -1073741510}
 
@@ -1543,7 +1488,7 @@ def load_bound_inputs() -> tuple[dict, dict, dict, dict]:
 
 
 def child_env() -> dict[str, str]:
-    """The holder's environment after proxy stripping (A-O13), for the worker and the scorer."""
+    """The holder's environment after proxy stripping (A-O13), for the scorer."""
     import os
     env = dict(os.environ)
     for name in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy"):
@@ -1551,29 +1496,6 @@ def child_env() -> dict[str, str]:
     env["NO_PROXY"] = env["no_proxy"] = "127.0.0.1,localhost"
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     return env
-
-
-def spawn_worker(fs) -> Callable[[Mapping[str, Any]], Mapping[str, Any]]:
-    import subprocess
-    import sys
-
-    def call(request: Mapping[str, Any]) -> Mapping[str, Any]:
-        argv = [sys.executable, "-B", str(TOOLS / "g_route3_worker.py")]
-        try:
-            result = fs.run_child(argv, env=child_env(), input_bytes=json.dumps(request).encode("utf-8"),
-                                  timeout=WORKER_TIMEOUT_SECONDS)
-        except subprocess.TimeoutExpired as exc:
-            raise WorkerFailure("timeout") from exc
-        code = result.returncode
-        if code in CONSOLE_CONTROL_EXITS or code < 0:
-            raise WorkerFailure(f"console_control_or_signal:{code}")
-        if code != 0:
-            raise WorkerFailure(f"died:{code}")
-        try:
-            return json.loads(result.stdout.decode("ascii"))
-        except (ValueError, UnicodeDecodeError) as exc:
-            raise WorkerFailure("unparseable_output") from exc
-    return call
 
 
 def spawn_scorer(fs) -> Callable[[Mapping[str, Any]], Mapping[str, Any]]:
@@ -1650,7 +1572,7 @@ def _remove_tree(path: Path) -> None:
     shutil.rmtree(path, onerror=writable_then_retry)
 
 
-__all__ = ["CONTRACT_VERSION", "Runtime", "Lifecycle", "Refusal", "PhaseBlocked", "WorkerFailure",
-           "guarded_digest", "standard_guarded_files", "load_bound_inputs", "spawn_worker", "spawn_scorer",
+__all__ = ["CONTRACT_VERSION", "Runtime", "Lifecycle", "Refusal", "PhaseBlocked",
+           "guarded_digest", "standard_guarded_files", "load_bound_inputs", "spawn_scorer",
            "child_env",
            "R7_MODULES", "TABLE_NAME", "AUDIT_NAME"]

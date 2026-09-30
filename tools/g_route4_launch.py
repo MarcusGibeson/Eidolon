@@ -147,7 +147,7 @@ def governed_runtime():
         freeze_binding=lambda: contract.json_digest(contract.load_json(contract.EXECUTION_FREEZE_PATH)),
         freeze_valid=freeze_valid,
         guarded_files=lambda phase: lifecycle.standard_guarded_files(Path(data_root), phase),
-        worker=lifecycle.spawn_worker(fs), scorer=lifecycle.spawn_scorer(fs),
+        scorer=lifecycle.spawn_scorer(fs),
         schedules=schedules, fixtures=fixtures, bodies=bodies, input_digests=input_digests,
         synthetic=False, endpoint=runner.OLLAMA_ENDPOINT, interrupted=lambda: _INTERRUPTED["flag"],
         frozen_artifact_digests=lambda: set((manifest.get("artifacts") or {}).values()),
