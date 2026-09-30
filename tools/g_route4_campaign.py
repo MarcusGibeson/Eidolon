@@ -1000,7 +1000,7 @@ def review_seeds(workdir: Path, template: Path) -> dict:
     import subprocess
     probe_code = ("import sys; sys.path.insert(0, r'%s'); import g_route4_launch, g_route4_lifecycle, g_route4_scorer, "
                   "g_route4_journal, g_route4_runner, g_route4_validation, g_route4_qualification, g_route4_freeze; "
-                  "print('\n'.join(sorted(sys.modules)))" % str(TOOLS))
+                  "print(chr(10).join(sorted(sys.modules)))" % str(TOOLS))
     loaded = subprocess.run([sys.executable, "-B", "-c", probe_code], capture_output=True, text=True, timeout=120)
     allowed_prior = {"g_route3_conversation", "g_route3_semantics", "g_route3_operational", "g_route3_triggers",
                      "g_route3_routing"}

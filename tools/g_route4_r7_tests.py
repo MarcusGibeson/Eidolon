@@ -686,6 +686,89 @@ class SentenceMeaningTests(unittest.TestCase):
         self.refused(world, "Clear G-ROUTE4 phase A orphan run groute4a-001-" + "0" * 16, "not_an_orphan_run")
 
 
+class DataRootIdentityTests(unittest.TestCase):
+    """Design "Data roots": the committed experiment name is checked read-only before setup, the lease or any write;
+    a root of another experiment is refused and left byte-identical. A damaged working root.json over an intact
+    commit is not an identity failure: it is restored from the root commit."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import tempfile
+        import g_route4_campaign as K
+        import g_route4_platform as P
+        P.pin_recursion_limit()
+        cls.K = K
+        cls.work = Path(tempfile.mkdtemp(prefix="g_route4_dataroot_tests_"))
+        cls.template = cls.work / "template"
+        cls.template.mkdir()
+        K.run_command(K.World(cls.template), K.F.RealFs(), "setup")
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        import g_route4_lifecycle as L
+        L._remove_tree(cls.work)
+
+    @staticmethod
+    def snapshot(root: Path) -> dict:
+        return {str(q.relative_to(root)): (q.read_bytes() if q.is_file() else None) for q in sorted(root.rglob("*"))}
+
+    def recommit_root_json(self, world, experiment: str) -> None:
+        """Replace the committed root.json at the evidence ref by one naming ``experiment`` (plain git plumbing)."""
+        import os
+        import subprocess
+        import g_route4_evidence as ev
+        git_dir = world.D / "evidence.git"
+        env = dict(os.environ, GIT_INDEX_FILE=str(self.work / f"index-{world.root.name}"),
+                   GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t", GIT_COMMITTER_EMAIL="t@t")
+
+        def git(*args, data=None):
+            return subprocess.run(["git", "--git-dir", str(git_dir), *args], input=data, env=env, check=True,
+                                  capture_output=True).stdout.decode().strip()
+        root = json.loads(git("cat-file", "blob", f"{ev.REF}:root.json"))
+        body = json.dumps(dict(root, experiment=experiment), sort_keys=True).encode("utf-8")
+        blob = git("hash-object", "-w", "--stdin", data=body)
+        git("read-tree", ev.REF)
+        git("update-index", "--cacheinfo", f"100644,{blob},root.json")
+        commit = git("commit-tree", git("write-tree"), "-p", ev.REF, "-m", "other experiment")
+        git("update-ref", ev.REF, commit)
+
+    def assert_refused_untouched(self, world, reason: str, setup: bool) -> None:
+        before = self.snapshot(world.root)
+        with self.assertRaisesRegex(self.K.L.Refusal, reason):
+            lc = world.lifecycle(self.K.F.RealFs())
+            lc.setup_if_missing() if setup else lc.open()
+        self.assertEqual(self.snapshot(world.root), before)
+
+    def test_committed_name_of_another_experiment_is_refused_before_setup_and_lease(self) -> None:
+        world = self.K.base_world(self.template, self.work / "other_committed")
+        self.recommit_root_json(world, "G-ROUTE3")
+        for setup in (True, False):
+            self.assert_refused_untouched(world, "data_root_belongs_to_another_experiment:G-ROUTE3", setup)
+
+    def test_committed_name_governs_over_the_working_file(self) -> None:
+        world = self.K.base_world(self.template, self.work / "working_says_g4")
+        self.recommit_root_json(world, "G-ROUTE3")          # the working root.json still names G-ROUTE4
+        self.assert_refused_untouched(world, "data_root_belongs_to_another_experiment:G-ROUTE3", False)
+
+    def test_working_root_json_without_a_repository_is_checked(self) -> None:
+        import g_route4_lifecycle as L
+        other = self.work / "working_only" / "D"
+        other.mkdir(parents=True)
+        (other / "root.json").write_bytes(json.dumps({"experiment": "G-ROUTE3", "root_id": "x"}).encode())
+        world = self.K.World(other.parent)
+        self.assert_refused_untouched(world, "data_root_belongs_to_another_experiment:G-ROUTE3", True)
+        (other / "root.json").write_bytes(b"{broken")
+        self.assert_refused_untouched(world, "data_root_experiment_unreadable", True)
+        L._remove_tree(other.parent)
+
+    def test_damaged_working_root_json_over_an_intact_commit_is_restored(self) -> None:
+        world = self.K.base_world(self.template, self.work / "damaged_working")
+        committed = (world.D / "root.json").read_bytes()
+        (world.D / "root.json").write_bytes(b"{broken")
+        self.assertEqual(self.K.drive_to_end(world), "completed")
+        self.assertEqual((world.D / "root.json").read_bytes(), committed)
+
+
 class PlatformTests(unittest.TestCase):
     def test_a_killed_holder_leaves_no_live_children(self) -> None:                  # §15, §18
         import subprocess

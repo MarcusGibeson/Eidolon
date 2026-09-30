@@ -125,13 +125,22 @@ class Lifecycle:
 
     # ------------------------------------------------------------ setup (§3.1) and opening (J8 steps 1-2)
     def check_experiment_readonly(self) -> None:
-        """Design "Data roots": before setup, the lease or any write, a data root that already holds a root.json
-        must name this experiment. Read-only; a root of another experiment is refused, never touched."""
+        """Design "Data roots": before setup, the lease or any write, the experiment name committed in the data
+        root must be this experiment. Read-only (git reads without optional locks; nothing is written); a root of
+        another experiment is refused, never touched. The evidence repository's committed root.json is
+        authoritative, so a damaged working root.json is left to the restore from the root commit; only a data root
+        without a committed root.json falls back to its working root.json, which must then be readable."""
+        committed = None
+        if self.fs.list_names(self.D / "evidence.git") is not None:
+            blob = self.repo.git("rev-parse", "--verify", "-q", f"{ev.REF}:root.json", check=False).decode().strip()
+            if blob:
+                committed = self.repo.read_blob(blob)
         path = self.D / "root.json"
-        if not path.is_file():
+        if committed is None and not path.is_file():
             return
         try:
-            experiment = json.loads(path.read_bytes().decode("utf-8")).get("experiment")
+            data = committed if committed is not None else path.read_bytes()
+            experiment = json.loads(data.decode("utf-8")).get("experiment")
         except (OSError, ValueError, UnicodeDecodeError, AttributeError) as exc:
             raise Refusal("data_root_experiment_unreadable") from exc
         if experiment != EXPERIMENT:
