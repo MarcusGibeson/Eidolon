@@ -18,8 +18,8 @@ from g_route1_contract import ROOT, canonical_digest, digest_file
 from g_route3_operational import validate_operational
 from g_route3_semantics import validate_fixture_output
 from g_route2_normalization import normalize
-from g_route4_contract import (QUALIFICATION_TABLE_PATH, RISK_CLASSES, TASK_CLASSES, TIER_ORDER, corpus_path,
-                               gold_path, indexed_fixture_gold, json_digest, load_json, load_thresholds)
+from g_route4_contract import (FIXTURE_PREFIX, QUALIFICATION_TABLE_PATH, RISK_CLASSES, TASK_CLASSES, TIER_ORDER,
+                               corpus_path, gold_path, indexed_fixture_gold, json_digest, load_json, load_thresholds)
 
 CONTRACT_VERSION = "g-route4.qualification.v1"
 TABLE_SCHEMA = "g-route4.qualification-table.v1"
@@ -53,8 +53,7 @@ def sealable(result: dict[str, Any], *, gate: str) -> dict[str, Any]:
             "uses_gold": bool(result.get("uses_gold")), "belief_effects": "none"}
 
 
-def collect_evaluation(fixture: Mapping[str, Any], raw_output: Any,
-                       execution_evidence: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def collect_evaluation(fixture: Mapping[str, Any], raw_output: Any) -> dict[str, Any]:
     """Gold-blind part of evaluation, safe for the collection path. Model output cannot make it raise, and the
     result can always be sealed: lone surrogates are replaced first, exactly as the runner does."""
     if isinstance(raw_output, str):
@@ -62,10 +61,8 @@ def collect_evaluation(fixture: Mapping[str, Any], raw_output: Any,
     record = safe_normalize(raw_output, str(fixture["validator_profile"]))
     return {
         "normalization": record,
-        "raw_operational_validation": sealable(validate_operational(fixture, raw_output, execution_evidence=execution_evidence),
-                                               gate="accepted"),
-        "normalized_operational_validation": sealable(validate_operational(fixture, record["payload"],
-                                                                           execution_evidence=execution_evidence),
+        "raw_operational_validation": sealable(validate_operational(fixture, raw_output), gate="accepted"),
+        "normalized_operational_validation": sealable(validate_operational(fixture, record["payload"]),
                                                       gate="accepted"),
     }
 
@@ -75,14 +72,12 @@ def attach_semantics(records: Iterable[Mapping[str, Any]], corpus: str) -> list[
     index = indexed_fixture_gold(corpus)
     out = []
     for row in records:
-        if not str(row["fixture_id"]).startswith(corpus + "-"):
+        if not str(row["fixture_id"]).startswith(FIXTURE_PREFIX[corpus]):
             raise ValueError("cross_corpus_record_in_scoring")
         fixture, gold = index[row["fixture_id"]]
-        evidence = row.get("coding_execution_evidence")
-        raw_sem = sealable(validate_fixture_output(fixture, gold, row["raw_output"], execution_evidence=evidence),
-                           gate="hard_gate_pass")
-        norm_sem = sealable(validate_fixture_output(fixture, gold, row["normalization"]["payload"],
-                                                    execution_evidence=evidence), gate="hard_gate_pass")
+        raw_sem = sealable(validate_fixture_output(fixture, gold, row["raw_output"]), gate="hard_gate_pass")
+        norm_sem = sealable(validate_fixture_output(fixture, gold, row["normalization"]["payload"]),
+                            gate="hard_gate_pass")
         out.append({**dict(row), "semantics": {
             "raw_semantic_evaluation": raw_sem, "normalized_semantic_evaluation": norm_sem,
             "raw_false_clean": bool(row["raw_operational_validation"]["accepted"] and not raw_sem["hard_gate_pass"]),
@@ -143,12 +138,18 @@ def qualify(records: Iterable[Mapping[str, Any]], thresholds: Mapping[str, Any] 
                 else:
                     verdict = NOT_QUALIFIED
                 failures = len(complete_rows) - correct
+                # the fixture-level bound (design "Qualification (Phase A′)"): a fixture fails if any of its
+                # observations fails; 0 of 4 gives 0.527. The observation-level bound: 0 of 8 gives 0.312.
+                failing_fixtures = {r["fixture_id"] for r in complete_rows
+                                    if not r["semantics"]["normalized_semantic_evaluation"]["hard_gate_pass"]}
                 cells.append({
                     "task_class": task, "risk_class": risk, "model_tier": tier, "verdict": verdict,
                     "observations": len(rows), "complete_observations": len(complete_rows),
                     "distinct_fixtures": len(fixtures), "operational_acceptances": accepted,
                     "semantic_passes": correct, "false_clean": false_clean, "infrastructure_failures": infra,
                     "failure_rate_upper_95": failure_rate_upper_bound(max(failures, 0), len(complete_rows)),
+                    "failing_fixtures": len(failing_fixtures),
+                    "fixture_failure_rate_upper_95": failure_rate_upper_bound(len(failing_fixtures), len(fixtures)),
                 })
     return cells
 
@@ -239,7 +240,7 @@ def verify_table(doc: Mapping[str, Any]) -> dict[str, Any]:
         reasons.append("table_not_derived_from_corpus_a_alone")
     if routing_lookup(doc.get("cells") or []) != doc.get("routing_lookup"):
         reasons.append("routing_lookup_inconsistent_with_cells")
-    if len(doc.get("cells") or []) != 72:
+    if len(doc.get("cells") or []) != len(TASK_CLASSES) * len(RISK_CLASSES) * len(TIER_ORDER):      # 60
         reasons.append("table_cell_count_mismatch")
     if any(c.get("verdict") not in (QUALIFIED, NOT_QUALIFIED, INSUFFICIENT) for c in doc.get("cells") or []):
         reasons.append("unknown_verdict")

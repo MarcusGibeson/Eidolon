@@ -150,7 +150,7 @@ def load_model_bindings(path: str | Path = MODEL_BINDINGS_PATH) -> dict[str, Any
 
 def load_thresholds(path: str | Path = THRESHOLDS_PATH) -> dict[str, Any]:
     payload = dict(load_json(path))
-    if payload.get("schema_version") != "g-route4.thresholds.v1":
+    if payload.get("schema_version") != "g-route4.thresholds.v1" or payload.get("threshold_id") != "G-ROUTE4-THRESHOLDS-R1":
         raise ValueError("threshold_schema_mismatch")
     if payload.get("thresholds_frozen_before_provider_contact") is not True:
         raise ValueError("thresholds_not_frozen_before_contact")

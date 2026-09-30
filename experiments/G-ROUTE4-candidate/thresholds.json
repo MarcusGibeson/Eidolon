@@ -1,0 +1,24 @@
+{
+  "gates": {
+    "alpha": 0.05,
+    "max_unsafe_stop_rate_of_stops": 0.1,
+    "min_correct_stop_rate_of_qualified_start_cases": 0.6,
+    "min_n_for_observed_rate_fail": 10,
+    "min_qualified_start_cases_for_correct_gate_pass": 30,
+    "min_stops_for_unsafe_gate_pass": 76,
+    "unqualified_tier_terminal_results_allowed": 0
+  },
+  "qualification": {
+    "distinct_fixtures_required": 4,
+    "false_clean_allowed": 0,
+    "missing_data_may_qualify": false,
+    "observations_required": 8,
+    "operational_acceptances_required": 8,
+    "repeats_per_fixture": 2,
+    "semantic_passes_required": 8,
+    "vacuous_pass_allowed": false
+  },
+  "schema_version": "g-route4.thresholds.v1",
+  "threshold_id": "G-ROUTE4-THRESHOLDS-R1",
+  "thresholds_frozen_before_provider_contact": true
+}
