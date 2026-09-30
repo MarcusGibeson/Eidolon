@@ -1,0 +1,55 @@
+{
+  "schema_version": "g-route4.certification-failure.v1",
+  "run_id": "groute4-cert-20260930T133008Z-09859b9",
+  "implementation_commit": "09859b9529511d8dee31eca71c8a7d751fdc7511",
+  "review_verdict_at_preflight": "READY_FOR_CERTIFICATION",
+  "status": "FAILED_CERTIFICATION_BOUND_TEST",
+  "official_certification_complete": false,
+  "ready_for_execution_freeze": false,
+  "raw_campaign": {
+    "mode": "full (no --quick, stride 1)",
+    "runtime_workdir": "C:\\Users\\marcu\\AppData\\Local\\Temp\\groute4-cert-20260930T133008Z-09859b9",
+    "report": "CAMPAIGN_RAW_REPORT.json",
+    "report_literal_sha256": "ef5629b65a7c56e6d92c4ee20fb1d66505081cfad52c604e16b31777bb67fae7",
+    "stdout": "CAMPAIGN_STDOUT.log",
+    "stdout_literal_sha256": "465e5a343cac99f26bf0e993ba84eadc3113f0b9426c480db3d53540fc3c2be7",
+    "exit_code": 0,
+    "duration_seconds": 21429.2,
+    "sections": 11,
+    "section_problems": 0
+  },
+  "official_differential": {
+    "report": "experiments/G-ROUTE4-candidate/implementation/DIFFERENTIAL_REPORT.json",
+    "report_literal_sha256": "89aabbfa6e3317cefd695533fc01f32aff1913099729c68d67649c52c9cd23de",
+    "exit_code": 0,
+    "grading_residual_differences": 0,
+    "lifecycle_residual_differences": 0,
+    "grading_sensitivity_differences": 3,
+    "lifecycle_sensitivity_differences": 107
+  },
+  "oracle": {
+    "exit_code": 0,
+    "pairs_checked": 80601,
+    "gate_mismatches": 0,
+    "numeric_bound_failures": 0,
+    "qualification_cases": 2107,
+    "qualification_mismatches": 0
+  },
+  "deterministic_test_failure": {
+    "suite": "g_route4_tests",
+    "tests_run": 47,
+    "failures": 1,
+    "test": "FreezeTests.test_no_freeze_before_the_later_step_4_records",
+    "file": "tools/g_route4_tests.py",
+    "line": 589,
+    "expected_exception_pattern": "IMPLEMENTATION_REVIEW",
+    "actual_exception": "FileNotFoundError: execution_freeze_artifacts_missing:experiments/G-ROUTE4-candidate/implementation/CERTIFICATION_REPORT.json",
+    "interpretation": "The review record is now present. This stage-specific assertion still expects it to be missing; the current freeze check correctly reports the next absent record. The failed test is not waived."
+  },
+  "post_failure_tests_not_run": ["g_route4_r7_tests"],
+  "official_certification_report_created": false,
+  "execution_freeze_created": false,
+  "scientific_phase_a_or_b_started": false,
+  "provider_generation_calls": 0,
+  "next_action_requires_separate_authorization": "Repair the stage-specific test prospectively, preserve this failed certification attempt, then authorize a new complete official certification run."
+}
