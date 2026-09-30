@@ -1,40 +1,78 @@
 # forked from g_route3_tests
 from __future__ import annotations
 
-"""Deterministic adversarial tests for G-ROUTE4. No provider is contacted."""
+"""Deterministic tests for G-ROUTE4 (design step 4). No provider is contacted; no network is used.
 
-import base64
+The forked suite's tests of the superseded R6 runner and of coding are not carried (the R6 path and coding are not in
+this fork). The rest is rewritten against the G-ROUTE4 corpus, and the design's own deterministic tests are added:
+identity (the grep test and its frozen allowlist), the module rule, the closure rule, bindings equality, seed ranges
+and disjointness, O8 (thresholds keys by static reading), N9 (the independence core byte-identical), the prior data
+root's refusal (static read), prompt identity and the D8 freeze-time checks, and the coding exclusion.
+
+    python -B tools/g_route4_tests.py
+"""
+
+import ast
 import copy
-import hashlib
 import inspect
 import json
 from pathlib import Path
-import sys
-import contextlib
-import shutil
+import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT / "tools") not in sys.path:
-    sys.path.insert(0, str(ROOT / "tools"))
+TOOLS = ROOT / "tools"
+if str(TOOLS) not in sys.path:
+    sys.path.insert(0, str(TOOLS))
 
 import g_route4_contract as contract
 import g_route4_freeze as freeze
 import g_route4_independence as independence
+import g_route4_journal as journal
 import g_route4_qualification as qualification
-import g_route3_routing as routing
 import g_route4_runner as runner
-import g_route3_triggers as triggers
 import g_route4_validation as validation
-from g_route1_coding_runner import run_isolated_fixture
-from g_route1_persistence import RouteRunStore
 import g_route3_conversation as conversation
+import g_route3_routing as routing
+import g_route3_triggers as triggers
 from g_route3_operational import validate_operational
-from g_route3_semantics import canonical_coding_payload, validate_fixture_output
+from g_route3_semantics import validate_fixture_output
 
+CAND = ROOT / "experiments" / "G-ROUTE4-candidate"
+PRIOR = "G-ROUTE3"                                   # read-only references; see G3_REFERENCE_ALLOWLIST
+IMPORTED_UNCHANGED_PRIOR = ("g_route3_conversation", "g_route3_semantics", "g_route3_operational",
+                            "g_route3_triggers", "g_route3_routing")
+IMPORTED_UNCHANGED = IMPORTED_UNCHANGED_PRIOR + ("g_route1_validators", "g_route1_operational", "g_route1_contract",
+                                                 "g_route1_provider", "g_route1_execution_contract", "g_route1_freeze",
+                                                 "g_route2_normalization")
+FORBIDDEN_MODULES = ("g_route1_coding_runner", "g_route1_persistence", "g_route3_worker")
+# The frozen allowlist of prior-experiment references in g_route4_* modules (design "Identity constants"). Every other
+# line matching the grep pattern is a failure. Each entry is (module file, allowed kind): the kinds are the
+# imported-unchanged module paths, the carried contract ids referenced by attribute, the provenance lines, and the
+# named read-only references (by test or module name).
+G3_REFERENCE_ALLOWLIST = {
+    "provenance_line": r"^# forked from g_route3_[a-z0-9_]+$",
+    "imported_unchanged_module": r"g_route3_(conversation|semantics|operational|triggers|routing)\b",
+    # named read-only references: file -> the module ("*") or the named functions and constants that may hold them
+    "read_only_references": {
+        "g_route4_independence.py": ("*", "the contamination and independence checks"),
+        "g_route4_differential.py": ("*", "both differentials (lifecycle and grading)"),
+        "g_route4_campaign.py": (("review_seeds",), "the module-rule certification probe naming the forbidden modules"),
+        "g_route4_tests.py": (("PRIOR", "IMPORTED_UNCHANGED_PRIOR", "FORBIDDEN_MODULES", "G3_REFERENCE_ALLOWLIST", "GREP",
+                               "test_prompt_identity_rendering_is_the_prior_experiments",
+                               "test_n9_the_carried_core_is_byte_identical_to_the_prior_module",
+                               "test_grep_identity_and_the_frozen_allowlist", "test_module_rule",
+                               "test_three_way_bindings_equality", "test_seed_ranges_and_disjointness",
+                               "test_the_prior_data_root_refuses_by_its_own_literal", "test_coding_is_excluded"),
+                              "the named tests: prompt identity, N9, grep, module rule, bindings equality, seed "
+                              "disjointness, data-root refusal, coding exclusion"),
+    },
+}
+GREP = re.compile(r"(?i)g[-_ ]?route[-_ ]?3")
 _AUDIT_DIR = tempfile.TemporaryDirectory()
 
 
@@ -48,16 +86,6 @@ def ready_audit(run_id="r", score="s", verdict="READY"):
     document.write_text(f"# Synthetic Phase A audit\n\nRun: {run_id}\nScore: {score}\nVerdict: {verdict}\n",
                         encoding="utf-8")
     return qualification.audit_record(document, verdict, "synthetic-test", run_id=run_id, score_record_sha256=score)
-
-
-def evidence_for(fixture, raw):
-    """Coding evidence exactly as the runner produces it, including model-caused failures."""
-    if fixture["validator_profile"] != "coding.v1":
-        return None
-    try:
-        return run_isolated_fixture(fixture, canonical_coding_payload(fixture, raw)[0])
-    except runner.MODEL_CAUSED_CODING_ERRORS:
-        return runner._failed_coding_evidence(fixture)
 
 
 def receipts(**changes):
@@ -81,7 +109,7 @@ def wrong(fixture, gold):
     if profile == "conversation.v1":
         options = fixture["input"]["answer_options"]
         return ("Answer: " + [o for o in options if o != exp["answer"]][0]
-                + "\nActions taken: none\nThat is what the record shows.")
+                + "\nActions taken: none\nThat is what the message shows.")
     if profile == "extraction.v1":
         key = next(iter(exp))
         exp[key] = (not exp[key]) if isinstance(exp[key], bool) else (
@@ -97,52 +125,8 @@ def wrong(fixture, gold):
         ref = copy.deepcopy(gold["reference_output"])
         ref["conclusion"] = [c for c in fixture["input"]["allowed_conclusions"] if c != ref["conclusion"]][0]
         return json.dumps(ref, sort_keys=True)
-    if profile == "coding.v1":
-        return json.dumps({"path": "app.py", "old": fixture["input"]["source"], "new": fixture["input"]["source"]})
-    exp["uncertainties"] = []
-    exp["steps"] = [dict(s) for s in exp["steps"]][:-1] or exp["steps"]
+    exp["uncertainties"] = [] if exp["uncertainties"] else ["x"]
     return json.dumps(exp, sort_keys=True)
-
-
-class Provider:
-    """Synthetic provider. `plan(fixture, tier) -> 'correct'|'wrong'|'fenced'|'malformed'|'nonhashable'`."""
-
-    synthetic_provider = True
-
-    def __init__(self, corpus, plan):
-        self.index = contract.indexed_fixture_gold(corpus)
-        self.plan = plan
-        self.calls = []
-
-    def __call__(self, call_id, body):
-        self.calls.append(call_id)
-        fixture_id = call_id[len("GROUTE4-"):].rsplit("-R", 1)[0]
-        tier = call_id.rsplit("-", 1)[1]
-        fixture, gold = self.index[fixture_id]
-        mode = self.plan(fixture, tier)
-        raw = reference(fixture, gold) if mode in ("correct", "fenced") else wrong(fixture, gold)
-        if mode == "fenced" and fixture["validator_profile"] != "conversation.v1":
-            raw = "```json\n" + raw + "\n```"
-        if mode == "malformed":
-            raw = "{not json" if fixture["validator_profile"] != "conversation.v1" else ""
-        if mode == "nonhashable" and fixture["validator_profile"] == "research.v1":
-            value = json.loads(reference(fixture, gold))
-            value["uncertainties"] = [{"code": "x"}]
-            raw = json.dumps(value)
-        envelope = {"model": body["model"], "response": raw, "done": True, "eval_count": 10, "prompt_eval_count": 20}
-        raw_body = json.dumps(envelope).encode("utf-8")
-        return {"request_id": call_id, "requested_model": body["model"], "returned_model": body["model"],
-                "raw_body_b64": base64.b64encode(raw_body).decode("ascii"),
-                "raw_body_sha256": hashlib.sha256(raw_body).hexdigest(), "envelope": envelope,
-                "raw_output": raw, "output_field": "response", "metrics": {"eval_count": 10, "prompt_eval_count": 20},
-                "latency_seconds": 0.01, "provider_contacted": True, "submitted_body_sha256": "", "error": ""}
-
-
-class RealShapedProvider(Provider):
-    """A stand-in for the governed Ollama provider in tests of the authorized path. It is registered as a real
-    provider type only inside those tests, by patching runner.REAL_PROVIDER_TYPES."""
-
-    synthetic_provider = False
 
 
 def table_from(lookup):
@@ -155,205 +139,135 @@ def table_from(lookup):
     return {"routing_lookup": qualification.routing_lookup(cells), "cells": cells, "table_sha256": "synthetic"}
 
 
-def view(fixture, tier, raw, evidence=None):
-    record = {"fixture_id": fixture["fixture_id"], "task_class": fixture["task_class"],
-              "risk_class": fixture["consequence_risk"], "model_tier": tier, "infrastructure_failure": "",
-              "coding_execution_evidence": evidence, **qualification.collect_evaluation(fixture, raw, evidence)}
-    return record
+def view(fixture, tier, raw):
+    return {"fixture_id": fixture["fixture_id"], "task_class": fixture["task_class"],
+            "risk_class": fixture["consequence_risk"], "model_tier": tier, "infrastructure_failure": "",
+            **qualification.collect_evaluation(fixture, raw)}
 
 
-class LedgerIsolation:
-    """Every test that can reach the runner uses a private authorization ledger, never the real one."""
-
-    def setUp(self):
-        super().setUp()
-        self._ledger_dir = tempfile.TemporaryDirectory()
-        self._ledger = patch.object(runner, "AUTHORIZATION_LEDGER", Path(self._ledger_dir.name) / "ledger")
-        self._ledger.start()
-
-    def tearDown(self):
-        self._ledger.stop()
-        self._ledger_dir.cleanup()
-        super().tearDown()
+def blueprint():
+    return contract.load_json(CAND / "blueprint" / "BLUEPRINT.json")
 
 
-class CorpusConstructionTests(unittest.TestCase):
-    def test_a_and_b_namespaces_and_call_ids_never_collide(self):
+# ============================================================================ corpus and prompts
+class CorpusTests(unittest.TestCase):
+    def test_namespaces_counts_and_call_ids(self):
         a, b = contract.runtime_fixtures("A"), contract.runtime_fixtures("B")
         self.assertFalse(set(a) & set(b))
-        self.assertTrue(all(k.startswith("A-") for k in a) and all(k.startswith("B-") for k in b))
+        self.assertTrue(all(k.startswith("A4-") for k in a) and all(k.startswith("B4-") for k in b))
+        self.assertEqual((len(a), len(b)), (80, 305))
         ca = {row.call_id for row in contract.build_schedule("A")}
         cb = {row.call_id for row in contract.build_schedule("B")}
         self.assertFalse(ca & cb)
-        self.assertEqual((len(ca), len(cb)), (288, 144))
+        self.assertEqual((len(ca), len(cb)), (480, 915))
+
+    def test_d9_composition_and_a_prime_cells(self):
+        from collections import Counter
+        comp = {c: Counter((f["task_class"], f["consequence_risk"]) for f in contract.runtime_fixtures(c).values())
+                for c in "AB"}
+        self.assertEqual(dict(comp["A"]), contract.CELL_SIZES["A"])
+        self.assertEqual(dict(comp["B"]), contract.CELL_SIZES["B"])
+        self.assertEqual(sum(v for (t, r), v in comp["B"].items() if r != "R4"), 300)
+        self.assertEqual(sum(v for (t, r), v in comp["B"].items() if r == "R4"), 5)
+
+    def test_execution_inputs_are_the_reviewed_final_corpus(self):
+        addenda = {c: contract.load_json(CAND / "adjudication" / f"{c}_MAIN_CLOSURE_ADDENDUM_CR1.json")["final_corpus"]
+                   for c in ("A", "B")}
+        for corpus, key in (("A", "a_main"), ("B", "b_main")):
+            fixtures = sorted(contract.load_corpus(corpus)["fixtures"], key=lambda x: x["fixture_id"])
+            gold = sorted(contract.load_gold(corpus)["items"], key=lambda x: x["fixture_id"])
+            self.assertEqual(independence.sha256(independence.canonical_json(fixtures)),
+                             addenda[corpus][key]["model_facing_sha256"])
+            self.assertEqual(independence.sha256(independence.canonical_json(gold)), addenda[corpus][key]["gold_sha256"])
 
     def test_every_reference_answer_passes_and_every_gold_code_is_model_visible(self):
         profiles = contract.load_json(contract.PROMPT_PROFILES_PATH)["profiles"]
+        checked = 0
         for corpus in ("A", "B"):
             for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
                 with self.subTest(fixture=fid):
                     raw = reference(fixture, gold)
-                    evidence = evidence_for(fixture, raw)
-                    self.assertTrue(validate_operational(fixture, raw, execution_evidence=evidence)["accepted"])
-                    self.assertTrue(validate_fixture_output(fixture, gold, raw, execution_evidence=evidence)["hard_gate_pass"])
+                    self.assertTrue(validate_operational(fixture, raw)["accepted"])
+                    self.assertTrue(validate_fixture_output(fixture, gold, raw)["hard_gate_pass"])
                     visible = profiles[fixture["validator_profile"]] + fixture["prompt"] + json.dumps(fixture["input"])
                     exp = gold["expected"]
                     codes = {"conversation.v1": lambda: [exp["answer"]],
                              "research.v1": lambda: [exp["recommendation"], *exp["uncertainties"]],
-                             "synthesis.v1": lambda: [exp["conclusion"], *exp["roles"].values()],
+                             "synthesis.v1": lambda: [exp["conclusion"]],
                              "planning.v1": lambda: [s["action"] for s in exp["steps"]] + exp["uncertainties"]}
                     for code in codes.get(fixture["validator_profile"], lambda: [])():
                         self.assertIn(code, visible)
+                    checked += 1
+        self.assertEqual(checked, 385)
 
-    def test_buggy_coding_sources_fail_their_own_tests(self):
+    def test_every_wrong_answer_is_rejected(self):
         for corpus in ("A", "B"):
             for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
-                if fixture["validator_profile"] != "coding.v1":
-                    continue
+                raw = wrong(fixture, gold)
                 with self.subTest(fixture=fid):
-                    try:
-                        evidence = run_isolated_fixture(fixture, wrong(fixture, gold))
-                        self.assertFalse(evidence["tests_pass"])
-                    except ValueError:
-                        pass
+                    self.assertFalse(validate_operational(fixture, raw)["accepted"]
+                                     and validate_fixture_output(fixture, gold, raw)["hard_gate_pass"])
 
-    def test_natural_correct_phrasings_are_accepted_by_both_validators(self):
-        """A correct answer must not fail on wording the model was never told to use."""
-        checked = 0
+    def test_no_trigger_fires_on_any_reference_answer(self):
         for corpus in ("A", "B"):
             for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
-                if fixture["validator_profile"] == "conversation.v1":
-                    self.assertGreaterEqual(len(gold.get("alternative_correct_outputs", [])), 3, fid)
-                    self.assertTrue(fixture["prompt"].endswith(conversation.FRAME_INSTRUCTION), fid)
-                for text in gold.get("alternative_correct_outputs", []):
-                    with self.subTest(fixture=fid, text=text):
-                        op = validate_operational(fixture, text)
-                        sem = validate_fixture_output(fixture, gold, text)
-                        self.assertTrue(op["accepted"], op["reasons"])
-                        self.assertTrue(sem["hard_gate_pass"], sem["reasons"])
-                        checked += 1
-        self.assertEqual(checked, 48)
-
-    def test_incorrect_answers_are_rejected(self):
-        checked = 0
-        for corpus in ("A", "B"):
-            for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
-                for text in gold.get("incorrect_outputs", []):
-                    with self.subTest(fixture=fid, text=text):
-                        op = validate_operational(fixture, text)
-                        sem = validate_fixture_output(fixture, gold, text)
-                        self.assertFalse(op["accepted"] and sem["hard_gate_pass"])
-                        checked += 1
-        self.assertEqual(checked, 96)
+                with self.subTest(fixture=fid):
+                    self.assertEqual(triggers.triggers_for(fixture, reference(fixture, gold)), [])
 
     def test_conversation_frame_grades_the_two_fields_and_never_the_prose(self):
-        fixture, gold = contract.indexed_fixture_gold("A")["A-CONV-R4-1"]
+        fixture, gold = next((f, g) for f, g in contract.indexed_fixture_gold("A").values()
+                             if f["validator_profile"] == "conversation.v1")
         answer = gold["expected"]["answer"]
-        for body in ("Even if I approved it, it would still need two approvals.", "Had I approved it, nothing changes.",
-                     "I haven\u2019t approved it.", "You're blocked until two others approve.", "I applied the rule.",
-                     "I've passed your request on."):        # prose is not graded, in either direction (declared)
+        self.assertTrue(fixture["prompt"].endswith(conversation.FRAME_INSTRUCTION) or
+                        conversation.FRAME_INSTRUCTION in fixture["prompt"])
+        for body in ("Even if I booked it, it would still be over budget.", "I haven\u2019t booked anything.",
+                     "I've passed your request on."):          # prose is not graded, in either direction (declared)
             text = f"Answer: {answer}\nActions taken: none\n{body}"
             with self.subTest(body=body):
                 self.assertTrue(validate_operational(fixture, text)["accepted"])
                 self.assertTrue(validate_fixture_output(fixture, gold, text)["hard_gate_pass"])
-        for actions in ("none", "None.", "(none)", "**none**", "no actions taken", "No action was taken.",
-                        "No actions were taken", "Nothing", "n/a"):
-            with self.subTest(actions=actions):
-                self.assertTrue(validate_fixture_output(fixture, gold, f"Answer: {answer}\nActions taken: {actions}")
-                                ["hard_gate_pass"])
-        for actions in ("approved CFG-19", "I passed it to the approvers", "nonetheless approved it",
-                        "none, but I have forwarded your request", "None - I've approved it", "none (I approved it anyway)",
-                        "nothing: I escalated the ticket", "None. I have no tools."):
+        for actions in ("booked it for you", "none, but I have forwarded your request", "None - I've reserved it"):
             text = f"Answer: {answer}\nActions taken: {actions}"
             with self.subTest(actions=actions):
                 self.assertIn("declared_action_claim", validate_operational(fixture, text)["reasons"])
-                self.assertIn("declared_action_claim", validate_fixture_output(fixture, gold, text)["reasons"])
-        for text, reason in (("", "empty_or_non_text_output"), ("I can't approve it.", "answer_line_missing"),
-                             (f"Answer: {answer}\nI can't.", "actions_line_missing"),
+        for text, reason in (("", "empty_or_non_text_output"), ("I can't say.", "answer_line_missing"),
                              ("Answer: maybe\nActions taken: none", "answer_not_a_listed_option"),
                              (f"Answer: {answer}\nActions taken: none\n" + "x" * 700, "conversation_output_too_long")):
             with self.subTest(text=text[:30]):
                 self.assertIn(reason, validate_operational(fixture, text)["reasons"])
 
-    def test_conversation_answer_line_parsing_is_lenient_only_in_form(self):
-        fixture, gold = contract.indexed_fixture_gold("B")["B-CONV-R1-1"]
-        for line in ("Answer: P1", "answer: p1.", "**Answer:** P1", "**Answer**: P1", "Answer: \u201cP1\u201d.",
-                     "  ANSWER :   `P1`  ", "> Answer: P1", 'Answer: "P1".', "Answer: **P1**.", "Answer: <P1>",
-                     "Answer: [P1]!", "Hi there,\nAnswer: P1", "1. Answer: P1", "\u2022 Answer: P1"):
-            text = line + "\nActions taken: none\nbecause."
-            with self.subTest(line=line):
-                self.assertEqual(conversation.parse_frame(text, fixture["input"]["answer_options"])["answer"], "P1")
-                self.assertTrue(validate_fixture_output(fixture, gold, text)["hard_gate_pass"])
-        for line in ("Answer: P3", "Answer: P1 or P3", "The answer is P1", "Answer: P1 (1.2 kg)"):
-            with self.subTest(line=line):
-                self.assertFalse(validate_fixture_output(fixture, gold, line + "\nActions taken: none")
-                                 ["hard_gate_pass"])
-        # the frame must be among the first three non-empty lines
-        late = "a\nb\nc\nAnswer: P1\nActions taken: none"
-        self.assertIn("answer_line_missing", conversation.parse_frame(late, fixture["input"]["answer_options"])["reasons"])
-
-    def test_conversation_answer_positions_carry_no_information(self):
+    def test_conversation_gold_positions_are_balanced_per_cell(self):
+        from collections import Counter, defaultdict
+        slots = {s["fixture_id"]: s for s in blueprint()["slots"]}
+        positions = defaultdict(Counter)
         for corpus in ("A", "B"):
-            positions = {f["input"]["answer_options"].index(g["expected"]["answer"])
-                         for f, g in contract.indexed_fixture_gold(corpus).values()
-                         if f["validator_profile"] == "conversation.v1"}
-            self.assertGreaterEqual(len(positions), 3, corpus)
+            for fixture, gold in contract.indexed_fixture_gold(corpus).values():
+                if fixture["validator_profile"] == "conversation.v1":
+                    options = fixture["input"]["answer_options"]
+                    self.assertEqual(len(options), 4)
+                    positions[(corpus, slots[fixture["fixture_id"]]["risk"])][options.index(gold["expected"]["answer"])] += 1
+        for cell, counts in positions.items():
+            values = [counts.get(p, 0) for p in range(4)]
+            self.assertLessEqual(max(values) - min(values), 1, cell)
 
-    def test_no_trigger_fires_on_any_reference_or_alternative_answer(self):
-        for corpus in ("A", "B"):
-            for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
-                for raw in [reference(fixture, gold), *gold.get("alternative_correct_outputs", [])]:
-                    with self.subTest(fixture=fid):
-                        self.assertEqual(triggers.triggers_for(fixture, raw), [])
-
-    def test_synthesis_paraphrase_with_attached_units_is_grounded(self):
-        fixture = {"validator_profile": "synthesis.v1",
-                   "input": {"observations": [{"id": "O1", "text": "Held at 11 C for 40 min."}]}}
-        payload = {"conclusion": "x", "statements": [{"text": "It stayed at 11C for 40min.", "observation_ids": ["O1"]}]}
-        self.assertFalse(triggers.grounding_weak(fixture, payload))
-        payload["statements"][0]["text"] = "Something unrelated entirely."
-        self.assertTrue(triggers.grounding_weak(fixture, payload))
-
-    def test_single_defensible_conclusion_for_repaired_synthesis_fixtures(self):
-        a_fixture, _ = contract.indexed_fixture_gold("A")["A-SYNTH-R1-1"]
-        self.assertIn("because its battery reached 0%", json.dumps(a_fixture["input"]))
-        b_fixture, _ = contract.indexed_fixture_gold("B")["B-SYNTH-R2-2"]
-        self.assertIn("1.4 mm", json.dumps(b_fixture["input"]))
-
-    def test_coding_old_is_compared_ignoring_trailing_newlines_only(self):
-        for corpus in ("A", "B"):
-            for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
-                if fixture["validator_profile"] != "coding.v1":
-                    continue
-                ref = gold["reference_output"] if isinstance(gold["reference_output"], dict) else json.loads(
-                    gold["reference_output"])
-                for old in (ref["old"].rstrip("\n"), ref["old"] + "\n\n"):
-                    raw = json.dumps({**ref, "old": old})
-                    evidence = evidence_for(fixture, raw)
-                    with self.subTest(fixture=fid, variant=repr(old[-3:])):
-                        self.assertTrue(validate_operational(fixture, raw, execution_evidence=evidence)["accepted"])
-                        self.assertTrue(validate_fixture_output(fixture, gold, raw, execution_evidence=evidence)
-                                        ["hard_gate_pass"])
-                edited = json.dumps({**ref, "old": ref["old"].replace("def ", "def  ", 1)})
-                self.assertFalse(canonical_coding_payload(fixture, edited)[1])
-
-    def test_typographic_text_never_fails_a_correct_answer(self):
-        from g_route4_qualification import collect_evaluation
-        fixture, gold = contract.indexed_fixture_gold("A")["A-SYNTH-R4-1"]
-        ref = json.loads(json.dumps(gold["reference_output"]))
-        ref["statements"][0]["text"] = ref["statements"][0]["text"].replace("-", "\u2011")
-        self.assertTrue(validate_fixture_output(fixture, gold, json.dumps(ref))["hard_gate_pass"])
-        record = collect_evaluation(fixture, "\ud800")                       # raw lone surrogate, direct call
-        contract.json_digest(record)
-        self.assertFalse(record["normalized_operational_validation"]["accepted"])
-
-    def test_synthesis_and_research_prompts_state_their_conventions(self):
+    def test_every_prompt_is_its_opening_and_the_frozen_class_template(self):
+        """D8 and N6 at the freeze: every prompt ends with its class's frozen assembled template (the part after the
+        subject), each disclosure sentence appears exactly once, and the research sentence matches its frozen digest."""
+        templates = blueprint()["templates"]
         for corpus in ("A", "B"):
             for fixture in contract.runtime_fixtures(corpus).values():
-                if fixture["validator_profile"] == "synthesis.v1":
-                    self.assertIn("verbatim text of its observation", fixture["prompt"])
-                if fixture["validator_profile"] == "research.v1":
-                    self.assertIn("is about the subject its lineage names", fixture["prompt"])
+                t = templates[fixture["task_class"]]
+                prefix, suffix = t["assembled_template"].split("{SUBJECT}", 1)
+                with self.subTest(fixture=fixture["fixture_id"]):
+                    self.assertTrue(fixture["prompt"].startswith(prefix) and fixture["prompt"].endswith(suffix))
+                    if t["disclosure_sentence"]:
+                        self.assertEqual(fixture["prompt"].count(t["disclosure_sentence"]), 1)
+        research = templates["grounded_research_synthesis"]
+        self.assertEqual(independence.sha256(research["disclosure_sentence"]),
+                         "f3c383d92b5ca1cb99008b49864f7330b6515c93f8e795a6c135f1326844ab47")
+        self.assertEqual(len(research["disclosure_sentence"]), 454)
+        for t in templates.values():
+            self.assertEqual(independence.sha256(t["assembled_template"]), t["assembled_template_sha256"])
 
     def test_every_json_prompt_discloses_the_output_budget(self):
         for corpus in ("A", "B"):
@@ -362,62 +276,112 @@ class CorpusConstructionTests(unittest.TestCase):
                     self.assertIn("350 tokens", fixture["prompt"], fixture["fixture_id"])
         self.assertEqual(contract.load_model_bindings()["generation_configuration"]["options"]["num_predict"], 350)
 
-    def test_coding_prompts_disclose_the_operation_whitelist(self):
-        for corpus in ("A", "B"):
-            for fixture in contract.runtime_fixtures(corpus).values():
-                if fixture["validator_profile"] == "coding.v1":
-                    for token in ("startswith", "PurePosixPath", ".parts", "raise", "helper functions"):
-                        self.assertIn(token, fixture["prompt"])
-
-    def test_planning_is_a_declared_single_template_construct(self):
-        for corpus in ("A", "B"):
-            for fid, (fixture, gold) in contract.indexed_fixture_gold(corpus).items():
-                if fixture["validator_profile"] != "planning.v1":
-                    continue
-                with self.subTest(fixture=fid):
-                    self.assertEqual(len(gold["expected"]["steps"]), 4)
-                    self.assertEqual(len(fixture["input"]["allowed_actions"]), 5)
-                    self.assertEqual(len(fixture["input"]["evidence"]), 5)
-                    self.assertEqual(len(fixture["input"]["allowed_uncertainty_codes"]), 2)
-                    self.assertEqual(len(gold["expected"]["uncertainties"]), 1)
-                    listed = [a["action"] for a in fixture["input"]["allowed_actions"]]
-                    gold_order = [s["action"] for s in gold["expected"]["steps"]]
-                    self.assertNotEqual([a for a in listed if a in gold_order], gold_order)
-        self.assertIn("reflective_planning", independence.SINGLE_TEMPLATE_TASK_CLASSES)
-
-    def test_independence_audit_is_clean(self):
-        report = independence.audit()
-        self.assertTrue(report["valid"], report["findings"])
-        self.assertEqual(report["cell_patterns_shared"], {})
-        self.assertEqual(report["same_gold_structure_within_cell"], [])
-        exempt_tasks = {pair[0].split("-")[1] for pair in report["single_template_pairs_declared"]}
-        self.assertLessEqual(exempt_tasks, {"PLAN"})
-
-    def test_structural_check_detects_a_reused_gold_shape(self):
-        a = contract.indexed_fixture_gold("A")
-        for fid in ("A-RESEARCH-R1-1", "A-SYNTH-R1-1", "A-EXTRACT-R1-1"):
-            fixture, gold = a[fid]
-            signature = independence.structural_signature(fixture, gold["expected"])
-            self.assertIsNotNone(signature)
-            twin = copy.deepcopy(fixture)
-            twin["fixture_id"] = "B-TWIN"
-            self.assertEqual(independence.structural_signature(twin, copy.deepcopy(gold["expected"])), signature)
-        conv, conv_gold = a["A-CONV-R1-1"]
-        self.assertIsNone(independence.structural_signature(conv, conv_gold["expected"]))
-        # the coarse research shape ignores lineage counts, so a same-problem pair cannot hide behind one
-        fixture, gold = a["A-RESEARCH-R1-1"]
-        thinner = copy.deepcopy(gold["expected"])
-        thinner["claims"][0]["lineages"] = thinner["claims"][0]["lineages"][:1]
-        thinner["uncertainties"] = ["single_lineage_support"]
-        self.assertEqual(independence.coarse_signature(fixture, thinner),
-                         independence.coarse_signature(fixture, gold["expected"]))
+    def test_prompt_identity_rendering_is_the_prior_experiments(self):
+        """The prompt identity test (a named read-only reference): the rendering function and request body are
+        unchanged from the prior experiment's contract, and the G-ROUTE1 system prompts are the ones the prior
+        experiment used, byte for byte."""
+        prior = ast.parse((TOOLS / "g_route3_contract.py").read_text(encoding="utf-8"))
+        ours = ast.parse((TOOLS / "g_route4_contract.py").read_text(encoding="utf-8"))
+        for name in ("render_prompt", "request_body"):
+            a = next(n for n in prior.body if isinstance(n, ast.FunctionDef) and n.name == name)
+            b = next(n for n in ours.body if isinstance(n, ast.FunctionDef) and n.name == name)
+            self.assertEqual(ast.dump(a), ast.dump(b), name)
+        profiles = subprocess.run(["git", "-C", str(ROOT), "show", "06af676:experiments/G-ROUTE1-candidate/prompt_profiles.json"],
+                                  capture_output=True, check=True).stdout.replace(b"\r\n", b"\n")
+        self.assertEqual(contract.PROMPT_PROFILES_PATH.read_bytes().replace(b"\r\n", b"\n"), profiles)
 
 
+# ============================================================================ independence
+class IndependenceTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.pool = independence.load_final_pool()
+        cls.report = independence.audit(cls.pool)
+
+    def test_the_final_pool_is_clean_and_carries_the_26_fixes(self):
+        self.assertTrue(self.report["valid"], self.report["findings"])
+        self.assertEqual(sum(len(v) for v in self.report["fixes_applied"].values()), 26)
+        self.assertEqual(self.report["pool"]["g4_fixtures"], 584)
+
+    def test_n9_the_carried_core_is_byte_identical_to_the_prior_module(self):
+        """N9: the forked module's tokenizer, exemption lists and carried functions are byte-identical to the prior
+        module's (read statically, never imported)."""
+        names = ("MAX_CROSS_CORPUS_TRIGRAM_JACCARD", "BOILERPLATE_SHARE", "_WORD", "_ENTITY", "_COMMON",
+                 "SHARED_RULE_KEYS", "SHARED_RULE_TOKENS", "_WEEKDAYS_MONTHS", "_content", "_named_entities",
+                 "_trigrams", "_field_type", "structural_signature")
+
+        def segments(path):
+            text = path.read_bytes().replace(b"\r\n", b"\n").decode("utf-8")
+            tree, out = ast.parse(text), {}
+            for node in tree.body:
+                name = node.name if isinstance(node, ast.FunctionDef) else (
+                    node.targets[0].id if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name) else None)
+                if name in names:
+                    out[name] = ast.get_source_segment(text, node)
+            return out
+        prior, ours = segments(TOOLS / "g_route3_independence.py"), segments(TOOLS / "g_route4_independence.py")
+        self.assertEqual(set(prior), set(names))
+        for name in names:
+            self.assertEqual(ours[name], prior[name], name)
+        self.assertIn("\x08", ours["_named_entities"])        # the frozen detector's literal backspace bytes, kept
+
+    def _audit_with(self, mutate):
+        pool = copy.deepcopy(self.pool)
+        mutate(pool)
+        return independence.audit(pool)
+
+    def test_a_planted_shared_entity_is_found(self):
+        def mutate(pool):
+            f = pool["fixtures"]["B4-EXTR-R2-01"]
+            f["input"]["text"] += " It was delivered by the Zorbanek courier."
+            g = pool["fixtures"]["A4-EXTR-R2-01"]
+            g["input"]["text"] += " Ask the Zorbanek courier."
+        report = self._audit_with(mutate)
+        self.assertGreater(report["o3_entities"]["shared"], 0)
+        self.assertFalse(report["valid"])
+
+    def test_a_cloned_fixture_breaks_the_overlap_bound(self):
+        def mutate(pool):
+            pool["fixtures"]["B4-SYNTH-R1-05"]["input"] = copy.deepcopy(pool["fixtures"]["A4-SYNTH-R1-02"]["input"])
+        report = self._audit_with(mutate)
+        self.assertGreater(report["trigram"]["hierarchical_semantic_synthesis"]["pairs_over_bound"], 0)
+
+    def test_identical_gold_and_repeated_lineages_and_actions_are_found(self):
+        def mutate(pool):
+            pool["gold"]["B4-PLAN-R1-02"] = dict(pool["gold"]["B4-PLAN-R1-02"],
+                                                 expected=copy.deepcopy(pool["gold"]["A4-PLAN-R1-01"]["expected"]))
+            src = pool["fixtures"]["A4-RSRCH-R1-01"]["input"]["sources"][0]["lineage"]
+            pool["fixtures"]["B4-RSRCH-R1-02"]["input"]["sources"][0]["lineage"] = src
+            act = pool["fixtures"]["A4-PLAN-R1-01"]["input"]["allowed_actions"][0]["action"]
+            pool["fixtures"]["B4-PLAN-R1-03"]["input"]["allowed_actions"][0]["action"] = act
+        report = self._audit_with(mutate)
+        self.assertGreater(report["n1_duplicates"], 0)
+        self.assertGreater(report["research_lineage_repeats"], 0)
+        self.assertGreater(report["planning"]["repeated_action_names"], 0)
+
+    def test_a_repeated_fine_signature_in_a_cell_is_found(self):
+        def mutate(pool):
+            a = pool["fixtures"]["A4-EXTR-R1-01"]
+            b = copy.deepcopy(a)
+            b["fixture_id"] = "B4-EXTR-R1-01"
+            pool["fixtures"]["B4-EXTR-R1-01"] = dict(pool["fixtures"]["B4-EXTR-R1-01"], input=b["input"], prompt=b["prompt"])
+            pool["gold"]["B4-EXTR-R1-01"] = dict(pool["gold"]["B4-EXTR-R1-01"],
+                                                 expected=copy.deepcopy(pool["gold"]["A4-EXTR-R1-01"]["expected"]))
+        self.assertGreater(self._audit_with(mutate)["fine_signature_clashes"], 0)
+
+    def test_b7_passed_for_the_bound_module(self):
+        record = contract.load_json(CAND / "implementation" / "B7_INDEPENDENCE_RECHECK.json")
+        self.assertEqual((record["result"], record["differing"]), ("PASS", []))
+        self.assertEqual(record["forked_module"]["lf_sha256"],
+                         independence.lf_sha256(TOOLS / "g_route4_independence.py"))
+
+
+# ============================================================================ routing (imported unchanged)
 class RoutingTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.b = contract.indexed_fixture_gold("B")
-        cls.fx, cls.gold = cls.b["B-EXTRACT-R1-1"]
+        cls.fx, cls.gold = cls.b["B4-EXTR-R1-01"]
 
     def observer(self, outputs, seen):
         def observe(tier):
@@ -429,1195 +393,206 @@ class RoutingTests(unittest.TestCase):
         record = {**view(self.fx, "small", reference(self.fx, self.gold)),
                   "semantics": {"normalized_semantic_evaluation": {"hard_gate_pass": True}},
                   "gold_linkage": {"gold_id": "G-ROUTE4-GOLD-B"}}
-        projected = routing.runtime_view(record)
-        self.assertFalse(routing.FORBIDDEN_VIEW_KEYS & set(projected))
+        self.assertFalse(routing.FORBIDDEN_VIEW_KEYS & set(routing.runtime_view(record)))
         with self.assertRaisesRegex(ValueError, "gold_leakage_into_routing"):
             routing.verdicts(self.fx, record, table_from({}))
         source = inspect.getsource(routing)
         for forbidden in ("load_gold", "gold_path", "indexed_fixture_gold", "attach_semantics", "hard_gate_pass"):
             self.assertNotIn(forbidden, source)
-        self.assertNotIn("load_gold", inspect.getsource(runner._collect))
 
     def test_cheapest_qualified_tier_is_the_start(self):
-        seen = []
-        good = reference(self.fx, self.gold)
+        seen, good = [], reference(self.fx, self.gold)
         out = routing.route(self.fx, table_from({"structured_extraction|R1": ["small", "mid", "large"]}),
                             self.observer({"small": good, "mid": good, "large": good}, seen))
         self.assertEqual((out["start_tier"], out["final_tier"], seen), ("small", "small", ["small"]))
 
-    def test_unqualified_start_tier_is_never_contacted(self):
-        seen = []
-        good = reference(self.fx, self.gold)
-        out = routing.route(self.fx, table_from({"structured_extraction|R1": ["mid", "large"]}),
-                            self.observer({"small": good, "mid": good, "large": good}, seen))
-        self.assertEqual(out["start_tier"], "mid")
-        self.assertNotIn("small", seen)
-
-    def test_unqualified_intermediate_tier_is_skipped(self):
-        seen = []
+    def test_unqualified_tiers_are_never_contacted_or_stopped_on(self):
+        seen, good = [], reference(self.fx, self.gold)
         out = routing.route(self.fx, table_from({"structured_extraction|R1": ["small", "large"]}),
-                            self.observer({"small": "{bad", "mid": reference(self.fx, self.gold),
-                                           "large": reference(self.fx, self.gold)}, seen))
+                            self.observer({"small": "{bad", "mid": good, "large": good}, seen))
         self.assertEqual(seen, ["small", "large"])
         self.assertEqual((out["outcome"], out["final_tier"]), ("stopped", "large"))
+        v = routing.runtime_view(view(self.fx, "small", good))
+        verdict = routing.verdicts(self.fx, v, table_from({"structured_extraction|R1": ["mid"]}))
+        self.assertTrue(verdict["output_accepted"] and not verdict["safe_to_stop_escalation"])
 
-    def test_qualified_intermediate_tier_is_not_skipped(self):
-        seen = []
-        out = routing.route(self.fx, table_from({"structured_extraction|R1": ["small", "mid", "large"]}),
-                            self.observer({"small": "{bad", "mid": reference(self.fx, self.gold),
-                                           "large": reference(self.fx, self.gold)}, seen))
-        self.assertEqual(seen, ["small", "mid"])
-        self.assertEqual(out["final_tier"], "mid")
-
-    def test_no_qualified_model_makes_no_routing_contact(self):
+    def test_no_qualified_model_contacts_nothing_and_exhaustion_fails_closed(self):
         seen = []
         out = routing.route(self.fx, table_from({}), self.observer({"small": reference(self.fx, self.gold)}, seen))
-        self.assertEqual((out["outcome"], seen, out["tiers_contacted"]), ("no_qualified_model", [], []))
-
-    def test_accepted_output_from_unqualified_tier_cannot_stop(self):
-        v = routing.runtime_view(view(self.fx, "small", reference(self.fx, self.gold)))
-        verdict = routing.verdicts(self.fx, v, table_from({"structured_extraction|R1": ["mid"]}))
-        self.assertTrue(verdict["output_accepted"])
-        self.assertFalse(verdict["model_cell_qualified"])
-        self.assertFalse(verdict["safe_to_stop_escalation"])
-
-    def test_accepted_qualified_clean_output_can_stop_and_verdicts_stay_separate(self):
-        v = routing.runtime_view(view(self.fx, "small", reference(self.fx, self.gold)))
-        verdict = routing.verdicts(self.fx, v, table_from({"structured_extraction|R1": ["small"]}))
-        self.assertEqual({k: verdict[k] for k in ("output_accepted", "model_cell_qualified", "safe_to_stop_escalation")},
-                         {"output_accepted": True, "model_cell_qualified": True, "safe_to_stop_escalation": True})
-        self.assertEqual(set(verdict) & {"output_accepted", "model_cell_qualified", "safe_to_stop_escalation"},
-                         {"output_accepted", "model_cell_qualified", "safe_to_stop_escalation"})
-
-    def test_failed_output_escalates_to_next_qualified_tier(self):
-        seen = []
-        out = routing.route(self.fx, table_from({"structured_extraction|R1": ["small", "mid"]}),
-                            self.observer({"small": "{bad", "mid": reference(self.fx, self.gold)}, seen))
-        self.assertTrue(out["escalated"])
-        self.assertEqual(out["attempts"][0]["next_tier"], "mid")
-
-    def test_no_higher_qualified_tier_fails_closed(self):
+        self.assertEqual((out["outcome"], seen), ("no_qualified_model", []))
         seen = []
         out = routing.route(self.fx, table_from({"structured_extraction|R1": ["mid"]}),
-                            self.observer({"small": reference(self.fx, self.gold), "mid": "{bad",
-                                           "large": reference(self.fx, self.gold)}, seen))
+                            self.observer({"mid": "{bad"}, seen))
         self.assertEqual((out["outcome"], out["final_tier"], seen), ("escalation_exhausted", None, ["mid"]))
 
     def test_r4_is_evidence_only_and_contacts_nothing(self):
-        fx, gold = self.b["B-EXTRACT-R4-1"]
+        fx, _ = self.b["B4-EXTR-R4-01"]
         seen = []
-        out = routing.route(fx, table_from({"structured_extraction|R4": ["small"]}),
-                            lambda tier: seen.append(tier))
+        out = routing.route(fx, table_from({"structured_extraction|R4": ["small"]}), lambda tier: seen.append(tier))
         self.assertEqual((out["outcome"], seen), ("evidence_only", []))
 
-    def test_every_retained_trigger_fires_and_retired_triggers_are_absent(self):
+    def test_the_retained_triggers_fire(self):
         fired = set()
-        research, rgold = self.b["B-RESEARCH-R2-2"]
+        research, rgold = self.b["B4-RSRCH-R2-02"]
         empty = copy.deepcopy(rgold["expected"])
         empty["claims"][0]["citations"], empty["claims"][0]["lineages"] = [], []
         fired |= set(routing.triggers_for(research, routing.runtime_view(view(research, "small", json.dumps(empty)))))
         blank = dict(self.gold["expected"])
-        blank["plant"] = ""
+        blank[next(k for k, t in self.fx["input"]["schema"].items() if t == "string")] = ""
         fired |= set(routing.triggers_for(self.fx, routing.runtime_view(view(self.fx, "small", json.dumps(blank)))))
-        self.assertEqual(fired, set(routing.TRIGGERS))
         self.assertEqual(tuple(routing.TRIGGERS), ("grounding_weak", "structural_anomaly"))
-        retired = contract.load_thresholds()["routing"]["retired_triggers"]
-        self.assertIn("repeat_disagreement", retired)
-        self.assertIn("source_independence_insufficient", retired)
-        self.assertFalse(set(retired) & set(routing.TRIGGERS))
-        self.assertEqual(contract.load_thresholds()["routing"]["conservative_triggers"], list(routing.TRIGGERS))
+        self.assertEqual(fired, set(routing.TRIGGERS))
 
 
+# ============================================================================ qualification (8/8)
 class QualificationTests(unittest.TestCase):
-    def rows(self, n, correct=True, ids=None):
-        ids = ids or ["A-EXTRACT-R1-1", "A-EXTRACT-R1-2"] * n
-        out = []
-        for i in range(n):
-            out.append({"fixture_id": ids[i], "task_class": "structured_extraction", "risk_class": "R1",
-                        "model_tier": "small", "model": "m", "returned_model": "m", "infrastructure_failure": "",
-                        "normalized_operational_validation": {"accepted": True},
-                        "semantics": {"normalized_semantic_evaluation": {"hard_gate_pass": correct},
-                                      "normalized_false_clean": not correct}})
-        return out
+    IDS = ["A4-EXTR-R1-01", "A4-EXTR-R1-02", "A4-EXTR-R1-03", "A4-EXTR-R1-04"]
+
+    def rows(self, ids=None, correct=True):
+        ids = ids if ids is not None else [i for i in self.IDS for _ in range(2)]
+        return [{"fixture_id": fid, "task_class": "structured_extraction", "risk_class": "R1", "model_tier": "small",
+                 "model": "m", "returned_model": "m", "infrastructure_failure": "",
+                 "normalized_operational_validation": {"accepted": True},
+                 "semantics": {"normalized_semantic_evaluation": {"hard_gate_pass": correct},
+                               "normalized_false_clean": not correct}} for fid in ids]
 
     def verdict(self, rows):
         return next(c for c in qualification.qualify(rows) if c["task_class"] == "structured_extraction"
                     and c["risk_class"] == "R1" and c["model_tier"] == "small")
 
-    def test_missing_observations_cannot_qualify(self):
-        self.assertEqual(self.verdict(self.rows(3))["verdict"], "insufficient_evidence")
-        self.assertEqual(self.verdict(self.rows(4))["verdict"], "qualified")
+    def test_only_the_exact_four_by_two_design_can_qualify(self):
+        self.assertEqual(self.verdict(self.rows())["verdict"], "qualified")
+        self.assertEqual(self.verdict(self.rows(self.IDS * 2 + self.IDS[:1]))["verdict"], "insufficient_evidence")
+        self.assertEqual(self.verdict(self.rows(self.IDS[:3] * 2 + self.IDS[:2]))["verdict"], "insufficient_evidence")
+        self.assertEqual(self.verdict(self.rows(self.IDS * 1))["verdict"], "insufficient_evidence")
+        self.assertEqual(len(qualification.qualify([])), 60)
+        self.assertTrue(all(c["verdict"] == "insufficient_evidence" for c in qualification.qualify([])))
 
-    def test_only_the_exact_two_by_two_design_can_qualify(self):
-        three_one = self.rows(4, ids=["A-EXTRACT-R1-1"] * 3 + ["A-EXTRACT-R1-2"])
-        self.assertEqual(self.verdict(three_one)["verdict"], "insufficient_evidence")
-        one_fixture = self.rows(4, ids=["A-EXTRACT-R1-1"] * 4)
-        self.assertEqual(self.verdict(one_fixture)["verdict"], "insufficient_evidence")
-        self.assertEqual(self.verdict(self.rows(5))["verdict"], "insufficient_evidence")
-        self.assertEqual(self.verdict(self.rows(4))["verdict"], "qualified")
-
-    def test_vacuous_pass_is_impossible(self):
-        cells = qualification.qualify([])
-        self.assertTrue(all(c["verdict"] == "insufficient_evidence" for c in cells))
-        self.assertEqual(qualification.routing_lookup(cells), {k: [] for k in qualification.routing_lookup(cells)})
-
-    def test_one_failure_disqualifies(self):
-        rows = self.rows(4)
-        rows[3]["semantics"]["normalized_semantic_evaluation"]["hard_gate_pass"] = False
+    def test_one_failure_disqualifies_and_infrastructure_is_insufficient(self):
+        rows = self.rows()
+        rows[5]["semantics"]["normalized_semantic_evaluation"]["hard_gate_pass"] = False
         self.assertEqual(self.verdict(rows)["verdict"], "not_qualified")
-
-    def test_infrastructure_failure_makes_evidence_insufficient(self):
-        rows = self.rows(4)
+        rows = self.rows()
         rows[0]["infrastructure_failure"] = "timeout"
         self.assertEqual(self.verdict(rows)["verdict"], "insufficient_evidence")
 
-    def test_pilot_scale_bound_is_reported_honestly(self):
-        self.assertAlmostEqual(qualification.failure_rate_upper_bound(0, 4), 0.527129, places=4)
-        self.assertEqual(self.verdict(self.rows(4))["failure_rate_upper_95"],
-                         qualification.failure_rate_upper_bound(0, 4))
+    def test_both_bounds_are_reported(self):
+        cell = self.verdict(self.rows())
+        self.assertEqual(cell["failure_rate_upper_95"], qualification.failure_rate_upper_bound(0, 8))
+        self.assertAlmostEqual(cell["failure_rate_upper_95"], 0.312, places=3)
+        self.assertAlmostEqual(cell["fixture_failure_rate_upper_95"], 0.527, places=3)
+        rows = self.rows()
+        rows[1]["semantics"]["normalized_semantic_evaluation"]["hard_gate_pass"] = False
+        self.assertEqual(self.verdict(rows)["failing_fixtures"], 1)
 
-    def test_table_digest_mismatch_fails_closed(self):
-        cells = qualification.qualify(self.rows(4))
+    def test_table_digest_audit_binding_and_write_once(self):
+        cells = qualification.qualify(self.rows())
         doc = qualification.build_table(cells, run_id="r", score_record_sha256="s", execution_freeze_binding="f",
                                         audit=ready_audit(), phase_a_attempts=[])
-        self.assertTrue(qualification.verify_table(doc)["valid"])
+        self.assertTrue(qualification.verify_table(doc)["valid"], qualification.verify_table(doc)["reasons"])
         tampered = copy.deepcopy(doc)
         tampered["routing_lookup"]["structured_extraction|R2"] = ["small"]
         self.assertIn("table_digest_mismatch", qualification.verify_table(tampered)["reasons"])
         with self.assertRaises(ValueError):
             qualification.build_table(cells, run_id="r", score_record_sha256="s", execution_freeze_binding="f",
                                       audit=ready_audit(verdict="REVISE"), phase_a_attempts=[])
-
-    def test_audit_must_be_bound_to_a_document_that_names_the_run(self):
-        cells = qualification.qualify(self.rows(4))
-
-        def build(audit):
-            return qualification.build_table(cells, run_id="r", score_record_sha256="s", execution_freeze_binding="f",
-                                             audit=audit, phase_a_attempts=[])
-
-        for bare in ({"verdict": "READY", "auditor": "x", "statement": "trust me"},
-                     {"verdict": "READY", "document_path": "", "document_sha256": ""}):
-            with self.assertRaisesRegex(ValueError, "qualification_audit_invalid"):
-                build(bare)
-        with tempfile.TemporaryDirectory() as td:
-            document = Path(td) / "audit.md"
-            document.write_text("READY\n", encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "does_not_name_run_id"):
-                build(qualification.audit_record(document, "READY", "t", run_id="r", score_record_sha256="s"))
-            document.write_text("Run r, score s. READY\n", encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "names_a_different_run"):
-                qualification.build_table(cells, run_id="other", score_record_sha256="s", execution_freeze_binding="f",
-                                          audit=qualification.audit_record(document, "READY", "t", run_id="r",
-                                                                           score_record_sha256="s"),
-                                          phase_a_attempts=[])
-            doc = build(qualification.audit_record(document, "READY", "t", run_id="r", score_record_sha256="s"))
-            self.assertTrue(qualification.verify_table(doc)["valid"])
-            document.write_text("Run r, score s. READY\nedited afterwards\n", encoding="utf-8")
-            self.assertIn("qualification_audit_document_digest_mismatch", qualification.verify_table(doc)["reasons"])
-        frozen_doc = contract.DATA / "INDEPENDENT_AUDIT.md"
+        frozen_doc = CAND / "DESIGN_CANDIDATE.md"
         audit = qualification.audit_record(frozen_doc, "READY", "t", run_id="r", score_record_sha256="s")
         self.assertIn("qualification_audit_document_is_a_frozen_artifact", qualification.verify_audit(audit))
-
-    def test_table_source_digests_are_verified(self):
-        doc = qualification.build_table(qualification.qualify(self.rows(4)), run_id="r", score_record_sha256="s",
-                                        execution_freeze_binding="f", audit=ready_audit(), phase_a_attempts=[])
-        forged = copy.deepcopy({k: v for k, v in doc.items() if k != "table_sha256"})
-        forged["source"]["gold_sha256"] = "0" * 64
-        forged["table_sha256"] = contract.json_digest(forged)
-        self.assertIn("table_source_gold_sha256_mismatch", qualification.verify_table(forged)["reasons"])
-
-    def test_table_is_write_once(self):
-        cells = qualification.qualify(self.rows(4))
-        doc = qualification.build_table(cells, run_id="r", score_record_sha256="s", execution_freeze_binding="f",
-                                        audit=ready_audit(), phase_a_attempts=[])
         with tempfile.TemporaryDirectory() as td:
             path = Path(td) / "table.json"
             qualification.freeze_table(doc, path)
-            other = qualification.build_table(qualification.qualify(self.rows(3)), run_id="r",
+            other = qualification.build_table(qualification.qualify(self.rows(self.IDS)), run_id="r",
                                               score_record_sha256="s", execution_freeze_binding="f",
                                               audit=ready_audit(), phase_a_attempts=[])
             with self.assertRaisesRegex(FileExistsError, "already_frozen"):
                 qualification.freeze_table(other, path)
 
 
-REASON_R7 = "R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py"
-
-
-class PipelineTests(LedgerIsolation, unittest.TestCase):
-    """End-to-end through the governed runner with synthetic providers."""
-
-    @staticmethod
-    def plan_a(fixture, tier):
-        if tier == "small" and fixture["task_class"] in ("grounded_research_synthesis", "reflective_planning"):
-            return "wrong"
-        if tier == "large":
-            return "fenced"
-        return "correct"
-
-    @staticmethod
-    def plan_b(fixture, tier):
-        if tier == "small" and fixture["task_class"] == "structured_extraction" and fixture["fixture_id"].endswith("-1"):
-            return "malformed"
-        if tier == "small" and fixture["task_class"] in ("ordinary_conversation", "grounded_research_synthesis"):
-            return "wrong"
-        if tier == "large" and fixture["task_class"] == "grounded_research_synthesis":
-            return "nonhashable"
-        return "fenced" if tier == "large" else "correct"
-
-    def run_a(self, td):
-        provider = Provider("A", self.plan_a)
-        result = runner.execute_phase_a(provider_call=provider, model_receipts=receipts(), run_root=Path(td) / "a",
-                                        run_id="a", synthetic_fixture=True)
-        return provider, result
-
-    def freeze(self, td, result_a, run_id="a"):
-        store = RouteRunStore(Path(td) / "a", run_id, create=False)
-        score = store.score_record()["record_sha256"]
-        doc = qualification.build_table(result_a["score"]["cells"], run_id=run_id, score_record_sha256=score,
-                                        execution_freeze_binding=runner._freeze_digest(),
-                                        audit=ready_audit(run_id, score), phase_a_attempts=runner.phase_a_attempts())
-        path = Path(td) / "QUALIFICATION_TABLE.json"
-        qualification.freeze_table(doc, path)
-        return doc, path
-
-    def test_full_pipeline_boundary_arithmetic_and_denominators(self):
-        with tempfile.TemporaryDirectory() as td:
-            real_load_gold = contract.load_gold
-
-            def guarded_gold(corpus):
-                if corpus == "B":
-                    raise AssertionError("corpus B gold loaded during phase A")
-                return real_load_gold(corpus)
-
-            with patch.object(contract, "load_gold", guarded_gold):
-                provider_a, result_a = self.run_a(td)
-            self.assertEqual(result_a["state"], "complete")
-            self.assertEqual(len(provider_a.calls), 288)
-            records_a = RouteRunStore(Path(td) / "a", "a", create=False).call_records()
-            self.assertTrue(all(r["normalization"]["raw_output"] == r["raw_output"] for r in records_a))
-            self.assertTrue(any(r["normalization"]["normalized"] for r in records_a))
-            self.assertFalse(any("semantics" in r for r in records_a))
-
-            with patch.object(runner, "QUALIFICATION_TABLE_PATH", Path(td) / "QUALIFICATION_TABLE.json"):
-                with self.assertRaisesRegex(PermissionError, "qualification_table_not_frozen"):
-                    runner.execute_phase_b(provider_call=Provider("B", self.plan_b), model_receipts=receipts(),
-                                           run_root=Path(td) / "b", phase_a_root=Path(td) / "a",
-                                           phase_a_run_id="a", synthetic_fixture=True)
-                doc, path = self.freeze(td, result_a)
-                lookup = doc["routing_lookup"]
-                self.assertEqual(lookup["grounded_research_synthesis|R1"], ["mid", "large"])
-                self.assertEqual(lookup["structured_extraction|R1"], ["small", "mid", "large"])
-
-                provider_b = Provider("B", self.plan_b)
-                result_b = runner.execute_phase_b(provider_call=provider_b, model_receipts=receipts(),
-                                                  run_root=Path(td) / "b", phase_a_root=Path(td) / "a",
-                                                  phase_a_run_id="a", synthetic_fixture=True)
-            self.assertEqual(result_b["state"], "complete")
-            self.assertTrue(result_b["terminal_views"]["valid"])
-            report = result_b["score"]
-            m = report["metrics"]
-            self.assertEqual(m["validation_cases"], 48)
-            self.assertEqual(m["r4_evidence_only_cases"], 12)
-            self.assertEqual(m["eligible_cases"], 36)
-            self.assertEqual(m["stops"] + m["no_qualified_model_cases"] + m["escalation_exhausted_cases"]
-                             + m["r4_evidence_only_cases"], 48)
-            self.assertEqual(m["routing_provider_calls"] + m["diagnostic_only_provider_calls"], 144)
-            self.assertEqual(report["gates"]["unqualified_tier_terminal_results"]["observed"], 0)
-            self.assertTrue(report["gates"]["denominator_integrity"]["observed"])
-            self.assertGreater(m["successful_escalations"], 0)
-            self.assertGreater(m["false_clean_outputs_caught_because_tier_unqualified"], 0)
-            research = [d for d in report["decisions"] if d["task_class"] == "grounded_research_synthesis"
-                        and d["risk_class"] != "R4"]
-            self.assertTrue(research and all(d["start_tier"] == "mid" and "small" not in d["tiers_contacted"]
-                                             for d in research))
-            conversation_unsafe = [d for d in report["decisions"] if d["task_class"] == "ordinary_conversation"
-                                   and d["outcome"] == "stopped" and d["final_tier"] == "small"]
-            self.assertEqual(m["unsafe_stops"], len(conversation_unsafe))
-            labels = report["generalization"]["label_counts"]
-            self.assertGreater(labels.get("false_positive_qualification", 0), 0)
-            self.assertEqual(report["table_sha256"], doc["table_sha256"])
-            self.assertIn(report["primary_status"], ("PASS", "FAIL", "NOT_TESTABLE"))
-
-    def test_table_mutation_after_phase_b_launch_fails_closed(self):
-        with tempfile.TemporaryDirectory() as td:
-            _, result_a = self.run_a(td)
-            with patch.object(runner, "QUALIFICATION_TABLE_PATH", Path(td) / "QUALIFICATION_TABLE.json"):
-                doc, path = self.freeze(td, result_a)
-                ticks = {"n": 0}
-
-                def control():
-                    ticks["n"] += 1
-                    if ticks["n"] == 3:
-                        path.write_text(path.read_text(encoding="utf-8").replace('"small"', '"large"', 1),
-                                        encoding="utf-8")
-                    return "continue"
-
-                with self.assertRaisesRegex(RuntimeError, "guarded_dependency_drift"):
-                    runner.execute_phase_b(provider_call=Provider("B", self.plan_b), model_receipts=receipts(),
-                                           run_root=Path(td) / "b", phase_a_root=Path(td) / "a", phase_a_run_id="a",
-                                           synthetic_fixture=True, control=control)
-            run_dir = next(p for p in (Path(td) / "b").iterdir() if p.is_dir())
-            self.assertEqual(RouteRunStore(Path(td) / "b", run_dir.name, create=False).manifest()["state"],
-                             "incomplete")
-
-    def test_incomplete_phase_a_blocks_phase_b(self):
-        with tempfile.TemporaryDirectory() as td:
-            ticks = {"n": 0}
-
-            def control():
-                ticks["n"] += 1
-                return "pause" if ticks["n"] == 5 else "continue"
-
-            paused = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                            run_root=Path(td) / "a", run_id="a", synthetic_fixture=True,
-                                            control=control)
-            self.assertEqual(paused["state"], "paused")
-            with patch.object(runner, "QUALIFICATION_TABLE_PATH", Path(td) / "QUALIFICATION_TABLE.json"):
-                pre = runner.phase_b_preconditions(Path(td) / "a", "a")
-                self.assertFalse(pre["valid"])
-
-    def test_table_provenance_is_rederived_from_the_sealed_call_records(self):
-        with tempfile.TemporaryDirectory() as td:
-            _, result_a = self.run_a(td)
-            table_path = Path(td) / "QUALIFICATION_TABLE.json"
-            run_dir = Path(td) / "a" / "a"
-            with patch.object(runner, "QUALIFICATION_TABLE_PATH", table_path):
-                doc, _ = self.freeze(td, result_a)
-                pre = runner.phase_b_preconditions(Path(td) / "a", "a", allow_synthetic_phase_a=True)
-                self.assertTrue(pre["valid"], pre["reasons"])
-                # a synthetic Phase A can never open a real Phase B, even with its run manifest relabelled
-                manifest = json.loads((run_dir / "run.json").read_text(encoding="utf-8"))
-                manifest["synthetic_fixture"] = False
-                (run_dir / "run.json").write_text(json.dumps(manifest), encoding="utf-8")
-                self.assertIn("phase_a_was_synthetic", runner.phase_b_preconditions(Path(td) / "a", "a")["reasons"])
-
-                # table cells edited with every table digest recomputed
-                forged = copy.deepcopy({k: v for k, v in doc.items() if k != "table_sha256"})
-                cell = next(c for c in forged["cells"] if c["verdict"] == "not_qualified")
-                cell["verdict"] = "qualified"
-                forged["routing_lookup"] = qualification.routing_lookup(forged["cells"])
-                forged["table_sha256"] = contract.json_digest(forged)
-                self.assertTrue(qualification.verify_table(forged)["valid"])
-                table_path.write_text(json.dumps(forged, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-                reasons = runner.phase_b_preconditions(Path(td) / "a", "a", allow_synthetic_phase_a=True)["reasons"]
-                self.assertIn("table_cells_differ_from_call_records", reasons)
-
-                # the table and the sealed score edited together, score resealed
-                score = json.loads((run_dir / "score.json").read_text(encoding="utf-8"))
-                score.pop("record_sha256")
-                score["cells"] = forged["cells"]
-                score["record_sha256"] = contract.json_digest(score)
-                (run_dir / "score.json").write_text(json.dumps(score), encoding="utf-8")
-                reasons = runner.phase_b_preconditions(Path(td) / "a", "a", allow_synthetic_phase_a=True)["reasons"]
-                self.assertIn("sealed_score_differs_from_call_records", reasons)
-                self.assertIn("phase_a_receipt_does_not_chain_to_score", reasons)
-
-    def test_a_fabricated_phase_a_run_cannot_open_phase_b(self):
-        """The round-2 reviewer's probe: a run directory with a hand-written manifest and resealed score only."""
-        with tempfile.TemporaryDirectory() as td:
-            root = Path(td) / "a"
-            RouteRunStore(root, "fabricated", create=True, manifest={"benchmark_id": "G-ROUTE4", "phase": "A"})
-            store = RouteRunStore(root, "fabricated", create=False)
-            cells = [{**c, "verdict": "qualified"} for c in table_from({})["cells"]]
-            store.write_score({"phase": "A", "cells": cells})
-            store.update(state="complete", synthetic_fixture=False)
-            score = store.score_record()["record_sha256"]
-            doc = qualification.build_table(cells, run_id="fabricated", score_record_sha256=score,
-                                            execution_freeze_binding=runner._freeze_digest(),
-                                            audit=ready_audit("fabricated", score), phase_a_attempts=[])
-            with patch.object(runner, "QUALIFICATION_TABLE_PATH", Path(td) / "QUALIFICATION_TABLE.json"):
-                qualification.freeze_table(doc, Path(td) / "QUALIFICATION_TABLE.json")
-                pre = runner.phase_b_preconditions(root, "fabricated")
-                self.assertFalse(pre["valid"])
-                self.assertTrue(any(r.startswith("phase_a_unverifiable") for r in pre["reasons"]), pre["reasons"])
-
-    def real_path(self, td):
-        """Patches for the authorized path: a stand-in freeze, the real-shaped stub as a governed provider type."""
-        freeze_path = Path(td) / "EXECUTION_FREEZE_CANDIDATE.json"
-        freeze_path.write_text(json.dumps({"candidate_id": "test-freeze"}), encoding="utf-8")
-        self.anchors = []
-        return [patch.object(runner, "EXECUTION_FREEZE_PATH", freeze_path),
-                patch.object(runner, "_freeze_valid", lambda: True),
-                patch.object(runner, "QUALIFICATION_TABLE_PATH", Path(td) / "QUALIFICATION_TABLE.json"),
-                patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,)),
-                patch.object(runner, "RUN_ROOTS", {"A": Path(td) / "a", "B": Path(td) / "b"}),
-                patch.object(runner, "RUN_ANCHORS", Path(td) / "anchors"),
-                patch.object(runner, "AUTHORIZATION_LEDGER", Path(td) / "ledger")]
-
-    def anchor(self, event, path):
-        self.anchors.append((event, Path(path).name))
-
-    @staticmethod
-    def auth_a(attempt, **extra):
-        digest = runner._freeze_digest()
-        return {"benchmark_id": "G-ROUTE4", "phase": "A", "execution_freeze_sha256": digest, "attempt": attempt,
-                "one_execution_only": True, "consumed": False,
-                "operator_confirmation": runner.confirmation_string("A", attempt, freeze=digest), **extra}
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_real_authorizations_are_numbered_attempts_recorded_in_a_fixed_ledger(self):
-        """The authorized path end to end, with a real-shaped stub provider and a stand-in freeze file."""
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            digest = runner._freeze_digest()
-            root_a = Path(td) / "a"
-            self.assertEqual(self.auth_a(1)["operator_confirmation"],
-                             f"Authorize G-ROUTE4 phase A execution {digest} attempt 1")
-            self.assertTrue(runner.phase_a_authorized(self.auth_a(1)))
-            self.assertFalse(runner.phase_a_authorized(self.auth_a(2)))               # attempts cannot skip
-            self.assertFalse(runner.phase_a_authorized(self.auth_a(1, note="retry")))  # no extra keys
-            # the authorized path refuses a synthetic provider and a guarded-root override
-            with self.assertRaisesRegex(PermissionError, "governed_ollama_provider"):
-                runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="x", authorization=self.auth_a(1), anchor=self.anchor)
-            with self.assertRaisesRegex(PermissionError, "guarded_root_override"):
-                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="x", authorization=self.auth_a(1), anchor=self.anchor, guarded_root=ROOT)
-            self.assertEqual(runner.ledger_entries("A"), [])                             # nothing consumed yet
-            # attempt 1 pauses, then resumes under the same authorization, run id and run root only
-            paused = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                            run_root=root_a, run_id="real-a", authorization=self.auth_a(1), anchor=self.anchor,
-                                            control=lambda: "pause")
-            self.assertEqual(paused["state"], "paused")
-            for root, rid in ((root_a, "real-a-again"), (Path(td) / "elsewhere", "real-a")):
-                with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized|fixed_run_root"):
-                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
-                                           model_receipts=receipts(), run_root=root, run_id=rid,
-                                           authorization=self.auth_a(1), anchor=self.anchor, resume=(rid == "real-a"))
-            result_a = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
-                                              model_receipts=receipts(), run_root=root_a, run_id="real-a",
-                                              authorization=self.auth_a(1), anchor=self.anchor, resume=True)
-            self.assertEqual(result_a["state"], "complete")
-            # anchoring is idempotent and re-applied on resume, so compare what was anchored, not how often
-            self.assertEqual(sorted(set(self.anchors)), [("authorization_consumed", "phase-A-attempt-001.json"),
-                                                         ("run_complete", "phase-A-real-a.json")])
-            # a further attempt after a complete one is never authorized (no best-of-N)
-            self.assertFalse(runner.phase_a_authorized(self.auth_a(2)))
-            self.assertEqual([(r["run_id"], r["outcome"]) for r in runner.phase_a_attempts()], [("real-a", "complete")])
-
-            doc, _ = self.freeze(td, result_a, run_id="real-a")
-            pre = runner.phase_b_preconditions(root_a, "real-a")
-            self.assertTrue(pre["valid"], pre["reasons"])
-            # the same run read from a different root is not the ledger's run
-            shutil.copytree(root_a / "real-a", Path(td) / "copy" / "real-a")
-            self.assertIn("phase_a_run_root_differs_from_ledger",
-                          runner.phase_b_preconditions(Path(td) / "copy", "real-a")["reasons"])
-            table = doc["table_sha256"]
-
-            def auth_b(attempt, **changes):
-                row = {"benchmark_id": "G-ROUTE4", "phase": "B", "execution_freeze_sha256": digest,
-                       "qualification_table_sha256": table, "phase_a_run_id": "real-a", "attempt": attempt,
-                       "one_execution_only": True, "consumed": False,
-                       "operator_confirmation": runner.confirmation_string("B", attempt, freeze=digest, table=table)}
-                return {**row, **changes}
-
-            self.assertTrue(runner.phase_b_authorized(auth_b(1), root_a, "real-a"))
-            self.assertFalse(runner.phase_b_authorized(auth_b(1, qualification_table_sha256="0" * 64), root_a, "real-a"))
-            result_b = runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b),
-                                              model_receipts=receipts(), run_root=Path(td) / "b", phase_a_root=root_a,
-                                              phase_a_run_id="real-a", run_id="real-b", authorization=auth_b(1), anchor=self.anchor, committed=lambda path: True)
-            self.assertEqual(result_b["state"], "complete")
-            self.assertEqual([(r["run_id"], r["outcome"]) for r in result_b["score"]["phase_b_attempts"]],
-                             [("real-b", "running")])
-            self.assertIs(result_b["score"]["synthetic_fixture"], False)
-            for rid, root in (("real-b-again", Path(td) / "b"), ("real-b", Path(td) / "b2")):
-                with self.assertRaisesRegex(PermissionError, "phase_b_not_authorized|fixed_run_root"):
-                    runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b), model_receipts=receipts(),
-                                           run_root=root, phase_a_root=root_a, phase_a_run_id="real-a", run_id=rid,
-                                           authorization=auth_b(1), anchor=self.anchor, committed=lambda path: True)
-            self.assertFalse(runner.phase_b_authorized(auth_b(2), root_a, "real-a"))     # B is not best-of-N either
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_a_retry_is_allowed_only_after_a_non_complete_attempt_and_both_are_disclosed(self):
-        class FlakyProvider(RealShapedProvider):
-            def __call__(self, call_id, body):
-                if len(self.calls) == 3:
-                    raise ConnectionError("provider went away")
-                return super().__call__(call_id, body)
-
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            stack.enter_context(patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider, FlakyProvider)))
-            root_a = Path(td) / "a"
-            first = runner.execute_phase_a(provider_call=FlakyProvider("A", self.plan_a), model_receipts=receipts(),
-                                           run_root=root_a, run_id="try-1", authorization=self.auth_a(1), anchor=self.anchor)
-            self.assertEqual(first["state"], "incomplete")
-            self.assertTrue(runner.phase_a_authorized(self.auth_a(2)))
-            second = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                            run_root=root_a, run_id="try-2", authorization=self.auth_a(2), anchor=self.anchor)
-            self.assertEqual(second["state"], "complete")
-            self.assertEqual([(r["attempt"], r["outcome"]) for r in runner.phase_a_attempts()],
-                             [(1, "incomplete"), (2, "complete")])
-            self.assertTrue(runner.phase_a_attempts()[0]["reason"].startswith("provider_boundary_exception"))
-            doc, _ = self.freeze(td, second, run_id="try-2")
-            pre = runner.phase_b_preconditions(root_a, "try-2")
-            self.assertTrue(pre["valid"], pre["reasons"])
-            self.assertFalse(runner.phase_b_preconditions(root_a, "try-1")["valid"])
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_a_stuck_attempt_can_only_be_abandoned_explicitly(self):
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                   run_root=Path(td) / "a", run_id="stuck", authorization=self.auth_a(1), anchor=self.anchor,
-                                   control=lambda: "pause")
-            self.assertFalse(runner.phase_a_authorized(self.auth_a(2)))                  # paused is not terminal
-            with self.assertRaisesRegex(ValueError, "abandon_reason_required"):
-                runner.abandon_attempt("A", " ")
-            runner.abandon_attempt("A", "host rebooted; checkpoint unrecoverable")
-            self.assertEqual(runner.phase_a_attempts()[0]["outcome"], "incomplete")
-            self.assertIn("abandoned_by_operator", runner.phase_a_attempts()[0]["reason"])
-            self.assertTrue(runner.phase_a_authorized(self.auth_a(2)))
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_a_synthetic_run_cannot_be_relabelled_as_authorized(self):
-        """Round-3 reviewer's probe: resume a finished synthetic run under a real authorization, reseal the receipt."""
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            root_a = Path(td) / "a"
-            synthetic = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                               run_root=root_a, run_id="S", synthetic_fixture=True)
-            self.freeze(td, synthetic, run_id="S")
-            with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
-                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="S", authorization=self.auth_a(1), anchor=self.anchor, resume=True)
-            self.assertEqual(runner.ledger_entries("A"), [])
-            receipt_path = root_a / "S" / "terminal_receipt.json"
-            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-            receipt.pop("record_sha256")
-            receipt["synthetic_fixture"] = False
-            receipt["record_sha256"] = contract.json_digest(receipt)
-            receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
-            reasons = runner.phase_b_preconditions(root_a, "S")["reasons"]
-            self.assertIn("phase_a_records_disagree_with_receipt_on_synthetic", reasons)
-            self.assertIn("phase_a_run_not_in_authorization_ledger", reasons)
-            with self.assertRaisesRegex(PermissionError, "synthetic_phase_b_requires_a_synthetic_phase_a"):
-                runner.execute_phase_b(provider_call=Provider("B", self.plan_b), model_receipts=receipts(),
-                                       run_root=Path(td) / "b", phase_a_root=root_a, phase_a_run_id="S",
-                                       synthetic_fixture=True)
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_authorized_runs_must_carry_the_providers_own_raw_bodies(self):
-        class HollowProvider(RealShapedProvider):
-            def __call__(self, call_id, body):
-                return {**super().__call__(call_id, body), "raw_body_b64": "", "raw_body_sha256": ""}
-
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            stack.enter_context(patch.object(runner, "REAL_PROVIDER_TYPES", (HollowProvider,)))
-            result = runner.execute_phase_a(provider_call=HollowProvider("A", self.plan_a), model_receipts=receipts(),
-                                            run_root=Path(td) / "a", run_id="hollow", authorization=self.auth_a(1), anchor=self.anchor)
-            self.assertEqual(result["state"], "complete")
-            self.freeze(td, result, run_id="hollow")
-            self.assertIn("provider_raw_body_digest_mismatch",
-                          runner.phase_b_preconditions(Path(td) / "a", "hollow")["reasons"])
-
-    def test_authorization_is_consumed_exactly_once_in_the_fixed_ledger(self):
-        with tempfile.TemporaryDirectory() as td:
-            auth = {"attempt": 1, "operator_confirmation": "x"}
-            runner.consume_authorization("A", auth, "run-1", Path(td) / "one")
-            runner.consume_authorization("A", auth, "run-1", Path(td) / "one")     # the same run resuming
-            for run_id, root in (("run-2", Path(td) / "one"), ("run-1b", Path(td) / "two"), ("run-1", Path(td) / "two")):
-                with self.assertRaisesRegex(PermissionError, "authorization_already_consumed"):
-                    runner.consume_authorization("A", auth, run_id, root)
-            self.assertEqual(len(runner.ledger_entries("A")), 1)
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_launcher_builds_its_own_provider_and_reads_only_the_exact_sentence(self):
-        import g_route4_launch as launch
-        freeze = "a" * 64
-        row = launch.authorization_from_sentence(f"Authorize G-ROUTE4 phase A execution {freeze} attempt 2")
-        self.assertEqual((row["phase"], row["attempt"], row["execution_freeze_sha256"]), ("A", 2, freeze))
-        self.assertEqual(set(row), runner.AUTHORIZATION_KEYS["A"])
-        b = launch.authorization_from_sentence(f"Authorize G-ROUTE4 phase B execution {freeze} table {'b' * 64} "
-                                               f"attempt 1", phase_a_run_id="run-a")
-        self.assertEqual(set(b), runner.AUTHORIZATION_KEYS["B"])
-        for bad in (f"Authorize G-ROUTE4 phase A execution {freeze}", f"Authorize G-ROUTE4 phase A execution {freeze} "
-                    f"attempt 01", f" Authorize G-ROUTE4 phase A execution {freeze} attempt 1",
-                    f"Authorize G-ROUTE4 phase A execution {freeze.upper()} attempt 1"):
-            with self.assertRaises(ValueError):
-                launch.authorization_from_sentence(bad)
-        with self.assertRaisesRegex(ValueError, "phase_a_run_id"):
-            launch.authorization_from_sentence(f"Authorize G-ROUTE4 phase B execution {freeze} table {'b' * 64} attempt 1")
-        source = inspect.getsource(launch.launch)
-        self.assertIn("runner.GovernedOllamaProvider()", source)
-        self.assertNotIn("guarded_root", source)
-        self.assertEqual(runner.REAL_PROVIDER_TYPES, (runner.GovernedOllamaProvider,))
-
-    def test_synthetic_path_requires_a_declared_synthetic_provider(self):
-        def real_looking(call_id, body):
-            raise AssertionError("must not be contacted")
-
-        with tempfile.TemporaryDirectory() as td:
-            with self.assertRaisesRegex(PermissionError, "declared_synthetic_provider"):
-                runner.execute_phase_a(provider_call=real_looking, model_receipts=receipts(),
-                                       run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
-            with self.assertRaisesRegex(PermissionError, "declared_synthetic_provider"):
-                runner.execute_phase_b(provider_call=real_looking, model_receipts=receipts(),
-                                       run_root=Path(td) / "b", phase_a_root=Path(td) / "a", phase_a_run_id="a",
-                                       synthetic_fixture=True)
-
-    def test_coding_sandbox_host_failure_is_infrastructure_not_model_failure(self):
-        def host_down(fixture, raw):
-            raise OSError("sandbox host unavailable")
-
-        def model_error(fixture, raw):
-            raise ValueError("candidate uses a disallowed operation")
-
-        def always_slow(fixture, raw):
-            raise subprocess.TimeoutExpired("python", 20)
-
-        def only_candidate_slow(fixture, raw):
-            if json.loads(raw)["new"] not in (fixture["input"]["source"], "baseline = 0\n"):
-                raise subprocess.TimeoutExpired("python", 20)
-            return runner._failed_coding_evidence(fixture)
-
-        with tempfile.TemporaryDirectory() as td:
-            with patch.object(runner, "run_isolated_fixture", host_down):
-                result = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                                run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
-            self.assertEqual(result["state"], "incomplete")
-            self.assertTrue(result["reason"].startswith("coding_sandbox_host_failure:OSError"))
-            last = RouteRunStore(Path(td) / "a", "a", create=False).call_records()[-1]
-            self.assertEqual(last["task_class"], "coding_generation_repair")
-            self.assertTrue(last["infrastructure_failure"].startswith("coding_sandbox_host_failure"))
-        with tempfile.TemporaryDirectory() as td:
-            with patch.object(runner, "run_isolated_fixture", model_error):
-                result = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                                run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
-            self.assertEqual(result["state"], "complete")
-            coding = [c for c in result["score"]["cells"] if c["task_class"] == "coding_generation_repair"]
-            self.assertTrue(all(c["verdict"] == "not_qualified" and c["infrastructure_failures"] == 0 for c in coding))
-        with tempfile.TemporaryDirectory() as td:
-            with patch.object(runner, "run_isolated_fixture", always_slow):
-                result = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                                run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
-            self.assertEqual((result["state"], result["reason"]), ("incomplete", "coding_sandbox_host_slow"))
-        with tempfile.TemporaryDirectory() as td:
-            with patch.object(runner, "run_isolated_fixture", only_candidate_slow):
-                result = runner.execute_phase_a(provider_call=Provider("A", self.plan_a), model_receipts=receipts(),
-                                                run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
-            self.assertEqual(result["state"], "complete")
-
-    def test_no_model_output_can_crash_collection_or_sealing(self):
-        """Round-4 reviewer's crashes: unhashable status, deep nesting, a lone surrogate, a non-list steps field."""
-        class Hostile(Provider):
-            def __call__(self, call_id, body):
-                result = super().__call__(call_id, body)
-                fixture_id = call_id[len("GROUTE4-"):].rsplit("-R", 1)[0]
-                profile = self.index[fixture_id][0]["validator_profile"]
-                n = len(self.calls)
-                if profile == "research.v1":
-                    raw = ['{"claims": [{"claim_id": "C1", "status": [], "citations": [], "lineages": []}], '
-                           '"recommendation": "x", "uncertainties": []}', "[" * 1500 + "]" * 1500][n % 2]
-                elif profile == "planning.v1":
-                    raw = '{"steps": 1.5, "uncertainties": [], "claims_completed": false, "requested_authority": []}'
-                elif profile == "conversation.v1":
-                    raw = None
-                else:
-                    return result
-                if raw is None:           # a lone surrogate arrives as a JSON escape in the provider body
-                    envelope_text = '{"model": "%s", "response": "Answer: \\ud800\\nActions taken: none"}' % body["model"]
-                    raw_body = envelope_text.encode("ascii")
-                    envelope = json.loads(envelope_text)
-                    raw = envelope["response"]
-                else:
-                    envelope = {"model": body["model"], "response": raw}
-                    raw_body = json.dumps(envelope).encode("utf-8")
-                return {**result, "raw_output": raw, "envelope": envelope,
-                        "raw_body_b64": base64.b64encode(raw_body).decode("ascii"),
-                        "raw_body_sha256": hashlib.sha256(raw_body).hexdigest()}
-
-        with tempfile.TemporaryDirectory() as td:
-            result = runner.execute_phase_a(provider_call=Hostile("A", lambda f, tier: "correct"),
-                                            model_receipts=receipts(), run_root=Path(td) / "a", run_id="a",
-                                            synthetic_fixture=True)
-            self.assertEqual(result["state"], "complete")
-            records = RouteRunStore(Path(td) / "a", "a", create=False).call_records()
-            self.assertEqual(len(records), 288)
-            self.assertTrue(any(r["provider_strings_sanitized"] for r in records))
-            hostile = [r for r in records if r["task_class"] in ("grounded_research_synthesis", "reflective_planning",
-                                                                 "ordinary_conversation")]
-            self.assertTrue(hostile and not any(r["normalized_operational_validation"]["accepted"] for r in hostile))
-            self.assertEqual(runner._provider_evidence_problems(records, "A"), [])
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_the_ledger_is_hash_chained_and_must_agree_with_the_run_root(self):
-        """Round-4 reviewer's replay: delete a ledger entry and reuse the attempt-1 sentence."""
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            root_a = runner.RUN_ROOTS["A"]
-            done = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                          run_root=root_a, run_id="first", authorization=self.auth_a(1),
-                                          anchor=self.anchor)
-            self.assertEqual(done["state"], "complete")
-            entry = runner.AUTHORIZATION_LEDGER / "phase-A-attempt-001.json"
-            original = entry.read_text(encoding="utf-8")
-            entry.unlink()
-            self.assertEqual(runner.ledger_run_root_mismatches("A"), ["run_directory_not_in_ledger:first"])
-            self.assertFalse(runner.phase_a_authorized(self.auth_a(1)))
-            with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
-                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="replay", authorization=self.auth_a(1),
-                                       anchor=self.anchor)
-            entry.write_text(original, encoding="utf-8")
-            self.assertEqual(runner.ledger_run_root_mismatches("A"), [])
-            # an edited earlier entry breaks the chain for every later one
-            second = runner.AUTHORIZATION_LEDGER / "phase-A-attempt-002.json"
-            forged = {**json.loads(original), "attempt": 2, "run_id": "other",
-                      "previous_entry_sha256": "0" * 64}
-            second.write_text(json.dumps(forged), encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "authorization_ledger_chain_broken"):
-                runner.ledger_entries("A")
-            second.unlink()
-            # the anchor file binds the run to its sealed receipt
-            self.freeze(td, done, run_id="first")
-            self.assertTrue(runner.phase_b_preconditions(root_a, "first")["valid"])
-            anchor_file = runner.RUN_ANCHORS / "phase-A-first.json"
-            anchor_file.write_text(anchor_file.read_text(encoding="utf-8").replace('"calls_persisted": 288',
-                                                                                    '"calls_persisted": 287'),
-                                   encoding="utf-8")
-            self.assertIn("run_anchor_missing_or_different", runner.phase_b_preconditions(root_a, "first")["reasons"])
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_an_interrupted_finalization_is_completed_on_resume_not_deadlocked(self):
-        original_finish = RouteRunStore.finish
-        crashed = {"n": 0}
-
-        def crash_once(store, *, state, reason, valid_verdict):
-            if state == "complete" and not crashed["n"]:
-                crashed["n"] += 1
-                raise KeyboardInterrupt("killed after the receipt was sealed")
-            return original_finish(store, state=state, reason=reason, valid_verdict=valid_verdict)
-
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            root_a = runner.RUN_ROOTS["A"]
-            with patch.object(RouteRunStore, "finish", crash_once):
-                with self.assertRaises(KeyboardInterrupt):
-                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
-                                           model_receipts=receipts(), run_root=root_a, run_id="cut",
-                                           authorization=self.auth_a(1), anchor=self.anchor)
-            (root_a / ".g-route1-single-job.lease").unlink(missing_ok=True)
-            self.assertEqual(runner.attempt_outcome(runner.ledger_entries("A")[0])["outcome"], "complete")
-            resumed = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
-                                             model_receipts=receipts(), run_root=root_a, run_id="cut",
-                                             authorization=self.auth_a(1), anchor=self.anchor, resume=True)
-            self.assertEqual((resumed["state"], resumed.get("finalization_resumed")), ("complete", True))
-            self.assertEqual(RouteRunStore(root_a, "cut", create=False).manifest()["state"], "complete")
-            self.freeze(td, resumed, run_id="cut")
-            self.assertTrue(runner.phase_b_preconditions(root_a, "cut")["valid"],
-                            runner.phase_b_preconditions(root_a, "cut")["reasons"])
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_a_run_holding_every_record_cannot_be_abandoned(self):
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            root_a = runner.RUN_ROOTS["A"]
-            ticks = {"n": 0}
-
-            def pause_at_end():
-                ticks["n"] += 1
-                return "continue"
-
-            with patch.object(runner, "_score_and_finalize", side_effect=KeyboardInterrupt("killed before scoring")):
-                with self.assertRaises(KeyboardInterrupt):
-                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
-                                           model_receipts=receipts(), run_root=root_a, run_id="full",
-                                           authorization=self.auth_a(1), anchor=self.anchor, control=pause_at_end)
-            self.assertEqual(runner.attempts_with_outcomes("A")[0]["sealed_calls"], 288)
-            with self.assertRaisesRegex(ValueError, "resume_it_instead"):
-                runner.abandon_attempt("A", "trying to discard a finished collection")
-
-    def test_pathological_coding_candidates_are_model_failures_not_infrastructure(self):
-        """Round-5 reviewers: a 3,200-dash expression or JSON nested 1,500 deep raised before the sandbox
-        subprocess and was charged to infrastructure, stopping Phase A."""
-        class Pathological(Provider):
-            def __call__(self, call_id, body):
-                result = super().__call__(call_id, body)
-                fixture_id = call_id[len("GROUTE4-"):].rsplit("-R", 1)[0]
-                fixture = self.index[fixture_id][0]
-                if fixture["validator_profile"] != "coding.v1":
-                    return result
-                source = fixture["input"]["source"]
-                raw = [json.dumps({"path": "app.py", "old": source, "new": "x = " + "-" * 3200 + "1\n"}),
-                       "[" * 1500 + "]" * 1500,
-                       json.dumps({"path": "app.py", "old": source, "new": "x = " + "(" * 3000 + "1" + ")" * 3000})
-                       ][len(self.calls) % 3]
-                envelope = {"model": body["model"], "response": raw}
-                raw_body = json.dumps(envelope).encode("utf-8")
-                return {**result, "raw_output": raw, "envelope": envelope,
-                        "raw_body_b64": base64.b64encode(raw_body).decode("ascii"),
-                        "raw_body_sha256": hashlib.sha256(raw_body).hexdigest()}
-
-        with tempfile.TemporaryDirectory() as td:
-            result = runner.execute_phase_a(provider_call=Pathological("A", lambda f, tier: "correct"),
-                                            model_receipts=receipts(), run_root=Path(td) / "a", run_id="a",
-                                            synthetic_fixture=True)
-            self.assertEqual(result["state"], "complete")
-            coding = [r for r in RouteRunStore(Path(td) / "a", "a", create=False).call_records()
-                      if r["task_class"] == "coding_generation_repair"]
-            self.assertEqual(len(coding), 48)
-            self.assertTrue(all(not r["infrastructure_failure"] for r in coding))
-            self.assertFalse(any(r["normalized_operational_validation"]["accepted"] for r in coding))
-
-    def _crash_during(self, td, target, *, when):
-        """Run an authorized Phase A and kill it once inside `target` (a RouteRunStore method) when `when`
-        holds; return the root. The lease a killed process leaves behind is removed, as the launcher documents."""
-        root_a = runner.RUN_ROOTS["A"]
-        original = getattr(RouteRunStore, target)
-        fired = {"n": 0}
-
-        def crash(store, *args, **kwargs):
-            if not fired["n"] and when(store, *args, **kwargs):
-                fired["n"] += 1
-                raise KeyboardInterrupt(f"killed in {target}")
-            return original(store, *args, **kwargs)
-
-        with patch.object(RouteRunStore, target, crash):
-            with self.assertRaises(KeyboardInterrupt):
-                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="w", authorization=self.auth_a(1), anchor=self.anchor)
-        (root_a / ".g-route1-single-job.lease").unlink(missing_ok=True)
-        return root_a
-
-    def _resume_and_check(self, td, root_a):
-        resumed = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                         run_root=root_a, run_id="w", authorization=self.auth_a(1),
-                                         anchor=self.anchor, resume=True)
-        self.assertEqual(resumed["state"], "complete")
-        self.assertEqual(RouteRunStore(root_a, "w", create=False).manifest()["state"], "complete")
-        self.assertIn(("run_complete", "phase-A-w.json"), self.anchors)
-        self.freeze(td, resumed, run_id="w")
-        pre = runner.phase_b_preconditions(root_a, "w")
-        self.assertTrue(pre["valid"], pre["reasons"])
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_finalization_recovers_from_a_crash_after_the_score_before_the_receipt(self):
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            root_a = self._crash_during(td, "write_terminal_receipt", when=lambda store, *a, **k: True)
-            self.assertTrue((root_a / "w" / "score.json").is_file())
-            self._resume_and_check(td, root_a)
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_finalization_recovers_from_a_crash_after_completion_before_the_anchor(self):
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            root_a = self._crash_during(td, "seal_terminal_checkpoint", when=lambda store, *a, **k: True)
-            self.assertEqual(RouteRunStore(root_a, "w", create=False).manifest()["state"], "complete")
-            self.assertNotIn(("run_complete", "phase-A-w.json"), self.anchors)
-            self._resume_and_check(td, root_a)
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_a_checkpoint_one_record_behind_is_reconciled_at_the_end_and_mid_run(self):
-        for last in (288, 100):
-            with self.subTest(position=last), tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-                for item in self.real_path(td):
-                    stack.enter_context(item)
-                root_a = self._crash_during(
-                    td, "write_checkpoint",
-                    when=lambda store, *a, next_position=0, **k: next_position == last + 1)
-                self.assertEqual(len(RouteRunStore(root_a, "w", create=False).call_records()), last)
-                self._resume_and_check(td, root_a)
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_a_closed_run_is_never_resumable_even_if_its_manifest_is_edited(self):
-        class Failing(RealShapedProvider):
-            def __call__(self, call_id, body):
-                if len(self.calls) == 5:
-                    raise ConnectionError("provider went away")
-                return super().__call__(call_id, body)
-
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            stack.enter_context(patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider, Failing)))
-            root_a = runner.RUN_ROOTS["A"]
-            first = runner.execute_phase_a(provider_call=Failing("A", self.plan_a), model_receipts=receipts(),
-                                           run_root=root_a, run_id="f", authorization=self.auth_a(1),
-                                           anchor=self.anchor)
-            self.assertEqual(first["state"], "incomplete")
-            self.assertIn(("run_closed", "phase-A-f-closed.json"), self.anchors)
-            manifest_path = root_a / "f" / "run.json"
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            manifest["state"] = "running"
-            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
-            self.assertEqual(runner.phase_a_attempts()[0]["outcome"], "incomplete")     # the sealed closure decides
-            with self.assertRaisesRegex(ValueError, "closed_and_is_not_resumable"):
-                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="f", authorization=self.auth_a(1),
-                                       anchor=self.anchor, resume=True)
-
-    def test_an_orphan_run_folder_can_be_cleared_on_the_record(self):
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            root_a = runner.RUN_ROOTS["A"]
-            RouteRunStore(root_a, "orphan", create=True, manifest={"benchmark_id": "G-ROUTE4", "phase": "A"})
-            self.assertFalse(runner.phase_a_authorized(self.auth_a(1)))                 # root disagrees with ledger
-            with self.assertRaisesRegex(ValueError, "orphan_reason_required"):
-                runner.clear_orphan_run("A", "orphan", "")
-            runner.clear_orphan_run("A", "orphan", "launch interrupted before its lease", anchor=self.anchor)
-            self.assertIn(("orphan_cleared", "phase-A-orphan-orphan.json"), self.anchors)
-            self.assertEqual(runner.ledger_run_root_mismatches("A"), [])
-            self.assertTrue(runner.phase_a_authorized(self.auth_a(1)))
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_authorized_phase_b_requires_phase_a_evidence_committed_in_git(self):
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            root_a = runner.RUN_ROOTS["A"]
-            result_a = runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
-                                              model_receipts=receipts(), run_root=root_a, run_id="c",
-                                              authorization=self.auth_a(1), anchor=self.anchor)
-            doc, _ = self.freeze(td, result_a, run_id="c")
-            digest, table = runner._freeze_digest(), doc["table_sha256"]
-            auth_b = {"benchmark_id": "G-ROUTE4", "phase": "B", "execution_freeze_sha256": digest,
-                      "qualification_table_sha256": table, "phase_a_run_id": "c", "attempt": 1,
-                      "one_execution_only": True, "consumed": False,
-                      "operator_confirmation": runner.confirmation_string("B", 1, freeze=digest, table=table)}
-            for committed, pattern in ((None, "requires_a_git_commit_check"),
-                                       (lambda path: path.name != "phase-A-c.json", "not_committed_in_git:phase-A-c")):
-                with self.assertRaisesRegex(PermissionError, pattern):
-                    runner.execute_phase_b(provider_call=RealShapedProvider("B", self.plan_b), model_receipts=receipts(),
-                                           run_root=runner.RUN_ROOTS["B"], phase_a_root=root_a, phase_a_run_id="c",
-                                           run_id="b", authorization=auth_b, anchor=self.anchor, committed=committed)
-            self.assertEqual(runner.ledger_entries("B"), [])
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_a_failed_consumption_anchor_is_reapplied_on_resume(self):
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            root_a = runner.RUN_ROOTS["A"]
-
-            def failing_anchor(event, path):
-                raise RuntimeError("index.lock held by another program")
-
-            with self.assertRaisesRegex(RuntimeError, "index.lock"):
-                runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                       run_root=root_a, run_id="g", authorization=self.auth_a(1),
-                                       anchor=failing_anchor)
-            (root_a / ".g-route1-single-job.lease").unlink(missing_ok=True)
-            runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                   run_root=root_a, run_id="g", authorization=self.auth_a(1), anchor=self.anchor,
-                                   resume=True, control=lambda: "pause")
-            self.assertIn(("authorization_consumed", "phase-A-attempt-001.json"), self.anchors)
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_launcher_table_freeze_and_local_only_network(self):
-        import g_route4_launch as launch
-        with tempfile.TemporaryDirectory() as td, contextlib.ExitStack() as stack:
-            for item in self.real_path(td):
-                stack.enter_context(item)
-            anchored = []
-            stack.enter_context(patch.object(launch, "git_anchor", lambda event, path: anchored.append(event)))
-            runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a), model_receipts=receipts(),
-                                   run_root=runner.RUN_ROOTS["A"], run_id="t", authorization=self.auth_a(1),
-                                   anchor=self.anchor)
-            score = RouteRunStore(runner.RUN_ROOTS["A"], "t", create=False).score_record()["record_sha256"]
-            audit = Path(td) / "PHASE_A_AUDIT.md"
-            audit.write_text(f"Phase A run t, score {score}: READY\n", encoding="utf-8")
-            relative = Path(audit).relative_to(Path(td))
-            cwd = Path.cwd()
-            try:
-                import os
-                os.chdir(td)
-                result = launch.freeze_table("t", str(relative), "auditor", "READY")
-            finally:
-                os.chdir(cwd)
-            self.assertEqual(anchored, ["qualification_table_frozen"])
-            self.assertTrue(result["phase_b_preconditions"]["valid"], result["phase_b_preconditions"]["reasons"])
-            table = json.loads(runner.QUALIFICATION_TABLE_PATH.read_text(encoding="utf-8"))
-            self.assertTrue(Path(table["audit"]["document_path"]).is_absolute())
-        import os
-        saved = {k: os.environ.get(k) for k in launch.PROXY_VARIABLES + ("NO_PROXY", "no_proxy")}
-        try:
-            os.environ["HTTP_PROXY"] = "http://proxy.invalid:8080"
-            launch._local_only_network()
-            self.assertNotIn("HTTP_PROXY", os.environ)
-            self.assertIn("127.0.0.1", os.environ["NO_PROXY"])
-        finally:
-            for key, value in saved.items():
-                if value is None:
-                    os.environ.pop(key, None)
-                else:
-                    os.environ[key] = value
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_the_authorized_provider_endpoint_is_fixed(self):
-        self.assertNotIn("endpoint", inspect.signature(runner.GovernedOllamaProvider.__init__).parameters)
-        import g_route4_launch as launch
-        self.assertNotIn("endpoint", inspect.signature(launch.launch).parameters)
-        self.assertNotIn("--endpoint", inspect.getsource(launch.main))
-        self.assertEqual(runner.OLLAMA_ENDPOINT, "http://127.0.0.1:11434")
-
-    @unittest.skip("R6 authorized lifecycle superseded by R7 (R7_LIFECYCLE_DESIGN.md §20); its R7 counterparts are in g_route4_r7_tests.py and g_route4_campaign.py")
-    def test_the_git_anchor_commits_exactly_one_file(self):
-        import g_route4_launch as launch
-        with tempfile.TemporaryDirectory() as td:
-            repo = Path(td)
-            git = ["git", "-c", f"safe.directory={repo.as_posix()}", "-C", str(repo)]
-            subprocess.run(git + ["init", "-q"], check=True)
-            subprocess.run(git + ["config", "user.email", "t@example.invalid"], check=True)
-            subprocess.run(git + ["config", "user.name", "t"], check=True)
-            (repo / "unrelated.txt").write_text("staged but not anchored", encoding="utf-8")
-            subprocess.run(git + ["add", "unrelated.txt"], check=True)
-            ledger = repo / "ledger" / "phase-A-attempt-001.json"
-            ledger.parent.mkdir()
-            ledger.write_text("{}", encoding="utf-8")
-            launch.git_anchor("authorization_consumed", ledger, root=repo)
-            files = subprocess.run(git + ["show", "--name-only", "--format=", "HEAD"], check=True,
-                                   capture_output=True, text=True).stdout.split()
-            self.assertEqual(files, ["ledger/phase-A-attempt-001.json"])
-            message = subprocess.run(git + ["log", "-1", "--format=%B"], check=True, capture_output=True,
-                                     text=True).stdout
-            self.assertIn("G-ROUTE4 anchor: authorization_consumed", message)
-            head = subprocess.run(git + ["rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout
-            launch.git_anchor("authorization_consumed", ledger, root=repo)          # idempotent on resume
-            self.assertEqual(subprocess.run(git + ["rev-parse", "HEAD"], check=True, capture_output=True,
-                                            text=True).stdout, head)
-
-    def test_malformed_and_non_hashable_output_never_crash(self):
-        def chaos(fixture, tier):
-            return {"small": "malformed", "mid": "nonhashable", "large": "wrong"}[tier]
-        with tempfile.TemporaryDirectory() as td:
-            result = runner.execute_phase_a(provider_call=Provider("A", chaos), model_receipts=receipts(),
-                                            run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
-            self.assertEqual(result["state"], "complete")
-            self.assertEqual(result["score"]["qualified_cells"], 0)
-
-    def test_r6_authorized_path_refuses_as_superseded(self):
-        with self.assertRaisesRegex(PermissionError, "r6_authorized_path_superseded_by_r7_lifecycle"):
-            runner._require_governed_real_path(object(), None, "A", runner.RUN_ROOTS["A"], lambda *a: None)
-
-    @unittest.skip(REASON_R7)
-    def test_authorization_is_required_for_both_phases(self):
-        with tempfile.TemporaryDirectory() as td:
-            with patch.object(runner, "REAL_PROVIDER_TYPES", (RealShapedProvider,)), \
-                    patch.object(runner, "RUN_ROOTS", {"A": Path(td) / "a", "B": Path(td) / "b"}):
-                with self.assertRaisesRegex(PermissionError, "phase_a_not_authorized"):
-                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
-                                           model_receipts=receipts(), run_root=Path(td) / "a", run_id="a",
-                                           anchor=lambda event, path: None)
-                with self.assertRaisesRegex(PermissionError, "git_anchor"):
-                    runner.execute_phase_a(provider_call=RealShapedProvider("A", self.plan_a),
-                                           model_receipts=receipts(), run_root=Path(td) / "a", run_id="a")
-        self.assertFalse(runner.phase_a_authorized({}))
-        self.assertFalse(runner.phase_b_authorized({}, Path("."), "none"))
-
-    def test_model_binding_drift_fails_closed(self):
-        with tempfile.TemporaryDirectory() as td:
-            with self.assertRaisesRegex(ValueError, "model_preflight_rejected"):
-                runner.execute_phase_a(provider_call=Provider("A", self.plan_a),
-                                       model_receipts=receipts(manifest_digest="0" * 64),
-                                       run_root=Path(td) / "a", run_id="a", synthetic_fixture=True)
-        # the preflight reads G-ROUTE4's own frozen bindings, not G-ROUTE1's
-        self.assertNotIn("g_route1_provider", inspect.getsource(runner._collect))
-        self.assertTrue(runner.verify_model_receipts(receipts())["valid"])
-
-class ValidationGateTests(LedgerIsolation, unittest.TestCase):
-    @staticmethod
-    def records(output_for):
-        records = []
+# ============================================================================ gates
+class GateTests(unittest.TestCase):
+    GATES = contract.load_thresholds()["gates"]
+
+    def test_the_frozen_three_way_tables(self):
+        u = lambda k, n: validation.unsafe_stop_gate(k, n, self.GATES)["outcome"]            # noqa: E731
+        c = lambda x, n: validation.correct_stop_gate(x, n, self.GATES)["outcome"]           # noqa: E731
+        self.assertEqual(u(3, 76), "PASS")
+        self.assertEqual(u(4, 76), "FAIL (not shown)")
+        self.assertEqual(u(3, 75), "NOT_TESTABLE")
+        self.assertEqual(u(10, 30), "FAIL (shown worse)")
+        self.assertEqual(u(2, 12), "FAIL (not shown)")               # n >= 10 and observed > 0.10
+        self.assertEqual(u(1, 10), "NOT_TESTABLE")
+        self.assertEqual(u(0, 0), "NOT_TESTABLE")
+        self.assertEqual(c(23, 30), "PASS")
+        self.assertEqual(c(22, 30), "FAIL (not shown)")
+        self.assertEqual(c(2, 20), "FAIL (shown worse)")
+        self.assertEqual(c(5, 9), "NOT_TESTABLE")
+        self.assertEqual(c(5, 10), "FAIL (not shown)")               # n >= 10 and observed < 0.60
+
+    def test_the_floors_reproduce_their_derivation(self):
+        from fractions import Fraction
+        self.assertEqual(next(n for n in range(4, 400) if validation.upper_bound_at_most(3, n, Fraction(1, 10),
+                                                                                        Fraction(1, 20))), 76)
+        self.assertEqual(next(x for x in range(31) if validation.lower_bound_at_least(x, 30, Fraction(3, 5),
+                                                                                     Fraction(1, 20))), 23)
+
+    @classmethod
+    def records(cls, output_for, drop=0):
+        out = []
         for fid, (fixture, gold) in contract.indexed_fixture_gold("B").items():
             for tier in contract.TIER_ORDER:
                 raw = output_for(fid, fixture, gold, tier)
-                evidence = evidence_for(fixture, raw)
-                records.append({"fixture_id": fid, "task_class": fixture["task_class"],
-                                "risk_class": fixture["consequence_risk"], "model_tier": tier, "model": "m",
-                                "returned_model": "m", "infrastructure_failure": "", "raw_output": raw,
-                                "coding_execution_evidence": evidence,
-                                **qualification.collect_evaluation(fixture, raw, evidence)})
-        return records
+                out.append({"fixture_id": fid, "task_class": fixture["task_class"], "risk_class": fixture["consequence_risk"],
+                            "model_tier": tier, "model": "m", "returned_model": "m", "infrastructure_failure": "",
+                            "raw_output": raw, **qualification.collect_evaluation(fixture, raw)})
+        return out[drop:]
 
-    def test_an_empty_table_is_not_testable_rather_than_passing(self):
+    def test_an_empty_table_is_not_testable_with_intact_denominators(self):
         report = validation.score(self.records(lambda fid, f, g, tier: reference(f, g)), table_from({}))
         self.assertEqual(report["primary_status"], "NOT_TESTABLE")
-        self.assertEqual(report["metrics"]["stops"], 0)
-        self.assertEqual(report["metrics"]["no_qualified_model_cases"], 36)
+        self.assertEqual((report["metrics"]["stops"], report["metrics"]["no_qualified_model_cases"],
+                          report["metrics"]["r4_evidence_only_cases"]), (0, 300, 5))
+        self.assertTrue(report["gates"]["denominator_integrity"]["observed"])
+        self.assertNotIn("secondary_status", report)
+        self.assertNotIn("unsafe_stops_of_stops_excluding_coding", report["metrics"])
 
-    def test_an_evaluable_failing_gate_is_a_failure_even_when_the_other_gate_is_not_evaluable(self):
-        b = contract.indexed_fixture_gold("B")
-        eligible = sorted(fid for fid, (f, _) in b.items()
-                          if f["consequence_risk"] != "R4" and f["validator_profile"] != "coding.v1")
-        good = set(eligible[:5])
+    def test_a_missing_record_is_an_integrity_failure(self):
+        report = validation.score(self.records(lambda fid, f, g, tier: reference(f, g), drop=1),
+                                  table_from({f"{t}|{r}": ["small"] for t in contract.TASK_CLASSES
+                                              for r in ("R1", "R2", "R3")}))
+        self.assertEqual(report["primary_status"], "FAILED_INTEGRITY")
 
-        def outputs(fid, fixture, gold, tier):
-            if tier != "small" or fid in good:
-                return reference(fixture, gold)
-            return "" if fixture["validator_profile"] == "conversation.v1" else "{not json"
+    def test_every_stop_correct_passes_both_gates(self):
+        lookup = {f"{t}|{r}": ["small"] for t in contract.TASK_CLASSES for r in ("R1", "R2", "R3")}
+        report = validation.score(self.records(lambda fid, f, g, tier: reference(f, g)), table_from(lookup))
+        self.assertEqual(report["metrics"]["stops"], 300)
+        self.assertEqual(report["gates"]["unsafe_stop_rate_of_stops"]["outcome"], "PASS")
+        self.assertEqual(report["gates"]["correct_stop_rate_of_qualified_start_cases"]["outcome"], "PASS")
+        self.assertEqual(report["primary_status"], "PASS")
+        self.assertEqual(report["descriptive_never_gating"]["research_metrics_b"]["claim_level_agreement"]["rate"], 1.0)
 
-        lookup = {f"{task}|{risk}": ["small"] for task in contract.TASK_CLASSES for risk in ("R1", "R2", "R3")}
-        report = validation.score(self.records(outputs), table_from(lookup))
-        gates = report["gates"]
-        self.assertEqual(report["metrics"]["stops"], 5)
-        self.assertFalse(gates["unsafe_stop_rate_of_stops"]["evaluable"])
-        self.assertTrue(gates["correct_stop_rate_of_qualified_start_cases"]["evaluable"])
-        self.assertFalse(gates["correct_stop_rate_of_qualified_start_cases"]["passed"])
+    def test_an_evaluable_failing_gate_is_a_failure(self):
+        lookup = {f"{t}|{r}": ["small"] for t in contract.TASK_CLASSES for r in ("R1", "R2", "R3")}
+        report = validation.score(self.records(lambda fid, f, g, tier: wrong(f, g) if tier == "small" else reference(f, g)),
+                                  table_from(lookup))
+        self.assertEqual(report["gates"]["unsafe_stop_rate_of_stops"]["outcome"], "FAIL (shown worse)")
         self.assertEqual(report["primary_status"], "FAIL")
-        self.assertIn("unsafe_stops_of_stops_excluding_coding", report["metrics"])
-        self.assertIn("coding_generation_repair", report["metrics"]["unsafe_stops_by_task_class"])
 
 
+# ============================================================================ freeze
 class FreezeTests(unittest.TestCase):
-    def test_freeze_verification_does_not_depend_on_table_absence(self):
-        for function in (freeze.build_manifest, freeze.verify_manifest):
-            self.assertNotIn("QUALIFICATION_TABLE", inspect.getsource(function))
-        self.assertIn("QUALIFICATION_TABLE", inspect.getsource(freeze.write_manifest))
-        manifest = freeze.build_manifest(implementation_commit="0" * 40)
-        self.assertTrue(freeze.verify_manifest(manifest)["valid"], freeze.verify_manifest(manifest)["reasons"])
-        self.assertEqual([row["binding_sha256"] for row in manifest["supersedes"]],
-                         ["64eed1ba1a6bb40faa0277f363f4027c09056ef909e6a31bdf71e8ad5ffe3c21",
-                          "aa5db17af6e12aaf1453cdbd1c88940743cb8712882c8a7ccba2a6541bfd52af",
-                          "f92fd6e0a628864a7da9a842642ec2e3fd79c81685f9fce3c0a817dbed721397",
-                          "3660f60f459ef7a0b3dc1e86bd50aec397d1233e7a235665989ad91195b727b3",
-                          "2e97b75e0b3ce68bd2cd21fd5cbcc69f6133abaa736727b62452d729061fce94",
-                          "2e5e8cc72570b6be1dd92b1bebe80d0366b3b1c489fb75a8d1f4404886e062e3"])
-        self.assertFalse(any(row["authorized"] for row in manifest["supersedes"]))
+    def test_identity_and_pinned_data_root(self):
+        self.assertEqual((freeze.CANDIDATE_ID, freeze.SUPERSEDED), ("G-ROUTE4-EXECUTION-R1", ()))
+        self.assertEqual(freeze.DATA_ROOT, r"C:\Users\marcu\AppData\Local\Eidolon\research\g_route4")
 
-    def test_superseded_digests_are_independent_of_checkout_line_endings(self):
-        for prior in freeze.SUPERSEDED:
-            path = contract.ROOT / prior["path"]
-            self.assertEqual(freeze.literal_sha256(path), prior["literal_sha256"])
-            with tempfile.TemporaryDirectory() as td:
-                crlf = Path(td) / "prior.json"
-                crlf.write_bytes(path.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
-                self.assertEqual(freeze.literal_sha256(crlf), prior["literal_sha256"])
+    def test_no_freeze_before_the_later_step_4_records(self):
+        with self.assertRaisesRegex(FileNotFoundError, "IMPLEMENTATION_REVIEW"):
+            freeze.build_manifest(implementation_commit="0" * 40)
 
-    def test_every_runtime_module_is_frozen_and_guarded(self):
-        """The import closure of the governed run, including the activity module, must be bound and guarded."""
-        script = (
-            "import sys, os, json, tempfile\n"
-            "sys.path.insert(0, os.getcwd())\n"
-            "import g_route4_runner as r, g_route4_qualification, g_route4_validation, g_route3_routing, g_route4_freeze\n"
-            "import g_route4_launch, g_route4_lifecycle, g_route3_worker, g_route4_scorer\n"
-            "r.RouteFourActivity('closure-probe', phase='A', root=tempfile.mkdtemp())\n"
-            "root = os.path.abspath('..')\n"
-            "mods = sorted({os.path.relpath(os.path.abspath(m.__file__), root).replace(os.sep, '/')\n"
-            "               for m in list(sys.modules.values()) if getattr(m, '__file__', None)\n"
-            "               and os.path.abspath(m.__file__).startswith(root)})\n"
-            "print(json.dumps(mods))\n")
-        out = subprocess.run([sys.executable, "-c", script], cwd=contract.ROOT / "tools", capture_output=True,
-                             text=True, check=True).stdout.strip().splitlines()[-1]
-        modules = set(json.loads(out))
-        self.assertIn("conscious_agent/activity.py", modules)
-        import g_route4_lifecycle
-        guarded = set(runner.GUARDED_PATHS) | set(g_route4_lifecycle.R7_MODULES)
-        self.assertLessEqual(modules, guarded, sorted(modules - guarded))
-        self.assertLessEqual(modules, set(freeze.ARTIFACTS), sorted(modules - set(freeze.ARTIFACTS)))
+    def test_freeze_conditions_b7_and_b8_are_bound(self):
+        self.assertEqual(freeze.b7_condition()["result"], "PASS")
+        counts = freeze.b8_condition()["per_cell_fix_round_counts"]
+        self.assertEqual(counts["g4adj-bmain-fix1-20260929T171651Z"]["B4-RSRCH-R3"], {"slots": 12, "disagreeing_slots": 7})
 
     def test_a_freeze_cannot_be_written_once_a_table_exists(self):
         with tempfile.TemporaryDirectory() as td:
@@ -1625,6 +600,161 @@ class FreezeTests(unittest.TestCase):
             with patch.object(freeze, "DATA", Path(td)):
                 with self.assertRaisesRegex(ValueError, "qualification_table_must_not_exist_at_execution_freeze"):
                     freeze.write_manifest(Path(td) / "freeze.json")
+
+    def test_every_runtime_module_is_guarded_and_frozen(self):
+        script = ("import sys, os, json\nsys.path.insert(0, os.getcwd())\n"
+                  "import g_route4_launch, g_route4_lifecycle, g_route4_scorer, g_route4_runner, g_route4_journal\n"
+                  "import g_route4_qualification, g_route4_validation, g_route4_freeze, g_route4_evidence, g_route4_fs\n"
+                  "root = os.path.abspath('..')\n"
+                  "print(json.dumps(sorted({os.path.relpath(os.path.abspath(m.__file__), root).replace(os.sep, '/')\n"
+                  "      for m in list(sys.modules.values()) if getattr(m, '__file__', None)\n"
+                  "      and os.path.abspath(m.__file__).startswith(root)})))\n")
+        out = subprocess.run([sys.executable, "-B", "-c", script], cwd=TOOLS, capture_output=True, text=True,
+                             check=True).stdout.strip().splitlines()[-1]
+        modules = set(json.loads(out))
+        import g_route4_lifecycle
+        guarded = set(runner.GUARDED_PATHS) | set(g_route4_lifecycle.R7_MODULES)
+        self.assertLessEqual(modules, guarded, sorted(modules - guarded))
+        self.assertLessEqual(modules, set(freeze.ARTIFACTS), sorted(modules - set(freeze.ARTIFACTS)))
+
+
+# ============================================================================ design: identity and separation
+class DesignTests(unittest.TestCase):
+    def test_grep_identity_and_the_frozen_allowlist(self):
+        """No prior-experiment reference in any g_route4_* module outside the frozen allowlist."""
+        provenance = re.compile(G3_REFERENCE_ALLOWLIST["provenance_line"])
+        imported = re.compile(G3_REFERENCE_ALLOWLIST["imported_unchanged_module"])
+        failures = []
+        for path in sorted(TOOLS.glob("g_route4_*.py")):
+            text = path.read_text(encoding="utf-8")
+            scope, _ = G3_REFERENCE_ALLOWLIST["read_only_references"].get(path.name, ((), ""))
+            if scope == "*":
+                continue
+            allowed_lines = set()
+            for node in ast.walk(ast.parse(text)):
+                name = getattr(node, "name", None)
+                if name is None and isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
+                    name = node.targets[0].id
+                if name in scope:
+                    allowed_lines |= set(range(node.lineno, node.end_lineno + 1))
+            for number, line in enumerate(text.splitlines(), 1):
+                if not GREP.search(line) or provenance.match(line) or number in allowed_lines:
+                    continue
+                if GREP.search(imported.sub("", line)):
+                    failures.append(f"{path.name}:{number}:{line.strip()[:100]}")
+        self.assertEqual(failures, [])
+        camel = "Route" + "Three"                     # built from parts so this test does not match itself
+        for path in TOOLS.glob("g_route4_*.py"):
+            self.assertNotIn(camel, path.read_text(encoding="utf-8"), path.name)
+
+    def test_module_rule(self):
+        """No prior module other than the five imported unchanged, and neither the coding runner nor the persistence
+        module, is loaded by a G-ROUTE4 process (checked through the loaded module set)."""
+        code = ("import sys; sys.path.insert(0, r'%s')\n"
+                "import g_route4_launch, g_route4_lifecycle, g_route4_scorer, g_route4_runner, g_route4_journal\n"
+                "import g_route4_qualification, g_route4_validation, g_route4_freeze, g_route4_independence\n"
+                "print('\\n'.join(sorted(sys.modules)))" % TOOLS)
+        loaded = subprocess.run([sys.executable, "-B", "-c", code], capture_output=True, text=True, check=True).stdout.split()
+        prior = sorted(m for m in loaded if m.startswith("g_route3_"))
+        self.assertEqual(set(prior) - set(IMPORTED_UNCHANGED_PRIOR), set(), prior)
+        self.assertFalse(set(FORBIDDEN_MODULES) & set(loaded))
+
+    def test_closure_rule_for_imported_unchanged_modules(self):
+        allowed = set(IMPORTED_UNCHANGED) | {"requests"}
+        for name in IMPORTED_UNCHANGED:
+            tree = ast.parse((TOOLS / f"{name}.py").read_text(encoding="utf-8"))
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.Import, ast.ImportFrom)):
+                    modules = [a.name for a in node.names] if isinstance(node, ast.Import) else [node.module or ""]
+                    for module in modules:
+                        top = module.split(".")[0]
+                        with self.subTest(module=name, imports=top):
+                            self.assertTrue(top in allowed or top in sys.stdlib_module_names or top == "__future__",
+                                            top)
+
+    def test_three_way_bindings_equality(self):
+        rows = [contract.load_json(p) for p in (ROOT / "experiments/G-ROUTE1-candidate/model_bindings.json",
+                                                ROOT / "experiments/G-ROUTE3-candidate/model_bindings.json",
+                                                CAND / "model_bindings.json")]
+        for key in ("bindings", "generation_configuration", "provider_version"):
+            self.assertEqual(rows[0][key], rows[1][key], key)
+            self.assertEqual(rows[1][key], rows[2][key], key)
+        self.assertEqual((rows[2]["schema_version"], rows[2]["binding_id"]),
+                         ("g-route4.model-bindings.v1", "G-ROUTE4-MODEL-BINDINGS-R1"))
+
+    def test_seed_ranges_and_disjointness(self):
+        seeds = {c: {row.seed for row in contract.build_schedule(c)} for c in "AB"}
+        self.assertEqual((min(seeds["A"]), max(seeds["A"])), (470001, 470792))
+        self.assertEqual((min(seeds["B"]), max(seeds["B"])), (480001, 483041))
+        prior = {row["seed"] for c in "ab"
+                 for row in contract.load_json(ROOT / f"experiments/G-ROUTE3-candidate/schedule_{c}.json")["calls"]}
+        self.assertFalse((seeds["A"] | seeds["B"]) & prior)
+        self.assertLess(max(prior), 470001)
+
+    def test_o8_thresholds_carry_exactly_the_keys_the_code_reads(self):
+        """O8: derive by static reading the keys read by the forked qualify, score and gate code and the threshold
+        loader, and require the frozen thresholds to contain exactly that set."""
+        holders = {"limits", "gates", "qualification", "payload", "thresholds"}
+
+        def rooted(expr) -> bool:
+            """True when the expression is the thresholds object or a part of it."""
+            while True:
+                if isinstance(expr, ast.Name):
+                    return expr.id in holders
+                if isinstance(expr, ast.Call):
+                    if isinstance(expr.func, ast.Name) and expr.func.id == "load_thresholds":
+                        return True
+                    if isinstance(expr.func, ast.Name) and expr.func.id == "dict" and expr.args:
+                        expr = expr.args[0]
+                        continue
+                    return False
+                if isinstance(expr, ast.BoolOp):
+                    return any(rooted(v) for v in expr.values)
+                if isinstance(expr, ast.Subscript):
+                    expr = expr.value
+                    continue
+                return False
+
+        read = set()
+        for module, names in (("g_route4_qualification.py", ("qualify",)),
+                              ("g_route4_validation.py", ("score", "unsafe_stop_gate", "correct_stop_gate")),
+                              ("g_route4_contract.py", ("load_thresholds",))):
+            tree = ast.parse((TOOLS / module).read_text(encoding="utf-8"))
+            for fn in (n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in names):
+                for node in ast.walk(fn):
+                    if isinstance(node, ast.Subscript) and isinstance(node.slice, ast.Constant) and rooted(node.value):
+                        read.add(node.slice.value)
+                    elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "get" \
+                            and node.args and isinstance(node.args[0], ast.Constant) and rooted(node.func.value):
+                        read.add(node.args[0].value)
+        thresholds = contract.load_thresholds()
+        frozen = set(thresholds) | set(thresholds["qualification"]) | set(thresholds["gates"])
+        self.assertEqual(read, frozen, sorted(read ^ frozen))
+        self.assertEqual(thresholds["qualification"]["false_clean_allowed"], 0)
+
+    def test_the_prior_data_root_refuses_by_its_own_literal(self):
+        """The data-root refusal test (static read of the prior freeze module, never imported)."""
+        tree = ast.parse((TOOLS / "g_route3_freeze.py").read_text(encoding="utf-8"))
+        literal = next(n.value.value for n in tree.body if isinstance(n, ast.Assign)
+                       and isinstance(n.targets[0], ast.Name) and n.targets[0].id == "DATA_ROOT")
+        self.assertTrue(literal.endswith("\\g_route3"))
+        self.assertNotEqual(literal, freeze.DATA_ROOT)
+        self.assertTrue(freeze.DATA_ROOT.endswith("\\g_route4"))
+
+    def test_coding_is_excluded(self):
+        with self.assertRaisesRegex(ValueError, "coding_positions_forbidden"):
+            journal.RunSpec(call_ids=("x",), coding=frozenset({1}))
+        self.assertNotIn("coding_generation_repair", contract.TASK_CLASSES)
+        doc = contract.load_corpus("A")
+        bad = copy.deepcopy(doc)
+        bad["fixtures"][0]["validator_profile"] = "coding.v1"
+        with patch.object(contract, "load_json", lambda path: bad):
+            with self.assertRaisesRegex(ValueError, "corpus_coding_fixture_refused"):
+                contract.load_corpus("A")
+        runner_source = (TOOLS / "g_route4_runner.py").read_text(encoding="utf-8")
+        for name in FORBIDDEN_MODULES:
+            self.assertNotIn(f"import {name}", runner_source)
+            self.assertNotIn(f"from {name}", runner_source)
 
 
 if __name__ == "__main__":

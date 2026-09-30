@@ -3,6 +3,10 @@ from __future__ import annotations
 
 """Quick, deterministic R7 lifecycle tests (the normal suite; the exhaustive campaign is g_route4_campaign.py).
 
+Coding is excluded in this fork: the run spec has no coding positions, a run journal holds no execution entries, and
+the coding-exclusion probes assert that an execution entry is an integrity failure. Journal entry numbers follow the
+non-coding run (the last call_recorded of the four-call schedule is entry 9).
+
     python tools/g_route4_r7_tests.py
 """
 
@@ -15,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import g_route4_journal as J  # noqa: E402
 
-SPEC = J.RunSpec(call_ids=("c1", "c2", "c3"), coding=frozenset({2}))
+SPEC = J.RunSpec(call_ids=("c1", "c2", "c3"), coding=frozenset())
 HEAD0 = "0" * 64
 
 
@@ -64,8 +68,6 @@ def full_run(b: Builder) -> None:
     b.add("call_recorded", {"position": 1, "call_id": "c1", "transport_failure": ""})
     b.add("call_started", {"position": 2, "call_id": "c2"})
     b.add("call_recorded", {"position": 2, "call_id": "c2", "transport_failure": ""})
-    b.add("execution_started", {"position": 2, **executable()})
-    b.add("execution_recorded", {"position": 2, "infrastructure_failure": ""})
     b.add("call_started", {"position": 3, "call_id": "c3"})
     b.add("call_recorded", {"position": 3, "call_id": "c3", "transport_failure": ""})
 
@@ -74,14 +76,11 @@ class JournalReplayTests(unittest.TestCase):
     def test_states_along_a_clean_run(self) -> None:
         b = Builder()
         self.assertEqual(b.replay().state, "absent")
-        expected = ["created", "in_doubt", "collecting", "in_doubt", "awaiting_execution", "execution_in_doubt",
-                    "collecting", "in_doubt", "collected"]
+        expected = ["created", "in_doubt", "collecting", "in_doubt", "collecting", "in_doubt", "collected"]
         steps = [("run_created", {}), ("call_started", {"position": 1, "call_id": "c1"}),
                  ("call_recorded", {"position": 1, "call_id": "c1", "transport_failure": ""}),
                  ("call_started", {"position": 2, "call_id": "c2"}),
                  ("call_recorded", {"position": 2, "call_id": "c2", "transport_failure": ""}),
-                 ("execution_started", {"position": 2, **executable()}),
-                 ("execution_recorded", {"position": 2, "infrastructure_failure": ""}),
                  ("call_started", {"position": 3, "call_id": "c3"}),
                  ("call_recorded", {"position": 3, "call_id": "c3", "transport_failure": ""})]
         for (kind, payload), state in zip(steps, expected):
@@ -129,17 +128,6 @@ class JournalReplayTests(unittest.TestCase):
             J.closed_reason_for(b.replay(), SPEC, acknowledging=False)
         b.add("closed", {"reason": "operator_interrupt"})
         self.assertEqual(b.replay().state, "integrity_failure")
-
-    def test_no_closed_directly_after_execution_started(self) -> None:
-        b = Builder()
-        b.add("run_created", {})
-        b.add("call_started", {"position": 1, "call_id": "c1"})
-        b.add("call_recorded", {"position": 1, "call_id": "c1", "transport_failure": ""})
-        b.add("call_started", {"position": 2, "call_id": "c2"})
-        b.add("call_recorded", {"position": 2, "call_id": "c2", "transport_failure": ""})
-        b.add("execution_started", {"position": 2, **executable()})
-        with self.assertRaises(ValueError):
-            J.closed_reason_for(b.replay(), SPEC, acknowledging=False)
 
     def test_tear_prediction_and_acknowledgement(self) -> None:
         b = Builder()
@@ -204,16 +192,6 @@ class JournalReplayTests(unittest.TestCase):
         b.rename_tail_to_torn()
         self.assertEqual(b.replay().state, "integrity_failure")
 
-    def test_executable_sha_checked(self) -> None:
-        b = Builder()
-        b.add("run_created", {})
-        b.add("call_started", {"position": 1, "call_id": "c1"})
-        b.add("call_recorded", {"position": 1, "call_id": "c1", "transport_failure": ""})
-        b.add("call_started", {"position": 2, "call_id": "c2"})
-        b.add("call_recorded", {"position": 2, "call_id": "c2", "transport_failure": ""})
-        b.add("execution_started", {"position": 2, "executable_json": '"a"', "executable_sha256": "0" * 64})
-        self.assertEqual(b.replay().state, "integrity_failure")
-
     def test_per_file_protection(self) -> None:
         b = Builder()
         full_run(b)
@@ -221,7 +199,7 @@ class JournalReplayTests(unittest.TestCase):
         damaged = dict(b.files)
         damaged["000004.json"] = b"garbage"
         self.assertTrue(J.sealed_protective(damaged, SPEC))
-        partial = {name: data for name, data in b.files.items() if name < "000009.json"}
+        partial = {name: data for name, data in b.files.items() if name < "000007.json"}
         self.assertFalse(J.sealed_protective(partial, SPEC))
 
     def test_acknowledges_only_on_closed_and_derived(self) -> None:          # A-O14
@@ -236,6 +214,27 @@ class JournalReplayTests(unittest.TestCase):
         text = "a\ud800b\U0001f600"
         encoded, _ = J.text_to_b64(text)
         self.assertEqual(J.b64_to_text(encoded), text)
+
+
+class CodingExclusionProbes(unittest.TestCase):
+    """Design "Coding exclusion in the R7 fork": RunSpec.coding must be empty, and any execution_started or
+    execution_recorded entry fails R7 §5 R3 as an integrity failure, so the coding replay states are unreachable."""
+
+    def test_coding_positions_are_refused(self) -> None:
+        with self.assertRaisesRegex(ValueError, "coding_positions_forbidden"):
+            J.RunSpec(call_ids=("c1",), coding=frozenset({1}))
+
+    def test_an_execution_entry_is_an_integrity_failure(self) -> None:
+        for kind in ("execution_started", "execution_recorded"):
+            b = Builder()
+            b.add("run_created", {})
+            b.add("call_started", {"position": 1, "call_id": "c1"})
+            b.add("call_recorded", {"position": 1, "call_id": "c1", "transport_failure": ""})
+            b.add(kind, {"position": 1, **executable(), "infrastructure_failure": ""})
+            replay = b.replay()
+            with self.subTest(kind=kind):
+                self.assertEqual(replay.state, "integrity_failure")
+                self.assertIn("execution_kind_forbidden", replay.reason)
 
 
 class LedgerReplayTests(unittest.TestCase):
@@ -258,7 +257,7 @@ class LedgerReplayTests(unittest.TestCase):
 
 
 class LifecycleTests(unittest.TestCase):
-    """The lifecycle on a four-call schedule with stub provider, worker and scorer (fast, deterministic)."""
+    """The lifecycle on a four-call schedule with stub provider and scorer (fast, deterministic)."""
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -321,12 +320,6 @@ class LifecycleTests(unittest.TestCase):
         world = self.world("raise", failures={call: "raise"})
         out = self.launch(world)
         self.assertEqual((out["state"], out["reason"]), ("closed", "transport_failure"))
-
-    def test_worker_failure_is_infrastructure_not_model(self) -> None:
-        fixture = self.K.small_schedule()[0]["A"][1]["fixture_id"]
-        world = self.world("worker", worker_failures={fixture})
-        out = self.launch(world)
-        self.assertEqual((out["state"], out["reason"]), ("closed", "infrastructure_failure"))
 
     def test_completed_attempt_blocks_further_launches(self) -> None:
         world = self.world("blocks")
@@ -427,7 +420,7 @@ class LifecycleTests(unittest.TestCase):
 
     def test_protected_attempt_cannot_be_declared(self) -> None:
         world = self.world("protected")
-        self.killed(world, self.op_index(":child:", after="000011.json"), after=False)
+        self.killed(world, self.op_index(":child:", after="000009.json"), after=False)
         run_dir = next((world.D / "phase_a" / "runs").iterdir())
         (run_dir / "journal" / "000005.json").write_bytes(b"damage")
         with self.assertRaises(self.K.L.PhaseBlocked):
@@ -484,16 +477,13 @@ class LifecycleTests(unittest.TestCase):
         finally:
             lc.close()
 
-    def test_resume_interrupt_at_pending_sandbox_safe_point_leaves_attempt_open(self) -> None:   # ruling 12
-        world = self.world("resume_sandbox_interrupt")
-        self.killed(world, self.op_index("000005.json"))              # the coding call_recorded
-        self.K.run_command(world, self.K.F.RealFs(), "prelude")
-        journal = next((world.D / "phase_a" / "runs").iterdir()) / "journal"
-        before, calls_before = sorted(p.name for p in journal.iterdir()), dict(world.counts)
-        out = self._resume_with(world, lambda: True)
-        self.assertEqual((out["state"], out["reason"]), ("open", "interrupted_before_first_new_call"))
-        self.assertEqual(sorted(p.name for p in journal.iterdir()), before)     # no sandbox run, nothing written
-        self.assertEqual(world.counts, calls_before)
+    def test_resume_killed_at_position_n_minus_1_exits_interrupted_after_collection(self) -> None:   # ruling 12
+        world = self.world("resume_n_minus_1")
+        self.killed(world, self.op_index("000007.json"))              # the call_recorded of position N-1 = 3
+        calls_before = sum(world.counts.values())
+        out = self._resume_with(world, lambda: sum(world.counts.values()) > calls_before)
+        self.assertEqual(sum(world.counts.values()) - calls_before, 1)   # exactly the last position, once
+        self.assertEqual(out["reason"], "interrupted_after_collection")
         self.assertEqual(self.K.drive_to_end(world), "completed")
         self.assertEqual(self.K.check_oracles(world), [])
 
@@ -541,7 +531,7 @@ class LifecycleTests(unittest.TestCase):
         self.K.run_command(world, self.K.F.RealFs(), "prelude")
         self.assertEqual(flag(), (True, True))
 
-    def test_scorer_marks_request_body_mismatch_and_unexecuted_coding(self) -> None:   # A-N1, B-N2
+    def test_scorer_marks_request_body_mismatch_and_refuses_execution_entries(self) -> None:   # A-N1
         import copy
         import g_route4_scorer as S
         world = self.world("scorer_records")
@@ -549,20 +539,16 @@ class LifecycleTests(unittest.TestCase):
         journal = world.D / "phase_a" / "runs" / out["run_id"] / "journal"
         entries = [J.parse_entry(p.read_bytes()) for p in sorted(journal.glob("*.json"))]
         schedule, fixtures = world.schedule["A"], world.fixtures["A"]
-        records, mismatched = S.rebuild_records(entries, "A", schedule, fixtures, check_executables=False)
+        records, mismatched = S.rebuild_records(entries, "A", schedule, fixtures)
         self.assertEqual((len(records), mismatched), (len(schedule), {}))
         tampered = copy.deepcopy(entries)
         first_call = next(e for e in tampered if e["kind"] == "call_started")
         first_call["payload"]["request_sha256"] = "0" * 64
-        _, mismatched = S.rebuild_records(tampered, "A", schedule, fixtures, check_executables=False)
+        _, mismatched = S.rebuild_records(tampered, "A", schedule, fixtures)
         self.assertEqual(mismatched, {int(first_call["payload"]["position"]): "request_body_differs_from_call_started"})
-        coding = next((int(e["payload"]["position"]) for e in entries if e["kind"] == "execution_recorded"), None)
-        if coding is not None:
-            unexecuted = [e for e in entries if not (e["kind"] in ("execution_started", "execution_recorded")
-                                                     and int(e["payload"]["position"]) == coding)]
-            records, _ = S.rebuild_records(unexecuted, "A", schedule, fixtures, check_executables=False)
-            row = next(r for r in records if r["schedule_position"] == coding)
-            self.assertEqual(row["infrastructure_failure"], "execution_not_run")
+        injected = entries + [{"kind": "execution_recorded", "payload": {"position": 2}}]
+        _, mismatched = S.rebuild_records(injected, "A", schedule, fixtures)
+        self.assertEqual(mismatched, {2: "execution_entry_forbidden"})
 
     def test_individually_sealed_prefers_json_over_torn_twin(self) -> None:          # B-N5
         import g_route4_lifecycle as L
@@ -596,35 +582,32 @@ class PlatformTests(unittest.TestCase):
         self.assertFalse(_alive(child))
 
     def test_near_limit_bands_are_deterministic_across_depths_and_processes(self) -> None:   # C-O1, C-O5
-        import json
+        """The JSON nesting band (the only band left without coding): evaluating deeply nested model output gives the
+        same records at any caller stack depth and in fresh processes."""
         import subprocess
         import g_route4_platform as P
-        from g_route4_contract import runtime_fixtures
-        from g_route3_worker import derive_executable
+        from g_route4_contract import json_digest, runtime_fixtures
+        from g_route4_qualification import collect_evaluation
         P.pin_recursion_limit()
-        fixture = next(f for f in runtime_fixtures("A").values() if f["validator_profile"] == "coding.v1")
-        outputs = []
-        for terms in (2960, 2976, 2990):
-            outputs.append(json.dumps({"path": fixture["input"]["allowed_path"], "old": fixture["input"]["source"],
-                                       "new": "value = " + " + ".join(["1"] * terms) + "\n"}))
-        for depth in (960, 991, 1000):
-            outputs.append("[" * depth + "]" * depth)
+        fixture = next(f for f in runtime_fixtures("A").values() if f["validator_profile"] == "research.v1")
+        outputs = ["[" * depth + "]" * depth for depth in (960, 991, 1000)] + ['{"claims": ' + "[" * 995 + "]" * 995 + "}"]
 
         def at_depth(k: int, raw: str) -> str:
-            return derive_executable(fixture, raw) if k == 0 else at_depth(k - 1, raw)
+            return json_digest(P.run_pinned(collect_evaluation, fixture, raw)) if k == 0 else at_depth(k - 1, raw)
         here = [at_depth(0, raw) for raw in outputs]
         deep = [at_depth(300, raw) for raw in outputs]
         self.assertEqual(here, deep)
         script = ("import sys, json; sys.path.insert(0, %r); import g_route4_platform as P; P.pin_recursion_limit(); "
-                  "from g_route4_contract import runtime_fixtures; from g_route3_worker import derive_executable, "
-                  "classify; f = [x for x in runtime_fixtures('A').values() if x['validator_profile']=='coding.v1'][0]; "
-                  "outs = json.loads(sys.stdin.read()); exes = [derive_executable(f, o) for o in outs]; "
-                  "print(json.dumps([exes, [P.run_pinned(classify, f, json.loads(e))['candidate_error'] "
-                  "for e in exes]]))" % str(Path(__file__).resolve().parent))
+                  "from g_route4_contract import json_digest, runtime_fixtures; "
+                  "from g_route4_qualification import collect_evaluation; "
+                  "f = [x for x in runtime_fixtures('A').values() if x['validator_profile']=='research.v1'][0]; "
+                  "outs = json.loads(sys.stdin.read()); "
+                  "print(json.dumps([json_digest(P.run_pinned(collect_evaluation, f, o)) for o in outs]))"
+                  % str(Path(__file__).resolve().parent))
         results = [subprocess.run([sys.executable, "-B", "-c", script], input=json.dumps(outputs), text=True,
                                   capture_output=True, check=True).stdout for _ in range(2)]
         self.assertEqual(results[0], results[1])
-        self.assertEqual(json.loads(results[0])[0], here)
+        self.assertEqual(json.loads(results[0]), here)
 
 
 def _alive(pid: int) -> bool:
