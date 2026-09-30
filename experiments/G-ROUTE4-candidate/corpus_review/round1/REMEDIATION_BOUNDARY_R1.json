@@ -1,0 +1,179 @@
+{
+ "schema_version": "g-route4.remediation-boundary.v1",
+ "round": "corpus review round 1 remediation (cr1)",
+ "status": "AT OPERATOR-DECISION BOUNDARY",
+ "config_sha256": "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516",
+ "runs": {
+  "g4adj-amain-cr1-20260930T001531Z": {
+   "contact": {
+    "sessions": 3,
+    "slots": 3,
+    "exactly_once_per_slot": true,
+    "final_messages": 3,
+    "results_by_kind": {
+     "final_message": 3
+    },
+    "refusals": 0,
+    "in_doubt": 0,
+    "stops": 0,
+    "models": [
+     "claude-opus-5-5"
+    ],
+    "config_digests": [
+     "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516"
+    ],
+    "harness_commit": "2baa3936ddd48a71263a7024c9582cccd6324b35",
+    "fixes_bound": {
+     "corpus_fixed_sha256": "1c051edb49800e15fc913c627dac868442f0ea22d2bad48bc0340a75689c467c",
+     "dir": "experiments/G-ROUTE4-candidate/adjudication/fixes/cr1_amain",
+     "fix_record_sha256": "31ebc828c138e22d9a4bf535fb8ab6cd57b3983317aadab89d230d65cc09a89f",
+     "fixtures": [
+      "A4-SYNTH-R1-01"
+     ],
+     "purpose": "re-adjudication from scratch after the fixture's one fix"
+    },
+    "tokens": {
+     "input": 2118,
+     "output": 893
+    },
+    "first_utc": "2026-09-30T00:15:34.085196Z",
+    "last_utc": "2026-09-30T00:15:44.625330Z",
+    "journal_lf_sha256": "40a735a6c8c5f90180746d1b66d1df27158095219fd5621c88887eaaddca76b9"
+   },
+   "records_lf_sha256": {
+    "answers_phase1.json": "31ab8977dadfc3a45d1ed439e78dec9d29ad723a0d456a61aa549803c9fd4dba",
+    "decisions.json": "55c155e56d8c43276d4c60f9c910a9ebbb9b79a64639b502276c8b7724a2b4f0",
+    "scores_phase1.json": "534125e692367a03ab8cfd002fc8b5649667a75c5f48769113b9f01cf77c4df1"
+   }
+  },
+  "g4adj-bmain-cr1-20260930T001608Z": {
+   "contact": {
+    "sessions": 7,
+    "slots": 7,
+    "exactly_once_per_slot": true,
+    "final_messages": 7,
+    "results_by_kind": {
+     "final_message": 7
+    },
+    "refusals": 0,
+    "in_doubt": 0,
+    "stops": 0,
+    "models": [
+     "claude-opus-5-5"
+    ],
+    "config_digests": [
+     "7691126e6a96974d43f816ee61253332ba5b2510395de2baa8fdd7342581d516"
+    ],
+    "harness_commit": "6feae0c859dbec981f8083a5269c5da4e946e5a1",
+    "fixes_bound": {
+     "corpus_fixed_sha256": "b10ff6c42431ba5c238b0fdc956172e38747e2ccced0d5fb63cb0314974171b8",
+     "dir": "experiments/G-ROUTE4-candidate/adjudication/fixes/cr1_bmain",
+     "fix_record_sha256": "e9dad640733f1b1d0881c73a8e7cdf4424b7b195425f72115e84e5d9199d0d10",
+     "fixtures": [
+      "B4-CONV-R1-08",
+      "B4-CONV-R2-28",
+      "B4-SYNTH-R1-02",
+      "B4-SYNTH-R2-15",
+      "B4-SYNTH-R3-08"
+     ],
+     "purpose": "re-adjudication from scratch after the fixture's one fix"
+    },
+    "tokens": {
+     "input": 4345,
+     "output": 2204
+    },
+    "first_utc": "2026-09-30T00:16:10.606583Z",
+    "last_utc": "2026-09-30T00:16:59.798655Z",
+    "journal_lf_sha256": "437477bdea14ca6a265ee8402e4762e285403d1b16d84062e9f651ae0e5fd3bd"
+   },
+   "records_lf_sha256": {
+    "answers_phase1.json": "d9949182cd2ab2d68cd63d18a9a5b1e5853d1c8e2f7b982c8630e8f007884e19",
+    "answers_phase2.json": "0ad6a0da9c9c8831964488c5d69de612bbd1fc2ae813ffc46bbaa65c1d30d856",
+    "decisions.json": "0018b1451864d072dcf794538d0bbbdcbe0f9506d119525035b34ff270121e14",
+    "scores_phase1.json": "4c9ee7fcb140c0e55b67fe7dcb1a6e09765fc6cfbd480c1a556e21c7360c95b9",
+    "scores_phase2.json": "22d12578f0e14861fd0d9467cc3e95b0f0d9eebd7ce9d7daf50264133bd822dc"
+   }
+  }
+ },
+ "decisions_by_frozen_rule": {
+  "A4-SYNTH-R1-01": {
+   "a1": true,
+   "a2": true,
+   "a3": true,
+   "decision": "keep"
+  },
+  "B4-CONV-R1-08": {
+   "sampled": false,
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "decision": "keep",
+   "flag": null
+  },
+  "B4-CONV-R2-28": {
+   "sampled": false,
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "decision": "keep",
+   "flag": null
+  },
+  "B4-SYNTH-R1-02": {
+   "sampled": false,
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "decision": "keep",
+   "flag": null
+  },
+  "B4-SYNTH-R2-15": {
+   "sampled": false,
+   "a1": false,
+   "a2": false,
+   "a3": true,
+   "decision": "operator",
+   "flag": null
+  },
+  "B4-SYNTH-R3-08": {
+   "sampled": false,
+   "a1": true,
+   "a2": null,
+   "a3": null,
+   "decision": "keep",
+   "flag": null
+  }
+ },
+ "kept_by_frozen_rule": [
+  "A4-SYNTH-R1-01",
+  "B4-CONV-R1-08",
+  "B4-CONV-R2-28",
+  "B4-SYNTH-R1-02",
+  "B4-SYNTH-R3-08"
+ ],
+ "pending_operator": [
+  "B4-SYNTH-R2-15"
+ ],
+ "fence_diagnostic_only": {
+  "B4-SYNTH-R2-15": [
+   {
+    "slot": 1,
+    "fenced": true,
+    "content_passes_frozen_validators_against_fixed_gold": true
+   },
+   {
+    "slot": 2,
+    "fenced": true,
+    "content_passes_frozen_validators_against_fixed_gold": true
+   },
+   {
+    "slot": 3,
+    "fenced": false,
+    "content_passes_frozen_validators_against_fixed_gold": true
+   }
+  ]
+ },
+ "verdicts": "recorded verdicts are unchanged; every malformed_json answer remains a disagreement",
+ "if_not_kept": {
+  "B4-SYNTH-R2-15": "each fixture has used its one fix; 'not keep' would mean replacement from the matching B′ reserve, B4-SYNTH-R2-X03 (mergeable_pair yes × obs_band large; no known defect); nothing is replaced without the operator"
+ }
+}
