@@ -1,0 +1,292 @@
+{
+  "artifacts": {
+    "experiments/G-ROUTE1-candidate/model_bindings.json": "fd3840145b4b8dbe380388bf046976944d37794e65755ffb8ed5ae55071bc7f4",
+    "experiments/G-ROUTE1-candidate/prompt_profiles.json": "f54e85795a3bf972b8593a28644f9229aea21f61327e324db4af518bc9c368b8",
+    "experiments/G-ROUTE4-candidate/CONTAMINATION_ANALYSIS.md": "a938b6c2206fe0f32f8ffb395a8b748b6982ed4ac3312d1fd165ab02db02631e",
+    "experiments/G-ROUTE4-candidate/CONTAMINATION_ANALYSIS_CR1.md": "8158107f89476d1dddb797f99c31843874adb5eea505a4deff27542c840c7001",
+    "experiments/G-ROUTE4-candidate/DESIGN_CANDIDATE.md": "0d20e43dc063f04328d049a66ce0b3e0d5644c8b1f31016495e82a53c26973ea",
+    "experiments/G-ROUTE4-candidate/DESIGN_REVIEW_ROUND1.md": "7f4a07e2c1f93a4117643251fd4ed754e24f4532e09c4f1996828a51c2645138",
+    "experiments/G-ROUTE4-candidate/DESIGN_REVIEW_ROUND2.md": "93061fd8b382a8b5b03e625282714899749223e739fff260f7d5805720553844",
+    "experiments/G-ROUTE4-candidate/DESIGN_REVIEW_ROUND3.md": "a810ccae88adc23ac766de71d02b5a2b2dc85e38e6fa253323a859e4172ed1c1",
+    "experiments/G-ROUTE4-candidate/DESIGN_REVIEW_ROUND4.md": "7b4b3e1812588382f92fd4ab1bd592658aa71a5214f637e29ec23f894ca79ebd",
+    "experiments/G-ROUTE4-candidate/DESIGN_REVIEW_ROUND5.md": "3fad45d4d37fa13b719fe0a0542c8ca0b2d0082edcc89c8e2110b3bc246075e8",
+    "experiments/G-ROUTE4-candidate/DESIGN_REVIEW_ROUND6.md": "f9d68806d2d50f437cae769cdf8e0e3641963ed856ebccd7ed652e5ce0f0bd9e",
+    "experiments/G-ROUTE4-candidate/G-ROUTE4_OBLIGATIONS.md": "fd4ce5ed26b6765f6c775ddcc23b37e5f7baa614352ea8588bba7cda6698ece9",
+    "experiments/G-ROUTE4-candidate/INDEPENDENCE_REPORT.json": "59a4a224d510beeb995c9981b91bb423773b57450f2404ec9dc7c826191949d4",
+    "experiments/G-ROUTE4-candidate/INDEPENDENCE_REPORT_CR1.json": "23828827ac0e36663b7db3217308910ca4e4323314c6eb97504bbd84a410893c",
+    "experiments/G-ROUTE4-candidate/RESEARCH_DIAGNOSIS.json": "bd820a86045bae2697557657eb785ff265ec6cdc57da9d6117eb85e84fece989",
+    "experiments/G-ROUTE4-candidate/RESEARCH_DIAGNOSIS.md": "ee9d888e467da75936583e5701e66b1eab93730aef04e21897a28bf9acf4ca30",
+    "experiments/G-ROUTE4-candidate/adjudication/A_MAIN_CLOSURE.json": "1eb6f3fb2aa660a67493102b75bd9343758b422c00c4894e09819eecf244f022",
+    "experiments/G-ROUTE4-candidate/adjudication/A_MAIN_CLOSURE_ADDENDUM_CR1.json": "08561c8429d7fe73ceda737a4d232790846348c3138ba39200a6b901bee787ec",
+    "experiments/G-ROUTE4-candidate/adjudication/B_MAIN_CLOSURE.json": "863f1aa8708eafa614245473de697f6535c70410d66f2545fd09b41ae33ef42d",
+    "experiments/G-ROUTE4-candidate/adjudication/B_MAIN_CLOSURE_ADDENDUM_CR1.json": "9ad124e2e66c35537a09e9f137c0e0b8d17ec747f11494bac5c025543a725236",
+    "experiments/G-ROUTE4-candidate/adjudication/O2_AMENDMENT_2026-09-29.md": "61945398d94299b89061d6031643925120289f31b95c4502e5f93ca24a866f8a",
+    "experiments/G-ROUTE4-candidate/adjudication/adjudicator_config_amended.json": "7f2cb6a1597e81241709bb3631a332820804d9448c2290050f7db8083c2f52e9",
+    "experiments/G-ROUTE4-candidate/adjudication/errata/B_MAIN_CLOSURE_ERRATUM_1.json": "67fc63af2d729316206c644fe50d2b0a938a5151780db2c0f57b6dca194ad5cf",
+    "experiments/G-ROUTE4-candidate/adjudication/errata/B_MAIN_CLOSURE_ERRATUM_2.json": "b3dae88ceda1ffac45884daaf301edc8bb083c2e1aa74bc6c867d01dc09b97dc",
+    "experiments/G-ROUTE4-candidate/adjudication/errata/STEP7_RULING_ANNOTATION.md": "7a599104253d5f14e627640d00838e81b4f880c662e77440cd0cd08199bf4c8d",
+    "experiments/G-ROUTE4-candidate/adjudication/fixes/LATENT_DEFECTS.md": "6d14cd795ab846b148f451992e7f1f4a140a76e40d22fb3dd5e310a7db055569",
+    "experiments/G-ROUTE4-candidate/adjudication/fixes/cr1_amain/FIX_RECORD.json": "31ebc828c138e22d9a4bf535fb8ab6cd57b3983317aadab89d230d65cc09a89f",
+    "experiments/G-ROUTE4-candidate/adjudication/fixes/cr1_bmain/FIX_RECORD.json": "e9dad640733f1b1d0881c73a8e7cdf4424b7b195425f72115e84e5d9199d0d10",
+    "experiments/G-ROUTE4-candidate/adjudication/fixes/round1_amain/FIX_RECORD.json": "661b75ce861ef545e9ccf21d7ecc6960a29ee8f2e7d8fd37124f9dffa7803677",
+    "experiments/G-ROUTE4-candidate/adjudication/fixes/round1_amain/LATENT_DEFECTS_ADDENDUM.md": "6df6c8f61520c89728e2cd95734803da4cf07bf5fe6c778f3cf8c398af120091",
+    "experiments/G-ROUTE4-candidate/adjudication/fixes/round1_bmain/FIX_RECORD.json": "d4f81a8e3b439b070fa49e81a344a8e28bbe2640faf29de1a6b0e8e8d5f1f7a2",
+    "experiments/G-ROUTE4-candidate/audit_sample/AUDIT_SAMPLE.json": "ae40d962e1115b369a0a0d862a6aa041721930b8723413d692016f3c63786ba7",
+    "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json": "80e3455e4f5d94dd4281e62def0182cdd95f3fe909883150fbf251c81fea3e4b",
+    "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT_CANDIDATE.md": "61a7221e1c823bd2a8eac3bda590545dbe72c7bea635584ac7711c141642afa7",
+    "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT_FREEZE.json": "9ecf0cda331b0550c5254ccc225071afa80b99556deefc6d91b6de7e50b963b0",
+    "experiments/G-ROUTE4-candidate/blueprint/FEASIBILITY_REPORT.json": "ae152d00de29c6560eedbd1794c9b33be4242199a5b615f7da6e8243fbff1815",
+    "experiments/G-ROUTE4-candidate/blueprint/audit_sample.py": "8e5afc8478c913150fd9d4ac9564a829ae857e74d005ca4371d2b76937767524",
+    "experiments/G-ROUTE4-candidate/blueprint/build_blueprint.py": "cb8b8ec9012a983bcb720ee31d01a8c6152d201e83cfae41677ff92c071f3753",
+    "experiments/G-ROUTE4-candidate/corpus_a.json": "a1d36688f5945ecb695d19a9df68e0a90fdede9c6aa50211a09a230282649513",
+    "experiments/G-ROUTE4-candidate/corpus_b.json": "deede9676fa68e26b6a3220efc580ba0345751282ff4a6f1236a8cf83a763d02",
+    "experiments/G-ROUTE4-candidate/corpus_review/round1/CORPUS_REVIEW_R1_CLOSURE.json": "f762be5f06043dc03f0c31f85d4692c984962485b8ef1f18ad1bcfbb48632c8c",
+    "experiments/G-ROUTE4-candidate/corpus_review/round1/RECONCILIATION_R1_FINAL.md": "7305dcae483e80bc0bee2703349471a0be1eade6d067ec82ce372719313628a0",
+    "experiments/G-ROUTE4-candidate/fixture_families.json": "9253baaa3c9fa2522bfb8104a72f884d2f4c6255dba101ead9ff66ef9e603127",
+    "experiments/G-ROUTE4-candidate/gold_a.json": "31c61142b103ea0652d3973267cc07ba826089fcd0082a844d6de439a9cc44b5",
+    "experiments/G-ROUTE4-candidate/gold_b.json": "8c353289eacb75e71d0f9326d0d435600fb017cd125000c01bd94fb0509292ca",
+    "experiments/G-ROUTE4-candidate/implementation/B7_INDEPENDENCE_RECHECK.json": "32dc3f73b6dca87e1304c05c9e9a255cf699319dc011281c6521f49309a782f1",
+    "experiments/G-ROUTE4-candidate/implementation/FORK_RECORD.json": "e4a7c8d0ca4b536e9c9e2a84c7db281bf936da711e6e37d52e7327face7e8be4",
+    "experiments/G-ROUTE4-candidate/implementation/RESULTS_TEMPLATE.md": "7940f389b1d48c6ab261972cb75539549f77f4fc5c1787e3897f89ff2e0e552b",
+    "experiments/G-ROUTE4-candidate/model_bindings.json": "e87e26c40f014a8d58e242082384db382b0b4942902e6d9bd387f24d68859e36",
+    "experiments/G-ROUTE4-candidate/schedule_a.json": "5c02ef043b8891327a815a6a99aa80aa6caa9687ec7d0260d9bc622c6d68662d",
+    "experiments/G-ROUTE4-candidate/schedule_b.json": "7e3fba26bc3d0857a925e87278d11711d308c11823f536605e8c796807b9649a",
+    "experiments/G-ROUTE4-candidate/sealed/O3_IDENTIFIER_DECISION.md": "1f03ac0a1fc549a2e6e1e45cb4eab486749c3653f2eae7013244738bb62f8c44",
+    "experiments/G-ROUTE4-candidate/sealed/SEAL_MANIFEST.json": "98306eeb37f16da6f0991b17ece9e49abb428e2eb28cedc2a2cdd8baf1cd3a01",
+    "experiments/G-ROUTE4-candidate/sealed/SEAL_NOTES.md": "a0ffebbc26b1ad14a3757bcbe38b9042eaa25da6048a66d294adef30a71926d1",
+    "experiments/G-ROUTE4-candidate/sealed/adjudicator_config.json": "90f1f72f5c51f757f414da8a5975a325b4b880138b51a7337e0f96da5ac2d051",
+    "experiments/G-ROUTE4-candidate/sealed/authoring_ledger.json": "71793e9ed0142d29ec2bf99822b123daa003255f18300f1fc953aaa12e781dae",
+    "experiments/G-ROUTE4-candidate/sealed/corpus_a.json": "44eac7feca2476a7bf8e8210e5742cd70cf27077e69f9cf7cf5e9b3c2f2f21ea",
+    "experiments/G-ROUTE4-candidate/sealed/corpus_b.json": "f309acff9eb18282475ac4a927dac97af87b879a07acfd218e9804b421191d32",
+    "experiments/G-ROUTE4-candidate/sealed/gold_a.json": "6e0b66e60a444fa426dae36517160c2189f27f92d827d4acb9d35331b3144dd8",
+    "experiments/G-ROUTE4-candidate/sealed/gold_b.json": "4284c4aba297afb819975ce7a7bc576c5086ae35594bdc87ffe5a7dc60bfb6bf",
+    "experiments/G-ROUTE4-candidate/sealed/reserve_corpus_a.json": "eda3ae0c437e466aca733ba1dc52dd5ad6b018f101f5a8904e80412b87cb130c",
+    "experiments/G-ROUTE4-candidate/sealed/reserve_corpus_b.json": "83ab5422f4f38bc8c71efcad7fa60b8d50087a89c1645af4de3a14542cf57abf",
+    "experiments/G-ROUTE4-candidate/sealed/reserve_gold_a.json": "4f80f879b1ebf141d913f8bb70a431bd6c0285c571465200150bfc6f651f50ba",
+    "experiments/G-ROUTE4-candidate/sealed/reserve_gold_b.json": "5315bbbae28b7fe6034fae965a73fa207982c58f7ba655b87dc9193c5f6b04d8",
+    "experiments/G-ROUTE4-candidate/thresholds.json": "c40447418a5b1b3fb7dab0990e01336a4297427f3cc74a3329369596993c8f06",
+    "tools/g_route1_contract.py": "680132919ac8f249b0d72be2b70ea65511b6f0b9555e3ff5ccf82cd5c9ab3292",
+    "tools/g_route1_execution_contract.py": "3ea2ba45f0c683fd2e525818254a2ce0bb41bbebbc0649e161cdc3c7ad849987",
+    "tools/g_route1_freeze.py": "a7bc998e5cded872430d2e6aa077537dfab9cafa9212d379e2240d203388d32a",
+    "tools/g_route1_operational.py": "07cbc8c60c1255bdae222c394a7046adad3ed56131d3d30c9071f4832291b0b4",
+    "tools/g_route1_provider.py": "cab0404337fea4b8be5f29ac8b1a0f69db141e81d9e2fc840350a82c0005329d",
+    "tools/g_route1_validators.py": "64ae53f4510828e1ec8275dc1ef1e6d6fd6bc5fa9b2600116ec9afd32643850d",
+    "tools/g_route2_normalization.py": "24d263cf98339bed0dff35756f01466e220e7c597665e27ad5d13e96aaf264be",
+    "tools/g_route3_conversation.py": "eecdc14031543dbc82e7eaf9a31e9c2c09d6e6ca3777407139ab4f1971c89b30",
+    "tools/g_route3_operational.py": "830e023493e7b61999625457ce320d346bae771f8157f579ca1825e82afe02a0",
+    "tools/g_route3_routing.py": "0357d16ed47ce9ed02280560f889aec9e21d8ffe4adaf2dd900f1595279746e2",
+    "tools/g_route3_semantics.py": "ac091116489276d13d643a75f80b0847d5231842af53b54beb3b85548b24741b",
+    "tools/g_route3_triggers.py": "d98febfb7b3cf9e801573e54b5f4ae6c06ffbe496194d65b27931d67d324ddec",
+    "tools/g_route4_campaign.py": "e97e462dd532e683ee36c92d4c4784a2d96477baa1c454e5fac2435dc81447c6",
+    "tools/g_route4_contract.py": "a1d1de6c77abb9d8240c521b1afda891dbf9b32641df7d84b4f44a442767b45e",
+    "tools/g_route4_differential.py": "93fc4dd00594918363c9d6ad3e7ed3a4e8a8f07cb1b10a04982e7d0740d485a1",
+    "tools/g_route4_evidence.py": "0b2fb87608c9f40bfa48b89609564b684422c1d7e98d8d7d3f23226e762d847c",
+    "tools/g_route4_freeze.py": "a76c094d1d4baa11044c095f44f14b94e208419166166017c6d4419e7cfee69b",
+    "tools/g_route4_fs.py": "9ffeac5335561452164b634dfbfbaca8ccc1f21915ba251b586242a3cc277cd3",
+    "tools/g_route4_independence.py": "f5bb1265cf30af301ff47efa168d49eb069bf32bd778d17e5185db48c430ef09",
+    "tools/g_route4_journal.py": "3b6e569e86494282987c6be43b414ed467598f9de0a0a5c435f70ce3721cf9d4",
+    "tools/g_route4_launch.py": "b68eefe3b0617cb5c77e9a7b17071574b6da715cbd7c9f0a34e167f28715a8e9",
+    "tools/g_route4_lifecycle.py": "eec13853d7f93f673536416365d8d68f43974ae9b9d24fa1921b10971f606f5d",
+    "tools/g_route4_oracle.py": "83e06436cd513d97bbe8c0f8a78a6573ef21d4ee6cbff7557804de542302c7d7",
+    "tools/g_route4_platform.py": "79a46187fac9e762958f830856af9fb7b79bc81ed8de3a25ac7bfb16d8fae092",
+    "tools/g_route4_qualification.py": "0a3d1a6d81ff50edcad5881f463a9c12e6ffb0bcc03e7336dfc4498390033915",
+    "tools/g_route4_r7_tests.py": "708c9c46906f64094ee44443de5a566291b29448516333ec63e00bc31f715caa",
+    "tools/g_route4_runner.py": "ea517fc02d22151e245592c7c05d60a09d6e8f1647534986550dd8f369187f9d",
+    "tools/g_route4_scorer.py": "317d3b7c5812a8952889d4a864914456a98c1a0803a945fd14bf3645b01dc53a",
+    "tools/g_route4_tests.py": "e1622db7c88805f9a73832a06776a4616bcc491eff2747fbd8a7fbbd8c49388c",
+    "tools/g_route4_validation.py": "a96baa787d50014ba74314f539d7c91c2dcd7ee26de4a0684fa96e6f5f2e54fa"
+  },
+  "authorization_artifact_created": false,
+  "automatic_escalation_authorized": false,
+  "belief_effects": "none",
+  "benchmark_execution_authorized": false,
+  "benchmark_launches": 0,
+  "both_corpora_frozen_before_any_contact": true,
+  "candidate_id": "G-ROUTE4-EXECUTION-R1",
+  "carried_contracts": {
+    "conversation": "g-route3.conversation-frame.v3",
+    "normalization": "g-route2.transport-normalization.v1",
+    "operational_validator": "g-route3.operational-validator.v2",
+    "routing": "g-route3.routing.v1",
+    "semantics": "g-route3.semantics.v1",
+    "triggers": "g-route3.triggers.v1",
+    "validators": "g-route1.validators.v1"
+  },
+  "coding": "excluded (D6): no coding fixture, no worker, execution kinds are integrity failures",
+  "contract_version": "g-route4.execution-freeze-candidate.v1",
+  "corpus_digests": {
+    "corpus_a.json": "a1d36688f5945ecb695d19a9df68e0a90fdede9c6aa50211a09a230282649513",
+    "corpus_b.json": "deede9676fa68e26b6a3220efc580ba0345751282ff4a6f1236a8cf83a763d02",
+    "gold_a.json": "31c61142b103ea0652d3973267cc07ba826089fcd0082a844d6de439a9cc44b5",
+    "gold_b.json": "8c353289eacb75e71d0f9326d0d435600fb017cd125000c01bd94fb0509292ca"
+  },
+  "data_root": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4",
+  "digest_convention": "sha256; CRLF and CR normalized to LF for source artifacts",
+  "evidence_scale": "pilot",
+  "execution_freeze": true,
+  "execution_freeze_content_sha256": "934ababde1e01bd647adcbecc936072ad5c458f9188fc72d8be385dbd947b9ad",
+  "freeze_conditions": {
+    "B7": {
+      "condition_verbatim": "After \"g_route4_independence\" is implemented from the frozen design, the final pre-freeze independence re-check using that forked module must reproduce the required frozen values and satisfy the same bounds. Failure of that check blocks freeze and cannot be waived by the successful pinned-tool result.",
+      "forked_module_sha256": "f5bb1265cf30af301ff47efa168d49eb069bf32bd778d17e5185db48c430ef09",
+      "record": "experiments/G-ROUTE4-candidate/implementation/B7_INDEPENDENCE_RECHECK.json",
+      "record_sha256": "32dc3f73b6dca87e1304c05c9e9a255cf699319dc011281c6521f49309a782f1",
+      "result": "PASS",
+      "values_compared": 156
+    },
+    "B8": {
+      "per_cell_fix_round_counts": {
+        "g4adj-bmain-cr1-20260930T001608Z": {
+          "B4-CONV-R1": {
+            "disagreeing_slots": 0,
+            "slots": 1
+          },
+          "B4-CONV-R2": {
+            "disagreeing_slots": 0,
+            "slots": 1
+          },
+          "B4-SYNTH-R1": {
+            "disagreeing_slots": 0,
+            "slots": 1
+          },
+          "B4-SYNTH-R2": {
+            "disagreeing_slots": 2,
+            "slots": 3
+          },
+          "B4-SYNTH-R3": {
+            "disagreeing_slots": 0,
+            "slots": 1
+          }
+        },
+        "g4adj-bmain-fix1-20260929T171651Z": {
+          "B4-RSRCH-R1": {
+            "disagreeing_slots": 0,
+            "slots": 2
+          },
+          "B4-RSRCH-R2": {
+            "disagreeing_slots": 4,
+            "slots": 6
+          },
+          "B4-RSRCH-R3": {
+            "disagreeing_slots": 7,
+            "slots": 12
+          },
+          "B4-SYNTH-R1": {
+            "disagreeing_slots": 0,
+            "slots": 2
+          },
+          "B4-SYNTH-R2": {
+            "disagreeing_slots": 0,
+            "slots": 2
+          },
+          "B4-SYNTH-R3": {
+            "disagreeing_slots": 0,
+            "slots": 2
+          }
+        }
+      },
+      "source": "experiments/G-ROUTE4-candidate/adjudication/B_MAIN_CLOSURE_ADDENDUM_CR1.json",
+      "source_sha256": "9ad124e2e66c35537a09e9f137c0e0b8d17ec747f11494bac5c025543a725236"
+    }
+  },
+  "generation_configuration": {
+    "fresh_session_per_call": true,
+    "options": {
+      "num_ctx": 8192,
+      "num_predict": 350,
+      "repeat_penalty": 1.1,
+      "temperature": 0.45,
+      "top_k": 40,
+      "top_p": 0.9
+    },
+    "output_repair_calls": 0,
+    "retry_limit": 0,
+    "silent_fallback": false,
+    "stream": false,
+    "think": false
+  },
+  "implementation_commit": "b1ca92e7b6c538dc24c3f5fab2ee238273a2c7e0",
+  "launcher": {
+    "authorized_runs_only_through_launcher": true,
+    "contract": "g-route4.launcher.v4",
+    "data_root": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4",
+    "path": "tools/g_route4_launch.py",
+    "provider_endpoint": "http://127.0.0.1:11434 (fixed)"
+  },
+  "lifecycle_contract": "g-route4.lifecycle.r7",
+  "model_bindings_sha256": "bb75f1f07c0d1874cdc492fe988ba965ef2a288e03d0c12fc351fecb89769be0",
+  "model_identities": [
+    {
+      "manifest_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+      "model": "qwen2.5:7b",
+      "model_blob_sha256": "2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730",
+      "tier": "small"
+    },
+    {
+      "manifest_digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+      "model": "qwen3:14b",
+      "model_blob_sha256": "a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e",
+      "tier": "mid"
+    },
+    {
+      "manifest_digest": "22130167c4c20e20c7b71454612966ca8e8171e9b3cc8ab6ce8aa6cbfec79643",
+      "model": "qwen3.8:27b",
+      "model_blob_sha256": "f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d",
+      "tier": "large"
+    }
+  ],
+  "ollama_version": "0.34.3",
+  "phases": {
+    "A": {
+      "attempts": "numbered from 1; each attempt is a separate explicit authorization",
+      "authorization_format": "Authorize G-ROUTE4 phase A execution <binding> attempt <n>",
+      "corpus": "G-ROUTE4-CORPUS-A",
+      "planned_calls": 480,
+      "role": "qualification",
+      "schedule_sha256": "0b41d85ed898b2cdc8e383db01367e831e514598fb5ffa1315ff4754b44c072c"
+    },
+    "B": {
+      "authorization_format": "Authorize G-ROUTE4 phase B execution <binding> table <table> attempt <n>",
+      "corpus": "G-ROUTE4-CORPUS-B",
+      "planned_calls": 915,
+      "requires_frozen_audited_qualification_table": true,
+      "role": "validation",
+      "schedule_sha256": "d24a9e960921cd725bf08d4bc671fbd3c96239359f7798b580e6172c969fe939"
+    },
+    "table_freeze_sentence": "Freeze G-ROUTE4 qualification table from phase A attempt <n> of execution <binding>"
+  },
+  "prior_experiments_modified": false,
+  "production_routing_authorized": false,
+  "provider_generation_authorized": false,
+  "provider_generation_calls": 0,
+  "qualification_table_exists": false,
+  "recursion_thresholds": {
+    "json_nesting_max": 991,
+    "recursion_limit": 1000,
+    "stack_bytes": 67108864
+  },
+  "requests_and_dependencies": {
+    "certifi": "2026.6.17",
+    "charset-normalizer": "3.3.2",
+    "idna": "3.4",
+    "requests": "2.34.2",
+    "urllib3": "2.0.7"
+  },
+  "research_questions": {
+    "E1": "escalation (pilot, descriptive)",
+    "P1": "On the frozen validation corpus, given the A′ table actually produced: is the true unsafe-stop rate at most 0.10, and is the true correct-stop rate of qualified-start cases at least 0.60, each at one-sided 95% confidence with exact binomial bounds?",
+    "P2": "conversation on the cheapest tier (descriptive)",
+    "R1": "grounded research: can a tier qualify on fresh, adjudicated fixtures (descriptive metrics)"
+  },
+  "runner_contract": "g-route4.runner.v1",
+  "source_mutation_authorized": false,
+  "status": "READY_FOR_EXPLICIT_SCIENTIFIC_EXECUTION_AUTHORIZATION",
+  "step4_records": {
+    "experiments/G-ROUTE4-candidate/implementation/CERTIFICATION_REPORT.json": "31d187839500570e0a65f3f9212ea682331d2a3bfd9ed87aa71cbd195ba74acf",
+    "experiments/G-ROUTE4-candidate/implementation/DIFFERENTIAL_REPORT.json": "89aabbfa6e3317cefd695533fc01f32aff1913099729c68d67649c52c9cd23de",
+    "experiments/G-ROUTE4-candidate/implementation/IMPLEMENTATION_REVIEW.json": "a0ae5dfa38712c5563a0cb2bcae85e17020b974eac1be552a4c41e420a30b39a"
+  },
+  "supersedes": [],
+  "threat_model": "accidents in code, tampering at boundaries. The code guarantees at-most-once and a truthful history against accidents and misuse of supported commands; every attempt's journal is committed to the private evidence repository at its boundaries and verified by every command; tampering with an attempt in progress is a declared residual",
+  "thresholds_sha256": "1d8d696e36cd6ae011e8f36805661bc95f3b63be07fe3a0ce9545f7e032da87a"
+}
