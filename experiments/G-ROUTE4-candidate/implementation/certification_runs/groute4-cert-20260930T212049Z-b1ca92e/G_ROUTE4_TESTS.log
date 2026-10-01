@@ -1,0 +1,59 @@
+test_conversation_frame_grades_the_two_fields_and_never_the_prose (__main__.CorpusTests.test_conversation_frame_grades_the_two_fields_and_never_the_prose) ... ok
+test_conversation_gold_positions_are_balanced_per_cell (__main__.CorpusTests.test_conversation_gold_positions_are_balanced_per_cell) ... ok
+test_d9_composition_and_a_prime_cells (__main__.CorpusTests.test_d9_composition_and_a_prime_cells) ... ok
+test_every_json_prompt_discloses_the_output_budget (__main__.CorpusTests.test_every_json_prompt_discloses_the_output_budget) ... ok
+test_every_prompt_is_its_opening_and_the_frozen_class_template (__main__.CorpusTests.test_every_prompt_is_its_opening_and_the_frozen_class_template)
+D8 and N6 at the freeze: every prompt ends with its class's frozen assembled template (the part after the ... ok
+test_every_reference_answer_passes_and_every_gold_code_is_model_visible (__main__.CorpusTests.test_every_reference_answer_passes_and_every_gold_code_is_model_visible) ... ok
+test_every_wrong_answer_is_rejected (__main__.CorpusTests.test_every_wrong_answer_is_rejected) ... ok
+test_execution_inputs_are_the_reviewed_final_corpus (__main__.CorpusTests.test_execution_inputs_are_the_reviewed_final_corpus) ... ok
+test_namespaces_counts_and_call_ids (__main__.CorpusTests.test_namespaces_counts_and_call_ids) ... ok
+test_no_trigger_fires_on_any_reference_answer (__main__.CorpusTests.test_no_trigger_fires_on_any_reference_answer) ... ok
+test_prompt_identity_rendering_is_the_prior_experiments (__main__.CorpusTests.test_prompt_identity_rendering_is_the_prior_experiments)
+The prompt identity test (a named read-only reference): the rendering function and request body are ... ok
+test_closure_rule_for_imported_unchanged_modules (__main__.DesignTests.test_closure_rule_for_imported_unchanged_modules) ... ok
+test_coding_is_excluded (__main__.DesignTests.test_coding_is_excluded) ... ok
+test_grep_identity_and_the_frozen_allowlist (__main__.DesignTests.test_grep_identity_and_the_frozen_allowlist)
+No prior-experiment reference in any g_route4_* module outside the frozen allowlist. ... ok
+test_module_rule (__main__.DesignTests.test_module_rule)
+No prior module other than the five imported unchanged, and neither the coding runner nor the persistence ... ok
+test_o8_thresholds_carry_exactly_the_keys_the_code_reads (__main__.DesignTests.test_o8_thresholds_carry_exactly_the_keys_the_code_reads)
+O8: derive by static reading the keys read by the forked qualify, score and gate code and the threshold ... ok
+test_seed_ranges_and_disjointness (__main__.DesignTests.test_seed_ranges_and_disjointness) ... ok
+test_the_prior_data_root_refuses_by_its_own_literal (__main__.DesignTests.test_the_prior_data_root_refuses_by_its_own_literal)
+The data-root refusal test (static read of the prior freeze module, never imported). ... ok
+test_three_way_bindings_equality (__main__.DesignTests.test_three_way_bindings_equality) ... ok
+test_a_freeze_cannot_be_written_once_a_table_exists (__main__.FreezeTests.test_a_freeze_cannot_be_written_once_a_table_exists) ... ok
+test_every_runtime_module_is_guarded_and_frozen (__main__.FreezeTests.test_every_runtime_module_is_guarded_and_frozen) ... ok
+test_freeze_conditions_b7_and_b8_are_bound (__main__.FreezeTests.test_freeze_conditions_b7_and_b8_are_bound) ... ok
+test_identity_and_pinned_data_root (__main__.FreezeTests.test_identity_and_pinned_data_root) ... ok
+test_no_freeze_before_the_later_step_4_records (__main__.FreezeTests.test_no_freeze_before_the_later_step_4_records) ... ok
+test_a_missing_record_is_an_integrity_failure (__main__.GateTests.test_a_missing_record_is_an_integrity_failure) ... ok
+test_an_empty_table_is_not_testable_with_intact_denominators (__main__.GateTests.test_an_empty_table_is_not_testable_with_intact_denominators) ... ok
+test_an_evaluable_failing_gate_is_a_failure (__main__.GateTests.test_an_evaluable_failing_gate_is_a_failure) ... ok
+test_every_stop_correct_passes_both_gates (__main__.GateTests.test_every_stop_correct_passes_both_gates) ... ok
+test_the_floors_reproduce_their_derivation (__main__.GateTests.test_the_floors_reproduce_their_derivation) ... ok
+test_the_frozen_three_way_tables (__main__.GateTests.test_the_frozen_three_way_tables) ... ok
+test_a_cloned_fixture_breaks_the_overlap_bound (__main__.IndependenceTests.test_a_cloned_fixture_breaks_the_overlap_bound) ... ok
+test_a_planted_shared_entity_is_found (__main__.IndependenceTests.test_a_planted_shared_entity_is_found) ... ok
+test_a_repeated_fine_signature_in_a_cell_is_found (__main__.IndependenceTests.test_a_repeated_fine_signature_in_a_cell_is_found) ... ok
+test_b7_passed_for_the_bound_module (__main__.IndependenceTests.test_b7_passed_for_the_bound_module) ... ok
+test_identical_gold_and_repeated_lineages_and_actions_are_found (__main__.IndependenceTests.test_identical_gold_and_repeated_lineages_and_actions_are_found) ... ok
+test_n9_the_carried_core_is_byte_identical_to_the_prior_module (__main__.IndependenceTests.test_n9_the_carried_core_is_byte_identical_to_the_prior_module)
+N9: the forked module's tokenizer, exemption lists and carried functions are byte-identical to the prior ... ok
+test_the_final_pool_is_clean_and_carries_the_26_fixes (__main__.IndependenceTests.test_the_final_pool_is_clean_and_carries_the_26_fixes) ... ok
+test_both_bounds_are_reported (__main__.QualificationTests.test_both_bounds_are_reported) ... ok
+test_one_failure_disqualifies_and_infrastructure_is_insufficient (__main__.QualificationTests.test_one_failure_disqualifies_and_infrastructure_is_insufficient) ... ok
+test_only_the_exact_four_by_two_design_can_qualify (__main__.QualificationTests.test_only_the_exact_four_by_two_design_can_qualify) ... ok
+test_table_digest_audit_binding_and_write_once (__main__.QualificationTests.test_table_digest_audit_binding_and_write_once) ... ok
+test_b_gold_cannot_enter_routing_context (__main__.RoutingTests.test_b_gold_cannot_enter_routing_context) ... ok
+test_cheapest_qualified_tier_is_the_start (__main__.RoutingTests.test_cheapest_qualified_tier_is_the_start) ... ok
+test_no_qualified_model_contacts_nothing_and_exhaustion_fails_closed (__main__.RoutingTests.test_no_qualified_model_contacts_nothing_and_exhaustion_fails_closed) ... ok
+test_r4_is_evidence_only_and_contacts_nothing (__main__.RoutingTests.test_r4_is_evidence_only_and_contacts_nothing) ... ok
+test_the_retained_triggers_fire (__main__.RoutingTests.test_the_retained_triggers_fire) ... ok
+test_unqualified_tiers_are_never_contacted_or_stopped_on (__main__.RoutingTests.test_unqualified_tiers_are_never_contacted_or_stopped_on) ... ok
+
+----------------------------------------------------------------------
+Ran 47 tests in 6.586s
+
+OK

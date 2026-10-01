@@ -1,0 +1,24 @@
+{
+  "schema_version": "g-route4.certification-precheck.v1",
+  "run_id": "groute4-cert-20260930T212049Z-b1ca92e",
+  "checkpoint": "b1ca92e7b6c538dc24c3f5fab2ee238273a2c7e0",
+  "implementation_review_verdict": "READY_FOR_CERTIFICATION",
+  "worktree_clean_before_run": true,
+  "reviewed_runtime_modules_matched": 17,
+  "execution_inputs_matched": 9,
+  "authorized_test_repair_lf_sha256": "e1622db7c88805f9a73832a06776a4616bcc491eff2747fbd8a7fbbd8c49388c",
+  "freeze_module_git_blob": "12791cd85e9b64b7adc5b554e1cb636e46ce550c",
+  "repair_record_sha256": "5f031678890ed5ea031ba6435b4a2beb97b16d2b21174e6180d70ed3be9fe931",
+  "previous_failed_run": {
+    "run_id": "groute4-cert-20260930T133008Z-09859b9",
+    "status": "FAILED_CERTIFICATION_BOUND_TEST",
+    "failure_receipt_sha256": "ad371fda529aa8e97e0e1745f0de4d32e996dd3b021dba03c75163bb42d70951",
+    "raw_campaign_sha256": "ef5629b65a7c56e6d92c4ee20fb1d66505081cfad52c604e16b31777bb67fae7",
+    "official_differential_sha256": "89aabbfa6e3317cefd695533fc01f32aff1913099729c68d67649c52c9cd23de",
+    "preserved_unchanged": true
+  },
+  "certification_report_present_before_run": false,
+  "execution_freeze_present_before_run": false,
+  "scientific_or_model_execution_started": false,
+  "result": "PASS"
+}

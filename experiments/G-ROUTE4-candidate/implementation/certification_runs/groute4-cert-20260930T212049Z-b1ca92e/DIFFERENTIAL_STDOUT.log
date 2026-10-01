@@ -1,0 +1,331 @@
+{
+ "schema_version": "g-route4.differential.v1",
+ "grading": {
+  "records_compared": 75,
+  "decisions_compared": 15,
+  "rebuilt_records_compared": 45,
+  "output_kinds": {
+   "crlf": 10,
+   "empty": 11,
+   "correct": 11,
+   "wrong": 8,
+   "malformed": 7,
+   "nonhashable": 12,
+   "lone_surrogate": 11,
+   "fenced": 5
+  },
+  "fields": [
+   "collect_evaluation",
+   "safe_normalize",
+   "sealable",
+   "attach_semantics",
+   "decide",
+   "rebuild_records"
+  ],
+  "difference_count": 0,
+  "passed": true
+ },
+ "grading_sensitivity": {
+  "perturbed_outputs": 1,
+  "differences_found": 3,
+  "passed": true
+ },
+ "lifecycle": {
+  "states": {
+   "prior": {
+    "A": "completed",
+    "table": "frozen",
+    "B": "completed"
+   },
+   "fork": {
+    "A": "completed",
+    "table": "frozen",
+    "B": "completed"
+   }
+  },
+  "reached_completed_on_both_sides": true,
+  "commits_compared": 8,
+  "files_compared": 142,
+  "normalization": "mask only root_id and run tokens; identity substitutions; every derived digest recomputed from its substituted preimage; git blob, tree and commit objects rebuilt",
+  "o7_module_bound_calls": {
+   "prior": [
+    {
+     "function": "collect",
+     "line": 931,
+     "module": "g_route3_contract",
+     "name": "request_body",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (the shared request bodies); the collection path also reads Runtime.bodies"
+    },
+    {
+     "function": "_execute",
+     "line": 995,
+     "module": "g_route3_worker",
+     "name": "derive_executable",
+     "shared_unchanged_module": false,
+     "disposition": "prior side only, inside _execute (execution kinds): the prior worker module is replaced by a raising stub; unreached, the shared schedule is non-coding"
+    },
+    {
+     "function": "phase_a_checks",
+     "line": 1280,
+     "module": "g_route1_provider",
+     "name": "extract_output",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "phase_a_checks",
+     "line": 1281,
+     "module": "g_route3_contract",
+     "name": "request_body",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (the shared request bodies); the collection path also reads Runtime.bodies"
+    },
+    {
+     "function": "command_freeze_table",
+     "line": 1352,
+     "module": "g_route1_contract",
+     "name": "canonical_digest",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "command_freeze_table",
+     "line": 1385,
+     "module": "g_route3_contract",
+     "name": "json_digest",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (_stub_json_digest)"
+    },
+    {
+     "function": "phase_b_preconditions",
+     "line": 1429,
+     "module": "g_route1_contract",
+     "name": "canonical_digest",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "phase_b_preconditions",
+     "line": 1430,
+     "module": "g_route3_qualification",
+     "name": "verify_table",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (valid)"
+    },
+    {
+     "function": "standard_guarded_files",
+     "line": 1500,
+     "module": "g_route1_contract",
+     "name": "ROOT",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "standard_guarded_files",
+     "line": 1500,
+     "module": "g_route1_contract",
+     "name": "canonical_digest",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "standard_guarded_files",
+     "line": 1501,
+     "module": "g_route3_contract",
+     "name": "EXECUTION_FREEZE_PATH",
+     "shared_unchanged_module": false,
+     "disposition": "inside standard_guarded_files, replaced by a raising stub in both processes (unreached: Runtime.guarded_files injected)"
+    },
+    {
+     "function": "standard_guarded_files",
+     "line": 1502,
+     "module": "g_route3_runner",
+     "name": "GUARDED_PATHS",
+     "shared_unchanged_module": false,
+     "disposition": "inside standard_guarded_files / load_bound_inputs, both replaced by raising stubs in both processes (unreached: Runtime injection)"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1523,
+     "module": "g_route1_contract",
+     "name": "ROOT",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1524,
+     "module": "g_route3_contract",
+     "name": "request_body",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (the shared request bodies); the collection path also reads Runtime.bodies"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1524,
+     "module": "g_route3_contract",
+     "name": "runtime_fixtures",
+     "shared_unchanged_module": false,
+     "disposition": "inside load_bound_inputs, replaced by a raising stub in both processes (unreached)"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1524,
+     "module": "g_route3_contract",
+     "name": "verify_checked_schedule",
+     "shared_unchanged_module": false,
+     "disposition": "inside load_bound_inputs, replaced by a raising stub in both processes (unreached)"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1525,
+     "module": "g_route3_runner",
+     "name": "GUARDED_PATHS",
+     "shared_unchanged_module": false,
+     "disposition": "inside standard_guarded_files / load_bound_inputs, both replaced by raising stubs in both processes (unreached: Runtime injection)"
+    }
+   ],
+   "fork": [
+    {
+     "function": "collect",
+     "line": 948,
+     "module": "g_route4_contract",
+     "name": "request_body",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (the shared request bodies); the collection path also reads Runtime.bodies"
+    },
+    {
+     "function": "phase_a_checks",
+     "line": 1259,
+     "module": "g_route1_provider",
+     "name": "extract_output",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "phase_a_checks",
+     "line": 1260,
+     "module": "g_route4_contract",
+     "name": "request_body",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (the shared request bodies); the collection path also reads Runtime.bodies"
+    },
+    {
+     "function": "command_freeze_table",
+     "line": 1331,
+     "module": "g_route1_contract",
+     "name": "canonical_digest",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "command_freeze_table",
+     "line": 1364,
+     "module": "g_route4_contract",
+     "name": "json_digest",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (_stub_json_digest)"
+    },
+    {
+     "function": "phase_b_preconditions",
+     "line": 1408,
+     "module": "g_route1_contract",
+     "name": "canonical_digest",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "phase_b_preconditions",
+     "line": 1409,
+     "module": "g_route4_qualification",
+     "name": "verify_table",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (valid)"
+    },
+    {
+     "function": "standard_guarded_files",
+     "line": 1475,
+     "module": "g_route1_contract",
+     "name": "ROOT",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "standard_guarded_files",
+     "line": 1475,
+     "module": "g_route1_contract",
+     "name": "canonical_digest",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "standard_guarded_files",
+     "line": 1476,
+     "module": "g_route4_contract",
+     "name": "EXECUTION_FREEZE_PATH",
+     "shared_unchanged_module": false,
+     "disposition": "inside standard_guarded_files, replaced by a raising stub in both processes (unreached: Runtime.guarded_files injected)"
+    },
+    {
+     "function": "standard_guarded_files",
+     "line": 1477,
+     "module": "g_route4_runner",
+     "name": "GUARDED_PATHS",
+     "shared_unchanged_module": false,
+     "disposition": "inside standard_guarded_files / load_bound_inputs, both replaced by raising stubs in both processes (unreached: Runtime injection)"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1498,
+     "module": "g_route1_contract",
+     "name": "ROOT",
+     "shared_unchanged_module": true,
+     "disposition": "same module loaded in both processes"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1499,
+     "module": "g_route4_contract",
+     "name": "request_body",
+     "shared_unchanged_module": false,
+     "disposition": "identical injected stub in both processes (the shared request bodies); the collection path also reads Runtime.bodies"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1499,
+     "module": "g_route4_contract",
+     "name": "runtime_fixtures",
+     "shared_unchanged_module": false,
+     "disposition": "inside load_bound_inputs, replaced by a raising stub in both processes (unreached)"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1499,
+     "module": "g_route4_contract",
+     "name": "verify_checked_schedule",
+     "shared_unchanged_module": false,
+     "disposition": "inside load_bound_inputs, replaced by a raising stub in both processes (unreached)"
+    },
+    {
+     "function": "load_bound_inputs",
+     "line": 1500,
+     "module": "g_route4_runner",
+     "name": "GUARDED_PATHS",
+     "shared_unchanged_module": false,
+     "disposition": "inside standard_guarded_files / load_bound_inputs, both replaced by raising stubs in both processes (unreached: Runtime injection)"
+    }
+   ]
+  },
+  "o7_undisposed": [],
+  "runtime_injections": "identical in both processes: provider, model receipts, freeze binding, guarded files, schedules, fixtures, request bodies, table_on_main and the shared stub scorer (score_run, phase_a_cells, build_table, attempt_rows)",
+  "difference_count": 0,
+  "sensitivity": {
+   "perturbed_files": 1,
+   "differences_found": 107
+  },
+  "passed": true
+ },
+ "passed": true
+}
+DIFFERENTIAL PASS

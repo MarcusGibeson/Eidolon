@@ -1,0 +1,4 @@
+gates: 80601 (n,k) pairs, 0 mismatches, 0 PASS-and-FAIL; outcomes {'unsafe': {'NOT_TESTABLE': 344, 'FAIL (shown worse)': 69461, 'FAIL (not shown)': 5400, 'PASS': 5396}, 'correct': {'NOT_TESTABLE': 211, 'FAIL (shown worse)': 43797, 'FAIL (not shown)': 8882, 'PASS': 27711}}
+numeric bounds: 492 pairs, 0 failures
+qualification: 2107 cases, 0 mismatches; figures {'0_of_8': 0.312344, '0_of_4': 0.527129}
+ORACLE PASS

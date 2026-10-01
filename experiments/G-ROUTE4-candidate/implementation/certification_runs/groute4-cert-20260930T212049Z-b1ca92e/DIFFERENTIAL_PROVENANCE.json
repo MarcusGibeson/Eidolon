@@ -1,0 +1,36 @@
+{
+  "schema_version": "g-route4.official-differential-provenance.v1",
+  "run_id": "groute4-cert-20260930T212049Z-b1ca92e",
+  "checkpoint": "b1ca92e7b6c538dc24c3f5fab2ee238273a2c7e0",
+  "command": "python -u -B tools/g_route4_differential.py --out <run>/DIFFERENTIAL_REPORT.json",
+  "independently_executed_for_this_run": true,
+  "reused_prior_result": false,
+  "report": "experiments/G-ROUTE4-candidate/implementation/certification_runs/groute4-cert-20260930T212049Z-b1ca92e/DIFFERENTIAL_REPORT.json",
+  "report_sha256": "89aabbfa6e3317cefd695533fc01f32aff1913099729c68d67649c52c9cd23de",
+  "stdout_sha256": "111980c324c40aa5d23aad03216cbf0491ccd453d311ef4bd44aee29fbad11e3",
+  "byte_identical_to_preserved_prior_report": true,
+  "preserved_prior_report": "experiments/G-ROUTE4-candidate/implementation/DIFFERENTIAL_REPORT.json",
+  "grading": {
+    "records_compared": 75,
+    "decisions_compared": 15,
+    "rebuilt_records_compared": 45,
+    "residual_differences": 0
+  },
+  "lifecycle": {
+    "phase_a_prior": "completed",
+    "phase_a_fork": "completed",
+    "table_prior": "frozen",
+    "table_fork": "frozen",
+    "phase_b_prior": "completed",
+    "phase_b_fork": "completed",
+    "commits_compared": 8,
+    "files_compared": 142,
+    "o7_undisposed_calls": 0,
+    "residual_differences": 0
+  },
+  "sensitivity": {
+    "grading_differences_detected": 3,
+    "lifecycle_differences_detected": 107
+  },
+  "verdict": "PASS"
+}

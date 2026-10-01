@@ -1,0 +1,13 @@
+test_after_integrity_failure_must_name_n_minus_1 (g_route4_r7_tests.SentenceMeaningTests.test_after_integrity_failure_must_name_n_minus_1) ... ok
+test_binding_must_be_the_freeze_in_force (g_route4_r7_tests.SentenceMeaningTests.test_binding_must_be_the_freeze_in_force) ... ok
+test_clear_orphan_phase_letter_must_match_the_run_id (g_route4_r7_tests.SentenceMeaningTests.test_clear_orphan_phase_letter_must_match_the_run_id) ... ok
+test_only_launch_sentences_authorize_generation (g_route4_r7_tests.SentenceMeaningTests.test_only_launch_sentences_authorize_generation) ... ok
+test_plain_and_distinct_forms_are_exclusive (g_route4_r7_tests.SentenceMeaningTests.test_plain_and_distinct_forms_are_exclusive) ... ok
+test_resume_binding_must_be_the_freeze_in_force (g_route4_r7_tests.SentenceMeaningTests.test_resume_binding_must_be_the_freeze_in_force) ... ok
+test_resume_must_be_byte_identical (g_route4_r7_tests.SentenceMeaningTests.test_resume_must_be_byte_identical) ... ok
+test_table_must_be_the_frozen_table (g_route4_r7_tests.SentenceMeaningTests.test_table_must_be_the_frozen_table) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 42.026s
+
+OK

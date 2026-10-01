@@ -1,0 +1,104 @@
+{
+  "schema_version": "g-route4.official-certification.v1",
+  "run_id": "groute4-cert-20260930T212049Z-b1ca92e",
+  "official_certification": true,
+  "checkpoint": "b1ca92e7b6c538dc24c3f5fab2ee238273a2c7e0",
+  "branch": "g-route4/implementation",
+  "campaign_started_utc": "2026-09-30T21:21:31.1054232Z",
+  "campaign_finished_utc": "2026-10-01T03:18:09.7742198Z",
+  "campaign_duration_seconds": 21393.7,
+  "previous_failed_certification": {
+    "run_id": "groute4-cert-20260930T133008Z-09859b9",
+    "status": "FAILED_CERTIFICATION_BOUND_TEST",
+    "preserved_unchanged": true,
+    "failure_receipt_sha256": "ad371fda529aa8e97e0e1745f0de4d32e996dd3b021dba03c75163bb42d70951",
+    "raw_campaign_sha256": "ef5629b65a7c56e6d92c4ee20fb1d66505081cfad52c604e16b31777bb67fae7",
+    "official_differential_sha256": "89aabbfa6e3317cefd695533fc01f32aff1913099729c68d67649c52c9cd23de"
+  },
+  "preflight": {
+    "result": "PASS",
+    "worktree_clean": true,
+    "head_exact": true,
+    "implementation_review": "READY_FOR_CERTIFICATION",
+    "reviewed_runtime_modules_matched": 17,
+    "execution_inputs_matched": 9,
+    "authorized_test_repair_lf_sha256": "e1622db7c88805f9a73832a06776a4616bcc491eff2747fbd8a7fbbd8c49388c",
+    "freeze_module_git_blob": "12791cd85e9b64b7adc5b554e1cb636e46ce550c",
+    "repair_record_sha256": "5f031678890ed5ea031ba6435b4a2beb97b16d2b21174e6180d70ed3be9fe931",
+    "certification_report_preexisted": false,
+    "execution_freeze_preexisted": false
+  },
+  "campaign": {
+    "mode": "full",
+    "stride": 1,
+    "sections": 11,
+    "problems": 0,
+    "report": "experiments/G-ROUTE4-candidate/implementation/certification_runs/groute4-cert-20260930T212049Z-b1ca92e/CAMPAIGN_RAW_REPORT.json",
+    "report_sha256": "ef5629b65a7c56e6d92c4ee20fb1d66505081cfad52c604e16b31777bb67fae7",
+    "stdout_sha256": "3e777466b22180805c43a8d358a6b96b7190e8064295a394f1ca497ed0aaf29c",
+    "results": {
+      "clean_kills": {"cases": 918, "problems": 0, "outcome": "completed:918"},
+      "clean_power_loss": {"cases": 918, "problems": 0, "outcome": "completed:918"},
+      "transport_failure_kills": {"cases": 506, "problems": 0, "outcome": "stopped_after_3_attempts:506"},
+      "torn_entries": {"cases": 12, "problems": 0, "outcome": "completed:12"},
+      "torn_ledger": {"cases": 1, "problems": 0, "outcome": "completed:1"},
+      "flush_failures": {"cases": 29, "problems": 0, "outcome": "completed:29"},
+      "environment": {"cases": 3, "problems": 0},
+      "gap_seeds": {"cases": 20, "problems": 0},
+      "review_seeds": {"cases": 10, "problems": 0},
+      "resumed_interrupts": {"cases": 16, "problems": 0, "interrupted_after_collection_certified": true},
+      "power_loss_subsets": {"cases": 918, "problems": 0, "outcome": "completed:918"}
+    }
+  },
+  "oracle": {
+    "result": "PASS",
+    "report": "experiments/G-ROUTE4-candidate/implementation/certification_runs/groute4-cert-20260930T212049Z-b1ca92e/ORACLE_REPORT.json",
+    "report_sha256": "6949ad572aa96d00a81a332d207f21d3dfb9f296106d9a42f87f0c01ec3d4de0",
+    "gate_pairs": 80601,
+    "gate_mismatches": 0,
+    "numeric_bound_pairs": 492,
+    "numeric_bound_failures": 0,
+    "qualification_cases": 2107,
+    "qualification_mismatches": 0
+  },
+  "official_differential": {
+    "result": "PASS",
+    "freshly_executed_for_this_run": true,
+    "report": "experiments/G-ROUTE4-candidate/implementation/certification_runs/groute4-cert-20260930T212049Z-b1ca92e/DIFFERENTIAL_REPORT.json",
+    "report_sha256": "89aabbfa6e3317cefd695533fc01f32aff1913099729c68d67649c52c9cd23de",
+    "provenance": "experiments/G-ROUTE4-candidate/implementation/certification_runs/groute4-cert-20260930T212049Z-b1ca92e/DIFFERENTIAL_PROVENANCE.json",
+    "grading_residual_differences": 0,
+    "lifecycle_residual_differences": 0,
+    "o7_undisposed_calls": 0,
+    "grading_sensitivity_differences": 3,
+    "lifecycle_sensitivity_differences": 107
+  },
+  "deterministic_tests": {
+    "g_route4_tests": {"result": "PASS", "tests": 47, "failures": 0, "runtime_seconds": 6.586, "log_sha256": "c7736112e9ec0e32e02be6a785acdd46e46c7749c2d80584c7f9e2e8798fb831"},
+    "g_route4_r7_tests": {"result": "PASS", "tests": 52, "failures": 0, "runtime_seconds": 151.189, "log_sha256": "d0c40e7736a4dc28c08e0dd42b32a6b75bdac16df6bce261165c1b3c46738a85"},
+    "o9_sentence_meaning": {"result": "PASS", "tests": 8, "failures": 0, "runtime_seconds": 42.026, "log_sha256": "6efd9780937bdd75177538f5c3016ac3bad1592d337f959ea2404334c17c7b3f"}
+  },
+  "obligations_and_conditions": {
+    "O8": "PASS",
+    "O9": "PASS",
+    "N2": "PASS",
+    "N9": "PASS",
+    "B7": {"result": "PASS", "comparisons": 156, "differences": 0, "bounds_met": true, "forked_findings": 0},
+    "B8": {"result": "PASS", "fix_rounds_bound": 2},
+    "coding_exclusion": "PASS",
+    "data_root_isolation": "PASS"
+  },
+  "integrity": {
+    "result": "PASS",
+    "governed_runtime_changed_during_certification": false,
+    "corpus_gold_thresholds_design_or_obligations_changed": false,
+    "historical_frozen_artifacts": "PASS",
+    "execution_input_provenance": "PASS",
+    "previous_failed_run_preserved": true,
+    "scientific_or_model_execution_started": false,
+    "provider_generation_calls": 0,
+    "execution_freeze_created": false
+  },
+  "ready_for_execution_freeze": true,
+  "verdict": "READY_FOR_EXECUTION_FREEZE"
+}
