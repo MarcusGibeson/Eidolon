@@ -1,52 +1,34 @@
 # G-EXTRACT1 Design Revision Changelog
 
-This record maps the second adversarial rereview of commit `9ada6f4ceefb805340d0f2226b33a68357ad6788` to design candidate v3. All changes are prospective design-document changes. No blueprint, fixture, reserve, runner, scorer, provider call, or experiment run was created.
+This record maps the third adversarial rereview of commit `196958184bd2f3aacc4e2ee4798c5811aed0a342` to design candidate v4. All changes are prospective design/checking changes. No blueprint, fixture, reserve, runner, scorer, provider call, or experiment run was created.
 
-## Second-rereview findings
+## Third-rereview findings
 
-| Finding | Disposition | Candidate v3 repair |
+| Finding | Disposition | Candidate v4 repair |
 |---|---|---|
-| Model-facing operation definitions were underconstrained | Resolved | Added finite `g-extract1.operation-definitions.v1`: exact opening, exact sentence catalog, exact placeholders, one/two-node limit, deterministic order, finite unit-conversion sentences, historical absence sentence, and explicit prohibitions. Free-form instruction text is forbidden. |
-| Primary family assignment remained subjective | Resolved | Added frozen metadata schema and first-match predicates for E7, E5, E4, E1, E2, E3, and E6. Difficulty, importance, principal challenge, and author intent are not inputs. |
-| Contamination/fingerprint rules were not reproducible | Resolved | Added exact character set, payload, schema serialization, normalization, tokenizer, 5-gram/Jaccard algorithm, six finite fingerprint components, canonical bytes, all-pairs scope, collision rules, near-replay rule, and two-implementation differential requirement. |
-| Ambiguity output classifier was not fully mechanical | Resolved | Bound historical `provided|not_provided` and exact `not_provided` instruction. Added nine first-match outcomes using observable fields only. Prose is JSON parse failure; no refusal/evasion interpretation remains. |
-| `INVALID` included a subjective catchall | Resolved | Added finite precontact, invalid, incomplete, and abort event catalogs. Removed `cannot be trusted`. Bound provider failures, omissions, interruptions, corrupt evidence, and post-contact gold defects to deterministic classes. |
-| Model blob hashes existed only in machine form | Resolved | Added all three blob SHA-256 values to normative Markdown. |
-| Seed formula existed only in machine form | Resolved | Added both seed bases, exact formula, collision audit, and balanced-order rule to normative Markdown. |
-| Legacy-sized prefix existed only in machine form | Resolved | Added the eight-observation reporting-only prefix and its non-gating status to normative Markdown. |
-| Phase B vaguely invoked all redundant guardrails | Resolved | Markdown and JSON now enumerate Phase B family and binding guardrails and mark correlated repeat false-clean not applicable because Phase B has one observation per fixture. |
-| Validator PASS was overstated | Resolved | The design now limits validator claims to deterministic structural and cross-representation consistency. The validator checks exact structured fields and explicitly disclaims scientific validity and adversarial-review replacement. |
-| Reserve replacement could break composed quotas | Resolved | Reserve identity now binds composed row and required secondary features; activation must preserve every composed count or stop. |
+| SUBJECT placeholder bytes were underdefined | Resolved | Operation contract v2 adds typed placeholders, exact identifier/literal/string rendering, connected graph rule, SUM bounds/punctuation, per-operation allowed kinds, and nine executable rendering vectors. |
+| Family and secondary-feature metadata were not fully derived | Resolved | Family contract v2 defines the canonical fixture/fact representation, exact derivation of every family field and secondary tag, wrapped-numeric E3 behavior, output roles, and five adversarial family vectors. |
+| C3 aggregation-to-binding was ambiguous | Resolved | C3 is exactly a numeric node followed by `EXACT_COPY` of that derived target; E3 explicitly recognizes this wrapped-numeric graph. |
+| Duplicate keys could receive ambiguity credit | Resolved | Ambiguity contract v3 separates unchanged operational parsing from duplicate-aware semantic parsing. Duplicate-key operational acceptance is false-clean and can never be `exact_valid_not_provided`; five vectors exercise it. |
+| Fingerprint inputs depended on prose interpretation | Resolved | Typed fact records render one sentence each; fact roles, entity indices, output roles, operand kinds, and source layout are finite derivations with layout/rejection vectors. |
+| Post-contact gold defect lacked its own event | Resolved | Added `POST_CONTACT_GOLD_DEFECT_DISCOVERED`, distinct from `POST_CONTACT_GOLD_MUTATION`, both invalid. |
+| Interruption/checkpoint failure states were prose-only | Resolved | Added corrupt, missing, and unverifiable checkpoint/journal events plus provider-failure-without-receipt and classification vectors. |
+| Reserve count contradicted one-to-one language | Resolved | Reserve contract v3 is explicitly one slot per phase x round x family: 28 total. It freezes slot IDs, ordered primaries, one profile, single-claim activation, and stop behavior. |
+| Independent contamination implementations were vague | Resolved | Requires separately authored modules with no shared normative helpers; only contract/data and standard-library primitives may be shared; byte disagreement blocks freeze. |
+| Tokenizer handled dates as signed fragments | Resolved | Tokenizer precedence is date, time, context-valid number, identifier. Frozen vectors cover dates, times, negatives, subtraction, exponent, currency, underscore, and hyphen. |
+| Validator checked presence more than behavior | Resolved | Validator v3 renders operation vectors, derives family/features, classifies duplicate outputs, tokenizes vectors, classifies layouts/reserves/events/verdicts, and retains its non-scientific claim boundary. |
 
-## Prior findings retained as repaired
+## Preserved design
 
-| Earlier finding | Candidate v3 status |
-|---|---|
-| Ambiguity recognition versus containment | Retained and tightened in ambiguity v2; malformed containment never earns semantic recognition. |
-| Enforceable baseline prompt | Retained and tightened in baseline v2; subject rendering is catalog-only and exact baseline artifacts remain path/hash/blob bound. |
-| Nondeterministic final results | Retained and tightened in result-state v2 with finite integrity events and first-match predicates. |
-| E5/E6/E7 overlap | Retained as deterministic first-match metadata predicates. |
-| Missing composed reasoning | Retained as four explicit, non-overlapping quota rows totaling eight fixtures per phase/round. |
-| Historical replay versus class recurrence | Retained: replay/near-replay is prohibited, abstract operation/failure recurrence is allowed. |
-| Exact-value representation ambiguity | Retained in exact-value comparator v1; `5`, `5.0`, and `5e0` behavior is type-specific and prospective. |
-| Opportunistic reserve activation | Retained as one mapped reserve per slot, precontact-only activation, and full refreeze. |
-| Confidence overclaim | Retained: confidence bounds are authored-benchmark decision statistics only. |
-| Redundant gates obscured | Retained with every gate labeled independent, enforced redundant, or not applicable. |
-| Phase A to Phase B carry-forward | Retained as exact cell state transitions, machine-built entrant set, no pooling, and no reentry. |
-| Governance gaps | Retained with separate blueprint, authoring, implementation, pilot, execution-freeze, Phase A, and Phase B authority. |
+- Seven families; 35 fixtures per round; 30 determinate plus five E7.
+- Phase A two repeats and 420 calls; Phase B one observation and at most 210 calls; maximum 630.
+- Gates remain 29/30 semantic, 29/30 structural, 27/30 useful acceptance, zero false-clean, E7 A 10/10, E7 B 5/5, malformed at most one.
+- Historical `not_provided` behavior, system/template bindings, models/configuration, no prompt repair, no A/B pooling, and no failed-cell reentry remain unchanged.
+- G-ROUTE4 remains closed failed and immutable; belief effects remain none.
 
-## Intentionally retained design judgments
+## Deferred under separate authority
 
-- The verified gate mathematics and counts are unchanged.
-- Zero false-clean remains an independent gate. Family floors, binding zero-error, and Phase A correlated-repeat checks remain visible redundant guardrails.
-- Clopper-Pearson values remain decision statistics for this authored benchmark, not population estimates.
-- The operational validator remains unchanged. Any operational acceptance that the semantic comparator rejects is false-clean.
-- Timezone conversion remains out of scope.
-- G-ROUTE4 remains closed failed and immutable.
-
-## Unresolved until later separately authorized phases
-
-- No fixture exists yet; authorability and actual corpus diversity require a separately authorized blueprint and authoring review.
-- The G-EXTRACT1 semantic scorer and comparator are identities only until separately implemented and audited.
+- Authorability and scientific representativeness require separately authorized blueprint and corpus review.
+- Production scorer/comparator/runner remain unimplemented.
 - Provider option honoring remains unattested internally by Ollama.
-- Scientific validity still requires independent design rereview; deterministic validation cannot grant it.
+- Deterministic validation does not establish scientific validity or replace adversarial rereview.
